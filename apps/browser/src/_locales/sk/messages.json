@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Pomoc a spätná väzba"
   },
+  "helpCenter": {
+    "message": "Centrum pomoci Bitwarden"
+  },
+  "communityForums": {
+    "message": "Prehliadať komunitné fóra Bitwardenu"
+  },
+  "contactSupport": {
+    "message": "Kontaktovať podporu Bitwardenu"
+  },
   "sync": {
     "message": "Synchronizácia"
   },
@@ -430,7 +439,7 @@
     "message": "Vyžaduje sa opätovné zadanie hlavného hesla."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Hlavné heslo musí mať aspoň $VALUE$ znakov.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "K položkám vo vypnutej organizácii nie je možné pristupovať. Požiadajte o pomoc vlastníka organizácie."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Prihlásenie do $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Chcete vyskúšať automatické vypĺňanie pri načítaní stránky?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "V pravidlách vašej organizácie je zapnuté automatické vypĺňanie pri načítaní stránky."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Ako používať automatické vypĺňanie"
   },
-  "autofillPageLoadInfo": {
-    "message": "Ak zapnete automatické vyplňovanie pri načítaní stránky, prihlasovacie polia sa automaticky vyplnia zodpovedajúce povereniami."
+  "autofillSelectInfoWithCommand": {
+    "message": "Vyberte položku z tejto stránky, alebo použite skratku: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Výberom položky na tejto stránke automaticky vyplníte formulár aktívnej karty."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Vyberte položku z tejto stránky, alebo nastavte skratku v nastaveniach."
   },
-  "autofillTurnedOn": {
-    "message": "Automatické vypĺňanie pri načítaní stránky zapnuté"
+  "gotIt": {
+    "message": "Chápem"
   },
-  "turnOn": {
-    "message": "Zapnúť"
+  "autofillSettings": {
+    "message": "Nastavenia automatického vypĺňania"
   },
-  "notNow": {
-    "message": "Teraz nie"
+  "autofillShortcut": {
+    "message": "Klávesová skratka automatického vypĺňania"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Skratka automatického vypĺňania nie je nastavená. Zmeníte ju v nastaveniach prehliadača."
+  },
+  "autofillShortcutText": {
+    "message": "Skratka automatického vypĺňania je: $COMMAND$. Zmeníte ju v nastaveniach prehliadača.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Predvolená skratka automatického vypĺňania: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

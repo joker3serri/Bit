@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Помощ и обратна връзка"
   },
+  "helpCenter": {
+    "message": "Помощен център на Битуорден"
+  },
+  "communityForums": {
+    "message": "Разгледайте обществения форум на Битуорден"
+  },
+  "contactSupport": {
+    "message": "Свържете се с поддръжката на Битуорден"
+  },
   "sync": {
     "message": "Синхронизиране"
   },
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Записите в изключени организации не са достъпни. Свържете се със собственика на организацията си за помощ."
   },
-  "cardBrandMir": {
-    "message": "Мир"
-  },
   "loggingInTo": {
     "message": "Вписване в $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Да се направи ли опит за автоматично попълване при зареждане на страницата?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Автоматичното попълване при зареждане на страница е включено в съответствие с политиките на Вашата организация."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Как се ползва автоматичното попълване"
   },
-  "autofillPageLoadInfo": {
-    "message": "Ако включите автоматичното попълване при зареждане на страницата, формулярите за вписване ще бъдат автоматично попълвани при наличие на съвпадение в трезора."
+  "autofillSelectInfoWithCommand": {
+    "message": "Изберете елемент от тази страница или използвайте следната комбинация: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Изберете елемент от тази страница, за да се попълни автоматично формуляра в текущия раздел."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Изберете елемент от тази страница или задайте клавишна комбинация в настройките."
   },
-  "autofillTurnedOn": {
-    "message": "Авт. попълване при зареждане на страницата е включено"
+  "gotIt": {
+    "message": "Разбрано"
   },
-  "turnOn": {
-    "message": "Включване"
+  "autofillSettings": {
+    "message": "Настройки за автоматичното попълване"
   },
-  "notNow": {
-    "message": "Не сега"
+  "autofillShortcut": {
+    "message": "Клавишна комбинация за автоматично попълване"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Няма зададена клавишна комбинация за автоматичното попълване. Променете това в настройките на браузъра."
+  },
+  "autofillShortcutText": {
+    "message": "Клавишната комбинация за автоматично попълване е: $COMMAND$. Може да я промените в настройките на браузъра.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Стандартна клавишна комбинация за автоматично попълване: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

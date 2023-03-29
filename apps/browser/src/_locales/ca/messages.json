@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Ajuda i comentaris"
   },
+  "helpCenter": {
+    "message": "Centre d'ajuda de Bitwarden"
+  },
+  "communityForums": {
+    "message": "Explora els fòrums de la comunitat de Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Contacta amb l'assistència de Bitwarden"
+  },
   "sync": {
     "message": "Sincronització"
   },
@@ -430,7 +439,7 @@
     "message": "Cal tornar a escriure la contrasenya mestra."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "La contrasenya mestra ha de contenir almenys $VALUE$ caràcters.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "No es pot accedir als elements de les organitzacions inhabilitades. Poseu-vos en contacte amb el propietari de la vostra organització per obtenir ajuda."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Inici de sessió a $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Es prova l'emplenament automàtic en carregar la pàgina?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Les polítiques de l'organització han activat l'emplenament automàtic en carregar la pàgina."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Com emplenar automàticament"
   },
-  "autofillPageLoadInfo": {
-    "message": "Els formularis d'inici de sessió emplenaran automàticament les credencials coincidents si activeu l'emplenament automàtic en carregar la pàgina."
+  "autofillSelectInfoWithCommand": {
+    "message": "Seleccioneu un element d'aquesta pàgina o utilitzeu la drecera: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Selecciona un element d'aquesta pàgina per emplenar automàticament el formulari de la pestanya activa."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Seleccioneu un element d'aquesta pàgina o definiu una drecera a la configuració."
   },
-  "autofillTurnedOn": {
-    "message": "S'ha activat l'emplenament automàtic en carregar de la pàgina"
+  "gotIt": {
+    "message": "D'acord"
   },
-  "turnOn": {
-    "message": "Activa"
+  "autofillSettings": {
+    "message": "Configuració d'emplenament automàtic"
   },
-  "notNow": {
-    "message": "Ara no"
+  "autofillShortcut": {
+    "message": "Drecera de teclat d'emplenament automàtic"
+  },
+  "autofillShortcutNotSet": {
+    "message": "La drecera d'emplenament automàtic no està configurada. Canvieu-ho a la configuració del navegador."
+  },
+  "autofillShortcutText": {
+    "message": "La drecera d'emplenament automàtic és: $COMMAND$. Canvieu-ho a la configuració del navegador.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Drecera d'emplenament automàtic per defecte: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

@@ -7,9 +7,10 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { SendService } from "@bitwarden/common/abstractions/send.service";
+import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
+import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { SendView } from "@bitwarden/common/models/view/send.view";
 import { Icons } from "@bitwarden/components";
 
@@ -36,7 +37,8 @@ export class SendComponent extends BaseSendComponent {
     policyService: PolicyService,
     private modalService: ModalService,
     private broadcasterService: BroadcasterService,
-    logService: LogService
+    logService: LogService,
+    sendApiService: SendApiService
   ) {
     super(
       sendService,
@@ -46,7 +48,8 @@ export class SendComponent extends BaseSendComponent {
       ngZone,
       searchService,
       policyService,
-      logService
+      logService,
+      sendApiService
     );
   }
 

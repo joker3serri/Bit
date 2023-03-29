@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Help & Feedback"
   },
+  "helpCenter": {
+    "message": "बिटवॉर्डेन सहायता केंद्र"
+  },
+  "communityForums": {
+    "message": "Explore Bitwarden community forums"
+  },
+  "contactSupport": {
+    "message": "बिटवॉर्डेन सहायता से संपर्क करें"
+  },
   "sync": {
     "message": "सिंक"
   },
@@ -348,7 +357,7 @@
     "message": "ताला खोलें"
   },
   "loggedInAsOn": {
-    "message": "Logged in as $EMAIL$ on $HOSTNAME$.",
+    "message": "$HOSTNAME$ पर $EMAIL$ के रूप में लॉग इन किया है।",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -430,7 +439,7 @@
     "message": "मास्टर पासवर्ड पुनः डालने की आवश्यकता है।"
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "मास्टर पासवर्ड कम से कम $VALUE$ अक्षर लंबा होना चाहिए।",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -455,7 +464,7 @@
     "message": "सत्यापन कोड अवैध है"
   },
   "valueCopied": {
-    "message": "$VALUE$ copied",
+    "message": "$VALUE$ कॉपी हो गया है।",
     "description": "Value has been copied to the clipboard.",
     "placeholders": {
       "value": {
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Items in suspended Organizations cannot be accessed. Contact your Organization owner for assistance."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Logging in to $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "पृष्ठ लोड पर ऑटो-फ़िल का प्रयोग करें?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Your organization policies have turned on auto-fill on page load."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "ऑटो-फ़िल कैसे करें"
   },
-  "autofillPageLoadInfo": {
-    "message": "Login forms will automatically fill in matching credentials if you turn on auto-fill on page load."
+  "autofillSelectInfoWithCommand": {
+    "message": "Select an item from this page or use the shortcut: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page to auto-fill the active tab's form."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Select an item from this page or set a shortcut in settings."
   },
-  "autofillTurnedOn": {
-    "message": "Auto-fill on page load turned on"
+  "gotIt": {
+    "message": "Got it"
   },
-  "turnOn": {
-    "message": "Turn on"
+  "autofillSettings": {
+    "message": "Auto-fill settings"
   },
-  "notNow": {
-    "message": "Not now"
+  "autofillShortcut": {
+    "message": "Auto-fill keyboard shortcut"
+  },
+  "autofillShortcutNotSet": {
+    "message": "The auto-fill shortcut is not set. Change this in the browser's settings."
+  },
+  "autofillShortcutText": {
+    "message": "The auto-fill shortcut is: $COMMAND$. Change this in the browser's settings.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Default auto-fill shortcut: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

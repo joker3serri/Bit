@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Помощь и обратная связь"
   },
+  "helpCenter": {
+    "message": "Справочный центр Bitwarden"
+  },
+  "communityForums": {
+    "message": "Посетите форумы сообщества Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Свяжитесь со службой поддержки Bitwarden"
+  },
   "sync": {
     "message": "Синхронизация"
   },
@@ -430,7 +439,7 @@
     "message": "Необходимо повторно ввести мастер-пароль."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Мастер-пароль должен содержать не менее $VALUE$ символов.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1818,7 +1827,7 @@
     "message": "Подтверждение мастер-пароля"
   },
   "passwordConfirmationDesc": {
-    "message": "Это действие защищено. Для продолжения введите свой мастер-пароль, чтобы подтвердить свою личность."
+    "message": "Это действие защищено. Чтобы продолжить, введите ваш мастер-пароль для подтверждения личности."
   },
   "emailVerificationRequired": {
     "message": "Требуется подтверждение электронной почты"
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Доступ к элементам в отключенных организациях невозможен. Обратитесь за помощью к владельцу организации."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Вход в $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Попробовать автозаполнение при загрузке страницы?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Автозаполнение при загрузке страницы было активировано политиками вашей организации."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Как использовать автозаполнение"
   },
-  "autofillPageLoadInfo": {
-    "message": "Если включить автозаполнение при загрузке страницы, то формы входа в систему автоматически заполняются соответствующими учетными данными."
+  "autofillSelectInfoWithCommand": {
+    "message": "Выберите элемент на этой странице или используйте сочетание клавиш: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Выберите элемент с этой страницы для автоматического заполнения формы на активной вкладке."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Выберите элемент на этой странице или задайте сочетание клавиш в настройках."
   },
-  "autofillTurnedOn": {
-    "message": "Автозаполнение при загрузке страницы включено"
+  "gotIt": {
+    "message": "Понятно"
   },
-  "turnOn": {
-    "message": "Включить"
+  "autofillSettings": {
+    "message": "Настройки автозаполнения"
   },
-  "notNow": {
-    "message": "Не сейчас"
+  "autofillShortcut": {
+    "message": "Сочетание клавиш для автозаполнения"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Сочетание клавиш для автозаполнения не установлено. Установите его в настройках браузера."
+  },
+  "autofillShortcutText": {
+    "message": "Сочетание клавиш для автозаполнения: $COMMAND$. Измените его в настройках браузера.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Сочетание клавиш для автозаполнения по умолчанию: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

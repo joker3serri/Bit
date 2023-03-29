@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Допомога і зворотний зв'язок"
   },
+  "helpCenter": {
+    "message": "Центр допомоги Bitwarden"
+  },
+  "communityForums": {
+    "message": "Форуми спільноти Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Звернутися в службу підтримки Bitwarden"
+  },
   "sync": {
     "message": "Синхронізація"
   },
@@ -430,7 +439,7 @@
     "message": "Необхідно повторно ввести головний пароль."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Довжина головного пароля має бути принаймні $VALUE$ символів.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1137,7 +1146,7 @@
     "message": "Mx"
   },
   "firstName": {
-    "message": "Ім’я"
+    "message": "Ім'я"
   },
   "middleName": {
     "message": "По батькові"
@@ -1619,7 +1628,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Досягнуто максимальну кількість доступів",
+    "message": "Досягнуто максимальної кількості доступів",
     "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Записи у вимкнених організаціях недоступні. Зверніться до власника вашої організації для отримання допомоги."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Вхід до $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Спробувати автозаповнення на сторінці?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Політикою вашої організації було увімкнено автозаповнення на сторінці."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Як працює автозаповнення"
   },
-  "autofillPageLoadInfo": {
-    "message": "Якщо ви увімкнете автозаповнення на сторінці, форми входу автоматично заповнюватимуться відповідними обліковими даними."
+  "autofillSelectInfoWithCommand": {
+    "message": "Виберіть елемент з цієї сторінки або використайте комбінацію клавіш: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Перебуваючи на цій сторінці, оберіть запис для автоматичного заповнення форми входу."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Виберіть елемент з цієї сторінки або встановіть комбінацію клавіш у налаштуваннях."
   },
-  "autofillTurnedOn": {
-    "message": "Автозаповнення на сторінці увімкнено"
+  "gotIt": {
+    "message": "Зрозуміло"
   },
-  "turnOn": {
-    "message": "Увімкнути"
+  "autofillSettings": {
+    "message": "Налаштування автозаповнення"
   },
-  "notNow": {
-    "message": "Не зараз"
+  "autofillShortcut": {
+    "message": "Комбінації клавіш автозаповнення"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Комбінацію клавіш для автозаповнення не встановлено. Змініть це в налаштуваннях браузера."
+  },
+  "autofillShortcutText": {
+    "message": "Комбінація клавіш автозаповнення: $COMMAND$. Змініть це в налаштуваннях браузера.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Типова комбінація клавіш автозаповнення: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }
