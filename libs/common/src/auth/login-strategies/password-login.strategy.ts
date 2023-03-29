@@ -126,7 +126,7 @@ export class PasswordLogInStrategy extends LogInStrategy {
 
       if (!meetsRequirements) {
         const resetOptions = new ForcePasswordResetOptions(
-          ForceResetPasswordReason.WeakMasterPasswordOnLogin
+          ForceResetPasswordReason.WeakMasterPassword
         );
         // Authentication was successful, save the force update password options with the state service
         if (await this.stateService.getIsAuthenticated()) {

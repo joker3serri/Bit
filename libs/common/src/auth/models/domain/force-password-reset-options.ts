@@ -5,10 +5,10 @@ export enum ForceResetPasswordReason {
   AdminForcePasswordReset,
 
   /**
-   * Occurs when a user logs in with a master password that does not meet an organization's master password policy that
-   * is enforced on login.
+   * Occurs when a user logs in / unlocks their vault with a master password that does not meet an organization's
+   * master password policy that is enforced on login/unlock.
    */
-  WeakMasterPasswordOnLogin,
+  WeakMasterPassword,
 }
 
 /**

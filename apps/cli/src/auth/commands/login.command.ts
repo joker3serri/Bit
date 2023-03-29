@@ -327,8 +327,7 @@ export class LoginCommand {
         ) {
           return await this.updateTempPassword();
         } else if (
-          response.forcePasswordResetOptions.reason ===
-          ForceResetPasswordReason.WeakMasterPasswordOnLogin
+          response.forcePasswordResetOptions.reason === ForceResetPasswordReason.WeakMasterPassword
         ) {
           return await this.updateWeakPassword(password);
         }

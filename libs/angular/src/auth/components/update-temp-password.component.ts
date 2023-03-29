@@ -34,7 +34,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   onSuccessfulChangePassword: () => Promise<any>;
 
   get requireCurrentPassword(): boolean {
-    return this.reason === ForceResetPasswordReason.WeakMasterPasswordOnLogin;
+    return this.reason === ForceResetPasswordReason.WeakMasterPassword;
   }
 
   constructor(
@@ -74,7 +74,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   }
 
   get masterPasswordWarningText(): string {
-    return this.reason == ForceResetPasswordReason.WeakMasterPasswordOnLogin
+    return this.reason == ForceResetPasswordReason.WeakMasterPassword
       ? this.i18nService.t("updateWeakMasterPasswordWarning")
       : this.i18nService.t("updateMasterPasswordWarning");
   }
@@ -159,7 +159,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
         case ForceResetPasswordReason.AdminForcePasswordReset:
           this.formPromise = this.updateTempPassword(masterPasswordHash, encKey);
           break;
-        case ForceResetPasswordReason.WeakMasterPasswordOnLogin:
+        case ForceResetPasswordReason.WeakMasterPassword:
           this.formPromise = this.updatePassword(masterPasswordHash, encKey);
           break;
       }

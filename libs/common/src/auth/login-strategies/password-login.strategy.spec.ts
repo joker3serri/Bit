@@ -146,7 +146,7 @@ describe("PasswordLogInStrategy", () => {
     const result = await passwordLogInStrategy.logIn(credentials);
 
     const expectedResetOptions = expect.objectContaining({
-      reason: ForceResetPasswordReason.WeakMasterPasswordOnLogin,
+      reason: ForceResetPasswordReason.WeakMasterPassword,
     });
 
     expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe("PasswordLogInStrategy", () => {
     );
 
     const expectedResetOptions = expect.objectContaining({
-      reason: ForceResetPasswordReason.WeakMasterPasswordOnLogin,
+      reason: ForceResetPasswordReason.WeakMasterPassword,
     });
 
     // First login attempt should not save the force password reset options
