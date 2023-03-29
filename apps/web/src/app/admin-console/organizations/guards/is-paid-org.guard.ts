@@ -25,19 +25,18 @@ export class IsPaidOrgGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    //users without billing permission can't access billing
-    if (org.isFreeOrg && !org.canManageBilling) {
-      await this.platformUtilsService.showDialog(
-        this.i18nService.t("notAvailableForFreeOrganization"),
-        this.i18nService.t("upgradeOrganization"),
-        this.i18nService.t("ok")
-      );
-
-      return false;
-    }
-
     if (org.isFreeOrg) {
-      this.messagingService.send("upgradeOrganization", { organizationId: org.id });
+      // Users without billing permission can't access billing
+      if (!org.canManageBilling) {
+        await this.platformUtilsService.showDialog(
+          this.i18nService.t("notAvailableForFreeOrganization"),
+          this.i18nService.t("upgradeOrganization"),
+          this.i18nService.t("ok")
+        );
+        return false;
+      } else {
+        this.messagingService.send("upgradeOrganization", { organizationId: org.id });
+      }
     }
 
     return !org.isFreeOrg;
