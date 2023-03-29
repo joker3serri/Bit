@@ -121,15 +121,15 @@ export class PasswordLogInStrategy extends LogInStrategy {
       const meetsRequirements = this.evaluateMasterPassword(credentials, this.masterPasswordPolicy);
 
       if (!meetsRequirements) {
-        // Authentication was successful, save the force update password options with the state service
-        if (await this.stateService.getIsAuthenticated()) {
+        if (result.requiresCaptcha || result.requiresTwoFactor) {
+          // Save the flag to this strategy for later use as the master password is about to pass out of scope
+          this.forcePasswordResetReason = ForceResetPasswordReason.WeakMasterPassword;
+        } else {
+          // Authentication was successful, save the force update password options with the state service
           await this.stateService.setForcePasswordResetReason(
             ForceResetPasswordReason.WeakMasterPassword
           );
           result.forcePasswordReset = ForceResetPasswordReason.WeakMasterPassword;
-        } else {
-          // Authentication was not fully successful (likely 2FA), save the flag to this strategy for later use
-          this.forcePasswordResetReason = ForceResetPasswordReason.WeakMasterPassword;
         }
       }
     }
