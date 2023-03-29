@@ -6,7 +6,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

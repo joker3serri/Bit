@@ -20,7 +20,7 @@ import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-con
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import {
   PasswordLogInCredentials,
   SsoLogInCredentials,

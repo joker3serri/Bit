@@ -16,7 +16,7 @@ import { ProviderData } from "../admin-console/models/data/provider.data";
 import { Policy } from "../admin-console/models/domain/policy";
 import { CollectionView } from "../admin-console/models/view/collection.view";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
-import { ForceResetPasswordReason } from "../auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "../auth/models/domain/force-reset-password-reason";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
 import { KdfType } from "../enums/kdfType";

@@ -12,7 +12,7 @@ import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
-import { ForceResetPasswordReason } from "../models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "../models/domain/force-reset-password-reason";
 import {
   PasswordlessLogInCredentials,
   PasswordLogInCredentials,

@@ -11,7 +11,7 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
-import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
 import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
