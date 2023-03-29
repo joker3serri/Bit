@@ -82,7 +82,8 @@ export class PasswordLogInStrategy extends LogInStrategy {
 
     // 2FA was successful, save the force update password options with the state service if defined
     if (
-      (await this.stateService.getIsAuthenticated()) &&
+      !result.requiresTwoFactor &&
+      !result.requiresCaptcha &&
       this.forcePasswordResetReason != ForceResetPasswordReason.None
     ) {
       await this.stateService.setForcePasswordResetReason(this.forcePasswordResetReason);
