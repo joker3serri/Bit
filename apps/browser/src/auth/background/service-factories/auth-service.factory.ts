@@ -1,7 +1,10 @@
 import { AuthService as AbstractAuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 
-import { policyServiceFactory } from "../../../admin-console/background/service-factories/policy-service.factory";
+import {
+  policyServiceFactory,
+  PolicyServiceInitOptions,
+} from "../../../admin-console/background/service-factories/policy-service.factory";
 import {
   apiServiceFactory,
   ApiServiceInitOptions,
@@ -36,7 +39,10 @@ import {
   messagingServiceFactory,
   MessagingServiceInitOptions,
 } from "../../../background/service_factories/messaging-service.factory";
-import { passwordGenerationServiceFactory } from "../../../background/service_factories/password-generation-service.factory";
+import {
+  passwordGenerationServiceFactory,
+  PasswordGenerationServiceInitOptions,
+} from "../../../background/service_factories/password-generation-service.factory";
 import {
   platformUtilsServiceFactory,
   PlatformUtilsServiceInitOptions,
@@ -67,7 +73,9 @@ export type AuthServiceInitOptions = AuthServiceFactoyOptions &
   StateServiceInitOptions &
   TwoFactorServiceInitOptions &
   I18nServiceInitOptions &
-  EncryptServiceInitOptions;
+  EncryptServiceInitOptions &
+  PolicyServiceInitOptions &
+  PasswordGenerationServiceInitOptions;
 
 export function authServiceFactory(
   cache: { authService?: AbstractAuthService } & CachedServices,
