@@ -10,14 +10,12 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
 import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { Verification } from "@bitwarden/common/types/verification";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
@@ -92,21 +90,6 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
           "error",
           this.i18nService.t("errorOccurred"),
           this.i18nService.t("masterPasswordRequired")
-        );
-        return false;
-      }
-
-      const secret: Verification = {
-        type: VerificationType.MasterPassword,
-        secret: this.currentMasterPassword,
-      };
-      try {
-        await this.userVerificationService.verifyUser(secret);
-      } catch (e) {
-        this.platformUtilsService.showToast(
-          "error",
-          this.i18nService.t("errorOccurred"),
-          e.message
         );
         return false;
       }
