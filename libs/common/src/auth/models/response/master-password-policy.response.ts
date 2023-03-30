@@ -1,19 +1,19 @@
 import { BaseResponse } from "../../../models/response/base.response";
 
 export class MasterPasswordPolicyResponse extends BaseResponse {
-  minComplexity = 0;
-  minLength = 0;
-  requireUpper = false;
-  requireLower = false;
-  requireNumbers = false;
-  requireSpecial = false;
+  minComplexity: number;
+  minLength: number;
+  requireUpper: boolean;
+  requireLower: boolean;
+  requireNumbers: boolean;
+  requireSpecial: boolean;
 
   /**
    * Flag to indicate if the policy should be enforced on login.
    * If true, and the user's password does not meet the policy requirements,
    * the user will be forced to update their password.
    */
-  enforceOnLogin = false;
+  enforceOnLogin: boolean;
 
   constructor(response: any) {
     super(response);
