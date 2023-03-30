@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { SharedOrganizationModule } from "../../../organizations/shared";
+import { SharedOrganizationModule } from "../../../admin-console/organizations/shared";
 import { LooseComponentsModule } from "../../../shared";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
