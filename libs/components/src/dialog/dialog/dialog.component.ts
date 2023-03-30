@@ -28,7 +28,7 @@ export class DialogComponent {
   get width() {
     switch (this.dialogSize) {
       case "small": {
-        return "tw-w-96";
+        return "tw-max-w-sm";
       }
       case "large": {
         return "tw-max-w-3xl";
