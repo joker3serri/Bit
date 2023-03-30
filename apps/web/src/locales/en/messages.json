@@ -5612,6 +5612,24 @@
       }
     }
   },
+  "inputMinValue": {
+    "message": "Input must be greater than $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Input must be less than $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
   "multipleInputEmails": {
     "message": "1 or more emails are invalid"
   },

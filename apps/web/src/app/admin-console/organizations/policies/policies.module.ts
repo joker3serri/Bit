@@ -1,5 +1,7 @@
 import { NgModule } from "@angular/core";
 
+import { SelectModule } from "@bitwarden/components";
+
 import { LooseComponentsModule, SharedModule } from "../../../shared";
 
 import { DisableSendPolicyComponent } from "./disable-send.component";
@@ -15,7 +17,7 @@ import { SingleOrgPolicyComponent } from "./single-org.component";
 import { TwoFactorAuthenticationPolicyComponent } from "./two-factor-authentication.component";
 
 @NgModule({
-  imports: [SharedModule, LooseComponentsModule],
+  imports: [SharedModule, LooseComponentsModule, SelectModule],
   declarations: [
     DisableSendPolicyComponent,
     MasterPasswordPolicyComponent,
