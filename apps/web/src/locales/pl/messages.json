@@ -4852,6 +4852,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Co najmniej jedna zasada organizacji uniemożliwia wyeksportowanie osobistego sejfu."
   },
+  "activateAutofill": {
+    "message": "Włącz autouzupełnianie"
+  },
+  "activateAutofillDesc": {
+    "message": "Aktywuj autouzupełnianie podczas wczytywania strony w rozszerzeniu przeglądarki dla wszystkich istniejących i nowych użytkowników."
+  },
+  "experimentalFeature": {
+    "message": "Zaatakowane lub niezaufane witryny internetowe mogą wykorzystać funkcję autouzupełniania podczas wczytywania strony, aby wyrządzić szkody."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Dowiedz się więcej o autouzupełnianiu"
+  },
   "selectType": {
     "message": "Wybierz rodzaj logowania jednokrotnego SSO"
   },
@@ -5626,9 +5638,6 @@
   "reporting": {
     "message": "Zgłaszanie"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Liczba użytkowników"
   },
@@ -5866,7 +5875,7 @@
     }
   },
   "deleteServiceAccountToast": {
-    "message": "Konto serwisowe zostało usunięte"
+    "message": "Service account deleted"
   },
   "deleteServiceAccountsToast": {
     "message": "Usunięto konta serwisowe"
@@ -6027,8 +6036,8 @@
     "message": "Tokeny dostępu",
     "description": "Title for the section displaying access tokens."
   },
-  "createAccessToken": {
-    "message": "Utwórz token dostępu",
+  "newAccessToken": {
+    "message": "Nowy token dostępu",
     "description": "Button label for creating a new access token."
   },
   "expires": {
@@ -6490,7 +6499,7 @@
     "message": "Zmień ustawienia KDF"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Kontynuowanie spowoduje wylogowanie z bieżącej sesji i konieczność ponownego zalogowania. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie godzinę. Zalecamy wyeksportowanie sejfu przed zmianą ustawień szyfrowania, aby zapobiec utracie danych."
+    "message": "Kontynuowanie spowoduje wylogowanie ze wszystkich aktywnych sesji. Będzie trzeba zalogować się ponownie i ukończyć konfigurację logowania dwuetapowego. Zalecamy wyeksportowanie sejfu przed zmianą ustawień szyfrowania, aby zapobiec utracie danych."
   },
   "secretsManagerBeta": {
     "message": "Menedżer sekretów beta"
