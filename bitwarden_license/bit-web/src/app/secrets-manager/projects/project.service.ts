@@ -104,12 +104,12 @@ export class ProjectService {
     projectView.organizationId = projectResponse.organizationId;
     projectView.creationDate = projectResponse.creationDate;
     projectView.revisionDate = projectResponse.revisionDate;
-    (projectView.read = projectResponse.read),
-      (projectView.write = projectResponse.write),
-      (projectView.name = await this.encryptService.decryptToUtf8(
-        new EncString(projectResponse.name),
-        orgKey
-      ));
+    projectView.read = projectResponse.read;
+    projectView.write = projectResponse.write;
+    projectView.name = await this.encryptService.decryptToUtf8(
+      new EncString(projectResponse.name),
+      orgKey
+    );
     return projectView;
   }
 
@@ -123,12 +123,12 @@ export class ProjectService {
         const projectListView = new ProjectListView();
         projectListView.id = s.id;
         projectListView.organizationId = s.organizationId;
-        (projectListView.read = s.read),
-          (projectListView.write = s.write),
-          (projectListView.name = await this.encryptService.decryptToUtf8(
-            new EncString(s.name),
-            orgKey
-          ));
+        projectListView.read = s.read;
+        projectListView.write = s.write;
+        projectListView.name = await this.encryptService.decryptToUtf8(
+          new EncString(s.name),
+          orgKey
+        );
         projectListView.creationDate = s.creationDate;
         projectListView.revisionDate = s.revisionDate;
         return projectListView;
