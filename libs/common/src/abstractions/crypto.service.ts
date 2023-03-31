@@ -4,7 +4,7 @@ import { ProfileProviderResponse } from "../admin-console/models/response/profil
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { HashPurpose } from "../enums/hash-purpose";
 import { KdfType } from "../enums/kdf-type";
-import { KeySuffixOptions } from "../enums/keySuffixOptions";
+import { KeySuffixOptions } from "../enums/key-suffix-options";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";

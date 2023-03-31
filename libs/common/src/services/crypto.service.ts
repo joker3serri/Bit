@@ -20,7 +20,7 @@ import {
   DEFAULT_ARGON2_PARALLELISM,
   KdfType,
 } from "../enums/kdf-type";
-import { KeySuffixOptions } from "../enums/keySuffixOptions";
+import { KeySuffixOptions } from "../enums/key-suffix-options";
 import { sequentialize } from "../misc/sequentialize";
 import { Utils } from "../misc/utils";
 import { EFFLongWordList } from "../misc/wordlist";

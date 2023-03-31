@@ -11,7 +11,7 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { KdfType } from "../../enums/kdf-type";
-import { KeySuffixOptions } from "../../enums/keySuffixOptions";
+import { KeySuffixOptions } from "../../enums/key-suffix-options";
 import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PreloginRequest } from "../../models/request/prelogin.request";
