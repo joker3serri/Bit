@@ -21,7 +21,7 @@ import { HtmlStorageLocation } from "../enums/html-storage-location";
 import { KdfType } from "../enums/kdf-type";
 import { StorageLocation } from "../enums/storage-location";
 import { ThemeType } from "../enums/theme-type";
-import { UriMatchType } from "../enums/uriMatchType";
+import { UriMatchType } from "../enums/uri-match-type";
 import { StateFactory } from "../factories/stateFactory";
 import { Utils } from "../misc/utils";
 import { EventData } from "../models/data/event.data";

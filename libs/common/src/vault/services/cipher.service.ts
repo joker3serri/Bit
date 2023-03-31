@@ -9,7 +9,7 @@ import { SearchService } from "../../abstractions/search.service";
 import { SettingsService } from "../../abstractions/settings.service";
 import { StateService } from "../../abstractions/state.service";
 import { FieldType } from "../../enums/field-type";
-import { UriMatchType } from "../../enums/uriMatchType";
+import { UriMatchType } from "../../enums/uri-match-type";
 import { sequentialize } from "../../misc/sequentialize";
 import { Utils } from "../../misc/utils";
 import { AccountSettingsSettings } from "../../models/domain/account";

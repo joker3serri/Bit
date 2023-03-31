@@ -11,7 +11,7 @@ import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { KdfType } from "../enums/kdf-type";
 import { ThemeType } from "../enums/theme-type";
-import { UriMatchType } from "../enums/uriMatchType";
+import { UriMatchType } from "../enums/uri-match-type";
 import { EventData } from "../models/data/event.data";
 import { ServerConfigData } from "../models/data/server-config.data";
 import { Account, AccountSettingsSettings } from "../models/domain/account";

@@ -4,7 +4,7 @@ import { I18nService } from "../abstractions/i18n.service";
 import { LogService } from "../abstractions/log.service";
 import { SearchService as SearchServiceAbstraction } from "../abstractions/search.service";
 import { FieldType } from "../enums/field-type";
-import { UriMatchType } from "../enums/uriMatchType";
+import { UriMatchType } from "../enums/uri-match-type";
 import { SendView } from "../tools/send/models/view/send.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
 import { CipherType } from "../vault/enums/cipher-type";

@@ -10,7 +10,7 @@ import { CollectionView } from "../../admin-console/models/view/collection.view"
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { KdfType } from "../../enums/kdf-type";
-import { UriMatchType } from "../../enums/uriMatchType";
+import { UriMatchType } from "../../enums/uri-match-type";
 import { Utils } from "../../misc/utils";
 import { GeneratedPasswordHistory } from "../../tools/generator/password";
 import { SendData } from "../../tools/send/models/data/send.data";

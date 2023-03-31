@@ -1,4 +1,4 @@
-import { UriMatchType } from "../../../enums/uriMatchType";
+import { UriMatchType } from "../../../enums/uri-match-type";
 
 import { LoginUriView } from "./login-uri.view";
 

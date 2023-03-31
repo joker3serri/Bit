@@ -1,4 +1,4 @@
-import { UriMatchType } from "../../enums/uriMatchType";
+import { UriMatchType } from "../../enums/uri-match-type";
 import { LoginUri as LoginUriDomain } from "../../vault/models/domain/login-uri";
 import { LoginUriView } from "../../vault/models/view/login-uri.view";
 import { EncString } from "../domain/enc-string";

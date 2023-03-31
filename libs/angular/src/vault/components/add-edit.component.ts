@@ -20,7 +20,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { EventType } from "@bitwarden/common/enums/event-type";
 import { SecureNoteType } from "@bitwarden/common/enums/secure-note-type";
-import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
+import { UriMatchType } from "@bitwarden/common/enums/uri-match-type";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
