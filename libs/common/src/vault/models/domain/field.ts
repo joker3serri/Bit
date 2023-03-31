@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { FieldType } from "../../../enums/field-type";
-import { LinkedIdType } from "../../../enums/linkedIdType";
+import { LinkedIdType } from "../../../enums/linked-id-type";
 import Domain from "../../../models/domain/domain-base";
 import { EncString } from "../../../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
