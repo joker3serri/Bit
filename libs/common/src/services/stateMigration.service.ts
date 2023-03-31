@@ -5,7 +5,7 @@ import { PolicyData } from "../admin-console/models/data/policy.data";
 import { ProviderData } from "../admin-console/models/data/provider.data";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { TokenService } from "../auth/services/token.service";
-import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
+import { HtmlStorageLocation } from "../enums/html-storage-location";
 import { KdfType } from "../enums/kdfType";
 import { StateVersion } from "../enums/stateVersion";
 import { ThemeType } from "../enums/themeType";
