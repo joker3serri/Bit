@@ -20,7 +20,7 @@ import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { HtmlStorageLocation } from "../enums/html-storage-location";
 import { KdfType } from "../enums/kdf-type";
 import { StorageLocation } from "../enums/storage-location";
-import { ThemeType } from "../enums/themeType";
+import { ThemeType } from "../enums/theme-type";
 import { UriMatchType } from "../enums/uriMatchType";
 import { StateFactory } from "../factories/stateFactory";
 import { Utils } from "../misc/utils";

@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { ThemeType } from "@bitwarden/common/enums/themeType";
+import { ThemeType } from "@bitwarden/common/enums/theme-type";
 
 import { Theme } from "./theme";
 

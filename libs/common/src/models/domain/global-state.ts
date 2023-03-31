@@ -1,6 +1,6 @@
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { StateVersion } from "../../enums/state-version";
-import { ThemeType } from "../../enums/themeType";
+import { ThemeType } from "../../enums/theme-type";
 
 import { WindowState } from "./window-state";
 
