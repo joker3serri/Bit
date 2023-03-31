@@ -19,7 +19,7 @@ import { UserVerificationApiService } from "@bitwarden/common/auth/services/user
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { ClientType } from "@bitwarden/common/enums/client-type";
 import { KeySuffixOptions } from "@bitwarden/common/enums/key-suffix-options";
-import { LogLevelType } from "@bitwarden/common/enums/logLevelType";
+import { LogLevelType } from "@bitwarden/common/enums/log-level-type";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";

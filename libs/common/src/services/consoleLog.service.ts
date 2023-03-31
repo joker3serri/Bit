@@ -1,5 +1,5 @@
 import { LogService as LogServiceAbstraction } from "../abstractions/log.service";
-import { LogLevelType } from "../enums/logLevelType";
+import { LogLevelType } from "../enums/log-level-type";
 
 export class ConsoleLogService implements LogServiceAbstraction {
   protected timersMap: Map<string, [number, number]> = new Map();

@@ -44,7 +44,6 @@
 ./libs/common/src/enums/secureNoteType.ts
 ./libs/common/src/enums/storageLocation.ts
 ./libs/common/src/enums/themeType.ts
-./libs/common/src/enums/logLevelType.ts
 ./libs/common/src/enums/stateVersion.ts
 ./libs/common/src/enums/nativeMessagingVersion.ts
 ./libs/common/src/factories/accountFactory.ts
