@@ -1,4 +1,4 @@
-import { ClientType } from "../../../../enums/clientType";
+import { ClientType } from "../../../../enums/client-type";
 import { Utils } from "../../../../misc/utils";
 import { CaptchaProtectedRequest } from "../captcha-protected.request";
 

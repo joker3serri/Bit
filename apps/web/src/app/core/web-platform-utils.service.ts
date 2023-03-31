@@ -5,7 +5,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ClientType } from "@bitwarden/common/enums/clientType";
+import { ClientType } from "@bitwarden/common/enums/client-type";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
 
 @Injectable()

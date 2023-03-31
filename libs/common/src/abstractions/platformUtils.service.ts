@@ -1,4 +1,4 @@
-import { ClientType } from "../enums/clientType";
+import { ClientType } from "../enums/client-type";
 import { DeviceType } from "../enums/deviceType";
 
 interface ToastOptions {

@@ -1,7 +1,7 @@
 import * as child_process from "child_process";
 
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ClientType } from "@bitwarden/common/enums/clientType";
+import { ClientType } from "@bitwarden/common/enums/client-type";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
 
 // eslint-disable-next-line
