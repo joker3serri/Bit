@@ -1,5 +1,5 @@
 import { ClientType } from "../enums/client-type";
-import { DeviceType } from "../enums/deviceType";
+import { DeviceType } from "../enums/device-type";
 
 interface ToastOptions {
   timeout?: number;

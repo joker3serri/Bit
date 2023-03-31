@@ -1,4 +1,4 @@
-import { DeviceType } from "../../enums/deviceType";
+import { DeviceType } from "../../enums/device-type";
 import { EventSystemUser } from "../../enums/event-system-user";
 import { EventType } from "../../enums/eventType";
 

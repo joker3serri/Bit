@@ -5,7 +5,7 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { ClientType } from "@bitwarden/common/enums/client-type";
-import { DeviceType } from "@bitwarden/common/enums/deviceType";
+import { DeviceType } from "@bitwarden/common/enums/device-type";
 
 import { isDev, isMacAppStore } from "../utils";
 

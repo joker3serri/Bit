@@ -4,7 +4,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { DeviceType } from "@bitwarden/common/enums/deviceType";
+import { DeviceType } from "@bitwarden/common/enums/device-type";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
 
