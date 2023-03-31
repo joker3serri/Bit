@@ -41,7 +41,6 @@
 ./libs/common/src/enums/kdfType.ts
 ./libs/common/src/enums/fileUploadType.ts
 ./libs/common/src/enums/linkedIdType.ts
-./libs/common/src/enums/encryptionType.ts
 ./libs/common/src/enums/htmlStorageLocation.ts
 ./libs/common/src/enums/notificationType.ts
 ./libs/common/src/enums/keySuffixOptions.ts

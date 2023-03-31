@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { EncryptionType } from "../../enums/encryptionType";
+import { EncryptionType } from "../../enums/encryption-type";
 import { Utils } from "../../misc/utils";
 
 export class SymmetricCryptoKey {
