@@ -1,4 +1,4 @@
-import { FieldType } from "@bitwarden/common/enums/fieldType";
+import { FieldType } from "@bitwarden/common/enums/field-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";

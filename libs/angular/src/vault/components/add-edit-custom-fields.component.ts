@@ -4,7 +4,7 @@ import { Directive, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { EventType } from "@bitwarden/common/enums/event-type";
-import { FieldType } from "@bitwarden/common/enums/fieldType";
+import { FieldType } from "@bitwarden/common/enums/field-type";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";

@@ -3,7 +3,7 @@ import * as lunr from "lunr";
 import { I18nService } from "../abstractions/i18n.service";
 import { LogService } from "../abstractions/log.service";
 import { SearchService as SearchServiceAbstraction } from "../abstractions/search.service";
-import { FieldType } from "../enums/fieldType";
+import { FieldType } from "../enums/field-type";
 import { UriMatchType } from "../enums/uriMatchType";
 import { SendView } from "../tools/send/models/view/send.view";
 import { CipherService } from "../vault/abstractions/cipher.service";

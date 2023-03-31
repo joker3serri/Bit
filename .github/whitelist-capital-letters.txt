@@ -52,7 +52,6 @@
 ./libs/common/src/enums/themeType.ts
 ./libs/common/src/enums/logLevelType.ts
 ./libs/common/src/enums/stateVersion.ts
-./libs/common/src/enums/fieldType.ts
 ./libs/common/src/enums/nativeMessagingVersion.ts
 ./libs/common/src/factories/accountFactory.ts
 ./libs/common/src/factories/globalStateFactory.ts

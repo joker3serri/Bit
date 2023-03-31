@@ -3,7 +3,7 @@ import { Substitute, Arg } from "@fluffy-spoon/substitute";
 import { Jsonify } from "type-fest";
 
 import { mockEnc, mockFromJson } from "../../../../spec/utils";
-import { FieldType } from "../../../enums/fieldType";
+import { FieldType } from "../../../enums/field-type";
 import { SecureNoteType } from "../../../enums/secureNoteType";
 import { UriMatchType } from "../../../enums/uriMatchType";
 import { EncString } from "../../../models/domain/enc-string";
