@@ -2,9 +2,10 @@ import { NgModule } from "@angular/core";
 
 import { SearchModule } from "@bitwarden/components";
 
-import { AccessSelectorModule } from "../../admin-console/organizations/shared/components/access-selector/access-selector.module";
-import { CollectionDialogModule } from "../../admin-console/organizations/shared/components/collection-dialog";
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../../../shared/shared.module";
+
+import { AccessSelectorModule } from "./components/access-selector/access-selector.module";
+import { CollectionDialogModule } from "./components/collection-dialog";
 
 @NgModule({
   imports: [SharedModule, CollectionDialogModule, AccessSelectorModule, SearchModule],
