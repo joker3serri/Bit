@@ -79,7 +79,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected formGroup = this.formBuilder.group({
     emails: ["", [Validators.required, commaSeparatedEmails]],
     type: OrganizationUserType.User,
-    externalId: this.formBuilder.control({ value: "", disabled: true }),
+    externalId: ["", [Validators.maxLength(300)]],
     accessAllCollections: false,
     accessSecretsManager: false,
     access: [[] as AccessItemValue[]],
