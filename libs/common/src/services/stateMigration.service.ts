@@ -6,7 +6,7 @@ import { ProviderData } from "../admin-console/models/data/provider.data";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { TokenService } from "../auth/services/token.service";
 import { HtmlStorageLocation } from "../enums/html-storage-location";
-import { KdfType } from "../enums/kdfType";
+import { KdfType } from "../enums/kdf-type";
 import { StateVersion } from "../enums/stateVersion";
 import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";

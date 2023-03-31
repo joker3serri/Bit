@@ -10,7 +10,7 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { KdfType } from "../../enums/kdfType";
+import { KdfType } from "../../enums/kdf-type";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
 import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";

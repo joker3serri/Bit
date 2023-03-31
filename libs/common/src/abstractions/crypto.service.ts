@@ -3,7 +3,7 @@ import { ProfileProviderOrganizationResponse } from "../admin-console/models/res
 import { ProfileProviderResponse } from "../admin-console/models/response/profile-provider.response";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { HashPurpose } from "../enums/hash-purpose";
-import { KdfType } from "../enums/kdfType";
+import { KdfType } from "../enums/kdf-type";
 import { KeySuffixOptions } from "../enums/keySuffixOptions";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";

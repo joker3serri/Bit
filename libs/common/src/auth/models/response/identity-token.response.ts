@@ -1,4 +1,4 @@
-import { KdfType } from "../../../enums/kdfType";
+import { KdfType } from "../../../enums/kdf-type";
 import { BaseResponse } from "../../../models/response/base.response";
 
 export class IdentityTokenResponse extends BaseResponse {

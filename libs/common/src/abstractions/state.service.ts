@@ -9,7 +9,7 @@ import { Policy } from "../admin-console/models/domain/policy";
 import { CollectionView } from "../admin-console/models/view/collection.view";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
-import { KdfType } from "../enums/kdfType";
+import { KdfType } from "../enums/kdf-type";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { EventData } from "../models/data/event.data";

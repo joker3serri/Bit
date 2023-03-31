@@ -19,7 +19,7 @@ import {
   DEFAULT_ARGON2_MEMORY,
   DEFAULT_ARGON2_PARALLELISM,
   KdfType,
-} from "../enums/kdfType";
+} from "../enums/kdf-type";
 import { KeySuffixOptions } from "../enums/keySuffixOptions";
 import { sequentialize } from "../misc/sequentialize";
 import { Utils } from "../misc/utils";
