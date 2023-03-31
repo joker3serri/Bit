@@ -13,7 +13,7 @@ import { CollectionService } from "@bitwarden/common/admin-console/abstractions/
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { EventType } from "@bitwarden/common/enums/event-type";
-import { ProductType } from "@bitwarden/common/enums/productType";
+import { ProductType } from "@bitwarden/common/enums/product-type";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
