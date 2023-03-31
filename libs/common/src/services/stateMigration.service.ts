@@ -7,7 +7,7 @@ import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { TokenService } from "../auth/services/token.service";
 import { HtmlStorageLocation } from "../enums/html-storage-location";
 import { KdfType } from "../enums/kdf-type";
-import { StateVersion } from "../enums/stateVersion";
+import { StateVersion } from "../enums/state-version";
 import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";
 import { EventData } from "../models/data/event.data";

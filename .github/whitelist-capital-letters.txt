@@ -41,7 +41,6 @@
 ./libs/common/src/enums/uriMatchType.ts
 ./libs/common/src/enums/storageLocation.ts
 ./libs/common/src/enums/themeType.ts
-./libs/common/src/enums/stateVersion.ts
 ./libs/common/src/factories/accountFactory.ts
 ./libs/common/src/factories/globalStateFactory.ts
 ./libs/common/src/factories/stateFactory.ts
