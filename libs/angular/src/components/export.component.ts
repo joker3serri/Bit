@@ -12,7 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
-import { EncryptedExportType } from "@bitwarden/common/enums/encryptedExportType";
+import { EncryptedExportType } from "@bitwarden/common/enums/encrypted-export-type";
 import { EventType } from "@bitwarden/common/enums/eventType";
 
 @Directive()
