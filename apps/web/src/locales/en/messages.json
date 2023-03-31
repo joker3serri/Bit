@@ -6674,6 +6674,9 @@
   "dismiss": {
     "message": "Dismiss"
   },
+  "notAvailableForFreeOrganization": {
+    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+  },
   "smProjectSecretsNoItemsNoAccess": {
     "message": "Contact your organization's admin to manage secrets for this project.",
     "description": "The message shown to the user under a project's secrets tab when the user only has read access to the project."
