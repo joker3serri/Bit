@@ -54,24 +54,24 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
             guard let data = blobData else {
                 return
             }
+            NSApplication.shared.setActivationPolicy(.accessory)
             let panel = NSSavePanel()
-            panel.isFloatingPanel = true
             panel.canCreateDirectories = true
             panel.nameFieldStringValue = dlMsg.fileName
-            panel.begin { response in
-                if response == NSApplication.ModalResponse.OK {
-                    if let url = panel.url {
-                        do {
-                            let fileManager = FileManager.default
-                            if !fileManager.fileExists(atPath: url.absoluteString) {
-                                fileManager.createFile(atPath: url.absoluteString, contents: Data(),
-                                                       attributes: nil)
-                            }
-                            try data.write(to: url)
-                        } catch {
-                            print(error)
-                            NSLog("ERROR in downloadFile, \(error)")
+            let response = panel.runModal();
+           
+            if response == NSApplication.ModalResponse.OK {
+                if let url = panel.url {
+                    do {
+                        let fileManager = FileManager.default
+                        if !fileManager.fileExists(atPath: url.absoluteString) {
+                            fileManager.createFile(atPath: url.absoluteString, contents: Data(),
+                                                   attributes: nil)
                         }
+                        try data.write(to: url)
+                    } catch {
+                        print(error)
+                        NSLog("ERROR in downloadFile, \(error)")
                     }
                 }
             }
