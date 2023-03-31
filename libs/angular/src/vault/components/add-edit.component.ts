@@ -18,7 +18,7 @@ import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enum
 import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { EventType } from "@bitwarden/common/enums/event-type";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { Utils } from "@bitwarden/common/misc/utils";

@@ -1,4 +1,4 @@
-import { EventType } from "../../enums/eventType";
+import { EventType } from "../../enums/event-type";
 
 export class EventRequest {
   type: EventType;

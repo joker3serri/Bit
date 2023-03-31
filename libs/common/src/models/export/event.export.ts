@@ -1,4 +1,4 @@
-import { EventType } from "../../enums/eventType";
+import { EventType } from "../../enums/event-type";
 import { EventView } from "../view/event.view";
 
 export class EventExport {

@@ -2,7 +2,7 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { EventType } from "@bitwarden/common/enums/event-type";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { Utils } from "@bitwarden/common/misc/utils";

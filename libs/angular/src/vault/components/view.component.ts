@@ -22,7 +22,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { EventType } from "@bitwarden/common/enums/event-type";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";

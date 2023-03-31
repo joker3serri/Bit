@@ -5,7 +5,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { DeviceType } from "@bitwarden/common/enums/device-type";
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { EventType } from "@bitwarden/common/enums/event-type";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
 
 @Injectable()

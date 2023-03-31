@@ -1,6 +1,6 @@
 import { DeviceType } from "../../enums/device-type";
 import { EventSystemUser } from "../../enums/event-system-user";
-import { EventType } from "../../enums/eventType";
+import { EventType } from "../../enums/event-type";
 
 import { BaseResponse } from "./base.response";
 

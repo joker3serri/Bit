@@ -13,7 +13,7 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { EncryptedExportType } from "@bitwarden/common/enums/encrypted-export-type";
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { EventType } from "@bitwarden/common/enums/event-type";
 
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
