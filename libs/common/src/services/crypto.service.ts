@@ -13,7 +13,7 @@ import { ProfileProviderOrganizationResponse } from "../admin-console/models/res
 import { ProfileProviderResponse } from "../admin-console/models/response/profile-provider.response";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { EncryptionType } from "../enums/encryption-type";
-import { HashPurpose } from "../enums/hashPurpose";
+import { HashPurpose } from "../enums/hash-purpose";
 import {
   DEFAULT_ARGON2_ITERATIONS,
   DEFAULT_ARGON2_MEMORY,

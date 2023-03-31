@@ -44,7 +44,6 @@
 ./libs/common/src/enums/notificationType.ts
 ./libs/common/src/enums/keySuffixOptions.ts
 ./libs/common/src/enums/productType.ts
-./libs/common/src/enums/hashPurpose.ts
 ./libs/common/src/enums/uriMatchType.ts
 ./libs/common/src/enums/secureNoteType.ts
 ./libs/common/src/enums/storageLocation.ts
