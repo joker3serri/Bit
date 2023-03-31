@@ -4,7 +4,7 @@ import { Jsonify } from "type-fest";
 
 import { mockEnc, mockFromJson } from "../../../../spec/utils";
 import { FieldType } from "../../../enums/field-type";
-import { SecureNoteType } from "../../../enums/secureNoteType";
+import { SecureNoteType } from "../../../enums/secure-note-type";
 import { UriMatchType } from "../../../enums/uriMatchType";
 import { EncString } from "../../../models/domain/enc-string";
 import { InitializerKey } from "../../../services/cryptography/initializer-key";

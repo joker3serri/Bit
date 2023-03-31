@@ -3,7 +3,7 @@ import * as papa from "papaparse";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { FieldType } from "@bitwarden/common/enums/field-type";
-import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
+import { SecureNoteType } from "@bitwarden/common/enums/secure-note-type";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
