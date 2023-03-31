@@ -57,19 +57,18 @@ export class SecretDialogComponent implements OnInit {
 
   async ngOnInit() {
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
+      await this.loadProjects(false);
       await this.loadData();
     } else if (this.data.operation !== OperationType.Add) {
       this.dialogRef.close();
       throw new Error(`The secret dialog was not called with the appropriate operation values.`);
+    } else if (this.data.operation == OperationType.Add) {
+      await this.loadProjects(true);
     }
 
     if (this.data.projectId) {
       this.formGroup.get("project").setValue(this.data.projectId);
     }
-
-    this.projects = await this.projectService
-      .getProjects(this.data.organizationId)
-      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
   }
 
   async loadData() {
@@ -85,7 +84,18 @@ export class SecretDialogComponent implements OnInit {
     this.loading = false;
 
     if (secret.write) {
+      this.projects = this.projects.filter((p) => p.write);
       this.formGroup.enable();
+    }
+  }
+
+  async loadProjects(filterByPermission: boolean) {
+    this.projects = await this.projectService
+      .getProjects(this.data.organizationId)
+      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
+
+    if (filterByPermission) {
+      this.projects = this.projects.filter((p) => p.write);
     }
   }
 
