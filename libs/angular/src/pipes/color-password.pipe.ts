@@ -53,6 +53,8 @@ export class ColorPasswordPipe implements PipeTransform {
         type = "special";
       } else if (character.match(/\d/)) {
         type = "number";
+      } else if (character.match(/[A-Z]/)) {
+        type = "upper";
       }
       colorizedPassword += templateGenerator(character, type, i);
     }

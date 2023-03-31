@@ -244,6 +244,12 @@ p.lead {
   }
 }
 
+.password-upper {
+  @include themify($themes) {
+    color: themed("passwordUpperColor");
+  }
+}
+
 .password-character {
   display: inline-flex;
   flex-direction: column;
