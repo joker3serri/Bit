@@ -66,7 +66,6 @@ export class AppComponent implements OnInit, OnDestroy {
       window.onclick = () => this.recordActivity();
       window.onscroll = () => this.recordActivity();
       window.onkeypress = () => this.recordActivity();
-      window.onblur = () => this.recordActivity();
     });
 
     (window as any).bitwardenPopupMainMessageListener = async (
@@ -74,7 +73,9 @@ export class AppComponent implements OnInit, OnDestroy {
       sender: any,
       sendResponse: any
     ) => {
-      if (msg.command === "doneLoggingOut") {
+      if (msg.command === "unlocked") {
+        this.recordActivity();
+      } else if (msg.command === "doneLoggingOut") {
         this.ngZone.run(async () => {
           this.authService.logOut(async () => {
             if (msg.expired) {
