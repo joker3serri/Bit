@@ -1,4 +1,5 @@
 import { ProductType } from "../../../enums/productType";
+import { ProviderType } from "../../../enums/provider-type";
 import { OrganizationUserStatusType } from "../../enums/organization-user-status-type";
 import { OrganizationUserType } from "../../enums/organization-user-type";
 import { PermissionsApi } from "../api/permissions.api";
@@ -37,6 +38,7 @@ export class OrganizationData {
   hasPublicAndPrivateKeys: boolean;
   providerId: string;
   providerName: string;
+  providerType?: ProviderType;
   isProviderUser: boolean;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
@@ -81,6 +83,7 @@ export class OrganizationData {
     this.hasPublicAndPrivateKeys = response.hasPublicAndPrivateKeys;
     this.providerId = response.providerId;
     this.providerName = response.providerName;
+    this.providerType = response.providerType;
     this.familySponsorshipFriendlyName = response.familySponsorshipFriendlyName;
     this.familySponsorshipAvailable = response.familySponsorshipAvailable;
     this.planProductType = response.planProductType;
