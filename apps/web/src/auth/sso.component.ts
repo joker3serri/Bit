@@ -104,7 +104,8 @@ export class SsoComponent extends BaseSsoComponent {
       const errorResponse: ErrorResponse = error as ErrorResponse;
       switch (errorResponse.statusCode) {
         case HttpStatusCode.NotFound:
-          break;
+          //this is a valid case for a domain not found
+          return;
 
         default:
           this.validationService.showError(errorResponse);
