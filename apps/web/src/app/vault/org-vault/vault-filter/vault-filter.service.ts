@@ -8,9 +8,11 @@ import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
+import {
+  CollectionAdminService,
+  CollectionAdminView,
+} from "../../../admin-console/organizations/core";
 import { StateService } from "../../../core";
-import { CollectionAdminView } from "../../../organizations/core";
-import { CollectionAdminService } from "../../../organizations/core/services/collection-admin.service";
 import { VaultFilterService as BaseVaultFilterService } from "../../individual-vault/vault-filter/services/vault-filter.service";
 import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
 

@@ -20,7 +20,7 @@ import {
   CollectionAccessSelectionView,
   CollectionAdminView,
   GroupView,
-} from "../../../organizations/core";
+} from "../../../admin-console/organizations/core";
 import { PreloadedEnglishI18nModule } from "../../../tests/preloaded-english-i18n.module";
 
 import { VaultItemsComponent } from "./vault-items.component";

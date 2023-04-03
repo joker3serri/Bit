@@ -6,7 +6,7 @@ import { CollectionView } from "@bitwarden/common/admin-console/models/view/coll
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { TableDataSource } from "@bitwarden/components";
 
-import { GroupView } from "../../../organizations/core";
+import { GroupView } from "../../../admin-console/organizations/core";
 
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";

@@ -5,7 +5,7 @@ import {
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 
-import { CollectionAdminView } from "../../organizations/core";
+import { CollectionAdminView } from "../../admin-console/organizations/core";
 
 export function getNestedCollectionTree(
   collections: CollectionAdminView[]

@@ -47,18 +47,18 @@ import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-repromp
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService, Icons } from "@bitwarden/components";
 
-import { EntityEventsComponent } from "../../admin-console/organizations/manage/entity-events.component";
 import {
   CollectionAdminService,
   CollectionAdminView,
   GroupService,
   GroupView,
-} from "../../organizations/core";
+} from "../../admin-console/organizations/core";
+import { EntityEventsComponent } from "../../admin-console/organizations/manage/entity-events.component";
 import {
   CollectionDialogResult,
   CollectionDialogTabType,
   openCollectionDialog,
-} from "../../organizations/shared";
+} from "../../admin-console/organizations/shared";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";

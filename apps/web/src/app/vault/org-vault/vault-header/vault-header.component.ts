@@ -14,8 +14,11 @@ import {
   SimpleDialogType,
 } from "@bitwarden/components";
 
-import { CollectionAdminService, CollectionAdminView } from "../../../organizations/core";
-import { CollectionDialogTabType } from "../../../organizations/shared";
+import {
+  CollectionAdminService,
+  CollectionAdminView,
+} from "../../../admin-console/organizations/core";
+import { CollectionDialogTabType } from "../../../admin-console/organizations/shared";
 import {
   All,
   RoutedVaultFilterModel,
