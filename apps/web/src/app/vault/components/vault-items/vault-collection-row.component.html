@@ -1,4 +1,4 @@
-<td bitCell [ngClass]="RowHeightClass">
+<td bitCell [ngClass]="RowHeightClass" class="tw-min-w-fit">
   <input
     type="checkbox"
     bitCheckbox
@@ -8,12 +8,12 @@
     (change)="$event ? this.checkedToggled.next() : null"
   />
 </td>
-<td bitCell class="tw-h-[65px]">
+<td bitCell [ngClass]="RowHeightClass" class="tw-min-w-fit">
   <div class="icon" aria-hidden="true">
     <i class="bwi bwi-fw bwi-lg bwi-collection"></i>
   </div>
 </td>
-<td bitCell>
+<td bitCell [ngClass]="RowHeightClass">
   <button
     bitLink
     [disabled]="disabled"
@@ -31,7 +31,7 @@
   <app-org-badge
     [disabled]="disabled"
     [organizationId]="collection.organizationId"
-    [organizationName]="collection.organizationId | orgNameFromId : organizations"
+    [organizationName]="collection.organizationId | orgNameFromId: organizations"
     appStopProp
   >
   </app-org-badge>

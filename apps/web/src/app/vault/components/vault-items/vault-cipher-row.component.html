@@ -1,4 +1,4 @@
-<td bitCell [ngClass]="RowHeightClass">
+<td bitCell [ngClass]="RowHeightClass" class="tw-min-w-fit">
   <input
     type="checkbox"
     bitCheckbox
@@ -8,7 +8,7 @@
     (change)="$event ? this.checkedToggled.next() : null"
   />
 </td>
-<td bitCell [ngClass]="RowHeightClass">
+<td bitCell [ngClass]="RowHeightClass" class="tw-min-w-fit">
   <app-vault-icon [cipher]="cipher"></app-vault-icon>
 </td>
 <td bitCell [ngClass]="RowHeightClass" class="tw-break-all">
@@ -49,7 +49,7 @@
   <app-org-badge
     [disabled]="disabled"
     [organizationId]="cipher.organizationId"
-    [organizationName]="cipher.organizationId | orgNameFromId : organizations"
+    [organizationName]="cipher.organizationId | orgNameFromId: organizations"
     appStopProp
   >
   </app-org-badge>
