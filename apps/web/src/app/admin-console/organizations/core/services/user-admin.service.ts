@@ -57,6 +57,7 @@ export class UserAdminService {
     request.collections = user.collections;
     request.groups = user.groups;
     request.accessSecretsManager = user.accessSecretsManager;
+    request.externalId = user.externalId;
 
     await this.organizationUserService.postOrganizationUserInvite(user.organizationId, request);
   }
