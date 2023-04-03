@@ -94,6 +94,8 @@ const SearchTextDebounceInterval = 200;
   providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
 export class VaultComponent implements OnInit, OnDestroy {
+  protected Unassigned = Unassigned;
+
   @ViewChild("vaultFilter", { static: true })
   vaultFilterComponent: VaultFilterComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })

@@ -74,7 +74,7 @@
           buttonType="primary"
           bitButton
           (click)="addCipher()"
-          *ngIf="filter.type !== 'trash'"
+          *ngIf="filter.type !== 'trash' && filter.collectionId !== Unassigned"
         >
           <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
           {{ "newItem" | i18n }}

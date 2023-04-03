@@ -28,6 +28,7 @@ import {
 })
 export class VaultHeaderComponent {
   protected All = All;
+  protected Unassigned = Unassigned;
 
   /**
    * Boolean to determine the loading state of the header.
