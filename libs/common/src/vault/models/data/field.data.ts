@@ -1,5 +1,4 @@
-import { FieldType } from "../../../enums/field-type";
-import { LinkedIdType } from "../../../enums/linked-id-type";
+import { FieldType, LinkedIdType } from "../../../enums";
 import { FieldApi } from "../../../models/api/field.api";
 
 export class FieldData {

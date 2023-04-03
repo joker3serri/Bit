@@ -1,7 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { HtmlStorageLocation } from "../../enums/html-storage-location";
-import { StorageLocation } from "../../enums/storage-location";
+import { HtmlStorageLocation, StorageLocation } from "../../enums";
 
 export type StorageOptions = {
   storageLocation?: StorageLocation;

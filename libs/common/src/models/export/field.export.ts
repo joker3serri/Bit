@@ -1,5 +1,4 @@
-import { FieldType } from "../../enums/field-type";
-import { LinkedIdType } from "../../enums/linked-id-type";
+import { FieldType, LinkedIdType } from "../../enums";
 import { Field as FieldDomain } from "../../vault/models/domain/field";
 import { FieldView } from "../../vault/models/view/field.view";
 import { EncString } from "../domain/enc-string";

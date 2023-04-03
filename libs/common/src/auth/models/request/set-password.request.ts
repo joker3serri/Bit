@@ -1,4 +1,4 @@
-import { KdfType } from "../../../enums/kdf-type";
+import { KdfType } from "../../../enums";
 import { KeysRequest } from "../../../models/request/keys.request";
 
 export class SetPasswordRequest {

@@ -1,4 +1,4 @@
-import { NotificationType } from "../../enums/notification-type";
+import { NotificationType } from "../../enums";
 
 import { BaseResponse } from "./base.response";
 

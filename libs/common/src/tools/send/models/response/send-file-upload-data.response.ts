@@ -1,4 +1,4 @@
-import { FileUploadType } from "../../../../enums/file-upload-type";
+import { FileUploadType } from "../../../../enums";
 import { BaseResponse } from "../../../../models/response/base.response";
 
 import { SendResponse } from "./send.response";

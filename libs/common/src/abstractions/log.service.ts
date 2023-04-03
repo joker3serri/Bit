@@ -1,4 +1,4 @@
-import { LogLevelType } from "../enums/log-level-type";
+import { LogLevelType } from "../enums";
 
 export abstract class LogService {
   debug: (message: string) => void;

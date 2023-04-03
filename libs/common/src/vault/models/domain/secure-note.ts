@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { SecureNoteType } from "../../../enums/secure-note-type";
+import { SecureNoteType } from "../../../enums";
 import Domain from "../../../models/domain/domain-base";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
 import { SecureNoteData } from "../data/secure-note.data";
