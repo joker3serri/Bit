@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 
 import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -15,8 +15,6 @@ export class OrganizationNameBadgeComponent implements OnChanges {
   @Input() organizationId?: string;
   @Input() organizationName: string;
   @Input() disabled: boolean;
-
-  @Output() onOrganizationClicked = new EventEmitter<string>();
 
   color: string;
   textColor: string;
@@ -54,9 +52,5 @@ export class OrganizationNameBadgeComponent implements OnChanges {
 
   get organizationIdLink() {
     return this.organizationId ?? Unassigned;
-  }
-
-  emitOnOrganizationClicked() {
-    this.onOrganizationClicked.emit();
   }
 }
