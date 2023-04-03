@@ -728,7 +728,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
 
       // Navigate away if we deleted the colletion we were viewing
-      if (this.selectedCollection.node.id === collection.id) {
+      if (this.selectedCollection?.node.id === collection.id) {
         this.router.navigate([], {
           queryParams: { collectionId: this.selectedCollection.parent?.node.id ?? null },
           queryParamsHandling: "merge",
