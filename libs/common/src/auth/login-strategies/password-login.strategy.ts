@@ -18,6 +18,9 @@ import { ForceResetPasswordReason } from "../models/domain/force-reset-password-
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
+import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
+import { IdentityTokenResponse } from "../models/response/identity-token.response";
+import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
 import { LogInStrategy } from "./login.strategy";
 
@@ -114,15 +117,16 @@ export class PasswordLogInStrategy extends LogInStrategy {
       await this.buildDeviceRequest()
     );
 
-    const result = await this.startLogIn();
+    const [authResult, identityResponse] = await this.startLogIn();
+    const mpPolicies = this.getMasterPasswordPolicyOptionsFromResponse(identityResponse);
 
     // The identity result can contain master password policies for the user's organizations
-    if (this.masterPasswordPolicy?.enforceOnLogin) {
+    if (mpPolicies?.enforceOnLogin) {
       // If there is a policy active, evaluate the supplied password before its no longer in memory
-      const meetsRequirements = this.evaluateMasterPassword(credentials, this.masterPasswordPolicy);
+      const meetsRequirements = this.evaluateMasterPassword(credentials, mpPolicies);
 
       if (!meetsRequirements) {
-        if (result.requiresCaptcha || result.requiresTwoFactor) {
+        if (authResult.requiresCaptcha || authResult.requiresTwoFactor) {
           // Save the flag to this strategy for later use as the master password is about to pass out of scope
           this.forcePasswordResetReason = ForceResetPasswordReason.WeakMasterPassword;
         } else {
@@ -130,12 +134,20 @@ export class PasswordLogInStrategy extends LogInStrategy {
           await this.stateService.setForcePasswordResetReason(
             ForceResetPasswordReason.WeakMasterPassword
           );
-          result.forcePasswordReset = ForceResetPasswordReason.WeakMasterPassword;
+          authResult.forcePasswordReset = ForceResetPasswordReason.WeakMasterPassword;
         }
       }
     }
+    return authResult;
+  }
 
-    return result;
+  private getMasterPasswordPolicyOptionsFromResponse(
+    response: IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse
+  ): MasterPasswordPolicyOptions {
+    if (response == null || response instanceof IdentityCaptchaResponse) {
+      return null;
+    }
+    return MasterPasswordPolicyOptions.fromResponse(response.masterPasswordPolicy);
   }
 
   private evaluateMasterPassword(

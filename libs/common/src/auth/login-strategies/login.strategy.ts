@@ -5,7 +5,6 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
 import { KeysRequest } from "../../models/request/keys.request";
 import { TokenService } from "../abstractions/token.service";
@@ -28,10 +27,11 @@ import { IdentityCaptchaResponse } from "../models/response/identity-captcha.res
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
+type IdentityResponse = IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse;
+
 export abstract class LogInStrategy {
   protected abstract tokenRequest: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest;
   protected captchaBypassToken: string = null;
-  protected masterPasswordPolicy: MasterPasswordPolicyOptions = undefined;
 
   constructor(
     protected cryptoService: CryptoService,
@@ -61,20 +61,21 @@ export abstract class LogInStrategy {
     captchaResponse: string = null
   ): Promise<AuthResult> {
     this.tokenRequest.setTwoFactor(twoFactor);
-    return this.startLogIn();
+    const [authResult] = await this.startLogIn();
+    return authResult;
   }
 
-  protected async startLogIn(): Promise<AuthResult> {
+  protected async startLogIn(): Promise<[AuthResult, IdentityResponse]> {
     this.twoFactorService.clearSelectedProvider();
 
     const response = await this.apiService.postIdentityToken(this.tokenRequest);
 
     if (response instanceof IdentityTwoFactorResponse) {
-      return this.processTwoFactorResponse(response);
+      return [await this.processTwoFactorResponse(response), response];
     } else if (response instanceof IdentityCaptchaResponse) {
-      return this.processCaptchaResponse(response);
+      return [await this.processCaptchaResponse(response), response];
     } else if (response instanceof IdentityTokenResponse) {
-      return this.processTokenResponse(response);
+      return [await this.processTokenResponse(response), response];
     }
 
     throw new Error("Invalid response object.");
@@ -134,10 +135,6 @@ export abstract class LogInStrategy {
       result.forcePasswordReset = ForceResetPasswordReason.AdminForcePasswordReset;
     }
 
-    this.masterPasswordPolicy = MasterPasswordPolicyOptions.fromResponse(
-      response.masterPasswordPolicy
-    );
-
     await this.saveAccountInformation(response);
 
     if (response.twoFactorToken != null) {
@@ -164,9 +161,6 @@ export abstract class LogInStrategy {
     const result = new AuthResult();
     result.twoFactorProviders = response.twoFactorProviders2;
 
-    this.masterPasswordPolicy = MasterPasswordPolicyOptions.fromResponse(
-      response.masterPasswordPolicy
-    );
     this.twoFactorService.setProviders(response);
     this.captchaBypassToken = response.captchaToken ?? null;
     return result;
