@@ -1,22 +1,22 @@
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
-import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { ContainerService } from "@bitwarden/common/services/container.service";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
-import IconDetails from "../background/models/iconDetails";
-import { authServiceFactory } from "../background/service_factories/auth-service.factory";
-import { cipherServiceFactory } from "../background/service_factories/cipher-service.factory";
+import { authServiceFactory } from "../auth/background/service-factories/auth-service.factory";
 import { searchServiceFactory } from "../background/service_factories/search-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
 import { BrowserApi } from "../browser/browserApi";
 import { Account } from "../models/account";
 import { BrowserStateService } from "../services/abstractions/browser-state.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
+import IconDetails from "../vault/background/models/icon-details";
+import { cipherServiceFactory } from "../vault/background/service_factories/cipher-service.factory";
 
 export type BadgeOptions = {
   tab?: chrome.tabs.Tab;
@@ -43,31 +43,47 @@ export class UpdateBadge {
     "deletedCipher",
   ];
 
-  static async tabsOnActivatedListener(activeInfo: chrome.tabs.TabActiveInfo) {
-    await new UpdateBadge(self).run({ tabId: activeInfo.tabId, windowId: activeInfo.windowId });
+  static async tabsOnActivatedListener(
+    activeInfo: chrome.tabs.TabActiveInfo,
+    serviceCache: Record<string, unknown>
+  ) {
+    await new UpdateBadge(self).run({
+      tabId: activeInfo.tabId,
+      existingServices: serviceCache,
+      windowId: activeInfo.windowId,
+    });
   }
 
-  static async tabsOnReplacedListener(addedTabId: number, removedTabId: number) {
-    await new UpdateBadge(self).run({ tabId: addedTabId });
+  static async tabsOnReplacedListener(
+    addedTabId: number,
+    removedTabId: number,
+    serviceCache: Record<string, unknown>
+  ) {
+    await new UpdateBadge(self).run({ tabId: addedTabId, existingServices: serviceCache });
   }
 
   static async tabsOnUpdatedListener(
     tabId: number,
     changeInfo: chrome.tabs.TabChangeInfo,
-    tab: chrome.tabs.Tab
+    tab: chrome.tabs.Tab,
+    serviceCache: Record<string, unknown>
   ) {
-    await new UpdateBadge(self).run({ tabId, windowId: tab.windowId });
+    await new UpdateBadge(self).run({
+      tabId,
+      existingServices: serviceCache,
+      windowId: tab.windowId,
+    });
   }
 
   static async messageListener(
-    serviceCache: Record<string, unknown>,
-    message: { command: string; tabId: number }
+    message: { command: string; tabId: number },
+    serviceCache: Record<string, unknown>
   ) {
     if (!UpdateBadge.listenedToCommands.includes(message.command)) {
       return;
     }
 
-    await new UpdateBadge(self).run();
+    await new UpdateBadge(self).run({ existingServices: serviceCache });
   }
 
   constructor(win: Window & typeof globalThis) {
