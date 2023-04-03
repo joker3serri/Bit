@@ -247,6 +247,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
     const formValue = this.groupForm.value;
     groupView.name = formValue.name;
     groupView.accessAll = formValue.accessAll;
+    groupView.externalId = formValue.externalId;
     groupView.members = formValue.members?.map((m) => m.id) ?? [];
 
     if (!groupView.accessAll) {
