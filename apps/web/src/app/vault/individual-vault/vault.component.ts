@@ -476,6 +476,14 @@ export class VaultComponent implements OnInit, OnDestroy {
           modal.close();
         });
         comp.onDeletedFolder.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          // Navigate away if we deleted the colletion we were viewing
+          if (this.filter.folderId === folder.id) {
+            this.router.navigate([], {
+              queryParams: { folderId: null },
+              queryParamsHandling: "merge",
+              replaceUrl: true,
+            });
+          }
           modal.close();
         });
       }
