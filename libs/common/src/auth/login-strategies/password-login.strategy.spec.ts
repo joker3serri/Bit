@@ -18,6 +18,7 @@ import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { ForceResetPasswordReason } from "../models/domain/force-reset-password-reason";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
+import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 import { MasterPasswordPolicyResponse } from "../models/response/master-password-policy.response";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
@@ -130,18 +131,28 @@ describe("PasswordLogInStrategy", () => {
     expect(cryptoService.setKeyHash).toHaveBeenCalledWith(localHashedPassword);
   });
 
-  it("evaluates the master password when policies are returned by the server", async () => {
-    passwordGenerationService.passwordStrength.mockReturnValue({ score: 0 } as any);
+  it("does not force the user to update their master password when there are no requirements", async () => {
+    apiService.postIdentityToken.mockResolvedValueOnce(identityTokenResponseFactory(null));
 
-    await passwordLogInStrategy.logIn(credentials);
+    const result = await passwordLogInStrategy.logIn(credentials);
 
-    expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
+    expect(policyService.evaluateMasterPassword).not.toHaveBeenCalled();
+    expect(result.forcePasswordReset).toEqual(ForceResetPasswordReason.None);
   });
 
-  it("saves force password reset options in state when the master password is weak and login was successful", async () => {
+  it("does not force the user to update their master password when it meets requirements", async () => {
+    passwordGenerationService.passwordStrength.mockReturnValue({ score: 5 } as any);
+    policyService.evaluateMasterPassword.mockReturnValue(true);
+
+    const result = await passwordLogInStrategy.logIn(credentials);
+
+    expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
+    expect(result.forcePasswordReset).toEqual(ForceResetPasswordReason.None);
+  });
+
+  it("forces the user to update their master password on successful login when it does not meet master password policy requirements", async () => {
     passwordGenerationService.passwordStrength.mockReturnValue({ score: 0 } as any);
     policyService.evaluateMasterPassword.mockReturnValue(false);
-    stateService.getIsAuthenticated.mockResolvedValue(true);
 
     const result = await passwordLogInStrategy.logIn(credentials);
 
@@ -152,16 +163,26 @@ describe("PasswordLogInStrategy", () => {
     expect(result.forcePasswordReset).toEqual(ForceResetPasswordReason.WeakMasterPassword);
   });
 
-  it("saves force password reset options to the strategy when the master password is weak and login requires 2FA", async () => {
+  it("forces the user to update their master password on successful 2FA login when it does not meet master password policy requirements", async () => {
     passwordGenerationService.passwordStrength.mockReturnValue({ score: 0 } as any);
     policyService.evaluateMasterPassword.mockReturnValue(false);
 
+    const token2FAResponse = new IdentityTwoFactorResponse({
+      TwoFactorProviders: ["0"],
+      TwoFactorProviders2: { 0: null },
+      error: "invalid_grant",
+      error_description: "Two factor required.",
+      MasterPasswordPolicy: masterPasswordPolicy,
+    });
+
     // First login request fails requiring 2FA
-    stateService.getIsAuthenticated.mockResolvedValueOnce(false);
+    apiService.postIdentityToken.mockResolvedValueOnce(token2FAResponse);
     const firstResult = await passwordLogInStrategy.logIn(credentials);
 
     // Second login request succeeds
-    stateService.getIsAuthenticated.mockResolvedValueOnce(true);
+    apiService.postIdentityToken.mockResolvedValueOnce(
+      identityTokenResponseFactory(masterPasswordPolicy)
+    );
     const secondResult = await passwordLogInStrategy.logInTwoFactor(
       {
         provider: TwoFactorProviderType.Authenticator,
@@ -172,7 +193,6 @@ describe("PasswordLogInStrategy", () => {
     );
 
     // First login attempt should not save the force password reset options
-    expect(firstResult.forcePasswordReset).toBeFalsy();
     expect(firstResult.forcePasswordReset).toEqual(ForceResetPasswordReason.None);
 
     // Second login attempt should save the force password reset options and return in result
