@@ -16,6 +16,8 @@ export class OrganizationNameBadgeComponent implements OnChanges {
   @Input() organizationName: string;
   @Input() disabled: boolean;
 
+  // Need a separate variable or we get weird behavior when used as part of cdk virtual scrolling
+  name: string;
   color: string;
   textColor: string;
   isMe: boolean;
@@ -32,7 +34,7 @@ export class OrganizationNameBadgeComponent implements OnChanges {
     this.isMe = this.organizationName == null || this.organizationName === "";
 
     if (this.isMe) {
-      this.organizationName = this.i18nService.t("me");
+      this.name = this.i18nService.t("me");
       this.color = await this.avatarService.loadColorFromState();
       if (this.color == null) {
         const userId = await this.tokenService.getUserId();
@@ -45,6 +47,7 @@ export class OrganizationNameBadgeComponent implements OnChanges {
         }
       }
     } else {
+      this.name = this.organizationName;
       this.color = Utils.stringToColor(this.organizationName.toUpperCase());
     }
     this.textColor = Utils.pickTextColorBasedOnBgColor(this.color, 135, true) + "!important";
