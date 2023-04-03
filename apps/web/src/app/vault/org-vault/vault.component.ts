@@ -370,6 +370,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         tap(() => (this.refreshing = true)),
         switchMap(() =>
           combineLatest([
+            organization$,
             filter$,
             allCollections$,
             allGroups$,
@@ -383,6 +384,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         ([
+          organization,
           filter,
           allCollections,
           allGroups,
@@ -391,6 +393,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           selectedCollection,
           showMissingCollectionPermissionMessage,
         ]) => {
+          this.organization = organization;
           this.filter = filter;
           this.allCollections = allCollections;
           this.allGroups = allGroups;
