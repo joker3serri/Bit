@@ -322,6 +322,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     userView.id = this.params.organizationUserId;
     userView.organizationId = this.params.organizationId;
     userView.accessAll = this.accessAllCollections;
+    userView.externalId = this.formGroup.value.externalId;
     userView.type = this.formGroup.value.type;
     userView.permissions = this.setRequestPermissions(
       userView.permissions ?? new PermissionsApi(),

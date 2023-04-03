@@ -40,6 +40,7 @@ export class UserAdminService {
     request.accessAll = user.accessAll;
     request.permissions = user.permissions;
     request.type = user.type;
+    request.externalId = user.externalId;
     request.collections = user.collections;
     request.groups = user.groups;
     request.accessSecretsManager = user.accessSecretsManager;
