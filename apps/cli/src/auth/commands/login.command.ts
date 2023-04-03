@@ -14,7 +14,6 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -48,7 +47,6 @@ export class LoginCommand {
 
   private ssoRedirectUri: string = null;
   private options: program.OptionValues;
-  private masterPasswordPolicies?: Policy[] = undefined;
 
   constructor(
     protected authService: AuthService,
