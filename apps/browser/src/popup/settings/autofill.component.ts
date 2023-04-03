@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { UriMatchType } from "@bitwarden/common/enums/uri-match-type";
+import { UriMatchType } from "@bitwarden/common/enums-type";
 
 import { BrowserApi } from "../../browser/browserApi";
 

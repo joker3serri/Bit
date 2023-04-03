@@ -5,8 +5,8 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { ThemeType } from "@bitwarden/common/enums/theme-type";
-import { UriMatchType } from "@bitwarden/common/enums/uri-match-type";
+import { ThemeType } from "@bitwarden/common/enums";
+import { UriMatchType } from "@bitwarden/common/enums-type";
 
 @Component({
   selector: "app-options",

@@ -3,7 +3,7 @@ import { Inject, Injectable } from "@angular/core";
 import { BehaviorSubject, filter, fromEvent, Observable } from "rxjs";
 
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { ThemeType } from "@bitwarden/common/enums/theme-type";
+import { ThemeType } from "@bitwarden/common/enums";
 
 import { WINDOW } from "../injection-tokens";
 

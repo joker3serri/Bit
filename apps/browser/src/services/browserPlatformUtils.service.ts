@@ -1,7 +1,6 @@
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ClientType } from "@bitwarden/common/enums/client-type";
-import { DeviceType } from "@bitwarden/common/enums/device-type";
+import { ClientType, DeviceType } from "@bitwarden/common/enums";
 
 import { BrowserApi } from "../browser/browserApi";
 import { SafariApp } from "../browser/safariApp";

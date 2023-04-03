@@ -2,7 +2,7 @@
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
-import { StateVersion } from "@bitwarden/common/enums/state-version";
+import { StateVersion } from "@bitwarden/common/enumsersion";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";

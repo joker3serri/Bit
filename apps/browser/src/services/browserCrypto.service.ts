@@ -1,4 +1,4 @@
-import { KeySuffixOptions } from "@bitwarden/common/enums/key-suffix-options";
+import { KeySuffixOptions } from "@bitwarden/common/enums-options";
 import { CryptoService } from "@bitwarden/common/services/crypto.service";
 
 export class BrowserCryptoService extends CryptoService {

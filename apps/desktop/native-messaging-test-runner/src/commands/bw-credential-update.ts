@@ -3,7 +3,7 @@ import "module-alias/register";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-import { NativeMessagingVersion } from "@bitwarden/common/enums/native-messaging-version";
+import { NativeMessagingVersion } from "@bitwarden/common/enumsmessaging-version";
 
 import { CredentialUpdatePayload } from "../../../src/models/native-messaging/encrypted-message-payloads/credential-update-payload";
 import { LogUtils } from "../log-utils";
