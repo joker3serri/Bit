@@ -111,6 +111,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected noItemIcon = Icons.Search;
   protected performingInitialLoad = true;
   protected refreshing = false;
+  protected processingEvent = false;
   protected filter: RoutedVaultFilterModel = {};
   protected organization: Organization;
   protected allCollections: CollectionAdminView[];
@@ -415,7 +416,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   get loading() {
-    return this.refreshing;
+    return this.refreshing || this.processingEvent;
   }
 
   ngOnDestroy() {
@@ -424,39 +425,45 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onVaultItemsEvent(event: VaultItemEvent) {
-    if (event.type === "viewAttachments") {
-      this.editCipherAttachments(event.item);
-    } else if (event.type === "viewCollections") {
-      this.editCipherCollections(event.item);
-    } else if (event.type === "clone") {
-      this.cloneCipher(event.item);
-    } else if (event.type === "restore") {
-      if (event.items.length === 1) {
-        this.restore(event.items[0]);
-      } else {
-        this.bulkRestore(event.items);
+  async onVaultItemsEvent(event: VaultItemEvent) {
+    this.processingEvent = true;
+
+    try {
+      if (event.type === "viewAttachments") {
+        await this.editCipherAttachments(event.item);
+      } else if (event.type === "viewCollections") {
+        await this.editCipherCollections(event.item);
+      } else if (event.type === "clone") {
+        await this.cloneCipher(event.item);
+      } else if (event.type === "restore") {
+        if (event.items.length === 1) {
+          await this.restore(event.items[0]);
+        } else {
+          await this.bulkRestore(event.items);
+        }
+      } else if (event.type === "delete") {
+        const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
+        const collections = event.items
+          .filter((i) => i.cipher === undefined)
+          .map((i) => i.collection);
+        if (ciphers.length === 1 && collections.length === 0) {
+          await this.deleteCipher(ciphers[0]);
+        } else if (ciphers.length === 0 && collections.length === 1) {
+          await this.deleteCollection(collections[0]);
+        } else {
+          await this.bulkDelete(ciphers, collections, this.organization);
+        }
+      } else if (event.type === "copyField") {
+        await this.copy(event.item, event.field);
+      } else if (event.type === "edit") {
+        await this.editCollection(event.item, CollectionDialogTabType.Info);
+      } else if (event.type === "viewAccess") {
+        await this.editCollection(event.item, CollectionDialogTabType.Access);
+      } else if (event.type === "viewEvents") {
+        await this.viewEvents(event.item);
       }
-    } else if (event.type === "delete") {
-      const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
-      const collections = event.items
-        .filter((i) => i.cipher === undefined)
-        .map((i) => i.collection);
-      if (ciphers.length === 1 && collections.length === 0) {
-        this.deleteCipher(ciphers[0]);
-      } else if (ciphers.length === 0 && collections.length === 1) {
-        this.deleteCollection(collections[0]);
-      } else {
-        this.bulkDelete(ciphers, collections, this.organization);
-      }
-    } else if (event.type === "copyField") {
-      this.copy(event.item, event.field);
-    } else if (event.type === "edit") {
-      this.editCollection(event.item, CollectionDialogTabType.Info);
-    } else if (event.type === "viewAccess") {
-      this.editCollection(event.item, CollectionDialogTabType.Access);
-    } else if (event.type === "viewEvents") {
-      this.viewEvents(event.item);
+    } finally {
+      this.processingEvent = false;
     }
   }
 
@@ -618,7 +625,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.cipherService.restoreWithServer(c.id);
+      await this.cipherService.restoreWithServer(c.id);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
       this.refresh();
     } catch (e) {

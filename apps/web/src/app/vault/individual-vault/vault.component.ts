@@ -122,6 +122,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected noItemIcon = Icons.Search;
   protected performingInitialLoad = true;
   protected refreshing = false;
+  protected processingEvent = false;
   protected filter: RoutedVaultFilterModel = {};
   protected showBulkMove: boolean;
   protected canAccessPremium: boolean;
@@ -405,36 +406,41 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onVaultItemsEvent(event: VaultItemEvent) {
-    if (event.type === "viewAttachments") {
-      this.editCipherAttachments(event.item);
-    } else if (event.type === "viewCollections") {
-      this.editCipherCollections(event.item);
-    } else if (event.type === "clone") {
-      this.cloneCipher(event.item);
-    } else if (event.type === "restore") {
-      if (event.items.length === 1) {
-        this.restore(event.items[0]);
-      } else {
-        this.bulkRestore(event.items);
+  async onVaultItemsEvent(event: VaultItemEvent) {
+    this.processingEvent = true;
+    try {
+      if (event.type === "viewAttachments") {
+        await this.editCipherAttachments(event.item);
+      } else if (event.type === "viewCollections") {
+        await this.editCipherCollections(event.item);
+      } else if (event.type === "clone") {
+        await this.cloneCipher(event.item);
+      } else if (event.type === "restore") {
+        if (event.items.length === 1) {
+          await this.restore(event.items[0]);
+        } else {
+          await this.bulkRestore(event.items);
+        }
+      } else if (event.type === "delete") {
+        const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
+        if (ciphers.length === 1) {
+          await this.deleteCipher(ciphers[0]);
+        } else {
+          await this.bulkDelete(ciphers);
+        }
+      } else if (event.type === "moveToFolder") {
+        await this.bulkMove(event.items);
+      } else if (event.type === "moveToOrganization") {
+        if (event.items.length === 1) {
+          await this.shareCipher(event.items[0]);
+        } else {
+          await this.bulkShare(event.items);
+        }
+      } else if (event.type === "copyField") {
+        await this.copy(event.item, event.field);
       }
-    } else if (event.type === "delete") {
-      const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
-      if (ciphers.length === 1) {
-        this.deleteCipher(ciphers[0]);
-      } else {
-        this.bulkDelete(ciphers);
-      }
-    } else if (event.type === "moveToFolder") {
-      this.bulkMove(event.items);
-    } else if (event.type === "moveToOrganization") {
-      if (event.items.length === 1) {
-        this.shareCipher(event.items[0]);
-      } else {
-        this.bulkShare(event.items);
-      }
-    } else if (event.type === "copyField") {
-      this.copy(event.item, event.field);
+    } finally {
+      this.processingEvent = false;
     }
   }
 
@@ -634,7 +640,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.cipherService.restoreWithServer(c.id);
+      await this.cipherService.restoreWithServer(c.id);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
       this.refresh();
     } catch (e) {
