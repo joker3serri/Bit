@@ -334,7 +334,8 @@ export class LockComponent implements OnInit, OnDestroy {
 
     const passwordStrength = this.passwordGenerationService.passwordStrength(
       this.masterPassword,
-      this.getPasswordStrengthUserInput()
+      null,
+      this.email
     )?.score;
 
     return !this.policyService.evaluateMasterPassword(
@@ -342,20 +343,5 @@ export class LockComponent implements OnInit, OnDestroy {
       this.masterPassword,
       this.enforcedMasterPasswordOptions
     );
-  }
-
-  protected getPasswordStrengthUserInput() {
-    let userInput: string[] = [];
-    const atPosition = this.email.indexOf("@");
-    if (atPosition > -1) {
-      userInput = userInput.concat(
-        this.email
-          .substr(0, atPosition)
-          .trim()
-          .toLowerCase()
-          .split(/[^A-Za-z0-9]/)
-      );
-    }
-    return userInput;
   }
 }

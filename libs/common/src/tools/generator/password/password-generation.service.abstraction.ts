@@ -17,7 +17,11 @@ export abstract class PasswordGenerationServiceAbstraction {
   getHistory: () => Promise<GeneratedPasswordHistory[]>;
   addHistory: (password: string) => Promise<void>;
   clear: (userId?: string) => Promise<void>;
-  passwordStrength: (password: string, userInputs?: string[]) => zxcvbn.ZXCVBNResult;
+  passwordStrength: (
+    password: string,
+    userInputs?: string[],
+    email?: string
+  ) => zxcvbn.ZXCVBNResult;
   normalizeOptions: (
     options: PasswordGeneratorOptions,
     enforcedPolicyOptions: PasswordGeneratorPolicyOptions

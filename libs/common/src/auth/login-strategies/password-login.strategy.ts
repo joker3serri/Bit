@@ -144,24 +144,10 @@ export class PasswordLogInStrategy extends LogInStrategy {
   ): boolean {
     const passwordStrength = this.passwordGenerationService.passwordStrength(
       masterPassword,
-      this.getPasswordStrengthUserInput(email)
+      null,
+      email
     )?.score;
 
     return this.policyService.evaluateMasterPassword(passwordStrength, masterPassword, options);
-  }
-
-  protected getPasswordStrengthUserInput(email: string) {
-    let userInput: string[] = [];
-    const atPosition = email.indexOf("@");
-    if (atPosition > -1) {
-      userInput = userInput.concat(
-        email
-          .substr(0, atPosition)
-          .trim()
-          .toLowerCase()
-          .split(/[^A-Za-z0-9]/)
-      );
-    }
-    return userInput;
   }
 }

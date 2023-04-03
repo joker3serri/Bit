@@ -513,7 +513,8 @@ export class LoginCommand {
     // Strength & Policy Validation
     const strengthResult = this.passwordGenerationService.passwordStrength(
       masterPassword,
-      this.getPasswordStrengthUserInput()
+      null,
+      this.email
     );
 
     const enforcedPolicyOptions = await firstValueFrom(
@@ -620,21 +621,6 @@ export class LoginCommand {
         return Response.error(e);
       }
     }
-  }
-
-  private getPasswordStrengthUserInput() {
-    let userInput: string[] = [];
-    const atPosition = this.email.indexOf("@");
-    if (atPosition > -1) {
-      userInput = userInput.concat(
-        this.email
-          .substr(0, atPosition)
-          .trim()
-          .toLowerCase()
-          .split(/[^A-Za-z0-9]/)
-      );
-    }
-    return userInput;
   }
 
   private async apiClientId(): Promise<string> {
