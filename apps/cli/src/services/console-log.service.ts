@@ -1,4 +1,4 @@
-import { LogLevelType } from "@bitwarden/common/enumsevel-type";
+import { LogLevelType } from "@bitwarden/common/enums";
 import { ConsoleLogService as BaseConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 
 export class ConsoleLogService extends BaseConsoleLogService {
