@@ -19,7 +19,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
-import { VerifyMasterPasswordResponse } from "@bitwarden/common/auth/models/response/verify-master-password.response";
+import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -35,7 +35,7 @@ export class LockComponent implements OnInit, OnDestroy {
   email: string;
   pinLock = false;
   webVaultHostname = "";
-  formPromise: Promise<any>;
+  formPromise: Promise<MasterPasswordPolicyResponse>;
   supportsBiometric: boolean;
   biometricLock: boolean;
   biometricText: string;
@@ -221,9 +221,7 @@ export class LockComponent implements OnInit, OnDestroy {
       try {
         this.formPromise = this.apiService.postAccountVerifyPassword(request);
         const response = await this.formPromise;
-        this.enforcedMasterPasswordOptions = MasterPasswordPolicyOptions.fromResponse(
-          (response as VerifyMasterPasswordResponse).masterPasswordPolicy
-        );
+        this.enforcedMasterPasswordOptions = MasterPasswordPolicyOptions.fromResponse(response);
         passwordValid = true;
         const localKeyHash = await this.cryptoService.hashPassword(
           this.masterPassword,
