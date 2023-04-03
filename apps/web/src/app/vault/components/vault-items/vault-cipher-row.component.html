@@ -16,7 +16,7 @@
     bitLink
     class="tw-text-start"
     [disabled]="disabled"
-    routerLink
+    [routerLink]="[]"
     [queryParams]="{ itemId: cipher.id }"
     queryParamsHandling="merge"
     title="{{ 'editItem' | i18n }}"
