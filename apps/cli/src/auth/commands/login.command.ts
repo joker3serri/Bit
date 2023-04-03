@@ -320,15 +320,14 @@ export class LoginCommand {
       await this.syncService.fullSync(true);
 
       // Handle updating passwords if NOT using an API Key for authentication
-      if (response.forcePasswordReset && clientId == null && clientSecret == null) {
-        if (
-          response.forcePasswordResetOptions.reason ===
-          ForceResetPasswordReason.AdminForcePasswordReset
-        ) {
+      if (
+        response.forcePasswordReset != ForceResetPasswordReason.None &&
+        clientId == null &&
+        clientSecret == null
+      ) {
+        if (response.forcePasswordReset === ForceResetPasswordReason.AdminForcePasswordReset) {
           return await this.updateTempPassword();
-        } else if (
-          response.forcePasswordResetOptions.reason === ForceResetPasswordReason.WeakMasterPassword
-        ) {
+        } else if (response.forcePasswordReset === ForceResetPasswordReason.WeakMasterPassword) {
           return await this.updateWeakPassword(password);
         }
       }
