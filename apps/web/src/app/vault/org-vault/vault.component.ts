@@ -320,17 +320,19 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
 
     const showMissingCollectionPermissionMessage$ = combineLatest([
+      filter$,
       selectedCollection$,
       organization$,
     ]).pipe(
-      map(([collection, organization]) => {
-        // Not filtering by collections or filtering by all collections, so no need to show message
-        if (collection == undefined) {
-          return false;
-        }
-
-        // Filtering by a collection, so show message if user is not assigned
-        return !collection.node.assigned && !organization.isAdmin;
+      map(([filter, collection, organization]) => {
+        return (
+          // Filtering by unassigned, show message if not admin
+          (filter.collectionId === Unassigned && !organization.canUseAdminCollections) ||
+          // Filtering by a collection, so show message if user is not assigned
+          (collection != undefined &&
+            !collection.node.assigned &&
+            !organization.canUseAdminCollections)
+        );
       }),
       shareReplay({ refCount: true, bufferSize: 1 })
     );
@@ -407,7 +409,10 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           // This is a temporary fix to avoid double fetching collections.
           // TODO: Remove when implementing new VVR menu
-          this.vaultFilterService.reloadCollections(allCollections);
+          const noneCollection = new CollectionAdminView();
+          noneCollection.name = this.i18nService.t("unassigned");
+          noneCollection.organizationId = organization.id;
+          this.vaultFilterService.reloadCollections(allCollections.concat(noneCollection));
 
           this.refreshing = false;
           this.performingInitialLoad = false;
