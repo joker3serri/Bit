@@ -1,4 +1,5 @@
 import { Directive } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -51,7 +52,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     stateService: StateService,
     private syncService: SyncService,
     private logService: LogService,
-    private userVerificationService: UserVerificationService
+    private userVerificationService: UserVerificationService,
+    private router: Router
   ) {
     super(
       i18nService,
@@ -69,9 +71,10 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
 
     this.reason = await this.stateService.getForcePasswordResetReason();
 
-    // If we somehow end up here without a reason, fallback to the original behavior of an admin password reset
+    // If we somehow end up here without a reason, go back to the home page
     if (this.reason == ForceResetPasswordReason.None) {
-      this.reason = ForceResetPasswordReason.AdminForcePasswordReset;
+      this.router.navigate(["/"]);
+      return;
     }
 
     await super.ngOnInit();
