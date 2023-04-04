@@ -399,7 +399,7 @@ jobs:
         uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
         if: failure()
         with:
-          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPLE }}
+          creds: ${{ secrets. AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Retrieve secrets
         id: retrieve-secrets
