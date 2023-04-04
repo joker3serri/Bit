@@ -245,7 +245,7 @@ jobs:
       - name: Login to Azure
         uses: Azure/login@1f63701bf3e6892515f1b7ce2d2bf1708b46beaf
         with:
-          creds: ${{ secrets. AZURE_KV_CI_SERVICE_PRINCIPAL }}
+          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Retrieve secrets
         id: retrieve-secrets
@@ -928,7 +928,7 @@ jobs:
       - name: Login to Azure
         uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
         with:
-          creds: ${{ secrets. AZURE_KV_CI_SERVICE_PRINCIPAL }}
+          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Retrieve secrets
         id: retrieve-secrets
