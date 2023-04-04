@@ -155,7 +155,6 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     if (this.enforcedPasswordPolicyOptions != null) {
       const strengthResult = this.passwordGenerationService.passwordStrength(
         masterPassword,
-        null,
         this.formGroup.value.email
       );
       const masterPasswordScore = strengthResult == null ? null : strengthResult.score;

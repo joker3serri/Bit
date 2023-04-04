@@ -387,10 +387,16 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
     await this.stateService.setDecryptedPasswordGenerationHistory(null, { userId: userId });
   }
 
+  /**
+   * Calculates a password strength score using zxcvbn.
+   * @param password The password to calculate the strength of.
+   * @param emailInput An unparsed email address to use as user input.
+   * @param userInputs An array of additional user inputs to use when calculating the strength.
+   */
   passwordStrength(
     password: string,
-    userInputs: string[] = null,
-    email: string = null
+    emailInput: string = null,
+    userInputs: string[] = null
   ): zxcvbn.ZXCVBNResult {
     if (password == null || password.length === 0) {
       return null;
@@ -400,7 +406,7 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       "bit",
       "warden",
       ...(userInputs ?? []),
-      ...this.emailToUserInputs(email),
+      ...this.emailToUserInputs(emailInput),
     ];
     // Use a hash set to get rid of any duplicate user inputs
     const finalUserInputs = Array.from(new Set(globalUserInputs));

@@ -332,7 +332,6 @@ export class LockComponent implements OnInit, OnDestroy {
 
     const passwordStrength = this.passwordGenerationService.passwordStrength(
       this.masterPassword,
-      null,
       this.email
     )?.score;
 

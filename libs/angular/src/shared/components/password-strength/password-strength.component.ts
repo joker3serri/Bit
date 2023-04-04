@@ -98,8 +98,8 @@ export class PasswordStrengthComponent implements OnChanges {
 
     const strengthResult = this.passwordGenerationService.passwordStrength(
       masterPassword,
-      this.name?.trim().toLowerCase().split(" "),
-      this.email
+      this.email,
+      this.name?.trim().toLowerCase().split(" ")
     );
     this.passwordStrengthResult.emit(strengthResult);
     this.masterPasswordScore = strengthResult == null ? null : strengthResult.score;

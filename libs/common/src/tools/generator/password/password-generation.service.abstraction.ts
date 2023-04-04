@@ -19,8 +19,8 @@ export abstract class PasswordGenerationServiceAbstraction {
   clear: (userId?: string) => Promise<void>;
   passwordStrength: (
     password: string,
-    userInputs?: string[],
-    email?: string
+    email?: string,
+    userInputs?: string[]
   ) => zxcvbn.ZXCVBNResult;
   normalizeOptions: (
     options: PasswordGeneratorOptions,

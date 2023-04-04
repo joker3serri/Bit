@@ -510,7 +510,6 @@ export class LoginCommand {
     // Strength & Policy Validation
     const strengthResult = this.passwordGenerationService.passwordStrength(
       masterPassword,
-      null,
       this.email
     );
 

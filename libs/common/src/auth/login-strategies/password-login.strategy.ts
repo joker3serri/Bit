@@ -156,7 +156,6 @@ export class PasswordLogInStrategy extends LogInStrategy {
   ): boolean {
     const passwordStrength = this.passwordGenerationService.passwordStrength(
       masterPassword,
-      null,
       email
     )?.score;
 
