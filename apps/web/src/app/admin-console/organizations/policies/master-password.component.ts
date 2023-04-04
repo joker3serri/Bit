@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -24,14 +24,14 @@ export class MasterPasswordPolicy extends BasePolicy {
 export class MasterPasswordPolicyComponent extends BasePolicyComponent {
   MinPasswordLength = Utils.minimumPasswordLength;
 
-  data = this.formBuilder.group<ControlsOf<MasterPasswordPolicyOptions>>({
-    minComplexity: new FormControl<number>(null),
-    minLength: new FormControl<number>(null, [Validators.min(Utils.minimumPasswordLength)]),
-    requireUpper: new FormControl<boolean>(null),
-    requireLower: new FormControl<boolean>(null),
-    requireNumbers: new FormControl<boolean>(null),
-    requireSpecial: new FormControl<boolean>(null),
-    enforceOnLogin: new FormControl<boolean>(null),
+  data: FormGroup<ControlsOf<MasterPasswordPolicyOptions>> = this.formBuilder.group({
+    minComplexity: [null],
+    minLength: [this.MinPasswordLength, [Validators.min(Utils.minimumPasswordLength)]],
+    requireUpper: [false],
+    requireLower: [false],
+    requireNumbers: [false],
+    requireSpecial: [false],
+    enforceOnLogin: [false],
   });
 
   passwordScores: { name: string; value: number }[];
