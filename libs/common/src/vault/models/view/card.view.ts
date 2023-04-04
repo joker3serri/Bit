@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { CardLinkedId as LinkedId } from "../../../enums/linked-id-type";
+import { CardLinkedId as LinkedId } from "../../../enums";
 import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
 
 import { ItemView } from "./item.view";

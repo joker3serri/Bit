@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { LoginLinkedId as LinkedId } from "../../../enums/linked-id-type";
+import { LoginLinkedId as LinkedId } from "../../../enums";
 import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../../misc/utils";
 import { Login } from "../domain/login";
