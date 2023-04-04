@@ -3,12 +3,13 @@ import * as papa from "papaparse";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CollectionData } from "@bitwarden/common/admin-console/models/data/collection.data";
 import { Collection } from "@bitwarden/common/admin-console/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/admin-console/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
-import { DEFAULT_PBKDF2_ITERATIONS, KdfType } from "@bitwarden/common/enums/kdfType";
+import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import {
   CipherWithIdExport,
@@ -25,6 +26,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { ExportHelper } from "../../export-helper";
+import { BitwardenPasswordProtectedFileFormat } from "../bitwarden-password-protected-types";
 
 import { ExportFormat, VaultExportServiceAbstraction } from "./vault-export.service.abstraction";
 
@@ -34,7 +36,8 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     private cipherService: CipherService,
     private apiService: ApiService,
     private cryptoService: CryptoService,
-    private cryptoFunctionService: CryptoFunctionService
+    private cryptoFunctionService: CryptoFunctionService,
+    private stateService: StateService
   ) {}
 
   async getExport(format: ExportFormat = "csv", organizationId?: string): Promise<string> {
@@ -54,24 +57,23 @@ export class VaultExportService implements VaultExportServiceAbstraction {
       ? await this.getOrganizationExport(organizationId, "json")
       : await this.getExport("json");
 
+    const kdfType: KdfType = await this.stateService.getKdfType();
+    const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
+
     const salt = Utils.fromBufferToB64(await this.cryptoFunctionService.randomBytes(16));
-    const kdfConfig = new KdfConfig(DEFAULT_PBKDF2_ITERATIONS);
-    const key = await this.cryptoService.makePinKey(
-      password,
-      salt,
-      KdfType.PBKDF2_SHA256,
-      kdfConfig
-    );
+    const key = await this.cryptoService.makePinKey(password, salt, kdfType, kdfConfig);
 
     const encKeyValidation = await this.cryptoService.encrypt(Utils.newGuid(), key);
     const encText = await this.cryptoService.encrypt(clearText, key);
 
-    const jsonDoc: any = {
+    const jsonDoc: BitwardenPasswordProtectedFileFormat = {
       encrypted: true,
       passwordProtected: true,
       salt: salt,
+      kdfType: kdfType,
       kdfIterations: kdfConfig.iterations,
-      kdfType: KdfType.PBKDF2_SHA256,
+      kdfMemory: kdfConfig.memory,
+      kdfParallelism: kdfConfig.parallelism,
       encKeyValidation_DO_NOT_EDIT: encKeyValidation.encryptedString,
       data: encText.encryptedString,
     };
