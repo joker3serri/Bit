@@ -1,13 +1,19 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { lastValueFrom, Subject } from "rxjs";
+import { lastValueFrom, Subject, takeUntil } from "rxjs";
 
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
+import { ProjectView } from "../../models/view/project.view";
 import { SecretListView } from "../../models/view/secret-list.view";
 import { SecretProjectView } from "../../models/view/secret-project.view";
 import { SecretView } from "../../models/view/secret.view";
@@ -38,10 +44,13 @@ export class SecretDialogComponent implements OnInit {
     value: new FormControl("", [Validators.required]),
     notes: new FormControl(""),
     project: new FormControl("", [Validators.required]),
+    newProjectName: new FormControl(""),
   });
 
   private loading = true;
   projects: ProjectListView[];
+  addNewProject = false;
+  private newProjectGuid = Utils.newGuid();
 
   private destroy$ = new Subject<void>();
 
@@ -52,7 +61,9 @@ export class SecretDialogComponent implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private projectService: ProjectService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private encryptService: EncryptService,
+    private cryptoService: CryptoService
   ) {}
 
   async ngOnInit() {
@@ -70,6 +81,10 @@ export class SecretDialogComponent implements OnInit {
     this.projects = await this.projectService
       .getProjects(this.data.organizationId)
       .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
+
+    if (this.data.projectId == null || this.data.projectId == "") {
+      this.addNewProjectOptionToProjectsDropDown();
+    }
   }
 
   async loadData() {
@@ -80,6 +95,7 @@ export class SecretDialogComponent implements OnInit {
       value: secret.value,
       notes: secret.note,
       project: secret.projects[0]?.id ?? "",
+      newProjectName: "",
     });
 
     this.loading = false;
@@ -92,6 +108,32 @@ export class SecretDialogComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  addNewProjectOptionToProjectsDropDown() {
+    this.formGroup
+      .get("project")
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((val: string) => {
+        this.dropDownSelected(val);
+      });
+
+    const addNewProject = new ProjectListView();
+    addNewProject.name = this.i18nService.t("addNewProject");
+    addNewProject.id = this.newProjectGuid;
+    this.projects.unshift(addNewProject);
+  }
+
+  dropDownSelected(val: string) {
+    this.addNewProject = val == this.newProjectGuid;
+
+    if (this.addNewProject) {
+      this.formGroup.get("newProjectName").addValidators([Validators.required]);
+    } else {
+      this.formGroup.get("newProjectName").clearValidators();
+    }
+
+    this.formGroup.updateValueAndValidity();
   }
 
   get title() {
@@ -110,6 +152,11 @@ export class SecretDialogComponent implements OnInit {
     }
 
     const secretView = this.getSecretView();
+
+    if (this.addNewProject) {
+      secretView.projects = await this.addNewProjectGetSecretProjectView();
+    }
+
     if (this.data.operation === OperationType.Add) {
       await this.createSecret(secretView);
     } else {
@@ -121,6 +168,32 @@ export class SecretDialogComponent implements OnInit {
 
   get deleteButtonIsVisible(): boolean {
     return this.data.operation === OperationType.Edit;
+  }
+
+  private async addNewProjectGetSecretProjectView() {
+    const newProjectView = this.getNewProjectView();
+    const createdProject = await this.createProject(newProjectView);
+
+    const orgKey = await this.getOrganizationKey(createdProject.organizationId);
+
+    const projectsMappedToSecretView = new SecretProjectView();
+    projectsMappedToSecretView.id = createdProject.id;
+    projectsMappedToSecretView.name = await this.encryptService.decryptToUtf8(
+      new EncString(createdProject.name),
+      orgKey
+    );
+
+    const newSecretProjectView: SecretProjectView[] = [];
+    newSecretProjectView.push(projectsMappedToSecretView);
+    return newSecretProjectView;
+  }
+
+  private async createProject(projectView: ProjectView) {
+    return await this.projectService.create(this.data.organizationId, projectView);
+  }
+
+  private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
+    return await this.cryptoService.getOrgKey(organizationId);
   }
 
   protected openDeleteSecretDialog() {
@@ -144,6 +217,13 @@ export class SecretDialogComponent implements OnInit {
   private async createSecret(secretView: SecretView) {
     await this.secretService.create(this.data.organizationId, secretView);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("secretCreated"));
+  }
+
+  private getNewProjectView() {
+    const projectView = new ProjectView();
+    projectView.organizationId = this.data.organizationId;
+    projectView.name = this.formGroup.value.newProjectName;
+    return projectView;
   }
 
   private async updateSecret(secretView: SecretView) {

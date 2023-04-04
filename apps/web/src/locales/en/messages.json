@@ -5916,6 +5916,10 @@
     "message": "New project",
     "description": "Title for creating a new project."
   },
+  "addNewProject": {
+    "message": "+ New project",
+    "description": "Title for creating a new project."
+  },
   "softDeleteSecretWarning": {
     "message": "Deleting secrets can affect existing integrations.",
     "description": "Warns that deleting secrets can have consequences on integrations"
