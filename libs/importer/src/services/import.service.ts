@@ -20,7 +20,6 @@ import {
   AvastJsonImporter,
   AviraCsvImporter,
   BitwardenCsvImporter,
-  // BitwardenJsonImporter,
   BitwardenPasswordProtectedImporter,
   BlackBerryCsvImporter,
   BlurCsvImporter,
