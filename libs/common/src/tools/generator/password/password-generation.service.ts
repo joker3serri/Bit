@@ -481,6 +481,9 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       return [];
     }
     const atPosition = email.indexOf("@");
+    if (atPosition < 0) {
+      return [];
+    }
     return email
       .substring(0, atPosition)
       .trim()
