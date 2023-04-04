@@ -34,7 +34,7 @@ class EmptyComponent {}
 const organizations = [...new Array(3).keys()].map(createOrganization);
 const groups = [...Array(3).keys()].map(createGroupView);
 const collections = [...Array(5).keys()].map(createCollectionView);
-const ciphers = [...Array(150).keys()].map((i) => createCipherView(i));
+const ciphers = [...Array(50).keys()].map((i) => createCipherView(i));
 const deletedCiphers = [...Array(15).keys()].map((i) => createCipherView(i, true));
 const organizationOnlyCiphers = ciphers.filter((c) => c.organizationId != undefined);
 const deletedOrganizationOnlyCiphers = deletedCiphers.filter((c) => c.organizationId != undefined);
