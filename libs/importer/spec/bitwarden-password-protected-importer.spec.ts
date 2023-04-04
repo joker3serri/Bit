@@ -26,8 +26,11 @@ describe("BitwardenPasswordProtectedImporter", () => {
     cryptoService = mock<CryptoService>();
     i18nService = mock<I18nService>();
 
-    importer = new BitwardenPasswordProtectedImporter(cryptoService, i18nService);
-    importer.promptForPassword_callback = promptForPassword_callback;
+    importer = new BitwardenPasswordProtectedImporter(
+      cryptoService,
+      i18nService,
+      promptForPassword_callback
+    );
   });
 
   describe("Unencrypted", () => {
