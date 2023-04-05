@@ -314,15 +314,28 @@ export class SyncService implements SyncServiceAbstraction {
     await this.stateService.setForcePasswordReset(response.forcePasswordReset);
     await this.keyConnectorService.setUsesKeyConnector(response.usesKeyConnector);
 
-    const organizations: { [id: string]: OrganizationData } = {};
-    response.organizations.forEach((o) => {
-      organizations[o.id] = new OrganizationData(o);
-      organizations[o.id].isMember = true;
-    });
+    await this.syncProfileOrganizations(response);
 
     const providers: { [id: string]: ProviderData } = {};
     response.providers.forEach((p) => {
       providers[p.id] = new ProviderData(p);
+    });
+
+    await this.providerService.save(providers);
+
+    if (await this.keyConnectorService.userNeedsMigration()) {
+      await this.keyConnectorService.setConvertAccountRequired(true);
+      this.messagingService.send("convertAccountToKeyConnector");
+    } else {
+      this.keyConnectorService.removeConvertAccountRequired();
+    }
+  }
+
+  private async syncProfileOrganizations(response: ProfileResponse) {
+    const organizations: { [id: string]: OrganizationData } = {};
+    response.organizations.forEach((o) => {
+      organizations[o.id] = new OrganizationData(o);
+      organizations[o.id].isMember = true;
     });
 
     response.providerOrganizations.forEach((o) => {
@@ -333,14 +346,6 @@ export class SyncService implements SyncServiceAbstraction {
     });
 
     await this.organizationService.replace(organizations);
-    await this.providerService.save(providers);
-
-    if (await this.keyConnectorService.userNeedsMigration()) {
-      await this.keyConnectorService.setConvertAccountRequired(true);
-      this.messagingService.send("convertAccountToKeyConnector");
-    } else {
-      this.keyConnectorService.removeConvertAccountRequired();
-    }
   }
 
   private async syncFolders(response: FolderResponse[]) {
