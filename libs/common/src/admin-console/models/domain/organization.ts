@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { ProductType } from "../../../enums/productType";
+import { ProductType } from "../../../enums";
 import { OrganizationUserStatusType } from "../../enums/organization-user-status-type";
 import { OrganizationUserType } from "../../enums/organization-user-type";
 import { PermissionsApi } from "../api/permissions.api";
@@ -208,6 +208,11 @@ export class Organization {
 
   get canAccessSecretsManager() {
     return this.useSecretsManager && this.accessSecretsManager;
+  }
+
+  get isFreeOrg() {
+    // return true if organization needs to be upgraded from a free org
+    return !this.useTotp;
   }
 
   static fromJSON(json: Jsonify<Organization>) {
