@@ -10,7 +10,14 @@ export class Organization {
   id: string;
   name: string;
   status: OrganizationUserStatusType;
+
+  /**
+   * The member's role in the organization.
+   * Avoid using this for permission checks - use the getters instead (e.g. isOwner, isAdmin, canManageX), because they
+   * properly handle permission inheritance and relationships.
+   */
   type: OrganizationUserType;
+
   enabled: boolean;
   usePolicies: boolean;
   useGroups: boolean;
@@ -39,8 +46,16 @@ export class Organization {
   hasPublicAndPrivateKeys: boolean;
   providerId: string;
   providerName: string;
-  isProviderUser: boolean; // User has access via a provider
-  isMember: boolean; // User has access via membership
+
+  /**
+   * Indicates that a user is a ProviderUser for the organization
+   */
+  isProviderUser: boolean;
+
+  /**
+   * Indicates that a user is a member for the organization (may be `false` if they have access via a Provider only)
+   */
+  isMember: boolean;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
   planProductType: ProductType;
@@ -108,14 +123,23 @@ export class Organization {
     return this.enabled && this.status === OrganizationUserStatusType.Confirmed;
   }
 
+  /**
+   * Whether a user has Manager permissions or greater
+   */
   get isManager() {
     return this.type === OrganizationUserType.Manager || this.isAdmin;
   }
 
+  /**
+   * Whether a user has Admin permissions or greater
+   */
   get isAdmin() {
     return this.type === OrganizationUserType.Admin || this.isOwner;
   }
 
+  /**
+   * Whether a user has Owner permissions (including ProviderUsers)
+   */
   get isOwner() {
     return this.type === OrganizationUserType.Owner || this.isProviderUser;
   }
