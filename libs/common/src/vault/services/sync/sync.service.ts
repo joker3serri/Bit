@@ -317,6 +317,7 @@ export class SyncService implements SyncServiceAbstraction {
     const organizations: { [id: string]: OrganizationData } = {};
     response.organizations.forEach((o) => {
       organizations[o.id] = new OrganizationData(o);
+      organizations[o.id].isMember = true;
     });
 
     const providers: { [id: string]: ProviderData } = {};

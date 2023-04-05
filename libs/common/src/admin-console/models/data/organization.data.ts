@@ -38,6 +38,7 @@ export class OrganizationData {
   providerId: string;
   providerName: string;
   isProviderUser: boolean;
+  isMember: boolean;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
   planProductType: ProductType;

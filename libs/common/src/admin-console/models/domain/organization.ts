@@ -39,7 +39,8 @@ export class Organization {
   hasPublicAndPrivateKeys: boolean;
   providerId: string;
   providerName: string;
-  isProviderUser: boolean;
+  isProviderUser: boolean; // User has access via a provider
+  isMember: boolean; // User has access via membership
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
   planProductType: ProductType;
@@ -88,6 +89,7 @@ export class Organization {
     this.providerId = obj.providerId;
     this.providerName = obj.providerName;
     this.isProviderUser = obj.isProviderUser;
+    this.isMember = obj.isMember;
     this.familySponsorshipFriendlyName = obj.familySponsorshipFriendlyName;
     this.familySponsorshipAvailable = obj.familySponsorshipAvailable;
     this.planProductType = obj.planProductType;
