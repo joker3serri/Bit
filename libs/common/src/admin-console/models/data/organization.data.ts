@@ -49,7 +49,13 @@ export class OrganizationData {
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
 
-  constructor(response: ProfileOrganizationResponse) {
+  constructor(
+    response: ProfileOrganizationResponse,
+    options: {
+      isMember: boolean;
+      isProviderUser: boolean;
+    }
+  ) {
     this.id = response.id;
     this.name = response.name;
     this.status = response.status;
@@ -91,5 +97,8 @@ export class OrganizationData {
     this.familySponsorshipValidUntil = response.familySponsorshipValidUntil;
     this.familySponsorshipToDelete = response.familySponsorshipToDelete;
     this.accessSecretsManager = response.accessSecretsManager;
+
+    this.isMember = options.isMember;
+    this.isProviderUser = options.isProviderUser;
   }
 }

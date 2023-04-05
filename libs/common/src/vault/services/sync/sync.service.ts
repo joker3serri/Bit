@@ -334,15 +334,22 @@ export class SyncService implements SyncServiceAbstraction {
   private async syncProfileOrganizations(response: ProfileResponse) {
     const organizations: { [id: string]: OrganizationData } = {};
     response.organizations.forEach((o) => {
-      organizations[o.id] = new OrganizationData(o);
+      organizations[o.id] = new OrganizationData(o, {
+        isMember: true,
+        isProviderUser: false,
+      });
       organizations[o.id].isMember = true;
     });
 
     response.providerOrganizations.forEach((o) => {
       if (organizations[o.id] == null) {
-        organizations[o.id] = new OrganizationData(o);
+        organizations[o.id] = new OrganizationData(o, {
+          isMember: false,
+          isProviderUser: true,
+        });
+      } else {
+        organizations[o.id].isProviderUser = true;
       }
-      organizations[o.id].isProviderUser = true;
     });
 
     await this.organizationService.replace(organizations);

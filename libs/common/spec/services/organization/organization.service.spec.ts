@@ -160,7 +160,7 @@ describe("Organization Service", () => {
   });
 
   function organizationData(id: string, name: string) {
-    const data = new OrganizationData({} as any);
+    const data = new OrganizationData({} as any, { isMember: true, isProviderUser: false });
     data.id = id;
     data.name = name;
     data.identifier = "test";
