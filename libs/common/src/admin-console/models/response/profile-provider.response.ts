@@ -1,5 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
-import { ProviderUserStatusType , ProviderUserType } from "../../enums";
+import { ProviderUserStatusType, ProviderUserType } from "../../enums";
 import { PermissionsApi } from "../api/permissions.api";
 
 export class ProfileProviderResponse extends BaseResponse {

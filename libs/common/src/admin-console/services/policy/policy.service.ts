@@ -5,7 +5,7 @@ import { Utils } from "../../../misc/utils";
 import { ListResponse } from "../../../models/response/list.response";
 import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
-import { OrganizationUserStatusType , OrganizationUserType , PolicyType } from "../../enums";
+import { OrganizationUserStatusType, OrganizationUserType, PolicyType } from "../../enums";
 import { PolicyData } from "../../models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { Organization } from "../../models/domain/organization";

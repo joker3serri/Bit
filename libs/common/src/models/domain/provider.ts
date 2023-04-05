@@ -1,4 +1,4 @@
-import { ProviderUserStatusType , ProviderUserType } from "../../admin-console/enums";
+import { ProviderUserStatusType, ProviderUserType } from "../../admin-console/enums";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 
 export class Provider {

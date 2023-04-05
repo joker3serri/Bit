@@ -1,6 +1,9 @@
 import { Component } from "@angular/core";
 
-import { OrganizationUserStatusType , ProviderUserStatusType } from "@bitwarden/common/admin-console/enums";
+import {
+  OrganizationUserStatusType,
+  ProviderUserStatusType,
+} from "@bitwarden/common/admin-console/enums";
 
 export interface BulkUserDetails {
   id: string;
