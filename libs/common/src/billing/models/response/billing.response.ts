@@ -1,5 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
-import { PaymentMethodType , TransactionType } from "../../enums";
+import { PaymentMethodType, TransactionType } from "../../enums";
 
 export class BillingResponse extends BaseResponse {
   balance: number;
