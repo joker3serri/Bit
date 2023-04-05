@@ -201,7 +201,7 @@ export class Organization {
   }
 
   get canManageBilling() {
-    return (this.isOwner && !this.hasProvider) || this.isProviderUser;
+    return this.hasProvider ? this.isProviderUser : this.isOwner;
   }
 
   get hasProvider() {
