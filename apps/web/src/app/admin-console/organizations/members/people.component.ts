@@ -43,7 +43,7 @@ import { Collection } from "@bitwarden/common/admin-console/models/domain/collec
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { CollectionDetailsResponse } from "@bitwarden/common/admin-console/models/response/collection.response";
-import { ProductType } from "@bitwarden/common/enums/productType";
+import { ProductType } from "@bitwarden/common/enums";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import {
@@ -55,13 +55,13 @@ import {
 
 import { EntityEventsComponent } from "../../../admin-console/organizations/manage/entity-events.component";
 import { BasePeopleComponent } from "../../../common/base.people.component";
-import { GroupService } from "../../../organizations/core";
-import { OrganizationUserView } from "../../../organizations/core/views/organization-user.view";
-import { BulkConfirmComponent } from "../../../organizations/members/components/bulk/bulk-confirm.component";
-import { BulkRemoveComponent } from "../../../organizations/members/components/bulk/bulk-remove.component";
-import { BulkRestoreRevokeComponent } from "../../../organizations/members/components/bulk/bulk-restore-revoke.component";
-import { BulkStatusComponent } from "../../../organizations/members/components/bulk/bulk-status.component";
+import { GroupService } from "../core";
+import { OrganizationUserView } from "../core/views/organization-user.view";
 
+import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
+import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
+import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
+import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
 import {
   MemberDialogResult,
   MemberDialogTab,

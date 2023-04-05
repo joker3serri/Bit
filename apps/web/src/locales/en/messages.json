@@ -6695,6 +6695,9 @@
   "dismiss": {
     "message": "Dismiss"
   },
+  "notAvailableForFreeOrganization": {
+    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+  },
   "enforceOnLoginDesc": {
     "message": "Require existing members to change their passwords"
   }

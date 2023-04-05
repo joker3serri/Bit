@@ -19,9 +19,7 @@ import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
-import { ClientType } from "@bitwarden/common/enums/clientType";
-import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
-import { LogLevelType } from "@bitwarden/common/enums/logLevelType";
+import { ClientType, KeySuffixOptions, LogLevelType } from "@bitwarden/common/enums";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
@@ -389,7 +387,8 @@ export class Main {
       this.cipherService,
       this.apiService,
       this.cryptoService,
-      this.cryptoFunctionService
+      this.cryptoFunctionService,
+      this.stateService
     );
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);

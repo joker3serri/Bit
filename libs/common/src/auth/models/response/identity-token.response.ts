@@ -1,4 +1,4 @@
-import { KdfType } from "../../../enums/kdfType";
+import { KdfType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
 
 import { MasterPasswordPolicyResponse } from "./master-password-policy.response";

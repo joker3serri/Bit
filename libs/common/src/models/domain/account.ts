@@ -10,8 +10,7 @@ import { CollectionView } from "../../admin-console/models/view/collection.view"
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { ForceResetPasswordReason } from "../../auth/models/domain/force-reset-password-reason";
-import { KdfType } from "../../enums/kdfType";
-import { UriMatchType } from "../../enums/uriMatchType";
+import { KdfType, UriMatchType } from "../../enums";
 import { Utils } from "../../misc/utils";
 import { GeneratedPasswordHistory } from "../../tools/generator/password";
 import { SendData } from "../../tools/send/models/data/send.data";

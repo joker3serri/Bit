@@ -7,7 +7,7 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
-import { HashPurpose } from "../../enums/hashPurpose";
+import { HashPurpose } from "../../enums";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "../../tools/generator/password";
 import { AuthService } from "../abstractions/auth.service";

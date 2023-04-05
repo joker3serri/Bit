@@ -8,7 +8,7 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { HashPurpose } from "../../enums/hashPurpose";
+import { HashPurpose } from "../../enums";
 import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PasswordGenerationService } from "../../tools/generator/password";

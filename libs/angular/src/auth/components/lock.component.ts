@@ -20,8 +20,7 @@ import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-con
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
-import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
-import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
+import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/enums";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
