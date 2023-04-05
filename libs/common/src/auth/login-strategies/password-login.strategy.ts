@@ -118,12 +118,16 @@ export class PasswordLogInStrategy extends LogInStrategy {
     );
 
     const [authResult, identityResponse] = await this.startLogIn();
-    const mpPolicies = this.getMasterPasswordPolicyOptionsFromResponse(identityResponse);
+    const masterPasswordPolicyOptions =
+      this.getMasterPasswordPolicyOptionsFromResponse(identityResponse);
 
     // The identity result can contain master password policies for the user's organizations
-    if (mpPolicies?.enforceOnLogin) {
+    if (masterPasswordPolicyOptions?.enforceOnLogin) {
       // If there is a policy active, evaluate the supplied password before its no longer in memory
-      const meetsRequirements = this.evaluateMasterPassword(credentials, mpPolicies);
+      const meetsRequirements = this.evaluateMasterPassword(
+        credentials,
+        masterPasswordPolicyOptions
+      );
 
       if (!meetsRequirements) {
         if (authResult.requiresCaptcha || authResult.requiresTwoFactor) {
