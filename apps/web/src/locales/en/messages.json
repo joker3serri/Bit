@@ -5613,7 +5613,7 @@
     }
   },
   "inputMinValue": {
-    "message": "Input must be greater than $MIN$.",
+    "message": "Input value must be at least $MIN$.",
     "placeholders": {
       "min": {
         "content": "$1",
@@ -5622,7 +5622,7 @@
     }
   },
   "inputMaxValue": {
-    "message": "Input must be less than $MAX$.",
+    "message": "Input value must not exceed $MAX$.",
     "placeholders": {
       "max": {
         "content": "$1",
