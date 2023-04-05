@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Nápověda a zpětná vazba"
   },
+  "helpCenter": {
+    "message": "Bitwarden Help center"
+  },
+  "communityForums": {
+    "message": "Explore Bitwarden community forums"
+  },
+  "contactSupport": {
+    "message": "Contact Bitwarden support"
+  },
   "sync": {
     "message": "Synchronizace"
   },
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "K položkám v deaktivované organizaci nemáte přístup. Požádejte o pomoc vlastníka organizace."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Přihlašování do $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Try auto-fill on page load?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Your organization policies have turned on auto-fill on page load."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "How to auto-fill"
   },
-  "autofillPageLoadInfo": {
-    "message": "Login forms will automatically fill in matching credentials if you turn on auto-fill on page load."
+  "autofillSelectInfoWithCommand": {
+    "message": "Vyberte položku z této stránky nebo použijte zkratku: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page to auto-fill the active tab's form."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Vyberte položku z této stránky nebo nastavte zkratku v nastavení."
   },
-  "autofillTurnedOn": {
-    "message": "Auto-fill on page load turned on"
+  "gotIt": {
+    "message": "Got it"
   },
-  "turnOn": {
-    "message": "Turn on"
+  "autofillSettings": {
+    "message": "Auto-fill settings"
   },
-  "notNow": {
-    "message": "Not now"
+  "autofillShortcut": {
+    "message": "Auto-fill keyboard shortcut"
+  },
+  "autofillShortcutNotSet": {
+    "message": "The auto-fill shortcut is not set. Change this in the browser's settings."
+  },
+  "autofillShortcutText": {
+    "message": "The auto-fill shortcut is: $COMMAND$. Change this in the browser's settings.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Default auto-fill shortcut: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

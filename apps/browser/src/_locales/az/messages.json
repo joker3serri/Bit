@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Kömək və əks əlaqə"
   },
+  "helpCenter": {
+    "message": "Bitwarden Kömək mərkəzi"
+  },
+  "communityForums": {
+    "message": "Bitwarden cəmiyyət forumlarını kəşf et"
+  },
+  "contactSupport": {
+    "message": "Bitwarden dəstəyi ilə əlaqə saxla"
+  },
   "sync": {
     "message": "Eyniləşdirmə"
   },
@@ -430,7 +439,7 @@
     "message": "Ana parolun yenidən yazılması lazımdır."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Ana parol ən azı $VALUE$ simvol uzunluğunda olmalıdır.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Sıradan çıxarılmış Təşkilatlardakı elementlərə müraciət edilə bilmir. Kömək üçün Təşkilatınızın sahibi ilə əlaqə saxlayın."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "$DOMAIN$ domeninə giriş edilir",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Səhifə yüklənəndə avto-doldurma sınansın?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Təşkilatınızın siyasətləri, səhifə yüklənəndə avto-doldurmanı işə saldı."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Avto-doldurma necə edilir"
   },
-  "autofillPageLoadInfo": {
-    "message": "Səhifə yüklənərkən avto-doldurmanı işə salsanız giriş formları uyğun gələn kimlik məlumatlarını avtomatik dolduracaq."
+  "autofillSelectInfoWithCommand": {
+    "message": "Bu səhifədən bir element seçin və ya qısayolu istifadə edin: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Aktiv vərəqin formunu avtomatik doldurmaq üçün bu səhifədən bir element seçin."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Bu səhifədən bir element seçin və ya tənzimləmələrdə bir qısayol tənzimləyin."
   },
-  "autofillTurnedOn": {
-    "message": "Səhifə yüklənərkən avto-doldurma işə salındı"
+  "gotIt": {
+    "message": "Anladım"
   },
-  "turnOn": {
-    "message": "İşə sal"
+  "autofillSettings": {
+    "message": "Avto-doldurma tənzimləmələri"
   },
-  "notNow": {
-    "message": "İndi yox"
+  "autofillShortcut": {
+    "message": "Avto-doldurma klaviatura qısayolu"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Avto-doldurma qısayolu tənzimlənməyib. Bunu brauzerin tənzimləmələrində dəyişdirin."
+  },
+  "autofillShortcutText": {
+    "message": "Avto-doldurma qısayolu: $COMMAND$. Bunu brauzerin tənzimləmələrində dəyişdirin.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "İlkin avto-doldurma qısayolu: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

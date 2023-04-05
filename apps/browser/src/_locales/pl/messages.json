@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Pomoc i opinie"
   },
+  "helpCenter": {
+    "message": "Centrum pomocy Bitwarden"
+  },
+  "communityForums": {
+    "message": "Przeglądaj fora społeczności Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Skontaktuj się z pomocą techniczną Bitwarden"
+  },
   "sync": {
     "message": "Synchronizacja"
   },
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Nie można uzyskać dostępu do elementów w zawieszonych organizacjach. Skontaktuj się z właścicielem organizacji, aby uzyskać pomoc."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Logowanie do $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Spróbować autouzupełnić po załadowaniu strony?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Twoja organizacji włączyła autouzupełnianie podczas wczytywania strony."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Jak autouzupełniać"
   },
-  "autofillPageLoadInfo": {
-    "message": "Formularze logowania automatycznie wypełnią się pasującymi danymi uwierzytelniającymi, jeśli włączysz autouzupełnianie po załadowaniu strony."
+  "autofillSelectInfoWithCommand": {
+    "message": "Wybierz element z tej strony lub użyj skrótu: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Wybierz element z tej strony, aby automatycznie wypełnić formularz na aktywnej karcie."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Wybierz element z tej strony lub ustaw skrót w ustawieniach."
   },
-  "autofillTurnedOn": {
-    "message": "Automatyczne uzupełnianie przy wczytywaniu strony zostało włączone"
+  "gotIt": {
+    "message": "Rozumiem"
   },
-  "turnOn": {
-    "message": "Włącz"
+  "autofillSettings": {
+    "message": "Ustawienia autouzupełniania"
   },
-  "notNow": {
-    "message": "Nie teraz"
+  "autofillShortcut": {
+    "message": "Skrót klawiaturowy autouzupełniania"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Skrót autouzupełniania nie jest ustawiony. Zmień to w ustawieniach przeglądarki."
+  },
+  "autofillShortcutText": {
+    "message": "Skrót autouzupełniania to: $COMMAND$. Zmień to w ustawieniach przeglądarki.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Domyślny skrót autouzupełniania: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

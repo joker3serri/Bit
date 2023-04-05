@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Даведка і зваротная сувязь"
   },
+  "helpCenter": {
+    "message": "Даведачны цэнтр Bitwarden"
+  },
+  "communityForums": {
+    "message": "Наведайце форумы супольнасці Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Звярніцеся ў службу падтрымкі Bitwarden"
+  },
   "sync": {
     "message": "Сінхранізаваць"
   },
@@ -430,7 +439,7 @@
     "message": "Неабходна паўторна ўвесці асноўны пароль."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Асноўны пароль павінен змяшчаць прынамсі $VALUE$ сімвалаў.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Доступ да элементаў у адключаных арганізацыях немагчымы. Звяжыце з уладальнікам арганізацыі для атрымання дапамогі."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Увайсці ў $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Паспрабаваць аўтазапоўніць пры загрузцы старонкі?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Аўтазапаўненне пры загрузцы старонцы было ўключана палітыкамі вашай арганізацыі."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Як аўтазапоўніць"
   },
-  "autofillPageLoadInfo": {
-    "message": "Калі аўтазапаўненне пры загрузцы старонкі ўключана, формы ўваходу будуць аўтаматычна запаўняцца адпаведнымі ўліковымі данымі."
+  "autofillSelectInfoWithCommand": {
+    "message": "Выберыце элемент на гэтай старонцы або скарыстайцеся спалучэннем клавіш: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Выберыце элемент з гэтай старонкі для аўтазапаўнення формы на актыўнай укладцы."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Выберыце элемент на гэтай старонцы або задайце спалучэнне клавіш у наладах."
   },
-  "autofillTurnedOn": {
-    "message": "Аўтазапаўненне пры загрузцы старонкі ўключана"
+  "gotIt": {
+    "message": "Зразумела"
   },
-  "turnOn": {
-    "message": "Уключыць"
+  "autofillSettings": {
+    "message": "Налады аўтазапаўнення"
   },
-  "notNow": {
-    "message": "Не зараз"
+  "autofillShortcut": {
+    "message": "Спалучэнні клавіш аўтазапаўнення"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Спалучэнні клавіш аўтазапаўнення не зададзены. Змяніце гэта ў наладах браўзера."
+  },
+  "autofillShortcutText": {
+    "message": "Спалучэнні клавіш аўтазапаўнення: $COMMAND$. Змяніце гэта ў наладах браўзера.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Прадвызначаная спалучэнні клавіш аўтазапаўнення: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Abi ja tagasiside"
   },
+  "helpCenter": {
+    "message": "Bitwardeni abikeskus"
+  },
+  "communityForums": {
+    "message": "Ava Bitwardeni foorum"
+  },
+  "contactSupport": {
+    "message": "Võta Bitwardeniga ühendust"
+  },
   "sync": {
     "message": "Sünkroniseeri"
   },
@@ -430,7 +439,7 @@
     "message": "Vajalik on ülemparooli uuesti sisestamine."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Ülemparool peab olema vähemalt $VALUE$ tähemärgi pikkune.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -805,7 +814,7 @@
     "message": "Täname, et toetad Bitwardenit."
   },
   "premiumPrice": {
-    "message": "Kõik see ainult %price% aastas!",
+    "message": "Kõik see ainult $PRICE$ / aastas!",
     "placeholders": {
       "price": {
         "content": "$1",
@@ -835,7 +844,7 @@
     "message": "Sisesta autentimise rakendusest 6 kohaline number."
   },
   "enterVerificationCodeEmail": {
-    "message": "Sisesta 6 kohaline number, mis saadeti e-posti aadressile",
+    "message": "Sisesta 6 kohaline number, mis saadeti e-posti aadressile $EMAIL$.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -1994,9 +2003,6 @@
   "disabledOrganizationFilterError": {
     "message": "Organisatsiooni alla kuuluvatele kirjetele ei ole ligipääsu. Kontakteeru oma organisatsiooni omanikuga."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Sisselogimine läbi $DOMAIN$",
     "placeholders": {
@@ -2111,25 +2117,52 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Proovi automaatset täitmist lehe laadimisel?"
+  "autofillPageLoadPolicyActivated": {
+    "message": "Sinu organisatsioon ei võimalda lehe laadimisel automaatset kontoandmete täitmist kasutada."
   },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Kuidas automaatselt täita"
   },
-  "autofillPageLoadInfo": {
-    "message": "Automaatse täitmise sisselülitamiselt sisestatakse kontoandmete lahtritesse automaatselt sobivad kirjed."
+  "autofillSelectInfoWithCommand": {
+    "message": "Vali sellele lehelt kirje või kasuta otseteed: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page to auto-fill the active tab's form."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Vali sellelt lehelt kirje või määra seadetes otsetee."
   },
-  "autofillTurnedOn": {
-    "message": "Automaatne täitmine on sisselülitatud"
+  "gotIt": {
+    "message": "Selge"
   },
-  "turnOn": {
-    "message": "Lülita sisse"
+  "autofillSettings": {
+    "message": "Automaattäite seaded"
   },
-  "notNow": {
-    "message": "Mitte praegu"
+  "autofillShortcut": {
+    "message": "Automaattäite klaviatuuri otseteed"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Automaattäite otsetee pole määratud. Muuda seda brauseri seadetes."
+  },
+  "autofillShortcutText": {
+    "message": "Automaattäite otsetee on: $COMMAND$. Saad seda brauseri seadetes muuta.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Vaike automaattäite otsetee on: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

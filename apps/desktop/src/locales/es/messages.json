@@ -542,7 +542,7 @@
     "message": "Se requiere volver a teclear la contraseña maestra."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "La contraseña maestra debe tener al menos $VALUE$ caracteres.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -769,6 +769,9 @@
   },
   "contactUs": {
     "message": "Contáctenos"
+  },
+  "helpAndFeedback": {
+    "message": "Ayuda y comentarios"
   },
   "getHelp": {
     "message": "Obtener ayuda"
@@ -2034,9 +2037,6 @@
   },
   "neverLockWarning": {
     "message": "¿Está seguro de que quieres usar la opción \"Nunca\"? Al ajustar las opciones de bloqueo a \"Nunca\", la clave de cifrado de su caja fuerte se guardará en tu dispositivo. Si usas esta opción, asegúrate de mantener tu dispositivo debidamente protegido."
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "vault": {
     "message": "Caja fuerte"
