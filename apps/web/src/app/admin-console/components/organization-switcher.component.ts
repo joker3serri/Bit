@@ -4,7 +4,7 @@ import { map, Observable } from "rxjs";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import {
   canAccessAdmin,
-  isNotProviderUser,
+  isMember,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -24,7 +24,7 @@ export class OrganizationSwitcherComponent implements OnInit {
 
   async ngOnInit() {
     this.organizations$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter(isNotProviderUser)),
+      map((orgs) => orgs.filter(isMember)),
       canAccessAdmin(this.i18nService),
       map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name")))
     );

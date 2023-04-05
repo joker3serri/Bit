@@ -6,7 +6,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
 import {
-  isNotProviderUser,
+  isMember,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organization-user-status-type";
@@ -58,8 +58,7 @@ export class ShareComponent implements OnInit, OnDestroy {
       map((orgs) => {
         return orgs
           .filter(
-            (o) =>
-              o.enabled && o.status === OrganizationUserStatusType.Confirmed && isNotProviderUser(o)
+            (o) => o.enabled && o.status === OrganizationUserStatusType.Confirmed && isMember(o)
           )
           .sort(Utils.getSortFunction(this.i18nService, "name"));
       })

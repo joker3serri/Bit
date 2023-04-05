@@ -56,8 +56,11 @@ export function canAccessAdmin(i18nService: I18nService) {
   );
 }
 
-export function isNotProviderUser(org: Organization): boolean {
-  return !org.isProviderUser;
+/**
+ * Returns `true` if a user is a member of an organization (rather than only being a ProviderUser)
+ */
+export function isMember(org: Organization): boolean {
+  return org.isMember;
 }
 
 export abstract class OrganizationService {
