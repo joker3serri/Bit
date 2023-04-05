@@ -6497,7 +6497,7 @@
     "message": "Low KDF Iterations"
   },
   "lowKdfIterationsDesc": {
-    "message": "Increase your KDF encryption settings to improve the security of your account."
+    "message": "Update your encryption settings to meet new security recommendations and improve account protection."
   },
   "changeKdfSettings": {
     "message": "Change KDF settings"
@@ -6676,5 +6676,8 @@
   },
   "notAvailableForFreeOrganization": {
     "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+  },
+  "updateKdfSettings": {
+    "message": "Update KDF settings"
   }
 }
