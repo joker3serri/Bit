@@ -102,22 +102,18 @@ export class Organization {
   }
 
   get canAccess() {
-    if (this.type === OrganizationUserType.Owner) {
+    if (this.isOwner) {
       return true;
     }
     return this.enabled && this.status === OrganizationUserStatusType.Confirmed;
   }
 
   get isManager() {
-    return (
-      this.type === OrganizationUserType.Manager ||
-      this.type === OrganizationUserType.Owner ||
-      this.type === OrganizationUserType.Admin
-    );
+    return this.type === OrganizationUserType.Manager || this.isAdmin;
   }
 
   get isAdmin() {
-    return this.type === OrganizationUserType.Owner || this.type === OrganizationUserType.Admin;
+    return this.type === OrganizationUserType.Admin || this.isOwner;
   }
 
   get isOwner() {
