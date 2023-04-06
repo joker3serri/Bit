@@ -270,7 +270,11 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
 
         let collectionsToReturn = [];
-        if (filter.collectionId === All) {
+        if (filter.organizationId !== undefined && filter.collectionId === All) {
+          collectionsToReturn = collections
+            .filter((c) => c.node.organizationId === filter.organizationId)
+            .map((c) => c.node);
+        } else if (filter.collectionId === All) {
           collectionsToReturn = collections.map((c) => c.node);
         } else {
           const selectedCollection = ServiceUtils.getTreeNodeObjectFromList(
