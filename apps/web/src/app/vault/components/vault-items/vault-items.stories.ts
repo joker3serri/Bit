@@ -22,6 +22,7 @@ import {
   GroupView,
 } from "../../../admin-console/organizations/core";
 import { PreloadedEnglishI18nModule } from "../../../tests/preloaded-english-i18n.module";
+import { Unassigned } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 import { VaultItemsComponent } from "./vault-items.component";
 import { VaultItemsModule } from "./vault-items.module";
@@ -212,10 +213,13 @@ OrganizationTrash.args = {
   cloneableOrganizationCiphers: true,
 };
 
+const unassignedCollection = new CollectionAdminView();
+unassignedCollection.id = Unassigned;
+unassignedCollection.name = "Unassigned";
 export const OrganizationTopLevelCollection = Template.bind({});
 OrganizationTopLevelCollection.args = {
   ciphers: [],
-  collections,
+  collections: collections.concat(unassignedCollection),
   showOwner: false,
   showCollections: false,
   showGroups: true,
