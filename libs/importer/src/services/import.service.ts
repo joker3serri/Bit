@@ -136,9 +136,9 @@ export class ImportService implements ImportServiceAbstraction {
     try {
       if (organizationId != null) {
         await this.handleOrganizationalImport(importResult, organizationId);
+      } else {
+        await this.handleIndividualImport(importResult);
       }
-
-      await this.handleIndividualImport(importResult);
     } catch (error) {
       const errorResponse = new ErrorResponse(error, 400);
       throw this.handleServerError(errorResponse, importResult);
