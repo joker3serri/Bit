@@ -1,7 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { LoginLinkedId as LinkedId } from "../../../enums/linkedIdType";
-import { UriMatchType } from "../../../enums/uriMatchType";
+import { LoginLinkedId as LinkedId, UriMatchType } from "../../../enums";
 import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../../misc/utils";
 import { Login } from "../domain/login";
