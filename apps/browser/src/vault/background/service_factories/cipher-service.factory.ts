@@ -27,10 +27,6 @@ import {
   I18nServiceInitOptions,
 } from "../../../background/service_factories/i18n-service.factory";
 import {
-  logServiceFactory,
-  LogServiceInitOptions,
-} from "../../../background/service_factories/log-service.factory";
-import {
   searchServiceFactory,
   SearchServiceInitOptions,
 } from "../../../background/service_factories/search-service.factory";
@@ -52,7 +48,6 @@ export type CipherServiceInitOptions = CipherServiceFactoryOptions &
   CipherFileUploadServiceInitOptions &
   I18nServiceInitOptions &
   SearchServiceInitOptions &
-  LogServiceInitOptions &
   StateServiceInitOptions &
   EncryptServiceInitOptions;
 
@@ -71,7 +66,6 @@ export function cipherServiceFactory(
         await apiServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         await searchServiceFactory(cache, opts),
-        await logServiceFactory(cache, opts),
         await stateServiceFactory(cache, opts),
         await encryptServiceFactory(cache, opts),
         await cipherFileUploadServiceFactory(cache, opts)
