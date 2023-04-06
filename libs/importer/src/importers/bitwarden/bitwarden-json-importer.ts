@@ -58,7 +58,6 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       for (const c of this.results.collections as CollectionWithIdExport[]) {
         const collection = CollectionWithIdExport.toDomain(c);
         if (collection != null) {
-          collection.id = null;
           collection.organizationId = this.organizationId;
           const view = await collection.decrypt();
           groupingsMap.set(c.id, this.result.collections.length);
@@ -69,7 +68,6 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       for (const f of this.results.folders as FolderWithIdExport[]) {
         const folder = FolderWithIdExport.toDomain(f);
         if (folder != null) {
-          folder.id = null;
           const view = await folder.decrypt();
           groupingsMap.set(f.id, this.result.folders.length);
           this.result.folders.push(view);
@@ -81,7 +79,6 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       const cipher = CipherWithIdExport.toDomain(c);
       // reset ids incase they were set for some reason
       cipher.id = null;
-      cipher.folderId = null;
       cipher.organizationId = this.organizationId;
       cipher.collectionIds = null;
 
@@ -120,7 +117,6 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       this.results.collections.forEach((c: CollectionWithIdExport) => {
         const collection = CollectionWithIdExport.toView(c);
         if (collection != null) {
-          collection.id = null;
           collection.organizationId = null;
           groupingsMap.set(c.id, this.result.collections.length);
           this.result.collections.push(collection);
@@ -130,7 +126,6 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       this.results.folders.forEach((f: FolderWithIdExport) => {
         const folder = FolderWithIdExport.toView(f);
         if (folder != null) {
-          folder.id = null;
           groupingsMap.set(f.id, this.result.folders.length);
           this.result.folders.push(folder);
         }
@@ -141,7 +136,6 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       const cipher = CipherWithIdExport.toView(c);
       // reset ids incase they were set for some reason
       cipher.id = null;
-      cipher.folderId = null;
       cipher.organizationId = null;
       cipher.collectionIds = null;
 
