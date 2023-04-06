@@ -221,9 +221,19 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
-    const allCollections$ = organizationId$.pipe(
+    const allCollectionsWithoutUnassigned$ = organizationId$.pipe(
       switchMap((orgId) => this.collectionAdminService.getAll(orgId)),
       shareReplay({ refCount: true, bufferSize: 1 })
+    );
+
+    const allCollections$ = combineLatest([organizationId$, allCollectionsWithoutUnassigned$]).pipe(
+      map(([organizationId, allCollections]) => {
+        const noneCollection = new CollectionAdminView();
+        noneCollection.name = this.i18nService.t("unassigned");
+        noneCollection.id = Unassigned;
+        noneCollection.organizationId = organizationId;
+        return allCollections.concat(noneCollection);
+      })
     );
 
     const allGroups$ = organizationId$.pipe(
@@ -411,10 +421,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           // This is a temporary fix to avoid double fetching collections.
           // TODO: Remove when implementing new VVR menu
-          const noneCollection = new CollectionAdminView();
-          noneCollection.name = this.i18nService.t("unassigned");
-          noneCollection.organizationId = organization.id;
-          this.vaultFilterService.reloadCollections(allCollections.concat(noneCollection));
+          this.vaultFilterService.reloadCollections(allCollections);
 
           this.refreshing = false;
           this.performingInitialLoad = false;

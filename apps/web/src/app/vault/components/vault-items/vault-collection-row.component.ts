@@ -4,6 +4,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 
 import { CollectionAdminView, GroupView } from "../../../admin-console/organizations/core";
+import { Unassigned } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 import { VaultItemEvent } from "./vault-item-event";
 import { RowHeightClass } from "./vault-items.component";
@@ -49,7 +50,7 @@ export class VaultCollectionRowComponent {
     const organization = this.organization;
 
     // Only edit collection if it is editable and not deleting "Unassigned"
-    if (!this.editable || this.collection.id == undefined) {
+    if (!this.editable || this.collection.id === Unassigned) {
       return false;
     }
 
@@ -68,7 +69,7 @@ export class VaultCollectionRowComponent {
     const organization = this.organization;
 
     // Only delete collection if it is editable and not deleting "Unassigned"
-    if (!this.editable || this.collection.id == undefined) {
+    if (!this.editable || this.collection.id === Unassigned) {
       return false;
     }
 
