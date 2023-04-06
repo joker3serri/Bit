@@ -6,7 +6,7 @@ import { BehaviorSubject } from "rxjs";
 import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organization-user-type";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
