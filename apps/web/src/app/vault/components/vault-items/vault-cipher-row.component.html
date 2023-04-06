@@ -11,10 +11,14 @@
 <td bitCell [ngClass]="RowHeightClass" class="tw-min-w-fit">
   <app-vault-icon [cipher]="cipher"></app-vault-icon>
 </td>
-<td bitCell [ngClass]="RowHeightClass" class="tw-break-all">
+<td
+  bitCell
+  [ngClass]="RowHeightClass"
+  class="tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap"
+>
   <button
     bitLink
-    class="tw-text-start"
+    class="tw-w-full tw-overflow-hidden tw-text-ellipsis tw-text-start"
     [disabled]="disabled"
     [routerLink]="[]"
     [queryParams]="{ itemId: cipher.id }"
