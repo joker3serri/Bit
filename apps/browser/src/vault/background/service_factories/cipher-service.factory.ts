@@ -7,6 +7,10 @@ import {
   ApiServiceInitOptions,
 } from "../../../background/service_factories/api-service.factory";
 import {
+  CipherFileUploadServiceInitOptions,
+  cipherFileUploadServiceFactory,
+} from "../../../background/service_factories/cipher-file-upload-service.factory";
+import {
   cryptoServiceFactory,
   CryptoServiceInitOptions,
 } from "../../../background/service_factories/crypto-service.factory";
@@ -20,17 +24,9 @@ import {
   FactoryOptions,
 } from "../../../background/service_factories/factory-options";
 import {
-  FileUploadServiceInitOptions,
-  fileUploadServiceFactory,
-} from "../../../background/service_factories/file-upload-service.factory";
-import {
   i18nServiceFactory,
   I18nServiceInitOptions,
 } from "../../../background/service_factories/i18n-service.factory";
-import {
-  logServiceFactory,
-  LogServiceInitOptions,
-} from "../../../background/service_factories/log-service.factory";
 import {
   SettingsServiceInitOptions,
   settingsServiceFactory,
@@ -50,9 +46,8 @@ export type CipherServiceInitOptions = CipherServiceFactoryOptions &
   CryptoServiceInitOptions &
   SettingsServiceInitOptions &
   ApiServiceInitOptions &
-  FileUploadServiceInitOptions &
+  CipherFileUploadServiceInitOptions &
   I18nServiceInitOptions &
-  LogServiceInitOptions &
   StateServiceInitOptions &
   EncryptServiceInitOptions;
 
@@ -69,14 +64,13 @@ export function cipherServiceFactory(
         await cryptoServiceFactory(cache, opts),
         await settingsServiceFactory(cache, opts),
         await apiServiceFactory(cache, opts),
-        await fileUploadServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         opts.cipherServiceOptions?.searchServiceFactory === undefined
           ? () => cache.searchService as SearchService
           : opts.cipherServiceOptions.searchServiceFactory,
-        await logServiceFactory(cache, opts),
         await stateServiceFactory(cache, opts),
-        await encryptServiceFactory(cache, opts)
+        await encryptServiceFactory(cache, opts),
+        await cipherFileUploadServiceFactory(cache, opts)
       )
   );
 }

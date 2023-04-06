@@ -1,8 +1,6 @@
-import { ProductType } from "../../../enums/productType";
-import { ProviderType } from "../../../enums/provider-type";
+import { ProductType, ProviderType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
-import { OrganizationUserStatusType } from "../../enums/organization-user-status-type";
-import { OrganizationUserType } from "../../enums/organization-user-type";
+import { OrganizationUserStatusType, OrganizationUserType } from "../../enums";
 import { PermissionsApi } from "../api/permissions.api";
 
 export class ProfileOrganizationResponse extends BaseResponse {
