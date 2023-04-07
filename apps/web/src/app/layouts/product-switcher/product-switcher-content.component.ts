@@ -25,6 +25,11 @@ type ProductSwitcherItem = {
    * Route for items in the `otherProducts$` section
    */
   marketingRoute?: string | any[];
+
+  /**
+   * Used to apply css styles to show when a button is selected
+   */
+  isActive?: boolean;
 };
 
 @Component({
@@ -56,12 +61,14 @@ export class ProductSwitcherContentComponent {
           icon: "bwi-lock",
           appRoute: "/vault",
           marketingRoute: "https://bitwarden.com/products/personal/",
+          isActive: !this.router.url.includes("/sm/"),
         },
         sm: {
           name: "Secrets Manager Beta",
           icon: "bwi-cli",
           appRoute: ["/sm", smOrg?.id],
           marketingRoute: "https://bitwarden.com/products/secrets-manager/",
+          isActive: this.router.url.includes("/sm/"),
         },
         orgs: {
           name: "Organizations",
@@ -89,17 +96,6 @@ export class ProductSwitcherContentComponent {
       };
     })
   );
-
-  selectedClass(product: ProductSwitcherItem) {
-    const isSecretsManagerUrl = this.router.url.includes("/sm");
-    const isSecretsProduct = product.appRoute.includes("/sm");
-    const secretsManagerSelected = isSecretsProduct && isSecretsManagerUrl;
-    const passwordManagerSelected = !isSecretsManagerUrl && !isSecretsProduct;
-
-    return secretsManagerSelected || passwordManagerSelected
-      ? "tw-font-bold tw-bg-primary-500 hover:tw-bg-primary-500 !tw-text-contrast tw-ring-offset-2"
-      : "";
-  }
 
   constructor(
     private organizationService: OrganizationService,
