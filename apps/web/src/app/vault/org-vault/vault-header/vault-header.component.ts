@@ -9,7 +9,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
-import { ProductType } from "@bitwarden/common/enums/productType";
+import { ProductType } from "@bitwarden/common/enums";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import {
   DialogService,
@@ -19,11 +19,14 @@ import {
 } from "@bitwarden/components";
 
 import {
+  CollectionAdminService,
+  CollectionAdminView,
+} from "../../../admin-console/organizations/core";
+import {
   CollectionDialogResult,
   CollectionDialogTabType,
   openCollectionDialog,
 } from "../../../admin-console/organizations/shared/components/collection-dialog";
-import { CollectionAdminService, CollectionAdminView } from "../../../organizations/core";
 import { VaultFilterService } from "../../individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.model";
 import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
