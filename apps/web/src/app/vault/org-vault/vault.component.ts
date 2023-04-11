@@ -251,7 +251,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             (c) => c.organizationId === organization.id
           );
         }
-        await this.searchService.indexCiphers(organization.id, ciphers);
+        await this.searchService.indexCiphers(ciphers, organization.id);
         return ciphers;
       })
     );
