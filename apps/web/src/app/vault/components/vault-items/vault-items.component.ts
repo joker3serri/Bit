@@ -76,16 +76,17 @@ export class VaultItemsComponent {
   }
 
   protected canEditCollection(collection: CollectionView): boolean {
+    // We currently don't support editing collections from individual vault
     if (!(collection instanceof CollectionAdminView)) {
       return false;
     }
 
-    const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
-
-    // Only edit collection if it is editable and not deleting "Unassigned"
+    // Only allow allow deletion if collection editing is enabled and not deleting "Unassigned"
     if (!this.editableCollections || collection.id === Unassigned) {
       return false;
     }
+
+    const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
 
     // Otherwise, check if we can edit the specified collection
     return (
@@ -95,16 +96,17 @@ export class VaultItemsComponent {
   }
 
   protected canDeleteCollection(collection: CollectionView): boolean {
+    // We currently don't support editing collections from individual vault
     if (!(collection instanceof CollectionAdminView)) {
       return false;
     }
 
-    const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
-
-    // Only delete collection if it is editable and not deleting "Unassigned"
+    // Only allow allow deletion if collection editing is enabled and not deleting "Unassigned"
     if (!this.editableCollections || collection.id === Unassigned) {
       return false;
     }
+
+    const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
 
     // Otherwise, check if we can delete the specified collection
     return (
