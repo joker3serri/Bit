@@ -97,6 +97,21 @@ export class SsoComponent extends BaseSsoComponent {
         }
       }
     });
+
+    // if we have an emergency access invite, redirect to emergency access
+    const emergencyAccessInvite = await this.stateService.getEmergencyAccessInvitation();
+    if (emergencyAccessInvite != null) {
+      this.onSuccessfulLoginNavigate = async () => {
+        this.router.navigate(["/accept-emergency"], {
+          queryParams: {
+            id: emergencyAccessInvite.id,
+            name: emergencyAccessInvite.name,
+            email: emergencyAccessInvite.email,
+            token: emergencyAccessInvite.token,
+          },
+        });
+      };
+    }
   }
 
   private handleGetClaimedDomainByEmailError(error: any): void {

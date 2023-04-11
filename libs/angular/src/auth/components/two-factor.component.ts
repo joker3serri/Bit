@@ -203,7 +203,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     }
     if (this.onSuccessfulLogin != null) {
       this.loginService.clearValues();
-      this.onSuccessfulLogin();
+      await this.onSuccessfulLogin();
     }
     if (response.resetMasterPassword) {
       this.successRoute = "set-password";
@@ -213,7 +213,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     }
     if (this.onSuccessfulLoginNavigate != null) {
       this.loginService.clearValues();
-      this.onSuccessfulLoginNavigate();
+      await this.onSuccessfulLoginNavigate();
     } else {
       this.loginService.clearValues();
       this.router.navigate([this.successRoute], {
