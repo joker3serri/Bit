@@ -90,10 +90,7 @@ export class ProjectsListComponent implements OnInit, OnDestroy {
     const selectedProjects = this.projects.filter((project) =>
       this.selection.isSelected(project.id)
     );
-    if (
-      selectedProjects.length == selectedProjects.filter((project) => project.write).length &&
-      selectedProjects.length != 0
-    ) {
+    if (selectedProjects.some((project) => project.write)) {
       return true;
     }
     return false;
