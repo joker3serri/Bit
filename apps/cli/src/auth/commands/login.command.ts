@@ -314,7 +314,7 @@ export class LoginCommand {
         );
       }
 
-      // Run full sync before handling success response or password reset flows
+      // Run full sync before handling success response or password reset flows (to get Master Password Policies)
       await this.syncService.fullSync(true);
 
       // Handle updating passwords if NOT using an API Key for authentication
@@ -389,9 +389,6 @@ export class LoginCommand {
   }
 
   private async updateWeakPassword(currentPassword: string) {
-    // Force a sync so we have access to organization details
-    await this.syncService.fullSync(true);
-
     // If no interaction available, alert user to use web vault
     if (!this.canInteract) {
       await this.logoutCallback();
