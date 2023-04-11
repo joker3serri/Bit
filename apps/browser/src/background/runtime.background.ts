@@ -79,7 +79,6 @@ export default class RuntimeBackground {
             item
           );
         }
-        this.messagingService.send("unlocked");
         break;
       }
       case "addToLockedVaultPendingNotifications":

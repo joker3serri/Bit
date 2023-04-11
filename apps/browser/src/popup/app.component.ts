@@ -60,6 +60,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.activeUserId = userId;
     });
 
+    this.stateService.activeAccountUnlocked$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((unlocked) => {
+        unlocked ? this.recordActivity() : null;
+      });
+
     this.ngZone.runOutsideAngular(() => {
       window.onmousedown = () => this.recordActivity();
       window.ontouchstart = () => this.recordActivity();
@@ -73,9 +79,7 @@ export class AppComponent implements OnInit, OnDestroy {
       sender: any,
       sendResponse: any
     ) => {
-      if (msg.command === "unlocked") {
-        this.recordActivity();
-      } else if (msg.command === "doneLoggingOut") {
+      if (msg.command === "doneLoggingOut") {
         this.ngZone.run(async () => {
           this.authService.logOut(async () => {
             if (msg.expired) {
