@@ -1,7 +1,12 @@
 import * as program from "commander";
 import * as inquirer from "inquirer";
 
-import { ExportFormat, ExportService } from "@bitwarden/common/abstractions/export.service";
+import {
+  ExportFormat,
+  ExportService,
+  isSupportedExportFormat,
+  EXPORT_FORMATS,
+} from "@bitwarden/common/abstractions/export.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -23,6 +28,13 @@ export class ExportCommand {
     }
 
     const format = options.format ?? "csv";
+    if (!isSupportedExportFormat(format)) {
+      return Response.badRequest(
+        `'${format}' is not a supported export format. Supported formats: ${EXPORT_FORMATS.join(
+          ", "
+        )}.`
+      );
+    }
 
     if (options.organizationid != null && !Utils.isGuid(options.organizationid)) {
       return Response.error("`" + options.organizationid + "` is not a GUID.");
