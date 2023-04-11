@@ -338,7 +338,6 @@ export class SyncService implements SyncServiceAbstraction {
         isMember: true,
         isProviderUser: false,
       });
-      organizations[o.id].isMember = true;
     });
 
     response.providerOrganizations.forEach((o) => {
