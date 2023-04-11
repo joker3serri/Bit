@@ -6,7 +6,8 @@ import { CollectionView } from "@bitwarden/common/admin-console/models/view/coll
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { TableDataSource } from "@bitwarden/components";
 
-import { GroupView } from "../../../admin-console/organizations/core";
+import { CollectionAdminView, GroupView } from "../../../admin-console/organizations/core";
+import { Unassigned } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";
@@ -73,7 +74,45 @@ export class VaultItemsComponent {
     return this.dataSource.data.length === 0;
   }
 
-  toggleAll() {
+  protected canEditCollection(collection: CollectionView): boolean {
+    if (!(collection instanceof CollectionAdminView)) {
+      return false;
+    }
+
+    const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
+
+    // Only edit collection if it is editable and not deleting "Unassigned"
+    if (!this.editableCollections || collection.id === Unassigned) {
+      return false;
+    }
+
+    // Otherwise, check if we can edit the specified collection
+    return (
+      organization?.canEditAnyCollection ||
+      (organization?.canEditAssignedCollections && collection.assigned)
+    );
+  }
+
+  protected canDeleteCollection(collection: CollectionView): boolean {
+    if (!(collection instanceof CollectionAdminView)) {
+      return false;
+    }
+
+    const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
+
+    // Only delete collection if it is editable and not deleting "Unassigned"
+    if (!this.editableCollections || collection.id === Unassigned) {
+      return false;
+    }
+
+    // Otherwise, check if we can delete the specified collection
+    return (
+      organization?.canDeleteAnyCollection ||
+      (organization?.canDeleteAssignedCollections && collection.assigned)
+    );
+  }
+
+  protected toggleAll() {
     this.isAllSelected
       ? this.selection.clear()
       : this.selection.select(...this.dataSource.data.slice(0, MaxSelectionCount));

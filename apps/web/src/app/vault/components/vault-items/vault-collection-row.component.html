@@ -3,7 +3,7 @@
     type="checkbox"
     bitCheckbox
     appStopProp
-    *ngIf="editable && canDeleteCollection"
+    *ngIf="canDeleteCollection"
     [disabled]="disabled"
     [checked]="checked"
     (change)="$event ? this.checkedToggled.next() : null"
@@ -47,7 +47,7 @@
 </td>
 <td bitCell [ngClass]="RowHeightClass" class="tw-text-right">
   <button
-    *ngIf="editable && (canEditCollection || canDeleteCollection)"
+    *ngIf="canEditCollection || canDeleteCollection"
     [disabled]="disabled"
     [bitMenuTriggerFor]="collectionOptions"
     size="small"
