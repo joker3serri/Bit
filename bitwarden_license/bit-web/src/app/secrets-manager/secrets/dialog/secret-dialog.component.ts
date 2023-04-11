@@ -7,6 +7,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
@@ -47,12 +48,11 @@ export class SecretDialogComponent implements OnInit {
     newProjectName: new FormControl(""),
   });
 
+  private destroy$ = new Subject<void>();
   private loading = true;
   projects: ProjectListView[];
   addNewProject = false;
   private newProjectGuid = Utils.newGuid();
-
-  private destroy$ = new Subject<void>();
 
   constructor(
     public dialogRef: DialogRef,
@@ -63,7 +63,8 @@ export class SecretDialogComponent implements OnInit {
     private projectService: ProjectService,
     private dialogService: DialogService,
     private encryptService: EncryptService,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private organizationService: OrganizationService
   ) {}
 
   async ngOnInit() {
@@ -76,6 +77,11 @@ export class SecretDialogComponent implements OnInit {
 
     if (this.data.projectId) {
       this.formGroup.get("project").setValue(this.data.projectId);
+    }
+
+    if (this.organizationService.get(this.data.organizationId)?.isAdmin) {
+      this.formGroup.get("project").removeValidators(Validators.required);
+      this.formGroup.get("project").updateValueAndValidity();
     }
 
     this.projects = await this.projectService
@@ -237,7 +243,10 @@ export class SecretDialogComponent implements OnInit {
     secretView.name = this.formGroup.value.name;
     secretView.value = this.formGroup.value.value;
     secretView.note = this.formGroup.value.notes;
-    secretView.projects = [this.projects.find((p) => p.id == this.formGroup.value.project)];
+
+    const project = this.projects.find((p) => p.id == this.formGroup.value.project);
+    secretView.projects = project != undefined ? [project] : [];
+
     return secretView;
   }
 
