@@ -18,7 +18,7 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
@@ -28,7 +28,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { CollectionAdminView } from "../../../../organizations/core";
+import { CollectionAdminView } from "../../../../admin-console/organizations/core";
 import {
   CipherTypeFilter,
   CollectionFilter,
@@ -138,12 +138,16 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
       orgs = orgs.slice(0, 1);
     }
     if (orgs) {
+      const orgNodes: TreeNode<OrganizationFilter>[] = [];
       orgs.filter(isNotProviderUser).forEach((org) => {
         const orgCopy = org as OrganizationFilter;
         orgCopy.icon = "bwi-business";
         const node = new TreeNode<OrganizationFilter>(orgCopy, headNode, orgCopy.name);
-        headNode.children.push(node);
+        orgNodes.push(node);
       });
+      // Sort organization nodes, then add them to the list after 'My Vault' and 'All Vaults' if present
+      orgNodes.sort((a, b) => a.node.name.localeCompare(b.node.name));
+      headNode.children.push(...orgNodes);
     }
     return headNode;
   }
