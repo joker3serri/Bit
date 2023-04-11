@@ -397,7 +397,7 @@ export class LoginCommand {
       });
       return Response.error(
         new MessageResponse(
-          `Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now via the web vault. You have been logged out.`,
+          "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now via the web vault. You have been logged out.",
           null
         )
       );
@@ -405,7 +405,7 @@ export class LoginCommand {
 
     try {
       const { newPasswordHash, newEncKey, hint } = await this.collectNewMasterPasswordDetails(
-        `Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now.`
+        "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now."
       );
 
       const request = new PasswordRequest();
