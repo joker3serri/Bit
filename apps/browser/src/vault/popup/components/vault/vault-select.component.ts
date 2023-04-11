@@ -19,6 +19,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 import { VaultFilterService } from "../../../services/vault-filter.service";
 
@@ -100,7 +101,7 @@ export class VaultSelectComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.organizations$ = this.organizationService.memberOrganizations$
       .pipe(takeUntil(this._destroy))
-      .pipe(map((orgs) => orgs.sort((a, b) => a.name.localeCompare(b.name))));
+      .pipe(map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))));
 
     this.organizations$
       .pipe(
