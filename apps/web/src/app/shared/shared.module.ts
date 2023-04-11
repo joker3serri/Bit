@@ -13,20 +13,21 @@ import {
   BadgeListModule,
   BadgeModule,
   ButtonModule,
-  IconButtonModule,
   CalloutModule,
   CheckboxModule,
+  ColorPasswordModule,
   DialogModule,
   FormFieldModule,
+  IconButtonModule,
   IconModule,
   LinkModule,
   MenuModule,
   MultiSelectModule,
-  NavigationModule,
+  RadioButtonModule,
   TableModule,
   TabsModule,
   ToggleGroupModule,
-  ColorPasswordModule,
+  TypographyModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -50,14 +51,16 @@ import "./locales";
     ToastrModule,
     JslibModule,
 
-    // Component library
+    // Component library modules
+    // Only add components that are used almost everywhere in the application
     AsyncActionsModule,
     AvatarModule,
-    BadgeModule,
     BadgeListModule,
+    BadgeModule,
     ButtonModule,
     CalloutModule,
     CheckboxModule,
+    ColorPasswordModule,
     DialogModule,
     FormFieldModule,
     IconButtonModule,
@@ -65,12 +68,11 @@ import "./locales";
     LinkModule,
     MenuModule,
     MultiSelectModule,
-    NavigationModule,
+    RadioButtonModule,
     TableModule,
     TabsModule,
     ToggleGroupModule,
-    LinkModule,
-    ColorPasswordModule,
+    TypographyModule,
 
     // Web specific
   ],
@@ -87,11 +89,12 @@ import "./locales";
     // Component library
     AsyncActionsModule,
     AvatarModule,
-    BadgeModule,
     BadgeListModule,
+    BadgeModule,
     ButtonModule,
     CalloutModule,
     CheckboxModule,
+    ColorPasswordModule,
     DialogModule,
     FormFieldModule,
     IconButtonModule,
@@ -99,12 +102,11 @@ import "./locales";
     LinkModule,
     MenuModule,
     MultiSelectModule,
-    NavigationModule,
+    RadioButtonModule,
     TableModule,
     TabsModule,
     ToggleGroupModule,
-    LinkModule,
-    ColorPasswordModule,
+    TypographyModule,
 
     // Web specific
   ],

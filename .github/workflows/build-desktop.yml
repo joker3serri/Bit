@@ -10,6 +10,7 @@ on:
       - 'apps/desktop/**'
       - 'libs/**'
       - '*'
+      - '!libs/importer'
       - '!*.md'
       - '!*.txt'
       - '.github/workflows/build-desktop.yml'
@@ -22,6 +23,7 @@ on:
       - 'apps/desktop/**'
       - 'libs/**'
       - '*'
+      - '!libs/importer'
       - '!*.md'
       - '!*.txt'
       - '.github/workflows/build-desktop.yml'
@@ -773,6 +775,7 @@ jobs:
         env:
           APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          CSC_FOR_PULL_REQUEST: true
         run: npm run pack:mac
 
       - name: Upload .zip artifact
@@ -970,6 +973,7 @@ jobs:
         env:
           APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          CSC_FOR_PULL_REQUEST: true
 
       - name: Upload .pkg artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535

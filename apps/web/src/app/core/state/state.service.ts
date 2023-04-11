@@ -12,13 +12,13 @@ import {
   AbstractMemoryStorageService,
   AbstractStorageService,
 } from "@bitwarden/common/abstractions/storage.service";
+import { CollectionData } from "@bitwarden/common/admin-console/models/data/collection.data";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
-import { CipherData } from "@bitwarden/common/models/data/cipher.data";
-import { CollectionData } from "@bitwarden/common/models/data/collection.data";
-import { FolderData } from "@bitwarden/common/models/data/folder.data";
-import { SendData } from "@bitwarden/common/models/data/send.data";
 import { StorageOptions } from "@bitwarden/common/models/domain/storage-options";
 import { StateService as BaseStateService } from "@bitwarden/common/services/state.service";
+import { SendData } from "@bitwarden/common/tools/send/models/data/send.data";
+import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
+import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
 
 import { Account } from "./account";
 import { GlobalState } from "./global-state";
