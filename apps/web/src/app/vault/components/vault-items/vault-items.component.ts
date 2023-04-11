@@ -61,11 +61,12 @@ export class VaultItemsComponent {
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
+  protected editableItems: VaultItem[] = [];
   protected dataSource = new TableDataSource<VaultItem>();
   protected selection = new SelectionModel<VaultItem>(true, [], true);
 
   get isAllSelected() {
-    return this.dataSource.data
+    return this.editableItems
       .slice(0, MaxSelectionCount)
       .every((item) => this.selection.isSelected(item));
   }
@@ -115,7 +116,7 @@ export class VaultItemsComponent {
   protected toggleAll() {
     this.isAllSelected
       ? this.selection.clear()
-      : this.selection.select(...this.dataSource.data.slice(0, MaxSelectionCount));
+      : this.selection.select(...this.editableItems.slice(0, MaxSelectionCount));
   }
 
   protected event(event: VaultItemEvent) {
@@ -159,9 +160,14 @@ export class VaultItemsComponent {
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
-    const items = [].concat(collections).concat(ciphers);
+    const items: VaultItem[] = [].concat(collections).concat(ciphers);
 
     this.selection.clear();
+    this.editableItems = items.filter(
+      (item) =>
+        item.cipher !== undefined ||
+        (item.collection !== undefined && this.canDeleteCollection(item.collection))
+    );
     this.dataSource.data = items;
   }
 }
