@@ -20,7 +20,7 @@
         <th bitCell class="tw-w-3/5" *ngIf="showOwner">{{ "owner" | i18n }}</th>
         <th bitCell class="tw-w-3/5" *ngIf="showCollections">{{ "collections" | i18n }}</th>
         <th bitCell class="tw-w-3/5" *ngIf="showGroups">{{ "groups" | i18n }}</th>
-        <th bitCell class="tw-w-min tw-text-right">
+        <th bitCell class="tw-w-12 tw-text-right">
           <button
             [disabled]="disabled || isEmpty"
             [bitMenuTriggerFor]="headerMenu"
