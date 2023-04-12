@@ -127,8 +127,8 @@ export class BrowserApi {
     return Promise.resolve(chrome.extension.getViews({ type: "popup" }).length > 0);
   }
 
-  static createNewTab(url: string, active = true, openerTab?: chrome.tabs.Tab) {
-    chrome.tabs.create({ url: url, active: active, openerTabId: openerTab?.id });
+  static createNewTab(url: string, active = true) {
+    chrome.tabs.create({ url: url, active: active });
   }
 
   static openBitwardenExtensionTab(
@@ -136,15 +136,18 @@ export class BrowserApi {
     active = true,
     openerTab?: chrome.tabs.Tab
   ) {
-    if (relativeUrl.includes("uilocation=tab")) {
-      this.createNewTab(relativeUrl, active, openerTab);
+    if (relativeUrl.includes("uilocation=tab") && typeof openerTab === "undefined") {
+      this.createNewTab(relativeUrl, active);
       return;
     }
 
     const fullUrl = chrome.extension.getURL(relativeUrl);
     const parsedUrl = new URL(fullUrl);
     parsedUrl.searchParams.set("uilocation", "tab");
-    this.createNewTab(parsedUrl.toString(), active, openerTab);
+    if (typeof openerTab?.id === "number") {
+      parsedUrl.searchParams.set("openerTabId", openerTab.id.toString());
+    }
+    this.createNewTab(parsedUrl.toString(), active);
   }
 
   static async closeBitwardenExtensionTab() {
@@ -160,11 +163,14 @@ export class BrowserApi {
     }
 
     const tabToClose = tabs[tabs.length - 1];
-    chrome.tabs.remove(tabToClose.id);
-
-    if (tabToClose.openerTabId) {
-      this.focusTab(tabToClose.openerTabId);
-    }
+    chrome.tabs.remove(tabToClose.id, () => {
+      const parsedUrl = new URL(tabToClose.url);
+      const openerTabId = parsedUrl.searchParams.get("openerTabId");
+      if (openerTabId) {
+        const parsedOpenerTabId = parseInt(openerTabId);
+        isNaN(parsedOpenerTabId) || this.focusTab(parsedOpenerTabId);
+      }
+    });
   }
 
   static messageListener(
