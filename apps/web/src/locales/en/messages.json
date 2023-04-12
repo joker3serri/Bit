@@ -5926,7 +5926,7 @@
     "description": "Title for creating a new project."
   },
   "addNewProject": {
-    "message": "+ New project",
+    "message": "New project",
     "description": "Title for creating a new project."
   },
   "softDeleteSecretWarning": {
