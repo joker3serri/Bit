@@ -100,7 +100,7 @@ export default class RuntimeBackground {
         await this.main.openPopup();
         break;
       case "promptForLogin":
-        BrowserApi.openBitwardenExtensionTab("popup/index.html", true);
+        BrowserApi.openBitwardenExtensionTab("popup/index.html", true, sender.tab);
         break;
       case "openAddEditCipher": {
         const addEditCipherUrl =
@@ -108,7 +108,7 @@ export default class RuntimeBackground {
             ? "popup/index.html#/edit-cipher"
             : "popup/index.html#/edit-cipher?cipherId=" + msg.data.cipherId;
 
-        BrowserApi.openBitwardenExtensionTab(addEditCipherUrl, true);
+        BrowserApi.openBitwardenExtensionTab(addEditCipherUrl, true, sender.tab);
         break;
       }
       case "closeTab":
