@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
@@ -33,6 +34,13 @@ export class VaultCipherRowComponent {
 
   protected CipherType = CipherType;
 
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  @HostBinding("class")
+  get classes() {
+    return [].concat(this.disabled ? [] : ["tw-cursor-pointer"]);
+  }
+
   protected get showTotpCopyButton() {
     return (
       (this.cipher.login?.hasTotp ?? false) &&
@@ -42,6 +50,14 @@ export class VaultCipherRowComponent {
 
   protected get showFixOldAttachments() {
     return this.cipher.hasOldAttachments && this.cipher.organizationId == null;
+  }
+
+  @HostListener("click")
+  protected click() {
+    this.router.navigate([], {
+      queryParams: { cipherId: this.cipher.id },
+      queryParamsHandling: "merge",
+    });
   }
 
   protected copy(field: "username" | "password" | "totp") {

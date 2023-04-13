@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
@@ -30,6 +31,13 @@ export class VaultCollectionRowComponent {
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  @HostBinding("class")
+  get classes() {
+    return [].concat(this.disabled ? [] : ["tw-cursor-pointer"]);
+  }
+
   get collectionGroups() {
     if (!(this.collection instanceof CollectionAdminView)) {
       return [];
@@ -40,6 +48,14 @@ export class VaultCollectionRowComponent {
 
   get organization() {
     return this.organizations.find((o) => o.id === this.collection.organizationId);
+  }
+
+  @HostListener("click")
+  protected click() {
+    this.router.navigate([], {
+      queryParams: { collectionId: this.collection.id },
+      queryParamsHandling: "merge",
+    });
   }
 
   protected edit() {
