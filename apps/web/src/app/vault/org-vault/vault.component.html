@@ -44,8 +44,9 @@
         [showOwner]="false"
         [showCollections]="filter.type !== undefined"
         [showGroups]="
-          (filter.type === undefined && filter.collectionId === undefined) ||
-          filter.collectionId !== undefined
+          organization?.useGroups &&
+          ((filter.type === undefined && filter.collectionId === undefined) ||
+            filter.collectionId !== undefined)
         "
         [showPremiumFeatures]="organization?.useTotp"
         [showBulkMove]="false"

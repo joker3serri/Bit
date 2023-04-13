@@ -65,6 +65,10 @@ export class VaultItemsComponent {
   protected dataSource = new TableDataSource<VaultItem>();
   protected selection = new SelectionModel<VaultItem>(true, [], true);
 
+  get showExtraColumn() {
+    return this.showCollections || this.showGroups || this.showOwner;
+  }
+
   get isAllSelected() {
     return this.editableItems
       .slice(0, MaxSelectionCount)
