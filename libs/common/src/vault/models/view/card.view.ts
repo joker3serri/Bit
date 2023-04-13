@@ -81,4 +81,28 @@ export class CardView extends ItemView {
   static fromJSON(obj: Partial<Jsonify<CardView>>): CardView {
     return Object.assign(new CardView(), obj);
   }
+
+  static cardBrandPatterns(): Map<string, string> {
+    return new Map<string, string>([
+      ["4", "Visa"],
+      ["5", "Mastercard"],
+      ["34", "Amex"],
+      ["37", "Amex"],
+      ["6011", "Discover"],
+      ["65", "Discover"],
+      ["36", "Diners Club"],
+      ["38", "Diners Club"],
+      ["300-305", "Diners Club"],
+      ["3528-3589", "JCB"],
+      ["62", "UnionPay"],
+      ["60", "RuPay"],
+      ["61", "RuPay"],
+      ["6", "Maestro"],
+      ["7", "Maestro"],
+      ["50", "Maestro"],
+      ["56-58", "Maestro"],
+      ["63", "Maestro"],
+      ["67", "Maestro"],
+    ]);
+  }
 }

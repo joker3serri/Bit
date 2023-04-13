@@ -163,6 +163,7 @@
                 class="monospaced"
                 type="{{ showCardNumber ? 'text' : 'password' }}"
                 name="Card.Number"
+                (input)="onCardNumberChange($event.target.value)"
                 [(ngModel)]="cipher.card.number"
                 appInputVerbatim
                 [readonly]="!cipher.edit && editMode"
