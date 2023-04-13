@@ -6,7 +6,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organization-user-status-type";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { Utils } from "@bitwarden/common/misc/utils";
