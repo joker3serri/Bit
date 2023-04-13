@@ -105,7 +105,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     );
   }
 
-  static safariVersion(win: Window & typeof globalThis): string {
+  static safariVersion(): string {
     return navigator.userAgent.match("Version/([0-9.]*)")?.[1];
   }
 
@@ -118,9 +118,9 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
       return false;
     }
 
-    const version = BrowserPlatformUtilsService.safariVersion(window);
-    const parts = version.split(".").map((v) => Number(v));
-    return parts?.[0] < 18 || (parts?.[0] == 16 && parts?.[1] == 0);
+    const version = BrowserPlatformUtilsService.safariVersion();
+    const parts = version?.split(".")?.map((v) => Number(v));
+    return parts?.[0] < 16 || (parts?.[0] === 16 && parts?.[1] === 0);
   }
 
   isSafari(): boolean {
