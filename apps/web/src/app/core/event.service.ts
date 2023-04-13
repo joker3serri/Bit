@@ -557,7 +557,7 @@ export class EventService {
     const a = this.makeAnchor(shortId);
     a.setAttribute(
       "href",
-      "#/organizations/" + ev.organizationId + "/manage/policies?policyId=" + ev.policyId
+      "#/organizations/" + ev.organizationId + "/settings/policies?policyId=" + ev.policyId
     );
     return a.outerHTML;
   }
