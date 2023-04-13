@@ -389,6 +389,37 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     firstSetup$
       .pipe(
+        switchMap(() => combineLatest([this.route.queryParams, organization$, allCiphers$])),
+        switchMap(async ([qParams, organization, allCiphers$]) => {
+          const cipherId = qParams.viewEvents;
+          if (!cipherId) {
+            return;
+          }
+          let cipher: CipherView;
+          if (
+            // Handle users with implicit collection access since they use the admin endpoint
+            organization.useEvents &&
+            (cipher = allCiphers$.find((c) => c.id === cipherId)) != null
+          ) {
+            this.viewEvents(cipher);
+          } else {
+            this.platformUtilsService.showToast(
+              "error",
+              this.i18nService.t("errorOccurred"),
+              this.i18nService.t("unknownCipher")
+            );
+            this.router.navigate([], {
+              queryParams: { viewEvents: null },
+              queryParamsHandling: "merge",
+            });
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
+    firstSetup$
+      .pipe(
         switchMap(() => this.refresh$),
         tap(() => (this.refreshing = true)),
         switchMap(() =>

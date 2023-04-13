@@ -487,12 +487,7 @@ export class EventService {
     const a = this.makeAnchor(shortId);
     a.setAttribute(
       "href",
-      "#/organizations/" +
-        ev.organizationId +
-        "/vault?search=" +
-        shortId +
-        "&viewEvents=" +
-        ev.cipherId
+      `#/organizations/${ev.organizationId}/vault?search=${shortId}&viewEvents=${ev.cipherId}&type=all`
     );
     return a.outerHTML;
   }
