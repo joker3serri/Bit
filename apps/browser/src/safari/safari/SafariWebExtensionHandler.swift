@@ -8,6 +8,11 @@ let ServiceNameBiometric = ServiceName + "_biometric"
 
 class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
 
+    override init() {
+        super.init();
+        NSApplication.shared.setActivationPolicy(.accessory)
+    }
+
 	func beginRequest(with context: NSExtensionContext) {
         let item = context.inputItems[0] as! NSExtensionItem
         let message = item.userInfo?[SFExtensionMessageKey] as AnyObject?
@@ -54,7 +59,7 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
             guard let data = blobData else {
                 return
             }
-            NSApplication.shared.setActivationPolicy(.accessory)
+            
             let panel = NSSavePanel()
             panel.canCreateDirectories = true
             panel.nameFieldStringValue = dlMsg.fileName
