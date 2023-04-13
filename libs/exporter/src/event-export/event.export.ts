@@ -1,4 +1,4 @@
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { EventType } from "@bitwarden/common/enums";
 import { EventView } from "@bitwarden/common/models/view/event.view";
 
 export class EventExport {

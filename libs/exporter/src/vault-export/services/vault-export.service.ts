@@ -9,7 +9,7 @@ import { Collection } from "@bitwarden/common/admin-console/models/domain/collec
 import { CollectionDetailsResponse } from "@bitwarden/common/admin-console/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
-import { KdfType } from "@bitwarden/common/enums/kdfType";
+import { KdfType } from "@bitwarden/common/enums";
 import { Utils } from "@bitwarden/common/misc/utils";
 import {
   CipherWithIdExport,
