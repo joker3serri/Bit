@@ -92,7 +92,7 @@ jobs:
         with:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
-          node-version: '16'
+          node-version: '18'
 
       - name: Install node-gyp
         run: |
@@ -166,7 +166,7 @@ jobs:
         with:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
-          node-version: '16'
+          node-version: '18'
 
       - name: Install node-gyp
         run: |
