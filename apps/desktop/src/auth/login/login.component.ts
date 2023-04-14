@@ -1,3 +1,5 @@
+import * as os from "os";
+
 import { Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -89,6 +91,10 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     super.onSuccessfulLogin = () => {
       return syncService.fullSync(true);
     };
+
+
+
+    console.log(os.release());
   }
 
   async ngOnInit() {
