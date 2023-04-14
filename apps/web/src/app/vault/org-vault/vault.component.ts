@@ -395,12 +395,8 @@ export class VaultComponent implements OnInit, OnDestroy {
           if (!cipherId) {
             return;
           }
-          let cipher: CipherView;
-          if (
-            // Handle users with implicit collection access since they use the admin endpoint
-            organization.useEvents &&
-            (cipher = allCiphers$.find((c) => c.id === cipherId)) != null
-          ) {
+          const cipher = allCiphers$.find((c) => c.id === cipherId);
+          if (organization.useEvents && cipher != undefined) {
             this.viewEvents(cipher);
           } else {
             this.platformUtilsService.showToast(
