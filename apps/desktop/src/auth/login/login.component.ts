@@ -40,6 +40,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
 
   private deferFocus: boolean = null;
   protected oldOs = false;
+  protected deprecated = false;
 
   get loggedEmail() {
     return this.formGroup.value.email;
@@ -99,6 +100,9 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
         const majorVersion = parseInt(release.split(".")[0], 10);
 
         this.oldOs = majorVersion < 10;
+        if (new Date() > new Date("2023-05-05")) {
+          this.deprecated = true;
+        }
       } catch (e) {
         this.logService.error(e);
       }

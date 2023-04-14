@@ -27,6 +27,7 @@ const BroadcasterSubscriptionId = "LockComponent";
 export class LockComponent extends BaseLockComponent {
   private deferFocus: boolean = null;
   protected oldOs = false;
+  protected deprecated = false;
 
   constructor(
     router: Router,
@@ -67,6 +68,9 @@ export class LockComponent extends BaseLockComponent {
         const majorVersion = parseInt(release.split(".")[0], 10);
 
         this.oldOs = majorVersion < 10;
+        if (new Date() > new Date("2023-05-05")) {
+          this.deprecated = true;
+        }
       } catch (e) {
         this.logService.error(e);
       }
