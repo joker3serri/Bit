@@ -39,7 +39,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
   showingModal = false;
 
   private deferFocus: boolean = null;
-  oldOs = false;
+  protected oldOs = false;
 
   get loggedEmail() {
     return this.formGroup.value.email;
