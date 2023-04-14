@@ -22,6 +22,7 @@ describe("Browser Utils Service", () => {
     afterEach(() => {
       window.matchMedia = undefined;
       (window as any).chrome = undefined;
+      (BrowserPlatformUtilsService as any).deviceCache = null;
     });
 
     it("should detect chrome", () => {
@@ -95,6 +96,10 @@ describe("Safari Height Fix", () => {
     Object.defineProperty(navigator, "userAgent", {
       value: originalUserAgent,
     });
+  });
+
+  afterEach(() => {
+    (BrowserPlatformUtilsService as any).deviceCache = null;
   });
 
   it("should apply fix for safari 15.6", () => {
