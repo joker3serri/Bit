@@ -2,11 +2,6 @@ import { EventView } from "../models/view/event.view";
 
 export const EXPORT_FORMATS = ["csv", "json", "encrypted_json"] as const;
 export type ExportFormat = (typeof EXPORT_FORMATS)[number];
-
-export function isSupportedExportFormat(format: string): format is ExportFormat {
-  return EXPORT_FORMATS.includes(format as ExportFormat);
-}
-
 export abstract class ExportService {
   getExport: (format?: ExportFormat, organizationId?: string) => Promise<string>;
   getPasswordProtectedExport: (password: string, organizationId?: string) => Promise<string>;

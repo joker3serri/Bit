@@ -4,7 +4,6 @@ import * as inquirer from "inquirer";
 import {
   ExportFormat,
   ExportService,
-  isSupportedExportFormat,
   EXPORT_FORMATS,
 } from "@bitwarden/common/abstractions/export.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -28,7 +27,7 @@ export class ExportCommand {
     }
 
     const format = options.format ?? "csv";
-    if (!isSupportedExportFormat(format)) {
+    if (!this.isSupportedExportFormat(format)) {
       return Response.badRequest(
         `'${format}' is not a supported export format. Supported formats: ${EXPORT_FORMATS.join(
           ", "
@@ -105,5 +104,9 @@ export class ExportCommand {
       return answer.password as string;
     }
     return null;
+  }
+
+  private isSupportedExportFormat(format: string): format is ExportFormat {
+    return EXPORT_FORMATS.includes(format as ExportFormat);
   }
 }
