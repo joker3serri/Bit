@@ -39,6 +39,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
   showingModal = false;
 
   private deferFocus: boolean = null;
+  oldOs = false;
 
   get loggedEmail() {
     return this.formGroup.value.email;
@@ -92,9 +93,16 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
       return syncService.fullSync(true);
     };
 
+    if (process.platform === "win32") {
+      try {
+        const release = os.release();
+        const majorVersion = parseInt(release.split(".")[0], 10);
 
-
-    console.log(os.release());
+        this.oldOs = majorVersion < 10;
+      } catch (e) {
+        this.logService.error(e);
+      }
+    }
   }
 
   async ngOnInit() {
