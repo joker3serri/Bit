@@ -2,9 +2,9 @@ import { BehaviorSubject } from "rxjs";
 
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { StorageOptions } from "@bitwarden/common/models/domain/storage-options";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { StateService as BaseStateService } from "@bitwarden/common/services/state.service";
 
-import { browserSession, sessionSync } from "../decorators/session-sync-observable";
 import { Account } from "../models/account";
 import { BrowserComponentState } from "../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../models/browserGroupingsComponentState";
@@ -12,24 +12,24 @@ import { BrowserSendComponentState } from "../models/browserSendComponentState";
 
 import { BrowserStateService as StateServiceAbstraction } from "./abstractions/browser-state.service";
 
-@browserSession
+// @browserSession
 export class BrowserStateService
   extends BaseStateService<GlobalState, Account>
   implements StateServiceAbstraction
 {
-  @sessionSync({
-    initializer: Account.fromJSON as any, // TODO: Remove this any when all any types are removed from Account
-    initializeAs: "record",
-  })
+  // @sessionSync({
+  //   initializer: Account.fromJSON as any, // TODO: Remove this any when all any types are removed from Account
+  //   initializeAs: "record",
+  // })
   protected accountsSubject: BehaviorSubject<{ [userId: string]: Account }>;
-  @sessionSync({ initializer: (s: string) => s })
+  // @sessionSync({ initializer: (s: string) => s })
   protected activeAccountSubject: BehaviorSubject<string>;
-  @sessionSync({ initializer: (b: boolean) => b })
+  // @sessionSync({ initializer: (b: boolean) => b })
   protected activeAccountUnlockedSubject: BehaviorSubject<boolean>;
-  @sessionSync({
-    initializer: Account.fromJSON as any, // TODO: Remove this any when all any types are removed from Account
-    initializeAs: "record",
-  })
+  // @sessionSync({
+  //   initializer: Account.fromJSON as any, // TODO: Remove this any when all any types are removed from Account
+  //   initializeAs: "record",
+  // })
   protected accountDiskCache: BehaviorSubject<Record<string, Account>>;
 
   protected accountDeserializer = Account.fromJSON;
@@ -131,5 +131,39 @@ export class BrowserStateService
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
+  }
+
+  override async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
+    const key = await super.getCryptoMasterKey(options);
+    if (key == null) {
+      return null;
+    }
+
+    // Chrome will only send back { keyB64: string }
+    // so we need to make sure it has the prototype
+    return SymmetricCryptoKey.fromJSON(key);
+  }
+
+  override async getDecryptedCryptoSymmetricKey(
+    options?: StorageOptions
+  ): Promise<SymmetricCryptoKey> {
+    const key = await super.getDecryptedCryptoSymmetricKey(options);
+    if (key == null) {
+      return null;
+    }
+
+    // Chrome will only send back { keyB64: string }
+    // so we need to make sure it has the prototype
+    return SymmetricCryptoKey.fromJSON(key);
+  }
+
+  override async setLastActive(value: number, options?: StorageOptions): Promise<void> {
+    const activeUserId = options?.userId ?? (await this.getActiveUserIdFromStorage());
+    await this.memoryStorageService.save(`lastActive__${activeUserId}`, value);
+  }
+
+  override async getLastActive(options?: StorageOptions): Promise<number> {
+    const activeUserId = options?.userId ?? (await this.getActiveUserIdFromStorage());
+    return this.memoryStorageService.get<number>(`lastActive__${activeUserId}`);
   }
 }

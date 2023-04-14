@@ -1,5 +1,3 @@
-import { PolicyService as AbstractPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-
 import {
   CachedServices,
   factory,
@@ -23,9 +21,9 @@ export type PolicyServiceInitOptions = PolicyServiceFactoryOptions &
   OrganizationServiceInitOptions;
 
 export function policyServiceFactory(
-  cache: { policyService?: AbstractPolicyService } & CachedServices,
+  cache: { policyService?: BrowserPolicyService } & CachedServices,
   opts: PolicyServiceInitOptions
-): Promise<AbstractPolicyService> {
+): Promise<BrowserPolicyService> {
   return factory(
     cache,
     "policyService",

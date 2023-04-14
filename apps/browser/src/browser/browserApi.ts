@@ -163,7 +163,7 @@ export class BrowserApi {
     chrome.tabs.remove(tabToClose.id);
 
     if (tabToClose.openerTabId) {
-      this.focusTab(tabToClose.openerTabId);
+      this.focusSpecifiedTab(tabToClose.openerTabId);
     }
   }
 
@@ -183,7 +183,55 @@ export class BrowserApi {
     return chrome.runtime.sendMessage(message);
   }
 
-  static async focusTab(tabId: number) {
+  static sendMessageWithResponse<TResponse>(
+    subscriber: string,
+    args: Record<string, unknown> = {}
+  ): Promise<TResponse> {
+    const message = Object.assign({}, { command: subscriber }, args);
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(message, (response) => {
+        resolve(response);
+      });
+    });
+  }
+
+  static receiveMessage<T>(
+    subscriber: string,
+    callback: (message: any, sender: chrome.runtime.MessageSender) => Promise<T>
+  ) {
+    chrome.runtime.onMessage.addListener((message: any, sender, sendResponse) => {
+      if (message.command === subscriber) {
+        // In firefox you are expected to return a Promise,
+        // but in chrome you should use the sendResponse callback
+        // and return true so that chrome knows to keep the callback
+        // alive.
+        if (BrowserPlatformUtilsService.isFirefox()) {
+          return callback(message, sender);
+        } else {
+          callback(message, sender).then((r) => sendResponse(r));
+          return true;
+        }
+      }
+    });
+  }
+
+  static async closeLoginTab() {
+    const tabs = await BrowserApi.tabsQuery({
+      active: true,
+      title: "Bitwarden",
+      windowType: "normal",
+      currentWindow: true,
+    });
+
+    if (tabs.length === 0) {
+      return;
+    }
+
+    const tabToClose = tabs[tabs.length - 1].id;
+    chrome.tabs.remove(tabToClose);
+  }
+
+  static async focusSpecifiedTab(tabId: number) {
     chrome.tabs.update(tabId, { active: true, highlighted: true });
   }
 

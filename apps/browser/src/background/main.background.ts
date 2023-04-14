@@ -1,7 +1,6 @@
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/abstractions/appId.service";
-import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
@@ -22,8 +21,6 @@ import {
 } from "@bitwarden/common/abstractions/storage.service";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/abstractions/system.service";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/abstractions/totp.service";
-import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/abstractions/userVerification/userVerification-api.service.abstraction";
-import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/collection.service";
@@ -32,7 +29,6 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { CollectionService } from "@bitwarden/common/admin-console/services/collection.service";
-import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -42,14 +38,11 @@ import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
-import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
-import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { AvatarUpdateService } from "@bitwarden/common/services/account/avatar-update.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
-import { AuditService } from "@bitwarden/common/services/audit.service";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
@@ -70,10 +63,6 @@ import {
   PasswordGenerationService,
   PasswordGenerationServiceAbstraction,
 } from "@bitwarden/common/tools/generator/password";
-import {
-  UsernameGenerationService,
-  UsernameGenerationServiceAbstraction,
-} from "@bitwarden/common/tools/generator/username";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { InternalSendService as InternalSendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
@@ -81,13 +70,11 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
-import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 
 import { BrowserOrganizationService } from "../admin-console/services/browser-organization.service";
@@ -106,6 +93,7 @@ import { flagEnabled } from "../flags";
 import { UpdateBadge } from "../listeners/update-badge";
 import { Account } from "../models/account";
 import { BrowserStateService as StateServiceAbstraction } from "../services/abstractions/browser-state.service";
+import BrowserApiMemoryStorageService from "../services/browser-api-memory-storage.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserI18nService } from "../services/browser-i18n.service";
 import { BrowserSendService } from "../services/browser-send.service";
@@ -126,6 +114,7 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
+import { listenForStorageServiceProxyCommands } from "./storage-service-proxy.background";
 import WebRequestBackground from "./webRequest.background";
 
 export default class MainBackground {
@@ -153,7 +142,6 @@ export default class MainBackground {
   totpService: TotpServiceAbstraction;
   autofillService: AutofillServiceAbstraction;
   containerService: ContainerService;
-  auditService: AuditServiceAbstraction;
   authService: AuthServiceAbstraction;
   exportService: ExportServiceAbstraction;
   searchService: SearchServiceAbstraction;
@@ -170,16 +158,12 @@ export default class MainBackground {
   organizationService: InternalOrganizationServiceAbstraction;
   providerService: ProviderServiceAbstraction;
   keyConnectorService: KeyConnectorServiceAbstraction;
-  userVerificationService: UserVerificationServiceAbstraction;
   twoFactorService: TwoFactorServiceAbstraction;
   vaultFilterService: VaultFilterService;
-  usernameGenerationService: UsernameGenerationServiceAbstraction;
   encryptService: EncryptService;
   folderApiService: FolderApiServiceAbstraction;
   policyApiService: PolicyApiServiceAbstraction;
   sendApiService: SendApiServiceAbstraction;
-  userVerificationApiService: UserVerificationApiServiceAbstraction;
-  syncNotifierService: SyncNotifierServiceAbstraction;
   avatarUpdateService: AvatarUpdateServiceAbstraction;
   mainContextMenuHandler: MainContextMenuHandler;
   cipherContextMenuHandler: CipherContextMenuHandler;
@@ -230,13 +214,18 @@ export default class MainBackground {
     this.cryptoFunctionService = new WebCryptoFunctionService(window);
     this.storageService = new BrowserLocalStorageService();
     this.secureStorageService = new BrowserLocalStorageService();
-    this.memoryStorageService =
-      BrowserApi.manifestVersion === 3
-        ? new LocalBackedSessionStorageService(
-            new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
-            new KeyGenerationService(this.cryptoFunctionService)
-          )
-        : new MemoryStorageService();
+    let sessionStorage: AbstractStorageService;
+    if (BrowserApi.manifestVersion === 3) {
+      sessionStorage = new BrowserApiMemoryStorageService();
+    } else {
+      sessionStorage = new MemoryStorageService();
+      listenForStorageServiceProxyCommands(sessionStorage);
+    }
+    this.memoryStorageService = new LocalBackedSessionStorageService(
+      new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
+      new KeyGenerationService(this.cryptoFunctionService),
+      sessionStorage
+    );
     this.stateMigrationService = new StateMigrationService(
       this.storageService,
       this.secureStorageService,
@@ -327,14 +316,8 @@ export default class MainBackground {
       this.i18nService,
       this.stateService
     );
-    this.syncNotifierService = new SyncNotifierService();
     this.organizationService = new BrowserOrganizationService(this.stateService);
     this.policyService = new BrowserPolicyService(this.stateService, this.organizationService);
-    this.policyApiService = new PolicyApiService(
-      this.policyService,
-      this.apiService,
-      this.stateService
-    );
     this.keyConnectorService = new KeyConnectorService(
       this.stateService,
       this.cryptoService,
@@ -460,7 +443,6 @@ export default class MainBackground {
       this.logService,
       this.settingsService
     );
-    this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
     this.exportService = new ExportService(
       this.folderService,
       this.cipherService,
@@ -479,14 +461,6 @@ export default class MainBackground {
       this.stateService,
       this.authService,
       this.messagingService
-    );
-
-    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
-
-    this.userVerificationService = new UserVerificationService(
-      this.cryptoService,
-      this.i18nService,
-      this.userVerificationApiService
     );
 
     const systemUtilsServiceReloadCallback = () => {
@@ -588,12 +562,6 @@ export default class MainBackground {
       this.platformUtilsService,
       this.cipherService,
       this.authService
-    );
-
-    this.usernameGenerationService = new UsernameGenerationService(
-      this.cryptoService,
-      this.stateService,
-      this.apiService
     );
 
     this.avatarUpdateService = new AvatarUpdateService(this.apiService, this.stateService);
@@ -722,7 +690,8 @@ export default class MainBackground {
       BrowserApi.sendMessage("updateBadge");
     }
     await this.refreshBadge();
-    await this.mainContextMenuHandler.noAccess();
+    await this.mainContextMenuHandler?.noAccess();
+    await this.reseedStorage();
     this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
     await this.systemService.startProcessReload(this.authService);

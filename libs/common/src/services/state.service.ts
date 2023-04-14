@@ -131,21 +131,19 @@ export class StateService<
   }
 
   async initAccountState() {
-    if (this.isRecoveredSession) {
-      return;
-    }
-
     await this.updateState(async (state) => {
-      state.authenticatedAccounts =
-        (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? [];
-      for (const i in state.authenticatedAccounts) {
-        if (i != null) {
-          await this.syncAccountFromDisk(state.authenticatedAccounts[i]);
+      if (!this.isRecoveredSession) {
+        state.authenticatedAccounts =
+          (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? [];
+        for (const i in state.authenticatedAccounts) {
+          if (i != null) {
+            await this.syncAccountFromDisk(state.authenticatedAccounts[i]);
+          }
         }
-      }
-      const storedActiveUser = await this.storageService.get<string>(keys.activeUserId);
-      if (storedActiveUser != null) {
-        state.activeUserId = storedActiveUser;
+        const storedActiveUser = await this.storageService.get<string>(keys.activeUserId);
+        if (storedActiveUser != null) {
+          state.activeUserId = storedActiveUser;
+        }
       }
       await this.pushAccounts();
       this.activeAccountSubject.next(state.activeUserId);
@@ -2908,7 +2906,7 @@ function withPrototypeForArrayMembers<T>(
         return originalResult.then((result) => {
           if (result == null) {
             return null;
-          } else if (!(result instanceof Array)) {
+          } else if (!(result instanceof Array || Array.isArray(result))) {
             throw new Error(
               `Attempted to retrieve non array type from state as an array for method ${String(
                 propertyKey

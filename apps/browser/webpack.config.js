@@ -114,7 +114,8 @@ const plugins = [
   }),
   new AngularWebpackPlugin({
     tsConfigPath: "tsconfig.json",
-    entryModule: "src/popup/app.module#AppModule",
+    // TODO: This change can be removed before merging
+    entryModule: "src/popup/in-app-app.module#InPopupAppModule",
     sourceMap: true,
   }),
   new CleanWebpackPlugin({

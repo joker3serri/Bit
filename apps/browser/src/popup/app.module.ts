@@ -18,6 +18,7 @@ import { BitwardenToastModule } from "@bitwarden/angular/components/toastr.compo
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
+import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 
 import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
@@ -61,7 +62,8 @@ import { PopOutComponent } from "./components/pop-out.component";
 import { PrivateModeWarningComponent } from "./components/private-mode-warning.component";
 import { SetPinComponent } from "./components/set-pin.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
-import { ServicesModule } from "./services/services.module";
+import { DebounceNavigationService } from "./services/debounceNavigationService";
+import { InitService } from "./services/init.service";
 import { AboutComponent } from "./settings/about.component";
 import { AutofillComponent } from "./settings/autofill.component";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
@@ -95,7 +97,7 @@ import { TabsComponent } from "./tabs.component";
     OverlayModule,
     ReactiveFormsModule,
     ScrollingModule,
-    ServicesModule,
+    JslibServicesModule,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -154,7 +156,6 @@ import { TabsComponent } from "./tabs.component";
     HelpAndFeedbackComponent,
     AutofillComponent,
   ],
-  providers: [CurrencyPipe, DatePipe],
-  bootstrap: [AppComponent],
+  providers: [CurrencyPipe, DatePipe, InitService, DebounceNavigationService],
 })
 export class AppModule {}
