@@ -162,13 +162,10 @@
 
     <ng-container *ngIf="oldOs">
       <app-callout type="warning" class="os-deprecated" *ngIf="!deprecated">
-        The operating system you are using will no longer be supported after the 2023.5.0 release.
-        Upgrade to a supported operating system. Continuing without updating your operating system
-        may result in unexpected behavior or security risks.
+        {{ "windows8SoonDeprecated" | i18n }}
       </app-callout>
       <app-callout type="warning" class="os-deprecated" *ngIf="deprecated">
-        The operating system you are using is no longer supported. Continuing without updating your
-        operating system may result in unexpected behavior.
+        {{ "windows8Deprecated" | i18n }}
       </app-callout>
     </ng-container>
   </form>
