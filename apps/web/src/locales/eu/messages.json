@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Datuak behar bezala inportatu dira."
   },
+  "importSuccessNumberOfItems": {
+    "message": "A total of $AMOUNT$ items were imported.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Data successfully exported"
   },
@@ -2018,6 +2027,9 @@
   },
   "cancelSubscription": {
     "message": "Harpidetza ezeztatu"
+  },
+  "subscriptionExpiration": {
+    "message": "Subscription expiration"
   },
   "subscriptionCanceled": {
     "message": "Harpidetza ezeztatu da."
@@ -4852,6 +4864,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Erakundeko politika batek edo gehiagok kutxa gotorra esportatzea galarazten dute."
   },
+  "activateAutofill": {
+    "message": "Activate auto-fill"
+  },
+  "activateAutofillPolicyDesc": {
+    "message": "Activate the auto-fill on page load setting on the browser extension for all existing and new members."
+  },
+  "experimentalFeature": {
+    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Learn more about auto-fill"
+  },
   "selectType": {
     "message": "Aukeratu SSO mota"
   },
@@ -5626,9 +5650,6 @@
   "reporting": {
     "message": "Informatzen"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Erabiltzaile kopurua"
   },
@@ -5844,9 +5865,40 @@
     "message": "View service account",
     "description": "Action to view the details of a service account."
   },
+  "deleteServiceAccountDialogMessage": {
+    "message": "Deleting service account $SERVICE_ACCOUNT$ is permanent and irreversible.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "Deleting service accounts is permanent and irreversible."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "Delete $COUNT$ service accounts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "Service account deleted"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "Service accounts deleted"
+  },
   "searchServiceAccounts": {
     "message": "Search service accounts",
     "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Edit service account",
+    "description": "Title for editing a service account."
   },
   "addProject": {
     "message": "Add project",
@@ -5904,6 +5956,10 @@
   "serviceAccountCreated": {
     "message": "Service account created",
     "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "Service account updated",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
     "message": "Idatzi edo aukeratu proiektu edo sekretuak",
@@ -5992,8 +6048,8 @@
     "message": "Access tokens",
     "description": "Title for the section displaying access tokens."
   },
-  "createAccessToken": {
-    "message": "Create access token",
+  "newAccessToken": {
+    "message": "New access token",
     "description": "Button label for creating a new access token."
   },
   "expires": {
@@ -6455,7 +6511,7 @@
     "message": "Change KDF settings"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour. We recommend exporting your vault before changing your encryption settings to prevent data loss."
+    "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
   "secretsManagerBeta": {
     "message": "Secrets Manager Beta"
@@ -6569,6 +6625,27 @@
   "secretsManagerEnable": {
     "message": "Enable Secrets Manager Beta"
   },
+  "saPeopleWarningTitle": {
+    "message": "Access tokens still available"
+  },
+  "saPeopleWarningMessage": {
+    "message": "Removing people from a service account does not remove the access tokens they created. For security best practice, it is recommended to revoke access tokens created by people removed from a service account."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Remove access to this project"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "This action will remove your access to the project."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Remove access to this service account"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "This action will remove your access to the service account."
+  },
+  "removeAccess": {
+    "message": "Remove access"
+  },
   "checkForBreaches": {
     "message": "Check known data breaches for this password"
   },
@@ -6604,5 +6681,8 @@
   },
   "dismiss": {
     "message": "Dismiss"
+  },
+  "notAvailableForFreeOrganization": {
+    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
   }
 }

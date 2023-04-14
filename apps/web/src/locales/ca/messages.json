@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Les dades s'han importat amb èxit"
   },
+  "importSuccessNumberOfItems": {
+    "message": "A total of $AMOUNT$ items were imported.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Les dades s'han exportat correctament"
   },
@@ -2018,6 +2027,9 @@
   },
   "cancelSubscription": {
     "message": "Cancel·la la subscripció"
+  },
+  "subscriptionExpiration": {
+    "message": "Caducitat de la subscripció"
   },
   "subscriptionCanceled": {
     "message": "S'ha cancel·lat la subscripció."
@@ -4852,6 +4864,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Una o més polítiques d'organització us impedeixen exportar la vostra caixa forta."
   },
+  "activateAutofill": {
+    "message": "Activa l'emplenament automàtic"
+  },
+  "activateAutofillPolicyDesc": {
+    "message": "Activate the auto-fill on page load setting on the browser extension for all existing and new members."
+  },
+  "experimentalFeature": {
+    "message": "Els llocs web compromesos o no fiables poden aprofitar l'emplenament automàtic en carregar de la pàgina."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Més informació sobre l'emplenament automàtic"
+  },
   "selectType": {
     "message": "Selecciona el tipus d'SSO"
   },
@@ -5626,9 +5650,6 @@
   "reporting": {
     "message": "Informes"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Nombre d'usuaris"
   },
@@ -5844,9 +5865,40 @@
     "message": "Veure el compte de servei",
     "description": "Action to view the details of a service account."
   },
+  "deleteServiceAccountDialogMessage": {
+    "message": "La supressió del compte de servei $SERVICE_ACCOUNT$ és permanent i irreversible.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "La supressió de comptes de servei és permanent i irreversible."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "Suprimeix $COUNT$ comptes de servei",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "S'ha suprimit el compte de servei"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "S'han suprimit els comptes de servei"
+  },
   "searchServiceAccounts": {
     "message": "Cerca els comptes de servei",
     "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Edita el compte de servei",
+    "description": "Title for editing a service account."
   },
   "addProject": {
     "message": "Afig un projecte",
@@ -5904,6 +5956,10 @@
   "serviceAccountCreated": {
     "message": "Compte de servei creat",
     "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "Compte de servei actualitzat",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
     "message": "Escriu o selecciona projectes o secrets",
@@ -5992,8 +6048,8 @@
     "message": "Tokens d'accès",
     "description": "Title for the section displaying access tokens."
   },
-  "createAccessToken": {
-    "message": "Crea un token d'accés",
+  "newAccessToken": {
+    "message": "Token nou d'accés",
     "description": "Button label for creating a new access token."
   },
   "expires": {
@@ -6455,7 +6511,7 @@
     "message": "Canvia la configuració de KDF"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Si continueu, es tancarà la sessió de la vostra sessió actual i us demanarà que torneu a iniciar sessió. Les sessions actives en altres dispositius poden continuar romanent actives fins a una hora. Us recomanem que exporteu la vostra caixa forta abans de canviar la configuració d'encriptació per evitar la pèrdua de dades."
+    "message": "Si continueu, tancareu totes les sessions actives. Haureu de tornar a iniciar sessió i completar la configuració d'inici de sessió en dos passos. Recomanem que exporteu la caixa forta abans de canviar la configuració d'encriptació per evitar la pèrdua de dades."
   },
   "secretsManagerBeta": {
     "message": "Administrador de secrets Beta"
@@ -6569,6 +6625,27 @@
   "secretsManagerEnable": {
     "message": "Habilita l'administrador de secrets Beta"
   },
+  "saPeopleWarningTitle": {
+    "message": "Els tokens d'accés encara estan disponibles"
+  },
+  "saPeopleWarningMessage": {
+    "message": "La supressió de persones d'un compte de servei no suprimeix els testimonis d'accés que han creat. Per a les millors pràctiques de seguretat, es recomana revocar els testimonis d'accés creats per persones suprimides d'un compte de servei."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Suprimeix l'accés a aquest projecte"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "Aquesta acció suprimirà l'accés al projecte."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Suprimeix l'accés a aquest compte de servei"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "Aquesta acció suprimirà l'accés al compte de servei."
+  },
+  "removeAccess": {
+    "message": "Suprimeix l'accés"
+  },
   "checkForBreaches": {
     "message": "Comproveu les filtracions de dades conegudes per a aquesta contrasenya"
   },
@@ -6604,5 +6681,8 @@
   },
   "dismiss": {
     "message": "Descarta"
+  },
+  "notAvailableForFreeOrganization": {
+    "message": "Aquesta funció no està disponible per a organitzacions gratuïtes. Poseu-vos en contacte amb el propietari de la vostra organització per actualitzar.-la."
   }
 }

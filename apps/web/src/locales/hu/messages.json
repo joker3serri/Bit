@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Az adatok sikeresen importálásra kerültek a széfbe."
   },
+  "importSuccessNumberOfItems": {
+    "message": "A total of $AMOUNT$ items were imported.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Az adatok sikeresen exportálásra kerültek."
   },
@@ -2018,6 +2027,9 @@
   },
   "cancelSubscription": {
     "message": "Előfizetés megszüntetése"
+  },
+  "subscriptionExpiration": {
+    "message": "Előfizetés lejárat"
   },
   "subscriptionCanceled": {
     "message": "Az előfizetés törlésre került."
@@ -4852,6 +4864,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Egy vagy több szervezeti házirend tiltja a személyes széf exportálását."
   },
+  "activateAutofill": {
+    "message": "Automatikus kitöltés bekapcsolása"
+  },
+  "activateAutofillPolicyDesc": {
+    "message": "Activate the auto-fill on page load setting on the browser extension for all existing and new members."
+  },
+  "experimentalFeature": {
+    "message": "A veszélyeztetett vagy nem megbízható webhelyek kihasználhatják az oldal betöltéskor végrehajtott automatikus kitöltést."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "További információ az automatikus kitöltésről"
+  },
   "selectType": {
     "message": "SSO típus választás"
   },
@@ -5626,9 +5650,6 @@
   "reporting": {
     "message": "Jelentés"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Felhasználók száma"
   },
@@ -5844,9 +5865,40 @@
     "message": "Szolgáltatás fiók megtekintése",
     "description": "Action to view the details of a service account."
   },
+  "deleteServiceAccountDialogMessage": {
+    "message": "$SERVICE_ACCOUNT$ szolgáltatásfiók törlése végleges és visszafordíthatatlan.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "A szolgáltatásfiókok törlése végleges és visszafordíthatatlan."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "$COUNT$ szolgáltatásfiókok törlése",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "Service account deleted"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "A szolgáltatás fiókok törlésre kerültek."
+  },
   "searchServiceAccounts": {
     "message": "Szolgáltatás fiókok keresése",
     "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Szolgáltatás fiók szerkesztése",
+    "description": "Title for editing a service account."
   },
   "addProject": {
     "message": "Projekt hozzáadása",
@@ -5904,6 +5956,10 @@
   "serviceAccountCreated": {
     "message": "A szolgáltatás fiók létrejött.",
     "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "A szolgáltatás fiók frissítésre került.",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
     "message": "Gépeljük be vagy válasszunk projekteket vagy titkos kódokat",
@@ -5992,8 +6048,8 @@
     "message": "Vezérjelek elérése",
     "description": "Title for the section displaying access tokens."
   },
-  "createAccessToken": {
-    "message": "Elérési vezérjel létrehozása",
+  "newAccessToken": {
+    "message": "Új hozzáférési vezérjel",
     "description": "Button label for creating a new access token."
   },
   "expires": {
@@ -6455,7 +6511,7 @@
     "message": "KDF beállítások megváltoztatása"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "A továbblépéssel kijelentkeztetésre kerülünk az aktuális munkamenetből és újra be kell jelentkezni. A többi eszközön lévő aktív munkamenetek akár egy óráig is aktívak maradhatnak. Célszerű a titkosítási beállítások módosítása előtt a széf exportálása  az adatvesztés elkerülése érdekében."
+    "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
   "secretsManagerBeta": {
     "message": "Titkos kód kezelő béta"
@@ -6569,6 +6625,27 @@
   "secretsManagerEnable": {
     "message": "A Titkos kód kezelő engedélyezése"
   },
+  "saPeopleWarningTitle": {
+    "message": "Az eléréi vezérjel még minig elérhető."
+  },
+  "saPeopleWarningMessage": {
+    "message": "Az emberek szolgáltatásfiókból való eltávolítása nem távolítja el az általuk létrehozott elérési vezérjeleket. A legjobb biztonsági gyakorlat érdekében javasolt visszavonni a szolgáltatásfiókból eltávolított személyek által létrehozott elérési vezérjeleket."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "A projekt elérés visszavonása"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "Ez a művelet eltávolítja a projekt elérési lehetőségét."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "A fiók elérés visszavonása"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "Ez a művelet eltávolítja a fiók elérési lehetőségét."
+  },
+  "removeAccess": {
+    "message": "Hozzáférés eltávolítása"
+  },
   "checkForBreaches": {
     "message": "Az ehhez a jelszóhoz tartozó ismert adatvédelmi incidensek ellenőrzése"
   },
@@ -6604,5 +6681,8 @@
   },
   "dismiss": {
     "message": "Elvetés"
+  },
+  "notAvailableForFreeOrganization": {
+    "message": "Ez a funkció nem érhető el ingyenes szervezetek számára. Az áttéréshez a szervezet tulajdonosához kell fordulni."
   }
 }

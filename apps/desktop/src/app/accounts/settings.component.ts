@@ -9,13 +9,11 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
-import { DeviceType } from "@bitwarden/common/enums/deviceType";
-import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { StorageLocation } from "@bitwarden/common/enums/storageLocation";
-import { ThemeType } from "@bitwarden/common/enums/themeType";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { DeviceType, ThemeType, StorageLocation } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { Utils } from "@bitwarden/common/misc/utils";
 
