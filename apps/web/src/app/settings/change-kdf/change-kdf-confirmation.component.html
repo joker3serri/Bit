@@ -1,4 +1,4 @@
-<bit-dialog>
+<bit-dialog id="modal">
   <span bitDialogTitle>
     {{ "changeKdf" | i18n }}
   </span>
@@ -43,7 +43,13 @@
     <button bitButton buttonType="primary" type="submit" [loading]="loading" form="form">
       <span>{{ "changeKdf" | i18n }}</span>
     </button>
-    <button bitButton buttonType="secondary" type="button" data-dismiss="modal">
+    <button
+      bitButton
+      buttonType="secondary"
+      type="button"
+      bitDialogClose
+      [bit-dialog-close]="false"
+    >
       {{ "cancel" | i18n }}
     </button>
   </div>
