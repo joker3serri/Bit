@@ -100,7 +100,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
         const majorVersion = parseInt(release.split(".")[0], 10);
 
         this.oldOs = majorVersion < 10;
-        if (new Date() > new Date("2023-05-05")) {
+        if (new Date() > new Date("2023-05-31")) {
           this.deprecated = true;
         }
       } catch (e) {
