@@ -171,7 +171,7 @@ describe("ExportService", () => {
     );
   });
 
-  it("exports unecrypted user ciphers", async () => {
+  it("exports unencrypted user ciphers", async () => {
     cipherService.getAllDecrypted().resolves(UserCipherViews.slice(0, 1));
 
     const actual = await exportService.getExport("json");
@@ -187,7 +187,7 @@ describe("ExportService", () => {
     expectEqualCiphers(UserCipherDomains.slice(0, 1), actual);
   });
 
-  it("does not unecrypted export trashed user items", async () => {
+  it("does not unencrypted export trashed user items", async () => {
     cipherService.getAllDecrypted().resolves(UserCipherViews);
 
     const actual = await exportService.getExport("json");
