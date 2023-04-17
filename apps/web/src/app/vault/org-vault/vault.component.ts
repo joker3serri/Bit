@@ -822,10 +822,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
 
     if (field === "password" || field === "totp") {
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledHiddenFieldVisible,
-        cipher.id
-      );
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, cipher.id);
     }
   }
 
