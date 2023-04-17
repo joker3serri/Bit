@@ -1,20 +1,20 @@
 @import "variables.scss";
 
-html.browser_safari.safari_height_fix {
-  body {
-    height: 360px !important;
+html.browser_safari {
+  &.safari_height_fix {
+    body {
+      height: 360px !important;
 
-    &.body-xs {
-      height: 300px !important;
-    }
+      &.body-xs {
+        height: 300px !important;
+      }
 
-    &.body-full {
-      height: 100% !important;
+      &.body-full {
+        height: 100% !important;
+      }
     }
   }
-}
 
-html.browser_safari {
   header {
     .search .bwi {
       left: 20px;
