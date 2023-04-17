@@ -285,7 +285,7 @@ export class EffluxDatesComponent implements OnInit {
 
     // loop through each hour on a 12 hour system
     for (let h = 1; h <= 12; h++) {
-      // loop through each minute in the hour using the skip to incriment
+      // loop through each minute in the hour using the skip to increment
       for (let m = 0; m < 60; m += minuteIncrementer) {
         // init the final strings that will be added to the lists
         let hour = h.toString();
