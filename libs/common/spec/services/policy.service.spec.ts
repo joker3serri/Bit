@@ -403,7 +403,7 @@ describe("PolicyService", () => {
     status: OrganizationUserStatusType,
     managePolicies: boolean
   ) {
-    const organizationData = new OrganizationData({} as any);
+    const organizationData = new OrganizationData({} as any, {} as any);
     organizationData.id = id;
     organizationData.enabled = enabled;
     organizationData.usePolicies = usePolicies;

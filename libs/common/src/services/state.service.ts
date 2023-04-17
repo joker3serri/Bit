@@ -19,6 +19,7 @@ import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { ForceResetPasswordReason } from "../auth/models/domain/force-reset-password-reason";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { HtmlStorageLocation, KdfType, StorageLocation, ThemeType, UriMatchType } from "../enums";
+import { VaultTimeoutAction } from "../enums/vault-timeout-action.enum";
 import { StateFactory } from "../factories/stateFactory";
 import { Utils } from "../misc/utils";
 import { EventData } from "../models/data/event.data";
@@ -2578,7 +2579,10 @@ export class StateService<
       await this.storageService.remove(keys.tempAccountSettings);
     }
     account.settings.environmentUrls = environmentUrls;
-    if (account.settings.vaultTimeoutAction === "logOut" && account.settings.vaultTimeout != null) {
+    if (
+      account.settings.vaultTimeoutAction === VaultTimeoutAction.LogOut &&
+      account.settings.vaultTimeout != null
+    ) {
       account.tokens.accessToken = null;
       account.tokens.refreshToken = null;
       account.profile.apiKeyClientId = null;
@@ -2838,7 +2842,7 @@ export class StateService<
     const timeoutAction = await this.getVaultTimeoutAction({ userId: options?.userId });
     const timeout = await this.getVaultTimeout({ userId: options?.userId });
     const defaultOptions =
-      timeoutAction === "logOut" && timeout != null
+      timeoutAction === VaultTimeoutAction.LogOut && timeout != null
         ? await this.defaultInMemoryOptions()
         : await this.defaultOnDiskOptions();
     return this.reconcileOptions(options, defaultOptions);
