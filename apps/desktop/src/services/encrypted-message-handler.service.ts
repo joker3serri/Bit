@@ -19,7 +19,7 @@ import { CredentialUpdatePayload } from "../models/native-messaging/encrypted-me
 import { PasswordGeneratePayload } from "../models/native-messaging/encrypted-message-payloads/password-generate-payload";
 import { AccountStatusResponse } from "../models/native-messaging/encrypted-message-responses/account-status-response";
 import { CipherResponse } from "../models/native-messaging/encrypted-message-responses/cipher-response";
-import { EncyptedMessageResponse } from "../models/native-messaging/encrypted-message-responses/encrypted-message-response";
+import { EncryptedMessageResponse } from "../models/native-messaging/encrypted-message-responses/encrypted-message-response";
 import { FailureStatusResponse } from "../models/native-messaging/encrypted-message-responses/failure-status-response";
 import { GenerateResponse } from "../models/native-messaging/encrypted-message-responses/generate-response";
 import { SuccessStatusResponse } from "../models/native-messaging/encrypted-message-responses/success-status-response";
@@ -39,7 +39,7 @@ export class EncryptedMessageHandlerService {
 
   async responseDataForCommand(
     commandData: DecryptedCommandData
-  ): Promise<EncyptedMessageResponse> {
+  ): Promise<EncryptedMessageResponse> {
     const { command, payload } = commandData;
     switch (command) {
       case "bw-status": {
