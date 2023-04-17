@@ -15,7 +15,7 @@
       <ng-template body>
         <tr bitRow *ngFor="let detail of data.details">
           <td bitCell>{{ detail.name }}</td>
-          <td bitCell>{{ detail.description }}</td>
+          <td bitCell>{{ detail.description | i18n }}</td>
         </tr>
       </ng-template>
     </bit-table>

@@ -8,7 +8,7 @@ export interface BulkConfirmationDetails {
   details: BulkConfirmationStatus[];
 }
 
-export class BulkConfirmationStatus {
+export interface BulkConfirmationStatus {
   id: string;
   name: string;
   description: string;
