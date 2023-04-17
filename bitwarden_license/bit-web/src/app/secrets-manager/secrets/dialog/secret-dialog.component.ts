@@ -119,7 +119,7 @@ export class SecretDialogComponent implements OnInit {
       });
 
     const addNewProject = new ProjectListView();
-    addNewProject.name = this.i18nService.t("addNewProject");
+    addNewProject.name = this.i18nService.t("newProject");
     addNewProject.id = this.newProjectGuid;
     this.projects.unshift(addNewProject);
   }
