@@ -135,10 +135,10 @@ export class EffluxDatesComponent implements OnInit {
         }
       default: {
         const now = new Date();
-        const miliseconds = now.setTime(
+        const milliseconds = now.setTime(
           now.getTime() + (this.selectedDeletionDatePreset.value as number) * 60 * 60 * 1000
         );
-        return new Date(miliseconds).toString();
+        return new Date(milliseconds).toString();
       }
     }
   }
@@ -166,10 +166,10 @@ export class EffluxDatesComponent implements OnInit {
         }
       default: {
         const now = new Date();
-        const miliseconds = now.setTime(
+        const milliseconds = now.setTime(
           now.getTime() + (this.selectedExpirationDatePreset.value as number) * 60 * 60 * 1000
         );
-        return new Date(miliseconds).toString();
+        return new Date(milliseconds).toString();
       }
     }
   }
