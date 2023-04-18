@@ -6461,7 +6461,7 @@
     "message": "License paid features help"
   },
   "selfHostGracePeriodHelp": {
-    "message": "After your subscription expires, you have 60-days to apply an updated license file to your organization. Grace period ends $GRACE_PERIOD_END_DATE$.",
+    "message": "After your subscription expires, you have 60 days to apply an updated license file to your organization. Grace period ends $GRACE_PERIOD_END_DATE$.",
     "placeholders": {
       "GRACE_PERIOD_END_DATE": {
         "content": "$1",
