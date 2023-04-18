@@ -4,7 +4,11 @@ import * as inquirer from "inquirer";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { ExportFormat, VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
+import {
+  ExportFormat,
+  EXPORT_FORMATS,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/exporter/vault-export";
 
 import { Response } from "../models/response";
 import { CliUtils } from "../utils";
@@ -26,6 +30,13 @@ export class ExportCommand {
     }
 
     const format = options.format ?? "csv";
+    if (!this.isSupportedExportFormat(format)) {
+      return Response.badRequest(
+        `'${format}' is not a supported export format. Supported formats: ${EXPORT_FORMATS.join(
+          ", "
+        )}.`
+      );
+    }
 
     if (options.organizationid != null && !Utils.isGuid(options.organizationid)) {
       return Response.error("`" + options.organizationid + "` is not a GUID.");
@@ -96,5 +107,9 @@ export class ExportCommand {
       return answer.password as string;
     }
     return null;
+  }
+
+  private isSupportedExportFormat(format: string): format is ExportFormat {
+    return EXPORT_FORMATS.includes(format as ExportFormat);
   }
 }
