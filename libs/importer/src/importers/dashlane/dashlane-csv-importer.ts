@@ -27,7 +27,7 @@ const _mappedCredentialsColumns = new Set([
   "category",
 ]);
 
-const _mappedPersonalInfoAsIdentiyColumns = new Set([
+const _mappedPersonalInfoAsIdentityColumns = new Set([
   "type",
   "title",
   "first_name",
@@ -249,7 +249,7 @@ export class DashlaneCsvImporter extends BaseImporter implements Importer {
         break;
     }
 
-    this.importUnmappedFields(cipher, row, _mappedPersonalInfoAsIdentiyColumns);
+    this.importUnmappedFields(cipher, row, _mappedPersonalInfoAsIdentityColumns);
   }
 
   parseSecureNoteRecords(cipher: CipherView, row: SecureNoteRecord) {
