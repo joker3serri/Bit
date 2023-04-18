@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Az adatok sikeresen importálásra kerültek a széfbe."
   },
+  "importSuccessNumberOfItems": {
+    "message": "Összesen $AMOUNT$ elem lett importálva.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Az adatok sikeresen exportálásra kerültek."
   },
@@ -3116,6 +3125,9 @@
   "inviteAcceptedDesc": {
     "message": "A szervezet elérhető, amikor az adminisztrátor jóváhagyja a tagságot.  Amint ez megtörténik, értesítő email érkezik."
   },
+  "inviteInitAcceptedDesc": {
+    "message": "Mostantól elérhető ez a szervezet."
+  },
   "inviteAcceptFailed": {
     "message": "A meghívás nem fogadható el. Kérjük fel a szervezet adminisztrátorát új meghívó küldésére."
   },
@@ -4858,7 +4870,7 @@
   "activateAutofill": {
     "message": "Automatikus kitöltés bekapcsolása"
   },
-  "activateAutofillDesc": {
+  "activateAutofillPolicyDesc": {
     "message": "Bekapcsolja az automatikus kitöltést az oldalbetöltési beállításokkal a böngésző bővítményben minden meglévő és új tag esetében."
   },
   "experimentalFeature": {
@@ -6674,6 +6686,6 @@
     "message": "Elvetés"
   },
   "notAvailableForFreeOrganization": {
-    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+    "message": "Ez a funkció nem érhető el ingyenes szervezetek számára. Az áttéréshez a szervezet tulajdonosához kell fordulni."
   }
 }

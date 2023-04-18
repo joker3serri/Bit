@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Tietojen tuonti onnistui"
   },
+  "importSuccessNumberOfItems": {
+    "message": "Tuotiin kaikkiaan $AMOUNT$ kohdetta.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Tietojen vienti onnistui"
   },
@@ -3116,6 +3125,9 @@
   "inviteAcceptedDesc": {
     "message": "Saat organisaation käyttöoikeudet ylläpitäjän vahvistettua jäsentyytesi. Saat vahvistuksesta ilmoituksen sähköpostitse."
   },
+  "inviteInitAcceptedDesc": {
+    "message": "You can now access this organization."
+  },
   "inviteAcceptFailed": {
     "message": "Kutsua ei voitu hyväksyä. Pyydä organisaation ylläpitäjää lähettämään uusi kutsu."
   },
@@ -4858,7 +4870,7 @@
   "activateAutofill": {
     "message": "Aktivoi automaattinen täyttö"
   },
-  "activateAutofillDesc": {
+  "activateAutofillPolicyDesc": {
     "message": "Aktivoi selainlaajennuksen \"Automaattinen täyttö sivun avautuessa\" -asetus kaikille nykyisille ja uusille jäsenille."
   },
   "experimentalFeature": {
@@ -6674,6 +6686,6 @@
     "message": "Hylkää"
   },
   "notAvailableForFreeOrganization": {
-    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+    "message": "Ominaisuus ei ole käytettävissä ilmaisella organisaatiotilauksella. Ole tilauspäivityksestä yhteydessä organisaatiosi omistajaan."
   }
 }

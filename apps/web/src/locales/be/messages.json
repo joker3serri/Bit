@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Даныя былі паспяхова імпартаваны ў ваша сховішча."
   },
+  "importSuccessNumberOfItems": {
+    "message": "A total of $AMOUNT$ items were imported.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Дадзеныя паспяхова экспартаваныя"
   },
@@ -2020,7 +2029,7 @@
     "message": "Скасаваць падпіску"
   },
   "subscriptionExpiration": {
-    "message": "Тэрмін дзеяння падпіскі"
+    "message": "Subscription expiration"
   },
   "subscriptionCanceled": {
     "message": "Падпіска была скасавана."
@@ -3115,6 +3124,9 @@
   },
   "inviteAcceptedDesc": {
     "message": "Вы можаце атрымаць доступ да гэтай арганізацыі адразу пасля таго, як будзе пацверджаны ваш удзел. Мы апавясцім вас, калі гэта адбудзецца."
+  },
+  "inviteInitAcceptedDesc": {
+    "message": "You can now access this organization."
   },
   "inviteAcceptFailed": {
     "message": "Немагчыма прыняць запрашэнне. Папрасіце адміністратара арганізацыі адправіць яго яшчэ раз."
@@ -4858,8 +4870,8 @@
   "activateAutofill": {
     "message": "Актываваць аўтазапаўненне"
   },
-  "activateAutofillDesc": {
-    "message": "Актываваць аўтазапаўненне падчас загрузкі старонкі ў наладах пашырэння браўзера для ўсіх існуючых і новых удзельнікаў."
+  "activateAutofillPolicyDesc": {
+    "message": "Activate the auto-fill on page load setting on the browser extension for all existing and new members."
   },
   "experimentalFeature": {
     "message": "Скампраметаваныя або ненадзейныя вэб-сайты могуць задзейнічаць функцыю аўтазапаўнення падчас загрузкі старонкі."

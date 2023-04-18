@@ -303,13 +303,14 @@ export default class MainBackground {
       this.apiService,
       this.fileUploadService
     );
+    this.searchService = new SearchService(this.logService, this.i18nService);
+
     this.cipherService = new CipherService(
       this.cryptoService,
       this.settingsService,
       this.apiService,
       this.i18nService,
-      () => this.searchService,
-      this.logService,
+      this.searchService,
       this.stateService,
       this.encryptService,
       this.cipherFileUploadService
@@ -326,7 +327,6 @@ export default class MainBackground {
       this.i18nService,
       this.stateService
     );
-    this.searchService = new SearchService(this.cipherService, this.logService, this.i18nService);
     this.syncNotifierService = new SyncNotifierService();
     this.organizationService = new BrowserOrganizationService(this.stateService);
     this.policyService = new BrowserPolicyService(this.stateService, this.organizationService);
@@ -353,6 +353,11 @@ export default class MainBackground {
       this.collectionService,
       this.policyService
     );
+    this.passwordGenerationService = new PasswordGenerationService(
+      this.cryptoService,
+      this.policyService,
+      this.stateService
+    );
 
     this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
 
@@ -378,7 +383,9 @@ export default class MainBackground {
       this.stateService,
       this.twoFactorService,
       this.i18nService,
-      this.encryptService
+      this.encryptService,
+      this.passwordGenerationService,
+      this.policyService
     );
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
@@ -446,11 +453,6 @@ export default class MainBackground {
       this.organizationService,
       this.eventUploadService
     );
-    this.passwordGenerationService = new PasswordGenerationService(
-      this.cryptoService,
-      this.policyService,
-      this.stateService
-    );
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
     this.autofillService = new AutofillService(
       this.cipherService,
@@ -466,7 +468,8 @@ export default class MainBackground {
       this.cipherService,
       this.apiService,
       this.cryptoService,
-      this.cryptoFunctionService
+      this.cryptoFunctionService,
+      this.stateService
     );
     this.notificationsService = new NotificationsService(
       this.syncService,

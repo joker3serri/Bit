@@ -1,4 +1,4 @@
-import { Injector, LOCALE_ID, NgModule } from "@angular/core";
+import { LOCALE_ID, NgModule } from "@angular/core";
 
 import { AvatarUpdateService as AccountUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/abstractions/anonymousHub.service";
@@ -23,8 +23,8 @@ import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/comm
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
 import {
-  OrgDomainServiceAbstraction,
   OrgDomainInternalServiceAbstraction,
+  OrgDomainServiceAbstraction,
 } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -232,6 +232,9 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         TwoFactorServiceAbstraction,
         I18nServiceAbstraction,
+        EncryptService,
+        PasswordGenerationServiceAbstraction,
+        PolicyServiceAbstraction,
       ],
     },
     {
@@ -251,8 +254,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         settingsService: SettingsServiceAbstraction,
         apiService: ApiServiceAbstraction,
         i18nService: I18nServiceAbstraction,
-        injector: Injector,
-        logService: LogService,
+        searchService: SearchServiceAbstraction,
         stateService: StateServiceAbstraction,
         encryptService: EncryptService,
         fileUploadService: CipherFileUploadServiceAbstraction
@@ -262,8 +264,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
           settingsService,
           apiService,
           i18nService,
-          () => injector.get(SearchServiceAbstraction),
-          logService,
+          searchService,
           stateService,
           encryptService,
           fileUploadService
@@ -273,8 +274,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         SettingsServiceAbstraction,
         ApiServiceAbstraction,
         I18nServiceAbstraction,
-        Injector, // TODO: Get rid of this circular dependency!
-        LogService,
+        SearchServiceAbstraction,
         StateServiceAbstraction,
         EncryptService,
         CipherFileUploadServiceAbstraction,
@@ -472,12 +472,13 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         ApiServiceAbstraction,
         CryptoServiceAbstraction,
         CryptoFunctionServiceAbstraction,
+        StateServiceAbstraction,
       ],
     },
     {
       provide: SearchServiceAbstraction,
       useClass: SearchService,
-      deps: [CipherServiceAbstraction, LogService, I18nServiceAbstraction],
+      deps: [LogService, I18nServiceAbstraction],
     },
     {
       provide: NotificationsServiceAbstraction,

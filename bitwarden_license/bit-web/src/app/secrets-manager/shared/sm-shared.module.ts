@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { MultiSelectModule, SearchModule } from "@bitwarden/components";
+import { MultiSelectModule, SearchModule, NoItemsModule } from "@bitwarden/components";
 import { CoreOrganizationModule } from "@bitwarden/web-vault/app/admin-console/organizations/core";
 import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
@@ -10,7 +10,6 @@ import { AccessRemovalDialogComponent } from "./access-policies/dialogs/access-r
 import { BulkStatusDialogComponent } from "./dialogs/bulk-status-dialog.component";
 import { HeaderComponent } from "./header.component";
 import { NewMenuComponent } from "./new-menu.component";
-import { NoItemsComponent } from "./no-items.component";
 import { ProjectsListComponent } from "./projects-list.component";
 import { SecretsListComponent } from "./secrets-list.component";
 
@@ -20,15 +19,17 @@ import { SecretsListComponent } from "./secrets-list.component";
     ProductSwitcherModule,
     MultiSelectModule,
     CoreOrganizationModule,
+    NoItemsModule,
     SearchModule,
   ],
   exports: [
+    SharedModule,
+    NoItemsModule,
     AccessRemovalDialogComponent,
     AccessSelectorComponent,
     BulkStatusDialogComponent,
     HeaderComponent,
     NewMenuComponent,
-    NoItemsComponent,
     ProjectsListComponent,
     SearchModule,
     SecretsListComponent,
@@ -39,7 +40,6 @@ import { SecretsListComponent } from "./secrets-list.component";
     BulkStatusDialogComponent,
     HeaderComponent,
     NewMenuComponent,
-    NoItemsComponent,
     ProjectsListComponent,
     SecretsListComponent,
     AccessSelectorComponent,

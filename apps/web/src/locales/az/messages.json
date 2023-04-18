@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Verilənlər anbarınıza uğurla idxal edildi."
   },
+  "importSuccessNumberOfItems": {
+    "message": "Cəmi $AMOUNT$ element daxilə köçürüldü.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Məlumat uğurla xaricə köçürüldü"
   },
@@ -3116,6 +3125,9 @@
   "inviteAcceptedDesc": {
     "message": "Administrator üzvlüyünüzü təsdiqlədikdən sonra bu təşkilata müraciət edə bilərsiniz. Bu baş verəndə sizə bir e-poçt göndərəcəyik."
   },
+  "inviteInitAcceptedDesc": {
+    "message": "You can now access this organization."
+  },
   "inviteAcceptFailed": {
     "message": "Dəvət qəbul edilə bilmədi. Təşkilat adminindən yeni bir dəvət göndərməsini xahiş edin."
   },
@@ -4858,8 +4870,8 @@
   "activateAutofill": {
     "message": "Avto-doldurmanı aktivləşdir"
   },
-  "activateAutofillDesc": {
-    "message": "Bütün mövcud və yeni üzvlər üçün brauzer genişləndirməsindəki səhifə yükləmə tənzimləmələri ilə avto-doldurmanı aktivləşdirin."
+  "activateAutofillPolicyDesc": {
+    "message": "Bütün mövcud və yeni üzvlər üçün brauzer genişləndirməsindəki səhifə yüklənəndə avto-doldurmanı tənzimləməsini aktivləşdirin."
   },
   "experimentalFeature": {
     "message": "Təhlükəli və ya güvənilməyən veb saytlar, səhifə yüklənərkən avto-doldurmanı istifadə edə bilər."
@@ -6674,6 +6686,6 @@
     "message": "Rədd et"
   },
   "notAvailableForFreeOrganization": {
-    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+    "message": "Bu özəllik ödənişsiz təşkilatlar üçün əlçatmazdır. Yüksəltmək üçün təşkilatınızın sahibi ilə əlaqə saxlayın."
   }
 }

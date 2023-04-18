@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Данните са внесени успешно в трезора ви."
   },
+  "importSuccessNumberOfItems": {
+    "message": "Общо внесени елементи: $AMOUNT$.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Данните са изнесени успешно"
   },
@@ -3116,6 +3125,9 @@
   "inviteAcceptedDesc": {
     "message": "Ще имате достъп до организацията, след като администраторът ѝ потвърди членството ви. Ще ви изпратим електронно писмо, когато това се случи."
   },
+  "inviteInitAcceptedDesc": {
+    "message": "You can now access this organization."
+  },
   "inviteAcceptFailed": {
     "message": "Поканата не може да бъде приета. Помолете администратора на организацията да ви прати нова."
   },
@@ -4858,7 +4870,7 @@
   "activateAutofill": {
     "message": "Включване на автоматичното попълване"
   },
-  "activateAutofillDesc": {
+  "activateAutofillPolicyDesc": {
     "message": "Включване на автоматичното попълване при зареждане на страница в браузърното разширение на всички текущи и бъдещи членове."
   },
   "experimentalFeature": {
@@ -6674,6 +6686,6 @@
     "message": "Dismiss"
   },
   "notAvailableForFreeOrganization": {
-    "message": "This feature is not available for free organizations. Contact your organization owner to upgrade."
+    "message": "Тази функционалност не е налична за организациите използващи безплатния план. Свържете се със собственика на организацията си, за да преминете към платен абонамент."
   }
 }
