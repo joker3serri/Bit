@@ -277,7 +277,7 @@ export class AuthService implements AuthServiceAbstraction {
     return this.cryptoService.makeKey(masterPassword, email, kdf, kdfConfig);
   }
 
-  async authResponsePushNotifiction(notification: AuthRequestPushNotification): Promise<any> {
+  async authResponsePushNotification(notification: AuthRequestPushNotification): Promise<any> {
     this.pushNotificationSubject.next(notification.id);
   }
 
