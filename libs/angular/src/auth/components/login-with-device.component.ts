@@ -74,7 +74,7 @@ export class LoginWithDeviceComponent
 
     //gets signalR push notification
     this.authService
-      .getPushNotifcationObs$()
+      .getPushNotificationObs$()
       .pipe(takeUntil(this.destroy$))
       .subscribe((id) => {
         this.confirmResponse(id);

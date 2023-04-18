@@ -43,5 +43,5 @@ export abstract class AuthService {
     key: string,
     requestApproved: boolean
   ) => Promise<AuthRequestResponse>;
-  getPushNotifcationObs$: () => Observable<any>;
+  getPushNotificationObs$: () => Observable<any>;
 }

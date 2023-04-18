@@ -281,7 +281,7 @@ export class AuthService implements AuthServiceAbstraction {
     this.pushNotificationSubject.next(notification.id);
   }
 
-  getPushNotifcationObs$(): Observable<any> {
+  getPushNotificationObs$(): Observable<any> {
     return this.pushNotificationSubject.asObservable();
   }
 
