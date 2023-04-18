@@ -14,10 +14,10 @@ import { ProviderService } from "@bitwarden/common/admin-console/abstractions/pr
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { EventSystemUser } from "@bitwarden/common/enums";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
-import { EventExportServiceAbstraction } from "@bitwarden/exporter/event-export";
 
 import { BaseEventsComponent } from "../../../common/base.events.component";
 import { EventService } from "../../../core";
+import { EventExportService } from "../../../tools/event-export";
 
 const EVENT_SYSTEM_USER_TO_TRANSLATION: Record<EventSystemUser, string> = {
   [EventSystemUser.SCIM]: null, // SCIM acronym not able to be translated so just display SCIM
@@ -41,7 +41,7 @@ export class EventsComponent extends BaseEventsComponent implements OnInit, OnDe
     private route: ActivatedRoute,
     eventService: EventService,
     i18nService: I18nService,
-    exportService: EventExportServiceAbstraction,
+    exportService: EventExportService,
     platformUtilsService: PlatformUtilsService,
     private router: Router,
     logService: LogService,

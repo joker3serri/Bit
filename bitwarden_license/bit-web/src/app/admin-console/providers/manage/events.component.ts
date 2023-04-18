@@ -9,9 +9,9 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
-import { EventExportServiceAbstraction } from "@bitwarden/exporter/event-export";
 import { BaseEventsComponent } from "@bitwarden/web-vault/app/common/base.events.component";
 import { EventService } from "@bitwarden/web-vault/app/core";
+import { EventExportService } from "@bitwarden/web-vault/app/tools/event-export";
 
 @Component({
   selector: "provider-events",
@@ -31,7 +31,7 @@ export class EventsComponent extends BaseEventsComponent implements OnInit {
     eventService: EventService,
     i18nService: I18nService,
     private providerService: ProviderService,
-    exportService: EventExportServiceAbstraction,
+    exportService: EventExportService,
     platformUtilsService: PlatformUtilsService,
     private router: Router,
     logService: LogService,

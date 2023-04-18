@@ -1,13 +1,15 @@
+import { Injectable } from "@angular/core";
 import * as papa from "papaparse";
 
 import { EventView } from "@bitwarden/common/models/view/event.view";
+import { ExportHelper } from "@bitwarden/exporter/export-helper";
 
-import { ExportHelper } from "../export-helper";
-
-import { EventExportServiceAbstraction } from "./event-export.service.abstraction";
 import { EventExport } from "./event.export";
 
-export class EventExportService implements EventExportServiceAbstraction {
+@Injectable({
+  providedIn: "root",
+})
+export class EventExportService {
   async getEventExport(events: EventView[]): Promise<string> {
     return papa.unparse(events.map((e) => new EventExport(e)));
   }
