@@ -22,7 +22,7 @@ enum BrowserPath {
 
 enum DateField {
   DeletionDate = "deletion",
-  ExpriationDate = "expiration",
+  ExpirationDate = "expiration",
 }
 
 // Value = hours
@@ -180,7 +180,7 @@ export class EffluxDatesComponent implements OnInit {
   }
 
   get safariExpirationTimePresetOptions() {
-    return this.safariTimePresetOptions(DateField.ExpriationDate);
+    return this.safariTimePresetOptions(DateField.ExpirationDate);
   }
 
   private get nextWeek(): Date {
@@ -333,7 +333,7 @@ export class EffluxDatesComponent implements OnInit {
 
     // determine if an unsupported value already exists on the send & add that to the top of the option list
     // example: if the Send was created with a different client
-    if (field === DateField.ExpriationDate && this.initialExpirationDate != null && this.editMode) {
+    if (field === DateField.ExpirationDate && this.initialExpirationDate != null && this.editMode) {
       const previousValue: TimeOption = {
         twelveHour: this.datePipe.transform(this.initialExpirationDate, "hh:mm a"),
         twentyFourHour: this.datePipe.transform(this.initialExpirationDate, "HH:mm"),
