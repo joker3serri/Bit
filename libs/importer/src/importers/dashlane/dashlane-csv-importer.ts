@@ -17,7 +17,7 @@ import {
   SecureNoteRecord,
 } from "./types/dashlane-csv-types";
 
-const _mappedCredentialsColums = new Set([
+const _mappedCredentialsColumns = new Set([
   "title",
   "note",
   "username",
@@ -123,7 +123,7 @@ export class DashlaneCsvImporter extends BaseImporter implements Importer {
     cipher.login.totp = row.otpSecret;
     cipher.login.uris = this.makeUriArray(row.url);
 
-    this.importUnmappedFields(cipher, row, _mappedCredentialsColums);
+    this.importUnmappedFields(cipher, row, _mappedCredentialsColumns);
   }
 
   parsePaymentRecord(cipher: CipherView, row: PaymentsRecord) {
