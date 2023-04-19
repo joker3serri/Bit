@@ -23,8 +23,8 @@ export class SelfHostedOrganizationSubscriptionView implements View {
     this._expirationWithGracePeriod =
       orgSub.expiration != null ? new Date(orgSub.expiration) : null;
     this._expirationWithoutGracePeriod =
-      orgSub.selfHostSubscriptionExpiration != null
-        ? new Date(orgSub.selfHostSubscriptionExpiration)
+      orgSub.expirationWithoutGracePeriod != null
+        ? new Date(orgSub.expirationWithoutGracePeriod)
         : null;
   }
 
