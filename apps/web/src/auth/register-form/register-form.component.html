@@ -100,7 +100,7 @@
         name="CheckBreach"
         formControlName="checkForBreaches"
       />
-      <bit-label> {{ "checkForBreaches" | i18n }}</bit-label>
+      <bit-label for="checkForBreaches"> {{ "checkForBreaches" | i18n }}</bit-label>
     </div>
     <div class="tw-mb-3 tw-flex tw-items-start" *ngIf="showTerms">
       <input
@@ -111,7 +111,7 @@
         formControlName="acceptPolicies"
       />
 
-      <bit-label>
+      <bit-label for="register-form_input_accept-policies">
         {{ "acceptPolicies" | i18n }}<br />
         <a href="https://bitwarden.com/terms/" target="_blank" rel="noopener">{{
           "termsOfService" | i18n
