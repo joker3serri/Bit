@@ -58,7 +58,6 @@ export class SecretDialogComponent implements OnInit {
 
   async ngOnInit() {
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
-      await this.loadProjects(false);
       await this.loadData();
     } else if (this.data.operation !== OperationType.Add) {
       this.dialogRef.close();
@@ -80,6 +79,9 @@ export class SecretDialogComponent implements OnInit {
   async loadData() {
     this.formGroup.disable();
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
+
+    await this.loadProjects(secret.write);
+
     this.formGroup.setValue({
       name: secret.name,
       value: secret.value,
@@ -90,7 +92,6 @@ export class SecretDialogComponent implements OnInit {
     this.loading = false;
 
     if (secret.write) {
-      this.projects = this.projects.filter((p) => p.write);
       this.formGroup.enable();
     }
   }
