@@ -1,6 +1,6 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { Observable, Subject, map } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -14,7 +14,7 @@ import { ProjectListView } from "../models/view/project-list.view";
 })
 export class ProjectsListComponent implements OnInit, OnDestroy {
   protected dataSource = new TableDataSource<ProjectListView>();
-  protected hasWriteAccessOnSelected = false;
+  protected hasWriteAccessOnSelected$ = new Observable<boolean>();
 
   @Input()
   get projects(): ProjectListView[] {
@@ -46,9 +46,9 @@ export class ProjectsListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((_) => {
-      this.hasWriteAccessOnSelected = this.selectedHasWriteAccess();
-    });
+    this.hasWriteAccessOnSelected$ = this.selection.changed.pipe(
+      map((_) => this.selectedHasWriteAccess())
+    );
   }
 
   ngOnDestroy(): void {

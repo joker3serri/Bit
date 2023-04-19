@@ -35,7 +35,7 @@
       <th bitCell bitSortable="revisionDate">{{ "lastEdited" | i18n }}</th>
       <th bitCell class="tw-w-0">
         <button
-          *ngIf="hasWriteAccessOnSelected"
+          *ngIf="hasWriteAccessOnSelected$ | async"
           type="button"
           bitIconButton="bwi-ellipsis-v"
           buttonType="main"
