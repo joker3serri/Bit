@@ -1,4 +1,4 @@
-import { Injector, LOCALE_ID, NgModule } from "@angular/core";
+import { LOCALE_ID, NgModule } from "@angular/core";
 
 import { AvatarUpdateService as AccountUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/abstractions/anonymousHub.service";
@@ -14,7 +14,6 @@ import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/abstractions/environment.service";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
-import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/file-upload/file-upload.service";
 import { FormValidationErrorsService as FormValidationErrorsServiceAbstraction } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
@@ -23,14 +22,12 @@ import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/comm
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
 import {
-  OrgDomainServiceAbstraction,
   OrgDomainInternalServiceAbstraction,
+  OrgDomainServiceAbstraction,
 } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
-import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendService as SendServiceAbstraction } from "@bitwarden/common/abstractions/send/send.service.abstraction";
 import { SettingsService as SettingsServiceAbstraction } from "@bitwarden/common/abstractions/settings.service";
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/abstractions/state.service";
 import { StateMigrationService as StateMigrationServiceAbstraction } from "@bitwarden/common/abstractions/stateMigration.service";
@@ -96,7 +93,6 @@ import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/servi
 import { EnvironmentService } from "@bitwarden/common/services/environment.service";
 import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
-import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/file-upload/file-upload.service";
 import { FormValidationErrorsService } from "@bitwarden/common/services/formValidationErrors.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
@@ -104,8 +100,6 @@ import { OrgDomainApiService } from "@bitwarden/common/services/organization-dom
 import { OrgDomainService } from "@bitwarden/common/services/organization-domain/org-domain.service";
 import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organization-user/organization-user.service.implementation";
 import { SearchService } from "@bitwarden/common/services/search.service";
-import { SendApiService } from "@bitwarden/common/services/send/send-api.service";
-import { SendService } from "@bitwarden/common/services/send/send.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
@@ -122,6 +116,10 @@ import {
   UsernameGenerationService,
   UsernameGenerationServiceAbstraction,
 } from "@bitwarden/common/tools/generator/username";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
+import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service";
+import { SendService as SendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
@@ -138,6 +136,10 @@ import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
+import {
+  VaultExportService,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/exporter/vault-export";
 
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { LockGuard } from "../auth/guards/lock.guard";
@@ -232,6 +234,9 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         TwoFactorServiceAbstraction,
         I18nServiceAbstraction,
+        EncryptService,
+        PasswordGenerationServiceAbstraction,
+        PolicyServiceAbstraction,
       ],
     },
     {
@@ -251,8 +256,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         settingsService: SettingsServiceAbstraction,
         apiService: ApiServiceAbstraction,
         i18nService: I18nServiceAbstraction,
-        injector: Injector,
-        logService: LogService,
+        searchService: SearchServiceAbstraction,
         stateService: StateServiceAbstraction,
         encryptService: EncryptService,
         fileUploadService: CipherFileUploadServiceAbstraction
@@ -262,8 +266,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
           settingsService,
           apiService,
           i18nService,
-          () => injector.get(SearchServiceAbstraction),
-          logService,
+          searchService,
           stateService,
           encryptService,
           fileUploadService
@@ -273,8 +276,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         SettingsServiceAbstraction,
         ApiServiceAbstraction,
         I18nServiceAbstraction,
-        Injector, // TODO: Get rid of this circular dependency!
-        LogService,
+        SearchServiceAbstraction,
         StateServiceAbstraction,
         EncryptService,
         CipherFileUploadServiceAbstraction,
@@ -464,20 +466,21 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       deps: [AbstractStorageService, SECURE_STORAGE, STATE_FACTORY],
     },
     {
-      provide: ExportServiceAbstraction,
-      useClass: ExportService,
+      provide: VaultExportServiceAbstraction,
+      useClass: VaultExportService,
       deps: [
         FolderServiceAbstraction,
         CipherServiceAbstraction,
         ApiServiceAbstraction,
         CryptoServiceAbstraction,
         CryptoFunctionServiceAbstraction,
+        StateServiceAbstraction,
       ],
     },
     {
       provide: SearchServiceAbstraction,
       useClass: SearchService,
-      deps: [CipherServiceAbstraction, LogService, I18nServiceAbstraction],
+      deps: [LogService, I18nServiceAbstraction],
     },
     {
       provide: NotificationsServiceAbstraction,
