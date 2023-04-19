@@ -82,27 +82,66 @@ export class CardView extends ItemView {
     return Object.assign(new CardView(), obj);
   }
 
-  static cardBrandPatterns(): Map<string, string> {
-    return new Map<string, string>([
-      ["4", "Visa"],
-      ["5", "Mastercard"],
-      ["34", "Amex"],
-      ["37", "Amex"],
-      ["6011", "Discover"],
-      ["65", "Discover"],
-      ["36", "Diners Club"],
-      ["38", "Diners Club"],
-      ["300-305", "Diners Club"],
-      ["3528-3589", "JCB"],
-      ["62", "UnionPay"],
-      ["60", "RuPay"],
-      ["61", "RuPay"],
-      ["6", "Maestro"],
-      ["7", "Maestro"],
-      ["50", "Maestro"],
-      ["56-58", "Maestro"],
-      ["63", "Maestro"],
-      ["67", "Maestro"],
-    ]);
+  // ref https://stackoverflow.com/a/5911300
+  get cardBrandByPatterns(): string {
+    if (this.number == null || typeof this.number !== "string" || this.number.trim() === "") {
+      return null;
+    }
+
+    // Visa
+    let re = new RegExp("^4");
+    if (this.number.match(re) != null) {
+      return "Visa";
+    }
+
+    // Mastercard
+    // Updated for Mastercard 2017 BINs expansion
+    if (
+      /^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/.test(
+        this.number
+      )
+    ) {
+      return "Mastercard";
+    }
+
+    // AMEX
+    re = new RegExp("^3[47]");
+    if (this.number.match(re) != null) {
+      return "Amex";
+    }
+
+    // Discover
+    re = new RegExp(
+      "^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)"
+    );
+    if (this.number.match(re) != null) {
+      return "Discover";
+    }
+
+    // Diners
+    re = new RegExp("^36");
+    if (this.number.match(re) != null) {
+      return "Diners Club";
+    }
+
+    // Diners - Carte Blanche
+    re = new RegExp("^30[0-5]");
+    if (this.number.match(re) != null) {
+      return "Diners Club";
+    }
+
+    // JCB
+    re = new RegExp("^35(2[89]|[3-8][0-9])");
+    if (this.number.match(re) != null) {
+      return "JCB";
+    }
+
+    // Visa Electron
+    re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
+    if (this.number.match(re) != null) {
+      return "Visa";
+    }
+
+    return null;
   }
 }

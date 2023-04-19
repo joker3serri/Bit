@@ -295,7 +295,7 @@ export abstract class OnePasswordCsvImporter extends BaseImporter implements Imp
       context.lowerProperty.includes("number")
     ) {
       context.cipher.card.number = context.importRecord[context.property];
-      context.cipher.card.brand = this.getCardBrand(context.cipher.card.number);
+      context.cipher.card.brand = context.cipher.card.cardBrandByPatterns;
       return true;
     }
     return false;

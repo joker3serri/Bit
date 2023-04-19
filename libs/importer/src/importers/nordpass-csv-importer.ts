@@ -66,7 +66,7 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
           cipher.card.cardholderName = this.getValueOrDefault(record.cardholdername);
           cipher.card.number = this.getValueOrDefault(record.cardnumber);
           cipher.card.code = this.getValueOrDefault(record.cvc);
-          cipher.card.brand = this.getCardBrand(cipher.card.number);
+          cipher.card.brand = cipher.card.cardBrandByPatterns;
           this.setCardExpiration(cipher, record.expirydate);
           break;
 

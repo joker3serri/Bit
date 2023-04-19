@@ -48,7 +48,7 @@ export class AvastJsonImporter extends BaseImporter implements Importer {
         cipher.card.cardholderName = this.getValueOrDefault(value.holderName);
         cipher.card.number = this.getValueOrDefault(value.cardNumber);
         cipher.card.code = this.getValueOrDefault(value.cvv);
-        cipher.card.brand = this.getCardBrand(cipher.card.number);
+        cipher.card.brand = cipher.card.cardBrandByPatterns;
         if (value.expirationDate != null) {
           if (value.expirationDate.month != null) {
             cipher.card.expMonth = value.expirationDate.month + "";
