@@ -365,21 +365,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCardNumberChange(cardNumberValue: string): void {
-    const cardBrandPatterns = CardView.cardBrandPatterns();
-
-    const matchingPattern = Array.from(cardBrandPatterns.keys()).find((pattern) => {
-      if (pattern.includes("-")) {
-        const [start, end] = pattern.split("-");
-        const num = Number(cardNumberValue.slice(0, end.length));
-        return num >= Number(start) && num <= Number(end);
-      }
-      return cardNumberValue.startsWith(pattern);
-    });
-
-    this.cipher.card.brand = matchingPattern
-      ? cardBrandPatterns.get(matchingPattern) || "Other"
-      : "Other";
+  onCardNumberChange(): void {
+    this.cipher.card.brand = this.cipher.card.cardBrandByPatterns;
   }
 
   getCardExpMonthDisplay() {
