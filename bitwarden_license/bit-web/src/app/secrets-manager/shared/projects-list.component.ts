@@ -1,6 +1,6 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { Observable, Subject, map } from "rxjs";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { map } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -12,10 +12,7 @@ import { ProjectListView } from "../models/view/project-list.view";
   selector: "sm-projects-list",
   templateUrl: "./projects-list.component.html",
 })
-export class ProjectsListComponent implements OnInit, OnDestroy {
-  protected dataSource = new TableDataSource<ProjectListView>();
-  protected hasWriteAccessOnSelected$ = new Observable<boolean>();
-
+export class ProjectsListComponent {
   @Input()
   get projects(): ProjectListView[] {
     return this._projects;
@@ -36,25 +33,16 @@ export class ProjectsListComponent implements OnInit, OnDestroy {
   @Output() deleteProjectEvent = new EventEmitter<ProjectListView[]>();
   @Output() newProjectEvent = new EventEmitter();
 
-  private destroy$: Subject<void> = new Subject<void>();
-
   selection = new SelectionModel<string>(true, []);
+  protected dataSource = new TableDataSource<ProjectListView>();
+  protected hasWriteAccessOnSelected$ = this.selection.changed.pipe(
+    map((_) => this.selectedHasWriteAccess())
+  );
 
   constructor(
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService
   ) {}
-
-  ngOnInit(): void {
-    this.hasWriteAccessOnSelected$ = this.selection.changed.pipe(
-      map((_) => this.selectedHasWriteAccess())
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
