@@ -22,10 +22,10 @@
   [providerName]="userOrg.providerName"
 ></app-org-subscription-hidden>
 
-<ng-container *ngIf="sub && firstLoaded">
+<ng-container *ngIf="subscription && firstLoaded">
   <dl>
     <dt>{{ "billingPlan" | i18n }}</dt>
-    <dd>{{ sub.plan.name }}</dd>
+    <dd>{{ subscription.planName }}</dd>
     <ng-container *ngIf="billingSyncSetUp">
       <dt>{{ "lastLicenseSync" | i18n }}</dt>
       <dd>
@@ -33,7 +33,9 @@
       </dd>
     </ng-container>
     <dt>
-      <span [ngClass]="{ 'tw-text-danger': isExpired }">{{ "subscriptionExpiration" | i18n }}</span>
+      <span [ngClass]="{ 'tw-text-danger': subscription.isExpired }">{{
+        "subscriptionExpiration" | i18n
+      }}</span>
       <a
         href="https://bitwarden.com/help/licensing-on-premise/#update-a-renewed-organization-license "
         target="_blank"
@@ -44,13 +46,16 @@
         <span class="sr-only">{{ "licensePaidFeaturesHelp" | i18n }}</span>
       </a>
     </dt>
-    <dd *ngIf="subscriptionExpiration" [ngClass]="{ 'tw-text-danger': isExpired }">
-      {{ subscriptionExpiration | date : "mediumDate" }}
-      <div *ngIf="hasGracePeriod" class="tw-text-muted">
-        {{ "selfHostGracePeriodHelp" | i18n : (gracePeriodExpiration | date : "mediumDate") }}
+    <dd *ngIf="subscription.hasExpiration" [ngClass]="{ 'tw-text-danger': subscription.isExpired }">
+      {{ subscription.expiration | date : "mediumDate" }}
+      <div *ngIf="subscription.hasSeparateGracePeriod" class="tw-text-muted">
+        {{
+          "selfHostGracePeriodHelp"
+            | i18n : (subscription.gracePeriodExpiration | date : "mediumDate")
+        }}
       </div>
     </dd>
-    <dd *ngIf="!subscriptionExpiration">{{ "neverExpires" | i18n }}</dd>
+    <dd *ngIf="!subscription.hasExpiration">{{ "neverExpires" | i18n }}</dd>
   </dl>
 
   <a

@@ -14,7 +14,7 @@ import { OrganizationConnectionType } from "@bitwarden/common/admin-console/enum
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationConnectionResponse } from "@bitwarden/common/admin-console/models/response/organization-connection.response";
 import { BillingSyncConfigApi } from "@bitwarden/common/billing/models/api/billing-sync-config.api";
-import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
+import { SelfHostedOrganizationSubscriptionView } from "@bitwarden/common/billing/models/view/self-hosted-organization-subscription.view";
 
 import {
   BillingSyncKeyComponent,
@@ -31,7 +31,7 @@ enum LicenseOptions {
   templateUrl: "organization-subscription-selfhost.component.html",
 })
 export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDestroy {
-  sub: OrganizationSubscriptionResponse;
+  subscription: SelfHostedOrganizationSubscriptionView;
   organizationId: string;
   userOrg: Organization;
 
@@ -102,7 +102,10 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     this.loading = true;
     this.userOrg = this.organizationService.get(this.organizationId);
     if (this.userOrg.canManageBilling) {
-      this.sub = await this.organizationApiService.getSubscription(this.organizationId);
+      const subscriptionResponse = await this.organizationApiService.getSubscription(
+        this.organizationId
+      );
+      this.subscription = new SelfHostedOrganizationSubscriptionView(subscriptionResponse);
     }
 
     this.loading = false;
@@ -157,25 +160,6 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
 
   get billingSyncSetUp() {
     return this.existingBillingSyncConnection?.id != null;
-  }
-
-  get isExpired() {
-    return (
-      this.subscriptionExpiration != null && new Date(this.subscriptionExpiration) < new Date()
-    );
-  }
-
-  get hasGracePeriod() {
-    // There is a known grace period if there are values for both expiration and subscription expiration
-    return this.sub?.expiration != null && this.sub?.selfHostSubscriptionExpiration != null;
-  }
-
-  get subscriptionExpiration() {
-    return this.sub.selfHostSubscriptionExpiration ?? this.sub.expiration;
-  }
-
-  get gracePeriodExpiration() {
-    return this.hasGracePeriod ? this.sub.expiration : null;
   }
 
   get updateMethod() {
