@@ -105,13 +105,13 @@
     <div class="tw-mb-3 tw-flex tw-items-start" *ngIf="showTerms">
       <input
         class="mt-1"
-        id="register-form_input_accept-policies"
+        id="register-form-input-accept-policies"
         bitCheckbox
         type="checkbox"
         formControlName="acceptPolicies"
       />
 
-      <bit-label for="register-form_input_accept-policies">
+      <bit-label for="register-form-input-accept-policies">
         {{ "acceptPolicies" | i18n }}<br />
         <a href="https://bitwarden.com/terms/" target="_blank" rel="noopener">{{
           "termsOfService" | i18n
