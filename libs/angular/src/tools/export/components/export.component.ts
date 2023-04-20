@@ -133,6 +133,7 @@ export class ExportComponent implements OnInit, OnDestroy {
         title: { key: "confirmVaultExport" },
         content:
           this.i18nService.t("encExportKeyWarningDesc") +
+          " " +
           this.i18nService.t("encExportAccountWarningDesc"),
         acceptButtonText: { key: "exportVault" },
         type: SimpleDialogType.WARNING,

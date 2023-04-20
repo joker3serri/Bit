@@ -15,7 +15,7 @@ import { DialogServiceAbstraction } from "./dialog.service.abstraction";
 import { SimpleDialogOptions } from "./simple-dialog-options";
 import { Translation } from "./translation";
 
-// This is a temporary base class for Dialogs. It is intended to be removed once the Component Library is adoped by each app.
+// This is a temporary base class for Dialogs. It is intended to be removed once the Component Library is adopted by each app.
 @Injectable()
 export abstract class DialogService extends Dialog implements DialogServiceAbstraction {
   constructor(
