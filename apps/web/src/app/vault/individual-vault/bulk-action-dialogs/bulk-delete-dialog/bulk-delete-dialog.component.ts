@@ -99,10 +99,11 @@ export class BulkDeleteDialogComponent {
   };
 
   private async deleteCiphers(): Promise<any> {
+    const orgAdmin = this.organization?.canEditAnyCollection;
     if (this.permanent) {
-      await this.cipherService.deleteManyWithServer(this.cipherIds);
+      await this.cipherService.deleteManyWithServer(this.cipherIds, orgAdmin);
     } else {
-      await this.cipherService.softDeleteManyWithServer(this.cipherIds);
+      await this.cipherService.softDeleteManyWithServer(this.cipherIds, orgAdmin);
     }
   }
 
