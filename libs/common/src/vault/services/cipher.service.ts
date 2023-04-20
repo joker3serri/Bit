@@ -729,8 +729,8 @@ export class CipherService implements CipherServiceAbstraction {
     await this.stateService.setEncryptedCiphers(ciphers);
   }
 
-  async deleteWithServer(id: string, orgAdmin: boolean): Promise<any> {
-    if (orgAdmin) {
+  async deleteWithServer(id: string, asAdmin = false): Promise<any> {
+    if (asAdmin) {
       await this.apiService.deleteCipherAdmin(id);
     } else {
       await this.apiService.deleteCipher(id);
@@ -739,8 +739,8 @@ export class CipherService implements CipherServiceAbstraction {
     await this.delete(id);
   }
 
-  async deleteManyWithServer(ids: string[], orgAdmin: boolean): Promise<any> {
-    if (orgAdmin) {
+  async deleteManyWithServer(ids: string[], asAdmin = false): Promise<any> {
+    if (asAdmin) {
       await this.apiService.deleteManyCiphersAdmin(new CipherBulkDeleteRequest(ids));
     } else {
       await this.apiService.deleteManyCiphers(new CipherBulkDeleteRequest(ids));
@@ -868,8 +868,8 @@ export class CipherService implements CipherServiceAbstraction {
     await this.stateService.setEncryptedCiphers(ciphers);
   }
 
-  async softDeleteWithServer(id: string, orgAdmin: boolean): Promise<any> {
-    if (orgAdmin) {
+  async softDeleteWithServer(id: string, asAdmin = false): Promise<any> {
+    if (asAdmin) {
       await this.apiService.putDeleteCipherAdmin(id);
     } else {
       await this.apiService.putDeleteCipher(id);
@@ -878,8 +878,8 @@ export class CipherService implements CipherServiceAbstraction {
     await this.softDelete(id);
   }
 
-  async softDeleteManyWithServer(ids: string[], orgAdmin: boolean): Promise<any> {
-    if (orgAdmin) {
+  async softDeleteManyWithServer(ids: string[], asAdmin = false): Promise<any> {
+    if (asAdmin) {
       await this.apiService.putDeleteManyCiphersAdmin(new CipherBulkDeleteRequest(ids));
     } else {
       await this.apiService.putDeleteManyCiphers(new CipherBulkDeleteRequest(ids));

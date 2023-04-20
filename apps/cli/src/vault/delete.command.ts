@@ -46,9 +46,9 @@ export class DeleteCommand {
     try {
       if (options.permanent) {
         this;
-        await this.cipherService.deleteWithServer(id, false);
+        await this.cipherService.deleteWithServer(id);
       } else {
-        await this.cipherService.softDeleteWithServer(id, false);
+        await this.cipherService.softDeleteWithServer(id);
       }
       return Response.success();
     } catch (e) {

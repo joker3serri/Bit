@@ -845,8 +845,8 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   protected deleteCipherWithServer(id: string, permanent: boolean) {
     return permanent
-      ? this.cipherService.deleteWithServer(id, false)
-      : this.cipherService.softDeleteWithServer(id, false);
+      ? this.cipherService.deleteWithServer(id)
+      : this.cipherService.softDeleteWithServer(id);
   }
 
   async updateKey() {
