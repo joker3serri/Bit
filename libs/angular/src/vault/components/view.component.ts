@@ -414,8 +414,8 @@ export class ViewComponent implements OnDestroy, OnInit {
 
   protected deleteCipher() {
     return this.cipher.isDeleted
-      ? this.cipherService.deleteWithServer(this.cipher.id)
-      : this.cipherService.softDeleteWithServer(this.cipher.id);
+      ? this.cipherService.deleteWithServer(this.cipher.id, false)
+      : this.cipherService.softDeleteWithServer(this.cipher.id, false);
   }
 
   protected restoreCipher() {
