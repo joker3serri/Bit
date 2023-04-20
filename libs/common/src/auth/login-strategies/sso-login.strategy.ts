@@ -8,6 +8,7 @@ import { StateService } from "../../abstractions/state.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { AuthResult } from "../models/domain/auth-result";
 import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -17,6 +18,12 @@ import { LogInStrategy } from "./login.strategy";
 export class SsoLogInStrategy extends LogInStrategy {
   tokenRequest: SsoTokenRequest;
   orgId: string;
+
+  // A OTP generated server side to serve as an authentication factor for the user
+  // in order to send email OTPs to the user's configured 2FA email address
+  // as we don't have a master password hash to verify against when using SSO.
+  email?: string; // email not preserved through SSO process so get from server
+  ssoEmail2faOtpVerifier?: string;
 
   constructor(
     cryptoService: CryptoService,
@@ -65,6 +72,11 @@ export class SsoLogInStrategy extends LogInStrategy {
       await this.buildDeviceRequest()
     );
 
-    return this.startLogIn();
+    const ssoAuthResult: AuthResult = await this.startLogIn();
+
+    this.email = ssoAuthResult.email;
+    this.ssoEmail2faOtpVerifier = ssoAuthResult.ssoEmail2faOtpVerifier;
+
+    return ssoAuthResult;
   }
 }
