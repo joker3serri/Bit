@@ -900,10 +900,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipherWithServer(id: string, permanent: boolean) {
-    const orgAdmin = this.organization?.canEditAnyCollection;
+    const asAdmin = this.organization?.canEditAnyCollection;
     return permanent
-      ? this.cipherService.deleteWithServer(id, orgAdmin)
-      : this.cipherService.softDeleteWithServer(id, orgAdmin);
+      ? this.cipherService.deleteWithServer(id, asAdmin)
+      : this.cipherService.softDeleteWithServer(id, asAdmin);
   }
 
   protected async repromptCipher(ciphers: CipherView[]) {
