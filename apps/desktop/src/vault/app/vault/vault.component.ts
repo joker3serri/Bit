@@ -635,9 +635,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.addEditComponent.submit();
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.modal.onClosed.subscribe(() => {
+      this.addEditComponent.submit();
       this.modal = null;
     });
   }
