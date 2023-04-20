@@ -19,6 +19,8 @@
       "@bitwarden/angular/*": ["./libs/angular/src/*"],
       "@bitwarden/node/*": ["./libs/node/src/*"],
       "@bitwarden/components": ["./libs/components/src"],
+      "@bitwarden/importer": ["./libs/importer/src"],
+      "@bitwarden/exporter/*": ["./libs/exporter/src/*"],
       "@bitwarden/web-vault/*": ["./apps/web/src/*"]
     },
     "plugins": [

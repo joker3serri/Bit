@@ -24,6 +24,7 @@ export abstract class TwoFactorBaseComponent {
 
   protected hashedSecret: string;
   protected verificationType: VerificationType;
+  protected componentName = "";
 
   constructor(
     protected apiService: ApiService,

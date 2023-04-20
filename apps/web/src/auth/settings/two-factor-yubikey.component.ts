@@ -30,6 +30,8 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
   formPromise: Promise<TwoFactorYubiKeyResponse>;
   disablePromise: Promise<unknown>;
 
+  override componentName = "app-two-factor-yubikey";
+
   constructor(
     apiService: ApiService,
     i18nService: I18nService,

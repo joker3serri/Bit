@@ -15,7 +15,7 @@ import { Collection } from "@bitwarden/common/admin-console/models/domain/collec
 import { CollectionDetailsResponse } from "@bitwarden/common/admin-console/models/response/collection.response";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
-import { GroupService, GroupView } from "../../../organizations/core";
+import { GroupService, GroupView } from "../core";
 import {
   AccessItemType,
   AccessItemValue,

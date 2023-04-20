@@ -24,6 +24,8 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   host: string;
   formPromise: Promise<TwoFactorDuoResponse>;
 
+  override componentName = "app-two-factor-duo";
+
   constructor(
     apiService: ApiService,
     i18nService: I18nService,

@@ -13,9 +13,12 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 
@@ -43,6 +46,9 @@ export class LockComponent extends BaseLockComponent {
     logService: LogService,
     keyConnectorService: KeyConnectorService,
     ngZone: NgZone,
+    policyApiService: PolicyApiServiceAbstraction,
+    policyService: InternalPolicyService,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     private authService: AuthService,
     dialogService: DialogServiceAbstraction
   ) {
@@ -60,6 +66,9 @@ export class LockComponent extends BaseLockComponent {
       logService,
       keyConnectorService,
       ngZone,
+      policyApiService,
+      policyService,
+      passwordGenerationService,
       dialogService
     );
     this.successRoute = "/tabs/current";

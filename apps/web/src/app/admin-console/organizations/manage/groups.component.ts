@@ -33,7 +33,7 @@ import { CollectionView } from "@bitwarden/common/admin-console/models/view/coll
 import { Utils } from "@bitwarden/common/misc/utils";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
-import { GroupService, GroupView } from "../../../organizations/core";
+import { GroupService, GroupView } from "../core";
 
 import {
   GroupAddEditDialogResultType,
