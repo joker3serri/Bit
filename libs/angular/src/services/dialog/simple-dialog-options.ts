@@ -1,4 +1,4 @@
-import { SimpleDialogType } from "./simple-dialog-type";
+import { SimpleDialogType } from "./simple-dialog-type.enum";
 import { Translation } from "./translation";
 
 // Using type lets devs skip optional params w/out having to pass undefined.
