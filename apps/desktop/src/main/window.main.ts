@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as url from "url";
 
-import { app, BrowserWindow, screen } from "electron";
+import { app, BrowserWindow, screen, ipcMain } from "electron";
 
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -98,6 +98,9 @@ export class WindowMain {
         // throw e;
         reject(e);
       }
+      ipcMain.on("request-app-quit", () => {
+        app.quit();
+      });
     });
   }
 
