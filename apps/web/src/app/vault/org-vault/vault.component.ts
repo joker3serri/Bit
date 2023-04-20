@@ -665,8 +665,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "restoreItemConfirmation" },
-      content: { key: "restoreItem" },
+      title: { key: "restoreItem" },
+      content: { key: "restoreItemConfirmation" },
       type: SimpleDialogType.WARNING,
     });
 
