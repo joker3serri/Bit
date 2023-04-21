@@ -9,7 +9,7 @@ import {
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
-import { Subject, takeUntil } from "rxjs";
+import { filter, concatMap, Subject, takeUntil } from "rxjs";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
