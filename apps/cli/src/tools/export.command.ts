@@ -1,16 +1,23 @@
 import * as program from "commander";
 import * as inquirer from "inquirer";
 
-import { ExportFormat, ExportService } from "@bitwarden/common/abstractions/export.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Utils } from "@bitwarden/common/misc/utils";
+import {
+  ExportFormat,
+  EXPORT_FORMATS,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/exporter/vault-export";
 
 import { Response } from "../models/response";
 import { CliUtils } from "../utils";
 
 export class ExportCommand {
-  constructor(private exportService: ExportService, private policyService: PolicyService) {}
+  constructor(
+    private exportService: VaultExportServiceAbstraction,
+    private policyService: PolicyService
+  ) {}
 
   async run(options: program.OptionValues): Promise<Response> {
     if (
@@ -23,6 +30,13 @@ export class ExportCommand {
     }
 
     const format = options.format ?? "csv";
+    if (!this.isSupportedExportFormat(format)) {
+      return Response.badRequest(
+        `'${format}' is not a supported export format. Supported formats: ${EXPORT_FORMATS.join(
+          ", "
+        )}.`
+      );
+    }
 
     if (options.organizationid != null && !Utils.isGuid(options.organizationid)) {
       return Response.error("`" + options.organizationid + "` is not a GUID.");
@@ -93,5 +107,9 @@ export class ExportCommand {
       return answer.password as string;
     }
     return null;
+  }
+
+  private isSupportedExportFormat(format: string): format is ExportFormat {
+    return EXPORT_FORMATS.includes(format as ExportFormat);
   }
 }
