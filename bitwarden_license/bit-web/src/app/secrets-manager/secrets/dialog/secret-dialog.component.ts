@@ -30,7 +30,6 @@ export interface SecretOperation {
 }
 
 @Component({
-  selector: "sm-secret-dialog",
   templateUrl: "./secret-dialog.component.html",
 })
 export class SecretDialogComponent implements OnInit {
