@@ -61,10 +61,14 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.stateService.activeAccountUnlocked$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((unlocked) => {
-        unlocked ? this.recordActivity() : null;
-      });
+      .pipe(
+        filter((unlocked) => unlocked),
+        concatMap(async () => {
+          await this.recordActivity();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
 
     this.ngZone.runOutsideAngular(() => {
       window.onmousedown = () => this.recordActivity();
