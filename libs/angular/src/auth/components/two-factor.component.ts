@@ -237,9 +237,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       const request = new TwoFactorEmailRequest();
       request.email = this.authService.email;
       request.masterPasswordHash = this.authService.masterPasswordHash;
-      if (this.authService.ssoEmail2faOtpVerifier) {
-        request.otp = this.authService.ssoEmail2faOtpVerifier;
-      }
+      request.ssoEmail2FaSessionToken = this.authService.ssoEmail2FaSessionToken;
       request.deviceIdentifier = await this.appIdService.getAppId();
       request.authRequestAccessCode = this.authService.accessCode;
       request.authRequestId = this.authService.authRequestId;

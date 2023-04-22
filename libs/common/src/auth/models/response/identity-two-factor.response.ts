@@ -5,8 +5,8 @@ export class IdentityTwoFactorResponse extends BaseResponse {
   twoFactorProviders: TwoFactorProviderType[];
   twoFactorProviders2 = new Map<TwoFactorProviderType, { [key: string]: string }>();
   captchaToken: string;
-  ssoEmail2faOtpVerifier: string;
-  email: string;
+  ssoEmail2faSessionToken: string;
+  // email: string;
 
   constructor(response: any) {
     super(response);
@@ -21,7 +21,7 @@ export class IdentityTwoFactorResponse extends BaseResponse {
         }
       }
     }
-    this.ssoEmail2faOtpVerifier = this.getResponseProperty("SsoEmail2faOtpVerifier");
-    this.email = this.getResponseProperty("Email");
+    this.ssoEmail2faSessionToken = this.getResponseProperty("SsoEmail2faSessionToken");
+    // this.email = this.getResponseProperty("Email");
   }
 }
