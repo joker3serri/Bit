@@ -8,7 +8,6 @@ import { StateService } from "../../abstractions/state.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
-import { AuthResult } from "../models/domain/auth-result";
 import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -72,7 +71,7 @@ export class SsoLogInStrategy extends LogInStrategy {
       await this.buildDeviceRequest()
     );
 
-    const ssoAuthResult: AuthResult = await this.startLogIn();
+    const [ssoAuthResult] = await this.startLogIn();
 
     this.email = ssoAuthResult.email;
     this.ssoEmail2FaSessionToken = ssoAuthResult.ssoEmail2FaSessionToken;
