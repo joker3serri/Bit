@@ -14,17 +14,17 @@ export class SelfHostedOrganizationSubscriptionView implements View {
    */
   private readonly _expirationWithoutGracePeriod?: Date;
 
-  constructor(orgSub: OrganizationSubscriptionResponse) {
-    if (orgSub == null) {
+  constructor(response: OrganizationSubscriptionResponse) {
+    if (response == null) {
       return;
     }
 
-    this.planName = orgSub.plan.name;
+    this.planName = response.plan.name;
     this._expirationWithGracePeriod =
-      orgSub.expiration != null ? new Date(orgSub.expiration) : null;
+      response.expiration != null ? new Date(response.expiration) : null;
     this._expirationWithoutGracePeriod =
-      orgSub.expirationWithoutGracePeriod != null
-        ? new Date(orgSub.expirationWithoutGracePeriod)
+      response.expirationWithoutGracePeriod != null
+        ? new Date(response.expirationWithoutGracePeriod)
         : null;
   }
 
