@@ -65,6 +65,15 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     return this.existingBillingSyncConnection?.enabled;
   }
 
+  /**
+   * Render the subscription as expired.
+   */
+  get showAsExpired() {
+    return this.subscription.hasSeparateGracePeriod
+      ? this.subscription.isExpiredWithoutGracePeriod
+      : this.subscription.isExpired;
+  }
+
   constructor(
     private modalService: ModalService,
     private messagingService: MessagingService,

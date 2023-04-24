@@ -5,14 +5,16 @@ export class SelfHostedOrganizationSubscriptionView implements View {
   planName: string;
 
   /**
-   * The expiration date of the subscription/organization, including any grace period.
+   * Date the subscription expires, including the grace period.
    */
-  private readonly _expirationWithGracePeriod?: Date;
+  expirationWithGracePeriod?: Date;
 
   /**
-   * The expiration date of the subscription, without any grace period.
+   * Date the subscription expires, excluding the grace period.
+   * This will be `null` for older (< v12) license files because they do not include this date.
+   * In this case, you have to rely on the `expirationWithGracePeriod` instead.
    */
-  private readonly _expirationWithoutGracePeriod?: Date;
+  expirationWithoutGracePeriod?: Date;
 
   constructor(response: OrganizationSubscriptionResponse) {
     if (response == null) {
@@ -20,9 +22,9 @@ export class SelfHostedOrganizationSubscriptionView implements View {
     }
 
     this.planName = response.plan.name;
-    this._expirationWithGracePeriod =
+    this.expirationWithGracePeriod =
       response.expiration != null ? new Date(response.expiration) : null;
-    this._expirationWithoutGracePeriod =
+    this.expirationWithoutGracePeriod =
       response.expirationWithoutGracePeriod != null
         ? new Date(response.expirationWithoutGracePeriod)
         : null;
@@ -32,38 +34,28 @@ export class SelfHostedOrganizationSubscriptionView implements View {
    * The subscription has separate expiration dates for the subscription and the end of grace period.
    */
   get hasSeparateGracePeriod() {
-    return this._expirationWithGracePeriod != null && this._expirationWithoutGracePeriod != null;
+    return this.expirationWithGracePeriod != null && this.expirationWithoutGracePeriod != null;
   }
 
   /**
-   * Date the subscription, including any grace period, expires.
-   */
-  get gracePeriodExpiration(): Date | null {
-    return this._expirationWithGracePeriod;
-  }
-
-  /**
-   * Date the subscription expires.
-   * - When the organization has a current (>= v12) license file, this value **excludes** the grace period.
-   * - When the organization has an older (< v12) license file, this value **includes** the grace period for
-   * backwards compatability.
-   */
-  get expiration(): Date | null {
-    // We fall back to the expiration with grace period, as old licenses don't have separate expiration dates.
-    return this._expirationWithoutGracePeriod ?? this._expirationWithGracePeriod;
-  }
-
-  /**
-   * True if the subscription has any expiration date.
+   * True if the subscription has an expiration date.
    */
   get hasExpiration() {
-    return this.expiration != null;
+    return this.expirationWithGracePeriod != null;
   }
 
   /**
-   * True if the subscription has an expiration date that has past.
+   * True if the subscription has an expiration date that has past, but may still be within the grace period.
+   * For older licenses (< v12), this will always be false because they do not include the `expirationWithoutGracePeriod`.
+   */
+  get isExpiredWithoutGracePeriod() {
+    return this.hasSeparateGracePeriod && this.expirationWithoutGracePeriod < new Date();
+  }
+
+  /**
+   * True if the subscription has an expiration date that has past, including the grace period.
    */
   get isExpired() {
-    return this.hasExpiration && this.expiration < new Date();
+    return this.hasExpiration && this.expirationWithGracePeriod < new Date();
   }
 }

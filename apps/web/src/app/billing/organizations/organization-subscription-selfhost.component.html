@@ -33,7 +33,7 @@
       </dd>
     </ng-container>
     <dt>
-      <span [ngClass]="{ 'tw-text-danger': subscription.isExpired }">{{
+      <span [ngClass]="{ 'tw-text-danger': showAsExpired }">{{
         "subscriptionExpiration" | i18n
       }}</span>
       <a
@@ -46,12 +46,17 @@
         <span class="sr-only">{{ "licensePaidFeaturesHelp" | i18n }}</span>
       </a>
     </dt>
-    <dd *ngIf="subscription.hasExpiration" [ngClass]="{ 'tw-text-danger': subscription.isExpired }">
-      {{ subscription.expiration | date : "mediumDate" }}
+    <dd *ngIf="subscription.hasExpiration" [ngClass]="{ 'tw-text-danger': showAsExpired }">
+      {{
+        (subscription.hasSeparateGracePeriod
+          ? subscription.expirationWithoutGracePeriod
+          : subscription.expirationWithGracePeriod
+        ) | date : "mediumDate"
+      }}
       <div *ngIf="subscription.hasSeparateGracePeriod" class="tw-text-muted">
         {{
           "selfHostGracePeriodHelp"
-            | i18n : (subscription.gracePeriodExpiration | date : "mediumDate")
+            | i18n : (subscription.expirationWithGracePeriod | date : "mediumDate")
         }}
       </div>
     </dd>
