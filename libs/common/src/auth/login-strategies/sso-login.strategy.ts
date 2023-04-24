@@ -19,12 +19,11 @@ export class SsoLogInStrategy extends LogInStrategy {
   tokenRequest: SsoTokenRequest;
   orgId: string;
 
-  // A OTP generated server side to serve as an authentication factor for the user
+  // A session token server side to serve as an authentication factor for the user
   // in order to send email OTPs to the user's configured 2FA email address
-  // as we don't have a master password hash to verify against when using SSO.
-  // email?: string; // email not preserved through SSO process so get from server
-  // TODO: add more detail here
+  // as we don't have a master password hash or other verifiable secret when using SSO.
   ssoEmail2FaSessionToken?: string;
+  email?: string; // email not preserved through SSO process so get from server
 
   constructor(
     cryptoService: CryptoService,
@@ -75,7 +74,7 @@ export class SsoLogInStrategy extends LogInStrategy {
 
     const ssoAuthResult: AuthResult = await this.startLogIn();
 
-    // this.email = ssoAuthResult.email;
+    this.email = ssoAuthResult.email;
     this.ssoEmail2FaSessionToken = ssoAuthResult.ssoEmail2FaSessionToken;
 
     return ssoAuthResult;

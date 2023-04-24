@@ -44,8 +44,8 @@ export class AuthService implements AuthServiceAbstraction {
   get email(): string {
     if (
       this.logInStrategy instanceof PasswordLogInStrategy ||
-      this.logInStrategy instanceof PasswordlessLogInStrategy
-      // || this.logInStrategy instanceof SsoLogInStrategy
+      this.logInStrategy instanceof PasswordlessLogInStrategy ||
+      this.logInStrategy instanceof SsoLogInStrategy
     ) {
       return this.logInStrategy?.email;
     }

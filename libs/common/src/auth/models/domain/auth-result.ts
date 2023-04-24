@@ -7,7 +7,7 @@ export class AuthResult {
   forcePasswordReset = false;
   twoFactorProviders: Map<TwoFactorProviderType, { [key: string]: string }> = null;
   ssoEmail2FaSessionToken = "";
-  // email = "";
+  email = "";
 
   get requiresCaptcha() {
     return !Utils.isNullOrWhitespace(this.captchaSiteKey);
