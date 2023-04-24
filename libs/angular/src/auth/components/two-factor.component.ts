@@ -233,6 +233,15 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       return;
     }
 
+    if (this.authService.email == null) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("sessionTimeout")
+      );
+      return;
+    }
+
     try {
       const request = new TwoFactorEmailRequest();
       request.email = this.authService.email;
