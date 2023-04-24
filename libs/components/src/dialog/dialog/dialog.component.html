@@ -32,12 +32,10 @@
       [ngClass]="{
         'tw-p-4': !disablePadding,
         'tw-overflow-y-auto': !loading,
-        'tw-overflow-y-hidden': loading
+        'tw-invisible tw-overflow-y-hidden': loading
       }"
     >
-      <div [ngClass]="{ 'tw-invisible': loading }">
-        <ng-content select="[bitDialogContent]"></ng-content>
-      </div>
+      <ng-content select="[bitDialogContent]"></ng-content>
     </div>
   </div>
 
