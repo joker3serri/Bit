@@ -32,6 +32,7 @@ export default {
     }),
   ],
   args: {
+    loading: false,
     dialogSize: "small",
   },
   argTypes: {
@@ -52,9 +53,9 @@ export default {
 const Template: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
-  <bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
+  <bit-dialog [dialogSize]="dialogSize" [loading]="loading" [disablePadding]="disablePadding">
     <span bitDialogTitle>{{title}}</span>
-    <span bitDialogContent>Dialog body text goes here.</span>
+    <ng-container bitDialogContent>Dialog body text goes here.</ng-container>
     <div bitDialogFooter class="tw-flex tw-items-center tw-flex-row tw-gap-2">
       <button bitButton buttonType="primary">Save</button>
       <button bitButton buttonType="secondary">Cancel</button>
@@ -94,22 +95,29 @@ Large.args = {
   title: "Large",
 };
 
+export const Loading = Template.bind({});
+Loading.args = {
+  dialogSize: "large",
+  loading: true,
+  title: "Loading",
+};
+
 const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
-  <bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
-  <span bitDialogTitle>Scrolling Example</span>
-  <span bitDialogContent>
-    Dialog body text goes here.<br>
-    <ng-container *ngFor="let _ of [].constructor(100)">
-      repeating lines of characters <br>
-    </ng-container>
-    end of sequence!
-  </span>
-  <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
-    <button bitButton buttonType="primary">Save</button>
-    <button bitButton buttonType="secondary">Cancel</button>
-  </div>
+  <bit-dialog [dialogSize]="dialogSize" [loading]="loading" [disablePadding]="disablePadding">
+    <span bitDialogTitle>Scrolling Example</span>
+    <span bitDialogContent>
+      Dialog body text goes here.<br>
+      <ng-container *ngFor="let _ of [].constructor(100)">
+        repeating lines of characters <br>
+      </ng-container>
+      end of sequence!
+    </span>
+    <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
+      <button bitButton buttonType="primary">Save</button>
+      <button bitButton buttonType="secondary">Cancel</button>
+    </div>
   </bit-dialog>
   `,
 });
