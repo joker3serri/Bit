@@ -253,11 +253,14 @@ export class BrowserApi {
     return BrowserApi.manifestVersion === 3 ? chrome.action : chrome.browserAction;
   }
 
-  static getSidebarAction(win: Window & typeof globalThis) {
-    return BrowserPlatformUtilsService.isSafari(win)
-      ? null
-      : typeof win.opr !== "undefined" && win.opr.sidebarAction
+  static getSidebarAction(
+    win: Window & typeof globalThis
+  ): OperaSidebarAction | FirefoxSidebarAction | null {
+    if (!BrowserPlatformUtilsService.isFirefox() && !BrowserPlatformUtilsService.isOpera(win)) {
+      return null;
+    }
+    return typeof win.opr !== "undefined" && win.opr.sidebarAction
       ? win.opr.sidebarAction
-      : win.chrome.sidebarAction;
+      : browser.sidebarAction;
   }
 }
