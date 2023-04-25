@@ -1,4 +1,5 @@
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { CipherService } from "../vault/abstractions/cipher.service";
 
 import { InitializerMetadata } from "./initializer-metadata.interface";
 
@@ -8,5 +9,5 @@ import { InitializerMetadata } from "./initializer-metadata.interface";
  * @example Cipher implements Decryptable<CipherView>
  */
 export interface Decryptable<TDecrypted extends InitializerMetadata> extends InitializerMetadata {
-  decrypt: (key?: SymmetricCryptoKey) => Promise<TDecrypted>;
+  decrypt: (cipherService?: CipherService, key?: SymmetricCryptoKey) => Promise<TDecrypted>;
 }

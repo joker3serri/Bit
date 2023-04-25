@@ -45,15 +45,11 @@ export class ShareCommand {
     if (cipher.organizationId != null) {
       return Response.badRequest("This item already belongs to an organization.");
     }
-    const cipherView = await cipher.decrypt(
-      await this.cipherService.getCipherKey(cipher.organizationId)
-    );
+    const cipherView = await cipher.decrypt(this.cipherService);
     try {
       await this.cipherService.shareWithServer(cipherView, organizationId, req);
       const updatedCipher = await this.cipherService.get(cipher.id);
-      const decCipher = await updatedCipher.decrypt(
-        await this.cipherService.getCipherKey(updatedCipher.organizationId)
-      );
+      const decCipher = await updatedCipher.decrypt(this.cipherService);
       const res = new CipherResponse(decCipher);
       return Response.success(res);
     } catch (e) {

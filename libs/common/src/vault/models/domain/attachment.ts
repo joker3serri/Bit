@@ -36,18 +36,14 @@ export class Attachment extends Domain {
     );
   }
 
-  async decrypt(
-    orgId: string,
-    encKey?: SymmetricCryptoKey,
-    cipherEncKey?: SymmetricCryptoKey
-  ): Promise<AttachmentView> {
+  async decrypt(orgId: string, encKey?: SymmetricCryptoKey): Promise<AttachmentView> {
     const view = await this.decryptObj(
       new AttachmentView(this),
       {
         fileName: null,
       },
       orgId,
-      cipherEncKey ?? encKey
+      encKey
     );
 
     if (this.key != null) {

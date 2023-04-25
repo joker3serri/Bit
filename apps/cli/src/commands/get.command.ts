@@ -103,9 +103,7 @@ export class GetCommand extends DownloadCommand {
     if (Utils.isGuid(id)) {
       const cipher = await this.cipherService.get(id);
       if (cipher != null) {
-        decCipher = await cipher.decrypt(
-          await this.cipherService.getCipherKey(cipher.organizationId)
-        );
+        decCipher = await cipher.decrypt(this.cipherService);
       }
     } else if (id.trim() !== "") {
       let ciphers = await this.cipherService.getAllDecrypted();

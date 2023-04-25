@@ -22,8 +22,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { EventType } from "@bitwarden/common/enums/eventType";
-import { FieldType } from "@bitwarden/common/enums/fieldType";
+import { EventType, FieldType } from "@bitwarden/common/enums";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -112,9 +111,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.cleanUp();
 
     const cipher = await this.cipherService.get(this.cipherId);
-    this.cipher = await cipher.decrypt(
-      await this.cipherService.getCipherKey(cipher.organizationId)
-    );
+    this.cipher = await cipher.decrypt(this.cipherService);
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     this.showPremiumRequiredTotp =
       this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;

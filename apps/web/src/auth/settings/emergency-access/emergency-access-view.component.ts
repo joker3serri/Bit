@@ -93,7 +93,7 @@ export class EmergencyAccessViewComponent implements OnInit {
     ciphers.forEach((cipherResponse) => {
       const cipherData = new CipherData(cipherResponse);
       const cipher = new Cipher(cipherData);
-      promises.push(cipher.decrypt(oldEncKey).then((c) => decCiphers.push(c)));
+      promises.push(cipher.decrypt(null, oldEncKey).then((c) => decCiphers.push(c)));
     });
 
     await Promise.all(promises);

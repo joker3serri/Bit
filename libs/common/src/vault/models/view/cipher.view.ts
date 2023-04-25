@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { LinkedIdType } from "../../../enums/linkedIdType";
+import { LinkedIdType } from "../../../enums";
 import { InitializerMetadata } from "../../../interfaces/initializer-metadata.interface";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
 import { View } from "../../../models/view/view";
