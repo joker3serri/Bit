@@ -217,7 +217,7 @@ export class BrowserApi {
   static reloadOpenWindows() {
     const views = chrome.extension.getViews() as Window[];
     views
-      .filter((w) => w.location.href != null)
+      .filter((w) => w.location.href != null && !w.location.href.includes("background.html"))
       .forEach((w) => {
         w.location.reload();
       });
