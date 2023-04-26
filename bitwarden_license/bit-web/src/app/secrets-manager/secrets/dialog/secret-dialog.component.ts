@@ -67,6 +67,8 @@ export class SecretDialogComponent implements OnInit {
     } else if (this.data.operation !== OperationType.Add) {
       this.dialogRef.close();
       throw new Error(`The secret dialog was not called with the appropriate operation values.`);
+    } else if (this.data.operation == OperationType.Add) {
+      await this.loadProjects(true);
     }
 
     if (this.data.projectId) {
@@ -90,6 +92,9 @@ export class SecretDialogComponent implements OnInit {
   async loadData() {
     this.formGroup.disable();
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
+
+    await this.loadProjects(secret.write);
+
     this.formGroup.setValue({
       name: secret.name,
       value: secret.value,
@@ -102,6 +107,16 @@ export class SecretDialogComponent implements OnInit {
 
     if (secret.write) {
       this.formGroup.enable();
+    }
+  }
+
+  async loadProjects(filterByPermission: boolean) {
+    this.projects = await this.projectService
+      .getProjects(this.data.organizationId)
+      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
+
+    if (filterByPermission) {
+      this.projects = this.projects.filter((p) => p.write);
     }
   }
 
