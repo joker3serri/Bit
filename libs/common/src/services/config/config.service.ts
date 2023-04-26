@@ -28,25 +28,6 @@ export class ConfigService implements ConfigServiceAbstraction {
       .subscribe((serverConfig) => {
         this._serverConfig.next(serverConfig);
       });
-
-    this.stateService.activeAccountUnlocked$
-      .pipe(
-        switchMap((unlocked) => {
-          if (!unlocked) {
-            this._serverConfig.next(null);
-            return EMPTY;
-          }
-
-          // Re-fetch the server config every hour
-          return timer(0, 3600 * 1000).pipe(map(() => unlocked));
-        }),
-        concatMap(async (unlocked) => {
-          return unlocked ? await this.buildServerConfig() : null;
-        })
-      )
-      .subscribe((serverConfig) => {
-        this._serverConfig.next(serverConfig);
-      });
   }
 
   async fetchServerConfig(): Promise<ServerConfig> {
