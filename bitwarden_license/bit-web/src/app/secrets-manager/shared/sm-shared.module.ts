@@ -1,6 +1,11 @@
 import { NgModule } from "@angular/core";
 
-import { MultiSelectModule, SearchModule, SelectModule, NoItemsModule } from "@bitwarden/components";
+import {
+  MultiSelectModule,
+  SearchModule,
+  SelectModule,
+  NoItemsModule,
+} from "@bitwarden/components";
 import { CoreOrganizationModule } from "@bitwarden/web-vault/app/admin-console/organizations/core";
 import { DynamicAvatarComponent } from "@bitwarden/web-vault/app/components/dynamic-avatar.component";
 import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
