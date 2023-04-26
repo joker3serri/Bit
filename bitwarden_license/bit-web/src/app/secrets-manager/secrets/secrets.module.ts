@@ -8,8 +8,8 @@ import { SecretsRoutingModule } from "./secrets-routing.module";
 import { SecretsComponent } from "./secrets.component";
 
 @NgModule({
+  imports: [SecretsManagerSharedModule, SecretsRoutingModule],
   declarations: [SecretDeleteDialogComponent, SecretDialogComponent, SecretsComponent],
   providers: [],
-  imports: [SecretsManagerSharedModule, SecretsRoutingModule],
 })
 export class SecretsModule {}
