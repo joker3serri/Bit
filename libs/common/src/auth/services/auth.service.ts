@@ -49,7 +49,7 @@ export class AuthService implements AuthServiceAbstraction {
       this.logInStrategy instanceof PasswordlessLogInStrategy ||
       this.logInStrategy instanceof SsoLogInStrategy
     ) {
-      return this.logInStrategy?.email;
+      return this.logInStrategy.email;
     }
 
     return null;
@@ -75,7 +75,7 @@ export class AuthService implements AuthServiceAbstraction {
 
   get ssoEmail2FaSessionToken(): string {
     return this.logInStrategy instanceof SsoLogInStrategy
-      ? this.logInStrategy?.ssoEmail2FaSessionToken
+      ? this.logInStrategy.ssoEmail2FaSessionToken
       : null;
   }
 
