@@ -259,8 +259,6 @@ export class BrowserApi {
     if (!BrowserPlatformUtilsService.isFirefox() && !BrowserPlatformUtilsService.isOpera(win)) {
       return null;
     }
-    return typeof win.opr !== "undefined" && win.opr.sidebarAction
-      ? win.opr.sidebarAction
-      : browser.sidebarAction;
+    return win.opr?.sidebarAction || browser.sidebarAction;
   }
 }
