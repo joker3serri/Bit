@@ -74,10 +74,10 @@ export default {
           provide: SettingsService,
           useValue: {
             disableFavicon$: new BehaviorSubject(false).asObservable(),
+            async getDisableFavicon() {
+              return false;
+            },
           } as Partial<SettingsService>,
-          async getDisableFavicon() {
-            return false;
-          },
         },
         {
           provide: AvatarUpdateService,
