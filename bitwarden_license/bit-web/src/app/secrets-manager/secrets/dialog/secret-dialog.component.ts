@@ -80,10 +80,6 @@ export class SecretDialogComponent implements OnInit {
       this.formGroup.get("project").updateValueAndValidity();
     }
 
-    this.projects = await this.projectService
-      .getProjects(this.data.organizationId)
-      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
-
     if (this.data.projectId == null || this.data.projectId == "") {
       this.addNewProjectOptionToProjectsDropDown();
     }

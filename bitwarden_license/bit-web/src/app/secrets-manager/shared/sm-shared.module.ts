@@ -43,7 +43,6 @@ import { SecretsListComponent } from "./secrets-list.component";
     ProjectsListComponent,
     SearchModule,
     SecretsListComponent,
-    AccessSelectorComponent,
     SelectModule,
     SharedModule,
   ],
