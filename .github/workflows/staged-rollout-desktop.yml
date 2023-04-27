@@ -15,37 +15,20 @@ defaults:
     shell: bash
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-
-      - name: Branch check
-        run: |
-          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ "$GITHUB_REF" != "refs/heads/hotfix-rc-desktop" ]]; then
-            echo "==================================="
-            echo "[!] Can only increase rollout from the 'rc' or 'hotfix-rc-desktop' branches"
-            echo "==================================="
-            exit 1
-          fi
-
   rollout:
     name: Update Rollout Percentage
     runs-on: ubuntu-22.04
-    needs: setup
     steps:
       - name: Login to Azure
         uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
         with:
-          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Retrieve secrets
         id: retrieve-secrets
         uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
         with:
-          keyvault: "bitwarden-prod-kv"
+          keyvault: "bitwarden-ci"
           secrets: "aws-electron-access-id,
             aws-electron-access-key,
             aws-electron-bucket-name,
@@ -123,7 +106,7 @@ jobs:
         run: |
           aws s3 cp latest.yml $AWS_S3_BUCKET_NAME/desktop/ \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
-          
+
           aws s3 cp latest-linux.yml $AWS_S3_BUCKET_NAME/desktop/ \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
 

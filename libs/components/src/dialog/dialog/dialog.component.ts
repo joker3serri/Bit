@@ -1,31 +1,40 @@
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
-import { Component, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
+
+import { fadeIn } from "../animations";
 
 @Component({
   selector: "bit-dialog",
   templateUrl: "./dialog.component.html",
+  animations: [fadeIn],
 })
 export class DialogComponent {
   @Input() dialogSize: "small" | "default" | "large" = "default";
 
-  private _disablePadding: boolean;
-  @Input() set disablePadding(value: boolean | string) {
+  private _disablePadding = false;
+  @Input() set disablePadding(value: boolean | "") {
     this._disablePadding = coerceBooleanProperty(value);
   }
   get disablePadding() {
     return this._disablePadding;
   }
 
+  @HostBinding("class") get classes() {
+    return ["tw-flex", "tw-flex-col", "tw-max-h-screen", "tw-w-screen", "tw-p-4"].concat(
+      this.width
+    );
+  }
+
   get width() {
     switch (this.dialogSize) {
       case "small": {
-        return "tw-w-96";
+        return "tw-max-w-sm";
       }
       case "large": {
-        return "tw-w-75vw";
+        return "tw-max-w-3xl";
       }
       default: {
-        return "tw-w-50vw";
+        return "tw-max-w-xl";
       }
     }
   }

@@ -3,8 +3,9 @@ export class WindowState {
   height?: number;
   isMaximized?: boolean;
   // TODO: displayBounds is an Electron.Rectangle.
-  // We need to establish some kind of client-specific global state, similiar to the way we already extend a base Account.
+  // We need to establish some kind of client-specific global state, similar to the way we already extend a base Account.
   displayBounds: any;
   x?: number;
   y?: number;
+  zoomFactor?: number;
 }

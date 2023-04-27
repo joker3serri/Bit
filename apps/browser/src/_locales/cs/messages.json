@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Nápověda a zpětná vazba"
   },
+  "helpCenter": {
+    "message": "Centrum nápovědy Bitwarden"
+  },
+  "communityForums": {
+    "message": "Prozkoumejte komunitní fóra Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Kontaktujte podporu/support Bitwarden"
+  },
   "sync": {
     "message": "Synchronizace"
   },
@@ -430,7 +439,14 @@
     "message": "Je vyžadováno zopakovat zadání hlavního hesla."
   },
   "masterPasswordMinlength": {
-    "message": "Hlavní heslo musí obsahovat alespoň 8 znaků."
+    "message": "Zakládní heslo musí obsahovat alespoň $VALUE$ znaků.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "Potvrzení hlavního hesla se neshoduje."
@@ -960,7 +976,10 @@
     "message": "Pokud je zjištěn přihlašovací formulář, automaticky se při načítání webové stránky vyplní přihlašovací údaje."
   },
   "experimentalFeature": {
-    "message": "Toto je momentálně experimentální funkce. Použijte na vlastní riziko."
+    "message": "Kompromitované nebo nedůvěryhodné webové stránky mohou zneužívat automatické vyplňování při načítání stránky."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Více informací o automatickém vyplňování"
   },
   "defaultAutoFillOnPageLoad": {
     "message": "Výchozí nastavení automatického vyplňování pro položky přihlášení"
@@ -1122,6 +1141,9 @@
   },
   "dr": {
     "message": "MUDr"
+  },
+  "mx": {
+    "message": "Mx"
   },
   "firstName": {
     "message": "Jméno"
@@ -1441,6 +1463,15 @@
   },
   "setMasterPassword": {
     "message": "Nastavit hlavní heslo"
+  },
+  "currentMasterPass": {
+    "message": "Aktuální hlavní heslo"
+  },
+  "newMasterPass": {
+    "message": "Nové hlavní heslo"
+  },
+  "confirmNewMasterPass": {
+    "message": "Potvrďte nové hlavní heslo"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Jedna nebo více zásad organizace vyžaduje, aby hlavní heslo splňovalo následující požadavky:"
@@ -1822,6 +1853,9 @@
   "updateMasterPasswordWarning": {
     "message": "Administrátor v organizaci nedávno změnil vaše hlavní heslo. Pro přístup k trezoru jej nyní musíte změnit. Pokračování vás odhlásí z vaší aktuální relace a bude nutné se znovu přihlásit. Aktivní relace na jiných zařízeních mohou zůstat aktivní až po dobu jedné hodiny."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Vaše hlavní heslo nesplňuje jednu nebo více zásad Vaší organizace. Pro přístup k trezoru musíte nyní aktualizovat své hlavní heslo. Pokračování Vás odhlásí z Vaší aktuální relace a bude nutné se přihlásit. Aktivní relace na jiných zařízeních mohou zůstat aktivní až po dobu jedné hodiny."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Automatická registrace"
   },
@@ -1850,6 +1884,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Pravidla Vaší organizace mají vliv na časový limit trezoru. Maximální povolený časový limit trezoru je $HOURS$ hodin a $MINUTES$ minut. Akce po časovém limitu trezoru je nastavena na $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Zásady Vaší organizace nastavily akce po časovém limitu trezoru na $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1933,7 +1993,7 @@
     "message": "E-mail pro doménový koš"
   },
   "catchallEmailDesc": {
-    "message": "Use your domain's configured catch-all inbox."
+    "message": "Použijte nakonfigurovanou univerzální schránku své domény."
   },
   "random": {
     "message": "Náhodný"
@@ -1980,9 +2040,6 @@
   },
   "disabledOrganizationFilterError": {
     "message": "K položkám v deaktivované organizaci nemáte přístup. Požádejte o pomoc vlastníka organizace."
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "loggingInTo": {
     "message": "Přihlašování do $DOMAIN$",
@@ -2043,5 +2100,107 @@
   },
   "rememberEmail": {
     "message": "Pamatovat si e-mail"
+  },
+  "loginWithDevice": {
+    "message": "Přihlásit se pomocí zařízení"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Přihlášení pomocí zařízení musí být nastaveno v nastavení aplikace Bitwarden. Potřebujete další možnosti?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Unikátní přístupová fráze"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Ověřte, zda je trezor odemčený a jestli se unikátní přístupová fráze shoduje s frází na druhém zařízení."
+  },
+  "resendNotification": {
+    "message": "Znovu odeslat upozornění"
+  },
+  "viewAllLoginOptions": {
+    "message": "Zobrazit veškeré možnosti přihlášení"
+  },
+  "notificationSentDevice": {
+    "message": "Na vaše zařízení bylo odesláno upozornění."
+  },
+  "logInInitiated": {
+    "message": "Přihlášení zahájeno"
+  },
+  "exposedMasterPassword": {
+    "message": "Odhalené základní heslo"
+  },
+  "exposedMasterPasswordDesc": {
+    "message": "Heslo nalezeno při porušení ochrany osobních údajů. K zabezpečení svého účtu používejte jedinečné heslo. Jste si jisti, zda chcete používat zneužité heslo?"
+  },
+  "weakAndExposedMasterPassword": {
+    "message": "Slabé a zneužité hlavní heslo"
+  },
+  "weakAndBreachedMasterPasswordDesc": {
+    "message": "Slabé heslo identifikované a nalezené při porušení ochrany osobních údajů. K zabezpečení vašeho účtu používejte silné a unikátní heslo. Jste si jisti, zda chcete používat toto heslo?"
+  },
+  "checkForBreaches": {
+    "message": "Zkontrolujte známé porušení ochrany osobních údajů pro toto heslo"
+  },
+  "important": {
+    "message": "Důležité:"
+  },
+  "masterPasswordHint": {
+    "message": "Vaše hlavní heslo nelze obnovit, pokud ho zapomenete!"
+  },
+  "characterMinimum": {
+    "message": "$LENGTH$ minimální počet znaků",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Podle směrnic vaší organizace je zapnuto automatické vyplňování při načítání stránky."
+  },
+  "howToAutofill": {
+    "message": "Jak na automatické vyplňování"
+  },
+  "autofillSelectInfoWithCommand": {
+    "message": "Vyberte položku z této stránky nebo použijte zkratku: $COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Vyberte položku z této stránky nebo nastavte zkratku v nastavení."
+  },
+  "gotIt": {
+    "message": "Rozumím"
+  },
+  "autofillSettings": {
+    "message": "Nastavení automatického vyplňování"
+  },
+  "autofillShortcut": {
+    "message": "Klávesová kombinace pro automatické vyplňování"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Klávesová kombinace pro automatické vyplňování není nastavena. Změňte ji v nastavení prohlížeče."
+  },
+  "autofillShortcutText": {
+    "message": "Klávesová kombinace pro automatické vyplňování je: $COMMAND$. Změňte ji v nastavení prohlížeče.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Výchozí klávesová kombinace pro automatické vyplňování: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

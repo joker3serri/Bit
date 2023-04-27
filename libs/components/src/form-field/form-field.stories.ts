@@ -11,10 +11,13 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
+import { AsyncActionsModule } from "../async-actions";
 import { ButtonModule } from "../button";
 import { CheckboxModule } from "../checkbox";
+import { IconButtonModule } from "../icon-button";
 import { InputModule } from "../input/input.module";
 import { RadioButtonModule } from "../radio-button";
+import { SelectModule } from "../select";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { BitFormFieldComponent } from "./form-field.component";
@@ -31,14 +34,18 @@ export default {
         FormFieldModule,
         InputModule,
         ButtonModule,
+        IconButtonModule,
+        AsyncActionsModule,
         CheckboxModule,
         RadioButtonModule,
+        SelectModule,
       ],
       providers: [
         {
           provide: I18nService,
           useFactory: () => {
             return new I18nMockService({
+              selectPlaceholder: "-- Select --",
               required: "required",
               inputRequired: "Input is required.",
               inputEmail: "Input is not an email-address.",
@@ -177,10 +184,13 @@ const ButtonGroupTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCom
   props: args,
   template: `
     <bit-form-field>
-      <bit-label>Label</bit-label>
-      <input bitInput placeholder="Placeholder" type="password" />
-      <button bitSuffix bitButton bitIconButton="bwi-eye"></button>
-      <button bitSuffix bitButton bitIconButton="bwi-clone"></button>
+      <button bitPrefix bitIconButton="bwi-star"></button>
+      <input bitInput placeholder="Placeholder" />
+      <button bitSuffix bitIconButton="bwi-eye"></button>
+      <button bitSuffix bitIconButton="bwi-clone"></button>
+      <button bitSuffix bitButton>
+        Apply
+      </button>
     </bit-form-field>
   `,
 });
@@ -195,9 +205,13 @@ const DisabledButtonInputGroupTemplate: Story<BitFormFieldComponent> = (
   template: `
     <bit-form-field>
       <bit-label>Label</bit-label>
+      <button bitPrefix bitIconButton="bwi-star" disabled></button>
       <input bitInput placeholder="Placeholder" disabled />
-      <button bitSuffix bitButton bitIconButton="bwi-eye" disabled></button>
-      <button bitSuffix bitButton bitIconButton="bwi-clone"></button>
+      <button bitSuffix bitIconButton="bwi-eye" disabled></button>
+      <button bitSuffix bitIconButton="bwi-clone" disabled></button>
+      <button bitSuffix bitButton disabled>
+        Apply
+      </button>
     </bit-form-field>
   `,
 });
@@ -220,6 +234,22 @@ const SelectTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponen
 
 export const Select = SelectTemplate.bind({});
 Select.args = {};
+
+const AdvancedSelectTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
+  props: args,
+  template: `
+    <bit-form-field>
+      <bit-label>Label</bit-label>
+      <bit-select>
+        <bit-option label="Select"></bit-option>
+        <bit-option label="Other"></bit-option>
+      </bit-select>
+    </bit-form-field>
+  `,
+});
+
+export const AdvancedSelect = AdvancedSelectTemplate.bind({});
+AdvancedSelectTemplate.args = {};
 
 const TextareaTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
   props: args,

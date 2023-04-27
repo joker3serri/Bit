@@ -5,6 +5,7 @@ import { app, BrowserWindow, screen } from "electron";
 
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { WindowState } from "@bitwarden/common/models/domain/window-state";
 
 import { cleanUserAgent, isDev, isMacAppStore, isSnapStore } from "../utils";
 
@@ -13,17 +14,18 @@ const WindowEventHandlingDelay = 100;
 export class WindowMain {
   win: BrowserWindow;
   isQuitting = false;
+  isClosing = false;
 
   private windowStateChangeTimer: NodeJS.Timer;
-  private windowStates: { [key: string]: any } = {};
+  private windowStates: { [key: string]: WindowState } = {};
   private enableAlwaysOnTop = false;
+
+  readonly defaultWidth = 950;
+  readonly defaultHeight = 600;
 
   constructor(
     private stateService: StateService,
     private logService: LogService,
-    private hideTitleBar = false,
-    private defaultWidth = 950,
-    private defaultHeight = 600,
     private argvCallback: (argv: string[]) => void = null,
     private createWindowCallback: (win: BrowserWindow) => void
   ) {}
@@ -116,7 +118,7 @@ export class WindowMain {
       y: this.windowStates[mainWindowSizeKey].y,
       title: app.name,
       icon: process.platform === "linux" ? path.join(__dirname, "/images/icon.png") : undefined,
-      titleBarStyle: this.hideTitleBar && process.platform === "darwin" ? "hiddenInset" : undefined,
+      titleBarStyle: process.platform === "darwin" ? "hiddenInset" : undefined,
       show: false,
       backgroundColor: "#fff",
       alwaysOnTop: this.enableAlwaysOnTop,
@@ -126,6 +128,10 @@ export class WindowMain {
         backgroundThrottling: false,
         contextIsolation: false,
       },
+    });
+
+    this.win.webContents.on("dom-ready", () => {
+      this.win.webContents.zoomFactor = this.windowStates[mainWindowSizeKey].zoomFactor ?? 1.0;
     });
 
     if (this.windowStates[mainWindowSizeKey].isMaximized) {
@@ -154,6 +160,7 @@ export class WindowMain {
 
     // Emitted when the window is closed.
     this.win.on("closed", async () => {
+      this.isClosing = false;
       await this.updateWindowState(mainWindowSizeKey, this.win);
 
       // Dereference the window object, usually you would store window
@@ -163,6 +170,7 @@ export class WindowMain {
     });
 
     this.win.on("close", async () => {
+      this.isClosing = true;
       await this.updateWindowState(mainWindowSizeKey, this.win);
     });
 
@@ -217,7 +225,7 @@ export class WindowMain {
       if (this.windowStates[configKey] == null) {
         this.windowStates[configKey] = await this.stateService.getWindow();
         if (this.windowStates[configKey] == null) {
-          this.windowStates[configKey] = {};
+          this.windowStates[configKey] = <WindowState>{};
         }
       }
 
@@ -229,6 +237,10 @@ export class WindowMain {
         this.windowStates[configKey].y = bounds.y;
         this.windowStates[configKey].width = bounds.width;
         this.windowStates[configKey].height = bounds.height;
+      }
+
+      if (this.isClosing) {
+        this.windowStates[configKey].zoomFactor = win.webContents.zoomFactor;
       }
 
       await this.stateService.setWindow(this.windowStates[configKey]);
