@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 import { UserVerificationPromptComponent } from "@bitwarden/web-vault/app/components/user-verification-prompt.component";
@@ -27,7 +28,8 @@ export class AccessTokenComponent implements OnInit {
     private accessService: AccessService,
     private dialogService: DialogService,
     private modalService: ModalService,
-    private platformUtilsService: PlatformUtilsService
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
   ) {}
 
   ngOnInit() {
@@ -43,16 +45,28 @@ export class AccessTokenComponent implements OnInit {
   }
 
   protected async revoke(tokens: AccessTokenView[]) {
-    if (!(await this.verifyUser())) {
-      return;
+    if (tokens.length) {
+      if (!(await this.verifyUser())) {
+        return;
+      }
+
+      await this.accessService.revokeAccessTokens(
+        this.serviceAccountId,
+        tokens.map((t) => t.id)
+      );
+
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("accessTokenRevoked")
+      );
+    } else {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("noAccessTokenSelected")
+      );
     }
-
-    await this.accessService.revokeAccessTokens(
-      this.serviceAccountId,
-      tokens.map((t) => t.id)
-    );
-
-    this.platformUtilsService.showToast("success", null, "Access tokens revoked.");
   }
 
   protected openNewAccessTokenDialog() {
