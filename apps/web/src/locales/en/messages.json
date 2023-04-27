@@ -6167,7 +6167,7 @@
   },
   "noAccessTokenSelected": {
     "message": "No access token selected to revoke",
-    "description": "Toast message after trying to delete access tokens but not selecting and access tokens."
+    "description": "Toast error message after trying to delete access tokens but not selecting any access tokens."
   },
   "submenu": {
     "message": "Submenu"
