@@ -74,7 +74,7 @@ export default {
           provide: SettingsService,
           useValue: {
             disableFavicon$: new BehaviorSubject(false).asObservable(),
-            async getDisableFavicon() {
+            getDisableFavicon() {
               return false;
             },
           } as Partial<SettingsService>,
