@@ -559,7 +559,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.collectionsModalRef,
       (comp) => {
         comp.collectionIds = cipher.collectionIds;
-        comp.collections = currCollections.filter((c) => !c.readOnly && c.id != null);
+        comp.collections = currCollections.filter((c) => !c.readOnly && c.id != Unassigned);
         comp.organization = this.organization;
         comp.cipherId = cipher.id;
         comp.onSavedCollections.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -572,7 +572,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async addCipher() {
     const collections = (await firstValueFrom(this.vaultFilterService.filteredCollections$)).filter(
-      (c) => !c.readOnly && c.id != null
+      (c) => !c.readOnly && c.id != Unassigned
     );
 
     await this.editCipher(null, (comp) => {
@@ -645,7 +645,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async cloneCipher(cipher: CipherView) {
     const collections = (await firstValueFrom(this.vaultFilterService.filteredCollections$)).filter(
-      (c) => !c.readOnly && c.id != null
+      (c) => !c.readOnly && c.id != Unassigned
     );
 
     await this.editCipher(cipher, (comp) => {
@@ -675,7 +675,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this.cipherService.restoreWithServer(c.id);
+      const asAdmin = this.organization?.canEditAnyCollection;
+      await this.cipherService.restoreWithServer(c.id, asAdmin);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
       this.refresh();
     } catch (e) {
@@ -898,9 +899,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipherWithServer(id: string, permanent: boolean) {
+    const asAdmin = this.organization?.canEditAnyCollection;
     return permanent
-      ? this.cipherService.deleteWithServer(id)
-      : this.cipherService.softDeleteWithServer(id);
+      ? this.cipherService.deleteWithServer(id, asAdmin)
+      : this.cipherService.softDeleteWithServer(id, asAdmin);
   }
 
   protected async repromptCipher(ciphers: CipherView[]) {

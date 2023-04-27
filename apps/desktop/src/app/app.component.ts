@@ -17,6 +17,7 @@ import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -135,6 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private policyService: InternalPolicyService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
+    private configService: ConfigServiceAbstraction,
     private dialogService: DialogServiceAbstraction
   ) {}
 
@@ -182,13 +184,17 @@ export class AppComponent implements OnInit, OnDestroy {
           case "lockVault":
             await this.vaultTimeoutService.lock(message.userId);
             break;
-          case "lockAllVaults":
-            for (const userId in await firstValueFrom(this.stateService.accounts$)) {
-              if (userId != null) {
-                await this.vaultTimeoutService.lock(userId);
-              }
-            }
+          case "lockAllVaults": {
+            const currentUser = await this.stateService.getUserId();
+            const accounts = await firstValueFrom(this.stateService.accounts$);
+            await this.vaultTimeoutService.lock(currentUser);
+            Promise.all(
+              Object.keys(accounts)
+                .filter((u) => u !== currentUser)
+                .map((u) => this.vaultTimeoutService.lock(u))
+            );
             break;
+          }
           case "locked":
             this.modalService.closeAll();
             if (
@@ -215,6 +221,7 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "syncCompleted":
             await this.updateAppMenu();
+            await this.configService.fetchServerConfig();
             break;
           case "openSettings":
             await this.openModal<SettingsComponent>(SettingsComponent, this.settingsRef);

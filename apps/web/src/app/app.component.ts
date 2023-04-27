@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -79,6 +80,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private policyService: InternalPolicyService,
     protected policyListService: PolicyListService,
     private keyConnectorService: KeyConnectorService,
+    private configService: ConfigServiceAbstraction,
     private dialogService: DialogServiceAbstraction
   ) {}
 
@@ -129,6 +131,7 @@ export class AppComponent implements OnDestroy, OnInit {
           case "syncStarted":
             break;
           case "syncCompleted":
+            await this.configService.fetchServerConfig();
             break;
           case "upgradeOrganization": {
             const upgradeConfirmed = await this.dialogService.openSimpleDialog({
