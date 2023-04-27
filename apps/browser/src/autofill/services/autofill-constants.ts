@@ -277,7 +277,13 @@ export class IdentityAutoFillConstants {
 
   static readonly FullNameFieldNameValues: string[] = ["full-name", "your-name"];
 
-  static readonly TitleFieldNames: string[] = ["honorific-prefix", "prefix", "title"];
+  static readonly TitleFieldNames: string[] = [
+    "honorific-prefix",
+    "prefix",
+    "title",
+    // German
+    "anrede",
+  ];
 
   static readonly FirstnameFieldNames: string[] = [
     // English
@@ -323,6 +329,9 @@ export class IdentityAutoFillConstants {
     "billing-addr",
     "mail-addr",
     "bill-addr",
+    // German
+    "strasse",
+    "adresse",
   ];
 
   static readonly AddressFieldNameValues: string[] = [
@@ -365,9 +374,9 @@ export class IdentityAutoFillConstants {
     "address-code",
     "address-postal-code",
     "address-zip-code",
-
-    // german
+    // German
     "plz",
+    "postleitzahl",
   ];
 
   static readonly CityFieldNames: string[] = [
@@ -376,8 +385,7 @@ export class IdentityAutoFillConstants {
     "address-level-2",
     "address-city",
     "address-town",
-
-    // german
+    // German
     "ort",
     "stadt",
     "wohnort",
@@ -390,6 +398,8 @@ export class IdentityAutoFillConstants {
     "address-level-1",
     "address-state",
     "address-province",
+    // German
+    "bundesland",
   ];
 
   static readonly CountryFieldNames: string[] = [
@@ -399,6 +409,8 @@ export class IdentityAutoFillConstants {
     "address-country",
     "address-country-name",
     "address-country-code",
+    // German
+    "land",
   ];
 
   static readonly PhoneFieldNames: string[] = [
@@ -408,6 +420,11 @@ export class IdentityAutoFillConstants {
     "tel",
     "telephone",
     "phone-number",
+    // German
+    "telefon",
+    "telefonnummer",
+    "mobil",
+    "handy",
   ];
 
   static readonly UserNameFieldNames: string[] = ["user-name", "user-id", "screen-name"];
@@ -417,6 +434,8 @@ export class IdentityAutoFillConstants {
     "company-name",
     "organization",
     "organization-name",
+    // German
+    "firma",
   ];
 
   static readonly IsoCountries: { [id: string]: string } = {
