@@ -181,7 +181,7 @@ export class PeopleComponent
             if (response != null) {
               this.organization.hasPublicAndPrivateKeys =
                 response.publicKey != null && response.privateKey != null;
-              await this.syncService.fullSync(true); // Replace oganizations with new data
+              await this.syncService.fullSync(true); // Replace organizations with new data
             } else {
               throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
             }
@@ -347,7 +347,7 @@ export class PeopleComponent
     const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
       title: this.i18nService.t("upgradeOrganization"),
       content: this.i18nService.t(
-        this.organization.canManageBilling
+        this.organization.canEditSubscription
           ? "freeOrgInvLimitReachedManageBilling"
           : "freeOrgInvLimitReachedNoManageBilling",
         this.organization.seats
@@ -355,7 +355,7 @@ export class PeopleComponent
       type: SimpleDialogType.PRIMARY,
     };
 
-    if (this.organization.canManageBilling) {
+    if (this.organization.canEditSubscription) {
       orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("upgrade");
     } else {
       orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("ok");
@@ -369,7 +369,7 @@ export class PeopleComponent
         return;
       }
 
-      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
+      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canEditSubscription) {
         this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
           queryParams: { upgrade: true },
         });
