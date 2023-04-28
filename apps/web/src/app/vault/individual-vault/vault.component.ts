@@ -857,7 +857,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async isLowKdfIteration() {
     const showLowKdfEnabled = await this.configService.getFeatureFlagBool(
-      FeatureFlag.DisplayLowKdfFlag
+      FeatureFlag.DisplayLowKdfIterationWarningFlag
     );
 
     if (showLowKdfEnabled) {

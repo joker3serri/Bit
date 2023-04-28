@@ -1,4 +1,4 @@
 export enum FeatureFlag {
   DisplayEuEnvironmentFlag = "display-eu-environment",
-  DisplayLowKdfFlag = "display-low-kdf",
+  DisplayLowKdfIterationWarningFlag = "display-kdf-iteration-warning",
 }
