@@ -18,7 +18,7 @@ export const canActivateSM: CanActivateFn = async (
   const orgs = await inject(OrganizationService).getAll();
   const smOrg = orgs.find((o) => o.canAccessSecretsManager);
   if (smOrg) {
-    return createUrlTreeFromSnapshot(route, ["sm", smOrg.id]);
+    return createUrlTreeFromSnapshot(route, ["/sm", smOrg.id]);
   }
   return createUrlTreeFromSnapshot(route, ["/vault"]);
 };
