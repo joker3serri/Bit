@@ -31,6 +31,7 @@ import {
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -46,6 +47,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { KdfType, DEFAULT_PBKDF2_ITERATIONS, EventType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
@@ -170,7 +172,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private totpService: TotpService,
     private eventCollectionService: EventCollectionService,
     private searchService: SearchService,
-    private searchPipe: SearchPipe
+    private searchPipe: SearchPipe,
+    private configService: ConfigServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -185,8 +188,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       first(),
       switchMap(async (params: Params) => {
         this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
-        // disable warning for March release -> add await this.isLowKdfIteration(); when ready
-        this.showLowKdf = false;
+        this.showLowKdf = await this.isLowKdfIteration();
         await this.syncService.fullSync(false);
 
         const canAccessPremium = await this.stateService.getCanAccessPremium();
@@ -854,9 +856,17 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async isLowKdfIteration() {
-    const kdfType = await this.stateService.getKdfType();
-    const kdfOptions = await this.stateService.getKdfConfig();
-    return kdfType === KdfType.PBKDF2_SHA256 && kdfOptions.iterations < DEFAULT_PBKDF2_ITERATIONS;
+    const showLowKdfEnabled = await this.configService.getFeatureFlagBool(
+      FeatureFlag.DisplayLowKdfIterationWarningFlag
+    );
+
+    if (showLowKdfEnabled) {
+      const kdfType = await this.stateService.getKdfType();
+      const kdfOptions = await this.stateService.getKdfConfig();
+      return kdfType === KdfType.PBKDF2_SHA256 && kdfOptions.iterations < DEFAULT_PBKDF2_ITERATIONS;
+    }
+
+    return showLowKdfEnabled;
   }
 
   protected async repromptCipher(ciphers: CipherView[]) {
