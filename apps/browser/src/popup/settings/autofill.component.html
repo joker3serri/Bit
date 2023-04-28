@@ -34,7 +34,10 @@
         rel="noopener noreferrer"
       >
         {{ "learnMoreAboutAutofill" | i18n }}.
-        <i aria-label="Opens in a new window" class="bwi bwi-external-link bwi-sm bwi-fw"></i>
+        <i
+          [attr.aria-label]="'opensInANewWindow' | i18n"
+          class="bwi bwi-external-link bwi-sm bwi-fw"
+        ></i>
       </a>
     </div>
   </div>
