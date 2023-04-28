@@ -12,6 +12,8 @@
       (input)="search(200)"
       autocomplete="off"
       appAutofocus
+      [readonly]="disableSend"
+      [disabled]="disableSend"
     />
     <i class="bwi bwi-search"></i>
   </div>
@@ -30,7 +32,7 @@
   <app-callout type="warning" title="{{ 'sendDisabled' | i18n }}" *ngIf="disableSend">
     {{ "sendDisabledWarning" | i18n }}
   </app-callout>
-  <div class="no-items" *ngIf="(!sends || !sends.length) && !showSearching()">
+  <div class="no-items" *ngIf="(!sends || !sends.length) && !showSearching() && !disableSend">
     <i class="bwi bwi-spinner bwi-spin bwi-3x" *ngIf="!loaded"></i>
     <ng-container *ngIf="loaded">
       <img class="no-items-image" aria-hidden="true" />
