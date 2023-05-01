@@ -19,10 +19,10 @@ import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-con
 import { DeviceType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 
-import { BrowserApi } from "../../browser/browserApi";
-import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
-import { SetPinComponent } from "../components/set-pin.component";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { BrowserApi } from "../../../browser/browserApi";
+import { BiometricErrors, BiometricErrorTypes } from "../../../models/biometricErrors";
+import { SetPinComponent } from "../../../popup/components/set-pin.component";
+import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
 
 import { AboutComponent } from "./about.component";
 

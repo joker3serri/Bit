@@ -5,7 +5,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/
 import { ServerConfig } from "@bitwarden/common/abstractions/config/server-config";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 
-import { BrowserApi } from "../../browser/browserApi";
+import { BrowserApi } from "../../../browser/browserApi";
 
 @Component({
   selector: "app-about",
