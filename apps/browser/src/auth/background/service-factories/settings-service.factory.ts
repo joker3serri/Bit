@@ -1,6 +1,5 @@
 import { SettingsService as AbstractSettingsService } from "@bitwarden/common/abstractions/settings.service";
 
-
 import {
   FactoryOptions,
   CachedServices,
