@@ -1,4 +1,8 @@
 import {
+  settingsServiceFactory,
+  SettingsServiceInitOptions,
+} from "../../../auth/background/service-factories/settings-service.factory";
+import {
   TotpServiceInitOptions,
   totpServiceFactory,
 } from "../../../auth/background/service-factories/totp-service.factory";
@@ -15,10 +19,6 @@ import {
   logServiceFactory,
   LogServiceInitOptions,
 } from "../../../background/service_factories/log-service.factory";
-import {
-  settingsServiceFactory,
-  SettingsServiceInitOptions,
-} from "../../../background/service_factories/settings-service.factory";
 import {
   stateServiceFactory,
   StateServiceInitOptions,

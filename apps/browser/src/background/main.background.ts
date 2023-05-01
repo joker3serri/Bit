@@ -97,6 +97,7 @@ import {
 
 import { BrowserOrganizationService } from "../admin-console/services/browser-organization.service";
 import { BrowserPolicyService } from "../admin-console/services/browser-policy.service";
+import { BrowserSettingsService } from "../auth/services/browser-settings.service";
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
 import TabsBackground from "../autofill/background/tabs.background";
@@ -114,7 +115,6 @@ import { BrowserStateService as StateServiceAbstraction } from "../services/abst
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserI18nService } from "../services/browser-i18n.service";
 import { BrowserSendService } from "../services/browser-send.service";
-import { BrowserSettingsService } from "../services/browser-settings.service";
 import { BrowserStateService } from "../services/browser-state.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";
 import BrowserLocalStorageService from "../services/browserLocalStorage.service";

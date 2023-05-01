@@ -83,6 +83,7 @@ import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export"
 import { BrowserOrganizationService } from "../../admin-console/services/browser-organization.service";
 import { BrowserPolicyService } from "../../admin-console/services/browser-policy.service";
 import { LockGuardService, UnauthGuardService } from "../../auth/popup/services";
+import { BrowserSettingsService } from "../../auth/services/browser-settings.service";
 import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
 import MainBackground from "../../background/main.background";
 import { BrowserApi } from "../../browser/browserApi";
@@ -92,7 +93,6 @@ import { BrowserConfigService } from "../../services/browser-config.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 import { BrowserI18nService } from "../../services/browser-i18n.service";
 import { BrowserSendService } from "../../services/browser-send.service";
-import { BrowserSettingsService } from "../../services/browser-settings.service";
 import { BrowserStateService } from "../../services/browser-state.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserMessagingService from "../../services/browserMessaging.service";
