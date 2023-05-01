@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { AccountSettingsSettings } from "@bitwarden/common/models/domain/account";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 
-import { browserSession, sessionSync } from "../decorators/session-sync-observable";
+import { browserSession, sessionSync } from "../../decorators/session-sync-observable";
 
 @browserSession
 export class BrowserSettingsService extends SettingsService {
