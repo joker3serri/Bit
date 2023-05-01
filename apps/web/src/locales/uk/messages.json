@@ -351,7 +351,7 @@
     "message": "Збірки"
   },
   "firstName": {
-    "message": "Ім’я"
+    "message": "Ім'я"
   },
   "middleName": {
     "message": "По батькові"
@@ -992,7 +992,7 @@
     "message": "Підтвердьте головний пароль"
   },
   "confirmFormat": {
-    "message": "Підтвердьте формат"
+    "message": "Підтвердити формат"
   },
   "filePassword": {
     "message": "Пароль файлу"
@@ -1254,6 +1254,15 @@
   },
   "importSuccess": {
     "message": "Дані успішно імпортовано"
+  },
+  "importSuccessNumberOfItems": {
+    "message": "Всього імпортовано $AMOUNT$ елементів.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "dataExportSuccess": {
     "message": "Дані успішно експортовано"
@@ -2018,6 +2027,9 @@
   },
   "cancelSubscription": {
     "message": "Скасувати передплату"
+  },
+  "subscriptionExpiration": {
+    "message": "Термін дії передплати"
   },
   "subscriptionCanceled": {
     "message": "Передплату було скасовано."
@@ -3113,6 +3125,9 @@
   "inviteAcceptedDesc": {
     "message": "Ви можете отримати доступ до цієї організації одразу після підтвердження адміністратором. Ми надішлемо вам електронне повідомлення, коли це станеться."
   },
+  "inviteInitAcceptedDesc": {
+    "message": "Тепер ви маєте доступ до цієї організації."
+  },
   "inviteAcceptFailed": {
     "message": "Не вдалося прийняти запрошення. Попросіть адміністратора організації надіслати вам нове."
   },
@@ -3935,7 +3950,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "deletionDate": {
-    "message": "Дата видалення"
+    "message": "Термін дії"
   },
   "deletionDateDesc": {
     "message": "Відправлення буде остаточно видалено у вказаний час.",
@@ -4250,7 +4265,7 @@
     "message": "Приблизний податок"
   },
   "custom": {
-    "message": "Спеціальний"
+    "message": "Власний"
   },
   "customDesc": {
     "message": "Надання користувацьких дозволів учасникам"
@@ -4797,6 +4812,9 @@
   "masterPasswordInvalidWarning": {
     "message": "Ваш головний пароль не відповідає вимогам політики цієї організації. Щоб приєднатися до організації, необхідно оновити свій головний пароль зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ваш головний пароль не відповідає одній або більше політикам вашої організації. Щоб отримати доступ до сховища, вам необхідно оновити свій головний пароль зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
+  },
   "maximumVaultTimeout": {
     "message": "Час очікування сховища"
   },
@@ -4816,7 +4834,7 @@
     "message": "Хвилин"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин",
+    "message": "Політикою вашої організації встановлено максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -4825,6 +4843,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин. Для часу очікування вашого сховища встановлена дія $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Політикою вашої організації встановлено дію для часу очікування сховища $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -4855,7 +4899,7 @@
   "activateAutofill": {
     "message": "Активувати автозаповнення"
   },
-  "activateAutofillDesc": {
+  "activateAutofillPolicyDesc": {
     "message": "Активувати автозаповнення під час завантаження сторінки в налаштуваннях розширення браузера для всіх наявних і нових учасників."
   },
   "experimentalFeature": {
@@ -4991,7 +5035,7 @@
     "message": "Тариф Bitwarden Families включає"
   },
   "sponsoredFamiliesPremiumAccess": {
-    "message": "Преміум-доступ до 6 користувачів"
+    "message": "Преміумдоступ до 6 користувачів"
   },
   "sponsoredFamiliesSharedCollections": {
     "message": "Спільні збірки для обміну паролями"
@@ -5309,7 +5353,7 @@
     }
   },
   "required": {
-    "message": "обов’язково"
+    "message": "обов'язково"
   },
   "characterMaximum": {
     "message": "Максимум $MAX$ символів",
@@ -5605,6 +5649,24 @@
       }
     }
   },
+  "inputMinValue": {
+    "message": "Значення має бути принаймні $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Значення не може перевищувати $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
   "multipleInputEmails": {
     "message": "1 або більше адрес е-пошти недійсні"
   },
@@ -5875,7 +5937,7 @@
     }
   },
   "deleteServiceAccountToast": {
-    "message": "Service account deleted"
+    "message": "Службовий обліковий запис видалено"
   },
   "deleteServiceAccountsToast": {
     "message": "Службові облікові записи видалено"
@@ -5938,7 +6000,7 @@
     "description": ""
   },
   "serviceAccountName": {
-    "message": "Назва сервісного облікового запису",
+    "message": "Назва службового облікового запису",
     "description": "Label for the name of a service account"
   },
   "serviceAccountCreated": {
@@ -6669,5 +6731,23 @@
   },
   "dismiss": {
     "message": "Відхилити"
+  },
+  "notAvailableForFreeOrganization": {
+    "message": "Ця функція недоступна для безплатних організацій. Зверніться до власника своєї організації для оновлення."
+  },
+  "smProjectSecretsNoItemsNoAccess": {
+    "message": "Зверніться до адміністратора організації, щоб керувати секретами для цього проєкту.",
+    "description": "The message shown to the user under a project's secrets tab when the user only has read access to the project."
+  },
+  "enforceOnLoginDesc": {
+    "message": "Вимагати від наявних учасників змінювати паролі"
+  },
+  "smProjectDeleteAccessRestricted": {
+    "message": "У вас немає дозволу на видалення цього проєкту",
+    "description": "The individual description shown to the user when the user doesn't have access to delete a project."
+  },
+  "smProjectsDeleteBulkConfirmation": {
+    "message": "Неможливо видалити зазначені проєкти. Бажаєте продовжити?",
+    "description": "The message shown to the user when bulk deleting projects and the user doesn't have access to some projects."
   }
 }

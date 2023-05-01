@@ -176,6 +176,9 @@ export class SecretService {
     secretView.value = value;
     secretView.note = note;
 
+    secretView.read = secretResponse.read;
+    secretView.write = secretResponse.write;
+
     if (secretResponse.projects != null) {
       secretView.projects = await this.decryptProjectsMappedToSecrets(
         orgKey,
@@ -214,6 +217,9 @@ export class SecretService {
           projectIds.includes(p.id)
         );
 
+        secretListView.read = s.read;
+        secretListView.write = s.write;
+
         return secretListView;
       })
     );
@@ -227,10 +233,9 @@ export class SecretService {
       projects.map(async (s: SecretProjectResponse) => {
         const projectsMappedToSecretView = new SecretProjectView();
         projectsMappedToSecretView.id = s.id;
-        projectsMappedToSecretView.name = await this.encryptService.decryptToUtf8(
-          new EncString(s.name),
-          orgKey
-        );
+        projectsMappedToSecretView.name = s.name
+          ? await this.encryptService.decryptToUtf8(new EncString(s.name), orgKey)
+          : null;
         return projectsMappedToSecretView;
       })
     );

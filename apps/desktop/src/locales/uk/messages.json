@@ -770,6 +770,9 @@
   "contactUs": {
     "message": "Зв'язатися з нами"
   },
+  "helpAndFeedback": {
+    "message": "Допомога та зворотний зв'язок"
+  },
   "getHelp": {
     "message": "Отримати допомогу"
   },
@@ -1389,20 +1392,32 @@
   "unlockWithWindowsHello": {
     "message": "Розблокувати з Windows Hello"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "Додаткові налаштування Windows Hello"
+  },
   "windowsHelloConsentMessage": {
     "message": "Перевірити на Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Розблокувати з Touch ID"
   },
+  "additionalTouchIdSettings": {
+    "message": "Додаткові налаштування Touch ID"
+  },
   "touchIdConsentMessage": {
     "message": "розблокувати сховище"
   },
   "autoPromptWindowsHello": {
-    "message": "Ініціювати Windows Hello під час запуску"
+    "message": "Запитувати Windows Hello під час запуску"
   },
   "autoPromptTouchId": {
-    "message": "Ініціювати Touch ID під час запуску"
+    "message": "Запитувати Touch ID під час запуску"
+  },
+  "requirePasswordOnStart": {
+    "message": "Вимагати пароль чи PIN під час запуску"
+  },
+  "recommendedForSecurity": {
+    "message": "Рекомендовано для безпеки."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Блокувати головним паролем при перезапуску"
@@ -1523,6 +1538,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "Щоб завершити налаштування входу з SSO, встановіть головний пароль для доступу і захисту сховища."
+  },
+  "currentMasterPass": {
+    "message": "Поточний головний пароль"
   },
   "newMasterPass": {
     "message": "Новий головний пароль"
@@ -1672,7 +1690,7 @@
     "message": "Текст"
   },
   "deletionDate": {
-    "message": "Дата видалення"
+    "message": "Термін дії"
   },
   "deletionDateDesc": {
     "message": "Відправлення буде остаточно видалено у вказаний час.",
@@ -1762,7 +1780,7 @@
     "message": "1 день"
   },
   "custom": {
-    "message": "Спеціальний"
+    "message": "Власний"
   },
   "deleteSendConfirmation": {
     "message": "Ви дійсно хочете видалити це відправлення?",
@@ -1840,6 +1858,9 @@
   "updateMasterPasswordWarning": {
     "message": "Ваш головний пароль нещодавно був змінений адміністратором організації. Щоб отримати доступ до сховища, вам необхідно оновити його зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ваш головний пароль не відповідає одній або більше політикам вашої організації. Щоб отримати доступ до сховища, вам необхідно оновити свій головний пароль зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
+  },
   "hours": {
     "message": "Годин"
   },
@@ -1847,7 +1868,7 @@
     "message": "Хвилин"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин",
+    "message": "Політикою вашої організації встановлено максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1856,6 +1877,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин. Для часу очікування вашого сховища встановлена дія $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Політикою вашої організації встановлено дію для часу очікування сховища $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -2198,5 +2245,19 @@
         "example": "14"
       }
     }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "Bitwarden рекомендує оновити ваші біометричні налаштування, щоб вимагати головний пароль (або PIN) під час першого розблокування. Чи бажаєте оновити налаштування зараз?"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "Оновлення рекомендованих налаштувань"
+  },
+  "windows8SoonDeprecated": {
+    "message": "Операційна система, якою ви користуєтесь, більше не підтримуватиметься після випуску версії 2023.5.0. Оновіть операційну систему. Якщо ви не оновите свою операційну систему, це може призвести до непередбаченої поведінки або ризиків безпеки.",
+    "description": "Windows 8, 8.1 and Server 2012 R2 are no longer supported by Electron & Chromium. Show a notice on the login and lock screen while 2023.4.0 is the active version."
+  },
+  "windows8Deprecated": {
+    "message": "Операційна система, якою ви користуєтесь, більше не підтримується. Якщо ви не оновите свою операційну систему, це може призвести до непередбаченої поведінки.",
+    "description": "Windows 8, 8.1 and Server 2012 R2 are no longer supported by Electron & Chromium. Show a notice on the login and lock screen after 2023.5.0 is released."
   }
 }

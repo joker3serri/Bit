@@ -12,9 +12,9 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { EventType } from "@bitwarden/common/enums/eventType";
-import { ProductType } from "@bitwarden/common/enums/productType";
+import { EventType, ProductType } from "@bitwarden/common/enums";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
@@ -56,7 +56,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     protected policyService: PolicyService,
     organizationService: OrganizationService,
     logService: LogService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    sendApiService: SendApiService
   ) {
     super(
       cipherService,
@@ -71,7 +72,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       policyService,
       logService,
       passwordRepromptService,
-      organizationService
+      organizationService,
+      sendApiService
     );
   }
 
@@ -148,10 +150,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
 
     if (this.editMode) {
       if (typeI18nKey === "password") {
-        this.eventCollectionService.collect(
-          EventType.Cipher_ClientToggledHiddenFieldVisible,
-          this.cipherId
-        );
+        this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
       } else if (typeI18nKey === "securityCode") {
         this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
       } else if (aType === "H_Field") {

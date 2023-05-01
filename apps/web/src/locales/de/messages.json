@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "Daten erfolgreich importiert"
   },
+  "importSuccessNumberOfItems": {
+    "message": "Insgesamt wurden $AMOUNT$ Einträge importiert.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Daten erfolgreich exportiert"
   },
@@ -1597,7 +1606,7 @@
     "message": "Gib dem Sicherheitsschlüssel einen eigenen Namen, um ihn zu erkennen."
   },
   "twoFactorU2fPlugInReadKey": {
-    "message": "Stecken Sie den Sicherheitsschlüssel in den USB-Port Ihres Computers und drücken Sie den \"Schlüssel erfassen\" Knopf."
+    "message": "Stecke den Sicherheitsschlüssel in den USB-Port deines Computers und drücke den \"Schlüssel erfassen\" Knopf."
   },
   "twoFactorU2fTouchButton": {
     "message": "Wenn der Sicherheitsschlüssel eine Taste hat, drücken Sie die."
@@ -1857,7 +1866,7 @@
     "description": "Add more credit to your account's balance."
   },
   "amount": {
-    "message": "Anzahl",
+    "message": "Betrag",
     "description": "Dollar amount, or quantity."
   },
   "creditDelayed": {
@@ -2018,6 +2027,9 @@
   },
   "cancelSubscription": {
     "message": "Abonnement kündigen"
+  },
+  "subscriptionExpiration": {
+    "message": "Ablauf des Abonnements"
   },
   "subscriptionCanceled": {
     "message": "Das Abonnement wurde gekündigt."
@@ -3113,6 +3125,9 @@
   "inviteAcceptedDesc": {
     "message": "Du kannst der Organisation beitreten, sobald ein Administrator deine Mitgliedschaft bestätigt hat. Wir werden dich dann per E-Mail benachrichtigen."
   },
+  "inviteInitAcceptedDesc": {
+    "message": "Du kannst nun auf diese Organisation zugreifen."
+  },
   "inviteAcceptFailed": {
     "message": "Einladung kann nicht angenommen werden. Bitte einen Administrator der Organisation, eine neue Einladung zu senden."
   },
@@ -3504,7 +3519,7 @@
     "message": "Ausgewählt"
   },
   "ownership": {
-    "message": "Besitzer"
+    "message": "Eigentümer"
   },
   "whoOwnsThisItem": {
     "message": "Wem gehört dieser Eintrag?"
@@ -3831,7 +3846,7 @@
     "message": "Melde dich über das Single Sign-on-Portal deiner Organisation an. Bitte gib die SSO-Kennung deiner Organisation ein, um zu beginnen."
   },
   "enterpriseSingleSignOn": {
-    "message": "Enterprise Single-Sign-On"
+    "message": "Enterprise Single Sign-on"
   },
   "ssoHandOff": {
     "message": "Du kannst diesen Tab nun schließen und in der Erweiterung fortfahren."
@@ -4661,7 +4676,7 @@
     "message": "Fehler"
   },
   "resetPasswordManageUsers": {
-    "message": "Benutzer verwalten muss ebenfalls mit der Passwort zurücksetzen Berechtigung aktiviert werden"
+    "message": "\"Benutzer verwalten\" muss ebenfalls mit der \"Passwort zurücksetzen\"-Berechtigung aktiviert werden"
   },
   "setupProvider": {
     "message": "Anbieter-Einrichtung"
@@ -4797,6 +4812,9 @@
   "masterPasswordInvalidWarning": {
     "message": "Dein Master-Passwort entspricht nicht den Anforderungen der Richtlinie dieser Organisation. Um der Organisation beizutreten, musst du dein Master-Passwort jetzt aktualisieren. Ein Fortfahren wird deine aktuelle Sitzung abmelden. Danach musst du dich wieder anmelden. Aktive Sitzungen auf anderen Geräten können weiterhin bis zu einer Stunde aktiv bleiben."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Dein Master-Passwort entspricht nicht einer oder mehreren Richtlinien deiner Organisation. Um auf den Tresor zugreifen zu können, musst du dein Master-Passwort jetzt aktualisieren. Wenn du fortfährst, wirst du von deiner aktuellen Sitzung abgemeldet und musst dich erneut anmelden. Aktive Sitzungen auf anderen Geräten können noch bis zu einer Stunde lang aktiv bleiben."
+  },
   "maximumVaultTimeout": {
     "message": "Tresor-Timeout"
   },
@@ -4816,7 +4834,7 @@
     "message": "Minuten"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Deine Unternehmensrichtlinien beeinflussen dein Tresor-Timeout. Das maximal zulässige Tresor-Timeout ist $HOURS$ Stunde(n) und $MINUTES$ Minute(n)",
+    "message": "Deine Unternehmensrichtlinien haben das maximal zulässige Tresor-Timeout auf $HOURS$ Stunde(n) und $MINUTES$ Minute(n) festgelegt.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -4825,6 +4843,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Deine Organisationsrichtlinien beeinflussen dein Tresor-Timeout. Das maximal zulässige Tresor-Timeout beträgt $HOURS$ Stunde(n) und $MINUTES$ Minute(n). Deine Tresor-Timeout-Aktion ist auf $ACTION$ gesetzt.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Deine Organisationsrichtlinien haben deine Tresor-Timeout-Aktion auf $ACTION$ gesetzt.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -4855,8 +4899,8 @@
   "activateAutofill": {
     "message": "Auto-Ausfüllen aktivieren"
   },
-  "activateAutofillDesc": {
-    "message": "Aktiviere Auto-Ausfüllen mit den Seitenladeeinstellungen der Browser-Erweiterung für alle bestehenden und neuen Mitglieder."
+  "activateAutofillPolicyDesc": {
+    "message": "Aktiviere die Einstellung \"Auto-Ausfüllen beim Laden einer Seite\" in der Browser-Erweiterung für alle bestehenden und neuen Mitglieder."
   },
   "experimentalFeature": {
     "message": "Kompromittierte oder nicht vertrauenswürdige Websites können Auto-Ausfüllen beim Laden der Seite ausnutzen."
@@ -4904,16 +4948,16 @@
     "message": "Ansprüche vom Benutzer Info-Endpunkt erhalten"
   },
   "additionalScopes": {
-    "message": "Zusätzliche/Benutzerdefinierte Bereiche (durch Komma getrennt)"
+    "message": "Benutzerdefinierte Bereiche"
   },
   "additionalUserIdClaimTypes": {
-    "message": "Zusätzliche/benutzerdefinierte Client-ID Anspruchstypen (durch Komma getrennt)"
+    "message": "Benutzerdefinierte Client-ID Anspruchstypen"
   },
   "additionalEmailClaimTypes": {
-    "message": "Zusätzliche/Benutzerdefinierte E-Mail Anspruchstypen (durch Komma getrennt)"
+    "message": "Benutzerdefinierte E-Mail Anspruchstypen"
   },
   "additionalNameClaimTypes": {
-    "message": "Zusätzliche/Benutzerdefinierte Namen Anspruchstypen (durch Komma getrennt)"
+    "message": "Benutzerdefinierte Namen Anspruchstypen"
   },
   "acrValues": {
     "message": "Angeforderte Authentifizierungskontextklassen Referenzwerte (acr_values)"
@@ -4943,7 +4987,7 @@
     "message": "Minimal eingehender Signaturalgorithmus"
   },
   "spWantAssertionsSigned": {
-    "message": "Möchte Zusicherungen signieren"
+    "message": "Signierte Assertions erwarten"
   },
   "spValidateCertificates": {
     "message": "Zertifikate validieren"
@@ -5605,6 +5649,24 @@
       }
     }
   },
+  "inputMinValue": {
+    "message": "Der Eingabewert muss mindestens $MIN$ betragen.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Der Eingabewert darf $MAX$ nicht überschreiten.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
   "multipleInputEmails": {
     "message": "Mindestens 1 E-Mail-Adresse ist ungültig"
   },
@@ -5875,7 +5937,7 @@
     }
   },
   "deleteServiceAccountToast": {
-    "message": "Service account deleted"
+    "message": "Dienstkonto gelöscht"
   },
   "deleteServiceAccountsToast": {
     "message": "Dienstkonten gelöscht"
@@ -6669,5 +6731,23 @@
   },
   "dismiss": {
     "message": "Verwerfen"
+  },
+  "notAvailableForFreeOrganization": {
+    "message": "Diese Funktion ist für kostenlose Organisationen nicht verfügbar. Kontaktiere deinen Organisationseigentümer zum Upgraden."
+  },
+  "smProjectSecretsNoItemsNoAccess": {
+    "message": "Kontaktiere den Administrator deiner Organisation, um Geheimnisse für dieses Projekt zu verwalten.",
+    "description": "The message shown to the user under a project's secrets tab when the user only has read access to the project."
+  },
+  "enforceOnLoginDesc": {
+    "message": "Bestehende Mitglieder auffordern, ihre Passwörter zu ändern"
+  },
+  "smProjectDeleteAccessRestricted": {
+    "message": "Du hast nicht die Berechtigungen, dieses Projekt zu löschen",
+    "description": "The individual description shown to the user when the user doesn't have access to delete a project."
+  },
+  "smProjectsDeleteBulkConfirmation": {
+    "message": "Die folgenden Projekte können nicht gelöscht werden. Möchtest du fortfahren?",
+    "description": "The message shown to the user when bulk deleting projects and the user doesn't have access to some projects."
   }
 }
