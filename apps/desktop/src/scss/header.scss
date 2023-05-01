@@ -73,6 +73,15 @@
         color: themed("headerInputColor");
       }
 
+      // Avoid readability issue when both of header and selection color was
+      // accent color.
+      &::selection {
+        @include themify($themes) {
+          background-color: themed("headerInputSelectionBackgroundColor");
+          color: themed("headerInputSelectionForegroundColor");
+        }
+      }
+
       &:focus {
         border-radius: $border-radius;
         outline: none;
