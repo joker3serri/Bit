@@ -71,7 +71,7 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   get showAsExpired() {
     return this.subscription.hasSeparateGracePeriod
       ? this.subscription.isExpiredWithoutGracePeriod
-      : this.subscription.isExpired;
+      : this.subscription.isExpiredAndOutsideGracePeriod;
   }
 
   constructor(

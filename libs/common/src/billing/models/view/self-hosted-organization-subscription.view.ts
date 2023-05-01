@@ -55,7 +55,7 @@ export class SelfHostedOrganizationSubscriptionView implements View {
   /**
    * True if the subscription has an expiration date that has past, including the grace period.
    */
-  get isExpired() {
+  get isExpiredAndOutsideGracePeriod() {
     return this.hasExpiration && this.expirationWithGracePeriod < new Date();
   }
 }
