@@ -9,8 +9,8 @@ import { IconButtonModule } from "../icon-button";
 import { SharedModule } from "../shared";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
-import { DialogService } from "./dialog.service";
 import { DialogComponent } from "./dialog/dialog.component";
+import { DialogService } from "./dialog.service";
 import { DialogCloseDirective } from "./directives/dialog-close.directive";
 import { DialogTitleContainerDirective } from "./directives/dialog-title-container.directive";
 
@@ -44,10 +44,10 @@ class StoryDialogComponent {
         <br />
         Animal: {{ animal }}
       </span>
-      <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
+      <ng-container bitDialogFooter>
         <button bitButton buttonType="primary" (click)="dialogRef.close()">Save</button>
         <button bitButton buttonType="secondary" bitDialogClose>Cancel</button>
-      </div>
+      </ng-container>
     </bit-dialog>
   `,
 })
