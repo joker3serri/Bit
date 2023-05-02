@@ -16,7 +16,6 @@ import { DialogTitleContainerDirective } from "../directives/dialog-title-contai
 import { SimpleDialogComponent } from "../simple-dialog/simple-dialog.component";
 
 @Component({
-  selector: "app-story-dialog",
   template: `
     <h2 class="tw-text-main">Dialog Type Examples:</h2>
     <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">

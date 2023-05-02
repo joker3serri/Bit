@@ -46,7 +46,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { KdfType, DEFAULT_PBKDF2_ITERATIONS, EventType } from "@bitwarden/common/enums";
+import { DEFAULT_PBKDF2_ITERATIONS, EventType, KdfType } from "@bitwarden/common/enums";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
@@ -586,6 +586,9 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
     const selectedColId = this.activeFilter.collectionId;
     if (selectedColId !== "AllCollections") {
+      component.organizationId = component.collections.find(
+        (collection) => collection.id === selectedColId
+      )?.organizationId;
       component.collectionIds = [selectedColId];
     }
     component.folderId = this.activeFilter.folderId;
