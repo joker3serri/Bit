@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -18,11 +19,11 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 
-import { AddEditComponent as BaseAddEditComponent } from "../../../app/vault/individual-vault/add-edit.component";
+import { AddEditComponent as BaseAddEditComponent } from "../../../vault/individual-vault/add-edit.component";
 
 @Component({
   selector: "app-org-vault-add-edit",
-  templateUrl: "../../../app/vault/individual-vault/add-edit.component.html",
+  templateUrl: "../../../vault/individual-vault/add-edit.component.html",
 })
 export class EmergencyAddEditComponent extends BaseAddEditComponent {
   originalCipher: Cipher = null;
@@ -45,7 +46,8 @@ export class EmergencyAddEditComponent extends BaseAddEditComponent {
     passwordRepromptService: PasswordRepromptService,
     organizationService: OrganizationService,
     logService: LogService,
-    sendApiService: SendApiService
+    sendApiService: SendApiService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cipherService,
@@ -63,7 +65,8 @@ export class EmergencyAddEditComponent extends BaseAddEditComponent {
       organizationService,
       logService,
       passwordRepromptService,
-      sendApiService
+      sendApiService,
+      dialogService
     );
   }
 

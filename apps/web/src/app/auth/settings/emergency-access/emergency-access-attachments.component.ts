@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { AttachmentsComponent as BaseAttachmentsComponent } from "@bitwarden/angular/vault/components/attachments.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -13,7 +14,7 @@ import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.v
 
 @Component({
   selector: "emergency-access-attachments",
-  templateUrl: "../../../app/vault/individual-vault/attachments.component.html",
+  templateUrl: "../../../vault/individual-vault/attachments.component.html",
 })
 export class EmergencyAccessAttachmentsComponent extends BaseAttachmentsComponent {
   viewOnly = true;
@@ -27,7 +28,8 @@ export class EmergencyAccessAttachmentsComponent extends BaseAttachmentsComponen
     platformUtilsService: PlatformUtilsService,
     apiService: ApiService,
     logService: LogService,
-    fileDownloadService: FileDownloadService
+    fileDownloadService: FileDownloadService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cipherService,
@@ -38,7 +40,8 @@ export class EmergencyAccessAttachmentsComponent extends BaseAttachmentsComponen
       window,
       logService,
       stateService,
-      fileDownloadService
+      fileDownloadService,
+      dialogService
     );
   }
 
