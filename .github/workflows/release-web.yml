@@ -167,13 +167,13 @@ jobs:
           repository: bitwarden/web-vault-pages
           path: ghpages-deployment
           token: ${{ steps.retrieve-bot-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
-        
+
       - name: Download latest cloud asset
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-web.yml
-          path: artifacts
+          path: assets
           workflow_conclusion: success
           branch: ${{ github.ref_name }}
           artifacts: web-*-cloud-COMMERCIAL.zip
@@ -183,14 +183,34 @@ jobs:
         uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-web.yml
-          path: artifacts
+          path: assets
           workflow_conclusion: success
           branch: master
           artifacts: web-*-cloud-COMMERCIAL.zip
 
       - name: Unzip build asset
-        working-directory: artifacts/web
+        working-directory: assets
         run: unzip web-*-cloud-COMMERCIAL.zip
+  
+      - name: Create new branch
+        run: |
+          cd ${{ github.workspace }}/ghpages-deployment
+          git config user.name = "GitHub Action Bot"
+          git config user.email = "<>"
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://".insteadOf ssh://
+          git checkout -b "${_TAG_VERSION}"
+  
+      - name: Copy build files to GH pages repo
+        run: |
+          rsync -av --delete ${{ github.workspace }}assets/web/build/* ghpages-deployment/
+  
+      - name: Commit and push changes
+        working-directory: ghpages-deployment
+        run: |
+          git add .
+          git commit -m "Deploy Web ${_TAG_VERSION} to GitHub Pages"
+          git push --set-upstream origin "${_TAG_VERSION}"
 
 
   release:
