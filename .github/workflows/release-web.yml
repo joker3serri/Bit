@@ -186,7 +186,7 @@ jobs:
     needs:
       - setup
       - self-host
-      - cfpages-deploy
+      - ghpages-deploy
     steps:
       - name: Create GitHub deployment
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
