@@ -139,25 +139,28 @@ jobs:
         run: docker logout
 
 
-  cfpages-deploy:
-    name: Deploy Web Vault to CloudFlare Pages branch
+  ghpages-deploy:
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-20.04
     needs:
       - setup
       - self-host
     env:
       _RELEASE_VERSION: ${{ needs.setup.outputs.release_version }}
-      _TAG_VERSION: ${{ needs.setup.outputs.release_version }}
+      _TAG_VERSION: ${{ needs.setup.outputs.tag_version }}
     steps:
-      - name: Checkout Repo
+      - name: Checkout GH pages repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
-
+        with:
+          repository: bitwarden/web-vault-pages
+          path: ghpages-deployment
+        
       - name: Download latest cloud asset
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-web.yml
-          path: apps/web
+          path: artifacts
           workflow_conclusion: success
           branch: ${{ github.ref_name }}
           artifacts: web-*-cloud-COMMERCIAL.zip
@@ -167,55 +170,14 @@ jobs:
         uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-web.yml
-          path: apps/web
+          path: artifacts
           workflow_conclusion: success
           branch: master
           artifacts: web-*-cloud-COMMERCIAL.zip
 
       - name: Unzip build asset
-        working-directory: apps/web
+        working-directory: artifacts/web
         run: unzip web-*-cloud-COMMERCIAL.zip
-
-      - name: Checkout Repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
-        with:
-          ref: cf-pages
-          path: deployment
-
-      - name: Setup git config
-        run: |
-          git config --global user.name = "GitHub Action Bot"
-          git config --global user.email = "<>"
-          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
-          git config --global url."https://".insteadOf ssh://
-
-      - name: Deploy CloudFlare Pages
-        run: |
-          rm -rf ./*
-          cp -R ../apps/web/build/* .
-        working-directory: deployment
-
-      - name: Create cf-pages-deploy branch
-        run: |
-          git switch -c cf-pages-deploy-$_TAG_VERSION
-          git add .
-          git commit -m "Staging deploy ${{ needs.setup.outputs.release_version }}"
-
-          if [[ "${{ github.event.inputs.release_type }}" != "Dry Run" ]]; then
-            git push -u origin cf-pages-deploy-$_TAG_VERSION
-          fi
-        working-directory: deployment
-
-      - name: Create CloudFlare Pages Deploy PR
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        env:
-          PR_BRANCH: cf-pages-deploy-${{ env._TAG_VERSION }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr create --title "Deploy $_RELEASE_VERSION to CloudFlare Pages" \
-            --body "Deploying $_RELEASE_VERSION" \
-            --base cf-pages \
-            --head "$PR_BRANCH"
 
 
   release:
