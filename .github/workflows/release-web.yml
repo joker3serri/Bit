@@ -199,7 +199,7 @@ jobs:
           git config user.email = "<>"
           git config --global url."https://github.com/".insteadOf ssh://git@github.com/
           git config --global url."https://".insteadOf ssh://
-          git checkout -b "${_TAG_VERSION}"
+          git checkout -b "${_RELEASE_VERSION}"
   
       - name: Copy build files to GH pages repo
         run: |
@@ -209,8 +209,8 @@ jobs:
         working-directory: ghpages-deployment
         run: |
           git add .
-          git commit -m "Deploy Web ${_TAG_VERSION} to GitHub Pages"
-          git push --set-upstream origin "${_TAG_VERSION}"
+          git commit -m "Deploy Web ${_RELEASE_VERSION} to GitHub Pages"
+          git push --set-upstream origin "${_RELEASE_VERSION}"
 
 
   release:
