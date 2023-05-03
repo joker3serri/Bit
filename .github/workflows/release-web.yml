@@ -149,11 +149,24 @@ jobs:
       _RELEASE_VERSION: ${{ needs.setup.outputs.release_version }}
       _TAG_VERSION: ${{ needs.setup.outputs.tag_version }}
     steps:
+      - name: Login to Azure - CI Subscription
+        uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.0
+        with:
+          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
+
+      - name: Retrieve bot secrets
+        id: retrieve-bot-secrets
+        uses: bitwarden/gh-actions/get-keyvault-secrets@34ecb67b2a357795dc893549df0795e7383ff50f
+        with:
+          keyvault: bitwarden-ci
+          secrets: "github-pat-bitwarden-devops-bot-repo-scope"
+
       - name: Checkout GH pages repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
         with:
           repository: bitwarden/web-vault-pages
           path: ghpages-deployment
+          token: ${{ steps.retrieve-bot-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
         
       - name: Download latest cloud asset
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
