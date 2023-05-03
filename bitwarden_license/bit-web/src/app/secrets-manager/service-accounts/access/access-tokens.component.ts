@@ -45,28 +45,25 @@ export class AccessTokenComponent implements OnInit {
   }
 
   protected async revoke(tokens: AccessTokenView[]) {
-    if (tokens.length) {
-      if (!(await this.verifyUser())) {
-        return;
-      }
-
-      await this.accessService.revokeAccessTokens(
-        this.serviceAccountId,
-        tokens.map((t) => t.id)
-      );
-
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("accessTokenRevoked")
-      );
-    } else {
+    if (!tokens?.length) {
       this.platformUtilsService.showToast(
         "error",
         null,
         this.i18nService.t("noAccessTokenSelected")
       );
+      return;
     }
+
+    if (!(await this.verifyUser())) {
+      return;
+    }
+
+    await this.accessService.revokeAccessTokens(
+      this.serviceAccountId,
+      tokens.map((t) => t.id)
+    );
+
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("accessTokenRevoked"));
   }
 
   protected openNewAccessTokenDialog() {
