@@ -203,7 +203,7 @@ jobs:
   
       - name: Copy build files to GH pages repo
         run: |
-          rsync -av --delete ${{ github.workspace }}assets/web/build/* ghpages-deployment/
+          rsync -av --delete ${{ github.workspace }}/assets/build/* ghpages-deployment/
   
       - name: Commit and push changes
         working-directory: ghpages-deployment
