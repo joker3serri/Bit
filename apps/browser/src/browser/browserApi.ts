@@ -1,3 +1,5 @@
+import { DeviceType } from "@bitwarden/common/enums/device-type.enum";
+
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
 import { TabMessage } from "../types/tab-messages";
 
@@ -256,7 +258,8 @@ export class BrowserApi {
   static getSidebarAction(
     win: Window & typeof globalThis
   ): OperaSidebarAction | FirefoxSidebarAction | null {
-    if (!BrowserPlatformUtilsService.isFirefox() && !BrowserPlatformUtilsService.isOpera(win)) {
+    const deviceType = BrowserPlatformUtilsService.getDevice(win);
+    if (deviceType !== DeviceType.FirefoxExtension && deviceType !== DeviceType.OperaExtension) {
       return null;
     }
     return win.opr?.sidebarAction || browser.sidebarAction;
