@@ -18,6 +18,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import {
+  MemberDecryptionType,
   OpenIdConnectRedirectBehavior,
   Saml2BindingType,
   Saml2NameIdFormat,
@@ -40,6 +41,7 @@ const defaultSigningAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha2
 })
 export class SsoComponent implements OnInit, OnDestroy {
   readonly ssoType = SsoType;
+  readonly memberDecryptionType = MemberDecryptionType;
 
   readonly ssoTypeOptions: SelectOptions[] = [
     { name: this.i18nService.t("selectType"), value: SsoType.None, disabled: true },
@@ -147,7 +149,7 @@ export class SsoComponent implements OnInit, OnDestroy {
 
   protected ssoConfigForm = this.formBuilder.group<ControlsOf<SsoConfigView>>({
     configType: new FormControl(SsoType.None),
-    keyConnectorEnabled: new FormControl(false),
+    memberDecryptionType: new FormControl(MemberDecryptionType.MasterPassword),
     keyConnectorUrl: new FormControl(""),
     openId: this.openIdForm,
     saml: this.samlForm,
@@ -247,7 +249,7 @@ export class SsoComponent implements OnInit, OnDestroy {
   async submit() {
     this.updateFormValidationState(this.ssoConfigForm);
 
-    if (this.ssoConfigForm.value.keyConnectorEnabled) {
+    if (this.ssoConfigForm.value.memberDecryptionType === MemberDecryptionType.KeyConnector) {
       this.haveTestedKeyConnector = false;
       await this.validateKeyConnectorUrl();
     }
@@ -313,7 +315,7 @@ export class SsoComponent implements OnInit, OnDestroy {
 
   get enableTestKeyConnector() {
     return (
-      this.ssoConfigForm.get("keyConnectorEnabled").value &&
+      this.ssoConfigForm.value?.memberDecryptionType === MemberDecryptionType.KeyConnector &&
       !Utils.isNullOrWhitespace(this.keyConnectorUrl?.value)
     );
   }
