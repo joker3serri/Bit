@@ -144,14 +144,13 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - setup
-      - self-host
     env:
       _RELEASE_VERSION: ${{ needs.setup.outputs.release_version }}
       _TAG_VERSION: ${{ needs.setup.outputs.tag_version }}
       _BRANCH: "v${{ needs.setup.outputs.release_version }}-deploy"
     steps:
       - name: Login to Azure - CI Subscription
-        uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.0
+        uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.6
         with:
           creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
@@ -163,7 +162,7 @@ jobs:
           secrets: "github-pat-bitwarden-devops-bot-repo-scope"
 
       - name: Checkout GH pages repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           repository: bitwarden/web-vault-pages
           path: ghpages-deployment
@@ -219,11 +218,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.retrieve-bot-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
         run: |
-          gh pr create --title "Deploy v${_RELEASE_VERSION} to GitHub Pages" \
-            --draft \
-            --body "Deploying v${_RELEASE_VERSION}" \
-            --base master \
-            --head "${_BRANCH}"
+          if [[ "${{ github.event.inputs.release_type }}" == "Dry Run" ]]; then
+            gh pr create --title "Deploy v${_RELEASE_VERSION} to GitHub Pages" \
+              --draft \
+              --body "Deploying v${_RELEASE_VERSION}" \
+              --base master \
+              --head "${_BRANCH}"
+          else
+            gh pr create --title "Deploy v${_RELEASE_VERSION} to GitHub Pages" \
+              --body "Deploying v${_RELEASE_VERSION}" \
+              --base master \
+              --head "${_BRANCH}"
+          fi
 
   release:
     name: Create GitHub Release
