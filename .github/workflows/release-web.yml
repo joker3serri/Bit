@@ -215,6 +215,7 @@ jobs:
           git push --set-upstream origin ${_BRANCH} --force
 
       - name: Create GitHub Pages Deploy PR
+        working-directory: ghpages-deployment
         env:
           GITHUB_TOKEN: ${{ steps.retrieve-bot-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
         run: |
