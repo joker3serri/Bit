@@ -57,9 +57,10 @@ const Template: Story<DialogComponent> = (args: DialogComponent) => ({
       <span bitDialogTitle>{{title}}</span>
       <ng-container bitDialogContent>Dialog body text goes here.</ng-container>
       <ng-container bitDialogFooter>
-        <button bitButton buttonType="primary">Save</button>
-        <button bitButton buttonType="secondary">Cancel</button>
+        <button bitButton buttonType="primary" [disabled]="loading">Save</button>
+        <button bitButton buttonType="secondary" [disabled]="loading">Cancel</button>
         <button
+          [disabled]="loading"
           class="tw-ml-auto"
           bitIconButton="bwi-trash"
           buttonType="danger"
@@ -115,8 +116,8 @@ const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
         end of sequence!
       </span>
       <ng-container bitDialogFooter>
-        <button bitButton buttonType="primary">Save</button>
-        <button bitButton buttonType="secondary">Cancel</button>
+        <button bitButton buttonType="primary" [disabled]="loading">Save</button>
+        <button bitButton buttonType="secondary" [disabled]="loading">Cancel</button>
       </ng-container>
     </bit-dialog>
   `,
@@ -140,8 +141,8 @@ const TemplateTabbed: Story<DialogComponent> = (args: DialogComponent) => ({
         </bit-tab-group>
       </span>
       <ng-container bitDialogFooter>
-        <button bitButton buttonType="primary">Save</button>
-        <button bitButton buttonType="secondary">Cancel</button>
+        <button bitButton buttonType="primary" [disabled]="loading">Save</button>
+        <button bitButton buttonType="secondary" [disabled]="loading">Cancel</button>
       </ng-container>
     </bit-dialog>
   `,
