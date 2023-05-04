@@ -241,7 +241,7 @@ jobs:
     steps:
       - name: Create GitHub deployment
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: chrnorm/deployment-action@1b599fe41a0ef1f95191e7f2eec4743f2d7dfc48
+        uses: chrnorm/deployment-action@d42cde7132fcec920de534fffc3be83794335c00 # v2.0.5
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
@@ -294,7 +294,7 @@ jobs:
 
       - name: Update deployment status to Success
         if: ${{ github.event.inputs.release_type != 'Dry Run' && success() }}
-        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
+        uses: chrnorm/deployment-status@d42cde7132fcec920de534fffc3be83794335c00 # v2.0.5
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.bitwarden.com
@@ -303,7 +303,7 @@ jobs:
 
       - name: Update deployment status to Failure
         if: ${{ github.event.inputs.release_type != 'Dry Run' && failure() }}
-        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
+        uses: chrnorm/deployment-status@d42cde7132fcec920de534fffc3be83794335c00 # v2.0.5
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.bitwarden.com
