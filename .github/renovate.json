@@ -19,7 +19,8 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "matchPackagePatterns": ["typescript"],
+      "packageNames": ["typescript"],
+      "matchUpdateTypes": ["major", "minor"],
       "enabled": false
     },
     {
