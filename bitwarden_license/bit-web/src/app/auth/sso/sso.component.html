@@ -8,7 +8,7 @@
     title="{{ 'loading' | i18n }}"
     aria-hidden="true"
   ></i>
-  <span class="sr-only">{{ "loading" | i18n }}</span>
+  <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 </ng-container>
 
 <form
@@ -27,12 +27,11 @@
 
   <!-- Root form -->
   <ng-container>
-    <app-input-checkbox
-      controlId="enabled"
-      formControlName="enabled"
-      [label]="'allowSso' | i18n"
-      [helperText]="'allowSsoDesc' | i18n"
-    ></app-input-checkbox>
+    <bit-form-control>
+      <bit-label>{{ "allowSso" | i18n }}</bit-label>
+      <input bitCheckbox type="checkbox" formControlName="enabled" id="enabled" />
+      <bit-hint>{{ "allowSsoDesc" | i18n }}</bit-hint>
+    </bit-form-control>
 
     <bit-form-field>
       <bit-label>{{ "ssoIdentifier" | i18n }}</bit-label>
@@ -223,11 +222,15 @@
         </select>
       </bit-form-field>
 
-      <app-input-checkbox
-        controlId="getClaimsFromUserInfoEndpoint"
-        formControlName="getClaimsFromUserInfoEndpoint"
-        [label]="'getClaimsFromUserInfoEndpoint' | i18n"
-      ></app-input-checkbox>
+      <bit-form-control>
+        <bit-label>{{ "getClaimsFromUserInfoEndpoint" | i18n }}</bit-label>
+        <input
+          bitCheckbox
+          type="checkbox"
+          formControlName="getClaimsFromUserInfoEndpoint"
+          id="getClaimsFromUserInfoEndpoint"
+        />
+      </bit-form-control>
 
       <!-- Optional customizations -->
       <div
@@ -399,17 +402,25 @@
         </select>
       </bit-form-field>
 
-      <app-input-checkbox
-        controlId="spWantAssertionsSigned"
-        formControlName="spWantAssertionsSigned"
-        [label]="'spWantAssertionsSigned' | i18n"
-      ></app-input-checkbox>
+      <bit-form-control>
+        <bit-label>{{ "spWantAssertionsSigned" | i18n }}</bit-label>
+        <input
+          bitCheckbox
+          type="checkbox"
+          formControlName="spWantAssertionsSigned"
+          id="spWantAssertionsSigned"
+        />
+      </bit-form-control>
 
-      <app-input-checkbox
-        controlId="spValidateCertificates"
-        formControlName="spValidateCertificates"
-        [label]="'spValidateCertificates' | i18n"
-      ></app-input-checkbox>
+      <bit-form-control>
+        <bit-label>{{ "spValidateCertificates" | i18n }}</bit-label>
+        <input
+          bitCheckbox
+          type="checkbox"
+          formControlName="spValidateCertificates"
+          id="spValidateCertificates"
+        />
+      </bit-form-control>
     </div>
 
     <!-- SAML2 IDP -->
@@ -480,17 +491,25 @@
         [label]="'idpAllowUnsolicitedAuthnResponse' | i18n"
       ></app-input-checkbox> -->
 
-      <app-input-checkbox
-        controlId="idpAllowOutboundLogoutRequests"
-        formControlName="idpAllowOutboundLogoutRequests"
-        [label]="'idpAllowOutboundLogoutRequests' | i18n"
-      ></app-input-checkbox>
+      <bit-form-control>
+        <bit-label>{{ "idpAllowOutboundLogoutRequests" | i18n }}</bit-label>
+        <input
+          bitCheckbox
+          type="checkbox"
+          formControlName="idpAllowOutboundLogoutRequests"
+          id="idpAllowOutboundLogoutRequests"
+        />
+      </bit-form-control>
 
-      <app-input-checkbox
-        controlId="idpWantAuthnRequestsSigned"
-        formControlName="idpWantAuthnRequestsSigned"
-        [label]="'idpSignAuthenticationRequests' | i18n"
-      ></app-input-checkbox>
+      <bit-form-control>
+        <bit-label>{{ "idpSignAuthenticationRequests" | i18n }}</bit-label>
+        <input
+          bitCheckbox
+          type="checkbox"
+          formControlName="idpWantAuthnRequestsSigned"
+          id="idpWantAuthnRequestsSigned"
+        />
+      </bit-form-control>
     </div>
   </div>
 
