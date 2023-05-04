@@ -746,9 +746,22 @@
               return false;
           }
 
-          return savedURLs.some(url => url?.indexOf('https://') === 0) && 'http:' === document.location.protocol && (passwordInputs = document.querySelectorAll('input[type=password]'),
-              0 < passwordInputs.length && (confirmResult = confirm('Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page.\n\nDo you still wish to fill this login?'),
-                  0 == confirmResult)) ? true : false;
+          const confirmationWarning = [
+              chrome.i18n.getMessage("insecurePageWarning"),
+              chrome.i18n.getMessage("insecurePageWarningFillPrompt", [window.location.hostname])
+          ].join('\n\n');
+
+          return savedURLs.some(url =>
+              url?.indexOf('https://') === 0) &&
+              'http:' === document.location.protocol &&
+              (
+                  passwordInputs = document.querySelectorAll('input[type=password]'),
+                  passwordInputs.length > 0 &&
+                  (
+                      confirmResult = confirm(confirmationWarning),
+                      !confirmResult
+                  )
+              ) ? true : false;
       }
 
       // Detect if within an iframe, and the iframe is sandboxed
@@ -777,9 +790,12 @@
             // confirm() is blocked by sandboxed iframes, but we don't want to fill sandboxed iframes anyway.
             // If this occurs, confirm() returns false without displaying the dialog box, and autofill will be aborted.
             // The browser may print a message to the console, but this is not a standard error that we can handle.
-            var confirmationWarning = `The form is hosted by a different domain than the URI of your saved login. Choose OK to auto-fill anyway, or Cancel to stop.\n\nTo prevent this warning in the future, save this URI, ${window.location.hostname}, to your Bitwarden login item for this site.`;
+            const confirmationWarning = [
+              chrome.i18n.getMessage("autofillIframeWarning"),
+              chrome.i18n.getMessage("autofillIframeWarningTip", [window.location.hostname])
+            ].join('\n\n');
 
-            var acceptedIframeWarning = confirm(confirmationWarning);
+            const acceptedIframeWarning = confirm(confirmationWarning);
 
             if (!acceptedIframeWarning) {
               return;
