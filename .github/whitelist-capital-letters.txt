@@ -47,7 +47,6 @@
 ./libs/common/src/abstractions/appId.service.ts
 ./libs/common/src/services/azureFileUpload.service.ts
 ./libs/common/src/services/stateMigration.service.ts
-./libs/common/src/services/consoleLog.service.ts
 ./libs/common/src/services/formValidationErrors.service.ts
 ./libs/common/src/services/vaultTimeout/vaultTimeoutSettings.service.ts
 ./libs/common/src/services/vaultTimeout/vaultTimeout.service.ts
