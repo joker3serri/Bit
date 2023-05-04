@@ -202,10 +202,10 @@ jobs:
           git config --global url."https://".insteadOf ssh://
           git checkout -b ${_BRANCH}
   
-      - name: Copy build files to GH pages repo
+      - name: Copy build files
         run: |
           rm -rf ${{ github.workspace }}/ghpages-deployment/*
-          rsync -v ${{ github.workspace }}/assets/build/* ghpages-deployment/
+          cp -Rf ${{ github.workspace }}/assets/build/* ghpages-deployment/
   
       - name: Commit and push changes
         working-directory: ghpages-deployment
@@ -220,6 +220,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.retrieve-bot-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
         run: |
           gh pr create --title "Deploy v${_RELEASE_VERSION} to GitHub Pages" \
+            --draft \
             --body "Deploying v${_RELEASE_VERSION}" \
             --base master \
             --head "${_BRANCH}"
