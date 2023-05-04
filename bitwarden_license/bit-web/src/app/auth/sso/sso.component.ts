@@ -96,7 +96,6 @@ export class SsoComponent implements OnInit, OnDestroy {
   haveTestedKeyConnector = false;
   organizationId: string;
   organization: Organization;
-  formPromise: Promise<OrganizationSsoResponse>;
 
   callbackPath: string;
   signedOutCallbackPath: string;
@@ -256,7 +255,7 @@ export class SsoComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  async submit() {
+  submit = async () => {
     this.updateFormValidationState(this.ssoConfigForm);
 
     if (this.ssoConfigForm.value.memberDecryptionType === MemberDecryptionType.KeyConnector) {
@@ -274,18 +273,11 @@ export class SsoComponent implements OnInit, OnDestroy {
     request.identifier = this.ssoIdentifierCtrl.value === "" ? null : this.ssoIdentifierCtrl.value;
     request.data = SsoConfigApi.fromView(this.ssoConfigForm.getRawValue());
 
-    this.formPromise = this.organizationApiService.updateSso(this.organizationId, request);
+    const response = await this.organizationApiService.updateSso(this.organizationId, request);
+    this.populateForm(response);
 
-    try {
-      const response = await this.formPromise;
-      this.populateForm(response);
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("ssoSettingsSaved"));
-    } catch {
-      // Logged by appApiAction, do nothing
-    }
-
-    this.formPromise = null;
-  }
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("ssoSettingsSaved"));
+  };
 
   async validateKeyConnectorUrl() {
     if (this.haveTestedKeyConnector) {

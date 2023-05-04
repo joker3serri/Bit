@@ -11,13 +11,7 @@
   <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 </ng-container>
 
-<form
-  #form
-  (ngSubmit)="submit()"
-  [formGroup]="ssoConfigForm"
-  [appApiAction]="formPromise"
-  *ngIf="!loading"
->
+<form [formGroup]="ssoConfigForm" [bitSubmit]="submit" *ngIf="!loading">
   <p>
     {{ "ssoPolicyHelpStart" | i18n }}
     <a routerLink="../policies">{{ "ssoPolicyHelpLink" | i18n }}</a>
@@ -513,7 +507,7 @@
     </div>
   </div>
 
-  <button type="submit" buttonType="primary" bitButton [loading]="form.loading">
+  <button type="submit" buttonType="primary" bitButton bitFormButton>
     {{ "save" | i18n }}
   </button>
   <bit-error-summary [formGroup]="ssoConfigForm"></bit-error-summary>
