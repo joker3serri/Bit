@@ -230,10 +230,14 @@ export class SsoComponent implements OnInit, OnDestroy {
       )
       .subscribe();
 
-    this.showTdeOptions =
-      (await this.configService.getFeatureFlagBool(FeatureFlag.TrustedDeviceEncryption)) &&
-      !this.platformUtilsService.isSelfHost();
-    this.showKeyConnectorOptions = this.platformUtilsService.isSelfHost();
+    const tdeFeatureFlag = await this.configService.getFeatureFlagBool(
+      FeatureFlag.TrustedDeviceEncryption
+    );
+
+    this.showTdeOptions = tdeFeatureFlag && !this.platformUtilsService.isSelfHost();
+    // If the tde flag is not enabled, continue showing the key connector options to keep the UI the same
+    // Once the flag is removed, we can rely on the platformUtilsService.isSelfHost() check alone
+    this.showKeyConnectorOptions = !tdeFeatureFlag || this.platformUtilsService.isSelfHost();
   }
 
   ngOnDestroy(): void {
