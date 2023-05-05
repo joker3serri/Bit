@@ -741,8 +741,7 @@
 
       // Check if URL is not secure when the original saved one was
       function urlNotSecure(savedURLs) {
-          var passwordInputs = null;
-          if (!savedURLs) {
+          if (!savedURLs || !savedURLs.length) {
               return false;
           }
 
@@ -751,17 +750,20 @@
               chrome.i18n.getMessage("insecurePageWarningFillPrompt", [window.location.hostname])
           ].join('\n\n');
 
-          return savedURLs.some(url =>
-              url?.indexOf('https://') === 0) &&
-              'http:' === document.location.protocol &&
-              (
-                  passwordInputs = document.querySelectorAll('input[type=password]'),
-                  passwordInputs.length > 0 &&
-                  (
-                      confirmResult = confirm(confirmationWarning),
-                      !confirmResult
-                  )
-              ) ? true : false;
+          if (
+              // At least one of the `savedURLs` uses SSL
+              savedURLs.some(url => url.startsWith('https://')) &&
+              // The current page is not using SSL
+              document.location.protocol === 'http:' &&
+              // There are password inputs on the page
+              document.querySelectorAll('input[type=password]')?.length
+          ) {
+              // The user agrees the page is unsafe or not
+              return !confirm(confirmationWarning);
+          }
+
+          // The page is secure
+          return false;
       }
 
       // Detect if within an iframe, and the iframe is sandboxed
