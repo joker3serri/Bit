@@ -56,9 +56,9 @@ within the `ng-template`which provides access to the rows using `let-rows$`.
 ### Sortable
 
 We provide a simple component for displaying sortable column headers. The `bitSortable` component
-wires up to the `TableDataSource` and will automatically sort the data when clicked and display
-an indicator for which column is currently sorted. The dafault sorting can be specified by setting
-the `default`.
+wires up to the `TableDataSource` and will automatically sort the data when clicked and display an
+indicator for which column is currently sorted. The dafault sorting can be specified by setting the
+`default`.
 
 ```html
 <th bitCell bitSortable="id" default>Id</th>
@@ -100,5 +100,6 @@ specify a `itemSize`, set `scrollWindow` to `true` and replace `*ngFor` with `*c
 
 ## Accessibility
 
-- Always incude a row or column header with your table; this allows screen readers to better contextualize the data
+- Always incude a row or column header with your table; this allows screen readers to better
+  contextualize the data
 - Avoid spanning data across cells
