@@ -4,16 +4,12 @@ import { Meta, Story } from "@storybook/addon-docs";
 
 # Button
 
-Use buttons for actions in forms, dialogs, and more with support for style, block, icon, and state.
+Buttons are interactive elements that can be triggered using a mouse, keyboard, or touch. They are
+used to indicate actions that can be performed by a user such as submitting a form.
 
-For pairings in the bottom left corner of a page or component, the `primary` call to action will go
-on the left side of a button group with the `secondary` call to action option on the left.
+## Guidelines
 
-Pairings in the top right corner of a page, should have the `primary` call to action on the right.
-
-Groups of buttons should have 1rem of spacing between them.
-
-## Choosing the `<a>` or `<button>`
+### Choosing the `<a>` or `<button>`
 
 Buttons can use either the `<a>` or `<button>` tags. Choose which based on the action the button
 takes:
@@ -22,15 +18,39 @@ takes:
 - If taking an action on the current page use `<button>`
 - If the button launches a dialog, use `<button>`
 
-## Submit and async actions
+### Groups
 
-Both submit and async action buttons use a loading button state while an action is taken.
+Groups of buttons should be seperated by a `0.5` rem gap. Usually acomplished by using the
+`tw-gap-2` class in the button group container.
+
+Groups within page content, dialog footers or forms should have the `primary` call to action placed
+to left. Groups in headers and navigational areas should have the `primary` call to action on the
+right.
+
+## Accessibility
+
+Please follow these guidelines to ensure that buttons are accessible to all users.
+
+### Color contrast
+
+All button styles are WCAG compliant when displayed on `background` and `background-alt` colors. To
+use a button on a different background, double check that the color contrast is sufficient in both
+the light and dark themes.
+
+### Loading Buttons
+
+Include an `aria-label` attribute that defaults to “loading” but can be configurable per
+implementation. On click, the screen reader should announce the `aria-label`. Once the action is
+compelted, use another messaging pattern to alert the user that the action is complete (example:
+success toast).
+
+### Submit and async actions
+
+Both submit and async action buttons use a loading button state while an action is taken. If your
+button is preforming a long running task in the background like a server API call, be sure to review
+the [Async Actions Directive](?path=/story/component-library-async-actions-overview--page).
 
 <Story id="component-library-button--loading" />
-
-If your button is preforming a long running task in the background like a server API call, be sure
-to review the
-[Async Actions Directive](https://components.bitwarden.com/?path=/story/component-library-async-actions-overview--page).
 
 ## Styles
 
@@ -70,18 +90,3 @@ Typically button widths expand with their text. In some causes though buttons ma
 where the width is fixed and the text wraps to 2 lines if exceeding the button’s width.
 
 <Story id="component-library-button--block" />
-
-## Accessibility
-
-### Color contrast
-
-All button styles are WCAG compliant when displayed on `background` and `background-alt` colors. To
-use a button on a different background, double check that the color contrast is sufficient in both
-the light and dark themes.
-
-### Loading Buttons
-
-Include an `aria-label` attribute that defaults to “loading” but can be configurable per
-implementation. On click, the screen reader should announce the `aria-label`. Once the action is
-compelted, use another messaging pattern to alert the user that the action is complete (example:
-success toast).
