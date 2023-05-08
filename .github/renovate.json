@@ -15,7 +15,7 @@
   "packageRules": [
     {
       "groupName": "{{manager}}",
-      "matchManagers": ["cargo", "github-actions", "npm"],
+      "matchManagers": ["cargo", "github-actions", "npm", "nuget"],
       "matchPackagePatterns": ["*"],
       "matchUpdateTypes": ["minor", "patch"]
     },
