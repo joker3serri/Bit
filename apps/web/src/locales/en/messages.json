@@ -2756,7 +2756,7 @@
     "placeholders": {
       "name": {
         "content": "$1",
-        "example": "Google Login"
+        "example": "Collection1"
       }
     }
   },
@@ -2765,7 +2765,7 @@
     "placeholders": {
       "name": {
         "content": "$1",
-        "example": "Collection1"
+        "example": "Google Login"
       }
     }
   },
