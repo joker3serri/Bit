@@ -10,12 +10,9 @@ persist across all pages a user navigates to.
 
 - They should always be dismissable and never use a timeout. If a user dismisses a banner, it should
   not reappear during that same active session.
-
 - Use banners sparingly, as they can feel intrusive to the user if they appear unexpectedly. Their
   effectiveness may decrease if too many are used.
-
 - Avoid stacking multiple banners.
-
 - Banners support a button link (text button).
 
 ## Types
@@ -51,5 +48,6 @@ Rarely used, but may be used to alert users over critical messages or very outda
 
 ## Accessibility
 
-Include `role="status" aria-live="polite"` attributes to ensure screen readers announce the content
-prior to the test of the page.
+Banners sets the `role="status"` and `aria-live="polite"` attributes to ensure screen readers
+announce the content prior to the test of the page. This behaviour can be disabled by setting
+`[useAlertRole]="false"`.
