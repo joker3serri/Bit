@@ -13,6 +13,26 @@ let nextId = 0;
       useExisting: SearchComponent,
     },
   ],
+  styles: [
+    `
+      input[type="search"]::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 21px;
+        width: 21px;
+        margin: 0;
+        cursor: pointer;
+        background-repeat: no-repeat;
+        mask-image: url("./close-button-white.svg");
+        -webkit-mask-image: url("./close-button-white.svg");
+        background-color: rgba(var(--color-text-muted));
+      }
+
+      input[type="search"]::-webkit-search-cancel-button:hover {
+        background-color: rgba(var(--color-text-main));
+      }
+    `,
+  ],
 })
 export class SearchComponent implements ControlValueAccessor {
   private notifyOnChange: (v: string) => void;
