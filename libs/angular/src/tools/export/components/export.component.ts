@@ -14,6 +14,8 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { EncryptedExportType, EventType } from "@bitwarden/common/enums";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "../../../services/dialog";
+
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();
@@ -52,7 +54,8 @@ export class ExportComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private userVerificationService: UserVerificationService,
     private formBuilder: UntypedFormBuilder,
-    protected fileDownloadService: FileDownloadService
+    protected fileDownloadService: FileDownloadService,
+    protected dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -125,25 +128,22 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   async warningDialog() {
     if (this.encryptedFormat) {
-      return await this.platformUtilsService.showDialog(
-        "<p>" +
+      return await this.dialogService.openSimpleDialog({
+        title: { key: "confirmVaultExport" },
+        content:
           this.i18nService.t("encExportKeyWarningDesc") +
-          "<p>" +
+          " " +
           this.i18nService.t("encExportAccountWarningDesc"),
-        this.i18nService.t("confirmVaultExport"),
-        this.i18nService.t("exportVault"),
-        this.i18nService.t("cancel"),
-        "warning",
-        true
-      );
+        acceptButtonText: { key: "exportVault" },
+        type: SimpleDialogType.WARNING,
+      });
     } else {
-      return await this.platformUtilsService.showDialog(
-        this.i18nService.t("exportWarningDesc"),
-        this.i18nService.t("confirmVaultExport"),
-        this.i18nService.t("exportVault"),
-        this.i18nService.t("cancel"),
-        "warning"
-      );
+      return await this.dialogService.openSimpleDialog({
+        title: { key: "confirmVaultExport" },
+        content: { key: "exportWarningDesc" },
+        acceptButtonText: { key: "exportVault" },
+        type: SimpleDialogType.WARNING,
+      });
     }
   }
 
