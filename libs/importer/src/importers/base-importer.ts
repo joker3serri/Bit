@@ -318,7 +318,7 @@ export abstract class BaseImporter {
           }
         }
         if (parts[1].length === 2 || parts[1].length === 4) {
-          year = month.length === 2 ? "20" + parts[1] : parts[1];
+          year = parts[1].length === 2 ? "20" + parts[1] : parts[1];
         }
         if (month != null && year != null) {
           cipher.card.expMonth = month;
