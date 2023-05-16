@@ -1,8 +1,13 @@
 import { EVENTS, TYPE_CHECK } from "../constants";
 import { FillableControl, ElementWithOpId, FormElement } from "../types";
 
-// Check if URL is not secure when the original saved one was
-export function urlNotSecure(savedURLs: string[]) {
+/**
+ * Check if the action to autofill on the given page should be considered "secure"
+ *
+ * @param {string[]} savedURLs
+ * @return {Boolean}
+ */
+export function urlNotSecure(savedURLs: string[]): boolean {
   if (!savedURLs || !savedURLs.length) {
     return false;
   }
@@ -16,15 +21,15 @@ export function urlNotSecure(savedURLs: string[]) {
     // At least one of the `savedURLs` uses SSL
     savedURLs.some((url) => url.startsWith("https://")) &&
     // The current page is not using SSL
-    document.location.protocol === "http:" &&
+    window.location.protocol === "http:" &&
     // There are password inputs on the page
-    document.querySelectorAll("input[type=password]")?.length
+    document.querySelectorAll("input[type=password]").length
   ) {
-    // The user agrees the page is unsafe or not
+    // The user agrees the action is unsafe or not
     return !confirm(confirmationWarning);
   }
 
-  // The page is secure
+  // The action is secure
   return false;
 }
 
