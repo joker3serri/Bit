@@ -182,7 +182,9 @@ export class BrowserApi {
     if (BrowserApi.isSafariApi && !BrowserApi.isBackgroundPage(window)) {
       BrowserApi.registeredMessageListeners.push(callback);
 
-      window.onunload = () => {
+      // The MDN recommend using 'visibilitychange' but that event is fired any time the popup window is obscured as well
+      // 'pagehide' works just like 'unload' but is compatible with the back/forward cache, so we prefer using that one
+      window.onpagehide = () => {
         for (const callback of BrowserApi.registeredMessageListeners) {
           chrome.runtime.onMessage.removeListener(callback);
         }
