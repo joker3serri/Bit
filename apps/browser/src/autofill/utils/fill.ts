@@ -165,21 +165,24 @@ export function selectAllFromDoc<T extends Element = Element>(theSelector: strin
     // Technically this returns a NodeListOf<Element> but it's ducktyped as an Array everywhere, so return it as an array here
     elements = d.querySelectorAll(theSelector) as unknown as Array<T>;
   } catch (e) {
-    /* no-op */
+    // eslint-disable-next-line no-console
+    console.error("An unexpected error occurred: " + e);
   }
 
   return elements;
 }
 
 /**
- * Find the element for the given `opid`.
+ * Find the first element for the given `opid`, falling back to the first relevant unmatched
+ * element if non is found.
  * @param {number} theOpId
  * @returns {HTMLElement} The element for the given `opid`, or `null` if not found.
  */
-export function getElementByOpId(theOpId: string): FormElement | null {
+export function getElementByOpId(theOpId: string): (FormElement & { opid?: string }) | null {
   let theElement;
 
-  if (void 0 === theOpId || null === theOpId) {
+  // @TODO do this check at the callsite(s)
+  if (!theOpId) {
     return null;
   }
 
@@ -187,18 +190,26 @@ export function getElementByOpId(theOpId: string): FormElement | null {
     const elements: Array<FillableControl | HTMLButtonElement> = Array.prototype.slice.call(
       selectAllFromDoc("input, select, button, textarea, span[data-bwautofill]")
     );
+
     const filteredElements = elements.filter(function (o) {
-      return (o as ElementWithOpId<FillableControl | HTMLButtonElement>).opid == theOpId;
+      return (o as ElementWithOpId<FillableControl | HTMLButtonElement>).opid === theOpId;
     });
 
-    if (0 < filteredElements.length) {
-      (theElement = filteredElements[0]),
-        1 < filteredElements.length &&
-          // eslint-disable-next-line no-console
-          console.warn("More than one element found with opid " + theOpId);
+    if (filteredElements.length) {
+      theElement = filteredElements[0];
+
+      if (filteredElements.length > 1) {
+        // eslint-disable-next-line no-console
+        console.warn("More than one element found with opid " + theOpId);
+      }
     } else {
       const elIndex = parseInt(theOpId.split("__")[1], 10);
-      isNaN(elIndex) || (theElement = elements[elIndex]);
+
+      if (isNaN(elIndex) || !elements[elIndex]) {
+        theElement = null;
+      } else {
+        theElement = elements[elIndex];
+      }
     }
   } catch (e) {
     // eslint-disable-next-line no-console
