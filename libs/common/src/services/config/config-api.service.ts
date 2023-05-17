@@ -8,11 +8,8 @@ export class ConfigApiService implements ConfigApiServiceAbstraction {
   constructor(private apiService: ApiService, private authService: AuthService) {}
 
   async get(): Promise<ServerConfigResponse> {
-    let authed = false;
-    const authStatus: AuthenticationStatus = await this.authService.getAuthStatus();
-    if (authStatus !== AuthenticationStatus.LoggedOut) {
-      authed = true;
-    }
+    const authed: boolean =
+      (await this.authService.getAuthStatus()) !== AuthenticationStatus.LoggedOut;
 
     const r = await this.apiService.send("GET", "/config", null, authed, true);
     return new ServerConfigResponse(r);
