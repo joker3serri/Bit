@@ -85,6 +85,15 @@ describe("canAccessFeature", () => {
     );
   });
 
+  it("does not show an error toast when the feature flag is enabled", async () => {
+    const { router } = setup(canAccessFeature(testFlag));
+    mockConfigService.getFeatureFlagBool.calledWith(testFlag).mockResolvedValue(true);
+
+    await router.navigate([featureRoute]);
+
+    expect(mockPlatformUtilsService.showToast).not.toHaveBeenCalled();
+  });
+
   it("redirects to the specified redirect url when the feature flag is disabled", async () => {
     const { router } = setup(canAccessFeature(testFlag, redirectRoute));
     mockConfigService.getFeatureFlagBool.calledWith(testFlag).mockResolvedValue(false);
