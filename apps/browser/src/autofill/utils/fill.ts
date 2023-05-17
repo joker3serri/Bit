@@ -178,7 +178,9 @@ export function selectAllFromDoc<T extends Element = Element>(theSelector: strin
  * @param {number} theOpId
  * @returns {HTMLElement} The element for the given `opid`, or `null` if not found.
  */
-export function getElementByOpId(theOpId: string): (FormElement & { opid?: string }) | null {
+export function getElementByOpId(
+  theOpId?: string | null
+): (FormElement & { opid?: string }) | null {
   let theElement;
 
   // @TODO do this check at the callsite(s)

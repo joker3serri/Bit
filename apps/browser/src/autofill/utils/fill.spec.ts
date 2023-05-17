@@ -112,83 +112,83 @@ describe("fill utils", () => {
 
   describe("canSeeElementToStyle", () => {
     it("should return true when the element is a non-hidden password field", () => {
-      const testElement: FormElementExtended = document.querySelector('input[type="password"]');
+      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden email input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="email" />';
-      const testElement: FormElementExtended = document.querySelector('input[type="email"]');
+      const testElement = document.querySelector('input[type="email"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden text input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="text" />';
-      const testElement: FormElementExtended = document.querySelector('input[type="text"]');
+      const testElement = document.querySelector('input[type="text"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden number input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="number" />';
-      const testElement: FormElementExtended = document.querySelector('input[type="number"]');
+      const testElement = document.querySelector('input[type="number"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden tel input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="tel" />';
-      const testElement: FormElementExtended = document.querySelector('input[type="tel"]');
+      const testElement = document.querySelector('input[type="tel"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden url input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="url" />';
-      const testElement: FormElementExtended = document.querySelector('input[type="url"]');
+      const testElement = document.querySelector('input[type="url"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return false when the element is a non-hidden hidden input type", () => {
       document.body.innerHTML = mockLoginForm + '<input type="hidden" />';
-      const testElement: FormElementExtended = document.querySelector('input[type="hidden"]');
+      const testElement = document.querySelector('input[type="hidden"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return false when the element is a non-hidden textarea", () => {
       document.body.innerHTML = mockLoginForm + "<textarea></textarea>";
-      const testElement: FormElementExtended = document.querySelector("textarea");
+      const testElement = document.querySelector("textarea") as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return true when the element is a non-hidden span", () => {
       document.body.innerHTML = mockLoginForm + '<span id="input-tag"></span>';
-      const testElement: FormElementExtended = document.querySelector("#input-tag");
+      const testElement = document.querySelector("#input-tag") as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return false when the element is a unsupported tag", () => {
       document.body.innerHTML = mockLoginForm + '<div id="input-tag"></div>';
-      const testElement: FormElementExtended = document.querySelector("#input-tag");
+      const testElement = document.querySelector("#input-tag") as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return false when the element has a `visibility: hidden;` CSS rule applied to it", () => {
-      const testElement: FormElementExtended = document.querySelector('input[type="password"]');
+      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
       testElement.style.visibility = "hidden";
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return false when the element has a `display: none;` CSS rule applied to it", () => {
-      const testElement: FormElementExtended = document.querySelector('input[type="password"]');
+      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
       testElement.style.display = "none";
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
@@ -197,7 +197,7 @@ describe("fill utils", () => {
     it("should return false when a parent of the element has a `display: none;` or `visibility: hidden;` CSS rule applied to it", () => {
       document.body.innerHTML =
         mockLoginForm + '<div style="visibility: hidden;"><input type="email" /></div>';
-      let testElement: FormElementExtended = document.querySelector('input[type="email"]');
+      let testElement = document.querySelector('input[type="email"]') as FormElementExtended;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
 
@@ -210,7 +210,7 @@ describe("fill utils", () => {
             </div>
           </div>
         `;
-      testElement = document.querySelector("#input-tag");
+      testElement = document.querySelector("#input-tag") as FormElementExtended;
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
   });
@@ -229,8 +229,8 @@ describe("fill utils", () => {
 
   describe("getElementByOpId", () => {
     it("should return the element with the opid property value matching the passed value", () => {
-      const textInput: FormElementExtended = document.querySelector('input[type="text"]');
-      const passwordInput: FormElementExtended = document.querySelector('input[type="password"]');
+      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const passwordInput = document.querySelector('input[type="password"]') as FormElementExtended;
 
       textInput.setAttribute("opid", "__0");
       passwordInput.setAttribute("opid", "__1");
@@ -252,8 +252,10 @@ describe("fill utils", () => {
       });
 
       it("should return the first of the elements with an `opid` value matching the passed value and emit a console warning", () => {
-        const textInput: FormElementExtended = document.querySelector('input[type="text"]');
-        const passwordInput: FormElementExtended = document.querySelector('input[type="password"]');
+        const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+        const passwordInput = document.querySelector(
+          'input[type="password"]'
+        ) as FormElementExtended;
 
         textInput.opid = "__1";
         passwordInput.opid = "__1";
@@ -266,8 +268,8 @@ describe("fill utils", () => {
     });
 
     it("should return the first of input, select, button, textarea, or span[data-bwautofill] elements or when the passed value cannot be found", () => {
-      const textInput: FormElementExtended = document.querySelector('input[type="text"]');
-      const passwordInput: FormElementExtended = document.querySelector('input[type="password"]');
+      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const passwordInput = document.querySelector('input[type="password"]') as FormElementExtended;
 
       textInput.removeAttribute("opid");
       passwordInput.opid = "__1";
