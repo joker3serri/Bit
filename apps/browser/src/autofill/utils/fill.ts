@@ -3,11 +3,11 @@ import { FillableControl, ElementWithOpId, FormElement } from "../types";
 
 /**
  * Check if the action to autofill on the given page should be considered "secure"
- *
  * @param {string[]} savedURLs
  * @return {Boolean}
  */
-export function urlNotSecure(savedURLs: string[]): boolean {
+export function urlNotSecure(savedURLs?: string[] | null): boolean {
+  // @TODO do this check at the callsite(s)
   if (!savedURLs || !savedURLs.length) {
     return false;
   }
@@ -95,18 +95,21 @@ function doFocusElement(el: FillableControl, setValue: boolean): void {
 }
 
 /**
- * Determine if we can apply styling to `el` to indicate that it was filled.
- * @param {HTMLElement} el
+ * Determine if we can apply styling to `element` to indicate that it was filled.
+ * @param {HTMLElement} element
+ * @param {HTMLElement} animateTheFilling
  * @returns {boolean} Returns true if we can see the element to apply styling.
  */
-export function canSeeElementToStyle(el: HTMLElement, animateTheFilling: boolean) {
-  let currentEl: any;
+export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: boolean) {
+  let currentEl: any = animateTheFilling;
 
-  if ((currentEl = animateTheFilling)) {
+  if (currentEl) {
     a: {
-      currentEl = el;
+      currentEl = element;
+
+      // Check the parent tree of `element` for display/visibility
       for (
-        let owner: any = el.ownerDocument.defaultView || {}, theStyle;
+        let owner: any = element.ownerDocument.defaultView, theStyle;
         currentEl && currentEl !== document;
 
       ) {
@@ -116,27 +119,36 @@ export function canSeeElementToStyle(el: HTMLElement, animateTheFilling: boolean
 
         if (!theStyle) {
           currentEl = true;
+
           break a;
         }
 
-        if ("none" === theStyle.display || "hidden" == theStyle.visibility) {
+        if (theStyle.display === "none" || theStyle.visibility === "hidden") {
           currentEl = false;
+
           break a;
         }
 
         currentEl = currentEl.parentNode;
       }
+
       currentEl = currentEl === document;
     }
   }
 
-  if (el && !(el as FillableControl).type && el.tagName.toLowerCase() === "span") {
+  if (
+    animateTheFilling &&
+    currentEl &&
+    !(element as FillableControl)?.type &&
+    element.tagName.toLowerCase() === "span"
+  ) {
     return true;
   }
 
   return currentEl
-    ? -1 !==
-        "email text password number tel url".split(" ").indexOf((el as HTMLInputElement).type || "")
+    ? ["email", "text", "password", "number", "tel", "url"].includes(
+        (element as FillableControl).type || ""
+      )
     : false;
 }
 
