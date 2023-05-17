@@ -22,15 +22,16 @@ export const canAccessFeature = (
     const router = inject(Router);
     const i18nService = inject(I18nService);
 
-    if (!(await configService.getFeatureFlagBool(featureFlag))) {
-      platformUtilsService.showToast("error", null, i18nService.t("accessDenied"));
-
-      if (redirectUrlOnDisabled != undefined) {
-        return router.createUrlTree([redirectUrlOnDisabled]);
-      } else {
-        return false;
-      }
+    if (await configService.getFeatureFlagBool(featureFlag)) {
+      return true;
     }
-    return true;
+
+    platformUtilsService.showToast("error", null, i18nService.t("accessDenied"));
+
+    if (redirectUrlOnDisabled != undefined) {
+      return router.createUrlTree([redirectUrlOnDisabled]);
+    } else {
+      return false;
+    }
   };
 };
