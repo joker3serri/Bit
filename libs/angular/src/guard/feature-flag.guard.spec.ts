@@ -19,12 +19,13 @@ describe("canAccessFeature", () => {
   const testFlag: FeatureFlag = "test-flag" as FeatureFlag;
   const featureRoute = "enabled-feature";
   const redirectRoute = "redirect";
-  const mockPlatformUtilsService: MockProxy<PlatformUtilsService> = mock<PlatformUtilsService>();
 
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
+  let mockPlatformUtilsService: MockProxy<PlatformUtilsService>;
 
   const setup = (featureGuard: CanActivateFn) => {
     mockConfigService = mock<ConfigServiceAbstraction>();
+    mockPlatformUtilsService = mock<PlatformUtilsService>();
 
     const testBed = TestBed.configureTestingModule({
       imports: [
