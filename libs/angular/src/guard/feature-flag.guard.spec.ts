@@ -81,7 +81,7 @@ describe("canAccessFeature", () => {
     expect(mockPlatformUtilsService.showToast).toHaveBeenCalledWith(
       "error",
       null,
-      expect.anything()
+      "Access Denied!"
     );
   });
 
