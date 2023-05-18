@@ -33,7 +33,7 @@ const decorator = componentWrapperDecorator(
   <div class="theme_nord tw-mt-5 tw-px-5 tw-py-10 tw-bg-[#434C5E]">${story}</div>
 </ng-template>
 <ng-template #solarizePreview>
-  <div class="theme_solarize tw-mt-5 tw-px-5 tw-py-10 tw-bg-[#434C5E]">${story}</div>
+  <div class="theme_solarize tw-mt-5 tw-px-5 tw-py-10 tw-bg-[#002b36]">${story}</div>
 </ng-template>
 
 <ng-container *ngTemplateOutlet="lightPreview"></ng-container>
