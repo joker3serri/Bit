@@ -3,8 +3,10 @@ import { CBOR } from "cbor-redux";
 import { LogService } from "../../abstractions/log.service";
 import { Utils } from "../../misc/utils";
 import { CipherService } from "../../vault/abstractions/cipher.service";
+import { Fido2UserInterfaceService } from "../../vault/abstractions/fido2/fido2-user-interface.service.abstraction";
 import { CipherType } from "../../vault/enums/cipher-type";
 import { CipherView } from "../../vault/models/view/cipher.view";
+import { Fido2KeyView } from "../../vault/models/view/fido2-key.view";
 import {
   Fido2AlgorithmIdentifier,
   Fido2AutenticatorError,
@@ -16,9 +18,7 @@ import {
   Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction,
   PublicKeyCredentialDescriptor,
 } from "../abstractions/fido2-authenticator.service.abstraction";
-import { Fido2UserInterfaceService } from "../abstractions/fido2-user-interface.service.abstraction";
 import { Fido2Utils } from "../abstractions/fido2-utils";
-import { Fido2KeyView } from "../models/view/fido2-key.view";
 
 import { joseToDer } from "./ecdsa-utils";
 

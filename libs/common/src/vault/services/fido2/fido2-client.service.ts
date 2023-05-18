@@ -1,7 +1,6 @@
 import { parse } from "tldts";
 
-import { LogService } from "../../abstractions/log.service";
-import { Utils } from "../../misc/utils";
+import { LogService } from "../../../abstractions/log.service";
 import {
   Fido2AutenticatorError,
   Fido2AutenticatorErrorCode,
@@ -9,7 +8,10 @@ import {
   Fido2AuthenticatorMakeCredentialsParams,
   Fido2AuthenticatorService,
   PublicKeyCredentialDescriptor,
-} from "../abstractions/fido2-authenticator.service.abstraction";
+} from "../../../fido2/abstractions/fido2-authenticator.service.abstraction";
+import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
+import { isValidRpId } from "../../../fido2/services/domain-utils";
+import { Utils } from "../../../misc/utils";
 import {
   AssertCredentialParams,
   AssertCredentialResult,
@@ -20,10 +22,7 @@ import {
   PublicKeyCredentialParam,
   UserRequestedFallbackAbortReason,
   UserVerification,
-} from "../abstractions/fido2-client.service.abstraction";
-import { Fido2Utils } from "../abstractions/fido2-utils";
-
-import { isValidRpId } from "./domain-utils";
+} from "../../abstractions/fido2/fido2-client.service.abstraction";
 
 export class Fido2ClientService implements Fido2ClientServiceAbstraction {
   constructor(private authenticator: Fido2AuthenticatorService, private logService?: LogService) {}

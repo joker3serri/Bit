@@ -5,22 +5,22 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { Utils } from "../../misc/utils";
 import { CipherService } from "../../vault/abstractions/cipher.service";
+import {
+  Fido2UserInterfaceService,
+  Fido2UserInterfaceSession,
+  NewCredentialParams,
+} from "../../vault/abstractions/fido2/fido2-user-interface.service.abstraction";
 import { CipherType } from "../../vault/enums/cipher-type";
 import { Cipher } from "../../vault/models/domain/cipher";
 import { CipherView } from "../../vault/models/view/cipher.view";
+import { Fido2KeyView } from "../../vault/models/view/fido2-key.view";
 import { LoginView } from "../../vault/models/view/login.view";
 import {
   Fido2AutenticatorErrorCode,
   Fido2AuthenticatorGetAssertionParams,
   Fido2AuthenticatorMakeCredentialsParams,
 } from "../abstractions/fido2-authenticator.service.abstraction";
-import {
-  Fido2UserInterfaceService,
-  Fido2UserInterfaceSession,
-  NewCredentialParams,
-} from "../abstractions/fido2-user-interface.service.abstraction";
 import { Fido2Utils } from "../abstractions/fido2-utils";
-import { Fido2KeyView } from "../models/view/fido2-key.view";
 
 import { AAGUID, Fido2AuthenticatorService } from "./fido2-authenticator.service";
 
