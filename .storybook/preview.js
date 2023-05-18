@@ -29,9 +29,16 @@ const decorator = componentWrapperDecorator(
 <ng-template #darkPreview>
   <div class="theme_dark tw-mt-5 tw-px-5 tw-py-10 tw-bg-[#1f242e]">${story}</div>
 </ng-template>
+<ng-template #nordPreview>
+  <div class="theme_nord tw-mt-5 tw-px-5 tw-py-10 tw-bg-[#434C5E]">${story}</div>
+</ng-template>
+<ng-template #solarizePreview>
+  <div class="theme_solarize tw-mt-5 tw-px-5 tw-py-10 tw-bg-[#434C5E]">${story}</div>
+</ng-template>
 
 <ng-container *ngTemplateOutlet="lightPreview"></ng-container>
 <ng-container *ngTemplateOutlet="darkPreview"></ng-container>
+<ng-container *ngTemplateOutlet="solarizePreview"></ng-container>
 `
 );
 
