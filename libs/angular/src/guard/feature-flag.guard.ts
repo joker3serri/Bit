@@ -28,7 +28,7 @@ export const canAccessFeature = (
 
     platformUtilsService.showToast("error", null, i18nService.t("accessDenied"));
 
-    if (redirectUrlOnDisabled != undefined) {
+    if (redirectUrlOnDisabled != null) {
       return router.createUrlTree([redirectUrlOnDisabled]);
     } else {
       return false;
