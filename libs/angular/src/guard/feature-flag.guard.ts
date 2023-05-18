@@ -1,5 +1,5 @@
 import { inject } from "@angular/core";
-import { Router, UrlTree } from "@angular/router";
+import { CanActivateFn, Router } from "@angular/router";
 
 import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -15,7 +15,7 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 export const canAccessFeature = (
   featureFlag: FeatureFlag,
   redirectUrlOnDisabled?: string
-): (() => Promise<boolean | UrlTree>) => {
+): CanActivateFn => {
   return async () => {
     const configService = inject(ConfigServiceAbstraction);
     const platformUtilsService = inject(PlatformUtilsService);
