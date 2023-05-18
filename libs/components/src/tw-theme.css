@@ -122,10 +122,6 @@
 .theme_solarize {
   --color-transparent-hover: rgb(255 255 255 / 0.12);
 
-  background: rgba(7, 54, 66, 1);
-  background: rgba(0, 43, 54, 1);
-  background: rgba(255, 255, 255, 1);
-
   --color-background: 0 43 54;
   --color-background-alt: 7 54 66;
   --color-background-alt2: 7 54 66;
