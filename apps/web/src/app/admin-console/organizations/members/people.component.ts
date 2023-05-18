@@ -546,12 +546,51 @@ export class PeopleComponent
       ? "removeUserConfirmationKeyConnector"
       : "removeOrgUserConfirmation";
 
-    return await this.dialogService.openSimpleDialog({
+    const confirmed = await this.dialogService.openSimpleDialog({
       title: {
         key: "removeUserIdAccess",
         placeholders: [this.userNamePipe.transform(user)],
       },
       content: { key: content },
+      type: SimpleDialogType.WARNING,
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    if (user.status > OrganizationUserStatusType.Invited && !user.hasMasterPassword) {
+      return await this.noMasterPasswordConfirmationDialog();
+    }
+
+    return true;
+  }
+
+  protected async revokeUserConfirmationDialog(user: OrganizationUserView) {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
+      content: this.revokeWarningMessage(),
+      acceptButtonText: { key: "revokeAccess" },
+      type: SimpleDialogType.WARNING,
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    if (user.status > OrganizationUserStatusType.Invited && !user.hasMasterPassword) {
+      return await this.noMasterPasswordConfirmationDialog();
+    }
+
+    return true;
+  }
+
+  private async noMasterPasswordConfirmationDialog() {
+    return await this.dialogService.openSimpleDialog({
+      title: {
+        key: "removeOrgUserNoMasterPasswordTitle",
+      },
+      content: { key: "removeOrgUserNoMasterPasswordDesc" },
       type: SimpleDialogType.WARNING,
     });
   }
