@@ -17,7 +17,7 @@ import { LoginService } from "@bitwarden/common/auth/abstractions/login.service"
 export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild(EnvironmentSelectorComponent, { static: true })
   environmentSelector!: EnvironmentSelectorComponent;
-  private componentDestroyed$: Subject<void> = new Subject();
+  private destroyed$: Subject<void> = new Subject();
 
   loginInitiated = false;
   formGroup = this.formBuilder.group({
@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     this.environmentSelector.onOpenSelfHostedSettings
-      .pipe(takeUntil(this.componentDestroyed$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(() => {
         this.setFormValues();
         this.router.navigate(["environment"]);
@@ -63,8 +63,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.componentDestroyed$.next();
-    this.componentDestroyed$.complete();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   submit() {

@@ -140,16 +140,15 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
       this.environmentModal
     );
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     modal.onShown.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
       this.showingModal = true;
     });
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+
     modal.onClosed.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
       this.showingModal = false;
     });
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
+    // eslint-disable-next-line rxjs/no-async-subscribe
     childComponent.onSaved.pipe(takeUntil(this.componentDestroyed$)).subscribe(async () => {
       modal.close();
       await this.checkSelfHosted();
