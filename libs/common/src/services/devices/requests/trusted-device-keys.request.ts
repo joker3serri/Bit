@@ -1,7 +1,7 @@
 export class TrustedDeviceKeysRequest {
   constructor(
-    public devicePublicKeyEncryptedUserSymKey: string,
-    public userSymKeyEncryptedDevicePublicKey: string,
-    public deviceKeyEncryptedDevicePrivateKey: string
+    public encryptedUserKey: string,
+    public encryptedPublicKey: string,
+    public encryptedPrivateKey: string
   ) {}
 }

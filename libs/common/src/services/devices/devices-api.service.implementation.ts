@@ -24,6 +24,17 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
     return r as boolean;
   }
 
+  async getDeviceByIdentifier(deviceIdentifier: string): Promise<DeviceResponse> {
+    const r = await this.apiService.send(
+      "GET",
+      `/devices/identifier/${deviceIdentifier}`,
+      null,
+      true,
+      true
+    );
+    return new DeviceResponse(r);
+  }
+
   async createTrustedDeviceKeys(
     deviceId: string,
     devicePublicKeyEncryptedUserSymKey: string,
