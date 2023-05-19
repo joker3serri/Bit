@@ -1,10 +1,7 @@
 import * as bigInt from "big-integer";
 
-import { AppIdService } from "../abstractions/appId.service";
 import { CryptoService as CryptoServiceAbstraction } from "../abstractions/crypto.service";
 import { CryptoFunctionService } from "../abstractions/cryptoFunction.service";
-import { DevicesApiServiceAbstraction } from "../abstractions/devices/devices-api.service.abstraction";
-import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { LogService } from "../abstractions/log.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
@@ -30,7 +27,6 @@ import { EFFLongWordList } from "../misc/wordlist";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { CsprngArray } from "../types/csprng";
 
 export class CryptoService implements CryptoServiceAbstraction {
   constructor(
@@ -38,9 +34,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     protected encryptService: EncryptService,
     protected platformUtilService: PlatformUtilsService,
     protected logService: LogService,
-    protected stateService: StateService,
-    protected appIdService: AppIdService,
-    protected devicesApiService: DevicesApiServiceAbstraction
+    protected stateService: StateService
   ) {}
 
   async setKey(key: SymmetricCryptoKey, userId?: string): Promise<any> {
@@ -718,68 +712,6 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     return true;
   }
-
-  // Start Trusted Device Encryption
-  async trustDevice(): Promise<DeviceResponse> {
-    // Generate deviceKey
-    const deviceKey = await this.makeDeviceKey();
-
-    // Generate asymmetric RSA key pair: devicePrivateKey, devicePublicKey
-    const [devicePublicKey, devicePrivateKey] = await this.cryptoFunctionService.rsaGenerateKeyPair(
-      2048
-    );
-
-    // Get user data symmetric key
-    const userSymKey: SymmetricCryptoKey = await this.getKey();
-
-    const [
-      devicePublicKeyEncryptedUserSymKey,
-      userSymKeyEncryptedDevicePublicKey,
-      deviceKeyEncryptedDevicePrivateKey,
-    ] = await Promise.all([
-      // Encrypt user data symmetric key with the DevicePublicKey
-      this.rsaEncrypt(userSymKey.encKey, devicePublicKey),
-
-      // Encrypt devicePublicKey with user data symmetric key
-      this.encryptService.encrypt(devicePublicKey, userSymKey),
-
-      // Encrypt devicePrivateKey with deviceKey
-      this.encryptService.encrypt(devicePrivateKey, deviceKey),
-    ]);
-
-    // Send encrypted keys to server
-    const deviceId = await this.appIdService.getAppId();
-    return this.devicesApiService.createTrustedDeviceKeys(
-      deviceId,
-      devicePublicKeyEncryptedUserSymKey.encryptedString,
-      userSymKeyEncryptedDevicePublicKey.encryptedString,
-      deviceKeyEncryptedDevicePrivateKey.encryptedString
-    );
-  }
-
-  async getDeviceKey(): Promise<SymmetricCryptoKey> {
-    // Check if device key is already stored
-    const existingDeviceKey = await this.stateService.getDeviceKey();
-
-    if (existingDeviceKey != null) {
-      return existingDeviceKey;
-    } else {
-      return this.makeDeviceKey();
-    }
-  }
-
-  async makeDeviceKey(): Promise<SymmetricCryptoKey> {
-    // Create 512-bit device key
-    const randomBytes: CsprngArray = await this.cryptoFunctionService.randomBytes(64);
-    const deviceKey = new SymmetricCryptoKey(randomBytes);
-
-    // Save device key in secure storage
-    await this.stateService.setDeviceKey(deviceKey);
-
-    return deviceKey;
-  }
-
-  // End Trusted Device Encryption
 
   // ---HELPERS---
 

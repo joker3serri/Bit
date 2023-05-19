@@ -7,8 +7,6 @@ import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
-import { DeviceResponse } from "./devices/responses/device.response";
-
 export abstract class CryptoService {
   setKey: (key: SymmetricCryptoKey) => Promise<any>;
   setKeyHash: (keyHash: string) => Promise<void>;
@@ -85,9 +83,4 @@ export abstract class CryptoService {
   decryptFromBytes: (encBuffer: EncArrayBuffer, key: SymmetricCryptoKey) => Promise<ArrayBuffer>;
   randomNumber: (min: number, max: number) => Promise<number>;
   validateKey: (key: SymmetricCryptoKey) => Promise<boolean>;
-
-  // Trusted Device Encryption
-  trustDevice: () => Promise<DeviceResponse>;
-  getDeviceKey: () => Promise<SymmetricCryptoKey>;
-  makeDeviceKey: () => Promise<SymmetricCryptoKey>;
 }
