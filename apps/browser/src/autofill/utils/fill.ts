@@ -225,22 +225,23 @@ export function getElementByOpId(
 /**
  * Simulate the entry of a value into an element by using events.
  * Dispatches a keydown, keypress, and keyup event, then fires the `input` and `change` events before removing focus.
- * @param {HTMLElement} el
+ * @param {HTMLElement} element
  */
-export function setValueForElementByEvent(el: FillableControl) {
-  const valueToSet = el.value;
-  const ev1 = el.ownerDocument.createEvent(EVENTS.HTMLEVENTS);
-  const ev2 = el.ownerDocument.createEvent(EVENTS.HTMLEVENTS);
+export function setValueForElementByEvent(element: FillableControl) {
+  const valueToSet = element.value;
+  const inputEvent = new Event(EVENTS.INPUT, { bubbles: true, cancelable: true });
+  const changeEvent = new Event(EVENTS.CHANGE, { bubbles: true, cancelable: true });
 
-  el.dispatchEvent(normalizeEvent(el, EVENTS.KEYDOWN));
-  el.dispatchEvent(normalizeEvent(el, EVENTS.KEYPRESS));
-  el.dispatchEvent(normalizeEvent(el, EVENTS.KEYUP));
-  ev2.initEvent(EVENTS.INPUT, true, true);
-  el.dispatchEvent(ev2);
-  ev1.initEvent(EVENTS.CHANGE, true, true);
-  el.dispatchEvent(ev1);
-  el.blur();
-  el.value !== valueToSet && (el.value = valueToSet);
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYDOWN));
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYPRESS));
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYUP));
+  element.dispatchEvent(inputEvent);
+  element.dispatchEvent(changeEvent);
+  element.blur();
+
+  if (element.value !== valueToSet) {
+    element.value = valueToSet;
+  }
 }
 
 /**
@@ -262,17 +263,20 @@ function getAllFields(): HTMLInputElement[] {
 /**
  * Simulate the entry of a value into an element.
  * Clicks the element, focuses it, and then fires a keydown, keypress, and keyup event.
- * @param {HTMLElement} el
+ * @param {HTMLElement} element
  */
-export function setValueForElement(el: FillableControl) {
-  const valueToSet = el.value;
+export function setValueForElement(element: FillableControl) {
+  const valueToSet = element.value;
 
-  clickElement(el);
-  doFocusElement(el, false);
-  el.dispatchEvent(normalizeEvent(el, EVENTS.KEYDOWN));
-  el.dispatchEvent(normalizeEvent(el, EVENTS.KEYPRESS));
-  el.dispatchEvent(normalizeEvent(el, EVENTS.KEYUP));
-  el.value !== valueToSet && (el.value = valueToSet);
+  clickElement(element);
+  doFocusElement(element, false);
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYDOWN));
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYPRESS));
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYUP));
+
+  if (element.value !== valueToSet) {
+    element.value = valueToSet;
+  }
 }
 
 /**
@@ -355,7 +359,7 @@ export function doSimpleSetByQuery(query: string, valueToSet: string): FillableC
       el.disabled ||
         (el as any).a ||
         (el as HTMLInputElement).readOnly ||
-        void 0 === el.value ||
+        el.value === void 0 ||
         ((el.value = valueToSet), arr.push(el));
     }
   );
