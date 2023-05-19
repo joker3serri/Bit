@@ -135,35 +135,33 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
         name: null,
         notes: null,
       },
-      this.organizationId,
+      null,
       encKey
     );
 
     switch (this.type) {
       case CipherType.Login:
-        model.login = await this.login.decrypt(this.organizationId, encKey);
+        model.login = await this.login.decrypt(null, encKey);
         break;
       case CipherType.SecureNote:
-        model.secureNote = await this.secureNote.decrypt(this.organizationId, encKey);
+        model.secureNote = await this.secureNote.decrypt(null, encKey);
         break;
       case CipherType.Card:
-        model.card = await this.card.decrypt(this.organizationId, encKey);
+        model.card = await this.card.decrypt(null, encKey);
         break;
       case CipherType.Identity:
-        model.identity = await this.identity.decrypt(this.organizationId, encKey);
+        model.identity = await this.identity.decrypt(null, encKey);
         break;
       default:
         break;
     }
-
-    const orgId = this.organizationId;
 
     if (this.attachments != null && this.attachments.length > 0) {
       const attachments: any[] = [];
       await this.attachments.reduce((promise, attachment) => {
         return promise
           .then(() => {
-            return attachment.decrypt(orgId, encKey);
+            return attachment.decrypt(null, encKey);
           })
           .then((decAttachment) => {
             attachments.push(decAttachment);
@@ -177,7 +175,7 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
       await this.fields.reduce((promise, field) => {
         return promise
           .then(() => {
-            return field.decrypt(orgId, encKey);
+            return field.decrypt(null, encKey);
           })
           .then((decField) => {
             fields.push(decField);
@@ -191,7 +189,7 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
       await this.passwordHistory.reduce((promise, ph) => {
         return promise
           .then(() => {
-            return ph.decrypt(orgId, encKey);
+            return ph.decrypt(null, encKey);
           })
           .then((decPh) => {
             passwordHistory.push(decPh);
