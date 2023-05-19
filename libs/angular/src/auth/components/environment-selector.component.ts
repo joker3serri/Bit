@@ -1,14 +1,12 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Router } from "@angular/router";
+import { Subject } from "rxjs";
 
-import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-
-import { EnvironmentComponent } from "../../auth/environment.component";
 
 @Component({
   selector: "environment-selector",
@@ -35,8 +33,7 @@ import { EnvironmentComponent } from "../../auth/environment.component";
   ],
 })
 export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
-  @ViewChild("environment", { read: ViewContainerRef, static: true })
-  environmentModal: ViewContainerRef;
+  @Output() onOpenSelfHostedSettings = new EventEmitter();
   isOpen = false;
   showingModal = false;
   selectedEnvironment: ServerEnvironment;
@@ -50,12 +47,12 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
       overlayY: "top",
     },
   ];
-  private componentDestroyed$: Subject<void> = new Subject();
+  protected componentDestroyed$: Subject<void> = new Subject();
 
   constructor(
-    private modalService: ModalService,
-    private environmentService: EnvironmentService,
-    private configService: ConfigServiceAbstraction
+    protected environmentService: EnvironmentService,
+    protected configService: ConfigServiceAbstraction,
+    protected router: Router
   ) {}
 
   async ngOnInit() {
@@ -77,20 +74,9 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     } else if (option === ServerEnvironment.US) {
       await this.environmentService.setUrls({ base: "https://vault.bitwarden.com" });
     } else if (option === ServerEnvironment.SelfHosted) {
-      this.openSelfHostedSettingsModal();
+      this.onOpenSelfHostedSettings.emit();
     }
     this.updateEnvironmentInfo();
-  }
-
-  async openSelfHostedSettingsModal() {
-    const modal = this.modalService.open(EnvironmentComponent);
-    modal.onShown.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
-      this.showingModal = true;
-    });
-    modal.onClosed.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
-      this.showingModal = false;
-      this.updateEnvironmentInfo();
-    });
   }
 
   updateEnvironmentInfo() {
