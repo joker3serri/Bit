@@ -8,6 +8,8 @@ import {
   getElementByOpId,
   setValueForElementByEvent,
   setValueForElement,
+  doClickByOpId,
+  touchAllPasswordFields,
   doSimpleSetByQuery,
 } from "./fill";
 
@@ -295,7 +297,7 @@ describe("fill utils", () => {
       });
     });
 
-    it("should return the first of input, select, button, textarea, or span[data-bwautofill] elements or when the passed value cannot be found", () => {
+    it("should return the element at the index position (parsed from passed opid) of all document input, select, button, textarea, or span[data-bwautofill] elements when the passed opid value cannot be found", () => {
       const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
       const passwordInput = document.querySelector('input[type="password"]') as FormElementExtended;
 
@@ -305,6 +307,7 @@ describe("fill utils", () => {
       expect(textInput.hasAttribute("opid")).toEqual(false);
       expect(getElementByOpId("__0")).toEqual(textInput);
       expect(getElementByOpId("__0")).not.toEqual(passwordInput);
+      expect(getElementByOpId("__2")).toEqual(null);
     });
 
     it("should return null if a falsey value is passed", () => {
@@ -347,7 +350,7 @@ describe("fill utils", () => {
         touchend: 0,
         touchstart: 0,
       };
-      const eventHandlers: { [key: string]: (event: InputEvent) => void } = {};
+      const eventHandlers: { [key: string]: EventListener } = {};
 
       eventsToTest.forEach((eventType) => {
         elementEventCount[eventType] = 0;
@@ -403,7 +406,7 @@ describe("fill utils", () => {
         touchend: 0,
         touchstart: 0,
       };
-      const eventHandlers: { [key: string]: (event: InputEvent) => void } = {};
+      const eventHandlers: { [key: string]: EventListener } = {};
 
       eventsToTest.forEach((eventType) => {
         elementEventCount[eventType] = 0;
@@ -465,6 +468,119 @@ describe("fill utils", () => {
       expect(returnedElements).toHaveLength(1);
       expect(returnedElements[0].id).toEqual("input-tag-c");
       expect(returnedElements[0].value).toEqual("aUsername");
+    });
+  });
+
+  describe("doClickByOpId", () => {
+    it("should click on and return the elements targeted by the passed opid", () => {
+      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      textInput.opid = "__1";
+      let clickEventCount = 0;
+      const expectedClickEventCount = 1;
+      const clickEventHandler: (handledEvent: Event) => void = (handledEvent) => {
+        const eventTarget = handledEvent.target as HTMLInputElement;
+
+        if (eventTarget.id === "username") {
+          clickEventCount++;
+        }
+      };
+
+      textInput.addEventListener("click", clickEventHandler);
+
+      expect(doClickByOpId("__1")?.[0]).toEqual(textInput);
+      expect(clickEventCount).toEqual(expectedClickEventCount);
+
+      textInput.removeEventListener("click", clickEventHandler);
+    });
+
+    it("should not click and should return null when no suitable elements can be found", () => {
+      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+
+      let clickEventCount = 0;
+      const expectedClickEventCount = 0;
+      const clickEventHandler: (handledEvent: Event) => void = (handledEvent) => {
+        const eventTarget = handledEvent.target as HTMLInputElement;
+
+        if (eventTarget.id === "username") {
+          clickEventCount++;
+        }
+      };
+
+      textInput.addEventListener("click", clickEventHandler);
+
+      expect(clickEventCount).toEqual(expectedClickEventCount);
+      expect(doClickByOpId("__2")).toEqual(null);
+
+      textInput.removeEventListener("click", clickEventHandler);
+    });
+
+    it("should return null when the targeted element is found but not clickable", () => {
+      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      textInput.opid = "__1";
+      textInput.click = null;
+
+      let clickEventCount = 0;
+      const expectedClickEventCount = 0;
+      const clickEventHandler: (handledEvent: Event) => void = (handledEvent) => {
+        const eventTarget = handledEvent.target as HTMLInputElement;
+
+        if (eventTarget.id === "username") {
+          clickEventCount++;
+        }
+      };
+
+      textInput.addEventListener("click", clickEventHandler);
+
+      expect(clickEventCount).toEqual(expectedClickEventCount);
+      expect(doClickByOpId("__1")).toEqual(null);
+
+      textInput.removeEventListener("click", clickEventHandler);
+    });
+  });
+
+  describe("touchAllPasswordFields", () => {
+    it("should, for each possible password field in the document, set the existing value and click the element if it is clickable", () => {
+      document.body.innerHTML += '<input type="text" name="text_password" value="password" />';
+      const targetInput = document.querySelector(
+        'input[type="text"][name="text_password"]'
+      ) as FormElementExtended;
+      const elementEventCount: { [key: string]: number } = {};
+      const expectedElementEventCount: { [key: string]: number } = {
+        [EVENTS.CHANGE]: 1,
+        [EVENTS.INPUT]: 1,
+        [EVENTS.KEYDOWN]: 2,
+        [EVENTS.KEYPRESS]: 2,
+        [EVENTS.KEYUP]: 2,
+        blur: 1,
+        click: 2,
+        focus: 1,
+        focusin: 1,
+        focusout: 1,
+        mousedown: 0,
+        paste: 0,
+        select: 0,
+        selectionchange: 0,
+        touchend: 0,
+        touchstart: 0,
+      };
+      const eventHandlers: { [key: string]: EventListener } = {};
+
+      eventsToTest.forEach((eventType) => {
+        elementEventCount[eventType] = 0;
+        eventHandlers[eventType] = (handledEvent) => {
+          elementEventCount[handledEvent.type]++;
+        };
+
+        targetInput.addEventListener(eventType, eventHandlers[eventType]);
+      });
+
+      touchAllPasswordFields();
+
+      expect(elementEventCount).toEqual(expectedElementEventCount);
+
+      eventsToTest.forEach((eventType) => {
+        targetInput.removeEventListener(eventType, eventHandlers[eventType]);
+      });
     });
   });
 });
