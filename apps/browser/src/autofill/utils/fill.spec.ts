@@ -1,6 +1,15 @@
-import { FormElement } from "../types";
+import { EVENTS } from "../constants";
+import { FillableControl, FormElement } from "../types";
 
-import { urlNotSecure, canSeeElementToStyle, selectAllFromDoc, getElementByOpId } from "./fill";
+import {
+  urlNotSecure,
+  canSeeElementToStyle,
+  selectAllFromDoc,
+  getElementByOpId,
+  setValueForElementByEvent,
+  setValueForElement,
+  doSimpleSetByQuery,
+} from "./fill";
 
 type FormElementExtended = FormElement & { opid?: string };
 
@@ -12,6 +21,25 @@ const mockLoginForm = `
     </form>
   </div>
 `;
+
+const eventsToTest = [
+  EVENTS.CHANGE,
+  EVENTS.INPUT,
+  EVENTS.KEYDOWN,
+  EVENTS.KEYPRESS,
+  EVENTS.KEYUP,
+  "blur",
+  "click",
+  "focus",
+  "focusin",
+  "focusout",
+  "mousedown",
+  "paste",
+  "select",
+  "selectionchange",
+  "touchend",
+  "touchstart",
+];
 
 let confirmSpy: jest.SpyInstance<boolean, [message?: string]>;
 let consoleSpy: jest.SpyInstance<any>;
@@ -288,6 +316,155 @@ describe("fill utils", () => {
       document.body.innerHTML = "<div></div>";
 
       expect(getElementByOpId("__2")).toEqual(null);
+    });
+  });
+
+  describe("setValueForElementByEvent", () => {
+    it("should fire expected interaction events for the element without changing the value", () => {
+      document.body.innerHTML = `
+        <input
+          name="user_id"
+          value="anInitialValue"
+        />
+      `;
+      const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
+      const elementEventCount: { [key: string]: number } = {};
+      const expectedElementEventCount: { [key: string]: number } = {
+        [EVENTS.CHANGE]: 1,
+        [EVENTS.INPUT]: 1,
+        [EVENTS.KEYDOWN]: 1,
+        [EVENTS.KEYPRESS]: 1,
+        [EVENTS.KEYUP]: 1,
+        blur: 0,
+        click: 0,
+        focus: 0,
+        focusin: 0,
+        focusout: 0,
+        mousedown: 0,
+        paste: 0,
+        select: 0,
+        selectionchange: 0,
+        touchend: 0,
+        touchstart: 0,
+      };
+      const eventHandlers: { [key: string]: (event: InputEvent) => void } = {};
+
+      eventsToTest.forEach((eventType) => {
+        elementEventCount[eventType] = 0;
+        eventHandlers[eventType] = (handledEvent) => {
+          const eventTarget = handledEvent.target as HTMLInputElement;
+
+          if (eventTarget.name === "user_id") {
+            // Test value updates as side-effects from events
+            eventTarget.value = "valueToOverwrite";
+            elementEventCount[handledEvent.type]++;
+          }
+        };
+
+        targetInput.addEventListener(eventType, eventHandlers[eventType]);
+      });
+
+      setValueForElementByEvent(targetInput);
+
+      expect(targetInput.value).toEqual("anInitialValue");
+      expect(elementEventCount).toEqual(expectedElementEventCount);
+
+      eventsToTest.forEach((eventType) => {
+        targetInput.removeEventListener(eventType, eventHandlers[eventType]);
+      });
+    });
+  });
+
+  describe("setValueForElement", () => {
+    it("should fire expected interaction events for the element without changing the value", () => {
+      document.body.innerHTML = `
+        <input
+          name="user_id"
+          value="anInitialValue"
+        />
+      `;
+      const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
+      const elementEventCount: { [key: string]: number } = {};
+      const expectedElementEventCount: { [key: string]: number } = {
+        [EVENTS.CHANGE]: 0,
+        [EVENTS.INPUT]: 0,
+        [EVENTS.KEYDOWN]: 1,
+        [EVENTS.KEYPRESS]: 1,
+        [EVENTS.KEYUP]: 1,
+        blur: 0,
+        click: 1,
+        focus: 1,
+        focusin: 1,
+        focusout: 0,
+        mousedown: 0,
+        paste: 0,
+        select: 0,
+        selectionchange: 0,
+        touchend: 0,
+        touchstart: 0,
+      };
+      const eventHandlers: { [key: string]: (event: InputEvent) => void } = {};
+
+      eventsToTest.forEach((eventType) => {
+        elementEventCount[eventType] = 0;
+        eventHandlers[eventType] = (handledEvent) => {
+          const eventTarget = handledEvent.target as HTMLInputElement;
+
+          if (eventTarget.name === "user_id") {
+            // Test value updates as side-effects from events
+            eventTarget.value = "valueToOverwrite";
+            elementEventCount[handledEvent.type]++;
+          }
+        };
+
+        targetInput.addEventListener(eventType, eventHandlers[eventType]);
+      });
+
+      setValueForElement(targetInput);
+
+      expect(targetInput.value).toEqual("anInitialValue");
+      expect(elementEventCount).toEqual(expectedElementEventCount);
+
+      eventsToTest.forEach((eventType) => {
+        targetInput.removeEventListener(eventType, eventHandlers[eventType]);
+      });
+    });
+  });
+
+  describe("doSimpleSetByQuery", () => {
+    it("should fill (with the passed value) and return all elements targeted by the passed selector", () => {
+      document.body.innerHTML =
+        mockLoginForm + '<input id="input-tag" name="user_id" value="anInitialValue" />';
+
+      const targetInputUserId = document.querySelector('[name="user_id"]') as FillableControl;
+      const targetInputUserName = document.querySelector(
+        'input[type="text"]#username'
+      ) as FillableControl;
+      const passedValue = "jsmith";
+
+      expect(targetInputUserId.value).toEqual("anInitialValue");
+      expect(targetInputUserName.value).toEqual("");
+      expect(
+        doSimpleSetByQuery('input[type="text"]#username, [name="user_id"]', passedValue)
+      ).toHaveLength(2);
+      expect(targetInputUserId.value).toEqual(passedValue);
+      expect(targetInputUserName.value).toEqual(passedValue);
+    });
+
+    it("should not fill or return elements targeted by the passed selector which are anchor tags, disabled, read-only, or cannot have a value set", () => {
+      document.body.innerHTML = `
+        <input id="input-tag-a" type="text" class="user_id" disabled />
+        <input id="input-tag-b" type="text" class="user_id" readonly />
+        <input id="input-tag-c" type="text" class="user_id" />
+        <a id="input-tag-d" class="user_id" href="./"></a>
+        <span id="input-tag-e" class="user_id" value="anInitialValue"></span>
+      `;
+
+      const returnedElements = doSimpleSetByQuery(".user_id", "aUsername");
+
+      expect(returnedElements).toHaveLength(1);
+      expect(returnedElements[0].id).toEqual("input-tag-c");
+      expect(returnedElements[0].value).toEqual("aUsername");
     });
   });
 });
