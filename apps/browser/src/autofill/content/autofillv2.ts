@@ -74,7 +74,7 @@ import {
   setValueForElementByEvent,
   setValueForElement,
   doClickByOpId,
-  touchAllFields,
+  touchAllPasswordFields,
   doClickByQuery,
   doFocusByOpId,
   doSimpleSetByQuery,
@@ -496,7 +496,7 @@ function fill(document: Document, fillScript: AutofillScript) {
     fill_by_query: doFillByQuery,
     click_on_opid: doClickByOpId,
     click_on_query: doClickByQuery,
-    touch_all_fields: touchAllFields,
+    touch_all_fields: touchAllPasswordFields,
     simple_set_value_by_query: doSimpleSetByQuery,
     focus_by_opid: doFocusByOpId,
     delay: null,
@@ -536,17 +536,13 @@ function fill(document: Document, fillScript: AutofillScript) {
    * Find all elements matching `query` and fill them using the value `op` from the fill script
    */
   function doFillByQuery(query: string, op: string): FillableControl[] {
-    const elements = selectAllFromDoc(query);
+    const elements = Array.from(selectAllFromDoc(query)) as HTMLInputElement[];
 
-    return Array.prototype.map.call(
-      Array.prototype.slice.call(elements),
-      function (el: FillableControl) {
-        fillTheElement(el, op);
+    return elements.map((el: FillableControl) => {
+      fillTheElement(el, op);
 
-        return el;
-      },
-      this
-    );
+      return el;
+    });
   }
 
   const checkRadioTrueOps: Record<string, boolean> = {

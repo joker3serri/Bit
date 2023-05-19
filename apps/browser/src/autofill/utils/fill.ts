@@ -1,5 +1,5 @@
 import { EVENTS, TYPE_CHECK } from "../constants";
-import { FillableControl, ElementWithOpId, FormElement } from "../types";
+import { FillableControl, ElementWithOpId } from "../types";
 
 /**
  * Check if the action to autofill on the given page should be considered "secure"
@@ -157,19 +157,16 @@ export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: bo
  * @param {string} theSelector
  * @returns
  */
-export function selectAllFromDoc<T extends Element = Element>(theSelector: string): Array<T> {
-  const d = document;
-  let elements: Array<T> = [];
-
+export function selectAllFromDoc(theSelector: string): NodeListOf<Element> {
   try {
     // Technically this returns a NodeListOf<Element> but it's ducktyped as an Array everywhere, so return it as an array here
-    elements = d.querySelectorAll(theSelector) as unknown as Array<T>;
+    return document.querySelectorAll(theSelector) as NodeListOf<Element>;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error("An unexpected error occurred: " + e);
-  }
 
-  return elements;
+    return [] as unknown as NodeListOf<Element>;
+  }
 }
 
 /**
@@ -180,7 +177,7 @@ export function selectAllFromDoc<T extends Element = Element>(theSelector: strin
  */
 export function getElementByOpId(
   theOpId?: string | null
-): (FormElement & { opid?: string }) | null {
+): HTMLButtonElement | FillableControl | null | undefined {
   let theElement;
 
   // @TODO do this check at the callsite(s)
@@ -248,16 +245,21 @@ export function setValueForElementByEvent(element: FillableControl) {
  * Get all the elements on the DOM that are likely to be a password field
  * @returns {Array} Array of elements
  */
-function getAllFields(): HTMLInputElement[] {
+function getAllPasswordFields() {
   const r = RegExp(
     "((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|passe|contraseña|senha|密码|adgangskode|hasło|wachtwoord)",
     "i"
   );
-  return Array.prototype.slice
-    .call(selectAllFromDoc("input[type='text']"))
-    .filter(function (el: HTMLInputElement) {
-      return el.value && r.test(el.value);
-    }, this);
+
+  // @TODO Check password input type as well?
+  const fields = Array.from(selectAllFromDoc("input[type='text']")) as HTMLInputElement[];
+
+  return fields.filter((element) => {
+    const { value } = element;
+
+    // @TODO Check placeholder value? title/label/name/id/etc?
+    return value && r.test(value);
+  });
 }
 
 /**
@@ -291,10 +293,10 @@ export function doClickByOpId(opId: string) {
 }
 
 /**
- * Touch all the fields
+ * Touch all the password fields
  */
-export function touchAllFields() {
-  getAllFields().forEach(function (el) {
+export function touchAllPasswordFields() {
+  getAllPasswordFields().forEach(function (el) {
     setValueForElement(el);
     el.click && el.click();
     setValueForElementByEvent(el);
@@ -307,19 +309,21 @@ export function touchAllFields() {
  * @returns
  */
 export function doClickByQuery(query: string) {
-  query = selectAllFromDoc(query) as any; // string parameter has been reassigned and is now a NodeList
+  const fields = Array.from(selectAllFromDoc(query)) as HTMLInputElement[];
 
-  return Array.prototype.map.call(
-    Array.prototype.slice.call(query),
-    function (el: HTMLInputElement) {
-      clickElement(el);
-      typeof el.click === TYPE_CHECK.FUNCTION && el.click();
-      typeof el.focus === TYPE_CHECK.FUNCTION && doFocusElement(el, true);
+  return fields.forEach((element) => {
+    clickElement(element);
 
-      return [el];
-    },
-    this
-  );
+    if (typeof element.click === TYPE_CHECK.FUNCTION) {
+      element.click();
+    }
+
+    if (typeof element.focus === TYPE_CHECK.FUNCTION) {
+      doFocusElement(element, true);
+    }
+
+    return [element];
+  });
 }
 
 /**
