@@ -85,6 +85,8 @@ describe("Cipher Service", () => {
       cipherView = new CipherView();
       cipherView.type = CipherType.Login;
       cipherView.key = null;
+
+      encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
     });
 
     describe("cipher.key", () => {
@@ -93,7 +95,6 @@ describe("Cipher Service", () => {
           enableCipherKeyEncryption: false,
         });
 
-        encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
         const cipher = await cipherService.encrypt(cipherView);
 
         expect(cipher.key).toBeUndefined();
@@ -104,24 +105,25 @@ describe("Cipher Service", () => {
           enableCipherKeyEncryption: true,
         });
 
-        encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
         const cipher = await cipherService.encrypt(cipherView);
 
         expect(cipher.key).toBeDefined();
       });
     });
 
-    describe("encryptCipher", () => {
+    describe("encryptWithCipherKey", () => {
+      beforeEach(() => {
+        jest.spyOn<any, string>(cipherService, "encryptWithCipherKey");
+      });
+
       it("is called when enableCipherKeyEncryption is false", async () => {
         process.env.FLAGS = JSON.stringify({
           enableCipherKeyEncryption: false,
         });
 
-        encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
-        jest.spyOn<any, string>(cipherService, "encryptCipher");
         await cipherService.encrypt(cipherView);
 
-        expect(cipherService["encryptCipher"]).toHaveBeenCalled();
+        expect(cipherService["encryptWithCipherKey"]).not.toHaveBeenCalled();
       });
 
       it("is called when enableCipherKeyEncryption is true", async () => {
@@ -129,11 +131,9 @@ describe("Cipher Service", () => {
           enableCipherKeyEncryption: true,
         });
 
-        encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
-        jest.spyOn<any, string>(cipherService, "encryptCipher");
         await cipherService.encrypt(cipherView);
 
-        expect(cipherService["encryptCipher"]).toHaveBeenCalled();
+        expect(cipherService["encryptWithCipherKey"]).toHaveBeenCalled();
       });
     });
   });

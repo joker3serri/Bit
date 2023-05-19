@@ -120,23 +120,14 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
     }
   }
 
-  async decrypt(encKey?: SymmetricCryptoKey): Promise<CipherView> {
+  async decrypt(encKey: SymmetricCryptoKey): Promise<CipherView> {
     const model = new CipherView(this);
 
-    if (encKey == null) {
-      const cryptoService = Utils.getContainerService().getCryptoService();
-      encKey = await cryptoService.getKeyForCipherKeyEncryption(this.organizationId);
-    }
-
-    let cipherEncKey: SymmetricCryptoKey = null;
     if (this.key != null) {
       const encryptService = Utils.getContainerService().getEncryptService();
-      const t = await encryptService.decryptToBytes(this.key, encKey);
-      model.key = new SymmetricCryptoKey(t);
-      cipherEncKey = model.key;
+      model.key = new SymmetricCryptoKey(await encryptService.decryptToBytes(this.key, encKey));
+      encKey = model.key;
     }
-
-    cipherEncKey = cipherEncKey ?? encKey;
 
     await this.decryptObj(
       model,
@@ -145,21 +136,21 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
         notes: null,
       },
       this.organizationId,
-      cipherEncKey
+      encKey
     );
 
     switch (this.type) {
       case CipherType.Login:
-        model.login = await this.login.decrypt(this.organizationId, cipherEncKey);
+        model.login = await this.login.decrypt(this.organizationId, encKey);
         break;
       case CipherType.SecureNote:
-        model.secureNote = await this.secureNote.decrypt(this.organizationId, cipherEncKey);
+        model.secureNote = await this.secureNote.decrypt(this.organizationId, encKey);
         break;
       case CipherType.Card:
-        model.card = await this.card.decrypt(this.organizationId, cipherEncKey);
+        model.card = await this.card.decrypt(this.organizationId, encKey);
         break;
       case CipherType.Identity:
-        model.identity = await this.identity.decrypt(this.organizationId, cipherEncKey);
+        model.identity = await this.identity.decrypt(this.organizationId, encKey);
         break;
       default:
         break;
@@ -186,7 +177,7 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
       await this.fields.reduce((promise, field) => {
         return promise
           .then(() => {
-            return field.decrypt(orgId, cipherEncKey);
+            return field.decrypt(orgId, encKey);
           })
           .then((decField) => {
             fields.push(decField);
@@ -200,7 +191,7 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
       await this.passwordHistory.reduce((promise, ph) => {
         return promise
           .then(() => {
-            return ph.decrypt(orgId, cipherEncKey);
+            return ph.decrypt(orgId, encKey);
           })
           .then((decPh) => {
             passwordHistory.push(decPh);

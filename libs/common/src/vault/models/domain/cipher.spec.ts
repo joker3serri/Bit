@@ -9,6 +9,7 @@ import { FieldType, SecureNoteType, UriMatchType } from "../../../enums";
 import { EncString } from "../../../models/domain/enc-string";
 import { ContainerService } from "../../../services/container.service";
 import { InitializerKey } from "../../../services/cryptography/initializer-key";
+import { CipherService } from "../../abstractions/cipher.service";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
 import { CipherData } from "../../models/data/cipher.data";
@@ -224,6 +225,7 @@ describe("Cipher DTO", () => {
 
       const cryptoService = Substitute.for<CryptoService>();
       const encryptService = Substitute.for<EncryptService>();
+      const cipherService = Substitute.for<CipherService>();
 
       encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
 
@@ -232,7 +234,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt();
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -341,6 +345,7 @@ describe("Cipher DTO", () => {
 
       const cryptoService = Substitute.for<CryptoService>();
       const encryptService = Substitute.for<EncryptService>();
+      const cipherService = Substitute.for<CipherService>();
 
       encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
 
@@ -349,7 +354,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt();
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -476,6 +483,7 @@ describe("Cipher DTO", () => {
 
       const cryptoService = Substitute.for<CryptoService>();
       const encryptService = Substitute.for<EncryptService>();
+      const cipherService = Substitute.for<CipherService>();
 
       encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
 
@@ -484,7 +492,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt();
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -635,6 +645,7 @@ describe("Cipher DTO", () => {
 
       const cryptoService = Substitute.for<CryptoService>();
       const encryptService = Substitute.for<EncryptService>();
+      const cipherService = Substitute.for<CipherService>();
 
       encryptService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(64));
 
@@ -643,7 +654,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt();
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
