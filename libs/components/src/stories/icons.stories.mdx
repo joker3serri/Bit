@@ -12,6 +12,18 @@ the text to screen readers, and a `title` attribute to provide the text visually
 Note: this pattern should only be followed for very common iconography such as, a settings cog icon
 or an options menu icon.
 
+## SVG Icons
+
+Bitwarden is **deprecating** the icon font `<i class="bwi bwi-check"></i>` in favor of an icon
+component `<bit-icon name="check"></bit-icon>` that renders SVG icons under the hood.
+
+To update the icon sheet:
+
+1. Download `selection.json` from IcoMoon and update `libs/components/src/icon/selection.ts`
+2. Download `symbol-defs.svg` from IcoMoon and update in all clients:
+   - Web: `apps/web/src/images/icons/symbol-defs.svg`
+   - Storybook: `.storybook/public/images/icons/symbol-defs.svg`
+
 ## Status Indicators
 
 | Icon                                         | bwi-name                 | Usage                                                                                                                                                                                     |
