@@ -10,6 +10,8 @@ import {
   setValueForElement,
   doClickByOpId,
   touchAllPasswordFields,
+  doClickByQuery,
+  doFocusByOpId,
   doSimpleSetByQuery,
 } from "./fill";
 
@@ -43,6 +45,16 @@ const eventsToTest = [
   "touchstart",
 ];
 
+const initEventCount = Object.freeze(
+  eventsToTest.reduce(
+    (eventCounts, eventName) => ({
+      ...eventCounts,
+      [eventName]: 0,
+    }),
+    {}
+  )
+);
+
 let confirmSpy: jest.SpyInstance<boolean, [message?: string]>;
 let consoleSpy: jest.SpyInstance<any>;
 let windowSpy: jest.SpyInstance<any>;
@@ -57,20 +69,22 @@ function setMockWindowLocationProtocol(protocol: "http:" | "https:") {
   }));
 }
 
-beforeEach(() => {
-  windowSpy = jest.spyOn(window, "window", "get");
-  confirmSpy = jest.spyOn(window, "confirm");
-});
-
-afterEach(() => {
-  windowSpy.mockRestore();
-  confirmSpy.mockRestore();
-
-  document.body.innerHTML = mockLoginForm;
-});
-
 describe("fill utils", () => {
+  afterEach(() => {
+    document.body.innerHTML = mockLoginForm;
+  });
+
   describe("urlNotSecure", () => {
+    beforeEach(() => {
+      confirmSpy = jest.spyOn(window, "confirm");
+      windowSpy = jest.spyOn(window, "window", "get");
+    });
+
+    afterEach(() => {
+      windowSpy.mockRestore();
+      confirmSpy.mockRestore();
+    });
+
     it("is secure on page with no password field", () => {
       setMockWindowLocationProtocol("https:");
 
@@ -331,29 +345,20 @@ describe("fill utils", () => {
         />
       `;
       const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
-      const elementEventCount: { [key: string]: number } = {};
+      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+
+      // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
+        ...initEventCount,
         [EVENTS.CHANGE]: 1,
         [EVENTS.INPUT]: 1,
         [EVENTS.KEYDOWN]: 1,
         [EVENTS.KEYPRESS]: 1,
         [EVENTS.KEYUP]: 1,
-        blur: 0,
-        click: 0,
-        focus: 0,
-        focusin: 0,
-        focusout: 0,
-        mousedown: 0,
-        paste: 0,
-        select: 0,
-        selectionchange: 0,
-        touchend: 0,
-        touchstart: 0,
       };
       const eventHandlers: { [key: string]: EventListener } = {};
 
       eventsToTest.forEach((eventType) => {
-        elementEventCount[eventType] = 0;
         eventHandlers[eventType] = (handledEvent) => {
           const eventTarget = handledEvent.target as HTMLInputElement;
 
@@ -386,30 +391,23 @@ describe("fill utils", () => {
           value="anInitialValue"
         />
       `;
+
       const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
-      const elementEventCount: { [key: string]: number } = {};
+      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+
+      // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
-        [EVENTS.CHANGE]: 0,
-        [EVENTS.INPUT]: 0,
+        ...initEventCount,
         [EVENTS.KEYDOWN]: 1,
         [EVENTS.KEYPRESS]: 1,
         [EVENTS.KEYUP]: 1,
-        blur: 0,
         click: 1,
         focus: 1,
         focusin: 1,
-        focusout: 0,
-        mousedown: 0,
-        paste: 0,
-        select: 0,
-        selectionchange: 0,
-        touchend: 0,
-        touchstart: 0,
       };
       const eventHandlers: { [key: string]: EventListener } = {};
 
       eventsToTest.forEach((eventType) => {
-        elementEventCount[eventType] = 0;
         eventHandlers[eventType] = (handledEvent) => {
           const eventTarget = handledEvent.target as HTMLInputElement;
 
@@ -514,6 +512,7 @@ describe("fill utils", () => {
       textInput.removeEventListener("click", clickEventHandler);
     });
 
+    // @TODO better define this code path
     it("should return null when the targeted element is found but not clickable", () => {
       const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
       textInput.opid = "__1";
@@ -544,8 +543,11 @@ describe("fill utils", () => {
       const targetInput = document.querySelector(
         'input[type="text"][name="text_password"]'
       ) as FormElementExtended;
-      const elementEventCount: { [key: string]: number } = {};
+      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+
+      // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
+        ...initEventCount,
         [EVENTS.CHANGE]: 1,
         [EVENTS.INPUT]: 1,
         [EVENTS.KEYDOWN]: 2,
@@ -556,17 +558,10 @@ describe("fill utils", () => {
         focus: 1,
         focusin: 1,
         focusout: 1,
-        mousedown: 0,
-        paste: 0,
-        select: 0,
-        selectionchange: 0,
-        touchend: 0,
-        touchstart: 0,
       };
       const eventHandlers: { [key: string]: EventListener } = {};
 
       eventsToTest.forEach((eventType) => {
-        elementEventCount[eventType] = 0;
         eventHandlers[eventType] = (handledEvent) => {
           elementEventCount[handledEvent.type]++;
         };
@@ -575,6 +570,71 @@ describe("fill utils", () => {
       });
 
       touchAllPasswordFields();
+
+      expect(elementEventCount).toEqual(expectedElementEventCount);
+
+      eventsToTest.forEach((eventType) => {
+        targetInput.removeEventListener(eventType, eventHandlers[eventType]);
+      });
+    });
+  });
+
+  describe("doClickByQuery", () => {
+    it("should click and focus the elements targeted by the passed selector", () => {
+      const passedSelector = 'input[type="text"]';
+      const targetInput = document.querySelector(passedSelector) as FormElementExtended;
+      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+
+      // Testing all the relevant events to ensure downstream side-effects are firing correctly
+      const expectedElementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+        click: 2,
+        focus: 1,
+        focusin: 1,
+      };
+      const eventHandlers: { [key: string]: EventListener } = {};
+
+      eventsToTest.forEach((eventType) => {
+        eventHandlers[eventType] = (handledEvent) => {
+          elementEventCount[handledEvent.type]++;
+        };
+
+        targetInput.addEventListener(eventType, eventHandlers[eventType]);
+      });
+
+      expect(doClickByQuery(passedSelector)).toEqual(undefined);
+
+      expect(elementEventCount).toEqual(expectedElementEventCount);
+
+      eventsToTest.forEach((eventType) => {
+        targetInput.removeEventListener(eventType, eventHandlers[eventType]);
+      });
+    });
+  });
+
+  describe("doFocusByOpId", () => {
+    it("should click and focus the elements targeted by the passed opid", () => {
+      const targetInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+
+      // Testing all the relevant events to ensure downstream side-effects are firing correctly
+      const expectedElementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+        click: 1,
+        focus: 1,
+        focusin: 1,
+      };
+      const eventHandlers: { [key: string]: EventListener } = {};
+
+      eventsToTest.forEach((eventType) => {
+        eventHandlers[eventType] = (handledEvent) => {
+          elementEventCount[handledEvent.type]++;
+        };
+
+        targetInput.addEventListener(eventType, eventHandlers[eventType]);
+      });
+
+      expect(doFocusByOpId("__0")).toEqual(null);
 
       expect(elementEventCount).toEqual(expectedElementEventCount);
 
