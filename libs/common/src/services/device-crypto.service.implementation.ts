@@ -67,7 +67,7 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
     }
   }
 
-  async makeDeviceKey(): Promise<SymmetricCryptoKey> {
+  private async makeDeviceKey(): Promise<SymmetricCryptoKey> {
     // Create 512-bit device key
     const randomBytes: CsprngArray = await this.cryptoFunctionService.randomBytes(64);
     const deviceKey = new SymmetricCryptoKey(randomBytes);

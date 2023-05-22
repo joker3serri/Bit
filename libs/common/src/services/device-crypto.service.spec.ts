@@ -64,7 +64,7 @@ describe("deviceCryptoService", () => {
         );
 
         stateSvcGetDeviceKeySpy = jest.spyOn(stateService, "getDeviceKey");
-        makeDeviceKeySpy = jest.spyOn(deviceCryptoService, "makeDeviceKey");
+        makeDeviceKeySpy = jest.spyOn(deviceCryptoService as any, "makeDeviceKey");
       });
 
       it("gets a device key when there is not an existing device key", async () => {
@@ -105,7 +105,9 @@ describe("deviceCryptoService", () => {
 
         const stateSvcSetDeviceKeySpy = jest.spyOn(stateService, "setDeviceKey");
 
-        const deviceKey = await deviceCryptoService.makeDeviceKey();
+        // TypeScript will allow calling private methods if the object is of type 'any'
+        // This is a hacky workaround, but it allows for cleaner tests
+        const deviceKey = await (deviceCryptoService as any).makeDeviceKey();
 
         expect(cryptoFuncSvcRandomBytesSpy).toHaveBeenCalledTimes(1);
         expect(cryptoFuncSvcRandomBytesSpy).toHaveBeenCalledWith(deviceKeyBytesLength);
@@ -183,8 +185,9 @@ describe("deviceCryptoService", () => {
           "mockDeviceKeyEncryptedDevicePrivateKey"
         );
 
+        // TypeScript will allow calling private methods if the object is of type 'any'
         makeDeviceKeySpy = jest
-          .spyOn(deviceCryptoService, "makeDeviceKey")
+          .spyOn(deviceCryptoService as any, "makeDeviceKey")
           .mockResolvedValue(mockDeviceKey);
 
         rsaGenerateKeyPairSpy = jest
