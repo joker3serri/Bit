@@ -39,29 +39,6 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
     return new DeviceResponse(r);
   }
 
-  async createTrustedDeviceKeys(
-    deviceIdentifier: string,
-    devicePublicKeyEncryptedUserSymKey: string,
-    userSymKeyEncryptedDevicePublicKey: string,
-    deviceKeyEncryptedDevicePrivateKey: string
-  ): Promise<DeviceResponse> {
-    const request = new TrustedDeviceKeysRequest(
-      devicePublicKeyEncryptedUserSymKey,
-      userSymKeyEncryptedDevicePublicKey,
-      deviceKeyEncryptedDevicePrivateKey
-    );
-
-    const result = await this.apiService.send(
-      "POST",
-      `/devices/${deviceIdentifier}/keys`,
-      request,
-      true,
-      true
-    );
-
-    return new DeviceResponse(result);
-  }
-
   async updateTrustedDeviceKeys(
     deviceIdentifier: string,
     devicePublicKeyEncryptedUserSymKey: string,
