@@ -59,7 +59,6 @@ const partialKeys = {
   autoKey: "_masterkey_auto",
   biometricKey: "_masterkey_biometric",
   masterKey: "_masterkey",
-  deviceKey: "_devicekey",
 };
 
 const DDG_SHARED_KEY = "DuckDuckGoSharedKey";
@@ -1056,28 +1055,29 @@ export class StateService<
   }
 
   async getDeviceKey(options?: StorageOptions): Promise<SymmetricCryptoKey | null> {
-    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
     if (options?.userId == null) {
       return null;
     }
-    return await this.secureStorageService.get<SymmetricCryptoKey>(
-      `${options.userId}${partialKeys.deviceKey}`,
-      options
-    );
+
+    const account = await this.getAccount(options);
+
+    return account?.keys?.deviceKey;
   }
 
   async setDeviceKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
-    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
     if (options?.userId == null) {
       return;
     }
-    value == null
-      ? await this.secureStorageService.remove(`${options.userId}${partialKeys.deviceKey}`, options)
-      : await this.secureStorageService.save(
-          `${options.userId}${partialKeys.deviceKey}`,
-          value,
-          options
-        );
+
+    const account = await this.getAccount(options);
+
+    account.keys.deviceKey = value;
+
+    await this.saveAccount(account, options);
   }
 
   async getEmail(options?: StorageOptions): Promise<string> {
@@ -2777,7 +2777,10 @@ export class StateService<
 
   // settings persist even on reset, and are not effected by this method
   protected resetAccount(account: TAccount) {
-    const persistentAccountInformation = { settings: account.settings };
+    const persistentAccountInformation = {
+      settings: account.settings,
+      keys: { deviceKey: account.keys.deviceKey },
+    };
     return Object.assign(this.createAccount(), persistentAccountInformation);
   }
 
@@ -2856,7 +2859,7 @@ export class StateService<
     return this.reconcileOptions(options, defaultOptions);
   }
 
-  private async saveSecureStorageKey<T extends JsonValue>(
+  protected async saveSecureStorageKey<T extends JsonValue>(
     key: string,
     value: T,
     options?: StorageOptions

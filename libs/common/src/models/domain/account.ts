@@ -107,6 +107,7 @@ export class AccountKeys {
     string,
     SymmetricCryptoKey
   >();
+  deviceKey?: SymmetricCryptoKey;
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
     Record<string, SymmetricCryptoKey>

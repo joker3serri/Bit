@@ -1,6 +1,8 @@
+import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { StorageOptions } from "@bitwarden/common/models/domain/storage-options";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { StateService as BaseStateService } from "@bitwarden/common/services/state.service";
 
 import { Account } from "../models/account";
@@ -11,6 +13,10 @@ export class ElectronStateService
   extends BaseStateService<GlobalState, Account>
   implements ElectronStateServiceAbstraction
 {
+  private partialKeys = {
+    deviceKey: "_deviceKey",
+  };
+
   async addAccount(account: Account) {
     // Apply desktop overides to default account values
     account = new Account(account);
@@ -76,5 +82,23 @@ export class ElectronStateService
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
+  }
+
+  override async getDeviceKey(options?: StorageOptions): Promise<SymmetricCryptoKey | null> {
+    const b64DeviceKey = await this.secureStorageService.get<string>(
+      `${options.userId}${this.partialKeys.deviceKey}`,
+      options
+    );
+
+    return new SymmetricCryptoKey(Utils.fromB64ToArray(b64DeviceKey).buffer);
+  }
+
+  override async setDeviceKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    if (options?.userId == null) {
+      return;
+    }
+
+    await this.saveSecureStorageKey(this.partialKeys.deviceKey, value.keyB64, options);
   }
 }
