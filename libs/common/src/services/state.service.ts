@@ -59,10 +59,10 @@ const partialKeys = {
   autoKey: "_masterkey_auto",
   biometricKey: "_masterkey_biometric",
   masterKey: "_masterkey",
+  deviceKey: "_devicekey",
 };
 
 const DDG_SHARED_KEY = "DuckDuckGoSharedKey";
-const DEVICE_KEY = "BitwardenDeviceKey";
 
 export class StateService<
   TGlobalState extends GlobalState = GlobalState,
@@ -1060,7 +1060,10 @@ export class StateService<
     if (options?.userId == null) {
       return null;
     }
-    return await this.secureStorageService.get<SymmetricCryptoKey>(DEVICE_KEY, options);
+    return await this.secureStorageService.get<SymmetricCryptoKey>(
+      `${options.userId}${partialKeys.deviceKey}`,
+      options
+    );
   }
 
   async setDeviceKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
@@ -1069,8 +1072,12 @@ export class StateService<
       return;
     }
     value == null
-      ? await this.secureStorageService.remove(DEVICE_KEY, options)
-      : await this.secureStorageService.save(DEVICE_KEY, value, options);
+      ? await this.secureStorageService.remove(`${options.userId}${partialKeys.deviceKey}`, options)
+      : await this.secureStorageService.save(
+          `${options.userId}${partialKeys.deviceKey}`,
+          value,
+          options
+        );
   }
 
   async getEmail(options?: StorageOptions): Promise<string> {
