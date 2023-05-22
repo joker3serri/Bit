@@ -1,12 +1,10 @@
 import { CBOR } from "cbor-redux";
 
-import { LogService } from "../../abstractions/log.service";
-import { Utils } from "../../misc/utils";
-import { CipherService } from "../../vault/abstractions/cipher.service";
-import { Fido2UserInterfaceService } from "../../vault/abstractions/fido2/fido2-user-interface.service.abstraction";
-import { CipherType } from "../../vault/enums/cipher-type";
-import { CipherView } from "../../vault/models/view/cipher.view";
-import { Fido2KeyView } from "../../vault/models/view/fido2-key.view";
+import { LogService } from "../../../abstractions/log.service";
+import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
+import { joseToDer } from "../../../fido2/services/ecdsa-utils";
+import { Utils } from "../../../misc/utils";
+import { CipherService } from "../../abstractions/cipher.service";
 import {
   Fido2AlgorithmIdentifier,
   Fido2AutenticatorError,
@@ -17,10 +15,12 @@ import {
   Fido2AuthenticatorMakeCredentialsParams,
   Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction,
   PublicKeyCredentialDescriptor,
-} from "../abstractions/fido2-authenticator.service.abstraction";
-import { Fido2Utils } from "../abstractions/fido2-utils";
+} from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
+import { Fido2UserInterfaceService } from "../../abstractions/fido2/fido2-user-interface.service.abstraction";
+import { CipherType } from "../../enums/cipher-type";
+import { CipherView } from "../../models/view/cipher.view";
+import { Fido2KeyView } from "../../models/view/fido2-key.view";
 
-import { joseToDer } from "./ecdsa-utils";
 
 // AAGUID: 6e8248d5-b479-40db-a3d8-11116f7e8349
 export const AAGUID = new Uint8Array([

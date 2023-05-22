@@ -1,19 +1,19 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
+import { Utils } from "../../../misc/utils";
 import {
   Fido2AutenticatorError,
   Fido2AutenticatorErrorCode,
   Fido2AuthenticatorGetAssertionResult,
   Fido2AuthenticatorMakeCredentialResult,
-} from "../../../fido2/abstractions/fido2-authenticator.service.abstraction";
-import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
-import { Fido2AuthenticatorService } from "../../../fido2/services/fido2-authenticator.service";
-import { Utils } from "../../../misc/utils";
+} from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
 import {
   AssertCredentialParams,
   CreateCredentialParams,
 } from "../../abstractions/fido2/fido2-client.service.abstraction";
 
+import { Fido2AuthenticatorService } from "./fido2-authenticator.service";
 import { Fido2ClientService } from "./fido2-client.service";
 
 const RpId = "bitwarden.com";

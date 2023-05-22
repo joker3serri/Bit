@@ -1,6 +1,9 @@
 import { parse } from "tldts";
 
 import { LogService } from "../../../abstractions/log.service";
+import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
+import { isValidRpId } from "../../../fido2/services/domain-utils";
+import { Utils } from "../../../misc/utils";
 import {
   Fido2AutenticatorError,
   Fido2AutenticatorErrorCode,
@@ -8,10 +11,7 @@ import {
   Fido2AuthenticatorMakeCredentialsParams,
   Fido2AuthenticatorService,
   PublicKeyCredentialDescriptor,
-} from "../../../fido2/abstractions/fido2-authenticator.service.abstraction";
-import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
-import { isValidRpId } from "../../../fido2/services/domain-utils";
-import { Utils } from "../../../misc/utils";
+} from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
 import {
   AssertCredentialParams,
   AssertCredentialResult,
