@@ -38,6 +38,7 @@ const decorator = componentWrapperDecorator(
 
 <ng-container *ngTemplateOutlet="lightPreview"></ng-container>
 <ng-container *ngTemplateOutlet="darkPreview"></ng-container>
+<ng-container *ngTemplateOutlet="nordPreview"></ng-container>
 <ng-container *ngTemplateOutlet="solarizePreview"></ng-container>
 `
 );
