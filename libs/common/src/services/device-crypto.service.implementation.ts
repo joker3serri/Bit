@@ -48,7 +48,7 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
 
     // Send encrypted keys to server
     const deviceId = await this.appIdService.getAppId();
-    return this.devicesApiService.createTrustedDeviceKeys(
+    return this.devicesApiService.updateTrustedDeviceKeys(
       deviceId,
       devicePublicKeyEncryptedUserSymKey.encryptedString,
       userSymKeyEncryptedDevicePublicKey.encryptedString,

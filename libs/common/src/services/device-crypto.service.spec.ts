@@ -151,7 +151,7 @@ describe("deviceCryptoService", () => {
       let cryptoSvcRsaEncryptSpy: jest.SpyInstance;
       let encryptServiceEncryptSpy: jest.SpyInstance;
       let appIdServiceGetAppIdSpy: jest.SpyInstance;
-      let devicesApiServiceCreateTrustedDeviceKeysSpy: jest.SpyInstance;
+      let devicesApiServiceUpdateTrustedDeviceKeysSpy: jest.SpyInstance;
 
       beforeEach(() => {
         // Setup all spies and default return values for the happy path
@@ -215,8 +215,8 @@ describe("deviceCryptoService", () => {
           .spyOn(appIdService, "getAppId")
           .mockResolvedValue(mockDeviceId);
 
-        devicesApiServiceCreateTrustedDeviceKeysSpy = jest
-          .spyOn(devicesApiService, "createTrustedDeviceKeys")
+        devicesApiServiceUpdateTrustedDeviceKeysSpy = jest
+          .spyOn(devicesApiService, "updateTrustedDeviceKeys")
           .mockResolvedValue(mockDeviceResponse);
       });
 
@@ -231,8 +231,8 @@ describe("deviceCryptoService", () => {
         expect(encryptServiceEncryptSpy).toHaveBeenCalledTimes(2);
 
         expect(appIdServiceGetAppIdSpy).toHaveBeenCalledTimes(1);
-        expect(devicesApiServiceCreateTrustedDeviceKeysSpy).toHaveBeenCalledTimes(1);
-        expect(devicesApiServiceCreateTrustedDeviceKeysSpy).toHaveBeenCalledWith(
+        expect(devicesApiServiceUpdateTrustedDeviceKeysSpy).toHaveBeenCalledTimes(1);
+        expect(devicesApiServiceUpdateTrustedDeviceKeysSpy).toHaveBeenCalledWith(
           mockDeviceId,
           mockDevicePublicKeyEncryptedUserSymKey.encryptedString,
           mockUserSymKeyEncryptedDevicePublicKey.encryptedString,
