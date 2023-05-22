@@ -560,7 +560,7 @@ export class PeopleComponent
     }
 
     if (user.status > OrganizationUserStatusType.Invited && !user.hasMasterPassword) {
-      return await this.noMasterPasswordConfirmationDialog();
+      return await this.noMasterPasswordConfirmationDialog(user);
     }
 
     return true;
@@ -579,18 +579,21 @@ export class PeopleComponent
     }
 
     if (user.status > OrganizationUserStatusType.Invited && !user.hasMasterPassword) {
-      return await this.noMasterPasswordConfirmationDialog();
+      return await this.noMasterPasswordConfirmationDialog(user);
     }
 
     return true;
   }
 
-  private async noMasterPasswordConfirmationDialog() {
+  private async noMasterPasswordConfirmationDialog(user: OrganizationUserView) {
     return await this.dialogService.openSimpleDialog({
       title: {
         key: "removeOrgUserNoMasterPasswordTitle",
       },
-      content: { key: "removeOrgUserNoMasterPasswordDesc" },
+      content: {
+        key: "removeOrgUserNoMasterPasswordDesc",
+        placeholders: [this.userNamePipe.transform(user)],
+      },
       type: SimpleDialogType.WARNING,
     });
   }

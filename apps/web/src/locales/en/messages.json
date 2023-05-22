@@ -6830,6 +6830,12 @@
     "message": "Account does not have master password"
   },
   "removeOrgUserNoMasterPasswordDesc": {
-    "message": "Removing this member without setting a master password for them may restrict access to their full account. Are you sure you want to continue?"
+    "message": "Removing $USER$ without setting a master password for them may restrict access to their full account. Are you sure you want to continue?",
+    "placeholders": {
+      "user": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
   }
 }
