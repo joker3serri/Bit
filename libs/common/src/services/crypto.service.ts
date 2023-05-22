@@ -767,10 +767,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     return await this.getKey();
   }
 
-  async getKeyForCipherKeyEncryption(orgId?: string): Promise<SymmetricCryptoKey> {
-    return orgId != null ? await this.getOrgKey(orgId) : await this.getKeyForUserEncryption();
-  }
-
   private async stretchKey(key: SymmetricCryptoKey): Promise<SymmetricCryptoKey> {
     const newKey = new Uint8Array(64);
     const encKey = await this.cryptoFunctionService.hkdfExpand(key.key, "enc", 32, "sha256");

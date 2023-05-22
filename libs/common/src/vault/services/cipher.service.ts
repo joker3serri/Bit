@@ -619,7 +619,7 @@ export class CipherService implements CipherServiceAbstraction {
     data: ArrayBuffer,
     admin = false
   ): Promise<Cipher> {
-    const key = await this.cryptoService.getKeyForCipherKeyEncryption(cipher.organizationId);
+    const key = await this.getKeyForCipherKeyDecryption(cipher);
 
     const cipherEncKey = flagEnabled("enableCipherKeyEncryption")
       ? new SymmetricCryptoKey(await this.encryptService.decryptToBytes(cipher.key, key))
