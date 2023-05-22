@@ -1,8 +1,6 @@
 import { parse } from "tldts";
 
 import { LogService } from "../../../abstractions/log.service";
-import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
-import { isValidRpId } from "../../../fido2/services/domain-utils";
 import { Utils } from "../../../misc/utils";
 import {
   Fido2AutenticatorError,
@@ -23,6 +21,9 @@ import {
   UserRequestedFallbackAbortReason,
   UserVerification,
 } from "../../abstractions/fido2/fido2-client.service.abstraction";
+
+import { isValidRpId } from "./domain-utils";
+import { Fido2Utils } from "./fido2-utils";
 
 export class Fido2ClientService implements Fido2ClientServiceAbstraction {
   constructor(private authenticator: Fido2AuthenticatorService, private logService?: LogService) {}

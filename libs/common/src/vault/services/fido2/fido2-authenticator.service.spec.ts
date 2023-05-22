@@ -3,7 +3,6 @@ import { TextEncoder } from "util";
 import { CBOR } from "cbor-redux";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { Fido2Utils } from "../../../fido2/abstractions/fido2-utils";
 import { Utils } from "../../../misc/utils";
 import { CipherService } from "../../abstractions/cipher.service";
 import {
@@ -23,6 +22,7 @@ import { Fido2KeyView } from "../../models/view/fido2-key.view";
 import { LoginView } from "../../models/view/login.view";
 
 import { AAGUID, Fido2AuthenticatorService } from "./fido2-authenticator.service";
+import { Fido2Utils } from "./fido2-utils";
 
 const RpId = "bitwarden.com";
 
