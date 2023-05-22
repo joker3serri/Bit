@@ -40,7 +40,7 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
   }
 
   async createTrustedDeviceKeys(
-    deviceId: string,
+    deviceIdentifier: string,
     devicePublicKeyEncryptedUserSymKey: string,
     userSymKeyEncryptedDevicePublicKey: string,
     deviceKeyEncryptedDevicePrivateKey: string
@@ -53,7 +53,7 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
 
     const result = await this.apiService.send(
       "POST",
-      `/devices/${deviceId}/keys`,
+      `/devices/${deviceIdentifier}/keys`,
       request,
       true,
       true
@@ -63,7 +63,7 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
   }
 
   async updateTrustedDeviceKeys(
-    deviceId: string,
+    deviceIdentifier: string,
     devicePublicKeyEncryptedUserSymKey: string,
     userSymKeyEncryptedDevicePublicKey: string,
     deviceKeyEncryptedDevicePrivateKey: string
@@ -76,7 +76,7 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
 
     const result = await this.apiService.send(
       "PUT",
-      `/devices/${deviceId}/keys`,
+      `/devices/${deviceIdentifier}/keys`,
       request,
       true,
       true
