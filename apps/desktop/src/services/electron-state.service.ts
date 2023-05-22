@@ -85,6 +85,11 @@ export class ElectronStateService
   }
 
   override async getDeviceKey(options?: StorageOptions): Promise<SymmetricCryptoKey | null> {
+    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    if (options?.userId == null) {
+      return;
+    }
+
     const b64DeviceKey = await this.secureStorageService.get<string>(
       `${options.userId}${this.partialKeys.deviceKey}`,
       options
