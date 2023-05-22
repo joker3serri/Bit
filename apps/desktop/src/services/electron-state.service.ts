@@ -2,7 +2,10 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { StorageOptions } from "@bitwarden/common/models/domain/storage-options";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import {
+  DeviceKey,
+  SymmetricCryptoKey,
+} from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { StateService as BaseStateService } from "@bitwarden/common/services/state.service";
 
 import { Account } from "../models/account";
@@ -84,7 +87,7 @@ export class ElectronStateService
     );
   }
 
-  override async getDeviceKey(options?: StorageOptions): Promise<SymmetricCryptoKey | null> {
+  override async getDeviceKey(options?: StorageOptions): Promise<DeviceKey | null> {
     options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
     if (options?.userId == null) {
       return;
@@ -95,10 +98,10 @@ export class ElectronStateService
       options
     );
 
-    return new SymmetricCryptoKey(Utils.fromB64ToArray(b64DeviceKey).buffer);
+    return new SymmetricCryptoKey(Utils.fromB64ToArray(b64DeviceKey).buffer) as DeviceKey;
   }
 
-  override async setDeviceKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
+  override async setDeviceKey(value: DeviceKey, options?: StorageOptions): Promise<void> {
     options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
     if (options?.userId == null) {
       return;

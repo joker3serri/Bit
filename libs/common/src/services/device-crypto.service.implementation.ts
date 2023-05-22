@@ -6,7 +6,7 @@ import { DevicesApiServiceAbstraction } from "../abstractions/devices/devices-ap
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { StateService } from "../abstractions/state.service";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { DeviceKey, SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../types/csprng";
 
 export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
@@ -61,7 +61,7 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
     );
   }
 
-  async getDeviceKey(): Promise<SymmetricCryptoKey> {
+  async getDeviceKey(): Promise<DeviceKey> {
     // Check if device key is already stored
     const existingDeviceKey = await this.stateService.getDeviceKey();
 
@@ -72,10 +72,10 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
     }
   }
 
-  private async makeDeviceKey(): Promise<SymmetricCryptoKey> {
+  private async makeDeviceKey(): Promise<DeviceKey> {
     // Create 512-bit device key
     const randomBytes: CsprngArray = await this.cryptoFunctionService.randomBytes(64);
-    const deviceKey = new SymmetricCryptoKey(randomBytes);
+    const deviceKey = new SymmetricCryptoKey(randomBytes) as DeviceKey;
 
     // Save device key in secure storage
     await this.stateService.setDeviceKey(deviceKey);

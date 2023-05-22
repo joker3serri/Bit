@@ -35,7 +35,7 @@ import { EncString } from "../models/domain/enc-string";
 import { GlobalState } from "../models/domain/global-state";
 import { State } from "../models/domain/state";
 import { StorageOptions } from "../models/domain/storage-options";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { DeviceKey, SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { WindowState } from "../models/domain/window-state";
 import { GeneratedPasswordHistory } from "../tools/generator/password";
 import { SendData } from "../tools/send/models/data/send.data";
@@ -1054,7 +1054,7 @@ export class StateService<
       : await this.secureStorageService.save(DDG_SHARED_KEY, value, options);
   }
 
-  async getDeviceKey(options?: StorageOptions): Promise<SymmetricCryptoKey | null> {
+  async getDeviceKey(options?: StorageOptions): Promise<DeviceKey | null> {
     options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
 
     if (options?.userId == null) {
@@ -1063,10 +1063,10 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    return account?.keys?.deviceKey;
+    return account?.keys?.deviceKey as DeviceKey;
   }
 
-  async setDeviceKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
+  async setDeviceKey(value: DeviceKey, options?: StorageOptions): Promise<void> {
     options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
 
     if (options?.userId == null) {

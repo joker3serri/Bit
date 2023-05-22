@@ -8,7 +8,7 @@ import { EncryptService } from "../abstractions/encrypt.service";
 import { StateService } from "../abstractions/state.service";
 import { EncryptionType } from "../enums/encryption-type.enum";
 import { EncString } from "../models/domain/enc-string";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { DeviceKey, SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { CryptoService } from "../services/crypto.service";
 import { CsprngArray } from "../types/csprng";
 
@@ -52,7 +52,7 @@ describe("deviceCryptoService", () => {
     describe("getDeviceKey", () => {
       let mockRandomBytes: CsprngArray;
       let mockDeviceKey: SymmetricCryptoKey;
-      let existingDeviceKey: SymmetricCryptoKey;
+      let existingDeviceKey: DeviceKey;
       let stateSvcGetDeviceKeySpy: jest.SpyInstance;
       let makeDeviceKeySpy: jest.SpyInstance;
 
@@ -61,7 +61,7 @@ describe("deviceCryptoService", () => {
         mockDeviceKey = new SymmetricCryptoKey(mockRandomBytes);
         existingDeviceKey = new SymmetricCryptoKey(
           new Uint8Array(deviceKeyBytesLength).buffer as CsprngArray
-        );
+        ) as DeviceKey;
 
         stateSvcGetDeviceKeySpy = jest.spyOn(stateService, "getDeviceKey");
         makeDeviceKeySpy = jest.spyOn(deviceCryptoService as any, "makeDeviceKey");
@@ -122,7 +122,7 @@ describe("deviceCryptoService", () => {
 
     describe("trustDevice", () => {
       let mockDeviceKeyRandomBytes: CsprngArray;
-      let mockDeviceKey: SymmetricCryptoKey;
+      let mockDeviceKey: DeviceKey;
 
       let mockUserSymKeyRandomBytes: CsprngArray;
       let mockUserSymKey: SymmetricCryptoKey;
@@ -157,7 +157,7 @@ describe("deviceCryptoService", () => {
         // Setup all spies and default return values for the happy path
 
         mockDeviceKeyRandomBytes = new Uint8Array(deviceKeyBytesLength).buffer as CsprngArray;
-        mockDeviceKey = new SymmetricCryptoKey(mockDeviceKeyRandomBytes);
+        mockDeviceKey = new SymmetricCryptoKey(mockDeviceKeyRandomBytes) as DeviceKey;
 
         mockUserSymKeyRandomBytes = new Uint8Array(userSymKeyBytesLength).buffer as CsprngArray;
         mockUserSymKey = new SymmetricCryptoKey(mockUserSymKeyRandomBytes);
