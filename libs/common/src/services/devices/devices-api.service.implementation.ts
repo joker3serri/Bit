@@ -24,6 +24,10 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
     return r as boolean;
   }
 
+  /**
+   * Get device by identifier
+   * @param deviceIdentifier - client generated id (not device id in DB)
+   */
   async getDeviceByIdentifier(deviceIdentifier: string): Promise<DeviceResponse> {
     const r = await this.apiService.send(
       "GET",
