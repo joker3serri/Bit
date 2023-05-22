@@ -35,62 +35,66 @@ export function urlNotSecure(savedURLs?: string[] | null): boolean {
 
 /**
  * Normalize the event based on API support
- * @param {HTMLElement} el
+ * @param {HTMLElement} element
  * @param {string} eventName
  * @returns {Event} A normalized event
  */
-function normalizeEvent(el: FillableControl, eventName: string) {
-  let ev;
+function normalizeEvent(element: FillableControl, eventName: string) {
+  let event;
 
   if (EVENTS.KEYBOARDEVENT in window) {
-    ev = new window.KeyboardEvent(eventName, {
+    event = new window.KeyboardEvent(eventName, {
       bubbles: true,
       cancelable: false,
     });
   } else {
-    ev = el.ownerDocument.createEvent("Events");
-    ev.initEvent(eventName, true, false);
-    ev = {
-      ...ev,
+    event = element.ownerDocument.createEvent("Events");
+    // new Event(EVENTS.INPUT, { bubbles: true, cancelable: true });
+    event.initEvent(eventName, true, false);
+    event = {
+      ...event,
       charCode: 0,
       keyCode: 0,
       which: 0,
-      srcElement: el,
-      target: el,
+      srcElement: element,
+      target: element,
     };
   }
 
-  return ev;
+  return event;
 }
 
 /**
- * Click on an element `el`
- * @param {HTMLElement} el
+ * Click on an element `element`
+ * @param {HTMLElement} element
  * @returns {boolean} Returns true if the element was clicked and false if it was not able to be clicked
  */
-function clickElement(el: HTMLElement) {
-  if (!el || (el && typeof el.click !== TYPE_CHECK.FUNCTION)) {
+function clickElement(element: HTMLElement) {
+  if (!element || (element && typeof element.click !== TYPE_CHECK.FUNCTION)) {
     return false;
   }
 
-  el.click();
+  element.click();
 
   return true;
 }
 
 /**
  * Focus an element and optionally re-set its value after focusing
- * @param {HTMLElement} el
- * @param {boolean} setValue Re-set the value after focusing
+ * @param {HTMLElement} element
+ * @param {boolean} shouldResetValue Reset the value after focusing
  */
-function doFocusElement(el: FillableControl, setValue: boolean): void {
-  if (setValue) {
-    const existingValue = el.value;
+function doFocusElement(element: FillableControl, shouldResetValue: boolean): void {
+  if (shouldResetValue) {
+    const initialValue = element.value;
 
-    el.focus();
-    el.value !== existingValue && (el.value = existingValue);
+    element.focus();
+
+    if (element.value !== initialValue) {
+      element.value = initialValue;
+    }
   } else {
-    el.focus();
+    element.focus();
   }
 }
 
@@ -101,51 +105,51 @@ function doFocusElement(el: FillableControl, setValue: boolean): void {
  * @returns {boolean} Returns true if we can see the element to apply styling.
  */
 export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: boolean) {
-  let currentEl: any = animateTheFilling;
+  let currentElement: any = animateTheFilling;
 
-  if (currentEl) {
+  if (currentElement) {
     a: {
-      currentEl = element;
+      currentElement = element;
 
       // Check the parent tree of `element` for display/visibility
       for (
         let owner: any = element.ownerDocument.defaultView, theStyle;
-        currentEl && currentEl !== document;
+        currentElement && currentElement !== document;
 
       ) {
         theStyle = owner.getComputedStyle
-          ? owner.getComputedStyle(currentEl, null)
-          : currentEl.style;
+          ? owner.getComputedStyle(currentElement, null)
+          : currentElement.style;
 
         if (!theStyle) {
-          currentEl = true;
+          currentElement = true;
 
           break a;
         }
 
         if (theStyle.display === "none" || theStyle.visibility === "hidden") {
-          currentEl = false;
+          currentElement = false;
 
           break a;
         }
 
-        currentEl = currentEl.parentNode;
+        currentElement = currentElement.parentNode;
       }
 
-      currentEl = currentEl === document;
+      currentElement = currentElement === document;
     }
   }
 
   if (
     animateTheFilling &&
-    currentEl &&
+    currentElement &&
     !(element as FillableControl)?.type &&
     element.tagName.toLowerCase() === "span"
   ) {
     return true;
   }
 
-  return currentEl
+  return currentElement
     ? ["email", "text", "password", "number", "tel", "url"].includes(
         (element as FillableControl).type || ""
       )
@@ -154,16 +158,15 @@ export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: bo
 
 /**
  * Helper for doc.querySelectorAll
- * @param {string} theSelector
+ * @param {string} selector
  * @returns
  */
-export function selectAllFromDoc(theSelector: string): NodeListOf<Element> {
+export function selectAllFromDoc(selector: string): NodeListOf<Element> {
   try {
-    // Technically this returns a NodeListOf<Element> but it's ducktyped as an Array everywhere, so return it as an array here
-    return document.querySelectorAll(theSelector) as NodeListOf<Element>;
-  } catch (e) {
+    return document.querySelectorAll(selector);
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error("An unexpected error occurred: " + e);
+    console.error("An unexpected error occurred: " + error);
 
     return [] as unknown as NodeListOf<Element>;
   }
@@ -172,50 +175,51 @@ export function selectAllFromDoc(theSelector: string): NodeListOf<Element> {
 /**
  * Find the first element for the given `opid`, falling back to the first relevant unmatched
  * element if non is found.
- * @param {number} theOpId
+ * @param {number} targetOpId
  * @returns {HTMLElement} The element for the given `opid`, or `null` if not found.
  */
 export function getElementByOpId(
-  theOpId?: string | null
+  targetOpId?: string | null
 ): HTMLButtonElement | FillableControl | null | undefined {
-  let theElement;
+  let currentElement;
 
   // @TODO do this check at the callsite(s)
-  if (!theOpId) {
+  if (!targetOpId) {
     return null;
   }
 
   try {
-    const elements: Array<FillableControl | HTMLButtonElement> = Array.prototype.slice.call(
+    const elements = Array.from(
       selectAllFromDoc("input, select, button, textarea, span[data-bwautofill]")
+    ) as Array<FillableControl | HTMLButtonElement>;
+
+    const filteredElements = elements.filter(
+      (element) =>
+        (element as ElementWithOpId<FillableControl | HTMLButtonElement>).opid === targetOpId
     );
 
-    const filteredElements = elements.filter(function (o) {
-      return (o as ElementWithOpId<FillableControl | HTMLButtonElement>).opid === theOpId;
-    });
-
     if (filteredElements.length) {
-      theElement = filteredElements[0];
+      currentElement = filteredElements[0];
 
       if (filteredElements.length > 1) {
         // eslint-disable-next-line no-console
-        console.warn("More than one element found with opid " + theOpId);
+        console.warn("More than one element found with opid " + targetOpId);
       }
     } else {
-      const elIndex = parseInt(theOpId.split("__")[1], 10);
+      const elementIndex = parseInt(targetOpId.split("__")[1], 10);
 
-      if (isNaN(elIndex) || !elements[elIndex]) {
-        theElement = null;
+      if (isNaN(elementIndex) || !elements[elementIndex]) {
+        currentElement = null;
       } else {
-        theElement = elements[elIndex];
+        currentElement = elements[elementIndex];
       }
     }
-  } catch (e) {
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error("An unexpected error occurred: " + e);
+    console.error("An unexpected error occurred: " + error);
   } finally {
     // eslint-disable-next-line no-unsafe-finally
-    return theElement;
+    return currentElement;
   }
 }
 
@@ -246,7 +250,7 @@ export function setValueForElementByEvent(element: FillableControl) {
  * @returns {Array} Array of elements
  */
 function getAllPasswordFields() {
-  const r = RegExp(
+  const passwordPattern = RegExp(
     "((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|passe|contraseña|senha|密码|adgangskode|hasło|wachtwoord)",
     "i"
   );
@@ -258,7 +262,7 @@ function getAllPasswordFields() {
     const { value } = element;
 
     // @TODO Check placeholder value? title/label/name/id/etc?
-    return value && r.test(value);
+    return value && passwordPattern.test(value);
   });
 }
 
@@ -268,7 +272,7 @@ function getAllPasswordFields() {
  * @param {HTMLElement} element
  */
 export function setValueForElement(element: FillableControl) {
-  const valueToSet = element.value;
+  const initialValue = element.value;
 
   clickElement(element);
   doFocusElement(element, false);
@@ -276,40 +280,40 @@ export function setValueForElement(element: FillableControl) {
   element.dispatchEvent(normalizeEvent(element, EVENTS.KEYPRESS));
   element.dispatchEvent(normalizeEvent(element, EVENTS.KEYUP));
 
-  if (element.value !== valueToSet) {
-    element.value = valueToSet;
+  if (element.value !== initialValue) {
+    element.value = initialValue;
   }
 }
 
 /**
  * Do a click on the element with the given `opId`.
- * @param {number} opId
+ * @param {string} opId
  * @returns
  */
 export function doClickByOpId(opId: string) {
-  const el = getElementByOpId(opId) as FillableControl;
+  const element = getElementByOpId(opId) as FillableControl;
 
-  return el ? (clickElement(el) ? [el] : null) : null;
+  return element ? (clickElement(element) ? [element] : null) : null;
 }
 
 /**
  * Touch all the password fields
  */
 export function touchAllPasswordFields() {
-  getAllPasswordFields().forEach(function (el) {
-    setValueForElement(el);
-    el.click && el.click();
-    setValueForElementByEvent(el);
+  getAllPasswordFields().forEach(function (element) {
+    setValueForElement(element);
+    element.click && element.click();
+    setValueForElementByEvent(element);
   });
 }
 
 /**
  * Do a `click` and `focus` on all elements that match the query.
- * @param {string} query
+ * @param {string} selector
  * @returns
  */
-export function doClickByQuery(query: string) {
-  const fields = Array.from(selectAllFromDoc(query)) as HTMLInputElement[];
+export function doClickByQuery(selector: string) {
+  const fields = Array.from(selectAllFromDoc(selector)) as HTMLInputElement[];
 
   return fields.forEach((element) => {
     clickElement(element);
@@ -322,25 +326,26 @@ export function doClickByQuery(query: string) {
       doFocusElement(element, true);
     }
 
+    // @TODO Is this meant to return all the affected elements?
     return [element];
   });
 }
 
 /**
  * Do a click and focus on the element with the given `opId`.
- * @param {number} opId
+ * @param {string} opId
  * @returns
  */
 export function doFocusByOpId(opId: string): null {
-  const el = getElementByOpId(opId) as FillableControl;
+  const element = getElementByOpId(opId) as FillableControl;
 
-  if (el) {
-    if (typeof el.click === TYPE_CHECK.FUNCTION) {
-      el.click();
+  if (element) {
+    if (typeof element.click === TYPE_CHECK.FUNCTION) {
+      element.click();
     }
 
-    if (typeof el.focus === TYPE_CHECK.FUNCTION) {
-      doFocusElement(el, true);
+    if (typeof element.focus === TYPE_CHECK.FUNCTION) {
+      doFocusElement(element, true);
     }
   }
 
@@ -348,25 +353,26 @@ export function doFocusByOpId(opId: string): null {
 }
 
 /**
- * Assign `valueToSet` to all elements in the DOM that match `query`.
- * @param {string} query
+ * Assign `valueToSet` to all elements in the DOM that match `selector`.
+ * @param {string} selector
  * @param {string} valueToSet
  * @returns {Array} Array of elements that were set.
  */
-export function doSimpleSetByQuery(query: string, valueToSet: string): FillableControl[] {
-  const elements = selectAllFromDoc(query);
-  const arr: FillableControl[] = [];
+export function doSimpleSetByQuery(selector: string, valueToSet: string): FillableControl[] {
+  const elements = Array.from(selectAllFromDoc(selector)) as FillableControl[];
 
-  Array.prototype.forEach.call(
-    Array.prototype.slice.call(elements),
-    function (el: FillableControl) {
-      el.disabled ||
-        (el as any).a ||
-        (el as HTMLInputElement).readOnly ||
-        el.value === void 0 ||
-        ((el.value = valueToSet), arr.push(el));
+  return elements.filter((element) => {
+    if (
+      element.disabled ||
+      (element as any).a ||
+      (element as HTMLInputElement).readOnly ||
+      element.value === undefined
+    ) {
+      return false;
     }
-  );
 
-  return arr;
+    element.value = valueToSet;
+
+    return true;
+  });
 }
