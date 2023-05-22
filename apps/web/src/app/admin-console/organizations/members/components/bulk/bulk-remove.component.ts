@@ -53,4 +53,8 @@ export class BulkRemoveComponent {
   protected get removeUsersWarning() {
     return this.i18nService.t("removeOrgUsersConfirmation");
   }
+
+  protected showNoMasterPasswordWarning(): boolean {
+    return this.users.some((u) => !u.hasMasterPassword);
+  }
 }

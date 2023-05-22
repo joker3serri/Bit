@@ -68,4 +68,8 @@ export class BulkRestoreRevokeComponent {
       );
     }
   }
+
+  protected showNoMasterPasswordWarning(): boolean {
+    return this.users.some((u) => !u.hasMasterPassword);
+  }
 }
