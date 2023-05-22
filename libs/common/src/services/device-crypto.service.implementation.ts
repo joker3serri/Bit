@@ -20,6 +20,14 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
   ) {}
 
   async trustDevice(): Promise<DeviceResponse> {
+    // Attempt to get user symmetric key
+    const userSymKey: SymmetricCryptoKey = await this.cryptoService.getEncKey();
+
+    // If user symmetric key is not found, throw error
+    if (!userSymKey) {
+      throw new Error("User symmetric key not found");
+    }
+
     // Generate deviceKey
     const deviceKey = await this.makeDeviceKey();
 
@@ -28,18 +36,15 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
       2048
     );
 
-    // Get user data symmetric key
-    const userSymKey: SymmetricCryptoKey = await this.cryptoService.getKey();
-
     const [
       devicePublicKeyEncryptedUserSymKey,
       userSymKeyEncryptedDevicePublicKey,
       deviceKeyEncryptedDevicePrivateKey,
     ] = await Promise.all([
-      // Encrypt user data symmetric key with the DevicePublicKey
+      // Encrypt user symmetric key with the DevicePublicKey
       this.cryptoService.rsaEncrypt(userSymKey.encKey, devicePublicKey),
 
-      // Encrypt devicePublicKey with user data symmetric key
+      // Encrypt devicePublicKey with user symmetric key
       this.encryptService.encrypt(devicePublicKey, userSymKey),
 
       // Encrypt devicePrivateKey with deviceKey
