@@ -158,7 +158,7 @@ export class EncryptServiceImplementation implements EncryptService {
       return [];
     }
 
-    return await Promise.all(items.map((item) => item.decrypt(null, key)));
+    return await Promise.all(items.map((item) => item.decrypt(key)));
   }
 
   private async aesEncrypt(data: ArrayBuffer, key: SymmetricCryptoKey): Promise<EncryptedObject> {

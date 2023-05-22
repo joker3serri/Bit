@@ -53,11 +53,7 @@ export class Attachment extends Domain {
     return view;
   }
 
-  private async decryptAttachmentKey(
-    orgId: string,
-    encKey?: SymmetricCryptoKey,
-    cipherEncKey?: SymmetricCryptoKey
-  ) {
+  private async decryptAttachmentKey(orgId: string, encKey?: SymmetricCryptoKey) {
     try {
       if (encKey == null) {
         encKey = await this.getKeyForDecryption(orgId);

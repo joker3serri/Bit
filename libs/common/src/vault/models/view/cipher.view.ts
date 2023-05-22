@@ -45,7 +45,6 @@ export class CipherView implements View, InitializerMetadata {
   deletedDate: Date = null;
   reprompt: CipherRepromptType = CipherRepromptType.None;
   key: SymmetricCryptoKey;
-  forceKeyRotation: boolean;
 
   constructor(c?: Cipher) {
     if (!c) {
@@ -67,7 +66,6 @@ export class CipherView implements View, InitializerMetadata {
     this.deletedDate = c.deletedDate;
     // Old locally stored ciphers might have reprompt == null. If so set it to None.
     this.reprompt = c.reprompt ?? CipherRepromptType.None;
-    this.forceKeyRotation = c.forceKeyRotation;
   }
 
   private get item() {

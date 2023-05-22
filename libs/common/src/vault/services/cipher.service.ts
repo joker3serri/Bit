@@ -1,7 +1,4 @@
-import { SemVer } from "semver";
-
 import { ApiService } from "../../abstractions/api.service";
-import { ConfigApiServiceAbstraction } from "../../abstractions/config/config-api.service.abstraction";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { EncryptService } from "../../abstractions/encrypt.service";
 import { I18nService } from "../../abstractions/i18n.service";
@@ -47,14 +44,10 @@ import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 
-const CIPHER_KEY_ENC_MIN_SERVER_VER = "2023.4.0";
-
 export class CipherService implements CipherServiceAbstraction {
   private sortedCiphersCache: SortedCiphersCache = new SortedCiphersCache(
     this.sortCiphersByLastUsed
   );
-
-  private cipherKeyEncriptionEnabled?: boolean;
 
   constructor(
     private cryptoService: CryptoService,
@@ -64,8 +57,7 @@ export class CipherService implements CipherServiceAbstraction {
     private searchService: SearchService,
     private stateService: StateService,
     private encryptService: EncryptService,
-    private cipherFileUploadService: CipherFileUploadService,
-    private configApiService: ConfigApiServiceAbstraction
+    private cipherFileUploadService: CipherFileUploadService
   ) {}
 
   async getDecryptedCipherCache(): Promise<CipherView[]> {
@@ -99,7 +91,9 @@ export class CipherService implements CipherServiceAbstraction {
         originalCipher = await this.get(model.id);
       }
       if (originalCipher != null) {
-        const existingCipher = await originalCipher.decrypt(this);
+        const existingCipher = await originalCipher.decrypt(
+          await this.getKeyForCipherKeyDecryption(originalCipher)
+        );
         model.passwordHistory = existingCipher.passwordHistory || [];
         if (model.type === CipherType.Login && existingCipher.type === CipherType.Login) {
           if (
@@ -159,7 +153,6 @@ export class CipherService implements CipherServiceAbstraction {
     cipher.revisionDate = model.revisionDate;
     cipher.reprompt = model.reprompt;
     cipher.edit = model.edit;
-    cipher.forceKeyRotation = model.forceKeyRotation;
 
     if (key == null && cipher.organizationId != null) {
       key = await this.cryptoService.getOrgKey(cipher.organizationId);
@@ -168,7 +161,7 @@ export class CipherService implements CipherServiceAbstraction {
       }
     }
 
-    if (await this.getCipherKeyEncryptionEnabled()) {
+    if (flagEnabled("enableCipherKeyEncryption")) {
       return this.encryptWithCipherKey(model, cipher, key);
     }
 
@@ -626,16 +619,14 @@ export class CipherService implements CipherServiceAbstraction {
     data: ArrayBuffer,
     admin = false
   ): Promise<Cipher> {
-    const key = await this.getCipherKey(cipher.organizationId);
+    const key = await this.getKeyForCipherKeyDecryption(cipher);
 
-    const cipherEncKey = (await this.getCipherKeyEncryptionEnabled())
+    const cipherEncKey = flagEnabled("enableCipherKeyEncryption")
       ? new SymmetricCryptoKey(await this.encryptService.decryptToBytes(cipher.key, key))
       : key;
     const encFileName = await this.cryptoService.encrypt(filename, cipherEncKey);
 
-    const dataEncKey: [SymmetricCryptoKey, EncString] = (await this.getCipherKeyEncryptionEnabled())
-      ? [cipherEncKey, cipher.key]
-      : await this.cryptoService.makeEncKey(cipherEncKey);
+    const dataEncKey = await this.cryptoService.makeEncKey(cipherEncKey);
     const encData = await this.cryptoService.encryptToBytes(data, dataEncKey[0]);
 
     const response = await this.cipherFileUploadService.upload(
@@ -929,10 +920,10 @@ export class CipherService implements CipherServiceAbstraction {
     await this.restore(restores);
   }
 
-  async getCipherKey(orgId?: string): Promise<SymmetricCryptoKey> {
-    return orgId != null
-      ? await this.cryptoService.getOrgKey(orgId)
-      : await this.cryptoService.getKeyForUserEncryption();
+  async getKeyForCipherKeyDecryption(cipher: Cipher): Promise<SymmetricCryptoKey> {
+    return await (cipher.organizationId != null
+      ? this.cryptoService.getOrgKey(cipher.organizationId)
+      : this.cryptoService.getKeyForUserEncryption());
   }
 
   // Helpers
@@ -1167,9 +1158,8 @@ export class CipherService implements CipherServiceAbstraction {
     cipher: Cipher,
     key: SymmetricCryptoKey
   ): Promise<Cipher> {
-    if (model.key == null || model.forceKeyRotation) {
+    if (model.key == null) {
       model.key = await this.cryptoService.makeCipherKey();
-      cipher.forceKeyRotation = false;
     }
     cipher.key = await this.cryptoService.encrypt(model.key.key, key);
     key = model.key;
@@ -1205,16 +1195,5 @@ export class CipherService implements CipherServiceAbstraction {
     ]);
 
     return cipher;
-  }
-
-  private async getCipherKeyEncryptionEnabled(): Promise<boolean> {
-    if (this.cipherKeyEncriptionEnabled == null) {
-      const minVersion = new SemVer(CIPHER_KEY_ENC_MIN_SERVER_VER);
-      const serverVersion = new SemVer((await this.configApiService.get()).version);
-      this.cipherKeyEncriptionEnabled =
-        flagEnabled("enableCipherKeyEncryption") && serverVersion.compare(minVersion) > 0;
-    }
-
-    return this.cipherKeyEncriptionEnabled;
   }
 }

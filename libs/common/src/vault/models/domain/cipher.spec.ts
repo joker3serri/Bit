@@ -52,7 +52,6 @@ describe("Cipher DTO", () => {
       fields: null,
       passwordHistory: null,
       key: null,
-      forceKeyRotation: undefined,
     });
   });
 
@@ -76,7 +75,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         key: "EncryptedString",
-        forceKeyRotation: false,
         login: {
           uris: [{ uri: "EncryptedString", match: UriMatchType.Domain }],
           username: "EncryptedString",
@@ -145,7 +143,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: 0,
         key: { encryptedString: "EncryptedString", encryptionType: 0 },
-        forceKeyRotation: false,
         login: {
           passwordRevisionDate: new Date("2022-01-31T12:00:00.000Z"),
           autofillOnPageLoad: false,
@@ -217,7 +214,6 @@ describe("Cipher DTO", () => {
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
       cipher.key = mockEnc("EncKey");
-      cipher.forceKeyRotation = false;
 
       const loginView = new LoginView();
       loginView.username = "username";
@@ -238,7 +234,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt(cipherService);
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -261,7 +259,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
-        forceKeyRotation: false,
       });
     });
   });
@@ -286,7 +283,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         key: "EncKey",
-        forceKeyRotation: false,
         secureNote: {
           type: SecureNoteType.Generic,
         },
@@ -319,7 +315,6 @@ describe("Cipher DTO", () => {
         fields: null,
         passwordHistory: null,
         key: { encryptedString: "EncKey", encryptionType: 0 },
-        forceKeyRotation: false,
       });
     });
 
@@ -347,7 +342,6 @@ describe("Cipher DTO", () => {
       cipher.secureNote = new SecureNote();
       cipher.secureNote.type = SecureNoteType.Generic;
       cipher.key = mockEnc("EncKey");
-      cipher.forceKeyRotation = false;
 
       const cryptoService = Substitute.for<CryptoService>();
       const encryptService = Substitute.for<EncryptService>();
@@ -360,7 +354,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt(cipherService);
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -383,7 +379,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
-        forceKeyRotation: false,
       });
     });
   });
@@ -416,7 +411,6 @@ describe("Cipher DTO", () => {
           code: "EncryptedString",
         },
         key: "EncKey",
-        forceKeyRotation: false,
       };
     });
 
@@ -453,7 +447,6 @@ describe("Cipher DTO", () => {
         fields: null,
         passwordHistory: null,
         key: { encryptedString: "EncKey", encryptionType: 0 },
-        forceKeyRotation: false,
       });
     });
 
@@ -479,7 +472,6 @@ describe("Cipher DTO", () => {
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
       cipher.key = mockEnc("EncKey");
-      cipher.forceKeyRotation = false;
 
       const cardView = new CardView();
       cardView.cardholderName = "cardholderName";
@@ -500,7 +492,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt(cipherService);
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -523,7 +517,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
-        forceKeyRotation: false,
       });
     });
   });
@@ -548,7 +541,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         key: "EncKey",
-        forceKeyRotation: false,
         identity: {
           title: "EncryptedString",
           firstName: "EncryptedString",
@@ -617,7 +609,6 @@ describe("Cipher DTO", () => {
         fields: null,
         passwordHistory: null,
         key: { encryptedString: "EncKey", encryptionType: 0 },
-        forceKeyRotation: false,
       });
     });
 
@@ -643,7 +634,6 @@ describe("Cipher DTO", () => {
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
       cipher.key = mockEnc("EncKey");
-      cipher.forceKeyRotation = false;
 
       const identityView = new IdentityView();
       identityView.firstName = "firstName";
@@ -664,7 +654,9 @@ describe("Cipher DTO", () => {
         encryptService
       );
 
-      const cipherView = await cipher.decrypt(cipherService);
+      const cipherView = await cipher.decrypt(
+        await cipherService.getKeyForCipherKeyDecryption(cipher)
+      );
 
       expect(cipherView).toMatchObject({
         id: "id",
@@ -687,7 +679,6 @@ describe("Cipher DTO", () => {
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
-        forceKeyRotation: false,
       });
     });
   });

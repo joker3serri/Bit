@@ -35,6 +35,8 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+
 const BroadcasterSubscriptionId = "ViewComponent";
 
 @Directive()
@@ -84,7 +86,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected passwordRepromptService: PasswordRepromptService,
     private logService: LogService,
     protected stateService: StateService,
-    protected fileDownloadService: FileDownloadService
+    protected fileDownloadService: FileDownloadService,
+    protected dialogService: DialogServiceAbstraction
   ) {}
 
   ngOnInit() {
@@ -111,7 +114,9 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.cleanUp();
 
     const cipher = await this.cipherService.get(this.cipherId);
-    this.cipher = await cipher.decrypt(this.cipherService);
+    this.cipher = await cipher.decrypt(
+      await this.cipherService.getKeyForCipherKeyDecryption(cipher)
+    );
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     this.showPremiumRequiredTotp =
       this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;
@@ -174,15 +179,14 @@ export class ViewComponent implements OnDestroy, OnInit {
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t(
-        this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
-      ),
-      this.i18nService.t("deleteItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      "warning"
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteItem" },
+      content: {
+        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
+      },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -207,13 +211,12 @@ export class ViewComponent implements OnDestroy, OnInit {
       return false;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t("restoreItemConfirmation"),
-      this.i18nService.t("restoreItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      "warning"
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "restoreItem" },
+      content: { key: "restoreItemConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -336,10 +339,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     );
 
     if (typeI18nKey === "password") {
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledHiddenFieldVisible,
-        this.cipherId
-      );
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
     } else if (typeI18nKey === "securityCode") {
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
     } else if (aType === "H_Field") {

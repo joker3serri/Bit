@@ -40,7 +40,7 @@ export class CipherRequest {
     this.favorite = cipher.favorite;
     this.lastKnownRevisionDate = cipher.revisionDate;
     this.reprompt = cipher.reprompt;
-    this.key = cipher.key != null ? cipher.key.encryptedString : null;
+    this.key = cipher.key?.encryptedString;
 
     switch (this.type) {
       case CipherType.Login:
