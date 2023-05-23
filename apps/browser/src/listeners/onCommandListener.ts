@@ -8,13 +8,13 @@ import { GeneratePasswordToClipboardCommand } from "../autofill/clipboard";
 import { AutofillTabCommand } from "../autofill/commands/autofill-tab-command";
 import { CachedServices } from "../background/service_factories/factory-options";
 import { logServiceFactory } from "../background/service_factories/log-service.factory";
-import {
-  passwordGenerationServiceFactory,
-  PasswordGenerationServiceInitOptions,
-} from "../background/service_factories/password-generation-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
 import { BrowserApi } from "../browser/browserApi";
 import { Account } from "../models/account";
+import {
+  passwordGenerationServiceFactory,
+  PasswordGenerationServiceInitOptions,
+} from "../tools/background/service_factories/password-generation-service.factory";
 
 export const onCommandListener = async (command: string, tab: chrome.tabs.Tab) => {
   switch (command) {

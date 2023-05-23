@@ -6,11 +6,20 @@ import {
 import {
   policyServiceFactory,
   PolicyServiceInitOptions,
-} from "../../admin-console/background/service-factories/policy-service.factory";
-
-import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+} from "../../../admin-console/background/service-factories/policy-service.factory";
+import {
+  cryptoServiceFactory,
+  CryptoServiceInitOptions,
+} from "../../../background/service_factories/crypto-service.factory";
+import {
+  CachedServices,
+  factory,
+  FactoryOptions,
+} from "../../../background/service_factories/factory-options";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
 
 type PasswordGenerationServiceFactoryOptions = FactoryOptions;
 

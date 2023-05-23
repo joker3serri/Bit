@@ -40,10 +40,6 @@ import {
   MessagingServiceInitOptions,
 } from "../../../background/service_factories/messaging-service.factory";
 import {
-  passwordGenerationServiceFactory,
-  PasswordGenerationServiceInitOptions,
-} from "../../../background/service_factories/password-generation-service.factory";
-import {
   platformUtilsServiceFactory,
   PlatformUtilsServiceInitOptions,
 } from "../../../background/service_factories/platform-utils-service.factory";
@@ -51,6 +47,10 @@ import {
   stateServiceFactory,
   StateServiceInitOptions,
 } from "../../../background/service_factories/state-service.factory";
+import {
+  passwordStrengthServiceFactory,
+  PasswordStrengthServiceInitOptions,
+} from "../../../tools/background/service_factories/password-strength-service.factory";
 
 import {
   keyConnectorServiceFactory,
@@ -75,7 +75,7 @@ export type AuthServiceInitOptions = AuthServiceFactoyOptions &
   I18nServiceInitOptions &
   EncryptServiceInitOptions &
   PolicyServiceInitOptions &
-  PasswordGenerationServiceInitOptions;
+  PasswordStrengthServiceInitOptions;
 
 export function authServiceFactory(
   cache: { authService?: AbstractAuthService } & CachedServices,
@@ -100,7 +100,7 @@ export function authServiceFactory(
         await twoFactorServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         await encryptServiceFactory(cache, opts),
-        await passwordGenerationServiceFactory(cache, opts),
+        await passwordStrengthServiceFactory(cache, opts),
         await policyServiceFactory(cache, opts)
       )
   );

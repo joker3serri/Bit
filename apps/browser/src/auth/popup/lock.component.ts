@@ -18,7 +18,7 @@ import { InternalPolicyService } from "@bitwarden/common/admin-console/abstracti
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 
@@ -48,7 +48,7 @@ export class LockComponent extends BaseLockComponent {
     ngZone: NgZone,
     policyApiService: PolicyApiServiceAbstraction,
     policyService: InternalPolicyService,
-    passwordGenerationService: PasswordGenerationServiceAbstraction,
+    passwordStrengthService: PasswordStrengthServiceAbstraction,
     private authService: AuthService,
     dialogService: DialogServiceAbstraction
   ) {
@@ -68,7 +68,7 @@ export class LockComponent extends BaseLockComponent {
       ngZone,
       policyApiService,
       policyService,
-      passwordGenerationService,
+      passwordStrengthService,
       dialogService
     );
     this.successRoute = "/tabs/current";

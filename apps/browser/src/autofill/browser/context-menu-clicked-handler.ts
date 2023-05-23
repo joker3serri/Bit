@@ -17,10 +17,10 @@ import { totpServiceFactory } from "../../auth/background/service-factories/totp
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { eventCollectionServiceFactory } from "../../background/service_factories/event-collection-service.factory";
 import { CachedServices } from "../../background/service_factories/factory-options";
-import { passwordGenerationServiceFactory } from "../../background/service_factories/password-generation-service.factory";
 import { stateServiceFactory } from "../../background/service_factories/state-service.factory";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
+import { passwordGenerationServiceFactory } from "../../tools/background/service_factories/password-generation-service.factory";
 import {
   cipherServiceFactory,
   CipherServiceInitOptions,
