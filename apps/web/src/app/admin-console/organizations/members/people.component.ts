@@ -585,19 +585,6 @@ export class PeopleComponent
     return true;
   }
 
-  private async noMasterPasswordConfirmationDialog(user: OrganizationUserView) {
-    return await this.dialogService.openSimpleDialog({
-      title: {
-        key: "removeOrgUserNoMasterPasswordTitle",
-      },
-      content: {
-        key: "removeOrgUserNoMasterPasswordDesc",
-        placeholders: [this.userNamePipe.transform(user)],
-      },
-      type: SimpleDialogType.WARNING,
-    });
-  }
-
   private async showBulkStatus(
     users: OrganizationUserView[],
     filteredUsers: OrganizationUserView[],
