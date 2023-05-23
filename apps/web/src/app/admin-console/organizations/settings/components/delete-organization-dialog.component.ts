@@ -3,6 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { combineLatest, Subject, takeUntil } from "rxjs";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -15,7 +16,6 @@ import { Verification } from "@bitwarden/common/types/verification";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
 
 import { UserVerificationModule } from "../../../../shared/components/user-verification";
 import { SharedModule } from "../../../../shared/shared.module";
@@ -175,7 +175,7 @@ export class DeleteOrganizationDialogComponent implements OnInit, OnDestroy {
  * @param config Configuration for the dialog
  */
 export function openDeleteOrganizationDialog(
-  dialogService: DialogService,
+  dialogService: DialogServiceAbstraction,
   config: DialogConfig<DeleteOrganizationDialogParams>
 ) {
   return dialogService.open<DeleteOrganizationDialogResult, DeleteOrganizationDialogParams>(
