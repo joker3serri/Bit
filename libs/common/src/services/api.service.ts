@@ -35,10 +35,7 @@ import {
 } from "../admin-console/models/response/provider/provider-organization.response";
 import { ProviderUserBulkPublicKeyResponse } from "../admin-console/models/response/provider/provider-user-bulk-public-key.response";
 import { ProviderUserBulkResponse } from "../admin-console/models/response/provider/provider-user-bulk.response";
-import {
-  ProviderUserResponse,
-  ProviderUserUserDetailsResponse,
-} from "../admin-console/models/response/provider/provider-user.response";
+import { ProviderUserUserDetailsResponse } from "../admin-console/models/response/provider/provider-user.response";
 import { ProviderResponse } from "../admin-console/models/response/provider/provider.response";
 import { SelectionReadOnlyResponse } from "../admin-console/models/response/selection-read-only.response";
 import { TokenService } from "../auth/abstractions/token.service";
@@ -1262,9 +1259,9 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, ProviderUserUserDetailsResponse);
   }
 
-  async getProviderUser(providerId: string, id: string): Promise<ProviderUserResponse> {
+  async getProviderUser(providerId: string, id: string): Promise<ProviderUserUserDetailsResponse> {
     const r = await this.send("GET", "/providers/" + providerId + "/users/" + id, null, true, true);
-    return new ProviderUserResponse(r);
+    return new ProviderUserUserDetailsResponse(r);
   }
 
   postProviderUserInvite(providerId: string, request: ProviderUserInviteRequest): Promise<any> {

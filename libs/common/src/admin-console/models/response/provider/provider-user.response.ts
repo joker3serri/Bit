@@ -8,7 +8,6 @@ export class ProviderUserResponse extends BaseResponse {
   type: ProviderUserType;
   status: ProviderUserStatusType;
   permissions: PermissionsApi;
-  hasMasterPassword: boolean;
 
   constructor(response: any) {
     super(response);
@@ -17,17 +16,18 @@ export class ProviderUserResponse extends BaseResponse {
     this.type = this.getResponseProperty("Type");
     this.status = this.getResponseProperty("Status");
     this.permissions = new PermissionsApi(this.getResponseProperty("Permissions"));
-    this.hasMasterPassword = this.getResponseProperty("HasMasterPassword") ?? false;
   }
 }
 
 export class ProviderUserUserDetailsResponse extends ProviderUserResponse {
   name: string;
   email: string;
+  hasMasterPassword: boolean;
 
   constructor(response: any) {
     super(response);
     this.name = this.getResponseProperty("Name");
     this.email = this.getResponseProperty("Email");
+    this.hasMasterPassword = this.getResponseProperty("HasMasterPassword") ?? false;
   }
 }
