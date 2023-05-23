@@ -100,6 +100,14 @@ describe("canAccessFeature", () => {
     expect(router.url).toBe("/");
   });
 
+  it("fails to navigate when the feature flag does not exist", async () => {
+    const { router } = setup(canAccessFeature("missing-flag" as FeatureFlag), true);
+
+    await router.navigate([featureRoute]);
+
+    expect(router.url).toBe("/");
+  });
+
   it("shows an error toast when the feature flag is disabled", async () => {
     const { router } = setup(canAccessFeature(testFlag), false);
 
