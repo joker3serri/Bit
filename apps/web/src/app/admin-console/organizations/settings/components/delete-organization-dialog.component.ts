@@ -163,10 +163,6 @@ export class DeleteOrganizationDialogComponent implements OnInit, OnDestroy {
   private getOrganizationItemLocalizationKeysByType(type: string): CountBasedLocalizationKey {
     return new CountBasedLocalizationKey(`type${type}`, `type${type}Plural`);
   }
-
-  cancel() {
-    this.dialogRef.close(DeleteOrganizationDialogResult.Canceled);
-  }
 }
 
 /**
