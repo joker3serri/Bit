@@ -5,7 +5,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
+import { ProviderUserStatusType, ProviderUserType } from "@bitwarden/common/admin-console/enums";
 import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
 import { ProviderUserInviteRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-user-invite.request";
 import { ProviderUserUpdateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-user-update.request";
@@ -32,6 +32,8 @@ export class UserAddEditComponent implements OnInit {
   formPromise: Promise<any>;
   deletePromise: Promise<any>;
   userType = ProviderUserType;
+  status: ProviderUserStatusType;
+  hasMasterPassword: boolean;
 
   constructor(
     private apiService: ApiService,
@@ -50,6 +52,8 @@ export class UserAddEditComponent implements OnInit {
       try {
         const user = await this.apiService.getProviderUser(this.providerId, this.providerUserId);
         this.type = user.type;
+        this.status = user.status;
+        this.hasMasterPassword = user.hasMasterPassword;
       } catch (e) {
         this.logService.error(e);
       }
@@ -93,7 +97,7 @@ export class UserAddEditComponent implements OnInit {
       return;
     }
 
-    const confirmed = await this.dialogService.openSimpleDialog({
+    let confirmed = await this.dialogService.openSimpleDialog({
       title: this.name,
       content: { key: "removeUserConfirmation" },
       type: SimpleDialogType.WARNING,
@@ -101,6 +105,23 @@ export class UserAddEditComponent implements OnInit {
 
     if (!confirmed) {
       return false;
+    }
+
+    if (this.status > ProviderUserStatusType.Invited && !this.hasMasterPassword) {
+      confirmed = await this.dialogService.openSimpleDialog({
+        title: {
+          key: "removeOrgUserNoMasterPasswordTitle",
+        },
+        content: {
+          key: "removeOrgUserNoMasterPasswordDesc",
+          placeholders: [this.name],
+        },
+        type: SimpleDialogType.WARNING,
+      });
+
+      if (!confirmed) {
+        return false;
+      }
     }
 
     try {
