@@ -1,37 +1,60 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
+import { catchError, map, of } from "rxjs";
 
 import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+
+// Replace this with a type safe lookup of the feature flag values in PM-2282
+type FlagValue = boolean | number | string;
 
 /**
- * Returns a CanActivateFn that checks if the boolean feature flag is enabled. If not, it shows an "Access Denied!"
+ * Returns a CanActivateFn that checks if the feature flag is enabled. If not, it shows an "Access Denied!"
  * toast and optionally redirects to the specified url.
- * @param featureFlag - The boolean feature flag to check
+ * @param featureFlag - The feature flag to check
+ * @param requiredFlagValue - Optional value to the feature flag must be equal to, defaults to true
  * @param redirectUrlOnDisabled - Optional url to redirect to if the feature flag is disabled
  */
 export const canAccessFeature = (
   featureFlag: FeatureFlag,
+  requiredFlagValue: FlagValue = true,
   redirectUrlOnDisabled?: string
 ): CanActivateFn => {
-  return async () => {
+  return () => {
     const configService = inject(ConfigServiceAbstraction);
     const platformUtilsService = inject(PlatformUtilsService);
     const router = inject(Router);
     const i18nService = inject(I18nService);
+    const logService = inject(LogService);
 
-    if (await configService.getFeatureFlagBool(featureFlag)) {
-      return true;
-    }
+    return configService.serverConfig$.pipe(
+      map((c) => {
+        const flagValue = c.featureStates[featureFlag];
 
-    platformUtilsService.showToast("error", null, i18nService.t("accessDenied"));
+        if (flagValue === requiredFlagValue) {
+          return true;
+        }
 
-    if (redirectUrlOnDisabled != null) {
-      return router.createUrlTree([redirectUrlOnDisabled]);
-    } else {
-      return false;
-    }
+        platformUtilsService.showToast("error", null, i18nService.t("accessDenied"));
+
+        if (redirectUrlOnDisabled != null) {
+          return router.createUrlTree([redirectUrlOnDisabled]);
+        } else {
+          return false;
+        }
+      }),
+      catchError((e: unknown) => {
+        if (e instanceof ErrorResponse) {
+          logService.error(e.message);
+        } else {
+          logService.error(e.toString());
+        }
+        return of(true);
+      })
+    );
   };
 };
