@@ -16,7 +16,7 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 
 import { RouterService } from "../core";
 
@@ -42,7 +42,7 @@ export class LockComponent extends BaseLockComponent {
     ngZone: NgZone,
     policyApiService: PolicyApiServiceAbstraction,
     policyService: InternalPolicyService,
-    passwordGenerationService: PasswordGenerationServiceAbstraction,
+    passwordStrengthService: PasswordStrengthServiceAbstraction,
     dialogService: DialogServiceAbstraction
   ) {
     super(
@@ -61,7 +61,7 @@ export class LockComponent extends BaseLockComponent {
       ngZone,
       policyApiService,
       policyService,
-      passwordGenerationService,
+      passwordStrengthService,
       dialogService
     );
   }
