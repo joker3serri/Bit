@@ -77,4 +77,4 @@ export class SymmetricCryptoKey {
 }
 
 // Setup all separate key types as opaque types
-export type DeviceKey = Opaque<SymmetricCryptoKey>;
+export type DeviceKey = Opaque<SymmetricCryptoKey, "DeviceKey">;
