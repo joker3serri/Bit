@@ -434,7 +434,7 @@ export abstract class BasePeopleComponent<
   }
 
   protected async noMasterPasswordConfirmationDialog(user: UserType) {
-    return await this.dialogService.openSimpleDialog({
+    return this.dialogService.openSimpleDialog({
       title: {
         key: "removeOrgUserNoMasterPasswordTitle",
       },
