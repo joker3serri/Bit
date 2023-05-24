@@ -10,7 +10,7 @@ export interface BulkUserDetails {
   name: string;
   email: string;
   status: OrganizationUserStatusType | ProviderUserStatusType;
-  hasMasterPassword: boolean;
+  hasMasterPassword?: boolean;
 }
 
 type BulkStatusEntry = {

@@ -55,6 +55,6 @@ export class BulkRemoveComponent {
   }
 
   protected showNoMasterPasswordWarning(): boolean {
-    return this.users.some((u) => !u.hasMasterPassword);
+    return this.users.some((u) => u.hasMasterPassword === false);
   }
 }

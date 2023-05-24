@@ -168,7 +168,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         this.canUseSecretsManager = organization.useSecretsManager && flagEnabled("secretsManager");
         this.showNoMasterPasswordWarning =
           userDetails.status > OrganizationUserStatusType.Invited &&
-          userDetails.hasMasterPassword == false;
+          userDetails.hasMasterPassword === false;
 
         this.collectionAccessItems = [].concat(
           collections.map((c) => mapCollectionToAccessItemView(c))

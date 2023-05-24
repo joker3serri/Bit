@@ -22,12 +22,10 @@ export class ProviderUserResponse extends BaseResponse {
 export class ProviderUserUserDetailsResponse extends ProviderUserResponse {
   name: string;
   email: string;
-  hasMasterPassword: boolean;
 
   constructor(response: any) {
     super(response);
     this.name = this.getResponseProperty("Name");
     this.email = this.getResponseProperty("Email");
-    this.hasMasterPassword = this.getResponseProperty("HasMasterPassword") ?? false;
   }
 }

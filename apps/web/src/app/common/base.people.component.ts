@@ -227,17 +227,9 @@ export abstract class BasePeopleComponent<
   }
 
   async remove(user: UserType) {
-    let confirmed = await this.removeUserConfirmationDialog(user);
+    const confirmed = await this.removeUserConfirmationDialog(user);
     if (!confirmed) {
       return false;
-    }
-
-    if (user.status > OrganizationUserStatusType.Invited && user.hasMasterPassword == false) {
-      confirmed = await this.noMasterPasswordConfirmationDialog(user);
-
-      if (!confirmed) {
-        return false;
-      }
     }
 
     this.actionPromise = this.deleteUser(user.id);
@@ -431,18 +423,5 @@ export abstract class BasePeopleComponent<
         this.statusMap.get(user.status).splice(index, 1);
       }
     }
-  }
-
-  protected async noMasterPasswordConfirmationDialog(user: UserType) {
-    return this.dialogService.openSimpleDialog({
-      title: {
-        key: "removeOrgUserNoMasterPasswordTitle",
-      },
-      content: {
-        key: "removeOrgUserNoMasterPasswordDesc",
-        placeholders: [this.userNamePipe.transform(user)],
-      },
-      type: SimpleDialogType.WARNING,
-    });
   }
 }

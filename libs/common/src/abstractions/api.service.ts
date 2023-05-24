@@ -31,7 +31,10 @@ import {
 } from "../admin-console/models/response/provider/provider-organization.response";
 import { ProviderUserBulkPublicKeyResponse } from "../admin-console/models/response/provider/provider-user-bulk-public-key.response";
 import { ProviderUserBulkResponse } from "../admin-console/models/response/provider/provider-user-bulk.response";
-import { ProviderUserUserDetailsResponse } from "../admin-console/models/response/provider/provider-user.response";
+import {
+  ProviderUserResponse,
+  ProviderUserUserDetailsResponse,
+} from "../admin-console/models/response/provider/provider-user.response";
 import { ProviderResponse } from "../admin-console/models/response/provider/provider.response";
 import { SelectionReadOnlyResponse } from "../admin-console/models/response/selection-read-only.response";
 import { DeviceVerificationRequest } from "../auth/models/request/device-verification.request";
@@ -403,7 +406,7 @@ export abstract class ApiService {
   putProvider: (id: string, request: ProviderUpdateRequest) => Promise<ProviderResponse>;
 
   getProviderUsers: (providerId: string) => Promise<ListResponse<ProviderUserUserDetailsResponse>>;
-  getProviderUser: (providerId: string, id: string) => Promise<ProviderUserUserDetailsResponse>;
+  getProviderUser: (providerId: string, id: string) => Promise<ProviderUserResponse>;
   postProviderUserInvite: (providerId: string, request: ProviderUserInviteRequest) => Promise<any>;
   postProviderUserReinvite: (providerId: string, id: string) => Promise<any>;
   postManyProviderUserReinvite: (
