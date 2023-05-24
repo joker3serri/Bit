@@ -11,6 +11,7 @@ import { AutofocusDirective } from "./directives/autofocus.directive";
 import { BoxRowDirective } from "./directives/box-row.directive";
 import { CopyClickDirective } from "./directives/copy-click.directive";
 import { FallbackSrcDirective } from "./directives/fallback-src.directive";
+import { IfFeatureDirective } from "./directives/if-feature.directive";
 import { InputStripSpacesDirective } from "./directives/input-strip-spaces.directive";
 import { InputVerbatimDirective } from "./directives/input-verbatim.directive";
 import { LaunchClickDirective } from "./directives/launch-click.directive";
@@ -68,6 +69,7 @@ import { IconComponent } from "./vault/components/icon.component";
     UserNamePipe,
     PasswordStrengthComponent,
     UserTypePipe,
+    IfFeatureDirective,
   ],
   exports: [
     A11yInvalidDirective,
@@ -97,6 +99,7 @@ import { IconComponent } from "./vault/components/icon.component";
     UserNamePipe,
     PasswordStrengthComponent,
     UserTypePipe,
+    IfFeatureDirective,
   ],
   providers: [CreditCardNumberPipe, DatePipe, I18nPipe, SearchPipe, UserNamePipe, UserTypePipe],
 })
