@@ -39,7 +39,7 @@ export class SecretDialogComponent implements OnInit {
   protected formGroup = new FormGroup({
     name: new FormControl("", {
       validators: [Validators.required, BitValidators.trimValidator],
-      updateOn: "blur",
+      updateOn: "submit",
     }),
     value: new FormControl("", [Validators.required]),
     notes: new FormControl("", {
@@ -47,7 +47,10 @@ export class SecretDialogComponent implements OnInit {
       updateOn: "submit",
     }),
     project: new FormControl("", [Validators.required]),
-    newProjectName: new FormControl(""),
+    newProjectName: new FormControl("", {
+      validators: [BitValidators.trimValidator],
+      updateOn: "submit",
+    }),
   });
 
   private destroy$ = new Subject<void>();
