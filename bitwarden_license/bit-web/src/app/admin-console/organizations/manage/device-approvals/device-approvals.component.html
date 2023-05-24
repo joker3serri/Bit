@@ -27,7 +27,7 @@
           appA11yTitle="{{ 'options' | i18n }}"
         ></button>
         <bit-menu #headerMenu>
-          <button type="button" bitMenuItem (click)="denyAllRequests()">
+          <button type="button" bitMenuItem [bitAction]="denyAllRequests">
             <span class="tw-text-danger">
               <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
               {{ "denyAllRequests" | i18n }}
@@ -59,11 +59,11 @@
           appA11yTitle="{{ 'options' | i18n }}"
         ></button>
         <bit-menu #rowMenu>
-          <button type="button" bitMenuItem bitButton (click)="approveRequest(r)">
+          <button type="button" bitMenuItem [bitAction]="approveRequest(r)">
             <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
             {{ "approveRequest" | i18n }}
           </button>
-          <button type="button" bitMenuItem (click)="denyRequest(r.id)">
+          <button type="button" bitMenuItem [bitAction]="denyRequest(r.id)">
             <span class="tw-text-danger">
               <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
               {{ "denyRequest" | i18n }}

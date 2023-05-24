@@ -86,47 +86,49 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
     return await this.cryptoService.rsaEncrypt(userSymKey.key, devicePubKey.buffer);
   }
 
-  approveRequest = async (authRequest: PendingAuthRequestView) => {
-    const details = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
-      this.organizationId,
-      authRequest.organizationUserId
-    );
-
-    // The user must be enrolled in account recovery (password reset) in order for the request to be approved.
-    if (details == null || details.resetPasswordKey == null) {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("resetPasswordDetailsError")
+  protected approveRequest = (authRequest: PendingAuthRequestView) => {
+    return async () => {
+      const details = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
+        this.organizationId,
+        authRequest.organizationUserId
       );
-      return;
-    }
 
-    const encryptedKey = await this.getEncryptedUserSymKey(authRequest.publicKey, details);
+      // The user must be enrolled in account recovery (password reset) in order for the request to be approved.
+      if (details == null || details.resetPasswordKey == null) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("resetPasswordDetailsError")
+        );
+        return;
+      }
 
-    await this.organizationAuthRequestService.approvePendingRequest(
-      this.organizationId,
-      authRequest.id,
-      encryptedKey
-    );
+      const encryptedKey = await this.getEncryptedUserSymKey(authRequest.publicKey, details);
 
-    this.platformUtilsService.showToast(
+      await this.organizationAuthRequestService.approvePendingRequest(
+        this.organizationId,
+        authRequest.id,
+        encryptedKey
+      );
+
+      this.platformUtilsService.showToast(
         "success",
         null,
         this.i18nService.t("loginRequestApproved")
       );
-
       this.refresh$.next();
-
+    };
   };
 
-  denyRequest = async (requestId: string) => {
-    await this.organizationAuthRequestService.denyPendingRequests(this.organizationId, requestId);
-    this.platformUtilsService.showToast("error", null, this.i18nService.t("loginRequestDenied"));
-    this.refresh$.next();
+  protected denyRequest = (requestId: string) => {
+    return async () => {
+      await this.organizationAuthRequestService.denyPendingRequests(this.organizationId, requestId);
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("loginRequestDenied"));
+      this.refresh$.next();
+    };
   };
 
-  denyAllRequests = async () => {
+  protected denyAllRequests = async () => {
     if (this.tableDataSource.data.length === 0) {
       return;
     }
