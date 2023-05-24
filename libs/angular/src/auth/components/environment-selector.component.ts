@@ -69,7 +69,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
 
   async toggle(option: ServerEnvironment) {
     this.isOpen = !this.isOpen;
-    if (option === this.selectedEnvironment || option === null) {
+    if (option === null) {
       return;
     }
     if (option === ServerEnvironment.EU) {
