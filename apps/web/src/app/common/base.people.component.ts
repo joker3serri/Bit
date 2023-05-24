@@ -232,7 +232,7 @@ export abstract class BasePeopleComponent<
       return false;
     }
 
-    if (user.status > OrganizationUserStatusType.Invited && !user.hasMasterPassword) {
+    if (user.status > OrganizationUserStatusType.Invited && user.hasMasterPassword == false) {
       confirmed = await this.noMasterPasswordConfirmationDialog(user);
 
       if (!confirmed) {

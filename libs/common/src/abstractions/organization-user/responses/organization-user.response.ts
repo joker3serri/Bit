@@ -14,6 +14,7 @@ export class OrganizationUserResponse extends BaseResponse {
   accessSecretsManager: boolean;
   permissions: PermissionsApi;
   resetPasswordEnrolled: boolean;
+  hasMasterPassword: boolean;
   collections: SelectionReadOnlyResponse[] = [];
   groups: string[] = [];
 
@@ -28,6 +29,7 @@ export class OrganizationUserResponse extends BaseResponse {
     this.accessAll = this.getResponseProperty("AccessAll");
     this.accessSecretsManager = this.getResponseProperty("AccessSecretsManager");
     this.resetPasswordEnrolled = this.getResponseProperty("ResetPasswordEnrolled");
+    this.hasMasterPassword = this.getResponseProperty("HasMasterPassword");
 
     const collections = this.getResponseProperty("Collections");
     if (collections != null) {
@@ -46,7 +48,6 @@ export class OrganizationUserUserDetailsResponse extends OrganizationUserRespons
   avatarColor: string;
   twoFactorEnabled: boolean;
   usesKeyConnector: boolean;
-  hasMasterPassword: boolean;
 
   constructor(response: any) {
     super(response);
@@ -55,7 +56,6 @@ export class OrganizationUserUserDetailsResponse extends OrganizationUserRespons
     this.avatarColor = this.getResponseProperty("AvatarColor");
     this.twoFactorEnabled = this.getResponseProperty("TwoFactorEnabled");
     this.usesKeyConnector = this.getResponseProperty("UsesKeyConnector") ?? false;
-    this.hasMasterPassword = this.getResponseProperty("HasMasterPassword") ?? false;
   }
 }
 
