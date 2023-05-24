@@ -54,6 +54,19 @@
     </div>
     <div class="col-6">
       <bit-avatar [text]="org.name" [id]="org.id" size="large"></bit-avatar>
+      <hr />
+      <p *ngIf="orgFingerprint">
+        {{ "yourAccountsFingerprint" | i18n }}:
+        <a
+          href="https://bitwarden.com/help/fingerprint-phrase/"
+          target="_blank"
+          rel="noopener"
+          appA11yTitle="{{ 'learnMore' | i18n }}"
+        >
+          <i class="bwi bwi-question-circle" aria-hidden="true"></i></a
+        ><br />
+        <code>{{ orgFingerprint }}</code>
+      </p>
     </div>
   </div>
   <button type="submit" buttonType="primary" bitButton [loading]="form.loading">

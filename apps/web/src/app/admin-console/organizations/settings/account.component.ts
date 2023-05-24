@@ -13,6 +13,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-update.request";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 import { ApiKeyComponent } from "../../../settings/api-key.component";
 import { PurgeVaultComponent } from "../../../settings/purge-vault.component";
@@ -36,6 +37,7 @@ export class AccountComponent {
   canEditSubscription = true;
   loading = true;
   canUseApi = false;
+  orgFingerprint: string;
   org: OrganizationResponse;
   formPromise: Promise<OrganizationResponse>;
   taxFormPromise: Promise<unknown>;
@@ -67,6 +69,15 @@ export class AccountComponent {
       try {
         this.org = await this.organizationApiService.get(this.organizationId);
         this.canUseApi = this.org.useApi;
+
+        // Retrieve Public Key
+        const orgKeys = await this.organizationApiService.getKeys(this.org.id);
+        const publicKey = Utils.fromB64ToArray(orgKeys.publicKey);
+
+        const fingerprint = await this.cryptoService.getFingerprint(this.org.id, publicKey.buffer);
+        if (fingerprint != null) {
+          this.orgFingerprint = fingerprint.join("-");
+        }
       } catch (e) {
         this.logService.error(e);
       }
