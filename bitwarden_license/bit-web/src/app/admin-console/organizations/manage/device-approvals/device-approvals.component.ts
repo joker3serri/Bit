@@ -4,4 +4,6 @@ import { Component } from "@angular/core";
   selector: "app-org-device-approvals",
   templateUrl: "./device-approvals.component.html",
 })
-export class DeviceApprovalsComponent {}
+export class DeviceApprovalsComponent {
+  today = new Date();
+}
