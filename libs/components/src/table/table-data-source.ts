@@ -17,7 +17,7 @@ export class TableDataSource<T> extends DataSource<T> {
   private readonly _sort: BehaviorSubject<Sort>;
   private readonly _filter = new BehaviorSubject<string>("");
   private readonly _renderData = new BehaviorSubject<T[]>([]);
-
+  filteredData: T[];
   private _renderChangesSubscription: Subscription | null = null;
 
   constructor() {
@@ -81,7 +81,8 @@ export class TableDataSource<T> extends DataSource<T> {
       return data;
     }
 
-    return data.filter((obj) => this.filterPredicate(obj, filter));
+    this.filteredData = data.filter((obj) => this.filterPredicate(obj, filter));
+    return this.filteredData;
   }
 
   private orderData(data: T[], sort: Sort): T[] {
