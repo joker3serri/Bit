@@ -107,7 +107,7 @@ export class UserAddEditComponent implements OnInit {
       return false;
     }
 
-    if (this.status > ProviderUserStatusType.Invited && !this.hasMasterPassword) {
+    if (this.status > ProviderUserStatusType.Invited && this.hasMasterPassword == false) {
       confirmed = await this.dialogService.openSimpleDialog({
         title: {
           key: "removeOrgUserNoMasterPasswordTitle",
