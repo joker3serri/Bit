@@ -2,14 +2,15 @@ import { EVENTS } from "../constants";
 import { FillableControl, FormElementExtended } from "../types";
 
 import {
-  urlNotSecure,
-  setValueForElementByEvent,
-  setValueForElement,
   doClickByOpId,
-  touchAllPasswordFields,
   doClickByQuery,
   doFocusByOpId,
   doSimpleSetByQuery,
+  setValueForElement,
+  setValueForElementByEvent,
+  touchAllPasswordFields,
+  urlNotSecure,
+  addProperty,
 } from "./fill";
 
 const mockLoginForm = `
@@ -453,6 +454,40 @@ describe("fill utils", () => {
       eventsToTest.forEach((eventType) => {
         targetInput.removeEventListener(eventType, eventHandlers[eventType]);
       });
+    });
+  });
+
+  describe("addProperty", () => {
+    it("should add the passed string value to the passed record as a property", () => {
+      const propertyName = "isArbitraryPropery";
+      const propertyValue = "probably not";
+      const fieldRecord: Record<string, any> = {};
+
+      expect(fieldRecord).not.toHaveProperty(propertyName);
+
+      addProperty(fieldRecord, propertyName, propertyValue);
+
+      expect(fieldRecord).toEqual({ [propertyName]: propertyValue });
+    });
+
+    it("should not add the passed string value to the passed record as a property if the passed value is null, undefined, or matches the optional 'do not set' value", () => {
+      const propertyName = "isArbitraryPropery";
+      const propertyValue = "probably not";
+      const fieldRecord: Record<string, any> = {};
+
+      expect(fieldRecord).toEqual({});
+
+      addProperty(fieldRecord, propertyName, propertyValue, propertyValue);
+
+      expect(fieldRecord).toEqual({});
+
+      addProperty(fieldRecord, propertyName, null);
+
+      expect(fieldRecord).toEqual({});
+
+      addProperty(fieldRecord, propertyName, undefined);
+
+      expect(fieldRecord).toEqual({});
     });
   });
 });

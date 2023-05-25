@@ -67,12 +67,12 @@ import {
   toLowerString,
 
   // fill utils
-  addProp,
+  addProperty,
   doClickByOpId,
   doClickByQuery,
   doFocusByOpId,
   doSimpleSetByQuery,
-  focusElement,
+  doFocusElement,
   setValueForElement,
   setValueForElementByEvent,
   touchAllPasswordFields,
@@ -196,12 +196,12 @@ function collect(document: Document) {
 
         (formEl as ElementWithOpId<HTMLFormElement>).opid = formOpId as string;
         op.opid = formOpId as string;
-        addProp(op, "htmlName", getElementAttrValue(formEl, "name"));
-        addProp(op, "htmlID", getElementAttrValue(formEl, "id"));
+        addProperty(op, "htmlName", getElementAttrValue(formEl, "name"));
+        addProperty(op, "htmlID", getElementAttrValue(formEl, "id"));
         formOpId = getElementAttrValue(formEl, "action");
         formOpId = new URL(formOpId as string, window.location.href) as any;
-        addProp(op, "htmlAction", formOpId ? (formOpId as URL).href : null);
-        addProp(op, "htmlMethod", getElementAttrValue(formEl, "method"));
+        addProperty(op, "htmlAction", formOpId ? (formOpId as URL).href : null);
+        addProperty(op, "htmlMethod", getElementAttrValue(formEl, "method"));
 
         return op;
       });
@@ -225,27 +225,27 @@ function collect(document: Document) {
         (el as ElementWithOpId<FormElement>).opid = opId;
         field.opid = opId;
         field.elementNumber = elIndex;
-        addProp(field, "maxLength", Math.min(elMaxLen, 999), 999);
+        addProperty(field, "maxLength", Math.min(elMaxLen, 999), 999);
         field.visible = isElementVisible(el);
         field.viewable = isElementViewable(el);
-        addProp(field, "htmlID", getElementAttrValue(el, "id"));
-        addProp(field, "htmlName", getElementAttrValue(el, "name"));
-        addProp(field, "htmlClass", getElementAttrValue(el, "class"));
-        addProp(field, "tabindex", getElementAttrValue(el, "tabindex"));
-        addProp(field, "title", getElementAttrValue(el, "title"));
+        addProperty(field, "htmlID", getElementAttrValue(el, "id"));
+        addProperty(field, "htmlName", getElementAttrValue(el, "name"));
+        addProperty(field, "htmlClass", getElementAttrValue(el, "class"));
+        addProperty(field, "tabindex", getElementAttrValue(el, "tabindex"));
+        addProperty(field, "title", getElementAttrValue(el, "title"));
 
         const elTagName = el.tagName.toLowerCase();
-        addProp(field, "tagName", elTagName);
+        addProperty(field, "tagName", elTagName);
 
         if (elTagName === "span") {
           return field;
         }
 
         if ("hidden" != toLowerString((el as FillableControl).type)) {
-          addProp(field, "label-tag", getLabelTag(el as FillableControl));
-          addProp(field, "label-data", getElementAttrValue(el, "data-label"));
-          addProp(field, "label-aria", getElementAttrValue(el, "aria-label"));
-          addProp(field, "label-top", getLabelTop(el));
+          addProperty(field, "label-tag", getLabelTag(el as FillableControl));
+          addProperty(field, "label-data", getElementAttrValue(el, "data-label"));
+          addProperty(field, "label-aria", getElementAttrValue(el, "aria-label"));
+          addProperty(field, "label-top", getLabelTop(el));
 
           let labelArr: any = [];
 
@@ -259,19 +259,19 @@ function collect(document: Document) {
             checkNodeType(labelArr, sib);
           }
 
-          addProp(field, "label-right", labelArr.join(""));
+          addProperty(field, "label-right", labelArr.join(""));
           labelArr = [];
           shiftForLeftLabel(el, labelArr);
           labelArr = labelArr.reverse().join("");
-          addProp(field, "label-left", labelArr);
-          addProp(field, "placeholder", getElementAttrValue(el, "placeholder"));
+          addProperty(field, "label-left", labelArr);
+          addProperty(field, "placeholder", getElementAttrValue(el, "placeholder"));
         }
 
-        addProp(field, "rel", getElementAttrValue(el, "rel"));
-        addProp(field, "type", toLowerString(getElementAttrValue(el, "type")));
-        addProp(field, "value", getElementValue(el));
-        addProp(field, "checked", (el as HTMLFormElement).checked, false);
-        addProp(
+        addProperty(field, "rel", getElementAttrValue(el, "rel"));
+        addProperty(field, "type", toLowerString(getElementAttrValue(el, "type")));
+        addProperty(field, "value", getElementValue(el));
+        addProperty(field, "checked", (el as HTMLFormElement).checked, false);
+        addProperty(
           field,
           "autoCompleteType",
           el.getAttribute("x-autocompletetype") ||
@@ -279,26 +279,26 @@ function collect(document: Document) {
             el.getAttribute("autocomplete"),
           "off"
         );
-        addProp(field, "disabled", (el as FillableControl).disabled);
-        addProp(field, "readonly", (el as any).b || (el as HTMLInputElement).readOnly);
-        addProp(field, "selectInfo", getSelectElementOptions(el as HTMLSelectElement));
-        addProp(field, "aria-hidden", el.getAttribute("aria-hidden") == "true", false);
-        addProp(field, "aria-disabled", el.getAttribute("aria-disabled") == "true", false);
-        addProp(field, "aria-haspopup", el.getAttribute("aria-haspopup") == "true", false);
-        addProp(field, "data-stripe", getElementAttrValue(el, "data-stripe"));
+        addProperty(field, "disabled", (el as FillableControl).disabled);
+        addProperty(field, "readonly", (el as any).b || (el as HTMLInputElement).readOnly);
+        addProperty(field, "selectInfo", getSelectElementOptions(el as HTMLSelectElement));
+        addProperty(field, "aria-hidden", el.getAttribute("aria-hidden") == "true", false);
+        addProperty(field, "aria-disabled", el.getAttribute("aria-disabled") == "true", false);
+        addProperty(field, "aria-haspopup", el.getAttribute("aria-haspopup") == "true", false);
+        addProperty(field, "data-stripe", getElementAttrValue(el, "data-stripe"));
         /** DEAD CODE */
-        // addProp(field, "data-unmasked", el.dataset.unmasked);
-        // addProp(
+        // addProperty(field, "data-unmasked", el.dataset.unmasked);
+        // addProperty(
         //   field,
         //   "onepasswordFieldType",
         //   el.dataset.onepasswordFieldType || (el as FillableControl).type
         // );
-        // addProp(field, "onepasswordDesignation", el.dataset.onepasswordDesignation);
-        // addProp(field, "onepasswordSignInUrl", el.dataset.onepasswordSignInUrl);
-        // addProp(field, "onepasswordSectionTitle", el.dataset.onepasswordSectionTitle);
-        // addProp(field, "onepasswordSectionFieldKind", el.dataset.onepasswordSectionFieldKind);
-        // addProp(field, "onepasswordSectionFieldTitle", el.dataset.onepasswordSectionFieldTitle);
-        // addProp(field, "onepasswordSectionFieldValue", el.dataset.onepasswordSectionFieldValue);
+        // addProperty(field, "onepasswordDesignation", el.dataset.onepasswordDesignation);
+        // addProperty(field, "onepasswordSignInUrl", el.dataset.onepasswordSignInUrl);
+        // addProperty(field, "onepasswordSectionTitle", el.dataset.onepasswordSectionTitle);
+        // addProperty(field, "onepasswordSectionFieldKind", el.dataset.onepasswordSectionFieldKind);
+        // addProperty(field, "onepasswordSectionFieldTitle", el.dataset.onepasswordSectionFieldTitle);
+        // addProperty(field, "onepasswordSectionFieldValue", el.dataset.onepasswordSectionFieldValue);
         /** END DEAD CODE */
 
         if ((el as FillableControl).form) {
@@ -321,7 +321,7 @@ function collect(document: Document) {
     //     const originalValue = el.value;
     //     // click it
     //     !el || (el && typeof el.click !== TYPE_CHECK.FUNCTION) || el.click();
-    //     focusElement(el, false);
+    //     doFocusElement(el, false);
     //
     //     el.dispatchEvent(doEventOnElement(el, EVENTS.KEYDOWN));
     //     el.dispatchEvent(doEventOnElement(el, EVENTS.KEYPRESS));

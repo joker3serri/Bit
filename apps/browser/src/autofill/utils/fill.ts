@@ -86,7 +86,7 @@ function clickElement(element: HTMLElement) {
  * @param {HTMLElement} element
  * @param {boolean} shouldResetValue Reset the value after focusing
  */
-function doFocusElement(element: FillableControl, shouldResetValue: boolean): void {
+export function doFocusElement(element: FillableControl, shouldResetValue: boolean): void {
   if (shouldResetValue) {
     const initialValue = element.value;
 
@@ -255,32 +255,26 @@ export function doSimpleSetByQuery(selector: string, valueToSet: string): Fillab
 }
 
 /**
- * Focus the element `element` and optionally restore its original value
- * @param {HTMLElement} element
- * @param {boolean} setVal Set the value of the element to its original value
+ * Add property `propertyKeyName` with `valueToSet` to `fieldRecord`.
+ * @param {Record<string, any>} fieldRecord
+ * @param {string} propertyKeyName
+ * @param {*} valueToSet
+ * @param {*} valueToNotSet Do not set the property value if `valueToSet` is the same value (e.g. dynamically populated `valueToSet` from an input with a default value that should not be stored in `fieldRecord`)
+ * @return {*}
  */
-export function focusElement(element: FillableControl, setVal: boolean) {
-  if (setVal) {
-    const initialValue = element.value;
-
-    element.focus();
-
-    if (element.value !== initialValue) {
-      element.value = initialValue;
-    }
-  } else {
-    element.focus();
-  }
-}
-
-/**
- * Add property `prop` with value `val` to the object `obj`
- * @param {*} d unknown
- */
-export function addProp(obj: Record<string, any>, prop: string, val: any, d?: unknown) {
-  if ((0 !== d && d === val) || null === val || void 0 === val) {
+export function addProperty(
+  fieldRecord: Record<string, any>,
+  propertyKeyName: string,
+  valueToSet: any,
+  valueToNotSet?: any
+) {
+  if (
+    (valueToNotSet !== 0 && valueToNotSet === valueToSet) ||
+    valueToSet === null ||
+    valueToSet === undefined
+  ) {
     return;
   }
 
-  obj[prop] = val;
+  fieldRecord[propertyKeyName] = valueToSet;
 }
