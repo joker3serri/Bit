@@ -1,6 +1,12 @@
 import { FormElementExtended } from "../types";
 
-import { canSeeElementToStyle, selectAllFromDoc, getElementByOpId } from "./collect";
+import {
+  canSeeElementToStyle,
+  getElementByOpId,
+  isElementVisible,
+  isKnownTag,
+  selectAllFromDoc,
+} from "./collect";
 
 const mockLoginForm = `
   <div id="root">
@@ -17,6 +23,86 @@ document.body.innerHTML = mockLoginForm;
 describe("collect utils", () => {
   afterEach(() => {
     document.body.innerHTML = mockLoginForm;
+  });
+
+  describe("isKnownTag", () => {
+    const validTags = [
+      "body",
+      "button",
+      "form",
+      "head",
+      "iframe",
+      "input",
+      "option",
+      "script",
+      "select",
+      "table",
+      "textarea",
+    ];
+
+    const invalidTags = ["div", "span"];
+
+    validTags.forEach((tag) => {
+      const element = document.createElement(tag);
+
+      it(`should return true if the element tag is a ${tag}`, () => {
+        expect(isKnownTag(element)).toEqual(true);
+      });
+    });
+
+    invalidTags.forEach((tag) => {
+      const element = document.createElement(tag);
+
+      it(`should return false if the element tag is a ${tag}`, () => {
+        expect(isKnownTag(element)).toEqual(false);
+      });
+    });
+
+    it(`should return true if the element tag is falsey`, () => {
+      expect(isKnownTag(undefined)).toEqual(true);
+    });
+  });
+
+  describe("isElementVisible", () => {
+    it("should return true when a non-hidden element is passed", () => {
+      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+
+      expect(isElementVisible(testElement)).toEqual(true);
+    });
+
+    it("should return false when the element has a `visibility: hidden;` CSS rule applied to it", () => {
+      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      testElement.style.visibility = "hidden";
+
+      expect(isElementVisible(testElement)).toEqual(false);
+    });
+
+    it("should return false when the element has a `display: none;` CSS rule applied to it", () => {
+      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      testElement.style.display = "none";
+
+      expect(isElementVisible(testElement)).toEqual(false);
+    });
+
+    it("should return false when a parent of the element has a `display: none;` or `visibility: hidden;` CSS rule applied to it", () => {
+      document.body.innerHTML =
+        mockLoginForm + '<div style="visibility: hidden;"><input type="email" /></div>';
+      let testElement = document.querySelector('input[type="email"]') as FormElementExtended;
+
+      expect(isElementVisible(testElement)).toEqual(false);
+
+      document.body.innerHTML =
+        mockLoginForm +
+        `
+          <div style="display: none;">
+            <div>
+              <span id="input-tag"></span>
+            </div>
+          </div>
+        `;
+      testElement = document.querySelector("#input-tag") as FormElementExtended;
+      expect(isElementVisible(testElement)).toEqual(false);
+    });
   });
 
   describe("canSeeElementToStyle", () => {
