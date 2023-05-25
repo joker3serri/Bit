@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, filter, startWith, switchMap, tap } from "rxjs";
+import { EMPTY, catchError, combineLatest, filter, startWith, switchMap, tap } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 
@@ -24,18 +24,19 @@ export class ServiceAccountComponent {
    * TODO: remove when a server method is available that fetches a service account by ID
    */
   protected serviceAccount$ = combineLatest([this.route.params, this.onChange$]).pipe(
-    switchMap(async ([params]) => {
+    tap(([params]) => {
       this.serviceAccountId = params.serviceAccountId;
       this.organizationId = params.organizationId;
-
-      return this.serviceAccountService
-        .getServiceAccounts(params.organizationId)
-        .then((saList) => saList.find((sa) => sa.id === params.serviceAccountId));
     }),
-    tap((sa) => {
-      if (!sa) {
-        this.router.navigate(["/sm", this.organizationId, "service-accounts"]);
-      }
+    switchMap(([params]) =>
+      this.serviceAccountService.getByServiceAccountId(
+        params.serviceAccountId,
+        params.organizationId
+      )
+    ),
+    catchError(() => {
+      this.router.navigate(["/sm", this.organizationId, "service-accounts"]);
+      return EMPTY;
     })
   );
 
