@@ -86,8 +86,8 @@
   --color-background: 67 76 94;
   --color-background-alt: 59 66 82;
   --color-background-alt2: 76 86 106;
-  --color-background-alt3: 47 52 61;
-  --color-background-alt4: 16 18 21;
+  --color-background-alt3: 76 86 106;
+  --color-background-alt4: 67 76 94;
 
   --color-primary-300: 108 153 166;
   --color-primary-500: 136 192 208;
@@ -116,7 +116,7 @@
   --color-text-alt2: 255 255 255;
   --color-text-code: 219 177 211;
 
-  --tw-ring-offset-color: #1f242e;
+  --tw-ring-offset-color: #434c5e;
 }
 
 .theme_solarize {
@@ -125,8 +125,8 @@
   --color-background: 0 43 54;
   --color-background-alt: 7 54 66;
   --color-background-alt2: 31 72 87;
-  --color-background-alt3: 47 52 61;
-  --color-background-alt4: 16 18 21;
+  --color-background-alt3: 31 72 87;
+  --color-background-alt4: 0 43 54;
 
   --color-primary-300: 42 161 152;
   --color-primary-500: 133 153 0;
@@ -155,7 +155,7 @@
   --color-text-alt2: 255 255 255;
   --color-text-code: 240 141 199;
 
-  --tw-ring-offset-color: #1f242e;
+  --tw-ring-offset-color: #002b36;
 }
 
 @import "./search/search.component.css";
