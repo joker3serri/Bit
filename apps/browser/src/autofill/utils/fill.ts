@@ -1,5 +1,7 @@
 import { EVENTS, TYPE_CHECK } from "../constants";
-import { FillableControl, ElementWithOpId } from "../types";
+import { FillableControl } from "../types";
+
+import { getElementByOpId, selectAllFromDoc } from "./collect";
 
 /**
  * Check if the action to autofill on the given page should be considered "secure"
@@ -95,131 +97,6 @@ function doFocusElement(element: FillableControl, shouldResetValue: boolean): vo
     }
   } else {
     element.focus();
-  }
-}
-
-/**
- * Determine if we can apply styling to `element` to indicate that it was filled.
- * @param {HTMLElement} element
- * @param {HTMLElement} animateTheFilling
- * @returns {boolean} Returns true if we can see the element to apply styling.
- */
-export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: boolean) {
-  let currentElement: any = animateTheFilling;
-
-  if (currentElement) {
-    a: {
-      currentElement = element;
-
-      // Check the parent tree of `element` for display/visibility
-      for (
-        let owner: any = element.ownerDocument.defaultView, theStyle;
-        currentElement && currentElement !== document;
-
-      ) {
-        theStyle = owner.getComputedStyle
-          ? owner.getComputedStyle(currentElement, null)
-          : currentElement.style;
-
-        if (!theStyle) {
-          currentElement = true;
-
-          break a;
-        }
-
-        if (theStyle.display === "none" || theStyle.visibility === "hidden") {
-          currentElement = false;
-
-          break a;
-        }
-
-        currentElement = currentElement.parentNode;
-      }
-
-      currentElement = currentElement === document;
-    }
-  }
-
-  if (
-    animateTheFilling &&
-    currentElement &&
-    !(element as FillableControl)?.type &&
-    element.tagName.toLowerCase() === "span"
-  ) {
-    return true;
-  }
-
-  return currentElement
-    ? ["email", "text", "password", "number", "tel", "url"].includes(
-        (element as FillableControl).type || ""
-      )
-    : false;
-}
-
-/**
- * Helper for doc.querySelectorAll
- * @param {string} selector
- * @returns
- */
-export function selectAllFromDoc(selector: string): NodeListOf<Element> {
-  try {
-    return document.querySelectorAll(selector);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("An unexpected error occurred: " + error);
-
-    return [] as unknown as NodeListOf<Element>;
-  }
-}
-
-/**
- * Find the first element for the given `opid`, falling back to the first relevant unmatched
- * element if non is found.
- * @param {number} targetOpId
- * @returns {HTMLElement} The element for the given `opid`, or `null` if not found.
- */
-export function getElementByOpId(
-  targetOpId?: string | null
-): HTMLButtonElement | FillableControl | null | undefined {
-  let currentElement;
-
-  // @TODO do this check at the callsite(s)
-  if (!targetOpId) {
-    return null;
-  }
-
-  try {
-    const elements = Array.from(
-      selectAllFromDoc("input, select, button, textarea, span[data-bwautofill]")
-    ) as Array<FillableControl | HTMLButtonElement>;
-
-    const filteredElements = elements.filter(
-      (element) =>
-        (element as ElementWithOpId<FillableControl | HTMLButtonElement>).opid === targetOpId
-    );
-
-    if (filteredElements.length) {
-      currentElement = filteredElements[0];
-
-      if (filteredElements.length > 1) {
-        // eslint-disable-next-line no-console
-        console.warn("More than one element found with opid " + targetOpId);
-      }
-    } else {
-      const elementIndex = parseInt(targetOpId.split("__")[1], 10);
-
-      if (isNaN(elementIndex) || !elements[elementIndex]) {
-        currentElement = null;
-      } else {
-        currentElement = elements[elementIndex];
-      }
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("An unexpected error occurred: " + error);
-  } finally {
-    // eslint-disable-next-line no-unsafe-finally
-    return currentElement;
   }
 }
 
@@ -375,4 +252,35 @@ export function doSimpleSetByQuery(selector: string, valueToSet: string): Fillab
 
     return true;
   });
+}
+
+/**
+ * Focus the element `element` and optionally restore its original value
+ * @param {HTMLElement} element
+ * @param {boolean} setVal Set the value of the element to its original value
+ */
+export function focusElement(element: FillableControl, setVal: boolean) {
+  if (setVal) {
+    const initialValue = element.value;
+
+    element.focus();
+
+    if (element.value !== initialValue) {
+      element.value = initialValue;
+    }
+  } else {
+    element.focus();
+  }
+}
+
+/**
+ * Add property `prop` with value `val` to the object `obj`
+ * @param {*} d unknown
+ */
+export function addProp(obj: Record<string, any>, prop: string, val: any, d?: unknown) {
+  if ((0 !== d && d === val) || null === val || void 0 === val) {
+    return;
+  }
+
+  obj[prop] = val;
 }

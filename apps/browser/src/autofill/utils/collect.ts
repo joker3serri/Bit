@@ -14,29 +14,30 @@ function cleanText(s: string | null): string | null {
 }
 
 /**
- * If `el` is a text node, add the node's text to `arr`.
- * If `el` is an element node, add the element's `textContent or `innerText` to `arr`.
+ * If `element` is a text node, add the node's text to `arr`.
+ * If `element` is an element node, add the element's `textContent or `innerText` to `arr`.
  * @param {string[]} arr An array of `textContent` or `innerText` values
- * @param {HTMLElement} el The element to push to the array
+ * @param {HTMLElement} element The element to push to the array
  */
-export function checkNodeType(arr: string[], el: Node) {
+export function checkNodeType(arr: string[], element: Node) {
   let theText: string | Node["nodeValue"] = "";
 
-  3 === el.nodeType
-    ? (theText = el.nodeValue)
-    : 1 === el.nodeType && (theText = el.textContent || (el as HTMLElement).innerText);
+  3 === element.nodeType
+    ? (theText = element.nodeValue)
+    : 1 === element.nodeType &&
+      (theText = element.textContent || (element as HTMLElement).innerText);
 
   (theText = cleanText(theText)) && arr.push(theText);
 }
 
 /**
- * Check if `el` is a type that indicates the transition to a new section of the page.
- * If so, this indicates that we should not use `el` or its children for getting autofill context for the previous element.
- * @param {HTMLElement} el The element to check
- * @returns {boolean} Returns `true` if `el` is an HTML element from a known set and `false` otherwise
+ * Check if `element` is a type that indicates the transition to a new section of the page.
+ * If so, this indicates that we should not use `element` or its children for getting autofill context for the previous element.
+ * @param {HTMLElement} element The element to check
+ * @returns {boolean} Returns `true` if `element` is an HTML element from a known set and `false` otherwise
  */
-export function isKnownTag(el: any) {
-  if (el && void 0 !== el) {
+export function isKnownTag(element: HTMLElement) {
+  if (element) {
     const tags = [
       "body",
       "button",
@@ -51,51 +52,47 @@ export function isKnownTag(el: any) {
       "textarea",
     ];
 
-    if (el) {
-      const elTag = el ? (el.tagName || "").toLowerCase() : "";
+    const elementTag = (element.tagName || "").toLowerCase();
 
-      return tags.constructor == Array ? 0 <= tags.indexOf(elTag) : elTag === tags;
-    } else {
-      return false;
-    }
+    return tags.includes(elementTag);
   } else {
     return true;
   }
 }
 
 /**
- * Recursively gather all of the text values from the elements preceding `el` in the DOM
- * @param {HTMLElement} el
+ * Recursively gather all of the text values from the elements preceding `element` in the DOM
+ * @param {HTMLElement} element
  * @param {string[]} arr An array of `textContent` or `innerText` values
  * @param {number} steps The number of steps to take up the DOM tree
  */
-export function shiftForLeftLabel(el: any, arr: string[], steps?: number) {
+export function shiftForLeftLabel(element: any, arr: string[], steps?: number) {
   let sib;
 
   // For all previous siblings, add their text to the array
-  for (steps || (steps = 0); el && el.previousSibling; ) {
-    el = el.previousSibling;
+  for (steps || (steps = 0); element && element.previousSibling; ) {
+    element = element.previousSibling;
 
-    if (isKnownTag(el)) {
+    if (isKnownTag(element)) {
       return;
     }
 
-    checkNodeType(arr, el);
+    checkNodeType(arr, element);
   }
 
   // If no previous siblings were found and no textItems were found, check the parent element
-  if (el && 0 === arr.length) {
-    // While no sibilings are found
+  if (element && 0 === arr.length) {
+    // While no siblings are found
     for (sib = null; !sib; ) {
-      el = el.parentElement || el.parentNode;
+      element = element.parentElement || element.parentNode;
 
       // If no parent element is found, return
-      if (!el) {
+      if (!element) {
         return;
       }
 
       // If the parent element has a previous sibling, and the previous sibling is not a known tag, and the sibling has at least one child, then set the sibling to the last child
-      for (sib = el.previousSibling; sib && !isKnownTag(sib) && sib.lastChild; ) {
+      for (sib = element.previousSibling; sib && !isKnownTag(sib) && sib.lastChild; ) {
         sib = sib.lastChild;
       }
     }
@@ -111,23 +108,24 @@ export function shiftForLeftLabel(el: any, arr: string[], steps?: number) {
 
 /**
  * Determine if the element is visible.
- * Visible is define as not having `display: none` or `visibility: hidden`.
- * @param {HTMLElement} el
+ * Visible is defined as not having `display: none;` or `visibility: hidden;`.
+ * @param {HTMLElement} element
  * @returns {boolean} Returns `true` if the element is visible and `false` otherwise
  */
-export function isElementVisible(el: any) {
-  let theEl = el;
+export function isElementVisible(element: any) {
+  let theEl = element;
   // Get the top level document
   // eslint-disable-next-line no-cond-assign
-  el = (el = el.ownerDocument) ? el.defaultView : {};
+  element = (element = element.ownerDocument) ? element.defaultView : {};
 
   // walk the dom tree until we reach the top
   for (let elStyle; theEl && theEl !== document; ) {
     // Calculate the style of the element
-    elStyle = el.getComputedStyle ? el.getComputedStyle(theEl, null) : theEl.style;
+    elStyle = element.getComputedStyle ? element.getComputedStyle(theEl, null) : theEl.style;
 
     // If there's no computed style at all, we're done, as we know that it's not hidden
     if (!elStyle) {
+      // @TODO reachable?
       return true;
     }
 
@@ -146,25 +144,30 @@ export function isElementVisible(el: any) {
 /**
  * Determine if the element is "viewable" on the screen.
  * "Viewable" is defined as being visible in the DOM and being within the confines of the viewport.
- * @param {HTMLElement} el
+ * @param {HTMLElement} element
  * @returns {boolean} Returns `true` if the element is viewable and `false` otherwise
  */
-export function isElementViewable(el: FormElement) {
-  const theDoc = el.ownerDocument.documentElement;
-  const rect = el.getBoundingClientRect(); // getBoundingClientRect is relative to the viewport
+export function isElementViewable(element: FormElement) {
+  const theDoc = element.ownerDocument.documentElement;
+  const rect = element.getBoundingClientRect(); // getBoundingClientRect is relative to the viewport
   const docScrollWidth = theDoc.scrollWidth; // scrollWidth is the width of the document including any overflow
   const docScrollHeight = theDoc.scrollHeight; // scrollHeight is the height of the document including any overflow
   const leftOffset = rect.left - theDoc.clientLeft; // How far from the left of the viewport is the element, minus the left border width?
   const topOffset = rect.top - theDoc.clientTop; // How far from the top of the viewport is the element, minus the top border width?
   let theRect;
 
-  if (!isElementVisible(el) || !el.offsetParent || 10 > el.clientWidth || 10 > el.clientHeight) {
+  if (
+    !isElementVisible(element) ||
+    !element.offsetParent ||
+    element.clientWidth < 10 ||
+    element.clientHeight < 10
+  ) {
     return false;
   }
 
-  const rects = el.getClientRects();
+  const rects = element.getClientRects();
 
-  if (0 === rects.length) {
+  if (rects.length) {
     return false;
   }
 
@@ -193,25 +196,25 @@ export function isElementViewable(el: FormElement) {
   // If the bottom of the bounding rectangle is outside the viewport, the y coordinate of the center point is the window height (minus offset) divided by 2.
   // If the bottom side of the bounding rectangle is inside the viewport, the y coordinate of the center point is the height of the bounding rectangle divided by
   // We then use elementFromPoint to find the element at that point.
-  let pointEl = el.ownerDocument.elementFromPoint(
+  let pointEl = element.ownerDocument.elementFromPoint(
     leftOffset +
       (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2),
     topOffset +
       (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)
   );
 
-  for (; pointEl && pointEl !== el && pointEl !== (document as unknown as Element); ) {
+  for (; pointEl && pointEl !== element && pointEl !== (document as unknown as Element); ) {
     // If the element we found is a label, and the element we're checking has labels
     if (
       pointEl.tagName &&
       typeof pointEl.tagName === TYPE_CHECK.STRING &&
       pointEl.tagName.toLowerCase() === "label" &&
-      (el as FillableControl).labels &&
-      0 < ((el as FillableControl).labels?.length || 0)
+      (element as FillableControl).labels &&
+      0 < ((element as FillableControl).labels?.length || 0)
     ) {
       // Return true if the element we found is one of the labels for the element we're checking.
       // This means that the element we're looking for is considered viewable
-      return 0 <= Array.prototype.slice.call((el as FillableControl).labels).indexOf(pointEl);
+      return 0 <= Array.prototype.slice.call((element as FillableControl).labels).indexOf(pointEl);
     }
 
     // Walk up the DOM tree to check the parent element
@@ -220,42 +223,131 @@ export function isElementViewable(el: FormElement) {
 
   // If the for loop exited because we found the element we're looking for, return true, as it's viewable
   // If the element that we found isn't the element we're looking for, it means the element we're looking for is not viewable
-  return pointEl === el;
+  return pointEl === element;
 }
 
 /**
- * Retrieve the element from the document with the specified `opid` property
- * @param {number} opId
- * @returns {HTMLElement} The element with the specified `opiId`, or `null` if no such element exists
+ * Determine if we can apply styling to `element` to indicate that it was filled.
+ * @param {HTMLElement} element
+ * @param {HTMLElement} animateTheFilling
+ * @returns {boolean} Returns true if we can see the element to apply styling.
  */
-export function getElementForOPID(opId: string): Element | null {
-  let theEl;
+export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: boolean) {
+  let currentElement: any = animateTheFilling;
 
-  if (void 0 === opId || null === opId) {
+  if (currentElement) {
+    a: {
+      currentElement = element;
+
+      // Check the parent tree of `element` for display/visibility
+      for (
+        let owner: any = element.ownerDocument.defaultView, theStyle;
+        currentElement && currentElement !== document;
+
+      ) {
+        theStyle = owner.getComputedStyle
+          ? owner.getComputedStyle(currentElement, null)
+          : currentElement.style;
+
+        if (!theStyle) {
+          currentElement = true;
+
+          break a;
+        }
+
+        if (theStyle.display === "none" || theStyle.visibility === "hidden") {
+          currentElement = false;
+
+          break a;
+        }
+
+        currentElement = currentElement.parentNode;
+      }
+
+      currentElement = currentElement === document;
+    }
+  }
+
+  if (
+    animateTheFilling &&
+    currentElement &&
+    !(element as FillableControl)?.type &&
+    element.tagName.toLowerCase() === "span"
+  ) {
+    return true;
+  }
+
+  return currentElement
+    ? ["email", "text", "password", "number", "tel", "url"].includes(
+        (element as FillableControl).type || ""
+      )
+    : false;
+}
+
+/**
+ * Helper for doc.querySelectorAll
+ * @param {string} selector
+ * @returns
+ */
+export function selectAllFromDoc(selector: string): NodeListOf<Element> {
+  try {
+    return document.querySelectorAll(selector);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("An unexpected error occurred: " + error);
+
+    return [] as unknown as NodeListOf<Element>;
+  }
+}
+
+/**
+ * Find the first element for the given `opid`, falling back to the first relevant unmatched
+ * element if non is found.
+ * @param {number} targetOpId
+ * @returns {HTMLElement} The element for the given `opid`, or `null` if not found.
+ */
+export function getElementByOpId(
+  targetOpId?: string | null
+): HTMLButtonElement | FillableControl | null | undefined {
+  let currentElement;
+
+  // @TODO do this check at the callsite(s)
+  if (!targetOpId) {
     return null;
   }
 
   try {
-    const formEls = Array.prototype.slice.call(getFormElements(document));
-    const filteredFormEls = formEls.filter(function (el: ElementWithOpId<FormElement>) {
-      return el.opid == opId;
-    });
+    const elements = Array.from(
+      selectAllFromDoc("input, select, button, textarea, span[data-bwautofill]")
+    ) as Array<FillableControl | HTMLButtonElement>;
 
-    if (0 < filteredFormEls.length) {
-      (theEl = filteredFormEls[0]),
+    const filteredElements = elements.filter(
+      (element) =>
+        (element as ElementWithOpId<FillableControl | HTMLButtonElement>).opid === targetOpId
+    );
+
+    if (filteredElements.length) {
+      currentElement = filteredElements[0];
+
+      if (filteredElements.length > 1) {
         // eslint-disable-next-line no-console
-        1 < filteredFormEls.length && console.warn(`More than one element found with opid ${opId}`);
+        console.warn("More than one element found with opid " + targetOpId);
+      }
     } else {
-      const theIndex = parseInt(opId.split("__")[1], 10);
+      const elementIndex = parseInt(targetOpId.split("__")[1], 10);
 
-      isNaN(theIndex) || (theEl = formEls[theIndex]);
+      if (isNaN(elementIndex) || !elements[elementIndex]) {
+        currentElement = null;
+      } else {
+        currentElement = elements[elementIndex];
+      }
     }
-  } catch (e) {
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(`An unexpected error occurred: ${e}`);
+    console.error("An unexpected error occurred: " + error);
   } finally {
     // eslint-disable-next-line no-unsafe-finally
-    return theEl;
+    return currentElement;
   }
 }
 
@@ -292,15 +384,15 @@ export function getFormElements(theDoc: Document, limit?: number): FormElement[]
       break;
     }
 
-    const el = els[i];
-    const type = (el as HTMLInputElement).type
-      ? (el as HTMLInputElement).type.toLowerCase()
-      : (el as HTMLInputElement).type;
+    const element = els[i];
+    const type = (element as HTMLInputElement).type
+      ? (element as HTMLInputElement).type.toLowerCase()
+      : (element as HTMLInputElement).type;
 
     if (type === "checkbox" || type === "radio") {
-      unimportantEls.push(el);
+      unimportantEls.push(element);
     } else {
-      returnEls.push(el);
+      returnEls.push(element);
     }
   }
 
@@ -314,88 +406,71 @@ export function getFormElements(theDoc: Document, limit?: number): FormElement[]
 }
 
 /**
- * Focus the element `el` and optionally restore its original value
- * @param {HTMLElement} el
- * @param {boolean} setVal Set the value of the element to its original value
- */
-export function focusElement(el: FillableControl, setVal: boolean) {
-  if (setVal) {
-    const initialValue = el.value;
-
-    el.focus();
-
-    if (el.value !== initialValue) {
-      el.value = initialValue;
-    }
-  } else {
-    el.focus();
-  }
-}
-
-/**
- * For a given element `el`, returns the value of the attribute `attrName`.
- * @param {HTMLElement} el
+ * For a given element `element`, returns the value of the attribute `attrName`.
+ * @param {HTMLElement} element
  * @param {string} attrName
  * @returns {string} The value of the attribute
  */
-export function getElementAttrValue(el: any, attrName: string): string {
-  let attrVal = el[attrName];
+export function getElementAttrValue(element: any, attrName: string): string {
+  let attrVal = element[attrName];
 
   if (typeof attrVal === TYPE_CHECK.STRING) {
     return attrVal;
   }
 
-  attrVal = el.getAttribute(attrName);
+  attrVal = element.getAttribute(attrName);
 
   return typeof attrVal == TYPE_CHECK.STRING ? attrVal : "";
 }
 
 /**
  * Returns the value of the given element.
- * @param {HTMLElement} el
+ * @param {HTMLElement} element
  * @returns {any} Value of the element
  */
-export function getElementValue(el: any) {
-  switch (toLowerString(el.type)) {
+export function getElementValue(element: any) {
+  switch (toLowerString(element.type)) {
     case "checkbox":
-      return el.checked ? "✓" : "";
+      return element.checked ? "✓" : "";
     case "hidden":
-      el = el.value;
+      element = element.value;
 
-      if (!el || typeof el.length != TYPE_CHECK.NUMBER) {
+      if (!element || typeof element.length != TYPE_CHECK.NUMBER) {
         return "";
       }
 
-      254 < el.length && (el = el.substr(0, 254) + "...SNIPPED");
+      254 < element.length && (element = element.substr(0, 254) + "...SNIPPED");
 
-      return el;
+      return element;
     default:
-      if (!el.type && el.tagName.toLowerCase() === "span") {
-        return el.innerText;
+      if (!element.type && element.tagName.toLowerCase() === "span") {
+        return element.innerText;
       }
 
-      return el.value;
+      return element.value;
   }
 }
 
 /**
- * If `el` is a `<select>` element, return an array of all of the options' `text` properties.
+ * If `element` is a `<select>` element, return an array of all of the options' `text` properties.
  */
-export function getSelectElementOptions(el: HTMLSelectElement): null | { options: string[] } {
-  if (!el.options) {
+export function getSelectElementOptions(element: HTMLSelectElement): null | { options: string[] } {
+  if (!element.options) {
     return null;
   }
 
-  const options = Array.prototype.slice.call(el.options).map(function (option: HTMLOptionElement) {
-    const optionText = option.text
-      ? toLowerString(option.text)
-          .replace(/\\s/gm, "")
-          // eslint-disable-next-line no-useless-escape
-          .replace(/[~`!@$%^&*()\\-_+=:;'\"\\[\\]|\\\\,<.>\\?]/gm, "")
-      : null;
+  const options = Array.prototype.slice
+    .call(element.options)
+    .map(function (option: HTMLOptionElement) {
+      const optionText = option.text
+        ? toLowerString(option.text)
+            .replace(/\\s/gm, "")
+            // eslint-disable-next-line no-useless-escape
+            .replace(/[~`!@$%^&*()\\-_+=:;'\"\\[\\]|\\\\,<.>\\?]/gm, "")
+        : null;
 
-    return [optionText ? optionText : null, option.value];
-  });
+      return [optionText ? optionText : null, option.value];
+    });
 
   return {
     options: options,
@@ -403,25 +478,29 @@ export function getSelectElementOptions(el: HTMLSelectElement): null | { options
 }
 
 /**
- * If `el` is in a data table, get the label in the row directly above it
- * @param {HTMLElement} el
+ * If `element` is in a data table, get the label in the row directly above it
+ * @param {HTMLElement} element
  * @returns {string} A string containing the label, or null if not found
  */
-export function getLabelTop(el: any) {
+export function getLabelTop(element: any) {
   let parent;
 
   // Traverse up the DOM until we reach either the top or the table data element containing our field
-  for (el = el.parentElement || el.parentNode; el && "td" != toLowerString(el.tagName); ) {
-    el = el.parentElement || el.parentNode;
+  for (
+    element = element.parentElement || element.parentNode;
+    element && "td" != toLowerString(element.tagName);
+
+  ) {
+    element = element.parentElement || element.parentNode;
   }
 
   // If we reached the top, return null
-  if (!el || void 0 === el) {
+  if (!element || void 0 === element) {
     return null;
   }
 
   // Establish the parent of the table and make sure it's a table row
-  parent = el.parentElement || el.parentNode;
+  parent = element.parentElement || element.parentNode;
   if ("tr" != parent.tagName.toLowerCase()) {
     return null;
   }
@@ -432,31 +511,19 @@ export function getLabelTop(el: any) {
   if (
     !parent ||
     "tr" != (parent.tagName + "").toLowerCase() ||
-    (parent.cells && el.cellIndex >= parent.cells.length)
+    (parent.cells && element.cellIndex >= parent.cells.length)
   ) {
     return null;
   }
 
   // Parent is established as the row above the table data element containing our field
   // Now let's traverse over to the cell in the same column as our field
-  el = parent.cells[el.cellIndex];
+  element = parent.cells[element.cellIndex];
 
   // Get the contents of this label
-  let elText = el.textContent || el.innerText;
+  let elText = element.textContent || element.innerText;
 
   return (elText = cleanText(elText));
-}
-
-/**
- * Add property `prop` with value `val` to the object `obj`
- * @param {*} d unknown
- */
-export function addProp(obj: Record<string, any>, prop: string, val: any, d?: unknown) {
-  if ((0 !== d && d === val) || null === val || void 0 === val) {
-    return;
-  }
-
-  obj[prop] = val;
 }
 
 /**

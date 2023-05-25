@@ -48,12 +48,11 @@ import {
 } from "../types";
 import {
   // collect utils
-  addProp,
+  canSeeElementToStyle,
   checkNodeType,
-  // focusElement,
   getElementAttrValue,
   /** DEAD CODE ?? **/
-  // getElementForOPID,
+  // getElementByOpId,
   /** END DEAD CODE **/
   getElementValue,
   getFormElements,
@@ -63,21 +62,21 @@ import {
   isElementVisible,
   isKnownTag,
   queryDoc,
+  selectAllFromDoc,
   shiftForLeftLabel,
   toLowerString,
 
   // fill utils
-  urlNotSecure,
-  canSeeElementToStyle,
-  selectAllFromDoc,
-  getElementByOpId,
-  setValueForElementByEvent,
-  setValueForElement,
+  addProp,
   doClickByOpId,
-  touchAllPasswordFields,
   doClickByQuery,
   doFocusByOpId,
   doSimpleSetByQuery,
+  focusElement,
+  setValueForElement,
+  setValueForElementByEvent,
+  touchAllPasswordFields,
+  urlNotSecure,
 } from "../utils";
 
 function collect(document: Document) {
@@ -375,7 +374,7 @@ function collect(document: Document) {
   }
 
   /** DEAD CODE ?? **/
-  // (document as AutofillDocument).elementForOPID = getElementForOPID;
+  // (document as AutofillDocument).elementForOPID = getElementByOpId;
   /** END DEAD CODE **/
 
   return JSON.stringify(getPageDetails(document, "oneshotUUID"));

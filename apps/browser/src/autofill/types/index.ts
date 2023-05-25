@@ -22,8 +22,11 @@ export type FillableControl = HTMLInputElement | HTMLSelectElement | HTMLTextAre
  * This script's definition of a Form Element (only a subset of HTML form elements)
  * This is defined by getFormElements
  */
+
 export type FormElement = FillableControl | HTMLSpanElement;
 
 export type FormElementWithAttribute = FormElement & {
   [key: string]: string | undefined;
 };
+
+export type FormElementExtended = FormElement & { opid?: string };
