@@ -1,19 +1,21 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { EventType } from "@bitwarden/common/enums/eventType";
+import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { EventType, ProductType } from "@bitwarden/common/enums";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
@@ -49,13 +51,15 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     stateService: StateService,
     collectionService: CollectionService,
     protected totpService: TotpService,
-    protected passwordGenerationService: PasswordGenerationService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected messagingService: MessagingService,
     eventCollectionService: EventCollectionService,
     protected policyService: PolicyService,
     organizationService: OrganizationService,
     logService: LogService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    sendApiService: SendApiService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cipherService,
@@ -70,7 +74,9 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       policyService,
       logService,
       passwordRepromptService,
-      organizationService
+      organizationService,
+      sendApiService,
+      dialogService
     );
   }
 
@@ -86,11 +92,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     this.cleanUp();
 
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
-    if (
-      this.cipher.type === CipherType.Login &&
-      this.cipher.login.totp &&
-      (this.cipher.organizationUseTotp || this.canAccessPremium)
-    ) {
+    if (this.showTotp()) {
       await this.totpUpdateCode();
       const interval = this.totpService.getTimeInterval(this.cipher.login.totp);
       await this.totpTick(interval);
@@ -151,10 +153,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
 
     if (this.editMode) {
       if (typeI18nKey === "password") {
-        this.eventCollectionService.collect(
-          EventType.Cipher_ClientToggledHiddenFieldVisible,
-          this.cipherId
-        );
+        this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
       } else if (typeI18nKey === "securityCode") {
         this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
       } else if (aType === "H_Field") {
@@ -243,6 +242,15 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       (!this.editMode || this.cloneMode) &&
       this.ownershipOptions != null &&
       (this.ownershipOptions.length > 1 || !this.allowPersonal)
+    );
+  }
+
+  protected showTotp() {
+    return (
+      this.cipher.type === CipherType.Login &&
+      this.cipher.login.totp &&
+      this.organization?.planProductType != ProductType.Free &&
+      (this.cipher.organizationUseTotp || this.canAccessPremium)
     );
   }
 

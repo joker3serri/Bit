@@ -1255,6 +1255,15 @@
   "importSuccess": {
     "message": "De gegevens zijn in je kluis geïmporteerd."
   },
+  "importSuccessNumberOfItems": {
+    "message": "A total of $AMOUNT$ items were imported.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "dataExportSuccess": {
     "message": "Gegevens succesvol geëxporteerd"
   },
@@ -2019,6 +2028,9 @@
   "cancelSubscription": {
     "message": "Abonnement opzeggen"
   },
+  "subscriptionExpiration": {
+    "message": "Subscription expiration"
+  },
   "subscriptionCanceled": {
     "message": "Het abonnement is opgezegd."
   },
@@ -2060,9 +2072,6 @@
   },
   "updateLicense": {
     "message": "Licentie bijwerken"
-  },
-  "updatedLicense": {
-    "message": "Licentie bijgewerkt"
   },
   "manageSubscription": {
     "message": "Abonnement beheren"
@@ -2741,6 +2750,24 @@
       }
     }
   },
+  "viewCollectionWithName": {
+    "message": "Collectie weergeven - $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Collection1"
+      }
+    }
+  },
+  "editItemWithName": {
+    "message": "Item bewerken - $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google Login"
+      }
+    }
+  },
   "copiedPasswordItemId": {
     "message": "Wachtwoord gekopieerd voor item $ID$.",
     "placeholders": {
@@ -3115,6 +3142,9 @@
   },
   "inviteAcceptedDesc": {
     "message": "Je krijgt toegang tot deze organisatie zodra een beheerder je lidmaatschap bevestigt. We sturen je een e-mail zodra dat gebeurt."
+  },
+  "inviteInitAcceptedDesc": {
+    "message": "Je hebt nu toegang tot deze organisatie."
   },
   "inviteAcceptFailed": {
     "message": "De uitnodiging is niet geaccepteerd. Vraag een beheerder van de organisatie om een nieuwe uitnodiging te versturen."
@@ -4800,6 +4830,9 @@
   "masterPasswordInvalidWarning": {
     "message": "Je hoofdwachtwoord voldoet niet aan het beleid van deze organisatie. Om lid te worden van deze organisatie, moet je nu je hoofdwachtwoord veranderen. Als je doorgaat moet je opnieuw inloggen. Sessies op andere apparaten blijven mogelijk nog een uur actief."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Je hoofdwachtwoord voldoet niet aan en of meerdere oganisatiebeleidsonderdelen. Om toegang te krijgen tot de kluis, moet je je hoofdwachtwoord nu bijwerken. Doorgaan zal je huidige sessie uitloggen, waarna je opnieuw moet inloggen. Actieve sessies op andere apparaten blijven mogelijk nog een uur actief."
+  },
   "maximumVaultTimeout": {
     "message": "Time-out van de kluis"
   },
@@ -4831,6 +4864,32 @@
       }
     }
   },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "De beleidsinstellingen van je organisatie hebben invloed op de time-out van je kluis. De maximale toegestane kluis time-out is $HOURS$ uur en $MINUTES$ minuten. Jouw time-out is ingesteld op $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "De beleidsinstellingen van je organisatie hebben je kluis time-out ingesteld op $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
+      }
+    }
+  },
   "customVaultTimeout": {
     "message": "Aangepaste time-out van de kluis"
   },
@@ -4854,6 +4913,18 @@
   },
   "personalVaultExportPolicyInEffect": {
     "message": "Organisatiebeleid voorkomt dat je je persoonlijke kluis exporteert."
+  },
+  "activateAutofill": {
+    "message": "Automatisch invullen activeren"
+  },
+  "activateAutofillPolicyDesc": {
+    "message": "Activate the auto-fill on page load setting on the browser extension for all existing and new members."
+  },
+  "experimentalFeature": {
+    "message": "Gehackte of onbetrouwbare websites kunnen automatisch invullen bij laden van pagina misbruiken."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Meer info over automatisch invullen"
   },
   "selectType": {
     "message": "Selecteer Type"
@@ -5146,9 +5217,6 @@
     "message": "om alle leden inloggen met SSO te verplichten.",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Use the require single-sign-on authentication policy to require all members to log in with SSO.'"
   },
-  "ssoPolicyHelpKeyConnector": {
-    "message": "SSO-authenticatie en Enkele Organisatie-beleid zijn vereist voor het instellen van de versleuteling van de Key Connector."
-  },
   "memberDecryptionOption": {
     "message": "Member Decryption Options"
   },
@@ -5158,8 +5226,17 @@
   "keyConnector": {
     "message": "Key Connector"
   },
-  "memberDecryptionKeyConnectorDesc": {
-    "message": "Verbind Login met SSO met je zelf gehoste decoderingssleutelserver. Met deze optie kunnen leden kluisgegevens ontsleutelen zonder hoofdwachtwoord."
+  "memberDecryptionKeyConnectorDescStart": {
+    "message": "Connect login with SSO to your self-hosted decryption key server. Using this option, members won’t need to use their master passwords to decrypt vault data. The",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Connect login with SSO to your self-hosted decryption key server. Using this option, members won’t need to use their master passwords to decrypt vault data. The require SSO authentication and single organization policies are required to set up Key Connector decryption. Contact Bitwarden Support for set up assistance.'"
+  },
+  "memberDecryptionKeyConnectorDescLink": {
+    "message": "require SSO authentication and single organization policies",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Connect login with SSO to your self-hosted decryption key server. Using this option, members won’t need to use their master passwords to decrypt vault data. The require SSO authentication and single organization policies are required to set up Key Connector decryption. Contact Bitwarden Support for set up assistance.'"
+  },
+  "memberDecryptionKeyConnectorDescEnd": {
+    "message": "are required to set up Key Connector decryption. Contact Bitwarden Support for set up assistance.",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Connect login with SSO to your self-hosted decryption key server. Using this option, members won’t need to use their master passwords to decrypt vault data. The require SSO authentication and single organization policies are required to set up Key Connector decryption. Contact Bitwarden Support for set up assistance.'"
   },
   "keyConnectorPolicyRestriction": {
     "message": "\"Login met SSO en Key Connector Decryption\" is ingeschakeld. Dit beleid is alleen van toepassing op de eigenaren en beheerders."
@@ -5375,6 +5452,15 @@
     "message": "Huidige organisatie",
     "description": "This is used by screen readers to indicate the organization that is currently being shown to the user."
   },
+  "accountLoggedInAsName": {
+    "message": "Account: Ingelogd als $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
   "accountSettings": {
     "message": "Accountinstellingen"
   },
@@ -5454,7 +5540,7 @@
   },
   "lastSync": {
     "message": "Laatste synchronisatie",
-    "Description": "Used as a prefix to indicate the last time a sync occured. Example \"Last sync 1968-11-16 00:00:00\""
+    "description": "Used as a prefix to indicate the last time a sync occured. Example \"Last sync 1968-11-16 00:00:00\""
   },
   "sponsorshipsSynced": {
     "message": "Zelf-gehoste sponsors gesynchroniseerd."
@@ -5596,6 +5682,24 @@
       }
     }
   },
+  "inputMinValue": {
+    "message": "Je moet minimaal $MIN$ invoeren.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Je invoer mag niet hoger zxijn dan $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
   "multipleInputEmails": {
     "message": "Een of meer e-mailadressen zijn ongeldig"
   },
@@ -5628,9 +5732,6 @@
   },
   "reporting": {
     "message": "Rapporteren"
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "numberOfUsers": {
     "message": "Aantal gebruikers"
@@ -5707,28 +5808,36 @@
     "message": "Verbergen"
   },
   "projects": {
-    "message": "Projecten"
+    "message": "Projecten",
+    "description": "Description for the Projects field."
   },
   "lastEdited": {
-    "message": "Laatst bewerkt"
+    "message": "Laatst bewerkt",
+    "description": "The label for the date and time when a item was last edited."
   },
   "editSecret": {
-    "message": "Bewerk geheim"
+    "message": "Bewerk geheim",
+    "description": "Action to modify an existing secret."
   },
   "addSecret": {
-    "message": "Geheim toevoegen"
+    "message": "Geheim toevoegen",
+    "description": "Action to create a new secret."
   },
   "copySecretName": {
-    "message": "Kopieer geheime naam"
+    "message": "Kopieer geheime naam",
+    "description": "Action to copy the name of a secret to the system's clipboard."
   },
   "copySecretValue": {
-    "message": "Geheime waarde kopiëren"
+    "message": "Geheime waarde kopiëren",
+    "description": "Action to copy the value of a secret to the system's clipboard."
   },
   "deleteSecret": {
-    "message": "Geheim verwijderen"
+    "message": "Geheim verwijderen",
+    "description": "Action to delete a single secret from the system."
   },
   "deleteSecrets": {
-    "message": "Geheimen verwijderen"
+    "message": "Geheimen verwijderen",
+    "description": "The action to delete multiple secrets from the system."
   },
   "hardDeleteSecret": {
     "message": "Geheim definitief verwijderen"
@@ -5737,106 +5846,174 @@
     "message": "Geheimen definitief verwijderen"
   },
   "secretProjectAssociationDescription": {
-    "message": "Kies projecten om het geheim aan te koppelen. Alleen gebruikers uit de organisatie met toegang tot deze projecten kunnen het geheim zien."
+    "message": "Kies projecten om het geheim aan te koppelen. Alleen gebruikers uit de organisatie met toegang tot deze projecten kunnen het geheim zien.",
+    "description": "A prompt explaining how secrets can be associated with projects."
   },
   "selectProjects": {
-    "message": "Projecten selecteren"
+    "message": "Projecten selecteren",
+    "description": "A label for a type-to-filter input field to choose projects."
+  },
+  "searchProjects": {
+    "message": "Zoek projecten",
+    "description": "Label for the search bar used to search projects."
   },
   "project": {
-    "message": "Project"
+    "message": "Project",
+    "description": "Similar to collections, projects can be used to group secrets."
   },
   "editProject": {
-    "message": "Bewerk project"
+    "message": "Bewerk project",
+    "description": "The action to modify an existing project."
   },
   "viewProject": {
-    "message": "Bekijk project"
+    "message": "Bekijk project",
+    "description": "The action to view details of a project."
   },
   "deleteProject": {
-    "message": "Verwijder project"
+    "message": "Verwijder project",
+    "description": "The action to delete a project from the system."
   },
   "deleteProjects": {
-    "message": "Verwijder projecten"
+    "message": "Verwijder projecten",
+    "description": "The action to delete multiple projects from the system."
   },
   "secret": {
-    "message": "Geheim"
+    "message": "Geheim",
+    "description": "Label for a secret (key/value pair)"
   },
   "serviceAccount": {
-    "message": "Service-account"
+    "message": "Service-account",
+    "description": "A machine user which can be used to automate processes and access secrets in the system."
   },
   "serviceAccounts": {
-    "message": "Service-accounts"
+    "message": "Service-accounts",
+    "description": "The title for the section that deals with service accounts."
   },
   "secrets": {
-    "message": "Geheimen"
+    "message": "Geheimen",
+    "description": "The title for the section of the application that deals with secrets."
   },
   "nameValuePair": {
-    "message": "Naam/waarde paar"
+    "message": "Naam/waarde paar",
+    "description": "Title for a name/ value pair. Secrets typically consist of a name and value pair."
   },
   "secretEdited": {
-    "message": "Geheim bewerkt"
+    "message": "Geheim bewerkt",
+    "description": "Notification for the successful editing of a secret."
   },
   "secretCreated": {
-    "message": "Geheim aangemaakt"
+    "message": "Geheim aangemaakt",
+    "description": "Notification for the successful creation of a secret."
   },
   "newSecret": {
-    "message": "Nieuw geheim"
+    "message": "Nieuw geheim",
+    "description": "Title for creating a new secret."
   },
   "newServiceAccount": {
-    "message": "Nieuw service account"
+    "message": "Nieuw service account",
+    "description": "Title for creating a new service account."
   },
   "secretsNoItemsTitle": {
-    "message": "Geen geheimen om weer te geven"
+    "message": "Geen geheimen om weer te geven",
+    "description": "Empty state to indicate that there are no secrets to display."
   },
   "secretsNoItemsMessage": {
-    "message": "Om te starten, voeg een nieuw geheim toe of importeer een geheim."
+    "message": "Om te starten, voeg een nieuw geheim toe of importeer een geheim.",
+    "description": "Message to encourage the user to start adding secrets."
   },
   "secretsTrashNoItemsMessage": {
     "message": "Er bevinden zich geen geheimen in de prullenbak."
   },
-  "serviceAccountsNoItemsTitle": {
-    "message": "Geen inhoud beschikbaar"
-  },
   "serviceAccountsNoItemsMessage": {
-    "message": "Maak een nieuw service account aan om te beginnen met het automatiseren van geheime toegang."
+    "message": "Maak een nieuw service account aan om te beginnen met het automatiseren van geheime toegang.",
+    "description": "Message to encourage the user to start creating service accounts."
+  },
+  "serviceAccountsNoItemsTitle": {
+    "message": "Geen inhoud beschikbaar",
+    "description": "Title to indicate that there are no service accounts to display."
   },
   "searchSecrets": {
-    "message": "Geheimen zoeken"
+    "message": "Geheimen zoeken",
+    "description": "Placeholder text for searching secrets."
   },
   "deleteServiceAccounts": {
-    "message": "Verwijder service accounts"
+    "message": "Verwijder service accounts",
+    "description": "Title for the action to delete one or multiple service accounts."
   },
   "deleteServiceAccount": {
-    "message": "Verwijder service account"
+    "message": "Verwijder service account",
+    "description": "Title for the action to delete a single service account."
   },
   "viewServiceAccount": {
-    "message": "Bekijk service account"
+    "message": "Bekijk service account",
+    "description": "Action to view the details of a service account."
+  },
+  "deleteServiceAccountDialogMessage": {
+    "message": "Het verwijderen van serviceaccount $SERVICE_ACCOUNT$ is definitief en onomkeerbaar.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "Het verwijderen van serviceaccounts is definitief en onomkeerbaar."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "$COUNT$ serviceaccounts verwijderen",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "Service account deleted"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "Serviceaccounts verwijderd"
   },
   "searchServiceAccounts": {
-    "message": "Zoek service account"
+    "message": "Zoek service account",
+    "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Bewerk serviceaccount",
+    "description": "Title for editing a service account."
   },
   "addProject": {
-    "message": "Project toevoegen"
+    "message": "Project toevoegen",
+    "description": "Title for creating a new project."
   },
   "projectEdited": {
-    "message": "Project bewerkt"
+    "message": "Project bewerkt",
+    "description": "Notification for the successful editing of a project."
   },
   "projectSaved": {
-    "message": "Project opgeslagen"
+    "message": "Project opgeslagen",
+    "description": "Notification for the successful saving of a project."
   },
   "projectCreated": {
-    "message": "Project aangemaakt"
+    "message": "Project aangemaakt",
+    "description": "Notification for the successful creation of a project."
   },
   "projectName": {
-    "message": "Projectnaam"
+    "message": "Projectnaam",
+    "description": "Label for entering the name of a project."
   },
   "newProject": {
-    "message": "Nieuw Project"
+    "message": "Nieuw Project",
+    "description": "Title for creating a new project."
   },
   "softDeleteSecretWarning": {
-    "message": "Verwijderen van geheimen kan invloed hebben op bestaande integraties."
+    "message": "Verwijderen van geheimen kan invloed hebben op bestaande integraties.",
+    "description": "Warns that deleting secrets can have consequences on integrations"
   },
   "softDeletesSuccessToast": {
-    "message": "Geheimen verplaatst naar prullenbak"
+    "message": "Geheimen verplaatst naar prullenbak",
+    "description": "Notifies that the selected secrets have been moved to the trash"
   },
   "hardDeleteSecretConfirmation": {
     "message": "Weet je zeker dat je dit geheim permanent wilt verwijderen?"
@@ -5847,32 +6024,45 @@
   "hardDeletesSuccessToast": {
     "message": "Geheimen permanent verwijderd"
   },
-  "serviceAccountCreated": {
-    "message": "Service account aangemaakt"
-  },
   "smAccess": {
-    "message": "Toegang"
+    "message": "Toegang",
+    "description": "Title indicating what permissions a service account has"
   },
   "projectCommaSecret": {
-    "message": "Project, geheim"
+    "message": "Project, geheim",
+    "description": ""
   },
   "serviceAccountName": {
-    "message": "Service account naam"
+    "message": "Service account naam",
+    "description": "Label for the name of a service account"
+  },
+  "serviceAccountCreated": {
+    "message": "Service account aangemaakt",
+    "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "Serviceaccount bijgewerkt",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
-    "message": "Typ of selecteer projecten of geheimen"
+    "message": "Typ of selecteer projecten of geheimen",
+    "description": "Instructions for selecting projects or secrets for a new service account"
   },
   "newSaTypeToFilter": {
-    "message": "Typ om te filteren"
+    "message": "Typ om te filteren",
+    "description": "Instructions for filtering a list of projects or secrets"
   },
   "deleteProjectsToast": {
-    "message": "Projecten verwijderd"
+    "message": "Projecten verwijderd",
+    "description": "Notifies that the selected projects have been deleted"
   },
   "deleteProjectToast": {
-    "message": "Het project en alle bijbehorende geheimen zijn verwijderd"
+    "message": "Het project en alle bijbehorende geheimen zijn verwijderd",
+    "description": "Notifies that a project has been deleted"
   },
   "deleteProjectDialogMessage": {
     "message": "Het verwijderen van project $PROJECT$ is permanent en onomkeerbaar.",
+    "description": "Informs users that projects are hard deleted and not sent to trash",
     "placeholders": {
       "project": {
         "content": "$1",
@@ -5882,6 +6072,7 @@
   },
   "deleteProjectInputLabel": {
     "message": "Typ \"$CONFIRM$\" om door te gaan",
+    "description": "Users are prompted to type 'confirm' to delete a project",
     "placeholders": {
       "confirm": {
         "content": "$1",
@@ -5891,6 +6082,7 @@
   },
   "deleteProjectConfirmMessage": {
     "message": "$PROJECT$ verwijderen",
+    "description": "Confirmation prompt to delete a specific project, where '$PROJECT$' is a placeholder for the name of the project.",
     "placeholders": {
       "project": {
         "content": "$1",
@@ -5900,6 +6092,7 @@
   },
   "deleteProjectsConfirmMessage": {
     "message": "$COUNT$ projecten verwijderen",
+    "description": "Confirmation prompt to delete multiple projects, where '$COUNT$' is a placeholder for the number of projects to be deleted.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -5908,73 +6101,91 @@
     }
   },
   "deleteProjectsDialogMessage": {
-    "message": "Het verwijderen van projecten is permanent en onomkeerbaar."
+    "message": "Het verwijderen van projecten is permanent en onomkeerbaar.",
+    "description": "This message is displayed in a dialog box as a warning before proceeding with project deletion."
   },
   "projectsNoItemsTitle": {
-    "message": "Geen projecten om weer te geven"
+    "message": "Geen projecten om weer te geven",
+    "description": "Empty state to be displayed when there are no projects to display in the list."
   },
   "projectsNoItemsMessage": {
-    "message": "Voeg een nieuw project toe om te starten met het organiseren van geheimen."
+    "message": "Voeg een nieuw project toe om te starten met het organiseren van geheimen.",
+    "description": "Message to be displayed when there are no projects to display in the list."
   },
   "smConfirmationRequired": {
-    "message": "Bevestiging vereist"
+    "message": "Bevestiging vereist",
+    "description": "Indicates that user confirmation is required for an action to proceed."
   },
   "bulkDeleteProjectsErrorMessage": {
-    "message": "De volgende projecten konden niet worden verwijderd:"
+    "message": "De volgende projecten konden niet worden verwijderd:",
+    "description": "Message to be displayed when there is an error during bulk project deletion."
   },
   "softDeleteSuccessToast": {
-    "message": "Geheim verplaatst naar prullenbak"
+    "message": "Geheim verplaatst naar prullenbak",
+    "description": "Notification to be displayed when a secret is successfully sent to the trash."
   },
   "hardDeleteSuccessToast": {
     "message": "Geheim permanent verwijderd"
   },
-  "searchProjects": {
-    "message": "Zoek projecten"
-  },
   "accessTokens": {
-    "message": "Toegangstoken"
+    "message": "Toegangstoken",
+    "description": "Title for the section displaying access tokens."
   },
-  "createAccessToken": {
-    "message": "Toegangstoken aanmaken"
+  "newAccessToken": {
+    "message": "Nieuw toegangstoken",
+    "description": "Button label for creating a new access token."
   },
   "expires": {
-    "message": "Verloopt"
+    "message": "Verloopt",
+    "description": "Label for the expiration date of an access token."
   },
   "canRead": {
-    "message": "Kan lezen"
+    "message": "Kan lezen",
+    "description": "Label for the access level of an access token (Read only)."
   },
   "accessTokensNoItemsTitle": {
-    "message": "Geen toegangstokens om weer te geven"
+    "message": "Geen toegangstokens om weer te geven",
+    "description": "Title to be displayed when there are no access tokens to display in the list."
   },
   "accessTokensNoItemsDesc": {
-    "message": "Om te starten, creeer een toegangstoken"
+    "message": "Om te starten, creeer een toegangstoken",
+    "description": "Message to be displayed when there are no access tokens to display in the list."
   },
   "downloadAccessToken": {
-    "message": "Download of kopieer voordat u afsluit."
+    "message": "Download of kopieer voordat u afsluit.",
+    "description": "Message to be displayed before closing an access token, reminding the user to download or copy it."
   },
   "expiresOnAccessToken": {
-    "message": "Verloopt op:"
+    "message": "Verloopt op:",
+    "description": "Label for the expiration date of an access token."
   },
   "accessTokenCallOutTitle": {
-    "message": "Toegangstokens zijn niet opgeslagen en kunnen niet worden opgehaald"
+    "message": "Toegangstokens zijn niet opgeslagen en kunnen niet worden opgehaald",
+    "description": "Notification to inform the user that access tokens are only displayed once and cannot be retrieved again."
   },
   "copyToken": {
-    "message": "Kopieer token"
+    "message": "Kopieer token",
+    "description": "Copies the generated access token to the user's clipboard."
   },
   "accessToken": {
-    "message": "Toegangstoken"
+    "message": "Toegangstoken",
+    "description": "A unique string that gives a client application (eg. CLI) access to a secret or set of secrets."
   },
   "accessTokenExpirationRequired": {
-    "message": "Vervaldatum vereist"
+    "message": "Vervaldatum vereist",
+    "description": "Error message indicating that an expiration date for the access token must be set."
   },
   "accessTokenCreatedAndCopied": {
-    "message": "Toegangstoken aangemaakt en gekopieerd naar klembord"
+    "message": "Toegangstoken aangemaakt en gekopieerd naar klembord",
+    "description": "Notification to inform the user that the access token has been created and copied to the clipboard."
   },
   "accessTokenPermissionsBetaNotification": {
-    "message": "Beheer van machtigingen is niet beschikbaar in deze beta."
+    "message": "Beheer van machtigingen is niet beschikbaar in deze beta.",
+    "description": "Notification to inform the user that the feature for managing access token permissions is not available in the beta version."
   },
   "revokeAccessToken": {
-    "message": "Toegangstoken intrekken"
+    "message": "Toegangstoken intrekken",
+    "description": "Invalidates / cancels an access token and as such removes access to secrets for the client application."
   },
   "revokeAccessTokens": {
     "message": "Toegangstokens intrekken"
@@ -5985,6 +6196,10 @@
   "accessTokenRevoked": {
     "message": "Toegangstokens ingetrokken",
     "description": "Toast message after deleting one or multiple access tokens."
+  },
+  "noAccessTokenSelected": {
+    "message": "Geen toegangstoken geselecteerd om in te trekken",
+    "description": "Toast error message after trying to delete access tokens but not selecting any access tokens."
   },
   "submenu": {
     "message": "Submenu"
@@ -6358,8 +6573,14 @@
   "projectEmptyServiceAccountAccessPolicies": {
     "message": "Serviceaccounts toevoegen om toegang te verlenen"
   },
-  "canWrite": {
-    "message": "Kan schrijven"
+  "serviceAccountPeopleDescription": {
+    "message": "Geef groepen of mensen toegang tot dit serviceaccount."
+  },
+  "serviceAccountProjectsDescription": {
+    "message": "Projecten aan dit serviceaccount toewijzen. "
+  },
+  "serviceAccountEmptyProjectAccesspolicies": {
+    "message": "Projecten toevoegen om toegang te verlenen"
   },
   "canReadWrite": {
     "message": "Kan lezen, schrijven"
@@ -6370,14 +6591,11 @@
   "lowKdfIterations": {
     "message": "Weinig KDF-iteraties"
   },
-  "lowKdfIterationsDesc": {
-    "message": "Verhoog je KDF-versleutelingsinstellingen om je account beter te beveiligen."
-  },
-  "changeKdfSettings": {
-    "message": "KDF-instellingen wijzigen"
+  "updateLowKdfIterationsDesc": {
+    "message": "Werk je versleutelingsinstellingen bij om aan de nieuwe beveiligingsaanbevelingen te voldoen en de bescherming van je account te verbeteren."
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Als je doorgaat zal je huidige sessie uitloggen, waarna je opnieuw moet inloggen. Actieve sessies op andere apparaten blijven mogelijk nog een uur actief. We raden je aan je kluis te exporteren voordat je je versleutelingsinstellingen wijzigt om gegevensverlies te voorkomen."
+    "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
   "secretsManagerBeta": {
     "message": "Secrets Manager Bèta"
@@ -6415,6 +6633,19 @@
   },
   "errorReadingImportFile": {
     "message": "Er is een fout opgetreden bij het lezen van het bronbestand"
+  },
+  "accessedSecret": {
+    "message": "Geopend geheim $SECRET_ID$.",
+    "placeholders": {
+      "secret_id": {
+        "content": "$1",
+        "example": "4d34e8a8"
+      }
+    }
+  },
+  "sdk": {
+    "message": "SDK",
+    "description": "Software Development Kit"
   },
   "createSecret": {
     "message": "Geheim aanmaken"
@@ -6478,8 +6709,29 @@
   "secretsManagerEnable": {
     "message": "Secrets Manager Bèta inschakelen"
   },
+  "saPeopleWarningTitle": {
+    "message": "Toegangstokens nog beschikbaar"
+  },
+  "saPeopleWarningMessage": {
+    "message": "Het verwijderen van mensen uit een serviceaccount verwijdert de door hen aangemaakte toegangstokens niet. Voor de veiligheid kun je het beste de toegangstokens die zijn gemaakt door mensen die zijn verwijderd uit een serviceaccount intrekken."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Toegang tot dit project verwijderen"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "Deze actie verwijdert je toegang tot het project."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Verwijder toegang tot dit serviceaccount"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "Deze actie verwijdert je toegang tot het serviceaccount."
+  },
+  "removeAccess": {
+    "message": "Toegang verwijderen"
+  },
   "checkForBreaches": {
-    "message": "Check known data breaches for this password"
+    "message": "Controleer bekende datalekken voor dit wachtwoord"
   },
   "exposedMasterPassword": {
     "message": "Exposed Master Password"
@@ -6503,12 +6755,51 @@
     }
   },
   "masterPasswordMinimumlength": {
-    "message": "Master password must be at least $LENGTH$ characters long.",
+    "message": "Hoofdwachtwoord moet minstens $LENGTH$ karakters lang zijn.",
     "placeholders": {
       "length": {
         "content": "$1",
         "example": "14"
       }
     }
+  },
+  "dismiss": {
+    "message": "Sluiten"
+  },
+  "notAvailableForFreeOrganization": {
+    "message": "Deze functie is niet beschikbaar voor gratis organisaties. Contacteer uw organisatie-eigenaar om te upgraden."
+  },
+  "smProjectSecretsNoItemsNoAccess": {
+    "message": "Neem contact op met de beheerder van je organisatie om geheimen voor dit project te beheren.",
+    "description": "The message shown to the user under a project's secrets tab when the user only has read access to the project."
+  },
+  "enforceOnLoginDesc": {
+    "message": "Verplicht bestaande leden hun wachtwoord te wijzigen"
+  },
+  "smProjectDeleteAccessRestricted": {
+    "message": "Je hebt geen rechten om dit project te verwijderen",
+    "description": "The individual description shown to the user when the user doesn't have access to delete a project."
+  },
+  "smProjectsDeleteBulkConfirmation": {
+    "message": "De volgende projecten kunnen niet verwijderd worden. Wil je doorgaan?",
+    "description": "The message shown to the user when bulk deleting projects and the user doesn't have access to some projects."
+  },
+  "updateKdfSettings": {
+    "message": "KDF instellingen bijwerken"
+  },
+  "trustedDeviceEncryption": {
+    "message": "Trusted device encryption"
+  },
+  "memberDecryptionTdeDescStart": {
+    "message": "Once authenticated, members will decrypt vault data using a key stored on their device. The",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Once authenticated, members will decrypt vault data using a key stored on their device. The master password reset policy with automatic enrollment will turn on when this option is used.'"
+  },
+  "memberDecryptionTdeDescLink": {
+    "message": "master password reset policy",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Once authenticated, members will decrypt vault data using a key stored on their device. The master password reset policy with automatic enrollment will turn on when this option is used.'"
+  },
+  "memberDecryptionTdeDescEnd": {
+    "message": "with automatic enrollment will turn on when this option is used.",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Once authenticated, members will decrypt vault data using a key stored on their device. The master password reset policy with automatic enrollment will turn on when this option is used.'"
   }
 }

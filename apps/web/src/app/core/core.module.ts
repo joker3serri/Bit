@@ -24,6 +24,7 @@ import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 
+import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { PasswordRepromptService } from "../vault/core/password-reprompt.service";
 
 import { BroadcasterMessagingService } from "./broadcaster-messaging.service";
@@ -32,7 +33,6 @@ import { HtmlStorageService } from "./html-storage.service";
 import { I18nService } from "./i18n.service";
 import { InitService } from "./init.service";
 import { ModalService } from "./modal.service";
-import { PolicyListService } from "./policy-list.service";
 import { RouterService } from "./router.service";
 import { Account, GlobalState, StateService } from "./state";
 import { StateMigrationService } from "./state-migration.service";
@@ -70,7 +70,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     {
       provide: SECURE_STORAGE,
       // TODO: platformUtilsService.isDev has a helper for this, but using that service here results in a circular dependency.
-      // We have a tech debt item in the backlog to break up platformUtilsService, but in the meantime simply checking the environement here is less cumbersome.
+      // We have a tech debt item in the backlog to break up platformUtilsService, but in the meantime simply checking the environment here is less cumbersome.
       useClass: process.env.NODE_ENV === "development" ? HtmlStorageService : MemoryStorageService,
     },
     {

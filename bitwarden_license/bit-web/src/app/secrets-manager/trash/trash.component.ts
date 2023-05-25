@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
-import { DialogService } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 
 import { SecretListView } from "../models/view/secret-list.view";
 import { SecretService } from "../secrets/secret.service";
@@ -28,7 +28,7 @@ export class TrashComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private secretService: SecretService,
-    private dialogService: DialogService
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   ngOnInit() {
@@ -46,7 +46,9 @@ export class TrashComponent implements OnInit {
     return await this.secretService.getTrashedSecrets(this.organizationId);
   }
 
-  openDeleteSecret(secretIds: string[]) {
+  openDeleteSecret(secrets: SecretListView[]) {
+    const secretIds = secrets.map((secret) => secret.id);
+
     this.dialogService.open<unknown, SecretHardDeleteOperation>(SecretHardDeleteDialogComponent, {
       data: {
         secretIds: secretIds,

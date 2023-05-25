@@ -1,7 +1,23 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatestWith, map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
+import {
+  combineLatestWith,
+  map,
+  Observable,
+  share,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
+import {
+  SimpleDialogType,
+  DialogServiceAbstraction,
+  SimpleDialogOptions,
+} from "@bitwarden/angular/services/dialog";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
@@ -14,6 +30,10 @@ import {
   AccessSelectorComponent,
   AccessSelectorRowView,
 } from "../../shared/access-policies/access-selector.component";
+import {
+  AccessRemovalDetails,
+  AccessRemovalDialogComponent,
+} from "../../shared/access-policies/dialogs/access-removal-dialog.component";
 
 @Component({
   selector: "sm-service-account-people",
@@ -22,6 +42,8 @@ import {
 export class ServiceAccountPeopleComponent {
   private destroy$ = new Subject<void>();
   private serviceAccountId: string;
+  private organizationId: string;
+  private rows: AccessSelectorRowView[];
 
   protected rows$: Observable<AccessSelectorRowView[]> =
     this.accessPolicyService.serviceAccountAccessPolicyChanges$.pipe(
@@ -40,6 +62,7 @@ export class ServiceAccountPeopleComponent {
             accessPolicyId: policy.id,
             read: policy.read,
             write: policy.write,
+            userId: policy.userId,
             icon: AccessSelectorComponent.userIcon,
             static: true,
           });
@@ -53,13 +76,15 @@ export class ServiceAccountPeopleComponent {
             accessPolicyId: policy.id,
             read: policy.read,
             write: policy.write,
+            currentUserInGroup: policy.currentUserInGroup,
             icon: AccessSelectorComponent.groupIcon,
             static: true,
           });
         });
 
         return rows;
-      })
+      }),
+      share()
     );
 
   protected handleCreateAccessPolicies(selected: SelectItemView[]) {
@@ -92,16 +117,67 @@ export class ServiceAccountPeopleComponent {
     );
   }
 
-  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
+  protected async handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
+    if (
+      await this.accessPolicyService.needToShowAccessRemovalWarning(
+        this.organizationId,
+        policy,
+        this.rows
+      )
+    ) {
+      this.launchDeleteWarningDialog(policy);
+      return;
+    }
+
+    try {
+      await this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
+      const simpleDialogOpts: SimpleDialogOptions = {
+        title: this.i18nService.t("saPeopleWarningTitle"),
+        content: this.i18nService.t("saPeopleWarningMessage"),
+        type: SimpleDialogType.WARNING,
+        acceptButtonText: { key: "close" },
+        cancelButtonText: null,
+      };
+      this.dialogService.openSimpleDialogRef(simpleDialogOpts);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+  }
+
+  constructor(
+    private route: ActivatedRoute,
+    private dialogService: DialogServiceAbstraction,
+    private i18nService: I18nService,
+    private validationService: ValidationService,
+    private accessPolicyService: AccessPolicyService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.serviceAccountId = params.serviceAccountId;
+      this.organizationId = params.organizationId;
+    });
+
+    this.rows$.pipe(takeUntil(this.destroy$)).subscribe((rows) => {
+      this.rows = rows;
     });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private launchDeleteWarningDialog(policy: AccessSelectorRowView) {
+    this.dialogService.open<unknown, AccessRemovalDetails>(AccessRemovalDialogComponent, {
+      data: {
+        title: "smAccessRemovalWarningSaTitle",
+        message: "smAccessRemovalWarningSaMessage",
+        operation: "delete",
+        type: "service-account",
+        returnRoute: ["sm", this.organizationId, "service-accounts"],
+        policy,
+      },
+    });
   }
 }

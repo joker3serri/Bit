@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Даведка і зваротная сувязь"
   },
+  "helpCenter": {
+    "message": "Даведачны цэнтр Bitwarden"
+  },
+  "communityForums": {
+    "message": "Наведайце форумы супольнасці Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Звярніцеся ў службу падтрымкі Bitwarden"
+  },
   "sync": {
     "message": "Сінхранізаваць"
   },
@@ -1452,8 +1461,35 @@
   "autoFillSuccess": {
     "message": "Аўтазапоўнены элемент"
   },
+  "insecurePageWarning": {
+    "message": "Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Do you still wish to fill this login?"
+  },
+  "autofillIframeWarning": {
+    "message": "The form is hosted by a different domain than the URI of your saved login. Choose OK to auto-fill anyway, or Cancel to stop."
+  },
+  "autofillIframeWarningTip": {
+    "message": "To prevent this warning in the future, save this URI, $HOSTNAME$, to your Bitwarden login item for this site.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Прызначыць асноўны пароль"
+  },
+  "currentMasterPass": {
+    "message": "Бягучы асноўны пароль"
+  },
+  "newMasterPass": {
+    "message": "Новы асноўны пароль"
+  },
+  "confirmNewMasterPass": {
+    "message": "Пацвердзіць новы асноўны пароль"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Адна або больш палітык арганізацыі патрабуе, каб ваш асноўны пароль адпавядаў наступным патрабаванням:"
@@ -1835,6 +1871,9 @@
   "updateMasterPasswordWarning": {
     "message": "Ваш асноўны пароль нядаўна быў зменены адміністратарам арганізацыі. Для таго, каб атрымаць доступ да вашага сховішча, вы павінны абнавіць яго зараз. Гэта прывядзе да завяршэння бягучага сеанса і вам неабходна будзе ўвайсці паўторна. Сеансы на іншых прыладах могуць заставацца актыўнымі на працягу адной гадзіны."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ваш асноўны пароль не адпавядае адной або некалькім палітыкам арганізацыі. Для атрымання доступу да сховішча, вы павінны абнавіць яго. Працягваючы, вы выйдзіце з бягучага сеанса і вам неабходна будзе ўвайсці паўторна. Актыўныя сеансы на іншых прыладах могуць заставацца актыўнымі на працягу адной гадзіны."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Аўтаматычная рэгістрацыя"
   },
@@ -1863,6 +1902,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Палітыка вашай арганізацыі ўплывае на час чакання сховішча. Максімальны дазволены час чакання сховішча складае гадзін: $HOURS$; хвілін: $MINUTES$. Для часу чакання вашага сховішча прызначана дзеянне $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Палітыкай вашай арганізацыі прызначана дзеянне $ACTION$ для часу чакання вашага сховішча.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1994,9 +2059,6 @@
   "disabledOrganizationFilterError": {
     "message": "Доступ да элементаў у адключаных арганізацыях немагчымы. Звяжыце з уладальнікам арганізацыі для атрымання дапамогі."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Увайсці ў $DOMAIN$",
     "placeholders": {
@@ -2111,11 +2173,14 @@
       }
     }
   },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Аўтазапаўненне пры загрузцы старонцы было ўключана палітыкамі вашай арганізацыі."
+  },
   "howToAutofill": {
     "message": "Як аўтазапоўніць"
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page or use the shortcut: $COMMAND$. You can also try auto-fill on page load.",
+  "autofillSelectInfoWithCommand": {
+    "message": "Выберыце элемент на гэтай старонцы або скарыстайцеся спалучэннем клавіш: $COMMAND$",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2123,8 +2188,8 @@
       }
     }
   },
-  "autofillSelectInfoNoCommand": {
-    "message": "Выберыце элемент на гэтай старонцы або задайце спалучэнні клавіш у наладах. Вы таксама можаце паспрабаваць аўтазапаўненне пры загрузцы старонкі."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Выберыце элемент на гэтай старонцы або задайце спалучэнне клавіш у наладах."
   },
   "gotIt": {
     "message": "Зразумела"
@@ -2155,5 +2220,19 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "region": {
+    "message": "Region"
+  },
+  "opensInANewWindow": {
+    "message": "Адкрываць у новым акне"
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "us": {
+    "message": "US",
+    "description": "United States"
   }
 }

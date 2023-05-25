@@ -2,10 +2,8 @@
 import { Substitute, Arg } from "@fluffy-spoon/substitute";
 import { Jsonify } from "type-fest";
 
-import { mockEnc, mockFromJson } from "../../../../spec/utils";
-import { FieldType } from "../../../enums/fieldType";
-import { SecureNoteType } from "../../../enums/secureNoteType";
-import { UriMatchType } from "../../../enums/uriMatchType";
+import { mockEnc, mockFromJson } from "../../../../spec";
+import { FieldType, SecureNoteType, UriMatchType } from "../../../enums";
 import { EncString } from "../../../models/domain/enc-string";
 import { InitializerKey } from "../../../services/cryptography/initializer-key";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";

@@ -12,19 +12,20 @@ import {
 } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
-import { DEFAULT_KDF_CONFIG, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
+import { DEFAULT_KDF_CONFIG, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
+import { DialogServiceAbstraction, SimpleDialogType } from "../services/dialog";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputsFieldMatch.validator";
 
@@ -87,10 +88,11 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected apiService: ApiService,
     protected stateService: StateService,
     platformUtilsService: PlatformUtilsService,
-    protected passwordGenerationService: PasswordGenerationService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     environmentService: EnvironmentService,
     protected logService: LogService,
-    protected auditService: AuditService
+    protected auditService: AuditService,
+    protected dialogService: DialogServiceAbstraction
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.showTerms = !platformUtilsService.isSelfHost();
@@ -227,35 +229,32 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       (await this.auditService.passwordLeaked(this.formGroup.controls.masterPassword.value)) > 0;
 
     if (passwordWeak && passwordLeak) {
-      const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("weakAndBreachedMasterPasswordDesc"),
-        this.i18nService.t("weakAndExposedMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        "warning"
-      );
+      const result = await this.dialogService.openSimpleDialog({
+        title: { key: "weakAndExposedMasterPassword" },
+        content: { key: "weakAndBreachedMasterPasswordDesc" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!result) {
         return { isValid: false };
       }
     } else if (passwordWeak) {
-      const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("weakMasterPasswordDesc"),
-        this.i18nService.t("weakMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        "warning"
-      );
+      const result = await this.dialogService.openSimpleDialog({
+        title: { key: "weakMasterPassword" },
+        content: { key: "weakMasterPasswordDesc" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!result) {
         return { isValid: false };
       }
     } else if (passwordLeak) {
-      const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("exposedMasterPasswordDesc"),
-        this.i18nService.t("exposedMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        "warning"
-      );
+      const result = await this.dialogService.openSimpleDialog({
+        title: { key: "exposedMasterPassword" },
+        content: { key: "exposedMasterPasswordDesc" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!result) {
         return { isValid: false };
       }

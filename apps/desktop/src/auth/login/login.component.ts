@@ -1,7 +1,9 @@
 import { Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
+import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -13,11 +15,11 @@ import { FormValidationErrorsService } from "@bitwarden/common/abstractions/form
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { EnvironmentComponent } from "../environment.component";
@@ -31,7 +33,10 @@ const BroadcasterSubscriptionId = "LoginComponent";
 export class LoginComponent extends BaseLoginComponent implements OnDestroy {
   @ViewChild("environment", { read: ViewContainerRef, static: true })
   environmentModal: ViewContainerRef;
+  @ViewChild(EnvironmentSelectorComponent)
+  environmentSelector!: EnvironmentSelectorComponent;
 
+  protected componentDestroyed$: Subject<void> = new Subject();
   webVaultHostname = "";
 
   showingModal = false;
@@ -57,7 +62,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     platformUtilsService: PlatformUtilsService,
     stateService: StateService,
     environmentService: EnvironmentService,
-    passwordGenerationService: PasswordGenerationService,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     cryptoFunctionService: CryptoFunctionService,
     private broadcasterService: BroadcasterService,
     ngZone: NgZone,
@@ -116,10 +121,17 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
       });
     });
     this.messagingService.send("getWindowIsFocused");
+    this.environmentSelector.onOpenSelfHostedSettings
+      .pipe(takeUntil(this.componentDestroyed$))
+      .subscribe(() => {
+        this.settings();
+      });
   }
 
   ngOnDestroy() {
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
   }
 
   async settings() {
@@ -128,17 +140,16 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
       this.environmentModal
     );
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    modal.onShown.subscribe(() => {
+    modal.onShown.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
       this.showingModal = true;
     });
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    modal.onClosed.subscribe(() => {
+
+    modal.onClosed.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
       this.showingModal = false;
     });
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    childComponent.onSaved.subscribe(async () => {
+    // eslint-disable-next-line rxjs/no-async-subscribe
+    childComponent.onSaved.pipe(takeUntil(this.componentDestroyed$)).subscribe(async () => {
       modal.close();
       await this.checkSelfHosted();
     });

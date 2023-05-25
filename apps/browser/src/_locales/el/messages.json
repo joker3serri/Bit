@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Βοήθεια & Σχόλια"
   },
+  "helpCenter": {
+    "message": "Κέντρο βοήθειας Bitwarden"
+  },
+  "communityForums": {
+    "message": "Εξερευνήστε τα φόρουμ της κοινότητας του Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Επικοινωνία με την υποστήριξη Bitwarden"
+  },
   "sync": {
     "message": "Συγχρονισμός"
   },
@@ -430,7 +439,7 @@
     "message": "Απαιτείται ξανά ο κύριος κωδικός πρόσβασης."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Ο κύριος κωδικός πρέπει να έχει μήκος τουλάχιστον $VALUE$ χαρακτήρες.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -1452,8 +1461,35 @@
   "autoFillSuccess": {
     "message": "Αυτόματη συμπλήρωση αντικειμένου"
   },
+  "insecurePageWarning": {
+    "message": "Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Do you still wish to fill this login?"
+  },
+  "autofillIframeWarning": {
+    "message": "The form is hosted by a different domain than the URI of your saved login. Choose OK to auto-fill anyway, or Cancel to stop."
+  },
+  "autofillIframeWarningTip": {
+    "message": "To prevent this warning in the future, save this URI, $HOSTNAME$, to your Bitwarden login item for this site.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Ορισμός Κύριου Κωδικού"
+  },
+  "currentMasterPass": {
+    "message": "Τρέχων Κύριος Κωδικός"
+  },
+  "newMasterPass": {
+    "message": "Νέος Κύριος Κωδικός"
+  },
+  "confirmNewMasterPass": {
+    "message": "Επιβεβαίωση Νέου Κύριου Κωδικού"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Σε μία ή περισσότερες πολιτικές του οργανισμού απαιτείται ο κύριος κωδικός να πληρεί τις ακόλουθες απαιτήσεις:"
@@ -1835,6 +1871,9 @@
   "updateMasterPasswordWarning": {
     "message": "Ο Κύριος Κωδικός Πρόσβασής σας άλλαξε πρόσφατα από διαχειριστή στον οργανισμό σας. Για να αποκτήσετε πρόσβαση στο vault, πρέπει να τον ενημερώσετε τώρα. Η διαδικασία θα σας αποσυνδέσει από την τρέχουσα συνεδρία σας, απαιτώντας από εσάς να συνδεθείτε ξανά. Οι ενεργές συνεδρίες σε άλλες συσκευές ενδέχεται να συνεχίσουν να είναι ενεργές για μία ώρα."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ο Κύριος κωδικός πρόσβασης δεν πληροί τις απαιτήσεις πολιτικής αυτού του οργανισμού. Για να έχετε πρόσβαση στο vault, πρέπει να ενημερώσετε τον Κύριο σας κωδικό άμεσα. Η διαδικασία θα σας αποσυνδέσει από την τρέχουσα συνεδρία σας, απαιτώντας από εσάς να συνδεθείτε ξανά. Οι ενεργές συνεδρίες σε άλλες συσκευές ενδέχεται να συνεχίσουν να είναι ενεργές για μία ώρα."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Αυτόματη Εγγραφή"
   },
@@ -1863,6 +1902,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Οι πολιτικές του οργανισμού σας επηρεάζουν το χρονικό όριο λήξης του vault σας. Το μέγιστο επιτρεπόμενο χρονικό όριο λήξης vault είναι $HOURS$ ώρα(ες) και $MINUTES$ λεπτό(ά). H ενέργεια χρονικού ορίου λήξης είναι ορισμένη ως $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Οι πολιτικές του οργανισμού σας έχουν ορίσει την ενέργεια χρονικού ορίου λήξης vault ως $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1994,9 +2059,6 @@
   "disabledOrganizationFilterError": {
     "message": "Δεν είναι δυνατή η πρόσβαση σε αντικείμενα σε απενεργοποιημένους οργανισμούς. Επικοινωνήστε με τον ιδιοκτήτη του Οργανισμού για βοήθεια."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Σύνδεση στο $DOMAIN$",
     "placeholders": {
@@ -2111,11 +2173,14 @@
       }
     }
   },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Οι πολιτικές του οργανισμού σας έχουν ενεργοποιήσει την αυτόματη συμπλήρωση με φόρτωση σελίδας."
+  },
   "howToAutofill": {
     "message": "Πώς να συμπληρώσετε αυτόματα"
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page or use the shortcut: $COMMAND$. You can also try auto-fill on page load.",
+  "autofillSelectInfoWithCommand": {
+    "message": "Επιλέξτε ένα στοιχείο από αυτή τη σελίδα ή χρησιμοποιήστε τη συντόμευση: $COMMAND$",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2123,8 +2188,8 @@
       }
     }
   },
-  "autofillSelectInfoNoCommand": {
-    "message": "Επιλέξτε ένα στοιχείο από αυτή τη σελίδα ή ορίστε μια συντόμευση στις ρυθμίσεις. Μπορείτε επίσης να δοκιμάσετε την αυτόματη συμπλήρωση κατά τη φόρτωση της σελίδας."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Επιλέξτε ένα στοιχείο από αυτή τη σελίδα ή ορίστε μια συντόμευση στις ρυθμίσεις."
   },
   "gotIt": {
     "message": "Το κατάλαβα"
@@ -2155,5 +2220,19 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "region": {
+    "message": "Region"
+  },
+  "opensInANewWindow": {
+    "message": "Ανοίγει σε νέο παράθυρο"
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "us": {
+    "message": "US",
+    "description": "United States"
   }
 }

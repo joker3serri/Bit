@@ -3,6 +3,7 @@ import { UntypedFormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -10,10 +11,10 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { FormValidationErrorsService } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 @Component({
   selector: "app-register",
@@ -33,10 +34,11 @@ export class RegisterComponent extends BaseRegisterComponent {
     apiService: ApiService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
-    passwordGenerationService: PasswordGenerationService,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     environmentService: EnvironmentService,
     logService: LogService,
-    auditService: AuditService
+    auditService: AuditService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       formValidationErrorService,
@@ -51,7 +53,8 @@ export class RegisterComponent extends BaseRegisterComponent {
       passwordGenerationService,
       environmentService,
       logService,
-      auditService
+      auditService,
+      dialogService
     );
   }
 }

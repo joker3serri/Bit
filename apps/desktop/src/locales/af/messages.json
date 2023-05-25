@@ -257,7 +257,7 @@
     "message": "Ander"
   },
   "generatePassword": {
-    "message": "Genereer Wagwoord"
+    "message": "Wek 'n Wagwoord op"
   },
   "type": {
     "message": "Tipe"
@@ -389,7 +389,7 @@
     "message": "Wysig Vouer"
   },
   "regeneratePassword": {
-    "message": "Hergenereer Wagwoord"
+    "message": "Wek 'n wagwoord weer op"
   },
   "copyPassword": {
     "message": "Kopieer Wagwoord"
@@ -542,7 +542,7 @@
     "message": "Hoofwagwoord moet weer intevoer word."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Die Hoofwagwoord moet ten minste $VALUE$ karakters lank wees.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -639,7 +639,7 @@
     "message": "Waarmerktoep"
   },
   "authenticatorAppDesc": {
-    "message": "Gebruik ’n waarmerktoep (soos Authy of Google Authenticator) om tydgebaseerde bevestigingskodes te genereer.",
+    "message": "Gebruik ’n waarmerktoep (soos Authy of Google Authenticator) om tydgebaseerde bevestigingskodes optewek.",
     "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
   },
   "yubiKeyTitle": {
@@ -765,10 +765,13 @@
     "message": "Vergrendel kluis"
   },
   "passwordGenerator": {
-    "message": "Wagwoordgenereerder"
+    "message": "Wagwoordopwekker"
   },
   "contactUs": {
     "message": "Kontak ons"
+  },
+  "helpAndFeedback": {
+    "message": "Hulp en terugvoer"
   },
   "getHelp": {
     "message": "Kry hulp"
@@ -1081,7 +1084,7 @@
     "message": "Wagwoordhigiëne, rekeningwelstand en databreukverslae om u kluis veilig te hou."
   },
   "premiumSignUpTotp": {
-    "message": "TOTP-bevestigingskodegenereerder (2FA) vir aantekenings in u kluis."
+    "message": "TOTP-bevestigingskode-opwekker (2FA) vir aantekenings in u kluis."
   },
   "premiumSignUpSupport": {
     "message": "Klantediens met hoë prioriteit."
@@ -1389,11 +1392,17 @@
   "unlockWithWindowsHello": {
     "message": "Ontgrendel met Windows Hello"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "Additional Windows Hello settings"
+  },
   "windowsHelloConsentMessage": {
     "message": "Bevestig vir Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Ontgrendel met Touch ID"
+  },
+  "additionalTouchIdSettings": {
+    "message": "Bykomende Touch ID-instellings"
   },
   "touchIdConsentMessage": {
     "message": "ontgrendel u kluis"
@@ -1403,6 +1412,12 @@
   },
   "autoPromptTouchId": {
     "message": "Vra vir Touch ID by lansering"
+  },
+  "requirePasswordOnStart": {
+    "message": "Require password or PIN on app start"
+  },
+  "recommendedForSecurity": {
+    "message": "Aanbeveel vir veiligheid."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Vergrendel by herbegin met hoofwagwoord"
@@ -1466,7 +1481,7 @@
     "message": "Kloon"
   },
   "passwordGeneratorPolicyInEffect": {
-    "message": "Een of meer organisasiebeleide beïnvloed u genereerderinstellings."
+    "message": "Een of meer organisasiebeleide beïnvloed u opwekkerinstellings."
   },
   "vaultTimeoutAction": {
     "message": "Kluis-uittelaksie"
@@ -1523,6 +1538,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "Om aantekening met SSO te voltooi moet u ’n hoofwagwoord instel vir toegang tot en beskerming van u kluis."
+  },
+  "currentMasterPass": {
+    "message": "Huidige hoofwagwoord"
   },
   "newMasterPass": {
     "message": "Nuwe hoofwagwoord"
@@ -1840,6 +1858,9 @@
   "updateMasterPasswordWarning": {
     "message": "U hoofwagwoord is onlangs deur ’n administrateur in u organisasie verander. Om toegang tot u kluis te verkry moet u dit nóú bywerk. Deur voort te gaan word u uit u huidige sessie geteken, waarna u weer sal moet aanteken. Aktiewe sessies op ander toestelle kan vir tot ’n uur steeds aktief bly."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
+  },
   "hours": {
     "message": "Uur"
   },
@@ -1856,6 +1877,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Jou organisasie se beleid affekteer jou kluis-uittel tyd. Die maksimum toelaatbare kluis-uittel tyd is $HOURS$ uur(ure) en $MINUTES$ minuut(minute). Jou kluis-uittelaksie is gestel na $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Jou organisasie se beleid het jou kluis-uittel aksie na $ACTION$ gestel.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1956,19 +2003,19 @@
     "message": "Ontgrendel"
   },
   "generator": {
-    "message": "Genereerder"
+    "message": "Opwekker"
   },
   "whatWouldYouLikeToGenerate": {
-    "message": "Wat wil u genereer?"
+    "message": "Wat wil u opwek?"
   },
   "passwordType": {
     "message": "Wagwoordtipe"
   },
   "regenerateUsername": {
-    "message": "Hergenereer gebruikersnaam"
+    "message": "Wek 'n gebruikersnaam weer op"
   },
   "generateUsername": {
-    "message": "Genereer gebruikersnaam"
+    "message": "Wek 'n gebruikersnaam op"
   },
   "usernameType": {
     "message": "Gebruikersnaamtipe"
@@ -2011,7 +2058,7 @@
     "message": "E-posalias vir aanstuur"
   },
   "forwardedEmailDesc": {
-    "message": "Genereer ’n e-posalias met ’n eksterne aanstuurdiens."
+    "message": "Wek ’n e-posalias op met ’n eksterne aanstuurdiens."
   },
   "hostname": {
     "message": "Gasheernaam",
@@ -2034,9 +2081,6 @@
   },
   "neverLockWarning": {
     "message": "Is u seker u wil die “Nooit”-opsie gebruik? Deur u vergrendelopsies op “Nooit” te stel word u kluis se enkripsie op u toestel bewaar. Indien u hierdie opsie gebruik moet u verseker dat u toestel behoorlik beskerm is."
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "vault": {
     "message": "Kluis"
@@ -2069,35 +2113,35 @@
     "message": "Meld aan met 'n ander toestel"
   },
   "logInInitiated": {
-    "message": "Log in initiated"
+    "message": "Aan tekening geïnisieer"
   },
   "notificationSentDevice": {
-    "message": "A notification has been sent to your device."
+    "message": "'n Kennisgewing was na jou toestel gestuur."
   },
   "fingerprintMatchInfo": {
-    "message": "Please make sure your vault is unlocked and Fingerprint phrase matches the other device."
+    "message": "Maak asseblief seker dat jou kluis oopgesluit is en die Vingerafdrukfrase met die ander toestel vergelyk."
   },
   "fingerprintPhraseHeader": {
-    "message": "Fingerprint phrase"
+    "message": "Vingerafdrukfrase"
   },
   "needAnotherOption": {
-    "message": "Log in with device must be set up in the settings of the Bitwarden app. Need another option?"
+    "message": "Aan teken met toestel moet opgestel word in die instellings van die Bitwarden toep. Nodig 'n ander opsie?"
   },
   "viewAllLoginOptions": {
-    "message": "View all login options"
+    "message": "Beskou alle aantekenings opsies"
   },
   "resendNotification": {
-    "message": "Resend notification"
+    "message": "Herstuur kennisgewing"
   },
   "toggleCharacterCount": {
     "message": "Tokkel karakter telling",
     "description": "'Character count' describes a feature that displays a number next to each character of the password."
   },
   "areYouTryingtoLogin": {
-    "message": "Are you trying to log in?"
+    "message": "Probeer jy om aan te teken?"
   },
   "logInAttemptBy": {
-    "message": "Login attempt by $EMAIL$",
+    "message": "Aantekenings poging deur $EMAIL$",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2106,25 +2150,25 @@
     }
   },
   "deviceType": {
-    "message": "Device Type"
+    "message": "Toestel Tiepe"
   },
   "ipAddress": {
-    "message": "IP Address"
+    "message": "IP adres"
   },
   "time": {
-    "message": "Time"
+    "message": "Tyd"
   },
   "confirmLogIn": {
-    "message": "Confirm login"
+    "message": "Bevestig aantekening"
   },
   "denyLogIn": {
-    "message": "Deny login"
+    "message": "Weier aantekening"
   },
   "approveLoginRequests": {
-    "message": "Approve login requests"
+    "message": "Bevestig aantekenings versoeke"
   },
   "logInConfirmedForEmailOnDevice": {
-    "message": "Login confirmed for $EMAIL$ on $DEVICE$",
+    "message": "Aantekening gebevestig vir $EMAIL$ op $DEVICE$",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2137,13 +2181,13 @@
     }
   },
   "youDeniedALogInAttemptFromAnotherDevice": {
-    "message": "You denied a login attempt from another device. If this really was you, try to log in with the device again."
+    "message": "Jy het 'n aantekenings poging van 'n ander toestel gekeer. As dit inderdaad jy was, probeer om weer met die toestel aan te teken."
   },
   "justNow": {
-    "message": "Just now"
+    "message": "Nou net"
   },
   "requestedXMinutesAgo": {
-    "message": "Requested $MINUTES$ minutes ago",
+    "message": "Versoek $MINUTES$ minute gelede",
     "placeholders": {
       "minutes": {
         "content": "$1",
@@ -2152,16 +2196,16 @@
     }
   },
   "loginRequestHasAlreadyExpired": {
-    "message": "Login request has already expired."
+    "message": "Aantekenings versoek het reeds versper."
   },
   "thisRequestIsNoLongerValid": {
-    "message": "This request is no longer valid."
+    "message": "Hierdie versoek is nie meer geldig nie."
   },
   "approveLoginRequestDesc": {
-    "message": "Use this device to approve login requests made from other devices."
+    "message": "Gebruik hierdie toestel om aantekenings versoeke, van ander toetstelle, goed te keer."
   },
   "confirmLoginAtemptForMail": {
-    "message": "Confirm login attempt for $EMAIL$",
+    "message": "Bevestig aantekenings poging vir $EMAIL$",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2170,36 +2214,56 @@
     }
   },
   "logInRequested": {
-    "message": "Log in requested"
+    "message": "Aan teken versoek"
   },
   "exposedMasterPassword": {
-    "message": "Exposed Master Password"
+    "message": "Ontblote Hoofwagwoord"
   },
   "exposedMasterPasswordDesc": {
-    "message": "Password found in a data breach. Use a unique password to protect your account. Are you sure you want to use an exposed password?"
+    "message": "Wagwoord gevind in data lekkasie. Gebruik 'n unieke wagwoord om jou rekening te beskerm. Is jy seker dat jy 'n ontblote wagwoord wil gebruik?"
   },
   "weakAndExposedMasterPassword": {
-    "message": "Weak and Exposed Master Password"
+    "message": "Swak en Ontblote Hoofwagwoord"
   },
   "weakAndBreachedMasterPasswordDesc": {
-    "message": "Weak password identified and found in a data breach. Use a strong and unique password to protect your account. Are you sure you want to use this password?"
+    "message": "Swak wagwoord geidentifiseer en gevind in 'n data lekkasie. Gebruik 'n sterk en unieke wagwoord om jou rekening te beskerm. Is jy seker dat jy hierdie wagwoord wil gebruik?"
   },
   "checkForBreaches": {
-    "message": "Check known data breaches for this password"
+    "message": "Kontroleer bekende data lekkasies vir hierdie wagwoord"
   },
   "important": {
-    "message": "Important:"
+    "message": "Belangrik:"
   },
   "masterPasswordHint": {
-    "message": "Your master password cannot be recovered if you forget it!"
+    "message": "Jou hoofwagwoord kan nie herkry word as jy dit vergeet nie!"
   },
   "characterMinimum": {
-    "message": "$LENGTH$ character minimum",
+    "message": "$LENGTH$ karakters minimum",
     "placeholders": {
       "length": {
         "content": "$1",
         "example": "14"
       }
     }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "Bitwarden recommends updating your biometric settings to require your master password (or PIN) on the first unlock. Would you like to update your settings now?"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "Recommended Settings Update"
+  },
+  "region": {
+    "message": "Region"
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "us": {
+    "message": "US",
+    "description": "United States"
+  },
+  "selfHosted": {
+    "message": "Self-hosted"
   }
 }
