@@ -22,6 +22,7 @@ import { StopPropDirective } from "./directives/stop-prop.directive";
 import { TrueFalseValueDirective } from "./directives/true-false-value.directive";
 import { CreditCardNumberPipe } from "./pipes/credit-card-number.pipe";
 import { EllipsisPipe } from "./pipes/ellipsis.pipe";
+import { FingerprintPipe } from "./pipes/fingerprint.pipe";
 import { I18nPipe } from "./pipes/i18n.pipe";
 import { SearchCiphersPipe } from "./pipes/search-ciphers.pipe";
 import { SearchPipe } from "./pipes/search.pipe";
@@ -70,6 +71,7 @@ import { IconComponent } from "./vault/components/icon.component";
     PasswordStrengthComponent,
     UserTypePipe,
     IfFeatureDirective,
+    FingerprintPipe,
   ],
   exports: [
     A11yInvalidDirective,
@@ -100,7 +102,16 @@ import { IconComponent } from "./vault/components/icon.component";
     PasswordStrengthComponent,
     UserTypePipe,
     IfFeatureDirective,
+    FingerprintPipe,
   ],
-  providers: [CreditCardNumberPipe, DatePipe, I18nPipe, SearchPipe, UserNamePipe, UserTypePipe],
+  providers: [
+    CreditCardNumberPipe,
+    DatePipe,
+    I18nPipe,
+    SearchPipe,
+    UserNamePipe,
+    UserTypePipe,
+    FingerprintPipe,
+  ],
 })
 export class JslibModule {}
