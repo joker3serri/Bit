@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { ConfigServiceAbstraction } from "../../../abstractions/config/config.service.abstraction";
 import { Utils } from "../../../misc/utils";
-import { ConfigServiceAbstraction } from "../../abstractions/config/config.service.abstraction";
 import {
   Fido2AutenticatorError,
   Fido2AutenticatorErrorCode,

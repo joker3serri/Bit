@@ -1,8 +1,9 @@
 import { parse } from "tldts";
 
+import { ConfigServiceAbstraction } from "../../../abstractions/config/config.service.abstraction";
 import { LogService } from "../../../abstractions/log.service";
+import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { Utils } from "../../../misc/utils";
-import { ConfigServiceAbstraction } from "../../abstractions/config/config.service.abstraction";
 import {
   Fido2AutenticatorError,
   Fido2AutenticatorErrorCode,
@@ -22,7 +23,6 @@ import {
   UserRequestedFallbackAbortReason,
   UserVerification,
 } from "../../abstractions/fido2/fido2-client.service.abstraction";
-import { FeatureFlag } from "../../enums/feature-flag.enum";
 
 import { isValidRpId } from "./domain-utils";
 import { Fido2Utils } from "./fido2-utils";
