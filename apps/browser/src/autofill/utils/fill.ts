@@ -51,7 +51,7 @@ function normalizeEvent(element: FillableControl, eventName: string) {
     });
   } else {
     event = element.ownerDocument.createEvent("Events");
-    // new Event(EVENTS.INPUT, { bubbles: true, cancelable: true });
+    // @TODO do not use deprecated `initEvent`
     event.initEvent(eventName, true, false);
     event = {
       ...event,
@@ -64,40 +64,6 @@ function normalizeEvent(element: FillableControl, eventName: string) {
   }
 
   return event;
-}
-
-/**
- * Click on an element `element`
- * @param {HTMLElement} element
- * @returns {boolean} Returns true if the element was clicked and false if it was not able to be clicked
- */
-function clickElement(element: HTMLElement) {
-  if (!element || (element && typeof element.click !== TYPE_CHECK.FUNCTION)) {
-    return false;
-  }
-
-  element.click();
-
-  return true;
-}
-
-/**
- * Focus an element and optionally re-set its value after focusing
- * @param {HTMLElement} element
- * @param {boolean} shouldResetValue Reset the value after focusing
- */
-export function doFocusElement(element: FillableControl, shouldResetValue: boolean): void {
-  if (shouldResetValue) {
-    const initialValue = element.value;
-
-    element.focus();
-
-    if (element.value !== initialValue) {
-      element.value = initialValue;
-    }
-  } else {
-    element.focus();
-  }
 }
 
 /**
@@ -144,22 +110,18 @@ function getAllPasswordFields() {
 }
 
 /**
- * Simulate the entry of a value into an element.
- * Clicks the element, focuses it, and then fires a keydown, keypress, and keyup event.
+ * Click on an element `element`
  * @param {HTMLElement} element
+ * @returns {boolean} Returns true if the element was clicked and false if it was not able to be clicked
  */
-export function setValueForElement(element: FillableControl) {
-  const initialValue = element.value;
-
-  clickElement(element);
-  doFocusElement(element, false);
-  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYDOWN));
-  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYPRESS));
-  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYUP));
-
-  if (element.value !== initialValue) {
-    element.value = initialValue;
+function clickElement(element: HTMLElement) {
+  if (!element || (element && typeof element.click !== TYPE_CHECK.FUNCTION)) {
+    return false;
   }
+
+  element.click();
+
+  return true;
 }
 
 /**
@@ -209,6 +171,25 @@ export function doClickByQuery(selector: string) {
 }
 
 /**
+ * Focus an element and optionally re-set its value after focusing
+ * @param {HTMLElement} element
+ * @param {boolean} shouldResetValue Reset the value after focusing
+ */
+export function doFocusElement(element: FillableControl, shouldResetValue: boolean): void {
+  if (shouldResetValue) {
+    const initialValue = element.value;
+
+    element.focus();
+
+    if (element.value !== initialValue) {
+      element.value = initialValue;
+    }
+  } else {
+    element.focus();
+  }
+}
+
+/**
  * Do a click and focus on the element with the given `opId`.
  * @param {string} opId
  * @returns
@@ -227,6 +208,25 @@ export function doFocusByOpId(opId: string): null {
   }
 
   return null;
+}
+
+/**
+ * Simulate the entry of a value into an element.
+ * Clicks the element, focuses it, and then fires a keydown, keypress, and keyup event.
+ * @param {HTMLElement} element
+ */
+export function setValueForElement(element: FillableControl) {
+  const initialValue = element.value;
+
+  clickElement(element);
+  doFocusElement(element, false);
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYDOWN));
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYPRESS));
+  element.dispatchEvent(normalizeEvent(element, EVENTS.KEYUP));
+
+  if (element.value !== initialValue) {
+    element.value = initialValue;
+  }
 }
 
 /**

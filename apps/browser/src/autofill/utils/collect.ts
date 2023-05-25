@@ -2,32 +2,38 @@ import { TYPE_CHECK } from "../constants";
 import { FillableControl, ElementWithOpId, FormElement } from "../types";
 
 /**
- * Clean up the string `s` to remove non-printable characters and whitespace.
- * @param {string} s
+ * Clean up the string `unformattedString` to remove non-printable characters and whitespace.
+ * @param {string} unformattedString
  * @returns {string} Clean text
  */
-function cleanText(s: string | null): string | null {
-  let sVal: string | null = null;
-  s && ((sVal = s.replace(/^\\s+|\\s+$|\\r?\\n.*$/gm, "")), (sVal = 0 < sVal.length ? sVal : null));
+function cleanText(unformattedString: string | null): string | null {
+  let newString = "";
 
-  return sVal;
+  if (unformattedString) {
+    newString = unformattedString.trim();
+  }
+
+  return newString.length ? newString : null;
 }
 
 /**
  * If `element` is a text node, add the node's text to `arr`.
  * If `element` is an element node, add the element's `textContent or `innerText` to `arr`.
- * @param {string[]} arr An array of `textContent` or `innerText` values
+ * @param {string[]} siblingTexts An array of `textContent` or `innerText` values
  * @param {HTMLElement} element The element to push to the array
  */
-export function checkNodeType(arr: string[], element: Node) {
+export function checkNodeType(siblingTexts: string[], element: Node) {
   let theText: string | Node["nodeValue"] = "";
 
-  3 === element.nodeType
-    ? (theText = element.nodeValue)
-    : 1 === element.nodeType &&
-      (theText = element.textContent || (element as HTMLElement).innerText);
+  if (element.nodeType === Node.TEXT_NODE) {
+    theText = element.nodeValue;
+  } else if (element.nodeType === Node.ELEMENT_NODE) {
+    theText = element.textContent || (element as HTMLElement).innerText;
+  }
 
-  (theText = cleanText(theText)) && arr.push(theText);
+  theText = cleanText(theText);
+
+  siblingTexts.push(theText);
 }
 
 /**
@@ -36,7 +42,8 @@ export function checkNodeType(arr: string[], element: Node) {
  * @param {HTMLElement} element The element to check
  * @returns {boolean} Returns `true` if `element` is an HTML element from a known set and `false` otherwise
  */
-export function isKnownTag(element: HTMLElement) {
+// @TODO fix `element` typing: "`tagName` doesn't exist on Node"
+export function isKnownTag(element: any) {
   if (element) {
     const tags = [
       "body",
@@ -66,8 +73,8 @@ export function isKnownTag(element: HTMLElement) {
  * @param {string[]} arr An array of `textContent` or `innerText` values
  * @param {number} steps The number of steps to take up the DOM tree
  */
-export function shiftForLeftLabel(element: any, arr: string[], steps?: number) {
-  let sib;
+export function shiftForLeftLabel(element: any, siblingTexts: string[], steps?: number) {
+  let sibling;
 
   // For all previous siblings, add their text to the array
   for (steps || (steps = 0); element && element.previousSibling; ) {
@@ -77,13 +84,13 @@ export function shiftForLeftLabel(element: any, arr: string[], steps?: number) {
       return;
     }
 
-    checkNodeType(arr, element);
+    checkNodeType(siblingTexts, element);
   }
 
   // If no previous siblings were found and no textItems were found, check the parent element
-  if (element && 0 === arr.length) {
+  if (element && siblingTexts.length === 0) {
     // While no siblings are found
-    for (sib = null; !sib; ) {
+    for (sibling = null; !sibling; ) {
       element = element.parentElement || element.parentNode;
 
       // If no parent element is found, return
@@ -92,8 +99,11 @@ export function shiftForLeftLabel(element: any, arr: string[], steps?: number) {
       }
 
       // If the parent element has a previous sibling, and the previous sibling is not a known tag, and the sibling has at least one child, then set the sibling to the last child
-      for (sib = element.previousSibling; sib && !isKnownTag(sib) && sib.lastChild; ) {
-        sib = sib.lastChild;
+      for (
+        sibling = element.previousSibling;
+        sibling && !isKnownTag(sibling) && sibling.lastChild;
+      ) {
+        sibling = sibling.lastChild;
       }
     }
 
@@ -101,8 +111,9 @@ export function shiftForLeftLabel(element: any, arr: string[], steps?: number) {
     // If the sibling is a known tag, do not attempt to recurse.
     // Otherwise, add the sibling to the array of text values
     // If the array length is equal to zero, recurse with the sibling as the new element
-    isKnownTag(sib) ||
-      (checkNodeType(arr, sib), 0 === arr.length && shiftForLeftLabel(sib, arr, steps + 1));
+    isKnownTag(sibling) ||
+      (checkNodeType(siblingTexts, sibling),
+      0 === siblingTexts.length && shiftForLeftLabel(sibling, siblingTexts, steps + 1));
   }
 }
 

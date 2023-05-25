@@ -2,6 +2,7 @@ import { EVENTS } from "../constants";
 import { FillableControl, FormElementExtended } from "../types";
 
 import {
+  addProperty,
   doClickByOpId,
   doClickByQuery,
   doFocusByOpId,
@@ -10,7 +11,6 @@ import {
   setValueForElementByEvent,
   touchAllPasswordFields,
   urlNotSecure,
-  addProperty,
 } from "./fill";
 
 const mockLoginForm = `
@@ -157,6 +157,7 @@ describe("fill utils", () => {
           value="anInitialValue"
         />
       `;
+
       const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
       const elementEventCount: { [key: string]: number } = { ...initEventCount };
 
