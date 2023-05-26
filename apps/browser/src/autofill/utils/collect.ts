@@ -365,57 +365,53 @@ export function getElementByOpId(
 }
 
 /**
- * Query `theDoc` for form elements that we can use for autofill, ranked by importance and limited by `limit`
- * @param {Document} theDoc The Document to query
+ * Query `targetDocument` for form elements that we can use for autofill, limited and
+ * ranked for importance by `limit`.
+ * @param {Document} targetDocument The Document to query
  * @param {number} limit The maximum number of elements to return
- * @returns An array of HTMLElements
+ * @returns {FormElement[]}
  */
-export function getFormElements(theDoc: Document, limit?: number): FormElement[] {
-  let els: FormElement[] = [];
+export function getFormElements(targetDocument: Document, limit?: number): FormElement[] {
+  let elementList: FormElement[] = [];
 
   try {
-    const elsList = theDoc.querySelectorAll(
-      'input:not([type="hidden"]):not([type="submit"]):not([type="reset"])' +
-        ':not([type="button"]):not([type="image"]):not([type="file"]):not([data-bwignore]), select, textarea, ' +
-        "span[data-bwautofill]"
+    // @TODO `select` and `textarea` should also have `data-bwignore` qualifier
+    elementList = Array.from(
+      targetDocument.querySelectorAll(
+        'input:not([type="hidden"]):not([type="submit"]):not([type="reset"])' +
+          ':not([type="button"]):not([type="image"]):not([type="file"]):not([data-bwignore]), ' +
+          "select:not([data-bwignore]), textarea:not([data-bwignore]), " +
+          "span[data-bwautofill]"
+      )
     );
-    els = Array.prototype.slice.call(elsList);
   } catch (e) {
     /* no-op */
   }
 
-  if (!limit || els.length <= limit) {
-    return els;
+  if (!limit || elementList.length <= limit) {
+    return elementList;
   }
 
-  // non-checkboxes/radios have higher priority
-  let returnEls: FormElement[] = [];
-  const unimportantEls: FormElement[] = [];
+  const returnElements: FormElement[] = [];
+  const unimportantElements: FormElement[] = [];
 
-  for (let i = 0; i < els.length; i++) {
-    if (returnEls.length >= limit) {
-      break;
+  elementList.every((element: HTMLInputElement) => {
+    if (returnElements.length >= limit) {
+      return false; // stop iterating
     }
 
-    const element = els[i];
-    const type = (element as HTMLInputElement).type
-      ? (element as HTMLInputElement).type.toLowerCase()
-      : (element as HTMLInputElement).type;
+    const elementType = element.type?.toLowerCase();
 
-    if (type === "checkbox" || type === "radio") {
-      unimportantEls.push(element);
+    if (["checkbox", "radio"].includes(elementType)) {
+      unimportantElements.push(element);
     } else {
-      returnEls.push(element);
+      returnElements.push(element);
     }
-  }
 
-  const unimportantElsToAdd = limit - returnEls.length;
+    return true;
+  });
 
-  if (unimportantElsToAdd > 0) {
-    returnEls = returnEls.concat(unimportantEls.slice(0, unimportantElsToAdd));
-  }
-
-  return returnEls;
+  return [...returnElements, ...unimportantElements].slice(0, limit);
 }
 
 /**
