@@ -33,7 +33,9 @@ export function checkNodeType(siblingTexts: string[], element: Node) {
 
   theText = cleanText(theText);
 
-  siblingTexts.push(theText);
+  if (theText) {
+    siblingTexts.push(theText);
+  }
 }
 
 /**
