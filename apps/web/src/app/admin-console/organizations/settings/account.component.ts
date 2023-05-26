@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { lastValueFrom } from "rxjs";
+import { lastValueFrom, map, Subject, switchMap, takeUntil } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -24,7 +24,6 @@ import { DeleteOrganizationDialogResult, openDeleteOrganizationDialog } from "./
   selector: "app-org-account",
   templateUrl: "account.component.html",
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class AccountComponent {
   @ViewChild("purgeOrganizationTemplate", { read: ViewContainerRef, static: true })
   purgeModalRef: ViewContainerRef;
@@ -43,6 +42,7 @@ export class AccountComponent {
   taxFormPromise: Promise<unknown>;
 
   private organizationId: string;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private modalService: ModalService,
@@ -60,29 +60,42 @@ export class AccountComponent {
   async ngOnInit() {
     this.selfHosted = this.platformUtilsService.isSelfHost();
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    this.route.parent.parent.params.subscribe(async (params) => {
-      this.organizationId = params.organizationId;
-      this.canEditSubscription = this.organizationService.get(
-        this.organizationId
-      ).canEditSubscription;
-      try {
-        this.org = await this.organizationApiService.get(this.organizationId);
-        this.canUseApi = this.org.useApi;
+    this.route.parent.parent.params
+      .pipe(
+        map((params) => this.organizationService.get(params.organizationId)),
+        switchMap(async (organization) => {
+          // Set variables available with domain object
+          this.organizationId = organization.id;
+          this.canEditSubscription = organization.canEditSubscription;
+          this.canUseApi = organization.useApi;
 
-        // Retrieve Public Key
-        const orgKeys = await this.organizationApiService.getKeys(this.org.id);
-        const publicKey = Utils.fromB64ToArray(orgKeys.publicKey);
+          try {
+            // Retrieve Organization from API for fields needed during form binding
+            this.org = await this.organizationApiService.get(this.organizationId);
+            // Retrieve Organization Public Key
+            const orgKeys = await this.organizationApiService.getKeys(this.organizationId);
+            const publicKey = Utils.fromB64ToArray(orgKeys.publicKey);
+            // Generate Organization Fingerprint
+            const fingerprint = await this.cryptoService.getFingerprint(
+              this.organizationId,
+              publicKey.buffer
+            );
+            this.orgFingerprint = fingerprint?.join("-") ?? null;
+          } catch (e) {
+            this.logService.error(e);
+          }
 
-        const fingerprint = await this.cryptoService.getFingerprint(this.org.id, publicKey.buffer);
-        if (fingerprint != null) {
-          this.orgFingerprint = fingerprint.join("-");
-        }
-      } catch (e) {
-        this.logService.error(e);
-      }
-    });
-    this.loading = false;
+          this.loading = false;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    // You must first call .next() in order for the notifier to properly close subscriptions using takeUntil
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async submit() {
