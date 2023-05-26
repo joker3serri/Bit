@@ -6,6 +6,7 @@ import {
   isElementVisible,
   isNewSectionTag,
   selectAllFromDoc,
+  getFormElements,
   getAdjacentElementLabelValues,
 } from "./collect";
 
@@ -382,6 +383,143 @@ describe("collect utils", () => {
       getAdjacentElementLabelValues(textInput, elementList);
 
       expect(elementList).toEqual([]);
+    });
+  });
+
+  describe("getFormElements", () => {
+    it("should return all form elements from the targeted document", () => {
+      const formElements = getFormElements(document);
+      const elementStringsToCheck = formElements.map(({ outerHTML }) => outerHTML);
+
+      expect(elementStringsToCheck).toEqual([
+        '<input type="text" id="username">',
+        '<input type="password">',
+      ]);
+    });
+
+    it("should return up to 2 (passed as `limit`) form elements from the targeted document with more than 2 form elements", () => {
+      document.body.innerHTML = `
+        <div>
+          <span data-bwautofill="true">included span</span>
+          <textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>
+          <span>ignored span</span>
+          <select><option value="1">Option 1</option><select>
+          <label for="username">username</label>
+          <input type="text" id="username" />
+          <input type="password" />
+          <span data-bwautofill="true">another included span</span>
+        </div>
+      `;
+
+      const formElements = getFormElements(document, 2);
+      const elementStringsToCheck = formElements.map(({ outerHTML }) => outerHTML);
+
+      expect(elementStringsToCheck).toEqual([
+        '<span data-bwautofill="true">included span</span>',
+        '<textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>',
+      ]);
+    });
+
+    it("should return form elements from the targeted document, ignoring input types `hidden`, `submit`, `reset`, `button`, `image`, `file`, and inputs tagged with `data-bwignore`, while giving lower order priority to `checkbox` and `radio` inputs if the returned list is truncated by `limit`", () => {
+      document.body.innerHTML = `
+        <div>
+          <fieldset>
+            <legend>Select an option:</legend>
+            <div>
+              <input type="radio" value="option-a" />
+              <label for="option-a">Option A: Options B & C</label>
+            </div>
+            <div>
+              <input type="radio" value="option-b" />
+              <label for="option-b">Option B: Options A & C</label>
+            </div>
+            <div>
+              <input type="radio" value="option-c" />
+              <label for="option-c">Option C: Options A & B</label>
+            </div>
+          </fieldset>
+          <span data-bwautofill="true">included span</span>
+          <textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>
+          <span>ignored span</span>
+          <input type="checkbox" name="doYouWantToCheck" />
+          <label for="doYouWantToCheck">Do you want to skip checking this box?</label>
+          <select><option value="1">Option 1</option><select>
+          <label for="username">username</label>
+          <input type="text" data-bwignore value="None"/>
+          <input type="hidden" value="of" />
+          <input type="submit" value="these" />
+          <input type="reset" value="inputs" />
+          <input type="button" value="should" />
+          <input type="image" src="be" />
+          <input type="file" multiple id="returned" />
+          <input type="text" id="username" />
+          <input type="password" />
+          <span data-bwautofill="true">another included span</span>
+        </div>
+      `;
+
+      const formElements = getFormElements(document);
+      const elementStringsToCheck = formElements.map(({ outerHTML }) => outerHTML);
+
+      expect(elementStringsToCheck).toEqual([
+        '<input type="radio" value="option-a">',
+        '<input type="radio" value="option-b">',
+        '<input type="radio" value="option-c">',
+        '<span data-bwautofill="true">included span</span>',
+        '<textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>',
+        '<input type="checkbox" name="doYouWantToCheck">',
+        '<select><option value="1">Option 1</option></select>',
+        '<input type="text" id="username">',
+        '<input type="password">',
+        '<span data-bwautofill="true">another included span</span>',
+      ]);
+    });
+
+    it("should return form elements from the targeted document while giving lower order priority to `checkbox` and `radio` inputs if the returned list is truncated by `limit`", () => {
+      document.body.innerHTML = `
+        <div>
+          <input type="checkbox" name="doYouWantToCheck" />
+          <label for="doYouWantToCheck">Do you want to skip checking this box?</label>
+          <textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>
+          <span>ignored span</span>
+          <fieldset>
+            <legend>Select an option:</legend>
+            <div>
+              <input type="radio" value="option-a" />
+              <label for="option-a">Option A: Options B & C</label>
+            </div>
+            <div>
+              <input type="radio" value="option-b" />
+              <label for="option-b">Option B: Options A & C</label>
+            </div>
+            <div>
+              <input type="radio" value="option-c" />
+              <label for="option-c">Option C: Options A & B</label>
+            </div>
+          </fieldset>
+          <select><option value="1">Option 1</option><select>
+          <label for="username">username</label>
+          <input type="text" id="username" />
+          <input type="password" />
+          <span data-bwautofill="true">another included span</span>
+        </div>
+      `;
+
+      const truncatedFormElements = getFormElements(document, 8);
+      const truncatedElementStringsToCheck = truncatedFormElements.map(
+        ({ outerHTML }) => outerHTML
+      );
+
+      expect(truncatedElementStringsToCheck).toEqual([
+        '<textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>',
+        '<select><option value="1">Option 1</option></select>',
+        '<input type="text" id="username">',
+        '<input type="password">',
+        '<span data-bwautofill="true">another included span</span>',
+        '<input type="checkbox" name="doYouWantToCheck">',
+        '<input type="radio" value="option-a">',
+        '<input type="radio" value="option-b">',
+      ]);
     });
   });
 });
