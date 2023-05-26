@@ -49,7 +49,7 @@ import {
 import {
   // collect utils
   canSeeElementToStyle,
-  checkNodeType,
+  getInnerText,
   getElementAttrValue,
   /** DEAD CODE ?? **/
   // getElementByOpId,
@@ -60,10 +60,10 @@ import {
   getSelectElementOptions,
   isElementViewable,
   isElementVisible,
-  isKnownTag,
+  isNewSectionTag,
   queryDoc,
   selectAllFromDoc,
-  shiftForLeftLabel,
+  getAdjacentElementLabelValues,
   toLowerString,
 
   // fill utils
@@ -252,16 +252,16 @@ function collect(document: Document) {
           for (let sib: Node = el; sib && sib.nextSibling; ) {
             sib = sib.nextSibling;
 
-            if (isKnownTag(sib)) {
+            if (isNewSectionTag(sib)) {
               break;
             }
 
-            checkNodeType(labelArr, sib);
+            getInnerText(labelArr, sib);
           }
 
           addProperty(field, "label-right", labelArr.join(""));
           labelArr = [];
-          shiftForLeftLabel(el, labelArr);
+          getAdjacentElementLabelValues(el, labelArr);
           labelArr = labelArr.reverse().join("");
           addProperty(field, "label-left", labelArr);
           addProperty(field, "placeholder", getElementAttrValue(el, "placeholder"));

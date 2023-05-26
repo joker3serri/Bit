@@ -4,9 +4,9 @@ import {
   canSeeElementToStyle,
   getElementByOpId,
   isElementVisible,
-  isKnownTag,
+  isNewSectionTag,
   selectAllFromDoc,
-  shiftForLeftLabel,
+  getAdjacentElementLabelValues,
 } from "./collect";
 
 const mockLoginForm = `
@@ -26,7 +26,7 @@ describe("collect utils", () => {
     document.body.innerHTML = mockLoginForm;
   });
 
-  describe("isKnownTag", () => {
+  describe("isNewSectionTag", () => {
     const validTags = [
       "body",
       "button",
@@ -47,7 +47,7 @@ describe("collect utils", () => {
       const element = document.createElement(tag);
 
       it(`should return true if the element tag is a ${tag}`, () => {
-        expect(isKnownTag(element)).toEqual(true);
+        expect(isNewSectionTag(element)).toEqual(true);
       });
     });
 
@@ -55,12 +55,12 @@ describe("collect utils", () => {
       const element = document.createElement(tag);
 
       it(`should return false if the element tag is a ${tag}`, () => {
-        expect(isKnownTag(element)).toEqual(false);
+        expect(isNewSectionTag(element)).toEqual(false);
       });
     });
 
-    it(`should return true if the element tag is falsey`, () => {
-      expect(isKnownTag(undefined)).toEqual(true);
+    it(`should return true if the element tag is falsy`, () => {
+      expect(isNewSectionTag(undefined)).toEqual(true);
     });
   });
 
@@ -288,7 +288,7 @@ describe("collect utils", () => {
     });
   });
 
-  describe("shiftForLeftLabel", () => {
+  describe("getAdjacentElementLabelValues", () => {
     it("should find text adjacent to the target element likely to be a label", () => {
       document.body.innerHTML = `
         <div>
@@ -307,7 +307,7 @@ describe("collect utils", () => {
       const textInput = document.querySelector("#input-tag") as FormElementExtended;
       const elementList: string[] = [];
 
-      shiftForLeftLabel(textInput, elementList);
+      getAdjacentElementLabelValues(textInput, elementList);
 
       expect(elementList).toEqual([
         "something else",
@@ -336,7 +336,7 @@ describe("collect utils", () => {
       const textInput = document.querySelector("#input-tag") as FormElementExtended;
       const elementList: string[] = [];
 
-      shiftForLeftLabel(textInput, elementList);
+      getAdjacentElementLabelValues(textInput, elementList);
 
       expect(elementList).toEqual(["something else"]);
     });
@@ -356,7 +356,7 @@ describe("collect utils", () => {
       const textInput = document.querySelector("#input-tag") as FormElementExtended;
       const elementList: string[] = [];
 
-      shiftForLeftLabel(textInput, elementList);
+      getAdjacentElementLabelValues(textInput, elementList);
 
       expect(elementList).toEqual(["some things"]);
     });
@@ -370,7 +370,7 @@ describe("collect utils", () => {
       const textInput = document.querySelector("#input-tag") as FormElementExtended;
       const elementList: string[] = [];
 
-      shiftForLeftLabel(textInput, elementList);
+      getAdjacentElementLabelValues(textInput, elementList);
 
       expect(elementList).toEqual(["some nested things"]);
     });
@@ -379,7 +379,7 @@ describe("collect utils", () => {
       const textInput = document.querySelector("html") as FormElementExtended;
       const elementList: string[] = [];
 
-      shiftForLeftLabel(textInput, elementList);
+      getAdjacentElementLabelValues(textInput, elementList);
 
       expect(elementList).toEqual([]);
     });

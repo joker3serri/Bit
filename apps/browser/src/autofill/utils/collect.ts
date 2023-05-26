@@ -17,12 +17,12 @@ function cleanText(unformattedString: string | null): string | null {
 }
 
 /**
- * If `element` is a text node, add the node's text to `arr`.
- * If `element` is an element node, add the element's `textContent or `innerText` to `arr`.
+ * If `element` is a text node, add the node's text to `siblingTexts`.
+ * If `element` is an element node, add the element's `textContent or `innerText` to `siblingTexts`.
  * @param {string[]} siblingTexts An array of `textContent` or `innerText` values
  * @param {HTMLElement} element The element to push to the array
  */
-export function checkNodeType(siblingTexts: string[], element: Node) {
+export function getInnerText(siblingTexts: string[], element: Node) {
   let theText: string | Node["nodeValue"] = "";
 
   if (element.nodeType === Node.TEXT_NODE) {
@@ -45,7 +45,7 @@ export function checkNodeType(siblingTexts: string[], element: Node) {
  * @returns {boolean} Returns `true` if `element` is an HTML element from a known set and `false` otherwise
  */
 // @TODO fix `element` typing: "`tagName` doesn't exist on Node"
-export function isKnownTag(element: any) {
+export function isNewSectionTag(element: any) {
   if (element) {
     const tags = [
       "body",
@@ -72,50 +72,50 @@ export function isKnownTag(element: any) {
 /**
  * Recursively gather all of the text values from the elements preceding `element` in the DOM
  * @param {HTMLElement} element
- * @param {string[]} arr An array of `textContent` or `innerText` values
- * @param {number} steps The number of steps to take up the DOM tree
+ * @param {string[]} siblingTexts An array of `textContent` or `innerText` values
  */
-export function shiftForLeftLabel(element: any, siblingTexts: string[], steps?: number) {
+export function getAdjacentElementLabelValues(element: any, siblingTexts: string[]) {
   let sibling;
 
-  // For all previous siblings, add their text to the array
-  for (steps || (steps = 0); element && element.previousSibling; ) {
+  // While the current element exists and has `previousSibling`
+  while (element && element.previousSibling) {
     element = element.previousSibling;
 
-    if (isKnownTag(element)) {
+    if (isNewSectionTag(element)) {
       return;
     }
 
-    checkNodeType(siblingTexts, element);
+    getInnerText(siblingTexts, element);
   }
 
-  // If no previous siblings were found and no textItems were found, check the parent element
-  if (element && siblingTexts.length === 0) {
-    // While no siblings are found
-    for (sibling = null; !sibling; ) {
-      element = element.parentElement || element.parentNode;
+  // If the current element exists and no valid sibling texts have been found
+  if (element && !siblingTexts.length) {
+    // Move up to parent element/node
+    sibling = null;
 
-      // If no parent element is found, return
+    while (!sibling) {
+      element = element.parentElement || element.parentNode;
+      // If there is no parent element/node, exit loop
       if (!element) {
         return;
       }
 
-      // If the parent element has a previous sibling, and the previous sibling is not a known tag, and the sibling has at least one child, then set the sibling to the last child
-      for (
-        sibling = element.previousSibling;
-        sibling && !isKnownTag(sibling) && sibling.lastChild;
-      ) {
+      // Look at parent element/node siblings; if not a new section tag, and the sibling has `lastChild`, sibling becomes `lastChild`, loop ends
+      sibling = element.previousSibling;
+
+      while (sibling && !isNewSectionTag(sibling) && sibling.lastChild) {
         sibling = sibling.lastChild;
       }
     }
 
     // base case and recurse
-    // If the sibling is a known tag, do not attempt to recurse.
-    // Otherwise, add the sibling to the array of text values
-    // If the array length is equal to zero, recurse with the sibling as the new element
-    isKnownTag(sibling) ||
-      (checkNodeType(siblingTexts, sibling),
-      0 === siblingTexts.length && shiftForLeftLabel(sibling, siblingTexts, steps + 1));
+    if (!isNewSectionTag(sibling)) {
+      getInnerText(siblingTexts, sibling);
+
+      if (!siblingTexts.length) {
+        getAdjacentElementLabelValues(sibling, siblingTexts);
+      }
+    }
   }
 }
 
