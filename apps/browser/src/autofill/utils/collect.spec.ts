@@ -6,6 +6,7 @@ import {
   isElementVisible,
   isKnownTag,
   selectAllFromDoc,
+  shiftForLeftLabel,
 } from "./collect";
 
 const mockLoginForm = `
@@ -275,7 +276,7 @@ describe("collect utils", () => {
       expect(getElementByOpId("__2")).toEqual(null);
     });
 
-    it("should return null if a falsey value is passed", () => {
+    it("should return null if a falsy value is passed", () => {
       expect(getElementByOpId(null)).toEqual(null);
       expect(getElementByOpId(undefined)).toEqual(null);
     });
@@ -284,6 +285,103 @@ describe("collect utils", () => {
       document.body.innerHTML = "<div></div>";
 
       expect(getElementByOpId("__2")).toEqual(null);
+    });
+  });
+
+  describe("shiftForLeftLabel", () => {
+    it("should find text adjacent to the target element likely to be a label", () => {
+      document.body.innerHTML = `
+        <div>
+          Text about things
+          <div>some things</div>
+          <div>
+            <h3>Stuff Section Header</h3>
+            Other things which are also stuff
+            <div style="display:none;"> Not visible text </div>
+            <label for="input-tag">something else</label>
+            <input id="input-tag" type="text" value="something" />
+          </div>
+        </div>
+      `;
+
+      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const elementList: string[] = [];
+
+      shiftForLeftLabel(textInput, elementList);
+
+      expect(elementList).toEqual([
+        "something else",
+        "Not visible text",
+        "Other things which are also stuff",
+        "Stuff Section Header",
+      ]);
+    });
+
+    it("should stop looking at siblings for label values when a 'new section' element is seen", () => {
+      document.body.innerHTML = `
+        <div>
+          Text about things
+          <div>some things</div>
+          <div>
+            <h3>Stuff Section Header</h3>
+            Other things which are also stuff
+            <div style="display:none;">Not a label</div>
+            <input type=text />
+            <label for="input-tag">something else</label>
+            <input id="input-tag" type="text" value="something" />
+          </div>
+        </div>
+      `;
+
+      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const elementList: string[] = [];
+
+      shiftForLeftLabel(textInput, elementList);
+
+      expect(elementList).toEqual(["something else"]);
+    });
+
+    it("should keep looking for labels in parents when there are no siblings of the target element", () => {
+      document.body.innerHTML = `
+        <div>
+          Text about things
+          <input type="text" />
+          <div>some things</div>
+          <div>
+            <input id="input-tag" type="text" value="something" />
+          </div>
+        </div>
+      `;
+
+      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const elementList: string[] = [];
+
+      shiftForLeftLabel(textInput, elementList);
+
+      expect(elementList).toEqual(["some things"]);
+    });
+
+    // @TODO This case should probably not care about whitespace/text nodes along the way, but the code path currently does
+    it("should find label in parent sibling last child if no other label candidates have been encountered and there are no text nodes along the way", () => {
+      document.body.innerHTML = `
+        <div><div><div>not the most relevant things</div><div>some nested things</div><div><input id="input-tag" type="text" value="something" /></div></div>
+      `;
+
+      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const elementList: string[] = [];
+
+      shiftForLeftLabel(textInput, elementList);
+
+      expect(elementList).toEqual(["some nested things"]);
+    });
+
+    it("should exit early if the target element has no parent element/node", () => {
+      const textInput = document.querySelector("html") as FormElementExtended;
+      const elementList: string[] = [];
+
+      shiftForLeftLabel(textInput, elementList);
+
+      expect(elementList).toEqual([]);
     });
   });
 });
