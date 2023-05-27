@@ -9,47 +9,26 @@
   ></i>
   <span class="sr-only">{{ "loading" | i18n }}</span>
 </div>
-<form
-  *ngIf="org && !loading"
-  #form
-  (ngSubmit)="submit()"
-  [appApiAction]="formPromise"
-  ngNativeValidate
->
+<form *ngIf="org && !loading" #form [bitSubmit]="submit" [formGroup]="formGroup">
   <div class="row">
     <div class="col-6">
       <div class="form-group">
-        <label for="name">{{ "organizationName" | i18n }}</label>
-        <input
-          id="name"
-          class="form-control"
-          type="text"
-          name="Name"
-          [(ngModel)]="org.name"
-          [disabled]="selfHosted"
-        />
+        <bit-form-field>
+          <bit-label>{{ "organizationName" | i18n }}</bit-label>
+          <input bitInput id="orgName" type="text" formControlName="orgName" />
+        </bit-form-field>
       </div>
       <div class="form-group">
-        <label for="billingEmail">{{ "billingEmail" | i18n }}</label>
-        <input
-          id="billingEmail"
-          class="form-control"
-          type="text"
-          name="BillingEmail"
-          [(ngModel)]="org.billingEmail"
-          [disabled]="selfHosted || !canEditSubscription"
-        />
+        <bit-form-field>
+          <bit-label>{{ "billingEmail" | i18n }}</bit-label>
+          <input bitInput id="billingEmail" formControlName="billingEmail" type="email" />
+        </bit-form-field>
       </div>
       <div class="form-group">
-        <label for="businessName">{{ "businessName" | i18n }}</label>
-        <input
-          id="businessName"
-          class="form-control"
-          type="text"
-          name="BusinessName"
-          [(ngModel)]="org.businessName"
-          [disabled]="selfHosted || !canEditSubscription"
-        />
+        <bit-form-field>
+          <bit-label>{{ "businessName" | i18n }}</bit-label>
+          <input bitInput id="businessName" formControlName="businessName" type="text" />
+        </bit-form-field>
       </div>
     </div>
     <div class="col-6">
@@ -69,7 +48,7 @@
       </p>
     </div>
   </div>
-  <button type="submit" buttonType="primary" bitButton [loading]="form.loading">
+  <button type="submit" bitButton bitFormButton buttonType="primary">
     {{ "save" | i18n }}
   </button>
 </form>

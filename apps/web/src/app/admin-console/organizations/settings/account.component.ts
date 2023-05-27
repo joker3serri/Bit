@@ -1,4 +1,5 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { lastValueFrom, map, Subject, switchMap, takeUntil } from "rxjs";
 
@@ -41,6 +42,24 @@ export class AccountComponent {
   formPromise: Promise<OrganizationResponse>;
   taxFormPromise: Promise<unknown>;
 
+  protected formGroup = this.formBuilder.group({
+    orgName: this.formBuilder.control(
+      { value: "", disabled: true },
+      {
+        validators: [Validators.required, Validators.maxLength(50)],
+        updateOn: "change",
+      }
+    ),
+    billingEmail: this.formBuilder.control(
+      { value: "", disabled: true },
+      { validators: [Validators.required, Validators.email, Validators.maxLength(256)] }
+    ),
+    businessName: this.formBuilder.control(
+      { value: "", disabled: true },
+      { validators: [Validators.maxLength(50)] }
+    ),
+  });
+
   private organizationId: string;
   private destroy$ = new Subject<void>();
 
@@ -54,7 +73,8 @@ export class AccountComponent {
     private router: Router,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogServiceAbstraction,
+    private formBuilder: FormBuilder
   ) {}
 
   async ngOnInit() {
@@ -64,13 +84,13 @@ export class AccountComponent {
       .pipe(
         map((params) => this.organizationService.get(params.organizationId)),
         switchMap(async (organization) => {
-          // Set variables available with domain object
+          // Set domain level organization variables
           this.organizationId = organization.id;
           this.canEditSubscription = organization.canEditSubscription;
           this.canUseApi = organization.useApi;
 
           try {
-            // Retrieve Organization from API for fields needed during form binding
+            // Retrieve OrganizationResponse for form population
             this.org = await this.organizationApiService.get(this.organizationId);
             // Retrieve Organization Public Key
             const orgKeys = await this.organizationApiService.getKeys(this.organizationId);
@@ -81,8 +101,24 @@ export class AccountComponent {
               publicKey.buffer
             );
             this.orgFingerprint = fingerprint?.join("-") ?? null;
+            // Patch existing values
+            this.formGroup.patchValue({
+              orgName: this.org.name,
+              billingEmail: this.org.billingEmail,
+              businessName: this.org.businessName,
+            });
           } catch (e) {
             this.logService.error(e);
+          }
+
+          // Update disabled states - reactive forms prefers not using disabled attribute
+          if (!this.selfHosted) {
+            this.formGroup.get("orgName").enable();
+          }
+
+          if (!this.selfHosted || this.canEditSubscription) {
+            this.formGroup.get("billingEmail").enable();
+            this.formGroup.get("businessName").enable();
           }
 
           this.loading = false;
@@ -98,12 +134,17 @@ export class AccountComponent {
     this.destroy$.complete();
   }
 
-  async submit() {
+  submit = async () => {
+    this.formGroup.markAllAsTouched();
+    if (this.formGroup.invalid) {
+      return;
+    }
+
     try {
       const request = new OrganizationUpdateRequest();
-      request.name = this.org.name;
-      request.businessName = this.org.businessName;
-      request.billingEmail = this.org.billingEmail;
+      request.name = this.formGroup.value.orgName;
+      request.businessName = this.formGroup.value.businessName;
+      request.billingEmail = this.formGroup.value.billingEmail;
 
       // Backfill pub/priv key if necessary
       if (!this.org.hasPublicAndPrivateKeys) {
@@ -122,7 +163,38 @@ export class AccountComponent {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
+
+  // async submit() {
+  //   this.formGroup.markAllAsTouched();
+  //   if (this.formGroup.invalid) {
+  //     return;
+  //   }
+
+  //   try {
+  //     const request = new OrganizationUpdateRequest();
+  //     request.name = this.formGroup.value.orgName;
+  //     request.businessName = this.formGroup.value.businessName;
+  //     request.billingEmail = this.formGroup.value.billingEmail;
+
+  //     // Backfill pub/priv key if necessary
+  //     if (!this.org.hasPublicAndPrivateKeys) {
+  //       const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
+  //       const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
+  //       request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
+  //     }
+
+  //     this.formPromise = this.organizationApiService.save(this.organizationId, request);
+  //     await this.formPromise;
+  //     this.platformUtilsService.showToast(
+  //       "success",
+  //       null,
+  //       this.i18nService.t("organizationUpdated")
+  //     );
+  //   } catch (e) {
+  //     this.logService.error(e);
+  //   }
+  // }
 
   async deleteOrganization() {
     const dialog = openDeleteOrganizationDialog(this.dialogService, {
