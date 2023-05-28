@@ -227,10 +227,12 @@ export class BrowserApi {
     }
   }
 
-  static reloadOpenWindows() {
+  static reloadOpenWindows(exemptCurrentHref = false) {
+    const currentHref = window.location.href;
     const views = chrome.extension.getViews() as Window[];
     views
       .filter((w) => w.location.href != null && !w.location.href.includes("background.html"))
+      .filter((w) => exemptCurrentHref && w.location.href !== currentHref)
       .forEach((w) => {
         w.location.reload();
       });
@@ -274,5 +276,32 @@ export class BrowserApi {
       return null;
     }
     return win.opr?.sidebarAction || browser.sidebarAction;
+  }
+
+  static closeCurrentTab(win: Window & typeof globalThis) {
+    if (this.isWebExtensionsApi) {
+      // Note: In certain browser's implementation of the Web Extensions API (ex: Safari && FF),
+      // functions like browser.tabs.query require a specific "this" context.
+      // In this case, the "this" context should be browser.tabs itself.
+      browser.tabs.query.apply(browser.tabs, [
+        { active: true, currentWindow: true },
+        function (tabs: any) {
+          const tab = tabs[0]; // Get the current active tab
+          browser.tabs.remove.apply(browser.tabs, [tab.id]);
+        },
+      ]);
+    } else if (this.isChromeApi) {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        // Get the current active tab
+        const tab = tabs[0];
+        chrome.tabs.remove(tab.id);
+      });
+    } else {
+      // Fallback just in case
+      // This will not work in all browsers due to security restrictions (ex: Safari) as they require
+      // that the window was originally opened by a script in order for a script to be able to close it.
+      const thisWindow = win.open("", "_self");
+      thisWindow.close();
+    }
   }
 }

@@ -118,9 +118,21 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
       if (qParams.sso === "true") {
         super.onSuccessfulLogin = () => {
-          BrowserApi.reloadOpenWindows();
-          const thisWindow = window.open("", "_self");
-          thisWindow.close();
+          // Force sidebars (FF && Opera) to reload while exempting current window
+          // because we are just going to close the current window.
+          BrowserApi.reloadOpenWindows(true);
+
+          // We don't need this window anymore because the intent is for the user to be left
+          // on the web vault screen which tells them to continue in the browser extension (sidebar or popup)
+          BrowserApi.closeCurrentTab(window);
+
+          // There is no guarantee that this will be called before the window is closed
+          // This sync would only be useful if the browser extension running in the tab shared memory with the popup or sidebar
+          // Note: local storage is shared amongst the extension execution context (popup, sidebar, & tab) so if some sync data
+          // is stored in local storage it will be available to the extension sidebar/popup after the tab closes.
+          // However, as the dev tools close when the tab closes, we could not confirm if the sync ever actually executes.
+          // If the sync is required for the extension to function properly, then the sync should be moved and awaited above
+          // the closeCurrentTab call.
           return this.syncService.fullSync(true);
         };
       }
