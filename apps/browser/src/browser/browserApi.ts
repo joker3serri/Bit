@@ -232,7 +232,7 @@ export class BrowserApi {
     const views = chrome.extension.getViews() as Window[];
     views
       .filter((w) => w.location.href != null && !w.location.href.includes("background.html"))
-      .filter((w) => exemptCurrentHref && w.location.href !== currentHref)
+      .filter((w) => !exemptCurrentHref || w.location.href !== currentHref)
       .forEach((w) => {
         w.location.reload();
       });
