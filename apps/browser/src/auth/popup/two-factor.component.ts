@@ -124,7 +124,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
 
           // We don't need this window anymore because the intent is for the user to be left
           // on the web vault screen which tells them to continue in the browser extension (sidebar or popup)
-          BrowserApi.closeCurrentTab(window);
+          BrowserApi.closeBitwardenExtensionTab();
 
           // There is no guarantee that this will be called before the window is closed
           // This sync would only be useful if the browser extension running in the tab shared memory with the popup or sidebar
