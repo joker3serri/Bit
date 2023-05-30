@@ -12,7 +12,7 @@ import {
   getElementValue,
   getSelectElementOptions,
   getLabelTop,
-  queryDoc,
+  queryDocument,
 } from "./collect";
 
 const mockLoginForm = `
@@ -672,7 +672,7 @@ describe("collect utils", () => {
 
   describe("queryDoc", () => {
     it("should return a list of queried elements", () => {
-      const documentBodyRootElements = queryDoc(document, "body input");
+      const documentBodyRootElements = queryDocument(document, "body input");
       const truncatedDocumentBodyElements = documentBodyRootElements.map(
         ({ outerHTML }) => outerHTML
       );

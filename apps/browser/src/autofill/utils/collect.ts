@@ -545,17 +545,19 @@ export function toLowerString(s: string | null) {
 }
 
 /**
- * Query the document `doc` for elements matching the selector `selector`
+ * Query the document `targetDocument` for elements matching the selector `selector`
+ * @param {Document} targetDocument
+ * @param {string} selector
+ * @return {*}  {HTMLElement[]}
  */
-export function queryDoc<T extends Element = Element>(doc: Document, query: string): Array<T> {
-  let els: Array<T> = [];
+export function queryDocument(targetDocument: Document, selector: string): HTMLElement[] {
+  let elements: HTMLElement[] = [];
 
   try {
-    // Technically this returns a NodeListOf<Element> but it's ducktyped as an Array everywhere, so return it as an array here
-    els = doc.querySelectorAll(query) as unknown as Array<T>;
-  } catch (e) {
+    elements = Array.from(targetDocument.querySelectorAll(selector)) as HTMLElement[];
+  } catch (error) {
     /* no-op */
   }
 
-  return els;
+  return elements;
 }

@@ -61,7 +61,7 @@ import {
   isElementViewable,
   isElementVisible,
   isNewSectionTag,
-  queryDoc,
+  queryDocument,
   selectAllFromDoc,
   getAdjacentElementLabelValues,
   toLowerString,
@@ -121,8 +121,8 @@ function collect(document: Document) {
      * @returns {string} A string containing all of the `innerText` or `textContent` values for all elements that are labels for `el`
      */
     function getLabelTag(el: FillableControl): string | null {
-      let docLabel: HTMLLabelElement[],
-        theLabels: HTMLLabelElement[] = [];
+      let docLabel: HTMLElement[],
+        theLabels: HTMLElement[] = [];
       let theEl: HTMLElement = el;
 
       if (el.labels && el.labels.length && 0 < el.labels.length) {
@@ -131,16 +131,13 @@ function collect(document: Document) {
         if (el.id) {
           theLabels = theLabels.concat(
             Array.prototype.slice.call(
-              queryDoc<HTMLLabelElement>(theDoc, "label[for=" + JSON.stringify(el.id) + "]")
+              queryDocument(theDoc, "label[for=" + JSON.stringify(el.id) + "]")
             )
           );
         }
 
         if (el.name) {
-          docLabel = queryDoc<HTMLLabelElement>(
-            theDoc,
-            "label[for=" + JSON.stringify(el.name) + "]"
-          );
+          docLabel = queryDocument(theDoc, "label[for=" + JSON.stringify(el.name) + "]");
 
           for (let labelIndex = 0; labelIndex < docLabel.length; labelIndex++) {
             if (-1 === theLabels.indexOf(docLabel[labelIndex])) {
@@ -189,7 +186,7 @@ function collect(document: Document) {
 
     // get all the docs
     const theForms: AutofillForm[] = Array.prototype.slice
-      .call(queryDoc<HTMLFormElement>(theDoc, "form"))
+      .call(queryDocument(theDoc, "form"))
       .map(function (formEl: HTMLFormElement, elIndex: number) {
         const op: AutofillForm = {} as any;
         let formOpId: unknown = "__form__" + elIndex;
