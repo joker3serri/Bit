@@ -50,7 +50,7 @@ import {
   // collect utils
   canSeeElementToStyle,
   getInnerText,
-  getElementAttrValue,
+  getPropertyOrAttribute,
   /** DEAD CODE ?? **/
   // getElementByOpId,
   /** END DEAD CODE **/
@@ -193,12 +193,12 @@ function collect(document: Document) {
 
         (formEl as ElementWithOpId<HTMLFormElement>).opid = formOpId as string;
         op.opid = formOpId as string;
-        addProperty(op, "htmlName", getElementAttrValue(formEl, "name"));
-        addProperty(op, "htmlID", getElementAttrValue(formEl, "id"));
-        formOpId = getElementAttrValue(formEl, "action");
+        addProperty(op, "htmlName", getPropertyOrAttribute(formEl, "name"));
+        addProperty(op, "htmlID", getPropertyOrAttribute(formEl, "id"));
+        formOpId = getPropertyOrAttribute(formEl, "action");
         formOpId = new URL(formOpId as string, window.location.href) as any;
         addProperty(op, "htmlAction", formOpId ? (formOpId as URL).href : null);
-        addProperty(op, "htmlMethod", getElementAttrValue(formEl, "method"));
+        addProperty(op, "htmlMethod", getPropertyOrAttribute(formEl, "method"));
 
         return op;
       });
@@ -225,11 +225,11 @@ function collect(document: Document) {
         addProperty(field, "maxLength", Math.min(elMaxLen, 999), 999);
         field.visible = isElementVisible(el);
         field.viewable = isElementViewable(el);
-        addProperty(field, "htmlID", getElementAttrValue(el, "id"));
-        addProperty(field, "htmlName", getElementAttrValue(el, "name"));
-        addProperty(field, "htmlClass", getElementAttrValue(el, "class"));
-        addProperty(field, "tabindex", getElementAttrValue(el, "tabindex"));
-        addProperty(field, "title", getElementAttrValue(el, "title"));
+        addProperty(field, "htmlID", getPropertyOrAttribute(el, "id"));
+        addProperty(field, "htmlName", getPropertyOrAttribute(el, "name"));
+        addProperty(field, "htmlClass", getPropertyOrAttribute(el, "class"));
+        addProperty(field, "tabindex", getPropertyOrAttribute(el, "tabindex"));
+        addProperty(field, "title", getPropertyOrAttribute(el, "title"));
 
         const elTagName = el.tagName.toLowerCase();
         addProperty(field, "tagName", elTagName);
@@ -240,8 +240,8 @@ function collect(document: Document) {
 
         if ("hidden" != toLowerString((el as FillableControl).type)) {
           addProperty(field, "label-tag", getLabelTag(el as FillableControl));
-          addProperty(field, "label-data", getElementAttrValue(el, "data-label"));
-          addProperty(field, "label-aria", getElementAttrValue(el, "aria-label"));
+          addProperty(field, "label-data", getPropertyOrAttribute(el, "data-label"));
+          addProperty(field, "label-aria", getPropertyOrAttribute(el, "aria-label"));
           addProperty(field, "label-top", getLabelTop(el));
 
           let labelArr: any = [];
@@ -261,11 +261,11 @@ function collect(document: Document) {
           getAdjacentElementLabelValues(el, labelArr);
           labelArr = labelArr.reverse().join("");
           addProperty(field, "label-left", labelArr);
-          addProperty(field, "placeholder", getElementAttrValue(el, "placeholder"));
+          addProperty(field, "placeholder", getPropertyOrAttribute(el, "placeholder"));
         }
 
-        addProperty(field, "rel", getElementAttrValue(el, "rel"));
-        addProperty(field, "type", toLowerString(getElementAttrValue(el, "type")));
+        addProperty(field, "rel", getPropertyOrAttribute(el, "rel"));
+        addProperty(field, "type", toLowerString(getPropertyOrAttribute(el, "type")));
         addProperty(field, "value", getElementValue(el));
         addProperty(field, "checked", (el as HTMLFormElement).checked, false);
         addProperty(
@@ -278,11 +278,17 @@ function collect(document: Document) {
         );
         addProperty(field, "disabled", (el as FillableControl).disabled);
         addProperty(field, "readonly", (el as any).b || (el as HTMLInputElement).readOnly);
-        addProperty(field, "selectInfo", getSelectElementOptions(el as HTMLSelectElement));
+        addProperty(
+          field,
+          "selectInfo",
+          (el as HTMLSelectElement)?.options
+            ? getSelectElementOptions(el as HTMLSelectElement)
+            : null
+        );
         addProperty(field, "aria-hidden", el.getAttribute("aria-hidden") == "true", false);
         addProperty(field, "aria-disabled", el.getAttribute("aria-disabled") == "true", false);
         addProperty(field, "aria-haspopup", el.getAttribute("aria-haspopup") == "true", false);
-        addProperty(field, "data-stripe", getElementAttrValue(el, "data-stripe"));
+        addProperty(field, "data-stripe", getPropertyOrAttribute(el, "data-stripe"));
         /** DEAD CODE */
         // addProperty(field, "data-unmasked", el.dataset.unmasked);
         // addProperty(
@@ -299,7 +305,7 @@ function collect(document: Document) {
         /** END DEAD CODE */
 
         if ((el as FillableControl).form) {
-          field.form = getElementAttrValue((el as FillableControl).form, "opid");
+          field.form = getPropertyOrAttribute((el as FillableControl).form, "opid");
         }
 
         return field;

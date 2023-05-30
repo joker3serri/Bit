@@ -298,9 +298,9 @@ export function canSeeElementToStyle(element: HTMLElement, animateTheFilling: bo
 }
 
 /**
- * Helper for doc.querySelectorAll
+ * Helper for `document.querySelectorAll`
  * @param {string} selector
- * @returns
+ * @return {NodeListOf<Element>}
  */
 export function selectAllFromDoc(selector: string): NodeListOf<Element> {
   try {
@@ -372,7 +372,7 @@ export function getElementByOpId(
  * @returns {FormElement[]}
  */
 export function getFormElements(targetDocument: Document, limit?: number): FormElement[] {
-  let elementList: FormElement[] = [];
+  let elementList: HTMLInputElement[] = [];
 
   try {
     // @TODO `select` and `textarea` should also have `data-bwignore` qualifier
@@ -415,21 +415,21 @@ export function getFormElements(targetDocument: Document, limit?: number): FormE
 }
 
 /**
- * For a given element `element`, returns the value of the attribute `attrName`.
+ * For a given element `element`, returns the value of the attribute `attributeName`.
  * @param {HTMLElement} element
- * @param {string} attrName
+ * @param {string} attributeName
  * @returns {string} The value of the attribute
  */
-export function getElementAttrValue(element: any, attrName: string): string {
-  let attrVal = element[attrName];
+export function getPropertyOrAttribute(element: any, attributeName: string) {
+  let targetValue = element[attributeName];
 
-  if (typeof attrVal === TYPE_CHECK.STRING) {
-    return attrVal;
+  if (typeof targetValue === TYPE_CHECK.STRING) {
+    return targetValue;
   }
 
-  attrVal = element.getAttribute(attrName);
+  targetValue = element.getAttribute(attributeName);
 
-  return typeof attrVal == TYPE_CHECK.STRING ? attrVal : "";
+  return typeof targetValue == TYPE_CHECK.STRING ? targetValue : null;
 }
 
 /**
@@ -439,51 +439,53 @@ export function getElementAttrValue(element: any, attrName: string): string {
  */
 export function getElementValue(element: any) {
   switch (toLowerString(element.type)) {
-    case "checkbox":
+    case "checkbox": {
       return element.checked ? "✓" : "";
-    case "hidden":
-      element = element.value;
+    }
+    case "hidden": {
+      let elementValue = element.value;
 
-      if (!element || typeof element.length != TYPE_CHECK.NUMBER) {
+      if (!elementValue || typeof elementValue.length !== TYPE_CHECK.NUMBER) {
         return "";
       }
 
-      254 < element.length && (element = element.substr(0, 254) + "...SNIPPED");
+      const inputValueMaxLength = 254;
 
-      return element;
-    default:
+      if (elementValue.length > inputValueMaxLength) {
+        elementValue = elementValue.substr(0, inputValueMaxLength) + "...SNIPPED";
+      }
+
+      return elementValue;
+    }
+    default: {
       if (!element.type && element.tagName.toLowerCase() === "span") {
         return element.innerText;
       }
 
       return element.value;
+    }
   }
 }
 
 /**
  * If `element` is a `<select>` element, return an array of all of the options' `text` properties.
+ * @param {HTMLSelectElement} element
+ * @return {{ options: string[][] }} array of text values from all the passed `select` options
  */
-export function getSelectElementOptions(element: HTMLSelectElement): null | { options: string[] } {
-  if (!element.options) {
-    return null;
-  }
+export function getSelectElementOptions(element: HTMLSelectElement): {
+  options: (string | null)[][];
+} {
+  const options = Array.from(element.options).map(function (option: HTMLOptionElement) {
+    const optionText = option.text
+      ? toLowerString(option.text)
+          // remove whitespace and punctuation
+          .replace(/[\s~`!@$%^&*()\-_+=:;'"[\]|\\,<.>?]/gm, "")
+      : null;
 
-  const options = Array.prototype.slice
-    .call(element.options)
-    .map(function (option: HTMLOptionElement) {
-      const optionText = option.text
-        ? toLowerString(option.text)
-            .replace(/\\s/gm, "")
-            // eslint-disable-next-line no-useless-escape
-            .replace(/[~`!@$%^&*()\\-_+=:;'\"\\[\\]|\\\\,<.>\\?]/gm, "")
-        : null;
+    return [optionText, option.value];
+  });
 
-      return [optionText ? optionText : null, option.value];
-    });
-
-  return {
-    options: options,
-  };
+  return { options };
 }
 
 /**
@@ -491,6 +493,7 @@ export function getSelectElementOptions(element: HTMLSelectElement): null | { op
  * @param {HTMLElement} element
  * @returns {string} A string containing the label, or null if not found
  */
+// @TODO handle cases where the table layout utilizes `thead` and `tbody`?
 export function getLabelTop(element: any) {
   let parent;
 

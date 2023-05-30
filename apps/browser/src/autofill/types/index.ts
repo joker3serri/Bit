@@ -3,7 +3,9 @@
  */
 export type AutofillDocument = Document & {
   elementsByOPID: Record<string, Element>;
-  elementForOPID: (opId: string) => Element | null;
+  elementForOPID: (
+    targetOpId?: string | null | undefined
+  ) => FillableControl | HTMLButtonElement | null | undefined;
 };
 
 /**
