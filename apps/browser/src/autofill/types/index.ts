@@ -31,4 +31,5 @@ export type FormElementWithAttribute = FormElement & {
   [key: string]: string | undefined;
 };
 
-export type FormElementExtended = FormElement & { opid?: string };
+// @TODO deprecate in favor of FormElementWithAttribute?
+// export type FormElementExtended = FormElement & { opid?: string };

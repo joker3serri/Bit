@@ -1,6 +1,5 @@
 import { EVENTS } from "../constants";
-import { FillableControl, FormElementExtended } from "../types";
-
+import { FillableControl, FormElementWithAttribute } from "../types";
 import {
   addProperty,
   doClickByOpId,
@@ -285,7 +284,7 @@ describe("fill utils", () => {
 
   describe("doClickByOpId", () => {
     it("should click on and return the elements targeted by the passed opid", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
       textInput.opid = "__1";
       let clickEventCount = 0;
       const expectedClickEventCount = 1;
@@ -306,7 +305,7 @@ describe("fill utils", () => {
     });
 
     it("should not click and should return null when no suitable elements can be found", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
 
       let clickEventCount = 0;
       const expectedClickEventCount = 0;
@@ -328,7 +327,7 @@ describe("fill utils", () => {
 
     // @TODO better define this code path
     it("should return null when the targeted element is found but not clickable", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
       textInput.opid = "__1";
       textInput.click = null;
 
@@ -356,7 +355,7 @@ describe("fill utils", () => {
       document.body.innerHTML += '<input type="text" name="text_password" value="password" />';
       const targetInput = document.querySelector(
         'input[type="text"][name="text_password"]'
-      ) as FormElementExtended;
+      ) as FormElementWithAttribute;
       const elementEventCount: { [key: string]: number } = { ...initEventCount };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
@@ -396,7 +395,7 @@ describe("fill utils", () => {
   describe("doClickByQuery", () => {
     it("should click and focus the elements targeted by the passed selector", () => {
       const passedSelector = 'input[type="text"]';
-      const targetInput = document.querySelector(passedSelector) as FormElementExtended;
+      const targetInput = document.querySelector(passedSelector) as FormElementWithAttribute;
       const elementEventCount: { [key: string]: number } = { ...initEventCount };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
@@ -428,7 +427,7 @@ describe("fill utils", () => {
 
   describe("doFocusByOpId", () => {
     it("should click and focus the elements targeted by the passed opid", () => {
-      const targetInput = document.querySelector('input[type="text"]') as FormElementExtended;
+      const targetInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
       const elementEventCount: { [key: string]: number } = { ...initEventCount };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly

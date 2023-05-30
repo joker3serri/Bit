@@ -1,5 +1,4 @@
-import { FormElementExtended } from "../types";
-
+import { FormElementWithAttribute } from "../types";
 import {
   canSeeElementToStyle,
   getElementByOpId,
@@ -72,20 +71,26 @@ describe("collect utils", () => {
 
   describe("isElementVisible", () => {
     it("should return true when a non-hidden element is passed", () => {
-      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
 
       expect(isElementVisible(testElement)).toEqual(true);
     });
 
     it("should return false when the element has a `visibility: hidden;` CSS rule applied to it", () => {
-      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
       testElement.style.visibility = "hidden";
 
       expect(isElementVisible(testElement)).toEqual(false);
     });
 
     it("should return false when the element has a `display: none;` CSS rule applied to it", () => {
-      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
       testElement.style.display = "none";
 
       expect(isElementVisible(testElement)).toEqual(false);
@@ -94,7 +99,7 @@ describe("collect utils", () => {
     it("should return false when a parent of the element has a `display: none;` or `visibility: hidden;` CSS rule applied to it", () => {
       document.body.innerHTML =
         mockLoginForm + '<div style="visibility: hidden;"><input type="email" /></div>';
-      let testElement = document.querySelector('input[type="email"]') as FormElementExtended;
+      let testElement = document.querySelector('input[type="email"]') as FormElementWithAttribute;
 
       expect(isElementVisible(testElement)).toEqual(false);
 
@@ -107,90 +112,100 @@ describe("collect utils", () => {
             </div>
           </div>
         `;
-      testElement = document.querySelector("#input-tag") as FormElementExtended;
+      testElement = document.querySelector("#input-tag") as FormElementWithAttribute;
       expect(isElementVisible(testElement)).toEqual(false);
     });
   });
 
   describe("canSeeElementToStyle", () => {
     it("should return true when the element is a non-hidden password field", () => {
-      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden email input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="email" />';
-      const testElement = document.querySelector('input[type="email"]') as FormElementExtended;
+      const testElement = document.querySelector('input[type="email"]') as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden text input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="text" />';
-      const testElement = document.querySelector('input[type="text"]') as FormElementExtended;
+      const testElement = document.querySelector('input[type="text"]') as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden number input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="number" />';
-      const testElement = document.querySelector('input[type="number"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="number"]'
+      ) as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden tel input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="tel" />';
-      const testElement = document.querySelector('input[type="tel"]') as FormElementExtended;
+      const testElement = document.querySelector('input[type="tel"]') as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return true when the element is a non-hidden url input", () => {
       document.body.innerHTML = mockLoginForm + '<input type="url" />';
-      const testElement = document.querySelector('input[type="url"]') as FormElementExtended;
+      const testElement = document.querySelector('input[type="url"]') as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return false when the element is a non-hidden hidden input type", () => {
       document.body.innerHTML = mockLoginForm + '<input type="hidden" />';
-      const testElement = document.querySelector('input[type="hidden"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="hidden"]'
+      ) as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return false when the element is a non-hidden textarea", () => {
       document.body.innerHTML = mockLoginForm + "<textarea></textarea>";
-      const testElement = document.querySelector("textarea") as FormElementExtended;
+      const testElement = document.querySelector("textarea") as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return true when the element is a non-hidden span", () => {
       document.body.innerHTML = mockLoginForm + '<span id="input-tag"></span>';
-      const testElement = document.querySelector("#input-tag") as FormElementExtended;
+      const testElement = document.querySelector("#input-tag") as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(true);
     });
 
     it("should return false when the element is a unsupported tag", () => {
       document.body.innerHTML = mockLoginForm + '<div id="input-tag"></div>';
-      const testElement = document.querySelector("#input-tag") as FormElementExtended;
+      const testElement = document.querySelector("#input-tag") as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return false when the element has a `visibility: hidden;` CSS rule applied to it", () => {
-      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
       testElement.style.visibility = "hidden";
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
 
     it("should return false when the element has a `display: none;` CSS rule applied to it", () => {
-      const testElement = document.querySelector('input[type="password"]') as FormElementExtended;
+      const testElement = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
       testElement.style.display = "none";
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
@@ -199,7 +214,7 @@ describe("collect utils", () => {
     it("should return false when a parent of the element has a `display: none;` or `visibility: hidden;` CSS rule applied to it", () => {
       document.body.innerHTML =
         mockLoginForm + '<div style="visibility: hidden;"><input type="email" /></div>';
-      let testElement = document.querySelector('input[type="email"]') as FormElementExtended;
+      let testElement = document.querySelector('input[type="email"]') as FormElementWithAttribute;
 
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
 
@@ -212,7 +227,7 @@ describe("collect utils", () => {
             </div>
           </div>
         `;
-      testElement = document.querySelector("#input-tag") as FormElementExtended;
+      testElement = document.querySelector("#input-tag") as FormElementWithAttribute;
       expect(canSeeElementToStyle(testElement, true)).toEqual(false);
     });
   });
@@ -231,8 +246,10 @@ describe("collect utils", () => {
 
   describe("getElementByOpId", () => {
     it("should return the element with the opid property value matching the passed value", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
-      const passwordInput = document.querySelector('input[type="password"]') as FormElementExtended;
+      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
+      const passwordInput = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
 
       textInput.setAttribute("opid", "__0");
       passwordInput.setAttribute("opid", "__1");
@@ -254,10 +271,10 @@ describe("collect utils", () => {
       });
 
       it("should return the first of the elements with an `opid` value matching the passed value and emit a console warning", () => {
-        const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
+        const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
         const passwordInput = document.querySelector(
           'input[type="password"]'
-        ) as FormElementExtended;
+        ) as FormElementWithAttribute;
 
         textInput.opid = "__1";
         passwordInput.opid = "__1";
@@ -270,8 +287,10 @@ describe("collect utils", () => {
     });
 
     it("should return the element at the index position (parsed from passed opid) of all document input, select, button, textarea, or span[data-bwautofill] elements when the passed opid value cannot be found", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementExtended;
-      const passwordInput = document.querySelector('input[type="password"]') as FormElementExtended;
+      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
+      const passwordInput = document.querySelector(
+        'input[type="password"]'
+      ) as FormElementWithAttribute;
 
       textInput.removeAttribute("opid");
       passwordInput.opid = "__1";
@@ -310,7 +329,7 @@ describe("collect utils", () => {
         </div>
       `;
 
-      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const textInput = document.querySelector("#input-tag") as FormElementWithAttribute;
       const elementList: string[] = [];
 
       getAdjacentElementLabelValues(textInput, elementList);
@@ -339,7 +358,7 @@ describe("collect utils", () => {
         </div>
       `;
 
-      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const textInput = document.querySelector("#input-tag") as FormElementWithAttribute;
       const elementList: string[] = [];
 
       getAdjacentElementLabelValues(textInput, elementList);
@@ -359,7 +378,7 @@ describe("collect utils", () => {
         </div>
       `;
 
-      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const textInput = document.querySelector("#input-tag") as FormElementWithAttribute;
       const elementList: string[] = [];
 
       getAdjacentElementLabelValues(textInput, elementList);
@@ -373,7 +392,7 @@ describe("collect utils", () => {
         <div><div><div>not the most relevant things</div><div>some nested things</div><div><input id="input-tag" type="text" value="something" /></div></div>
       `;
 
-      const textInput = document.querySelector("#input-tag") as FormElementExtended;
+      const textInput = document.querySelector("#input-tag") as FormElementWithAttribute;
       const elementList: string[] = [];
 
       getAdjacentElementLabelValues(textInput, elementList);
@@ -382,7 +401,7 @@ describe("collect utils", () => {
     });
 
     it("should exit early if the target element has no parent element/node", () => {
-      const textInput = document.querySelector("html") as FormElementExtended;
+      const textInput = document.querySelector("html") as HTMLHtmlElement;
       const elementList: string[] = [];
 
       getAdjacentElementLabelValues(textInput, elementList);

@@ -27,10 +27,7 @@
   SOFTWARE.
   */
 
-import {
-  // EVENTS,
-  TYPE_CHECK,
-} from "../constants";
+import { TYPE_CHECK } from "../constants";
 import AutofillForm from "../models/autofill-form";
 import AutofillPageDetails from "../models/autofill-page-details";
 import AutofillScript, {
@@ -51,9 +48,7 @@ import {
   canSeeElementToStyle,
   getInnerText,
   getPropertyOrAttribute,
-  /** DEAD CODE ?? **/
-  // getElementByOpId,
-  /** END DEAD CODE **/
+  getElementByOpId,
   getElementValue,
   getFormElements,
   getLabelTop,
@@ -72,7 +67,6 @@ import {
   doClickByQuery,
   doFocusByOpId,
   doSimpleSetByQuery,
-  doFocusElement,
   setValueForElement,
   setValueForElementByEvent,
   touchAllPasswordFields,
