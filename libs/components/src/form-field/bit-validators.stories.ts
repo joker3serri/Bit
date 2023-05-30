@@ -1,5 +1,5 @@
 import { FormsModule, ReactiveFormsModule, FormBuilder } from "@angular/forms";
-import { Meta, moduleMetadata, Story } from "@storybook/angular";
+import { StoryObj, Meta, moduleMetadata } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
@@ -48,26 +48,30 @@ const template = `
     </bit-form-field>
   </form>`;
 
-export const ForbiddenCharacters: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
-  props: {
-    formObj: new FormBuilder().group({
-      name: ["", forbiddenCharacters(["\\", "/", "@", "#", "$", "%", "^", "&", "*", "(", ")"])],
-    }),
-  },
-  template,
-});
+export const ForbiddenCharacters: StoryObj<BitFormFieldComponent> = {
+  render: (args: BitFormFieldComponent) => ({
+    props: {
+      formObj: new FormBuilder().group({
+        name: ["", forbiddenCharacters(["\\", "/", "@", "#", "$", "%", "^", "&", "*", "(", ")"])],
+      }),
+    },
+    template,
+  }),
+};
 
-export const TrimValidator: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
-  props: {
-    formObj: new FormBuilder().group({
-      name: [
-        "",
-        {
-          updateOn: "submit",
-          validators: [trimValidator],
-        },
-      ],
-    }),
-  },
-  template,
-});
+export const TrimValidator: StoryObj<BitFormFieldComponent> = {
+  render: (args: BitFormFieldComponent) => ({
+    props: {
+      formObj: new FormBuilder().group({
+        name: [
+          "",
+          {
+            updateOn: "submit",
+            validators: [trimValidator],
+          },
+        ],
+      }),
+    },
+    template,
+  }),
+};
