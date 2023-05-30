@@ -8,6 +8,11 @@ import {
   selectAllFromDoc,
   getFormElements,
   getAdjacentElementLabelValues,
+  getElementAttrValue,
+  getElementValue,
+  getSelectElementOptions,
+  getLabelTop,
+  queryDoc,
 } from "./collect";
 
 const mockLoginForm = `
@@ -403,7 +408,7 @@ describe("collect utils", () => {
           <span data-bwautofill="true">included span</span>
           <textarea name="user-bio" rows="10" cols="42">Tell us about yourself...</textarea>
           <span>ignored span</span>
-          <select><option value="1">Option 1</option><select>
+          <select><option value="1">Option 1</option></select>
           <label for="username">username</label>
           <input type="text" id="username" />
           <input type="password" />
@@ -443,9 +448,9 @@ describe("collect utils", () => {
           <span>ignored span</span>
           <input type="checkbox" name="doYouWantToCheck" />
           <label for="doYouWantToCheck">Do you want to skip checking this box?</label>
-          <select><option value="1">Option 1</option><select>
+          <select><option value="1">Option 1</option></select>
           <label for="username">username</label>
-          <input type="text" data-bwignore value="None"/>
+          <input type="text" data-bwignore value="None" />
           <input type="hidden" value="of" />
           <input type="submit" value="these" />
           <input type="reset" value="inputs" />
@@ -497,7 +502,7 @@ describe("collect utils", () => {
               <label for="option-c">Option C: Options A & B</label>
             </div>
           </fieldset>
-          <select><option value="1">Option 1</option><select>
+          <select><option value="1">Option 1</option></select>
           <label for="username">username</label>
           <input type="text" id="username" />
           <input type="password" />
@@ -519,6 +524,162 @@ describe("collect utils", () => {
         '<input type="checkbox" name="doYouWantToCheck">',
         '<input type="radio" value="option-a">',
         '<input type="radio" value="option-b">',
+      ]);
+    });
+  });
+
+  describe("getElementAttrValue", () => {
+    it("should get the value of the named property or attribute of the target element, if the value is a string", () => {
+      document.body.innerHTML += '<input type="checkbox" value="userWouldLikeToCheck" checked />';
+
+      const textInput: HTMLInputElement = document.querySelector("#username");
+      textInput.setAttribute("value", "jsmith");
+      const checkboxInput: HTMLInputElement = document.querySelector('input[type="checkbox"]');
+
+      expect(getElementAttrValue(textInput, "value")).toEqual("jsmith");
+      expect(getElementAttrValue(textInput, "id")).toEqual("username");
+      expect(getElementAttrValue(textInput, "baseURI")).toEqual("http://localhost/");
+      expect(getElementAttrValue(textInput, "autofocus")).toEqual(null);
+      expect(getElementAttrValue(textInput, "non-existant-attribute")).toEqual(null);
+      expect(getElementAttrValue(checkboxInput, "checked")).toEqual("");
+    });
+  });
+
+  describe("getElementValue", () => {
+    it("should return the value of the passed input element", () => {
+      // @TODO cannot test `span` `innerText` case, as jsdom has no layout engine
+      document.body.innerHTML += `
+        <input type="checkbox" value="aTestValue" />
+        <input id="hidden-input" type="hidden" value="aHiddenInputValue" />
+        <span id="span-input">A span input value</span>
+      `;
+
+      const textInput: HTMLInputElement = document.querySelector("#username");
+      const checkboxInput: HTMLInputElement = document.querySelector('input[type="checkbox"]');
+      const hiddenInput: HTMLInputElement = document.querySelector("#hidden-input");
+
+      expect(getElementValue(textInput)).toEqual("");
+      expect(getElementValue(checkboxInput)).toEqual("");
+      expect(getElementValue(hiddenInput)).toEqual("aHiddenInputValue");
+
+      textInput.value = "jsmith";
+      checkboxInput.checked = true;
+      hiddenInput.value = null;
+
+      expect(getElementValue(textInput)).toEqual("jsmith");
+      expect(getElementValue(checkboxInput)).toEqual("✓");
+      expect(getElementValue(hiddenInput)).toEqual("");
+    });
+
+    it("should return the truncated value of the passed hidden input type if the value length exceeds 256 characters", () => {
+      document.body.innerHTML += `
+        <input id="long-value-hidden-input" type="hidden" value="’Twas brillig, and the slithy toves | Did gyre and gimble in the wabe: | All mimsy were the borogoves, | And the mome raths outgrabe. | “Beware the Jabberwock, my son! | The jaws that bite, the claws that catch! | Beware the Jubjub bird, and shun | The frumious Bandersnatch!” | He took his vorpal sword in hand; | Long time the manxome foe he sought— | So rested he by the Tumtum tree | And stood awhile in thought. | And, as in uffish thought he stood, | The Jabberwock, with eyes of flame, | Came whiffling through the tulgey wood, | And burbled as it came! | One, two! One, two! And through and through | The vorpal blade went snicker-snack! | He left it dead, and with its head | He went galumphing back. | “And hast thou slain the Jabberwock? | Come to my arms, my beamish boy! | O frabjous day! Callooh! Callay!” | He chortled in his joy. | ’Twas brillig, and the slithy toves | Did gyre and gimble in the wabe: | All mimsy were the borogoves, | And the mome raths outgrabe." />
+      `;
+
+      const longValueHiddenInput: HTMLInputElement = document.querySelector(
+        "#long-value-hidden-input"
+      );
+
+      expect(getElementValue(longValueHiddenInput)).toEqual(
+        "’Twas brillig, and the slithy toves | Did gyre and gimble in the wabe: | All mimsy were the borogoves, | And the mome raths outgrabe. | “Beware the Jabberwock, my son! | The jaws that bite, the claws that catch! | Beware the Jubjub bird, and shun | The f...SNIPPED"
+      );
+    });
+  });
+
+  describe("getSelectElementOptions", () => {
+    it("should return the inner text and values of each `option` within the passed `select`", () => {
+      document.body.innerHTML = `
+        <select id="select-without-options"></select>
+        <select id="select-with-options">
+          <option value="1">Option: 1</option>
+          <option value="b">Option - B</option>
+          <option value="iii">Option III.</option>
+          <option value="four"></option>
+        </select>
+      `;
+
+      const selectWithOptions: HTMLSelectElement = document.querySelector("#select-with-options");
+      const selectWithoutOptions: HTMLSelectElement =
+        document.querySelector("#select-without-options");
+
+      expect(getSelectElementOptions(selectWithOptions)).toEqual({
+        options: [
+          ["option1", "1"],
+          ["optionb", "b"],
+          ["optioniii", "iii"],
+          [null, "four"],
+        ],
+      });
+      expect(getSelectElementOptions(selectWithoutOptions)).toEqual({
+        options: [],
+      });
+    });
+  });
+
+  describe("getLabelTop", () => {
+    it("should return the table column header value for the passed table element", () => {
+      document.body.innerHTML = `
+        <table>
+          <tbody>
+            <tr>
+              <th>Username</td>
+              <th>Password</td>
+              <th>Login code</th>
+            </tr>
+            <tr>
+              <td><input type="text" name="username" /></td>
+              <td><input type="password" name="password" /><td>
+              <td><input type="text" name="auth-code" /><td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      const targetTableCellInput: HTMLSelectElement =
+        document.querySelector('input[name="password"]');
+
+      expect(getLabelTop(targetTableCellInput)).toEqual("Password");
+    });
+
+    it("should return null for the passed table element it's parent row has no previous sibling row", () => {
+      document.body.innerHTML = `
+        <table>
+          <tbody>
+            <tr>
+              <td><input type="text" name="username" /></td>
+              <td><input type="password" name="password" /><td>
+              <td><input type="text" name="auth-code" /><td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      const targetTableCellInput: HTMLSelectElement =
+        document.querySelector('input[name="password"]');
+
+      expect(getLabelTop(targetTableCellInput)).toEqual(null);
+    });
+  });
+
+  // @TODO jsdom has no layout engine, making testing `isElementViewable` with it non-authoritative
+  // describe("isElementViewable", () => {
+  //   it("should return true if the passed element is visible in the viewport", () => {
+  //   });
+
+  //   it("should return false if the passed element is not visible in the viewport", () => {
+  //   });
+  // });
+
+  describe("queryDoc", () => {
+    it("should return a list of queried elements", () => {
+      const documentBodyRootElements = queryDoc(document, "body input");
+      const truncatedDocumentBodyElements = documentBodyRootElements.map(
+        ({ outerHTML }) => outerHTML
+      );
+
+      expect(truncatedDocumentBodyElements).toEqual([
+        '<input type="text" id="username">',
+        '<input type="password">',
       ]);
     });
   });
