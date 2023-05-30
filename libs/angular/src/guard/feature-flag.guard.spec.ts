@@ -3,15 +3,12 @@ import { TestBed } from "@angular/core/testing";
 import { CanActivateFn, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject } from "rxjs";
 
 import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
-import { ServerConfig } from "@bitwarden/common/abstractions/config/server-config";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ServerConfigData } from "@bitwarden/common/models/data/server-config.data";
 import { I18nMockService } from "@bitwarden/components/src";
 
 import { canAccessFeature } from "./feature-flag.guard";
@@ -31,13 +28,20 @@ describe("canAccessFeature", () => {
     mockConfigService = mock<ConfigServiceAbstraction>();
     mockPlatformUtilsService = mock<PlatformUtilsService>();
 
-    mockConfigService.serverConfig$ = new BehaviorSubject(
-      new ServerConfig({
-        featureStates: {
-          [testFlag]: flagValue,
-        },
-      } as ServerConfigData)
-    );
+    // Mock the correct getter based on the type of flagValue; also mock default values if one is not provided
+    if (typeof flagValue === "boolean") {
+      mockConfigService.getFeatureFlagBool.mockImplementation((flag, defaultValue = false) =>
+        flag == testFlag ? Promise.resolve(flagValue) : Promise.resolve(defaultValue)
+      );
+    } else if (typeof flagValue === "string") {
+      mockConfigService.getFeatureFlagString.mockImplementation((flag, defaultValue = "") =>
+        flag == testFlag ? Promise.resolve(flagValue) : Promise.resolve(defaultValue)
+      );
+    } else if (typeof flagValue === "number") {
+      mockConfigService.getFeatureFlagNumber.mockImplementation((flag, defaultValue = 0) =>
+        flag == testFlag ? Promise.resolve(flagValue) : Promise.resolve(defaultValue)
+      );
+    }
 
     const testBed = TestBed.configureTestingModule({
       imports: [
@@ -136,11 +140,10 @@ describe("canAccessFeature", () => {
     expect(router.url).toBe(`/${redirectRoute}`);
   });
 
-  it("successfully navigates when the observable throws an unexpected exception", async () => {
+  it("successfully navigates when the config service throws an unexpected exception", async () => {
     const { router } = setup(canAccessFeature(testFlag), true);
 
-    // Supplying a null config cause the observable to throw an exception
-    mockConfigService.serverConfig$ = new BehaviorSubject(null);
+    mockConfigService.getFeatureFlagBool.mockImplementation(() => Promise.reject("Some error"));
 
     await router.navigate([featureRoute]);
 
