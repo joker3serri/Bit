@@ -92,7 +92,11 @@ module.exports = {
       maxWidth: ({ theme }) => ({
         ...theme("width"),
         "90vw": "90vw",
+        "1/2": "50%", // emulates col-6
       }),
+      flex: {
+        6: "0 0 50%", // emulates col-6
+      },
     },
   },
   plugins: [
