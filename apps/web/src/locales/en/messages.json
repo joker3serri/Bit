@@ -6846,5 +6846,11 @@
   },
   "approveRequest": {
     "message": "Approve request"
+  },
+  "noDeviceRequests": {
+    "message": "No device requests"
+  },
+  "noDeviceRequestsDesc": {
+    "message": "Member device approval requests will appear here"
   }
 }

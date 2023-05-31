@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 
+import { NoItemsModule } from "@bitwarden/components";
 import { SharedModule } from "@bitwarden/web-vault/app/shared/shared.module";
 
 import { SsoComponent } from "../../auth/sso/sso.component";
@@ -12,7 +13,7 @@ import { ScimComponent } from "./manage/scim.component";
 import { OrganizationsRoutingModule } from "./organizations-routing.module";
 
 @NgModule({
-  imports: [SharedModule, CoreOrganizationModule, OrganizationsRoutingModule],
+  imports: [SharedModule, CoreOrganizationModule, OrganizationsRoutingModule, NoItemsModule],
   declarations: [
     SsoComponent,
     ScimComponent,
