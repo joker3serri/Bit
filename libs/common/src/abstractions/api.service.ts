@@ -1,8 +1,8 @@
 import { OrganizationConnectionType } from "../admin-console/enums";
 import { CollectionRequest } from "../admin-console/models/request/collection.request";
+import { OrganizationConnectionRequest } from "../admin-console/models/request/organization-connection.request";
 import { OrganizationSponsorshipCreateRequest } from "../admin-console/models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../admin-console/models/request/organization/organization-sponsorship-redeem.request";
-import { OrganizationConnectionRequest } from "../admin-console/models/request/organization-connection.request";
 import { ProviderAddOrganizationRequest } from "../admin-console/models/request/provider/provider-add-organization.request";
 import { ProviderOrganizationCreateRequest } from "../admin-console/models/request/provider/provider-organization-create.request";
 import { ProviderSetupRequest } from "../admin-console/models/request/provider/provider-setup.request";
@@ -361,7 +361,6 @@ export abstract class ApiService {
   putDeviceVerificationSettings: (
     request: DeviceVerificationRequest
   ) => Promise<DeviceVerificationResponse>;
-  getKnownDevice: (email: string, deviceIdentifier: string) => Promise<boolean>;
 
   getEmergencyAccessTrusted: () => Promise<ListResponse<EmergencyAccessGranteeDetailsResponse>>;
   getEmergencyAccessGranted: () => Promise<ListResponse<EmergencyAccessGrantorDetailsResponse>>;

@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogModule, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
-import { Meta, moduleMetadata, Story } from "@storybook/angular";
+import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
@@ -9,8 +9,8 @@ import { IconButtonModule } from "../icon-button";
 import { SharedModule } from "../shared";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
-import { DialogComponent } from "./dialog/dialog.component";
 import { DialogService } from "./dialog.service";
+import { DialogComponent } from "./dialog/dialog.component";
 import { DialogCloseDirective } from "./directives/dialog-close.directive";
 import { DialogTitleContainerDirective } from "./directives/dialog-title-container.directive";
 
@@ -90,8 +90,6 @@ export default {
   },
 } as Meta;
 
-const Template: Story<StoryDialogComponent> = (args: StoryDialogComponent) => ({
-  props: args,
-});
+type Story = StoryObj<StoryDialogComponent>;
 
-export const Default = Template.bind({});
+export const Default: Story = {};
