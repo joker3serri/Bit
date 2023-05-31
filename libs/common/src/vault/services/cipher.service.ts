@@ -54,8 +54,6 @@ export class CipherService implements CipherServiceAbstraction {
     this.sortCiphersByLastUsed
   );
 
-  private cipherKeyEncriptionEnabled?: boolean;
-
   constructor(
     private cryptoService: CryptoService,
     private settingsService: SettingsService,
@@ -1207,13 +1205,8 @@ export class CipherService implements CipherServiceAbstraction {
   }
 
   private async getCipherKeyEncryptionEnabled(): Promise<boolean> {
-    if (this.cipherKeyEncriptionEnabled == null) {
-      const minVersion = new SemVer(CIPHER_KEY_ENC_MIN_SERVER_VER);
-      const serverVersion = new SemVer((await this.configApiService.get()).version);
-      this.cipherKeyEncriptionEnabled =
-        flagEnabled("enableCipherKeyEncryption") && serverVersion.compare(minVersion) > 0;
-    }
-
-    return this.cipherKeyEncriptionEnabled;
+    const minVersion = new SemVer(CIPHER_KEY_ENC_MIN_SERVER_VER);
+    const serverVersion = new SemVer((await this.configApiService.get()).version);
+    return flagEnabled("enableCipherKeyEncryption") && serverVersion.compare(minVersion) > 0;
   }
 }
