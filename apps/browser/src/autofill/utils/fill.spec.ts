@@ -157,8 +157,12 @@ describe("fill utils", () => {
         />
       `;
 
-      const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
-      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+      const targetInput = document.querySelector(
+        '[name="user_id"]'
+      ) as FillableControl;
+      const elementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+      };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
@@ -205,8 +209,12 @@ describe("fill utils", () => {
         />
       `;
 
-      const targetInput = document.querySelector('[name="user_id"]') as FillableControl;
-      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+      const targetInput = document.querySelector(
+        '[name="user_id"]'
+      ) as FillableControl;
+      const elementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+      };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
@@ -248,9 +256,12 @@ describe("fill utils", () => {
   describe("doSimpleSetByQuery", () => {
     it("should fill (with the passed value) and return all elements targeted by the passed selector", () => {
       document.body.innerHTML =
-        mockLoginForm + '<input id="input-tag" name="user_id" value="anInitialValue" />';
+        mockLoginForm +
+        '<input id="input-tag" name="user_id" value="anInitialValue" />';
 
-      const targetInputUserId = document.querySelector('[name="user_id"]') as FillableControl;
+      const targetInputUserId = document.querySelector(
+        '[name="user_id"]'
+      ) as FillableControl;
       const targetInputUserName = document.querySelector(
         'input[type="text"]#username'
       ) as FillableControl;
@@ -259,7 +270,10 @@ describe("fill utils", () => {
       expect(targetInputUserId.value).toEqual("anInitialValue");
       expect(targetInputUserName.value).toEqual("");
       expect(
-        doSimpleSetByQuery('input[type="text"]#username, [name="user_id"]', passedValue)
+        doSimpleSetByQuery(
+          'input[type="text"]#username, [name="user_id"]',
+          passedValue
+        )
       ).toHaveLength(2);
       expect(targetInputUserId.value).toEqual(passedValue);
       expect(targetInputUserName.value).toEqual(passedValue);
@@ -284,11 +298,15 @@ describe("fill utils", () => {
 
   describe("doClickByOpId", () => {
     it("should click on and return the elements targeted by the passed opid", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
+      const textInput = document.querySelector(
+        'input[type="text"]'
+      ) as FormElementWithAttribute;
       textInput.opid = "__1";
       let clickEventCount = 0;
       const expectedClickEventCount = 1;
-      const clickEventHandler: (handledEvent: Event) => void = (handledEvent) => {
+      const clickEventHandler: (handledEvent: Event) => void = (
+        handledEvent
+      ) => {
         const eventTarget = handledEvent.target as HTMLInputElement;
 
         if (eventTarget.id === "username") {
@@ -305,11 +323,15 @@ describe("fill utils", () => {
     });
 
     it("should not click and should return null when no suitable elements can be found", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
+      const textInput = document.querySelector(
+        'input[type="text"]'
+      ) as FormElementWithAttribute;
 
       let clickEventCount = 0;
       const expectedClickEventCount = 0;
-      const clickEventHandler: (handledEvent: Event) => void = (handledEvent) => {
+      const clickEventHandler: (handledEvent: Event) => void = (
+        handledEvent
+      ) => {
         const eventTarget = handledEvent.target as HTMLInputElement;
 
         if (eventTarget.id === "username") {
@@ -327,13 +349,17 @@ describe("fill utils", () => {
 
     // @TODO better define this code path
     it("should return null when the targeted element is found but not clickable", () => {
-      const textInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
+      const textInput = document.querySelector(
+        'input[type="text"]'
+      ) as FormElementWithAttribute;
       textInput.opid = "__1";
       textInput.click = null;
 
       let clickEventCount = 0;
       const expectedClickEventCount = 0;
-      const clickEventHandler: (handledEvent: Event) => void = (handledEvent) => {
+      const clickEventHandler: (handledEvent: Event) => void = (
+        handledEvent
+      ) => {
         const eventTarget = handledEvent.target as HTMLInputElement;
 
         if (eventTarget.id === "username") {
@@ -352,11 +378,14 @@ describe("fill utils", () => {
 
   describe("touchAllPasswordFields", () => {
     it("should, for each possible password field in the document, set the existing value and click the element if it is clickable", () => {
-      document.body.innerHTML += '<input type="text" name="text_password" value="password" />';
+      document.body.innerHTML +=
+        '<input type="text" name="text_password" value="password" />';
       const targetInput = document.querySelector(
         'input[type="text"][name="text_password"]'
       ) as FormElementWithAttribute;
-      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+      const elementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+      };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
@@ -395,8 +424,12 @@ describe("fill utils", () => {
   describe("doClickByQuery", () => {
     it("should click and focus the elements targeted by the passed selector", () => {
       const passedSelector = 'input[type="text"]';
-      const targetInput = document.querySelector(passedSelector) as FormElementWithAttribute;
-      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+      const targetInput = document.querySelector(
+        passedSelector
+      ) as FormElementWithAttribute;
+      const elementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+      };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
@@ -427,8 +460,12 @@ describe("fill utils", () => {
 
   describe("doFocusByOpId", () => {
     it("should click and focus the elements targeted by the passed opid", () => {
-      const targetInput = document.querySelector('input[type="text"]') as FormElementWithAttribute;
-      const elementEventCount: { [key: string]: number } = { ...initEventCount };
+      const targetInput = document.querySelector(
+        'input[type="text"]'
+      ) as FormElementWithAttribute;
+      const elementEventCount: { [key: string]: number } = {
+        ...initEventCount,
+      };
 
       // Testing all the relevant events to ensure downstream side-effects are firing correctly
       const expectedElementEventCount: { [key: string]: number } = {
@@ -459,7 +496,7 @@ describe("fill utils", () => {
 
   describe("addProperty", () => {
     it("should add the passed string value to the passed record as a property", () => {
-      const propertyName = "isArbitraryPropery";
+      const propertyName = "isArbitraryProperty";
       const propertyValue = "probably not";
       const fieldRecord: Record<string, any> = {};
 
@@ -471,7 +508,7 @@ describe("fill utils", () => {
     });
 
     it("should not add the passed string value to the passed record as a property if the passed value is null, undefined, or matches the optional 'do not set' value", () => {
-      const propertyName = "isArbitraryPropery";
+      const propertyName = "isArbitraryProperty";
       const propertyValue = "probably not";
       const fieldRecord: Record<string, any> = {};
 
