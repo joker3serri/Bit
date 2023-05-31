@@ -14,6 +14,7 @@ export default {
   ],
   args: {
     badgeType: "primary",
+    truncate: false,
   },
   parameters: {
     design: {
