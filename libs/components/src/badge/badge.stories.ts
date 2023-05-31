@@ -30,7 +30,7 @@ export const Primary: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <span class="tw-text-main">Span </span><span bitBadge [badgeType]="badgeType" [truncate]="truncate">Badge</span>
+      <span class="tw-text-main">Span </span><span bitBadge [badgeType]="badgeType" [truncate]="truncate">Badge containing lengthy text</span>
       <br><br>
       <span class="tw-text-main">Link </span><a href="#" bitBadge [badgeType]="badgeType" [truncate]="truncate">Badge</a>
       <br><br>
