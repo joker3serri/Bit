@@ -49,7 +49,8 @@ export class BadgeDirective {
       .concat(this.truncate ? ["tw-truncate", "tw-max-w-40"] : []);
   }
   @HostBinding("attr.title") get title() {
-    return this.truncate ? this.el.nativeElement.innerText : null;
+    // If the text is truncated then a tooltip is added with the full text except the comma that is added for screen readers on badge lists
+    return this.truncate ? this.el.nativeElement.childNodes[0].textContent.trim() : null;
   }
 
   @Input() badgeType: BadgeTypes = "primary";
