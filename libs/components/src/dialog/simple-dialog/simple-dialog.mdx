@@ -1,0 +1,58 @@
+import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
+
+import * as stories from "./simple-dialog.stories";
+
+<Meta of={stories} />
+
+# Simple Dialogs
+
+Simple Dialogs are used throughout the app for simple alert or confirmation actions such as
+speedbumps.
+
+For dialogs with a high number of interactive elements such as a form or content exceeding 384px,
+use the [Dialog component](?path=/docs/component-library-dialogs-dialog--docs).
+
+<Primary />
+<Controls />
+
+## Placement
+
+Like Dialogs, Simple Dialogs should be centered vertically and horizontally on screen and their
+height should expand to fit their content until there are 2rems of margin on the top/bottom of the
+dialog. In this case, the simple dialog should become scrollable.
+
+A background scrim should be used to hide the content below the dialog. Use `#000000` with
+`30% opacity`. See
+[Dialog Service](?path=/story/component-library-dialogs-service-simpleconfigurable--default)
+
+## Scrolling Content
+
+<Story of={stories.ScrollingContent} />
+
+## Accessibility
+
+The triggering button should indicate to assistive technology that additional content will open or
+appear when the trigger is selected. Consider using `aria-haspopup="true"`
+
+Dialog should include `role=“dialog”`
+
+The Dialog title should be in an `<h1>`
+
+Dialog title should be announced by a screen reader when launched. Consider using `aria-labledby` or
+`aria-label`
+
+When opened, focus should follow the visual order of the popover’s focusable content. Typically
+focus is moved to the close button, but it is acceptable to move focus to the first interactive
+element after close since a user may not want to close the dialog immediately if there are
+additional interactive elements. See
+[WCAG Focus Order success criteria](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)
+
+A user should not be able to tab focus outside of the Dialog until it has been closed.
+
+Once closed, focus should remain on the the element which triggered the Dialog.
+
+Clicking outside the dialog or clicking escape should close the dialog (this prevents a keyboard
+trap)
+
+**Note:** If a Simple Dialog is triggered from a main Dialog, be sure to make sure focus is moved to
+the Simple Dialog.
