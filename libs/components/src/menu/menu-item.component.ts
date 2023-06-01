@@ -1,10 +1,14 @@
 import { FocusableOption } from "@angular/cdk/a11y";
-import { Directive, ElementRef, HostBinding } from "@angular/core";
+import { Component, ElementRef, HostBinding } from "@angular/core";
 
-@Directive({
+import { ButtonLikeAbstraction, ButtonType } from "../shared/button-like.abstraction";
+
+@Component({
   selector: "[bitMenuItem]",
+  templateUrl: "./menu-item.component.html",
+  providers: [{ provide: ButtonLikeAbstraction, useExisting: MenuItemComponent }],
 })
-export class MenuItemDirective implements FocusableOption {
+export class MenuItemComponent implements ButtonLikeAbstraction, FocusableOption {
   @HostBinding("class") classList = [
     "tw-block",
     "tw-py-1",
@@ -28,9 +32,22 @@ export class MenuItemDirective implements FocusableOption {
   @HostBinding("attr.role") role = "menuitem";
   @HostBinding("tabIndex") tabIndex = "-1";
 
+  @HostBinding("attr.disabled")
+  get disabledAttr() {
+    const disabled = this.disabled != null && this.disabled !== false;
+    return disabled || this.loading ? true : null;
+  }
+
+  disabled: boolean;
+  loading: boolean;
+
   constructor(private elementRef: ElementRef) {}
 
   focus() {
     this.elementRef.nativeElement.focus();
+  }
+
+  setButtonType(value: ButtonType): void {
+    // noop
   }
 }
