@@ -58,10 +58,14 @@
       </div>
       <div class="tw-pt-44" *ngIf="useTrialStepper">
         <div class="tw-rounded tw-border tw-border-solid tw-border-secondary-300 tw-bg-background">
-          <div class="tw-flex tw-h-12 tw-w-full tw-items-center tw-rounded-t tw-bg-secondary-100">
-            <h2 class="tw-mb-0 tw-pl-4 tw-text-base tw-font-bold tw-uppercase">
+          <div class="tw-flex tw-h-auto tw-w-full tw-rounded-t tw-bg-secondary-100">
+            <h2 class="tw-pb-4 tw-pl-4 tw-pt-5 tw-text-base tw-font-bold tw-uppercase">
               Start your 7-Day free trial of Bitwarden for {{ org }}
             </h2>
+            <environment-selector
+              [hasFlags]="true"
+              class="tw-mr-4 tw-mt-6 tw-w-52 tw-min-w-52 tw-text-end"
+            ></environment-selector>
           </div>
           <app-vertical-stepper #stepper linear (selectionChange)="stepSelectionChange($event)">
             <app-vertical-step label="Create Account" [editable]="false" [subLabel]="email">
