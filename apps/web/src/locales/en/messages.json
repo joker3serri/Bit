@@ -6852,5 +6852,11 @@
   },
   "noDeviceRequestsDesc": {
     "message": "Member device approval requests will appear here"
+  },
+  "loginRequestDenied": {
+    "message": "Login request denied"
+  },
+  "allLoginRequestsDenied": {
+    "message": "All login requests denied"
   }
 }
