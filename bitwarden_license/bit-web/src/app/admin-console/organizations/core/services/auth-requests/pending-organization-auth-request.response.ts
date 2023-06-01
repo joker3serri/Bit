@@ -3,6 +3,7 @@ import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 export class PendingOrganizationAuthRequestResponse extends BaseResponse {
   id: string;
   userId: string;
+  organizationUserId: string;
   email: string;
   publicKey: string;
   requestDeviceIdentifier: string;
@@ -14,6 +15,7 @@ export class PendingOrganizationAuthRequestResponse extends BaseResponse {
     super(response);
     this.id = this.getResponseProperty("Id");
     this.userId = this.getResponseProperty("UserId");
+    this.organizationUserId = this.getResponseProperty("OrganizationUserId");
     this.email = this.getResponseProperty("Email");
     this.publicKey = this.getResponseProperty("PublicKey");
     this.requestDeviceIdentifier = this.getResponseProperty("RequestDeviceIdentifier");

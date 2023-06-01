@@ -5,6 +5,7 @@ import { PendingOrganizationAuthRequestResponse } from "../services/auth-request
 export class PendingAuthRequestView implements View {
   id: string;
   userId: string;
+  organizationUserId: string;
   email: string;
   publicKey: string;
   requestDeviceIdentifier: string;
