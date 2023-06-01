@@ -2,8 +2,14 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BehaviorSubject, Subject, switchMap, takeUntil, tap } from "rxjs";
 
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
+import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { Icons, TableDataSource } from "@bitwarden/components";
 
 import { OrganizationAuthRequestService } from "../../core/services/auth-requests";
@@ -25,6 +31,8 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
 
   constructor(
     private organizationAuthRequestService: OrganizationAuthRequestService,
+    private organizationUserService: OrganizationUserService,
+    private cryptoService: CryptoService,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService
@@ -48,6 +56,69 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
         this.loading = false;
       });
   }
+
+  /**
+   * Creates a copy of the user's symmetric key that has been encrypted with the provided device's public key.
+   * @param devicePublicKey
+   * @param resetPasswordDetails
+   * @private
+   */
+  private async getEncryptedUserSymKey(
+    devicePublicKey: string,
+    resetPasswordDetails: OrganizationUserResetPasswordDetailsResponse
+  ): Promise<EncString> {
+    const encryptedUserSymKey = resetPasswordDetails.resetPasswordKey;
+    const encryptedOrgPrivateKey = resetPasswordDetails.encryptedPrivateKey;
+    const devicePubKey = Utils.fromB64ToArray(devicePublicKey);
+
+    // Decrypt Organization's encrypted Private Key with org key
+    const orgSymKey = await this.cryptoService.getOrgKey(this.organizationId);
+    const decOrgPrivateKey = await this.cryptoService.decryptToBytes(
+      new EncString(encryptedOrgPrivateKey),
+      orgSymKey
+    );
+
+    // Decrypt User's symmetric key with decrypted org private key
+    const decValue = await this.cryptoService.rsaDecrypt(encryptedUserSymKey, decOrgPrivateKey);
+    const userSymKey = new SymmetricCryptoKey(decValue);
+
+    // Re-encrypt User's Symmetric Key with the Device Public Key
+    return await this.cryptoService.rsaEncrypt(userSymKey.key, devicePubKey.buffer);
+  }
+
+  approveRequest = async (authRequest: PendingAuthRequestView) => {
+    const details = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
+      this.organizationId,
+      authRequest.organizationUserId
+    );
+
+    // The user must be enrolled in account recovery (password reset) in order for the request to be approved.
+    if (details == null || details.resetPasswordKey == null) {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("resetPasswordDetailsError")
+      );
+      return;
+    }
+
+    const encryptedKey = await this.getEncryptedUserSymKey(authRequest.publicKey, details);
+
+    await this.organizationAuthRequestService.approvePendingRequest(
+      this.organizationId,
+      authRequest.id,
+      encryptedKey
+    );
+
+    this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("loginRequestApproved")
+      );
+
+      this.refresh$.next();
+
+  };
 
   denyRequest = async (requestId: string) => {
     await this.organizationAuthRequestService.denyPendingRequests(this.organizationId, requestId);

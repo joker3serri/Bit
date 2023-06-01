@@ -59,7 +59,7 @@
           appA11yTitle="{{ 'options' | i18n }}"
         ></button>
         <bit-menu #rowMenu>
-          <button type="button" bitMenuItem>
+          <button type="button" bitMenuItem bitButton (click)="approveRequest(r)">
             <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
             {{ "approveRequest" | i18n }}
           </button>

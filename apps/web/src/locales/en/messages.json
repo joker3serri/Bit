@@ -6858,5 +6858,8 @@
   },
   "allLoginRequestsDenied": {
     "message": "All login requests denied"
+  },
+  "loginRequestApproved": {
+    "message": "Login request approved"
   }
 }
