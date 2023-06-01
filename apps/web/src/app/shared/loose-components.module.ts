@@ -108,7 +108,7 @@ import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
 
-import { EnvironmentSelectorComponent } from "./../components/environment-selector.component";
+import { EnvironmentSelectorModule } from "./../components/environment-selector/environment-selector.module";
 import { UserVerificationModule } from "./components/user-verification";
 import { SharedModule } from "./shared.module";
 
@@ -123,6 +123,7 @@ import { SharedModule } from "./shared.module";
     UserVerificationModule,
     ChangeKdfModule,
     DynamicAvatarComponent,
+    EnvironmentSelectorModule,
   ],
   declarations: [
     PremiumBadgeComponent,
@@ -229,7 +230,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
-    EnvironmentSelectorComponent,
   ],
   exports: [
     PremiumBadgeComponent,
@@ -335,7 +335,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
-    EnvironmentSelectorComponent,
   ],
 })
 export class LooseComponentsModule {}
