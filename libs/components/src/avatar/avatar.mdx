@@ -1,0 +1,72 @@
+import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
+
+import * as stories from "./avatar.stories";
+
+<Meta of={stories} />
+
+# Avatar
+
+Avatars display a unique color that helps a user visually recognize their logged in account.
+
+A variance in color across the avatar component is important as it is used in Account Switching as a
+visual indicator to recognize which of a personal or work account a user is logged into.
+
+## Size
+
+### Large: 64px
+
+<Story of of={stories.Large} />
+
+### Default: 48px
+
+<Story of of={stories.Default} />
+
+### Small 28px
+
+<Story of of={stories.Small} />
+
+## Styles:
+
+`textColor:` set dynamically based on background color to maintain a 4.5:1 contrast ratio.
+
+`backgroundColor:` defined by control, see next section
+
+`fontSize: 20px` since tailwind classes don’t render in the image function use 20px for the default
+size. Font-size will scale automatically from this.
+
+`fontWeight: 400`
+
+`charCount: 2`
+
+## Background color
+
+The Background color can be manually set. However, typically the avatar color should be defined by
+the user's `Name` field.
+
+<Story of of={stories.ColorByText} />
+Use the user 'ID' field if `Name` is not defined.
+<Story of of={stories.ColorByID} />
+
+## Outline
+
+If the avatar is displayed on one of the theme's `background` color variables or is interactive,
+display the avatar with a 1 pixel `secondary-500` border to meet WCAG AA graphic contrast guidelines
+for interactive elements.
+
+<Story of of={stories.Border} />
+
+## Avatar as a button
+
+The Avatar can be used as a button.
+
+Typically this is only in the navigation on client apps where account switching is used and in the
+web app for the account menu indicator.
+
+When the avatar is used as a button, the following states should be used:
+
+`TODO: add stories for button avatars. See Figma`
+
+## Accessibility
+
+Avatar background color should have 3.1:1 contrast with it’s background; or include the
+`secondary-500` border Avatar text should have 4.5:1 contrast with the avatar background color
