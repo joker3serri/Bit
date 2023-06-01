@@ -29,6 +29,7 @@ const preview: Preview = {
     },
     options: {
       storySort: {
+        method: "alphabetical",
         order: ["Documentation", ["Introduction", "Colors", "Icons"], "Component Library"],
       },
     },
