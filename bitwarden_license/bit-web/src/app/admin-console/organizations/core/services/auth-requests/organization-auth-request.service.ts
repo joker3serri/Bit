@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import { CoreOrganizationModule } from "../../core-organization.module";
 import { PendingAuthRequestView } from "../../views/pending-auth-request.view";
 
+import { AdminAuthRequestUpdateRequest } from "./admin-auth-request-update.request";
 import { BulkDenyAuthRequestsRequest } from "./bulk-deny-auth-requests.request";
 import { PendingOrganizationAuthRequestResponse } from "./pending-organization-auth-request.response";
 
@@ -32,6 +34,20 @@ export class OrganizationAuthRequestService {
       "POST",
       `/organizations/${organizationId}/auth-requests/deny`,
       new BulkDenyAuthRequestsRequest(requestIds),
+      true,
+      false
+    );
+  }
+
+  async approvePendingRequest(
+    organizationId: string,
+    requestId: string,
+    encryptedKey: EncString
+  ): Promise<void> {
+    await this.apiService.send(
+      "POST",
+      `/organizations/${organizationId}/auth-requests/${requestId}`,
+      new AdminAuthRequestUpdateRequest(true, encryptedKey.encryptedString),
       true,
       false
     );
