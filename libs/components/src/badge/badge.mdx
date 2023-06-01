@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/addon-docs";
+import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
 
 import * as stories from "./badge.stories";
 
@@ -12,6 +12,9 @@ for interactive events. The Focus and Hover states only apply to badges used for
 Typically Badges are only used with text set to `text-xs`. If additional sizes are needed, the
 component configurations may be reviewed and adjusted.
 
+<Primary />
+<Controls />
+
 ## Styles
 
 ### Primary
@@ -19,20 +22,20 @@ component configurations may be reviewed and adjusted.
 The primary badge is used to indicate an active status (example: device management page) or provide
 additional information (example: type of emergency access granted).
 
-<Story of of={stories.Primary} />
+<Story of={stories.Primary} />
 ### Secondary The secondary badge style is typically is a default badge style. It is often used to indicate
-neautral information.
-<Story of of={stories.Secondary} />
+neutral information.
+<Story of={stories.Secondary} />
 ### Success The success badge is used to indicate a positive status, OR to indicate a feature requires
 a Premium subscription. See [Premium Badge](?path=/docs/web-premium-badge--docs)
-<Story of of={stories.Success} />
+<Story of={stories.Success} />
 ### Danger The danger badge is used to indicate a negative status.
-<Story of of={stories.Danger} />
+<Story of={stories.Danger} />
 ### Warning The warning badge is used to indicate a status waiting on an additional action from the active
 user.
-<Story of of={stories.Warning} />
+<Story of={stories.Warning} />
 ### Info The info badge is used to indicate a low emphasis informative information.
-<Story of of={stories.Info} />
+<Story of={stories.Info} />
 
 ## Badges as counters
 

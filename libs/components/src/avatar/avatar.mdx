@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/addon-docs";
+import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
 
 import * as stories from "./avatar.stories";
 
@@ -11,19 +11,22 @@ Avatars display a unique color that helps a user visually recognize their logged
 A variance in color across the avatar component is important as it is used in Account Switching as a
 visual indicator to recognize which of a personal or work account a user is logged into.
 
+<Primary />
+<Controls />
+
 ## Size
 
 ### Large: 64px
 
-<Story of of={stories.Large} />
+<Story of={stories.Large} />
 
 ### Default: 48px
 
-<Story of of={stories.Default} />
+<Story of={stories.Default} />
 
 ### Small 28px
 
-<Story of of={stories.Small} />
+<Story of={stories.Small} />
 
 ## Styles:
 
@@ -43,9 +46,9 @@ size. Font-size will scale automatically from this.
 The Background color can be manually set. However, typically the avatar color should be defined by
 the user's `Name` field.
 
-<Story of of={stories.ColorByText} />
+<Story of={stories.ColorByText} />
 Use the user 'ID' field if `Name` is not defined.
-<Story of of={stories.ColorByID} />
+<Story of={stories.ColorByID} />
 
 ## Outline
 
@@ -53,7 +56,7 @@ If the avatar is displayed on one of the theme's `background` color variables or
 display the avatar with a 1 pixel `secondary-500` border to meet WCAG AA graphic contrast guidelines
 for interactive elements.
 
-<Story of of={stories.Border} />
+<Story of={stories.Border} />
 
 ## Avatar as a button
 
