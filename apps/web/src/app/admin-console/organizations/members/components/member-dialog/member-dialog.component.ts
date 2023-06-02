@@ -35,6 +35,7 @@ import {
 } from "../../../shared/components/access-selector";
 
 import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
+import { freeOrgSeatLimitReachedValidator } from "./validators/free-org-inv-limit-reached.validator";
 
 export enum MemberDialogTab {
   Role = 0,
@@ -46,6 +47,8 @@ export interface MemberDialogParams {
   name: string;
   organizationId: string;
   organizationUserId: string;
+  organization: Organization;
+  allOrganizationUserEmails: string[];
   usesKeyConnector: boolean;
   initialTab?: MemberDialogTab;
 }
@@ -78,7 +81,21 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   protected formGroup = this.formBuilder.group({
-    emails: ["", [Validators.required, commaSeparatedEmails]],
+    emails: [
+      "",
+      {
+        validators: [
+          Validators.required,
+          commaSeparatedEmails,
+          freeOrgSeatLimitReachedValidator(
+            this.params.organization,
+            this.params.allOrganizationUserEmails,
+            this.i18nService
+          ),
+        ],
+        updateOn: "blur",
+      },
+    ],
     type: OrganizationUserType.User,
     externalId: this.formBuilder.control({ value: "", disabled: true }),
     accessAllCollections: false,

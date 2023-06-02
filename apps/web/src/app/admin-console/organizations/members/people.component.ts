@@ -398,6 +398,8 @@ export class PeopleComponent
         name: this.userNamePipe.transform(user),
         organizationId: this.organization.id,
         organizationUserId: user != null ? user.id : null,
+        organization: this.organization,
+        allOrganizationUserEmails: this.allUsers?.map((user) => user.email) ?? [],
         usesKeyConnector: user?.usesKeyConnector,
         initialTab: initialTab,
       },
