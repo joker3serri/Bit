@@ -37,11 +37,11 @@ export class AccountComponent {
   canEditSubscription = true;
   loading = true;
   canUseApi = false;
-  orgFingerprint: string;
   org: OrganizationResponse;
   formPromise: Promise<OrganizationResponse>;
   taxFormPromise: Promise<unknown>;
 
+  // FormGroup validators taken from server Organization domain object
   protected formGroup = this.formBuilder.group({
     orgName: this.formBuilder.control(
       { value: "", disabled: true },
@@ -60,7 +60,9 @@ export class AccountComponent {
     ),
   });
 
-  private organizationId: string;
+  protected organizationId: string;
+  protected publicKeyBuffer: ArrayBuffer;
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -94,13 +96,7 @@ export class AccountComponent {
             this.org = await this.organizationApiService.get(this.organizationId);
             // Retrieve Organization Public Key
             const orgKeys = await this.organizationApiService.getKeys(this.organizationId);
-            const publicKey = Utils.fromB64ToArray(orgKeys.publicKey);
-            // Generate Organization Fingerprint
-            const fingerprint = await this.cryptoService.getFingerprint(
-              this.organizationId,
-              publicKey.buffer
-            );
-            this.orgFingerprint = fingerprint?.join("-") ?? null;
+            this.publicKeyBuffer = Utils.fromB64ToArray(orgKeys?.publicKey)?.buffer;
             // Patch existing values
             this.formGroup.patchValue({
               orgName: this.org.name,
@@ -164,37 +160,6 @@ export class AccountComponent {
       this.logService.error(e);
     }
   };
-
-  // async submit() {
-  //   this.formGroup.markAllAsTouched();
-  //   if (this.formGroup.invalid) {
-  //     return;
-  //   }
-
-  //   try {
-  //     const request = new OrganizationUpdateRequest();
-  //     request.name = this.formGroup.value.orgName;
-  //     request.businessName = this.formGroup.value.businessName;
-  //     request.billingEmail = this.formGroup.value.billingEmail;
-
-  //     // Backfill pub/priv key if necessary
-  //     if (!this.org.hasPublicAndPrivateKeys) {
-  //       const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
-  //       const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
-  //       request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
-  //     }
-
-  //     this.formPromise = this.organizationApiService.save(this.organizationId, request);
-  //     await this.formPromise;
-  //     this.platformUtilsService.showToast(
-  //       "success",
-  //       null,
-  //       this.i18nService.t("organizationUpdated")
-  //     );
-  //   } catch (e) {
-  //     this.logService.error(e);
-  //   }
-  // }
 
   async deleteOrganization() {
     const dialog = openDeleteOrganizationDialog(this.dialogService, {
