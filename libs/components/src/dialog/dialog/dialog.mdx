@@ -26,7 +26,9 @@ fit its content until there are 2rems of margin on the top/bottom of the dialog;
 dialog should become scrollable.
 
 A background scrim should be used to hide the content below the dialog. Use `#000000` with
-`30% opacity`. See [Dialog Service](?path=/docs/component-library-dialogs-service--docs)
+`30% opacity`.
+
+<Story id="component-library-dialogs-service--default" />
 
 ## Size
 
@@ -86,28 +88,3 @@ loading state.
 Use tabs to separate related content within a dialog.
 
 <Story of={stories.TabContent} />
-
-## Accessibility
-
-The triggering button should indicate to assistive technology that additional content will open or
-appear when the trigger is selected. Consider using `aria-haspopup="true"`
-
-Dialog should include `role=“dialog”`
-
-The Dialog title should be in an `<h1>`
-
-Dialog title should be announced by a screen reader when launched. Consider using `aria-labledby` or
-`aria-label`
-
-When opened, focus should follow the visual order of the popover’s focusable content. Typically
-focus is moved to the close button, but it is acceptable to move focus to the first interactive
-element after close since a user may not want to close the dialog immediately if there are
-additional interactive elements. See
-[WCAG Focus Order success criteria](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)
-
-A user should not be able to tab focus outside of the Dialog until it has been closed.
-
-Once closed, focus should remain on the the element which triggered the Dialog.
-
-Clicking outside the dialog or clicking escape should close the dialog (this prevents a keyboard
-trap)

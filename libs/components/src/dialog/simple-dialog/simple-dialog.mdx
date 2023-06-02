@@ -15,44 +15,57 @@ use the [Dialog component](?path=/docs/component-library-dialogs-dialog--docs).
 <Primary />
 <Controls />
 
-## Placement
+## Configurable Simple Dialog
 
-Like Dialogs, Simple Dialogs should be centered vertically and horizontally on screen and their
-height should expand to fit their content until there are 2rems of margin on the top/bottom of the
-dialog. In this case, the simple dialog should become scrollable.
+The Simple Dialog contains the following configuration points:
 
-A background scrim should be used to hide the content below the dialog. Use `#000000` with
-`30% opacity`. See
-[Dialog Service](?path=/story/component-library-dialogs-service-simpleconfigurable--default)
+- `title`: string
+- `content`: string
+- `type`: SimpleDialogType = "primary",
+- `icon`: string – if empty, infer from type
+- `acceptButtonText`: string – if empty, default to "Yes"
+- `cancelButtonText`: string – if empty, default to "No", unless acceptButtonText is overridden, in
+  which case default to "Cancel"
+
+To increase consistency, the simple dialog service supports some automation for setting the `icon`
+and `color` based on the defined type. See the following for how properties will be configured when
+the simple dialog's type is specified.
+
+```
+if type = primary
+then {
+icon: bwi-business,
+color: primary,
+}
+
+if type = success
+then {
+icon: bwi-star,
+color: success,
+}
+
+if type = info
+then {
+icon: bwi-info-circle,
+color: info,
+}
+
+if type = warning
+then {
+icon: bwi-exclamation-triangle,
+color: warning,
+}
+
+if type = danger
+then {
+icon: bwi-error,
+color: danger,
+}
+```
 
 ## Scrolling Content
 
+Simple dialogs can support scrolling content if necessary, but typically with larger quantities of
+content a [Dialog component](?path=/docs/component-library-dialogs-dialog--docs).
+
 <Story of={stories.ScrollingContent} />
-
-## Accessibility
-
-The triggering button should indicate to assistive technology that additional content will open or
-appear when the trigger is selected. Consider using `aria-haspopup="true"`
-
-Dialog should include `role=“dialog”`
-
-The Dialog title should be in an `<h1>`
-
-Dialog title should be announced by a screen reader when launched. Consider using `aria-labledby` or
-`aria-label`
-
-When opened, focus should follow the visual order of the popover’s focusable content. Typically
-focus is moved to the close button, but it is acceptable to move focus to the first interactive
-element after close since a user may not want to close the dialog immediately if there are
-additional interactive elements. See
-[WCAG Focus Order success criteria](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)
-
-A user should not be able to tab focus outside of the Dialog until it has been closed.
-
-Once closed, focus should remain on the the element which triggered the Dialog.
-
-Clicking outside the dialog or clicking escape should close the dialog (this prevents a keyboard
-trap)
-
-**Note:** If a Simple Dialog is triggered from a main Dialog, be sure to make sure focus is moved to
-the Simple Dialog.
