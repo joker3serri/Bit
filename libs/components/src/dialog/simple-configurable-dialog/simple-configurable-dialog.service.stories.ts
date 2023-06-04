@@ -203,9 +203,7 @@ export default {
   component: StoryDialogComponent,
   decorators: [
     moduleMetadata({
-      declarations: [],
       imports: [ButtonModule, DialogModule, CalloutModule],
-      providers: [],
     }),
     applicationConfig({
       providers: [
