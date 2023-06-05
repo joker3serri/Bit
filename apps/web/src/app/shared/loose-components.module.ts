@@ -1,38 +1,5 @@
 import { NgModule } from "@angular/core";
 
-import { AcceptEmergencyComponent } from "../../auth/accept-emergency.component";
-import { AcceptOrganizationComponent } from "../../auth/accept-organization.component";
-import { HintComponent } from "../../auth/hint.component";
-import { LockComponent } from "../../auth/lock.component";
-import { RecoverDeleteComponent } from "../../auth/recover-delete.component";
-import { RecoverTwoFactorComponent } from "../../auth/recover-two-factor.component";
-import { RegisterFormModule } from "../../auth/register-form/register-form.module";
-import { RemovePasswordComponent } from "../../auth/remove-password.component";
-import { SetPasswordComponent } from "../../auth/set-password.component";
-import { DeauthorizeSessionsComponent } from "../../auth/settings/deauthorize-sessions.component";
-import { EmergencyAccessAddEditComponent } from "../../auth/settings/emergency-access/emergency-access-add-edit.component";
-import { EmergencyAccessAttachmentsComponent } from "../../auth/settings/emergency-access/emergency-access-attachments.component";
-import { EmergencyAccessConfirmComponent } from "../../auth/settings/emergency-access/emergency-access-confirm.component";
-import { EmergencyAccessTakeoverComponent } from "../../auth/settings/emergency-access/emergency-access-takeover.component";
-import { EmergencyAccessViewComponent } from "../../auth/settings/emergency-access/emergency-access-view.component";
-import { EmergencyAccessComponent } from "../../auth/settings/emergency-access/emergency-access.component";
-import { EmergencyAddEditComponent } from "../../auth/settings/emergency-access/emergency-add-edit.component";
-import { TwoFactorAuthenticatorComponent } from "../../auth/settings/two-factor-authenticator.component";
-import { TwoFactorDuoComponent } from "../../auth/settings/two-factor-duo.component";
-import { TwoFactorEmailComponent } from "../../auth/settings/two-factor-email.component";
-import { TwoFactorRecoveryComponent } from "../../auth/settings/two-factor-recovery.component";
-import { TwoFactorSetupComponent } from "../../auth/settings/two-factor-setup.component";
-import { TwoFactorVerifyComponent } from "../../auth/settings/two-factor-verify.component";
-import { TwoFactorWebAuthnComponent } from "../../auth/settings/two-factor-webauthn.component";
-import { TwoFactorYubiKeyComponent } from "../../auth/settings/two-factor-yubikey.component";
-import { VerifyEmailComponent } from "../../auth/settings/verify-email.component";
-import { SsoComponent } from "../../auth/sso.component";
-import { TwoFactorOptionsComponent } from "../../auth/two-factor-options.component";
-import { TwoFactorComponent } from "../../auth/two-factor.component";
-import { UpdatePasswordComponent } from "../../auth/update-password.component";
-import { UpdateTempPasswordComponent } from "../../auth/update-temp-password.component";
-import { VerifyEmailTokenComponent } from "../../auth/verify-email-token.component";
-import { VerifyRecoverDeleteComponent } from "../../auth/verify-recover-delete.component";
 import { OrganizationSwitcherComponent } from "../admin-console/components/organization-switcher.component";
 import { OrganizationCreateModule } from "../admin-console/organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
@@ -51,6 +18,39 @@ import { ProvidersComponent } from "../admin-console/providers/providers.compone
 import { CreateOrganizationComponent } from "../admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
+import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
+import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
+import { HintComponent } from "../auth/hint.component";
+import { LockComponent } from "../auth/lock.component";
+import { RecoverDeleteComponent } from "../auth/recover-delete.component";
+import { RecoverTwoFactorComponent } from "../auth/recover-two-factor.component";
+import { RegisterFormModule } from "../auth/register-form/register-form.module";
+import { RemovePasswordComponent } from "../auth/remove-password.component";
+import { SetPasswordComponent } from "../auth/set-password.component";
+import { DeauthorizeSessionsComponent } from "../auth/settings/deauthorize-sessions.component";
+import { EmergencyAccessAddEditComponent } from "../auth/settings/emergency-access/emergency-access-add-edit.component";
+import { EmergencyAccessAttachmentsComponent } from "../auth/settings/emergency-access/emergency-access-attachments.component";
+import { EmergencyAccessConfirmComponent } from "../auth/settings/emergency-access/emergency-access-confirm.component";
+import { EmergencyAccessTakeoverComponent } from "../auth/settings/emergency-access/emergency-access-takeover.component";
+import { EmergencyAccessViewComponent } from "../auth/settings/emergency-access/emergency-access-view.component";
+import { EmergencyAccessComponent } from "../auth/settings/emergency-access/emergency-access.component";
+import { EmergencyAddEditComponent } from "../auth/settings/emergency-access/emergency-add-edit.component";
+import { TwoFactorAuthenticatorComponent } from "../auth/settings/two-factor-authenticator.component";
+import { TwoFactorDuoComponent } from "../auth/settings/two-factor-duo.component";
+import { TwoFactorEmailComponent } from "../auth/settings/two-factor-email.component";
+import { TwoFactorRecoveryComponent } from "../auth/settings/two-factor-recovery.component";
+import { TwoFactorSetupComponent } from "../auth/settings/two-factor-setup.component";
+import { TwoFactorVerifyComponent } from "../auth/settings/two-factor-verify.component";
+import { TwoFactorWebAuthnComponent } from "../auth/settings/two-factor-webauthn.component";
+import { TwoFactorYubiKeyComponent } from "../auth/settings/two-factor-yubikey.component";
+import { VerifyEmailComponent } from "../auth/settings/verify-email.component";
+import { SsoComponent } from "../auth/sso.component";
+import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component";
+import { TwoFactorComponent } from "../auth/two-factor.component";
+import { UpdatePasswordComponent } from "../auth/update-password.component";
+import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
+import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
+import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
 import { AddCreditComponent } from "../billing/settings/add-credit.component";
 import { AdjustPaymentComponent } from "../billing/settings/adjust-payment.component";
 import { BillingHistoryViewComponent } from "../billing/settings/billing-history-view.component";
@@ -64,8 +64,6 @@ import { TaxInfoComponent } from "../billing/settings/tax-info.component";
 import { UserSubscriptionComponent } from "../billing/settings/user-subscription.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
-import { UserVerificationPromptComponent } from "../components/user-verification-prompt.component";
-import { UserVerificationComponent } from "../components/user-verification.component";
 import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
@@ -110,6 +108,7 @@ import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
 
+import { UserVerificationModule } from "./components/user-verification";
 import { SharedModule } from "./shared.module";
 
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
@@ -120,6 +119,7 @@ import { SharedModule } from "./shared.module";
     OrganizationCreateModule,
     RegisterFormModule,
     ProductSwitcherModule,
+    UserVerificationModule,
     ChangeKdfModule,
     DynamicAvatarComponent,
   ],
@@ -178,7 +178,6 @@ import { SharedModule } from "./shared.module";
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
     PasswordRepromptComponent,
-    UserVerificationPromptComponent,
     PaymentComponent,
     PaymentMethodComponent,
     PreferencesComponent,
@@ -224,7 +223,6 @@ import { SharedModule } from "./shared.module";
     BillingHistoryViewComponent,
     UserLayoutComponent,
     UserSubscriptionComponent,
-    UserVerificationComponent,
     VaultTimeoutInputComponent,
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
@@ -330,7 +328,6 @@ import { SharedModule } from "./shared.module";
     BillingHistoryViewComponent,
     UserLayoutComponent,
     UserSubscriptionComponent,
-    UserVerificationComponent,
     VaultTimeoutInputComponent,
     VerifyEmailComponent,
     VerifyEmailTokenComponent,

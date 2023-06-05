@@ -1,19 +1,16 @@
 import { A11yModule } from "@angular/cdk/a11y";
+import { DialogModule } from "@angular/cdk/dialog";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { LayoutModule } from "@angular/cdk/layout";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { ScrollingModule } from "@angular/cdk/scrolling";
-// eslint-disable-next-line import/order
 import { CurrencyPipe, DatePipe } from "@angular/common";
-
-// Register the locales for the application
-import "./locales";
-
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
+import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
 import { BitwardenToastModule } from "@bitwarden/angular/components/toastr.component";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
@@ -76,6 +73,9 @@ import { SyncComponent } from "./settings/sync.component";
 import { VaultTimeoutInputComponent } from "./settings/vault-timeout-input.component";
 import { TabsComponent } from "./tabs.component";
 
+// Register the locales for the application
+import "./locales";
+
 @NgModule({
   imports: [
     A11yModule,
@@ -96,6 +96,7 @@ import { TabsComponent } from "./tabs.component";
     ReactiveFormsModule,
     ScrollingModule,
     ServicesModule,
+    DialogModule,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -153,6 +154,7 @@ import { TabsComponent } from "./tabs.component";
     AboutComponent,
     HelpAndFeedbackComponent,
     AutofillComponent,
+    EnvironmentSelectorComponent,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],

@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -34,7 +35,8 @@ export class OrganizationExportComponent extends ExportComponent {
     userVerificationService: UserVerificationService,
     formBuilder: UntypedFormBuilder,
     fileDownloadService: FileDownloadService,
-    modalService: ModalService
+    modalService: ModalService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cryptoService,
@@ -47,8 +49,13 @@ export class OrganizationExportComponent extends ExportComponent {
       userVerificationService,
       formBuilder,
       fileDownloadService,
-      modalService
+      modalService,
+      dialogService
     );
+  }
+
+  protected get disabledByPolicy(): boolean {
+    return false;
   }
 
   async ngOnInit() {
@@ -57,10 +64,6 @@ export class OrganizationExportComponent extends ExportComponent {
       this.organizationId = params.organizationId;
     });
     await super.ngOnInit();
-  }
-
-  async checkExportDisabled() {
-    return;
   }
 
   getExportData() {

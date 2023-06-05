@@ -202,7 +202,9 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     }
     if (this.onSuccessfulLogin != null) {
       this.loginService.clearValues();
-      await this.onSuccessfulLogin();
+      // Note: awaiting this will currently cause a hang on desktop & browser as they will wait for a full sync to complete
+      // before nagivating to the success route.
+      this.onSuccessfulLogin();
     }
     if (response.resetMasterPassword) {
       this.successRoute = "set-password";
@@ -232,10 +234,20 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       return;
     }
 
+    if (this.authService.email == null) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("sessionTimeout")
+      );
+      return;
+    }
+
     try {
       const request = new TwoFactorEmailRequest();
       request.email = this.authService.email;
       request.masterPasswordHash = this.authService.masterPasswordHash;
+      request.ssoEmail2FaSessionToken = this.authService.ssoEmail2FaSessionToken;
       request.deviceIdentifier = await this.appIdService.getAppId();
       request.authRequestAccessCode = this.authService.accessCode;
       request.authRequestId = this.authService.authRequestId;

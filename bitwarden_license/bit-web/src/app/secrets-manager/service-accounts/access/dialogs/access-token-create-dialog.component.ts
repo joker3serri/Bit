@@ -2,7 +2,9 @@ import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
-import { DialogService } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { BitValidators } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../../../models/view/service-account.view";
 import { AccessTokenView } from "../../models/view/access-token.view";
@@ -20,7 +22,10 @@ export interface AccessTokenOperation {
 })
 export class AccessTokenCreateDialogComponent implements OnInit {
   protected formGroup = new FormGroup({
-    name: new FormControl("", [Validators.required, Validators.maxLength(80)]),
+    name: new FormControl("", {
+      validators: [Validators.required, Validators.maxLength(80), BitValidators.trimValidator],
+      updateOn: "submit",
+    }),
     expirationDateControl: new FormControl(null),
   });
   protected loading = false;
@@ -30,7 +35,8 @@ export class AccessTokenCreateDialogComponent implements OnInit {
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public data: AccessTokenOperation,
-    private dialogService: DialogService,
+    private i18nService: I18nService,
+    private dialogService: DialogServiceAbstraction,
     private accessService: AccessService
   ) {}
 
@@ -83,7 +89,7 @@ export class AccessTokenCreateDialogComponent implements OnInit {
   }
 
   static openNewAccessTokenDialog(
-    dialogService: DialogService,
+    dialogService: DialogServiceAbstraction,
     serviceAccountId: string,
     organizationId: string
   ) {

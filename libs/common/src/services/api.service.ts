@@ -4,9 +4,9 @@ import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { OrganizationConnectionType } from "../admin-console/enums";
 import { CollectionRequest } from "../admin-console/models/request/collection.request";
-import { OrganizationConnectionRequest } from "../admin-console/models/request/organization-connection.request";
 import { OrganizationSponsorshipCreateRequest } from "../admin-console/models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../admin-console/models/request/organization/organization-sponsorship-redeem.request";
+import { OrganizationConnectionRequest } from "../admin-console/models/request/organization-connection.request";
 import { ProviderAddOrganizationRequest } from "../admin-console/models/request/provider/provider-add-organization.request";
 import { ProviderOrganizationCreateRequest } from "../admin-console/models/request/provider/provider-organization-create.request";
 import { ProviderSetupRequest } from "../admin-console/models/request/provider/provider-setup.request";
@@ -1108,14 +1108,6 @@ export class ApiService implements ApiServiceAbstraction {
       true
     );
     return new DeviceVerificationResponse(r);
-  }
-
-  async getKnownDevice(email: string, deviceIdentifier: string): Promise<boolean> {
-    const r = await this.send("GET", "/devices/knowndevice", null, false, true, null, (headers) => {
-      headers.set("X-Device-Identifier", deviceIdentifier);
-      headers.set("X-Request-Email", Utils.fromUtf8ToUrlB64(email));
-    });
-    return r as boolean;
   }
 
   // Emergency Access APIs
