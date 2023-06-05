@@ -9,7 +9,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule, FormFieldModule, IconButtonModule } from "@bitwarden/components";
 
 import { AvatarComponent } from "../components/avatar.component";
 import { ServicesModule } from "../services/services.module";
@@ -26,9 +25,6 @@ import { ServicesModule } from "../services/services.module";
     ReactiveFormsModule,
     ScrollingModule,
     ServicesModule,
-    ButtonModule,
-    IconButtonModule,
-    FormFieldModule,
   ],
   declarations: [AvatarComponent],
   exports: [
@@ -44,9 +40,6 @@ import { ServicesModule } from "../services/services.module";
     ScrollingModule,
     ServicesModule,
     AvatarComponent,
-    ButtonModule,
-    IconButtonModule,
-    FormFieldModule,
   ],
   providers: [DatePipe],
 })
