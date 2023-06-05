@@ -37,16 +37,12 @@ export class ForwardEmailForwarder implements Forwarder {
     if (response.status === 401) {
       throw "Invalid Forward Email API key.";
     }
-    try {
-      const json = await response.json();
-      if (json?.message != null) {
-        throw "Forward Email error:" + json.message;
-      }
-      if (json?.error != null) {
-        throw "Forward Email error:" + json.error;
-      }
-    } catch {
-      // Do nothing...
+    const json = await response.json();
+    if (json?.message != null) {
+      throw "Forward Email error:\n" + json.message;
+    }
+    if (json?.error != null) {
+      throw "Forward Email error:\n" + json.error;
     }
     throw "Unknown Forward Email error occurred.";
   }
