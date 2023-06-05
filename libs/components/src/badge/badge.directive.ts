@@ -50,7 +50,7 @@ export class BadgeDirective {
   }
   @HostBinding("attr.title") get title() {
     // If the text is truncated then a tooltip is added with the full text except the comma that is added for screen readers on badge lists
-    return this.truncate ? this.el.nativeElement.childNodes[0].textContent.trim() : null;
+    return this.truncate ? this.el.nativeElement.textContent.trim() : null;
   }
 
   @Input() badgeType: BadgeTypes = "primary";
