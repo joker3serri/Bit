@@ -10,8 +10,8 @@
   <span class="sr-only">{{ "loading" | i18n }}</span>
 </div>
 <form *ngIf="org && !loading" #form [bitSubmit]="submit" [formGroup]="formGroup">
-  <div class="-tw-mx-2.5 tw-flex tw-flex-wrap">
-    <div class="tw-max-w-1/2 tw-flex-6 tw-px-2.5">
+  <div class="-tw-mx-2.5 tw-grid tw-grid-cols-2 tw-gap-5">
+    <div class="tw-pl-2.5">
       <div class="tw-mb-4">
         <bit-form-field>
           <bit-label>{{ "organizationName" | i18n }}</bit-label>
@@ -31,7 +31,7 @@
         </bit-form-field>
       </div>
     </div>
-    <div class="tw-max-w-1/2 tw-flex-6 tw-px-2.5">
+    <div class="tw-pr-2.5">
       <bit-avatar [text]="org.name" [id]="org.id" size="large"></bit-avatar>
       <app-account-fingerprint
         [fingerprintMaterial]="organizationId"
