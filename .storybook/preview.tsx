@@ -47,7 +47,6 @@ const decorator = componentWrapperDecorator(
   `;
   },
   ({ globals }) => {
-    console.log(globals);
     return { theme: `${globals["theme"]}` };
   }
 );
