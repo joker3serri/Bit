@@ -6,10 +6,10 @@ import { Subject, takeUntil } from "rxjs";
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { FormValidationErrorsService } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -52,7 +52,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
   }
 
   constructor(
-    apiService: ApiService,
+    devicesApiService: DevicesApiServiceAbstraction,
     appIdService: AppIdService,
     authService: AuthService,
     router: Router,
@@ -74,7 +74,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     loginService: LoginService
   ) {
     super(
-      apiService,
+      devicesApiService,
       appIdService,
       authService,
       router,
@@ -98,7 +98,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
 
   async ngOnInit() {
     await super.ngOnInit();
-    await this.checkSelfHosted();
+    await this.getLoginWithDevice(this.loggedEmail);
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
       this.ngZone.run(() => {
         switch (message.command) {
@@ -151,7 +151,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     // eslint-disable-next-line rxjs/no-async-subscribe
     childComponent.onSaved.pipe(takeUntil(this.componentDestroyed$)).subscribe(async () => {
       modal.close();
-      await this.checkSelfHosted();
+      await this.getLoginWithDevice(this.loggedEmail);
     });
   }
 
@@ -187,11 +187,5 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
   private focusInput() {
     const email = this.loggedEmail;
     document.getElementById(email == null || email === "" ? "email" : "masterPassword").focus();
-  }
-
-  private async checkSelfHosted() {
-    this.selfHosted = this.environmentService.isSelfHosted();
-
-    await this.getLoginWithDevice(this.loggedEmail);
   }
 }
