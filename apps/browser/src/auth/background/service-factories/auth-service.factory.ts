@@ -6,26 +6,14 @@ import {
   PolicyServiceInitOptions,
 } from "../../../admin-console/background/service-factories/policy-service.factory";
 import {
-  apiServiceFactory,
-  ApiServiceInitOptions,
-} from "../../../background/service-factories/api-service.factory";
-import { appIdServiceFactory } from "../../../background/service-factories/app-id-service.factory";
-import {
-  environmentServiceFactory,
-  EnvironmentServiceInitOptions,
-} from "../../../background/service-factories/environment-service.factory";
-import {
-  messagingServiceFactory,
-  MessagingServiceInitOptions,
-} from "../../../background/service-factories/messaging-service.factory";
-import {
   passwordGenerationServiceFactory,
   PasswordGenerationServiceInitOptions,
 } from "../../../background/service-factories/password-generation-service.factory";
 import {
-  platformUtilsServiceFactory,
-  PlatformUtilsServiceInitOptions,
-} from "../../../background/service-factories/platform-utils-service.factory";
+  apiServiceFactory,
+  ApiServiceInitOptions,
+} from "../../../platform/background/service-factories/api-service.factory";
+import { appIdServiceFactory } from "../../../platform/background/service-factories/app-id-service.factory";
 import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,
@@ -34,6 +22,10 @@ import {
   EncryptServiceInitOptions,
   encryptServiceFactory,
 } from "../../../platform/background/service-factories/encrypt-service.factory";
+import {
+  environmentServiceFactory,
+  EnvironmentServiceInitOptions,
+} from "../../../platform/background/service-factories/environment-service.factory";
 import {
   CachedServices,
   factory,
@@ -47,6 +39,14 @@ import {
   logServiceFactory,
   LogServiceInitOptions,
 } from "../../../platform/background/service-factories/log-service.factory";
+import {
+  messagingServiceFactory,
+  MessagingServiceInitOptions,
+} from "../../../platform/background/service-factories/messaging-service.factory";
+import {
+  platformUtilsServiceFactory,
+  PlatformUtilsServiceInitOptions,
+} from "../../../platform/background/service-factories/platform-utils-service.factory";
 import {
   stateServiceFactory,
   StateServiceInitOptions,

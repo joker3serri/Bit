@@ -10,7 +10,7 @@ import {
 import { BehaviorSubject, combineLatest, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import {
   AvatarModule,

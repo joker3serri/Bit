@@ -22,6 +22,14 @@ import {
   FactoryOptions,
 } from "../../platform/background/service-factories/factory-options";
 import {
+  messagingServiceFactory,
+  MessagingServiceInitOptions,
+} from "../../platform/background/service-factories/messaging-service.factory";
+import {
+  platformUtilsServiceFactory,
+  PlatformUtilsServiceInitOptions,
+} from "../../platform/background/service-factories/platform-utils-service.factory";
+import {
   StateServiceInitOptions,
   stateServiceFactory,
 } from "../../platform/background/service-factories/state-service.factory";
@@ -35,11 +43,6 @@ import {
   FolderServiceInitOptions,
 } from "../../vault/background/service_factories/folder-service.factory";
 
-import { messagingServiceFactory, MessagingServiceInitOptions } from "./messaging-service.factory";
-import {
-  platformUtilsServiceFactory,
-  PlatformUtilsServiceInitOptions,
-} from "./platform-utils-service.factory";
 import { searchServiceFactory, SearchServiceInitOptions } from "./search-service.factory";
 import {
   vaultTimeoutSettingsServiceFactory,

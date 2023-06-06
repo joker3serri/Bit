@@ -1,7 +1,7 @@
 import { DeviceType } from "@bitwarden/common/enums";
 
-import BrowserPlatformUtilsService from "../../services/browserPlatformUtils.service";
 import { TabMessage } from "../../types/tab-messages";
+import BrowserPlatformUtilsService from "../services/browser-platform-utils.service";
 
 export class BrowserApi {
   static isWebExtensionsApi: boolean = typeof browser !== "undefined";

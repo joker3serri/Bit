@@ -67,6 +67,7 @@ apps/web/src/utils/ @bitwarden/team-platform-dev
 # Web core and shared files
 apps/web/src/app/core @bitwarden/team-platform-dev
 apps/web/src/app/shared @bitwarden/team-platform-dev
+apps/web/src/translation-constants.ts @bitwarden/team-platform-dev
 
 ## Component Library ##
 libs/components @bitwarden/team-platform-dev

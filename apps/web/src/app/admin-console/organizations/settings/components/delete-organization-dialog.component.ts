@@ -4,13 +4,13 @@ import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { combineLatest, Subject, takeUntil } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { Verification } from "@bitwarden/common/types/verification";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";

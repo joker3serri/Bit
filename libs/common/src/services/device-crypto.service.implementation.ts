@@ -1,7 +1,7 @@
-import { AppIdService } from "../abstractions/appId.service";
 import { DeviceCryptoServiceAbstraction } from "../abstractions/device-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices/devices-api.service.abstraction";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
+import { AppIdService } from "../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../platform/abstractions/crypto.service";
 import { EncryptService } from "../platform/abstractions/encrypt.service";

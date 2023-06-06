@@ -2,10 +2,6 @@ import { CipherService as AbstractCipherService } from "@bitwarden/common/vault/
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
 import {
-  apiServiceFactory,
-  ApiServiceInitOptions,
-} from "../../../background/service-factories/api-service.factory";
-import {
   CipherFileUploadServiceInitOptions,
   cipherFileUploadServiceFactory,
 } from "../../../background/service-factories/cipher-file-upload-service.factory";
@@ -17,6 +13,10 @@ import {
   SettingsServiceInitOptions,
   settingsServiceFactory,
 } from "../../../background/service-factories/settings-service.factory";
+import {
+  apiServiceFactory,
+  ApiServiceInitOptions,
+} from "../../../platform/background/service-factories/api-service.factory";
 import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,

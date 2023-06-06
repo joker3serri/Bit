@@ -8,7 +8,7 @@ import {
 import {
   apiServiceFactory,
   ApiServiceInitOptions,
-} from "../../../background/service-factories/api-service.factory";
+} from "../../../platform/background/service-factories/api-service.factory";
 import {
   CryptoFunctionServiceInitOptions,
   cryptoFunctionServiceFactory,
