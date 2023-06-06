@@ -107,10 +107,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
       useClass: LoginService,
       deps: [StateService],
     },
-    {
-      provide: CollectionAdminService,
-      useClass: CollectionAdminService,
-    },
+    CollectionAdminService,
   ],
 })
 export class CoreModule {
