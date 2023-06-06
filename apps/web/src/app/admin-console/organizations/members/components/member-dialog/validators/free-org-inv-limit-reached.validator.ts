@@ -1,13 +1,11 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductType } from "@bitwarden/common/enums";
 
 export function freeOrgSeatLimitReachedValidator(
   organization: Organization,
-  allOrganizationUserEmails: string[],
-  i18nService: I18nService
+  allOrganizationUserEmails: string[]
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (control.value === "" || !control.value) {
@@ -28,7 +26,7 @@ export function freeOrgSeatLimitReachedValidator(
     return organizationIsOnFreePlan && maxSeatsExceeded
       ? {
           freePlanLimitReached: {
-            message: i18nService.t("subscriptionFreePlan", organization.seats),
+            seats: organization.seats,
           },
         }
       : null;

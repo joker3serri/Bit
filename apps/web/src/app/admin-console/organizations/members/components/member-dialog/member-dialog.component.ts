@@ -47,7 +47,6 @@ export interface MemberDialogParams {
   name: string;
   organizationId: string;
   organizationUserId: string;
-  organization: Organization;
   allOrganizationUserEmails: string[];
   usesKeyConnector: boolean;
   initialTab?: MemberDialogTab;
@@ -88,9 +87,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           Validators.required,
           commaSeparatedEmails,
           freeOrgSeatLimitReachedValidator(
-            this.params.organization,
-            this.params.allOrganizationUserEmails,
-            this.i18nService
+            this.organizationService.get(this.params.organizationId),
+            this.params.allOrganizationUserEmails
           ),
         ],
         updateOn: "blur",
