@@ -31,6 +31,7 @@ export class BadgeDirective {
       "tw-px-1.5",
       "tw-font-bold",
       "tw-text-center",
+      "tw-align-text-top",
       "!tw-text-contrast",
       "tw-rounded",
       "tw-border-none",
@@ -42,14 +43,12 @@ export class BadgeDirective {
       "focus:tw-ring",
       "focus:tw-ring-offset-2",
       "focus:tw-ring-primary-700",
-      "tw-align-text-top",
     ]
       .concat(styles[this.badgeType])
       .concat(this.hasHoverEffects ? hoverStyles[this.badgeType] : [])
       .concat(this.truncate ? ["tw-truncate", "tw-max-w-40"] : []);
   }
   @HostBinding("attr.title") get title() {
-    // If the text is truncated then a tooltip is added with the full text except the comma that is added for screen readers on badge lists
     return this.truncate ? this.el.nativeElement.textContent.trim() : null;
   }
 
