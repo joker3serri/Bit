@@ -9,6 +9,15 @@ import { ProductType } from "@bitwarden/common/enums";
 export class FreeOrgSeatLimitReachedValidator {
   constructor(private i18nService: I18nService) {}
 
+  /**
+   * Checks if the limit of free organization seats has been reached when adding new users to an
+   * organization
+   * @param organization An object representing the organization to which new users are being added
+   * @param allOrganizationUserEmails An array of strings containing all the existing email
+   * addresses of users in the organization
+   * @returns A function that takes an `AbstractControl` (a form control) and returns either
+   * `ValidationErrors` or `null`.
+   */
   validate(organization: Organization, allOrganizationUserEmails: string[]): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === "" || !control.value) {
