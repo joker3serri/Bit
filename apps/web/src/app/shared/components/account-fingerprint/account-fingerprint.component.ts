@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 
 import { SharedModule } from "../../shared.module";
 
