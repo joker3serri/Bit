@@ -72,7 +72,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   canUseCustomPermissions: boolean;
   PermissionMode = PermissionMode;
   canUseSecretsManager: boolean;
-  showNoMasterPasswordWarning: boolean;
+  showNoMasterPasswordWarning = false;
 
   protected organization: Organization;
   protected collectionAccessItems: AccessItemView[] = [];
@@ -166,9 +166,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         this.organization = organization;
         this.canUseCustomPermissions = organization.useCustomPermissions;
         this.canUseSecretsManager = organization.useSecretsManager && flagEnabled("secretsManager");
-        this.showNoMasterPasswordWarning =
-          userDetails.status > OrganizationUserStatusType.Invited &&
-          userDetails.hasMasterPassword === false;
 
         this.collectionAccessItems = [].concat(
           collections.map((c) => mapCollectionToAccessItemView(c))
@@ -183,6 +180,9 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
             throw new Error("Could not find user to edit.");
           }
           this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
+          this.showNoMasterPasswordWarning =
+            userDetails.status > OrganizationUserStatusType.Invited &&
+            userDetails.hasMasterPassword === false;
           const assignedCollectionsPermissions = {
             editAssignedCollections: userDetails.permissions.editAssignedCollections,
             deleteAssignedCollections: userDetails.permissions.deleteAssignedCollections,
