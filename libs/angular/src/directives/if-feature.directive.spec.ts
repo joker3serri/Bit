@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 import { IfFeatureDirective } from "./if-feature.directive";
 

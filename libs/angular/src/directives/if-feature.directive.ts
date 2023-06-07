@@ -1,8 +1,8 @@
 import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 
-import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 // Replace this with a type safe lookup of the feature flag values in PM-2282
 type FlagValue = boolean | number | string;

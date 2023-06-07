@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
 import { CoreOrganizationModule } from "../../core-organization.module";
 import { PendingAuthRequestView } from "../../views/pending-auth-request.view";

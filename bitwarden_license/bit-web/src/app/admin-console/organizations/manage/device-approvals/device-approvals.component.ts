@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BehaviorSubject, Subject, switchMap, takeUntil, tap } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { Icons, TableDataSource } from "@bitwarden/components";
 
 import { OrganizationAuthRequestService } from "../../core/services/auth-requests";
