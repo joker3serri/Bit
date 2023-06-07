@@ -228,6 +228,7 @@ describe("FidoAuthenticatorService", () => {
           id: "YmFzZTY0LWVuY29kZWQtdXNlci1pZA",
           displayName: "User Name",
         },
+        fallbackSupported: params.fallbackSupported ?? false,
         timeout: params.timeout,
       };
     }
@@ -408,13 +409,14 @@ describe("FidoAuthenticatorService", () => {
         timeout: params.timeout,
         userVerification: params.userVerification,
         sameOriginWithAncestors: true,
+        fallbackSupported: params.fallbackSupported ?? false,
       };
     }
 
     function createAuthenticatorAssertResult(): Fido2AuthenticatorGetAssertionResult {
       return {
         selectedCredential: {
-          id: Utils.newGuid(),
+          id: randomBytes(32),
           userHandle: randomBytes(32),
         },
         authenticatorData: randomBytes(64),

@@ -573,6 +573,7 @@ describe("FidoAuthenticatorService", () => {
         ],
         requireResidentKey: params.requireResidentKey ?? false,
         requireUserVerification: params.requireUserVerification ?? false,
+        fallbackSupported: params.fallbackSupported ?? false,
         extensions: params.extensions ?? {
           appid: undefined,
           appidExclude: undefined,
@@ -908,6 +909,7 @@ describe("FidoAuthenticatorService", () => {
         allowCredentialDescriptorList: params.allowCredentialDescriptorList ?? [],
         requireUserVerification: params.requireUserVerification ?? false,
         extensions: params.extensions ?? {},
+        fallbackSupported: params.fallbackSupported ?? false,
       };
     }
 
