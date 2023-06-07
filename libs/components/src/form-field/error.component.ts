@@ -40,8 +40,6 @@ export class BitErrorComponent {
         return this.i18nService.t("multipleInputEmails");
       case "trim":
         return this.i18nService.t("inputTrimValidator");
-      case "freePlanLimitReached":
-        return this.i18nService.t("subscriptionFreePlan", this.error[1].seats);
       default:
         // Attempt to show a custom error message.
         if (this.error[1]?.message) {

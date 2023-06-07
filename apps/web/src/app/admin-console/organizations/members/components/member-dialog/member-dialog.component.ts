@@ -88,7 +88,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           commaSeparatedEmails,
           freeOrgSeatLimitReachedValidator(
             this.organizationService.get(this.params.organizationId),
-            this.params.allOrganizationUserEmails
+            this.params.allOrganizationUserEmails,
+            this.i18nService
           ),
         ],
         updateOn: "blur",
