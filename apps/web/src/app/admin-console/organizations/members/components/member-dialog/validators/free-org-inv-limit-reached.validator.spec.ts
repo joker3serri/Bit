@@ -6,7 +6,7 @@ import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductType } from "@bitwarden/common/enums";
 
-import { freeOrgSeatLimitReachedValidator } from "./free-org-inv-limit-reached.validator";
+import { FreeOrgSeatLimitReachedValidator } from "./free-org-inv-limit-reached.validator";
 
 const orgFactory = (props: Partial<Organization> = {}) =>
   Object.assign(
@@ -19,23 +19,21 @@ const orgFactory = (props: Partial<Organization> = {}) =>
     props
   );
 
-describe("freeOrgSeatLimitReachedValidator", () => {
+describe("FreeOrgSeatLimitReachedValidator", () => {
   let organization: Organization;
   let allOrganizationUserEmails: string[];
   let i18nService: MockProxy<I18nService>;
+  let validator: FreeOrgSeatLimitReachedValidator;
   let validatorFn: (control: AbstractControl) => ValidationErrors | null;
 
   beforeEach(() => {
     i18nService = mock();
     allOrganizationUserEmails = ["user1@example.com"];
+    validator = new FreeOrgSeatLimitReachedValidator(i18nService);
   });
 
   it("should return null when control value is empty", () => {
-    validatorFn = freeOrgSeatLimitReachedValidator(
-      organization,
-      allOrganizationUserEmails,
-      i18nService
-    );
+    validatorFn = validator.validate(organization, allOrganizationUserEmails);
     const control = new FormControl("");
 
     const result = validatorFn(control);
@@ -44,11 +42,7 @@ describe("freeOrgSeatLimitReachedValidator", () => {
   });
 
   it("should return null when control value is null", () => {
-    validatorFn = freeOrgSeatLimitReachedValidator(
-      organization,
-      allOrganizationUserEmails,
-      i18nService
-    );
+    validatorFn = validator.validate(organization, allOrganizationUserEmails);
     const control = new FormControl(null);
 
     const result = validatorFn(control);
@@ -61,11 +55,7 @@ describe("freeOrgSeatLimitReachedValidator", () => {
       planProductType: ProductType.Free,
       seats: 2,
     });
-    validatorFn = freeOrgSeatLimitReachedValidator(
-      organization,
-      allOrganizationUserEmails,
-      i18nService
-    );
+    validatorFn = validator.validate(organization, allOrganizationUserEmails);
     const control = new FormControl("user2@example.com");
 
     const result = validatorFn(control);
@@ -78,11 +68,7 @@ describe("freeOrgSeatLimitReachedValidator", () => {
       planProductType: ProductType.Free,
       seats: 2,
     });
-    validatorFn = freeOrgSeatLimitReachedValidator(
-      organization,
-      allOrganizationUserEmails,
-      i18nService
-    );
+    validatorFn = validator.validate(organization, allOrganizationUserEmails);
     const control = new FormControl("user2@example.com,user3@example.com");
 
     const result = validatorFn(control);
@@ -96,11 +82,7 @@ describe("freeOrgSeatLimitReachedValidator", () => {
       planProductType: ProductType.Enterprise,
       seats: 100,
     });
-    validatorFn = freeOrgSeatLimitReachedValidator(
-      organization,
-      allOrganizationUserEmails,
-      i18nService
-    );
+    validatorFn = validator.validate(organization, allOrganizationUserEmails);
 
     const result = validatorFn(control);
 
