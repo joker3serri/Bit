@@ -4,7 +4,10 @@ import {
 } from "../../abstractions/fido2/fido2-user-interface.service.abstraction";
 
 export class Fido2UserInterfaceService implements Fido2UserInterfaceServiceAbstraction {
-  newSession(abortController?: AbortController): Promise<Fido2UserInterfaceSession> {
+  newSession(
+    fallbackSupported: boolean,
+    abortController?: AbortController
+  ): Promise<Fido2UserInterfaceSession> {
     throw new Error("Not implemented exception");
   }
 }
