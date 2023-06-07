@@ -1,6 +1,11 @@
 <div class="tw-mb-1">
   <bit-menu #environmentOptions>
-    <a bitMenuItem href="https://vault.bitwarden.com" class="pr-4">
+    <a
+      bitMenuItem
+      [attr.href]="isEuServer ? 'https://vault.bitwarden.com' : '#'"
+      href=""
+      class="pr-4"
+    >
       <i
         class="bwi bwi-fw bwi-sm bwi-check pb-1"
         aria-hidden="true"
@@ -9,7 +14,12 @@
       <img src="../../images/us_flag.png" alt="" class="pb-1 mr-1" />
       {{ "us" | i18n }}
     </a>
-    <a bitMenuItem href="https://vault.bitwarden.eu" class="pr-4" *ngIf="euServerFlagEnabled">
+    <a
+      bitMenuItem
+      [attr.href]="isEuServer ? '#' : 'https://vault.bitwarden.eu'"
+      class="pr-4"
+      *ngIf="euServerFlagEnabled"
+    >
       <i
         class="bwi bwi-fw bwi-sm bwi-check pb-1"
         aria-hidden="true"
