@@ -52,7 +52,7 @@ export const canAccessFeature = (
       return false;
     } catch (e) {
       logService.error(e);
-      return true;
+      return false;
     }
   };
 };
