@@ -80,20 +80,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   protected formGroup = this.formBuilder.group({
-    emails: [
-      "",
-      {
-        validators: [
-          Validators.required,
-          commaSeparatedEmails,
-          this.freeOrgSeatLimitReachedValidator.validate(
-            this.organizationService.get(this.params.organizationId),
-            this.params.allOrganizationUserEmails
-          ),
-        ],
-        updateOn: "blur",
-      },
-    ],
+    emails: ["", { updateOn: "blur" }],
     type: OrganizationUserType.User,
     externalId: this.formBuilder.control({ value: "", disabled: true }),
     accessAllCollections: false,
@@ -181,6 +168,19 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         this.organization = organization;
         this.canUseCustomPermissions = organization.useCustomPermissions;
         this.canUseSecretsManager = organization.useSecretsManager && flagEnabled("secretsManager");
+
+        const emailsControlValidators = [
+          Validators.required,
+          commaSeparatedEmails,
+          this.freeOrgSeatLimitReachedValidator.validate(
+            this.organization,
+            this.params.allOrganizationUserEmails
+          ),
+        ];
+
+        const emailsControl = this.formGroup.get("emails");
+        emailsControl.setValidators(emailsControlValidators);
+        emailsControl.updateValueAndValidity();
 
         this.collectionAccessItems = [].concat(
           collections.map((c) => mapCollectionToAccessItemView(c))
