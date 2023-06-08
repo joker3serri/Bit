@@ -1,17 +1,17 @@
 import { FocusKeyManager } from "@angular/cdk/a11y";
 import {
-  AfterContentInit,
   Component,
-  ContentChildren,
-  EventEmitter,
-  Input,
   Output,
-  QueryList,
   TemplateRef,
   ViewChild,
+  EventEmitter,
+  ContentChildren,
+  QueryList,
+  AfterContentInit,
+  Input,
 } from "@angular/core";
 
-import { MenuItemComponent } from "./menu-item.component";
+import { MenuItemDirective } from "./menu-item.directive";
 
 @Component({
   selector: "bit-menu",
@@ -21,9 +21,9 @@ import { MenuItemComponent } from "./menu-item.component";
 export class MenuComponent implements AfterContentInit {
   @ViewChild(TemplateRef) templateRef: TemplateRef<any>;
   @Output() closed = new EventEmitter<void>();
-  @ContentChildren(MenuItemComponent, { descendants: true })
-  menuItems: QueryList<MenuItemComponent>;
-  keyManager?: FocusKeyManager<MenuItemComponent>;
+  @ContentChildren(MenuItemDirective, { descendants: true })
+  menuItems: QueryList<MenuItemDirective>;
+  keyManager?: FocusKeyManager<MenuItemDirective>;
 
   @Input() ariaRole: "menu" | "dialog" = "menu";
 

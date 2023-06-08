@@ -1,10 +1,10 @@
 import { OverlayModule } from "@angular/cdk/overlay";
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
 import { ButtonModule } from "../button/button.module";
 
 import { MenuDividerComponent } from "./menu-divider.component";
-import { MenuItemComponent } from "./menu-item.component";
+import { MenuItemDirective } from "./menu-item.directive";
 import { MenuTriggerForDirective } from "./menu-trigger-for.directive";
 import { MenuComponent } from "./menu.component";
 
@@ -16,7 +16,7 @@ export default {
       declarations: [
         MenuTriggerForDirective,
         MenuComponent,
-        MenuItemComponent,
+        MenuItemDirective,
         MenuDividerComponent,
       ],
       imports: [OverlayModule, ButtonModule],
@@ -43,7 +43,7 @@ export const OpenMenu: Story = {
         <bit-menu-divider></bit-menu-divider>
         <button type="button" bitMenuItem>Button after divider</button>
       </bit-menu>
-
+  
       <div class="tw-h-40">
         <div class="cdk-overlay-pane bit-menu-panel">
           <ng-container *ngTemplateOutlet="myMenu.templateRef"></ng-container>
@@ -59,7 +59,7 @@ export const ClosedMenu: Story = {
       <div class="tw-h-40">
         <button bitButton buttonType="secondary" [bitMenuTriggerFor]="myMenu">Open menu</button>
       </div>
-
+  
       <bit-menu #myMenu>
         <a href="#" bitMenuItem>Anchor link</a>
         <a href="#" bitMenuItem>Another link</a>
