@@ -12,7 +12,8 @@ import { ValidationService } from "@bitwarden/common/platform/abstractions/valid
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { Icons, TableDataSource } from "@bitwarden/components";
+import { TableDataSource } from "@bitwarden/components";
+import { Devices } from "@bitwarden/web-vault/app/admin-console/icons";
 
 import { OrganizationAuthRequestService } from "../../core/services/auth-requests";
 import { PendingAuthRequestView } from "../../core/views/pending-auth-request.view";
@@ -27,7 +28,7 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
   loading = true;
   actionInProgress = false;
 
-  protected readonly Devices = Icons.Devices;
+  protected readonly Devices = Devices;
 
   private destroy$ = new Subject<void>();
   private refresh$ = new BehaviorSubject<void>(null);
