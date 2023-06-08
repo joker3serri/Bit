@@ -1,6 +1,6 @@
+import { EncString } from "../../platform/models/domain/enc-string";
 import { Collection as CollectionDomain } from "../../vault/models/domain/collection";
 import { CollectionView } from "../../vault/models/view/collection.view";
-import { EncString } from "../domain/enc-string";
 
 export class CollectionExport {
   static template(): CollectionExport {

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import {
