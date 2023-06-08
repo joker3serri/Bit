@@ -1,15 +1,10 @@
-<div class="tw-mb-1">
+<div class="tw-mb-1" *ngIf="showRegionSelector">
   <bit-menu #environmentOptions>
-    <a
-      bitMenuItem
-      [attr.href]="isEuServer ? 'https://vault.bitwarden.com' : '#'"
-      href=""
-      class="pr-4"
-    >
+    <a bitMenuItem [attr.href]="isUsServer ? '#' : 'https://vault.bitwarden.com'" class="pr-4">
       <i
         class="bwi bwi-fw bwi-sm bwi-check pb-1"
         aria-hidden="true"
-        [style.visibility]="isEuServer ? 'hidden' : 'visible'"
+        [style.visibility]="isUsServer ? 'visible' : 'hidden'"
       ></i>
       <img src="../../images/us_flag.png" alt="" class="pb-1 mr-1" />
       {{ "us" | i18n }}
@@ -37,7 +32,7 @@
       class="tw-rounded-md tw-border tw-border-solid tw-border-secondary-300 tw-bg-background tw-p-2"
     >
       <img
-        [src]="isEuServer ? '../../images/eu_flag.png' : '../../images/us_flag.png'"
+        [src]="'../../images/{{this.selectedRegionImageName}}.png'"
         alt=""
         class="pb-1 mr-1 tw-ml-1"
       /><label class="tw-cursor-pointer !tw-font-normal"
