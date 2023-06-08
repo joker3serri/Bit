@@ -1,4 +1,8 @@
 import { NgModule } from "@angular/core";
 
-@NgModule({})
+import { OrganizationAuthRequestService } from "./services/auth-requests";
+
+@NgModule({
+  providers: [OrganizationAuthRequestService],
+})
 export class CoreOrganizationModule {}

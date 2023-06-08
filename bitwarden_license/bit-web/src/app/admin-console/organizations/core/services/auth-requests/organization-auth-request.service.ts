@@ -4,14 +4,13 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
-import { CoreOrganizationModule } from "../../core-organization.module";
 import { PendingAuthRequestView } from "../../views/pending-auth-request.view";
 
 import { AdminAuthRequestUpdateRequest } from "./admin-auth-request-update.request";
 import { BulkDenyAuthRequestsRequest } from "./bulk-deny-auth-requests.request";
 import { PendingOrganizationAuthRequestResponse } from "./pending-organization-auth-request.response";
 
-@Injectable({ providedIn: CoreOrganizationModule })
+@Injectable()
 export class OrganizationAuthRequestService {
   constructor(private apiService: ApiService) {}
 
