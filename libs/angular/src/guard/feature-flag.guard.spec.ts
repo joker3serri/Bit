@@ -140,13 +140,13 @@ describe("canAccessFeature", () => {
     expect(router.url).toBe(`/${redirectRoute}`);
   });
 
-  it("successfully navigates when the config service throws an unexpected exception", async () => {
+  it("fails to navigate when the config service throws an unexpected exception", async () => {
     const { router } = setup(canAccessFeature(testFlag), true);
 
     mockConfigService.getFeatureFlagBool.mockImplementation(() => Promise.reject("Some error"));
 
     await router.navigate([featureRoute]);
 
-    expect(router.url).toBe(`/${featureRoute}`);
+    expect(router.url).toBe("/");
   });
 });
