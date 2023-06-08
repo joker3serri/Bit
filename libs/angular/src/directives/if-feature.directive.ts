@@ -60,8 +60,8 @@ export class IfFeatureDirective implements OnInit {
       }
     } catch (e) {
       this.logService.error(e);
-      this.viewContainer.createEmbeddedView(this.templateRef);
-      this.hasView = true;
+      this.viewContainer.clear();
+      this.hasView = false;
     }
   }
 }

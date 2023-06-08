@@ -125,13 +125,13 @@ describe("IfFeatureDirective", () => {
     expect(content).toBeUndefined();
   });
 
-  it("renders content when the directive throws an unexpected exception", async () => {
+  it("hides content when the directive throws an unexpected exception", async () => {
     mockConfigService.getFeatureFlagBool.mockImplementation(() => Promise.reject("Some error"));
     fixture.detectChanges();
     await fixture.whenStable();
 
     content = queryContent("boolean-content");
 
-    expect(content).toBeDefined();
+    expect(content).toBeUndefined();
   });
 });
