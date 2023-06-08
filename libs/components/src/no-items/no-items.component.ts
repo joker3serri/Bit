@@ -10,6 +10,5 @@ import { Icons } from "..";
   templateUrl: "./no-items.component.html",
 })
 export class NoItemsComponent {
-  @Input()
-  icon = Icons.Search;
+  @Input() icon = Icons.Search;
 }
