@@ -35,7 +35,7 @@ import {
 } from "../../../shared/components/access-selector";
 
 import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
-import { FreeOrgSeatLimitReachedValidator } from "./validators/free-org-inv-limit-reached.validator";
+import { freeOrgSeatLimitReachedValidator } from "./validators/free-org-inv-limit-reached.validator";
 
 export enum MemberDialogTab {
   Role = 0,
@@ -133,8 +133,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private groupService: GroupService,
     private userService: UserAdminService,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogServiceAbstraction,
-    private freeOrgSeatLimitReachedValidator: FreeOrgSeatLimitReachedValidator
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -172,9 +171,10 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         const emailsControlValidators = [
           Validators.required,
           commaSeparatedEmails,
-          this.freeOrgSeatLimitReachedValidator.validate(
+          freeOrgSeatLimitReachedValidator(
             this.organization,
-            this.params.allOrganizationUserEmails
+            this.params.allOrganizationUserEmails,
+            this.i18nService.t("subscriptionFreePlan", organization.seats)
           ),
         ];
 

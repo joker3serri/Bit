@@ -1,12 +1,10 @@
 import { AbstractControl, FormControl, ValidationErrors } from "@angular/forms";
-import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductType } from "@bitwarden/common/enums";
 
-import { FreeOrgSeatLimitReachedValidator } from "./free-org-inv-limit-reached.validator";
+import { freeOrgSeatLimitReachedValidator } from "./free-org-inv-limit-reached.validator";
 
 const orgFactory = (props: Partial<Organization> = {}) =>
   Object.assign(
@@ -19,21 +17,21 @@ const orgFactory = (props: Partial<Organization> = {}) =>
     props
   );
 
-describe("FreeOrgSeatLimitReachedValidator", () => {
+describe("freeOrgSeatLimitReachedValidator", () => {
   let organization: Organization;
   let allOrganizationUserEmails: string[];
-  let i18nService: MockProxy<I18nService>;
-  let validator: FreeOrgSeatLimitReachedValidator;
   let validatorFn: (control: AbstractControl) => ValidationErrors | null;
 
   beforeEach(() => {
-    i18nService = mock();
     allOrganizationUserEmails = ["user1@example.com"];
-    validator = new FreeOrgSeatLimitReachedValidator(i18nService);
   });
 
   it("should return null when control value is empty", () => {
-    validatorFn = validator.validate(organization, allOrganizationUserEmails);
+    validatorFn = freeOrgSeatLimitReachedValidator(
+      organization,
+      allOrganizationUserEmails,
+      "You cannot invite more than 2 members without upgrading your plan."
+    );
     const control = new FormControl("");
 
     const result = validatorFn(control);
@@ -42,7 +40,11 @@ describe("FreeOrgSeatLimitReachedValidator", () => {
   });
 
   it("should return null when control value is null", () => {
-    validatorFn = validator.validate(organization, allOrganizationUserEmails);
+    validatorFn = freeOrgSeatLimitReachedValidator(
+      organization,
+      allOrganizationUserEmails,
+      "You cannot invite more than 2 members without upgrading your plan."
+    );
     const control = new FormControl(null);
 
     const result = validatorFn(control);
@@ -55,7 +57,11 @@ describe("FreeOrgSeatLimitReachedValidator", () => {
       planProductType: ProductType.Free,
       seats: 2,
     });
-    validatorFn = validator.validate(organization, allOrganizationUserEmails);
+    validatorFn = freeOrgSeatLimitReachedValidator(
+      organization,
+      allOrganizationUserEmails,
+      "You cannot invite more than 2 members without upgrading your plan."
+    );
     const control = new FormControl("user2@example.com");
 
     const result = validatorFn(control);
@@ -68,12 +74,17 @@ describe("FreeOrgSeatLimitReachedValidator", () => {
       planProductType: ProductType.Free,
       seats: 2,
     });
-    validatorFn = validator.validate(organization, allOrganizationUserEmails);
+    const errorMessage = "You cannot invite more than 2 members without upgrading your plan.";
+    validatorFn = freeOrgSeatLimitReachedValidator(
+      organization,
+      allOrganizationUserEmails,
+      "You cannot invite more than 2 members without upgrading your plan."
+    );
     const control = new FormControl("user2@example.com,user3@example.com");
 
     const result = validatorFn(control);
 
-    expect(result).not.toBeNull();
+    expect(result).toStrictEqual({ freePlanLimitReached: { message: errorMessage } });
   });
 
   it("should return null when not on free plan", () => {
@@ -82,7 +93,11 @@ describe("FreeOrgSeatLimitReachedValidator", () => {
       planProductType: ProductType.Enterprise,
       seats: 100,
     });
-    validatorFn = validator.validate(organization, allOrganizationUserEmails);
+    validatorFn = freeOrgSeatLimitReachedValidator(
+      organization,
+      allOrganizationUserEmails,
+      "You cannot invite more than 2 members without upgrading your plan."
+    );
 
     const result = validatorFn(control);
 
