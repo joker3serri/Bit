@@ -1,4 +1,13 @@
-<h1>{{ "deviceApprovals" | i18n }}</h1>
+<h1>
+  {{ "deviceApprovals" | i18n }}
+  <i
+    class="bwi bwi-spinner bwi-spin text-muted"
+    title="{{ 'loading' | i18n }}"
+    aria-hidden="true"
+    *ngIf="actionInProgress"
+  ></i>
+  <span class="sr-only">{{ "loading" | i18n }}</span>
+</h1>
 <p>
   {{ "deviceApprovalsDesc" | i18n }}
 </p>
@@ -27,7 +36,12 @@
           appA11yTitle="{{ 'options' | i18n }}"
         ></button>
         <bit-menu #headerMenu>
-          <button type="button" bitMenuItem (click)="denyAllRequests()">
+          <button
+            type="button"
+            bitMenuItem
+            (click)="denyAllRequests()"
+            [disabled]="actionInProgress"
+          >
             <span class="tw-text-danger">
               <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
               {{ "denyAllRequests" | i18n }}
@@ -59,11 +73,21 @@
           appA11yTitle="{{ 'options' | i18n }}"
         ></button>
         <bit-menu #rowMenu>
-          <button type="button" bitMenuItem (click)="approveRequest(r)">
+          <button
+            type="button"
+            bitMenuItem
+            (click)="approveRequest(r)"
+            [disabled]="actionInProgress"
+          >
             <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
             {{ "approveRequest" | i18n }}
           </button>
-          <button type="button" bitMenuItem (click)="denyRequest(r.id)">
+          <button
+            type="button"
+            bitMenuItem
+            (click)="denyRequest(r.id)"
+            [disabled]="actionInProgress"
+          >
             <span class="tw-text-danger">
               <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
               {{ "denyRequest" | i18n }}

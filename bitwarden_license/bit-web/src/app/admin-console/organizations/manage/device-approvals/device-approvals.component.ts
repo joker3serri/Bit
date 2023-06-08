@@ -6,7 +6,9 @@ import { OrganizationUserService } from "@bitwarden/common/abstractions/organiza
 import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -23,6 +25,7 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
   tableDataSource = new TableDataSource<PendingAuthRequestView>();
   organizationId: string;
   loading = true;
+  actionInProgress = false;
 
   protected readonly Devices = Icons.Devices;
 
@@ -35,7 +38,9 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
     private cryptoService: CryptoService,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
+    private logService: LogService,
+    private validationService: ValidationService
   ) {}
 
   async ngOnInit() {
@@ -86,61 +91,79 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
     return await this.cryptoService.rsaEncrypt(userSymKey.key, devicePubKey.buffer);
   }
 
-  approveRequest = async (authRequest: PendingAuthRequestView) => {
-    const details = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
-      this.organizationId,
-      authRequest.organizationUserId
-    );
-
-    // The user must be enrolled in account recovery (password reset) in order for the request to be approved.
-    if (details == null || details.resetPasswordKey == null) {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("resetPasswordDetailsError")
+  async approveRequest(authRequest: PendingAuthRequestView) {
+    await this.performAsyncAction(async () => {
+      const details = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
+        this.organizationId,
+        authRequest.organizationUserId
       );
-      return;
-    }
 
-    const encryptedKey = await this.getEncryptedUserSymKey(authRequest.publicKey, details);
+      // The user must be enrolled in account recovery (password reset) in order for the request to be approved.
+      if (details == null || details.resetPasswordKey == null) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("resetPasswordDetailsError")
+        );
+        return;
+      }
 
-    await this.organizationAuthRequestService.approvePendingRequest(
-      this.organizationId,
-      authRequest.id,
-      encryptedKey
-    );
+      const encryptedKey = await this.getEncryptedUserSymKey(authRequest.publicKey, details);
 
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("loginRequestApproved")
-    );
+      await this.organizationAuthRequestService.approvePendingRequest(
+        this.organizationId,
+        authRequest.id,
+        encryptedKey
+      );
 
-    this.refresh$.next();
-  };
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("loginRequestApproved")
+      );
+    });
+  }
 
-  denyRequest = async (requestId: string) => {
-    await this.organizationAuthRequestService.denyPendingRequests(this.organizationId, requestId);
-    this.platformUtilsService.showToast("error", null, this.i18nService.t("loginRequestDenied"));
-    this.refresh$.next();
-  };
+  async denyRequest(requestId: string) {
+    await this.performAsyncAction(async () => {
+      await this.organizationAuthRequestService.denyPendingRequests(this.organizationId, requestId);
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("loginRequestDenied"));
+    });
+  }
 
-  denyAllRequests = async () => {
+  async denyAllRequests() {
     if (this.tableDataSource.data.length === 0) {
       return;
     }
 
-    await this.organizationAuthRequestService.denyPendingRequests(
-      this.organizationId,
-      ...this.tableDataSource.data.map((r) => r.id)
-    );
-    this.platformUtilsService.showToast(
-      "error",
-      null,
-      this.i18nService.t("allLoginRequestsDenied")
-    );
-    this.refresh$.next();
-  };
+    await this.performAsyncAction(async () => {
+      await this.organizationAuthRequestService.denyPendingRequests(
+        this.organizationId,
+        ...this.tableDataSource.data.map((r) => r.id)
+      );
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("allLoginRequestsDenied")
+      );
+    });
+  }
+
+  private async performAsyncAction(action: () => Promise<void>) {
+    if (this.actionInProgress) {
+      return;
+    }
+    this.actionInProgress = true;
+    try {
+      await action();
+      this.refresh$.next();
+    } catch (err: unknown) {
+      this.logService.error(err.toString());
+      this.validationService.showError(err);
+    } finally {
+      this.actionInProgress = false;
+    }
+  }
 
   ngOnDestroy() {
     this.destroy$.next();
