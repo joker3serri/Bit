@@ -50,6 +50,7 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
         tap((params) => (this.organizationId = params.organizationId)),
         switchMap(() =>
           this.refresh$.pipe(
+            tap(() => (this.loading = true)),
             switchMap(() =>
               this.organizationAuthRequestService.listPendingRequests(this.organizationId)
             )

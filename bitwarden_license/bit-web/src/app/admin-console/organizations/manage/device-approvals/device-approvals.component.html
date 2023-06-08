@@ -4,7 +4,7 @@
     class="bwi bwi-spinner bwi-spin text-muted"
     title="{{ 'loading' | i18n }}"
     aria-hidden="true"
-    *ngIf="actionInProgress"
+    *ngIf="actionInProgress || loading"
   ></i>
   <span class="sr-only">{{ "loading" | i18n }}</span>
 </h1>
@@ -12,16 +12,7 @@
   {{ "deviceApprovalsDesc" | i18n }}
 </p>
 
-<ng-container *ngIf="loading">
-  <i
-    class="bwi bwi-spinner bwi-spin text-muted"
-    title="{{ 'loading' | i18n }}"
-    aria-hidden="true"
-  ></i>
-  <span class="sr-only">{{ "loading" | i18n }}</span>
-</ng-container>
-
-<bit-table [dataSource]="tableDataSource" *ngIf="!loading">
+<bit-table [dataSource]="tableDataSource">
   <ng-container header>
     <tr>
       <th bitCell>{{ "member" | i18n }}</th>
