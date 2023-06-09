@@ -70,6 +70,7 @@ export class ConfigService implements ConfigServiceAbstraction, OnDestroy {
     return await this.getFeatureFlag(key, defaultValue);
   }
 
+  // TODO: break into separate PR
   getFeatureFlag$<T>(key: FeatureFlag, defaultValue: T) {
     return this.serverConfig$.pipe(
       map((serverConfig) => {
