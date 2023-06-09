@@ -271,13 +271,12 @@
   </div>
 
   <!-- Secrets Manager -->
-  <div *ngIf="formGroup.value.product !== productTypes.Families">
-    <sm-subscribe
-      [formGroup]="formGroup.controls.secretsManager"
-      [selectedPlan]="selectedPlan"
-    ></sm-subscribe>
-    {{ formGroup.value.secretsManager | json }}
-  </div>
+  <!-- TODO: add a plan.HasSecretsManager property or something -->
+  <sm-subscribe
+    *ngIf="formGroup.value.product !== productTypes.Families"
+    [formGroup]="formGroup.controls.secretsManager"
+    [selectedPlan]="selectedPlan"
+  ></sm-subscribe>
 
   <!-- Payment info -->
   <div *ngIf="formGroup.value.product !== productTypes.Free">
