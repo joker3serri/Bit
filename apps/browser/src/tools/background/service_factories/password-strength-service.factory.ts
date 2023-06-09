@@ -7,7 +7,7 @@ import {
   CachedServices,
   factory,
   FactoryOptions,
-} from "../../../background/service_factories/factory-options";
+} from "../../../platform/background/service-factories/factory-options";
 
 type PasswordStrengthServiceFactoryOptions = FactoryOptions;
 
