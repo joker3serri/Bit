@@ -243,7 +243,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         TwoFactorServiceAbstraction,
         I18nServiceAbstraction,
         EncryptService,
-        PasswordGenerationServiceAbstraction,
+        PasswordStrengthServiceAbstraction,
         PolicyServiceAbstraction,
       ],
     },
