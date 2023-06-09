@@ -59,6 +59,7 @@ import { BillingSyncKeyComponent } from "../billing/settings/billing-sync-key.co
 import { OrganizationPlansComponent } from "../billing/settings/organization-plans.component";
 import { PaymentMethodComponent } from "../billing/settings/payment-method.component";
 import { PaymentComponent } from "../billing/settings/payment.component";
+import { SecretsManagerSubscribeComponent } from "../billing/settings/sm-subscribe.component";
 import { SubscriptionComponent } from "../billing/settings/subscription.component";
 import { TaxInfoComponent } from "../billing/settings/tax-info.component";
 import { UserSubscriptionComponent } from "../billing/settings/user-subscription.component";
@@ -164,6 +165,7 @@ import { SharedModule } from "./shared.module";
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
+    SecretsManagerSubscribeComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,
@@ -269,6 +271,7 @@ import { SharedModule } from "./shared.module";
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
+    SecretsManagerSubscribeComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,

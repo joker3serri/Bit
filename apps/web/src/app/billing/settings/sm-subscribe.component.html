@@ -1,0 +1,68 @@
+<form *ngIf="formGroup" [formGroup]="formGroup" class="tw-border-secondary-300">
+  <h3 bitTypography="h3">{{ "moreFromBitwarden" | i18n }}</h3>
+  <div>
+    <div class="tw-bg-background-alt3 tw-text-contrast">
+      <i class="bwi bwi-shield"></i>
+      <span bitTypography="h3">{{ "secretsManager" | i18n }}</span>
+    </div>
+    <h3 bitTypography="h3">{{ "secretsManagerForPlan" | i18n : planName }}</h3>
+    <div class="tw-text-muted">
+      {{ "secretsManagerForPlanDesc" | i18n }}
+      <ul>
+        <li *ngIf="product == productTypes.Free">{{ "limitedUsers" | i18n : "TODO" }}</li>
+        <li>{{ "unlimitedSecrets" | i18n }}</li>
+        <li *ngIf="product == productTypes.Free; else unlimitedProjects">
+          {{ "includedProjects" | i18n : "TODO" }}
+        </li>
+        <ng-template #unlimitedProjects>
+          <li>{{ "unlimitedProjects" | i18n }}</li>
+        </ng-template>
+        <li>{{ "includedServiceAccounts" | i18n : "TODO" }}</li>
+        <li *ngIf="product != productTypes.Free">
+          {{ "additionalServiceAccountCost" | i18n : "TODO" }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- TODO: consider refactoring into a component, this is basically a copy/paste from OrganizationPlans -->
+    <!-- TODO: currently using PM pricing, need to use SM plan when available -->
+    <span *ngIf="product != productTypes.Free">
+      <ng-container *ngIf="selectedPlan.basePrice">
+        {{ selectedPlan.basePrice / 12 | currency : "$" }} /{{ "month" | i18n }},
+        {{ "includesXUsers" | i18n : selectedPlan.baseSeats }}
+        <ng-container *ngIf="selectedPlan.hasAdditionalSeatsOption">
+          {{ ("additionalUsers" | i18n).toLowerCase() }}
+          {{ selectedPlan.seatPrice / 12 | currency : "$" }} /{{ "month" | i18n }}
+        </ng-container>
+      </ng-container>
+    </span>
+    <span *ngIf="!selectedPlan.basePrice && selectedPlan.hasAdditionalSeatsOption">
+      {{ "costPerUser" | i18n : (selectedPlan.seatPrice / 12 | currency : "$") }} /{{
+        "month" | i18n
+      }}
+    </span>
+    <span *ngIf="product == productTypes.Free">{{ "freeForever" | i18n }}</span>
+
+    <bit-form-control>
+      <input type="checkbox" bitCheckbox formControlName="enabled" />
+      <bit-label>{{ "addSecretsManager" | i18n }}</bit-label>
+    </bit-form-control>
+
+    <ng-container *ngIf="formGroup.value.enabled">
+      <bit-form-field>
+        <bit-label>{{ "userSeats" | i18n }}</bit-label>
+        <input bitInput formControlName="userSeats" />
+        <bit-hint>{{ "userSeatsHowManyDesc" | i18n }}</bit-hint>
+      </bit-form-field>
+
+      <bit-form-field>
+        <bit-label>{{ "additionalServiceAccounts" | i18n }}</bit-label>
+        <input bitInput formControlName="additionalServiceAccounts" />
+        <bit-hint>{{
+          "additionalServiceAccountsDesc"
+            | i18n : includedServiceAccounts : additionalServiceAccountCost
+        }}</bit-hint>
+      </bit-form-field>
+    </ng-container>
+  </div>
+</form>

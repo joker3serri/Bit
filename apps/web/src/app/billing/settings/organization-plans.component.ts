@@ -7,10 +7,11 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { UntypedFormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
+import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -33,6 +34,7 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { PaymentComponent } from "./payment.component";
+import { SecretsManagerSubscription } from "./sm-subscribe.component";
 import { TaxInfoComponent } from "./tax-info.component";
 
 interface OnSuccessArgs {
@@ -83,6 +85,16 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   isInTrialFlow = false;
   discount = 0;
 
+  secretsManagerSubscription: FormGroup<ControlsOf<SecretsManagerSubscription>> =
+    this.formBuilder.group({
+      enabled: [false],
+      userSeats: [1, [Validators.required, Validators.min(0), Validators.max(100000)]],
+      additionalServiceAccounts: [
+        0,
+        [Validators.required, Validators.min(0), Validators.max(100000)],
+      ],
+    });
+
   formGroup = this.formBuilder.group({
     name: [""],
     billingEmail: ["", [Validators.email]],
@@ -94,6 +106,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     businessName: [""],
     plan: [this.plan],
     product: [this.product],
+    secretsManager: this.secretsManagerSubscription,
   });
 
   plans: PlanResponse[];
@@ -111,7 +124,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private logService: LogService,
     private messagingService: MessagingService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private organizationApiService: OrganizationApiServiceAbstraction
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
