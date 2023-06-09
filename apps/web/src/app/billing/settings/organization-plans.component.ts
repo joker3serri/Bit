@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Observable, Subject, takeUntil } from "rxjs";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -24,6 +24,8 @@ import { ProviderOrganizationCreateRequest } from "@bitwarden/common/admin-conso
 import { PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { ProductType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -84,6 +86,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   singleOrgPolicyAppliesToActiveUser = false;
   isInTrialFlow = false;
   discount = 0;
+  showSecretsManagerBilling$: Observable<boolean>;
 
   secretsManagerSubscription: FormGroup<ControlsOf<SecretsManagerSubscription>> =
     this.formBuilder.group({
@@ -125,9 +128,14 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private messagingService: MessagingService,
     private formBuilder: FormBuilder,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private configService: ConfigServiceAbstraction
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
+    this.showSecretsManagerBilling$ = this.configService.getFeatureFlag$(
+      FeatureFlag.SecretsManagerBilling,
+      false
+    );
   }
 
   async ngOnInit() {

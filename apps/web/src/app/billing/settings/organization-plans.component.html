@@ -273,7 +273,9 @@
   <!-- Secrets Manager -->
   <!-- TODO: add a plan.HasSecretsManager property or something -->
   <sm-subscribe
-    *ngIf="formGroup.value.product !== productTypes.Families"
+    *ngIf="
+      (showSecretsManagerBilling$ | async) && formGroup.value.product !== productTypes.Families
+    "
     [formGroup]="formGroup.controls.secretsManager"
     [selectedPlan]="selectedPlan"
   ></sm-subscribe>

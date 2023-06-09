@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { BehaviorSubject, Subject, concatMap, from, takeUntil, timer } from "rxjs";
+import { BehaviorSubject, Subject, concatMap, from, map, takeUntil, timer } from "rxjs";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
@@ -68,6 +68,18 @@ export class ConfigService implements ConfigServiceAbstraction, OnDestroy {
 
   async getFeatureFlagNumber(key: FeatureFlag, defaultValue = 0): Promise<number> {
     return await this.getFeatureFlag(key, defaultValue);
+  }
+
+  getFeatureFlag$<T>(key: FeatureFlag, defaultValue: T) {
+    return this.serverConfig$.pipe(
+      map((serverConfig) => {
+        if (serverConfig?.featureStates == null || serverConfig.featureStates[key] == null) {
+          return defaultValue;
+        }
+
+        return serverConfig.featureStates[key] as T;
+      })
+    );
   }
 
   private async getFeatureFlag<T>(key: FeatureFlag, defaultValue: T): Promise<T> {
