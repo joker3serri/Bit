@@ -9,7 +9,7 @@ import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { FormValidationErrorsService } from "@bitwarden/common/platform/abstractions/form-validation-errors.service";
+import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";

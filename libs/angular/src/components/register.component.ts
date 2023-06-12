@@ -13,10 +13,6 @@ import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenc
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import {
-  AllValidationErrors,
-  FormValidationErrorsService,
-} from "@bitwarden/common/platform/abstractions/form-validation-errors.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -24,6 +20,10 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
+import {
+  AllValidationErrors,
+  FormValidationErrorsService,
+} from "../platform/abstractions/form-validation-errors.service";
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
 import { DialogServiceAbstraction, SimpleDialogType } from "../services/dialog";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
