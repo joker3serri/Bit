@@ -15,6 +15,7 @@ export default {
     showText: true,
     size: "default",
     bgColor: "primary",
+    minWidth: 0,
   },
 } as Meta;
 
@@ -36,5 +37,12 @@ export const CustomText: Story = {
   args: {
     barWidth: 25,
     text: "Loading...",
+  },
+};
+
+export const MinWidth: Story = {
+  args: {
+    barWidth: 0,
+    minWidth: 5,
   },
 };
