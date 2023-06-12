@@ -6844,5 +6844,8 @@
   },
   "updatedTempPassword": {
     "message": "User updated a password issued through account recovery."
+  },
+  "passwordManager": {
+    "message": "Password Manager"
   }
 }
