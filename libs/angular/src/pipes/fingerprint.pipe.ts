@@ -9,13 +9,16 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 export class FingerprintPipe {
   constructor(private cryptoService: CryptoService) {}
 
-  async transform(publicKey: string | Uint8Array, userId: string): Promise<string> {
+  async transform(publicKey: string | Uint8Array, fingerprintMaterial: string): Promise<string> {
     try {
       if (typeof publicKey === "string") {
         publicKey = Utils.fromB64ToArray(publicKey);
       }
 
-      const fingerprint = await this.cryptoService.getFingerprint(userId, publicKey.buffer);
+      const fingerprint = await this.cryptoService.getFingerprint(
+        fingerprintMaterial,
+        publicKey.buffer
+      );
 
       if (fingerprint != null) {
         return fingerprint.join("-");
