@@ -83,9 +83,9 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   }
 
   async updateEnvironmentInfo() {
-    this.euServerFlagEnabled = !(await this.configService.getFeatureFlagBool(
+    this.euServerFlagEnabled = await this.configService.getFeatureFlagBool(
       FeatureFlag.DisplayEuEnvironmentFlag
-    ));
+    );
 
     if (
       this.environmentService.compareCurrentWithUrls(this.environmentService.usUrls) ||
