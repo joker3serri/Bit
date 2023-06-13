@@ -19,6 +19,8 @@ export type PayPalConfig = {
 
 export abstract class EnvironmentService {
   urls: Observable<Urls>;
+  usUrls: Urls;
+  euUrls: Urls;
 
   hasBaseUrl: () => boolean;
   getNotificationsUrl: () => string;
@@ -34,6 +36,8 @@ export abstract class EnvironmentService {
   setUrls: (urls: Urls) => Promise<Urls>;
   getUrls: () => Urls;
   isCloud: () => boolean;
+  compareCurrentWithUrls: (urls: Urls) => boolean;
+  isEmpty: () => boolean;
   /**
    * @remarks For desktop and browser use only.
    * For web, use PlatformUtilsService.isSelfHost()

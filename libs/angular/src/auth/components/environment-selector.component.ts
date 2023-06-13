@@ -6,7 +6,7 @@ import { Subject, takeUntil } from "rxjs";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/platform/abstractions/environment.service";
 
 @Component({
   selector: "environment-selector",
@@ -50,7 +50,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   protected componentDestroyed$: Subject<void> = new Subject();
 
   constructor(
-    protected environmentService: EnvironmentService,
+    protected environmentService: EnvironmentServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
     protected router: Router
   ) {}
@@ -72,10 +72,10 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     if (option === null) {
       return;
     }
-    if (option === ServerEnvironment.EU) {
-      await this.environmentService.setUrls({ base: "https://vault.bitwarden.eu" });
-    } else if (option === ServerEnvironment.US) {
-      await this.environmentService.setUrls({ base: "https://vault.bitwarden.com" });
+    if (option === ServerEnvironment.US) {
+      await this.environmentService.setUrls(this.environmentService.usUrls);
+    } else if (option === ServerEnvironment.EU) {
+      await this.environmentService.setUrls(this.environmentService.euUrls);
     } else if (option === ServerEnvironment.SelfHosted) {
       this.onOpenSelfHostedSettings.emit();
     }
@@ -83,15 +83,21 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   }
 
   async updateEnvironmentInfo() {
-    this.euServerFlagEnabled = await this.configService.getFeatureFlagBool(
+    this.euServerFlagEnabled = !(await this.configService.getFeatureFlagBool(
       FeatureFlag.DisplayEuEnvironmentFlag
-    );
-    const webvaultUrl = this.environmentService.getWebVaultUrl();
-    if (this.environmentService.isSelfHosted()) {
-      this.selectedEnvironment = ServerEnvironment.SelfHosted;
-    } else if (webvaultUrl != null && webvaultUrl.includes("bitwarden.eu")) {
+    ));
+
+    if (
+      this.environmentService.compareCurrentWithUrls(this.environmentService.usUrls) ||
+      this.environmentService.isEmpty()
+    ) {
+      this.selectedEnvironment = ServerEnvironment.US;
+    } else if (this.environmentService.compareCurrentWithUrls(this.environmentService.euUrls)) {
       this.selectedEnvironment = ServerEnvironment.EU;
+    } else if (!this.environmentService.isEmpty()) {
+      this.selectedEnvironment = ServerEnvironment.SelfHosted;
     } else {
+      await this.environmentService.setUrls(this.environmentService.usUrls);
       this.selectedEnvironment = ServerEnvironment.US;
     }
   }

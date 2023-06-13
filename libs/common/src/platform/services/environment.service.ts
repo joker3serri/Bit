@@ -21,6 +21,28 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   private keyConnectorUrl: string;
   private scimUrl: string = null;
 
+  readonly usUrls: Urls = {
+    base: null,
+    api: "https://api.bitwarden.com",
+    identity: "https://identity.bitwarden.com",
+    icons: "https://icons.bitwarden.com",
+    webVault: "https://vault.bitwarden.com",
+    notifications: "https://notifications.bitwarden.com",
+    events: "https://events.bitwarden.com",
+    scim: "https://scim.bitwarden.com/v2",
+  };
+
+  readonly euUrls: Urls = {
+    base: null,
+    api: "https://api.bitwarden.eu",
+    identity: "https://identity.bitwarden.eu",
+    icons: "https://icons.bitwarden.eu",
+    webVault: "https://vault.bitwarden.eu",
+    notifications: "https://notifications.bitwarden.eu",
+    events: "https://events.bitwarden.eu",
+    scim: "https://scim.bitwarden.eu/v2",
+  };
+
   constructor(private stateService: StateService) {
     this.stateService.activeAccount$
       .pipe(
@@ -193,6 +215,28 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       keyConnector: this.keyConnectorUrl,
       scim: this.scimUrl,
     };
+  }
+
+  compareCurrentWithUrls(urls: Urls) {
+    return (
+      urls.webVault === this.webVaultUrl &&
+      urls.api === this.apiUrl &&
+      urls.identity === this.identityUrl &&
+      urls.icons === this.iconsUrl &&
+      urls.notifications === this.notificationsUrl &&
+      urls.events === this.eventsUrl
+    );
+  }
+
+  isEmpty(): boolean {
+    return (
+      this.webVaultUrl == null &&
+      this.apiUrl == null &&
+      this.identityUrl == null &&
+      this.iconsUrl == null &&
+      this.notificationsUrl == null &&
+      this.eventsUrl == null
+    );
   }
 
   private formatUrl(url: string): string {

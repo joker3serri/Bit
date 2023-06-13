@@ -25,6 +25,12 @@ export class EnvironmentComponent {
     private modalService: ModalService
   ) {
     const urls = this.environmentService.getUrls();
+    if (
+      this.environmentService.compareCurrentWithUrls(this.environmentService.usUrls) ||
+      this.environmentService.compareCurrentWithUrls(this.environmentService.euUrls)
+    ) {
+      return;
+    }
 
     this.baseUrl = urls.base || "";
     this.webVaultUrl = urls.webVault || "";
