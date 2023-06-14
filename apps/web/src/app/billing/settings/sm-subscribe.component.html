@@ -53,21 +53,21 @@
       <bit-label>{{ "addSecretsManager" | i18n }}</bit-label>
     </bit-form-control>
 
-    <ng-container *ngIf="formGroup.value.enabled">
+    <div *ngIf="formGroup.value.enabled && selectedPlan.hasAdditionalSeatsOption" class="tw-w-1/2">
       <bit-form-field>
         <bit-label>{{ "userSeats" | i18n }}</bit-label>
-        <input bitInput formControlName="userSeats" />
+        <input bitInput formControlName="userSeats" type="number" />
         <bit-hint>{{ "userSeatsHowManyDesc" | i18n }}</bit-hint>
       </bit-form-field>
 
       <bit-form-field>
         <bit-label>{{ "additionalServiceAccounts" | i18n }}</bit-label>
-        <input bitInput formControlName="additionalServiceAccounts" />
+        <input bitInput formControlName="additionalServiceAccounts" type="number" />
         <bit-hint>{{
           "additionalServiceAccountsDesc"
             | i18n : serviceAccountsIncluded : additionalServiceAccountCost
         }}</bit-hint>
       </bit-form-field>
-    </ng-container>
+    </div>
   </div>
 </form>
