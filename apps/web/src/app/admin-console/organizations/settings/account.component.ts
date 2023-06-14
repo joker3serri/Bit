@@ -86,30 +86,25 @@ export class AccountComponent {
     this.route.parent.parent.params
       .pipe(
         map((params) => this.organizationService.get(params.organizationId)),
-        switchMap(async (organization: Organization) => {
+        switchMap((organization: Organization) => {
           // Set domain level organization variables
           this.organizationId = organization.id;
           this.canEditSubscription = organization.canEditSubscription;
           this.canUseApi = organization.useApi;
 
-          combineLatest([
+          return combineLatest([
             // OrganizationResponse for form population
-            from(this.organizationApiService.get(this.organizationId)).pipe(
-              map((organizationResponse) => {
-                this.org = organizationResponse;
-              })
-            ),
+            from(this.organizationApiService.get(this.organizationId)),
             // Organization Public Key
-            from(this.organizationApiService.getKeys(this.organizationId)).pipe(
-              map((orgKeys) => {
-                this.publicKeyBuffer = Utils.fromB64ToArray(orgKeys?.publicKey)?.buffer;
-              })
-            ),
+            from(this.organizationApiService.getKeys(this.organizationId)),
           ]);
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
+      .subscribe(([orgResponse, orgKeys]) => {
+        this.org = orgResponse;
+        this.publicKeyBuffer = Utils.fromB64ToArray(orgKeys?.publicKey)?.buffer;
+
         // Patch existing values
         this.formGroup.patchValue({
           orgName: this.org.name,
