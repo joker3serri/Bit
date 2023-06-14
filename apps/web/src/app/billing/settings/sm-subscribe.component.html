@@ -1,4 +1,4 @@
-<form *ngIf="formGroup" [formGroup]="formGroup">
+<form *ngIf="formGroup && selectedPlan != null" [formGroup]="formGroup">
   <h3 bitTypography="h3">{{ "moreFromBitwarden" | i18n }}</h3>
   <div class="tw-rounded-t tw-bg-background-alt3 tw-p-4">
     <div class="tw-w-80">
@@ -12,17 +12,19 @@
     <div class="tw-text-muted">
       {{ "secretsManagerForPlanDesc" | i18n }}
       <ul>
-        <li *ngIf="product == productTypes.Free">{{ "limitedUsers" | i18n : "TODO" }}</li>
+        <li *ngIf="product == productTypes.Free">{{ "limitedUsers" | i18n : maxUsers }}</li>
         <li>{{ "unlimitedSecrets" | i18n }}</li>
         <li *ngIf="product == productTypes.Free; else unlimitedProjects">
-          {{ "projectsIncluded" | i18n : "TODO" }}
+          {{ "projectsIncluded" | i18n : maxProjects }}
         </li>
         <ng-template #unlimitedProjects>
           <li>{{ "unlimitedProjects" | i18n }}</li>
         </ng-template>
-        <li>{{ "serviceAccountsIncluded" | i18n : "TODO" }}</li>
+        <li>{{ "serviceAccountsIncluded" | i18n : serviceAccountsIncluded }}</li>
         <li *ngIf="product != productTypes.Free">
-          {{ "additionalServiceAccountCost" | i18n : "TODO" }}
+          {{
+            "additionalServiceAccountCost" | i18n : (additionalServiceAccountCost | currency : "$")
+          }}
         </li>
       </ul>
     </div>

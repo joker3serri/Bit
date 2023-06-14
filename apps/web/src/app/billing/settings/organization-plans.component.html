@@ -28,7 +28,7 @@
   (ngSubmit)="submit()"
   [appApiAction]="formPromise"
   ngNativeValidate
-  *ngIf="!loading && !selfHosted && this.plans"
+  *ngIf="!loading && !selfHosted && this.passwordManagerPlans && this.secretsManagerPlans"
   class="tw-pt-6"
 >
   <app-org-info
@@ -277,7 +277,7 @@
       (showSecretsManagerBilling$ | async) && formGroup.value.product !== productTypes.Families
     "
     [formGroup]="formGroup.controls.secretsManager"
-    [selectedPlan]="selectedPlan"
+    [selectedPlan]="selectedSecretsManagerPlan"
   ></sm-subscribe>
 
   <!-- Payment info -->

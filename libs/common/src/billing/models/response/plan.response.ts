@@ -1,10 +1,12 @@
 import { ProductType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
 import { PlanType } from "../../enums";
+import { BitwardenProductType } from "../../enums/bitwardenProductType";
 
 export class PlanResponse extends BaseResponse {
   type: PlanType;
   product: ProductType;
+  bitwardenProduct: BitwardenProductType;
   name: string;
   isAnnual: boolean;
   nameLocalizationKey: string;
@@ -48,6 +50,12 @@ export class PlanResponse extends BaseResponse {
   additionalStoragePricePerGb: number;
   premiumAccessOptionPrice: number;
 
+  // SM only
+  additionalPricePerServiceAccount: number;
+  baseServiceAccount: number;
+  maxServiceAccount: number;
+  hasAdditionalServiceAccountOption: boolean;
+
   constructor(response: any) {
     super(response);
     this.type = this.getResponseProperty("Type");
@@ -90,5 +98,15 @@ export class PlanResponse extends BaseResponse {
     this.seatPrice = this.getResponseProperty("SeatPrice");
     this.additionalStoragePricePerGb = this.getResponseProperty("AdditionalStoragePricePerGb");
     this.premiumAccessOptionPrice = this.getResponseProperty("PremiumAccessOptionPrice");
+
+    this.bitwardenProduct = this.getResponseProperty("BitwardenProduct");
+    this.additionalPricePerServiceAccount = this.getResponseProperty(
+      "AdditionalPricePerServiceAccount"
+    );
+    this.baseServiceAccount = this.getResponseProperty("BaseServiceAccount");
+    this.maxServiceAccount = this.getResponseProperty("MaxServiceAccount");
+    this.hasAdditionalServiceAccountOption = this.getResponseProperty(
+      "HasAdditionalServiceAccountOption"
+    );
   }
 }

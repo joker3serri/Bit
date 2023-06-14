@@ -22,6 +22,7 @@ import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/
 import { OrganizationUpgradeRequest } from "@bitwarden/common/admin-console/models/request/organization-upgrade.request";
 import { ProviderOrganizationCreateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-organization-create.request";
 import { PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
+import { BitwardenProductType } from "@bitwarden/common/billing/enums/bitwardenProductType";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { ProductType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -112,7 +113,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     secretsManager: this.secretsManagerSubscription,
   });
 
-  plans: PlanResponse[];
+  passwordManagerPlans: PlanResponse[];
+  secretsManagerPlans: PlanResponse[];
 
   private destroy$ = new Subject<void>();
 
@@ -141,7 +143,13 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.selfHosted) {
       const plans = await this.apiService.getPlans();
-      this.plans = plans.data;
+      this.passwordManagerPlans = plans.data.filter(
+        (plan) => plan.bitwardenProduct === BitwardenProductType.PasswordManager
+      );
+      this.secretsManagerPlans = plans.data.filter(
+        (plan) => plan.bitwardenProduct === BitwardenProductType.SecretsManager
+      );
+
       if (this.product === ProductType.Enterprise || this.product === ProductType.Teams) {
         this.formGroup.controls.businessOwned.setValue(true);
       }
@@ -186,7 +194,15 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   get selectedPlan() {
-    return this.plans.find((plan) => plan.type === this.formGroup.controls.plan.value);
+    return this.passwordManagerPlans.find(
+      (plan) => plan.type === this.formGroup.controls.plan.value
+    );
+  }
+
+  get selectedSecretsManagerPlan() {
+    return this.secretsManagerPlans.find(
+      (plan) => plan.type === this.formGroup.controls.plan.value
+    );
   }
 
   get selectedPlanInterval() {
@@ -194,7 +210,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   get selectableProducts() {
-    let validPlans = this.plans.filter((plan) => plan.type !== PlanType.Custom);
+    let validPlans = this.passwordManagerPlans.filter((plan) => plan.type !== PlanType.Custom);
 
     if (this.formGroup.controls.businessOwned.value) {
       validPlans = validPlans.filter((plan) => plan.canBeUsedByBusiness);
@@ -212,7 +228,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     );
 
     if (this.acceptingSponsorship) {
-      const familyPlan = this.plans.find((plan) => plan.type === PlanType.FamiliesAnnually);
+      const familyPlan = this.passwordManagerPlans.find(
+        (plan) => plan.type === PlanType.FamiliesAnnually
+      );
       this.discount = familyPlan.basePrice;
       validPlans = [familyPlan];
     }
@@ -221,7 +239,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   get selectablePlans() {
-    return this.plans?.filter(
+    return this.passwordManagerPlans?.filter(
       (plan) =>
         !plan.legacyYear && !plan.disabled && plan.product === this.formGroup.controls.product.value
     );

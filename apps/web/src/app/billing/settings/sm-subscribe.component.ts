@@ -64,17 +64,24 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO
   get serviceAccountsIncluded() {
-    return "INCSERVICEACCOUNTS";
+    return this.selectedPlan.baseServiceAccount;
   }
 
-  // TODO
   get additionalServiceAccountCost() {
-    return "EXTRASERVICEACCOUNTCOST";
+    return this.selectedPlan.additionalPricePerServiceAccount;
+  }
+
+  get maxUsers() {
+    return this.selectedPlan.maxUsers;
+  }
+
+  get maxProjects() {
+    return "TODO";
   }
 
   // TODO: should get supports SM value from plan itself
+  // TODO move to parent component or it just wont' run if the component isn't rendered
   @Input() set selectedPlan(value: PlanResponse) {
     this._selectedPlan = value;
 
