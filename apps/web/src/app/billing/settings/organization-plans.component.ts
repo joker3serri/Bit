@@ -329,9 +329,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     return this.formGroup.controls.secretsManager;
   }
 
-  get canUseSecretsManager() {
-    // TODO this should come from the plan
-    return this.product !== ProductType.Families;
+  get planOffersSecretsManager() {
+    return this.selectedSecretsManagerPlan != null;
   }
 
   changedProduct() {
@@ -457,7 +456,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
     // Secrets Manager
     request.secretsManagerEnabled =
-      this.canUseSecretsManager && this.secretsManagerForm.value.enabled;
+      this.planOffersSecretsManager && this.secretsManagerForm.value.enabled;
     if (request.secretsManagerEnabled) {
       request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
       request.secretsManagerAdditionalServiceAccounts =
@@ -521,7 +520,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
     // Secrets Manager
     request.secretsManagerEnabled =
-      this.canUseSecretsManager && this.secretsManagerForm.value.enabled;
+      this.planOffersSecretsManager && this.secretsManagerForm.value.enabled;
     if (request.secretsManagerEnabled) {
       request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
       request.secretsManagerAdditionalServiceAccounts =
