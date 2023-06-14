@@ -61,6 +61,8 @@ export default class RuntimeBackground {
   }
 
   async processMessage(msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) {
+    const cipherId = msg.data?.cipherId;
+
     switch (msg.command) {
       case "loggedIn":
       case "unlocked": {
@@ -110,11 +112,19 @@ export default class RuntimeBackground {
       case "bgReopenPromptForLogin":
         await this.browserPopoutWindowService.openLoginPrompt(sender.tab?.windowId);
         break;
+      case "passwordReprompt":
+        if (cipherId) {
+          BrowserApi.openBitwardenExtensionTab(
+            `popup/index.html#/view-cipher?cipherId=${cipherId}&senderTabId=${sender.tab.id}`,
+            true
+          );
+        }
+        break;
       case "openAddEditCipher": {
         const addEditCipherUrl =
-          msg.data?.cipherId == null
+          cipherId == null
             ? "popup/index.html#/edit-cipher"
-            : "popup/index.html#/edit-cipher?cipherId=" + msg.data.cipherId;
+            : "popup/index.html#/edit-cipher?cipherId=" + cipherId;
 
         BrowserApi.openBitwardenExtensionTab(addEditCipherUrl, true);
         break;
