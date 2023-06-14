@@ -74,16 +74,6 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
     return "EXTRASERVICEACCOUNTCOST";
   }
 
-  get costPerUser() {
-    if (this.product === ProductType.Free) {
-      return this.i18nService.t("freeForever");
-    }
-
-    if (this.selectedPlan.isAnnual) {
-      return this.i18nService.t("");
-    }
-  }
-
   // TODO: should get supports SM value from plan itself
   @Input() set selectedPlan(value: PlanResponse) {
     this._selectedPlan = value;
