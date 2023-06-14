@@ -15,7 +15,7 @@
         <li *ngIf="product == productTypes.Free">{{ "limitedUsers" | i18n : "TODO" }}</li>
         <li>{{ "unlimitedSecrets" | i18n }}</li>
         <li *ngIf="product == productTypes.Free; else unlimitedProjects">
-          {{ "includedProjects" | i18n : "TODO" }}
+          {{ "projectsIncluded" | i18n : "TODO" }}
         </li>
         <ng-template #unlimitedProjects>
           <li>{{ "unlimitedProjects" | i18n }}</li>
@@ -63,7 +63,7 @@
         <input bitInput formControlName="additionalServiceAccounts" />
         <bit-hint>{{
           "additionalServiceAccountsDesc"
-            | i18n : includedServiceAccounts : additionalServiceAccountCost
+            | i18n : serviceAccountsIncluded : additionalServiceAccountCost
         }}</bit-hint>
       </bit-form-field>
     </ng-container>

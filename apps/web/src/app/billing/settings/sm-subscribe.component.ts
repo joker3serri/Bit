@@ -65,7 +65,7 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   }
 
   // TODO
-  get includedServiceAccounts() {
+  get serviceAccountsIncluded() {
     return "INCSERVICEACCOUNTS";
   }
 

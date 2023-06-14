@@ -6869,8 +6869,8 @@
   "unlimitedProjects": {
     "message": "Unlimited projects"
   },
-  "includedProjects": {
-    "message": "$COUNT$ included projects",
+  "projectsIncluded": {
+    "message": "$COUNT$ projects included",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -6878,8 +6878,8 @@
       }
     }
   },
-  "includedServiceAccounts": {
-    "message": "$COUNT$ included service accounts",
+  "serviceAccountsIncluded": {
+    "message": "$COUNT$ service accounts included",
     "placeholders": {
       "count": {
         "content": "$1",
