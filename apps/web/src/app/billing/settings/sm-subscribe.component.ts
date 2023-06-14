@@ -7,6 +7,8 @@ import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.res
 import { ProductType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
+import { SecretsManagerLogo } from "../../../../../../bitwarden_license/bit-web/src/app/secrets-manager/layout/secrets-manager-logo";
+
 export interface SecretsManagerSubscription {
   enabled: boolean;
   userSeats: number;
@@ -21,6 +23,7 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup<ControlsOf<SecretsManagerSubscription>>;
   @Input() selectedPlan: PlanResponse;
 
+  logo = SecretsManagerLogo;
   productTypes = ProductType;
 
   private destroy$ = new Subject<void>();
