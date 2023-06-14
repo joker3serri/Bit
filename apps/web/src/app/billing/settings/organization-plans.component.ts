@@ -307,6 +307,15 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     }
   }
 
+  get secretsManagerForm() {
+    return this.formGroup.controls.secretsManager;
+  }
+
+  get canUseSecretsManager() {
+    // TODO this should come from the plan
+    return this.product !== ProductType.Families;
+  }
+
   changedProduct() {
     this.formGroup.controls.plan.setValue(this.selectablePlans[0].type);
     if (!this.selectedPlan.hasPremiumAccessOption) {
@@ -428,6 +437,15 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     request.billingAddressCountry = this.taxComponent.taxInfo.country;
     request.billingAddressPostalCode = this.taxComponent.taxInfo.postalCode;
 
+    // Secrets Manager
+    request.secretsManagerEnabled =
+      this.canUseSecretsManager && this.secretsManagerForm.value.enabled;
+    if (request.secretsManagerEnabled) {
+      request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
+      request.secretsManagerAdditionalServiceAccounts =
+        this.secretsManagerForm.value.additionalServiceAccounts;
+    }
+
     // Retrieve org info to backfill pub/priv key if necessary
     const org = await this.organizationService.get(this.organizationId);
     if (!org.hasPublicAndPrivateKeys) {
@@ -481,6 +499,15 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         request.billingAddressCity = this.taxComponent.taxInfo.city;
         request.billingAddressState = this.taxComponent.taxInfo.state;
       }
+    }
+
+    // Secrets Manager
+    request.secretsManagerEnabled =
+      this.canUseSecretsManager && this.secretsManagerForm.value.enabled;
+    if (request.secretsManagerEnabled) {
+      request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
+      request.secretsManagerAdditionalServiceAccounts =
+        this.secretsManagerForm.value.additionalServiceAccounts;
     }
 
     if (this.providerId) {
