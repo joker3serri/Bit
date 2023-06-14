@@ -8,6 +8,8 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { SsoLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -33,6 +35,7 @@ export class SsoComponent {
   protected twoFactorRoute = "2fa";
   protected successRoute = "lock";
   protected changePasswordRoute = "set-password";
+  protected tdeLogin = "login-initiated";
   protected forcePasswordResetRoute = "update-temp-password";
   protected clientId: string;
   protected redirectUri: string;
@@ -50,7 +53,8 @@ export class SsoComponent {
     protected cryptoFunctionService: CryptoFunctionService,
     protected environmentService: EnvironmentService,
     protected passwordGenerationService: PasswordGenerationServiceAbstraction,
-    protected logService: LogService
+    protected logService: LogService,
+    protected configService: ConfigServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -201,6 +205,15 @@ export class SsoComponent {
             },
           });
         }
+      } else if (
+        response.resetMasterPassword &&
+        this.configService.getFeatureFlagBool(FeatureFlag.TrustedDeviceEncryption)
+      ) {
+        this.router.navigate([this.tdeLogin], {
+          queryParams: {
+            identifier: orgIdFromState,
+          },
+        });
       } else if (response.resetMasterPassword) {
         if (this.onSuccessfulLoginChangePasswordNavigate != null) {
           await this.onSuccessfulLoginChangePasswordNavigate();
