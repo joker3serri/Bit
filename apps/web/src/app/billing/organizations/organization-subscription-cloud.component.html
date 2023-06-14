@@ -63,17 +63,36 @@
       </ng-container>
     </dl>
     <ng-container *ngIf="userOrg.canEditSubscription">
-      <div class="tw-flex-col" *ngIf="subscription">
-        <strong class="tw-mb-1 tw-block">{{ "details" | i18n }}</strong>
+      <div class="tw-mb-7 tw-flex-col">
+        <strong class="tw-block tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300">{{
+          "details" | i18n
+        }}</strong>
         <bit-table>
           <ng-template body>
-            <tr bitRow *ngFor="let i of subscription.items">
-              <td bitCell>
-                {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} @
-                {{ i.amount | currency : "$" }}
-              </td>
-              <td bitCell>{{ i.quantity * i.amount | currency : "$" }} /{{ i.interval | i18n }}</td>
-            </tr>
+            <ng-container *ngIf="subscription">
+              <tr bitRow *ngFor="let i of lineItems">
+                <td bitCell [ngClass]="{ 'tw-pl-20': i.addonSubscriptionItem }">
+                  <span *ngIf="!i.addonSubscriptionItem"
+                    >{{ productName(i.bitwardenProduct) }} -</span
+                  >
+                  {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} @
+                  {{ i.amount | currency : "$" }}
+                </td>
+                <td bitCell class="tw-text-right">
+                  {{ i.quantity * i.amount | currency : "$" }} /{{ i.interval | i18n }}
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="!subscription && userOrg.isFreeOrg">
+              <tr bitRow *ngIf="userOrg.usePasswordManager">
+                <td bitCell>{{ "passwordManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
+                <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
+              </tr>
+              <tr bitRow *ngIf="userOrg.useSecretsManager">
+                <td bitCell>{{ "secretsManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
+                <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
+              </tr>
+            </ng-container>
           </ng-template>
         </bit-table>
       </div>
