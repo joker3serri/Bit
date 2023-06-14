@@ -18,26 +18,28 @@
     <div
       class="tw-w-full tw-rounded-md tw-border tw-border-solid tw-border-secondary-300 tw-bg-background tw-p-6"
     >
-      <h2 bitTypography="h2" class="tw-mb-6">{{ "loginInitiated" | i18n }}</h2>
+      <ng-container *ngIf="approvalRequired">
+        <h2 bitTypography="h2" class="tw-mb-6">{{ "loginInitiated" | i18n }}</h2>
 
-      <p bitTypography="body1" class="tw-mb-6">{{ "deviceApprovalRequired" | i18n }}</p>
+        <p bitTypography="body1" class="tw-mb-6">
+          {{ "deviceApprovalRequired" | i18n }}
+        </p>
 
-      <form [formGroup]="rememberDeviceForm">
-        <bit-form-control>
-          <input type="checkbox" bitCheckbox formControlName="rememberDevice" />
-          <bit-label>{{ "rememberThisDevice" | i18n }} </bit-label>
-          <bit-hint bitTypography="body2">{{ "uncheckIfPublicDevice" | i18n }}</bit-hint>
-        </bit-form-control>
-      </form>
+        <form [formGroup]="rememberDeviceForm">
+          <bit-form-control>
+            <input type="checkbox" bitCheckbox formControlName="rememberDevice" />
+            <bit-label>{{ "rememberThisDevice" | i18n }} </bit-label>
+            <bit-hint bitTypography="body2">{{ "uncheckIfPublicDevice" | i18n }}</bit-hint>
+          </bit-form-control>
+        </form>
 
-      <div class="tw-mb-6 tw-flex tw-flex-col">
         <button
           *ngIf="showApproveFromOtherDeviceBtn"
           (click)="approveFromOtherDevice()"
           bitButton
           type="button"
           buttonType="primary"
-          [block]="true"
+          block
           [ngClass]="{ 'tw-mb-3': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn }"
           [appA11yTitle]="'approveFromYourOtherDevice' | i18n"
         >
@@ -50,6 +52,7 @@
           bitButton
           type="button"
           buttonType="secondary"
+          block
           [ngClass]="{ 'tw-mb-3': showApproveWithMasterPasswordBtn }"
           [appA11yTitle]="'requestAdminApproval' | i18n"
         >
@@ -62,11 +65,38 @@
           bitButton
           type="button"
           buttonType="secondary"
+          block
+          class="tw-mb-6"
           [appA11yTitle]="'approveWithMasterPassword' | i18n"
         >
           {{ "approveWithMasterPassword" | i18n }}
         </button>
-      </div>
+      </ng-container>
+
+      <ng-container *ngIf="!approvalRequired">
+        <h2 bitTypography="h2" class="tw-mb-6">{{ "loggedIn" | i18n }}</h2>
+
+        <form [formGroup]="rememberDeviceForm">
+          <bit-form-control>
+            <input type="checkbox" bitCheckbox formControlName="rememberDevice" />
+            <bit-label>{{ "rememberThisDevice" | i18n }} </bit-label>
+            <bit-hint bitTypography="body2">{{ "uncheckIfPublicDevice" | i18n }}</bit-hint>
+          </bit-form-control>
+        </form>
+
+        <button
+          (click)="approveWithMasterPassword()"
+          bitButton
+          type="button"
+          buttonType="primary"
+          block
+          [appA11yTitle]="'continue' | i18n"
+          class="tw-mb-6"
+        >
+          {{ "continue" | i18n }}
+        </button>
+      </ng-container>
+      <ng-container> </ng-container>
 
       <hr class="tw-mb-6 tw-mt-0" />
 

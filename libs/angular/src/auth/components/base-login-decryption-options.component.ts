@@ -1,15 +1,18 @@
 import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
+import { firstValueFrom, from, map, of, Subject, switchMap } from "rxjs";
 
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { DeviceType } from "@bitwarden/common/enums/device-type.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
+
+import { AutoEnrollService } from "../services/auto-enroll.service.abstraction";
 
 // TODO: replace this base component with a service per latest ADR
 @Directive()
@@ -24,6 +27,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   loading = true;
 
+  approvalRequired = false;
   showApproveFromOtherDeviceBtn = false;
   showReqAdminApprovalBtn = false;
   showApproveWithMasterPasswordBtn = false;
@@ -33,12 +37,34 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected devicesApiService: DevicesApiServiceAbstraction,
     protected stateService: StateService,
     protected router: Router,
+    protected activatedRoute: ActivatedRoute,
     protected messagingService: MessagingService,
     protected tokenService: TokenService,
-    protected loginService: LoginService
+    protected loginService: LoginService,
+    protected autoEnrollService: AutoEnrollService,
+    protected organizationApiService: OrganizationApiServiceAbstraction
   ) {}
 
   async ngOnInit() {
+    const resetPasswordEnabled$ = this.activatedRoute.queryParamMap.pipe(
+      map((params) => params.get("identifier")),
+      switchMap((identifier) => {
+        if (identifier == null) {
+          return of(false);
+        }
+
+        return from(this.organizationApiService.getAutoEnrollStatus(identifier)).pipe(
+          map((response) => response.resetPasswordEnabled)
+        );
+      })
+    );
+    this.approvalRequired = !(await firstValueFrom(resetPasswordEnabled$));
+
+    if (!this.approvalRequired) {
+      this.loading = false;
+      return;
+    }
+
     // Determine if the user has any mobile or desktop devices
     // to determine if we should show the approve from other device button
     const devicesListResponse = await this.devicesApiService.getDevices();

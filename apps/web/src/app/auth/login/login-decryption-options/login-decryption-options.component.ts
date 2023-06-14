@@ -1,9 +1,11 @@
 import { Component } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { BaseLoginDecryptionOptionsComponent } from "@bitwarden/angular/auth/components/base-login-decryption-options.component";
+import { AutoEnrollService } from "@bitwarden/angular/auth/services/auto-enroll.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -18,18 +20,24 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
     devicesApiService: DevicesApiServiceAbstraction,
     stateService: StateService,
     router: Router,
+    activatedRoute: ActivatedRoute,
     messagingService: MessagingService,
     tokenService: TokenService,
-    loginService: LoginService
+    loginService: LoginService,
+    autoEnrollService: AutoEnrollService,
+    organizationApiService: OrganizationApiServiceAbstraction
   ) {
     super(
       formBuilder,
       devicesApiService,
       stateService,
       router,
+      activatedRoute,
       messagingService,
       tokenService,
-      loginService
+      loginService,
+      autoEnrollService,
+      organizationApiService
     );
   }
 }
