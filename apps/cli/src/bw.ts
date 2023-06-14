@@ -4,6 +4,7 @@ import * as path from "path";
 import * as program from "commander";
 import * as jsdom from "jsdom";
 
+import { ConfigApiServiceAbstraction } from "@bitwarden/common/abstractions/config/config-api.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
@@ -26,6 +27,7 @@ import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { BroadcasterService } from "@bitwarden/common/services/broadcaster.service";
+import { ConfigApiService } from "@bitwarden/common/services/config/config-api.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { CryptoService } from "@bitwarden/common/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
@@ -135,6 +137,7 @@ export class Main {
   organizationApiService: OrganizationApiServiceAbstraction;
   syncNotifierService: SyncNotifierService;
   sendApiService: SendApiService;
+  configApiService: ConfigApiServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -247,6 +250,8 @@ export class Main {
 
     this.searchService = new SearchService(this.logService, this.i18nService);
 
+    this.configApiService = new ConfigApiService(this.apiService);
+
     this.cipherService = new CipherService(
       this.cryptoService,
       this.settingsService,
@@ -255,7 +260,8 @@ export class Main {
       this.searchService,
       this.stateService,
       this.encryptService,
-      this.cipherFileUploadService
+      this.cipherFileUploadService,
+      this.configApiService
     );
 
     this.broadcasterService = new BroadcasterService();
