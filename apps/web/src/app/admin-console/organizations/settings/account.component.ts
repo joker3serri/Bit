@@ -1,12 +1,13 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { lastValueFrom, map, Subject, switchMap, takeUntil } from "rxjs";
+import { combineLatest, lastValueFrom, map, Subject, switchMap, takeUntil, from } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-update.request";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
@@ -85,43 +86,49 @@ export class AccountComponent {
     this.route.parent.parent.params
       .pipe(
         map((params) => this.organizationService.get(params.organizationId)),
-        switchMap(async (organization) => {
+        switchMap(async (organization: Organization) => {
           // Set domain level organization variables
           this.organizationId = organization.id;
           this.canEditSubscription = organization.canEditSubscription;
           this.canUseApi = organization.useApi;
 
-          try {
-            // Retrieve OrganizationResponse for form population
-            this.org = await this.organizationApiService.get(this.organizationId);
-            // Retrieve Organization Public Key
-            const orgKeys = await this.organizationApiService.getKeys(this.organizationId);
-            this.publicKeyBuffer = Utils.fromB64ToArray(orgKeys?.publicKey)?.buffer;
-            // Patch existing values
-            this.formGroup.patchValue({
-              orgName: this.org.name,
-              billingEmail: this.org.billingEmail,
-              businessName: this.org.businessName,
-            });
-          } catch (e) {
-            this.logService.error(e);
-          }
-
-          // Update disabled states - reactive forms prefers not using disabled attribute
-          if (!this.selfHosted) {
-            this.formGroup.get("orgName").enable();
-          }
-
-          if (!this.selfHosted || this.canEditSubscription) {
-            this.formGroup.get("billingEmail").enable();
-            this.formGroup.get("businessName").enable();
-          }
-
-          this.loading = false;
+          combineLatest([
+            // OrganizationResponse for form population
+            from(this.organizationApiService.get(this.organizationId)).pipe(
+              map((organizationResponse) => {
+                this.org = organizationResponse;
+              })
+            ),
+            // Organization Public Key
+            from(this.organizationApiService.getKeys(this.organizationId)).pipe(
+              map((orgKeys) => {
+                this.publicKeyBuffer = Utils.fromB64ToArray(orgKeys?.publicKey)?.buffer;
+              })
+            ),
+          ]);
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe();
+      .subscribe(() => {
+        // Patch existing values
+        this.formGroup.patchValue({
+          orgName: this.org.name,
+          billingEmail: this.org.billingEmail,
+          businessName: this.org.businessName,
+        });
+
+        // Update disabled states - reactive forms prefers not using disabled attribute
+        if (!this.selfHosted) {
+          this.formGroup.get("orgName").enable();
+        }
+
+        if (!this.selfHosted || this.canEditSubscription) {
+          this.formGroup.get("billingEmail").enable();
+          this.formGroup.get("businessName").enable();
+        }
+
+        this.loading = false;
+      });
   }
 
   ngOnDestroy(): void {
@@ -136,29 +143,21 @@ export class AccountComponent {
       return;
     }
 
-    try {
-      const request = new OrganizationUpdateRequest();
-      request.name = this.formGroup.value.orgName;
-      request.businessName = this.formGroup.value.businessName;
-      request.billingEmail = this.formGroup.value.billingEmail;
+    const request = new OrganizationUpdateRequest();
+    request.name = this.formGroup.value.orgName;
+    request.businessName = this.formGroup.value.businessName;
+    request.billingEmail = this.formGroup.value.billingEmail;
 
-      // Backfill pub/priv key if necessary
-      if (!this.org.hasPublicAndPrivateKeys) {
-        const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
-        const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
-        request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
-      }
-
-      this.formPromise = this.organizationApiService.save(this.organizationId, request);
-      await this.formPromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("organizationUpdated")
-      );
-    } catch (e) {
-      this.logService.error(e);
+    // Backfill pub/priv key if necessary
+    if (!this.org.hasPublicAndPrivateKeys) {
+      const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
+      const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
+      request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
     }
+
+    this.formPromise = this.organizationApiService.save(this.organizationId, request);
+    await this.formPromise;
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
   };
 
   async deleteOrganization() {
