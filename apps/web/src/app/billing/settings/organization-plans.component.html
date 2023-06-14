@@ -293,8 +293,17 @@
     <app-tax-info (onCountryChanged)="changedCountry()"></app-tax-info>
     <div id="price" class="my-4">
       <div class="text-muted text-sm">
-        {{ "planPrice" | i18n }}: {{ subtotal | currency : "USD $" }}
+        {{ "passwordManagerPlanPrice" | i18n }}: {{ subtotal | currency : "USD $" }}
         <br />
+        <!-- TODO: make this more generic, plan.supportsSM or something -->
+        <span
+          *ngIf="
+            selectedPlan.product != productTypes.Families && formGroup.value.secretsManager.enabled
+          "
+        >
+          {{ "secretsManagerPlanPrice" | i18n }}: {{ subtotal | currency : "USD $" }}
+          <br />
+        </span>
         <ng-container>
           {{ "estimatedTax" | i18n }}: {{ taxCharges | currency : "USD $" }}
         </ng-container>

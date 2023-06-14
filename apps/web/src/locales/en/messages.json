@@ -6914,5 +6914,11 @@
         "example": "$0.50"
       }
     }
+  },
+  "passwordManagerPlanPrice": {
+    "message": "Password Manager plan price"
+  },
+  "secretsManagerPlanPrice": {
+    "message": "Secrets Manager plan price"
   }
 }

@@ -21,7 +21,7 @@ export interface SecretsManagerSubscription {
 })
 export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup<ControlsOf<SecretsManagerSubscription>>;
-  @Input() selectedPlan: PlanResponse;
+  _selectedPlan: PlanResponse;
 
   logo = SecretsManagerLogo;
   productTypes = ProductType;
@@ -82,5 +82,20 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
     if (this.selectedPlan.isAnnual) {
       return this.i18nService.t("");
     }
+  }
+
+  // TODO: should get supports SM value from plan itself
+  @Input() set selectedPlan(value: PlanResponse) {
+    this._selectedPlan = value;
+
+    if (this.selectedPlan.product === ProductType.Families) {
+      this.formGroup.disable();
+    } else {
+      this.formGroup.enable();
+    }
+  }
+
+  get selectedPlan() {
+    return this._selectedPlan;
   }
 }
