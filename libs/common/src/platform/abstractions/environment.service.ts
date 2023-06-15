@@ -17,10 +17,17 @@ export type PayPalConfig = {
   buttonAction?: string;
 };
 
+export enum Region {
+  US = "US",
+  EU = "EU",
+  SelfHosted = "Self-hosted",
+}
+
 export abstract class EnvironmentService {
   urls: Observable<void>;
   usUrls: Urls;
   euUrls: Urls;
+  selectedRegion?: Region;
 
   hasBaseUrl: () => boolean;
   getNotificationsUrl: () => string;
@@ -34,9 +41,9 @@ export abstract class EnvironmentService {
   getScimUrl: () => string;
   setUrlsFromStorage: () => Promise<void>;
   setUrls: (urls: Urls) => Promise<Urls>;
+  setRegion: (region: Region) => Promise<void>;
   getUrls: () => Urls;
   isCloud: () => boolean;
-  compareCurrentWithUrls: (urls: Urls) => boolean;
   isEmpty: () => boolean;
   /**
    * @remarks For desktop and browser use only.
