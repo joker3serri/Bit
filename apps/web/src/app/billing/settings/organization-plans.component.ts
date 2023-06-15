@@ -455,13 +455,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     request.billingAddressPostalCode = this.taxComponent.taxInfo.postalCode;
 
     // Secrets Manager
-    request.secretsManagerEnabled =
-      this.planOffersSecretsManager && this.secretsManagerForm.value.enabled;
-    if (request.secretsManagerEnabled) {
-      request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
-      request.secretsManagerAdditionalServiceAccounts =
-        this.secretsManagerForm.value.additionalServiceAccounts;
-    }
+    this.buildSecretsManagerRequest(request);
 
     // Retrieve org info to backfill pub/priv key if necessary
     const org = await this.organizationService.get(this.organizationId);
@@ -519,16 +513,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     }
 
     // Secrets Manager
-    request.secretsManagerEnabled =
-      this.planOffersSecretsManager && this.secretsManagerForm.value.enabled;
-    if (
-      request.secretsManagerEnabled &&
-      this.selectedSecretsManagerPlan.product !== ProductType.Free
-    ) {
-      request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
-      request.secretsManagerAdditionalServiceAccounts =
-        this.secretsManagerForm.value.additionalServiceAccounts;
-    }
+    this.buildSecretsManagerRequest(request);
 
     if (this.providerId) {
       const providerRequest = new ProviderOrganizationCreateRequest(
@@ -584,5 +569,25 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     }
 
     return text;
+  }
+
+  private buildSecretsManagerRequest(
+    request: OrganizationCreateRequest | OrganizationUpgradeRequest
+  ): void {
+    const formValues = this.secretsManagerForm.value;
+
+    request.secretsManagerEnabled = this.planOffersSecretsManager && formValues.enabled;
+
+    if (!request.secretsManagerEnabled) {
+      return;
+    }
+
+    if (this.selectedSecretsManagerPlan.hasAdditionalSeatsOption) {
+      request.secretsManagerUserSeats = formValues.userSeats;
+    }
+
+    if (this.selectedSecretsManagerPlan.hasAdditionalServiceAccountOption) {
+      request.secretsManagerAdditionalServiceAccounts = formValues.additionalServiceAccounts;
+    }
   }
 }
