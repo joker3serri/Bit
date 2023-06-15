@@ -80,6 +80,12 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
     return this.selectedPlan.maxProjects;
   }
 
+  get monthlyCostPerUser() {
+    return this.selectedPlan.isAnnual
+      ? this.selectedPlan.seatPrice / 12
+      : this.selectedPlan.seatPrice;
+  }
+
   // TODO: should get supports SM value from plan itself
   // TODO move to parent component or it just wont' run if the component isn't rendered
   @Input() set selectedPlan(value: PlanResponse) {

@@ -29,24 +29,12 @@
       </ul>
     </div>
 
-    <!-- TODO: consider refactoring into a component, this is basically a copy/paste from OrganizationPlans -->
-    <!-- TODO: currently using PM pricing, need to use SM plan when available -->
-    <span *ngIf="product != productTypes.Free">
-      <ng-container *ngIf="selectedPlan.basePrice">
-        {{ selectedPlan.basePrice / 12 | currency : "$" }} /{{ "month" | i18n }},
-        {{ "includesXUsers" | i18n : selectedPlan.baseSeats }}
-        <ng-container *ngIf="selectedPlan.hasAdditionalSeatsOption">
-          {{ ("additionalUsers" | i18n).toLowerCase() }}
-          {{ selectedPlan.seatPrice / 12 | currency : "$" }} /{{ "month" | i18n }}
-        </ng-container>
-      </ng-container>
+    <span *ngIf="product != productTypes.Free; else freeForever">
+      {{ "costPerUser" | i18n : (monthlyCostPerUser | currency : "$") }} /{{ "month" | i18n }}
     </span>
-    <span *ngIf="!selectedPlan.basePrice && selectedPlan.hasAdditionalSeatsOption">
-      {{ "costPerUser" | i18n : (selectedPlan.seatPrice / 12 | currency : "$") }} /{{
-        "month" | i18n
-      }}
-    </span>
-    <span *ngIf="product == productTypes.Free">{{ "freeForever" | i18n }}</span>
+    <ng-template #freeForever>
+      <span *ngIf="product == productTypes.Free">{{ "freeForever" | i18n }}</span>
+    </ng-template>
 
     <bit-form-control>
       <input type="checkbox" bitCheckbox formControlName="enabled" />
