@@ -279,6 +279,7 @@
       *ngIf="(showSecretsManagerBilling$ | async) && planOffersSecretsManager"
       [formGroup]="formGroup.controls.secretsManager"
       [selectedPlan]="selectedSecretsManagerPlan"
+      [createOrganization]="createOrganization"
     ></sm-subscribe>
   </div>
 

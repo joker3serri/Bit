@@ -41,6 +41,7 @@
     <bit-form-control>
       <input type="checkbox" bitCheckbox formControlName="enabled" />
       <bit-label>{{ "addSecretsManager" | i18n }}</bit-label>
+      <bit-hint *ngIf="!createOrganization">{{ "addSecretsManagerUpgradeDesc" | i18n }}</bit-hint>
     </bit-form-control>
 
     <div *ngIf="formGroup.value.enabled && selectedPlan.hasAdditionalSeatsOption" class="tw-w-1/2">

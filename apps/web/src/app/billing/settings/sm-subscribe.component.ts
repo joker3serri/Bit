@@ -21,7 +21,9 @@ export interface SecretsManagerSubscription {
 })
 export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup<ControlsOf<SecretsManagerSubscription>>;
-  _selectedPlan: PlanResponse;
+  @Input() createOrganization: boolean;
+
+  private _selectedPlan: PlanResponse;
 
   logo = SecretsManagerLogo;
   productTypes = ProductType;

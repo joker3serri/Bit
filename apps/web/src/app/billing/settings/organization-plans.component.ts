@@ -160,12 +160,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.changedOwnedBusiness();
     }
 
-    if (!this.createOrganization || this.acceptingSponsorship) {
-      this.formGroup.controls.product.setValue(ProductType.Families);
-      this.changedProduct();
-    }
-
-    if (this.createOrganization) {
+    if (!this.createOrganization) {
+      this.upgradeFlowPrefillForm();
+    } else {
       this.formGroup.controls.name.addValidators([Validators.required, Validators.maxLength(50)]);
       this.formGroup.controls.billingEmail.addValidators(Validators.required);
     }
@@ -620,6 +617,22 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
     if (this.selectedSecretsManagerPlan.hasAdditionalServiceAccountOption) {
       request.secretsManagerAdditionalServiceAccounts = formValues.additionalServiceAccounts;
+    }
+  }
+
+  private upgradeFlowPrefillForm() {
+    if (this.acceptingSponsorship) {
+      this.formGroup.controls.product.setValue(ProductType.Families);
+      this.changedProduct();
+      return;
+    }
+
+    // If they already have SM enabled, bump them up to Teams and enable SM to maintain this access
+    const organization = this.organizationService.get(this.organizationId);
+    if (organization.useSecretsManager) {
+      this.formGroup.controls.product.setValue(ProductType.Teams);
+      this.secretsManagerForm.controls.enabled.setValue(true);
+      this.changedProduct();
     }
   }
 }
