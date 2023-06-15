@@ -521,7 +521,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     // Secrets Manager
     request.secretsManagerEnabled =
       this.planOffersSecretsManager && this.secretsManagerForm.value.enabled;
-    if (request.secretsManagerEnabled) {
+    if (
+      request.secretsManagerEnabled &&
+      this.selectedSecretsManagerPlan.product !== ProductType.Free
+    ) {
       request.secretsManagerUserSeats = this.secretsManagerForm.value.userSeats;
       request.secretsManagerAdditionalServiceAccounts =
         this.secretsManagerForm.value.additionalServiceAccounts;
