@@ -271,16 +271,17 @@
   </div>
 
   <!-- Secrets Manager -->
-  <sm-subscribe
-    *ngIf="(showSecretsManagerBilling$ | async) && planOffersSecretsManager"
-    [formGroup]="formGroup.controls.secretsManager"
-    [selectedPlan]="selectedSecretsManagerPlan"
-  ></sm-subscribe>
+  <div class="tw-my-10">
+    <sm-subscribe
+      *ngIf="(showSecretsManagerBilling$ | async) && planOffersSecretsManager"
+      [formGroup]="formGroup.controls.secretsManager"
+      [selectedPlan]="selectedSecretsManagerPlan"
+    ></sm-subscribe>
+  </div>
 
   <!-- Payment info -->
   <div *ngIf="formGroup.value.product !== productTypes.Free">
-    <hr class="my-3" />
-    <h2 class="spaced-header mb-4">
+    <h2 class="mb-4">
       {{ (createOrganization ? "paymentInformation" : "billingInformation") | i18n }}
     </h2>
     <small class="text-muted font-italic mb-3 d-block">
