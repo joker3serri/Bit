@@ -55,6 +55,7 @@ export class PlanResponse extends BaseResponse {
   baseServiceAccount: number;
   maxServiceAccount: number;
   hasAdditionalServiceAccountOption: boolean;
+  maxProjects: number;
 
   constructor(response: any) {
     super(response);
@@ -108,5 +109,6 @@ export class PlanResponse extends BaseResponse {
     this.hasAdditionalServiceAccountOption = this.getResponseProperty(
       "HasAdditionalServiceAccountOption"
     );
+    this.maxProjects = this.getResponseProperty("MaxProjects");
   }
 }

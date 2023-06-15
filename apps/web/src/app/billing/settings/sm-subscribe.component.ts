@@ -77,7 +77,7 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   }
 
   get maxProjects() {
-    return "TODO";
+    return this.selectedPlan.maxProjects;
   }
 
   // TODO: should get supports SM value from plan itself
