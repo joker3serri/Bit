@@ -270,21 +270,32 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     );
   }
 
-  seatTotal(plan: PlanResponse): number {
+  seatTotal(plan: PlanResponse, seats: number): number {
     if (!plan.hasAdditionalSeatsOption) {
       return 0;
     }
 
-    return plan.seatPrice * Math.abs(this.formGroup.controls.additionalSeats.value || 0);
+    return plan.seatPrice * Math.abs(seats || 0);
   }
 
-  get subtotal() {
+  additionalServiceAccountTotal(plan: PlanResponse): number {
+    if (!plan.hasAdditionalServiceAccountOption) {
+      return 0;
+    }
+
+    return (
+      plan.additionalPricePerServiceAccount *
+      Math.abs(this.secretsManagerForm.value.additionalServiceAccounts || 0)
+    );
+  }
+
+  get passwordManagerSubtotal() {
     let subTotal = this.selectedPlan.basePrice;
     if (
       this.selectedPlan.hasAdditionalSeatsOption &&
       this.formGroup.controls.additionalSeats.value
     ) {
-      subTotal += this.seatTotal(this.selectedPlan);
+      subTotal += this.seatTotal(this.selectedPlan, this.formGroup.value.additionalSeats);
     }
     if (
       this.selectedPlan.hasAdditionalStorageOption &&
@@ -301,18 +312,37 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     return subTotal - this.discount;
   }
 
+  get secretsManagerSubtotal() {
+    const plan = this.selectedSecretsManagerPlan;
+    const formValues = this.secretsManagerForm.value;
+
+    if (!this.planOffersSecretsManager || !formValues.enabled) {
+      return 0;
+    }
+
+    let subTotal = plan.basePrice;
+    if (plan.hasAdditionalSeatsOption && formValues.userSeats) {
+      subTotal += this.seatTotal(plan, formValues.userSeats);
+    }
+    if (plan.hasAdditionalStorageOption && formValues.additionalServiceAccounts) {
+      subTotal += this.additionalServiceAccountTotal(this.selectedPlan);
+    }
+    return subTotal;
+  }
+
   get freeTrial() {
     return this.selectedPlan.trialPeriodDays != null;
   }
 
   get taxCharges() {
     return this.taxComponent != null && this.taxComponent.taxRate != null
-      ? (this.taxComponent.taxRate / 100) * this.subtotal
+      ? (this.taxComponent.taxRate / 100) *
+          (this.passwordManagerSubtotal + this.secretsManagerSubtotal)
       : 0;
   }
 
   get total() {
-    return this.subtotal + this.taxCharges || 0;
+    return this.passwordManagerSubtotal + this.secretsManagerSubtotal + this.taxCharges || 0;
   }
 
   get paymentDesc() {

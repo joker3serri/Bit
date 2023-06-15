@@ -230,7 +230,8 @@
             <span *ngIf="!selectablePlan.baseSeats">{{ "users" | i18n }}:</span>
             {{ formGroup.controls["additionalSeats"].value || 0 }} &times;
             {{ selectablePlan.seatPrice / 12 | currency : "$" }} &times; 12
-            {{ "monthAbbr" | i18n }} = {{ seatTotal(selectablePlan) | currency : "$" }} /{{
+            {{ "monthAbbr" | i18n }} =
+            {{ seatTotal(selectablePlan, formGroup.value.additionalSeats) | currency : "$" }} /{{
               "year" | i18n
             }}
           </small>
@@ -256,7 +257,9 @@
             <span *ngIf="!selectablePlan.baseSeats">{{ "users" | i18n }}:</span>
             {{ formGroup.controls["additionalSeats"].value || 0 }} &times;
             {{ selectablePlan.seatPrice | currency : "$" }} {{ "monthAbbr" | i18n }} =
-            {{ seatTotal(selectablePlan) | currency : "$" }} /{{ "month" | i18n }}
+            {{ seatTotal(selectablePlan, formGroup.value.additionalSeats) | currency : "$" }} /{{
+              "month" | i18n
+            }}
           </small>
           <small *ngIf="selectablePlan.hasAdditionalStorageOption">
             {{ "additionalStorageGb" | i18n }}:
@@ -291,10 +294,10 @@
     <app-tax-info (onCountryChanged)="changedCountry()"></app-tax-info>
     <div id="price" class="my-4">
       <div class="text-muted text-sm">
-        {{ "passwordManagerPlanPrice" | i18n }}: {{ subtotal | currency : "USD $" }}
+        {{ "passwordManagerPlanPrice" | i18n }}: {{ passwordManagerSubtotal | currency : "USD $" }}
         <br />
         <span *ngIf="planOffersSecretsManager && formGroup.value.secretsManager.enabled">
-          {{ "secretsManagerPlanPrice" | i18n }}: {{ subtotal | currency : "USD $" }}
+          {{ "secretsManagerPlanPrice" | i18n }}: {{ secretsManagerSubtotal | currency : "USD $" }}
           <br />
         </span>
         <ng-container>
