@@ -324,9 +324,11 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     if (plan.hasAdditionalSeatsOption && formValues.userSeats) {
       subTotal += this.seatTotal(plan, formValues.userSeats);
     }
+
     if (plan.hasAdditionalStorageOption && formValues.additionalServiceAccounts) {
       subTotal += this.additionalServiceAccountTotal(this.selectedPlan);
     }
+
     return subTotal;
   }
 
