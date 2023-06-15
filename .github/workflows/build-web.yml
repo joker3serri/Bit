@@ -82,7 +82,7 @@ jobs:
             npm_command: "build:bit:qa"
           - name: "ee"
             npm_command: "build:bit:ee"
-          - name: "cloud-EU-PROD"
+          - name: "cloud-euprd"
             npm_command: "build:bit:euprd"
 
     steps:
