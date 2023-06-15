@@ -56,7 +56,6 @@
       *ngFor="let item of selectionList.selectedItems; let i = index"
       [formGroupName]="i"
       [ngClass]="{ 'tw-text-muted': item.readonly }"
-      alignContent="middle"
     >
       <td bitCell [ngSwitch]="item.type">
         <div class="tw-flex tw-items-center" *ngSwitchCase="itemType.Member">
