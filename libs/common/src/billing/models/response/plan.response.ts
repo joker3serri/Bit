@@ -1,7 +1,7 @@
 import { ProductType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
 import { PlanType } from "../../enums";
-import { BitwardenProductType } from "../../enums/bitwardenProductType";
+import { BitwardenProductType } from "../../enums/bitwarden-product-type";
 
 export class PlanResponse extends BaseResponse {
   type: PlanType;
