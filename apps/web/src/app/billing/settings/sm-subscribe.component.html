@@ -1,4 +1,4 @@
-<form *ngIf="formGroup && selectedPlan != null" [formGroup]="formGroup">
+<div *ngIf="formGroup && selectedPlan != null" [formGroup]="formGroup">
   <h3 bitTypography="h3">{{ "moreFromBitwarden" | i18n }}</h3>
   <div class="tw-rounded-t tw-bg-background-alt3 tw-p-5">
     <div class="tw-w-72">
@@ -60,4 +60,4 @@
       </bit-form-field>
     </div>
   </div>
-</form>
+</div>
