@@ -1,13 +1,12 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, lastValueFrom, map, Subject, switchMap, takeUntil, from } from "rxjs";
+import { combineLatest, lastValueFrom, Subject, switchMap, takeUntil, from } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-update.request";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
@@ -85,24 +84,28 @@ export class AccountComponent {
 
     this.route.parent.parent.params
       .pipe(
-        map((params) => this.organizationService.get(params.organizationId)),
-        switchMap((organization: Organization) => {
-          // Set domain level organization variables
-          this.organizationId = organization.id;
-          this.canEditSubscription = organization.canEditSubscription;
-          this.canUseApi = organization.useApi;
-
+        switchMap((params) => {
           return combineLatest([
+            // Organization domain
+            this.organizationService.get$(params.organizationId),
             // OrganizationResponse for form population
-            from(this.organizationApiService.get(this.organizationId)),
+            from(this.organizationApiService.get(params.organizationId)),
             // Organization Public Key
-            from(this.organizationApiService.getKeys(this.organizationId)),
+            from(this.organizationApiService.getKeys(params.organizationId)),
           ]);
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(([orgResponse, orgKeys]) => {
+      .subscribe(([organization, orgResponse, orgKeys]) => {
+        // Set domain level organization variables
+        this.organizationId = organization.id;
+        this.canEditSubscription = organization.canEditSubscription;
+        this.canUseApi = organization.useApi;
+
+        // Org Response
         this.org = orgResponse;
+
+        // Public Key Buffer for Org Fingerprint Generation
         this.publicKeyBuffer = Utils.fromB64ToArray(orgKeys?.publicKey)?.buffer;
 
         // Patch existing values
