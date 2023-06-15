@@ -23,7 +23,7 @@
         <li>{{ "serviceAccountsIncluded" | i18n : serviceAccountsIncluded }}</li>
         <li *ngIf="product != productTypes.Free">
           {{
-            "additionalServiceAccountCost" | i18n : (additionalServiceAccountCost | currency : "$")
+            "additionalServiceAccountCost" | i18n : (monthlyCostPerServiceAccount | currency : "$")
           }}
         </li>
       </ul>
@@ -53,7 +53,7 @@
         <input bitInput formControlName="additionalServiceAccounts" type="number" />
         <bit-hint>{{
           "additionalServiceAccountsDesc"
-            | i18n : serviceAccountsIncluded : additionalServiceAccountCost
+            | i18n : serviceAccountsIncluded : (monthlyCostPerServiceAccount | currency : "$")
         }}</bit-hint>
       </bit-form-field>
     </div>

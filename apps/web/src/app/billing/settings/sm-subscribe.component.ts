@@ -68,8 +68,10 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
     return this.selectedPlan.baseServiceAccount;
   }
 
-  get additionalServiceAccountCost() {
-    return this.selectedPlan.additionalPricePerServiceAccount;
+  get monthlyCostPerServiceAccount() {
+    return this.selectedPlan.isAnnual
+      ? this.selectedPlan.additionalPricePerServiceAccount / 12
+      : this.selectedPlan.additionalPricePerServiceAccount;
   }
 
   get maxUsers() {
