@@ -3,6 +3,7 @@ import { concatMap, Observable, Subject } from "rxjs";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
+  Region,
   Urls,
 } from "../abstractions/environment.service";
 import { StateService } from "../abstractions/state.service";
@@ -10,6 +11,7 @@ import { StateService } from "../abstractions/state.service";
 export class EnvironmentService implements EnvironmentServiceAbstraction {
   private readonly urlsSubject = new Subject<void>();
   urls: Observable<void> = this.urlsSubject.asObservable();
+  selectedRegion?: Region;
 
   protected baseUrl: string;
   protected webVaultUrl: string;
@@ -25,7 +27,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     base: null,
     api: "https://api.bitwarden.com",
     identity: "https://identity.bitwarden.com",
-    icons: "https://icons.bitwarden.com",
+    icons: "https://icons.bitwarden.net",
     webVault: "https://vault.bitwarden.com",
     notifications: "https://notifications.bitwarden.com",
     events: "https://events.bitwarden.com",
@@ -149,20 +151,42 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   async setUrlsFromStorage(): Promise<void> {
-    const urls: any = await this.stateService.getEnvironmentUrls();
+    const region = await this.stateService.getRegion();
+    const savedUrls = await this.stateService.getEnvironmentUrls();
     const envUrls = new EnvironmentUrls();
 
-    this.baseUrl = envUrls.base = urls.base;
-    this.webVaultUrl = urls.webVault;
-    this.apiUrl = envUrls.api = urls.api;
-    this.identityUrl = envUrls.identity = urls.identity;
-    this.iconsUrl = urls.icons;
-    this.notificationsUrl = urls.notifications;
-    this.eventsUrl = envUrls.events = urls.events;
-    this.keyConnectorUrl = urls.keyConnector;
-    // scimUrl is not saved to storage
+    // fix environment urls for old users
+    if (savedUrls.base === "https://vault.bitwarden.com") {
+      this.setRegion(Region.US);
+      return;
+    }
+    if (savedUrls.base === "https://vault.bitwarden.eu") {
+      this.setRegion(Region.EU);
+      return;
+    }
 
-    this.urlsSubject.next();
+    switch (region) {
+      case Region.EU:
+        this.setRegion(Region.EU);
+        return;
+      case Region.US:
+        this.setRegion(Region.US);
+        return;
+      case Region.SelfHosted:
+      default:
+        this.baseUrl = envUrls.base = savedUrls.base;
+        this.webVaultUrl = savedUrls.webVault;
+        this.apiUrl = envUrls.api = savedUrls.api;
+        this.identityUrl = envUrls.identity = savedUrls.identity;
+        this.iconsUrl = savedUrls.icons;
+        this.notificationsUrl = savedUrls.notifications;
+        this.eventsUrl = envUrls.events = savedUrls.events;
+        this.keyConnectorUrl = savedUrls.keyConnector;
+        // scimUrl is not saved to storage
+        this.urlsSubject.next();
+        this.setRegion(Region.SelfHosted);
+        break;
+    }
   }
 
   async setUrls(urls: Urls): Promise<Urls> {
@@ -200,6 +224,8 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.keyConnectorUrl = urls.keyConnector;
     this.scimUrl = urls.scim;
 
+    await this.setRegion(Region.SelfHosted);
+
     this.urlsSubject.next();
 
     return urls;
@@ -219,19 +245,9 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     };
   }
 
-  compareCurrentWithUrls(urls: Urls) {
-    return (
-      urls.webVault === this.webVaultUrl &&
-      urls.api === this.apiUrl &&
-      urls.identity === this.identityUrl &&
-      urls.icons === this.iconsUrl &&
-      urls.notifications === this.notificationsUrl &&
-      urls.events === this.eventsUrl
-    );
-  }
-
   isEmpty(): boolean {
     return (
+      this.baseUrl == null &&
       this.webVaultUrl == null &&
       this.apiUrl == null &&
       this.identityUrl == null &&
@@ -239,6 +255,40 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       this.notificationsUrl == null &&
       this.eventsUrl == null
     );
+  }
+
+  async setRegion(region: Region) {
+    this.selectedRegion = region;
+    await this.stateService.setRegion(region);
+    switch (region) {
+      case Region.EU:
+        this.setUrlsInternal(this.euUrls);
+        break;
+      case Region.US:
+        this.setUrlsInternal(this.usUrls);
+        break;
+      case Region.SelfHosted:
+        // if user saves with empty fields, default to US
+        if (this.isEmpty()) {
+          this.setRegion(Region.US);
+        }
+        break;
+    }
+  }
+
+  private setUrlsInternal(urls: Urls) {
+    this.baseUrl = this.formatUrl(urls.base);
+    this.webVaultUrl = this.formatUrl(urls.webVault);
+    this.apiUrl = this.formatUrl(urls.api);
+    this.identityUrl = this.formatUrl(urls.identity);
+    this.iconsUrl = this.formatUrl(urls.icons);
+    this.notificationsUrl = this.formatUrl(urls.notifications);
+    this.eventsUrl = this.formatUrl(urls.events);
+    this.keyConnectorUrl = this.formatUrl(urls.keyConnector);
+
+    // scimUrl cannot be cleared
+    this.scimUrl = this.formatUrl(urls.scim) ?? this.scimUrl;
+    this.urlsSubject.next();
   }
 
   private formatUrl(url: string): string {

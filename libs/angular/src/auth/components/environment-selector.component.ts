@@ -6,7 +6,10 @@ import { Subject, takeUntil } from "rxjs";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
-import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/platform/abstractions/environment.service";
+import {
+  EnvironmentService as EnvironmentServiceAbstraction,
+  Region,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 
 @Component({
   selector: "environment-selector",
@@ -37,8 +40,8 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   euServerFlagEnabled: boolean;
   isOpen = false;
   showingModal = false;
-  selectedEnvironment: ServerEnvironment;
-  ServerEnvironmentType = ServerEnvironment;
+  selectedEnvironment: Region;
+  ServerEnvironmentType = Region;
   overlayPostition: ConnectedPosition[] = [
     {
       originX: "start",
@@ -67,18 +70,20 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     this.componentDestroyed$.complete();
   }
 
-  async toggle(option: ServerEnvironment) {
+  async toggle(option: Region) {
     this.isOpen = !this.isOpen;
     if (option === null) {
       return;
     }
-    if (option === ServerEnvironment.US) {
-      await this.environmentService.setUrls(this.environmentService.usUrls);
-    } else if (option === ServerEnvironment.EU) {
-      await this.environmentService.setUrls(this.environmentService.euUrls);
-    } else if (option === ServerEnvironment.SelfHosted) {
+
+    this.updateEnvironmentInfo();
+
+    if (option === Region.SelfHosted) {
       this.onOpenSelfHostedSettings.emit();
+      return;
     }
+
+    await this.environmentService.setRegion(option);
     this.updateEnvironmentInfo();
   }
 
@@ -87,29 +92,11 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
       FeatureFlag.DisplayEuEnvironmentFlag
     );
 
-    if (
-      this.environmentService.compareCurrentWithUrls(this.environmentService.usUrls) ||
-      this.environmentService.isEmpty()
-    ) {
-      this.selectedEnvironment = ServerEnvironment.US;
-    } else if (this.environmentService.compareCurrentWithUrls(this.environmentService.euUrls)) {
-      this.selectedEnvironment = ServerEnvironment.EU;
-    } else if (!this.environmentService.isEmpty()) {
-      this.selectedEnvironment = ServerEnvironment.SelfHosted;
-    } else {
-      await this.environmentService.setUrls(this.environmentService.usUrls);
-      this.selectedEnvironment = ServerEnvironment.US;
-    }
+    this.selectedEnvironment = this.environmentService.selectedRegion;
   }
 
   close() {
     this.isOpen = false;
     this.updateEnvironmentInfo();
   }
-}
-
-enum ServerEnvironment {
-  US = "US",
-  EU = "EU",
-  SelfHosted = "Self-hosted",
 }
