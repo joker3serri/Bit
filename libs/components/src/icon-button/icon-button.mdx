@@ -48,9 +48,12 @@ Icon buttons can be found in other components such as: the
 
 ## Accessibility
 
-Include an `aria-label` and `title` attribute describing the action.
+Follow guidelines outlined in the [Button docs](?path=/docs/component-library-button--doc)
 
-`aria-label` allows assistive technology to announce the action the button takes to the users
+Always use the `appA11yTitle` element set to a string that describes the action of the icon-button.
+This will auto assign the same string to the `title` and `aria-label` attributes.
+
+`aria-label` allows assistive technology to announce the action the button takes to the users.
 
 `title` attribute provides a user with the browser tool tip if they do not understand what the icon
 is indicating.
