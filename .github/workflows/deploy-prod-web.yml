@@ -12,15 +12,15 @@ jobs:
       _WEB_ARTIFACT: "web-*-cloud-euprd.zip"
     steps:
       - name: Login to Azure - EU Subscription
-        uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
+        uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.6
         with:
-          creds: ${{ secrets.AZURE_KV_US_QA_SERVICE_PRINCIPAL }} # TODO: Update to EU later
+          creds: ${{ secrets.AZURE_KV_EU_PRD_SERVICE_PRINCIPAL }}
 
       - name: Retrieve Storage Account connection string
         id: retrieve-secrets
         uses: bitwarden/gh-actions/get-keyvault-secrets@c86ced0dc8c9daeecf057a6333e6f318db9c5a2b
         with:
-          keyvault: bw-webvault-rlktusqa-kv # TODO: Update to EU Key Vault later
+          keyvault: webvault-westeurope-prod
           secrets: "sa-bitwarden-web-vault-dev-key-temp"
 
       - name: Download latest cloud asset
@@ -37,13 +37,12 @@ jobs:
         working-directory: apps/web
         run: unzip ${{ env._WEB_ARTIFACT }}
 
-        # TODO: Update name of Storage Account to EU Prod one once created.
       - name: Deploy to Azure Storage Account
         working-directory: apps/web
         run: |
           az storage blob upload-batch --source "./build" \
             --destination "\$web" \
-            --account-name "bwwebvaultrlktusqa" \
+            --account-name "bwwebvault1itgprod" \
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
             --overwrite \
             --no-progress
