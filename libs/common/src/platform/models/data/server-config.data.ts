@@ -51,6 +51,7 @@ export class ThirdPartyServerConfigData {
 
 export class EnvironmentServerConfigData {
   vault: string;
+  cloudVault: string;
   api: string;
   identity: string;
   notifications: string;
@@ -58,6 +59,7 @@ export class EnvironmentServerConfigData {
 
   constructor(response: Partial<EnvironmentServerConfigResponse>) {
     this.vault = response.vault;
+    this.cloudVault = response.cloudVault;
     this.api = response.api;
     this.identity = response.identity;
     this.notifications = response.notifications;
