@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { concatMap, map, Observable, Subject, takeUntil } from "rxjs";
 
 import { ModalConfig, ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -12,6 +12,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { OrganizationConnectionResponse } from "@bitwarden/common/admin-console/models/response/organization-connection.response";
 import { BillingSyncConfigApi } from "@bitwarden/common/billing/models/api/billing-sync-config.api";
 import { SelfHostedOrganizationSubscriptionView } from "@bitwarden/common/billing/models/view/self-hosted-organization-subscription.view";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -34,6 +35,7 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   subscription: SelfHostedOrganizationSubscriptionView;
   organizationId: string;
   userOrg: Organization;
+  cloudWebVaultUrl$: Observable<string>;
 
   licenseOptions = LicenseOptions;
   form = new FormGroup({
@@ -82,8 +84,13 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     private route: ActivatedRoute,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
-    private i18nService: I18nService
-  ) {}
+    private i18nService: I18nService,
+    private configService: ConfigServiceAbstraction
+  ) {
+    this.cloudWebVaultUrl$ = this.configService.serverConfig$.pipe(
+      map((config) => config?.environment?.cloudVault)
+    );
+  }
 
   async ngOnInit() {
     this.route.params
