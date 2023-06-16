@@ -9,7 +9,6 @@
               [activeFilter]="activeFilter"
               [searchText]="currentSearchText$ | async"
               (searchTextChanged)="filterSearchText($event)"
-              (onAddFolder)="addFolder()"
               (onEditFolder)="editFolder($event)"
             ></app-vault-filter>
           </div>
