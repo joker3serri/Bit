@@ -1207,6 +1207,6 @@ export class CipherService implements CipherServiceAbstraction {
   private async getCipherKeyEncryptionEnabled(): Promise<boolean> {
     const minVersion = new SemVer(CIPHER_KEY_ENC_MIN_SERVER_VER);
     const serverVersion = new SemVer((await this.configApiService.get()).version);
-    return flagEnabled("enableCipherKeyEncryption") && serverVersion.compare(minVersion) > 0;
+    return flagEnabled("enableCipherKeyEncryption") && serverVersion.compare(minVersion) >= 0;
   }
 }
