@@ -38,11 +38,14 @@ export class InitService {
 
   init() {
     return async () => {
+      // Workaround to ignore stateService.activeAccount until process.env.URLS are set
+      this.environmentService.initialized = false;
       await this.stateService.init();
 
       const urls = process.env.URLS as Urls;
       urls.base ??= this.win.location.origin;
       this.environmentService.setUrls(urls);
+      this.environmentService.initialized = true;
 
       setTimeout(() => this.notificationsService.init(), 3000);
       (this.vaultTimeoutService as VaultTimeoutService).init(true);
