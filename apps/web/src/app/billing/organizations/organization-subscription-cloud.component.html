@@ -99,9 +99,7 @@
     ></app-change-plan>
   </ng-container>
 
-  <ng-container
-    *ngIf="userOrg.canEditSubscription && !userOrg.useSecretsManager && showSecretsManagerSubscribe"
-  >
+  <ng-container *ngIf="showSecretsManagerSubscribe">
     <sm-subscribe-standalone
       [plan]="sub.secretsManagerPlan"
       [organization]="userOrg"

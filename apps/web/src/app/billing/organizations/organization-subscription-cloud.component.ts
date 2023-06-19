@@ -11,6 +11,8 @@ import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlanType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -19,8 +21,6 @@ import {
   BillingSyncApiKeyComponent,
   BillingSyncApiModalData,
 } from "./billing-sync-api-key.component";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 @Component({
   selector: "app-org-subscription-cloud",
@@ -95,9 +95,16 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       (i) => i.keyType === OrganizationApiKeyType.BillingSync
     );
 
-    this.showSecretsManagerSubscribe = await this.configService.getFeatureFlagBool(
-      FeatureFlag.SecretsManagerBilling
-    );
+    this.showSecretsManagerSubscribe =
+      this.userOrg.canEditSubscription &&
+      !this.userOrg.useSecretsManager &&
+      !this.subscription.cancelled &&
+      !this.subscriptionMarkedForCancel;
+
+    // Remove next line when the sm-ga-billing flag is deleted
+    this.showSecretsManagerSubscribe =
+      this.showSecretsManagerSubscribe &&
+      (await this.configService.getFeatureFlagBool(FeatureFlag.SecretsManagerBilling));
 
     this.loading = false;
   }
