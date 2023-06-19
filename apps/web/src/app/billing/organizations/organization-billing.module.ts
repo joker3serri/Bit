@@ -12,8 +12,8 @@ import { OrganizationBillingRoutingModule } from "./organization-billing-routing
 import { OrganizationBillingTabComponent } from "./organization-billing-tab.component";
 import { OrganizationSubscriptionCloudComponent } from "./organization-subscription-cloud.component";
 import { OrganizationSubscriptionSelfhostComponent } from "./organization-subscription-selfhost.component";
-import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
 import { SecretsManagerBillingModule } from "./secrets-manager/sm-billing.module";
+import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
 
 @NgModule({
   imports: [
