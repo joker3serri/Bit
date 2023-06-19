@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
@@ -9,13 +9,13 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 
 import { SecretsManagerSubscription } from "./sm-subscribe.component";
 
-
 @Component({
   selector: "sm-subscribe-standalone",
   templateUrl: "sm-subscribe-standalone.component.html",
 })
 export class SecretsManagerSubscribeStandaloneComponent {
   @Input() plan: PlanResponse;
+  @Output() onSubscribe = new EventEmitter<void>();
 
   // TODO: extract in a reusable way
   formGroup: FormGroup<ControlsOf<SecretsManagerSubscription>> = this.formBuilder.group({
@@ -52,7 +52,6 @@ export class SecretsManagerSubscribeStandaloneComponent {
       this.logService.error(e);
     }
 
-    // necessary?
-    // this.onAdjusted.emit();
+    this.onSubscribe.emit();
   };
 }

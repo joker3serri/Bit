@@ -99,6 +99,14 @@
     ></app-change-plan>
   </ng-container>
 
+  <!-- TODO: only show if not already subscribed, depends on Shane's PR -->
+  <ng-container *ngIf="userOrg.canEditSubscription && showSecretsManagerSubscribe">
+    <sm-subscribe-standalone
+      [plan]="sub.secretsManagerPlan"
+      (onSubscribe)="subscriptionAdjusted()"
+    ></sm-subscribe-standalone>
+  </ng-container>
+
   <ng-container *ngIf="userOrg.canEditSubscription">
     <h2 class="spaced-header">{{ "manageSubscription" | i18n }}</h2>
     <p class="mb-4">{{ subscriptionDesc }}</p>
