@@ -7,11 +7,10 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -36,7 +35,7 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { SecretsManagerSubscription } from "../organizations/secrets-manager/sm-subscribe.component";
+import { secretsManagerSubscribeFormFactory } from "../organizations/secrets-manager/sm-subscribe.component";
 
 import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";
@@ -90,15 +89,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   discount = 0;
   showSecretsManagerSubscribe: boolean;
 
-  secretsManagerSubscription: FormGroup<ControlsOf<SecretsManagerSubscription>> =
-    this.formBuilder.group({
-      enabled: [false],
-      userSeats: [1, [Validators.required, Validators.min(0), Validators.max(100000)]],
-      additionalServiceAccounts: [
-        0,
-        [Validators.required, Validators.min(0), Validators.max(100000)],
-      ],
-    });
+  secretsManagerSubscription = secretsManagerSubscribeFormFactory(this.formBuilder);
 
   formGroup = this.formBuilder.group({
     name: [""],

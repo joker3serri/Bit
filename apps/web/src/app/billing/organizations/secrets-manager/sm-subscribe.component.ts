@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subject, startWith, takeUntil } from "rxjs";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
@@ -14,6 +14,18 @@ export interface SecretsManagerSubscription {
   userSeats: number;
   additionalServiceAccounts: number;
 }
+
+export const secretsManagerSubscribeFormFactory = (
+  formBuilder: FormBuilder
+): FormGroup<ControlsOf<SecretsManagerSubscription>> =>
+  formBuilder.group({
+    enabled: [false],
+    userSeats: [1, [Validators.required, Validators.min(0), Validators.max(100000)]],
+    additionalServiceAccounts: [
+      0,
+      [Validators.required, Validators.min(0), Validators.max(100000)],
+    ],
+  });
 
 @Component({
   selector: "sm-subscribe",
