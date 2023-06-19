@@ -99,8 +99,9 @@
     ></app-change-plan>
   </ng-container>
 
-  <!-- TODO: only show if not already subscribed, depends on Shane's PR -->
-  <ng-container *ngIf="userOrg.canEditSubscription && showSecretsManagerSubscribe">
+  <ng-container
+    *ngIf="userOrg.canEditSubscription && !userOrg.useSecretsManager && showSecretsManagerSubscribe"
+  >
     <sm-subscribe-standalone
       [plan]="sub.secretsManagerPlan"
       (onSubscribe)="subscriptionAdjusted()"
