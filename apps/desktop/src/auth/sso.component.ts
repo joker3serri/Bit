@@ -43,7 +43,9 @@ export class SsoComponent extends BaseSsoComponent {
       cryptoFunctionService,
       environmentService,
       passwordGenerationService,
-      logService
+      logService,
+      // TODO: DO NOT MERGE LIKE THIS!
+      { getFeatureFlagBool: async () => true } as any
     );
     super.onSuccessfulLogin = () => {
       return syncService.fullSync(true);
