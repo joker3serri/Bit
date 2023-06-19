@@ -276,7 +276,7 @@
   <!-- Secrets Manager -->
   <div class="tw-my-10">
     <sm-subscribe
-      *ngIf="(showSecretsManagerBilling$ | async) && planOffersSecretsManager"
+      *ngIf="showSecretsManagerSubscribe && planOffersSecretsManager"
       [formGroup]="formGroup.controls.secretsManager"
       [selectedPlan]="selectedSecretsManagerPlan"
       [createOrganization]="createOrganization"

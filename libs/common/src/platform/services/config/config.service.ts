@@ -1,4 +1,4 @@
-import { BehaviorSubject, concatMap, from, map, timer } from "rxjs";
+import { BehaviorSubject, concatMap, from, timer } from "rxjs";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
@@ -60,19 +60,6 @@ export class ConfigService implements ConfigServiceAbstraction {
 
   async getFeatureFlagNumber(key: FeatureFlag, defaultValue = 0): Promise<number> {
     return await this.getFeatureFlag(key, defaultValue);
-  }
-
-  // TODO: break into separate PR
-  getFeatureFlag$<T>(key: FeatureFlag, defaultValue: T) {
-    return this.serverConfig$.pipe(
-      map((serverConfig) => {
-        if (serverConfig?.featureStates == null || serverConfig.featureStates[key] == null) {
-          return defaultValue;
-        }
-
-        return serverConfig.featureStates[key] as T;
-      })
-    );
   }
 
   private async getFeatureFlag<T>(key: FeatureFlag, defaultValue: T): Promise<T> {

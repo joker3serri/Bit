@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -36,8 +36,9 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { PaymentComponent } from "./payment.component";
 import { SecretsManagerSubscription } from "../organizations/secrets-manager/sm-subscribe.component";
+
+import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";
 
 interface OnSuccessArgs {
@@ -87,7 +88,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   singleOrgPolicyAppliesToActiveUser = false;
   isInTrialFlow = false;
   discount = 0;
-  showSecretsManagerBilling$: Observable<boolean>;
+  showSecretsManagerSubscribe: boolean;
 
   secretsManagerSubscription: FormGroup<ControlsOf<SecretsManagerSubscription>> =
     this.formBuilder.group({
@@ -134,10 +135,6 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private configService: ConfigServiceAbstraction
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
-    this.showSecretsManagerBilling$ = this.configService.getFeatureFlag$(
-      FeatureFlag.SecretsManagerBilling,
-      false
-    );
   }
 
   async ngOnInit() {
@@ -173,6 +170,11 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       .subscribe((policyAppliesToActiveUser) => {
         this.singleOrgPolicyAppliesToActiveUser = policyAppliesToActiveUser;
       });
+
+    this.showSecretsManagerSubscribe = await this.configService.getFeatureFlagBool(
+      FeatureFlag.SecretsManagerBilling,
+      false
+    );
 
     this.loading = false;
   }
