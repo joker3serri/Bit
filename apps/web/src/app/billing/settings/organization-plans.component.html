@@ -279,7 +279,7 @@
       *ngIf="showSecretsManagerSubscribe && planOffersSecretsManager"
       [formGroup]="formGroup.controls.secretsManager"
       [selectedPlan]="selectedSecretsManagerPlan"
-      [createOrganization]="createOrganization"
+      [upgradeOrganization]="!createOrganization"
     ></sm-subscribe>
   </div>
 
