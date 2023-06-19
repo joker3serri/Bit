@@ -123,8 +123,10 @@ import { SharedModule } from "./shared.module";
     UserVerificationModule,
     ChangeKdfModule,
     DynamicAvatarComponent,
-    SecretsManagerBillingModule,
     AccountFingerprintComponent,
+
+    // To be removed when OrganizationPlansComponent is moved to its own module (see AC-1453)
+    SecretsManagerBillingModule,
   ],
   declarations: [
     PremiumBadgeComponent,
