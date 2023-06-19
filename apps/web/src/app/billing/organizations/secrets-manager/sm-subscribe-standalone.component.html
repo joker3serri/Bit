@@ -1,9 +1,5 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit" *ngIf="plan">
-  <sm-subscribe
-    [formGroup]="formGroup"
-    [selectedPlan]="plan"
-    [upgradeOrganization]="false"
-  ></sm-subscribe>
-
-  <button type="submit" bitButton bitFormButton>{{ "save" | i18n }}</button>
+  <sm-subscribe [formGroup]="formGroup" [selectedPlan]="plan" [upgradeOrganization]="false">
+    <button type="submit" bitButton bitFormButton>{{ "save" | i18n }}</button>
+  </sm-subscribe>
 </form>

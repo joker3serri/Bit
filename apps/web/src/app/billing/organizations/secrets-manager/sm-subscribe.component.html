@@ -59,6 +59,9 @@
             | i18n : serviceAccountsIncluded : (monthlyCostPerServiceAccount | currency : "$")
         }}</bit-hint>
       </bit-form-field>
+
+      <!-- Parent component may project a save button in here if it's not part of a larger form -->
+      <ng-content></ng-content>
     </div>
   </div>
 </div>
