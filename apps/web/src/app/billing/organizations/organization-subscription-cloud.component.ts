@@ -19,6 +19,8 @@ import {
   BillingSyncApiKeyComponent,
   BillingSyncApiModalData,
 } from "./billing-sync-api-key.component";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 @Component({
   selector: "app-org-subscription-cloud",
@@ -34,6 +36,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   showAdjustStorage = false;
   hasBillingSyncToken: boolean;
 
+  showSecretsManagerSubscribe = true;
+
   firstLoaded = false;
   loading: boolean;
 
@@ -48,7 +52,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private route: ActivatedRoute,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogServiceAbstraction,
+    private configService: ConfigServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -88,6 +93,10 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     );
     this.hasBillingSyncToken = apiKeyResponse.data.some(
       (i) => i.keyType === OrganizationApiKeyType.BillingSync
+    );
+
+    this.showSecretsManagerSubscribe = await this.configService.getFeatureFlagBool(
+      FeatureFlag.SecretsManagerBilling
     );
 
     this.loading = false;

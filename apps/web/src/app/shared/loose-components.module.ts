@@ -59,7 +59,6 @@ import { BillingSyncKeyComponent } from "../billing/settings/billing-sync-key.co
 import { OrganizationPlansComponent } from "../billing/settings/organization-plans.component";
 import { PaymentMethodComponent } from "../billing/settings/payment-method.component";
 import { PaymentComponent } from "../billing/settings/payment.component";
-import { SecretsManagerSubscribeComponent } from "../billing/settings/sm-subscribe.component";
 import { SubscriptionComponent } from "../billing/settings/subscription.component";
 import { TaxInfoComponent } from "../billing/settings/tax-info.component";
 import { UserSubscriptionComponent } from "../billing/settings/user-subscription.component";
@@ -108,6 +107,7 @@ import { ShareComponent } from "../vault/individual-vault/share.component";
 import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
+import { SecretsManagerBillingModule } from "../billing/organizations/secrets-manager/sm-billing.module";
 
 import { UserVerificationModule } from "./components/user-verification";
 import { SharedModule } from "./shared.module";
@@ -123,6 +123,7 @@ import { SharedModule } from "./shared.module";
     UserVerificationModule,
     ChangeKdfModule,
     DynamicAvatarComponent,
+    SecretsManagerBillingModule,
   ],
   declarations: [
     PremiumBadgeComponent,
@@ -165,7 +166,6 @@ import { SharedModule } from "./shared.module";
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
-    SecretsManagerSubscribeComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,
@@ -271,7 +271,6 @@ import { SharedModule } from "./shared.module";
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
-    SecretsManagerSubscribeComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,

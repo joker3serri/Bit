@@ -37,7 +37,7 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { PaymentComponent } from "./payment.component";
-import { SecretsManagerSubscription } from "./sm-subscribe.component";
+import { SecretsManagerSubscription } from "../organizations/secrets-manager/sm-subscribe.component";
 import { TaxInfoComponent } from "./tax-info.component";
 
 interface OnSuccessArgs {

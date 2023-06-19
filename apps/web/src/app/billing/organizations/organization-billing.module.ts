@@ -13,6 +13,7 @@ import { OrganizationBillingTabComponent } from "./organization-billing-tab.comp
 import { OrganizationSubscriptionCloudComponent } from "./organization-subscription-cloud.component";
 import { OrganizationSubscriptionSelfhostComponent } from "./organization-subscription-selfhost.component";
 import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
+import { SecretsManagerBillingModule } from "./secrets-manager/sm-billing.module";
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
     LooseComponentsModule,
     OrganizationBillingRoutingModule,
     UserVerificationModule,
+    SecretsManagerBillingModule,
   ],
   declarations: [
     AdjustSubscription,
