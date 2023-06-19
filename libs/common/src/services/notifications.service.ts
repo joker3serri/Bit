@@ -49,7 +49,6 @@ export class NotificationsService implements NotificationsServiceAbstraction {
 
   async init(): Promise<void> {
     this.inited = false;
-    return;
     this.url = this.environmentService.getNotificationsUrl();
 
     // Set notifications server URL to `https://-` to effectively disable communication
