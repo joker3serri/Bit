@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { OrganizationSwitcherComponent } from "../admin-console/components/organization-switcher.component";
 import { OrganizationCreateModule } from "../admin-console/organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
-import { EntityEventsComponent as OrgEntityEventsComponent } from "../admin-console/organizations/manage/entity-events.component";
 import { EventsComponent as OrgEventsComponent } from "../admin-console/organizations/manage/events.component";
 import { UserConfirmComponent as OrgUserConfirmComponent } from "../admin-console/organizations/manage/user-confirm.component";
 import { AcceptFamilySponsorshipComponent } from "../admin-console/organizations/sponsorships/accept-family-sponsorship.component";
@@ -51,6 +50,7 @@ import { UpdatePasswordComponent } from "../auth/update-password.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
+import { SecretsManagerBillingModule } from "../billing/organizations/secrets-manager/sm-billing.module";
 import { AddCreditComponent } from "../billing/settings/add-credit.component";
 import { AdjustPaymentComponent } from "../billing/settings/adjust-payment.component";
 import { BillingHistoryViewComponent } from "../billing/settings/billing-history-view.component";
@@ -107,8 +107,8 @@ import { ShareComponent } from "../vault/individual-vault/share.component";
 import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
-import { SecretsManagerBillingModule } from "../billing/organizations/secrets-manager/sm-billing.module";
 
+import { AccountFingerprintComponent } from "./components/account-fingerprint/account-fingerprint.component";
 import { UserVerificationModule } from "./components/user-verification";
 import { SharedModule } from "./shared.module";
 
@@ -124,6 +124,7 @@ import { SharedModule } from "./shared.module";
     ChangeKdfModule,
     DynamicAvatarComponent,
     SecretsManagerBillingModule,
+    AccountFingerprintComponent,
   ],
   declarations: [
     PremiumBadgeComponent,
@@ -168,7 +169,6 @@ import { SharedModule } from "./shared.module";
     OrganizationPlansComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
-    OrgEntityEventsComponent,
     OrgEventsComponent,
     OrgExposedPasswordsReportComponent,
     OrgInactiveTwoFactorReportComponent,
@@ -273,7 +273,6 @@ import { SharedModule } from "./shared.module";
     OrganizationPlansComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
-    OrgEntityEventsComponent,
     OrgEventsComponent,
     OrgExposedPasswordsReportComponent,
     OrgInactiveTwoFactorReportComponent,
