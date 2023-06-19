@@ -12,7 +12,6 @@ import { OrganizationBillingRoutingModule } from "./organization-billing-routing
 import { OrganizationBillingTabComponent } from "./organization-billing-tab.component";
 import { OrganizationSubscriptionCloudComponent } from "./organization-subscription-cloud.component";
 import { OrganizationSubscriptionSelfhostComponent } from "./organization-subscription-selfhost.component";
-import { SecretsManagerEnrollComponent } from "./secrets-manager/enroll.component";
 import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
 
 @NgModule({
@@ -32,7 +31,6 @@ import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
     OrganizationSubscriptionSelfhostComponent,
     OrganizationSubscriptionCloudComponent,
     SubscriptionHiddenComponent,
-    SecretsManagerEnrollComponent,
   ],
 })
 export class OrganizationBillingModule {}
