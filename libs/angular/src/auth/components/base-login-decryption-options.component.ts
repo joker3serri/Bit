@@ -137,35 +137,44 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   autoEnroll = async () => {
-    await this.cryptoService.initAccount();
+    // this.loading to support clients without CL-support
+    this.loading = true;
+    try {
+      await this.cryptoService.initAccount();
 
-    const keyResponse = await this.organizationApiService.getKeys(this.organizationId);
+      const keyResponse = await this.organizationApiService.getKeys(this.organizationId);
 
-    if (keyResponse == null) {
-      throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
+      if (keyResponse == null) {
+        throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
+      }
+
+      const publicKey = Utils.fromB64ToArray(keyResponse.publicKey);
+
+      // RSA Encrypt user's encKey.key with organization public key
+      const userId = await this.stateService.getUserId();
+      const userEncKey = await this.cryptoService.getEncKey();
+      const encryptedKey = await this.cryptoService.rsaEncrypt(userEncKey.key, publicKey.buffer);
+
+      const resetRequest = new OrganizationUserResetPasswordEnrollmentRequest();
+      resetRequest.resetPasswordKey = encryptedKey.encryptedString;
+
+      await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
+        this.organizationId,
+        userId,
+        resetRequest
+      );
+
+      if (this.rememberDeviceForm.value.rememberDevice) {
+        await this.deviceCryptoService.trustDevice();
+      }
+
+      // TODO: On browser this should close the window. But since we might extract
+      // this logic into a service I'm gonna leaves this as-is untill that
+      // refactor is done
+      await this.router.navigate(["/vault"]);
+    } finally {
+      this.loading = false;
     }
-
-    const publicKey = Utils.fromB64ToArray(keyResponse.publicKey);
-
-    // RSA Encrypt user's encKey.key with organization public key
-    const userId = await this.stateService.getUserId();
-    const userEncKey = await this.cryptoService.getEncKey();
-    const encryptedKey = await this.cryptoService.rsaEncrypt(userEncKey.key, publicKey.buffer);
-
-    const resetRequest = new OrganizationUserResetPasswordEnrollmentRequest();
-    resetRequest.resetPasswordKey = encryptedKey.encryptedString;
-
-    await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
-      this.organizationId,
-      userId,
-      resetRequest
-    );
-
-    if (this.rememberDeviceForm.value.rememberDevice) {
-      await this.deviceCryptoService.trustDevice();
-    }
-
-    this.router.navigate(["/vault"]);
   };
 
   logOut() {
