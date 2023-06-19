@@ -85,13 +85,12 @@
         </form>
 
         <button
-          (click)="approveWithMasterPassword()"
           bitButton
           type="button"
           buttonType="primary"
           block
-          [appA11yTitle]="'continue' | i18n"
           class="tw-mb-6"
+          [bitAction]="autoEnroll"
         >
           {{ "continue" | i18n }}
         </button>
