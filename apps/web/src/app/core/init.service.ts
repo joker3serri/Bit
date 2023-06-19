@@ -39,6 +39,7 @@ export class InitService {
   init() {
     return async () => {
       // Workaround to ignore stateService.activeAccount until process.env.URLS are set
+      // TODO: Remove this when implementing ticket PM-2637
       this.environmentService.initialized = false;
       await this.stateService.init();
 
