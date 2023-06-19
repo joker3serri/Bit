@@ -205,6 +205,7 @@ export class SsoComponent {
             },
           });
         }
+        // TODO: Rewrite to check if organization actually has TDE enabled
       } else if (
         response.resetMasterPassword &&
         this.configService.getFeatureFlagBool(FeatureFlag.TrustedDeviceEncryption)
