@@ -314,6 +314,14 @@ export class CryptoService implements CryptoServiceAbstraction {
     return providerKeys.get(providerId);
   }
 
+  async hasMasterPassword(): Promise<boolean> {
+    // TODO: Verify that this is ok https://bitwarden.atlassian.net/browse/PM-1203?focusedCommentId=38949
+    const usesKeyConnector = await this.stateService.getUsesKeyConnector();
+    const hasMasterKey = (await this.stateService.getCryptoMasterKey()) != null;
+
+    return usesKeyConnector || (!usesKeyConnector && !hasMasterKey);
+  }
+
   async hasKey(): Promise<boolean> {
     return (
       (await this.hasKeyInMemory()) ||

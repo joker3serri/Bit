@@ -29,6 +29,11 @@ export abstract class CryptoService {
   getOrgKey: (orgId: string) => Promise<SymmetricCryptoKey>;
   getProviderKey: (providerId: string) => Promise<SymmetricCryptoKey>;
   getKeyForUserEncryption: (key?: SymmetricCryptoKey) => Promise<SymmetricCryptoKey>;
+  /**
+   * Check if user has master password or only uses passwordless technologies to log in
+   * @returns True if the user has a master password
+   */
+  hasMasterPassword: () => Promise<boolean>;
   hasKey: () => Promise<boolean>;
   hasKeyInMemory: (userId?: string) => Promise<boolean>;
   hasKeyStored: (keySuffix?: KeySuffixOptions, userId?: string) => Promise<boolean>;
