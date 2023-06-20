@@ -29,8 +29,7 @@ jobs:
           workflow: build-web.yml
           path: apps/web
           workflow_conclusion: success
-          # branch: ${{ github.ref_name }}
-          branch: master
+          branch: ${{ github.ref_name }}
           artifacts: ${{ env._WEB_ARTIFACT }}
 
       - name: Unzip build asset
