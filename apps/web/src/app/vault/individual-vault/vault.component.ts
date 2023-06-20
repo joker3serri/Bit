@@ -664,7 +664,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.refresh();
     } else if (result.action === CollectionDialogAction.Deleted) {
       // TODO: Remove collection from collectionService when collection
-      // deletion is implemented in the individual vault.
+      // deletion is implemented in the individual vault in AC-1347
       this.refresh();
     }
   }
