@@ -92,7 +92,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
+    // Opened from the individual vault
     if (this.params.showOrgSelector) {
       this.showOrgSelector = true;
       this.formGroup.controls.selectedOrg.valueChanges
@@ -110,8 +110,13 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         .subscribe((orgs: Organization[]) => {
           this.organizations = orgs;
         });
+      // patchValue will trigger a call to loadOrg() in this case, so no need to call it again here
+      this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
+    } else {
+      // Opened from the org vault
+      this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
+      this.loadOrg(this.params.organizationId, this.params.collectionIds);
     }
-    this.loadOrg(this.params.organizationId, this.params.collectionIds);
   }
 
   async loadOrg(orgId: string, collectionIds: string[]) {
