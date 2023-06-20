@@ -41,14 +41,9 @@ export interface CollectionDialogParams {
   collectionIds?: string[];
 }
 
-export class CollectionDialogResult {
+export interface CollectionDialogResult {
   action: CollectionDialogAction;
   collection: CollectionResponse;
-
-  constructor(result: CollectionDialogAction, collection: CollectionResponse) {
-    this.action = result;
-    this.collection = collection;
-  }
 }
 
 export enum CollectionDialogAction {
@@ -269,7 +264,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   }
 
   private close(action: CollectionDialogAction, collection?: CollectionResponse) {
-    this.dialogRef.close(new CollectionDialogResult(action, collection));
+    this.dialogRef.close({ action, collection } as CollectionDialogResult);
   }
 }
 
