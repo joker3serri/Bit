@@ -16,10 +16,10 @@ import {
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import {
-  SimpleDialogType,
   DialogServiceAbstraction,
   SimpleDialogCloseType,
   SimpleDialogOptions,
+  SimpleDialogType,
 } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -55,7 +55,7 @@ import { CollectionData } from "@bitwarden/common/vault/models/data/collection.d
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
 
-import { EntityEventsComponent } from "../../../admin-console/organizations/manage/entity-events.component";
+import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
 import { BasePeopleComponent } from "../../../common/base.people.component";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
@@ -81,8 +81,6 @@ export class PeopleComponent
 {
   @ViewChild("groupsTemplate", { read: ViewContainerRef, static: true })
   groupsModalRef: ViewContainerRef;
-  @ViewChild("eventsTemplate", { read: ViewContainerRef, static: true })
-  eventsModalRef: ViewContainerRef;
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
   @ViewChild("resetPasswordTemplate", { read: ViewContainerRef, static: true })
@@ -398,6 +396,7 @@ export class PeopleComponent
         name: this.userNamePipe.transform(user),
         organizationId: this.organization.id,
         organizationUserId: user != null ? user.id : null,
+        allOrganizationUserEmails: this.allUsers?.map((user) => user.email) ?? [],
         usesKeyConnector: user?.usesKeyConnector,
         initialTab: initialTab,
       },
@@ -513,12 +512,14 @@ export class PeopleComponent
   }
 
   async events(user: OrganizationUserView) {
-    await this.modalService.openViewRef(EntityEventsComponent, this.eventsModalRef, (comp) => {
-      comp.name = this.userNamePipe.transform(user);
-      comp.organizationId = this.organization.id;
-      comp.entityId = user.id;
-      comp.showUser = false;
-      comp.entity = "user";
+    await openEntityEventsDialog(this.dialogService, {
+      data: {
+        name: this.userNamePipe.transform(user),
+        organizationId: this.organization.id,
+        entityId: user.id,
+        showUser: false,
+        entity: "user",
+      },
     });
   }
 
@@ -546,7 +547,7 @@ export class PeopleComponent
       ? "removeUserConfirmationKeyConnector"
       : "removeOrgUserConfirmation";
 
-    return await this.dialogService.openSimpleDialog({
+    const confirmed = await this.dialogService.openSimpleDialog({
       title: {
         key: "removeUserIdAccess",
         placeholders: [this.userNamePipe.transform(user)],
@@ -554,6 +555,35 @@ export class PeopleComponent
       content: { key: content },
       type: SimpleDialogType.WARNING,
     });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    if (user.status > OrganizationUserStatusType.Invited && user.hasMasterPassword === false) {
+      return await this.noMasterPasswordConfirmationDialog(user);
+    }
+
+    return true;
+  }
+
+  protected async revokeUserConfirmationDialog(user: OrganizationUserView) {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
+      content: this.revokeWarningMessage(),
+      acceptButtonText: { key: "revokeAccess" },
+      type: SimpleDialogType.WARNING,
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    if (user.status > OrganizationUserStatusType.Invited && user.hasMasterPassword === false) {
+      return await this.noMasterPasswordConfirmationDialog(user);
+    }
+
+    return true;
   }
 
   private async showBulkStatus(
@@ -607,5 +637,18 @@ export class PeopleComponent
       close = true;
       modal.close();
     }
+  }
+
+  private async noMasterPasswordConfirmationDialog(user: OrganizationUserView) {
+    return this.dialogService.openSimpleDialog({
+      title: {
+        key: "removeOrgUserNoMasterPasswordTitle",
+      },
+      content: {
+        key: "removeOrgUserNoMasterPasswordDesc",
+        placeholders: [this.userNamePipe.transform(user)],
+      },
+      type: SimpleDialogType.WARNING,
+    });
   }
 }
