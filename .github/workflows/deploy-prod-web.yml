@@ -41,7 +41,7 @@ jobs:
         working-directory: apps/web
         run: |
           az storage blob upload-batch --source "./build" \
-            --destination "\$web" \
+            --destination '$web' \
             --account-name "bwwebvault1itgprod" \
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
             --overwrite \
