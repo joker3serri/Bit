@@ -16,6 +16,7 @@ describe("ServerConfigData", () => {
         },
         environment: {
           vault: "https://vault.com",
+          cloudWebVault: "https://cloudwebvault.com",
           api: "https://api.com",
           identity: "https://identity.com",
           notifications: "https://notifications.com",
