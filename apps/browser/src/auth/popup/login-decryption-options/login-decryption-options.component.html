@@ -70,7 +70,9 @@
 
       <div class="small mx-5px">
         <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
-        <a [routerLink]="[]" (click)="logOut()">{{ "notYou" | i18n }}</a>
+        <a tabindex="0" role="button" style="cursor: pointer" (click)="logOut()">{{
+          "notYou" | i18n
+        }}</a>
       </div>
     </ng-container>
   </div>
