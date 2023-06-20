@@ -302,13 +302,11 @@
           <br />
         </span>
         <ng-container>
-          <!-- TODO: UPDATE TOTALS -->
           {{ "estimatedTax" | i18n }}: {{ taxCharges | currency : "USD $" }}
         </ng-container>
       </div>
       <hr class="my-1 col-3 ml-0" />
       <p class="text-lg">
-        <!-- TODO: UPDATE TOTALS -->
         <strong>{{ "total" | i18n }}:</strong> {{ total | currency : "USD $" }}/{{
           selectedPlanInterval | i18n
         }}
