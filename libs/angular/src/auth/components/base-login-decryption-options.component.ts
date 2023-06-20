@@ -58,7 +58,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     }
 
     const acctDecryptionOptions: AccountDecryptionOptions =
-      await this.stateService.getAcctDecryptionOptions();
+      await this.stateService.getAccountDecryptionOptions();
 
     // Get user's email from access token:
     this.userEmail = await this.tokenService.getEmail();
