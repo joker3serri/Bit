@@ -52,6 +52,11 @@ export abstract class CryptoService {
     userId?: string
   ) => Promise<UserKey>;
   /**
+   * Check if user has master password or only uses passwordless technologies to log in
+   * @returns True if the user has a master password
+   */
+  hasMasterPassword: () => Promise<boolean>;
+  /**
    * @returns True if any version of the user key is available
    */
   hasUserKey: () => Promise<boolean>;
