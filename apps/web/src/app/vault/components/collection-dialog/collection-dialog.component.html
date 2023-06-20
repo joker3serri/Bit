@@ -26,7 +26,7 @@
             <bit-label>{{ "organization" | i18n }}</bit-label>
             <bit-select bitInput formControlName="selectedOrg">
               <bit-option
-                *ngFor="let org of organizations"
+                *ngFor="let org of organizations$ | async"
                 icon="bwi-business"
                 [value]="org.id"
                 [label]="org.name"

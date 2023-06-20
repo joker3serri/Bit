@@ -1,7 +1,16 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { combineLatest, map, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
+import {
+  combineLatest,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
@@ -57,6 +66,7 @@ export enum CollectionDialogAction {
 })
 export class CollectionDialogComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  protected organizations$: Observable<Organization[]>;
 
   protected tabIndex: CollectionDialogTabType;
   protected loading = true;
@@ -65,7 +75,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected nestOptions: CollectionView[] = [];
   protected accessItems: AccessItemView[] = [];
   protected deletedParentName: string | undefined;
-  protected organizations: Organization[];
   protected showOrgSelector = false;
   protected formGroup = this.formBuilder.group({
     name: ["", [Validators.required, BitValidators.forbiddenCharacters(["/"])]],
@@ -98,18 +107,13 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       this.formGroup.controls.selectedOrg.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe((id) => this.loadOrg(id, this.params.collectionIds));
-      this.organizationService.organizations$
-        .pipe(
-          map((orgs) =>
-            orgs
-              .filter((o) => o.canCreateNewCollections)
-              .sort(Utils.getSortFunction(this.i18nService, "name"))
-          ),
-          takeUntil(this.destroy$)
+      this.organizations$ = this.organizationService.organizations$.pipe(
+        map((orgs) =>
+          orgs
+            .filter((o) => o.canCreateNewCollections)
+            .sort(Utils.getSortFunction(this.i18nService, "name"))
         )
-        .subscribe((orgs: Organization[]) => {
-          this.organizations = orgs;
-        });
+      );
       // patchValue will trigger a call to loadOrg() in this case, so no need to call it again here
       this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
     } else {
