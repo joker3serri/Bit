@@ -6,7 +6,6 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { SecretsManagerSubscribeRequest } from "@bitwarden/common/billing/models/request/sm-subscribe.request";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { secretsManagerSubscribeFormFactory } from "./sm-subscribe.component";
@@ -22,12 +21,9 @@ export class SecretsManagerSubscribeStandaloneComponent {
 
   formGroup = secretsManagerSubscribeFormFactory(this.formBuilder);
 
-  formPromise: Promise<void>;
-
   constructor(
     private formBuilder: FormBuilder,
     private platformUtilsService: PlatformUtilsService,
-    private logService: LogService,
     private i18nService: I18nService,
     private organizationApiService: OrganizationApiServiceAbstraction
   ) {}
@@ -37,22 +33,9 @@ export class SecretsManagerSubscribeStandaloneComponent {
     request.userSeats = this.formGroup.value.userSeats;
     request.additionalServiceAccounts = this.formGroup.value.additionalServiceAccounts;
 
-    this.formPromise = this.organizationApiService.subscribeToSecretsManager(
-      this.organization.id,
-      request
-    );
+    await this.organizationApiService.subscribeToSecretsManager(this.organization.id, request);
 
-    await this.formPromise;
-
-    try {
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("subscriptionUpdated")
-      );
-    } catch (e) {
-      this.logService.error(e);
-    }
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
 
     this.onSubscribe.emit();
   };
