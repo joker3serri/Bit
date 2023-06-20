@@ -34,6 +34,7 @@ export const secretsManagerSubscribeFormFactory = (
 export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   @Input() formGroup: FormGroup<ControlsOf<SecretsManagerSubscription>>;
   @Input() upgradeOrganization: boolean;
+  @Input() showSubmitButton = false;
 
   private _selectedPlan: PlanResponse;
 

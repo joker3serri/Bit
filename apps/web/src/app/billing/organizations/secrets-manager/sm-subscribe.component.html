@@ -60,8 +60,9 @@
         }}</bit-hint>
       </bit-form-field>
 
-      <!-- Parent component may project a save button in here if it's not part of a larger form -->
-      <ng-content></ng-content>
+      <button *ngIf="showSubmitButton" type="submit" bitButton buttonType="primary" bitFormButton>
+        {{ "save" | i18n }}
+      </button>
     </div>
   </div>
 </div>
