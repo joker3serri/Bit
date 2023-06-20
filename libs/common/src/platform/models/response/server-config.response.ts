@@ -24,7 +24,7 @@ export class ServerConfigResponse extends BaseResponse {
 
 export class EnvironmentServerConfigResponse extends BaseResponse {
   vault: string;
-  cloudVault: string;
+  cloudWebVault: string;
   api: string;
   identity: string;
   notifications: string;
@@ -38,7 +38,7 @@ export class EnvironmentServerConfigResponse extends BaseResponse {
     }
 
     this.vault = this.getResponseProperty("Vault");
-    this.cloudVault = this.getResponseProperty("CloudVault");
+    this.cloudWebVault = this.getResponseProperty("CloudWebVault") ?? this.vault;
     this.api = this.getResponseProperty("Api");
     this.identity = this.getResponseProperty("Identity");
     this.notifications = this.getResponseProperty("Notifications");

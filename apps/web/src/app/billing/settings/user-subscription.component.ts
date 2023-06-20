@@ -42,7 +42,7 @@ export class UserSubscriptionComponent implements OnInit {
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
     this.cloudWebVaultUrl$ = this.configService.serverConfig$.pipe(
-      map((config) => config?.environment?.cloudVault)
+      map((config) => config?.environment?.cloudWebVault)
     );
   }
 

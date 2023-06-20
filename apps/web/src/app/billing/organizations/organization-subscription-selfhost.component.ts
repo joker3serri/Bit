@@ -88,7 +88,7 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     private configService: ConfigServiceAbstraction
   ) {
     this.cloudWebVaultUrl$ = this.configService.serverConfig$.pipe(
-      map((config) => config?.environment?.cloudVault)
+      map((config) => config?.environment?.cloudWebVault)
     );
   }
 
