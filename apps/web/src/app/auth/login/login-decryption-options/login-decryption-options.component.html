@@ -39,7 +39,6 @@
           buttonType="primary"
           [block]="true"
           [ngClass]="{ 'tw-mb-3': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn }"
-          [appA11yTitle]="'approveFromYourOtherDevice' | i18n"
         >
           {{ "approveFromYourOtherDevice" | i18n }}
         </button>
@@ -51,7 +50,6 @@
           type="button"
           buttonType="secondary"
           [ngClass]="{ 'tw-mb-3': showApproveWithMasterPasswordBtn }"
-          [appA11yTitle]="'requestAdminApproval' | i18n"
         >
           {{ "requestAdminApproval" | i18n }}
         </button>
@@ -62,7 +60,6 @@
           bitButton
           type="button"
           buttonType="secondary"
-          [appA11yTitle]="'approveWithMasterPassword' | i18n"
         >
           {{ "approveWithMasterPassword" | i18n }}
         </button>
