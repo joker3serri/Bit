@@ -372,6 +372,14 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     ) {
       this.formGroup.controls.additionalSeats.setValue(1);
     }
+
+    if (this.planOffersSecretsManager) {
+      this.secretsManagerForm.enable();
+    } else {
+      this.secretsManagerForm.disable();
+    }
+
+    this.secretsManagerForm.updateValueAndValidity();
   }
 
   changedOwnedBusiness() {
