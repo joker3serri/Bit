@@ -23,6 +23,7 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private organizationId: string;
   private projectId: string;
+  private rows: AccessSelectorRowView[];
 
   protected rows$: Observable<AccessSelectorRowView[]> =
     this.accessPolicyService.projectAccessPolicyChanges$.pipe(
@@ -39,10 +40,20 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
           read: policy.read,
           write: policy.write,
           icon: AccessSelectorComponent.serviceAccountIcon,
-          static: true,
+          static: false,
         }))
       )
     );
+
+  protected async handleUpdateAccessPolicy(policy: AccessSelectorRowView) {
+    try {
+      return await this.accessPolicyService.updateAccessPolicy(
+        AccessSelectorComponent.getBaseAccessPolicyView(policy)
+      );
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+  }
 
   protected handleCreateAccessPolicies(selected: SelectItemView[]) {
     const projectAccessPoliciesView = new ProjectAccessPoliciesView();
@@ -84,6 +95,10 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.organizationId = params.organizationId;
       this.projectId = params.projectId;
+    });
+
+    this.rows$.pipe(takeUntil(this.destroy$)).subscribe((rows) => {
+      this.rows = rows;
     });
   }
 
