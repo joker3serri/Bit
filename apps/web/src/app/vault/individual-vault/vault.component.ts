@@ -468,40 +468,26 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   addFolder = async (): Promise<void> => {
-    const [modal] = await this.modalService.openViewRef(
-      FolderAddEditComponent,
-      this.folderAddEditModalRef,
-      (comp) => {
-        comp.folderId = null;
-        comp.onSavedFolder.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-        });
-      }
-    );
+    await this.dialogService.open(FolderAddEditComponent);
   };
 
   editFolder = async (folder: FolderFilter): Promise<void> => {
-    const [modal] = await this.modalService.openViewRef(
-      FolderAddEditComponent,
-      this.folderAddEditModalRef,
-      (comp) => {
-        comp.folderId = folder.id;
-        comp.onSavedFolder.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-        });
-        comp.onDeletedFolder.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          // Navigate away if we deleted the colletion we were viewing
-          if (this.filter.folderId === folder.id) {
-            this.router.navigate([], {
-              queryParams: { folderId: null },
-              queryParamsHandling: "merge",
-              replaceUrl: true,
-            });
-          }
-          modal.close();
+    const modal = await this.dialogService.open(FolderAddEditComponent, {
+      data: {
+        folderId: folder.id,
+      },
+    });
+
+    modal.closed.pipe(takeUntil(this.destroy$)).subscribe((deleted: boolean) => {
+      // Navigate away if the deleted folder was selected
+      if (deleted && this.filter.folderId === folder.id) {
+        this.router.navigate([], {
+          queryParams: { folderId: null },
+          queryParamsHandling: "merge",
+          replaceUrl: true,
         });
       }
-    );
+    });
   };
 
   filterSearchText(searchText: string) {
