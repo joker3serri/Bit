@@ -21,6 +21,7 @@ import { DesktopDeviceTypes, MobileDeviceTypes } from "@bitwarden/common/enums/d
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
 // TODO: replace this base component with a service per latest ADR
@@ -47,7 +48,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected router: Router,
     protected messagingService: MessagingService,
     protected tokenService: TokenService,
-    protected loginService: LoginService
+    protected loginService: LoginService,
+    private validationService: ValidationService
   ) {}
 
   ngOnInit() {
@@ -61,7 +63,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.userEmail$ = from(this.tokenService.getEmail()).pipe(
       tap((email) => (this.userEmail = email)), // set userEmail as a side effect
       catchError((err: unknown) => {
-        // TODO: figure out correct error handling
+        this.validationService.showError(err);
         return throwError(() => err);
       }),
       takeUntil(this.componentDestroyed$)
@@ -72,7 +74,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // Show approve from other device btn if user has any mobile or desktop devices
     this.showApproveFromOtherDeviceBtn$ = devices$.pipe(
       catchError((err: unknown) => {
-        // TODO: figure out correct error handling
+        this.validationService.showError(err);
         return throwError(() => err);
       }),
 
@@ -90,7 +92,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       this.userEmail$,
     ]).pipe(
       catchError((err: unknown) => {
-        // TODO: figure out correct error handling
+        this.validationService.showError(err);
         return throwError(() => err);
       }),
       map(
@@ -102,7 +104,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
     this.showApproveWithMasterPasswordBtn$ = accountDecryptionOptions$.pipe(
       catchError((err: unknown) => {
-        // TODO: figure out correct error handling
+        this.validationService.showError(err);
         return throwError(() => err);
       }),
       map((acctDecryptionOptions) => acctDecryptionOptions.hasMasterPassword),

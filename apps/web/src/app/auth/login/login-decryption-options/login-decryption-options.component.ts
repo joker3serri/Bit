@@ -8,6 +8,7 @@ import { LoginService } from "@bitwarden/common/auth/abstractions/login.service"
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 @Component({
   selector: "web-login-decryption-options",
   templateUrl: "login-decryption-options.component.html",
@@ -20,7 +21,8 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
     router: Router,
     messagingService: MessagingService,
     tokenService: TokenService,
-    loginService: LoginService
+    loginService: LoginService,
+    validationService: ValidationService
   ) {
     super(
       formBuilder,
@@ -29,7 +31,8 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
       router,
       messagingService,
       tokenService,
-      loginService
+      loginService,
+      validationService
     );
   }
 }
