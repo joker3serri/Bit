@@ -8,14 +8,16 @@
           </h1>
           <div class="box-content">
             <div class="box-content-row" appBoxRow>
-              <label for="name">{{ "name" | i18n }}</label>
-              <input
-                id="name"
-                type="text"
-                name="Name"
-                [(ngModel)]="folder.name"
-                [appAutofocus]="!editMode"
-              />
+              <form
+                #form
+                [formGroup]="formGroup"
+                (ngSubmit)="submit()"
+                [appApiAction]="formPromise"
+                ngNativeValidate
+              >
+                <label for="name">{{ "name" | i18n }}</label>
+                <input id="name" type="text" formControlName="name" [appAutofocus]="!editMode" />
+              </form>
             </div>
           </div>
         </div>
@@ -25,7 +27,7 @@
           type="submit"
           class="primary"
           appA11yTitle="{{ 'save' | i18n }}"
-          [disabled]="form.loading"
+          [disabled]="form.loading || !formGroup.valid"
         >
           <i
             class="bwi bwi-save-changes bwi-lg bwi-fw"
