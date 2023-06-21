@@ -23,7 +23,6 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private organizationId: string;
   private projectId: string;
-  private rows: AccessSelectorRowView[];
 
   protected rows$: Observable<AccessSelectorRowView[]> =
     this.accessPolicyService.projectAccessPolicyChanges$.pipe(
@@ -95,10 +94,6 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.organizationId = params.organizationId;
       this.projectId = params.projectId;
-    });
-
-    this.rows$.pipe(takeUntil(this.destroy$)).subscribe((rows) => {
-      this.rows = rows;
     });
   }
 
