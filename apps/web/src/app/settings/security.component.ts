@@ -17,9 +17,12 @@ export class SecurityComponent {
 
   async ngOnInit() {
     const accountDecriptionOptions = await this.stateService.getAcctDecryptionOptions();
-    if (accountDecriptionOptions == null) {
-      this.showChangePassword = accountDecriptionOptions.hasMasterPassword;
-    }
-    this.showChangePassword = !(await this.keyConnectorService.getUsesKeyConnector());
+    const hasMasterPassword =
+      accountDecriptionOptions != null &&
+      accountDecriptionOptions.hasMasterPassword != null &&
+      !accountDecriptionOptions.hasMasterPassword;
+
+    this.showChangePassword =
+      !(await this.keyConnectorService.getUsesKeyConnector()) || hasMasterPassword;
   }
 }
