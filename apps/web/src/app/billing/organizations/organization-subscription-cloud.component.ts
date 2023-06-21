@@ -77,6 +77,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         return this.i18nService.t("passwordManager");
       case BitwardenProductType.SecretsManager:
         return this.i18nService.t("secretsManager");
+      default:
+        return this.i18nService.t("passwordManager");
     }
   }
 
