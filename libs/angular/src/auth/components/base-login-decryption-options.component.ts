@@ -1,12 +1,24 @@
 import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import {
+  Observable,
+  Subject,
+  catchError,
+  combineLatest,
+  from,
+  map,
+  takeUntil,
+  tap,
+  throwError,
+} from "rxjs";
 
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
+import { DeviceResponse } from "@bitwarden/common/abstractions/devices/responses/device.response";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { DeviceType } from "@bitwarden/common/enums/device-type.enum";
+import { DesktopDeviceTypes, MobileDeviceTypes } from "@bitwarden/common/enums/device-type.enum";
+import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
@@ -16,6 +28,10 @@ import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/doma
 export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject();
 
+  showApproveFromOtherDeviceBtn$: Observable<boolean>;
+  showReqAdminApprovalBtn$: Observable<boolean>;
+  showApproveWithMasterPasswordBtn$: Observable<boolean>;
+  userEmail$: Observable<string>;
   userEmail: string = null;
 
   rememberDeviceForm = this.formBuilder.group({
@@ -23,10 +39,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   });
 
   loading = true;
-
-  showApproveFromOtherDeviceBtn = false;
-  showReqAdminApprovalBtn = false;
-  showApproveWithMasterPasswordBtn = false;
 
   constructor(
     protected formBuilder: FormBuilder,
@@ -38,39 +50,64 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected loginService: LoginService
   ) {}
 
-  async ngOnInit() {
-    // Determine if the user has any mobile or desktop devices
-    // to determine if we should show the approve from other device button
-    const devicesListResponse = await this.devicesApiService.getDevices();
-    for (const device of devicesListResponse.data) {
-      if (
-        device.type === DeviceType.Android ||
-        device.type === DeviceType.iOS ||
-        device.type === DeviceType.AndroidAmazon ||
-        device.type === DeviceType.WindowsDesktop ||
-        device.type === DeviceType.MacOsDesktop ||
-        device.type === DeviceType.LinuxDesktop ||
-        device.type === DeviceType.UWP
-      ) {
-        this.showApproveFromOtherDeviceBtn = true;
-        break;
-      }
-    }
+  ngOnInit() {
+    const devices$: Observable<ListResponse<DeviceResponse>> = from(
+      this.devicesApiService.getDevices()
+    );
+    const accountDecryptionOptions$: Observable<AccountDecryptionOptions> = from(
+      this.stateService.getAccountDecryptionOptions()
+    );
+    // Pull user email from access token b/c it's available post authN
+    this.userEmail$ = from(this.tokenService.getEmail()).pipe(
+      tap((email) => (this.userEmail = email)), // set userEmail as a side effect
+      catchError((err: unknown) => {
+        // TODO: figure out correct error handling
+        return throwError(() => err);
+      }),
+      takeUntil(this.componentDestroyed$)
+    );
 
-    const acctDecryptionOptions: AccountDecryptionOptions =
-      await this.stateService.getAccountDecryptionOptions();
+    this.loading = true;
 
-    // Get user's email from access token:
-    this.userEmail = await this.tokenService.getEmail();
+    // Show approve from other device btn if user has any mobile or desktop devices
+    this.showApproveFromOtherDeviceBtn$ = devices$.pipe(
+      catchError((err: unknown) => {
+        // TODO: figure out correct error handling
+        return throwError(() => err);
+      }),
+
+      map((response) =>
+        response.data.some(
+          (device) => MobileDeviceTypes.has(device.type) || DesktopDeviceTypes.has(device.type)
+        )
+      ),
+      takeUntil(this.componentDestroyed$)
+    );
 
     // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set && user email is not null
-    this.showReqAdminApprovalBtn =
-      !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval && this.userEmail != null;
+    this.showReqAdminApprovalBtn$ = combineLatest([
+      accountDecryptionOptions$,
+      this.userEmail$,
+    ]).pipe(
+      catchError((err: unknown) => {
+        // TODO: figure out correct error handling
+        return throwError(() => err);
+      }),
+      map(
+        ([acctDecryptionOptions, userEmail]) =>
+          !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval && userEmail != null
+      ),
+      takeUntil(this.componentDestroyed$)
+    );
 
-    this.showApproveWithMasterPasswordBtn = acctDecryptionOptions.hasMasterPassword;
-
-    // TODO: do I extend the lock guard for the lock screen to prevent the user from getting to the lock screen
-    // if they do not have a master password set
+    this.showApproveWithMasterPasswordBtn$ = accountDecryptionOptions$.pipe(
+      catchError((err: unknown) => {
+        // TODO: figure out correct error handling
+        return throwError(() => err);
+      }),
+      map((acctDecryptionOptions) => acctDecryptionOptions.hasMasterPassword),
+      takeUntil(this.componentDestroyed$)
+    );
 
     this.loading = false;
   }

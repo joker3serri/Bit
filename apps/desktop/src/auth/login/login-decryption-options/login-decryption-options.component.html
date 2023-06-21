@@ -26,7 +26,7 @@
       </form>
 
       <div class="buttons with-rows">
-        <div class="buttons-row" *ngIf="showApproveFromOtherDeviceBtn">
+        <div class="buttons-row" *ngIf="showApproveFromOtherDeviceBtn$ | async">
           <button
             (click)="approveFromOtherDevice()"
             type="button"
@@ -36,7 +36,7 @@
             {{ "approveFromYourOtherDevice" | i18n }}
           </button>
         </div>
-        <div class="buttons-row" *ngIf="showReqAdminApprovalBtn">
+        <div class="buttons-row" *ngIf="showReqAdminApprovalBtn$ | async">
           <button
             (click)="requestAdminApproval()"
             type="button"
@@ -46,7 +46,7 @@
             {{ "requestAdminApproval" | i18n }}
           </button>
         </div>
-        <div class="buttons-row" *ngIf="showApproveWithMasterPasswordBtn">
+        <div class="buttons-row" *ngIf="showApproveWithMasterPasswordBtn$ | async">
           <button
             (click)="approveWithMasterPassword()"
             type="button"
@@ -59,7 +59,7 @@
       </div>
 
       <div style="text-align: center">
-        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
+        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail$ | async }}</p>
         <a [routerLink]="[]" (click)="logOut()">{{ "notYou" | i18n }}</a>
       </div>
     </ng-container>

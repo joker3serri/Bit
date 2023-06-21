@@ -37,29 +37,30 @@
 
       <div class="box mb-20px">
         <button
-          *ngIf="showApproveFromOtherDeviceBtn"
+          *ngIf="showApproveFromOtherDeviceBtn$ | async"
           (click)="approveFromOtherDevice()"
           type="button"
           class="btn primary block"
           [ngClass]="{
-            'btn-bottom-margin': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn
+            'btn-bottom-margin':
+              (showReqAdminApprovalBtn$ | async) || (showApproveWithMasterPasswordBtn$ | async)
           }"
         >
           <b>{{ "approveFromYourOtherDevice" | i18n }}</b>
         </button>
         <button
-          *ngIf="showReqAdminApprovalBtn"
+          *ngIf="showReqAdminApprovalBtn$ | async"
           (click)="requestAdminApproval()"
           type="button"
           class="btn block"
-          [ngClass]="{ 'btn-bottom-margin': showApproveWithMasterPasswordBtn }"
+          [ngClass]="{ 'btn-bottom-margin': showApproveWithMasterPasswordBtn$ | async }"
         >
           {{ "requestAdminApproval" | i18n }}
         </button>
         <button
           type="button"
           class="btn block"
-          *ngIf="showApproveWithMasterPasswordBtn"
+          *ngIf="showApproveWithMasterPasswordBtn$ | async"
           (click)="approveWithMasterPassword()"
         >
           {{ "approveWithMasterPassword" | i18n }}
@@ -69,7 +70,7 @@
       <hr class="muted-hr mx-5px mb-20px" />
 
       <div class="small mx-5px">
-        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
+        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail$ | async }}</p>
         <a tabindex="0" role="button" style="cursor: pointer" (click)="logOut()">{{
           "notYou" | i18n
         }}</a>

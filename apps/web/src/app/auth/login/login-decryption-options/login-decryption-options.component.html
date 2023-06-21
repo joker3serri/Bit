@@ -32,30 +32,33 @@
 
       <div class="tw-mb-6 tw-flex tw-flex-col">
         <button
-          *ngIf="showApproveFromOtherDeviceBtn"
+          *ngIf="showApproveFromOtherDeviceBtn$ | async"
           (click)="approveFromOtherDevice()"
           bitButton
           type="button"
           buttonType="primary"
           [block]="true"
-          [ngClass]="{ 'tw-mb-3': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn }"
+          [ngClass]="{
+            'tw-mb-3':
+              (showReqAdminApprovalBtn$ | async) || (showApproveWithMasterPasswordBtn$ | async)
+          }"
         >
           {{ "approveFromYourOtherDevice" | i18n }}
         </button>
 
         <button
-          *ngIf="showReqAdminApprovalBtn"
+          *ngIf="showReqAdminApprovalBtn$ | async"
           (click)="requestAdminApproval()"
           bitButton
           type="button"
           buttonType="secondary"
-          [ngClass]="{ 'tw-mb-3': showApproveWithMasterPasswordBtn }"
+          [ngClass]="{ 'tw-mb-3': showApproveWithMasterPasswordBtn$ | async }"
         >
           {{ "requestAdminApproval" | i18n }}
         </button>
 
         <button
-          *ngIf="showApproveWithMasterPasswordBtn"
+          *ngIf="showApproveWithMasterPasswordBtn$ | async"
           (click)="approveWithMasterPassword()"
           bitButton
           type="button"
@@ -68,7 +71,7 @@
       <hr class="tw-mb-6 tw-mt-0" />
 
       <div class="tw-m-0 tw-text-sm">
-        <p class="tw-mb-1">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
+        <p class="tw-mb-1">{{ "loggingInAs" | i18n }} {{ userEmail$ | async }}</p>
         <a [routerLink]="[]" (click)="logOut()">{{ "notYou" | i18n }}</a>
       </div>
     </div>
