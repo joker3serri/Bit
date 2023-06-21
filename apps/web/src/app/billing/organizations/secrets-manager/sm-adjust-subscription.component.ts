@@ -2,6 +2,11 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angu
 import { FormBuilder, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/organization-subscription-update.request";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+
 export interface SecretsManagerSubscriptionOptions {
   interval: "year" | "month";
   seatCount: number;
@@ -64,7 +69,12 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
     return Math.abs((this.formGroup.value.seatLimit ?? 0) * this.options.seatPrice);
   }
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private i18nService: I18nService,
+    private platformUtilsService: PlatformUtilsService
+  ) {}
 
   ngOnInit() {
     this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -106,7 +116,24 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
       return;
     }
 
-    // TODO: Make the request to update the subscription
+    const seatAdjustment = this.formGroup.value.seatCount - this.options.seatCount;
+    const serviceAccountAdjustment =
+      this.formGroup.value.serviceAccountCount - this.options.serviceAccountCount;
+
+    const request = OrganizationSubscriptionUpdateRequest.forSecretsManager(
+      seatAdjustment,
+      serviceAccountAdjustment,
+      this.formGroup.value.seatLimit,
+      this.formGroup.value.serviceAccountLimit
+    );
+
+    await this.organizationApiService.updateSubscription(this.organizationId, request);
+
+    await this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("subscriptionUpdated")
+    );
 
     this.onAdjusted.emit();
   };
