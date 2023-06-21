@@ -10,7 +10,9 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlanType } from "@bitwarden/common/billing/enums";
+import { BitwardenProductType } from "@bitwarden/common/billing/enums/bitwarden-product-type.enum";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
+import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -28,6 +30,7 @@ import {
 })
 export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy {
   sub: OrganizationSubscriptionResponse;
+  lineItems: BillingSubscriptionItemResponse[] = [];
   organizationId: string;
   userOrg: Organization;
   showChangePlan = false;
@@ -73,6 +76,15 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       .subscribe();
   }
 
+  productName(product: BitwardenProductType) {
+    switch (product) {
+      case BitwardenProductType.PasswordManager:
+        return this.i18nService.t("passwordManager");
+      case BitwardenProductType.SecretsManager:
+        return this.i18nService.t("secretsManager");
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -86,6 +98,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.userOrg = this.organizationService.get(this.organizationId);
     if (this.userOrg.canViewSubscription) {
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
+      this.lineItems = this.sub?.subscription?.items?.sort(sortSubscriptionItems) ?? [];
     }
 
     const apiKeyResponse = await this.organizationApiService.getApiKeyInformation(
@@ -347,4 +360,22 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   get showChangePlanButton() {
     return this.subscription == null && this.sub.planType === PlanType.Free && !this.showChangePlan;
   }
+}
+
+/**
+ * Helper to sort subscription items by product type and then by addon status
+ */
+function sortSubscriptionItems(
+  a: BillingSubscriptionItemResponse,
+  b: BillingSubscriptionItemResponse
+) {
+  if (a.bitwardenProduct == b.bitwardenProduct) {
+    // sort addon items to the bottom
+    return a.addonSubscriptionItem == b.addonSubscriptionItem
+      ? 0
+      : a.addonSubscriptionItem
+      ? 1
+      : -1;
+  }
+  return a.bitwardenProduct - b.bitwardenProduct;
 }

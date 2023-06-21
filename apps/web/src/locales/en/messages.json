@@ -6610,6 +6610,9 @@
   "changeKdfLoggedOutWarning": {
     "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
+  "secretsManager": {
+    "message": "Secrets Manager"
+  },
   "secretsManagerBeta": {
     "message": "Secrets Manager Beta"
   },
@@ -6903,9 +6906,6 @@
   "removeMembersWithoutMasterPasswordWarning": {
     "message": "Removing members who do not have master passwords without setting one for them may restrict access to their full account."
   },
-  "secretsManager": {
-    "message": "Secrets Manager"
-  },
   "secretsManagerForPlan": {
     "message": "Secrets Manager for $PLAN$",
     "placeholders": {
@@ -6981,6 +6981,12 @@
   },
   "secretsManagerPlanPrice": {
     "message": "Secrets Manager plan price"
+  },
+  "passwordManager": {
+    "message": "Password Manager"
+  },
+  "freeOrganization": {
+    "message": "Free Organization"
   }
 }
 
