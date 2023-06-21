@@ -84,9 +84,9 @@ the light and dark themes.
 
 ### Loading Buttons
 
-Include an `aria-label` attribute that defaults to “loading” but can be configurable per
+Include an `aria-label` attribute that defaults to "loading" but can be configurable per
 implementation. On click, the screen reader should announce the `aria-label`. Once the action is
-compelted, use another messaging pattern to alert the user that the action is complete (example:
+completed, use another messaging pattern to alert the user that the action is complete (example:
 success toast).
 
 ### Submit and async actions
@@ -99,10 +99,10 @@ the [Async Actions Directive](?path=/story/component-library-async-actions-overv
 
 ### appA11yTitle
 
-`appA11yTitle` is an element that auto assigns the same string to the `title` and `aria-label`
+`appA11yTitle` is a directive that auto assigns the same string to the `title` and `aria-label`
 attributes.
 
-When a button uses accessible content (i.e. actual text), DO NOT include this as it adds redundant
+When a button uses accessible content (e.i. actual text), DO NOT include this as it adds redundant
 content for someone using assistive technology.
 
 `appA11yTitle` should only be used if the element it applies to does not include accessible text,
