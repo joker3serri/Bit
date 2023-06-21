@@ -7,7 +7,7 @@
       <span class="title">{{ title }}</span>
     </h1>
     <div class="right">
-      <button type="submit" [disabled]="form.loading">
+      <button type="submit" [disabled]="form.loading || !formGroup.valid">
         <span [hidden]="form.loading">{{ "save" | i18n }}</span>
         <i class="bwi bwi-spinner bwi-lg bwi-spin" [hidden]="!form.loading" aria-hidden="true"></i>
       </button>
@@ -17,14 +17,16 @@
     <div class="box">
       <div class="box-content">
         <div class="box-content-row" appBoxRow>
-          <label for="name">{{ "name" | i18n }}</label>
-          <input
-            id="name"
-            type="text"
-            name="Name"
-            [(ngModel)]="folder.name"
-            [appAutofocus]="!editMode"
-          />
+          <form
+            #form
+            [formGroup]="formGroup"
+            (ngSubmit)="submit()"
+            [appApiAction]="formPromise"
+            ngNativeValidate
+          >
+            <label for="name">{{ "name" | i18n }}</label>
+            <input id="name" type="text" formControlName="name" [appAutofocus]="!editMode" />
+          </form>
         </div>
       </div>
     </div>
