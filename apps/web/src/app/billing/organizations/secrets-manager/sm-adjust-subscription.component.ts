@@ -13,8 +13,8 @@ export interface SecretsManagerSubscriptionOptions {
    */
   baseServiceAccountCount: number;
 
-  additionalServiceAccountCount: number;
-  additionalServiceAccountLimit: number;
+  serviceAccountCount: number;
+  serviceAccountLimit: number;
   additionalServiceAccountPrice: number;
 }
 
@@ -92,10 +92,10 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
     this.formGroup.patchValue({
       seatCount: this.options.seatCount,
       seatLimit: this.options.seatLimit,
-      serviceAccountCount: this.options.additionalServiceAccountCount,
-      serviceAccountLimit: this.options.additionalServiceAccountLimit,
+      serviceAccountCount: this.options.serviceAccountCount,
+      serviceAccountLimit: this.options.serviceAccountLimit,
       limitSeats: this.options.seatLimit != null,
-      limitServiceAccounts: this.options.additionalServiceAccountLimit != null,
+      limitServiceAccounts: this.options.serviceAccountLimit != null,
     });
   }
 
