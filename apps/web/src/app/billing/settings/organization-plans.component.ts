@@ -606,18 +606,18 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   ): void {
     const formValues = this.secretsManagerForm.value;
 
-    request.secretsManagerEnabled = this.planOffersSecretsManager && formValues.enabled;
+    request.useSecretsManager = this.planOffersSecretsManager && formValues.enabled;
 
-    if (!request.secretsManagerEnabled) {
+    if (!request.useSecretsManager) {
       return;
     }
 
     if (this.selectedSecretsManagerPlan.hasAdditionalSeatsOption) {
-      request.secretsManagerUserSeats = formValues.userSeats;
+      request.additionalSmSeats = formValues.userSeats;
     }
 
     if (this.selectedSecretsManagerPlan.hasAdditionalServiceAccountOption) {
-      request.secretsManagerAdditionalServiceAccounts = formValues.additionalServiceAccounts;
+      request.additionalServiceAccounts = formValues.additionalServiceAccounts;
     }
   }
 

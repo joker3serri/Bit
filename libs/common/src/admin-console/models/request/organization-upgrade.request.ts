@@ -12,7 +12,7 @@ export class OrganizationUpgradeRequest {
   billingAddressPostalCode: string;
   keys: OrganizationKeysRequest;
 
-  secretsManagerEnabled: boolean;
-  secretsManagerUserSeats: number;
-  secretsManagerAdditionalServiceAccounts: number;
+  useSecretsManager: boolean;
+  additionalSmSeats: number;
+  additionalServiceAccounts: number;
 }
