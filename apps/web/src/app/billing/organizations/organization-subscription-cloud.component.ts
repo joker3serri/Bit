@@ -355,11 +355,14 @@ function sortSubscriptionItems(
 ) {
   if (a.bitwardenProduct == b.bitwardenProduct) {
     // sort addon items to the bottom
-    return a.addonSubscriptionItem == b.addonSubscriptionItem
-      ? 0
-      : a.addonSubscriptionItem
-      ? 1
-      : -1;
+    if (a.addonSubscriptionItem == b.addonSubscriptionItem) {
+      return 0;
+    }
+
+    if (a.addonSubscriptionItem) {
+      return 1;
+    }
+    return -1;
   }
   return a.bitwardenProduct - b.bitwardenProduct;
 }
