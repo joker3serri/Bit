@@ -16,13 +16,13 @@ export class SecurityComponent {
   ) {}
 
   async ngOnInit() {
-    const accountDecriptionOptions = await this.stateService.getAcctDecryptionOptions();
+    const accountDecryptionOptions = await this.stateService.getAcctDecryptionOptions();
     const hasMasterPassword =
-      accountDecriptionOptions != null &&
-      accountDecriptionOptions.hasMasterPassword != null &&
-      !accountDecriptionOptions.hasMasterPassword;
+      accountDecryptionOptions != null &&
+      accountDecryptionOptions.hasMasterPassword != null &&
+      accountDecryptionOptions.hasMasterPassword;
+    const usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
 
-    this.showChangePassword =
-      !(await this.keyConnectorService.getUsesKeyConnector()) || hasMasterPassword;
+    this.showChangePassword = !usesKeyConnector && hasMasterPassword;
   }
 }

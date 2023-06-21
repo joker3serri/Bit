@@ -82,9 +82,10 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     const hasMasterPassword =
       accountDecriptionOptions != null &&
       accountDecriptionOptions.hasMasterPassword != null &&
-      !accountDecriptionOptions.hasMasterPassword;
+      accountDecriptionOptions.hasMasterPassword;
+    const usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
 
-    if ((await this.keyConnectorService.getUsesKeyConnector()) || !hasMasterPassword) {
+    if (usesKeyConnector || !hasMasterPassword) {
       this.router.navigate(["/settings/security/two-factor"]);
     }
 
