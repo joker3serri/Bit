@@ -13,6 +13,7 @@ import { OrganizationBillingTabComponent } from "./organization-billing-tab.comp
 import { OrganizationSubscriptionCloudComponent } from "./organization-subscription-cloud.component";
 import { OrganizationSubscriptionSelfhostComponent } from "./organization-subscription-selfhost.component";
 import { SecretsManagerEnrollComponent } from "./secrets-manager/enroll.component";
+import { SecretsManagerAdjustSubscriptionComponent } from "./secrets-manager/sm-adjust-subscription.component";
 import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
 
 @NgModule({
@@ -32,6 +33,7 @@ import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
     OrganizationSubscriptionSelfhostComponent,
     OrganizationSubscriptionCloudComponent,
     SubscriptionHiddenComponent,
+    SecretsManagerAdjustSubscriptionComponent,
     SecretsManagerEnrollComponent,
   ],
 })
