@@ -83,7 +83,7 @@
                 </td>
               </tr>
             </ng-container>
-            <ng-container *ngIf="!subscription && userOrg.isFreeOrg">
+            <ng-container *ngIf="userOrg.isFreeOrg">
               <tr bitRow *ngIf="userOrg.usePasswordManager">
                 <td bitCell>{{ "passwordManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
                 <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
