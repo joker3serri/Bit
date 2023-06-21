@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Branch/Tag name to deploy (examples: 'master', '2023.5.0', 'feature/sm')"
+        description: "Branch name to deploy (examples: 'master', 'feature/sm')"
         required: true
         type: string
         default: master
