@@ -21,6 +21,7 @@ import {
   BillingSyncApiKeyComponent,
   BillingSyncApiModalData,
 } from "./billing-sync-api-key.component";
+import { SecretsManagerSubscriptionOptions } from "./secrets-manager/sm-adjust-subscription.component";
 
 @Component({
   selector: "app-org-subscription-cloud",
@@ -36,6 +37,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   adjustStorageAdd = true;
   showAdjustStorage = false;
   hasBillingSyncToken: boolean;
+  showAdjustSecretsManager = false;
 
   firstLoaded = false;
   loading: boolean;
@@ -105,6 +107,14 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       (i) => i.keyType === OrganizationApiKeyType.BillingSync
     );
 
+    this.showAdjustSecretsManager =
+      this.userOrg.canEditSubscription &&
+      this.userOrg.useSecretsManager &&
+      this.sub.secretsManagerPlan != null &&
+      this.sub.secretsManagerPlan.hasAdditionalSeatsOption &&
+      !this.subscription.cancelled &&
+      !this.subscriptionMarkedForCancel;
+
     this.loading = false;
   }
 
@@ -151,6 +161,19 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   get seats() {
     return this.sub.seats;
+  }
+
+  get smOptions(): SecretsManagerSubscriptionOptions {
+    return {
+      seatCount: this.sub.smSeats,
+      seatLimit: this.sub.maxAutoscaleSmSeats,
+      seatPrice: this.sub.secretsManagerPlan.seatPrice,
+      serviceAccountLimit: this.sub.maxAutoscaleSmServiceAccounts,
+      serviceAccountCount: this.sub.smServiceAccounts,
+      interval: this.billingInterval,
+      additionalServiceAccountPrice: this.sub.secretsManagerPlan.additionalPricePerServiceAccount,
+      baseServiceAccountCount: this.sub.secretsManagerPlan.baseServiceAccount,
+    };
   }
 
   get maxAutoscaleSeats() {
