@@ -9,8 +9,20 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 
 export interface SecretsManagerSubscriptionOptions {
   interval: "year" | "month";
+
+  /**
+   * The current number of seats the organization subscribes to.
+   */
   seatCount: number;
+
+  /**
+   * Optional auto-scaling limit for the number of seats the organization can subscribe to.
+   */
   seatLimit: number;
+
+  /**
+   * The price per seat for the subscription.
+   */
   seatPrice: number;
 
   /**
@@ -18,8 +30,19 @@ export interface SecretsManagerSubscriptionOptions {
    */
   baseServiceAccountCount: number;
 
+  /**
+   * The current number of additional service accounts the organization subscribes to.
+   */
   serviceAccountCount: number;
+
+  /**
+   * Optional auto-scaling limit for the number of additional service accounts the organization can subscribe to.
+   */
   serviceAccountLimit: number;
+
+  /**
+   * The price per additional service account for the subscription.
+   */
   additionalServiceAccountPrice: number;
 }
 
