@@ -1,4 +1,4 @@
 export class SecretsManagerSubscribeRequest {
-  userSeats: number;
+  additionalSmSeats: number;
   additionalServiceAccounts: number;
 }
