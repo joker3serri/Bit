@@ -323,7 +323,14 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async hasKeyInMemory(userId?: string): Promise<boolean> {
-    return (await this.stateService.getCryptoMasterKey({ userId: userId })) != null;
+    // TODO: Rewrite this after https://github.com/bitwarden/clients/pull/5498
+    const hasUserKey =
+      userId == undefined
+        ? (await this.stateService.getDecryptedCryptoSymmetricKey()) != null
+        : false;
+    const hasMasterKey = (await this.stateService.getCryptoMasterKey({ userId: userId })) != null;
+
+    return hasUserKey || hasMasterKey;
   }
 
   async hasKeyStored(keySuffix: KeySuffixOptions, userId?: string): Promise<boolean> {
@@ -711,6 +718,17 @@ export class CryptoService implements CryptoServiceAbstraction {
     }
 
     return true;
+  }
+
+  /**
+   * Initialize all necessary crypto keys needed for a new account.
+   * Warning! This completely replaces any existing keys!
+   */
+  async initAccount(): Promise<void> {
+    const randomBytes = await this.cryptoFunctionService.randomBytes(64);
+    const key = new SymmetricCryptoKey(randomBytes);
+    const encKey = await this.makeEncKey(key);
+    await this.stateService.setDecryptedCryptoSymmetricKey(encKey[0]);
   }
 
   // ---HELPERS---

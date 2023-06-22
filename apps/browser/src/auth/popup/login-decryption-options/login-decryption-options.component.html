@@ -11,60 +11,93 @@
     </div>
 
     <ng-container *ngIf="!loading">
-      <div class="standard-x-margin">
-        <p class="lead">{{ "logInInitiated" | i18n }}</p>
-        <h6 class="mb-20px">{{ "deviceApprovalRequired" | i18n }}</h6>
-      </div>
-
-      <form
-        id="rememberDeviceForm"
-        class="mb-20px standard-x-margin"
-        [formGroup]="rememberDeviceForm"
-      >
-        <div class="">
-          <input
-            type="checkbox"
-            id="rememberDevice"
-            name="rememberDevice"
-            formControlName="rememberDevice"
-          />
-          <label for="rememberDevice">
-            {{ "rememberThisDevice" | i18n }}
-          </label>
-          <p id="rememberThisDeviceHintText">{{ "uncheckIfPublicDevice" | i18n }}</p>
+      <ng-container *ngIf="approvalRequired">
+        <div class="standard-x-margin">
+          <p class="lead">{{ "logInInitiated" | i18n }}</p>
+          <h6 class="mb-20px">{{ "deviceApprovalRequired" | i18n }}</h6>
         </div>
-      </form>
 
-      <div class="box mb-20px">
-        <button
-          *ngIf="showApproveFromOtherDeviceBtn"
-          (click)="approveFromOtherDevice()"
-          type="button"
-          class="btn primary block"
-          [ngClass]="{
-            'btn-bottom-margin': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn
-          }"
+        <form
+          id="rememberDeviceForm"
+          class="mb-20px standard-x-margin"
+          [formGroup]="rememberDeviceForm"
         >
-          <b>{{ "approveFromYourOtherDevice" | i18n }}</b>
-        </button>
-        <button
-          *ngIf="showReqAdminApprovalBtn"
-          (click)="requestAdminApproval()"
-          type="button"
-          class="btn block"
-          [ngClass]="{ 'btn-bottom-margin': showApproveWithMasterPasswordBtn }"
+          <div>
+            <input
+              type="checkbox"
+              id="rememberDevice"
+              name="rememberDevice"
+              formControlName="rememberDevice"
+            />
+            <label for="rememberDevice">
+              {{ "rememberThisDevice" | i18n }}
+            </label>
+            <p id="rememberThisDeviceHintText">{{ "uncheckIfPublicDevice" | i18n }}</p>
+          </div>
+        </form>
+
+        <div class="box mb-20px">
+          <button
+            *ngIf="showApproveFromOtherDeviceBtn"
+            (click)="approveFromOtherDevice()"
+            type="button"
+            class="btn primary block"
+            [ngClass]="{
+              'btn-bottom-margin': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn
+            }"
+          >
+            <b>{{ "approveFromYourOtherDevice" | i18n }}</b>
+          </button>
+          <button
+            *ngIf="showReqAdminApprovalBtn"
+            (click)="requestAdminApproval()"
+            type="button"
+            class="btn block"
+            [ngClass]="{ 'btn-bottom-margin': showApproveWithMasterPasswordBtn }"
+          >
+            {{ "requestAdminApproval" | i18n }}
+          </button>
+          <button
+            type="button"
+            class="btn block"
+            *ngIf="showApproveWithMasterPasswordBtn"
+            (click)="approveWithMasterPassword()"
+          >
+            {{ "approveWithMasterPassword" | i18n }}
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!approvalRequired">
+        <div class="standard-x-margin">
+          <p class="lead">{{ "logInInitiated" | i18n }}</p>
+        </div>
+
+        <form
+          id="rememberDeviceForm"
+          class="mb-20px standard-x-margin"
+          [formGroup]="rememberDeviceForm"
         >
-          {{ "requestAdminApproval" | i18n }}
-        </button>
-        <button
-          type="button"
-          class="btn block"
-          *ngIf="showApproveWithMasterPasswordBtn"
-          (click)="approveWithMasterPassword()"
-        >
-          {{ "approveWithMasterPassword" | i18n }}
-        </button>
-      </div>
+          <div>
+            <input
+              type="checkbox"
+              id="rememberDevice"
+              name="rememberDevice"
+              formControlName="rememberDevice"
+            />
+            <label for="rememberDevice">
+              {{ "rememberThisDevice" | i18n }}
+            </label>
+            <p id="rememberThisDeviceHintText">{{ "uncheckIfPublicDevice" | i18n }}</p>
+          </div>
+        </form>
+
+        <div class="box mb-20px">
+          <button (click)="autoEnroll()" type="button" class="btn primary block">
+            <b>{{ "continue" | i18n }}</b>
+          </button>
+        </div>
+      </ng-container>
 
       <hr class="muted-hr mx-5px mb-20px" />
 

@@ -8,7 +8,9 @@
     </div>
 
     <ng-container *ngIf="!loading">
-      <h6 id="subHeading" class="standard-bottom-margin">{{ "deviceApprovalRequired" | i18n }}</h6>
+      <h6 *ngIf="approvalRequired" id="subHeading" class="standard-bottom-margin">
+        {{ "deviceApprovalRequired" | i18n }}
+      </h6>
 
       <form id="rememberDeviceForm" class="standard-bottom-margin" [formGroup]="rememberDeviceForm">
         <div class="checkbox">
@@ -25,7 +27,7 @@
         <span id="rememberThisDeviceHintText">{{ "uncheckIfPublicDevice" | i18n }}</span>
       </form>
 
-      <div class="buttons with-rows">
+      <div *ngIf="approvalRequired" class="buttons with-rows">
         <div class="buttons-row" *ngIf="showApproveFromOtherDeviceBtn">
           <button
             (click)="approveFromOtherDevice()"
@@ -54,6 +56,14 @@
             [appA11yTitle]="'approveWithMasterPassword' | i18n"
           >
             {{ "approveWithMasterPassword" | i18n }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!approvalRequired" class="buttons with-rows">
+        <div class="buttons-row">
+          <button (click)="autoEnroll()" type="button" class="btn block">
+            {{ "continue" | i18n }}
           </button>
         </div>
       </div>
