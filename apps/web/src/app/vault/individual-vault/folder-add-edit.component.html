@@ -1,46 +1,33 @@
-<bit-dialog>
-  <span bitDialogTitle>
-    {{ title }}
-  </span>
-  <span bitDialogContent>
-    <form
-      #form
-      [formGroup]="formGroup"
-      (ngSubmit)="submit()"
-      [appApiAction]="formPromise"
-      ngNativeValidate
-    >
+<form [bitSubmit]="submitAndClose" [formGroup]="formGroup">
+  <bit-dialog>
+    <span bitDialogTitle>
+      {{ title }}
+    </span>
+    <span bitDialogContent>
       <bit-form-field>
         <bit-label>{{ "name" | i18n }}</bit-label>
-        <input bitInput id="name" formControlName="name" />
-      </bit-form-field></form
-  ></span>
-  <ng-container bitDialogFooter>
-    <button
-      bitButton
-      buttonType="primary"
-      (click)="submitAndClose()"
-      type="submit"
-      [disabled]="!formGroup.valid"
-      [loading]="form.loading"
-    >
-      <span>{{ "save" | i18n }}</span>
-    </button>
-    <button bitButton buttonType="secondary" bitDialogClose type="button" data-dismiss="modal">
-      {{ "cancel" | i18n }}
-    </button>
-    <div class="tw-m-0 tw-ml-auto">
-      <button
-        buttonType="danger"
-        bitIconButton="bwi-trash"
-        #deleteBtn
-        type="button"
-        (click)="deleteAndClose()"
-        appA11yTitle="{{ 'delete' | i18n }}"
-        *ngIf="editMode"
-        [disabled]="$any(deleteBtn).loading"
-        [appApiAction]="deletePromise"
-      ></button>
-    </div>
-  </ng-container>
-</bit-dialog>
+        <input bitInput id="name" formControlName="name" /> </bit-form-field
+    ></span>
+    <ng-container bitDialogFooter>
+      <button bitButton buttonType="primary" bitFormButton type="submit">
+        <span>{{ "save" | i18n }}</span>
+      </button>
+      <button bitButton buttonType="secondary" bitDialogClose type="button" data-dismiss="modal">
+        {{ "cancel" | i18n }}
+      </button>
+      <div class="tw-m-0 tw-ml-auto">
+        <button
+          buttonType="danger"
+          bitIconButton="bwi-trash"
+          bitFormButton
+          #deleteBtn
+          type="button"
+          appA11yTitle="{{ 'delete' | i18n }}"
+          *ngIf="editMode"
+          [disabled]="$any(deleteBtn).loading"
+          [bitAction]="deleteAndClose"
+        ></button>
+      </div>
+    </ng-container>
+  </bit-dialog>
+</form>

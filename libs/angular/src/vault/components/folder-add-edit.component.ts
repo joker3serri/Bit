@@ -32,7 +32,7 @@ export class FolderAddEditComponent implements OnInit {
     protected folderApiService: FolderApiServiceAbstraction,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
-    private logService: LogService,
+    protected logService: LogService,
     protected dialogService: DialogServiceAbstraction,
     protected formBuilder: FormBuilder
   ) {}

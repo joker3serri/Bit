@@ -2,7 +2,7 @@ import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { FolderAddEditComponent as BaseFolderAddEditComponent } from "@bitwarden/angular/vault/components/folder-add-edit.component";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -39,17 +39,54 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
     params?.folderId ? (this.folderId = params.folderId) : null;
   }
 
-  async deleteAndClose() {
-    const deleteResult = await super.delete();
-    if (deleteResult) {
-      this.dialogRef.close(deleteResult);
-    }
-  }
+  deleteAndClose = async () => {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteFolder" },
+      content: { key: "deleteFolderConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
 
-  async submitAndClose() {
-    const submitResult = await super.submit();
-    if (submitResult) {
-      this.dialogRef.close(submitResult);
+    if (!confirmed) {
+      return;
     }
-  }
+
+    try {
+      this.deletePromise = this.folderApiService.delete(this.folder.id);
+      await this.deletePromise;
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("deletedFolder"));
+      this.onDeletedFolder.emit(this.folder);
+    } catch (e) {
+      this.logService.error(e);
+    }
+
+    this.dialogRef.close(true);
+  };
+
+  submitAndClose = async () => {
+    this.folder.name = this.formGroup.controls.name.value;
+    if (this.folder.name == null || this.folder.name === "") {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nameRequired")
+      );
+      return;
+    }
+
+    try {
+      const folder = await this.folderService.encrypt(this.folder);
+      this.formPromise = this.folderApiService.save(folder);
+      await this.formPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(this.editMode ? "editedFolder" : "addedFolder")
+      );
+      this.onSavedFolder.emit(this.folder);
+      this.dialogRef.close(true);
+    } catch (e) {
+      this.logService.error(e);
+    }
+    return;
+  };
 }
