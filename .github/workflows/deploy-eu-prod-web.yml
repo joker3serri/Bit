@@ -1,5 +1,5 @@
 ---
-name: Deploy Web - EU Prod
+name: Deploy Web to EU-PRD Cloud
 
 on:
   workflow_dispatch:
