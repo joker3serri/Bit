@@ -105,17 +105,14 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
       const serviceAccountLimitControl = this.formGroup.controls.serviceAccountLimit;
 
       if (value.limitSeats) {
-        seatLimitControl.setValidators([Validators.required, Validators.min(value.seatCount)]);
+        seatLimitControl.setValidators([Validators.min(value.seatCount)]);
         seatLimitControl.enable({ emitEvent: false });
       } else {
         seatLimitControl.disable({ emitEvent: false });
       }
 
       if (value.limitServiceAccounts) {
-        serviceAccountLimitControl.setValidators([
-          Validators.required,
-          Validators.min(value.serviceAccountCount),
-        ]);
+        serviceAccountLimitControl.setValidators([Validators.min(value.serviceAccountCount)]);
         serviceAccountLimitControl.enable({ emitEvent: false });
       } else {
         serviceAccountLimitControl.disable({ emitEvent: false });
