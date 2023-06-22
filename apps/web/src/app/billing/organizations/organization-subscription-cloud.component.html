@@ -1,4 +1,4 @@
-<div class="tw-mb-2 tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300">
+<div class="tw-mb-2">
   <h1 bitTypography="h1">
     {{ "subscription" | i18n }}
     <small *ngIf="firstLoaded && loading">
@@ -40,64 +40,63 @@
     </button>
   </bit-callout>
 
-  <div class="tw-flex-col">
-    <dl class="tw-grid tw-grid-flow-col tw-grid-rows-2">
-      <dt>{{ "billingPlan" | i18n }}</dt>
-      <dd>{{ sub.plan.name }}</dd>
-      <ng-container *ngIf="subscription">
-        <dt>{{ "status" | i18n }}</dt>
-        <dd>
-          <span class="tw-capitalize">{{
-            isSponsoredSubscription ? "sponsored" : subscription.status || "-"
-          }}</span>
-          <span bitBadge badgeType="warning" *ngIf="subscriptionMarkedForCancel">{{
-            "pendingCancellation" | i18n
-          }}</span>
-        </dd>
-        <dt [ngClass]="{ 'tw-text-danger': isExpired }">
-          {{ "subscriptionExpiration" | i18n }}
-        </dt>
-        <dd [ngClass]="{ 'tw-text-danger': isExpired }">
-          {{ nextInvoice ? (nextInvoice.date | date : "mediumDate") : "-" }}
-        </dd>
-      </ng-container>
-    </dl>
-    <ng-container *ngIf="userOrg.canEditSubscription">
-      <div class="tw-mb-7 tw-flex-col">
-        <strong class="tw-block tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300">{{
-          "details" | i18n
-        }}</strong>
-        <bit-table>
-          <ng-template body>
-            <ng-container *ngIf="subscription">
-              <tr bitRow *ngFor="let i of lineItems">
-                <td bitCell [ngClass]="{ 'tw-pl-20': i.addonSubscriptionItem }">
-                  <span *ngIf="!i.addonSubscriptionItem"
-                    >{{ productName(i.bitwardenProduct) }} -</span
-                  >
-                  {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} @
-                  {{ i.amount | currency : "$" }}
-                </td>
-                <td bitCell class="tw-text-right">
-                  {{ i.quantity * i.amount | currency : "$" }} /{{ i.interval | i18n }}
-                </td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="!subscription && userOrg.isFreeOrg">
-              <tr bitRow *ngIf="userOrg.usePasswordManager">
-                <td bitCell>{{ "passwordManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
-                <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
-              </tr>
-              <tr bitRow *ngIf="userOrg.useSecretsManager">
-                <td bitCell>{{ "secretsManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
-                <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
-              </tr>
-            </ng-container>
-          </ng-template>
-        </bit-table>
-      </div>
+  <dl class="tw-grid tw-grid-flow-col tw-grid-rows-2">
+    <dt>{{ "billingPlan" | i18n }}</dt>
+    <dd>{{ sub.plan.name }}</dd>
+    <ng-container *ngIf="subscription">
+      <dt>{{ "status" | i18n }}</dt>
+      <dd>
+        <span class="tw-capitalize">{{
+          isSponsoredSubscription ? "sponsored" : subscription.status || "-"
+        }}</span>
+        <span bitBadge badgeType="warning" *ngIf="subscriptionMarkedForCancel">{{
+          "pendingCancellation" | i18n
+        }}</span>
+      </dd>
+      <dt [ngClass]="{ 'tw-text-danger': isExpired }">
+        {{ "subscriptionExpiration" | i18n }}
+      </dt>
+      <dd [ngClass]="{ 'tw-text-danger': isExpired }">
+        {{ nextInvoice ? (nextInvoice.date | date : "mediumDate") : "-" }}
+      </dd>
     </ng-container>
-  </div>
+  </dl>
+  <ng-container *ngIf="userOrg.canEditSubscription">
+    <div class="tw-mb-7 tw-flex-col">
+      <strong class="tw-block tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300">{{
+        "details" | i18n
+      }}</strong>
+      <bit-table>
+        <ng-template body>
+          <ng-container *ngIf="subscription">
+            <tr bitRow *ngFor="let i of lineItems">
+              <td bitCell [ngClass]="{ 'tw-pl-20': i.addonSubscriptionItem }">
+                <span *ngIf="!i.addonSubscriptionItem"
+                  >{{ productName(i.bitwardenProduct) }} -</span
+                >
+                {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} @
+                {{ i.amount | currency : "$" }}
+              </td>
+              <td bitCell class="tw-text-right">
+                {{ i.quantity * i.amount | currency : "$" }} /{{ i.interval | i18n }}
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="userOrg.isFreeOrg">
+            <tr bitRow *ngIf="userOrg.usePasswordManager">
+              <td bitCell>{{ "passwordManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
+              <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
+            </tr>
+            <tr bitRow *ngIf="userOrg.useSecretsManager">
+              <td bitCell>{{ "secretsManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
+              <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </bit-table>
+    </div>
+  </ng-container>
+
   <ng-container *ngIf="userOrg.canEditSubscription">
     <button
       bitButton
@@ -156,7 +155,7 @@
     <p bitTypography="body1">
       {{ "subscriptionStorage" | i18n : sub.maxStorageGb || 0 : sub.storageName || "0 MB" }}
     </p>
-    <bit-progress [barWidth]="storagePercentage" [minWidth]="5" bgColor="success"></bit-progress>
+    <bit-progress [barWidth]="storagePercentage" bgColor="success"></bit-progress>
     <ng-container *ngIf="subscription && !subscription.cancelled && !subscriptionMarkedForCancel">
       <div class="tw-mt-3">
         <div class="tw-flex tw-space-x-2" *ngIf="!showAdjustStorage">

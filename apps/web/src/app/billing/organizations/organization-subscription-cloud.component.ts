@@ -82,6 +82,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         return this.i18nService.t("passwordManager");
       case BitwardenProductType.SecretsManager:
         return this.i18nService.t("secretsManager");
+      default:
+        return this.i18nService.t("passwordManager");
     }
   }
 
@@ -370,12 +372,14 @@ function sortSubscriptionItems(
   b: BillingSubscriptionItemResponse
 ) {
   if (a.bitwardenProduct == b.bitwardenProduct) {
+    if (a.addonSubscriptionItem == b.addonSubscriptionItem) {
+      return 0;
+    }
     // sort addon items to the bottom
-    return a.addonSubscriptionItem == b.addonSubscriptionItem
-      ? 0
-      : a.addonSubscriptionItem
-      ? 1
-      : -1;
+    if (a.addonSubscriptionItem) {
+      return 1;
+    }
+    return -1;
   }
   return a.bitwardenProduct - b.bitwardenProduct;
 }
