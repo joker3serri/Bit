@@ -26,14 +26,9 @@ export class ProgressComponent {
   @Input() showText = true;
   @Input() size: SizeTypes = "default";
   @Input() text?: string;
-  @Input() minWidth = 0;
 
   get displayText() {
     return this.showText && this.size !== "small";
-  }
-
-  protected get barWidthPercentage() {
-    return this.barWidth > this.minWidth ? this.barWidth : this.minWidth;
   }
 
   get outerBarStyles() {
