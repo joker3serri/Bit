@@ -76,6 +76,10 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     await this.userVerificationApiService.postAccountRequestOTP();
   }
 
+  async hasMasterPassword(): Promise<boolean> {
+    return this.cryptoService.hasMasterPassword();
+  }
+
   private validateInput(verification: Verification) {
     if (verification?.secret == null || verification.secret === "") {
       if (verification.type === VerificationType.OTP) {

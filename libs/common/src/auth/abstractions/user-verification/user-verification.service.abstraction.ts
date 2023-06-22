@@ -9,4 +9,5 @@ export abstract class UserVerificationService {
   ) => Promise<T>;
   verifyUser: (verification: Verification) => Promise<boolean>;
   requestOTP: () => Promise<void>;
+  hasMasterPassword: () => Promise<boolean>;
 }
