@@ -30,7 +30,7 @@ export class SecretsManagerSubscribeStandaloneComponent {
 
   submit = async () => {
     const request = new SecretsManagerSubscribeRequest();
-    request.userSeats = this.formGroup.value.userSeats;
+    request.additionalSmSeats = this.formGroup.value.userSeats;
     request.additionalServiceAccounts = this.formGroup.value.additionalServiceAccounts;
 
     await this.organizationApiService.subscribeToSecretsManager(this.organization.id, request);
