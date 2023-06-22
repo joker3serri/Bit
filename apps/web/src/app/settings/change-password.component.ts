@@ -12,6 +12,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EmergencyAccessStatusType } from "@bitwarden/common/auth/enums/emergency-access-status-type";
 import { EmergencyAccessUpdateRequest } from "@bitwarden/common/auth/models/request/emergency-access-update.request";
 import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
@@ -63,7 +64,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     private router: Router,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogServiceAbstraction,
+    private userVerificationService: UserVerificationService
   ) {
     super(
       i18nService,
@@ -78,14 +80,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
   }
 
   async ngOnInit() {
-    const accountDecriptionOptions = await this.stateService.getAcctDecryptionOptions();
-    const hasMasterPassword =
-      accountDecriptionOptions != null &&
-      accountDecriptionOptions.hasMasterPassword != null &&
-      accountDecriptionOptions.hasMasterPassword;
-    const usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
-
-    if (usesKeyConnector || !hasMasterPassword) {
+    if (!(await this.userVerificationService.hasMasterPassword())) {
       this.router.navigate(["/settings/security/two-factor"]);
     }
 
