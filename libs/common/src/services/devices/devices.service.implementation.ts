@@ -4,23 +4,18 @@ import { DevicesApiServiceAbstraction } from "../../abstractions/devices/devices
 import { DevicesServiceAbstraction } from "../../abstractions/devices/devices.service.abstraction";
 import { DeviceResponse } from "../../abstractions/devices/responses/device.response";
 import { DeviceView } from "../../abstractions/devices/views/device.view";
+import { DeviceType } from "../../enums";
 import { ListResponse } from "../../models/response/list.response";
 
-// TODO add error handling? or logging?
-// catchError((error: unknown) => {
-//     // Should I inject validationService here?
-//     return throwError(() => error);
-//   })
-
 /**
- * @class DevicesService
+ * @class DevicesServiceImplementation
  * @implements {DevicesServiceAbstraction}
  * @description Observable based data store service for Devices.
  * note: defer is used to convert the promises to observables and to ensure
  * that observables are created for each subscription
  * (i.e., promsise --> observables are cold until subscribed to)
  */
-export class DevicesService implements DevicesServiceAbstraction {
+export class DevicesServiceImplementation implements DevicesServiceAbstraction {
   private devicesBSubject: BehaviorSubject<Array<DeviceView>> = new BehaviorSubject<
     Array<DeviceView>
   >([]);
@@ -54,6 +49,14 @@ export class DevicesService implements DevicesServiceAbstraction {
       })
     );
   }
+
+  /**
+   * @description Returns whether the user has any devices of the specified types.
+   */
+  hasDevicesOfTypes(deviceTypes: DeviceType[]): Observable<boolean> {
+    return defer(() => this.devicesApiService.hasDevicesOfTypes(deviceTypes));
+  }
+
   /**
    * @description Gets the device with the specified identifier.
    */
