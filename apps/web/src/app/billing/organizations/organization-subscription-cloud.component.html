@@ -151,7 +151,7 @@
     >
       {{ "removeSponsorship" | i18n }}
     </button>
-    <h4 bitTypography="h4" class="tw-mt-9">{{ "storage" | i18n }}</h4>
+    <h4 bitTypography="h4" class="tw-mt-7">{{ "storage" | i18n }}</h4>
     <p bitTypography="body1">
       {{ "subscriptionStorage" | i18n : sub.maxStorageGb || 0 : sub.storageName || "0 MB" }}
     </p>
@@ -178,7 +178,7 @@
       </div>
     </ng-container>
     <ng-container *ngIf="showAdjustSecretsManager">
-      <h3 bitTypography="h3" class="tw-mt-7">{{ "secretsManager" | i18n }}</h3>
+      <h3 bitTypography="h3" class="tw-mt-9">{{ "secretsManager" | i18n }}</h3>
       <app-sm-adjust-subscription
         [organizationId]="organizationId"
         [options]="smOptions"
