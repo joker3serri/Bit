@@ -314,16 +314,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     return providerKeys.get(providerId);
   }
 
-  async hasMasterPassword(): Promise<boolean> {
-    const decryptionOptions = await this.stateService.getAcctDecryptionOptions();
-
-    if (decryptionOptions?.hasMasterPassword != undefined) {
-      return decryptionOptions.hasMasterPassword;
-    }
-
-    return !(await this.stateService.getUsesKeyConnector());
-  }
-
   async hasKey(): Promise<boolean> {
     return (
       (await this.hasKeyInMemory()) ||
