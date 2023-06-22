@@ -70,10 +70,8 @@
         <ng-template body>
           <ng-container *ngIf="subscription">
             <tr bitRow *ngFor="let i of lineItems">
-              <td bitCell [ngClass]="{ 'tw-pl-20': i.addonSubscriptionItem }">
-                <span *ngIf="!i.addonSubscriptionItem"
-                  >{{ productName(i.bitwardenProduct) }} -</span
-                >
+              <td bitCell [ngClass]="{ 'tw-pl-20': i.addonProduct != null }">
+                <span *ngIf="i.addonProduct == null">{{ productName(i.bitwardenProduct) }} -</span>
                 {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} @
                 {{ i.amount | currency : "$" }}
               </td>

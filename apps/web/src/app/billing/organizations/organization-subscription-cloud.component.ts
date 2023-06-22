@@ -349,22 +349,25 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 }
 
 /**
- * Helper to sort subscription items by product type and then by addon status
+ * Helper to sort subscription items by product type and then by addon product type
  */
 function sortSubscriptionItems(
   a: BillingSubscriptionItemResponse,
   b: BillingSubscriptionItemResponse
 ) {
   if (a.bitwardenProduct == b.bitwardenProduct) {
-    // sort addon items to the bottom
-    if (a.addonSubscriptionItem == b.addonSubscriptionItem) {
-      return 0;
+    // Both are addon products, sort by enum value
+    if (a.addonProduct != null && b.addonProduct != null) {
+      return a.addonProduct - b.addonProduct;
     }
 
-    if (a.addonSubscriptionItem) {
-      return 1;
+    // 'a' is not an addon product, sort it to the bottom
+    if (a.addonProduct == null) {
+      return -1;
     }
-    return -1;
+
+    // 'a' is an addon product, sort it to the top
+    return 1;
   }
   return a.bitwardenProduct - b.bitwardenProduct;
 }

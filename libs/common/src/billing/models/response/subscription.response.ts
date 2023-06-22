@@ -1,4 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
+import { AddonProductType } from "../../enums/addon-product-type.enum";
 import { BitwardenProductType } from "../../enums/bitwarden-product-type.enum";
 
 export class SubscriptionResponse extends BaseResponse {
@@ -63,7 +64,7 @@ export class BillingSubscriptionItemResponse extends BaseResponse {
   quantity: number;
   interval: string;
   sponsoredSubscriptionItem: boolean;
-  addonSubscriptionItem: boolean;
+  addonProduct?: AddonProductType;
   bitwardenProduct: BitwardenProductType;
 
   constructor(response: any) {
@@ -73,7 +74,7 @@ export class BillingSubscriptionItemResponse extends BaseResponse {
     this.quantity = this.getResponseProperty("Quantity");
     this.interval = this.getResponseProperty("Interval");
     this.sponsoredSubscriptionItem = this.getResponseProperty("SponsoredSubscriptionItem");
-    this.addonSubscriptionItem = this.getResponseProperty("AddonSubscriptionItem");
+    this.addonProduct = this.getResponseProperty("AddonProduct");
     this.bitwardenProduct = this.getResponseProperty("BitwardenProduct");
   }
 }
