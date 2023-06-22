@@ -8,23 +8,25 @@ import {
   combineLatest,
   from,
   map,
+  shareReplay,
   takeUntil,
   tap,
   throwError,
 } from "rxjs";
 
-import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
-import { DeviceResponse } from "@bitwarden/common/abstractions/devices/responses/device.response";
+import { DevicesServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { DesktopDeviceTypes, MobileDeviceTypes } from "@bitwarden/common/enums/device-type.enum";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import {
+  DesktopDeviceTypes,
+  DeviceType,
+  MobileDeviceTypes,
+} from "@bitwarden/common/enums/device-type.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
-// TODO: replace this base component with a service per latest ADR
 @Directive()
 export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject();
@@ -43,7 +45,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   constructor(
     protected formBuilder: FormBuilder,
-    protected devicesApiService: DevicesApiServiceAbstraction,
+    protected devicesService: DevicesServiceAbstraction,
     protected stateService: StateService,
     protected router: Router,
     protected messagingService: MessagingService,
@@ -53,9 +55,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const devices$: Observable<ListResponse<DeviceResponse>> = from(
-      this.devicesApiService.getDevices()
-    );
     const accountDecryptionOptions$: Observable<AccountDecryptionOptions> = from(
       this.stateService.getAccountDecryptionOptions()
     );
@@ -69,22 +68,25 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       takeUntil(this.componentDestroyed$)
     );
 
-    this.loading = true;
-
     // Show approve from other device btn if user has any mobile or desktop devices
-    this.showApproveFromOtherDeviceBtn$ = devices$.pipe(
-      catchError((err: unknown) => {
-        this.validationService.showError(err);
-        return throwError(() => err);
-      }),
-
-      map((response) =>
-        response.data.some(
-          (device) => MobileDeviceTypes.has(device.type) || DesktopDeviceTypes.has(device.type)
-        )
-      ),
-      takeUntil(this.componentDestroyed$)
+    const mobileAndDesktopDeviceTypes: DeviceType[] = Array.from(MobileDeviceTypes).concat(
+      Array.from(DesktopDeviceTypes)
     );
+
+    this.showApproveFromOtherDeviceBtn$ = this.devicesService
+      .hasDevicesOfTypes(mobileAndDesktopDeviceTypes)
+      .pipe(
+        catchError((err: unknown) => {
+          this.validationService.showError(err);
+          return throwError(() => err);
+        }),
+        // Add shareReplay to prevent multiple calls to hasDevicesOfTypes
+        // bufferSize: 1 - only replay the last emitted value
+        // refCount: true - only keep the observable alive as long as there are subscribers
+        // see https://ncjamieson.com/whats-changed-with-sharereplay/ for more details.
+        shareReplay({ bufferSize: 1, refCount: true }),
+        takeUntil(this.componentDestroyed$)
+      );
 
     // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set && user email is not null
     this.showReqAdminApprovalBtn$ = combineLatest([
@@ -111,7 +113,14 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       takeUntil(this.componentDestroyed$)
     );
 
-    this.loading = false;
+    // Set loading false once all observables have emitted at least once
+    combineLatest([
+      this.showApproveFromOtherDeviceBtn$,
+      this.showReqAdminApprovalBtn$,
+      this.showApproveWithMasterPasswordBtn$,
+    ])
+      .pipe(takeUntil(this.componentDestroyed$))
+      .subscribe(() => (this.loading = false));
   }
 
   approveFromOtherDevice() {
