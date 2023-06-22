@@ -82,7 +82,7 @@ import {
   openBulkShareDialog,
 } from "./bulk-action-dialogs/bulk-share-dialog/bulk-share-dialog.component";
 import { CollectionsComponent } from "./collections.component";
-import { FolderAddEditComponent } from "./folder-add-edit.component";
+import { FolderAddEditDialogResult, openFolderAddEditDialog } from "./folder-add-edit.component";
 import { ShareComponent } from "./share.component";
 import { VaultFilterComponent } from "./vault-filter/components/vault-filter.component";
 import { VaultFilterService } from "./vault-filter/services/abstractions/vault-filter.service";
@@ -468,26 +468,25 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   addFolder = async (): Promise<void> => {
-    await this.dialogService.open(FolderAddEditComponent);
+    openFolderAddEditDialog(this.dialogService);
   };
 
   editFolder = async (folder: FolderFilter): Promise<void> => {
-    const modal = await this.dialogService.open(FolderAddEditComponent, {
+    const dialog = openFolderAddEditDialog(this.dialogService, {
       data: {
         folderId: folder.id,
       },
     });
 
-    modal.closed.pipe(takeUntil(this.destroy$)).subscribe((deleted: boolean) => {
-      // Navigate away if the deleted folder was selected
-      if (deleted && this.filter.folderId === folder.id) {
-        this.router.navigate([], {
-          queryParams: { folderId: null },
-          queryParamsHandling: "merge",
-          replaceUrl: true,
-        });
-      }
-    });
+    const result = await lastValueFrom(dialog.closed);
+
+    if (result === FolderAddEditDialogResult.Deleted) {
+      this.router.navigate([], {
+        queryParams: { folderId: null },
+        queryParamsHandling: "merge",
+        replaceUrl: true,
+      });
+    }
   };
 
   filterSearchText(searchText: string) {

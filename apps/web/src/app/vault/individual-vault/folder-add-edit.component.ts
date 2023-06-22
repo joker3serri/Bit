@@ -1,4 +1,4 @@
-import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
+import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
@@ -24,8 +24,8 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
     logService: LogService,
     dialogService: DialogServiceAbstraction,
     formBuilder: FormBuilder,
-    protected dialogRef: DialogRef<any>,
-    @Inject(DIALOG_DATA) params: { folderId: string }
+    protected dialogRef: DialogRef<FolderAddEditDialogResult>,
+    @Inject(DIALOG_DATA) params: FolderAddEditDialogParams
   ) {
     super(
       folderService,
@@ -59,7 +59,7 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
       this.logService.error(e);
     }
 
-    this.dialogRef.close(true);
+    this.dialogRef.close(FolderAddEditDialogResult.Deleted);
   };
 
   submitAndClose = async () => {
@@ -83,10 +83,35 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
         this.i18nService.t(this.editMode ? "editedFolder" : "addedFolder")
       );
       this.onSavedFolder.emit(this.folder);
-      this.dialogRef.close(true);
+      this.dialogRef.close(FolderAddEditDialogResult.Saved);
     } catch (e) {
       this.logService.error(e);
     }
     return;
   };
+}
+
+export interface FolderAddEditDialogParams {
+  folderId: string;
+}
+
+export enum FolderAddEditDialogResult {
+  Deleted = "deleted",
+  Canceled = "canceled",
+  Saved = "saved",
+}
+
+/**
+ * Strongly typed helper to open a FolderAddEdit dialog
+ * @param dialogService Instance of the dialog service that will be used to open the dialog
+ * @param config Optional configuration for the dialog
+ */
+export function openFolderAddEditDialog(
+  dialogService: DialogServiceAbstraction,
+  config?: DialogConfig<FolderAddEditDialogParams>
+) {
+  return dialogService.open<FolderAddEditDialogResult, FolderAddEditDialogParams>(
+    FolderAddEditComponent,
+    config
+  );
 }
