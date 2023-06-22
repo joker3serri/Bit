@@ -324,11 +324,13 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async hasKeyInMemory(userId?: string): Promise<boolean> {
     // TODO: Rewrite this after https://github.com/bitwarden/clients/pull/5498
-    if (userId === undefined) {
-      return (await this.stateService.getDecryptedCryptoSymmetricKey()) != null;
-    }
+    const hasUserKey =
+      userId == undefined
+        ? (await this.stateService.getDecryptedCryptoSymmetricKey()) != null
+        : false;
+    const hasMasterKey = (await this.stateService.getCryptoMasterKey({ userId: userId })) != null;
 
-    return (await this.stateService.getCryptoMasterKey({ userId: userId })) != null;
+    return hasUserKey || hasMasterKey;
   }
 
   async hasKeyStored(keySuffix: KeySuffixOptions, userId?: string): Promise<boolean> {
