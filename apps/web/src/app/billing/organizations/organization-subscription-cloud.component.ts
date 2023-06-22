@@ -356,11 +356,10 @@ function sortSubscriptionItems(
   b: BillingSubscriptionItemResponse
 ) {
   if (a.bitwardenProduct == b.bitwardenProduct) {
-    // sort addon items to the bottom
     if (a.addonSubscriptionItem == b.addonSubscriptionItem) {
       return 0;
     }
-
+    // sort addon items to the bottom
     if (a.addonSubscriptionItem) {
       return 1;
     }
