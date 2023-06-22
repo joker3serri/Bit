@@ -4,7 +4,7 @@ import { BaseResponse } from "../../../models/response/base.response";
 export class DeviceResponse extends BaseResponse {
   id: string;
   userId: string;
-  name: number;
+  name: string;
   identifier: string;
   type: DeviceType;
   creationDate: string;
