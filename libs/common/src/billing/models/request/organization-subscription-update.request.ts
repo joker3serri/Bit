@@ -1,7 +1,7 @@
 import { BitwardenProductType } from "../../enums/bitwarden-product-type.enum";
 
 export class OrganizationSubscriptionUpdateRequest {
-  productType: BitwardenProductType;
+  bitwardenProduct: BitwardenProductType;
 
   /**
    * The number of seats to add or remove from the subscription.
@@ -28,7 +28,7 @@ export class OrganizationSubscriptionUpdateRequest {
   maxAutoscaleServiceAccounts?: number;
 
   constructor(productType: BitwardenProductType) {
-    this.productType = productType;
+    this.bitwardenProduct = productType;
   }
 
   /**
