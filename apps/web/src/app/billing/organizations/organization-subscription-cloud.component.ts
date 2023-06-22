@@ -170,7 +170,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       seatPrice: this.sub.secretsManagerPlan.seatPrice,
       serviceAccountLimit: this.sub.maxAutoscaleSmServiceAccounts,
       serviceAccountCount: this.sub.smServiceAccounts,
-      interval: this.billingInterval,
+      interval: this.sub.secretsManagerPlan.isAnnual ? "year" : "month",
       additionalServiceAccountPrice: this.sub.secretsManagerPlan.additionalPricePerServiceAccount,
       baseServiceAccountCount: this.sub.secretsManagerPlan.baseServiceAccount,
     };
