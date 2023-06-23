@@ -17,8 +17,4 @@ export class FilePasswordPromptComponent {
     }
     this.dialogRef.close(this.filePassword.value);
   }
-
-  cancel() {
-    this.dialogRef.close(null);
-  }
 }
