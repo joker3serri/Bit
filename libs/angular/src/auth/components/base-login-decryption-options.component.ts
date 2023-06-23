@@ -96,7 +96,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       }),
       map(
         ([acctDecryptionOptions, userEmail]) =>
-          !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval && userEmail != null
+          !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval
       ),
       takeUntil(this.componentDestroyed$)
     );
