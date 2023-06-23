@@ -9,8 +9,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 export class FrontendLayoutComponent implements OnInit, OnDestroy {
   version: string;
   year = "2015";
-  isEuServer = true;
-  euServerFlagEnabled: boolean;
 
   constructor(private platformUtilsService: PlatformUtilsService) {}
 
