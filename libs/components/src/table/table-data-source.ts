@@ -17,8 +17,15 @@ export class TableDataSource<T> extends DataSource<T> {
   private readonly _sort: BehaviorSubject<Sort>;
   private readonly _filter = new BehaviorSubject<string>("");
   private readonly _renderData = new BehaviorSubject<T[]>([]);
-  filteredData: T[];
   private _renderChangesSubscription: Subscription | null = null;
+
+  /**
+   * The filtered set of data that has been matched by the filter string, or all the data if there
+   * is no filter. Useful for knowing the set of data the table represents.
+   * For example, a 'selectAll()' function would likely want to select the set of filtered data
+   * shown to the user rather than all the data.
+   */
+  filteredData: T[];
 
   constructor() {
     super();
