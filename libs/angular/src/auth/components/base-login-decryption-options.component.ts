@@ -80,7 +80,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
           this.validationService.showError(err);
           return throwError(() => err);
         }),
-        // Add shareReplay to prevent multiple calls to hasDevicesOfTypes
+        // Add shareReplay to prevent multiple calls to API
         // bufferSize: 1 - only replay the last emitted value
         // refCount: true - only keep the observable alive as long as there are subscribers
         // see https://ncjamieson.com/whats-changed-with-sharereplay/ for more details.
