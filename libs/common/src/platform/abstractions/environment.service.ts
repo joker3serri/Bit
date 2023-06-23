@@ -33,6 +33,8 @@ export abstract class EnvironmentService {
   hasBaseUrl: () => boolean;
   getNotificationsUrl: () => string;
   getWebVaultUrl: () => string;
+  getCloudWebVaultUrl: () => string;
+  setCloudWebVaultUrl: (region: Region) => void;
   getSendUrl: () => string;
   getIconsUrl: () => string;
   getApiUrl: () => string;

@@ -1,5 +1,6 @@
 import { Jsonify } from "type-fest";
 
+import { Region } from "../../abstractions/environment.service";
 import {
   ServerConfigResponse,
   ThirdPartyServerConfigResponse,
@@ -50,16 +51,16 @@ export class ThirdPartyServerConfigData {
 }
 
 export class EnvironmentServerConfigData {
+  cloudVaultRegion: Region;
   vault: string;
-  cloudWebVault: string;
   api: string;
   identity: string;
   notifications: string;
   sso: string;
 
   constructor(response: Partial<EnvironmentServerConfigResponse>) {
+    this.cloudVaultRegion = response.cloudVaultRegion;
     this.vault = response.vault;
-    this.cloudWebVault = response.cloudWebVault;
     this.api = response.api;
     this.identity = response.identity;
     this.notifications = response.notifications;

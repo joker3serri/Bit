@@ -1,3 +1,5 @@
+import { Region } from "../../abstractions/environment.service";
+
 import {
   EnvironmentServerConfigData,
   ServerConfigData,
@@ -15,8 +17,8 @@ describe("ServerConfigData", () => {
           url: "https://test.com",
         },
         environment: {
+          cloudVaultRegion: Region.EU,
           vault: "https://vault.com",
-          cloudWebVault: "https://cloudwebvault.com",
           api: "https://api.com",
           identity: "https://identity.com",
           notifications: "https://notifications.com",

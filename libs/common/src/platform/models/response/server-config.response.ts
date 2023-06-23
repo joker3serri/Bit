@@ -1,4 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
+import { Region } from "../../abstractions/environment.service";
 
 export class ServerConfigResponse extends BaseResponse {
   version: string;
@@ -23,8 +24,8 @@ export class ServerConfigResponse extends BaseResponse {
 }
 
 export class EnvironmentServerConfigResponse extends BaseResponse {
+  cloudVaultRegion: Region;
   vault: string;
-  cloudWebVault: string;
   api: string;
   identity: string;
   notifications: string;
@@ -37,8 +38,8 @@ export class EnvironmentServerConfigResponse extends BaseResponse {
       return;
     }
 
+    this.cloudVaultRegion = this.getResponseProperty("CloudVaultRegion");
     this.vault = this.getResponseProperty("Vault");
-    this.cloudWebVault = this.getResponseProperty("CloudWebVault") ?? this.vault;
     this.api = this.getResponseProperty("Api");
     this.identity = this.getResponseProperty("Identity");
     this.notifications = this.getResponseProperty("Notifications");

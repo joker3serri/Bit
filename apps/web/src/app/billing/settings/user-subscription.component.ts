@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, map } from "rxjs";
 
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SubscriptionResponse } from "@bitwarden/common/billing/models/response/subscription.response";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -24,7 +23,7 @@ export class UserSubscriptionComponent implements OnInit {
   showUpdateLicense = false;
   sub: SubscriptionResponse;
   selfHosted = false;
-  cloudWebVaultUrl$: Observable<string>;
+  cloudWebVaultUrl: string;
 
   cancelPromise: Promise<any>;
   reinstatePromise: Promise<any>;
@@ -38,12 +37,10 @@ export class UserSubscriptionComponent implements OnInit {
     private logService: LogService,
     private fileDownloadService: FileDownloadService,
     private dialogService: DialogServiceAbstraction,
-    private configService: ConfigServiceAbstraction
+    private environmentService: EnvironmentService
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
-    this.cloudWebVaultUrl$ = this.configService.serverConfig$.pipe(
-      map((config) => config?.environment?.cloudWebVault)
-    );
+    this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
   }
 
   async ngOnInit() {
