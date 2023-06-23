@@ -82,15 +82,15 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
 
   updateTrustedDeviceKeys(
     deviceIdentifier: string,
-    devicePublicKeyEncryptedUserSymKey: string,
-    userSymKeyEncryptedDevicePublicKey: string,
+    devicePublicKeyEncryptedUserKey: string,
+    userKeyEncryptedDevicePublicKey: string,
     deviceKeyEncryptedDevicePrivateKey: string
   ): Observable<DeviceView> {
     return defer(() =>
       this.devicesApiService.updateTrustedDeviceKeys(
         deviceIdentifier,
-        devicePublicKeyEncryptedUserSymKey,
-        userSymKeyEncryptedDevicePublicKey,
+        devicePublicKeyEncryptedUserKey,
+        userKeyEncryptedDevicePublicKey,
         deviceKeyEncryptedDevicePrivateKey
       )
     ).pipe(

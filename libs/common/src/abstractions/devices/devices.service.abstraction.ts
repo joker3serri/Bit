@@ -11,8 +11,8 @@ export abstract class DevicesServiceAbstraction {
   isDeviceKnownForUser: (email: string, deviceIdentifier: string) => Observable<boolean>;
   updateTrustedDeviceKeys: (
     deviceIdentifier: string,
-    devicePublicKeyEncryptedUserSymKey: string,
-    userSymKeyEncryptedDevicePublicKey: string,
+    devicePublicKeyEncryptedUserKey: string,
+    userKeyEncryptedDevicePublicKey: string,
     deviceKeyEncryptedDevicePrivateKey: string
   ) => Observable<DeviceView>;
 }
