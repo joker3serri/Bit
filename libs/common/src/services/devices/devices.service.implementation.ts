@@ -16,20 +16,20 @@ import { ListResponse } from "../../models/response/list.response";
  * (i.e., promsise --> observables are cold until subscribed to)
  */
 export class DevicesServiceImplementation implements DevicesServiceAbstraction {
-  private devicesBSubject: BehaviorSubject<Array<DeviceView>> = new BehaviorSubject<
+  private devicesSubject: BehaviorSubject<Array<DeviceView>> = new BehaviorSubject<
     Array<DeviceView>
   >([]);
 
   /**
    * @description Observable for devices in data store
    */
-  devices$: Observable<Array<DeviceView>> = this.devicesBSubject.asObservable();
+  devices$: Observable<Array<DeviceView>> = this.devicesSubject.asObservable();
 
   /**
    * @description Synchronous getter for current value of devices in data store
    */
   get devices(): Array<DeviceView> {
-    return this.devicesBSubject.value;
+    return this.devicesSubject.value;
   }
 
   constructor(private devicesApiService: DevicesApiServiceAbstraction) {}
@@ -45,7 +45,7 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
         });
       }),
       tap((deviceViews: Array<DeviceView>) => {
-        this.devicesBSubject.next(deviceViews);
+        this.devicesSubject.next(deviceViews);
       })
     );
   }
@@ -105,7 +105,7 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
    * @description Updates a device in the current device store, or adds it if it doesn't exist.
    */
   private upsertDevice(updatedDevice: DeviceView): void {
-    const currentDevices = this.devicesBSubject.value;
+    const currentDevices = this.devicesSubject.value;
 
     const deviceIndex = currentDevices.findIndex(
       (device) => device.identifier === updatedDevice.identifier
@@ -119,6 +119,6 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
       currentDevices.push(updatedDevice);
     }
 
-    this.devicesBSubject.next(currentDevices);
+    this.devicesSubject.next(currentDevices);
   }
 }
