@@ -29,6 +29,7 @@ export class SecretsListComponent implements OnDestroy {
 
   @Input()
   set search(search: string) {
+    this.selection.clear();
     this.dataSource.filter = search;
   }
 

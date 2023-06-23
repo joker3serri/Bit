@@ -38,6 +38,7 @@ export class TableDataSource<T> extends DataSource<T> {
   }
 
   set data(data: T[]) {
+    this.filteredData = data;
     this._data.next(data ? [...data] : []);
   }
 
@@ -84,11 +85,11 @@ export class TableDataSource<T> extends DataSource<T> {
   }
 
   private filterData(data: T[], filter: string): T[] {
-    if (filter == null || filter == "") {
-      return data;
-    }
+    this.filteredData =
+      this.filter == null || this.filter === ""
+        ? data
+        : data.filter((obj) => this.filterPredicate(obj, this.filter));
 
-    this.filteredData = data.filter((obj) => this.filterPredicate(obj, filter));
     return this.filteredData;
   }
 
