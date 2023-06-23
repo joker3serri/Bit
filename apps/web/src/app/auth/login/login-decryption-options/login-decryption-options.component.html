@@ -33,7 +33,7 @@
         </bit-form-control>
       </form>
 
-      <div class="tw-mb-6 tw-flex tw-flex-col">
+      <div class="tw-mb-6 tw-flex tw-flex-col tw-space-y-3">
         <button
           *ngIf="showApproveFromOtherDeviceBtn$ | async"
           (click)="approveFromOtherDevice()"
@@ -41,10 +41,6 @@
           type="button"
           buttonType="primary"
           [block]="true"
-          [ngClass]="{
-            'tw-mb-3':
-              (showReqAdminApprovalBtn$ | async) || (showApproveWithMasterPasswordBtn$ | async)
-          }"
         >
           {{ "approveFromYourOtherDevice" | i18n }}
         </button>
@@ -55,7 +51,6 @@
           bitButton
           type="button"
           buttonType="secondary"
-          [ngClass]="{ 'tw-mb-3': showApproveWithMasterPasswordBtn$ | async }"
         >
           {{ "requestAdminApproval" | i18n }}
         </button>
