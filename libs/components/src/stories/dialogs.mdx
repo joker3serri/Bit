@@ -7,8 +7,8 @@ import { Meta, Story, Source } from "@storybook/addon-docs";
 Dialogs are used throughout the app to help the user focus on a specific action.
 
 Use the main [Dialog Component](?path=/docs/component-library-dialogs-dialog--docs). when content
-exceeds 384px width or there are a high number of interactive elements needed. **Example:** Item
-type form dialog
+exceeds 384px width or there are a high number of interactive elements needed. **Example:** The web
+app's edit vault item form dialog
 
 For alerts or simple confirmation actions, like speedbumps, use the
 [Simple Dialog](?path=/docs/component-library-dialogs-simple-dialog--docs).
@@ -22,8 +22,7 @@ Dialogs should be centered vertically and horizontally on screen. Dialogs height
 fit its content until there are 2rems of margin on the top/bottom of the dialog; in this case, the
 dialog should become scrollable.
 
-A background scrim should be used to hide the content below the dialog. Use `#000000` with
-`30% opacity`.
+A backdrop should be used to hide the content below the dialog. Use `#000000` with `30% opacity`.
 
 <Story id="component-library-dialogs-service--default" />
 
@@ -36,8 +35,8 @@ Dialog should include `role=“dialog”`
 
 The Dialog title should be in an `<h1>`
 
-Dialog title should be announced by a screen reader when launched. Consider using `aria-labledby` or
-`aria-label`
+Dialog title should be announced by a screen reader when launched. Consider using `aria-labelledby`
+or `aria-label`
 
 When opened, focus should follow the visual order of the popover’s focusable content. Typically
 focus is moved to the close button, but it is acceptable to move focus to the first interactive

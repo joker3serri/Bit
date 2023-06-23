@@ -28,23 +28,14 @@ visual indicator to recognize which of a personal or work account a user is logg
 
 <Story of={stories.Small} />
 
-## Styles:
-
-`textColor:` set dynamically based on background color to maintain a 4.5:1 contrast ratio.
-
-`backgroundColor:` defined by control, see next section
-
-`fontSize: 20px` since tailwind classes don’t render in the image function use 20px for the default
-size. Font-size will scale automatically from this.
-
-`fontWeight: 400`
-
-`charCount: 2`
-
 ## Background color
 
-The Background color can be manually set. However, typically the avatar color should be defined by
-the user's `Name` field.
+The Background color can be set 3 ways. The color is generated using the following order of
+priority:
+
+- Color
+- ID
+- Text, usually set to the user's Name field
 
 <Story of={stories.ColorByText} />
 Use the user 'ID' field if `Name` is not defined.
@@ -67,7 +58,8 @@ web app for the account menu indicator.
 
 When the avatar is used as a button, the following states should be used:
 
-`TODO: add stories for button avatars. See Figma`
+`TODO:` [Jira add stories](https://bitwarden.atlassian.net/browse/CL-101) for button avatars.
+[See Figma](https://www.figma.com/file/Zt3YSeb6E6lebAffrNLa0h/Tailwind-Component-Library?type=design&node-id=9730-31746&mode=design&t=IjDIHDb6FZl6bUQW-4)
 
 ## Accessibility
 
