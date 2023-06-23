@@ -85,19 +85,14 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         takeUntil(this.componentDestroyed$)
       );
 
-    // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set && user email is not null
-    this.showReqAdminApprovalBtn$ = combineLatest([
-      accountDecryptionOptions$,
-      this.userEmail$,
-    ]).pipe(
+    // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set
+    this.showReqAdminApprovalBtn$ = accountDecryptionOptions$.pipe(
       catchError((err: unknown) => {
         this.validationService.showError(err);
         return throwError(() => err);
       }),
-      map(
-        ([acctDecryptionOptions, userEmail]) =>
-          !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval
-      ),
+      // !! is for case when trustedDeviceOption is undefined to achieve a boolean output always
+      map((acctDecryptionOptions) => !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval),
       takeUntil(this.componentDestroyed$)
     );
 
