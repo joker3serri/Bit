@@ -16,7 +16,6 @@ import {
 
 import { DevicesServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import {
   DesktopDeviceTypes,
   DeviceType,
@@ -49,7 +48,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected stateService: StateService,
     protected router: Router,
     protected messagingService: MessagingService,
-    protected tokenService: TokenService,
     protected loginService: LoginService,
     private validationService: ValidationService
   ) {}
@@ -58,8 +56,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     const accountDecryptionOptions$: Observable<AccountDecryptionOptions> = from(
       this.stateService.getAccountDecryptionOptions()
     );
-    // Pull user email from access token b/c it's available post authN
-    this.userEmail$ = from(this.tokenService.getEmail()).pipe(
+    this.userEmail$ = from(this.stateService.getEmail()).pipe(
       tap((email) => (this.userEmail = email)), // set userEmail as a side effect
       catchError((err: unknown) => {
         this.validationService.showError(err);
