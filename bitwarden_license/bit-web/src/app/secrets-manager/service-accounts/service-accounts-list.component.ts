@@ -60,7 +60,7 @@ export class ServiceAccountsListComponent implements OnDestroy {
     if (this.selection.selected?.length > 0) {
       const numSelected = this.selection.selected.length;
       const numRows = this.dataSource.filter
-        ? this.dataSource.data.filter((e) => e.name.includes(this.dataSource.filter)).length
+        ? this.dataSource.filteredData.length
         : this.dataSource.data.length;
       return numSelected === numRows;
     }
@@ -72,11 +72,7 @@ export class ServiceAccountsListComponent implements OnDestroy {
       this.selection.clear();
     } else {
       if (this.dataSource.filter?.length > 0) {
-        this.selection.select(
-          ...this.dataSource.data
-            .filter((e) => e.name.includes(this.dataSource.filter))
-            .map((s) => s.id)
-        );
+        this.selection.select(...this.dataSource.filteredData.map((s) => s.id));
       } else {
         this.selection.select(...this.dataSource.data.map((s) => s.id));
       }
