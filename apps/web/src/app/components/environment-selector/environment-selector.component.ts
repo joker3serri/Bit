@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Component({
@@ -9,11 +10,14 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
   templateUrl: "environment-selector.component.html",
 })
 export class EnvironmentSelectorComponent implements OnInit {
-  constructor(private configService: ConfigServiceAbstraction) {}
+  constructor(
+    private configService: ConfigServiceAbstraction,
+    private platformUtilsService: PlatformUtilsService
+  ) {}
   @Input() hasFlags: boolean;
   isEuServer: boolean;
   isUsServer: boolean;
-  showRegionSelector: boolean;
+  showRegionSelector = false;
   euServerFlagEnabled: boolean;
   selectedRegionImageName: string;
 
@@ -25,14 +29,13 @@ export class EnvironmentSelectorComponent implements OnInit {
     this.isEuServer = domain.includes("bitwarden.eu");
     this.isUsServer = domain.includes("bitwarden.com") || domain.includes("bitwarden.pw");
     this.selectedRegionImageName = this.getRegionImage();
-
-    this.showRegionSelector = this.isEuServer || this.isUsServer;
+    this.showRegionSelector = !this.platformUtilsService.isSelfHost();
   }
 
   getRegionImage(): string {
     if (this.isEuServer) {
       return "eu_flag";
-    } else if (this.isUsServer) {
+    } else {
       return "us_flag";
     }
   }

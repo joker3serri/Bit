@@ -108,6 +108,7 @@ import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-va
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
 
 import { EnvironmentSelectorModule } from "./../components/environment-selector/environment-selector.module";
+import { AccountFingerprintComponent } from "./components/account-fingerprint/account-fingerprint.component";
 import { UserVerificationModule } from "./components/user-verification";
 import { SharedModule } from "./shared.module";
 
@@ -123,6 +124,7 @@ import { SharedModule } from "./shared.module";
     ChangeKdfModule,
     DynamicAvatarComponent,
     EnvironmentSelectorModule,
+    AccountFingerprintComponent,
   ],
   declarations: [
     AcceptEmergencyComponent,
