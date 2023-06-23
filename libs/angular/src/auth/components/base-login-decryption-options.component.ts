@@ -74,7 +74,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     );
 
     this.showApproveFromOtherDeviceBtn$ = this.devicesService
-      .getDevicesExistenseByTypes(mobileAndDesktopDeviceTypes)
+      .getDevicesExistenceByTypes(mobileAndDesktopDeviceTypes)
       .pipe(
         catchError((err: unknown) => {
           this.validationService.showError(err);

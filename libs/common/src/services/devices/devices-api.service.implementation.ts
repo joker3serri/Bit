@@ -46,7 +46,7 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
     return new ListResponse(r, DeviceResponse);
   }
 
-  async getDevicesExistenseByTypes(deviceTypes: DeviceType[]): Promise<boolean> {
+  async getDevicesExistenceByTypes(deviceTypes: DeviceType[]): Promise<boolean> {
     const r = await this.apiService.send(
       "POST",
       "/devices/exist-by-types",

@@ -53,8 +53,8 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
   /**
    * @description Returns whether the user has any devices of the specified types.
    */
-  getDevicesExistenseByTypes(deviceTypes: DeviceType[]): Observable<boolean> {
-    return defer(() => this.devicesApiService.getDevicesExistenseByTypes(deviceTypes));
+  getDevicesExistenceByTypes(deviceTypes: DeviceType[]): Observable<boolean> {
+    return defer(() => this.devicesApiService.getDevicesExistenceByTypes(deviceTypes));
   }
 
   /**

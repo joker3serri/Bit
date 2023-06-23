@@ -9,7 +9,7 @@ export abstract class DevicesApiServiceAbstraction {
   getDeviceByIdentifier: (deviceIdentifier: string) => Promise<DeviceResponse>;
 
   getDevices: () => Promise<ListResponse<DeviceResponse>>;
-  getDevicesExistenseByTypes: (deviceTypes: DeviceType[]) => Promise<boolean>;
+  getDevicesExistenceByTypes: (deviceTypes: DeviceType[]) => Promise<boolean>;
 
   updateTrustedDeviceKeys: (
     deviceIdentifier: string,

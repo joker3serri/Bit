@@ -6,7 +6,7 @@ import { DeviceView } from "./views/device.view";
 
 export abstract class DevicesServiceAbstraction {
   getDevices: () => Observable<Array<DeviceView>>;
-  getDevicesExistenseByTypes: (deviceTypes: DeviceType[]) => Observable<boolean>;
+  getDevicesExistenceByTypes: (deviceTypes: DeviceType[]) => Observable<boolean>;
   getDeviceByIdentifier: (deviceIdentifier: string) => Observable<DeviceView>;
   isDeviceKnownForUser: (email: string, deviceIdentifier: string) => Observable<boolean>;
   updateTrustedDeviceKeys: (
