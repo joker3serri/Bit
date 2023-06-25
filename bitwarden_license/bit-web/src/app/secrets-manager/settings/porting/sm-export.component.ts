@@ -98,9 +98,9 @@ export class SecretsManagerExportComponent implements OnInit, OnDestroy {
     const ref = this.modalService.open(UserVerificationPromptComponent, {
       allowMultipleModals: true,
       data: {
-        confirmDescription: "exportWarningDesc",
-        confirmButtonText: "exportVault",
-        modalTitle: "confirmVaultExport",
+        confirmDescription: "exportSecretsWarningDesc",
+        confirmButtonText: "exportSecrets",
+        modalTitle: "confirmSecretsExport",
       },
     });
 
