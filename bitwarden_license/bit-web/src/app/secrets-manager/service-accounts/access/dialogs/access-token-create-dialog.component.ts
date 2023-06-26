@@ -16,7 +16,6 @@ import { AccessTokenDetails, AccessTokenDialogComponent } from "./access-token-d
 export interface AccessTokenOperation {
   organizationId: string;
   serviceAccountId: string;
-  // serviceAccountView: ServiceAccountView;
 }
 
 @Component({
