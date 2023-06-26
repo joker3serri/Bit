@@ -27,7 +27,6 @@ When measuring something other than progress, such as password strength, update 
 context of the implementation.
 
 <Story of={stories.CustomText} />
-&nbsp;{" "}
 
 ### Strength indicator styles
 
@@ -44,6 +43,6 @@ Be sure to include the proper `aria-valuemin`, `aria-valuemax`, and `aria-valuen
 a`ria-valuetext` should also be configurable to include the text a screen reader should read to the
 user.
 
-In the case of a password strength indicator; `aria-describedb`y should be used and should point to
-the `id` of the progress bar so as the screen reader will read the password’s strength to the user
-after the user finishes typing.
+In the case of a password strength indicator; `aria-describedby` is used on the password field and
+points to the `id` of the progress bar. This results in the screen reader reading the password
+strength to the user after they finish typing.
