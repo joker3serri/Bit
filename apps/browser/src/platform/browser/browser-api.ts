@@ -184,7 +184,11 @@ export class BrowserApi {
     name: string,
     callback: (message: any, sender: chrome.runtime.MessageSender, response: any) => unknown
   ) {
-    chrome.runtime.onMessage.addListener(callback);
+    chrome.runtime.onMessage.addListener(
+      (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
+        return callback(msg, sender, sendResponse) === true;
+      }
+    );
 
     // Keep track of all the events registered in a Safari popup so we can remove
     // them when the popup gets unloaded, otherwise we cause a memory leak
