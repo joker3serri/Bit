@@ -27,7 +27,7 @@ import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/doma
 
 @Directive()
 export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
-  private componentDestroyed$: Subject<void> = new Subject();
+  private destroy$ = new Subject<void>();
 
   showApproveFromOtherDeviceBtn$: Observable<boolean>;
   showReqAdminApprovalBtn$: Observable<boolean>;
@@ -61,7 +61,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         this.validationService.showError(err);
         return throwError(() => err);
       }),
-      takeUntil(this.componentDestroyed$)
+      takeUntil(this.destroy$)
     );
 
     // Show approve from other device btn if user has any mobile or desktop devices
@@ -76,7 +76,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
           this.validationService.showError(err);
           return throwError(() => err);
         }),
-        takeUntil(this.componentDestroyed$)
+        takeUntil(this.destroy$)
       );
 
     // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set
@@ -87,7 +87,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       }),
       // !! is for case when trustedDeviceOption is undefined to achieve a boolean output always
       map((acctDecryptionOptions) => !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval),
-      takeUntil(this.componentDestroyed$)
+      takeUntil(this.destroy$)
     );
 
     this.showApproveWithMasterPasswordBtn$ = accountDecryptionOptions$.pipe(
@@ -96,7 +96,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         return throwError(() => err);
       }),
       map((acctDecryptionOptions) => acctDecryptionOptions.hasMasterPassword),
-      takeUntil(this.componentDestroyed$)
+      takeUntil(this.destroy$)
     );
 
     // Set loading false once all observables have emitted at least once
@@ -105,7 +105,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       this.showReqAdminApprovalBtn$,
       this.showApproveWithMasterPasswordBtn$,
     ])
-      .pipe(takeUntil(this.componentDestroyed$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => (this.loading = false));
   }
 
@@ -142,7 +142,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.componentDestroyed$.next();
-    this.componentDestroyed$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
