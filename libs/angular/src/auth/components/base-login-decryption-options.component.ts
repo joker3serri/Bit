@@ -9,6 +9,7 @@ import {
   combineLatest,
   from,
   map,
+  shareReplay,
   takeUntil,
   tap,
   throwError,
@@ -56,6 +57,13 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const accountDecryptionOptions$: Observable<AccountDecryptionOptions> = from(
       this.stateService.getAccountDecryptionOptions()
+    ).pipe(
+      // ShareReplay Context:
+      // from(promise) turns a promise into an a hot observable (i.e., data produced outside of the observable)
+      // However, the promise eagerly executes immediately once defined.
+      // Using shareReplay will ensure that late subscribers will receive the last emitted value
+      // and, if the promise is ever converted to an observable, it will only execute once still
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
     from(this.stateService.getEmail())
