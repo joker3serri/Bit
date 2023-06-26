@@ -55,7 +55,7 @@ export class DevicesApiServiceImplementation implements DevicesApiServiceAbstrac
       true,
       null
     );
-    return r as boolean;
+    return Boolean(r);
   }
 
   async updateTrustedDeviceKeys(
