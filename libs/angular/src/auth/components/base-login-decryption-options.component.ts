@@ -2,6 +2,7 @@ import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 import {
+  BehaviorSubject,
   Observable,
   Subject,
   catchError,
@@ -32,8 +33,9 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   showApproveFromOtherDeviceBtn$: Observable<boolean>;
   showReqAdminApprovalBtn$: Observable<boolean>;
   showApproveWithMasterPasswordBtn$: Observable<boolean>;
-  userEmail$: Observable<string>;
-  userEmail: string = null;
+
+  private userEmailSubject = new BehaviorSubject<string>(null);
+  userEmail$ = this.userEmailSubject.asObservable();
 
   rememberDeviceForm = this.formBuilder.group({
     rememberDevice: [true],
@@ -55,14 +57,20 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     const accountDecryptionOptions$: Observable<AccountDecryptionOptions> = from(
       this.stateService.getAccountDecryptionOptions()
     );
-    this.userEmail$ = from(this.stateService.getEmail()).pipe(
-      tap((email) => (this.userEmail = email)), // set userEmail as a side effect
-      catchError((err: unknown) => {
-        this.validationService.showError(err);
-        return throwError(() => err);
-      }),
-      takeUntil(this.destroy$)
-    );
+
+    from(this.stateService.getEmail())
+      .pipe(
+        tap((email) => {
+          this.userEmailSubject.next(email);
+        }),
+        catchError((err: unknown) => {
+          this.validationService.showError(err);
+          return throwError(() => err);
+        }),
+        takeUntil(this.destroy$)
+      )
+      // Subscribe because we always want to get the email, even if the template doesn't subscribe to it via async pipe
+      .subscribe();
 
     // Show approve from other device btn if user has any mobile or desktop devices
     const mobileAndDesktopDeviceTypes: DeviceType[] = Array.from(MobileDeviceTypes).concat(
@@ -113,7 +121,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // TODO: plan is to re-use existing login-with-device component but rework it to have two flows
     // (1) Standard flow for unauthN user based on AuthService status
     // (2) New flow for authN user based on AuthService status b/c they have just authenticated w/ SSO
-    this.loginService.setEmail(this.userEmail);
+    this.loginService.setEmail(this.userEmailSubject.value);
     this.router.navigate(["/login-with-device"]);
   }
 
