@@ -37,7 +37,7 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
   /**
    * @description Gets the list of all devices.
    */
-  getDevices(): Observable<Array<DeviceView>> {
+  getDevices$(): Observable<Array<DeviceView>> {
     return defer(() => this.devicesApiService.getDevices()).pipe(
       map((deviceResponses: ListResponse<DeviceResponse>) => {
         return deviceResponses.data.map((deviceResponse: DeviceResponse) => {
@@ -53,14 +53,14 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
   /**
    * @description Returns whether the user has any devices of the specified types.
    */
-  getDevicesExistenceByTypes(deviceTypes: DeviceType[]): Observable<boolean> {
+  getDevicesExistenceByTypes$(deviceTypes: DeviceType[]): Observable<boolean> {
     return defer(() => this.devicesApiService.getDevicesExistenceByTypes(deviceTypes));
   }
 
   /**
    * @description Gets the device with the specified identifier.
    */
-  getDeviceByIdentifier(deviceIdentifier: string): Observable<DeviceView> {
+  getDeviceByIdentifier$(deviceIdentifier: string): Observable<DeviceView> {
     return defer(() => this.devicesApiService.getDeviceByIdentifier(deviceIdentifier)).pipe(
       map((deviceResponse: DeviceResponse) => new DeviceView(deviceResponse)),
       tap((deviceView: DeviceView) => {
@@ -72,7 +72,7 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
   /**
    * @description Checks if a device is known for a user by user's email and device's identifier.
    */
-  isDeviceKnownForUser(email: string, deviceIdentifier: string): Observable<boolean> {
+  isDeviceKnownForUser$(email: string, deviceIdentifier: string): Observable<boolean> {
     return defer(() => this.devicesApiService.getKnownDevice(email, deviceIdentifier));
   }
 
@@ -80,7 +80,7 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
    * @description Updates the keys for the specified device.
    */
 
-  updateTrustedDeviceKeys(
+  updateTrustedDeviceKeys$(
     deviceIdentifier: string,
     devicePublicKeyEncryptedUserKey: string,
     userKeyEncryptedDevicePublicKey: string,
