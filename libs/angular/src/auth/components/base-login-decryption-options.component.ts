@@ -3,6 +3,7 @@ import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom, from, map, of, Subject, switchMap } from "rxjs";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
@@ -17,6 +18,8 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
+
+import { KeysRequest } from "../../../../common/src/models/request/keys.request";
 
 // TODO: replace this base component with a service per latest ADR
 @Directive()
@@ -50,6 +53,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected cryptoService: CryptoService,
     protected deviceCryptoService: DeviceCryptoServiceAbstraction,
     protected organizationUserService: OrganizationUserService,
+    protected apiService: ApiService,
     protected i18nService: I18nService
   ) {}
 
@@ -140,20 +144,20 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // this.loading to support clients without CL-support
     this.loading = true;
     try {
-      await this.cryptoService.initAccount();
+      const { encKey, publicKey, privateKey } = await this.cryptoService.initAccount();
+      const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
+      await this.apiService.postAccountKeys(keysRequest);
 
-      const keyResponse = await this.organizationApiService.getKeys(this.organizationId);
-
-      if (keyResponse == null) {
+      const orgKeyResponse = await this.organizationApiService.getKeys(this.organizationId);
+      if (orgKeyResponse == null) {
         throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
       }
 
-      const publicKey = Utils.fromB64ToArray(keyResponse.publicKey);
+      const orgPublicKey = Utils.fromB64ToArray(orgKeyResponse.publicKey);
 
       // RSA Encrypt user's encKey.key with organization public key
       const userId = await this.stateService.getUserId();
-      const userEncKey = await this.cryptoService.getEncKey();
-      const encryptedKey = await this.cryptoService.rsaEncrypt(userEncKey.key, publicKey.buffer);
+      const encryptedKey = await this.cryptoService.rsaEncrypt(encKey.key, orgPublicKey.buffer);
 
       const resetRequest = new OrganizationUserResetPasswordEnrollmentRequest();
       resetRequest.resetPasswordKey = encryptedKey.encryptedString;

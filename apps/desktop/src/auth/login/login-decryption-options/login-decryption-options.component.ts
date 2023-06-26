@@ -3,6 +3,7 @@ import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { BaseLoginDecryptionOptionsComponent } from "@bitwarden/angular/auth/components/base-login-decryption-options.component";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
@@ -32,6 +33,7 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
     cryptoService: CryptoService,
     deviceCryptoService: DeviceCryptoServiceAbstraction,
     organizationUserSerivce: OrganizationUserService,
+    apiService: ApiService,
     i18nService: I18nService
   ) {
     super(
@@ -47,6 +49,7 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
       cryptoService,
       deviceCryptoService,
       organizationUserSerivce,
+      apiService,
       i18nService
     );
   }
