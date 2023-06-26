@@ -8,13 +8,15 @@ import { BitValidators } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../../../models/view/service-account.view";
 import { AccessTokenView } from "../../models/view/access-token.view";
+import { ServiceAccountService } from "../../service-account.service";
 import { AccessService } from "../access.service";
 
 import { AccessTokenDetails, AccessTokenDialogComponent } from "./access-token-dialog.component";
 
 export interface AccessTokenOperation {
   organizationId: string;
-  serviceAccountView: ServiceAccountView;
+  serviceAccountId: string;
+  // serviceAccountView: ServiceAccountView;
 }
 
 @Component({
@@ -29,6 +31,7 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     expirationDateControl: new FormControl(null),
   });
   protected loading = false;
+  protected serviceAccountView: ServiceAccountView;
 
   expirationDayOptions = [7, 30, 60];
 
@@ -37,20 +40,22 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     @Inject(DIALOG_DATA) public data: AccessTokenOperation,
     private i18nService: I18nService,
     private dialogService: DialogServiceAbstraction,
-    private accessService: AccessService
+    private accessService: AccessService,
+    private serviceAccountService: ServiceAccountService
   ) {}
 
   async ngOnInit() {
-    if (
-      !this.data.organizationId ||
-      !this.data.serviceAccountView?.id ||
-      !this.data.serviceAccountView?.name
-    ) {
+    if (!this.data.organizationId || !this.data.serviceAccountId) {
       this.dialogRef.close();
       throw new Error(
         `The access token create dialog was not called with the appropriate operation values.`
       );
     }
+
+    this.serviceAccountView = await this.serviceAccountService.getByServiceAccountId(
+      this.data.serviceAccountId,
+      this.data.organizationId
+    );
   }
 
   submit = async () => {
@@ -63,14 +68,10 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     accessTokenView.expireAt = this.formGroup.value.expirationDateControl;
     const accessToken = await this.accessService.createAccessToken(
       this.data.organizationId,
-      this.data.serviceAccountView.id,
+      this.data.serviceAccountId,
       accessTokenView
     );
-    this.openAccessTokenDialog(
-      this.data.serviceAccountView.name,
-      accessToken,
-      accessTokenView.expireAt
-    );
+    this.openAccessTokenDialog(this.serviceAccountView.name, accessToken, accessTokenView.expireAt);
     this.dialogRef.close();
   };
 
@@ -93,15 +94,10 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     serviceAccountId: string,
     organizationId: string
   ) {
-    // TODO once service account names are implemented in service account contents page pass in here.
-    const serviceAccountView = new ServiceAccountView();
-    serviceAccountView.id = serviceAccountId;
-    serviceAccountView.name = "placeholder";
-
     return dialogService.open<unknown, AccessTokenOperation>(AccessTokenCreateDialogComponent, {
       data: {
         organizationId: organizationId,
-        serviceAccountView: serviceAccountView,
+        serviceAccountId: serviceAccountId,
       },
     });
   }
