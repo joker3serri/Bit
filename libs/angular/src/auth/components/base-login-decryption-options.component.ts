@@ -144,7 +144,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // this.loading to support clients without CL-support
     this.loading = true;
     try {
-      const { encKey, publicKey, privateKey } = await this.cryptoService.initAccount();
+      const { userKey, publicKey, privateKey } = await this.cryptoService.initAccount();
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
       await this.apiService.postAccountKeys(keysRequest);
 
@@ -155,9 +155,9 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
       const orgPublicKey = Utils.fromB64ToArray(orgKeyResponse.publicKey);
 
-      // RSA Encrypt user's encKey.key with organization public key
+      // RSA Encrypt user's userKey.key with organization public key
       const userId = await this.stateService.getUserId();
-      const encryptedKey = await this.cryptoService.rsaEncrypt(encKey.key, orgPublicKey.buffer);
+      const encryptedKey = await this.cryptoService.rsaEncrypt(userKey.key, orgPublicKey.buffer);
 
       const resetRequest = new OrganizationUserResetPasswordEnrollmentRequest();
       resetRequest.resetPasswordKey = encryptedKey.encryptedString;
