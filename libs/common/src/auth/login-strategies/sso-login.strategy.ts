@@ -97,6 +97,8 @@ export class SsoLogInStrategy extends LogInStrategy {
       // await this.cryptoService.setUserKey(userKey);
 
       // TODO: also admin approval request existence check should go here b/c that can give us a decrypted user key to set
+      // TODO: future passkey login strategy will need to support setting user key (decrypting via TDE or admin approval request)
+      // so might be worth moving this logic to a common place (base login strategy or a separate service?)
 
       await this.cryptoService.setUserKeyMasterKey(tokenResponse.key);
 
