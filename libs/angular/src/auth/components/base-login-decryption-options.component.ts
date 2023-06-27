@@ -60,7 +60,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     // Get user's email from access token:
     this.userEmail = await this.tokenService.getEmail();
-
     const autoEnrollStatus$ = this.activatedRoute.queryParamMap.pipe(
       map((params) => params.get("identifier")),
       switchMap((identifier) => {
@@ -72,17 +71,18 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       })
     );
     const autoEnrollStatus = await firstValueFrom(autoEnrollStatus$);
-    this.approvalRequired = !autoEnrollStatus?.resetPasswordEnabled;
     this.organizationId = autoEnrollStatus.id;
 
-    if (!this.approvalRequired) {
-      this.loading = false;
-      return;
-    }
+    const devicesListResponse = await this.devicesApiService.getDevices();
+    const acctDecryptionOptions: AccountDecryptionOptions =
+      await this.stateService.getAcctDecryptionOptions();
+
+    this.approvalRequired =
+      devicesListResponse.data.length > 0 &&
+      acctDecryptionOptions?.trustedDeviceOption?.hasAdminApproval;
 
     // Determine if the user has any mobile or desktop devices
     // to determine if we should show the approve from other device button
-    const devicesListResponse = await this.devicesApiService.getDevices();
     for (const device of devicesListResponse.data) {
       if (
         device.type === DeviceType.Android ||
@@ -97,10 +97,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         break;
       }
     }
-
-    const acctDecryptionOptions: AccountDecryptionOptions =
-      await this.stateService.getAcctDecryptionOptions();
-
     // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set && user email is not null
     this.showReqAdminApprovalBtn =
       !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval && this.userEmail != null;
