@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, defer, map, tap } from "rxjs";
+import { Observable, defer, map } from "rxjs";
 
 import { DevicesApiServiceAbstraction } from "../../abstractions/devices/devices-api.service.abstraction";
 import { DevicesServiceAbstraction } from "../../abstractions/devices/devices.service.abstraction";
@@ -16,22 +16,6 @@ import { ListResponse } from "../../models/response/list.response";
  * (i.e., promsise --> observables are cold until subscribed to)
  */
 export class DevicesServiceImplementation implements DevicesServiceAbstraction {
-  private devicesSubject: BehaviorSubject<Array<DeviceView>> = new BehaviorSubject<
-    Array<DeviceView>
-  >([]);
-
-  /**
-   * @description Observable for devices in data store
-   */
-  devices$: Observable<Array<DeviceView>> = this.devicesSubject.asObservable();
-
-  /**
-   * @description Synchronous getter for current value of devices in data store
-   */
-  get devices(): Array<DeviceView> {
-    return this.devicesSubject.value;
-  }
-
   constructor(private devicesApiService: DevicesApiServiceAbstraction) {}
 
   /**
@@ -43,9 +27,6 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
         return deviceResponses.data.map((deviceResponse: DeviceResponse) => {
           return new DeviceView(deviceResponse);
         });
-      }),
-      tap((deviceViews: Array<DeviceView>) => {
-        this.devicesSubject.next(deviceViews);
       })
     );
   }
@@ -62,10 +43,7 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
    */
   getDeviceByIdentifier$(deviceIdentifier: string): Observable<DeviceView> {
     return defer(() => this.devicesApiService.getDeviceByIdentifier(deviceIdentifier)).pipe(
-      map((deviceResponse: DeviceResponse) => new DeviceView(deviceResponse)),
-      tap((deviceView: DeviceView) => {
-        this.upsertDevice(deviceView);
-      })
+      map((deviceResponse: DeviceResponse) => new DeviceView(deviceResponse))
     );
   }
 
@@ -93,32 +71,6 @@ export class DevicesServiceImplementation implements DevicesServiceAbstraction {
         userKeyEncryptedDevicePublicKey,
         deviceKeyEncryptedDevicePrivateKey
       )
-    ).pipe(
-      map((deviceResponse: DeviceResponse) => new DeviceView(deviceResponse)),
-      tap((deviceView: DeviceView) => {
-        this.upsertDevice(deviceView);
-      })
-    );
-  }
-
-  /**
-   * @description Updates a device in the current device store, or adds it if it doesn't exist.
-   */
-  private upsertDevice(updatedDevice: DeviceView): void {
-    const currentDevices = this.devicesSubject.value;
-
-    const deviceIndex = currentDevices.findIndex(
-      (device) => device.identifier === updatedDevice.identifier
-    );
-
-    if (deviceIndex >= 0) {
-      // If the device exists, update it
-      currentDevices[deviceIndex] = updatedDevice;
-    } else {
-      // Otherwise, add the new device to the store
-      currentDevices.push(updatedDevice);
-    }
-
-    this.devicesSubject.next(currentDevices);
+    ).pipe(map((deviceResponse: DeviceResponse) => new DeviceView(deviceResponse)));
   }
 }
