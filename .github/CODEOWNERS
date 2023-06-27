@@ -76,3 +76,7 @@ libs/components @bitwarden/team-platform-dev
 
 ## Desktop native module ##
 apps/desktop/desktop_native @bitwarden/team-platform-dev
+
+## DevOps team files ##
+apps/web/config
+apps/web/package.json
