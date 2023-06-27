@@ -43,7 +43,7 @@ export class AdjustSubscription {
         seatAdjustment,
         this.newMaxSeats
       );
-      this.formPromise = this.organizationApiService.updateSubscription(
+      this.formPromise = this.organizationApiService.updatePasswordManagerSeats(
         this.organizationId,
         request
       );

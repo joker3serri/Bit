@@ -6,9 +6,9 @@ import { BitwardenProductType } from "../../enums/bitwarden-product-type.enum";
 export class PlanResponse extends BaseResponse {
   type: PlanType;
   product: ProductType;
+  bitwardenProduct: BitwardenProductType;
   name: string;
   isAnnual: boolean;
-  bitwardenProduct: BitwardenProductType;
   nameLocalizationKey: string;
   descriptionLocalizationKey: string;
   canBeUsedByBusiness: boolean;
@@ -99,6 +99,7 @@ export class PlanResponse extends BaseResponse {
     this.seatPrice = this.getResponseProperty("SeatPrice");
     this.additionalStoragePricePerGb = this.getResponseProperty("AdditionalStoragePricePerGb");
     this.premiumAccessOptionPrice = this.getResponseProperty("PremiumAccessOptionPrice");
+
     this.bitwardenProduct = this.getResponseProperty("BitwardenProduct");
     this.additionalPricePerServiceAccount = this.getResponseProperty(
       "AdditionalPricePerServiceAccount"

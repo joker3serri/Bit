@@ -41,6 +41,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   hasBillingSyncToken: boolean;
   showAdjustSecretsManager = false;
 
+  showSecretsManagerSubscribe = false;
+
   firstLoaded = false;
   loading: boolean;
 
@@ -109,6 +111,17 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.hasBillingSyncToken = apiKeyResponse.data.some(
       (i) => i.keyType === OrganizationApiKeyType.BillingSync
     );
+
+    this.showSecretsManagerSubscribe =
+      this.userOrg.canEditSubscription &&
+      !this.userOrg.useSecretsManager &&
+      !this.subscription.cancelled &&
+      !this.subscriptionMarkedForCancel;
+
+    // Remove next line when the sm-ga-billing flag is deleted
+    this.showSecretsManagerSubscribe =
+      this.showSecretsManagerSubscribe &&
+      (await this.configService.getFeatureFlagBool(FeatureFlag.SecretsManagerBilling));
 
     this.showAdjustSecretsManager =
       this.userOrg.canEditSubscription &&

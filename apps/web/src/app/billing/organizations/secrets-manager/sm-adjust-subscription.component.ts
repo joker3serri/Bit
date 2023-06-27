@@ -147,7 +147,7 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
       this.formGroup.value.serviceAccountLimit
     );
 
-    await this.organizationApiService.updateSubscription(this.organizationId, request);
+    await this.organizationApiService.updatePasswordManagerSeats(this.organizationId, request);
 
     await this.platformUtilsService.showToast(
       "success",
