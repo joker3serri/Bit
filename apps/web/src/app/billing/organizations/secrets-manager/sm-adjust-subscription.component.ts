@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/organization-subscription-update.request";
+import { OrganizationSmSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/organization-sm-subscription-update.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
@@ -140,14 +140,17 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
     const serviceAccountAdjustment =
       this.formGroup.value.serviceAccountCount - this.options.serviceAccountCount;
 
-    const request = OrganizationSubscriptionUpdateRequest.forSecretsManager(
+    const request = new OrganizationSmSubscriptionUpdateRequest(
       seatAdjustment,
       serviceAccountAdjustment,
       this.formGroup.value.seatLimit,
       this.formGroup.value.serviceAccountLimit
     );
 
-    await this.organizationApiService.updatePasswordManagerSeats(this.organizationId, request);
+    await this.organizationApiService.updateSecretsManagerSubscription(
+      this.organizationId,
+      request
+    );
 
     await this.platformUtilsService.showToast(
       "success",
