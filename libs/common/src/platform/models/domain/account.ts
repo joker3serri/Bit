@@ -294,6 +294,14 @@ export class AccountDecryptionOptions {
     }
   }
 
+  get hasTrustedDeviceOption(): boolean {
+    return this.trustedDeviceOption !== null && this.trustedDeviceOption !== undefined;
+  }
+
+  get hasKeyConnectorOption(): boolean {
+    return this.keyConnectorOption !== null && this.keyConnectorOption !== undefined;
+  }
+
   static fromResponse(response: UserDecryptionOptionsResponse): AccountDecryptionOptions {
     if (response == null) {
       return null;
