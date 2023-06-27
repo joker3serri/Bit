@@ -117,11 +117,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       !this.subscription.cancelled &&
       !this.subscriptionMarkedForCancel;
 
-    // Remove next line when the sm-ga-billing flag is deleted
-    this.showSecretsManagerSubscribe =
-      this.showSecretsManagerSubscribe &&
-      (await this.configService.getFeatureFlagBool(FeatureFlag.SecretsManagerBilling));
-
     this.showAdjustSecretsManager =
       this.userOrg.canEditSubscription &&
       this.userOrg.useSecretsManager &&
@@ -130,11 +125,14 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       !this.subscription.cancelled &&
       !this.subscriptionMarkedForCancel;
 
-    this.showAdjustSecretsManager =
-      this.showAdjustSecretsManager &&
-      (await this.configService.getFeatureFlagBool(FeatureFlag.SecretsManagerBilling));
-
     this.loading = false;
+
+    // Remove the remaining lines when the sm-ga-billing flag is deleted
+    const smBillingEnabled = await this.configService.getFeatureFlagBool(
+      FeatureFlag.SecretsManagerBilling
+    );
+    this.showSecretsManagerSubscribe = this.showSecretsManagerSubscribe && smBillingEnabled;
+    this.showAdjustSecretsManager = this.showAdjustSecretsManager && smBillingEnabled;
   }
 
   get subscription() {
