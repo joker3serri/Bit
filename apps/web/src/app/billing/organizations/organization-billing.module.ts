@@ -12,7 +12,6 @@ import { OrganizationBillingRoutingModule } from "./organization-billing-routing
 import { OrganizationBillingTabComponent } from "./organization-billing-tab.component";
 import { OrganizationSubscriptionCloudComponent } from "./organization-subscription-cloud.component";
 import { OrganizationSubscriptionSelfhostComponent } from "./organization-subscription-selfhost.component";
-import { SecretsManagerAdjustSubscriptionComponent } from "./secrets-manager/sm-adjust-subscription.component";
 import { SecretsManagerBillingModule } from "./secrets-manager/sm-billing.module";
 import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
 
@@ -34,7 +33,6 @@ import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
     OrganizationSubscriptionSelfhostComponent,
     OrganizationSubscriptionCloudComponent,
     SubscriptionHiddenComponent,
-    SecretsManagerAdjustSubscriptionComponent,
   ],
 })
 export class OrganizationBillingModule {}
