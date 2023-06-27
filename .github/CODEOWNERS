@@ -77,9 +77,9 @@ libs/components @bitwarden/team-platform-dev
 ## Desktop native module ##
 apps/desktop/desktop_native @bitwarden/team-platform-dev
 
+## Multiple file owners ##
+/apps/web/config
+/apps/web/package.json
+
 ## DevOps team files ##
-# Web client config
-apps/web/config @bitwarden/dept-devops
-apps/web/package.json @bitwarden/dept-devops
-# GitHub workflows
 .github/workflows @bitwarden/dept-devops
