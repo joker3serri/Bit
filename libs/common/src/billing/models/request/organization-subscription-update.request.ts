@@ -1,4 +1,4 @@
-import { BitwardenProductType } from "../../enums/bitwarden-product-type.enum";
+import { BitwardenProductType } from "../../enums";
 
 export class OrganizationSubscriptionUpdateRequest {
   bitwardenProduct: BitwardenProductType;

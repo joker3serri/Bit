@@ -20,8 +20,7 @@ import { OrganizationCreateRequest } from "@bitwarden/common/admin-console/model
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpgradeRequest } from "@bitwarden/common/admin-console/models/request/organization-upgrade.request";
 import { ProviderOrganizationCreateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-organization-create.request";
-import { PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
-import { BitwardenProductType } from "@bitwarden/common/billing/enums/bitwarden-product-type.enum";
+import { BitwardenProductType, PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { ProductType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";

@@ -9,8 +9,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { PlanType } from "@bitwarden/common/billing/enums";
-import { BitwardenProductType } from "@bitwarden/common/billing/enums/bitwarden-product-type.enum";
+import { BitwardenProductType, PlanType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
