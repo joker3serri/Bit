@@ -82,4 +82,4 @@ apps/desktop/desktop_native @bitwarden/team-platform-dev
 /apps/web/package.json
 
 ## DevOps team files ##
-.github/workflows @bitwarden/dept-devops
+/.github/workflows @bitwarden/dept-devops
