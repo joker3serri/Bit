@@ -77,9 +77,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     const acctDecryptionOptions: AccountDecryptionOptions =
       await this.stateService.getAcctDecryptionOptions();
 
-    this.approvalRequired =
-      devicesListResponse.data.length > 0 &&
-      acctDecryptionOptions?.trustedDeviceOption?.hasAdminApproval;
+    // If the user does not have admin approval set up then we are dealing with a new account
+    this.approvalRequired = acctDecryptionOptions?.trustedDeviceOption?.hasAdminApproval;
 
     // Determine if the user has any mobile or desktop devices
     // to determine if we should show the approve from other device button
