@@ -202,6 +202,10 @@ export class SsoComponent {
           });
         }
       } else if (response.resetMasterPassword) {
+        // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
+        // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
+        // Users are allowed to not have a MP if TDE feature enabled + TDE configured. Otherwise, they must set a MP
+        // src: https://bitwarden.atlassian.net/browse/PM-2759?focusedCommentId=39438
         if (this.onSuccessfulLoginChangePasswordNavigate != null) {
           await this.onSuccessfulLoginChangePasswordNavigate();
         } else {
