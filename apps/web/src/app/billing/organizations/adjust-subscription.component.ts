@@ -39,10 +39,7 @@ export class AdjustSubscription {
   async submit() {
     try {
       const seatAdjustment = this.newSeatCount - this.currentSeatCount;
-      const request = OrganizationSubscriptionUpdateRequest.forPasswordManager(
-        seatAdjustment,
-        this.newMaxSeats
-      );
+      const request = new OrganizationSubscriptionUpdateRequest(seatAdjustment, this.newMaxSeats);
       this.formPromise = this.organizationApiService.updatePasswordManagerSeats(
         this.organizationId,
         request
