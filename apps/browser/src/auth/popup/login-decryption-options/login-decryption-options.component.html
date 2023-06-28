@@ -11,7 +11,7 @@
     </div>
 
     <ng-container *ngIf="!loading">
-      <ng-container *ngIf="approvalRequired">
+      <ng-container *ngIf="data.state == State.UntrustedDevice">
         <div class="standard-x-margin">
           <p class="lead">{{ "logInInitiated" | i18n }}</p>
           <h6 class="mb-20px">{{ "deviceApprovalRequired" | i18n }}</h6>
@@ -38,29 +38,30 @@
 
         <div class="box mb-20px">
           <button
-            *ngIf="showApproveFromOtherDeviceBtn"
+            *ngIf="data.showApproveFromOtherDeviceBtn"
             (click)="approveFromOtherDevice()"
             type="button"
             class="btn primary block"
             [ngClass]="{
-              'btn-bottom-margin': showReqAdminApprovalBtn || showApproveWithMasterPasswordBtn
+              'btn-bottom-margin':
+                data.showReqAdminApprovalBtn || data.showApproveWithMasterPasswordBtn
             }"
           >
             <b>{{ "approveFromYourOtherDevice" | i18n }}</b>
           </button>
           <button
-            *ngIf="showReqAdminApprovalBtn"
+            *ngIf="data.showReqAdminApprovalBtn"
             (click)="requestAdminApproval()"
             type="button"
             class="btn block"
-            [ngClass]="{ 'btn-bottom-margin': showApproveWithMasterPasswordBtn }"
+            [ngClass]="{ 'btn-bottom-margin': data.showApproveWithMasterPasswordBtn }"
           >
             {{ "requestAdminApproval" | i18n }}
           </button>
           <button
             type="button"
             class="btn block"
-            *ngIf="showApproveWithMasterPasswordBtn"
+            *ngIf="data.showApproveWithMasterPasswordBtn"
             (click)="approveWithMasterPassword()"
           >
             {{ "approveWithMasterPassword" | i18n }}
@@ -68,7 +69,7 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="!approvalRequired">
+      <ng-container *ngIf="data.state == State.NewUser">
         <div class="standard-x-margin">
           <p class="lead">{{ "logInInitiated" | i18n }}</p>
         </div>
@@ -102,7 +103,7 @@
       <hr class="muted-hr mx-5px mb-20px" />
 
       <div class="small mx-5px">
-        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
+        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ data.userEmail }}</p>
         <a tabindex="0" role="button" style="cursor: pointer" (click)="logOut()">{{
           "notYou" | i18n
         }}</a>

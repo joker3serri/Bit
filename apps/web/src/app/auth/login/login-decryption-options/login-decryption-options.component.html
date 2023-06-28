@@ -21,7 +21,7 @@
       *ngIf="!loading"
       class="tw-w-full tw-rounded-md tw-border tw-border-solid tw-border-secondary-300 tw-bg-background tw-p-6"
     >
-      <ng-container *ngIf="approvalRequired">
+      <ng-container *ngIf="data.state == State.UntrustedDevice">
         <h2 bitTypography="h2" class="tw-mb-6">{{ "loginInitiated" | i18n }}</h2>
 
         <p bitTypography="body1" class="tw-mb-6">
@@ -38,7 +38,7 @@
 
         <div class="tw-mb-6 tw-flex tw-flex-col tw-space-y-3">
           <button
-            *ngIf="showApproveFromOtherDeviceBtn"
+            *ngIf="data.showApproveFromOtherDeviceBtn"
             (click)="approveFromOtherDevice()"
             bitButton
             type="button"
@@ -49,7 +49,7 @@
           </button>
 
           <button
-            *ngIf="showReqAdminApprovalBtn"
+            *ngIf="data.showReqAdminApprovalBtn"
             (click)="requestAdminApproval()"
             bitButton
             type="button"
@@ -59,7 +59,7 @@
           </button>
 
           <button
-            *ngIf="showApproveWithMasterPasswordBtn"
+            *ngIf="data.showApproveWithMasterPasswordBtn"
             (click)="approveWithMasterPassword()"
             bitButton
             type="button"
@@ -72,7 +72,7 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="!approvalRequired">
+      <ng-container *ngIf="data.state == State.NewUser">
         <h2 bitTypography="h2" class="tw-mb-6">{{ "loggedIn" | i18n }}</h2>
 
         <form [formGroup]="rememberDeviceForm">
@@ -99,7 +99,7 @@
       <hr class="tw-mb-6 tw-mt-0" />
 
       <div class="tw-m-0 tw-text-sm">
-        <p class="tw-mb-1">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
+        <p class="tw-mb-1">{{ "loggingInAs" | i18n }} {{ data.userEmail }}</p>
         <a [routerLink]="[]" (click)="logOut()">{{ "notYou" | i18n }}</a>
       </div>
     </div>

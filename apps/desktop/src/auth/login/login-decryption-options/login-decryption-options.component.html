@@ -8,7 +8,11 @@
 
     <ng-container *ngIf="!loading">
       <h1 id="heading">{{ "logInInitiated" | i18n }}</h1>
-      <h6 *ngIf="approvalRequired" id="subHeading" class="standard-bottom-margin">
+      <h6
+        *ngIf="data.state == State.UntrustedDevice"
+        id="subHeading"
+        class="standard-bottom-margin"
+      >
         {{ "deviceApprovalRequired" | i18n }}
       </h6>
 
@@ -27,8 +31,8 @@
         <span id="rememberThisDeviceHintText">{{ "uncheckIfPublicDevice" | i18n }}</span>
       </form>
 
-      <div *ngIf="approvalRequired" class="buttons with-rows">
-        <div class="buttons-row" *ngIf="showApproveFromOtherDeviceBtn">
+      <div *ngIf="data.state == State.UntrustedDevice" class="buttons with-rows">
+        <div class="buttons-row" *ngIf="data.showApproveFromOtherDeviceBtn">
           <button
             (click)="approveFromOtherDevice()"
             type="button"
@@ -38,7 +42,7 @@
             {{ "approveFromYourOtherDevice" | i18n }}
           </button>
         </div>
-        <div class="buttons-row" *ngIf="showReqAdminApprovalBtn">
+        <div class="buttons-row" *ngIf="data.showReqAdminApprovalBtn">
           <button
             (click)="requestAdminApproval()"
             type="button"
@@ -48,7 +52,7 @@
             {{ "requestAdminApproval" | i18n }}
           </button>
         </div>
-        <div class="buttons-row" *ngIf="showApproveWithMasterPasswordBtn">
+        <div class="buttons-row" *ngIf="data.showApproveWithMasterPasswordBtn">
           <button
             (click)="approveWithMasterPassword()"
             type="button"
@@ -60,7 +64,7 @@
         </div>
       </div>
 
-      <div *ngIf="!approvalRequired" class="buttons with-rows">
+      <div *ngIf="data.state == State.NewUser" class="buttons with-rows">
         <div class="buttons-row">
           <button (click)="autoEnroll()" type="button" class="btn block">
             {{ "continue" | i18n }}
@@ -69,7 +73,7 @@
       </div>
 
       <div style="text-align: center">
-        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ userEmail }}</p>
+        <p class="no-margin">{{ "loggingInAs" | i18n }} {{ data.userEmail }}</p>
         <a [routerLink]="[]" (click)="logOut()">{{ "notYou" | i18n }}</a>
       </div>
     </ng-container>

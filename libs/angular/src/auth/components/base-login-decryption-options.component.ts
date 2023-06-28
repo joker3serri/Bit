@@ -37,22 +37,38 @@ import { ValidationService } from "@bitwarden/common/platform/abstractions/valid
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
+enum State {
+  NewUser,
+  UntrustedDevice,
+}
+
+type NewUserData = {
+  readonly state: State.NewUser;
+  readonly organizationId: string;
+  readonly userEmail: string;
+};
+
+type UntrustedDeviceData = {
+  readonly state: State.UntrustedDevice;
+  readonly showApproveFromOtherDeviceBtn: boolean;
+  readonly showReqAdminApprovalBtn: boolean;
+  readonly showApproveWithMasterPasswordBtn: boolean;
+  readonly userEmail: string;
+};
+
+type Data = NewUserData | UntrustedDeviceData;
+
 @Directive()
 export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  rememberDeviceForm = this.formBuilder.group({
+  protected State = State;
+
+  protected data?: Data;
+  protected loading = true;
+  protected rememberDeviceForm = this.formBuilder.group({
     rememberDevice: [true],
   });
-
-  userEmail?: string;
-  organizationId?: string;
-
-  loading = true;
-  approvalRequired = false;
-  showApproveFromOtherDeviceBtn = false;
-  showReqAdminApprovalBtn = false;
-  showApproveWithMasterPasswordBtn = false;
 
   constructor(
     protected formBuilder: FormBuilder,
@@ -73,47 +89,17 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // Get user's email from access token:
-    this.userEmail = await this.tokenService.getEmail();
-    const autoEnrollStatus$ = this.activatedRoute.queryParamMap.pipe(
-      map((params) => params.get("identifier")),
-      switchMap((identifier) => {
-        if (identifier == null) {
-          return of(null);
-        }
+    this.loading = true;
 
-        return from(this.organizationApiService.getAutoEnrollStatus(identifier));
-      })
-    );
-    const autoEnrollStatus = await firstValueFrom(autoEnrollStatus$);
-    this.organizationId = autoEnrollStatus.id;
-
-    const devices = await firstValueFrom(this.devicesService.getDevices$());
     const acctDecryptionOptions: AccountDecryptionOptions =
       await this.stateService.getAccountDecryptionOptions();
 
-    // If the user does not have admin approval set up then we are dealing with a new account
-    this.approvalRequired = acctDecryptionOptions?.trustedDeviceOption?.hasAdminApproval;
-
-    // Determine if the user has any mobile or desktop devices
-    // to determine if we should show the approve from other device button
-    for (const device of devices) {
-      if (
-        device.type === DeviceType.Android ||
-        device.type === DeviceType.iOS ||
-        device.type === DeviceType.AndroidAmazon ||
-        device.type === DeviceType.WindowsDesktop ||
-        device.type === DeviceType.MacOsDesktop ||
-        device.type === DeviceType.LinuxDesktop ||
-        device.type === DeviceType.UWP
-      ) {
-        this.showApproveFromOtherDeviceBtn = true;
-        break;
-      }
+    if (!acctDecryptionOptions?.trustedDeviceOption?.hasAdminApproval) {
+      // If the user does not have admin approval set up then we are dealing with a new account
+      this.loadNewUserData();
+    } else {
+      this.loadUntrustedDeviceData();
     }
-    // Show the admin approval btn if user has TDE enabled and the org admin approval policy is set && user email is not null
-    this.showReqAdminApprovalBtn =
-      !!acctDecryptionOptions.trustedDeviceOption?.hasAdminApproval && this.userEmail != null;
 
     // Note: this is probably not a comprehensive write up of all scenarios:
 
@@ -135,6 +121,32 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     //    - loadUntrustedDeviceData()
 
     this.loadUntrustedDeviceData();
+  }
+
+  async loadNewUserData() {
+    const autoEnrollStatus$ = this.activatedRoute.queryParamMap.pipe(
+      map((params) => params.get("identifier")),
+      switchMap((identifier) => {
+        if (identifier == null) {
+          return of(null);
+        }
+
+        return from(this.organizationApiService.getAutoEnrollStatus(identifier));
+      })
+    );
+
+    const email$ = from(this.stateService.getEmail()).pipe(
+      catchError((err: unknown) => {
+        this.validationService.showError(err);
+        return of(undefined);
+      }),
+      takeUntil(this.destroy$)
+    );
+
+    const autoEnrollStatus = await firstValueFrom(autoEnrollStatus$);
+    const email = await firstValueFrom(email$);
+
+    this.data = { state: State.NewUser, organizationId: autoEnrollStatus.id, userEmail: email };
   }
 
   loadUntrustedDeviceData() {
@@ -187,15 +199,23 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(({ mobileOrDesktopDevicesExistence, accountDecryptionOptions, email }) => {
-        this.showApproveFromOtherDeviceBtn = mobileOrDesktopDevicesExistence || false;
+        const showApproveFromOtherDeviceBtn = mobileOrDesktopDevicesExistence || false;
 
-        this.showReqAdminApprovalBtn =
+        const showReqAdminApprovalBtn =
           !!accountDecryptionOptions?.trustedDeviceOption?.hasAdminApproval || false;
 
-        this.showApproveWithMasterPasswordBtn =
+        const showApproveWithMasterPasswordBtn =
           accountDecryptionOptions?.hasMasterPassword || false;
 
-        this.userEmail = email;
+        const userEmail = email;
+
+        this.data = {
+          state: State.UntrustedDevice,
+          showApproveFromOtherDeviceBtn,
+          showReqAdminApprovalBtn,
+          showApproveWithMasterPasswordBtn,
+          userEmail,
+        };
       });
   }
 
@@ -203,7 +223,11 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // TODO: plan is to re-use existing login-with-device component but rework it to have two flows
     // (1) Standard flow for unauthN user based on AuthService status
     // (2) New flow for authN user based on AuthService status b/c they have just authenticated w/ SSO
-    this.loginService.setEmail(this.userEmail);
+    if (this.data.state !== State.UntrustedDevice) {
+      return;
+    }
+
+    this.loginService.setEmail(this.data.userEmail);
     this.router.navigate(["/login-with-device"]);
   }
 
@@ -227,14 +251,18 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   autoEnroll = async () => {
-    // this.loading to support clients without CL-support
+    if (this.data.state !== State.NewUser) {
+      return;
+    }
+
+    // this.loading to support clients without async-actions-support
     this.loading = true;
     try {
       const { userKey, publicKey, privateKey } = await this.cryptoService.initAccount();
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
       await this.apiService.postAccountKeys(keysRequest);
 
-      const orgKeyResponse = await this.organizationApiService.getKeys(this.organizationId);
+      const orgKeyResponse = await this.organizationApiService.getKeys(this.data.organizationId);
       if (orgKeyResponse == null) {
         throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
       }
@@ -249,7 +277,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       resetRequest.resetPasswordKey = encryptedKey.encryptedString;
 
       await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
-        this.organizationId,
+        this.data.organizationId,
         userId,
         resetRequest
       );
@@ -262,6 +290,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       // this logic into a service I'm gonna leaves this as-is untill that
       // refactor is done
       await this.router.navigate(["/vault"]);
+    } catch (error) {
+      this.validationService.showError(error);
     } finally {
       this.loading = false;
     }
