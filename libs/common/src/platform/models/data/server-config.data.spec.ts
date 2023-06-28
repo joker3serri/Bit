@@ -17,7 +17,7 @@ describe("ServerConfigData", () => {
           url: "https://test.com",
         },
         environment: {
-          cloudVaultRegion: Region.EU,
+          cloudRegion: Region.EU,
           vault: "https://vault.com",
           api: "https://api.com",
           identity: "https://identity.com",
