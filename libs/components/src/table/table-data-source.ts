@@ -38,8 +38,13 @@ export class TableDataSource<T> extends DataSource<T> {
   }
 
   set data(data: T[]) {
-    this.filteredData = data;
-    this._data.next(data ? [...data] : []);
+    data = Array.isArray(data) ? data : [];
+    this._data.next(data);
+    // Normally the `filteredData` is updated by the re-render
+    // subscription, but that won't happen if it's inactive.
+    if (!this._renderChangesSubscription) {
+      this.filterData(data, "");
+    }
   }
 
   set sort(sort: Sort) {
@@ -56,6 +61,10 @@ export class TableDataSource<T> extends DataSource<T> {
 
   set filter(filter: string) {
     this._filter.next(filter);
+
+    if (!this._renderChangesSubscription) {
+      this.filterData(this.data, filter);
+    }
   }
 
   connect(): Observable<readonly T[]> {
