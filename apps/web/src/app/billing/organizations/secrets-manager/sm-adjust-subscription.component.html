@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit">
   <bit-form-field class="tw-w-2/3">
     <bit-label>{{ "subscriptionSeats" | i18n }}</bit-label>
-    <input bitInput id="smSeatCount" formControlName="seatCount" type="number" step="1" min="0" />
+    <input bitInput id="smSeatCount" formControlName="seatCount" type="number" step="1" min="1" />
     <bit-hint>
       <strong>{{ "total" | i18n }}:</strong>
       {{ formGroup.value.seatCount || 0 }} &times; {{ options.seatPrice | currency }} =

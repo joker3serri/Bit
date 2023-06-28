@@ -58,7 +58,7 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
   private destroy$ = new Subject<void>();
 
   formGroup = this.formBuilder.group({
-    seatCount: [0, [Validators.required, Validators.min(0)]],
+    seatCount: [0, [Validators.required, Validators.min(1)]],
     limitSeats: [false],
     seatLimit: [null as number | null],
     serviceAccountCount: [0, [Validators.required, Validators.min(0)]],
