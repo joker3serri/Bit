@@ -78,8 +78,8 @@ libs/components @bitwarden/team-platform-dev
 apps/desktop/desktop_native @bitwarden/team-platform-dev
 
 ## Multiple file owners ##
-/apps/web/config @bitwarden/team-leads-eng @bitwarden/dept-devops
-/apps/web/package.json @bitwarden/team-leads-eng @bitwarden/dept-devops
+/apps/web/config
+/apps/web/package.json
 
 ## DevOps team files ##
 /.github/workflows @bitwarden/dept-devops
