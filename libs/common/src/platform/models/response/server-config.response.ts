@@ -24,7 +24,7 @@ export class ServerConfigResponse extends BaseResponse {
 }
 
 export class EnvironmentServerConfigResponse extends BaseResponse {
-  cloudVaultRegion: Region;
+  cloudRegion: Region;
   vault: string;
   api: string;
   identity: string;
@@ -38,7 +38,7 @@ export class EnvironmentServerConfigResponse extends BaseResponse {
       return;
     }
 
-    this.cloudVaultRegion = this.getResponseProperty("CloudVaultRegion");
+    this.cloudRegion = this.getResponseProperty("CloudRegion");
     this.vault = this.getResponseProperty("Vault");
     this.api = this.getResponseProperty("Api");
     this.identity = this.getResponseProperty("Identity");

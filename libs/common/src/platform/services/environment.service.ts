@@ -100,6 +100,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       case Region.EU:
         this.cloudWebVaultUrl = this.euUrls.webVault;
         break;
+      case Region.US:
       default:
         this.cloudWebVaultUrl = this.usUrls.webVault;
         break;

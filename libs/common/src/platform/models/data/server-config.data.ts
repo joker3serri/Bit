@@ -51,7 +51,7 @@ export class ThirdPartyServerConfigData {
 }
 
 export class EnvironmentServerConfigData {
-  cloudVaultRegion: Region;
+  cloudRegion: Region;
   vault: string;
   api: string;
   identity: string;
@@ -59,7 +59,7 @@ export class EnvironmentServerConfigData {
   sso: string;
 
   constructor(response: Partial<EnvironmentServerConfigResponse>) {
-    this.cloudVaultRegion = response.cloudVaultRegion;
+    this.cloudRegion = response.cloudRegion;
     this.vault = response.vault;
     this.api = response.api;
     this.identity = response.identity;
