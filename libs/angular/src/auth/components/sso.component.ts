@@ -17,6 +17,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 @Directive()
@@ -34,6 +35,7 @@ export class SsoComponent {
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "lock";
+  protected trustedDeviceEncRoute = "login-initiated";
   protected changePasswordRoute = "set-password";
   protected tdeLogin = "login-initiated";
   protected forcePasswordResetRoute = "update-temp-password";
@@ -187,13 +189,8 @@ export class SsoComponent {
         orgIdFromState
       );
       this.formPromise = this.authService.logIn(credentials);
-
-      // if device is trusted go to success route
-      // what does it mean for a device to not be trusted:
-      // -- no device key stored locally in secure storage
-      // -- no device encrypted user symmetric key from server
-
       const response = await this.formPromise;
+
       if (response.requiresTwoFactor) {
         if (this.onSuccessfulLoginTwoFactorNavigate != null) {
           await this.onSuccessfulLoginTwoFactorNavigate();
@@ -216,6 +213,10 @@ export class SsoComponent {
           },
         });
       } else if (response.resetMasterPassword) {
+        // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
+        // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
+        // Users are allowed to not have a MP if TDE feature enabled + TDE configured. Otherwise, they must set a MP
+        // src: https://bitwarden.atlassian.net/browse/PM-2759?focusedCommentId=39438
         if (this.onSuccessfulLoginChangePasswordNavigate != null) {
           await this.onSuccessfulLoginChangePasswordNavigate();
         } else {
@@ -238,7 +239,21 @@ export class SsoComponent {
         if (this.onSuccessfulLoginNavigate != null) {
           await this.onSuccessfulLoginNavigate();
         } else {
-          this.router.navigate([this.successRoute]);
+          const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
+            FeatureFlag.TrustedDeviceEncryption
+          );
+
+          const accountDecryptionOptions: AccountDecryptionOptions =
+            await this.stateService.getAccountDecryptionOptions();
+
+          if (
+            trustedDeviceEncryptionFeatureActive &&
+            accountDecryptionOptions.trustedDeviceOption !== undefined
+          ) {
+            this.router.navigate([this.trustedDeviceEncRoute]);
+          } else {
+            this.router.navigate([this.successRoute]);
+          }
         }
       }
     } catch (e) {

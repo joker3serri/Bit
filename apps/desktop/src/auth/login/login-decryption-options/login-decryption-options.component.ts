@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { BaseLoginDecryptionOptionsComponent } from "@bitwarden/angular/auth/components/base-login-decryption-options.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
-import { DevicesApiServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices-api.service.abstraction";
+import { DevicesServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
@@ -14,6 +14,7 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 
 @Component({
   selector: "desktop-login-decryption-options",
@@ -22,7 +23,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsComponent {
   constructor(
     formBuilder: FormBuilder,
-    devicesApiService: DevicesApiServiceAbstraction,
+    devicesService: DevicesServiceAbstraction,
     stateService: StateService,
     router: Router,
     activatedRoute: ActivatedRoute,
@@ -32,13 +33,14 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
     organizationApiService: OrganizationApiServiceAbstraction,
     cryptoService: CryptoService,
     deviceCryptoService: DeviceCryptoServiceAbstraction,
-    organizationUserSerivce: OrganizationUserService,
+    organizationUserService: OrganizationUserService,
     apiService: ApiService,
+    validationService: ValidationService,
     i18nService: I18nService
   ) {
     super(
       formBuilder,
-      devicesApiService,
+      devicesService,
       stateService,
       router,
       activatedRoute,
@@ -48,8 +50,9 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
       organizationApiService,
       cryptoService,
       deviceCryptoService,
-      organizationUserSerivce,
+      organizationUserService,
       apiService,
+      validationService,
       i18nService
     );
   }
