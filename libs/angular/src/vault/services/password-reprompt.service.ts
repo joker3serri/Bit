@@ -43,7 +43,7 @@ export class PasswordRepromptService implements PasswordRepromptServiceAbstracti
   async enabled() {
     return (
       !(await this.keyConnectorService.getUsesKeyConnector()) &&
-      (await this.stateService.getAcctDecryptionOptions()).hasMasterPassword
+      (await this.stateService.getAccountDecryptionOptions()).hasMasterPassword
     );
   }
 }

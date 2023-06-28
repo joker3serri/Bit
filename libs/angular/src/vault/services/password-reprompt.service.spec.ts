@@ -29,19 +29,19 @@ describe("PasswordRepromptService", () => {
   describe("enabled()", () => {
     it("returns false if Key Connector is enabled", async () => {
       keyConnectorService.getUsesKeyConnector.mockResolvedValue(true);
-      stateService.getAcctDecryptionOptions.mockResolvedValue({ hasMasterPassword: true });
+      stateService.getAccountDecryptionOptions.mockResolvedValue({ hasMasterPassword: true });
 
       expect(await passwordRepromptService.enabled()).toBe(false);
     });
     it("returns false if a user does not have a master password", async () => {
       keyConnectorService.getUsesKeyConnector.mockResolvedValue(false);
-      stateService.getAcctDecryptionOptions.mockResolvedValue({ hasMasterPassword: false });
+      stateService.getAccountDecryptionOptions.mockResolvedValue({ hasMasterPassword: false });
 
       expect(await passwordRepromptService.enabled()).toBe(false);
     });
     it("returns true if Key Connector is not enabled and the user has a master password", async () => {
       keyConnectorService.getUsesKeyConnector.mockResolvedValue(false);
-      stateService.getAcctDecryptionOptions.mockResolvedValue({ hasMasterPassword: true });
+      stateService.getAccountDecryptionOptions.mockResolvedValue({ hasMasterPassword: true });
 
       expect(await passwordRepromptService.enabled()).toBe(true);
     });
