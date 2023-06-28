@@ -11,7 +11,16 @@ import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
 import { Account, AccountProfile, AccountTokens } from "../../platform/models/domain/account";
 import { EncString } from "../../platform/models/domain/enc-string";
-import { PasswordGenerationService } from "../../tools/generator/password";
+import {
+  MasterKey,
+  SymmetricCryptoKey,
+  UserKey,
+} from "../../platform/models/domain/symmetric-crypto-key";
+import {
+  PasswordStrengthService,
+  PasswordStrengthServiceAbstraction,
+} from "../../tools/password-strength";
+import { CsprngArray } from "../../types/csprng";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
@@ -34,7 +43,7 @@ const masterPassword = "password";
 const deviceId = Utils.newGuid();
 const accessToken = "ACCESS_TOKEN";
 const refreshToken = "REFRESH_TOKEN";
-const encKey = "ENC_KEY";
+const userKey = "USER_KEY";
 const privateKey = "PRIVATE_KEY";
 const captchaSiteKey = "CAPTCHA_SITE_KEY";
 const kdf = 0;
@@ -61,7 +70,7 @@ export function identityTokenResponseFactory(
     ForcePasswordReset: false,
     Kdf: kdf,
     KdfIterations: kdfIterations,
-    Key: encKey,
+    Key: userKey,
     PrivateKey: privateKey,
     ResetMasterPassword: false,
     access_token: accessToken,
@@ -85,7 +94,7 @@ describe("LogInStrategy", () => {
   let twoFactorService: MockProxy<TwoFactorService>;
   let authService: MockProxy<AuthService>;
   let policyService: MockProxy<PolicyService>;
-  let passwordGenerationService: MockProxy<PasswordGenerationService>;
+  let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
 
   let passwordLogInStrategy: PasswordLogInStrategy;
   let credentials: PasswordLogInCredentials;
@@ -102,7 +111,7 @@ describe("LogInStrategy", () => {
     twoFactorService = mock<TwoFactorService>();
     authService = mock<AuthService>();
     policyService = mock<PolicyService>();
-    passwordGenerationService = mock<PasswordGenerationService>();
+    passwordStrengthService = mock<PasswordStrengthService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.calledWith(accessToken).mockResolvedValue(decodedToken);
@@ -118,7 +127,7 @@ describe("LogInStrategy", () => {
       logService,
       stateService,
       twoFactorService,
-      passwordGenerationService,
+      passwordStrengthService,
       policyService,
       authService
     );
@@ -126,6 +135,20 @@ describe("LogInStrategy", () => {
   });
 
   describe("base class", () => {
+    const userKeyBytesLength = 64;
+    const masterKeyBytesLength = 64;
+    let userKey: UserKey;
+    let masterKey: MasterKey;
+
+    beforeEach(() => {
+      userKey = new SymmetricCryptoKey(
+        new Uint8Array(userKeyBytesLength).buffer as CsprngArray
+      ) as UserKey;
+      masterKey = new SymmetricCryptoKey(
+        new Uint8Array(masterKeyBytesLength).buffer as CsprngArray
+      ) as MasterKey;
+    });
+
     it("sets the local environment after a successful login", async () => {
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
 
@@ -153,8 +176,6 @@ describe("LogInStrategy", () => {
           },
         })
       );
-      expect(cryptoService.setEncKey).toHaveBeenCalledWith(encKey);
-      expect(cryptoService.setEncPrivateKey).toHaveBeenCalledWith(privateKey);
       expect(messagingService.send).toHaveBeenCalledWith("loggedIn");
     });
 
@@ -184,6 +205,8 @@ describe("LogInStrategy", () => {
       });
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
+      cryptoService.getMasterKey.mockResolvedValue(masterKey);
+      cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       const result = await passwordLogInStrategy.logIn(credentials);
 
@@ -201,13 +224,15 @@ describe("LogInStrategy", () => {
       cryptoService.makeKeyPair.mockResolvedValue(["PUBLIC_KEY", new EncString("PRIVATE_KEY")]);
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
+      cryptoService.getMasterKey.mockResolvedValue(masterKey);
+      cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await passwordLogInStrategy.logIn(credentials);
 
-      // User key must be set before the new RSA keypair is generated, otherwise we can't decrypt the EncKey
-      expect(cryptoService.setKey).toHaveBeenCalled();
+      // User symmetric key must be set before the new RSA keypair is generated
+      expect(cryptoService.setUserKey).toHaveBeenCalled();
       expect(cryptoService.makeKeyPair).toHaveBeenCalled();
-      expect(cryptoService.setKey.mock.invocationCallOrder[0]).toBeLessThan(
+      expect(cryptoService.setUserKey.mock.invocationCallOrder[0]).toBeLessThan(
         cryptoService.makeKeyPair.mock.invocationCallOrder[0]
       );
 

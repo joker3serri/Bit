@@ -13,10 +13,6 @@ import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenc
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import {
-  AllValidationErrors,
-  FormValidationErrorsService,
-} from "@bitwarden/common/platform/abstractions/form-validation-errors.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -25,6 +21,10 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
+import {
+  AllValidationErrors,
+  FormValidationErrorsService,
+} from "../platform/abstractions/form-validation-errors.service";
 import { DialogServiceAbstraction, SimpleDialogType } from "../services/dialog";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputsFieldMatch.validator";
@@ -271,16 +271,16 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     const hint = this.formGroup.value.hint;
     const kdf = DEFAULT_KDF_TYPE;
     const kdfConfig = DEFAULT_KDF_CONFIG;
-    const key = await this.cryptoService.makeKey(masterPassword, email, kdf, kdfConfig);
-    const encKey = await this.cryptoService.makeEncKey(key);
+    const key = await this.cryptoService.makeMasterKey(masterPassword, email, kdf, kdfConfig);
+    const newUserKey = await this.cryptoService.makeUserKey(key);
     const hashedPassword = await this.cryptoService.hashPassword(masterPassword, key);
-    const keys = await this.cryptoService.makeKeyPair(encKey[0]);
+    const keys = await this.cryptoService.makeKeyPair(newUserKey[0]);
     const request = new RegisterRequest(
       email,
       name,
       hashedPassword,
       hint,
-      encKey[1].encryptedString,
+      newUserKey[1].encryptedString,
       this.referenceData,
       this.captchaToken,
       kdf,

@@ -1599,6 +1599,12 @@
   "biometricsNotSupportedDesc": {
     "message": "Browser biometrics is not supported on this device."
   },
+  "biometricsFailedTitle": {
+    "message": "Biometrics failed"
+  },
+  "biometricsFailedDesc": {
+    "message": "Biometrics cannot be completed, consider using a master password or logging out. If this persists, please contact Bitwarden support."
+  },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Permission not provided"
   },
@@ -2252,5 +2258,8 @@
   "us": {
     "message": "US",
     "description": "United States"
+  },
+  "accessDenied": {
+    "message": "Access denied. You do not have permission to view this page."
   }
 }
