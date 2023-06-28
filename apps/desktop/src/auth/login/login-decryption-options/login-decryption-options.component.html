@@ -33,32 +33,17 @@
 
       <div *ngIf="data.state == State.UntrustedDevice" class="buttons with-rows">
         <div class="buttons-row" *ngIf="data.showApproveFromOtherDeviceBtn">
-          <button
-            (click)="approveFromOtherDevice()"
-            type="button"
-            class="btn primary block"
-            [appA11yTitle]="'approveFromYourOtherDevice' | i18n"
-          >
+          <button (click)="approveFromOtherDevice()" type="button" class="btn primary block">
             {{ "approveFromYourOtherDevice" | i18n }}
           </button>
         </div>
         <div class="buttons-row" *ngIf="data.showReqAdminApprovalBtn">
-          <button
-            (click)="requestAdminApproval()"
-            type="button"
-            class="btn block"
-            [appA11yTitle]="'requestAdminApproval' | i18n"
-          >
+          <button (click)="requestAdminApproval()" type="button" class="btn block">
             {{ "requestAdminApproval" | i18n }}
           </button>
         </div>
         <div class="buttons-row" *ngIf="data.showApproveWithMasterPasswordBtn">
-          <button
-            (click)="approveWithMasterPassword()"
-            type="button"
-            class="btn block"
-            [appA11yTitle]="'approveWithMasterPassword' | i18n"
-          >
+          <button (click)="approveWithMasterPassword()" type="button" class="btn block">
             {{ "approveWithMasterPassword" | i18n }}
           </button>
         </div>

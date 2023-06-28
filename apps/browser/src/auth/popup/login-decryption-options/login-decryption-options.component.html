@@ -42,10 +42,6 @@
             (click)="approveFromOtherDevice()"
             type="button"
             class="btn primary block"
-            [ngClass]="{
-              'btn-bottom-margin':
-                data.showReqAdminApprovalBtn || data.showApproveWithMasterPasswordBtn
-            }"
           >
             <b>{{ "approveFromYourOtherDevice" | i18n }}</b>
           </button>
@@ -53,15 +49,14 @@
             *ngIf="data.showReqAdminApprovalBtn"
             (click)="requestAdminApproval()"
             type="button"
-            class="btn block"
-            [ngClass]="{ 'btn-bottom-margin': data.showApproveWithMasterPasswordBtn }"
+            class="btn block btn-top-margin"
           >
             {{ "requestAdminApproval" | i18n }}
           </button>
           <button
-            type="button"
-            class="btn block"
             *ngIf="data.showApproveWithMasterPasswordBtn"
+            type="button"
+            class="btn block btn-top-margin"
             (click)="approveWithMasterPassword()"
           >
             {{ "approveWithMasterPassword" | i18n }}
