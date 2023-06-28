@@ -186,10 +186,17 @@ export class BrowserApi {
   ) {
     chrome.runtime.onMessage.addListener(
       (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-        // The callback needs to return a truthy value here so that we can return a response using sendResponse
-        // This can sometimes return non-boolean values which are considered truthy,
-        // so we need to explicitly check for true
-        return callback(msg, sender, sendResponse) === true;
+        if (
+          msg.command === "fido2RegisterCredentialRequest" ||
+          msg.command === "fido2GetCredentialRequest"
+        ) {
+          // The callback needs to return a truthy value here for fido2 requests so that we can return a response
+          // using sendResponse. This can sometimes return non-boolean values which are considered truthy,
+          // so we need to explicitly check for true
+          return callback(msg, sender, sendResponse) === true;
+        } else {
+          callback(msg, sender, sendResponse);
+        }
       }
     );
 
