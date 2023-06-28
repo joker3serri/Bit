@@ -14,7 +14,6 @@ import { ServiceAccountView } from "../models/view/service-account.view";
 })
 export class ServiceAccountsListComponent implements OnDestroy {
   protected dataSource = new TableDataSource<ServiceAccountView>();
-  protected filteredServiceAccounts: ServiceAccountView[];
 
   @Input()
   get serviceAccounts(): ServiceAccountView[] {
