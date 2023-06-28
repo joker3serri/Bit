@@ -69,7 +69,7 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
   get monthlyServiceAccountPrice(): number {
     return this.options.interval == "month"
       ? this.options.additionalServiceAccountPrice
-      : Math.round((this.options.additionalServiceAccountPrice / 12 + Number.EPSILON) * 100) / 100;
+      : this.options.additionalServiceAccountPrice / 12;
   }
 
   get serviceAccountTotal(): number {
