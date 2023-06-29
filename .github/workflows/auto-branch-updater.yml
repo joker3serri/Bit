@@ -39,5 +39,5 @@ jobs:
         run: |
           git config --local user.email "${{ env._BOT_EMAIL }}"
           git config --local user.name "${{ env._BOT_NAME }}"
-          git merge ${{ steps.setup.outputs.branch }}
+          git merge origin/${{ steps.setup.outputs.branch }}
           git push
