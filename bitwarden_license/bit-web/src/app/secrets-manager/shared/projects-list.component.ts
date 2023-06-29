@@ -48,9 +48,7 @@ export class ProjectsListComponent {
   isAllSelected() {
     if (this.selection.selected?.length > 0) {
       const numSelected = this.selection.selected.length;
-      const numRows = this.dataSource.filter
-        ? this.dataSource.filteredData.length
-        : this.dataSource.data.length;
+      const numRows = this.dataSource.filteredData.length;
       return numSelected === numRows;
     }
     return false;
@@ -60,11 +58,7 @@ export class ProjectsListComponent {
     if (this.isAllSelected()) {
       this.selection.clear();
     } else {
-      if (this.dataSource.filter?.length > 0) {
-        this.selection.select(...this.dataSource.filteredData.map((s) => s.id));
-      } else {
-        this.selection.select(...this.dataSource.data.map((s) => s.id));
-      }
+      this.selection.select(...this.dataSource.filteredData.map((s) => s.id));
     }
   }
 
