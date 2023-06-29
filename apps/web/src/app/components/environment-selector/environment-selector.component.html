@@ -10,7 +10,7 @@
         aria-hidden="true"
         [style.visibility]="isUsServer ? 'visible' : 'hidden'"
       ></i>
-      <img src="../../images/us_flag.png" alt="" class="pb-1 mr-1" />
+      <img src="../../images/us_flag.png" alt="US Flag" class="pb-1 mr-1" />
       {{ "us" | i18n }}
     </a>
     <a
@@ -24,7 +24,7 @@
         aria-hidden="true"
         [style.visibility]="isEuServer ? 'visible' : 'hidden'"
       ></i>
-      <img src="../../images/eu_flag.png" alt="" class="pb-1 mr-1" />
+      <img src="../../images/eu_flag.png" alt="EU Flag" class="pb-1 mr-1" />
       {{ "eu" | i18n }}
     </a>
   </bit-menu>
@@ -37,7 +37,6 @@
     >
       <img
         [src]="'../../images/' + selectedRegionImageName + '.png'"
-        alt=""
         class="pb-1 mr-1 tw-ml-1"
       /><label class="tw-cursor-pointer !tw-font-normal"
         >{{ isEuServer ? ("eu" | i18n) : ("us" | i18n) }}
