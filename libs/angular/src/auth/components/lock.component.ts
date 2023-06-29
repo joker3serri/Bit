@@ -297,10 +297,10 @@ export class LockComponent implements OnInit, OnDestroy {
 
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
-    if (this.deviceCryptoService.getUserDeviceTrustChoice()) {
+    if (this.deviceCryptoService.getUserTrustDeviceChoiceForDecryption()) {
       await this.deviceCryptoService.trustDevice();
       // reset the trust choice
-      await this.deviceCryptoService.setUserDeviceTrustChoice(false);
+      await this.deviceCryptoService.setUserTrustDeviceChoiceForDecryption(false);
     }
 
     await this.doContinue(evaluatePasswordAfterUnlock);

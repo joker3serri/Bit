@@ -23,12 +23,16 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
     protected devicesApiService: DevicesApiServiceAbstraction
   ) {}
 
-  async getUserDeviceTrustChoice(): Promise<boolean> {
-    return await this.stateService.getUserDeviceTrustChoice();
+  /**
+   * @description Retrieves the users choice to trust the device which can only happen after decryption
+   * Note: this value should only be used once and then reset
+   */
+  async getUserTrustDeviceChoiceForDecryption(): Promise<boolean> {
+    return await this.stateService.getUserTrustDeviceChoiceForDecryption();
   }
 
-  async setUserDeviceTrustChoice(value: boolean): Promise<void> {
-    await this.stateService.setUserDeviceTrustChoice(value);
+  async setUserTrustDeviceChoiceForDecryption(value: boolean): Promise<void> {
+    await this.stateService.setUserTrustDeviceChoiceForDecryption(value);
   }
 
   async trustDevice(): Promise<DeviceResponse> {
