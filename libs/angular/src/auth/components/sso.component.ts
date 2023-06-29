@@ -213,7 +213,11 @@ export class SsoComponent {
         trustedDeviceEncryptionFeatureActive &&
         accountDecryptionOptions.trustedDeviceOption !== undefined
       ) {
-        this.router.navigate([this.trustedDeviceEncRoute]);
+        this.router.navigate([this.trustedDeviceEncRoute], {
+          queryParams: {
+            identifier: orgIdFromState,
+          },
+        });
       } else if (response.resetMasterPassword) {
         // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
         // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
