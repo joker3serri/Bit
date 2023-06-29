@@ -4,6 +4,7 @@ import { firstValueFrom, Subject } from "rxjs";
 import { concatMap, take, takeUntil } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
@@ -71,7 +72,8 @@ export class LockComponent implements OnInit, OnDestroy {
     protected policyApiService: PolicyApiServiceAbstraction,
     protected policyService: InternalPolicyService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogServiceAbstraction,
+    protected deviceCryptoService: DeviceCryptoServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -292,6 +294,15 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private async setKeyAndContinue(key: UserKey, evaluatePasswordAfterUnlock = false) {
     await this.cryptoService.setUserKey(key);
+
+    // Now that we have a decrypted user key in memory, we can check if we
+    // need to establish trust on the current device
+    if (this.deviceCryptoService.getUserDeviceTrustChoice()) {
+      await this.deviceCryptoService.trustDevice();
+      // reset the trust choice
+      await this.deviceCryptoService.setUserDeviceTrustChoice(false);
+    }
+
     await this.doContinue(evaluatePasswordAfterUnlock);
   }
 
