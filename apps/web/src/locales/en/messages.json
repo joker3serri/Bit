@@ -6930,7 +6930,13 @@
   "next": {
     "message": "Next"
   },
-  "inviteUsers": {
-    "message": "Invite Users"
+  "usFlag": {
+    "message": "US flag"
+  },
+  "euFlag": {
+    "message": "EU flag"
+  },
+  "selectedRegionFlag": {
+    "message": "Selected region flag"
   }
 }
