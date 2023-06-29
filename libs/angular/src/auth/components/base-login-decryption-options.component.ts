@@ -91,11 +91,16 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.loading = true;
 
-    const acctDecryptionOptions: AccountDecryptionOptions =
+    const accountDecryptionOptions: AccountDecryptionOptions =
       await this.stateService.getAccountDecryptionOptions();
 
-    if (!acctDecryptionOptions?.trustedDeviceOption?.hasAdminApproval) {
-      // If the user does not have admin approval set up then we are dealing with a new account
+    if (
+      !accountDecryptionOptions?.trustedDeviceOption?.hasAdminApproval &&
+      !accountDecryptionOptions?.hasMasterPassword
+    ) {
+      // We are dealing with a new account if:
+      //  - User does not have admin approval (i.e. has not enrolled into admin reset)
+      //  - AND does not have a master password
       this.loadNewUserData();
     } else {
       this.loadUntrustedDeviceData();
