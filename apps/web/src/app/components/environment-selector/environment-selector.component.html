@@ -37,6 +37,7 @@
     >
       <img
         [src]="'../../images/' + selectedRegionImageName + '.png'"
+        alt="{{ selectedRegionImageName }}"
         class="pb-1 mr-1 tw-ml-1"
       /><label class="tw-cursor-pointer !tw-font-normal"
         >{{ isEuServer ? ("eu" | i18n) : ("us" | i18n) }}
