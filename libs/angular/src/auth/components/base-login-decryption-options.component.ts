@@ -156,6 +156,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     const email = await firstValueFrom(email$);
 
     this.data = { state: State.NewUser, organizationId: autoEnrollStatus.id, userEmail: email };
+    this.loading = false;
   }
 
   loadUntrustedDeviceData(accountDecryptionOptions: AccountDecryptionOptions) {
