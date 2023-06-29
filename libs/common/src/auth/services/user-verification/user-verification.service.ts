@@ -78,6 +78,10 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     await this.userVerificationApiService.postAccountRequestOTP();
   }
 
+  /**
+   * Check if user has master password or only uses passwordless technologies to log in
+   * @returns True if the user has a master password
+   */
   async hasMasterPassword(): Promise<boolean> {
     const decryptionOptions = await this.stateService.getAccountDecryptionOptions();
 
