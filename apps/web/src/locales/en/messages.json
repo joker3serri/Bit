@@ -6921,7 +6921,7 @@
   "startYour7DayFreeTrialOfBitwardenFor": {
     "message": "Start your 7-Day free trial of Bitwarden for $ORG$",
     "placeholders": {
-      "resource": {
+      "org": {
         "content": "$1",
         "example": "Organization name"
       }
