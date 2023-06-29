@@ -107,7 +107,17 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
   }
 
   async copy(value: string, typeI18nKey: string, aType: string) {
-    super.copy(value, typeI18nKey, aType);
+    if (value == null) {
+      return;
+    }
+
+    if (
+      this.passwordRepromptService.protectedFields().includes(aType) &&
+      !(await this.promptPassword())
+    ) {
+      return;
+    }
+    await super.copy(value, typeI18nKey, aType);
     this.messagingService.send("minimizeOnCopy");
   }
 

@@ -317,17 +317,6 @@ export class ViewComponent implements OnDestroy, OnInit {
   }
 
   async copy(value: string, typeI18nKey: string, aType: string) {
-    if (value == null) {
-      return;
-    }
-
-    if (
-      this.passwordRepromptService.protectedFields().includes(aType) &&
-      !(await this.promptPassword())
-    ) {
-      return;
-    }
-
     const copyOptions = this.win != null ? { window: this.win } : null;
     this.platformUtilsService.copyToClipboard(value, copyOptions);
     this.platformUtilsService.showToast(
