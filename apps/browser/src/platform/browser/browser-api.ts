@@ -184,21 +184,18 @@ export class BrowserApi {
     name: string,
     callback: (message: any, sender: chrome.runtime.MessageSender, response: any) => unknown
   ) {
-    chrome.runtime.onMessage.addListener(
-      (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-        if (
-          msg.command === "fido2RegisterCredentialRequest" ||
-          msg.command === "fido2GetCredentialRequest"
-        ) {
-          // The callback needs to return a truthy value here for fido2 requests so that we can return a response
-          // using sendResponse. This can sometimes return non-boolean values which are considered truthy,
-          // so we need to explicitly check for true
-          return callback(msg, sender, sendResponse) === true;
-        } else {
-          callback(msg, sender, sendResponse);
-        }
+  chrome.runtime.onMessage.addListener(
+    (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
+      const messageResponse = callback(msg, sender, sendResponse);
+
+      if (!messageResponse) {
+        return false;
       }
-    );
+
+      Promise.resolve(messageResponse);
+      return true;
+    }
+  );
 
     // Keep track of all the events registered in a Safari popup so we can remove
     // them when the popup gets unloaded, otherwise we cause a memory leak
