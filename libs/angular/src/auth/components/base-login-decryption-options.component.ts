@@ -2,7 +2,6 @@ import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
-  Observable,
   Subject,
   catchError,
   forkJoin,
@@ -91,41 +90,43 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.loading = true;
 
-    const accountDecryptionOptions: AccountDecryptionOptions =
-      await this.stateService.getAccountDecryptionOptions();
+    try {
+      const accountDecryptionOptions: AccountDecryptionOptions =
+        await this.stateService.getAccountDecryptionOptions();
 
-    if (
-      !accountDecryptionOptions?.trustedDeviceOption?.hasAdminApproval &&
-      !accountDecryptionOptions?.hasMasterPassword
-    ) {
-      // We are dealing with a new account if:
-      //  - User does not have admin approval (i.e. has not enrolled into admin reset)
-      //  - AND does not have a master password
-      this.loadNewUserData();
-    } else {
-      this.loadUntrustedDeviceData();
+      if (
+        !accountDecryptionOptions?.trustedDeviceOption?.hasAdminApproval &&
+        !accountDecryptionOptions?.hasMasterPassword
+      ) {
+        // We are dealing with a new account if:
+        //  - User does not have admin approval (i.e. has not enrolled into admin reset)
+        //  - AND does not have a master password
+        this.loadNewUserData();
+      } else {
+        this.loadUntrustedDeviceData(accountDecryptionOptions);
+      }
+
+      // Note: this is probably not a comprehensive write up of all scenarios:
+
+      // If the TDE feature flag is enabled and TDE is configured for the org that the user is a member of,
+      // then new and existing users can be redirected here after completing the SSO flow (and 2FA if enabled).
+
+      // First we must determine user type (new or existing):
+
+      // New User
+      // - present user with option to remember the device or not (trust the device)
+      // - present a continue button to proceed to the vault
+      //  - loadNewUserData() --> will need to load enrollment status and user email address.
+
+      // Existing User
+      // - Determine if user is an admin with access to account recovery in admin console
+      //  - Determine if user has a MP or not, if not, they must be redirected to set one (see PM-1035)
+      // - Determine if device is trusted or not via device crypto service (method not yet written)
+      //  - If not trusted, present user with login decryption options (approve from other device, approve with master password, request admin approval)
+      //    - loadUntrustedDeviceData()
+    } catch (err) {
+      this.validationService.showError(err);
     }
-
-    // Note: this is probably not a comprehensive write up of all scenarios:
-
-    // If the TDE feature flag is enabled and TDE is configured for the org that the user is a member of,
-    // then new and existing users can be redirected here after completing the SSO flow (and 2FA if enabled).
-
-    // First we must determine user type (new or existing):
-
-    // New User
-    // - present user with option to remember the device or not (trust the device)
-    // - present a continue button to proceed to the vault
-    //  - loadNewUserData() --> will need to load enrollment status and user email address.
-
-    // Existing User
-    // - Determine if user is an admin with access to account recovery in admin console
-    //  - Determine if user has a MP or not, if not, they must be redirected to set one (see PM-1035)
-    // - Determine if device is trusted or not via device crypto service (method not yet written)
-    //  - If not trusted, present user with login decryption options (approve from other device, approve with master password, request admin approval)
-    //    - loadUntrustedDeviceData()
-
-    this.loadUntrustedDeviceData();
   }
 
   async loadNewUserData() {
@@ -154,7 +155,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.data = { state: State.NewUser, organizationId: autoEnrollStatus.id, userEmail: email };
   }
 
-  loadUntrustedDeviceData() {
+  loadUntrustedDeviceData(accountDecryptionOptions: AccountDecryptionOptions) {
     this.loading = true;
 
     const mobileAndDesktopDeviceTypes: DeviceType[] = Array.from(MobileDeviceTypes).concat(
@@ -174,16 +175,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       );
 
-    const accountDecryptionOptions$: Observable<AccountDecryptionOptions> = from(
-      this.stateService.getAccountDecryptionOptions()
-    ).pipe(
-      catchError((err: unknown) => {
-        this.validationService.showError(err);
-        return of(undefined);
-      }),
-      takeUntil(this.destroy$)
-    );
-
     const email$ = from(this.stateService.getEmail()).pipe(
       catchError((err: unknown) => {
         this.validationService.showError(err);
@@ -194,7 +185,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
     forkJoin({
       mobileOrDesktopDevicesExistence: mobileOrDesktopDevicesExistence$,
-      accountDecryptionOptions: accountDecryptionOptions$,
       email: email$,
     })
       .pipe(
@@ -203,7 +193,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
           this.loading = false;
         })
       )
-      .subscribe(({ mobileOrDesktopDevicesExistence, accountDecryptionOptions, email }) => {
+      .subscribe(({ mobileOrDesktopDevicesExistence, email }) => {
         const showApproveFromOtherDeviceBtn = mobileOrDesktopDevicesExistence || false;
 
         const showReqAdminApprovalBtn =
