@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { RegionDomain } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
@@ -26,8 +27,8 @@ export class EnvironmentSelectorComponent implements OnInit {
       FeatureFlag.DisplayEuEnvironmentFlag
     );
     const domain = Utils.getDomain(window.location.href);
-    this.isEuServer = domain.includes("bitwarden.eu");
-    this.isUsServer = domain.includes("bitwarden.com") || domain.includes("bitwarden.pw");
+    this.isEuServer = domain.includes(RegionDomain.EU);
+    this.isUsServer = domain.includes(RegionDomain.US) || domain.includes(RegionDomain.USQA);
     this.selectedRegionImageName = this.getRegionImage();
     this.showRegionSelector = !this.platformUtilsService.isSelfHost();
   }
