@@ -78,6 +78,7 @@ const partialKeys = {
 };
 
 const DDG_SHARED_KEY = "DuckDuckGoSharedKey";
+const USER_DEVICE_TRUST_CHOICE_KEY = "UserDeviceTrustChoiceKey";
 
 export class StateService<
   TGlobalState extends GlobalState = GlobalState,
@@ -1319,6 +1320,32 @@ export class StateService<
     account.keys.deviceKey = value;
 
     await this.saveAccount(account, options);
+  }
+
+  async getUserDeviceTrustChoice(options?: StorageOptions): Promise<boolean> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
+    if (options?.userId == null) {
+      return null;
+    }
+
+    return await this.storageService.get(
+      `${options.userId}${USER_DEVICE_TRUST_CHOICE_KEY}`,
+      options
+    );
+  }
+
+  async setUserDeviceTrustChoice(value: boolean, options?: StorageOptions): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+    if (options?.userId == null) {
+      return;
+    }
+
+    await this.storageService.save(
+      `${options.userId}${USER_DEVICE_TRUST_CHOICE_KEY}`,
+      value,
+      options
+    );
   }
 
   async getAccountDecryptionOptions(
