@@ -100,7 +100,10 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
   }
 
   // TODO: add proper types to parameters once we have them coming down from server
-  async decryptUserKey(encryptedDevicePrivateKey: any, encryptedUserKey: any): Promise<UserKey> {
+  async decryptUserKeyWithDeviceKey(
+    encryptedDevicePrivateKey: any,
+    encryptedUserKey: any
+  ): Promise<UserKey> {
     // get device key
     const existingDeviceKey = await this.stateService.getDeviceKey();
 
