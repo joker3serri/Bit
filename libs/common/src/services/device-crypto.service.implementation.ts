@@ -23,6 +23,14 @@ export class DeviceCryptoService implements DeviceCryptoServiceAbstraction {
     protected devicesApiService: DevicesApiServiceAbstraction
   ) {}
 
+  async getUserDeviceTrustChoice(): Promise<boolean> {
+    return await this.stateService.getUserDeviceTrustChoice();
+  }
+
+  async setUserDeviceTrustChoice(value: boolean): Promise<void> {
+    await this.stateService.setUserDeviceTrustChoice(value);
+  }
+
   async trustDevice(): Promise<DeviceResponse> {
     // Attempt to get user key
     const userKey: UserKey = await this.cryptoService.getUserKeyFromMemory();
