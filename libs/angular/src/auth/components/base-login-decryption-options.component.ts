@@ -36,6 +36,9 @@ import { ValidationService } from "@bitwarden/common/platform/abstractions/valid
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
+import { EncString } from "../../../../common/src/platform/models/domain/enc-string";
+import { UserKey } from "../../../../common/src/platform/models/domain/symmetric-crypto-key";
+
 enum State {
   NewUser,
   UntrustedDevice,
@@ -245,7 +248,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.router.navigate(["/lock"]);
   }
 
-  autoEnroll = async () => {
+  createUser = async () => {
     if (this.data.state !== State.NewUser) {
       return;
     }
@@ -257,6 +260,26 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
       await this.apiService.postAccountKeys(keysRequest);
 
+      await this.passwordResetEnroll(userKey, publicKey, privateKey);
+
+      if (this.rememberDeviceForm.value.rememberDevice) {
+        await this.deviceCryptoService.trustDevice();
+      }
+    } catch (error) {
+      this.validationService.showError(error);
+    } finally {
+      this.loading = false;
+    }
+  };
+
+  passwordResetEnroll = async (userKey: UserKey, publicKey: string, privateKey: EncString) => {
+    if (this.data.state !== State.NewUser) {
+      return;
+    }
+
+    // this.loading to support clients without async-actions-support
+    this.loading = true;
+    try {
       const orgKeyResponse = await this.organizationApiService.getKeys(this.data.organizationId);
       if (orgKeyResponse == null) {
         throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
@@ -276,10 +299,6 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         userId,
         resetRequest
       );
-
-      if (this.rememberDeviceForm.value.rememberDevice) {
-        await this.deviceCryptoService.trustDevice();
-      }
 
       // TODO: On browser this should close the window. But since we might extract
       // this logic into a service I'm gonna leaves this as-is untill that
