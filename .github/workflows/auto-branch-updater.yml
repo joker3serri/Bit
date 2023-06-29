@@ -6,7 +6,6 @@ on:
     branches:
       - 'master'
       - 'rc'
-      - 'DEVOPS-1421_auto-branch-updater-test'
     paths:
       - 'apps/web/**'
       - 'libs/**'
