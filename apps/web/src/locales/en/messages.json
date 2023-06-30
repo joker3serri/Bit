@@ -7012,5 +7012,20 @@
   },
   "maxServiceAccountCost": {
     "message": "Max potential service account cost"
+  },
+  "smBetaEndedDesc": {
+    "message": "The Secrets Manager Beta ended Aug 1, 2023. You have $DAYS$ days to upgrade the plan to Teams or Enterprise to maintain access to Secrets Manager data. Grace period ends October 1, 2023.",
+    "placeholders": {
+      "days": {
+        "content": "$1",
+        "example": "$0.50"
+      }
+    }
+  },
+  "betaEnding": {
+    "message": "Beta Ending"
+  },
+  "beta": {
+    "message": "Beta"
   }
 }

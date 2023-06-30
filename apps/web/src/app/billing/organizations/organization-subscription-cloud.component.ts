@@ -17,6 +17,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import {
   BillingSyncApiKeyComponent,
@@ -41,6 +42,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   showAdjustSecretsManager = false;
 
   showSecretsManagerSubscribe = false;
+  secretsManagerBetaDaysRemaining = Utils.daysRemaining(new Date(2023, 9, 1));
 
   firstLoaded = false;
   loading: boolean;
