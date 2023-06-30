@@ -1,8 +1,7 @@
-import { DeviceKey, UserKey } from "../platform/models/domain/symmetric-crypto-key";
+import { DeviceResponse } from "../../abstractions/devices/responses/device.response";
+import { DeviceKey, UserKey } from "../../platform/models/domain/symmetric-crypto-key";
 
-import { DeviceResponse } from "./devices/responses/device.response";
-
-export abstract class DeviceCryptoServiceAbstraction {
+export abstract class DeviceTrustCryptoServiceAbstraction {
   getUserTrustDeviceChoiceForDecryption: () => Promise<boolean>;
   setUserTrustDeviceChoiceForDecryption: (value: boolean) => Promise<void>;
 
