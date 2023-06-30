@@ -43,7 +43,7 @@ export class TableDataSource<T> extends DataSource<T> {
     // Normally the `filteredData` is updated by the re-render
     // subscription, but that won't happen if it's inactive.
     if (!this._renderChangesSubscription) {
-      this.filterData(data, "");
+      this.filterData(data, this.filter);
     }
   }
 
@@ -61,7 +61,8 @@ export class TableDataSource<T> extends DataSource<T> {
 
   set filter(filter: string) {
     this._filter.next(filter);
-
+    // Normally the `filteredData` is updated by the re-render
+    // subscription, but that won't happen if it's inactive.
     if (!this._renderChangesSubscription) {
       this.filterData(this.data, filter);
     }
