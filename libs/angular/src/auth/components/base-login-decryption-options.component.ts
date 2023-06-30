@@ -30,8 +30,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     rememberDevice: [true],
   });
 
-  get rememberDevice() {
-    return this.rememberDeviceForm?.controls.rememberDevice as FormControl;
+  get rememberDevice(): FormControl<boolean> {
+    return this.rememberDeviceForm?.controls.rememberDevice;
   }
 
   loading = true;
