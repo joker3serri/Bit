@@ -43,7 +43,7 @@ export class TableDataSource<T> extends DataSource<T> {
     // Normally the `filteredData` is updated by the re-render
     // subscription, but that won't happen if it's inactive.
     if (!this._renderChangesSubscription) {
-      this.filterData(data, this.filter);
+      this.filterData(data);
     }
   }
 
@@ -64,7 +64,7 @@ export class TableDataSource<T> extends DataSource<T> {
     // Normally the `filteredData` is updated by the re-render
     // subscription, but that won't happen if it's inactive.
     if (!this._renderChangesSubscription) {
-      this.filterData(this.data, filter);
+      this.filterData(this.data);
     }
   }
 
@@ -83,7 +83,7 @@ export class TableDataSource<T> extends DataSource<T> {
 
   private updateChangeSubscription() {
     const filteredData = combineLatest([this._data, this._filter]).pipe(
-      map(([data, filter]) => this.filterData(data, filter))
+      map(([data, filter]) => this.filterData(data))
     );
 
     const orderedData = combineLatest([filteredData, this._sort]).pipe(
@@ -94,7 +94,7 @@ export class TableDataSource<T> extends DataSource<T> {
     this._renderChangesSubscription = orderedData.subscribe((data) => this._renderData.next(data));
   }
 
-  private filterData(data: T[], filter: string): T[] {
+  private filterData(data: T[]): T[] {
     this.filteredData =
       this.filter == null || this.filter === ""
         ? data
