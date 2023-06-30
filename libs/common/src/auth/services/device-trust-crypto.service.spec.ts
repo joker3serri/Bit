@@ -49,7 +49,40 @@ describe("deviceTrustCryptoService", () => {
     expect(deviceTrustCryptoService).not.toBeFalsy();
   });
 
-  describe("Trusted Device Encryption", () => {
+  describe("User Trust Device Choice For Decryption", () => {
+    describe("getUserTrustDeviceChoiceForDecryption", () => {
+      it("gets the user trust device choice for decryption from the state service", async () => {
+        const stateSvcGetUserTrustDeviceChoiceForDecryptionSpy = jest.spyOn(
+          stateService,
+          "getUserTrustDeviceChoiceForDecryption"
+        );
+
+        const expectedValue = true;
+        stateSvcGetUserTrustDeviceChoiceForDecryptionSpy.mockResolvedValue(expectedValue);
+        const result = await deviceTrustCryptoService.getUserTrustDeviceChoiceForDecryption();
+
+        expect(stateSvcGetUserTrustDeviceChoiceForDecryptionSpy).toHaveBeenCalledTimes(1);
+        expect(result).toEqual(expectedValue);
+      });
+    });
+
+    describe("setUserTrustDeviceChoiceForDecryption", () => {
+      it("sets the user trust device choice for decryption in the state service", async () => {
+        const stateSvcSetUserTrustDeviceChoiceForDecryptionSpy = jest.spyOn(
+          stateService,
+          "setUserTrustDeviceChoiceForDecryption"
+        );
+
+        const newValue = true;
+        await deviceTrustCryptoService.setUserTrustDeviceChoiceForDecryption(newValue);
+
+        expect(stateSvcSetUserTrustDeviceChoiceForDecryptionSpy).toHaveBeenCalledTimes(1);
+        expect(stateSvcSetUserTrustDeviceChoiceForDecryptionSpy).toHaveBeenCalledWith(newValue);
+      });
+    });
+  });
+
+  describe("Trusted Device Encryption core logic tests", () => {
     const deviceKeyBytesLength = 64;
     const userKeyBytesLength = 64;
 
@@ -317,5 +350,7 @@ describe("deviceTrustCryptoService", () => {
         }
       );
     });
+
+    // TOOD Add tests for decryptUserKeyWithDeviceKey when types are available
   });
 });

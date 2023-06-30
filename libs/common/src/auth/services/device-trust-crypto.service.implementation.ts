@@ -100,6 +100,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
   }
 
   // TODO: add proper types to parameters once we have them coming down from server
+  // TODO: add tests for this method
   async decryptUserKeyWithDeviceKey(
     encryptedDevicePrivateKey: any,
     encryptedUserKey: any
