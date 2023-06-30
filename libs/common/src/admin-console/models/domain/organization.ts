@@ -64,6 +64,10 @@ export class Organization {
   familySponsorshipValidUntil?: Date;
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
+  /**
+   * Indicates the organization is participating in the Secrets Manager Beta
+   */
+  secretsManagerBeta: boolean;
 
   constructor(obj?: OrganizationData) {
     if (obj == null) {
