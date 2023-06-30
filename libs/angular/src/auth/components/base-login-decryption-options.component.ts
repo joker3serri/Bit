@@ -3,8 +3,8 @@ import { FormBuilder, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Observable, Subject, catchError, forkJoin, from, of, finalize, takeUntil } from "rxjs";
 
-import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices.service.abstraction";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import {
   DesktopDeviceTypes,
@@ -44,7 +44,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected messagingService: MessagingService,
     protected loginService: LoginService,
     protected validationService: ValidationService,
-    protected deviceCryptoService: DeviceCryptoServiceAbstraction
+    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {}
 
   ngOnInit() {
@@ -156,7 +156,9 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   async approveWithMasterPassword() {
-    await this.deviceCryptoService.setUserTrustDeviceChoiceForDecryption(this.rememberDevice.value);
+    await this.deviceTrustCryptoService.setUserTrustDeviceChoiceForDecryption(
+      this.rememberDevice.value
+    );
     this.router.navigate(["/lock"]);
   }
 

@@ -4,12 +4,12 @@ import { firstValueFrom, Subject } from "rxjs";
 import { concatMap, take, takeUntil } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
@@ -73,7 +73,7 @@ export class LockComponent implements OnInit, OnDestroy {
     protected policyService: InternalPolicyService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected dialogService: DialogServiceAbstraction,
-    protected deviceCryptoService: DeviceCryptoServiceAbstraction
+    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -297,10 +297,10 @@ export class LockComponent implements OnInit, OnDestroy {
 
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
-    if (this.deviceCryptoService.getUserTrustDeviceChoiceForDecryption()) {
-      await this.deviceCryptoService.trustDevice();
+    if (this.deviceTrustCryptoService.getUserTrustDeviceChoiceForDecryption()) {
+      await this.deviceTrustCryptoService.trustDevice();
       // reset the trust choice
-      await this.deviceCryptoService.setUserTrustDeviceChoiceForDecryption(false);
+      await this.deviceTrustCryptoService.setUserTrustDeviceChoiceForDecryption(false);
     }
 
     await this.doContinue(evaluatePasswordAfterUnlock);
