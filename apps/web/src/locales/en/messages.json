@@ -7018,7 +7018,7 @@
     "placeholders": {
       "days": {
         "content": "$1",
-        "example": "$0.50"
+        "example": "12"
       }
     }
   },
