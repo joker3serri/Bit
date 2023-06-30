@@ -83,7 +83,7 @@ export class TableDataSource<T> extends DataSource<T> {
 
   private updateChangeSubscription() {
     const filteredData = combineLatest([this._data, this._filter]).pipe(
-      map(([data, filter]) => this.filterData(data))
+      map(([data]) => this.filterData(data))
     );
 
     const orderedData = combineLatest([filteredData, this._sort]).pipe(
