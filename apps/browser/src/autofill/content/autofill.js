@@ -751,7 +751,7 @@
           ].join('\n\n');
 
           if (
-              // At least one of the `savedURLs` uses SSL
+              // At least one of the `savedURLs` uses SSL for the current page
               savedURLs.some(url => url.startsWith(`https://${window.location.hostname}`)) &&
               // The current page is not using SSL
               document.location.protocol === 'http:' &&
