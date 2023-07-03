@@ -13,6 +13,15 @@ on:
         options:
           - QA
 
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'QA'
+        type: choice
+        options:
+          - QA
 
 jobs:
   setup:
