@@ -65,11 +65,7 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
   submitAndClose = async () => {
     this.folder.name = this.formGroup.controls.name.value;
     if (this.folder.name == null || this.folder.name === "") {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("nameRequired")
-      );
+      this.formGroup.controls.name.markAsTouched();
       return;
     }
 
