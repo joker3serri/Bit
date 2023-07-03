@@ -1,7 +1,10 @@
 import { Directive, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
+  firstValueFrom,
+  map,
+  switchMap,
   Subject,
   catchError,
   forkJoin,
@@ -9,17 +12,14 @@ import {
   of,
   finalize,
   takeUntil,
-  firstValueFrom,
-  map,
-  switchMap,
 } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { DeviceCryptoServiceAbstraction } from "@bitwarden/common/abstractions/device-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/abstractions/devices/devices.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/abstractions/organization-user/requests";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import {
@@ -35,9 +35,8 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
-
-import { EncString } from "../../../../common/src/platform/models/domain/enc-string";
-import { UserKey } from "../../../../common/src/platform/models/domain/symmetric-crypto-key";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { UserKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
 enum State {
   NewUser,
@@ -68,9 +67,15 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   protected data?: Data;
   protected loading = true;
-  protected rememberDeviceForm = this.formBuilder.group({
+
+  // Remember device means for the user to trust the device
+  rememberDeviceForm = this.formBuilder.group({
     rememberDevice: [true],
   });
+
+  get rememberDevice(): FormControl<boolean> {
+    return this.rememberDeviceForm?.controls.rememberDevice;
+  }
 
   constructor(
     protected formBuilder: FormBuilder,
@@ -83,11 +88,11 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected loginService: LoginService,
     protected organizationApiService: OrganizationApiServiceAbstraction,
     protected cryptoService: CryptoService,
-    protected deviceCryptoService: DeviceCryptoServiceAbstraction,
     protected organizationUserService: OrganizationUserService,
     protected apiService: ApiService,
+    protected i18nService: I18nService,
     protected validationService: ValidationService,
-    protected i18nService: I18nService
+    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -245,7 +250,10 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // UNTIL the Admin Console team finishes their work to turn on Single Org policy when Admin Acct Recovery is enabled.
   }
 
-  approveWithMasterPassword() {
+  async approveWithMasterPassword() {
+    await this.deviceTrustCryptoService.setUserTrustDeviceChoiceForDecryption(
+      this.rememberDevice.value
+    );
     this.router.navigate(["/lock"]);
   }
 
@@ -264,7 +272,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       await this.passwordResetEnroll(userKey, publicKey, privateKey);
 
       if (this.rememberDeviceForm.value.rememberDevice) {
-        await this.deviceCryptoService.trustDevice();
+        await this.deviceTrustCryptoService.trustDevice();
       }
     } catch (error) {
       this.validationService.showError(error);
