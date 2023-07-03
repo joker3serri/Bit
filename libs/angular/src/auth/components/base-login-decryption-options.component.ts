@@ -40,7 +40,7 @@ import { UserKey } from "@bitwarden/common/platform/models/domain/symmetric-cryp
 
 enum State {
   NewUser,
-  UntrustedDevice,
+  ExistingUserUntrustedDevice,
 }
 
 type NewUserData = {
@@ -49,15 +49,15 @@ type NewUserData = {
   readonly userEmail: string;
 };
 
-type UntrustedDeviceData = {
-  readonly state: State.UntrustedDevice;
+type ExistingUserUntrustedDeviceData = {
+  readonly state: State.ExistingUserUntrustedDevice;
   readonly showApproveFromOtherDeviceBtn: boolean;
   readonly showReqAdminApprovalBtn: boolean;
   readonly showApproveWithMasterPasswordBtn: boolean;
   readonly userEmail: string;
 };
 
-type Data = NewUserData | UntrustedDeviceData;
+type Data = NewUserData | ExistingUserUntrustedDeviceData;
 
 @Directive()
 export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
@@ -214,7 +214,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         const userEmail = email;
 
         this.data = {
-          state: State.UntrustedDevice,
+          state: State.ExistingUserUntrustedDevice,
           showApproveFromOtherDeviceBtn,
           showReqAdminApprovalBtn,
           showApproveWithMasterPasswordBtn,
@@ -227,7 +227,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     // TODO: plan is to re-use existing login-with-device component but rework it to have two flows
     // (1) Standard flow for unauthN user based on AuthService status
     // (2) New flow for authN user based on AuthService status b/c they have just authenticated w/ SSO
-    if (this.data.state !== State.UntrustedDevice) {
+    if (this.data.state !== State.ExistingUserUntrustedDevice) {
       return;
     }
 
