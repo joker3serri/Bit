@@ -20,11 +20,9 @@
           buttonType="danger"
           bitIconButton="bwi-trash"
           bitFormButton
-          #deleteBtn
           type="button"
           appA11yTitle="{{ 'delete' | i18n }}"
           *ngIf="editMode"
-          [disabled]="$any(deleteBtn).loading"
           [bitAction]="deleteAndClose"
         ></button>
       </div>
