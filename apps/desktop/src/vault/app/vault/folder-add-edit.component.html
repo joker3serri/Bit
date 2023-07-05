@@ -1,6 +1,12 @@
 <div class="modal fade" role="dialog" aria-modal="true" aria-labelledby="folderAddEditTitle">
   <div class="modal-dialog modal-sm" role="document">
-    <form class="modal-content" (ngSubmit)="submit()" [appApiAction]="formPromise">
+    <form
+      #form
+      class="modal-content"
+      (ngSubmit)="submit()"
+      [appApiAction]="formPromise"
+      [formGroup]="formGroup"
+    >
       <div class="modal-body">
         <div class="box">
           <h1 class="box-header" id="folderAddEditTitle">
@@ -8,16 +14,8 @@
           </h1>
           <div class="box-content">
             <div class="box-content-row" appBoxRow>
-              <form
-                #form
-                [formGroup]="formGroup"
-                (ngSubmit)="submit()"
-                [appApiAction]="formPromise"
-                ngNativeValidate
-              >
-                <label for="name">{{ "name" | i18n }}</label>
-                <input id="name" type="text" formControlName="name" [appAutofocus]="!editMode" />
-              </form>
+              <label for="name">{{ "name" | i18n }}</label>
+              <input id="name" type="text" formControlName="name" [appAutofocus]="!editMode" />
             </div>
           </div>
         </div>
