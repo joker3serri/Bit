@@ -9,7 +9,7 @@
     <ng-container *ngIf="!loading">
       <h1 id="heading">{{ "logInInitiated" | i18n }}</h1>
       <h6
-        *ngIf="data.state == State.UntrustedDevice"
+        *ngIf="data.state == State.ExistingUserUntrustedDevice"
         id="subHeading"
         class="standard-bottom-margin"
       >
@@ -31,7 +31,7 @@
         <span id="rememberThisDeviceHintText">{{ "uncheckIfPublicDevice" | i18n }}</span>
       </form>
 
-      <div *ngIf="data.state == State.UntrustedDevice" class="buttons with-rows">
+      <div *ngIf="data.state == State.ExistingUserUntrustedDevice" class="buttons with-rows">
         <div class="buttons-row" *ngIf="data.showApproveFromOtherDeviceBtn">
           <button (click)="approveFromOtherDevice()" type="button" class="btn primary block">
             {{ "approveFromYourOtherDevice" | i18n }}
