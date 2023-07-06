@@ -119,6 +119,7 @@ export class Organization {
     this.familySponsorshipValidUntil = obj.familySponsorshipValidUntil;
     this.familySponsorshipToDelete = obj.familySponsorshipToDelete;
     this.accessSecretsManager = obj.accessSecretsManager;
+    this.secretsManagerBeta = obj.secretsManagerBeta;
   }
 
   get canAccess() {
