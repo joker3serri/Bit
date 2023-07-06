@@ -9,7 +9,7 @@ import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 
 export class ResetPasswordPolicy extends BasePolicy {
   name = "accountRecoveryPolicy";
-  description = "accountRecoveryPolicyDescription";
+  description = "accountRecoveryPolicyDesc";
   type = PolicyType.ResetPassword;
   component = ResetPasswordPolicyComponent;
 
