@@ -544,7 +544,9 @@ export class Utils {
    */
   static daysRemaining(targetDate: Date): number {
     const diffTime = targetDate.getTime() - Date.now();
-    return Math.max(0, Math.round(diffTime / (1000 * 60 * 60 * 24)));
+    const [ms, seconds, minutes, hours] = [1000, 60, 60, 24];
+    const msPerDay = ms * seconds * minutes * hours;
+    return Math.max(0, Math.round(diffTime / msPerDay));
   }
 
   private static isAppleMobile(win: Window) {
