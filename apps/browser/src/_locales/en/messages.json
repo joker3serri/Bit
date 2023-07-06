@@ -952,7 +952,7 @@
     "message": "Server URL"
   },
   "apiUrl": {
-    "message": "API Server URL"
+    "message": "API server URL"
   },
   "webVaultUrl": {
     "message": "Web vault server URL"
@@ -1598,6 +1598,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Browser biometrics is not supported on this device."
+  },
+  "biometricsFailedTitle": {
+    "message": "Biometrics failed"
+  },
+  "biometricsFailedDesc": {
+    "message": "Biometrics cannot be completed, consider using a master password or logging out. If this persists, please contact Bitwarden support."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Permission not provided"

@@ -25,8 +25,8 @@ import { CollectionView } from "../../../vault/models/view/collection.view";
 import { Utils } from "../../misc/utils";
 import { ServerConfigData } from "../../models/data/server-config.data";
 
-import { EncString } from "./enc-string";
-import { DeviceKey, SymmetricCryptoKey } from "./symmetric-crypto-key";
+import { EncryptedString, EncString } from "./enc-string";
+import { DeviceKey, MasterKey, SymmetricCryptoKey, UserKey } from "./symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {
   encrypted?: TEncrypted;
@@ -102,14 +102,20 @@ export class AccountData {
 }
 
 export class AccountKeys {
+  userKey?: UserKey;
+  masterKey?: MasterKey;
+  userKeyMasterKey?: string;
+  userKeyAuto?: string;
+  userKeyBiometric?: string;
+  // deprecated keys
   cryptoMasterKey?: SymmetricCryptoKey;
   cryptoMasterKeyAuto?: string;
-  cryptoMasterKeyB64?: string;
   cryptoMasterKeyBiometric?: string;
   cryptoSymmetricKey?: EncryptionPair<string, SymmetricCryptoKey> = new EncryptionPair<
     string,
     SymmetricCryptoKey
   >();
+  // end deprecated keys
   deviceKey?: DeviceKey;
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
@@ -138,6 +144,8 @@ export class AccountKeys {
     }
 
     return Object.assign(new AccountKeys(), {
+      userKey: SymmetricCryptoKey.fromJSON(obj?.userKey),
+      masterKey: SymmetricCryptoKey.fromJSON(obj?.masterKey),
       cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey),
       cryptoSymmetricKey: EncryptionPair.fromJSON(
         obj?.cryptoSymmetricKey,
@@ -227,8 +235,10 @@ export class AccountSettings {
   passwordGenerationOptions?: any;
   usernameGenerationOptions?: any;
   generatorOptions?: any;
-  pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();
+  userKeyPin?: EncryptedString;
+  userKeyPinEphemeral?: EncryptedString;
   protectedPin?: string;
+  pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>(); // Deprecated
   settings?: AccountSettingsSettings; // TODO: Merge whatever is going on here into the AccountSettings model properly
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
@@ -238,6 +248,7 @@ export class AccountSettings {
   activateAutoFillOnPageLoadFromPolicy?: boolean;
   region?: string;
   smOnboardingTasks?: Record<string, Record<string, boolean>>;
+  trustDeviceChoiceForDecryption?: boolean;
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
     if (obj == null) {
@@ -284,6 +295,17 @@ export class AccountDecryptionOptions {
     }
   }
 
+  // TODO: these nice getters don't work because the Account object is not properly being deserialized out of
+  // JSON (the Account static fromJSON method is not running) so these getters don't exist on the
+  // account decryptions options object when pulled out of state.  This is a bug that needs to be fixed later on
+  // get hasTrustedDeviceOption(): boolean {
+  //   return this.trustedDeviceOption !== null && this.trustedDeviceOption !== undefined;
+  // }
+
+  // get hasKeyConnectorOption(): boolean {
+  //   return this.keyConnectorOption !== null && this.keyConnectorOption !== undefined;
+  // }
+
   static fromResponse(response: UserDecryptionOptionsResponse): AccountDecryptionOptions {
     if (response == null) {
       return null;
@@ -312,7 +334,21 @@ export class AccountDecryptionOptions {
       return null;
     }
 
-    return Object.assign(new AccountDecryptionOptions(), obj);
+    const accountDecryptionOptions = Object.assign(new AccountDecryptionOptions(), obj);
+
+    if (obj.trustedDeviceOption) {
+      accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
+        obj.trustedDeviceOption.hasAdminApproval
+      );
+    }
+
+    if (obj.keyConnectorOption) {
+      accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
+        obj.keyConnectorOption.keyConnectorUrl
+      );
+    }
+
+    return accountDecryptionOptions;
   }
 }
 
