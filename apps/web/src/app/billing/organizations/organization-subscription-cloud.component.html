@@ -87,7 +87,7 @@
               <td bitCell>{{ "passwordManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
               <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
             </tr>
-            <tr bitRow *ngIf="userOrg.useSecretsManager">
+            <tr bitRow *ngIf="userOrg.useSecretsManager && !userOrg.secretsManagerBeta">
               <td bitCell>{{ "secretsManager" | i18n }} - {{ "freeOrganization" | i18n }}</td>
               <td bitCell class="tw-text-right">{{ "free" | i18n }}</td>
             </tr>
