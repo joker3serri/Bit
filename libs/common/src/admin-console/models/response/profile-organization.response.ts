@@ -48,6 +48,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
   familySponsorshipValidUntil?: Date;
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
+  secretsManagerBeta: boolean;
 
   constructor(response: any) {
     super(response);
@@ -105,5 +106,6 @@ export class ProfileOrganizationResponse extends BaseResponse {
     }
     this.familySponsorshipToDelete = this.getResponseProperty("FamilySponsorshipToDelete");
     this.accessSecretsManager = this.getResponseProperty("AccessSecretsManager");
+    this.secretsManagerBeta = this.getResponseProperty("SecretsManagerBeta") ?? false;
   }
 }
