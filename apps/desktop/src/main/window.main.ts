@@ -33,7 +33,8 @@ export class WindowMain {
 
   init(): Promise<any> {
     ipcMain.on("reload-process", () => {
-      this.win.webContents.reloadIgnoringCache();
+      this.win.webContents.forcefullyCrashRenderer();
+      this.win.webContents.reload();
       this.session.clearCache();
     });
 
