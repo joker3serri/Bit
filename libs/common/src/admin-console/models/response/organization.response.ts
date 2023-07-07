@@ -33,7 +33,6 @@ export class OrganizationResponse extends BaseResponse {
   smServiceAccounts?: number;
   maxAutoscaleSmSeats?: number;
   maxAutoscaleSmServiceAccounts?: number;
-  secretsManagerBeta?: boolean;
 
   constructor(response: any) {
     super(response);
@@ -73,6 +72,5 @@ export class OrganizationResponse extends BaseResponse {
     this.smServiceAccounts = this.getResponseProperty("SmServiceAccounts");
     this.maxAutoscaleSmSeats = this.getResponseProperty("MaxAutoscaleSmSeats");
     this.maxAutoscaleSmServiceAccounts = this.getResponseProperty("MaxAutoscaleSmServiceAccounts");
-    this.secretsManagerBeta = this.getResponseProperty("SecretsManagerBeta");
   }
 }
