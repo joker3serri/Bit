@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, Subject, takeUntil } from "rxjs";
@@ -42,10 +43,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   showAdjustSecretsManager = false;
 
   showSecretsManagerSubscribe = false;
-  secretsManagerBetaDaysRemaining = Utils.daysRemaining(new Date(2023, 9, 1));
 
   firstLoaded = false;
   loading: boolean;
+
+  private readonly _smBetaEndingDate = new Date(2023, 9, 1);
+  private readonly _smGracePeriodEndingDate = new Date(2023, 9, 1);
 
   private destroy$ = new Subject<void>();
 
@@ -59,7 +62,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private organizationApiService: OrganizationApiServiceAbstraction,
     private route: ActivatedRoute,
     private dialogService: DialogServiceAbstraction,
-    private configService: ConfigServiceAbstraction
+    private configService: ConfigServiceAbstraction,
+    private datePipe: DatePipe
   ) {}
 
   async ngOnInit() {
@@ -255,6 +259,15 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   get subscriptionMarkedForCancel() {
     return (
       this.subscription != null && !this.subscription.cancelled && this.subscription.cancelAtEndDate
+    );
+  }
+
+  get smBetaEndedDesc() {
+    return this.i18nService.translate(
+      "smBetaEndedDesc",
+      this.datePipe.transform(this._smBetaEndingDate),
+      Utils.daysRemaining(this._smGracePeriodEndingDate).toString(),
+      this.datePipe.transform(this._smGracePeriodEndingDate)
     );
   }
 
