@@ -1302,6 +1302,10 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
+    // TODO: figure out why state service isn't properly deserializing this so we don't have to
+    // manually instantiate an instance of the SymmetricCryptoKey class
+    // where we can just return account?.keys?.deviceKey
+    // Need to ensure this isn't a larger issue with the state service vs just here
     const existingDeviceKey = account?.keys?.deviceKey;
 
     if (existingDeviceKey != null) {
@@ -1309,8 +1313,6 @@ export class StateService<
     } else {
       return null;
     }
-
-    // return  as DeviceKey;
   }
 
   async setDeviceKey(value: DeviceKey, options?: StorageOptions): Promise<void> {
