@@ -4,6 +4,7 @@ import { Utils } from "../../misc/utils";
 import { AccountKeys, EncryptionPair } from "./account";
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
+// TODO: add device key to tests
 describe("AccountKeys", () => {
   describe("toJSON", () => {
     it("should serialize itself", () => {
