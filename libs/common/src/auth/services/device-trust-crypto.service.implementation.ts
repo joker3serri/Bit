@@ -5,6 +5,7 @@ import { CryptoFunctionService } from "../../platform/abstractions/crypto-functi
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { EncString } from "../../platform/models/domain/enc-string";
 import {
   SymmetricCryptoKey,
   DeviceKey,
@@ -97,28 +98,32 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     return deviceKey;
   }
 
-  // TODO: add proper types to parameters once we have them coming down from server
   // TODO: add tests for this method
   async decryptUserKeyWithDeviceKey(
-    encryptedDevicePrivateKey: any,
-    encryptedUserKey: any
-  ): Promise<UserKey> {
-    // get device key
-    const existingDeviceKey = await this.getDeviceKey();
+    encryptedDevicePrivateKey: EncString,
+    encryptedUserKey: EncString,
+    deviceKey?: DeviceKey
+  ): Promise<UserKey | null> {
+    // If device key provided use it, otherwise try to retrieve from storage
+    deviceKey ||= await this.getDeviceKey();
 
-    if (!existingDeviceKey) {
-      // TODO: not sure what to do here
+    if (!deviceKey) {
       // User doesn't have a device key anymore so device is untrusted
-      return;
+      return null;
     }
 
     // attempt to decrypt encryptedDevicePrivateKey with device key
     const devicePrivateKey = await this.encryptService.decryptToBytes(
       encryptedDevicePrivateKey,
-      existingDeviceKey
+      deviceKey
     );
+
     // Attempt to decrypt encryptedUserDataKey with devicePrivateKey
-    const userKey = await this.cryptoService.rsaDecrypt(encryptedUserKey, devicePrivateKey);
+    const userKey = await this.cryptoService.rsaDecrypt(
+      encryptedUserKey.encryptedString,
+      devicePrivateKey
+    );
+
     return new SymmetricCryptoKey(userKey) as UserKey;
   }
 }
