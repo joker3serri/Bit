@@ -1,3 +1,4 @@
+import { once } from "node:events";
 import * as path from "path";
 import * as url from "url";
 
@@ -32,9 +33,11 @@ export class WindowMain {
   ) {}
 
   init(): Promise<any> {
-    ipcMain.on("reload-process", () => {
+    ipcMain.on("reload-process", async () => {
+      const crashEvent = once(this.win.webContents, "render-process-gone");
       this.win.webContents.forcefullyCrashRenderer();
-      this.win.webContents.reload();
+      await crashEvent;
+      this.win.webContents.reloadIgnoringCache();
       this.session.clearCache();
     });
 
