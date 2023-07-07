@@ -90,7 +90,7 @@ export class SsoLogInStrategy extends LogInStrategy {
 
     // User now may or may not have a master password
     // but set the master key encrypted user key if it exists regardless
-    await this.cryptoService.setUserKeyMasterKey(tokenResponse.key);
+    await this.cryptoService.setMasterKeyEncryptedUserKey(tokenResponse.key);
 
     // TODO: also admin approval request existence check should go here b/c that can give us a decrypted user key to set
     // TODO: future passkey login strategy will need to support setting user key (decrypting via TDE or admin approval request)
