@@ -132,7 +132,7 @@ export class WindowMain {
       icon: process.platform === "linux" ? path.join(__dirname, "/images/icon.png") : undefined,
       titleBarStyle: process.platform === "darwin" ? "hiddenInset" : undefined,
       show: false,
-      backgroundColor: "#fff",
+      backgroundColor: "#ededed",
       alwaysOnTop: this.enableAlwaysOnTop,
       webPreferences: {
         spellcheck: false,
