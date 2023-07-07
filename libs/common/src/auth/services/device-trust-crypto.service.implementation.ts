@@ -86,7 +86,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     return await this.stateService.getDeviceKey();
   }
 
-  private async setDeviceKey(deviceKey: DeviceKey): Promise<void> {
+  private async setDeviceKey(deviceKey: DeviceKey | null): Promise<void> {
     await this.stateService.setDeviceKey(deviceKey);
   }
 
@@ -112,18 +112,27 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
       return null;
     }
 
-    // attempt to decrypt encryptedDevicePrivateKey with device key
-    const devicePrivateKey = await this.encryptService.decryptToBytes(
-      encryptedDevicePrivateKey,
-      deviceKey
-    );
+    try {
+      // attempt to decrypt encryptedDevicePrivateKey with device key
+      const devicePrivateKey = await this.encryptService.decryptToBytes(
+        encryptedDevicePrivateKey,
+        deviceKey
+      );
 
-    // Attempt to decrypt encryptedUserDataKey with devicePrivateKey
-    const userKey = await this.cryptoService.rsaDecrypt(
-      encryptedUserKey.encryptedString,
-      devicePrivateKey
-    );
+      // Attempt to decrypt encryptedUserDataKey with devicePrivateKey
+      const userKey = await this.cryptoService.rsaDecrypt(
+        encryptedUserKey.encryptedString,
+        devicePrivateKey
+      );
+      return new SymmetricCryptoKey(userKey) as UserKey;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("TDE: Failed to decrypt user key with device key. Removing device key.", e);
 
-    return new SymmetricCryptoKey(userKey) as UserKey;
+      // If either decryption effort fails, we want to remove the device key
+      await this.setDeviceKey(null);
+
+      return null;
+    }
   }
 }
