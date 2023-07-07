@@ -2606,7 +2606,7 @@ export class StateService<
         await this.defaultOnDiskLocalOptions()
       )
     );
-    // EnvironmentUrls are set before authenticating and should override whatever is stored from any previous session
+    // EnvironmentUrls and region are set before authenticating and should override whatever is stored from any previous session
     const environmentUrls = account.settings.environmentUrls;
     const region = account.settings.region;
     if (storedAccount?.settings != null) {
