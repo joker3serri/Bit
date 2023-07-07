@@ -98,7 +98,6 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     return deviceKey;
   }
 
-  // TODO: add tests for this method
   async decryptUserKeyWithDeviceKey(
     encryptedDevicePrivateKey: EncString,
     encryptedUserKey: EncString,
