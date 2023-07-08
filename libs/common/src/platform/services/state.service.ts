@@ -30,6 +30,7 @@ import { LocalData } from "../../vault/models/data/local.data";
 import { CipherView } from "../../vault/models/view/cipher.view";
 import { CollectionView } from "../../vault/models/view/collection.view";
 import { AddEditCipherInfo } from "../../vault/types/add-edit-cipher-info";
+import { Region } from "../abstractions/environment.service";
 import { LogService } from "../abstractions/log.service";
 import { StateMigrationService } from "../abstractions/state-migration.service";
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
@@ -2818,9 +2819,13 @@ export class StateService<
   }
 
   // The environment urls and region are selected before login and are transferred here to an authenticated account
+  // If a non-self-hosted region is selected, we don't want to persist the environment URLs, as those are defined in the EnvironmentService
   protected async setAccountEnvironment(account: TAccount): Promise<TAccount> {
-    account.settings.environmentUrls = await this.getGlobalEnvironmentUrls();
     account.settings.region = await this.getGlobalRegion();
+    if (account.settings.region == Region.SelfHosted) {
+      account.settings.environmentUrls = await this.getGlobalEnvironmentUrls();
+    }
+
     return account;
   }
 
