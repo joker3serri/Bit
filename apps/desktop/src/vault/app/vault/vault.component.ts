@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  HostListener,
   NgZone,
   OnDestroy,
   OnInit,
@@ -8,6 +9,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ipcRenderer } from "electron";
 import { first } from "rxjs/operators";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
@@ -84,6 +86,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   activeFilter: VaultFilter = new VaultFilter();
 
   private modal: ModalRef = null;
+  private triedQuit = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -636,6 +639,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.modal.onClosed.subscribe(() => {
+      this.addEditComponent.submit();
       this.modal = null;
     });
   }
@@ -770,6 +774,32 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     return true;
+  }
+
+  private async saveChangesOrCancel() {
+    const result = await ipcRenderer.invoke("showMessageBox", {
+      type: "warning",
+      title: "Unsaved Changes",
+      message: "Do you want to save your pending changes?",
+      buttons: ["Yes", "No", "Cancel"],
+    });
+    return result;
+  }
+
+  @HostListener("window:beforeunload", ["$event"])
+  private async onBeforeUnload(event: BeforeUnloadEvent) {
+    if (!this.triedQuit && this.dirtyInput() && this.action == "edit") {
+      event.returnValue = false;
+      let response = await this.saveChangesOrCancel();
+      response = response.response;
+      if (response === 0 || response === 1) {
+        if (response === 0) {
+          await this.addEditComponent.submit();
+        }
+        this.triedQuit = true;
+        ipcRenderer.send("request-app-quit");
+      }
+    }
   }
 
   private async passwordReprompt(cipher: CipherView) {
