@@ -2,11 +2,12 @@ import { once } from "node:events";
 import * as path from "path";
 import * as url from "url";
 
-import { app, BrowserWindow, ipcMain, screen, session } from "electron";
+import { app, BrowserWindow, ipcMain, nativeTheme, screen, session } from "electron";
 
 import { WindowState } from "@bitwarden/common/models/domain/window-state";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
 
 import { cleanUserAgent, isDev, isMacAppStore, isSnapStore } from "../utils";
 
@@ -28,12 +29,15 @@ export class WindowMain {
   constructor(
     private stateService: StateService,
     private logService: LogService,
+    private storageService: AbstractStorageService,
     private argvCallback: (argv: string[]) => void = null,
     private createWindowCallback: (win: BrowserWindow) => void
   ) {}
 
   init(): Promise<any> {
     ipcMain.on("reload-process", async () => {
+      this.win.setBackgroundColor(await this.getBackgroundColor());
+
       const crashEvent = once(this.win.webContents, "render-process-gone");
       this.win.webContents.forcefullyCrashRenderer();
       await crashEvent;
@@ -132,7 +136,7 @@ export class WindowMain {
       icon: process.platform === "linux" ? path.join(__dirname, "/images/icon.png") : undefined,
       titleBarStyle: process.platform === "darwin" ? "hiddenInset" : undefined,
       show: false,
-      backgroundColor: "#ededed",
+      backgroundColor: await this.getBackgroundColor(),
       alwaysOnTop: this.enableAlwaysOnTop,
       webPreferences: {
         spellcheck: false,
@@ -140,7 +144,7 @@ export class WindowMain {
         backgroundThrottling: false,
         contextIsolation: false,
         session: this.session,
-        devTools: false,
+        devTools: true,
       },
     });
 
@@ -212,6 +216,26 @@ export class WindowMain {
 
     if (this.createWindowCallback) {
       this.createWindowCallback(this.win);
+    }
+  }
+
+  /// Retrieve the background color
+  // Resolves background color missmatch when starting the application.
+  async getBackgroundColor(): Promise<string> {
+    const data: { theme?: string } = await this.storageService.get("global");
+    let theme = data?.theme;
+
+    if (theme == null || theme === "system") {
+      theme = nativeTheme.shouldUseDarkColors ? "dark" : "light";
+    }
+
+    switch (theme) {
+      case "light":
+        return "#ededed";
+      case "dark":
+        return "#222222";
+      case "nord":
+        return "#3b4252";
     }
   }
 
