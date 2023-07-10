@@ -101,10 +101,16 @@ export class SsoLogInStrategy extends LogInStrategy {
     //   FeatureFlag.TrustedDeviceEncryption
     // );
 
+    const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
+
     // Note: TDE and key connector are mutually exclusive
-    if (tokenResponse?.userDecryptionOptions?.trustedDeviceOption) {
+    if (userDecryptionOptions?.trustedDeviceOption) {
       await this.trySetUserKeyWithDeviceKey(tokenResponse);
-    } else if (tokenResponse.keyConnectorUrl) {
+    } else if (
+      // TODO: remove tokenResponse.keyConnectorUrl when it's deprecated
+      tokenResponse.keyConnectorUrl ||
+      userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl
+    ) {
       await this.trySetUserKeyForKeyConnector();
     }
   }
