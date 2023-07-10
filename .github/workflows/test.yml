@@ -75,14 +75,15 @@ jobs:
     steps:
       - name: Rust version check
         run: rustup --version
-      # - name: Install gnome-keyring
-      #   if: ${{ matrix.os=='ubuntu-latest' }}
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y gnome-keyring dbus-x11
 
-      # - name: Checkout repo
-      #   uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Install gnome-keyring
+        if: ${{ matrix.os=='ubuntu-latest' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnome-keyring dbus-x11
+
+      - name: Checkout repo
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
       # - name: Install rust
       #   uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
@@ -91,22 +92,22 @@ jobs:
       #     profile: minimal
       #     override: true
 
-      # - name: Build
-      #   working-directory: ./apps/desktop/desktop_native
-      #   run: cargo build
+      - name: Build
+        working-directory: ./apps/desktop/desktop_native
+        run: cargo build
 
-      # - name: Test Ubuntu
-      #   if: ${{ matrix.os=='ubuntu-latest' }}
-      #   working-directory: ./apps/desktop/desktop_native
-      #   run: |
-      #     eval "$(dbus-launch --sh-syntax)"
-      #     mkdir -p ~/.cache
-      #     mkdir -p ~/.local/share/keyrings
-      #     eval "$(printf '\n' | gnome-keyring-daemon --unlock)"
-      #     eval "$(printf '\n' | /usr/bin/gnome-keyring-daemon --start)"
-      #     cargo test -- --test-threads=1
+      - name: Test Ubuntu
+        if: ${{ matrix.os=='ubuntu-latest' }}
+        working-directory: ./apps/desktop/desktop_native
+        run: |
+          eval "$(dbus-launch --sh-syntax)"
+          mkdir -p ~/.cache
+          mkdir -p ~/.local/share/keyrings
+          eval "$(printf '\n' | gnome-keyring-daemon --unlock)"
+          eval "$(printf '\n' | /usr/bin/gnome-keyring-daemon --start)"
+          cargo test -- --test-threads=1
 
-      # - name: Test Windows / macOS
-      #   if: ${{ matrix.os!='ubuntu-latest' }}
-      #   working-directory: ./apps/desktop/desktop_native
-      #   run: cargo test -- --test-threads=1
+      - name: Test Windows / macOS
+        if: ${{ matrix.os!='ubuntu-latest' }}
+        working-directory: ./apps/desktop/desktop_native
+        run: cargo test -- --test-threads=1
