@@ -1302,12 +1302,9 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    // TODO: figure out why state service isn't properly deserializing this so we don't have to
-    // manually instantiate an instance of the SymmetricCryptoKey class
-    // where we can just return account?.keys?.deviceKey
-    // Need to ensure this isn't a larger issue with the state service vs just here
     const existingDeviceKey = account?.keys?.deviceKey;
 
+    // Must manually instantiate the SymmetricCryptoKey class from the JSON object
     if (existingDeviceKey != null) {
       return SymmetricCryptoKey.fromJSON(existingDeviceKey) as DeviceKey;
     } else {
