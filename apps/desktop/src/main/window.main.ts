@@ -35,12 +35,16 @@ export class WindowMain {
   ) {}
 
   init(): Promise<any> {
+    // Perform a hard reload of the render process by crashing it. This is suboptimal but ensures that all memory gets
+    // cleared, as the process itself will be completely garbage collected.
     ipcMain.on("reload-process", async () => {
+      // User might have changed theme, ensure the window is updated.
       this.win.setBackgroundColor(await this.getBackgroundColor());
 
       const crashEvent = once(this.win.webContents, "render-process-gone");
       this.win.webContents.forcefullyCrashRenderer();
       await crashEvent;
+
       this.win.webContents.reloadIgnoringCache();
       this.session.clearCache();
     });
@@ -144,7 +148,6 @@ export class WindowMain {
         backgroundThrottling: false,
         contextIsolation: false,
         session: this.session,
-        devTools: true,
       },
     });
 
@@ -219,7 +222,7 @@ export class WindowMain {
     }
   }
 
-  /// Retrieve the background color
+  // Retrieve the background color
   // Resolves background color missmatch when starting the application.
   async getBackgroundColor(): Promise<string> {
     const data: { theme?: string } = await this.storageService.get("global");
