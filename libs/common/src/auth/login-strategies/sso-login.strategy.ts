@@ -96,11 +96,6 @@ export class SsoLogInStrategy extends LogInStrategy {
     // TODO: future passkey login strategy will need to support setting user key (decrypting via TDE or admin approval request)
     // so might be worth moving this logic to a common place (base login strategy or a separate service?)
 
-    // Can't inject this due to circular dependency
-    // const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
-    //   FeatureFlag.TrustedDeviceEncryption
-    // );
-
     const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
 
     // Note: TDE and key connector are mutually exclusive
