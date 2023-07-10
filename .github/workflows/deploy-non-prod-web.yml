@@ -7,7 +7,6 @@ on:
     inputs:
       environment:
         description: 'Environment'
-        required: true
         default: 'QA'
         type: choice
         options:
@@ -17,7 +16,6 @@ on:
     inputs:
       environment:
         description: 'Environment'
-        required: true
         default: 'QA'
         type: choice
         options:
