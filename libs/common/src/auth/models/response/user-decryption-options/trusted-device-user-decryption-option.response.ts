@@ -1,6 +1,12 @@
 import { BaseResponse } from "../../../../models/response/base.response";
 import { EncString } from "../../../../platform/models/domain/enc-string";
 
+export interface ITrustedDeviceUserDecryptionOptionServerResponse {
+  HasAdminApproval: boolean;
+  EncryptedPrivateKey?: string;
+  EncryptedUserKey?: string;
+}
+
 export class TrustedDeviceUserDecryptionOptionResponse extends BaseResponse {
   hasAdminApproval: boolean;
   encryptedPrivateKey: EncString;
