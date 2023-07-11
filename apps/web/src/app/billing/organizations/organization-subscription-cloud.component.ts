@@ -267,8 +267,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return this.i18nService.translate(
       "smBetaEndedDesc",
       this.datePipe.transform(this._smBetaEndingDate),
-      Utils.daysRemaining(this._smGracePeriodEndingDate).toString(),
-      this.datePipe.transform(this._smGracePeriodEndingDate)
+      Utils.daysRemaining(this._smGracePeriodEndingDate).toString()
     );
   }
 
