@@ -106,7 +106,7 @@ export class SsoLogInStrategy extends LogInStrategy {
       tokenResponse.keyConnectorUrl ||
       userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl
     ) {
-      await this.trySetUserKeyForKeyConnector();
+      await this.trySetUserKeyWithMasterKey();
     }
   }
 
@@ -132,7 +132,7 @@ export class SsoLogInStrategy extends LogInStrategy {
     }
   }
 
-  private async trySetUserKeyForKeyConnector(): Promise<void> {
+  private async trySetUserKeyWithMasterKey(): Promise<void> {
     const masterKey = await this.cryptoService.getMasterKey();
 
     if (!masterKey) {

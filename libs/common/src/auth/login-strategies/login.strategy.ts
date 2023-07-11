@@ -122,7 +122,7 @@ export abstract class LogInStrategy {
         profile: {
           ...new AccountProfile(),
           ...{
-            userId: userId,
+            userId,
             name: accountInformation.name,
             email: accountInformation.email,
             hasPremiumPersonally: accountInformation.premium,

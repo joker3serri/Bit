@@ -168,7 +168,7 @@ describe("SsoLogInStrategy", () => {
       jest.clearAllMocks();
     });
 
-    it("decrypts and sets user key if trusted device decryption option exists with valid device key and enc key data", async () => {
+    it("decrypts and sets user key when trusted device decryption option exists with valid device key and enc key data", async () => {
       // Arrange
       const idTokenResponse: IdentityTokenResponse = identityTokenResponseFactory(
         null,
@@ -191,7 +191,7 @@ describe("SsoLogInStrategy", () => {
       expect(cryptoSvcSetUserKeySpy).toHaveBeenCalledWith(mockUserKey);
     });
 
-    it("does not set the user key if deviceKey is missing", async () => {
+    it("does not set the user key when deviceKey is missing", async () => {
       // Arrange
       const idTokenResponse: IdentityTokenResponse = identityTokenResponseFactory(
         null,
@@ -216,8 +216,8 @@ describe("SsoLogInStrategy", () => {
       {
         valueName: "encUserKey",
       },
-    ])("if trusted device decryption option has missing encrypted key data", ({ valueName }) => {
-      it(`does not set the user key if ${valueName} is missing`, async () => {
+    ])("given trusted device decryption option has missing encrypted key data", ({ valueName }) => {
+      it(`does not set the user key when ${valueName} is missing`, async () => {
         // Arrange
         const idTokenResponse = mockIdTokenResponseWithModifiedTrustedDeviceOption(valueName, null);
         apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
@@ -231,7 +231,7 @@ describe("SsoLogInStrategy", () => {
       });
     });
 
-    it("does not set user key if decrypted user key is null", async () => {
+    it("does not set user key when decrypted user key is null", async () => {
       // Arrange
       const idTokenResponse: IdentityTokenResponse = identityTokenResponseFactory(
         null,
