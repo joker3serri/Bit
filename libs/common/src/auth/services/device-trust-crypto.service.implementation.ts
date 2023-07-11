@@ -125,9 +125,6 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
       );
       return new SymmetricCryptoKey(userKey) as UserKey;
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn("TDE: Failed to decrypt user key with device key. Removing device key.", e);
-
       // If either decryption effort fails, we want to remove the device key
       await this.setDeviceKey(null);
 
