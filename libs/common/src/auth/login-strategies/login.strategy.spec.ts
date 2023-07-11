@@ -203,7 +203,7 @@ describe("LogInStrategy", () => {
       expect(messagingService.send).toHaveBeenCalledWith("loggedIn");
     });
 
-    it("for trusted device encryption, it persists a device key if it exists on login", async () => {
+    it("persists a device key for trusted device encryption when it exists on login", async () => {
       // Arrange
       const idTokenResponse = identityTokenResponseFactory();
       apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
