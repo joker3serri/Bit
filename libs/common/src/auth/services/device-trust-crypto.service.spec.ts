@@ -268,6 +268,11 @@ describe("deviceTrustCryptoService", () => {
         expect(cryptoSvcGetUserKeySpy).toHaveBeenCalledTimes(1);
 
         expect(cryptoSvcRsaEncryptSpy).toHaveBeenCalledTimes(1);
+
+        // RsaEncrypt must be called w/ a user key array buffer of 64 bytes
+        const userKeyKey: ArrayBuffer = cryptoSvcRsaEncryptSpy.mock.calls[0][0];
+        expect(userKeyKey.byteLength).toBe(64);
+
         expect(encryptServiceEncryptSpy).toHaveBeenCalledTimes(2);
 
         expect(appIdServiceGetAppIdSpy).toHaveBeenCalledTimes(1);

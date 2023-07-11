@@ -59,7 +59,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
       deviceKeyEncryptedDevicePrivateKey,
     ] = await Promise.all([
       // Encrypt user key with the DevicePublicKey
-      this.cryptoService.rsaEncrypt(userKey.encKey, devicePublicKey),
+      this.cryptoService.rsaEncrypt(userKey.key, devicePublicKey),
 
       // Encrypt devicePublicKey with user key
       this.encryptService.encrypt(devicePublicKey, userKey),
@@ -123,6 +123,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
         encryptedUserKey.encryptedString,
         devicePrivateKey
       );
+
       return new SymmetricCryptoKey(userKey) as UserKey;
     } catch (e) {
       // If either decryption effort fails, we want to remove the device key
