@@ -398,7 +398,7 @@ describe("deviceTrustCryptoService", () => {
         expect(getDeviceKeySpy).toHaveBeenCalledTimes(1);
       });
 
-      it("successfully returns the user key with a provided device key when is possible", async () => {
+      it("when device key is provided, successfully returns the user key ", async () => {
         const decryptToBytesSpy = jest
           .spyOn(encryptService, "decryptToBytes")
           .mockResolvedValue(new Uint8Array(userKeyBytesLength).buffer);
