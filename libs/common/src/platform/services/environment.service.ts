@@ -287,7 +287,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.selectedRegion = region;
     await this.stateService.setRegion(region);
     if (region === Region.SelfHosted) {
-      // if user saves with empty fields, default to US
+      // If user saves a self-hosted region with empty fields, default to US
       if (this.isEmpty()) {
         await this.setRegion(Region.US);
       }
