@@ -16,12 +16,12 @@ type DevicesApiServiceFactoryOptions = FactoryOptions;
 export type DevicesApiServiceInitOptions = DevicesApiServiceFactoryOptions & ApiServiceInitOptions;
 
 export function devicesApiServiceFactory(
-  cache: { DevicesApiService?: DevicesApiServiceAbstraction } & CachedServices,
+  cache: { devicesApiService?: DevicesApiServiceAbstraction } & CachedServices,
   opts: DevicesApiServiceInitOptions
 ): Promise<DevicesApiServiceAbstraction> {
   return factory(
     cache,
-    "DevicesApiService",
+    "devicesApiService",
     opts,
     async () => new DevicesApiServiceImplementation(await apiServiceFactory(cache, opts))
   );
