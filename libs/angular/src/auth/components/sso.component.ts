@@ -1,5 +1,5 @@
 import { Directive } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -8,7 +8,6 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { SsoLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -17,7 +16,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 @Directive()
@@ -191,62 +189,68 @@ export class SsoComponent {
       this.formPromise = this.authService.logIn(credentials);
       const response = await this.formPromise;
 
-      const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
-        FeatureFlag.TrustedDeviceEncryption
-      );
+      // const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
+      //   FeatureFlag.TrustedDeviceEncryption
+      // );
 
-      const accountDecryptionOptions: AccountDecryptionOptions =
-        await this.stateService.getAccountDecryptionOptions();
+      // const accountDecryptionOptions: AccountDecryptionOptions =
+      //   await this.stateService.getAccountDecryptionOptions();
+
+      // else if (
+      //   trustedDeviceEncryptionFeatureActive &&
+      //   accountDecryptionOptions.trustedDeviceOption !== undefined
+      // ) {
+      //   this.router.navigate([this.trustedDeviceEncRoute], {
+      //     queryParams: {
+      //       identifier: orgIdFromState,
+      //     },
+      //   });
+      // }
+
+      // Functionize all pathways
+      // 2FA
+      // TDE
+      // -- Set Password
+      // -- Force Password Reset
+      // -- Go to login decryption opts
+      //    (if already was existing user with TDE on and user key set in mem, lock guard navigates to vault)
+
+      // Non TDE
+      // -- Set Password
+      // -- Force Password Reset
+      // -- Standard Success Route
 
       if (response.requiresTwoFactor) {
-        if (this.onSuccessfulLoginTwoFactorNavigate != null) {
-          await this.onSuccessfulLoginTwoFactorNavigate();
-        } else {
-          this.router.navigate([this.twoFactorRoute], {
+        await this.navigateViaCallbackOrRoute(
+          this.onSuccessfulLoginTwoFactorNavigate,
+          [this.twoFactorRoute],
+          {
             queryParams: {
               identifier: orgIdFromState,
               sso: "true",
             },
-          });
-        }
-      } else if (
-        trustedDeviceEncryptionFeatureActive &&
-        accountDecryptionOptions.trustedDeviceOption !== undefined
-      ) {
-        this.router.navigate([this.trustedDeviceEncRoute], {
-          queryParams: {
-            identifier: orgIdFromState,
-          },
-        });
+          }
+        );
       } else if (response.resetMasterPassword) {
-        // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
-        // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
-        // Users are allowed to not have a MP if TDE feature enabled + TDE configured. Otherwise, they must set a MP
-        // src: https://bitwarden.atlassian.net/browse/PM-2759?focusedCommentId=39438
-        if (this.onSuccessfulLoginChangePasswordNavigate != null) {
-          await this.onSuccessfulLoginChangePasswordNavigate();
-        } else {
-          this.router.navigate([this.changePasswordRoute], {
+        await this.navigateViaCallbackOrRoute(
+          this.onSuccessfulLoginChangePasswordNavigate,
+          [this.changePasswordRoute],
+          {
             queryParams: {
               identifier: orgIdFromState,
             },
-          });
-        }
+          }
+        );
       } else if (response.forcePasswordReset !== ForceResetPasswordReason.None) {
-        if (this.onSuccessfulLoginForceResetNavigate != null) {
-          await this.onSuccessfulLoginForceResetNavigate();
-        } else {
-          this.router.navigate([this.forcePasswordResetRoute]);
-        }
+        await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginForceResetNavigate, [
+          this.forcePasswordResetRoute,
+        ]);
       } else {
         if (this.onSuccessfulLogin != null) {
           await this.onSuccessfulLogin();
         }
-        if (this.onSuccessfulLoginNavigate != null) {
-          await this.onSuccessfulLoginNavigate();
-        } else {
-          this.router.navigate([this.successRoute]);
-        }
+
+        await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
       }
     } catch (e) {
       this.logService.error(e);
@@ -261,6 +265,18 @@ export class SsoComponent {
       }
     }
     this.loggingIn = false;
+  }
+
+  private async navigateViaCallbackOrRoute(
+    callback: () => Promise<unknown>,
+    commands: any[],
+    extras?: NavigationExtras
+  ): Promise<void> {
+    if (callback) {
+      await callback();
+    } else {
+      await this.router.navigate(commands, extras);
+    }
   }
 
   private getOrgIdentifierFromState(state: string): string {
