@@ -44,6 +44,7 @@ export class InitService {
       this.nativeMessagingService.init();
       await this.stateService.init();
       await this.environmentService.setUrlsFromStorage();
+      this.environmentService.initialized = true;
       this.syncService.fullSync(true);
       (this.vaultTimeoutService as VaultTimeoutService).init(true);
       const locale = await this.stateService.getLocale();
