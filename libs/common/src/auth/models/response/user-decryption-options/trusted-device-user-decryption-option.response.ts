@@ -10,7 +10,7 @@ export interface ITrustedDeviceUserDecryptionOptionServerResponse {
 
 export class TrustedDeviceUserDecryptionOptionResponse extends BaseResponse {
   hasAdminApproval: boolean;
-  hasApprovingDevices: boolean;
+  hasLoginApprovingDevice: boolean;
   encryptedPrivateKey: EncString;
   encryptedUserKey: EncString;
 
@@ -18,7 +18,7 @@ export class TrustedDeviceUserDecryptionOptionResponse extends BaseResponse {
     super(response);
     this.hasAdminApproval = this.getResponseProperty("HasAdminApproval");
 
-    this.hasApprovingDevices = this.getResponseProperty("HasApprovingDevices");
+    this.hasLoginApprovingDevice = this.getResponseProperty("HasLoginApprovingDevice");
 
     if (response.EncryptedPrivateKey) {
       this.encryptedPrivateKey = new EncString(this.getResponseProperty("EncryptedPrivateKey"));

@@ -323,7 +323,7 @@ export class AccountDecryptionOptions {
     if (response.trustedDeviceOption) {
       accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
         response.trustedDeviceOption.hasAdminApproval,
-        response.trustedDeviceOption.hasApprovingDevices
+        response.trustedDeviceOption.hasLoginApprovingDevice
       );
     }
 
@@ -346,7 +346,7 @@ export class AccountDecryptionOptions {
     if (obj.trustedDeviceOption) {
       accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
         obj.trustedDeviceOption.hasAdminApproval,
-        obj.trustedDeviceOption.hasApprovingDevices
+        obj.trustedDeviceOption.hasLoginApprovingDevice
       );
     }
 

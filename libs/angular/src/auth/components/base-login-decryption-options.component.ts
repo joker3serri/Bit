@@ -181,7 +181,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       )
       .subscribe((email) => {
         const showApproveFromOtherDeviceBtn =
-          accountDecryptionOptions?.trustedDeviceOption?.hasApprovingDevices || false;
+          accountDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;
 
         const showReqAdminApprovalBtn =
           !!accountDecryptionOptions?.trustedDeviceOption?.hasAdminApproval || false;
