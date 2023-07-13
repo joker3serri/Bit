@@ -3,7 +3,7 @@ import { EncString } from "../../../../platform/models/domain/enc-string";
 
 export interface ITrustedDeviceUserDecryptionOptionServerResponse {
   HasAdminApproval: boolean;
-  HasApprovingDevice: boolean;
+  HasLoginApprovingDevice: boolean;
   EncryptedPrivateKey?: string;
   EncryptedUserKey?: string;
 }
