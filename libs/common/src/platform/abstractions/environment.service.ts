@@ -60,11 +60,10 @@ export abstract class EnvironmentService {
   getKeyConnectorUrl: () => string;
   getScimUrl: () => string;
   setUrlsFromStorage: () => Promise<void>;
-  setUrls: (urls: Urls) => Promise<Urls>;
+  setSelfHostedUrls: (urls: Urls) => Promise<Urls>;
   setRegion: (region: Region) => Promise<void>;
   getUrls: () => Urls;
   isCloud: () => boolean;
-  isEmpty: () => boolean;
   /**
    * @remarks For desktop and browser use only.
    * For web, use PlatformUtilsService.isSelfHost()

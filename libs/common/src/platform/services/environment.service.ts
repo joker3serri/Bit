@@ -176,9 +176,8 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   async setUrlsFromStorage(): Promise<void> {
-    const region = await this.stateService.getRegion();
+    const savedRegion = await this.stateService.getRegion();
     const savedUrls = await this.stateService.getEnvironmentUrls();
-    const envUrls = new EnvironmentUrls();
 
     // In release `2023.5.0`, we set the `base` property of the environment URLs to the US web vault URL when a user clicked the "US" region.
     // This check will detect these cases and convert them to the proper region instead.
@@ -189,32 +188,24 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       return;
     }
 
-    switch (region) {
-      case Region.EU:
-        await this.setRegion(Region.EU);
-        return;
-      case Region.US:
-        await this.setRegion(Region.US);
-        return;
-      case Region.SelfHosted:
-      case null:
-      default:
-        this.baseUrl = envUrls.base = savedUrls.base;
-        this.webVaultUrl = savedUrls.webVault;
-        this.apiUrl = envUrls.api = savedUrls.api;
-        this.identityUrl = envUrls.identity = savedUrls.identity;
-        this.iconsUrl = savedUrls.icons;
-        this.notificationsUrl = savedUrls.notifications;
-        this.eventsUrl = envUrls.events = savedUrls.events;
-        this.keyConnectorUrl = savedUrls.keyConnector;
-        await this.setRegion(Region.SelfHosted);
-        // scimUrl is not saved to storage
-        this.urlsSubject.next();
-        break;
-    }
+    const region = Region[savedRegion as keyof typeof Region] ?? null;
+
+    const urls: Urls = {
+      base: savedUrls.base,
+      api: savedUrls.api,
+      identity: savedUrls.identity,
+      webVault: savedUrls.webVault,
+      icons: savedUrls.icons,
+      notifications: savedUrls.notifications,
+      events: savedUrls.events,
+      keyConnector: savedUrls.keyConnector,
+      // scimUrl is not stored
+    };
+
+    await this.setRegion(region, urls);
   }
 
-  async setUrls(urls: Urls): Promise<Urls> {
+  async setSelfHostedUrls(urls: Urls): Promise<Urls> {
     urls.base = this.formatUrl(urls.base);
     urls.webVault = this.formatUrl(urls.webVault);
     urls.api = this.formatUrl(urls.api);
@@ -223,35 +214,9 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     urls.notifications = this.formatUrl(urls.notifications);
     urls.events = this.formatUrl(urls.events);
     urls.keyConnector = this.formatUrl(urls.keyConnector);
+    urls.scim = this.formatUrl(urls.scim) ?? this.scimUrl; // scimUrl cannot be cleared
 
-    // scimUrl cannot be cleared
-    urls.scim = this.formatUrl(urls.scim) ?? this.scimUrl;
-
-    await this.stateService.setEnvironmentUrls({
-      base: urls.base,
-      api: urls.api,
-      identity: urls.identity,
-      webVault: urls.webVault,
-      icons: urls.icons,
-      notifications: urls.notifications,
-      events: urls.events,
-      keyConnector: urls.keyConnector,
-      // scimUrl is not saved to storage
-    });
-
-    this.baseUrl = urls.base;
-    this.webVaultUrl = urls.webVault;
-    this.apiUrl = urls.api;
-    this.identityUrl = urls.identity;
-    this.iconsUrl = urls.icons;
-    this.notificationsUrl = urls.notifications;
-    this.eventsUrl = urls.events;
-    this.keyConnectorUrl = urls.keyConnector;
-    this.scimUrl = urls.scim;
-
-    await this.setRegion(Region.SelfHosted);
-
-    this.urlsSubject.next();
+    await this.setRegion(Region.SelfHosted, urls);
 
     return urls;
   }
@@ -271,26 +236,30 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     };
   }
 
-  isEmpty(): boolean {
-    return (
-      this.baseUrl == null &&
-      this.webVaultUrl == null &&
-      this.apiUrl == null &&
-      this.identityUrl == null &&
-      this.iconsUrl == null &&
-      this.notificationsUrl == null &&
-      this.eventsUrl == null
-    );
-  }
+  /**
+   * Sets the in state and in the EnvironmentService, using the provided URLs for Region.SelfHosted.
+   * @param region The region to set.
+   * @param selfHostedUrls The environment URLs to set for a self-hosted region.
+   */
+  async setRegion(region: Region, selfHostedUrls?: Urls): Promise<void> {
+    region = region ?? Region.SelfHosted;
 
-  async setRegion(region: Region) {
     this.selectedRegion = region;
     await this.stateService.setRegion(region);
+
     if (region === Region.SelfHosted) {
-      // If user saves a self-hosted region with empty fields, default to US
-      if (this.isEmpty()) {
-        await this.setRegion(Region.US);
-      }
+      await this.stateService.setEnvironmentUrls({
+        base: selfHostedUrls.base,
+        api: selfHostedUrls.api,
+        identity: selfHostedUrls.identity,
+        webVault: selfHostedUrls.webVault,
+        icons: selfHostedUrls.icons,
+        notifications: selfHostedUrls.notifications,
+        events: selfHostedUrls.events,
+        keyConnector: selfHostedUrls.keyConnector,
+        // scimUrl is not saved to storage
+      });
+      this.setUrlsInternal(selfHostedUrls);
     } else {
       // If we are setting the region to EU or US, clear the self-hosted URLs
       await this.stateService.setEnvironmentUrls(new EnvironmentUrls());
@@ -311,9 +280,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.notificationsUrl = this.formatUrl(urls.notifications);
     this.eventsUrl = this.formatUrl(urls.events);
     this.keyConnectorUrl = this.formatUrl(urls.keyConnector);
-
-    // scimUrl cannot be cleared
-    this.scimUrl = this.formatUrl(urls.scim) ?? this.scimUrl;
+    this.scimUrl = this.formatUrl(urls.scim) ?? this.scimUrl; // scimUrl cannot be cleared
     this.urlsSubject.next();
   }
 
