@@ -35,7 +35,6 @@ export class SsoComponent {
   protected successRoute = "lock";
   protected trustedDeviceEncRoute = "login-initiated";
   protected changePasswordRoute = "set-password";
-  protected tdeLogin = "login-initiated";
   protected forcePasswordResetRoute = "update-temp-password";
   protected clientId: string;
   protected redirectUri: string;
@@ -207,64 +206,84 @@ export class SsoComponent {
       //   });
       // }
 
-      // Functionize all pathways
       // 2FA
       // TDE
-      // -- Set Password
+      // -- User is an owner, admin, or user with manage password reset permission + doesn't have a MP, must set MP
       // -- Force Password Reset
       // -- Go to login decryption opts
       //    (if already was existing user with TDE on and user key set in mem, lock guard navigates to vault)
 
       // Non TDE
-      // -- Set Password
+      // -- resetMasterPassword
       // -- Force Password Reset
       // -- Standard Success Route
 
       if (response.requiresTwoFactor) {
-        await this.navigateViaCallbackOrRoute(
-          this.onSuccessfulLoginTwoFactorNavigate,
-          [this.twoFactorRoute],
-          {
-            queryParams: {
-              identifier: orgIdFromState,
-              sso: "true",
-            },
-          }
-        );
+        await this.handleTwoFactorRequired(orgIdFromState);
       } else if (response.resetMasterPassword) {
-        await this.navigateViaCallbackOrRoute(
-          this.onSuccessfulLoginChangePasswordNavigate,
-          [this.changePasswordRoute],
-          {
-            queryParams: {
-              identifier: orgIdFromState,
-            },
-          }
-        );
+        // Change implies going no password -> password
+        await this.handleChangePasswordRequired(orgIdFromState);
       } else if (response.forcePasswordReset !== ForceResetPasswordReason.None) {
-        await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginForceResetNavigate, [
-          this.forcePasswordResetRoute,
-        ]);
+        await this.handleForcePasswordReset();
       } else {
-        if (this.onSuccessfulLogin != null) {
-          await this.onSuccessfulLogin();
-        }
-
-        await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
+        await this.handleSuccessfulLogin();
       }
     } catch (e) {
-      this.logService.error(e);
-
-      // TODO: Key Connector Service should pass this error message to the logout callback instead of displaying here
-      if (e.message === "Key Connector error") {
-        this.platformUtilsService.showToast(
-          "error",
-          null,
-          this.i18nService.t("ssoKeyConnectorError")
-        );
-      }
+      await this.handleLoginError(e);
     }
     this.loggingIn = false;
+  }
+
+  private async handleTwoFactorRequired(orgIdFromState: string) {
+    await this.navigateViaCallbackOrRoute(
+      this.onSuccessfulLoginTwoFactorNavigate,
+      [this.twoFactorRoute],
+      {
+        queryParams: {
+          identifier: orgIdFromState,
+          sso: "true",
+        },
+      }
+    );
+  }
+
+  private async handleChangePasswordRequired(orgIdFromState: string) {
+    await this.navigateViaCallbackOrRoute(
+      this.onSuccessfulLoginChangePasswordNavigate,
+      [this.changePasswordRoute],
+      {
+        queryParams: {
+          identifier: orgIdFromState,
+        },
+      }
+    );
+  }
+
+  private async handleForcePasswordReset() {
+    await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginForceResetNavigate, [
+      this.forcePasswordResetRoute,
+    ]);
+  }
+
+  private async handleSuccessfulLogin() {
+    if (this.onSuccessfulLogin != null) {
+      await this.onSuccessfulLogin();
+    }
+
+    await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
+  }
+
+  private async handleLoginError(e: any) {
+    this.logService.error(e);
+
+    // TODO: Key Connector Service should pass this error message to the logout callback instead of displaying here
+    if (e.message === "Key Connector error") {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("ssoKeyConnectorError")
+      );
+    }
   }
 
   private async navigateViaCallbackOrRoute(
