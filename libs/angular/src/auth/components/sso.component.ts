@@ -193,7 +193,7 @@ export class SsoComponent {
       const acctDecryptionOpts: AccountDecryptionOptions =
         await this.stateService.getAccountDecryptionOptions();
 
-      // TODO: this logic deprecates the need for response.resetMasterPassword
+      // TODO: this logic deprecates the need for response.resetMasterPassword server side
       // User must set password if they don't have one and they aren't using either TDE or key connector.
       const requireSetPassword =
         !acctDecryptionOpts.hasMasterPassword &&
@@ -210,7 +210,7 @@ export class SsoComponent {
       if (authResult.requiresTwoFactor) {
         await this.handleTwoFactorRequired(orgIdFromState);
       } else if (tdeEnabled) {
-        await this.handleTrustedDeviceEncryptionRouting(authResult, orgIdFromState);
+        await this.handleTrustedDeviceEncryptionEnabled(authResult, orgIdFromState);
       } else if (requireSetPassword) {
         // Change most likely implies going no password -> password in this case
         await this.handleChangePasswordRequired(orgIdFromState);
@@ -238,15 +238,12 @@ export class SsoComponent {
     );
   }
 
-  private async handleTrustedDeviceEncryptionRouting(
+  private async handleTrustedDeviceEncryptionEnabled(
     authResult: AuthResult,
     orgIdFromState: string
   ) {
-    // TDE
+    // TODO: figure out if this is the right place to do this
     // -- User is an owner, admin, or user with manage password reset permission + doesn't have a MP, must set MP
-    // -- Force Password Reset
-    // -- Go to login decryption opts
-    //    (if already was existing user with TDE on and user key set in mem, lock guard navigates to vault)
 
     if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
       await this.handleForcePasswordReset();
