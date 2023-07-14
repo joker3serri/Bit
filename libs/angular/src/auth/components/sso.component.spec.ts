@@ -30,6 +30,7 @@ interface SsoComponentProtected {
   changePasswordRoute: string;
   forcePasswordResetRoute: string;
   logIn(code: string, codeVerifier: string, orgIdFromState: string): Promise<AuthResult>;
+  handleLoginError(e: any): Promise<void>;
 }
 
 // The ideal scenario would be to not have to test the protected / private methods of the SsoComponent
@@ -297,6 +298,43 @@ describe("SsoComponent", () => {
 
         expect(mockLogService.error).not.toHaveBeenCalled();
       });
+    });
+
+    describe("Error scenarios", () => {
+      it("calls handleLoginError when an error is thrown during logIn", async () => {
+        const errorMessage = "Key Connector error";
+        const error = new Error(errorMessage);
+        mockAuthService.logIn.mockRejectedValue(error);
+
+        const handleLoginErrorSpy = jest.spyOn(_component, "handleLoginError");
+
+        await _component.logIn(code, codeVerifier, orgIdFromState);
+
+        expect(handleLoginErrorSpy).toHaveBeenCalledWith(error);
+      });
+    });
+  });
+
+  describe("handleLoginError(e)", () => {
+    it("logs the error and shows a toast when the error message is 'Key Connector error'", async () => {
+      const errorMessage = "Key Connector error";
+      const error = new Error(errorMessage);
+
+      mockI18nService.t.mockReturnValueOnce("ssoKeyConnectorError");
+
+      await _component.handleLoginError(error);
+
+      expect(mockLogService.error).toHaveBeenCalledTimes(1);
+      expect(mockLogService.error).toHaveBeenCalledWith(error);
+
+      expect(mockPlatformUtilsService.showToast).toHaveBeenCalledTimes(1);
+      expect(mockPlatformUtilsService.showToast).toHaveBeenCalledWith(
+        "error",
+        null,
+        "ssoKeyConnectorError"
+      );
+
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
   });
 });
