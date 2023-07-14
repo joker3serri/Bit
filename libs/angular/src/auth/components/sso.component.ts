@@ -8,6 +8,7 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { SsoLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -187,11 +188,7 @@ export class SsoComponent {
         orgIdFromState
       );
       this.formPromise = this.authService.logIn(credentials);
-      const response = await this.formPromise;
-
-      // const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
-      //   FeatureFlag.TrustedDeviceEncryption
-      // );
+      const authResult = await this.formPromise;
 
       const acctDecryptionOpts: AccountDecryptionOptions =
         await this.stateService.getAccountDecryptionOptions();
@@ -202,35 +199,22 @@ export class SsoComponent {
         !acctDecryptionOpts.hasMasterPassword &&
         acctDecryptionOpts.keyConnectorOption === undefined;
 
-      // else if (
-      //   trustedDeviceEncryptionFeatureActive &&
-      //   accountDecryptionOptions.trustedDeviceOption !== undefined
-      // ) {
-      //   this.router.navigate([this.trustedDeviceEncRoute], {
-      //     queryParams: {
-      //       identifier: orgIdFromState,
-      //     },
-      //   });
-      // }
+      const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
+        FeatureFlag.TrustedDeviceEncryption
+      );
 
-      // 2FA
-      // TDE
-      // -- User is an owner, admin, or user with manage password reset permission + doesn't have a MP, must set MP
-      // -- Force Password Reset
-      // -- Go to login decryption opts
-      //    (if already was existing user with TDE on and user key set in mem, lock guard navigates to vault)
+      const tdeEnabled =
+        trustedDeviceEncryptionFeatureActive &&
+        acctDecryptionOpts.trustedDeviceOption !== undefined;
 
-      // Non TDE
-      // -- resetMasterPassword
-      // -- Force Password Reset
-      // -- Standard Success Route
-
-      if (response.requiresTwoFactor) {
+      if (authResult.requiresTwoFactor) {
         await this.handleTwoFactorRequired(orgIdFromState);
+      } else if (tdeEnabled) {
+        await this.handleTrustedDeviceEncryptionRouting(authResult, orgIdFromState);
       } else if (requireSetPassword) {
-        // Change implies going no password -> password
+        // Change most likely implies going no password -> password in this case
         await this.handleChangePasswordRequired(orgIdFromState);
-      } else if (response.forcePasswordReset !== ForceResetPasswordReason.None) {
+      } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
         await this.handleForcePasswordReset();
       } else {
         await this.handleSuccessfulLogin();
@@ -252,6 +236,27 @@ export class SsoComponent {
         },
       }
     );
+  }
+
+  private async handleTrustedDeviceEncryptionRouting(
+    authResult: AuthResult,
+    orgIdFromState: string
+  ) {
+    // TDE
+    // -- User is an owner, admin, or user with manage password reset permission + doesn't have a MP, must set MP
+    // -- Force Password Reset
+    // -- Go to login decryption opts
+    //    (if already was existing user with TDE on and user key set in mem, lock guard navigates to vault)
+
+    if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+      await this.handleForcePasswordReset();
+    } else {
+      this.router.navigate([this.trustedDeviceEncRoute], {
+        queryParams: {
+          identifier: orgIdFromState,
+        },
+      });
+    }
   }
 
   private async handleChangePasswordRequired(orgIdFromState: string) {

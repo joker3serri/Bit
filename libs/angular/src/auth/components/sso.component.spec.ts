@@ -204,6 +204,58 @@ describe("SsoComponent", () => {
       });
     });
 
+    describe("Trusted Device Encryption scenarios", () => {
+      beforeEach(() => {
+        mockConfigService.getFeatureFlagBool.mockResolvedValue(true); // TDE enabled
+
+        mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+          mockAcctDecryptionOpts.withMasterPasswordAndTrustedDevice
+        );
+      });
+
+      describe("Given Trusted Device Encryption is enabled and forcePasswordReset is not required", () => {
+        let authResult;
+        beforeEach(() => {
+          authResult = new AuthResult();
+          authResult.forcePasswordReset = ForceResetPasswordReason.None;
+          mockAuthService.logIn.mockResolvedValue(authResult);
+        });
+
+        it("navigates to the component's defined trusted device encryption route when login is successful", async () => {
+          await _component.logIn(code, codeVerifier, orgIdFromState);
+
+          expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
+          expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+          expect(mockRouter.navigate).toHaveBeenCalledWith([_component.trustedDeviceEncRoute], {
+            queryParams: {
+              identifier: orgIdFromState,
+            },
+          });
+          expect(mockLogService.error).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("Given Trusted Device Encryption is enabled and forcePasswordReset is required", () => {
+        let authResult;
+        beforeEach(() => {
+          authResult = new AuthResult();
+          authResult.forcePasswordReset = ForceResetPasswordReason.AdminForcePasswordReset;
+          mockAuthService.logIn.mockResolvedValue(authResult);
+        });
+
+        it("navigates to the component's defined force password reset route when login is successful", async () => {
+          await _component.logIn(code, codeVerifier, orgIdFromState);
+
+          expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
+          expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+          expect(mockRouter.navigate).toHaveBeenCalledWith(
+            [_component.forcePasswordResetRoute],
+            undefined
+          );
+          expect(mockLogService.error).not.toHaveBeenCalled();
+        });
+      });
+    });
     describe("Reset Master Password scenarios", () => {
       beforeEach(() => {
         const authResult = new AuthResult();
