@@ -32,6 +32,10 @@ interface SsoComponentProtected {
   logIn(code: string, codeVerifier: string, orgIdFromState: string): Promise<AuthResult>;
 }
 
+// The ideal scenario would be to not have to test the protected / private methods of the SsoComponent
+// but that will require a refactor of the SsoComponent class is out of scope for now.
+// This test suite allows us to be sure that the new Trusted Device encryption flows + mild refactors
+// of the SsoComponent don't break the existing post login flows.
 describe("SsoComponent", () => {
   let component: TestSsoComponent;
   let _component: SsoComponentProtected;
@@ -255,6 +259,7 @@ describe("SsoComponent", () => {
         expect(mockAuthService.logIn).toHaveBeenCalled();
 
         expect(mockOnSuccessfulLoginNavigate).not.toHaveBeenCalled();
+        expect(mockOnSuccessfulLogin).not.toHaveBeenCalled();
 
         expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
         expect(mockRouter.navigate).toHaveBeenCalledWith([_component.successRoute], undefined);
