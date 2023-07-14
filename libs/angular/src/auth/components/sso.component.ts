@@ -16,6 +16,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 @Directive()
@@ -192,8 +193,14 @@ export class SsoComponent {
       //   FeatureFlag.TrustedDeviceEncryption
       // );
 
-      // const accountDecryptionOptions: AccountDecryptionOptions =
-      //   await this.stateService.getAccountDecryptionOptions();
+      const acctDecryptionOpts: AccountDecryptionOptions =
+        await this.stateService.getAccountDecryptionOptions();
+
+      // TODO: this logic deprecates the need for response.resetMasterPassword
+      // User must set password if they don't have one and they aren't using either TDE or key connector.
+      const requireSetPassword =
+        !acctDecryptionOpts.hasMasterPassword &&
+        acctDecryptionOpts.keyConnectorOption === undefined;
 
       // else if (
       //   trustedDeviceEncryptionFeatureActive &&
@@ -220,7 +227,7 @@ export class SsoComponent {
 
       if (response.requiresTwoFactor) {
         await this.handleTwoFactorRequired(orgIdFromState);
-      } else if (response.resetMasterPassword) {
+      } else if (requireSetPassword) {
         // Change implies going no password -> password
         await this.handleChangePasswordRequired(orgIdFromState);
       } else if (response.forcePasswordReset !== ForceResetPasswordReason.None) {
