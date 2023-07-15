@@ -28,6 +28,9 @@ export class CipherExport {
     req.identity = null;
     req.reprompt = CipherRepromptType.None;
     req.passwordHistory = [];
+    req.creationDate = null;
+    req.revisionDate = null;
+    req.deletedDate = null;
     return req;
   }
 
@@ -68,6 +71,10 @@ export class CipherExport {
     if (req.passwordHistory != null) {
       view.passwordHistory = req.passwordHistory.map((ph) => PasswordHistoryExport.toView(ph));
     }
+
+    view.creationDate = req.creationDate;
+    view.revisionDate = req.revisionDate;
+    view.deletedDate = req.deletedDate;
     return view;
   }
 
@@ -104,6 +111,10 @@ export class CipherExport {
     if (req.passwordHistory != null) {
       domain.passwordHistory = req.passwordHistory.map((ph) => PasswordHistoryExport.toDomain(ph));
     }
+
+    domain.creationDate = req.creationDate;
+    domain.revisionDate = req.revisionDate;
+    domain.deletedDate = req.deletedDate;
     return domain;
   }
 
@@ -121,6 +132,9 @@ export class CipherExport {
   identity: IdentityExport;
   reprompt: CipherRepromptType;
   passwordHistory: PasswordHistoryExport[] = null;
+  revisionDate: Date = null;
+  creationDate: Date = null;
+  deletedDate: Date = null;
 
   // Use build method instead of ctor so that we can control order of JSON stringify for pretty print
   build(o: CipherView | CipherDomain) {
@@ -169,5 +183,9 @@ export class CipherExport {
         this.passwordHistory = o.passwordHistory.map((ph) => new PasswordHistoryExport(ph));
       }
     }
+
+    this.creationDate = o.creationDate;
+    this.revisionDate = o.revisionDate;
+    this.deletedDate = o.deletedDate;
   }
 }
