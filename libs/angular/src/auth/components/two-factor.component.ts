@@ -204,55 +204,80 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       this.captchaToken
     );
     const response: AuthResult = await this.formPromise;
+
+    await this.handleLoginResponse(response);
+  }
+
+  // const ssoTo2faFlowActive = this.route.snapshot.queryParamMap.get("sso") === "true";
+  // const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
+  //   FeatureFlag.TrustedDeviceEncryption
+  // );
+
+  // const accountDecryptionOptions: AccountDecryptionOptions =
+  //   await this.stateService.getAccountDecryptionOptions();
+
+  // if (
+  //   ssoTo2faFlowActive &&
+  //   trustedDeviceEncryptionFeatureActive &&
+  //   accountDecryptionOptions.trustedDeviceOption !== undefined
+  // ) {
+  //   this.router.navigate([this.trustedDeviceEncRoute]);
+  // } else {
+
+  private async handleLoginResponse(response: AuthResult) {
     if (this.handleCaptchaRequired(response)) {
       return;
     }
+    await this.handleOnSuccessfulLogin();
+    this.handleResetMasterPassword(response);
+    this.handleForcePasswordReset(response);
+
+    this.loginService.clearValues();
+
+    await this.handleOnSuccessfulLoginNavigate();
+  }
+
+  private async handleOnSuccessfulLogin() {
     if (this.onSuccessfulLogin != null) {
       this.loginService.clearValues();
       // Note: awaiting this will currently cause a hang on desktop & browser as they will wait for a full sync to complete
       // before nagivating to the success route.
       this.onSuccessfulLogin();
     }
+  }
+
+  private handleResetMasterPassword(response: AuthResult) {
+    // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
+    // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
+    // Users are allowed to not have a MP if TDE feature enabled + TDE configured. Otherwise, they must set a MP
+    // src: https://bitwarden.atlassian.net/browse/PM-2759?focusedCommentId=39438
     if (response.resetMasterPassword) {
-      // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
-      // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
-      // Users are allowed to not have a MP if TDE feature enabled + TDE configured. Otherwise, they must set a MP
-      // src: https://bitwarden.atlassian.net/browse/PM-2759?focusedCommentId=39438
       this.successRoute = "set-password";
     }
+  }
+
+  private handleForcePasswordReset(response: AuthResult) {
     if (response.forcePasswordReset !== ForceResetPasswordReason.None) {
       this.successRoute = "update-temp-password";
     }
+  }
+
+  private async handleOnSuccessfulLoginNavigate() {
     if (this.onSuccessfulLoginNavigate != null) {
-      this.loginService.clearValues();
       // TODO: this function is defined when coming SSO with 2FA for authenticator app
       // see two goAfterLogIn functions (one in web login.component.ts and one in web two factor component.ts )
       await this.onSuccessfulLoginNavigate();
     } else {
-      this.loginService.clearValues();
-
-      // const ssoTo2faFlowActive = this.route.snapshot.queryParamMap.get("sso") === "true";
-      // const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
-      //   FeatureFlag.TrustedDeviceEncryption
-      // );
-
-      // const accountDecryptionOptions: AccountDecryptionOptions =
-      //   await this.stateService.getAccountDecryptionOptions();
-
-      // if (
-      //   ssoTo2faFlowActive &&
-      //   trustedDeviceEncryptionFeatureActive &&
-      //   accountDecryptionOptions.trustedDeviceOption !== undefined
-      // ) {
-      //   this.router.navigate([this.trustedDeviceEncRoute]);
-      // } else {
-      this.router.navigate([this.successRoute], {
-        queryParams: {
-          identifier: this.identifier,
-        },
-      });
-      // }
+      this.navigateToSuccessRoute();
     }
+  }
+
+  private navigateToSuccessRoute() {
+    this.router.navigate([this.successRoute], {
+      queryParams: {
+        identifier: this.identifier,
+      },
+    });
   }
 
   async sendEmail(doToast: boolean) {
