@@ -128,7 +128,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
       : VaultTimeoutAction.Lock;
   }
 
-  async getAvailableVaultTimeoutActions(): Promise<VaultTimeoutAction[]> {
+  private async getAvailableVaultTimeoutActions(): Promise<VaultTimeoutAction[]> {
     const availableActions = [VaultTimeoutAction.LogOut];
 
     const canLock =
