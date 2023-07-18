@@ -257,6 +257,8 @@ export class SsoComponent {
     } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
       await this.handleForcePasswordReset();
     } else {
+      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
+      //  their user key, the lock guard will redirect them to the vault)
       this.router.navigate([this.trustedDeviceEncRoute], {
         queryParams: {
           identifier: orgIdFromState,
