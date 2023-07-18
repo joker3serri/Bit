@@ -7,6 +7,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { SsoLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
+import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -193,19 +194,14 @@ export class SsoComponent {
       const acctDecryptionOpts: AccountDecryptionOptions =
         await this.stateService.getAccountDecryptionOptions();
 
-      // TODO: this logic deprecates the need for response.resetMasterPassword server side
       // User must set password if they don't have one and they aren't using either TDE or key connector.
       const requireSetPassword =
         !acctDecryptionOpts.hasMasterPassword &&
         acctDecryptionOpts.keyConnectorOption === undefined;
 
-      const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
-        FeatureFlag.TrustedDeviceEncryption
+      const tdeEnabled = await this.isTrustedDeviceEncEnabled(
+        acctDecryptionOpts.trustedDeviceOption
       );
-
-      const tdeEnabled =
-        trustedDeviceEncryptionFeatureActive &&
-        acctDecryptionOpts.trustedDeviceOption !== undefined;
 
       if (authResult.requiresTwoFactor) {
         await this.handleTwoFactorRequired(orgIdFromState);
@@ -227,6 +223,16 @@ export class SsoComponent {
       await this.handleLoginError(e);
     }
     this.loggingIn = false;
+  }
+
+  private async isTrustedDeviceEncEnabled(
+    trustedDeviceOption: TrustedDeviceUserDecryptionOption
+  ): Promise<boolean> {
+    const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
+      FeatureFlag.TrustedDeviceEncryption
+    );
+
+    return trustedDeviceEncryptionFeatureActive && trustedDeviceOption !== undefined;
   }
 
   private async handleTwoFactorRequired(orgIdFromState: string) {
