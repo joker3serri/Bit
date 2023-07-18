@@ -108,7 +108,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
 
       this.router.navigate([this.successRoute], {
         queryParams: {
-          identifier: this.identifier,
+          identifier: this.orgIdentifier,
         },
       });
     }
