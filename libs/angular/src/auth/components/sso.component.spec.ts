@@ -285,10 +285,11 @@ describe("SsoComponent", () => {
 
           expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
           expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-          expect(mockRouter.navigate).toHaveBeenCalledWith(
-            [_component.forcePasswordResetRoute],
-            undefined
-          );
+          expect(mockRouter.navigate).toHaveBeenCalledWith([_component.forcePasswordResetRoute], {
+            queryParams: {
+              identifier: orgIdFromState,
+            },
+          });
           expect(mockLogService.error).not.toHaveBeenCalled();
         });
       });
@@ -384,10 +385,11 @@ describe("SsoComponent", () => {
           expect(mockOnSuccessfulLoginForceResetNavigate).not.toHaveBeenCalled();
 
           expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-          expect(mockRouter.navigate).toHaveBeenCalledWith(
-            [_component.forcePasswordResetRoute],
-            undefined
-          );
+          expect(mockRouter.navigate).toHaveBeenCalledWith([_component.forcePasswordResetRoute], {
+            queryParams: {
+              identifier: orgIdFromState,
+            },
+          });
 
           expect(mockLogService.error).not.toHaveBeenCalled();
         });
