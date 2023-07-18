@@ -215,7 +215,7 @@ export class SsoComponent {
         // Change implies going no password -> password in this case
         await this.handleChangePasswordRequired(orgIdFromState);
       } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-        await this.handleForcePasswordReset();
+        await this.handleForcePasswordReset(orgIdFromState);
       } else {
         await this.handleSuccessfulLogin();
       }
@@ -261,7 +261,7 @@ export class SsoComponent {
       // Change implies going no password -> password in this case
       await this.handleChangePasswordRequired(orgIdFromState);
     } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-      await this.handleForcePasswordReset();
+      await this.handleForcePasswordReset(orgIdFromState);
     } else {
       // Navigate to TDE page (if user was on trusted device and TDE has decrypted
       //  their user key, the lock guard will redirect them to the vault)
@@ -285,10 +285,16 @@ export class SsoComponent {
     );
   }
 
-  private async handleForcePasswordReset() {
-    await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginForceResetNavigate, [
-      this.forcePasswordResetRoute,
-    ]);
+  private async handleForcePasswordReset(orgIdFromState: string) {
+    await this.navigateViaCallbackOrRoute(
+      this.onSuccessfulLoginForceResetNavigate,
+      [this.forcePasswordResetRoute],
+      {
+        queryParams: {
+          identifier: orgIdFromState,
+        },
+      }
+    );
   }
 
   private async handleSuccessfulLogin() {
