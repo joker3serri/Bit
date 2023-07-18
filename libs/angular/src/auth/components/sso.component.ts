@@ -210,9 +210,13 @@ export class SsoComponent {
       if (authResult.requiresTwoFactor) {
         await this.handleTwoFactorRequired(orgIdFromState);
       } else if (tdeEnabled) {
-        await this.handleTrustedDeviceEncryptionEnabled(authResult, orgIdFromState);
+        await this.handleTrustedDeviceEncryptionEnabled(
+          authResult,
+          orgIdFromState,
+          acctDecryptionOpts
+        );
       } else if (requireSetPassword) {
-        // Change most likely implies going no password -> password in this case
+        // Change implies going no password -> password in this case
         await this.handleChangePasswordRequired(orgIdFromState);
       } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
         await this.handleForcePasswordReset();
@@ -240,12 +244,17 @@ export class SsoComponent {
 
   private async handleTrustedDeviceEncryptionEnabled(
     authResult: AuthResult,
-    orgIdFromState: string
+    orgIdFromState: string,
+    acctDecryptionOpts: AccountDecryptionOptions
   ) {
-    // TODO: figure out if this is the right place to do this
-    // -- User is an owner, admin, or user with manage password reset permission + doesn't have a MP, must set MP
-
-    if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+    // If user doesn't have a MP, but has reset password permission, they must set a MP
+    if (
+      !acctDecryptionOpts.hasMasterPassword &&
+      acctDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
+    ) {
+      // Change implies going no password -> password in this case
+      await this.handleChangePasswordRequired(orgIdFromState);
+    } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
       await this.handleForcePasswordReset();
     } else {
       this.router.navigate([this.trustedDeviceEncRoute], {
