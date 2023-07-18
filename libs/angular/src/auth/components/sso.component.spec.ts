@@ -21,50 +21,6 @@ import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/doma
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { SsoComponent } from "./sso.component";
-
-export const mockAcctDecryptionOpts = {
-  noMasterPassword: new AccountDecryptionOptions({
-    hasMasterPassword: false,
-    trustedDeviceOption: undefined,
-    keyConnectorOption: undefined,
-  }),
-  withMasterPassword: new AccountDecryptionOptions({
-    hasMasterPassword: true,
-    trustedDeviceOption: undefined,
-    keyConnectorOption: undefined,
-  }),
-  withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
-    hasMasterPassword: true,
-    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
-    keyConnectorOption: undefined,
-  }),
-  withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
-    hasMasterPassword: true,
-    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
-    keyConnectorOption: undefined,
-  }),
-  withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
-    hasMasterPassword: true,
-    trustedDeviceOption: undefined,
-    keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
-  }),
-  noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
-    hasMasterPassword: false,
-    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
-    keyConnectorOption: undefined,
-  }),
-  noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
-    hasMasterPassword: false,
-    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
-    keyConnectorOption: undefined,
-  }),
-  noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
-    hasMasterPassword: false,
-    trustedDeviceOption: undefined,
-    keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
-  }),
-};
-
 // test component that extends the SsoComponent
 @Component({})
 class TestSsoComponent extends SsoComponent {}
@@ -113,6 +69,49 @@ describe("SsoComponent", () => {
   let mockOnSuccessfulLoginTwoFactorNavigate = jest.fn();
   let mockOnSuccessfulLoginChangePasswordNavigate = jest.fn();
   let mockOnSuccessfulLoginForceResetNavigate = jest.fn();
+
+  const mockAcctDecryptionOpts = {
+    noMasterPassword: new AccountDecryptionOptions({
+      hasMasterPassword: false,
+      trustedDeviceOption: undefined,
+      keyConnectorOption: undefined,
+    }),
+    withMasterPassword: new AccountDecryptionOptions({
+      hasMasterPassword: true,
+      trustedDeviceOption: undefined,
+      keyConnectorOption: undefined,
+    }),
+    withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
+      hasMasterPassword: true,
+      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+      keyConnectorOption: undefined,
+    }),
+    withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+      hasMasterPassword: true,
+      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
+      keyConnectorOption: undefined,
+    }),
+    withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
+      hasMasterPassword: true,
+      trustedDeviceOption: undefined,
+      keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
+    }),
+    noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
+      hasMasterPassword: false,
+      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+      keyConnectorOption: undefined,
+    }),
+    noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+      hasMasterPassword: false,
+      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
+      keyConnectorOption: undefined,
+    }),
+    noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
+      hasMasterPassword: false,
+      trustedDeviceOption: undefined,
+      keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
+    }),
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -348,6 +347,7 @@ describe("SsoComponent", () => {
         });
       });
     });
+
     describe("Set Master Password scenarios", () => {
       beforeEach(() => {
         const authResult = new AuthResult();
@@ -366,7 +366,7 @@ describe("SsoComponent", () => {
         testOnSuccessfulLoginChangePasswordNavigate();
       });
 
-      it("calls authService.logIn and does not navigate to the change password route when the user has key connector even if user has no master password", async () => {
+      it("does not navigate to the change password route when the user has key connector even if user has no master password", async () => {
         mockStateService.getAccountDecryptionOptions.mockResolvedValue(
           mockAcctDecryptionOpts.noMasterPasswordWithKeyConnector
         );
