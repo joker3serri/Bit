@@ -51,7 +51,8 @@
           <input bitInput formControlName="userSeats" type="number" />
           <bit-hint>{{ "userSeatsHowManyDesc" | i18n }}</bit-hint>
         </bit-form-field>
-
+      </div>
+      <div *ngIf="selectedPlan.hasAdditionalServiceAccountOption" class="tw-w-1/2">
         <bit-form-field>
           <bit-label>{{ "additionalServiceAccounts" | i18n }}</bit-label>
           <input bitInput formControlName="additionalServiceAccounts" type="number" />
