@@ -9,6 +9,7 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -50,7 +51,8 @@ export class LockComponent extends BaseLockComponent {
     policyService: InternalPolicyService,
     passwordStrengthService: PasswordStrengthServiceAbstraction,
     private authService: AuthService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogServiceAbstraction,
+    deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {
     super(
       router,
@@ -69,7 +71,8 @@ export class LockComponent extends BaseLockComponent {
       policyApiService,
       policyService,
       passwordStrengthService,
-      dialogService
+      dialogService,
+      deviceTrustCryptoService
     );
     this.successRoute = "/tabs/current";
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;
@@ -81,7 +84,7 @@ export class LockComponent extends BaseLockComponent {
       (await this.stateService.getDisableAutoBiometricsPrompt()) ?? true;
 
     window.setTimeout(async () => {
-      document.getElementById(this.pinLock ? "pin" : "masterPassword").focus();
+      document.getElementById(this.pinEnabled ? "pin" : "masterPassword").focus();
       if (
         this.biometricLock &&
         !disableAutoBiometricsPrompt &&
@@ -93,7 +96,7 @@ export class LockComponent extends BaseLockComponent {
     }, 100);
   }
 
-  async unlockBiometric(): Promise<boolean> {
+  override async unlockBiometric(): Promise<boolean> {
     if (!this.biometricLock) {
       return;
     }

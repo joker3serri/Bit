@@ -15,7 +15,6 @@ import { NotificationsService } from "@bitwarden/common/abstractions/notificatio
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -31,6 +30,7 @@ import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-con
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -440,20 +440,13 @@ function getBgService<T>(service: keyof MainBackground) {
         logService: LogServiceAbstraction,
         stateMigrationService: StateMigrationService
       ) => {
-        // hack to share the disk cache between the two contexts.
-        // TODO: we need to figure out a better way of sharing/syncing
-        // the disk cache
-        const bgStateService = getBgService<StateServiceAbstraction>("stateService");
-        const bgDiskCache = bgStateService().accountDiskCache$;
         return new BrowserStateService(
           storageService,
           secureStorageService,
           memoryStorageService,
           logService,
           stateMigrationService,
-          new StateFactory(GlobalState, Account),
-          true,
-          bgDiskCache
+          new StateFactory(GlobalState, Account)
         );
       },
       deps: [

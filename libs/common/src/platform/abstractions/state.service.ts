@@ -41,7 +41,6 @@ export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
   activeAccount$: Observable<string>;
   activeAccountUnlocked$: Observable<boolean>;
-  accountDiskCache$: Observable<Record<string, T>>;
 
   addAccount: (account: T) => Promise<void>;
   setActiveUser: (userId: string) => Promise<void>;
@@ -263,6 +262,8 @@ export abstract class StateService<T extends Account = Account> {
   setDuckDuckGoSharedKey: (value: string, options?: StorageOptions) => Promise<void>;
   getDeviceKey: (options?: StorageOptions) => Promise<DeviceKey | null>;
   setDeviceKey: (value: DeviceKey, options?: StorageOptions) => Promise<void>;
+  getShouldTrustDevice: (options?: StorageOptions) => Promise<boolean | null>;
+  setShouldTrustDevice: (value: boolean, options?: StorageOptions) => Promise<void>;
   getAccountDecryptionOptions: (
     options?: StorageOptions
   ) => Promise<AccountDecryptionOptions | null>;
