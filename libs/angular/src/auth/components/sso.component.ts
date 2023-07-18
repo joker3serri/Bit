@@ -179,14 +179,14 @@ export class SsoComponent {
     return authorizeUrl;
   }
 
-  private async logIn(code: string, codeVerifier: string, orgIdFromState: string) {
+  private async logIn(code: string, codeVerifier: string, orgIdentifier: string) {
     this.loggingIn = true;
     try {
       const credentials = new SsoLogInCredentials(
         code,
         codeVerifier,
         this.redirectUri,
-        orgIdFromState
+        orgIdentifier
       );
       this.formPromise = this.authService.logIn(credentials);
       const authResult = await this.formPromise;
@@ -204,18 +204,18 @@ export class SsoComponent {
       );
 
       if (authResult.requiresTwoFactor) {
-        await this.handleTwoFactorRequired(orgIdFromState);
+        await this.handleTwoFactorRequired(orgIdentifier);
       } else if (tdeEnabled) {
         await this.handleTrustedDeviceEncryptionEnabled(
           authResult,
-          orgIdFromState,
+          orgIdentifier,
           acctDecryptionOpts
         );
       } else if (requireSetPassword) {
         // Change implies going no password -> password in this case
-        await this.handleChangePasswordRequired(orgIdFromState);
+        await this.handleChangePasswordRequired(orgIdentifier);
       } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-        await this.handleForcePasswordReset(orgIdFromState);
+        await this.handleForcePasswordReset(orgIdentifier);
       } else {
         await this.handleSuccessfulLogin();
       }
@@ -235,13 +235,13 @@ export class SsoComponent {
     return trustedDeviceEncryptionFeatureActive && trustedDeviceOption !== undefined;
   }
 
-  private async handleTwoFactorRequired(orgIdFromState: string) {
+  private async handleTwoFactorRequired(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
       this.onSuccessfulLoginTwoFactorNavigate,
       [this.twoFactorRoute],
       {
         queryParams: {
-          identifier: orgIdFromState,
+          identifier: orgIdentifier,
           sso: "true",
         },
       }
@@ -250,7 +250,7 @@ export class SsoComponent {
 
   private async handleTrustedDeviceEncryptionEnabled(
     authResult: AuthResult,
-    orgIdFromState: string,
+    orgIdentifier: string,
     acctDecryptionOpts: AccountDecryptionOptions
   ) {
     // If user doesn't have a MP, but has reset password permission, they must set a MP
@@ -259,39 +259,39 @@ export class SsoComponent {
       acctDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
     ) {
       // Change implies going no password -> password in this case
-      await this.handleChangePasswordRequired(orgIdFromState);
+      await this.handleChangePasswordRequired(orgIdentifier);
     } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-      await this.handleForcePasswordReset(orgIdFromState);
+      await this.handleForcePasswordReset(orgIdentifier);
     } else {
       // Navigate to TDE page (if user was on trusted device and TDE has decrypted
       //  their user key, the lock guard will redirect them to the vault)
       this.router.navigate([this.trustedDeviceEncRoute], {
         queryParams: {
-          identifier: orgIdFromState,
+          identifier: orgIdentifier,
         },
       });
     }
   }
 
-  private async handleChangePasswordRequired(orgIdFromState: string) {
+  private async handleChangePasswordRequired(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
       this.onSuccessfulLoginChangePasswordNavigate,
       [this.changePasswordRoute],
       {
         queryParams: {
-          identifier: orgIdFromState,
+          identifier: orgIdentifier,
         },
       }
     );
   }
 
-  private async handleForcePasswordReset(orgIdFromState: string) {
+  private async handleForcePasswordReset(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
       this.onSuccessfulLoginForceResetNavigate,
       [this.forcePasswordResetRoute],
       {
         queryParams: {
-          identifier: orgIdFromState,
+          identifier: orgIdentifier,
         },
       }
     );
