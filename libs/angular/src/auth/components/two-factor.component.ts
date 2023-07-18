@@ -1,5 +1,5 @@
 import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import * as DuoWebSDK from "duo_web_sdk";
 import { first } from "rxjs/operators";
 
@@ -12,11 +12,12 @@ import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
+import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
 import { TwoFactorProviders } from "@bitwarden/common/auth/services/two-factor.service";
 import { WebAuthnIFrame } from "@bitwarden/common/auth/webauthn-iframe";
-// import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -24,7 +25,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-// import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
+import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
@@ -43,13 +44,16 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   twoFactorEmail: string = null;
   formPromise: Promise<any>;
   emailPromise: Promise<any>;
-  identifier: string = null;
+  orgIdentifier: string = null;
   onSuccessfulLogin: () => Promise<any>;
   onSuccessfulLoginNavigate: () => Promise<any>;
 
   protected loginRoute = "login";
-  protected successRoute = "vault";
+
   protected trustedDeviceEncRoute = "login-initiated";
+  protected changePasswordRoute = "set-password";
+  protected forcePasswordResetRoute = "update-temp-password";
+  protected successRoute = "vault";
 
   constructor(
     protected authService: AuthService,
@@ -79,7 +83,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
 
     this.route.queryParams.pipe(first()).subscribe((qParams) => {
       if (qParams.identifier != null) {
-        this.identifier = qParams.identifier;
+        this.orgIdentifier = qParams.identifier;
       }
     });
 
@@ -203,38 +207,45 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       new TokenTwoFactorRequest(this.selectedProviderType, this.token, this.remember),
       this.captchaToken
     );
-    const response: AuthResult = await this.formPromise;
+    const authResult: AuthResult = await this.formPromise;
 
-    await this.handleLoginResponse(response);
+    await this.handleLoginResponse(authResult);
   }
 
-  // const ssoTo2faFlowActive = this.route.snapshot.queryParamMap.get("sso") === "true";
-  // const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
-  //   FeatureFlag.TrustedDeviceEncryption
-  // );
-
-  // const accountDecryptionOptions: AccountDecryptionOptions =
-  //   await this.stateService.getAccountDecryptionOptions();
-
-  // if (
-  //   ssoTo2faFlowActive &&
-  //   trustedDeviceEncryptionFeatureActive &&
-  //   accountDecryptionOptions.trustedDeviceOption !== undefined
-  // ) {
-  //   this.router.navigate([this.trustedDeviceEncRoute]);
-  // } else {
-
-  private async handleLoginResponse(response: AuthResult) {
-    if (this.handleCaptchaRequired(response)) {
+  private async handleLoginResponse(authResult: AuthResult) {
+    if (this.handleCaptchaRequired(authResult)) {
       return;
     }
+
+    // Note: calling this here is different from the SSO component.
+    // The SsoComponent only executes this logic as part of the handleSuccessfulLogin logic.
     await this.handleOnSuccessfulLogin();
-    this.handleResetMasterPassword(response);
-    this.handleForcePasswordReset(response);
 
     this.loginService.clearValues();
 
-    await this.handleOnSuccessfulLoginNavigate();
+    const acctDecryptionOpts: AccountDecryptionOptions =
+      await this.stateService.getAccountDecryptionOptions();
+
+    // User must set password if they don't have one and they aren't using either TDE or key connector.
+    const requireSetPassword =
+      !acctDecryptionOpts.hasMasterPassword && acctDecryptionOpts.keyConnectorOption === undefined;
+
+    const tdeEnabled = await this.isTrustedDeviceEncEnabled(acctDecryptionOpts.trustedDeviceOption);
+
+    if (tdeEnabled) {
+      await this.handleTrustedDeviceEncryptionEnabled(
+        authResult,
+        this.orgIdentifier,
+        acctDecryptionOpts
+      );
+    } else if (requireSetPassword) {
+      // Change implies going no password -> password in this case
+      await this.handleChangePasswordRequired(this.orgIdentifier);
+    } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+      await this.handleForcePasswordReset(this.orgIdentifier);
+    } else {
+      await this.handleSuccessfulLogin();
+    }
   }
 
   private async handleOnSuccessfulLogin() {
@@ -246,38 +257,76 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     }
   }
 
-  private handleResetMasterPassword(response: AuthResult) {
-    // TODO: for TDE, we are going to deprecate using response.resetMasterPassword
-    // and instead rely on accountDecryptionOptions to determine if the user needs to set a password
-    // Users are allowed to not have a MP if TDE feature enabled + TDE configured. Otherwise, they must set a MP
-    // src: https://bitwarden.atlassian.net/browse/PM-2759?focusedCommentId=39438
-    if (response.resetMasterPassword) {
-      this.successRoute = "set-password";
-    }
+  private async isTrustedDeviceEncEnabled(
+    trustedDeviceOption: TrustedDeviceUserDecryptionOption
+  ): Promise<boolean> {
+    const ssoTo2faFlowActive = this.route.snapshot.queryParamMap.get("sso") === "true";
+    const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlagBool(
+      FeatureFlag.TrustedDeviceEncryption
+    );
+
+    return (
+      ssoTo2faFlowActive &&
+      trustedDeviceEncryptionFeatureActive &&
+      trustedDeviceOption !== undefined
+    );
   }
 
-  private handleForcePasswordReset(response: AuthResult) {
-    if (response.forcePasswordReset !== ForceResetPasswordReason.None) {
-      this.successRoute = "update-temp-password";
-    }
-  }
-
-  private async handleOnSuccessfulLoginNavigate() {
-    if (this.onSuccessfulLoginNavigate != null) {
-      // TODO: this function is defined when coming SSO with 2FA for authenticator app
-      // see two goAfterLogIn functions (one in web login.component.ts and one in web two factor component.ts )
-      await this.onSuccessfulLoginNavigate();
+  private async handleTrustedDeviceEncryptionEnabled(
+    authResult: AuthResult,
+    orgIdentifier: string,
+    acctDecryptionOpts: AccountDecryptionOptions
+  ) {
+    // If user doesn't have a MP, but has reset password permission, they must set a MP
+    if (
+      !acctDecryptionOpts.hasMasterPassword &&
+      acctDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
+    ) {
+      // Change implies going no password -> password in this case
+      await this.handleChangePasswordRequired(orgIdentifier);
+    } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+      await this.handleForcePasswordReset(orgIdentifier);
     } else {
-      this.navigateToSuccessRoute();
+      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
+      //  their user key, the lock guard will redirect them to the vault)
+      this.router.navigate([this.trustedDeviceEncRoute], {
+        queryParams: {
+          identifier: orgIdentifier,
+        },
+      });
     }
   }
 
-  private navigateToSuccessRoute() {
-    this.router.navigate([this.successRoute], {
+  private async handleChangePasswordRequired(orgIdentifier: string) {
+    await this.router.navigate([this.changePasswordRoute], {
       queryParams: {
-        identifier: this.identifier,
+        identifier: orgIdentifier,
       },
     });
+  }
+
+  private async handleForcePasswordReset(orgIdentifier: string) {
+    this.router.navigate([this.forcePasswordResetRoute], {
+      queryParams: {
+        identifier: orgIdentifier,
+      },
+    });
+  }
+
+  private async handleSuccessfulLogin() {
+    await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
+  }
+
+  private async navigateViaCallbackOrRoute(
+    callback: () => Promise<unknown>,
+    commands: any[],
+    extras?: NavigationExtras
+  ): Promise<void> {
+    if (callback) {
+      await callback();
+    } else {
+      await this.router.navigate(commands, extras);
+    }
   }
 
   async sendEmail(doToast: boolean) {
