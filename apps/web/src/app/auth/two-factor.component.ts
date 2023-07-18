@@ -86,7 +86,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     );
   }
 
-  async goAfterLogIn() {
+  goAfterLogIn = async () => {
     this.loginService.clearValues();
     const previousUrl = this.routerService.getPreviousUrl();
     if (previousUrl) {
@@ -112,5 +112,5 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         },
       });
     }
-  }
+  };
 }
