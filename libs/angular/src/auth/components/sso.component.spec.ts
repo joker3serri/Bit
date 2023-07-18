@@ -141,7 +141,12 @@ describe("SsoComponent", () => {
       }),
       withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
         hasMasterPassword: true,
-        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true),
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+        keyConnectorOption: undefined,
+      }),
+      withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+        hasMasterPassword: true,
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
         keyConnectorOption: undefined,
       }),
       withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
@@ -151,7 +156,12 @@ describe("SsoComponent", () => {
       }),
       noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
         hasMasterPassword: false,
-        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true),
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+        keyConnectorOption: undefined,
+      }),
+      noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+        hasMasterPassword: false,
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
         keyConnectorOption: undefined,
       }),
       noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
@@ -204,18 +214,92 @@ describe("SsoComponent", () => {
       });
     });
 
+    const testChangePasswordOnSuccessfulLogin = async () => {
+      await _component.logIn(code, codeVerifier, orgIdFromState);
+      expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
+
+      expect(mockOnSuccessfulLoginChangePasswordNavigate).not.toHaveBeenCalled();
+
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+      expect(mockRouter.navigate).toHaveBeenCalledWith([_component.changePasswordRoute], {
+        queryParams: {
+          identifier: orgIdFromState,
+        },
+      });
+
+      expect(mockLogService.error).not.toHaveBeenCalled();
+    };
+
+    const testOnSuccessfulLoginChangePasswordNavigateOnSuccessfulLogin = async () => {
+      mockOnSuccessfulLoginChangePasswordNavigate = jest.fn().mockResolvedValue(null);
+      component.onSuccessfulLoginChangePasswordNavigate =
+        mockOnSuccessfulLoginChangePasswordNavigate;
+
+      await _component.logIn(code, codeVerifier, orgIdFromState);
+
+      expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
+      expect(mockOnSuccessfulLoginChangePasswordNavigate).toHaveBeenCalledTimes(1);
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+      expect(mockLogService.error).not.toHaveBeenCalled();
+    };
+
     describe("Trusted Device Encryption scenarios", () => {
       beforeEach(() => {
         mockConfigService.getFeatureFlagBool.mockResolvedValue(true); // TDE enabled
-
-        mockStateService.getAccountDecryptionOptions.mockResolvedValue(
-          mockAcctDecryptionOpts.withMasterPasswordAndTrustedDevice
-        );
       });
 
-      describe("Given Trusted Device Encryption is enabled and forcePasswordReset is not required", () => {
+      describe("Given Trusted Device Encryption is enabled and user needs to set a master password", () => {
         let authResult;
         beforeEach(() => {
+          mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+            mockAcctDecryptionOpts.noMasterPasswordWithTrustedDeviceWithManageResetPassword
+          );
+
+          authResult = new AuthResult();
+          mockAuthService.logIn.mockResolvedValue(authResult);
+        });
+
+        it("navigates to the component's defined change password route when the login is successful", async () => {
+          await testChangePasswordOnSuccessfulLogin();
+        });
+
+        it("calls onSuccessfulLoginChangePasswordNavigate instead of router.navigate when the callback is defined", async () => {
+          await testOnSuccessfulLoginChangePasswordNavigateOnSuccessfulLogin();
+        });
+      });
+
+      describe("Given Trusted Device Encryption is enabled, user doesn't need to set a MP, and forcePasswordReset is required", () => {
+        let authResult;
+        beforeEach(() => {
+          mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+            mockAcctDecryptionOpts.withMasterPasswordAndTrustedDevice
+          );
+
+          authResult = new AuthResult();
+          authResult.forcePasswordReset = ForceResetPasswordReason.AdminForcePasswordReset;
+          mockAuthService.logIn.mockResolvedValue(authResult);
+        });
+
+        it("navigates to the component's defined force password reset route when login is successful", async () => {
+          await _component.logIn(code, codeVerifier, orgIdFromState);
+
+          expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
+          expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+          expect(mockRouter.navigate).toHaveBeenCalledWith(
+            [_component.forcePasswordResetRoute],
+            undefined
+          );
+          expect(mockLogService.error).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("Given Trusted Device Encryption is enabled, user doesn't need to set a MP, and forcePasswordReset is not required", () => {
+        let authResult;
+        beforeEach(() => {
+          mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+            mockAcctDecryptionOpts.withMasterPasswordAndTrustedDevice
+          );
+
           authResult = new AuthResult();
           authResult.forcePasswordReset = ForceResetPasswordReason.None;
           mockAuthService.logIn.mockResolvedValue(authResult);
@@ -234,69 +318,43 @@ describe("SsoComponent", () => {
           expect(mockLogService.error).not.toHaveBeenCalled();
         });
       });
-
-      describe("Given Trusted Device Encryption is enabled and forcePasswordReset is required", () => {
-        let authResult;
-        beforeEach(() => {
-          authResult = new AuthResult();
-          authResult.forcePasswordReset = ForceResetPasswordReason.AdminForcePasswordReset;
-          mockAuthService.logIn.mockResolvedValue(authResult);
-        });
-
-        it("navigates to the component's defined force password reset route when login is successful", async () => {
-          await _component.logIn(code, codeVerifier, orgIdFromState);
-
-          expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
-          expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-          expect(mockRouter.navigate).toHaveBeenCalledWith(
-            [_component.forcePasswordResetRoute],
-            undefined
-          );
-          expect(mockLogService.error).not.toHaveBeenCalled();
-        });
-      });
     });
     describe("Reset Master Password scenarios", () => {
       beforeEach(() => {
         const authResult = new AuthResult();
-
-        // authResult.resetMasterPassword = true;
-        // Only need to test the case where the user has no master password to test the change mp flow
-        mockStateService.getAccountDecryptionOptions.mockResolvedValue(
-          mockAcctDecryptionOpts.noMasterPassword
-        );
-
         mockAuthService.logIn.mockResolvedValue(authResult);
       });
 
       it("calls authService.logIn and navigates to the component's defined change password route when the response requires a password reset", async () => {
-        await _component.logIn(code, codeVerifier, orgIdFromState);
+        // Only need to test the case where the user has no master password to test the primary change mp flow here
+        mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+          mockAcctDecryptionOpts.noMasterPassword
+        );
+        await testChangePasswordOnSuccessfulLogin();
+      });
 
+      it("calls onSuccessfulLoginChangePasswordNavigate instead of router.navigate when response.resetMasterPassword is true and the callback is defined", async () => {
+        // Only need to test the case where the user has no master password to test the primary change mp flow here
+        mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+          mockAcctDecryptionOpts.noMasterPassword
+        );
+        await testOnSuccessfulLoginChangePasswordNavigateOnSuccessfulLogin();
+      });
+
+      it("calls authService.logIn and does not navigate to the change password route when the user has key connector even if user has no master password", async () => {
+        mockStateService.getAccountDecryptionOptions.mockResolvedValue(
+          mockAcctDecryptionOpts.noMasterPasswordWithKeyConnector
+        );
+
+        await _component.logIn(code, codeVerifier, orgIdFromState);
         expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
 
         expect(mockOnSuccessfulLoginChangePasswordNavigate).not.toHaveBeenCalled();
-
-        expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-        expect(mockRouter.navigate).toHaveBeenCalledWith([_component.changePasswordRoute], {
+        expect(mockRouter.navigate).not.toHaveBeenCalledWith([_component.changePasswordRoute], {
           queryParams: {
             identifier: orgIdFromState,
           },
         });
-
-        expect(mockLogService.error).not.toHaveBeenCalled();
-      });
-
-      it("calls onSuccessfulLoginChangePasswordNavigate instead of router.navigate when response.resetMasterPassword is true and the callback is defined", async () => {
-        mockOnSuccessfulLoginChangePasswordNavigate = jest.fn().mockResolvedValue(null);
-        component.onSuccessfulLoginChangePasswordNavigate =
-          mockOnSuccessfulLoginChangePasswordNavigate;
-
-        await _component.logIn(code, codeVerifier, orgIdFromState);
-
-        expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
-        expect(mockOnSuccessfulLoginChangePasswordNavigate).toHaveBeenCalledTimes(1);
-        expect(mockRouter.navigate).not.toHaveBeenCalled();
-        expect(mockLogService.error).not.toHaveBeenCalled();
       });
     });
 
