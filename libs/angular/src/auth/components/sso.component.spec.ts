@@ -22,6 +22,49 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 
 import { SsoComponent } from "./sso.component";
 
+export const mockAcctDecryptionOpts = {
+  noMasterPassword: new AccountDecryptionOptions({
+    hasMasterPassword: false,
+    trustedDeviceOption: undefined,
+    keyConnectorOption: undefined,
+  }),
+  withMasterPassword: new AccountDecryptionOptions({
+    hasMasterPassword: true,
+    trustedDeviceOption: undefined,
+    keyConnectorOption: undefined,
+  }),
+  withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
+    hasMasterPassword: true,
+    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+    keyConnectorOption: undefined,
+  }),
+  withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+    hasMasterPassword: true,
+    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
+    keyConnectorOption: undefined,
+  }),
+  withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
+    hasMasterPassword: true,
+    trustedDeviceOption: undefined,
+    keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
+  }),
+  noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
+    hasMasterPassword: false,
+    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+    keyConnectorOption: undefined,
+  }),
+  noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+    hasMasterPassword: false,
+    trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
+    keyConnectorOption: undefined,
+  }),
+  noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
+    hasMasterPassword: false,
+    trustedDeviceOption: undefined,
+    keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
+  }),
+};
+
 // test component that extends the SsoComponent
 @Component({})
 class TestSsoComponent extends SsoComponent {}
@@ -128,49 +171,6 @@ describe("SsoComponent", () => {
   });
 
   describe("logIn(...)", () => {
-    const mockAcctDecryptionOpts = {
-      noMasterPassword: new AccountDecryptionOptions({
-        hasMasterPassword: false,
-        trustedDeviceOption: undefined,
-        keyConnectorOption: undefined,
-      }),
-      withMasterPassword: new AccountDecryptionOptions({
-        hasMasterPassword: true,
-        trustedDeviceOption: undefined,
-        keyConnectorOption: undefined,
-      }),
-      withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
-        hasMasterPassword: true,
-        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
-        keyConnectorOption: undefined,
-      }),
-      withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
-        hasMasterPassword: true,
-        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
-        keyConnectorOption: undefined,
-      }),
-      withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
-        hasMasterPassword: true,
-        trustedDeviceOption: undefined,
-        keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
-      }),
-      noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
-        hasMasterPassword: false,
-        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
-        keyConnectorOption: undefined,
-      }),
-      noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
-        hasMasterPassword: false,
-        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
-        keyConnectorOption: undefined,
-      }),
-      noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
-        hasMasterPassword: false,
-        trustedDeviceOption: undefined,
-        keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
-      }),
-    };
-
     describe("2FA scenarios", () => {
       beforeEach(() => {
         const authResult = new AuthResult();
