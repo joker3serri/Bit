@@ -43,64 +43,89 @@ describe("TwoFactorComponent", () => {
   let fixture: ComponentFixture<TestTwoFactorComponent>;
 
   // Mock Services
-  const mockAuthService = mock<AuthService>();
-  const mockRouter = mock<Router>();
-  const mockI18nService = mock<I18nService>();
-  const mockApiService = mock<ApiService>();
-  const mockPlatformUtilsService = mock<PlatformUtilsService>();
-  const mockWin = mock<Window>();
-  const mockEnvironmentService = mock<EnvironmentService>();
-  const mockStateService = mock<StateService>();
-  const mockLogService = mock<LogService>();
-  const mockTwoFactorService = mock<TwoFactorService>();
-  const mockAppIdService = mock<AppIdService>();
-  const mockLoginService = mock<LoginService>();
-  const mockConfigService = mock<ConfigServiceAbstraction>();
+  let mockAuthService: jest.Mocked<AuthService>;
+  let mockRouter: jest.Mocked<Router>;
+  let mockI18nService: jest.Mocked<I18nService>;
+  let mockApiService: jest.Mocked<ApiService>;
+  let mockPlatformUtilsService: jest.Mocked<PlatformUtilsService>;
+  let mockWin: jest.Mocked<Window>;
+  let mockEnvironmentService: jest.Mocked<EnvironmentService>;
+  let mockStateService: jest.Mocked<StateService>;
+  let mockLogService: jest.Mocked<LogService>;
+  let mockTwoFactorService: jest.Mocked<TwoFactorService>;
+  let mockAppIdService: jest.Mocked<AppIdService>;
+  let mockLoginService: jest.Mocked<LoginService>;
+  let mockConfigService: jest.Mocked<ConfigServiceAbstraction>;
 
-  const mockAcctDecryptionOpts = {
-    noMasterPassword: new AccountDecryptionOptions({
-      hasMasterPassword: false,
-      trustedDeviceOption: undefined,
-      keyConnectorOption: undefined,
-    }),
-    withMasterPassword: new AccountDecryptionOptions({
-      hasMasterPassword: true,
-      trustedDeviceOption: undefined,
-      keyConnectorOption: undefined,
-    }),
-    withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
-      hasMasterPassword: true,
-      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
-      keyConnectorOption: undefined,
-    }),
-    withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
-      hasMasterPassword: true,
-      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
-      keyConnectorOption: undefined,
-    }),
-    withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
-      hasMasterPassword: true,
-      trustedDeviceOption: undefined,
-      keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
-    }),
-    noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
-      hasMasterPassword: false,
-      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
-      keyConnectorOption: undefined,
-    }),
-    noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
-      hasMasterPassword: false,
-      trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
-      keyConnectorOption: undefined,
-    }),
-    noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
-      hasMasterPassword: false,
-      trustedDeviceOption: undefined,
-      keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
-    }),
+  let mockAcctDecryptionOpts: {
+    noMasterPassword: AccountDecryptionOptions;
+    withMasterPassword: AccountDecryptionOptions;
+    withMasterPasswordAndTrustedDevice: AccountDecryptionOptions;
+    withMasterPasswordAndTrustedDeviceWithManageResetPassword: AccountDecryptionOptions;
+    withMasterPasswordAndKeyConnector: AccountDecryptionOptions;
+    noMasterPasswordWithTrustedDevice: AccountDecryptionOptions;
+    noMasterPasswordWithTrustedDeviceWithManageResetPassword: AccountDecryptionOptions;
+    noMasterPasswordWithKeyConnector: AccountDecryptionOptions;
   };
 
   beforeEach(() => {
+    mockAuthService = mock<AuthService>();
+    mockRouter = mock<Router>();
+    mockI18nService = mock<I18nService>();
+    mockApiService = mock<ApiService>();
+    mockPlatformUtilsService = mock<PlatformUtilsService>();
+    mockWin = mock<Window>();
+    mockEnvironmentService = mock<EnvironmentService>();
+    mockStateService = mock<StateService>();
+    mockLogService = mock<LogService>();
+    mockTwoFactorService = mock<TwoFactorService>();
+    mockAppIdService = mock<AppIdService>();
+    mockLoginService = mock<LoginService>();
+    mockConfigService = mock<ConfigServiceAbstraction>();
+
+    mockAcctDecryptionOpts = {
+      noMasterPassword: new AccountDecryptionOptions({
+        hasMasterPassword: false,
+        trustedDeviceOption: undefined,
+        keyConnectorOption: undefined,
+      }),
+      withMasterPassword: new AccountDecryptionOptions({
+        hasMasterPassword: true,
+        trustedDeviceOption: undefined,
+        keyConnectorOption: undefined,
+      }),
+      withMasterPasswordAndTrustedDevice: new AccountDecryptionOptions({
+        hasMasterPassword: true,
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+        keyConnectorOption: undefined,
+      }),
+      withMasterPasswordAndTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+        hasMasterPassword: true,
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
+        keyConnectorOption: undefined,
+      }),
+      withMasterPasswordAndKeyConnector: new AccountDecryptionOptions({
+        hasMasterPassword: true,
+        trustedDeviceOption: undefined,
+        keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
+      }),
+      noMasterPasswordWithTrustedDevice: new AccountDecryptionOptions({
+        hasMasterPassword: false,
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, false),
+        keyConnectorOption: undefined,
+      }),
+      noMasterPasswordWithTrustedDeviceWithManageResetPassword: new AccountDecryptionOptions({
+        hasMasterPassword: false,
+        trustedDeviceOption: new TrustedDeviceUserDecryptionOption(true, false, true),
+        keyConnectorOption: undefined,
+      }),
+      noMasterPasswordWithKeyConnector: new AccountDecryptionOptions({
+        hasMasterPassword: false,
+        trustedDeviceOption: undefined,
+        keyConnectorOption: new KeyConnectorUserDecryptionOption("http://example.com"),
+      }),
+    };
+
     TestBed.configureTestingModule({
       declarations: [TestTwoFactorComponent],
       providers: [
