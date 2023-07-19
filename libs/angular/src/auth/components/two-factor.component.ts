@@ -226,26 +226,32 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     const acctDecryptionOpts: AccountDecryptionOptions =
       await this.stateService.getAccountDecryptionOptions();
 
-    // User must set password if they don't have one and they aren't using either TDE or key connector.
-    const requireSetPassword =
-      !acctDecryptionOpts.hasMasterPassword && acctDecryptionOpts.keyConnectorOption === undefined;
-
     const tdeEnabled = await this.isTrustedDeviceEncEnabled(acctDecryptionOpts.trustedDeviceOption);
 
     if (tdeEnabled) {
-      await this.handleTrustedDeviceEncryptionEnabled(
+      return await this.handleTrustedDeviceEncryptionEnabled(
         authResult,
         this.orgIdentifier,
         acctDecryptionOpts
       );
-    } else if (requireSetPassword) {
-      // Change implies going no password -> password in this case
-      await this.handleChangePasswordRequired(this.orgIdentifier);
-    } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-      await this.handleForcePasswordReset(this.orgIdentifier);
-    } else {
-      await this.handleSuccessfulLogin();
     }
+
+    // User must set password if they don't have one and they aren't using either TDE or key connector.
+    const requireSetPassword =
+      !acctDecryptionOpts.hasMasterPassword && acctDecryptionOpts.keyConnectorOption === undefined;
+
+    if (requireSetPassword) {
+      // Change implies going no password -> password in this case
+      return await this.handleChangePasswordRequired(this.orgIdentifier);
+    }
+
+    // Users can be forced to reset their password via an admin or org policy
+    // disallowing weak passwords
+    if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+      return await this.handleForcePasswordReset(this.orgIdentifier);
+    }
+
+    return await this.handleSuccessfulLogin();
   }
 
   private async handleOnSuccessfulLogin() {
@@ -276,25 +282,29 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     authResult: AuthResult,
     orgIdentifier: string,
     acctDecryptionOpts: AccountDecryptionOptions
-  ) {
+  ): Promise<void> {
     // If user doesn't have a MP, but has reset password permission, they must set a MP
     if (
       !acctDecryptionOpts.hasMasterPassword &&
       acctDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
     ) {
       // Change implies going no password -> password in this case
-      await this.handleChangePasswordRequired(orgIdentifier);
-    } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-      await this.handleForcePasswordReset(orgIdentifier);
-    } else {
-      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
-      //  their user key, the lock guard will redirect them to the vault)
-      this.router.navigate([this.trustedDeviceEncRoute], {
-        queryParams: {
-          identifier: orgIdentifier,
-        },
-      });
+      return await this.handleChangePasswordRequired(orgIdentifier);
     }
+
+    // Users can be forced to reset their password via an admin or org policy
+    // disallowing weak passwords
+    if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+      return await this.handleForcePasswordReset(orgIdentifier);
+    }
+
+    // Navigate to TDE page (if user was on trusted device and TDE has decrypted
+    // their user key, the lock guard will redirect them to the vault)
+    this.router.navigate([this.trustedDeviceEncRoute], {
+      queryParams: {
+        identifier: orgIdentifier,
+      },
+    });
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {
