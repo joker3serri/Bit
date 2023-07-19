@@ -194,7 +194,9 @@ export class SsoComponent {
       const acctDecryptionOpts: AccountDecryptionOptions =
         await this.stateService.getAccountDecryptionOptions();
 
-      // User must set password if they don't have one and they aren't using either TDE or key connector.
+      // In the standard, non TDE case, a user must set password if they don't
+      // have one and they aren't using key connector.
+      // Note: TDE & Key connector are mutually exclusive org config options.
       const requireSetPassword =
         !acctDecryptionOpts.hasMasterPassword &&
         acctDecryptionOpts.keyConnectorOption === undefined;
