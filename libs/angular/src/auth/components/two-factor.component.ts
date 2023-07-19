@@ -219,6 +219,8 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
 
     // Note: calling this here is different from the SSO component.
     // The SsoComponent only executes this logic as part of the handleSuccessfulLogin logic.
+    // We should investigate later on if we can move this down into the handleSuccessfulLogin
+    // without negative side effects.
     await this.handleOnSuccessfulLogin();
 
     this.loginService.clearValues();
