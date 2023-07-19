@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router, convertToParamMap } from "@angular/router";
-import { mock } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
 
 // eslint-disable-next-line no-restricted-imports
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -43,19 +43,19 @@ describe("TwoFactorComponent", () => {
   let fixture: ComponentFixture<TestTwoFactorComponent>;
 
   // Mock Services
-  let mockAuthService: jest.Mocked<AuthService>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockI18nService: jest.Mocked<I18nService>;
-  let mockApiService: jest.Mocked<ApiService>;
-  let mockPlatformUtilsService: jest.Mocked<PlatformUtilsService>;
-  let mockWin: jest.Mocked<Window>;
-  let mockEnvironmentService: jest.Mocked<EnvironmentService>;
-  let mockStateService: jest.Mocked<StateService>;
-  let mockLogService: jest.Mocked<LogService>;
-  let mockTwoFactorService: jest.Mocked<TwoFactorService>;
-  let mockAppIdService: jest.Mocked<AppIdService>;
-  let mockLoginService: jest.Mocked<LoginService>;
-  let mockConfigService: jest.Mocked<ConfigServiceAbstraction>;
+  let mockAuthService: MockProxy<AuthService>;
+  let mockRouter: MockProxy<Router>;
+  let mockI18nService: MockProxy<I18nService>;
+  let mockApiService: MockProxy<ApiService>;
+  let mockPlatformUtilsService: MockProxy<PlatformUtilsService>;
+  let mockWin: MockProxy<Window>;
+  let mockEnvironmentService: MockProxy<EnvironmentService>;
+  let mockStateService: MockProxy<StateService>;
+  let mockLogService: MockProxy<LogService>;
+  let mockTwoFactorService: MockProxy<TwoFactorService>;
+  let mockAppIdService: MockProxy<AppIdService>;
+  let mockLoginService: MockProxy<LoginService>;
+  let mockConfigService: MockProxy<ConfigServiceAbstraction>;
 
   let mockAcctDecryptionOpts: {
     noMasterPassword: AccountDecryptionOptions;

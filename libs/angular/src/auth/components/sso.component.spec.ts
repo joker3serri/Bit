@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { mock } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
 import { Observable, of } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -46,21 +46,21 @@ describe("SsoComponent", () => {
   let fixture: ComponentFixture<TestSsoComponent>;
 
   // Mock Services
-  let mockAuthService: jest.Mocked<AuthService>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockI18nService: jest.Mocked<I18nService>;
+  let mockAuthService: MockProxy<AuthService>;
+  let mockRouter: MockProxy<Router>;
+  let mockI18nService: MockProxy<I18nService>;
 
   let mockQueryParams: Observable<any>;
-  let mockActivatedRoute: jest.Mocked<ActivatedRoute>;
+  let mockActivatedRoute: ActivatedRoute;
 
-  let mockStateService: jest.Mocked<StateService>;
-  let mockPlatformUtilsService: jest.Mocked<PlatformUtilsService>;
-  let mockApiService: jest.Mocked<ApiService>;
-  let mockCryptoFunctionService: jest.Mocked<CryptoFunctionService>;
-  let mockEnvironmentService: jest.Mocked<EnvironmentService>;
-  let mockPasswordGenerationService: jest.Mocked<PasswordGenerationServiceAbstraction>;
-  let mockLogService: jest.Mocked<LogService>;
-  let mockConfigService: jest.Mocked<ConfigServiceAbstraction>;
+  let mockStateService: MockProxy<StateService>;
+  let mockPlatformUtilsService: MockProxy<PlatformUtilsService>;
+  let mockApiService: MockProxy<ApiService>;
+  let mockCryptoFunctionService: MockProxy<CryptoFunctionService>;
+  let mockEnvironmentService: MockProxy<EnvironmentService>;
+  let mockPasswordGenerationService: MockProxy<PasswordGenerationServiceAbstraction>;
+  let mockLogService: MockProxy<LogService>;
+  let mockConfigService: MockProxy<ConfigServiceAbstraction>;
 
   // Mock authService.logIn params
   let code: string;
@@ -96,7 +96,7 @@ describe("SsoComponent", () => {
     // Create a custom mock for ActivatedRoute with mock queryParams
     mockActivatedRoute = {
       queryParams: mockQueryParams,
-    } as any as jest.Mocked<ActivatedRoute>;
+    } as any as ActivatedRoute;
 
     mockStateService = mock<StateService>();
     mockPlatformUtilsService = mock<PlatformUtilsService>();
