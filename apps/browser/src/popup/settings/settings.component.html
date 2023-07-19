@@ -93,12 +93,7 @@
       </div>
       <div class="box-content-row box-content-row-checkbox" appBoxRow *ngIf="supportsBiometric">
         <label for="biometric">{{ "unlockWithBiometrics" | i18n }}</label>
-        <input
-          id="biometric"
-          type="checkbox"
-          (change)="updateBiometric()"
-          formControlName="biometric"
-        />
+        <input id="biometric" type="checkbox" formControlName="biometric" />
       </div>
       <div
         class="box-content-row box-content-row-checkbox"
