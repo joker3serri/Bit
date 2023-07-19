@@ -194,6 +194,22 @@ export class SsoComponent {
       const acctDecryptionOpts: AccountDecryptionOptions =
         await this.stateService.getAccountDecryptionOptions();
 
+      if (authResult.requiresTwoFactor) {
+        return await this.handleTwoFactorRequired(orgIdentifier);
+      }
+
+      const tdeEnabled = await this.isTrustedDeviceEncEnabled(
+        acctDecryptionOpts.trustedDeviceOption
+      );
+
+      if (tdeEnabled) {
+        return await this.handleTrustedDeviceEncryptionEnabled(
+          authResult,
+          orgIdentifier,
+          acctDecryptionOpts
+        );
+      }
+
       // In the standard, non TDE case, a user must set password if they don't
       // have one and they aren't using key connector.
       // Note: TDE & Key connector are mutually exclusive org config options.
@@ -201,30 +217,24 @@ export class SsoComponent {
         !acctDecryptionOpts.hasMasterPassword &&
         acctDecryptionOpts.keyConnectorOption === undefined;
 
-      const tdeEnabled = await this.isTrustedDeviceEncEnabled(
-        acctDecryptionOpts.trustedDeviceOption
-      );
-
-      if (authResult.requiresTwoFactor) {
-        await this.handleTwoFactorRequired(orgIdentifier);
-      } else if (tdeEnabled) {
-        await this.handleTrustedDeviceEncryptionEnabled(
-          authResult,
-          orgIdentifier,
-          acctDecryptionOpts
-        );
-      } else if (requireSetPassword) {
+      if (requireSetPassword) {
         // Change implies going no password -> password in this case
-        await this.handleChangePasswordRequired(orgIdentifier);
-      } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-        await this.handleForcePasswordReset(orgIdentifier);
-      } else {
-        await this.handleSuccessfulLogin();
+        return await this.handleChangePasswordRequired(orgIdentifier);
       }
+
+      // Users can be forced to reset their password via an admin or org policy
+      // disallowing weak passwords
+      if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+        return await this.handleForcePasswordReset(orgIdentifier);
+      }
+
+      // Standard SSO login success case
+      return await this.handleSuccessfulLogin();
     } catch (e) {
       await this.handleLoginError(e);
+    } finally {
+      this.loggingIn = false;
     }
-    this.loggingIn = false;
   }
 
   private async isTrustedDeviceEncEnabled(
@@ -254,25 +264,27 @@ export class SsoComponent {
     authResult: AuthResult,
     orgIdentifier: string,
     acctDecryptionOpts: AccountDecryptionOptions
-  ) {
+  ): Promise<void> {
     // If user doesn't have a MP, but has reset password permission, they must set a MP
     if (
       !acctDecryptionOpts.hasMasterPassword &&
       acctDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
     ) {
       // Change implies going no password -> password in this case
-      await this.handleChangePasswordRequired(orgIdentifier);
-    } else if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
-      await this.handleForcePasswordReset(orgIdentifier);
-    } else {
-      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
-      //  their user key, the lock guard will redirect them to the vault)
-      this.router.navigate([this.trustedDeviceEncRoute], {
-        queryParams: {
-          identifier: orgIdentifier,
-        },
-      });
+      return await this.handleChangePasswordRequired(orgIdentifier);
     }
+
+    if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
+      return await this.handleForcePasswordReset(orgIdentifier);
+    }
+
+    // Navigate to TDE page (if user was on trusted device and TDE has decrypted
+    //  their user key, the lock guard will redirect them to the vault)
+    this.router.navigate([this.trustedDeviceEncRoute], {
+      queryParams: {
+        identifier: orgIdentifier,
+      },
+    });
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {
