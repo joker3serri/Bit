@@ -334,7 +334,7 @@ export class SsoComponent {
 
   private async navigateViaCallbackOrRoute(
     callback: () => Promise<unknown>,
-    commands: any[],
+    commands: unknown[],
     extras?: NavigationExtras
   ): Promise<void> {
     if (callback) {
