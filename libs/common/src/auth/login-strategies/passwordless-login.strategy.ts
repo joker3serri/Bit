@@ -80,13 +80,30 @@ export class PasswordlessLogInStrategy extends LogInStrategy {
   }
 
   protected override async setMasterKey(response: IdentityTokenResponse) {
-    await this.cryptoService.setMasterKey(this.passwordlessCredentials.decKey);
-    await this.cryptoService.setMasterKeyHash(this.passwordlessCredentials.localPasswordHash);
+    if (
+      this.passwordlessCredentials.decryptedMasterKey &&
+      this.passwordlessCredentials.decryptedMasterKeyHash
+    ) {
+      await this.cryptoService.setMasterKey(this.passwordlessCredentials.decryptedMasterKey);
+      await this.cryptoService.setMasterKeyHash(
+        this.passwordlessCredentials.decryptedMasterKeyHash
+      );
+    }
   }
 
   protected override async setUserKey(response: IdentityTokenResponse): Promise<void> {
+    // User now may or may not have a master password
+    // but set the master key encrypted user key if it exists regardless
     await this.cryptoService.setMasterKeyEncryptedUserKey(response.key);
 
+    if (this.passwordlessCredentials.decryptedUserKey) {
+      await this.cryptoService.setUserKey(this.passwordlessCredentials.decryptedUserKey);
+    } else {
+      await this.trySetUserKeyWithMasterKey();
+    }
+  }
+
+  private async trySetUserKeyWithMasterKey(): Promise<void> {
     const masterKey = await this.cryptoService.getMasterKey();
     if (masterKey) {
       const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
