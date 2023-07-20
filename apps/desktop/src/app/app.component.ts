@@ -26,6 +26,7 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -144,6 +145,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private policyService: InternalPolicyService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
+    private userVerificationService: UserVerificationService,
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogServiceAbstraction
   ) {}
@@ -520,7 +522,7 @@ export class AppComponent implements OnInit, OnDestroy {
       updateRequest = {
         accounts: accounts,
         activeUserId: await this.stateService.getUserId(),
-        hideChangeMasterPassword: await this.keyConnectorService.getUsesKeyConnector(),
+        hideChangeMasterPassword: !(await this.userVerificationService.hasMasterPassword()),
       };
     }
 
