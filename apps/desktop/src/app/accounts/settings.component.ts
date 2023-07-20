@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { Observable, Subject } from "rxjs";
-import { concatMap, debounceTime, filter, map, takeUntil, tap } from "rxjs/operators";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -61,6 +61,7 @@ export class SettingsComponent implements OnInit {
 
   currentUserEmail: string;
 
+  availableVaultTimeoutActions$: Observable<VaultTimeoutAction[]>;
   vaultTimeoutPolicyCallout: Observable<{
     timeout: { hours: number; minutes: number };
     action: "lock" | "logOut";
@@ -97,6 +98,7 @@ export class SettingsComponent implements OnInit {
     locale: [null as string | null],
   });
 
+  private refreshTimeoutSettings$ = new BehaviorSubject<void>(undefined);
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -195,6 +197,10 @@ export class SettingsComponent implements OnInit {
       return;
     }
     this.currentUserEmail = await this.stateService.getEmail();
+
+    this.availableVaultTimeoutActions$ = this.refreshTimeoutSettings$.pipe(
+      switchMap(() => this.vaultTimeoutSettingsService.availableVaultTimeoutActions$)
+    );
 
     // Load timeout policy
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
