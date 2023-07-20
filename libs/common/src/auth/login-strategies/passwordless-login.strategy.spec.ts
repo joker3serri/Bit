@@ -14,6 +14,7 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
+import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { PasswordlessLogInCredentials } from "../models/domain/log-in-credentials";
@@ -22,7 +23,8 @@ import { IdentityTokenResponse } from "../models/response/identity-token.respons
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { PasswordlessLogInStrategy } from "./passwordless-login.strategy";
 
-describe("SsoLogInStrategy", () => {
+// TOOD: update these tests to take into account the new PasswordlessLogInCredentials and changes to the PasswordlessLogInStrategy
+describe("PasswordlessLogInStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -32,6 +34,7 @@ describe("SsoLogInStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
 
   let passwordlessLoginStrategy: PasswordlessLogInStrategy;
   let credentials: PasswordlessLogInCredentials;
@@ -55,6 +58,7 @@ describe("SsoLogInStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
@@ -69,12 +73,14 @@ describe("SsoLogInStrategy", () => {
       messagingService,
       logService,
       stateService,
-      twoFactorService
+      twoFactorService,
+      deviceTrustCryptoService
     );
     credentials = new PasswordlessLogInCredentials(
       email,
       accessCode,
       authRequestId,
+      null,
       decKey,
       localPasswordHash
     );
