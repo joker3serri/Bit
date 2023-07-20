@@ -166,17 +166,22 @@ export class LoginWithDeviceComponent
         return;
       }
 
-      // 3 Scenarios to handle for approved auth requests:
+      // 4 Scenarios to handle for approved auth requests:
       // Existing flow 1:
-      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(masterKey) > decrypt masterKey > must authenticate > gets masterKey(userKey) > decrypt userKey and proceed to vault
+      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(masterKey)
+      //    > decrypt masterKey > must authenticate > gets masterKey(userKey) > decrypt userKey and proceed to vault
 
-      // 2 new flows from TDE:
+      // 3 new flows from TDE:
       // Flow 2:
-      //  - Post SSO > User is AuthN > Receives approval from device with pubKey(userKey) > decrypt userKey > proceed to vault
+      //  - Post SSO > User is AuthN > receives approval from device with pubKey(masterKey)
+      //    > decrypt masterKey > must authenticate > gets masterKey(userKey) > decrypt userKey > establish trust if required > proceed to vault
       // Flow 3:
-      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(userKey) > decrypt userKey > must authenticate > set userKey > proceed to vault
+      //  - Post SSO > User is AuthN > Receives approval from device with pubKey(userKey) > decrypt userKey > establish trust if required > proceed to vault
+      // Flow 4:
+      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(userKey)
+      //    > decrypt userKey > must authenticate > set userKey > proceed to vault
 
-      // Flow 2:
+      // Flow 3:
       // if user has authenticated via SSO and masterPasswordHash is null
       if (
         this.userAuthNStatus === AuthenticationStatus.Locked &&
@@ -186,7 +191,7 @@ export class LoginWithDeviceComponent
         return await this.decryptWithSharedUserKey(authReqResponse);
       }
 
-      // Flow 1 and Flow 3:
+      // Flow 1, 2, and 4:
       return await this.authenticateAndDecrypt(requestId, authReqResponse);
     } catch (error) {
       if (error instanceof ErrorResponse) {
@@ -273,8 +278,9 @@ export class LoginWithDeviceComponent
   }
 
   async setRememberEmailValues() {
+    // TODO: solve bug with getRememberEmail not persisting across SSO to here
     const rememberEmail = this.loginService.getRememberEmail();
-    const rememberedEmail = this.loginService.getEmail();
+    const rememberedEmail = this.loginService.getEmail(); // this does persist across SSO
     await this.stateService.setRememberedEmail(rememberEmail ? rememberedEmail : null);
     this.loginService.clearValues();
   }
