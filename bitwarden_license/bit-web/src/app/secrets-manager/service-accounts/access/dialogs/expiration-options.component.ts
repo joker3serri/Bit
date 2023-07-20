@@ -77,9 +77,7 @@ export class ExpirationOptionsComponent
 
   validate(control: AbstractControl<any, any>): ValidationErrors {
     if (
-      (this.form.value.expires == "custom" &&
-        this.form.value.expireDateTime &&
-        !this.form.invalid) ||
+      (this.form.value.expires == "custom" && !this.form.invalid) ||
       this.form.value.expires !== "custom"
     ) {
       return null;
