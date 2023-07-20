@@ -5,6 +5,7 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthResult } from "../models/domain/auth-result";
@@ -40,7 +41,8 @@ export class PasswordlessLogInStrategy extends LogInStrategy {
     messagingService: MessagingService,
     logService: LogService,
     stateService: StateService,
-    twoFactorService: TwoFactorService
+    twoFactorService: TwoFactorService,
+    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {
     super(
       cryptoService,
@@ -100,6 +102,8 @@ export class PasswordlessLogInStrategy extends LogInStrategy {
       await this.cryptoService.setUserKey(this.passwordlessCredentials.decryptedUserKey);
     } else {
       await this.trySetUserKeyWithMasterKey();
+      // Establish trust if required after setting user key
+      await this.deviceTrustCryptoService.trustDeviceIfRequired();
     }
   }
 
