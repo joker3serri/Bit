@@ -35,6 +35,8 @@ describe("deviceTrustCryptoService", () => {
     mockReset(appIdService);
     mockReset(devicesApiService);
 
+    jest.clearAllMocks();
+
     deviceTrustCryptoService = new DeviceTrustCryptoService(
       cryptoFunctionService,
       cryptoService,
@@ -73,6 +75,34 @@ describe("deviceTrustCryptoService", () => {
         expect(stateSvcSetShouldTrustDeviceSpy).toHaveBeenCalledTimes(1);
         expect(stateSvcSetShouldTrustDeviceSpy).toHaveBeenCalledWith(newValue);
       });
+    });
+  });
+
+  describe("trustDeviceIfRequired", () => {
+    it("should trust device and reset when getShouldTrustDevice returns true", async () => {
+      jest.spyOn(deviceTrustCryptoService, "getShouldTrustDevice").mockResolvedValue(true);
+      jest.spyOn(deviceTrustCryptoService, "trustDevice").mockResolvedValue({} as DeviceResponse);
+      jest.spyOn(deviceTrustCryptoService, "setShouldTrustDevice").mockResolvedValue();
+
+      await deviceTrustCryptoService.trustDeviceIfRequired();
+
+      expect(deviceTrustCryptoService.getShouldTrustDevice).toHaveBeenCalledTimes(1);
+      expect(deviceTrustCryptoService.trustDevice).toHaveBeenCalledTimes(1);
+      expect(deviceTrustCryptoService.setShouldTrustDevice).toHaveBeenCalledWith(false);
+    });
+
+    it("should not trust device nor reset when getShouldTrustDevice returns false", async () => {
+      const getShouldTrustDeviceSpy = jest
+        .spyOn(deviceTrustCryptoService, "getShouldTrustDevice")
+        .mockResolvedValue(false);
+      const trustDeviceSpy = jest.spyOn(deviceTrustCryptoService, "trustDevice");
+      const setShouldTrustDeviceSpy = jest.spyOn(deviceTrustCryptoService, "setShouldTrustDevice");
+
+      await deviceTrustCryptoService.trustDeviceIfRequired();
+
+      expect(getShouldTrustDeviceSpy).toHaveBeenCalledTimes(1);
+      expect(trustDeviceSpy).not.toHaveBeenCalled();
+      expect(setShouldTrustDeviceSpy).not.toHaveBeenCalled();
     });
   });
 

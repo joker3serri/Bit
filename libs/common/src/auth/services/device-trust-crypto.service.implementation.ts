@@ -36,6 +36,15 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     await this.stateService.setShouldTrustDevice(value);
   }
 
+  async trustDeviceIfRequired(): Promise<void> {
+    const shouldTrustDevice = await this.getShouldTrustDevice();
+    if (shouldTrustDevice) {
+      await this.trustDevice();
+      // reset the trust choice
+      await this.setShouldTrustDevice(false);
+    }
+  }
+
   async trustDevice(): Promise<DeviceResponse> {
     // Attempt to get user key
     const userKey: UserKey = await this.cryptoService.getUserKey();
