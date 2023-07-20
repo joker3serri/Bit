@@ -304,7 +304,7 @@ export class AuthService implements AuthServiceAbstraction {
 
     const masterKey = await this.cryptoService.getMasterKey();
     let keyToEncrypt;
-    let encryptedMasterPasswordHash = null;
+    let encryptedMasterKeyHash = null;
 
     if (masterKey) {
       keyToEncrypt = masterKey.encKey;
@@ -313,7 +313,7 @@ export class AuthService implements AuthServiceAbstraction {
       // we won't have a masterKeyHash without a masterKey
       const masterKeyHash = await this.stateService.getKeyHash();
       if (masterKeyHash != null) {
-        encryptedMasterPasswordHash = await this.cryptoService.rsaEncrypt(
+        encryptedMasterKeyHash = await this.cryptoService.rsaEncrypt(
           Utils.fromUtf8ToArray(masterKeyHash),
           pubKey.buffer
         );
@@ -327,7 +327,7 @@ export class AuthService implements AuthServiceAbstraction {
 
     const request = new PasswordlessAuthRequest(
       encryptedKey.encryptedString,
-      encryptedMasterPasswordHash.encryptedString,
+      encryptedMasterKeyHash?.encryptedString,
       await this.appIdService.getAppId(),
       requestApproved
     );
