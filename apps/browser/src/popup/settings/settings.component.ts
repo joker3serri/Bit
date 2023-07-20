@@ -22,7 +22,7 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { DeviceType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -95,7 +95,7 @@ export class SettingsComponent implements OnInit {
     private stateService: StateService,
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
-    private keyConnectorService: KeyConnectorService,
+    private userVerificationService: UserVerificationService,
     private dialogService: DialogServiceAbstraction,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
@@ -179,7 +179,7 @@ export class SettingsComponent implements OnInit {
     this.form.patchValue(initialValues); // Emit event to initialize `pairwise` operator
 
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
-    this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
+    this.showChangeMasterPass = await this.userVerificationService.hasMasterPassword();
 
     this.refreshTimeoutSettings$
       .pipe(
