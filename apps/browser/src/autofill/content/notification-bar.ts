@@ -29,7 +29,7 @@ interface HTMLElementWithFormOpId extends HTMLElement {
 document.addEventListener("DOMContentLoaded", (event) => {
   // Do not show the notification bar on the Bitwarden vault
   // because they can add logins and change passwords there
-  if (window.location.hostname.endsWith("vault.bitwarden.com")) {
+  if (window.location.hostname.startsWith("vault.bitwarden")) {
     return;
   }
 
