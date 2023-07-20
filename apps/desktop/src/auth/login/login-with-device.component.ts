@@ -6,6 +6,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AnonymousHubService } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -50,7 +51,8 @@ export class LoginWithDeviceComponent
     private modalService: ModalService,
     syncService: SyncService,
     stateService: StateService,
-    loginService: LoginService
+    loginService: LoginService,
+    deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {
     super(
       router,
@@ -67,7 +69,8 @@ export class LoginWithDeviceComponent
       anonymousHubService,
       validationService,
       stateService,
-      loginService
+      loginService,
+      deviceTrustCryptoService
     );
 
     super.onSuccessfulLogin = () => {

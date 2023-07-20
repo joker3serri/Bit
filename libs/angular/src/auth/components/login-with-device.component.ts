@@ -5,8 +5,11 @@ import { Subject, takeUntil } from "rxjs";
 import { AnonymousHubService } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { PasswordlessLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { PasswordlessCreateAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-create-auth.request";
@@ -25,6 +28,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   MasterKey,
   SymmetricCryptoKey,
+  UserKey,
 } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
@@ -36,6 +40,7 @@ export class LoginWithDeviceComponent
   implements OnInit, OnDestroy
 {
   private destroy$ = new Subject<void>();
+  userAuthNStatus: AuthenticationStatus;
   email: string;
   showResendNotification = false;
   passwordlessRequest: PasswordlessCreateAuthRequest;
@@ -49,7 +54,8 @@ export class LoginWithDeviceComponent
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
   private resendTimeout = 12000;
-  private authRequestKeyPair: [publicKey: ArrayBuffer, privateKey: ArrayBuffer];
+
+  private authRequestKeyPair: { publicKey: ArrayBuffer; privateKey: ArrayBuffer };
 
   constructor(
     protected router: Router,
@@ -66,7 +72,8 @@ export class LoginWithDeviceComponent
     private anonymousHubService: AnonymousHubService,
     private validationService: ValidationService,
     private stateService: StateService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
   ) {
     super(environmentService, i18nService, platformUtilsService);
 
@@ -85,12 +92,45 @@ export class LoginWithDeviceComponent
   }
 
   async ngOnInit() {
+    this.userAuthNStatus = await this.authService.getAuthStatus();
+
     if (!this.email) {
       this.router.navigate(["/login"]);
       return;
     }
 
     this.startPasswordlessLogin();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.anonymousHubService.stopHubConnection();
+  }
+
+  private async buildAuthRequest() {
+    const authRequestKeyPairArray = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
+
+    this.authRequestKeyPair = {
+      publicKey: authRequestKeyPairArray[0],
+      privateKey: authRequestKeyPairArray[1],
+    };
+
+    const deviceIdentifier = await this.appIdService.getAppId();
+    const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair.publicKey);
+    const accessCode = await this.passwordGenerationService.generatePassword({ length: 25 });
+
+    this.fingerprintPhrase = (
+      await this.cryptoService.getFingerprint(this.email, this.authRequestKeyPair.publicKey)
+    ).join("-");
+
+    this.passwordlessRequest = new PasswordlessCreateAuthRequest(
+      this.email,
+      deviceIdentifier,
+      publicKey,
+      AuthRequestType.AuthenticateAndUnlock,
+      accessCode
+    );
   }
 
   async startPasswordlessLogin() {
@@ -112,63 +152,42 @@ export class LoginWithDeviceComponent
     }, this.resendTimeout);
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.anonymousHubService.stopHubConnection();
-  }
-
   private async confirmResponse(requestId: string) {
     try {
-      // TODO for TDE: We are going to have to make changes here to support the new unlock flow as the user is already AuthN via SSO
-      // The existing flow currently works for unauthN users and authenticates them AND unlocks their vault.
-      // We only need the unlock portion of the logic to run.
-
       // We need to make the approving device treats the MP hash as optional
       // and make sure the server can handle that.
 
-      const response = await this.apiService.getAuthResponse(
+      const authReqResponse = await this.apiService.getAuthResponse(
         requestId,
         this.passwordlessRequest.accessCode
       );
 
-      if (!response.requestApproved) {
+      if (!authReqResponse.requestApproved) {
         return;
       }
 
-      // TODO for TDE:
-      // Add a check here to see if the user is already AuthN via SSO, then we
-      // have to figure out how to handle the unlock portion of the logic.
-      // Taken from PasswordlessLogInStrategy:
-      // await this.cryptoService.setKey(this.passwordlessCredentials.decKey);
-      // navigate to vault
+      // 3 Scenarios to handle for approved auth requests:
+      // Existing flow 1:
+      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(masterKey) > decrypt masterKey > must authenticate > gets masterKey(userKey) > decrypt userKey and proceed to vault
 
-      const credentials = await this.buildLoginCredentials(requestId, response);
-      const loginResponse = await this.authService.logIn(credentials);
+      // 2 new flows from TDE:
+      // Flow 2:
+      //  - Post SSO > User is AuthN > Receives approval from device with pubKey(userKey) > decrypt userKey > proceed to vault
+      // Flow 3:
+      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(userKey) > decrypt userKey > must authenticate > set userKey > proceed to vault
 
-      if (loginResponse.requiresTwoFactor) {
-        if (this.onSuccessfulLoginTwoFactorNavigate != null) {
-          this.onSuccessfulLoginTwoFactorNavigate();
-        } else {
-          this.router.navigate([this.twoFactorRoute]);
-        }
-      } else if (loginResponse.forcePasswordReset != ForceResetPasswordReason.None) {
-        if (this.onSuccessfulLoginForceResetNavigate != null) {
-          this.onSuccessfulLoginForceResetNavigate();
-        } else {
-          this.router.navigate([this.forcePasswordResetRoute]);
-        }
-      } else {
-        await this.setRememberEmailValues();
-        if (this.onSuccessfulLogin != null) {
-          this.onSuccessfulLogin();
-        }
-        if (this.onSuccessfulLoginNavigate != null) {
-          this.onSuccessfulLoginNavigate();
-        } else {
-          this.router.navigate([this.successRoute]);
-        }
+      // Flow 2:
+      // if user has authenticated via SSO and masterPasswordHash is null
+      if (
+        this.userAuthNStatus === AuthenticationStatus.Locked &&
+        !authReqResponse.masterPasswordHash
+      ) {
+        // then we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
+        return await this.decryptWithSharedUserKey(authReqResponse);
       }
+
+      // Flow 1 and Flow 3:
+      return await this.authenticateAndDecrypt(requestId, authReqResponse);
     } catch (error) {
       if (error instanceof ErrorResponse) {
         this.router.navigate(["/login"]);
@@ -180,6 +199,86 @@ export class LoginWithDeviceComponent
     }
   }
 
+  // Authentication helper
+  private async buildPasswordlessLoginCredentials(
+    requestId: string,
+    response: AuthRequestResponse
+  ): Promise<PasswordlessLogInCredentials> {
+    // if masterPasswordHash has a value, we will always receive key as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
+    // if masterPasswordHash is null, we will always receive key as authRequestPublicKey(userKey)
+    if (response.masterPasswordHash) {
+      const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
+        response.key,
+        response.masterPasswordHash
+      );
+
+      return new PasswordlessLogInCredentials(
+        this.email,
+        this.passwordlessRequest.accessCode,
+        requestId,
+        null, // no userKey
+        masterKey,
+        masterKeyHash
+      );
+    } else {
+      const userKey = await this.decryptAuthReqResponseUserKey(response.key);
+      return new PasswordlessLogInCredentials(
+        this.email,
+        this.passwordlessRequest.accessCode,
+        requestId,
+        userKey,
+        null, // no masterKey
+        null // no masterKeyHash
+      );
+    }
+  }
+
+  // Login w/ device flows
+  private async decryptWithSharedUserKey(authReqResponse: AuthRequestResponse) {
+    const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key);
+    await this.cryptoService.setUserKey(userKey);
+
+    // TODO refactor this logic into the deviceTrustCryptoService and replace lock comp logic as well.
+
+    // Now that we have a decrypted user key in memory, we can check if we
+    // need to establish trust on the current device
+    const shouldTrustDevice = await this.deviceTrustCryptoService.getShouldTrustDevice();
+    if (shouldTrustDevice) {
+      await this.deviceTrustCryptoService.trustDevice();
+      // reset the trust choice
+      await this.deviceTrustCryptoService.setShouldTrustDevice(false);
+    }
+
+    await this.handleSuccessfulLoginNavigation();
+  }
+
+  private async authenticateAndDecrypt(requestId: string, authReqResponse: AuthRequestResponse) {
+    // Note: credentials change based on if the authReqResponse.key is a encryptedMasterKey or UserKey
+    const credentials = await this.buildPasswordlessLoginCredentials(requestId, authReqResponse);
+    const loginResponse = await this.authService.logIn(credentials);
+
+    await this.handlePostLoginNavigation(loginResponse);
+  }
+
+  // Routing logic
+  private async handlePostLoginNavigation(loginResponse: AuthResult) {
+    if (loginResponse.requiresTwoFactor) {
+      if (this.onSuccessfulLoginTwoFactorNavigate != null) {
+        this.onSuccessfulLoginTwoFactorNavigate();
+      } else {
+        this.router.navigate([this.twoFactorRoute]);
+      }
+    } else if (loginResponse.forcePasswordReset != ForceResetPasswordReason.None) {
+      if (this.onSuccessfulLoginForceResetNavigate != null) {
+        this.onSuccessfulLoginForceResetNavigate();
+      } else {
+        this.router.navigate([this.forcePasswordResetRoute]);
+      }
+    } else {
+      await this.handleSuccessfulLoginNavigation();
+    }
+  }
+
   async setRememberEmailValues() {
     const rememberEmail = this.loginService.getRememberEmail();
     const rememberedEmail = this.loginService.getEmail();
@@ -187,46 +286,48 @@ export class LoginWithDeviceComponent
     this.loginService.clearValues();
   }
 
-  private async buildAuthRequest() {
-    this.authRequestKeyPair = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
-    const deviceIdentifier = await this.appIdService.getAppId();
-    const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair[0]);
-    const accessCode = await this.passwordGenerationService.generatePassword({ length: 25 });
-
-    this.fingerprintPhrase = (
-      await this.cryptoService.getFingerprint(this.email, this.authRequestKeyPair[0])
-    ).join("-");
-
-    this.passwordlessRequest = new PasswordlessCreateAuthRequest(
-      this.email,
-      deviceIdentifier,
-      publicKey,
-      AuthRequestType.AuthenticateAndUnlock,
-      accessCode
-    );
+  private async handleSuccessfulLoginNavigation() {
+    await this.setRememberEmailValues();
+    if (this.onSuccessfulLogin != null) {
+      this.onSuccessfulLogin();
+    }
+    if (this.onSuccessfulLoginNavigate != null) {
+      this.onSuccessfulLoginNavigate();
+    } else {
+      this.router.navigate([this.successRoute]);
+    }
   }
 
-  private async buildLoginCredentials(
-    requestId: string,
-    response: AuthRequestResponse
-  ): Promise<PasswordlessLogInCredentials> {
-    const decMasterKeyArray = await this.cryptoService.rsaDecrypt(
-      response.key,
-      this.authRequestKeyPair[1]
+  // Decryption helpers
+  private async decryptAuthReqResponseUserKey(pubKeyEncryptedUserKey: string): Promise<UserKey> {
+    const decryptedUserKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
+      pubKeyEncryptedUserKey,
+      this.authRequestKeyPair.privateKey
     );
-    const decMasterPasswordHash = await this.cryptoService.rsaDecrypt(
-      response.masterPasswordHash,
-      this.authRequestKeyPair[1]
-    );
-    const decMasterKey = new SymmetricCryptoKey(decMasterKeyArray) as MasterKey;
-    const localHashedPassword = Utils.fromBufferToUtf8(decMasterPasswordHash);
 
-    return new PasswordlessLogInCredentials(
-      this.email,
-      this.passwordlessRequest.accessCode,
-      requestId,
-      decMasterKey,
-      localHashedPassword
+    return new SymmetricCryptoKey(decryptedUserKeyArrayBuffer) as UserKey;
+  }
+
+  private async decryptAuthReqResponseMasterKeyAndHash(
+    pubKeyEncryptedMasterKey: string,
+    pubKeyEncryptedMasterKeyHash: string
+  ): Promise<{ masterKey: MasterKey; masterKeyHash: string }> {
+    const decryptedMasterKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
+      pubKeyEncryptedMasterKey,
+      this.authRequestKeyPair.privateKey
     );
+
+    const decryptedMasterKeyHashArrayBuffer = await this.cryptoService.rsaDecrypt(
+      pubKeyEncryptedMasterKeyHash,
+      this.authRequestKeyPair.privateKey
+    );
+
+    const masterKey = new SymmetricCryptoKey(decryptedMasterKeyArrayBuffer) as MasterKey;
+    const masterKeyHash = Utils.fromBufferToUtf8(decryptedMasterKeyHashArrayBuffer);
+
+    return {
+      masterKey,
+      masterKeyHash,
+    };
   }
 }
