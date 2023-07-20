@@ -270,6 +270,15 @@ export class SettingsComponent implements OnInit {
     this.autoPromptBiometricsText = await this.stateService.getNoAutoPromptBiometricsText();
     this.previousVaultTimeout = this.form.value.vaultTimeout;
 
+    this.refreshTimeoutSettings$
+      .pipe(
+        switchMap(() => this.vaultTimeoutSettingsService.vaultTimeoutAction$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((action) => {
+        this.form.controls.vaultTimeoutAction.setValue(action, { emitEvent: false });
+      });
+
     // Form events
     this.form.controls.vaultTimeout.valueChanges
       .pipe(
@@ -285,6 +294,26 @@ export class SettingsComponent implements OnInit {
       .pipe(
         concatMap(async (action) => {
           await this.saveVaultTimeoutAction(action);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
+    this.form.controls.pin.valueChanges
+      .pipe(
+        concatMap(async (value) => {
+          await this.updatePin(value);
+          this.refreshTimeoutSettings$.next();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
+    this.form.controls.biometric.valueChanges
+      .pipe(
+        concatMap(async (enabled) => {
+          await this.updateBiometric(enabled);
+          this.refreshTimeoutSettings$.next();
         }),
         takeUntil(this.destroy$)
       )
@@ -368,30 +397,30 @@ export class SettingsComponent implements OnInit {
     );
   }
 
-  async updatePin() {
-    if (this.form.value.pin) {
+  async updatePin(value: boolean) {
+    if (value) {
       const ref = this.modalService.open(SetPinComponent, { allowMultipleModals: true });
 
       if (ref == null) {
-        this.form.controls.pin.setValue(false);
+        this.form.controls.pin.setValue(false, { emitEvent: false });
         return;
       }
 
-      this.form.controls.pin.setValue(await ref.onClosedPromise());
+      this.form.controls.pin.setValue(await ref.onClosedPromise(), { emitEvent: false });
     }
-    if (!this.form.value.pin) {
+    if (!value) {
       await this.vaultTimeoutSettingsService.clear();
     }
   }
 
-  async updateBiometric() {
+  async updateBiometric(enabled: boolean) {
     // NOTE: A bug in angular causes [ngModel] to not reflect the backing field value
     // causing the checkbox to remain checked even if authentication fails.
     // The bug should resolve itself once the angular issue is resolved.
     // See: https://github.com/angular/angular/issues/13063
 
-    if (!this.form.value.biometric || !this.supportsBiometric) {
-      this.form.controls.biometric.setValue(false);
+    if (!enabled || !this.supportsBiometric) {
+      this.form.controls.biometric.setValue(false, { emitEvent: false });
       await this.stateService.setBiometricUnlock(null);
       await this.cryptoService.refreshAdditionalKeys();
       return;
@@ -410,7 +439,7 @@ export class SettingsComponent implements OnInit {
 
     // Validate the key is stored in case biometrics fail.
     const biometricSet = await this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric);
-    this.form.controls.biometric.setValue(biometricSet);
+    this.form.controls.biometric.setValue(biometricSet, { emitEvent: false });
     if (!biometricSet) {
       await this.stateService.setBiometricUnlock(null);
     }

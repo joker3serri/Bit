@@ -117,7 +117,7 @@
               <div class="form-group">
                 <div class="checkbox">
                   <label for="pin">
-                    <input id="pin" type="checkbox" formControlName="pin" (change)="updatePin()" />
+                    <input id="pin" type="checkbox" formControlName="pin" />
                     {{ "unlockWithPin" | i18n }}
                   </label>
                 </div>
@@ -125,12 +125,7 @@
               <div class="form-group" *ngIf="supportsBiometric">
                 <div class="checkbox">
                   <label for="biometric">
-                    <input
-                      id="biometric"
-                      type="checkbox"
-                      formControlName="biometric"
-                      (change)="updateBiometric()"
-                    />
+                    <input id="biometric" type="checkbox" formControlName="biometric" />
                     {{ biometricText | i18n }}
                   </label>
                 </div>
