@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 import {
@@ -96,7 +96,8 @@ export class SettingsComponent implements OnInit {
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogServiceAbstraction,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -187,6 +188,8 @@ export class SettingsComponent implements OnInit {
       )
       .subscribe((action) => {
         this.form.controls.vaultTimeoutAction.setValue(action, { emitEvent: false });
+        // Without this, the `unlockMethodHelp` element will not update.
+        this.changeDetectorRef.detectChanges();
       });
 
     this.form.controls.pin.valueChanges
