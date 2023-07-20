@@ -299,21 +299,33 @@ export class AuthService implements AuthServiceAbstraction {
     key: string,
     requestApproved: boolean
   ): Promise<AuthRequestResponse> {
-    // TODO: This currently depends on always having the Master Key and MP Hash
-    // We need to change this to using a different method (possibly server auth code + user key)
     const pubKey = Utils.fromB64ToArray(key);
+
     const masterKey = await this.cryptoService.getMasterKey();
-    if (!masterKey) {
-      throw new Error("Master key not found");
-    }
-    const encryptedKey = await this.cryptoService.rsaEncrypt(masterKey.encKey, pubKey.buffer);
+    let keyToEncrypt;
     let encryptedMasterPasswordHash = null;
-    if ((await this.stateService.getKeyHash()) != null) {
-      encryptedMasterPasswordHash = await this.cryptoService.rsaEncrypt(
-        Utils.fromUtf8ToArray(await this.stateService.getKeyHash()),
-        pubKey.buffer
-      );
+
+    if (masterKey) {
+      // TODO: figure out why the masterKey.encKey is used vs key
+      keyToEncrypt = masterKey.encKey;
+
+      // TODO: is this a true statement or should this check remain outside of the if(masterKey) check
+      // Only encrypt the master password hash if masterKey exists as
+      // we won't have a masterKeyHash without a masterKey
+      const masterKeyHash = await this.stateService.getKeyHash();
+      if (masterKeyHash != null) {
+        encryptedMasterPasswordHash = await this.cryptoService.rsaEncrypt(
+          Utils.fromUtf8ToArray(masterKeyHash),
+          pubKey.buffer
+        );
+      }
+    } else {
+      const userKey = await this.cryptoService.getUserKey();
+      keyToEncrypt = userKey.key;
     }
+
+    const encryptedKey = await this.cryptoService.rsaEncrypt(keyToEncrypt, pubKey.buffer);
+
     const request = new PasswordlessAuthRequest(
       encryptedKey.encryptedString,
       encryptedMasterPasswordHash.encryptedString,
