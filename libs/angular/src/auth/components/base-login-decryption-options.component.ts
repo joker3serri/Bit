@@ -208,13 +208,12 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  approveFromOtherDevice() {
-    // TODO: plan is to re-use existing login-with-device component but rework it to have two flows
-    // (1) Standard flow for unauthN user based on AuthService status
-    // (2) New flow for authN user based on AuthService status b/c they have just authenticated w/ SSO
+  async approveFromOtherDevice() {
     if (this.data.state !== State.ExistingUserUntrustedDevice) {
       return;
     }
+
+    await this.deviceTrustCryptoService.setShouldTrustDevice(this.rememberDevice.value);
 
     this.loginService.setEmail(this.data.userEmail);
     this.router.navigate(["/login-with-device"]);
