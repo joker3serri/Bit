@@ -235,8 +235,9 @@ export abstract class CryptoService {
    */
   getPublicKey: () => Promise<ArrayBuffer>;
   /**
-   * Creates a new 64 byte key and encrypts it with the user's public key
-   * @returns The new encrypted share key and the decrypted key itself
+   * Creates a new organization key and encrypts it with the user's public key.
+   * This method can also return Provider keys for creating new Provider users.
+   * @returns The new encrypted org key and the decrypted key itself
    */
   makeOrgKey: <T extends OrgKey | ProviderKey>() => Promise<[EncString, T]>;
   /**
