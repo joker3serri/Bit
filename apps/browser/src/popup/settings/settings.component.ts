@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 import {
@@ -61,7 +61,7 @@ const RateUrls = {
 export class SettingsComponent implements OnInit {
   protected readonly VaultTimeoutAction = VaultTimeoutAction;
 
-  availableVaultTimeoutActions: VaultTimeoutAction[] = [];
+  availableVaultTimeoutActions$: Observable<VaultTimeoutAction[]>;
   vaultTimeoutOptions: any[];
   vaultTimeoutPolicyCallout: Observable<{
     timeout: { hours: number; minutes: number };
@@ -96,11 +96,13 @@ export class SettingsComponent implements OnInit {
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
-    private dialogService: DialogServiceAbstraction,
-    private changeDetectorRef: ChangeDetectorRef
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
+    this.availableVaultTimeoutActions$ =
+      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$;
+
     const maximumVaultTimeoutPolicy = this.policyService.get$(PolicyType.MaximumVaultTimeout);
     this.vaultTimeoutPolicyCallout = maximumVaultTimeoutPolicy.pipe(
       filter((policy) => policy != null),
@@ -178,6 +180,15 @@ export class SettingsComponent implements OnInit {
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
 
+    this.refreshTimeoutSettings$
+      .pipe(
+        switchMap(() => this.vaultTimeoutSettingsService.vaultTimeoutAction$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((action) => {
+        this.form.controls.vaultTimeoutAction.setValue(action, { emitEvent: false });
+      });
+
     this.form.controls.pin.valueChanges
       .pipe(
         concatMap(async (value) => {
@@ -206,26 +217,7 @@ export class SettingsComponent implements OnInit {
     this.refreshTimeoutSettings$
       .pipe(
         switchMap(() =>
-          combineLatest([
-            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$,
-            this.vaultTimeoutSettingsService.vaultTimeoutAction$,
-          ])
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(([availableActions, action]) => {
-        this.availableVaultTimeoutActions = availableActions;
-        this.form.controls.vaultTimeoutAction.setValue(action, { emitEvent: false });
-        this.changeDetectorRef.detectChanges();
-      });
-
-    this.refreshTimeoutSettings$
-      .pipe(
-        switchMap(() =>
-          combineLatest([
-            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$,
-            maximumVaultTimeoutPolicy,
-          ])
+          combineLatest([this.availableVaultTimeoutActions$, maximumVaultTimeoutPolicy])
         ),
         takeUntil(this.destroy$)
       )
