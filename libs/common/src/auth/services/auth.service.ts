@@ -307,10 +307,8 @@ export class AuthService implements AuthServiceAbstraction {
     let encryptedMasterPasswordHash = null;
 
     if (masterKey) {
-      // TODO: figure out why the masterKey.encKey is used vs key
       keyToEncrypt = masterKey.encKey;
 
-      // TODO: is this a true statement or should this check remain outside of the if(masterKey) check
       // Only encrypt the master password hash if masterKey exists as
       // we won't have a masterKeyHash without a masterKey
       const masterKeyHash = await this.stateService.getKeyHash();
