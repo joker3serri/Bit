@@ -9,7 +9,6 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
-import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -39,7 +38,6 @@ export class LockComponent extends BaseLockComponent {
     stateService: StateService,
     apiService: ApiService,
     logService: LogService,
-    keyConnectorService: KeyConnectorService,
     ngZone: NgZone,
     policyApiService: PolicyApiServiceAbstraction,
     policyService: InternalPolicyService,
@@ -59,7 +57,6 @@ export class LockComponent extends BaseLockComponent {
       stateService,
       apiService,
       logService,
-      keyConnectorService,
       ngZone,
       policyApiService,
       policyService,

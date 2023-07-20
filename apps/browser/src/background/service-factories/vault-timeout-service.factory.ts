@@ -5,10 +5,6 @@ import {
   AuthServiceInitOptions,
 } from "../../auth/background/service-factories/auth-service.factory";
 import {
-  keyConnectorServiceFactory,
-  KeyConnectorServiceInitOptions,
-} from "../../auth/background/service-factories/key-connector-service.factory";
-import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,
 } from "../../platform/background/service-factories/crypto-service.factory";
@@ -64,7 +60,6 @@ export type VaultTimeoutServiceInitOptions = VaultTimeoutServiceFactoryOptions &
   PlatformUtilsServiceInitOptions &
   MessagingServiceInitOptions &
   SearchServiceInitOptions &
-  KeyConnectorServiceInitOptions &
   StateServiceInitOptions &
   AuthServiceInitOptions &
   VaultTimeoutSettingsServiceInitOptions;
@@ -86,7 +81,6 @@ export function vaultTimeoutServiceFactory(
         await platformUtilsServiceFactory(cache, opts),
         await messagingServiceFactory(cache, opts),
         await searchServiceFactory(cache, opts),
-        await keyConnectorServiceFactory(cache, opts),
         await stateServiceFactory(cache, opts),
         await authServiceFactory(cache, opts),
         await vaultTimeoutSettingsServiceFactory(cache, opts),
