@@ -238,16 +238,9 @@ export class LoginWithDeviceComponent
     const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key);
     await this.cryptoService.setUserKey(userKey);
 
-    // TODO refactor this logic into the deviceTrustCryptoService and replace lock comp logic as well.
-
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
-    const shouldTrustDevice = await this.deviceTrustCryptoService.getShouldTrustDevice();
-    if (shouldTrustDevice) {
-      await this.deviceTrustCryptoService.trustDevice();
-      // reset the trust choice
-      await this.deviceTrustCryptoService.setShouldTrustDevice(false);
-    }
+    await this.deviceTrustCryptoService.trustDeviceIfRequired();
 
     await this.handleSuccessfulLoginNavigation();
   }
