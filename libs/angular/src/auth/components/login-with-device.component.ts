@@ -9,6 +9,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
 import { PasswordlessLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
@@ -115,18 +116,17 @@ export class LoginWithDeviceComponent
       matchOptions
     );
 
-    // if(this.router.isActive(this.adminApprovalRoute, false)) {
-    // Idea: extract logic from the existing login-with-device component into a base-auth-request-component that
-    // the new admin-approval-requested component and the existing login-with-device component can extend
-    // TODO: how to do:
-    // add create admin approval request on new OrganizationAuthRequestsController on the server
-    // once https://github.com/bitwarden/server/pull/2993 is merged
-    // Client will create an AuthRequest of type AdminAuthRequest WITHOUT orgId and send it to the server
-    // Server will look up the org id(s) based on the user id and create the AdminAuthRequest(s)
-    // Note: must lookup if the user has an account recovery key (resetPasswordKey) set in the org
-    // (means they've opted into the Admin Acct Recovery feature)
+    if (this.adminApprovalAuthRequestState) {
+      // We only allow a single admin approval request to be active at a time
+      // so must check state to see if we have an existing one or not
+      const adminAuthReqStorable = await this.stateService.getAdminAuthRequest();
 
-    this.startPasswordlessLogin();
+      if (!adminAuthReqStorable) {
+        this.startPasswordlessLogin();
+      }
+    } else {
+      this.startPasswordlessLogin();
+    }
   }
 
   ngOnDestroy(): void {
@@ -135,7 +135,7 @@ export class LoginWithDeviceComponent
     this.anonymousHubService.stopHubConnection();
   }
 
-  private async buildAuthRequest() {
+  private async buildAuthRequest(authRequestType: AuthRequestType) {
     const authRequestKeyPairArray = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
 
     this.authRequestKeyPair = {
@@ -155,39 +155,31 @@ export class LoginWithDeviceComponent
       this.email,
       deviceIdentifier,
       publicKey,
-      AuthRequestType.AuthenticateAndUnlock,
+      authRequestType,
       accessCode
     );
-  }
-
-  private async buildAdminApprovalAuthRequest() {
-    // TODO figure out what this is going to look like
-    // const authRequestKeyPairArray = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
-    // this.authRequestKeyPair = {
-    //   publicKey: authRequestKeyPairArray[0],
-    //   privateKey: authRequestKeyPairArray[1],
-    // };
-    // const deviceIdentifier = await this.appIdService.getAppId();
-    // const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair.publicKey);
-    // const accessCode = await this.passwordGenerationService.generatePassword({ length: 25 });
-    // this.fingerprintPhrase = (
-    //   await this.cryptoService.getFingerprint(this.email, this.authRequestKeyPair.publicKey)
-    // ).join("-");
-    // this.passwordlessRequest = new PasswordlessCreateAuthRequest(
-    //   this.email,
-    //   deviceIdentifier,
-    //   publicKey,
-    //   AuthRequestType.,
-    //   accessCode
-    // );
   }
 
   async startPasswordlessLogin() {
     this.showResendNotification = false;
 
     try {
-      await this.buildAuthRequest();
-      const reqResponse = await this.apiService.postAuthRequest(this.passwordlessRequest);
+      let reqResponse: AuthRequestResponse;
+
+      if (this.adminApprovalAuthRequestState) {
+        await this.buildAuthRequest(AuthRequestType.AdminApproval);
+        reqResponse = await this.apiService.postAdminAuthRequest(this.passwordlessRequest);
+
+        const adminAuthReqStorable = new AdminAuthRequestStorable({
+          id: reqResponse.id,
+          privateKey: this.authRequestKeyPair.privateKey,
+        });
+
+        await this.stateService.setAdminAuthRequest(adminAuthReqStorable);
+      } else {
+        await this.buildAuthRequest(AuthRequestType.AuthenticateAndUnlock);
+        reqResponse = await this.apiService.postAuthRequest(this.passwordlessRequest);
+      }
 
       if (reqResponse.id) {
         this.anonymousHubService.createHubConnection(reqResponse.id);
@@ -203,9 +195,6 @@ export class LoginWithDeviceComponent
 
   private async confirmResponse(requestId: string) {
     try {
-      // We need to make the approving device treats the MP hash as optional
-      // and make sure the server can handle that.
-
       const authReqResponse = await this.apiService.getAuthResponse(
         requestId,
         this.passwordlessRequest.accessCode
