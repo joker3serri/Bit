@@ -1,6 +1,8 @@
+import { Utils } from "../../../platform/misc/utils";
+
 export class AdminAuthRequestStorable {
   id: string;
-  privateKey: string;
+  privateKey: ArrayBuffer;
 
   constructor(init?: Partial<AdminAuthRequestStorable>) {
     if (init) {
@@ -8,11 +10,26 @@ export class AdminAuthRequestStorable {
     }
   }
 
-  static fromJSON(obj: Partial<AdminAuthRequestStorable>): AdminAuthRequestStorable {
+  toJSON() {
+    return {
+      id: this.id,
+      privateKey: Utils.fromBufferToByteString(this.privateKey),
+    };
+  }
+
+  static fromJSON(obj: any): AdminAuthRequestStorable {
     if (obj == null) {
       return null;
     }
 
-    return new AdminAuthRequestStorable(obj);
+    let privateKeyBuffer = null;
+    if (obj.privateKey) {
+      privateKeyBuffer = Utils.fromByteStringToArray(obj.privateKey)?.buffer;
+    }
+
+    return new AdminAuthRequestStorable({
+      id: obj.id,
+      privateKey: privateKeyBuffer,
+    });
   }
 }

@@ -1336,9 +1336,9 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    // TODO: determine if I need something like:
-    //  return account?.adminAuthRequest ? AdminAuthRequestStorable.fromJSON(account.adminAuthRequest) : null;
-    return account?.adminAuthRequest || null;
+    return account?.adminAuthRequest
+      ? AdminAuthRequestStorable.fromJSON(account.adminAuthRequest)
+      : null;
   }
 
   async setAdminAuthRequest(
