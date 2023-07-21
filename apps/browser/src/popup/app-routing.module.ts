@@ -79,6 +79,14 @@ const routes: Routes = [
     data: { state: "login-with-device" },
   },
   {
+    // TODO: investigate why unauthGuard is only on this route in the
+    // browser
+    path: "admin-approval-requested",
+    component: LoginWithDeviceComponent,
+    canActivate: [UnauthGuard],
+    data: { state: "login-with-device" },
+  },
+  {
     path: "lock",
     component: LockComponent,
     canActivate: [LockGuard],
