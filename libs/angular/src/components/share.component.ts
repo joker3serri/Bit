@@ -144,7 +144,8 @@ export class ShareComponent implements OnInit, OnDestroy {
       //Determine if Fido2Key object is disvoverable or non discoverable
       const newFido2Key = cipher.login?.fido2Key || cipher.fido2Key;
 
-      const exisitingOrgCiphers = await this.cipherService.getAllFromApiForOrganization(orgId);
+      const ciphers = await this.cipherService.getAllDecrypted();
+      const exisitingOrgCiphers = ciphers.filter((c) => c.organizationId === orgId);
 
       return exisitingOrgCiphers.some((c) => {
         const existingFido2key = c.login?.fido2Key || c.fido2Key;
@@ -152,8 +153,7 @@ export class ShareComponent implements OnInit, OnDestroy {
         return (
           !c.isDeleted &&
           existingFido2key.rpId === newFido2Key.rpId &&
-          existingFido2key.userHandle === newFido2Key.userHandle &&
-          existingFido2key.nonDiscoverableId === newFido2Key.nonDiscoverableId
+          existingFido2key.userHandle === newFido2Key.userHandle
         );
       });
     }
