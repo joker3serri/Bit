@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ViewComponent as BaseViewComponent } from "@bitwarden/angular/vault/components/view.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
@@ -21,7 +21,6 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 
@@ -41,7 +40,6 @@ export class ViewComponent extends BaseViewComponent {
   tab: any;
   loadPageDetailsTimeout: number;
   inPopout = false;
-  cipherType = CipherType;
 
   constructor(
     cipherService: CipherService,
@@ -156,16 +154,6 @@ export class ViewComponent extends BaseViewComponent {
   }
 
   async clone() {
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "passkeyNotCopied" },
-      content: { key: "passkeyNotCopiedAlert" },
-      type: SimpleDialogType.INFO,
-    });
-
-    if (!confirmed) {
-      return false;
-    }
-
     if (this.cipher.isDeleted) {
       return false;
     }
