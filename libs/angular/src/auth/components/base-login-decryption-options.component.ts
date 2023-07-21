@@ -238,7 +238,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.router.navigate(["/lock"]);
   }
 
-  createUser = async () => {
+  async createUser() {
     if (this.data.state !== State.NewUser) {
       return;
     }
@@ -250,7 +250,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
       await this.apiService.postAccountKeys(keysRequest);
 
-      await this.passwordResetEnroll();
+      await this.passwordResetEnrollmentService.enroll(this.data.organizationId);
 
       if (this.rememberDeviceForm.value.rememberDevice) {
         await this.deviceTrustCryptoService.trustDevice();
@@ -260,24 +260,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     } finally {
       this.loading = false;
     }
-  };
-
-  passwordResetEnroll = async () => {
-    if (this.data.state !== State.NewUser) {
-      return;
-    }
-
-    // this.loading to support clients without async-actions-support
-    this.loading = true;
-    try {
-      await this.passwordResetEnrollmentService.enroll(this.data.organizationId);
-      await this.router.navigate(["/vault"]);
-    } catch (error) {
-      this.validationService.showError(error);
-    } finally {
-      this.loading = false;
-    }
-  };
+  }
 
   logOut() {
     this.loading = true; // to avoid an awkward delay in browser extension

@@ -6,4 +6,13 @@ import { BaseLoginDecryptionOptionsComponent } from "@bitwarden/angular/auth/com
   selector: "desktop-login-decryption-options",
   templateUrl: "login-decryption-options.component.html",
 })
-export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsComponent {}
+export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsComponent {
+  async createUser(): Promise<void> {
+    try {
+      await super.createUser();
+      await this.router.navigate(["/vault"]);
+    } catch (error) {
+      this.validationService.showError(error);
+    }
+  }
+}
