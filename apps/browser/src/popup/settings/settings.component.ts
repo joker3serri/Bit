@@ -216,6 +216,10 @@ export class SettingsComponent implements OnInit {
       .subscribe(([availableActions, action]) => {
         this.availableVaultTimeoutActions = availableActions;
         this.form.controls.vaultTimeoutAction.setValue(action, { emitEvent: false });
+        // NOTE: The UI doesn't properly update without detect changes.
+        // I've even tried using an async pipe, but it still doesn't work. I'm not sure why.
+        // Using an async pipe means that we can't call `detectChanges` AFTER the data has change
+        // meaning that we are forced to use regular class variables instead of observables.
         this.changeDetectorRef.detectChanges();
       });
 
