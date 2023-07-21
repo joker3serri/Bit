@@ -370,7 +370,7 @@ export class Account {
   settings?: AccountSettings = new AccountSettings();
   tokens?: AccountTokens = new AccountTokens();
   decryptionOptions?: AccountDecryptionOptions = new AccountDecryptionOptions();
-  adminAuthRequest?: AdminAuthRequestStorable = new AdminAuthRequestStorable();
+  adminAuthRequest?: AdminAuthRequestStorable = null;
 
   constructor(init: Partial<Account>) {
     Object.assign(this, {
@@ -398,10 +398,9 @@ export class Account {
         ...new AccountDecryptionOptions(),
         ...init?.decryptionOptions,
       },
-      adminAuthRequests: {
-        ...new AdminAuthRequestStorable(),
-        ...init?.adminAuthRequest,
-      },
+      adminAuthRequest: init?.adminAuthRequest
+        ? new AdminAuthRequestStorable(init?.adminAuthRequest)
+        : null,
     });
   }
 
