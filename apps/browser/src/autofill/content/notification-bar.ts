@@ -3,6 +3,7 @@ import ChangePasswordRuntimeMessage from "../../background/models/changePassword
 import AutofillField from "../models/autofill-field";
 import { WatchedForm } from "../models/watched-form";
 import { FormData } from "../services/abstractions/autofill.service";
+import { UserSettings } from "../types";
 
 interface HTMLElementWithFormOpId extends HTMLElement {
   formOpId: string;
@@ -49,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
       return;
     }
 
-    const userSettings = obj[activeUserId].settings;
+    const userSettings: UserSettings = obj[activeUserId].settings;
 
     // Do not show the notification bar on the Bitwarden vault
     // because they can add logins and change passwords there
