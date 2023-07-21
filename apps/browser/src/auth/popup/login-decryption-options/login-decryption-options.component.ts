@@ -9,7 +9,7 @@ import { BrowserApi } from "../../../platform/browser/browser-api";
   templateUrl: "login-decryption-options.component.html",
 })
 export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsComponent {
-  async createUser(): Promise<void> {
+  override async createUser(): Promise<void> {
     try {
       await super.createUser();
       BrowserApi.closeBitwardenExtensionTab();
