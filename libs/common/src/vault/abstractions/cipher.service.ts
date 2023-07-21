@@ -80,5 +80,5 @@ export abstract class CipherService {
     ids: string[],
     organizationId?: string,
     asAdmin?: boolean
-  ) => Promise<any>;
+  ) => Promise<void>;
 }

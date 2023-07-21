@@ -917,9 +917,13 @@ export class CipherService implements CipherServiceAbstraction {
   }
 
   async restoreWithServer(id: string, asAdmin = false): Promise<any> {
-    const response = asAdmin
-      ? await this.apiService.putRestoreCipherAdmin(id)
-      : await this.apiService.putRestoreCipher(id);
+    let response;
+    if (asAdmin) {
+      response = await this.apiService.putRestoreCipherAdmin(id);
+    } else {
+      response = await this.apiService.putRestoreCipher(id);
+    }
+
     await this.restore({ id: id, revisionDate: response.revisionDate });
   }
 
@@ -927,12 +931,16 @@ export class CipherService implements CipherServiceAbstraction {
     ids: string[],
     organizationId: string = null,
     asAdmin = false
-  ): Promise<any> {
-    const response = asAdmin
-      ? await this.apiService.putRestoreManyCiphersAdmin(
-          new CipherBulkRestoreRequest(ids, organizationId)
-        )
-      : await this.apiService.putRestoreManyCiphers(new CipherBulkRestoreRequest(ids));
+  ): Promise<void> {
+    let response;
+    if (asAdmin) {
+      const request = new CipherBulkRestoreRequest(ids, organizationId);
+      response = await this.apiService.putRestoreManyCiphersAdmin(request);
+    } else {
+      const request = new CipherBulkRestoreRequest(ids);
+      response = await this.apiService.putRestoreManyCiphers(request);
+    }
+
     const restores: { id: string; revisionDate: string }[] = [];
     for (const cipher of response.data) {
       restores.push({ id: cipher.id, revisionDate: cipher.revisionDate });
