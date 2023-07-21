@@ -1,5 +1,5 @@
 import { Directive, OnDestroy, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { IsActiveMatchOptions, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { AnonymousHubService } from "@bitwarden/common/abstractions/anonymousHub.service";
@@ -50,6 +50,9 @@ export class LoginWithDeviceComponent
   onSuccessfulLoginNavigate: () => Promise<any>;
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
 
+  protected adminApprovalRoute = "admin-approval-requested";
+  protected adminApprovalAuthRequestState = false;
+
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
@@ -99,6 +102,28 @@ export class LoginWithDeviceComponent
       return;
     }
 
+    const matchOptions: IsActiveMatchOptions = {
+      paths: "exact",
+      queryParams: "ignored",
+      fragment: "ignored",
+      matrixParams: "ignored",
+    };
+    this.adminApprovalAuthRequestState = this.router.isActive(
+      this.adminApprovalRoute,
+      matchOptions
+    );
+
+    // if(this.router.isActive(this.adminApprovalRoute, false)) {
+    // Idea: extract logic from the existing login-with-device component into a base-auth-request-component that
+    // the new admin-approval-requested component and the existing login-with-device component can extend
+    // TODO: how to do:
+    // add create admin approval request on new OrganizationAuthRequestsController on the server
+    // once https://github.com/bitwarden/server/pull/2993 is merged
+    // Client will create an AuthRequest of type AdminAuthRequest WITHOUT orgId and send it to the server
+    // Server will look up the org id(s) based on the user id and create the AdminAuthRequest(s)
+    // Note: must lookup if the user has an account recovery key (resetPasswordKey) set in the org
+    // (means they've opted into the Admin Acct Recovery feature)
+
     this.startPasswordlessLogin();
   }
 
@@ -131,6 +156,28 @@ export class LoginWithDeviceComponent
       AuthRequestType.AuthenticateAndUnlock,
       accessCode
     );
+  }
+
+  private async buildAdminApprovalAuthRequest() {
+    // TODO figure out what this is going to look like
+    // const authRequestKeyPairArray = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
+    // this.authRequestKeyPair = {
+    //   publicKey: authRequestKeyPairArray[0],
+    //   privateKey: authRequestKeyPairArray[1],
+    // };
+    // const deviceIdentifier = await this.appIdService.getAppId();
+    // const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair.publicKey);
+    // const accessCode = await this.passwordGenerationService.generatePassword({ length: 25 });
+    // this.fingerprintPhrase = (
+    //   await this.cryptoService.getFingerprint(this.email, this.authRequestKeyPair.publicKey)
+    // ).join("-");
+    // this.passwordlessRequest = new PasswordlessCreateAuthRequest(
+    //   this.email,
+    //   deviceIdentifier,
+    //   publicKey,
+    //   AuthRequestType.,
+    //   accessCode
+    // );
   }
 
   async startPasswordlessLogin() {
