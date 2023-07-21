@@ -222,25 +222,28 @@ export class LoginWithDeviceComponent
 
       // 3 new flows from TDE:
       // Flow 2:
-      //  - Post SSO > User is AuthN > receives approval from device with pubKey(masterKey)
-      //    > decrypt masterKey > must authenticate > gets masterKey(userKey) > decrypt userKey > establish trust if required > proceed to vault
+      //  - Post SSO > User is AuthN > SSO login strategy success sets masterKey(userKey) > receives approval from device with pubKey(masterKey)
+      //    > decrypt masterKey > decrypt userKey > establish trust if required > proceed to vault
       // Flow 3:
       //  - Post SSO > User is AuthN > Receives approval from device with pubKey(userKey) > decrypt userKey > establish trust if required > proceed to vault
       // Flow 4:
       //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(userKey)
       //    > decrypt userKey > must authenticate > set userKey > proceed to vault
 
-      // Flow 3:
-      // if user has authenticated via SSO and masterPasswordHash is null
-      if (
-        this.userAuthNStatus === AuthenticationStatus.Locked &&
-        !authReqResponse.masterPasswordHash
-      ) {
-        // then we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
-        return await this.decryptWithSharedUserKey(authReqResponse);
+      // if user has authenticated via SSO
+      if (this.userAuthNStatus === AuthenticationStatus.Locked) {
+        // Then it's flow 2 or 3 based on presence of masterPasswordHash
+        if (authReqResponse.masterPasswordHash) {
+          // Flow 2: masterPasswordHash is not null
+          return await this.decryptWithSharedMasterKey(authReqResponse);
+        } else {
+          // Flow 3: masterPasswordHash is null
+          // then we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
+          return await this.decryptWithSharedUserKey(authReqResponse);
+        }
       }
 
-      // Flow 1, 2, and 4:
+      // Flow 1 and 4:
       return await this.authenticateAndDecrypt(requestId, authReqResponse);
     } catch (error) {
       if (error instanceof ErrorResponse) {
@@ -290,6 +293,22 @@ export class LoginWithDeviceComponent
   // Login w/ device flows
   private async decryptWithSharedUserKey(authReqResponse: AuthRequestResponse) {
     const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key);
+    await this.cryptoService.setUserKey(userKey);
+
+    // Now that we have a decrypted user key in memory, we can check if we
+    // need to establish trust on the current device
+    await this.deviceTrustCryptoService.trustDeviceIfRequired();
+
+    await this.handleSuccessfulLoginNavigation();
+  }
+
+  private async decryptWithSharedMasterKey(authReqResponse: AuthRequestResponse) {
+    const { masterKey } = await this.decryptAuthReqResponseMasterKeyAndHash(
+      authReqResponse.key,
+      authReqResponse.masterPasswordHash
+    );
+
+    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
     await this.cryptoService.setUserKey(userKey);
 
     // Now that we have a decrypted user key in memory, we can check if we
