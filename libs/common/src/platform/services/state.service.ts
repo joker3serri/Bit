@@ -1327,9 +1327,7 @@ export class StateService<
     await this.saveAccount(account, options);
   }
 
-  async getAdminAuthRequests(
-    options?: StorageOptions
-  ): Promise<Map<string, AdminAuthRequestStorable> | null> {
+  async getAdminAuthRequest(options?: StorageOptions): Promise<AdminAuthRequestStorable | null> {
     options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
 
     if (options?.userId == null) {
@@ -1338,11 +1336,13 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    return account?.adminAuthRequests || null;
+    // TODO: determine if I need something like:
+    //  return account?.adminAuthRequest ? AdminAuthRequestStorable.fromJSON(account.adminAuthRequest) : null;
+    return account?.adminAuthRequest || null;
   }
 
-  async setAdminAuthRequests(
-    requests: Map<string, AdminAuthRequestStorable>,
+  async setAdminAuthRequest(
+    adminAuthRequest: AdminAuthRequestStorable,
     options?: StorageOptions
   ): Promise<void> {
     options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
@@ -1353,7 +1353,7 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    account.adminAuthRequests = requests;
+    account.adminAuthRequest = adminAuthRequest;
 
     await this.saveAccount(account, options);
   }
@@ -3149,7 +3149,7 @@ export class StateService<
     const persistentAccountInformation = {
       settings: account.settings,
       keys: { deviceKey: account.keys.deviceKey },
-      adminAuthRequests: account.adminAuthRequests,
+      adminAuthRequest: account.adminAuthRequest,
     };
     return Object.assign(this.createAccount(), persistentAccountInformation);
   }

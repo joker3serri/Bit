@@ -370,10 +370,7 @@ export class Account {
   settings?: AccountSettings = new AccountSettings();
   tokens?: AccountTokens = new AccountTokens();
   decryptionOptions?: AccountDecryptionOptions = new AccountDecryptionOptions();
-  adminAuthRequests?: Map<string, AdminAuthRequestStorable> = new Map<
-    string,
-    AdminAuthRequestStorable
-  >();
+  adminAuthRequest?: AdminAuthRequestStorable = new AdminAuthRequestStorable();
 
   constructor(init: Partial<Account>) {
     Object.assign(this, {
@@ -402,8 +399,8 @@ export class Account {
         ...init?.decryptionOptions,
       },
       adminAuthRequests: {
-        ...new Map<string, AdminAuthRequestStorable>(),
-        ...init?.adminAuthRequests,
+        ...new AdminAuthRequestStorable(),
+        ...init?.adminAuthRequest,
       },
     });
   }
@@ -419,7 +416,7 @@ export class Account {
       settings: AccountSettings.fromJSON(json?.settings),
       tokens: AccountTokens.fromJSON(json?.tokens),
       decryptionOptions: AccountDecryptionOptions.fromJSON(json?.decryptionOptions),
-      adminAuthRequests: new Map(Object.entries(json?.adminAuthRequests || {})),
+      adminAuthRequest: AdminAuthRequestStorable.fromJSON(json?.adminAuthRequest),
     });
   }
 }
