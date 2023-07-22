@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import {
   DEFAULT_KDF_CONFIG,
@@ -11,6 +10,7 @@ import {
   KdfType,
 } from "@bitwarden/common/enums";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { ChangeKdfConfirmationComponent } from "./change-kdf-confirmation.component";
 

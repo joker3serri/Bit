@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
   SimpleDialogType,
   SimpleDialogOptions,
   DialogServiceAbstraction,
-} from "@bitwarden/angular/services/dialog";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+} from "@bitwarden/components";
 
 import { ButtonModule } from "../../button";
 import { CalloutModule } from "../../callout";

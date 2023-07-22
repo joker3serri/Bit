@@ -1,6 +1,5 @@
 import { APP_INITIALIZER, InjectionToken, NgModule } from "@angular/core";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import {
   SECURE_STORAGE,
   STATE_FACTORY,
@@ -40,6 +39,7 @@ import { SystemService } from "@bitwarden/common/platform/services/system.servic
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";

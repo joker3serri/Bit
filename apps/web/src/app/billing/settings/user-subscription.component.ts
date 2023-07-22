@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SubscriptionResponse } from "@bitwarden/common/billing/models/response/subscription.response";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -10,6 +9,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 @Component({
   selector: "app-user-subscription",

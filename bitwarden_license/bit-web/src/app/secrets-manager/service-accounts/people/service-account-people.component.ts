@@ -11,13 +11,13 @@ import {
   takeUntil,
 } from "rxjs";
 
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import {
   SimpleDialogType,
   DialogServiceAbstraction,
   SimpleDialogOptions,
-} from "@bitwarden/angular/services/dialog";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+} from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {

@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -22,6 +21,7 @@ import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherCreateRequest } from "@bitwarden/common/vault/models/request/cipher-create.request";
 import { CipherRequest } from "@bitwarden/common/vault/models/request/cipher.request";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { AddEditComponent as BaseAddEditComponent } from "../individual-vault/add-edit.component";
 

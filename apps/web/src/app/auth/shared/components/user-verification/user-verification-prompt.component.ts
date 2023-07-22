@@ -3,11 +3,11 @@ import { Component, Inject } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
 import { UserVerificationPromptComponent as BaseUserVerificationPrompt } from "@bitwarden/angular/auth/components/user-verification-prompt.component";
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalConfig } from "@bitwarden/angular/services/modal.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 export interface UserVerificationPromptParams {
   confirmDescription: string;

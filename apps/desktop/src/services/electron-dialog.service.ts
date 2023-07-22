@@ -1,10 +1,6 @@
 import { ipcRenderer } from "electron";
 
-import {
-  DialogService,
-  SimpleDialogOptions,
-  SimpleDialogType,
-} from "@bitwarden/angular/services/dialog";
+import { DialogService, SimpleDialogOptions, SimpleDialogType } from "@bitwarden/components";
 
 // Electron supports a limited set of dialog types
 // https://www.electronjs.org/docs/latest/api/dialog#dialogshowmessageboxbrowserwindow-options

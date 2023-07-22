@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, lastValueFrom, Observable, startWith, switchMap } from "rxjs";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
 import { AccessPolicyService } from "../../shared/access-policies/access-policy.service";
