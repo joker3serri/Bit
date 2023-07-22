@@ -23,7 +23,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { SimpleConfigurableDialogComponent } from "./simple-configurable-dialog/simple-configurable-dialog.component";
-import { Translation } from "./simple-dialog/translation";
+import { Translation } from "./simple-dialog/types";
 
 import { DialogServiceAbstraction, SimpleDialogCloseType, SimpleDialogOptions } from ".";
 

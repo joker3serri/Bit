@@ -1,5 +1,7 @@
-import { SimpleDialogType } from "./simple-dialog-type.enum";
-import { Translation } from "./translation";
+export interface Translation {
+  key: string;
+  placeholders?: Array<string | number>;
+}
 
 // Using type lets devs skip optional params w/out having to pass undefined.
 /**
@@ -49,3 +51,16 @@ export type SimpleDialogOptions = {
   /** Whether or not the user can use escape or clicking the backdrop to close the dialog */
   disableClose?: boolean;
 };
+
+export enum SimpleDialogCloseType {
+  ACCEPT = "accept",
+  CANCEL = "cancel",
+}
+
+export enum SimpleDialogType {
+  PRIMARY = "primary",
+  SUCCESS = "success",
+  INFO = "info",
+  WARNING = "warning",
+  DANGER = "danger",
+}
