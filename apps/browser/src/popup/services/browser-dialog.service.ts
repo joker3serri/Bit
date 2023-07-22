@@ -1,11 +1,7 @@
 import { Injectable } from "@angular/core";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
-import {
-  DialogService,
-  SimpleDialogOptions,
-  SimpleDialogType,
-} from "@bitwarden/angular/services/dialog";
+import { DialogService, SimpleDialogOptions, SimpleDialogType } from "@bitwarden/components";
 
 @Injectable()
 export class BrowserDialogService extends DialogService {

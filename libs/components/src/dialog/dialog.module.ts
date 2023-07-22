@@ -1,7 +1,6 @@
 import { DialogModule as CdkDialogModule } from "@angular/cdk/dialog";
 import { NgModule } from "@angular/core";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 
 import { ButtonModule } from "../button";
 import { IconButtonModule } from "../icon-button";
@@ -9,6 +8,7 @@ import { SharedModule } from "../shared";
 
 import { DialogComponent } from "./dialog/dialog.component";
 import { DialogService } from "./dialog.service";
+import { DialogServiceAbstraction } from "./dialog.service.abstraction";
 import { DialogCloseDirective } from "./directives/dialog-close.directive";
 import { DialogTitleContainerDirective } from "./directives/dialog-title-container.directive";
 import { SimpleConfigurableDialogComponent } from "./simple-configurable-dialog/simple-configurable-dialog.component";

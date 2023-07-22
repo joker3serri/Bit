@@ -18,16 +18,14 @@ import {
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, firstValueFrom, Subject, switchMap, takeUntil } from "rxjs";
 
-import {
-  DialogServiceAbstraction,
-  SimpleDialogCloseType,
-} from "@bitwarden/angular/services/dialog";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-
-import { SimpleDialogOptions } from "../../../angular/src/services/dialog/simple-dialog-options";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { SimpleConfigurableDialogComponent } from "./simple-configurable-dialog/simple-configurable-dialog.component";
+import { Translation } from "./simple-dialog/translation";
+
+import { DialogServiceAbstraction, SimpleDialogCloseType, SimpleDialogOptions } from ".";
 
 @Injectable()
 export class DialogService extends Dialog implements OnDestroy, DialogServiceAbstraction {
@@ -46,7 +44,9 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
 
     /** Not in parent class */
     @Optional() router: Router,
-    @Optional() authService: AuthService
+    @Optional() authService: AuthService,
+
+    protected i18nService: I18nService
   ) {
     super(_overlay, _injector, _defaultOptions, _parentDialog, _overlayContainer, scrollStrategy);
 
@@ -112,5 +112,22 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
       data: simpleDialogOptions,
       disableClose: simpleDialogOptions.disableClose,
     });
+  }
+
+  protected translate(translation: string | Translation, defaultKey?: string): string {
+    if (translation == null && defaultKey == null) {
+      return null;
+    }
+
+    if (translation == null) {
+      return this.i18nService.t(defaultKey);
+    }
+
+    // Translation interface use implies we must localize.
+    if (typeof translation === "object") {
+      return this.i18nService.t(translation.key, ...(translation.placeholders ?? []));
+    }
+
+    return translation;
   }
 }

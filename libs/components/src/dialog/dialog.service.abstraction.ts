@@ -1,6 +1,6 @@
 import { Dialog, DialogRef } from "@angular/cdk/dialog";
 
-import { SimpleDialogOptions } from "./simple-dialog-options";
+import { SimpleDialogOptions } from "./simple-dialog/simple-dialog-options";
 
 export abstract class DialogServiceAbstraction extends Dialog {
   /**
