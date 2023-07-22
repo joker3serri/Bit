@@ -2,12 +2,8 @@ import { Component } from "@angular/core";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import {
-  SimpleDialogType,
-  SimpleDialogOptions,
-  DialogServiceAbstraction,
-} from "@bitwarden/components";
 
+import { SimpleDialogType, SimpleDialogOptions, DialogServiceAbstraction } from "../..";
 import { ButtonModule } from "../../../button";
 import { CalloutModule } from "../../../callout";
 import { I18nMockService } from "../../../utils/i18n-mock.service";
