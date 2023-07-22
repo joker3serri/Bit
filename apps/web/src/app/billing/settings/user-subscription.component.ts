@@ -9,7 +9,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Component({
   selector: "app-user-subscription",
@@ -75,7 +75,7 @@ export class UserSubscriptionComponent implements OnInit {
         content: { key: "manageSubscriptionFromStore" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       return;
@@ -84,7 +84,7 @@ export class UserSubscriptionComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "reinstateSubscription" },
       content: { key: "reinstateConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -112,7 +112,7 @@ export class UserSubscriptionComponent implements OnInit {
         content: { key: "manageSubscriptionFromStore" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       return;
@@ -121,7 +121,7 @@ export class UserSubscriptionComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "cancelSubscription" },
       content: { key: "cancelConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -175,7 +175,7 @@ export class UserSubscriptionComponent implements OnInit {
         content: { key: "cannotPerformInAppPurchase" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       return;

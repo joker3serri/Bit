@@ -14,7 +14,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Component({
   selector: "app-preferences",
@@ -117,7 +117,7 @@ export class PreferencesComponent implements OnInit {
             const confirmed = await this.dialogService.openSimpleDialog({
               title: { key: "vaultTimeoutLogOutConfirmationTitle" },
               content: { key: "vaultTimeoutLogOutConfirmation" },
-              type: SimpleDialogType.WARNING,
+              type: "warning",
             });
 
             if (!confirmed) {

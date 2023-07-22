@@ -57,7 +57,7 @@ import { CollectionData } from "@bitwarden/common/vault/models/data/collection.d
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction, SimpleDialogType, Icons } from "@bitwarden/components";
+import { DialogServiceAbstraction, Icons } from "@bitwarden/components";
 
 import { UpdateKeyComponent } from "../../settings/update-key.component";
 import { CollectionDialogAction, openCollectionDialog } from "../components/collection-dialog";
@@ -669,7 +669,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "restoreItemConfirmation" },
       content: { key: "restoreItem" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -720,7 +720,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: permanent ? "permanentlyDeleteItem" : "deleteItem" },
       content: { key: permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

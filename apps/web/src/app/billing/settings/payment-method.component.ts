@@ -11,7 +11,7 @@ import { VerifyBankRequest } from "@bitwarden/common/models/request/verify-bank.
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { TaxInfoComponent } from "./tax-info.component";
 
@@ -100,7 +100,7 @@ export class PaymentMethodComponent implements OnInit {
         content: { key: "cannotPerformInAppPurchase" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       return;
@@ -122,7 +122,7 @@ export class PaymentMethodComponent implements OnInit {
         content: { key: "cannotPerformInAppPurchase" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       return;

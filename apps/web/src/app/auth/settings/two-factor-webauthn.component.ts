@@ -14,7 +14,7 @@ import { AuthResponse } from "@bitwarden/common/auth/types/auth-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
@@ -98,7 +98,7 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: name,
       content: { key: "removeU2fConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

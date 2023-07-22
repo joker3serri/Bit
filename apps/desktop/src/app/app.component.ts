@@ -42,7 +42,7 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
@@ -246,7 +246,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.i18nService.t("yourAccountsFingerprint") + ":\n" + fingerprint.join("-"),
               acceptButtonText: { key: "learnMore" },
               cancelButtonText: { key: "close" },
-              type: SimpleDialogType.INFO,
+              type: "info",
             });
 
             if (result) {
@@ -281,7 +281,7 @@ export class AppComponent implements OnInit, OnDestroy {
               title: { key: "premiumRequired" },
               content: { key: "premiumRequiredDesc" },
               acceptButtonText: { key: "learnMore" },
-              type: SimpleDialogType.SUCCESS,
+              type: "success",
             });
             if (premiumConfirmed) {
               await this.openModal<PremiumComponent>(PremiumComponent, this.premiumRef);
@@ -293,7 +293,7 @@ export class AppComponent implements OnInit, OnDestroy {
               title: { key: "emailVerificationRequired" },
               content: { key: "emailVerificationRequiredDesc" },
               acceptButtonText: { key: "learnMore" },
-              type: SimpleDialogType.INFO,
+              type: "info",
             });
             if (emailVerificationConfirmed) {
               this.platformUtilsService.launchUri(

@@ -8,7 +8,6 @@ import { ProductType } from "@bitwarden/common/enums";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
-  SimpleDialogType,
   DialogServiceAbstraction,
   SimpleDialogCloseType,
   SimpleDialogOptions,
@@ -114,7 +113,7 @@ export class VaultHeaderComponent {
           : "freeOrgMaxCollectionReachedNoManageBilling",
         this.organization.maxCollections
       ),
-      type: SimpleDialogType.PRIMARY,
+      type: "primary",
     };
 
     if (this.organization.canEditSubscription) {
@@ -131,7 +130,7 @@ export class VaultHeaderComponent {
         return;
       }
 
-      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canEditSubscription) {
+      if (result == "accept" && this.organization.canEditSubscription) {
         this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
           queryParams: { upgrade: true },
         });

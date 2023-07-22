@@ -14,7 +14,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { flagEnabled } from "../../../../../../utils/flags";
 import { CollectionAdminService } from "../../../../../vault/core/collection-admin.service";
@@ -389,7 +389,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     let confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "removeUserIdAccess", placeholders: [this.params.name] },
       content: { key: message },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -426,7 +426,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       title: { key: "revokeUserId", placeholders: [this.params.name] },
       content: { key: "revokeUserConfirmation" },
       acceptButtonText: { key: "revokeAccess" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -496,7 +496,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         key: "removeOrgUserNoMasterPasswordDesc",
         placeholders: [this.params.name],
       },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
   }
 }

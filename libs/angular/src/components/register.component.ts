@@ -19,7 +19,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
 import {
@@ -232,7 +232,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       const result = await this.dialogService.openSimpleDialog({
         title: { key: "weakAndExposedMasterPassword" },
         content: { key: "weakAndBreachedMasterPasswordDesc" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!result) {
@@ -242,7 +242,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       const result = await this.dialogService.openSimpleDialog({
         title: { key: "weakMasterPassword" },
         content: { key: "weakMasterPasswordDesc" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!result) {
@@ -252,7 +252,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       const result = await this.dialogService.openSimpleDialog({
         title: { key: "exposedMasterPassword" },
         content: { key: "exposedMasterPasswordDesc" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!result) {

@@ -13,7 +13,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 import { ImportServiceAbstraction } from "@bitwarden/importer";
 
 import { ImportComponent } from "../../../../tools/import-export/import.component";
@@ -82,7 +82,7 @@ export class OrganizationImportComponent extends ImportComponent {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "warning" },
       content: { key: "importWarning", placeholders: [this.organization.name] },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

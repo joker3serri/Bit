@@ -24,7 +24,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 
 import { DialogServiceAbstraction } from "./dialog.service.abstraction";
 import { SimpleConfigurableDialogComponent } from "./simple-dialog/simple-configurable-dialog/simple-configurable-dialog.component";
-import { SimpleDialogCloseType, SimpleDialogOptions, Translation } from "./simple-dialog/types";
+import { SimpleDialogOptions, Translation } from "./simple-dialog/types";
 
 @Injectable()
 export class DialogService extends Dialog implements OnDestroy, DialogServiceAbstraction {
@@ -92,7 +92,7 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
       disableClose: simpleDialogOptions.disableClose,
     });
 
-    return (await firstValueFrom(dialogRef.closed)) == SimpleDialogCloseType.ACCEPT;
+    return (await firstValueFrom(dialogRef.closed)) == "accept";
   }
 
   /**

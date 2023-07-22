@@ -16,7 +16,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { flagEnabled } from "../../platform/flags";
 import { ElectronStateService } from "../../platform/services/electron-state.service.abstraction";
@@ -300,7 +300,7 @@ export class SettingsComponent implements OnInit {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "warning" },
         content: { key: "neverLockWarning" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!confirmed) {
@@ -336,7 +336,7 @@ export class SettingsComponent implements OnInit {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "vaultTimeoutLogOutConfirmationTitle" },
         content: { key: "vaultTimeoutLogOutConfirmation" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!confirmed) {
@@ -465,7 +465,7 @@ export class SettingsComponent implements OnInit {
       const confirm = await this.dialogService.openSimpleDialog({
         title: { key: "confirmTrayTitle" },
         content: { key: "confirmTrayDesc" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (confirm) {
@@ -527,7 +527,7 @@ export class SettingsComponent implements OnInit {
         content: { key: "browserIntegrationMasOnlyDesc" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       this.form.controls.enableBrowserIntegration.setValue(false);
@@ -538,7 +538,7 @@ export class SettingsComponent implements OnInit {
         content: { key: "browserIntegrationWindowsStoreDesc" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       this.form.controls.enableBrowserIntegration.setValue(false);
@@ -549,7 +549,7 @@ export class SettingsComponent implements OnInit {
         content: { key: "browserIntegrationLinuxDesc" },
         acceptButtonText: { key: "ok" },
         cancelButtonText: null,
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       this.form.controls.enableBrowserIntegration.setValue(false);

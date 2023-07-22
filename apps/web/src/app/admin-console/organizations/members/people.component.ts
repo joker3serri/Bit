@@ -53,7 +53,6 @@ import {
   DialogServiceAbstraction,
   SimpleDialogCloseType,
   SimpleDialogOptions,
-  SimpleDialogType,
 } from "@bitwarden/components";
 
 import { flagEnabled } from "../../../../utils/flags";
@@ -359,7 +358,7 @@ export class PeopleComponent
           : "freeOrgInvLimitReachedNoManageBilling",
         this.organization.seats
       ),
-      type: SimpleDialogType.PRIMARY,
+      type: "primary",
     };
 
     if (this.organization.canEditSubscription) {
@@ -376,7 +375,7 @@ export class PeopleComponent
         return;
       }
 
-      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canEditSubscription) {
+      if (result == "accept" && this.organization.canEditSubscription) {
         this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
           queryParams: { upgrade: true },
         });
@@ -581,7 +580,7 @@ export class PeopleComponent
         placeholders: [this.userNamePipe.transform(user)],
       },
       content: { key: content },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -600,7 +599,7 @@ export class PeopleComponent
       title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
       content: this.revokeWarningMessage(),
       acceptButtonText: { key: "revokeAccess" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -676,7 +675,7 @@ export class PeopleComponent
         key: "removeOrgUserNoMasterPasswordDesc",
         placeholders: [this.userNamePipe.transform(user)],
       },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
   }
 }

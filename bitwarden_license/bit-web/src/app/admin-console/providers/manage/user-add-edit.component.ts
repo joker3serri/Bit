@@ -8,7 +8,7 @@ import { ProviderUserUpdateRequest } from "@bitwarden/common/admin-console/model
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Component({
   selector: "provider-user-add-edit",
@@ -96,7 +96,7 @@ export class UserAddEditComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: this.name,
       content: { key: "removeUserConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

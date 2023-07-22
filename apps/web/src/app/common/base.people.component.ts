@@ -20,7 +20,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { OrganizationUserView } from "../admin-console/organizations/core/views/organization-user.view";
 import { UserConfirmComponent } from "../admin-console/organizations/manage/user-confirm.component";
@@ -222,7 +222,7 @@ export abstract class BasePeopleComponent<
     return this.dialogService.openSimpleDialog({
       title: this.userNamePipe.transform(user),
       content: { key: "removeUserConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
   }
 
@@ -252,7 +252,7 @@ export abstract class BasePeopleComponent<
       title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
       content: this.revokeWarningMessage(),
       acceptButtonText: { key: "revokeAccess" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
   }
 

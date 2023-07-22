@@ -13,7 +13,7 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
 const BroadcasterSubscriptionId = "ExportComponent";
@@ -67,14 +67,14 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
           os.EOL +
           this.i18nService.t("encExportAccountWarningDesc"),
         acceptButtonText: { key: "exportVault" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
     } else {
       return await this.dialogService.openSimpleDialog({
         title: { key: "confirmVaultExport" },
         content: { key: "exportWarningDesc" },
         acceptButtonText: { key: "exportVault" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
     }
   }

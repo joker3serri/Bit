@@ -18,7 +18,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 import { BrowserApi } from "../../platform/browser/browser-api";
@@ -190,7 +190,7 @@ export class SettingsComponent implements OnInit {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "warning" },
         content: { key: "neverLockWarning" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!confirmed) {
@@ -226,7 +226,7 @@ export class SettingsComponent implements OnInit {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "vaultTimeoutLogOutConfirmationTitle" },
         content: { key: "vaultTimeoutLogOutConfirmation" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!confirmed) {
@@ -289,7 +289,7 @@ export class SettingsComponent implements OnInit {
             content: { key: "nativeMessaginPermissionSidebarDesc" },
             acceptButtonText: { key: "ok" },
             cancelButtonText: null,
-            type: SimpleDialogType.INFO,
+            type: "info",
           });
 
           this.form.controls.biometric.setValue(false);
@@ -303,7 +303,7 @@ export class SettingsComponent implements OnInit {
           content: { key: "nativeMessaginPermissionErrorDesc" },
           acceptButtonText: { key: "ok" },
           cancelButtonText: null,
-          type: SimpleDialogType.DANGER,
+          type: "danger",
         });
 
         this.form.controls.biometric.setValue(false);
@@ -358,7 +358,7 @@ export class SettingsComponent implements OnInit {
               content: { key: error.description },
               acceptButtonText: { key: "ok" },
               cancelButtonText: null,
-              type: SimpleDialogType.DANGER,
+              type: "danger",
             });
           }),
       ]);
@@ -382,7 +382,7 @@ export class SettingsComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "logOut" },
       content: { key: "logOutConfirmation" },
-      type: SimpleDialogType.INFO,
+      type: "info",
     });
 
     if (confirmed) {
@@ -394,7 +394,7 @@ export class SettingsComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "changeMasterPassword" },
       content: { key: "changeMasterPasswordConfirmation" },
-      type: SimpleDialogType.INFO,
+      type: "info",
     });
     if (confirmed) {
       BrowserApi.createNewTab(
@@ -407,7 +407,7 @@ export class SettingsComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "twoStepLogin" },
       content: { key: "twoStepLoginConfirmation" },
-      type: SimpleDialogType.INFO,
+      type: "info",
     });
     if (confirmed) {
       BrowserApi.createNewTab("https://bitwarden.com/help/setup-two-step-login/");
@@ -418,7 +418,7 @@ export class SettingsComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "learnOrg" },
       content: { key: "learnOrgConfirmation" },
-      type: SimpleDialogType.INFO,
+      type: "info",
     });
     if (confirmed) {
       BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");

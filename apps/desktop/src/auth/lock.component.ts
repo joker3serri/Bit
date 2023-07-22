@@ -18,7 +18,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { ElectronStateService } from "../platform/services/electron-state.service.abstraction";
 import { BiometricStorageAction, BiometricMessage } from "../types/biometric-message";
@@ -155,7 +155,7 @@ export class LockComponent extends BaseLockComponent {
       const response = await this.dialogService.openSimpleDialog({
         title: { key: "windowsBiometricUpdateWarningTitle" },
         content: { key: "windowsBiometricUpdateWarning" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       await this.stateService.setBiometricRequirePasswordOnStart(response);

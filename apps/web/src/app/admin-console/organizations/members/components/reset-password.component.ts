@@ -24,7 +24,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Component({
   selector: "app-reset-password",
@@ -140,7 +140,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       const result = await this.dialogService.openSimpleDialog({
         title: { key: "weakMasterPassword" },
         content: { key: "weakMasterPasswordDesc" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!result) {

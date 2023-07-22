@@ -13,7 +13,7 @@ import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/mode
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import {
   BillingSyncApiKeyComponent,
@@ -208,7 +208,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "cancelSubscription" },
       content: { key: "cancelConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -236,7 +236,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "reinstateSubscription" },
       content: { key: "reinstateConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -308,7 +308,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       title: { key: "removeSponsorship" },
       content: { key: "removeSponsorshipConfirmation" },
       acceptButtonText: { key: "remove" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

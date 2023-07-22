@@ -34,7 +34,7 @@ import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.v
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 
@@ -181,7 +181,7 @@ export class ViewComponent implements OnDestroy, OnInit {
       content: {
         key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
       },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -211,7 +211,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "restoreItem" },
       content: { key: "restoreItemConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

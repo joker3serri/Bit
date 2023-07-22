@@ -52,15 +52,6 @@ export type SimpleDialogOptions = {
   disableClose?: boolean;
 };
 
-export enum SimpleDialogCloseType {
-  ACCEPT = "accept",
-  CANCEL = "cancel",
-}
+export type SimpleDialogCloseType = "accept" | "cancel";
 
-export enum SimpleDialogType {
-  PRIMARY = "primary",
-  SUCCESS = "success",
-  INFO = "info",
-  WARNING = "warning",
-  DANGER = "danger",
-}
+export type SimpleDialogType = "primary" | "success" | "info" | "warning" | "danger";

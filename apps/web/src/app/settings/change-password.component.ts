@@ -31,7 +31,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherWithIdRequest } from "@bitwarden/common/vault/models/request/cipher-with-id.request";
 import { FolderWithIdRequest } from "@bitwarden/common/vault/models/request/folder-with-id.request";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Component({
   selector: "app-change-password",
@@ -107,7 +107,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
           content: { key: "oldAttachmentsNeedFixDesc" },
           acceptButtonText: { key: "learnMore" },
           cancelButtonText: { key: "close" },
-          type: SimpleDialogType.WARNING,
+          type: "warning",
         });
 
         if (learnMore) {
@@ -127,7 +127,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
           this.i18nService.t("updateEncryptionKeyExportWarning") +
           " " +
           this.i18nService.t("rotateEncKeyConfirmation"),
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (!result) {

@@ -5,11 +5,11 @@ import { DialogService, SimpleDialogOptions, SimpleDialogType } from "@bitwarden
 // Electron supports a limited set of dialog types
 // https://www.electronjs.org/docs/latest/api/dialog#dialogshowmessageboxbrowserwindow-options
 const electronTypeMap: Record<SimpleDialogType, string> = {
-  [SimpleDialogType.PRIMARY]: "info",
-  [SimpleDialogType.SUCCESS]: "info",
-  [SimpleDialogType.INFO]: "info",
-  [SimpleDialogType.WARNING]: "warning",
-  [SimpleDialogType.DANGER]: "error",
+  primary: "info",
+  success: "info",
+  info: "info",
+  warning: "warning",
+  danger: "error",
 };
 
 export class ElectronDialogService extends DialogService {

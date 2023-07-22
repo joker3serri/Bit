@@ -31,7 +31,7 @@ import {
   CollectionResponse,
 } from "@bitwarden/common/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 import { InternalGroupService as GroupService, GroupView } from "../core";
 
@@ -236,7 +236,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: groupRow.details.name,
       content: { key: "deleteGroupConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
     if (!confirmed) {
       return false;
@@ -269,7 +269,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
         placeholders: [groupsToDelete.length.toString()],
       },
       content: deleteMessage,
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
     if (!confirmed) {
       return false;

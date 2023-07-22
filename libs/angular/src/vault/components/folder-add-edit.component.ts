@@ -7,7 +7,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Directive()
 export class FolderAddEditComponent implements OnInit {
@@ -73,7 +73,7 @@ export class FolderAddEditComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteFolder" },
       content: { key: "deleteFolderConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {

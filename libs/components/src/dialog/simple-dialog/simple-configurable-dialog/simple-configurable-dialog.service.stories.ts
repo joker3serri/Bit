@@ -3,7 +3,7 @@ import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/an
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { SimpleDialogType, SimpleDialogOptions, DialogServiceAbstraction } from "../..";
+import { SimpleDialogOptions, DialogServiceAbstraction } from "../..";
 import { ButtonModule } from "../../../button";
 import { CalloutModule } from "../../../callout";
 import { I18nMockService } from "../../../utils/i18n-mock.service";
@@ -112,37 +112,37 @@ class StoryDialogComponent {
   primaryLocalizedSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("primaryTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.PRIMARY,
+    type: "primary",
   };
 
   successLocalizedSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("successTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.SUCCESS,
+    type: "success",
   };
 
   infoLocalizedSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("infoTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.INFO,
+    type: "info",
   };
 
   warningLocalizedSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("warningTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.WARNING,
+    type: "warning",
   };
 
   dangerLocalizedSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("dangerTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.DANGER,
+    type: "danger",
   };
 
   primarySingleBtnSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("primaryTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.PRIMARY,
+    type: "primary",
     acceptButtonText: "Ok",
     cancelButtonText: null,
   };
@@ -150,7 +150,7 @@ class StoryDialogComponent {
   primaryCustomBtnsSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("primaryTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.PRIMARY,
+    type: "primary",
     acceptButtonText: this.i18nService.t("accept"),
     cancelButtonText: this.i18nService.t("decline"),
   };
@@ -158,21 +158,21 @@ class StoryDialogComponent {
   primaryAcceptBtnOverrideSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("primaryTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.PRIMARY,
+    type: "primary",
     acceptButtonText: "Ok",
   };
 
   primaryCustomIconSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("primaryTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.PRIMARY,
+    type: "primary",
     icon: "bwi-family",
   };
 
   primaryDisableCloseSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("primaryTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.PRIMARY,
+    type: "primary",
     disableClose: true,
   };
 

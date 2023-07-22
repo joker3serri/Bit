@@ -13,7 +13,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {
@@ -105,7 +105,7 @@ export class AttachmentsComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteAttachment" },
       content: { key: "deleteAttachmentConfirmation" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (!confirmed) {
@@ -200,7 +200,7 @@ export class AttachmentsComponent implements OnInit {
         title: { key: "premiumRequired" },
         content: { key: "premiumRequiredDesc" },
         acceptButtonText: { key: "learnMore" },
-        type: SimpleDialogType.SUCCESS,
+        type: "success",
       });
 
       if (confirmed) {
@@ -211,7 +211,7 @@ export class AttachmentsComponent implements OnInit {
         title: { key: "featureUnavailable" },
         content: { key: "updateKey" },
         acceptButtonText: { key: "learnMore" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
 
       if (confirmed) {

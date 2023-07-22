@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Injectable({
   providedIn: "root",
@@ -31,7 +31,7 @@ export class IsPaidOrgGuard implements CanActivate {
           content: { key: "notAvailableForFreeOrganization" },
           acceptButtonText: { key: "ok" },
           cancelButtonText: null,
-          type: SimpleDialogType.INFO,
+          type: "info",
         });
         return false;
       } else {

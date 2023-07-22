@@ -25,7 +25,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
+import { DialogServiceAbstraction } from "@bitwarden/components";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {
@@ -101,7 +101,7 @@ export class LockComponent implements OnInit, OnDestroy {
       title: { key: "logOut" },
       content: { key: "logOutConfirmation" },
       acceptButtonText: { key: "logOut" },
-      type: SimpleDialogType.WARNING,
+      type: "warning",
     });
 
     if (confirmed) {
