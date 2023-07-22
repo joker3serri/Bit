@@ -7,8 +7,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-
-import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 @Directive()
 export class FolderAddEditComponent implements OnInit {

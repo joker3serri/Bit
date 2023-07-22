@@ -25,8 +25,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-
-import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {

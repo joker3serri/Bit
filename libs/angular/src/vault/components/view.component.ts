@@ -34,8 +34,7 @@ import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.v
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-
-import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 

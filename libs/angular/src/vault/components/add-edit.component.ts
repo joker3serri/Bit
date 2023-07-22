@@ -33,8 +33,7 @@ import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view"
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
-
-import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {

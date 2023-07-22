@@ -13,8 +13,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-
-import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {

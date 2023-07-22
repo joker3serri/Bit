@@ -14,8 +14,8 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
-import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
 import { PasswordColorText } from "../../shared/components/password-strength/password-strength.component";
 
 @Directive()

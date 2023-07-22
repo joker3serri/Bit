@@ -19,13 +19,13 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
 import {
   AllValidationErrors,
   FormValidationErrorsService,
 } from "../platform/abstractions/form-validation-errors.service";
-import { DialogServiceAbstraction, SimpleDialogType } from "../services/dialog";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputsFieldMatch.validator";
 
