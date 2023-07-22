@@ -20,7 +20,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 import { openEntityEventsDialog } from "@bitwarden/web-vault/app/admin-console/organizations/manage/entity-events.component";
 import { BulkStatusComponent } from "@bitwarden/web-vault/app/admin-console/organizations/members/components/bulk/bulk-status.component";
 import { BasePeopleComponent } from "@bitwarden/web-vault/app/common/base.people.component";
@@ -68,7 +68,7 @@ export class PeopleComponent
     userNamePipe: UserNamePipe,
     stateService: StateService,
     private providerService: ProviderService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       apiService,

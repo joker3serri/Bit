@@ -26,7 +26,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { PolicyListService } from "./admin-console/core/policy-list.service";
 import {
@@ -82,7 +82,7 @@ export class AppComponent implements OnDestroy, OnInit {
     protected policyListService: PolicyListService,
     private keyConnectorService: KeyConnectorService,
     private configService: ConfigServiceAbstraction,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   ngOnInit() {

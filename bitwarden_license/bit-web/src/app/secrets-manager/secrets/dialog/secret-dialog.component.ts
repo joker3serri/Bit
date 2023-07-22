@@ -7,7 +7,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction, BitValidators } from "@bitwarden/components";
+import { DialogService, BitValidators } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
 import { ProjectView } from "../../models/view/project.view";
@@ -65,7 +65,7 @@ export class SecretDialogComponent implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private projectService: ProjectService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private organizationService: OrganizationService
   ) {}
 

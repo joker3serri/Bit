@@ -12,7 +12,7 @@ import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Directive()
 export class SendComponent implements OnInit, OnDestroy {
@@ -51,7 +51,7 @@ export class SendComponent implements OnInit, OnDestroy {
     protected policyService: PolicyService,
     private logService: LogService,
     protected sendApiService: SendApiService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   async ngOnInit() {

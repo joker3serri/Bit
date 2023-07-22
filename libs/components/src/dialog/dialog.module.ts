@@ -7,7 +7,6 @@ import { SharedModule } from "../shared";
 
 import { DialogComponent } from "./dialog/dialog.component";
 import { DialogService } from "./dialog.service";
-import { DialogServiceAbstraction } from "./dialog.service.abstraction";
 import { DialogCloseDirective } from "./directives/dialog-close.directive";
 import { DialogTitleContainerDirective } from "./directives/dialog-title-container.directive";
 import { SimpleConfigurableDialogComponent } from "./simple-dialog/simple-configurable-dialog/simple-configurable-dialog.component";
@@ -30,11 +29,6 @@ import { IconDirective, SimpleDialogComponent } from "./simple-dialog/simple-dia
     DialogCloseDirective,
     IconDirective,
   ],
-  providers: [
-    {
-      provide: DialogServiceAbstraction,
-      useClass: DialogService,
-    },
-  ],
+  providers: [DialogService],
 })
 export class DialogModule {}

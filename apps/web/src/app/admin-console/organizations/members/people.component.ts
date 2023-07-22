@@ -49,11 +49,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import {
-  DialogServiceAbstraction,
-  SimpleDialogCloseType,
-  SimpleDialogOptions,
-} from "@bitwarden/components";
+import { DialogService, SimpleDialogCloseType, SimpleDialogOptions } from "@bitwarden/components";
 
 import { flagEnabled } from "../../../../utils/flags";
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
@@ -124,7 +120,7 @@ export class PeopleComponent
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    dialogService: DialogServiceAbstraction,
+    dialogService: DialogService,
     private router: Router,
     private groupService: GroupService,
     private collectionService: CollectionService

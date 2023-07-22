@@ -19,7 +19,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
 import {
@@ -92,7 +92,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     environmentService: EnvironmentService,
     protected logService: LogService,
     protected auditService: AuditService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.showTerms = !platformUtilsService.isSelfHost();

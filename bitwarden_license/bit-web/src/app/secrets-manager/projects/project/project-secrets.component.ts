@@ -4,7 +4,7 @@ import { combineLatest, combineLatestWith, filter, Observable, startWith, switch
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { ProjectView } from "../../models/view/project.view";
 import { SecretListView } from "../../models/view/secret-list.view";
@@ -36,7 +36,7 @@ export class ProjectSecretsComponent {
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private secretService: SecretService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService
   ) {}

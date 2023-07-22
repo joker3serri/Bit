@@ -16,7 +16,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { flagEnabled } from "../../platform/flags";
 import { ElectronStateService } from "../../platform/services/electron-state.service.abstraction";
@@ -111,7 +111,7 @@ export class SettingsComponent implements OnInit {
     private modalService: ModalService,
     private themingService: AbstractThemingService,
     private settingsService: SettingsService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 

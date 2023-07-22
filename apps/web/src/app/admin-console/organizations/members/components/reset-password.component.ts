@@ -24,7 +24,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-reset-password",
@@ -54,7 +54,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private cryptoService: CryptoService,
     private logService: LogService,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

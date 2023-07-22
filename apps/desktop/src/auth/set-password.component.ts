@@ -15,7 +15,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 const BroadcasterSubscriptionId = "SetPasswordComponent";
 
@@ -41,7 +41,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
     stateService: StateService,
     organizationApiService: OrganizationApiServiceAbstraction,
     organizationUserService: OrganizationUserService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       i18nService,

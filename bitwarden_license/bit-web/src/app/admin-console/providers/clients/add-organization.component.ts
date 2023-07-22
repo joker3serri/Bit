@@ -6,7 +6,7 @@ import { Provider } from "@bitwarden/common/models/domain/provider";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { WebProviderService } from "../services/web-provider.service";
 
@@ -29,7 +29,7 @@ export class AddOrganizationComponent implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private validationService: ValidationService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

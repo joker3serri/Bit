@@ -21,7 +21,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CollectionResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction, BitValidators } from "@bitwarden/components";
+import { DialogService, BitValidators } from "@bitwarden/components";
 
 import { GroupService, GroupView } from "../../../admin-console/organizations/core";
 import { PermissionMode } from "../../../admin-console/organizations/shared/components/access-selector/access-selector.component";
@@ -94,7 +94,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {
     this.tabIndex = params.initialTab ?? CollectionDialogTabType.Info;
   }
@@ -334,7 +334,7 @@ function mapToAccessSelections(collectionDetails: CollectionAdminView): AccessIt
  * @param config Configuration for the dialog
  */
 export function openCollectionDialog(
-  dialogService: DialogServiceAbstraction,
+  dialogService: DialogService,
   config: DialogConfig<CollectionDialogParams>
 ) {
   return dialogService.open<CollectionDialogResult, CollectionDialogParams>(

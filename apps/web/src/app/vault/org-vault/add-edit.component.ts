@@ -21,7 +21,7 @@ import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherCreateRequest } from "@bitwarden/common/vault/models/request/cipher-create.request";
 import { CipherRequest } from "@bitwarden/common/vault/models/request/cipher.request";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { AddEditComponent as BaseAddEditComponent } from "../individual-vault/add-edit.component";
 
@@ -51,7 +51,7 @@ export class AddEditComponent extends BaseAddEditComponent {
     passwordRepromptService: PasswordRepromptService,
     organizationService: OrganizationService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       cipherService,

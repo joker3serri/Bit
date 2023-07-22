@@ -18,7 +18,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "emergency-access-takeover",
@@ -48,7 +48,7 @@ export class EmergencyAccessTakeoverComponent
     policyService: PolicyService,
     private apiService: ApiService,
     private logService: LogService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       i18nService,

@@ -14,7 +14,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-preferences",
@@ -55,7 +55,7 @@ export class PreferencesComponent implements OnInit {
     private messagingService: MessagingService,
     private themingService: AbstractThemingService,
     private settingsService: SettingsService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {
     this.vaultTimeoutOptions = [
       { name: i18nService.t("oneMinute"), value: 1 },

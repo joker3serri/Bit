@@ -8,7 +8,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 export interface BulkMoveDialogParams {
   cipherIds?: string[];
@@ -25,7 +25,7 @@ export enum BulkMoveDialogResult {
  * @param config Configuration for the dialog
  */
 export const openBulkMoveDialog = (
-  dialogService: DialogServiceAbstraction,
+  dialogService: DialogService,
   config: DialogConfig<BulkMoveDialogParams>
 ) => {
   return dialogService.open<BulkMoveDialogResult, BulkMoveDialogParams>(

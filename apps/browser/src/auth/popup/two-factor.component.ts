@@ -17,7 +17,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { PopupUtilsService } from "../../popup/services/popup-utils.service";
@@ -48,7 +48,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
     loginService: LoginService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {
     super(
       authService,

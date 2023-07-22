@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +13,7 @@ export class IsPaidOrgGuard implements CanActivate {
     private router: Router,
     private organizationService: OrganizationService,
     private messagingService: MessagingService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

@@ -11,7 +11,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
@@ -52,7 +52,7 @@ export class TwoFactorAuthenticatorComponent
     platformUtilsService: PlatformUtilsService,
     logService: LogService,
     private stateService: StateService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       apiService,

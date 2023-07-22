@@ -11,7 +11,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-send-add-edit",
@@ -31,7 +31,7 @@ export class AddEditComponent extends BaseAddEditComponent {
     policyService: PolicyService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       i18nService,

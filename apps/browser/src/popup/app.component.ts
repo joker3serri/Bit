@@ -17,7 +17,7 @@ import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broa
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction, SimpleDialogOptions } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
 import { BrowserApi } from "../platform/browser/browser-api";
 import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private sanitizer: DomSanitizer,
     private platformUtilsService: PlatformUtilsService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

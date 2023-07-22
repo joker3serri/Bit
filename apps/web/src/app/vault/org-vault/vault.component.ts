@@ -52,7 +52,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction, Icons } from "@bitwarden/components";
+import { DialogService, Icons } from "@bitwarden/components";
 
 import { GroupService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
@@ -142,7 +142,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private syncService: SyncService,
     private i18nService: I18nService,
     private modalService: ModalService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private messagingService: MessagingService,
     private broadcasterService: BroadcasterService,
     private ngZone: NgZone,

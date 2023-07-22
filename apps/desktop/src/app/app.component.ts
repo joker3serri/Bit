@@ -42,7 +42,7 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
@@ -138,7 +138,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
     private configService: ConfigServiceAbstraction,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   ngOnInit() {

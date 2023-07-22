@@ -22,12 +22,11 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { DialogServiceAbstraction } from "./dialog.service.abstraction";
 import { SimpleConfigurableDialogComponent } from "./simple-dialog/simple-configurable-dialog/simple-configurable-dialog.component";
 import { SimpleDialogOptions, Translation } from "./simple-dialog/types";
 
 @Injectable()
-export class DialogService extends Dialog implements OnDestroy, DialogServiceAbstraction {
+export class DialogService extends Dialog implements OnDestroy {
   private _destroy$ = new Subject<void>();
 
   private backDropClasses = ["tw-fixed", "tw-bg-black", "tw-bg-opacity-30", "tw-inset-0"];

@@ -13,7 +13,7 @@ import {
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction, SimpleDialogOptions } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
@@ -142,7 +142,7 @@ export class ServiceAccountPeopleComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private i18nService: I18nService,
     private validationService: ValidationService,
     private accessPolicyService: AccessPolicyService

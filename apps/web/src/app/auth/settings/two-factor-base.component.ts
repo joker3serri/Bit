@@ -10,7 +10,7 @@ import { AuthResponseBase } from "@bitwarden/common/auth/types/auth-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Directive()
 export abstract class TwoFactorBaseComponent {
@@ -32,7 +32,7 @@ export abstract class TwoFactorBaseComponent {
     protected platformUtilsService: PlatformUtilsService,
     protected logService: LogService,
     protected userVerificationService: UserVerificationService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   protected auth(authResponse: AuthResponseBase) {

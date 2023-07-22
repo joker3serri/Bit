@@ -12,7 +12,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 import {
   ImportOption,
   ImportResult,
@@ -48,7 +48,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     private logService: LogService,
     protected modalService: ModalService,
     protected syncService: SyncService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   protected get importBlockedByPolicy(): boolean {

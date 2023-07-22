@@ -16,7 +16,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { WebProviderService } from "../services/web-provider.service";
 
@@ -63,7 +63,7 @@ export class ClientsComponent implements OnInit {
     private modalService: ModalService,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

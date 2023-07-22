@@ -11,7 +11,7 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
 import { ExportComponent } from "../../../../tools/import-export/export.component";
@@ -34,7 +34,7 @@ export class OrganizationExportComponent extends ExportComponent {
     userVerificationService: UserVerificationService,
     formBuilder: UntypedFormBuilder,
     fileDownloadService: FileDownloadService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       cryptoService,

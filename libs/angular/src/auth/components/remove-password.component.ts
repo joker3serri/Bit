@@ -8,7 +8,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Directive()
 export class RemovePasswordComponent implements OnInit {
@@ -28,7 +28,7 @@ export class RemovePasswordComponent implements OnInit {
     private i18nService: I18nService,
     private keyConnectorService: KeyConnectorService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

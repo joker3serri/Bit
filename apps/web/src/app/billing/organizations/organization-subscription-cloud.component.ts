@@ -13,7 +13,7 @@ import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/mode
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import {
   BillingSyncApiKeyComponent,
@@ -48,7 +48,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private route: ActivatedRoute,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

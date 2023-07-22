@@ -7,7 +7,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-premium",
@@ -24,7 +24,7 @@ export class PremiumComponent extends BasePremiumComponent {
     logService: LogService,
     private location: Location,
     private currencyPipe: CurrencyPipe,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(i18nService, platformUtilsService, apiService, logService, stateService, dialogService);
 

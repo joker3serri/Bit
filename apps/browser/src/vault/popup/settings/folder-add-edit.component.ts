@@ -9,7 +9,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-folder-add-edit",
@@ -25,7 +25,7 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
     private router: Router,
     private route: ActivatedRoute,
     logService: LogService,
-    dialogService: DialogServiceAbstraction,
+    dialogService: DialogService,
     formBuilder: FormBuilder
   ) {
     super(

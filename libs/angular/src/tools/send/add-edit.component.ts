@@ -18,7 +18,7 @@ import { SendTextView } from "@bitwarden/common/tools/send/models/view/send-text
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {
@@ -62,7 +62,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     private logService: LogService,
     protected stateService: StateService,
     protected sendApiService: SendApiService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {
     this.typeOptions = [
       { name: i18nService.t("sendTypeFile"), value: SendType.File },

@@ -7,7 +7,7 @@ import { ModalConfig } from "@bitwarden/angular/services/modal.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 export interface UserVerificationPromptParams {
   confirmDescription: string;
@@ -50,7 +50,7 @@ export class UserVerificationPromptComponent extends BaseUserVerificationPrompt 
  * @param config Configuration for the dialog
  */
 export const openUserVerificationPrompt = (
-  dialogService: DialogServiceAbstraction,
+  dialogService: DialogService,
   config: DialogConfig<UserVerificationPromptParams>
 ) => {
   return dialogService.open<boolean, UserVerificationPromptParams>(

@@ -20,7 +20,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { OrganizationUserView } from "../admin-console/organizations/core/views/organization-user.view";
 import { UserConfirmComponent } from "../admin-console/organizations/manage/user-confirm.component";
@@ -110,7 +110,7 @@ export abstract class BasePeopleComponent<
     private searchPipe: SearchPipe,
     protected userNamePipe: UserNamePipe,
     protected stateService: StateService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   abstract edit(user: UserType): void;

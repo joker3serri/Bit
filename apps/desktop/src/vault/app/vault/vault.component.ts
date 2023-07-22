@@ -28,7 +28,7 @@ import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-repromp
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { SearchBarService } from "../../../app/layout/search/search-bar.service";
 import { GeneratorComponent } from "../../../app/tools/generator.component";
@@ -102,7 +102,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private stateService: StateService,
     private searchBarService: SearchBarService,
     private apiService: ApiService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

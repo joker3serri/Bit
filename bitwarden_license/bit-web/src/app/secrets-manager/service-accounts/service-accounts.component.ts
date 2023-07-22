@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, Observable, startWith, switchMap } from "rxjs";
 
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../models/view/service-account.view";
 import { AccessPolicyService } from "../shared/access-policies/access-policy.service";
@@ -30,7 +30,7 @@ export class ServiceAccountsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private accessPolicyService: AccessPolicyService,
     private serviceAccountService: ServiceAccountService
   ) {}

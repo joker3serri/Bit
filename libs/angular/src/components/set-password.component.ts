@@ -21,7 +21,7 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "../auth/components/change-password.component";
 
@@ -52,7 +52,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     stateService: StateService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       i18nService,

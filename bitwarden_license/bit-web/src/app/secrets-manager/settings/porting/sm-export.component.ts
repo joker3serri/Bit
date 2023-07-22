@@ -8,7 +8,7 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 import { openUserVerificationPrompt } from "@bitwarden/web-vault/app/auth/shared/components/user-verification";
 
 import { SecretsManagerPortingApiService } from "../services/sm-porting-api.service";
@@ -42,7 +42,7 @@ export class SecretsManagerExportComponent implements OnInit, OnDestroy {
     private smPortingService: SecretsManagerPortingService,
     private fileDownloadService: FileDownloadService,
     private logService: LogService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private secretsManagerApiService: SecretsManagerPortingApiService
   ) {}
 

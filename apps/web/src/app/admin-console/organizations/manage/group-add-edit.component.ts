@@ -13,7 +13,7 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { InternalGroupService as GroupService, GroupView } from "../core";
 import {
@@ -64,7 +64,7 @@ export enum GroupAddEditDialogResultType {
  * @param config Configuration for the dialog
  */
 export const openGroupAddEditDialog = (
-  dialogService: DialogServiceAbstraction,
+  dialogService: DialogService,
   config: DialogConfig<GroupAddEditDialogParams>
 ) => {
   return dialogService.open<GroupAddEditDialogResultType, GroupAddEditDialogParams>(
@@ -181,7 +181,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private formBuilder: FormBuilder,
     private changeDetectorRef: ChangeDetectorRef,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {
     this.tabIndex = params.initialTab ?? GroupAddEditTabType.Info;
   }

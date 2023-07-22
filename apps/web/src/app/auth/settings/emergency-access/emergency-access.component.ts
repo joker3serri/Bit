@@ -18,7 +18,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { EmergencyAccessAddEditComponent } from "./emergency-access-add-edit.component";
 import { EmergencyAccessConfirmComponent } from "./emergency-access-confirm.component";
@@ -56,7 +56,7 @@ export class EmergencyAccessComponent implements OnInit {
     private logService: LogService,
     private stateService: StateService,
     private organizationService: OrganizationService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   async ngOnInit() {

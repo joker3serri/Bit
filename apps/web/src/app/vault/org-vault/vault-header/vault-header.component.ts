@@ -7,11 +7,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { ProductType } from "@bitwarden/common/enums";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import {
-  DialogServiceAbstraction,
-  SimpleDialogCloseType,
-  SimpleDialogOptions,
-} from "@bitwarden/components";
+import { DialogService, SimpleDialogCloseType, SimpleDialogOptions } from "@bitwarden/components";
 
 import { CollectionAdminView } from "../../../vault/core/views/collection-admin.view";
 import { CollectionDialogTabType } from "../../components/collection-dialog";
@@ -63,7 +59,7 @@ export class VaultHeaderComponent {
   constructor(
     private organizationService: OrganizationService,
     private i18nService: I18nService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private collectionAdminService: CollectionAdminService,
     private router: Router
   ) {}

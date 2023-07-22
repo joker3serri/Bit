@@ -12,7 +12,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { BrowserStateService } from "../../../platform/services/abstractions/browser-state.service";
 import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
@@ -47,7 +47,7 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     private popupUtilsService: PopupUtilsService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       i18nService,

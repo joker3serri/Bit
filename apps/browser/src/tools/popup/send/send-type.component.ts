@@ -15,7 +15,7 @@ import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { BrowserComponentState } from "../../../models/browserComponentState";
 import { BrowserStateService } from "../../../platform/services/abstractions/browser-state.service";
@@ -51,7 +51,7 @@ export class SendTypeComponent extends BaseSendComponent {
     private router: Router,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       sendService,

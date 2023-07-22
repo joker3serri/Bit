@@ -20,7 +20,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import { PopupUtilsService } from "../../../../popup/services/popup-utils.service";
@@ -55,7 +55,7 @@ export class AddEditComponent extends BaseAddEditComponent {
     passwordRepromptService: PasswordRepromptService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       cipherService,

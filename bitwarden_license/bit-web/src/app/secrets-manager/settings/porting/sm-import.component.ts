@@ -8,7 +8,7 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import {
   SecretsManagerImportErrorDialogComponent,
@@ -37,7 +37,7 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
     protected fileDownloadService: FileDownloadService,
     private logService: LogService,
     private secretsManagerPortingApiService: SecretsManagerPortingApiService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

@@ -31,7 +31,7 @@ import {
   CollectionResponse,
 } from "@bitwarden/common/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { InternalGroupService as GroupService, GroupView } from "../core";
 
@@ -127,7 +127,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private modalService: ModalService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private platformUtilsService: PlatformUtilsService,
     private searchService: SearchService,
     private logService: LogService,

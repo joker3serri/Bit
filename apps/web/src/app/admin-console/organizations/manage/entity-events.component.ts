@@ -12,7 +12,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction, TableDataSource } from "@bitwarden/components";
+import { DialogService, TableDataSource } from "@bitwarden/components";
 
 import { EventService } from "../../../core";
 import { SharedModule } from "../../../shared";
@@ -185,7 +185,7 @@ export class EntityEventsComponent implements OnInit {
  * @param config Configuration for the dialog
  */
 export const openEntityEventsDialog = (
-  dialogService: DialogServiceAbstraction,
+  dialogService: DialogService,
   config: DialogConfig<EntityEventsDialogParams>
 ) => {
   return dialogService.open<void, EntityEventsDialogParams>(EntityEventsComponent, config);

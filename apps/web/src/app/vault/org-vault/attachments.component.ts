@@ -12,7 +12,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { AttachmentsComponent as BaseAttachmentsComponent } from "../individual-vault/attachments.component";
 
@@ -33,7 +33,7 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     apiService: ApiService,
     logService: LogService,
     fileDownloadService: FileDownloadService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       cipherService,

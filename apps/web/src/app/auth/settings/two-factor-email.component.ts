@@ -11,7 +11,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
@@ -36,7 +36,7 @@ export class TwoFactorEmailComponent extends TwoFactorBaseComponent {
     logService: LogService,
     userVerificationService: UserVerificationService,
     private stateService: StateService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       apiService,

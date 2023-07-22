@@ -13,7 +13,7 @@ import {
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../models/view/service-account.view";
 
@@ -57,7 +57,7 @@ export class ServiceAccountComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private serviceAccountService: ServiceAccountService,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private router: Router,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService

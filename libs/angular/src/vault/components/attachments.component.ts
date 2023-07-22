@@ -13,7 +13,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {
@@ -42,7 +42,7 @@ export class AttachmentsComponent implements OnInit {
     protected logService: LogService,
     protected stateService: StateService,
     protected fileDownloadService: FileDownloadService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   async ngOnInit() {

@@ -10,7 +10,7 @@ import { ErrorResponse } from "@bitwarden/common/models/response/error.response"
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import {
   DomainAddEditDialogComponent,
@@ -35,7 +35,7 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private orgDomainService: OrgDomainServiceAbstraction,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private validationService: ValidationService
   ) {}
 

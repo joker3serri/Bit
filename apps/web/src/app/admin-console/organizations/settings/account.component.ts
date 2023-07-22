@@ -14,7 +14,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { ApiKeyComponent } from "../../../settings/api-key.component";
 import { PurgeVaultComponent } from "../../../settings/purge-vault.component";
@@ -75,7 +75,7 @@ export class AccountComponent {
     private router: Router,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private dialogService: DialogServiceAbstraction,
+    private dialogService: DialogService,
     private formBuilder: FormBuilder
   ) {}
 

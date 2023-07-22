@@ -25,7 +25,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 
@@ -55,7 +55,7 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
     logService: LogService,
     stateService: StateService,
     fileDownloadService: FileDownloadService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       cipherService,

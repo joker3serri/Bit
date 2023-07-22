@@ -11,7 +11,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { invokeMenu, RendererMenuItem } from "../../../utils";
 import { SearchBarService } from "../../layout/search/search-bar.service";
@@ -48,7 +48,7 @@ export class SendComponent extends BaseSendComponent implements OnInit, OnDestro
     private searchBarService: SearchBarService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       sendService,

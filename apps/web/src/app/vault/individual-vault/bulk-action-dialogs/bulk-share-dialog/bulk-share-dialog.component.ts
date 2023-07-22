@@ -11,7 +11,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 export interface BulkShareDialogParams {
   ciphers: CipherView[];
@@ -29,7 +29,7 @@ export enum BulkShareDialogResult {
  * @param config Configuration for the dialog
  */
 export const openBulkShareDialog = (
-  dialogService: DialogServiceAbstraction,
+  dialogService: DialogService,
   config: DialogConfig<BulkShareDialogParams>
 ) => {
   return dialogService.open<BulkShareDialogResult, BulkShareDialogParams>(

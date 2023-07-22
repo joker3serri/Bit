@@ -10,7 +10,7 @@ import {
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
 import {
@@ -38,7 +38,7 @@ export class ProjectDeleteDialogComponent implements OnInit {
     private projectService: ProjectService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {

@@ -14,7 +14,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { PasswordColorText } from "../../shared/components/password-strength/password-strength.component";
 
@@ -44,7 +44,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
     protected stateService: StateService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService
   ) {}
 
   async ngOnInit() {

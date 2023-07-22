@@ -18,7 +18,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 import { BrowserApi } from "../../platform/browser/browser-api";
@@ -84,7 +84,7 @@ export class SettingsComponent implements OnInit {
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

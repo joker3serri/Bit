@@ -3,7 +3,7 @@ import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/an
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { SimpleDialogOptions, DialogServiceAbstraction } from "../..";
+import { SimpleDialogOptions, DialogService } from "../..";
 import { ButtonModule } from "../../../button";
 import { CalloutModule } from "../../../callout";
 import { I18nMockService } from "../../../utils/i18n-mock.service";
@@ -180,7 +180,7 @@ class StoryDialogComponent {
   calloutType = "info";
   dialogCloseResult: boolean;
 
-  constructor(public dialogService: DialogServiceAbstraction, private i18nService: I18nService) {}
+  constructor(public dialogService: DialogService, private i18nService: I18nService) {}
 
   async openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
     this.dialogCloseResult = await this.dialogService.openSimpleDialog(opts);

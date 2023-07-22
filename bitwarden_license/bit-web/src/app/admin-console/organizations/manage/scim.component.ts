@@ -17,7 +17,7 @@ import { ApiKeyResponse } from "@bitwarden/common/auth/models/response/api-key.r
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-org-manage-scim",
@@ -47,7 +47,7 @@ export class ScimComponent implements OnInit {
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {

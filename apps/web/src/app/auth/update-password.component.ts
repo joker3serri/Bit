@@ -12,7 +12,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-update-password",
@@ -31,7 +31,7 @@ export class UpdatePasswordComponent extends BaseUpdatePasswordComponent {
     logService: LogService,
     stateService: StateService,
     userVerificationService: UserVerificationService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       router,

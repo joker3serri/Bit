@@ -9,7 +9,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { DialogServiceAbstraction } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-vault-attachments",
@@ -25,7 +25,7 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     logService: LogService,
     stateService: StateService,
     fileDownloadService: FileDownloadService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService
   ) {
     super(
       cipherService,
