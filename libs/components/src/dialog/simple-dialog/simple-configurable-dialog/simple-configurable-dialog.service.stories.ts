@@ -8,10 +8,10 @@ import {
   DialogServiceAbstraction,
 } from "@bitwarden/components";
 
-import { ButtonModule } from "../../button";
-import { CalloutModule } from "../../callout";
-import { I18nMockService } from "../../utils/i18n-mock.service";
-import { DialogModule } from "../dialog.module";
+import { ButtonModule } from "../../../button";
+import { CalloutModule } from "../../../callout";
+import { I18nMockService } from "../../../utils/i18n-mock.service";
+import { DialogModule } from "../../dialog.module";
 
 @Component({
   template: `
