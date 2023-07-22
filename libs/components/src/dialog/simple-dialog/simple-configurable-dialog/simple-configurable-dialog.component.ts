@@ -3,8 +3,7 @@ import { Component, Inject } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { SimpleDialogType, SimpleDialogCloseType, SimpleDialogOptions } from "../..";
-import { Translation } from "../types";
+import { SimpleDialogOptions, SimpleDialogCloseType, SimpleDialogType, Translation } from "../..";
 
 const DEFAULT_ICON: Record<SimpleDialogType, string> = {
   [SimpleDialogType.PRIMARY]: "bwi-business",
