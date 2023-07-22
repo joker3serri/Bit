@@ -15,7 +15,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
-
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();

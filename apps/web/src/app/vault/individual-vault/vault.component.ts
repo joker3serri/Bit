@@ -57,7 +57,7 @@ import { CollectionData } from "@bitwarden/common/vault/models/data/collection.d
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogServiceAbstraction, SimpleDialogType , Icons } from "@bitwarden/components";
+import { DialogServiceAbstraction, SimpleDialogType, Icons } from "@bitwarden/components";
 
 import { UpdateKeyComponent } from "../../settings/update-key.component";
 import { CollectionDialogAction, openCollectionDialog } from "../components/collection-dialog";

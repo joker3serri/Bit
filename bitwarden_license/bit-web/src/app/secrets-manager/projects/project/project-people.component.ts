@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { map, Observable, share, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction , SelectItemView } from "@bitwarden/components";
+import { DialogServiceAbstraction, SelectItemView } from "@bitwarden/components";
 
 import {
   GroupProjectAccessPolicyView,

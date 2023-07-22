@@ -12,7 +12,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogServiceAbstraction , TableDataSource } from "@bitwarden/components";
+import { DialogServiceAbstraction, TableDataSource } from "@bitwarden/components";
 
 import { EventService } from "../../../core";
 import { SharedModule } from "../../../shared";

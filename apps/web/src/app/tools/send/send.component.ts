@@ -12,7 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogServiceAbstraction , Icons } from "@bitwarden/components";
+import { DialogServiceAbstraction, Icons } from "@bitwarden/components";
 
 import { AddEditComponent } from "./add-edit.component";
 
