@@ -40,7 +40,7 @@ const routes: Routes = [
     component: LoginWithDeviceComponent,
   },
   {
-    path: "login-with-device",
+    path: "admin-approval-requested",
     component: LoginWithDeviceComponent,
   },
   { path: "2fa", component: TwoFactorComponent },

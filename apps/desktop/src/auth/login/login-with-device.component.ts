@@ -104,6 +104,17 @@ export class LoginWithDeviceComponent
   }
 
   goToLogin() {
-    this.router.navigate(["/login"]);
+    switch (this.state) {
+      case this.State.StandardAuthRequest:
+        this.router.navigate(["/login"]);
+
+        break;
+      case this.State.AdminAuthRequest:
+        this.router.navigate(["/login-initiated"]);
+        break;
+
+      default:
+        break;
+    }
   }
 }
