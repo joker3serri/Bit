@@ -107,6 +107,8 @@ export class LoginWithDeviceComponent
   async ngOnInit() {
     this.userAuthNStatus = await this.authService.getAuthStatus();
 
+    // TODO: refreshing this page takes you to the lock component
+    // as email is lost on refresh; is that important to change for the admin approval flow?
     if (!this.email) {
       this.router.navigate(["/login"]);
       return;
@@ -126,7 +128,10 @@ export class LoginWithDeviceComponent
       // so must check state to see if we have an existing one or not
       const adminAuthReqStorable = await this.stateService.getAdminAuthRequest();
 
-      if (!adminAuthReqStorable) {
+      if (adminAuthReqStorable) {
+        await this.handleExistingAdminAuthRequest(adminAuthReqStorable);
+      } else {
+        // No existing admin auth request; so we need to create one
         this.startPasswordlessLogin();
       }
     } else {
@@ -138,6 +143,20 @@ export class LoginWithDeviceComponent
     this.destroy$.next();
     this.destroy$.complete();
     this.anonymousHubService.stopHubConnection();
+  }
+
+  private async handleExistingAdminAuthRequest(adminAuthReqStorable: AdminAuthRequestStorable) {
+    // TODO: should we call to see if the auth request status has changed? (i.e. approved)
+    // before creating the hub connection? YES as any earlier approvals would have been missed
+
+    // TODO: fix this
+    // Note: this flow isn't working because access code is required info in the
+    // confirm response call and we don't have it here when an admin approves after
+    // the user has left the page and come back
+
+    // Create hub connection if we have an existing admin auth request
+    // so that any approvals will be received while on this component
+    this.anonymousHubService.createHubConnection(adminAuthReqStorable.id);
   }
 
   private async buildAuthRequest(authRequestType: AuthRequestType) {
@@ -152,6 +171,8 @@ export class LoginWithDeviceComponent
     const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair.publicKey);
     const accessCode = await this.passwordGenerationService.generatePassword({ length: 25 });
 
+    // TODO: figure out if fingerprint phrase needs to be shown for admin auth reqs
+    // on second+ navigations to the page; yes it does.
     this.fingerprintPhrase = (
       await this.cryptoService.getFingerprint(this.email, this.authRequestKeyPair.publicKey)
     ).join("-");
