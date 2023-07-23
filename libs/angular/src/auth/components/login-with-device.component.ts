@@ -59,7 +59,9 @@ export class LoginWithDeviceComponent
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
 
   protected adminApprovalRoute = "admin-approval-requested";
-  protected State = State.StandardAuthRequest;
+
+  protected State = State;
+  protected state = State.StandardAuthRequest;
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
@@ -118,7 +120,7 @@ export class LoginWithDeviceComponent
     };
 
     if (this.router.isActive(this.adminApprovalRoute, matchOptions)) {
-      this.State = State.AdminAuthRequest;
+      this.state = State.AdminAuthRequest;
 
       // We only allow a single admin approval request to be active at a time
       // so must check state to see if we have an existing one or not
@@ -169,7 +171,7 @@ export class LoginWithDeviceComponent
     try {
       let reqResponse: AuthRequestResponse;
 
-      if (this.State === State.AdminAuthRequest) {
+      if (this.state === State.AdminAuthRequest) {
         await this.buildAuthRequest(AuthRequestType.AdminApproval);
         reqResponse = await this.apiService.postAdminAuthRequest(this.passwordlessRequest);
 
