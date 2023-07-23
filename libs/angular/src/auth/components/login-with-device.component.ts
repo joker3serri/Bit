@@ -37,6 +37,11 @@ import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
 // TODO: consider renaming this component something like LoginViaAuthRequest
 
+enum State {
+  StandardAuthRequest,
+  AdminAuthRequest,
+}
+
 @Directive()
 export class LoginWithDeviceComponent
   extends CaptchaProtectedComponent
@@ -54,7 +59,7 @@ export class LoginWithDeviceComponent
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
 
   protected adminApprovalRoute = "admin-approval-requested";
-  protected adminApprovalAuthRequestState = false;
+  protected State = State.StandardAuthRequest;
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
@@ -111,12 +116,10 @@ export class LoginWithDeviceComponent
       fragment: "ignored",
       matrixParams: "ignored",
     };
-    this.adminApprovalAuthRequestState = this.router.isActive(
-      this.adminApprovalRoute,
-      matchOptions
-    );
 
-    if (this.adminApprovalAuthRequestState) {
+    if (this.router.isActive(this.adminApprovalRoute, matchOptions)) {
+      this.State = State.AdminAuthRequest;
+
       // We only allow a single admin approval request to be active at a time
       // so must check state to see if we have an existing one or not
       const adminAuthReqStorable = await this.stateService.getAdminAuthRequest();
@@ -166,7 +169,7 @@ export class LoginWithDeviceComponent
     try {
       let reqResponse: AuthRequestResponse;
 
-      if (this.adminApprovalAuthRequestState) {
+      if (this.State === State.AdminAuthRequest) {
         await this.buildAuthRequest(AuthRequestType.AdminApproval);
         reqResponse = await this.apiService.postAdminAuthRequest(this.passwordlessRequest);
 
