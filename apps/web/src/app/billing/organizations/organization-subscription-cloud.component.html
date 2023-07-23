@@ -106,7 +106,11 @@
           </tr>
         </ng-template>
       </bit-table>
-      <bit-callout *ngIf="sub.secretsManagerBeta" type="warning" class="tw-mt-4 tw-block">
+      <bit-callout
+        *ngIf="sub.secretsManagerBeta && !userOrg.isFreeOrg"
+        type="warning"
+        class="tw-mt-4 tw-block"
+      >
         {{ smBetaEndedDesc }}
       </bit-callout>
     </div>
