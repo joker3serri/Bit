@@ -140,15 +140,22 @@ export class SsoLogInStrategy extends LogInStrategy {
       // if masterPasswordHash has a value, we will always receive authReqResponse.key
       // as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
       if (adminAuthReqResponse.masterPasswordHash) {
-        await this.decryptWithSharedMasterKey(
+        await this.setKeysAfterDecryptingSharedMasterKeyAndHash(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey
         );
       } else {
         // if masterPasswordHash is null, we will always receive authReqResponse.key
         // as authRequestPublicKey(userKey)
-        await this.decryptWithSharedUserKey(adminAuthReqResponse, adminAuthReqStorable.privateKey);
+        await this.setUserKeyAfterDecryptingSharedUserKey(
+          adminAuthReqResponse,
+          adminAuthReqStorable.privateKey
+        );
       }
+
+      // Now that we have a decrypted user key in memory, we can check if we
+      // need to establish trust on the current device
+      await this.deviceTrustCryptoService.trustDeviceIfRequired();
 
       // if we successfully decrypted the user key, we can delete the admin auth request out of state
       // TODO: evaluate if we should post and clean up DB as well
@@ -156,22 +163,17 @@ export class SsoLogInStrategy extends LogInStrategy {
     }
   }
 
-  // TODO: re-evaluate these names
   // TODO: consider refactoring the logic in these methods into a separate service
   // for re-useability with the login with device component
-  private async decryptWithSharedUserKey(
+  private async setUserKeyAfterDecryptingSharedUserKey(
     authReqResponse: AuthRequestResponse,
     privateKey: ArrayBuffer
   ) {
     const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key, privateKey);
     await this.cryptoService.setUserKey(userKey);
-
-    // Now that we have a decrypted user key in memory, we can check if we
-    // need to establish trust on the current device
-    await this.deviceTrustCryptoService.trustDeviceIfRequired();
   }
 
-  private async decryptWithSharedMasterKey(
+  private async setKeysAfterDecryptingSharedMasterKeyAndHash(
     authReqResponse: AuthRequestResponse,
     privateKey: ArrayBuffer
   ) {
@@ -188,10 +190,6 @@ export class SsoLogInStrategy extends LogInStrategy {
     // Decrypt and set user key in state
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
     await this.cryptoService.setUserKey(userKey);
-
-    // Now that we have a decrypted user key in memory, we can check if we
-    // need to establish trust on the current device
-    await this.deviceTrustCryptoService.trustDeviceIfRequired();
   }
 
   private async decryptAuthReqResponseUserKey(

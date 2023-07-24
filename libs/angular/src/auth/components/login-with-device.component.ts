@@ -221,6 +221,8 @@ export class LoginWithDeviceComponent
 
   private async confirmResponse(requestId: string) {
     try {
+      // TODO: only do this in the standard case as we will be retrieving the admin auth request from the server
+      // on load anyway.
       const authReqResponse = await this.apiService.getAuthResponse(
         requestId,
         this.passwordlessRequest.accessCode
@@ -250,18 +252,25 @@ export class LoginWithDeviceComponent
         // Then it's flow 2 or 3 based on presence of masterPasswordHash
         if (authReqResponse.masterPasswordHash) {
           // Flow 2: masterPasswordHash is not null
-          return await this.decryptWithSharedMasterKey(authReqResponse);
+          await this.setKeysAfterDecryptingSharedMasterKeyAndHash(authReqResponse);
         } else {
           // Flow 3: masterPasswordHash is null
           // then we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
-          return await this.decryptWithSharedUserKey(authReqResponse);
+          await this.setUserKeyAfterDecryptingSharedUserKey(authReqResponse);
         }
+
+        // Now that we have a decrypted user key in memory, we can check if we
+        // need to establish trust on the current device
+        await this.deviceTrustCryptoService.trustDeviceIfRequired();
+
+        return await this.handleSuccessfulLoginNavigation();
       }
 
       // Flow 1 and 4:
-      return await this.authenticateAndDecrypt(requestId, authReqResponse);
+      return await this.authenticateAndSetKeys(requestId, authReqResponse);
     } catch (error) {
       if (error instanceof ErrorResponse) {
+        // TODO: update routing
         this.router.navigate(["/login"]);
         this.validationService.showError(error);
         return;
@@ -306,18 +315,12 @@ export class LoginWithDeviceComponent
   }
 
   // Login w/ device flows
-  private async decryptWithSharedUserKey(authReqResponse: AuthRequestResponse) {
+  private async setUserKeyAfterDecryptingSharedUserKey(authReqResponse: AuthRequestResponse) {
     const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key);
     await this.cryptoService.setUserKey(userKey);
-
-    // Now that we have a decrypted user key in memory, we can check if we
-    // need to establish trust on the current device
-    await this.deviceTrustCryptoService.trustDeviceIfRequired();
-
-    await this.handleSuccessfulLoginNavigation();
   }
 
-  private async decryptWithSharedMasterKey(authReqResponse: AuthRequestResponse) {
+  private async setKeysAfterDecryptingSharedMasterKeyAndHash(authReqResponse: AuthRequestResponse) {
     const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
       authReqResponse.key,
       authReqResponse.masterPasswordHash
@@ -330,17 +333,13 @@ export class LoginWithDeviceComponent
     // Decrypt and set user key in state
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
     await this.cryptoService.setUserKey(userKey);
-
-    // Now that we have a decrypted user key in memory, we can check if we
-    // need to establish trust on the current device
-    await this.deviceTrustCryptoService.trustDeviceIfRequired();
-
-    await this.handleSuccessfulLoginNavigation();
   }
 
-  private async authenticateAndDecrypt(requestId: string, authReqResponse: AuthRequestResponse) {
+  private async authenticateAndSetKeys(requestId: string, authReqResponse: AuthRequestResponse) {
     // Note: credentials change based on if the authReqResponse.key is a encryptedMasterKey or UserKey
     const credentials = await this.buildPasswordlessLoginCredentials(requestId, authReqResponse);
+
+    // Note: keys are set by PasswordlessLogInStrategy success handling
     const loginResponse = await this.authService.logIn(credentials);
 
     await this.handlePostLoginNavigation(loginResponse);
