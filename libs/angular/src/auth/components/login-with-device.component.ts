@@ -267,7 +267,8 @@ export class LoginWithDeviceComponent
       }
 
       // Flow 1 and 4:
-      return await this.authenticateAndSetKeys(requestId, authReqResponse);
+      const loginAuthResult = await this.loginViaPasswordlessStrategy(requestId, authReqResponse);
+      await this.handlePostLoginNavigation(loginAuthResult);
     } catch (error) {
       if (error instanceof ErrorResponse) {
         // TODO: update routing
@@ -343,14 +344,15 @@ export class LoginWithDeviceComponent
     await this.cryptoService.setUserKey(userKey);
   }
 
-  private async authenticateAndSetKeys(requestId: string, authReqResponse: AuthRequestResponse) {
+  private async loginViaPasswordlessStrategy(
+    requestId: string,
+    authReqResponse: AuthRequestResponse
+  ): Promise<AuthResult> {
     // Note: credentials change based on if the authReqResponse.key is a encryptedMasterKey or UserKey
     const credentials = await this.buildPasswordlessLoginCredentials(requestId, authReqResponse);
 
     // Note: keys are set by PasswordlessLogInStrategy success handling
-    const loginResponse = await this.authService.logIn(credentials);
-
-    await this.handlePostLoginNavigation(loginResponse);
+    return await this.authService.logIn(credentials);
   }
 
   // Routing logic
