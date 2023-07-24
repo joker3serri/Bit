@@ -5,6 +5,7 @@ import { DeviceType } from "../../enums";
 import { EncryptionType } from "../../enums/encryption-type.enum";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
+import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { EncString } from "../../platform/models/domain/enc-string";
@@ -13,7 +14,6 @@ import {
   DeviceKey,
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
-import { CryptoService } from "../../platform/services/crypto.service";
 import { CsprngArray } from "../../types/csprng";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
 import { UpdateDevicesTrustRequest } from "../models/request/update-devices-trust.request";
