@@ -7012,5 +7012,11 @@
   },
   "troubleLoggingIn": {
     "message": "Trouble logging in?"
+  },
+  "loginApproved": {
+    "message": "Login approved"
+  },
+  "userEmailMissing": {
+    "message": "User email missing"
   }
 }

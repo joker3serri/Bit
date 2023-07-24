@@ -87,6 +87,8 @@ export class LoginWithDeviceComponent
   ) {
     super(environmentService, i18nService, platformUtilsService);
 
+    // TODO: I don't know why this is necessary.
+    // Why would the existence of the email depend on the navigation?
     const navigation = this.router.getCurrentNavigation();
     if (navigation) {
       this.email = this.loginService.getEmail();
@@ -105,13 +107,6 @@ export class LoginWithDeviceComponent
   async ngOnInit() {
     this.userAuthNStatus = await this.authService.getAuthStatus();
 
-    // TODO: refreshing this page takes you to the lock component
-    // as email is lost on refresh; is that important to change for the admin approval flow?
-    if (!this.email) {
-      this.router.navigate(["/login"]);
-      return;
-    }
-
     const matchOptions: IsActiveMatchOptions = {
       paths: "exact",
       queryParams: "ignored",
@@ -121,6 +116,19 @@ export class LoginWithDeviceComponent
 
     if (this.router.isActive(this.adminApprovalRoute, matchOptions)) {
       this.state = State.AdminAuthRequest;
+    }
+
+    if (this.state === State.AdminAuthRequest) {
+      // Pull email from state for admin auth reqs b/c it is available
+      // This also prevents it from being lost on refresh as the
+      // login service email does not persist.
+      this.email = await this.stateService.getEmail();
+
+      if (!this.email) {
+        this.platformUtilsService.showToast("error", null, this.i18nService.t("userEmailMissing"));
+        this.router.navigate(["/login-initiated"]);
+        return;
+      }
 
       // We only allow a single admin approval request to be active at a time
       // so must check state to see if we have an existing one or not
@@ -133,6 +141,16 @@ export class LoginWithDeviceComponent
         this.startPasswordlessLogin();
       }
     } else {
+      // Standard auth request
+      // TODO: evaluate if we can remove the setting of this.email in the constructor
+      this.email = this.loginService.getEmail();
+
+      if (!this.email) {
+        this.platformUtilsService.showToast("error", null, this.i18nService.t("userEmailMissing"));
+        this.router.navigate(["/login"]);
+        return;
+      }
+
       this.startPasswordlessLogin();
     }
   }
@@ -333,11 +351,15 @@ export class LoginWithDeviceComponent
       );
     }
 
+    // clear the admin auth request from state so it cannot be used again (it's a one time use)
+    // TODO: this should eventually be enforced via deleting this on the server once it is used
+    this.stateService.setAdminAuthRequest(null);
+
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("loginApproved"));
+
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
     await this.deviceTrustCryptoService.trustDeviceIfRequired();
-
-    // TODO: per product: add a toast notification that admin approval was successful "Login approved"
 
     await this.handleSuccessfulLoginNavigation();
   }
