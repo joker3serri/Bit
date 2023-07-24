@@ -148,13 +148,15 @@ export class SsoLogInStrategy extends LogInStrategy {
         );
       }
 
-      // Now that we have a decrypted user key in memory, we can check if we
-      // need to establish trust on the current device
-      await this.deviceTrustCryptoService.trustDeviceIfRequired();
+      if (await this.cryptoService.hasUserKey()) {
+        // Now that we have a decrypted user key in memory, we can check if we
+        // need to establish trust on the current device
+        await this.deviceTrustCryptoService.trustDeviceIfRequired();
 
-      // if we successfully decrypted the user key, we can delete the admin auth request out of state
-      // TODO: evaluate if we should post and clean up DB as well
-      await this.stateService.setAdminAuthRequest(null);
+        // if we successfully decrypted the user key, we can delete the admin auth request out of state
+        // TODO: eventually we post and clean up DB as well once consumed on client
+        await this.stateService.setAdminAuthRequest(null);
+      }
     }
   }
 
