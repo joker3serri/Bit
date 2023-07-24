@@ -172,6 +172,13 @@ export class LoginWithDeviceComponent
       return await this.handleExistingAdminAuthReqDeletedOrDenied();
     }
 
+    // Re-derive the user's fingerprint phrase
+    // convert b64 string publicKey to ArrayBuffer
+    const publicKeyArrayBuffer = Utils.fromB64ToBuffer(adminAuthReqResponse.publicKey);
+    this.fingerprintPhrase = (
+      await this.cryptoService.getFingerprint(this.email, publicKeyArrayBuffer)
+    ).join("-");
+
     // Request denied
     if (adminAuthReqResponse.isAnswered && !adminAuthReqResponse.requestApproved) {
       return await this.handleExistingAdminAuthReqDeletedOrDenied();
@@ -210,8 +217,6 @@ export class LoginWithDeviceComponent
     const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair.publicKey);
     const accessCode = await this.passwordGenerationService.generatePassword({ length: 25 });
 
-    // TODO: figure out if fingerprint phrase needs to be shown for admin auth reqs
-    // on second+ navigations to the page; yes it does.
     this.fingerprintPhrase = (
       await this.cryptoService.getFingerprint(this.email, this.authRequestKeyPair.publicKey)
     ).join("-");
