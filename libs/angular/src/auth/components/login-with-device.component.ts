@@ -290,7 +290,8 @@ export class LoginWithDeviceComponent
     if (response.masterPasswordHash) {
       const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
         response.key,
-        response.masterPasswordHash
+        response.masterPasswordHash,
+        this.authRequestKeyPair.privateKey
       );
 
       return new PasswordlessLogInCredentials(
@@ -302,7 +303,10 @@ export class LoginWithDeviceComponent
         masterKeyHash
       );
     } else {
-      const userKey = await this.decryptAuthReqResponseUserKey(response.key);
+      const userKey = await this.decryptAuthReqResponseUserKey(
+        response.key,
+        this.authRequestKeyPair.privateKey
+      );
       return new PasswordlessLogInCredentials(
         this.email,
         this.passwordlessRequest.accessCode,
@@ -316,14 +320,18 @@ export class LoginWithDeviceComponent
 
   // Login w/ device flows
   private async setUserKeyAfterDecryptingSharedUserKey(authReqResponse: AuthRequestResponse) {
-    const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key);
+    const userKey = await this.decryptAuthReqResponseUserKey(
+      authReqResponse.key,
+      this.authRequestKeyPair.privateKey
+    );
     await this.cryptoService.setUserKey(userKey);
   }
 
   private async setKeysAfterDecryptingSharedMasterKeyAndHash(authReqResponse: AuthRequestResponse) {
     const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
       authReqResponse.key,
-      authReqResponse.masterPasswordHash
+      authReqResponse.masterPasswordHash,
+      this.authRequestKeyPair.privateKey
     );
 
     // Set masterKey + masterKeyHash in state
@@ -385,10 +393,13 @@ export class LoginWithDeviceComponent
   }
 
   // Decryption helpers
-  private async decryptAuthReqResponseUserKey(pubKeyEncryptedUserKey: string): Promise<UserKey> {
+  private async decryptAuthReqResponseUserKey(
+    pubKeyEncryptedUserKey: string,
+    privateKey: ArrayBuffer
+  ): Promise<UserKey> {
     const decryptedUserKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
       pubKeyEncryptedUserKey,
-      this.authRequestKeyPair.privateKey
+      privateKey
     );
 
     return new SymmetricCryptoKey(decryptedUserKeyArrayBuffer) as UserKey;
@@ -396,16 +407,17 @@ export class LoginWithDeviceComponent
 
   private async decryptAuthReqResponseMasterKeyAndHash(
     pubKeyEncryptedMasterKey: string,
-    pubKeyEncryptedMasterKeyHash: string
+    pubKeyEncryptedMasterKeyHash: string,
+    privateKey: ArrayBuffer
   ): Promise<{ masterKey: MasterKey; masterKeyHash: string }> {
     const decryptedMasterKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
       pubKeyEncryptedMasterKey,
-      this.authRequestKeyPair.privateKey
+      privateKey
     );
 
     const decryptedMasterKeyHashArrayBuffer = await this.cryptoService.rsaDecrypt(
       pubKeyEncryptedMasterKeyHash,
-      this.authRequestKeyPair.privateKey
+      privateKey
     );
 
     const masterKey = new SymmetricCryptoKey(decryptedMasterKeyArrayBuffer) as MasterKey;
