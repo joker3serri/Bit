@@ -8,7 +8,6 @@ import {
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
 
-// TODO: add tests for this service.
 export class AuthRequestCryptoServiceImplementation implements AuthRequestCryptoServiceAbstraction {
   constructor(protected cryptoService: CryptoService) {}
 
