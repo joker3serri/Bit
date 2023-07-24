@@ -674,7 +674,6 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   // ---HELPERS---
-  // TODO: Should we pass in userId?
   protected async validateUserKey(key: UserKey): Promise<boolean> {
     if (!key) {
       return false;
