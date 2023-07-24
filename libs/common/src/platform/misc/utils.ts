@@ -135,6 +135,25 @@ export class Utils {
     }
   }
 
+  static fromB64ToBuffer(b64: string): ArrayBuffer {
+    if (b64 == null) {
+      return null;
+    }
+
+    if (Utils.isNode) {
+      return Buffer.from(b64, "base64");
+    } else {
+      const binary = Utils.global.atob(b64);
+      const length = binary.length;
+      const buffer = new ArrayBuffer(length);
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return buffer;
+    }
+  }
+
   static fromBufferToUrlB64(buffer: ArrayBuffer): string {
     return Utils.fromB64toUrlB64(Utils.fromBufferToB64(buffer));
   }
