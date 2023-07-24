@@ -308,8 +308,12 @@ export class LoginWithDeviceComponent
       await this.handlePostLoginNavigation(loginAuthResult);
     } catch (error) {
       if (error instanceof ErrorResponse) {
-        // TODO: update routing
-        this.router.navigate(["/login"]);
+        let errorRoute = "/login";
+        if (this.state === State.AdminAuthRequest) {
+          errorRoute = "/login-initiated";
+        }
+
+        this.router.navigate([errorRoute]);
         this.validationService.showError(error);
         return;
       }
