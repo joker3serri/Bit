@@ -31,7 +31,7 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
-// TODO: consider renaming this component something like LoginViaAuthRequest
+// TODO: consider renaming this component something like LoginViaAuthReqComponent
 
 enum State {
   StandardAuthRequest,
@@ -144,6 +144,9 @@ export class LoginWithDeviceComponent
   }
 
   private async handleExistingAdminAuthRequest(adminAuthReqStorable: AdminAuthRequestStorable) {
+    // Note: on login, the SSOLoginStrategy will also call to see an existing admin auth req
+    // has been approved and handle it if so.
+    // Regardless, we always retrieve the auth request from the server verify and handle status changes here as well
     const adminAuthReqResponse = await this.apiService.getAuthRequest(adminAuthReqStorable.id);
 
     // Request doesn't exist
@@ -157,12 +160,15 @@ export class LoginWithDeviceComponent
     }
 
     // Request approved
-    // if (adminAuthReqResponse.requestApproved) {
-    // TODO: add logic for proceeding from here
-    // }
+    if (adminAuthReqResponse.requestApproved) {
+      return await this.handleApprovedAdminAuthRequest(
+        adminAuthReqResponse,
+        adminAuthReqStorable.privateKey
+      );
+    }
 
-    // Create hub connection if we have an existing admin auth request
-    // so that any approvals will be received while on this component
+    // Request still pending response from admin
+    // So, create hub connection so that any approvals will be received via push notification
     this.anonymousHubService.createHubConnection(adminAuthReqStorable.id);
   }
 
@@ -280,27 +286,10 @@ export class LoginWithDeviceComponent
 
       // if user has authenticated via SSO
       if (this.userAuthNStatus === AuthenticationStatus.Locked) {
-        // Then it's flow 2 or 3 based on presence of masterPasswordHash
-        if (authReqResponse.masterPasswordHash) {
-          // Flow 2: masterPasswordHash is not null
-          await this.authReqCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash(
-            authReqResponse,
-            this.authRequestKeyPair.privateKey
-          );
-        } else {
-          // Flow 3: masterPasswordHash is null
-          // then we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
-          await this.authReqCryptoService.setUserKeyAfterDecryptingSharedUserKey(
-            authReqResponse,
-            this.authRequestKeyPair.privateKey
-          );
-        }
-
-        // Now that we have a decrypted user key in memory, we can check if we
-        // need to establish trust on the current device
-        await this.deviceTrustCryptoService.trustDeviceIfRequired();
-
-        return await this.handleSuccessfulLoginNavigation();
+        return await this.handleApprovedAdminAuthRequest(
+          authReqResponse,
+          this.authRequestKeyPair.privateKey
+        );
       }
 
       // Flow 1 and 4:
@@ -320,6 +309,37 @@ export class LoginWithDeviceComponent
 
       this.logService.error(error);
     }
+  }
+
+  async handleApprovedAdminAuthRequest(
+    adminAuthReqResponse: AuthRequestResponse,
+    privateKey: ArrayBuffer
+  ) {
+    // See verifyAndHandleApprovedAuthReq(...) for flow details
+    // it's flow 2 or 3 based on presence of masterPasswordHash
+    if (adminAuthReqResponse.masterPasswordHash) {
+      // Flow 2: masterPasswordHash is not null
+      // key is authRequestPublicKey(masterKey) + we have authRequestPublicKey(masterPasswordHash)
+      await this.authReqCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash(
+        adminAuthReqResponse,
+        privateKey
+      );
+    } else {
+      // Flow 3: masterPasswordHash is null
+      // we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
+      await this.authReqCryptoService.setUserKeyAfterDecryptingSharedUserKey(
+        adminAuthReqResponse,
+        privateKey
+      );
+    }
+
+    // Now that we have a decrypted user key in memory, we can check if we
+    // need to establish trust on the current device
+    await this.deviceTrustCryptoService.trustDeviceIfRequired();
+
+    // TODO: per product: add a toast notification that admin approval was successful "Login approved"
+
+    await this.handleSuccessfulLoginNavigation();
   }
 
   // Authentication helper
