@@ -7,7 +7,7 @@ import {
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
-// import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
+
 // TODO: add tests for this service.
 export class AuthRequestCryptoServiceImplementation implements AuthRequestCryptoServiceAbstraction {
   constructor(protected cryptoService: CryptoService) {}
@@ -16,7 +16,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     authReqResponse: AuthRequestResponse,
     authReqPrivateKey: ArrayBuffer
   ) {
-    const userKey = await this.decryptAuthReqResponseUserKey(
+    const userKey = await this.decryptAuthReqPubKeyEncryptedUserKey(
       authReqResponse.key,
       authReqPrivateKey
     );
@@ -27,7 +27,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     authReqResponse: AuthRequestResponse,
     authReqPrivateKey: ArrayBuffer
   ) {
-    const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
+    const { masterKey, masterKeyHash } = await this.decryptAuthReqPubKeyEncryptedMasterKeyAndHash(
       authReqResponse.key,
       authReqResponse.masterPasswordHash,
       authReqPrivateKey
@@ -43,7 +43,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
   }
 
   // Decryption helpers
-  async decryptAuthReqResponseUserKey(
+  async decryptAuthReqPubKeyEncryptedUserKey(
     pubKeyEncryptedUserKey: string,
     privateKey: ArrayBuffer
   ): Promise<UserKey> {
@@ -55,7 +55,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     return new SymmetricCryptoKey(decryptedUserKeyArrayBuffer) as UserKey;
   }
 
-  async decryptAuthReqResponseMasterKeyAndHash(
+  async decryptAuthReqPubKeyEncryptedMasterKeyAndHash(
     pubKeyEncryptedMasterKey: string,
     pubKeyEncryptedMasterKeyHash: string,
     privateKey: ArrayBuffer
