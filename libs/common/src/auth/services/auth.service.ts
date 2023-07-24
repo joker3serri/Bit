@@ -250,7 +250,7 @@ export class AuthService implements AuthServiceAbstraction {
     if (neverLock) {
       // Get the key from storage and set it in memory
       const userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Auto, userId);
-      await this.cryptoService.setUserKey(userKey);
+      await this.cryptoService.setUserKey(userKey, userId);
     }
 
     const hasKeyInMemory = await this.cryptoService.hasUserKeyInMemory(userId);

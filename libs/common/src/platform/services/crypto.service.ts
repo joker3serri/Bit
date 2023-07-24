@@ -61,7 +61,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     }
 
     // If the user has set their vault timeout to 'Never', we can load the user key from storage
-    if (await this.hasUserKeyStored(KeySuffixOptions.Auto)) {
+    if (await this.hasUserKeyStored(KeySuffixOptions.Auto, userId)) {
       userKey = await this.getKeyFromStorage(KeySuffixOptions.Auto, userId);
       if (userKey) {
         await this.setUserKey(userKey, userId);
@@ -78,7 +78,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     // Legacy support: encryption used to be done with the master key (derived from master password).
     // Users who have not migrated will have a null user key and must use the master key instead.
-    return (await this.getMasterKey(userId)) as any as UserKey;
+    return (await this.getMasterKey(userId)) as unknown as UserKey;
   }
 
   async getUserKeyFromStorage(keySuffix: KeySuffixOptions, userId?: string): Promise<UserKey> {
@@ -177,7 +177,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     userKey?: EncString,
     userId?: string
   ): Promise<UserKey> {
-    masterKey ||= await this.getMasterKey();
+    masterKey ||= await this.getMasterKey(userId);
     if (masterKey == null) {
       throw new Error("No master key found.");
     }
@@ -674,7 +674,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   // ---HELPERS---
-
+  // TODO: Should we pass in userId?
   protected async validateUserKey(key: UserKey): Promise<boolean> {
     if (!key) {
       return false;
@@ -745,7 +745,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     );
     const encPin = await this.encryptService.encrypt(key.key, pinKey);
 
-    if ((await this.stateService.getUserKeyPin()) != null) {
+    if ((await this.stateService.getUserKeyPin({ userId: userId })) != null) {
       await this.stateService.setUserKeyPin(encPin, { userId: userId });
     } else {
       await this.stateService.setUserKeyPinEphemeral(encPin, { userId: userId });
@@ -904,7 +904,8 @@ export class CryptoService implements CryptoServiceAbstraction {
       ) as MasterKey;
       const userKey = await this.decryptUserKeyWithMasterKey(
         masterKey,
-        new EncString(await this.stateService.getEncryptedCryptoSymmetricKey())
+        new EncString(await this.stateService.getEncryptedCryptoSymmetricKey({ userId: userId })),
+        userId
       );
       // migrate
       await this.stateService.setUserKeyAuto(userKey.keyB64, { userId: userId });
