@@ -653,7 +653,8 @@ export default class MainBackground {
       this.cipherContextMenuHandler = new CipherContextMenuHandler(
         this.mainContextMenuHandler,
         this.authService,
-        this.cipherService
+        this.cipherService,
+        this.userVerificationService
       );
     }
   }

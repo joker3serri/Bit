@@ -1,6 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
@@ -13,6 +14,7 @@ describe("CipherContextMenuHandler", () => {
   let mainContextMenuHandler: MockProxy<MainContextMenuHandler>;
   let authService: MockProxy<AuthService>;
   let cipherService: MockProxy<CipherService>;
+  let userVerificationService: MockProxy<UserVerificationService>;
 
   let sut: CipherContextMenuHandler;
 
@@ -23,7 +25,12 @@ describe("CipherContextMenuHandler", () => {
 
     jest.spyOn(MainContextMenuHandler, "removeAll").mockResolvedValue();
 
-    sut = new CipherContextMenuHandler(mainContextMenuHandler, authService, cipherService);
+    sut = new CipherContextMenuHandler(
+      mainContextMenuHandler,
+      authService,
+      cipherService,
+      userVerificationService
+    );
   });
 
   afterEach(() => jest.resetAllMocks());
