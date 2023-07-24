@@ -2294,7 +2294,7 @@
     "message": "Admin approval requested"
   },
   "adminApprovalRequestSentToAdmins": {
-    "message": "Your request has been sent to your admin(s)."
+    "message": "Your request has been sent to your admin."
   },
   "youWillBeNotifiedOnceApproved": {
     "message": "You will be notified once approved."
