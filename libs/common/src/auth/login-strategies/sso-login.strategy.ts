@@ -5,19 +5,13 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
-import { Utils } from "../../platform/misc/utils";
-import {
-  MasterKey,
-  SymmetricCryptoKey,
-  UserKey,
-} from "../../platform/models/domain/symmetric-crypto-key";
+import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
-import { AuthRequestResponse } from "../models/response/auth-request.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 import { LogInStrategy } from "./login.strategy";
@@ -43,7 +37,8 @@ export class SsoLogInStrategy extends LogInStrategy {
     stateService: StateService,
     twoFactorService: TwoFactorService,
     private keyConnectorService: KeyConnectorService,
-    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
+    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    private authReqCryptoService: AuthRequestCryptoServiceAbstraction
   ) {
     super(
       cryptoService,
@@ -140,14 +135,14 @@ export class SsoLogInStrategy extends LogInStrategy {
       // if masterPasswordHash has a value, we will always receive authReqResponse.key
       // as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
       if (adminAuthReqResponse.masterPasswordHash) {
-        await this.setKeysAfterDecryptingSharedMasterKeyAndHash(
+        await this.authReqCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey
         );
       } else {
         // if masterPasswordHash is null, we will always receive authReqResponse.key
         // as authRequestPublicKey(userKey)
-        await this.setUserKeyAfterDecryptingSharedUserKey(
+        await this.authReqCryptoService.setUserKeyAfterDecryptingSharedUserKey(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey
         );
@@ -161,71 +156,6 @@ export class SsoLogInStrategy extends LogInStrategy {
       // TODO: evaluate if we should post and clean up DB as well
       await this.stateService.setAdminAuthRequest(null);
     }
-  }
-
-  // TODO: consider refactoring the logic in these methods into a separate service
-  // for re-useability with the login with device component
-  private async setUserKeyAfterDecryptingSharedUserKey(
-    authReqResponse: AuthRequestResponse,
-    privateKey: ArrayBuffer
-  ) {
-    const userKey = await this.decryptAuthReqResponseUserKey(authReqResponse.key, privateKey);
-    await this.cryptoService.setUserKey(userKey);
-  }
-
-  private async setKeysAfterDecryptingSharedMasterKeyAndHash(
-    authReqResponse: AuthRequestResponse,
-    privateKey: ArrayBuffer
-  ) {
-    const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
-      authReqResponse.key,
-      authReqResponse.masterPasswordHash,
-      privateKey
-    );
-
-    // Set masterKey + masterKeyHash in state
-    await this.cryptoService.setMasterKey(masterKey);
-    await this.cryptoService.setMasterKeyHash(masterKeyHash);
-
-    // Decrypt and set user key in state
-    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
-    await this.cryptoService.setUserKey(userKey);
-  }
-
-  private async decryptAuthReqResponseUserKey(
-    pubKeyEncryptedUserKey: string,
-    privateKey: ArrayBuffer
-  ): Promise<UserKey> {
-    const decryptedUserKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
-      pubKeyEncryptedUserKey,
-      privateKey
-    );
-
-    return new SymmetricCryptoKey(decryptedUserKeyArrayBuffer) as UserKey;
-  }
-
-  private async decryptAuthReqResponseMasterKeyAndHash(
-    pubKeyEncryptedMasterKey: string,
-    pubKeyEncryptedMasterKeyHash: string,
-    privateKey: ArrayBuffer
-  ): Promise<{ masterKey: MasterKey; masterKeyHash: string }> {
-    const decryptedMasterKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
-      pubKeyEncryptedMasterKey,
-      privateKey
-    );
-
-    const decryptedMasterKeyHashArrayBuffer = await this.cryptoService.rsaDecrypt(
-      pubKeyEncryptedMasterKeyHash,
-      privateKey
-    );
-
-    const masterKey = new SymmetricCryptoKey(decryptedMasterKeyArrayBuffer) as MasterKey;
-    const masterKeyHash = Utils.fromBufferToUtf8(decryptedMasterKeyHashArrayBuffer);
-
-    return {
-      masterKey,
-      masterKeyHash,
-    };
   }
 
   private async trySetUserKeyWithDeviceKey(tokenResponse: IdentityTokenResponse): Promise<void> {

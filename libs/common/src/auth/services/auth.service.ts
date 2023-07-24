@@ -18,6 +18,7 @@ import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
 import { MasterKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "../../tools/password-strength";
+import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
@@ -105,7 +106,8 @@ export class AuthService implements AuthServiceAbstraction {
     protected encryptService: EncryptService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected policyService: PolicyService,
-    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
+    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    protected authReqCryptoService: AuthRequestCryptoServiceAbstraction
   ) {}
 
   async logIn(
@@ -152,7 +154,8 @@ export class AuthService implements AuthServiceAbstraction {
           this.stateService,
           this.twoFactorService,
           this.keyConnectorService,
-          this.deviceTrustCryptoService
+          this.deviceTrustCryptoService,
+          this.authReqCryptoService
         );
         break;
       case AuthenticationType.UserApi:

@@ -4,6 +4,7 @@ import { Subject, takeUntil } from "rxjs";
 
 import { AnonymousHubService } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
@@ -26,11 +27,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import {
-  MasterKey,
-  SymmetricCryptoKey,
-  UserKey,
-} from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
@@ -86,7 +82,8 @@ export class LoginWithDeviceComponent
     private validationService: ValidationService,
     private stateService: StateService,
     private loginService: LoginService,
-    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction
+    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    private authReqCryptoService: AuthRequestCryptoServiceAbstraction
   ) {
     super(environmentService, i18nService, platformUtilsService);
 
@@ -147,12 +144,9 @@ export class LoginWithDeviceComponent
   }
 
   private async handleExistingAdminAuthRequest(adminAuthReqStorable: AdminAuthRequestStorable) {
-    // TODO: should we call to see if the auth request status has changed? (i.e. approved)
-    // before creating the hub connection? YES as any earlier approvals would have been missed
-
     const adminAuthReqResponse = await this.apiService.getAuthRequest(adminAuthReqStorable.id);
 
-    // Request doesn't exist:
+    // Request doesn't exist
     if (!adminAuthReqResponse) {
       return await this.handleExistingAdminAuthReqDeletedOrDenied();
     }
@@ -289,11 +283,17 @@ export class LoginWithDeviceComponent
         // Then it's flow 2 or 3 based on presence of masterPasswordHash
         if (authReqResponse.masterPasswordHash) {
           // Flow 2: masterPasswordHash is not null
-          await this.setKeysAfterDecryptingSharedMasterKeyAndHash(authReqResponse);
+          await this.authReqCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash(
+            authReqResponse,
+            this.authRequestKeyPair.privateKey
+          );
         } else {
           // Flow 3: masterPasswordHash is null
           // then we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
-          await this.setUserKeyAfterDecryptingSharedUserKey(authReqResponse);
+          await this.authReqCryptoService.setUserKeyAfterDecryptingSharedUserKey(
+            authReqResponse,
+            this.authRequestKeyPair.privateKey
+          );
         }
 
         // Now that we have a decrypted user key in memory, we can check if we
@@ -326,11 +326,12 @@ export class LoginWithDeviceComponent
     // if masterPasswordHash has a value, we will always receive key as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
     // if masterPasswordHash is null, we will always receive key as authRequestPublicKey(userKey)
     if (response.masterPasswordHash) {
-      const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
-        response.key,
-        response.masterPasswordHash,
-        this.authRequestKeyPair.privateKey
-      );
+      const { masterKey, masterKeyHash } =
+        await this.authReqCryptoService.decryptAuthReqResponseMasterKeyAndHash(
+          response.key,
+          response.masterPasswordHash,
+          this.authRequestKeyPair.privateKey
+        );
 
       return new PasswordlessLogInCredentials(
         this.email,
@@ -341,7 +342,7 @@ export class LoginWithDeviceComponent
         masterKeyHash
       );
     } else {
-      const userKey = await this.decryptAuthReqResponseUserKey(
+      const userKey = await this.authReqCryptoService.decryptAuthReqResponseUserKey(
         response.key,
         this.authRequestKeyPair.privateKey
       );
@@ -354,31 +355,6 @@ export class LoginWithDeviceComponent
         null // no masterKeyHash
       );
     }
-  }
-
-  // Login w/ device flows
-  private async setUserKeyAfterDecryptingSharedUserKey(authReqResponse: AuthRequestResponse) {
-    const userKey = await this.decryptAuthReqResponseUserKey(
-      authReqResponse.key,
-      this.authRequestKeyPair.privateKey
-    );
-    await this.cryptoService.setUserKey(userKey);
-  }
-
-  private async setKeysAfterDecryptingSharedMasterKeyAndHash(authReqResponse: AuthRequestResponse) {
-    const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
-      authReqResponse.key,
-      authReqResponse.masterPasswordHash,
-      this.authRequestKeyPair.privateKey
-    );
-
-    // Set masterKey + masterKeyHash in state
-    await this.cryptoService.setMasterKey(masterKey);
-    await this.cryptoService.setMasterKeyHash(masterKeyHash);
-
-    // Decrypt and set user key in state
-    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
-    await this.cryptoService.setUserKey(userKey);
   }
 
   private async loginViaPasswordlessStrategy(
@@ -429,42 +405,5 @@ export class LoginWithDeviceComponent
     } else {
       this.router.navigate([this.successRoute]);
     }
-  }
-
-  // Decryption helpers
-  private async decryptAuthReqResponseUserKey(
-    pubKeyEncryptedUserKey: string,
-    privateKey: ArrayBuffer
-  ): Promise<UserKey> {
-    const decryptedUserKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
-      pubKeyEncryptedUserKey,
-      privateKey
-    );
-
-    return new SymmetricCryptoKey(decryptedUserKeyArrayBuffer) as UserKey;
-  }
-
-  private async decryptAuthReqResponseMasterKeyAndHash(
-    pubKeyEncryptedMasterKey: string,
-    pubKeyEncryptedMasterKeyHash: string,
-    privateKey: ArrayBuffer
-  ): Promise<{ masterKey: MasterKey; masterKeyHash: string }> {
-    const decryptedMasterKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
-      pubKeyEncryptedMasterKey,
-      privateKey
-    );
-
-    const decryptedMasterKeyHashArrayBuffer = await this.cryptoService.rsaDecrypt(
-      pubKeyEncryptedMasterKeyHash,
-      privateKey
-    );
-
-    const masterKey = new SymmetricCryptoKey(decryptedMasterKeyArrayBuffer) as MasterKey;
-    const masterKeyHash = Utils.fromBufferToUtf8(decryptedMasterKeyHashArrayBuffer);
-
-    return {
-      masterKey,
-      masterKeyHash,
-    };
   }
 }

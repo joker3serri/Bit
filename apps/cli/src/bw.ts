@@ -12,8 +12,10 @@ import { OrganizationService } from "@bitwarden/common/admin-console/services/or
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
+import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
+import { AuthRequestCryptoServiceImplementation } from "@bitwarden/common/auth/services/auth-request-crypto.service.implementation";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
@@ -146,6 +148,7 @@ export class Main {
   sendApiService: SendApiService;
   devicesApiService: DevicesApiServiceAbstraction;
   deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
+  authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -331,6 +334,8 @@ export class Main {
       this.devicesApiService
     );
 
+    this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
+
     this.authService = new AuthService(
       this.cryptoService,
       this.apiService,
@@ -347,7 +352,8 @@ export class Main {
       this.encryptService,
       this.passwordStrengthService,
       this.policyService,
-      this.deviceTrustCryptoService
+      this.deviceTrustCryptoService,
+      this.authRequestCryptoService
     );
 
     const lockedCallback = async () =>
