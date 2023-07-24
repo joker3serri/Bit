@@ -91,6 +91,7 @@ export class SsoLogInStrategy extends LogInStrategy {
   protected override async setUserKey(tokenResponse: IdentityTokenResponse): Promise<void> {
     // TODO: this check doesn't work for the TDE flows which allow a user not to have a MP
     // If new user, return b/c we can't set the user key yet
+    // Note: tokenResponse.key is the MasterKey(UserKey)
     if (tokenResponse.key === null) {
       return;
     }
@@ -174,12 +175,17 @@ export class SsoLogInStrategy extends LogInStrategy {
     authReqResponse: AuthRequestResponse,
     privateKey: ArrayBuffer
   ) {
-    const { masterKey } = await this.decryptAuthReqResponseMasterKeyAndHash(
+    const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
       authReqResponse.key,
       authReqResponse.masterPasswordHash,
       privateKey
     );
 
+    // Set masterKey + masterKeyHash in state
+    await this.cryptoService.setMasterKey(masterKey);
+    await this.cryptoService.setMasterKeyHash(masterKeyHash);
+
+    // Decrypt and set user key in state
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
     await this.cryptoService.setUserKey(userKey);
 

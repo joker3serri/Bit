@@ -318,11 +318,16 @@ export class LoginWithDeviceComponent
   }
 
   private async decryptWithSharedMasterKey(authReqResponse: AuthRequestResponse) {
-    const { masterKey } = await this.decryptAuthReqResponseMasterKeyAndHash(
+    const { masterKey, masterKeyHash } = await this.decryptAuthReqResponseMasterKeyAndHash(
       authReqResponse.key,
       authReqResponse.masterPasswordHash
     );
 
+    // Set masterKey + masterKeyHash in state
+    await this.cryptoService.setMasterKey(masterKey);
+    await this.cryptoService.setMasterKeyHash(masterKeyHash);
+
+    // Decrypt and set user key in state
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
     await this.cryptoService.setUserKey(userKey);
 
