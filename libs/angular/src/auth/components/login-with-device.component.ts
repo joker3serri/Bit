@@ -242,6 +242,7 @@ export class LoginWithDeviceComponent
 
   private async verifyAndHandleApprovedAuthReq(requestId: string) {
     try {
+      // Retrieve the auth request from server and verify it's approved
       let authReqResponse: AuthRequestResponse;
 
       switch (this.state) {
@@ -265,6 +266,8 @@ export class LoginWithDeviceComponent
       if (!authReqResponse.requestApproved) {
         return;
       }
+
+      // Approved so proceed:
 
       // 4 Scenarios to handle for approved auth requests:
       // Existing flow 1:
