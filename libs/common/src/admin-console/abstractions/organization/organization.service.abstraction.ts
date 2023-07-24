@@ -87,4 +87,5 @@ export abstract class OrganizationService {
 
 export abstract class InternalOrganizationService extends OrganizationService {
   replace: (organizations: { [id: string]: OrganizationData }) => Promise<void>;
+  upsert: (OrganizationData: OrganizationData | OrganizationData[]) => Promise<void>;
 }
