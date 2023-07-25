@@ -11,12 +11,12 @@ export abstract class AuthRequestCryptoServiceAbstraction {
     authReqPrivateKey: ArrayBuffer
   ) => Promise<void>;
 
-  decryptAuthReqPubKeyEncryptedUserKey: (
+  decryptPubKeyEncryptedUserKey: (
     pubKeyEncryptedUserKey: string,
     privateKey: ArrayBuffer
   ) => Promise<UserKey>;
 
-  decryptAuthReqPubKeyEncryptedMasterKeyAndHash: (
+  decryptPubKeyEncryptedMasterKeyAndHash: (
     pubKeyEncryptedMasterKey: string,
     pubKeyEncryptedMasterKeyHash: string,
     privateKey: ArrayBuffer

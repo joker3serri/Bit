@@ -383,7 +383,7 @@ export class LoginWithDeviceComponent
     // if masterPasswordHash is null, we will always receive key as authRequestPublicKey(userKey)
     if (response.masterPasswordHash) {
       const { masterKey, masterKeyHash } =
-        await this.authReqCryptoService.decryptAuthReqPubKeyEncryptedMasterKeyAndHash(
+        await this.authReqCryptoService.decryptPubKeyEncryptedMasterKeyAndHash(
           response.key,
           response.masterPasswordHash,
           this.authRequestKeyPair.privateKey
@@ -398,7 +398,7 @@ export class LoginWithDeviceComponent
         masterKeyHash
       );
     } else {
-      const userKey = await this.authReqCryptoService.decryptAuthReqPubKeyEncryptedUserKey(
+      const userKey = await this.authReqCryptoService.decryptPubKeyEncryptedUserKey(
         response.key,
         this.authRequestKeyPair.privateKey
       );

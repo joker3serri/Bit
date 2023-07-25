@@ -15,7 +15,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     authReqResponse: AuthRequestResponse,
     authReqPrivateKey: ArrayBuffer
   ) {
-    const userKey = await this.decryptAuthReqPubKeyEncryptedUserKey(
+    const userKey = await this.decryptPubKeyEncryptedUserKey(
       authReqResponse.key,
       authReqPrivateKey
     );
@@ -26,7 +26,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     authReqResponse: AuthRequestResponse,
     authReqPrivateKey: ArrayBuffer
   ) {
-    const { masterKey, masterKeyHash } = await this.decryptAuthReqPubKeyEncryptedMasterKeyAndHash(
+    const { masterKey, masterKeyHash } = await this.decryptPubKeyEncryptedMasterKeyAndHash(
       authReqResponse.key,
       authReqResponse.masterPasswordHash,
       authReqPrivateKey
@@ -42,7 +42,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
   }
 
   // Decryption helpers
-  async decryptAuthReqPubKeyEncryptedUserKey(
+  async decryptPubKeyEncryptedUserKey(
     pubKeyEncryptedUserKey: string,
     privateKey: ArrayBuffer
   ): Promise<UserKey> {
@@ -54,7 +54,7 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     return new SymmetricCryptoKey(decryptedUserKeyArrayBuffer) as UserKey;
   }
 
-  async decryptAuthReqPubKeyEncryptedMasterKeyAndHash(
+  async decryptPubKeyEncryptedMasterKeyAndHash(
     pubKeyEncryptedMasterKey: string,
     pubKeyEncryptedMasterKeyHash: string,
     privateKey: ArrayBuffer

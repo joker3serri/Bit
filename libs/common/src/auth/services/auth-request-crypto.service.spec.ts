@@ -39,7 +39,7 @@ describe("AuthRequestCryptoService", () => {
 
       const mockDecryptedUserKey = {} as UserKey;
       jest
-        .spyOn(authReqCryptoService, "decryptAuthReqPubKeyEncryptedUserKey")
+        .spyOn(authReqCryptoService, "decryptPubKeyEncryptedUserKey")
         .mockResolvedValueOnce(mockDecryptedUserKey);
 
       cryptoService.setUserKey.mockResolvedValueOnce(undefined);
@@ -51,7 +51,7 @@ describe("AuthRequestCryptoService", () => {
       );
 
       // Assert
-      expect(authReqCryptoService.decryptAuthReqPubKeyEncryptedUserKey).toBeCalledWith(
+      expect(authReqCryptoService.decryptPubKeyEncryptedUserKey).toBeCalledWith(
         mockAuthReqResponse.key,
         mockPrivateKey
       );
@@ -72,7 +72,7 @@ describe("AuthRequestCryptoService", () => {
       const mockDecryptedUserKey = {} as UserKey;
 
       jest
-        .spyOn(authReqCryptoService, "decryptAuthReqPubKeyEncryptedMasterKeyAndHash")
+        .spyOn(authReqCryptoService, "decryptPubKeyEncryptedMasterKeyAndHash")
         .mockResolvedValueOnce({
           masterKey: mockDecryptedMasterKey,
           masterKeyHash: mockDecryptedMasterKeyHash,
@@ -90,7 +90,7 @@ describe("AuthRequestCryptoService", () => {
       );
 
       // Assert
-      expect(authReqCryptoService.decryptAuthReqPubKeyEncryptedMasterKeyAndHash).toBeCalledWith(
+      expect(authReqCryptoService.decryptPubKeyEncryptedMasterKeyAndHash).toBeCalledWith(
         mockAuthReqResponse.key,
         mockAuthReqResponse.masterPasswordHash,
         mockPrivateKey
@@ -114,7 +114,7 @@ describe("AuthRequestCryptoService", () => {
       cryptoService.rsaDecrypt.mockResolvedValueOnce(mockDecryptedUserKeyArrayBuffer);
 
       // Act
-      const result = await authReqCryptoService.decryptAuthReqPubKeyEncryptedUserKey(
+      const result = await authReqCryptoService.decryptPubKeyEncryptedUserKey(
         mockPubKeyEncryptedUserKey,
         mockPrivateKey
       );
@@ -145,7 +145,7 @@ describe("AuthRequestCryptoService", () => {
         .mockResolvedValueOnce(mockDecryptedMasterKeyHashArrayBuffer);
 
       // Act
-      const result = await authReqCryptoService.decryptAuthReqPubKeyEncryptedMasterKeyAndHash(
+      const result = await authReqCryptoService.decryptPubKeyEncryptedMasterKeyAndHash(
         mockPubKeyEncryptedMasterKey,
         mockPubKeyEncryptedMasterKeyHash,
         mockPrivateKey
