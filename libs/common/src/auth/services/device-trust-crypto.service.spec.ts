@@ -1,4 +1,4 @@
-import { matches, mock, mockReset } from "jest-mock-extended";
+import { matches, mock } from "jest-mock-extended";
 
 import { DeviceResponse } from "../../abstractions/devices/responses/device.response";
 import { DeviceType } from "../../enums";
@@ -7,6 +7,8 @@ import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
+import { I18nService } from "../../platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { EncString } from "../../platform/models/domain/enc-string";
 import {
@@ -20,7 +22,6 @@ import { UpdateDevicesTrustRequest } from "../models/request/update-devices-trus
 import { ProtectedDeviceResponse } from "../models/response/protected-device.response";
 
 import { DeviceTrustCryptoService } from "./device-trust-crypto.service.implementation";
-
 describe("deviceTrustCryptoService", () => {
   let deviceTrustCryptoService: DeviceTrustCryptoService;
 
@@ -30,14 +31,10 @@ describe("deviceTrustCryptoService", () => {
   const stateService = mock<StateService>();
   const appIdService = mock<AppIdService>();
   const devicesApiService = mock<DevicesApiServiceAbstraction>();
+  const i18nService = mock<I18nService>();
+  const platformUtilsService = mock<PlatformUtilsService>();
 
   beforeEach(() => {
-    mockReset(cryptoFunctionService);
-    mockReset(encryptService);
-    mockReset(stateService);
-    mockReset(appIdService);
-    mockReset(devicesApiService);
-
     jest.clearAllMocks();
 
     deviceTrustCryptoService = new DeviceTrustCryptoService(
@@ -46,7 +43,9 @@ describe("deviceTrustCryptoService", () => {
       encryptService,
       stateService,
       appIdService,
-      devicesApiService
+      devicesApiService,
+      i18nService,
+      platformUtilsService
     );
   });
 
