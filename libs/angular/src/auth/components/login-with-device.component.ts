@@ -174,7 +174,7 @@ export class LoginWithDeviceComponent
 
     // Re-derive the user's fingerprint phrase
     // convert b64 string publicKey to ArrayBuffer
-    const publicKeyArrayBuffer = Utils.fromB64ToBuffer(adminAuthReqResponse.publicKey);
+    const publicKeyArrayBuffer = Utils.fromB64ToArray(adminAuthReqResponse.publicKey).buffer;
     this.fingerprintPhrase = (
       await this.cryptoService.getFingerprint(this.email, publicKeyArrayBuffer)
     ).join("-");

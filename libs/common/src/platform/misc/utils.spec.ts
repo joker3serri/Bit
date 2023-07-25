@@ -1,5 +1,4 @@
 import * as path from "path";
-import { TextDecoder } from "util";
 
 import { Utils } from "./utils";
 
@@ -357,28 +356,6 @@ describe("Utils Service", () => {
       const actual = Utils.getUrl(urlString);
 
       expect(actual.protocol).toBe("http:");
-    });
-  });
-
-  describe("fromB64ToBuffer function", () => {
-    it("should return null when input is null", () => {
-      expect(Utils.fromB64ToBuffer(null)).toEqual(null);
-    });
-
-    it(" should return corresponding ArrayBuffer when the string is valid", () => {
-      // The base64 string "SGVsbG8gd29ybGQ=" decodes to "Hello world"
-      const base64String = "SGVsbG8gd29ybGQ=";
-      const buffer = Utils.fromB64ToBuffer(base64String);
-      const resultString = new TextDecoder().decode(buffer);
-      expect(resultString).toEqual("Hello world");
-    });
-
-    it("should correctly handle special characters in the decoded string when the string is valid", () => {
-      // The base64 string "SGVsbG8gd29ybGQhQCMk" decodes to "Hello world!@#$"
-      const base64String = "SGVsbG8gd29ybGQhQCMk";
-      const buffer = Utils.fromB64ToBuffer(base64String);
-      const resultString = new TextDecoder().decode(buffer);
-      expect(resultString).toEqual("Hello world!@#$");
     });
   });
 });
