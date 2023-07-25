@@ -22,7 +22,7 @@ export abstract class CryptoService {
    * @param key The user key to set
    * @param userId The desired user
    */
-  setUserKey: (key: UserKey) => Promise<void>;
+  setUserKey: (key: UserKey, userId?: string) => Promise<void>;
   /**
    * Gets the user key from memory and sets it again,
    * kicking off a refresh of any additional keys
@@ -167,7 +167,7 @@ export abstract class CryptoService {
    * Clears the user's stored master password hash
    * @param userId The desired user
    */
-  clearMasterKeyHash: () => Promise<void>;
+  clearMasterKeyHash: (userId?: string) => Promise<void>;
   /**
    * Compares the provided master password to the stored password hash and server password hash.
    * Updates the stored hash if outdated.
@@ -227,7 +227,7 @@ export abstract class CryptoService {
    * @param memoryOnly Clear only the in-memory keys
    * @param userId The desired user
    */
-  clearProviderKeys: (memoryOnly?: boolean) => Promise<void>;
+  clearProviderKeys: (memoryOnly?: boolean, userId?: string) => Promise<void>;
   /**
    * Returns the public key from memory. If not available, extracts it
    * from the private key and stores it in memory
