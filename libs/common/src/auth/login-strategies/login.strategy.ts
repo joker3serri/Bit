@@ -117,6 +117,7 @@ export abstract class LogInStrategy {
       accountKeys.deviceKey = deviceKey;
     }
 
+    // If you don't persist existing admin auth requests on login, they will get deleted.
     const adminAuthRequest = await this.stateService.getAdminAuthRequest({ userId });
 
     await this.stateService.addAccount(
