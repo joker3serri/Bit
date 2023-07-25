@@ -9,7 +9,7 @@ import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-reques
 import { AuthRequestResponse } from "../models/response/auth-request.response";
 
 export class AuthRequestCryptoServiceImplementation implements AuthRequestCryptoServiceAbstraction {
-  constructor(protected cryptoService: CryptoService) {}
+  constructor(private cryptoService: CryptoService) {}
 
   async setUserKeyAfterDecryptingSharedUserKey(
     authReqResponse: AuthRequestResponse,

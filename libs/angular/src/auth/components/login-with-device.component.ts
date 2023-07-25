@@ -139,7 +139,7 @@ export class LoginWithDeviceComponent
         await this.handleExistingAdminAuthRequest(adminAuthReqStorable);
       } else {
         // No existing admin auth request; so we need to create one
-        this.startPasswordlessLogin();
+        await this.startPasswordlessLogin();
       }
     } else {
       // Standard auth request
@@ -152,7 +152,7 @@ export class LoginWithDeviceComponent
         return;
       }
 
-      this.startPasswordlessLogin();
+      await this.startPasswordlessLogin();
     }
   }
 
@@ -202,7 +202,7 @@ export class LoginWithDeviceComponent
 
   private async handleExistingAdminAuthReqDeletedOrDenied() {
     // clear the admin auth request from state
-    this.stateService.setAdminAuthRequest(null);
+    await this.stateService.setAdminAuthRequest(null);
 
     // start new auth request
     this.startPasswordlessLogin();
@@ -361,7 +361,7 @@ export class LoginWithDeviceComponent
 
     // clear the admin auth request from state so it cannot be used again (it's a one time use)
     // TODO: this should eventually be enforced via deleting this on the server once it is used
-    this.stateService.setAdminAuthRequest(null);
+    await this.stateService.setAdminAuthRequest(null);
 
     this.platformUtilsService.showToast("success", null, this.i18nService.t("loginApproved"));
 
