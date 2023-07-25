@@ -174,10 +174,12 @@ export class LoginWithDeviceComponent
     }
 
     // Re-derive the user's fingerprint phrase
-    // convert b64 string publicKey to ArrayBuffer
-    const publicKeyArrayBuffer = Utils.fromB64ToArray(adminAuthReqResponse.publicKey).buffer;
+    // It is important to not use the server's public key here as it could have been compromised via MITM
+    const derivedPublicKeyArrayBuffer = await this.cryptoFunctionService.rsaExtractPublicKey(
+      adminAuthReqStorable.privateKey
+    );
     this.fingerprintPhrase = (
-      await this.cryptoService.getFingerprint(this.email, publicKeyArrayBuffer)
+      await this.cryptoService.getFingerprint(this.email, derivedPublicKeyArrayBuffer)
     ).join("-");
 
     // Request denied
