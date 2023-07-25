@@ -112,7 +112,16 @@ export class ImportService implements ImportServiceAbstraction {
     selectedImportTarget: string = null,
     isUserAdmin: boolean
   ): Promise<ImportResult> {
-    const importResult = await importer.parse(fileContents);
+    let importResult: ImportResult;
+    try {
+      importResult = await importer.parse(fileContents);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(this.i18nService.t("importFormatError"));
+      }
+      throw error;
+    }
+
     if (!importResult.success) {
       if (!Utils.isNullOrWhitespace(importResult.errorMessage)) {
         throw new Error(importResult.errorMessage);
