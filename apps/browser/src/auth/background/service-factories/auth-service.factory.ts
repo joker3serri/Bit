@@ -52,8 +52,14 @@ import {
   PasswordStrengthServiceInitOptions,
 } from "../../../tools/background/service_factories/password-strength-service.factory";
 
-import { authRequestCryptoServiceFactory } from "./auth-request-crypto-service.factory";
-import { deviceTrustCryptoServiceFactory } from "./device-trust-crypto-service.factory";
+import {
+  authRequestCryptoServiceFactory,
+  AuthRequestCryptoServiceInitOptions,
+} from "./auth-request-crypto-service.factory";
+import {
+  deviceTrustCryptoServiceFactory,
+  DeviceTrustCryptoServiceInitOptions,
+} from "./device-trust-crypto-service.factory";
 import {
   keyConnectorServiceFactory,
   KeyConnectorServiceInitOptions,
@@ -77,7 +83,9 @@ export type AuthServiceInitOptions = AuthServiceFactoyOptions &
   I18nServiceInitOptions &
   EncryptServiceInitOptions &
   PolicyServiceInitOptions &
-  PasswordStrengthServiceInitOptions;
+  PasswordStrengthServiceInitOptions &
+  DeviceTrustCryptoServiceInitOptions &
+  AuthRequestCryptoServiceInitOptions;
 
 export function authServiceFactory(
   cache: { authService?: AbstractAuthService } & CachedServices,
