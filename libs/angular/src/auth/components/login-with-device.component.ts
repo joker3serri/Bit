@@ -366,6 +366,8 @@ export class LoginWithDeviceComponent
     // need to establish trust on the current device
     await this.deviceTrustCryptoService.trustDeviceIfRequired();
 
+    // TODO: don't forget to use auto enrollment service everywhere we trust device
+
     await this.handleSuccessfulLoginNavigation();
   }
 
