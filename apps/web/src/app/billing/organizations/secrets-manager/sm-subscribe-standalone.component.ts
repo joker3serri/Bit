@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { InternalOrganizationService as InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationData } from "@bitwarden/common/admin-console/models/data/organization.data";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { SecretsManagerSubscribeRequest } from "@bitwarden/common/billing/models/request/sm-subscribe.request";
@@ -40,14 +40,12 @@ export class SecretsManagerSubscribeStandaloneComponent {
       this.organization.id,
       request
     );
+    const organizationData = new OrganizationData(profileOrganization, {
+      isMember: this.organization.isMember,
+      isProviderUser: this.organization.isProviderUser,
+    });
+    await this.organizationService.upsert(organizationData);
 
-    if (profileOrganization != null) {
-      const organizationData = new OrganizationData(profileOrganization, {
-        isMember: this.organization.isMember,
-        isProviderUser: this.organization.isProviderUser,
-      });
-      await this.organizationService.upsert(organizationData);
-    }
     this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
 
     this.onSubscribe.emit();
