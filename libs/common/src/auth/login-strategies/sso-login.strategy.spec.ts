@@ -3,6 +3,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
+import { I18nService } from "../../platform/abstractions/i18n.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
@@ -40,6 +41,7 @@ describe("SsoLogInStrategy", () => {
   let keyConnectorService: MockProxy<KeyConnectorService>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
   let authRequestCryptoService: MockProxy<AuthRequestCryptoServiceAbstraction>;
+  let i18nService: MockProxy<I18nService>;
 
   let ssoLogInStrategy: SsoLogInStrategy;
   let credentials: SsoLogInCredentials;
@@ -65,6 +67,7 @@ describe("SsoLogInStrategy", () => {
     keyConnectorService = mock<KeyConnectorService>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
     authRequestCryptoService = mock<AuthRequestCryptoServiceAbstraction>();
+    i18nService = mock<I18nService>();
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
@@ -82,7 +85,8 @@ describe("SsoLogInStrategy", () => {
       twoFactorService,
       keyConnectorService,
       deviceTrustCryptoService,
-      authRequestCryptoService
+      authRequestCryptoService,
+      i18nService
     );
     credentials = new SsoLogInCredentials(ssoCode, ssoCodeVerifier, ssoRedirectUrl, ssoOrgId);
   });
