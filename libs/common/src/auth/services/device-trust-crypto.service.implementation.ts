@@ -3,6 +3,8 @@ import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
+import { I18nService } from "../../platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { EncString } from "../../platform/models/domain/enc-string";
 import {
@@ -21,12 +23,14 @@ import {
 
 export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstraction {
   constructor(
-    protected cryptoFunctionService: CryptoFunctionService,
-    protected cryptoService: CryptoService,
-    protected encryptService: EncryptService,
-    protected stateService: StateService,
-    protected appIdService: AppIdService,
-    protected devicesApiService: DevicesApiServiceAbstraction
+    private cryptoFunctionService: CryptoFunctionService,
+    private cryptoService: CryptoService,
+    private encryptService: EncryptService,
+    private stateService: StateService,
+    private appIdService: AppIdService,
+    private devicesApiService: DevicesApiServiceAbstraction,
+    private i18nService: I18nService,
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
   /**
@@ -93,6 +97,9 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
 
     // store device key in local/secure storage if enc keys posted to server successfully
     await this.setDeviceKey(deviceKey);
+
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("deviceTrusted"));
+
     return deviceResponse;
   }
 

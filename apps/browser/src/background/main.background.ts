@@ -402,7 +402,9 @@ export default class MainBackground {
       this.encryptService,
       this.stateService,
       this.appIdService,
-      this.devicesApiService
+      this.devicesApiService,
+      this.i18nService,
+      this.platformUtilsService
     );
 
     this.authReqCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);

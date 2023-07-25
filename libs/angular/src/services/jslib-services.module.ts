@@ -711,6 +711,8 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         AppIdServiceAbstraction,
         DevicesApiServiceAbstraction,
+        I18nServiceAbstraction,
+        PlatformUtilsServiceAbstraction,
       ],
     },
     {

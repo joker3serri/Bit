@@ -2288,5 +2288,8 @@
   },
   "userEmailMissing": {
     "message": "User email missing"
+  },
+  "deviceTrusted": {
+    "message": "Device trusted"
   }
 }
