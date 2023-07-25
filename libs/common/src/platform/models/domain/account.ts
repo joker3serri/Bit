@@ -27,7 +27,7 @@ import { Utils } from "../../misc/utils";
 import { ServerConfigData } from "../../models/data/server-config.data";
 
 import { EncryptedString, EncString } from "./enc-string";
-import { DeviceKey, MasterKey, SymmetricCryptoKey, UserKey } from "./symmetric-crypto-key";
+import { MasterKey, SymmetricCryptoKey, UserKey } from "./symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {
   encrypted?: TEncrypted;
@@ -108,7 +108,7 @@ export class AccountKeys {
   userKeyMasterKey?: string;
   userKeyAuto?: string;
   userKeyBiometric?: string;
-  deviceKey?: DeviceKey;
+  deviceKey?: ReturnType<SymmetricCryptoKey["toJSON"]>;
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
     Record<string, SymmetricCryptoKey>
@@ -150,7 +150,7 @@ export class AccountKeys {
     return Object.assign(new AccountKeys(), {
       userKey: SymmetricCryptoKey.fromJSON(obj?.userKey),
       masterKey: SymmetricCryptoKey.fromJSON(obj?.masterKey),
-      deviceKey: SymmetricCryptoKey.fromJSON(obj?.deviceKey),
+      deviceKey: obj?.deviceKey,
       cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey),
       cryptoSymmetricKey: EncryptionPair.fromJSON(
         obj?.cryptoSymmetricKey,
