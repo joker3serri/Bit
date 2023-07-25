@@ -72,6 +72,7 @@ export class SsoLogInStrategy extends LogInStrategy {
   }
 
   protected override async setMasterKey(tokenResponse: IdentityTokenResponse) {
+    // TODO: discuss how this is no longer true with TDE
     const newSsoUser = tokenResponse.key == null;
 
     if (tokenResponse.keyConnectorUrl != null) {
@@ -83,21 +84,19 @@ export class SsoLogInStrategy extends LogInStrategy {
     }
   }
 
+  // TODO: future passkey login strategy will need to support setting user key (decrypting via TDE or admin approval request)
+  // so might be worth moving this logic to a common place (base login strategy or a separate service?)
   protected override async setUserKey(tokenResponse: IdentityTokenResponse): Promise<void> {
-    // TODO: this check doesn't work for the TDE flows which allow a user not to have a MP
-    // If new user, return b/c we can't set the user key yet
-    // Note: tokenResponse.key is the MasterKey(UserKey)
-    if (tokenResponse.key === null) {
-      return;
+    const masterKeyEncryptedUserKey = tokenResponse.key;
+
+    // Note: masterKeyEncryptedUserKey is undefined for SSO JIT provisioned users
+    // on account creation and subsequent logins (confirmed or unconfirmed)
+    // but that is fine for TDE so we cannot return if it is undefined
+
+    if (masterKeyEncryptedUserKey) {
+      // set the master key encrypted user key if it exists
+      await this.cryptoService.setMasterKeyEncryptedUserKey(masterKeyEncryptedUserKey);
     }
-    // Existing user; proceed
-
-    // User now may or may not have a master password
-    // but set the master key encrypted user key if it exists regardless
-    await this.cryptoService.setMasterKeyEncryptedUserKey(tokenResponse.key);
-
-    // TODO: future passkey login strategy will need to support setting user key (decrypting via TDE or admin approval request)
-    // so might be worth moving this logic to a common place (base login strategy or a separate service?)
 
     const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
 
@@ -113,11 +112,15 @@ export class SsoLogInStrategy extends LogInStrategy {
       }
     } else if (
       // TODO: remove tokenResponse.keyConnectorUrl when it's deprecated
-      tokenResponse.keyConnectorUrl ||
-      userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl
+      masterKeyEncryptedUserKey != null &&
+      (tokenResponse.keyConnectorUrl || userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl)
     ) {
+      // Key connector enabled for user
       await this.trySetUserKeyWithMasterKey();
     }
+
+    // Note: In the traditional SSO flow with MP without key connector, the lock component
+    // is responsible for deriving master key from MP entry and then decrypting the user key
   }
 
   private async trySetUserKeyWithApprovedAdminRequestIfExists(): Promise<void> {
