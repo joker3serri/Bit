@@ -203,7 +203,7 @@ export default class MainBackground {
   configApiService: ConfigApiServiceAbstraction;
   devicesApiService: DevicesApiServiceAbstraction;
   deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
-  authReqCryptoService: AuthRequestCryptoServiceAbstraction;
+  authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -407,7 +407,7 @@ export default class MainBackground {
       this.platformUtilsService
     );
 
-    this.authReqCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
+    this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
 
     this.authService = new AuthService(
       this.cryptoService,
@@ -426,7 +426,7 @@ export default class MainBackground {
       this.passwordStrengthService,
       this.policyService,
       this.deviceTrustCryptoService,
-      this.authReqCryptoService
+      this.authRequestCryptoService
     );
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
