@@ -5,6 +5,7 @@ import { Utils } from "../../../platform/misc/utils";
 //   id: string;
 //   privateKey: string;
 // }
+// so we can get rid of the any type passed into fromJSON and coming out of ToJSON
 export class AdminAuthRequestStorable {
   id: string;
   privateKey: ArrayBuffer;
