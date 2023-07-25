@@ -66,6 +66,7 @@ export class LoginWithDeviceComponent
 
   private authRequestKeyPair: { publicKey: ArrayBuffer; privateKey: ArrayBuffer };
 
+  // TODO: in future, go to child components and remove child constructors and let deps fall through to the super class
   constructor(
     protected router: Router,
     private cryptoService: CryptoService,
