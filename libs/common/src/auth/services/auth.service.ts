@@ -155,7 +155,8 @@ export class AuthService implements AuthServiceAbstraction {
           this.twoFactorService,
           this.keyConnectorService,
           this.deviceTrustCryptoService,
-          this.authReqCryptoService
+          this.authReqCryptoService,
+          this.i18nService
         );
         break;
       case AuthenticationType.UserApi:
