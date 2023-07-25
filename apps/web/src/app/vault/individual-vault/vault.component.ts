@@ -544,6 +544,12 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async shareCipher(cipher: CipherView) {
+    if (cipher != null && cipher.reprompt != 0) {
+      if (!(await this.passwordRepromptService.showPasswordPrompt())) {
+        this.go({ cipherId: null, itemId: null });
+        return;
+      }
+    }
     const [modal] = await this.modalService.openViewRef(
       ShareComponent,
       this.shareModalRef,
