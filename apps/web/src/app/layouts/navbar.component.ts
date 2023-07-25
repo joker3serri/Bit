@@ -60,9 +60,9 @@ export class NavbarComponent implements OnInit {
     this.organizations$ = this.organizationService.memberOrganizations$.pipe(
       canAccessAdmin(this.i18nService)
     );
-    this.canLock$ = this.vaultTimeoutSettingsService.availableVaultTimeoutActions$.pipe(
-      map((actions) => actions.includes(VaultTimeoutAction.Lock))
-    );
+    this.canLock$ = this.vaultTimeoutSettingsService
+      .availableVaultTimeoutActions$()
+      .pipe(map((actions) => actions.includes(VaultTimeoutAction.Lock)));
   }
 
   lock() {

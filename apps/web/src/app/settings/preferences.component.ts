@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { concatMap, filter, map, Observable, Subject, takeUntil, tap } from "rxjs";
+import { concatMap, filter, firstValueFrom, map, Observable, Subject, takeUntil, tap } from "rxjs";
 
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
@@ -92,7 +92,7 @@ export class PreferencesComponent implements OnInit {
 
   async ngOnInit() {
     this.availableVaultTimeoutActions$ =
-      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$;
+      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$();
 
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
       filter((policy) => policy != null),
@@ -138,7 +138,9 @@ export class PreferencesComponent implements OnInit {
       .subscribe();
     const initialFormValues = {
       vaultTimeout: await this.vaultTimeoutSettingsService.getVaultTimeout(),
-      vaultTimeoutAction: await this.vaultTimeoutSettingsService.getVaultTimeoutAction(),
+      vaultTimeoutAction: await firstValueFrom(
+        this.vaultTimeoutSettingsService.vaultTimeoutAction$()
+      ),
       enableFavicons: !(await this.settingsService.getDisableFavicon()),
       enableFullWidth: await this.stateService.getEnableFullWidth(),
       theme: await this.stateService.getTheme(),

@@ -68,7 +68,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     }
 
     const availableActions = await firstValueFrom(
-      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$
+      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$()
     );
     const supportsLock = availableActions.includes(VaultTimeoutAction.Lock);
     if (!supportsLock) {
@@ -130,7 +130,9 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   }
 
   private async executeTimeoutAction(userId: string): Promise<void> {
-    const timeoutAction = await this.vaultTimeoutSettingsService.getVaultTimeoutAction(userId);
+    const timeoutAction = await firstValueFrom(
+      this.vaultTimeoutSettingsService.vaultTimeoutAction$(userId)
+    );
     timeoutAction === VaultTimeoutAction.LogOut
       ? await this.logOut(userId)
       : await this.lock(userId);

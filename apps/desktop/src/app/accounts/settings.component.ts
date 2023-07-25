@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, firstValueFrom, Observable, Subject } from "rxjs";
 import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
 import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
@@ -199,7 +199,7 @@ export class SettingsComponent implements OnInit {
     this.currentUserEmail = await this.stateService.getEmail();
 
     this.availableVaultTimeoutActions$ = this.refreshTimeoutSettings$.pipe(
-      switchMap(() => this.vaultTimeoutSettingsService.availableVaultTimeoutActions$)
+      switchMap(() => this.vaultTimeoutSettingsService.availableVaultTimeoutActions$())
     );
 
     // Load timeout policy
@@ -228,7 +228,9 @@ export class SettingsComponent implements OnInit {
     const pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();
     const initialValues = {
       vaultTimeout: await this.vaultTimeoutSettingsService.getVaultTimeout(),
-      vaultTimeoutAction: await this.vaultTimeoutSettingsService.getVaultTimeoutAction(),
+      vaultTimeoutAction: await firstValueFrom(
+        this.vaultTimeoutSettingsService.vaultTimeoutAction$()
+      ),
       pin: pinStatus !== "DISABLED",
       biometric: await this.vaultTimeoutSettingsService.isBiometricLockSet(),
       autoPromptBiometrics: !(await this.stateService.getDisableAutoBiometricsPrompt()),
@@ -272,7 +274,7 @@ export class SettingsComponent implements OnInit {
 
     this.refreshTimeoutSettings$
       .pipe(
-        switchMap(() => this.vaultTimeoutSettingsService.vaultTimeoutAction$),
+        switchMap(() => this.vaultTimeoutSettingsService.vaultTimeoutAction$()),
         takeUntil(this.destroy$)
       )
       .subscribe((action) => {

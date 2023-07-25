@@ -92,9 +92,9 @@ export class VaultTimeoutInputComponent
         });
       });
 
-    this.canLockVault$ = this.vaultTimeoutSettingsService.availableVaultTimeoutActions$.pipe(
-      map((actions) => actions.includes(VaultTimeoutAction.Lock))
-    );
+    this.canLockVault$ = this.vaultTimeoutSettingsService
+      .availableVaultTimeoutActions$()
+      .pipe(map((actions) => actions.includes(VaultTimeoutAction.Lock)));
   }
 
   ngOnDestroy() {

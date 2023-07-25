@@ -167,7 +167,7 @@ export class SettingsComponent implements OnInit {
     const initialValues = {
       vaultTimeout: timeout,
       vaultTimeoutAction: await firstValueFrom(
-        this.vaultTimeoutSettingsService.vaultTimeoutAction$
+        this.vaultTimeoutSettingsService.vaultTimeoutAction$()
       ),
       pin: pinStatus !== "DISABLED",
       biometric: await this.vaultTimeoutSettingsService.isBiometricLockSet(),
@@ -207,8 +207,8 @@ export class SettingsComponent implements OnInit {
       .pipe(
         switchMap(() =>
           combineLatest([
-            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$,
-            this.vaultTimeoutSettingsService.vaultTimeoutAction$,
+            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
+            this.vaultTimeoutSettingsService.vaultTimeoutAction$(),
           ])
         ),
         takeUntil(this.destroy$)
@@ -227,7 +227,7 @@ export class SettingsComponent implements OnInit {
       .pipe(
         switchMap(() =>
           combineLatest([
-            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$,
+            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
             maximumVaultTimeoutPolicy,
           ])
         ),

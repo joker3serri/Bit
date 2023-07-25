@@ -49,9 +49,9 @@ export class HeaderComponent {
         return accounts[activeAccount]?.profile;
       })
     );
-    this.canLock$ = this.vaultTimeoutSettingsService.availableVaultTimeoutActions$.pipe(
-      map((actions) => actions.includes(VaultTimeoutAction.Lock))
-    );
+    this.canLock$ = this.vaultTimeoutSettingsService
+      .availableVaultTimeoutActions$()
+      .pipe(map((actions) => actions.includes(VaultTimeoutAction.Lock)));
   }
 
   protected lock() {

@@ -17,9 +17,6 @@ import { StateService } from "../../platform/abstractions/state.service";
 export type PinLockType = "DISABLED" | "PERSISTANT" | "TRANSIENT";
 
 export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceAbstraction {
-  readonly availableVaultTimeoutActions$ = defer(() => this.getAvailableVaultTimeoutActions());
-  readonly vaultTimeoutAction$ = defer(() => this.getVaultTimeoutAction());
-
   constructor(
     private cryptoService: CryptoService,
     private tokenService: TokenService,
@@ -58,12 +55,16 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     await this.cryptoService.refreshAdditionalKeys();
   }
 
-  async isPinLockSet(): Promise<PinLockType> {
+  availableVaultTimeoutActions$(userId?: string) {
+    return defer(() => this.getAvailableVaultTimeoutActions(userId));
+  }
+
+  async isPinLockSet(userId?: string): Promise<PinLockType> {
     // we can't check the protected pin for both because old accounts only
     // used it for MP on Restart
-    const pinIsEnabled = !!(await this.stateService.getProtectedPin());
-    const aUserKeyPinIsSet = !!(await this.stateService.getUserKeyPin());
-    const anOldUserKeyPinIsSet = !!(await this.stateService.getEncryptedPinProtected());
+    const pinIsEnabled = !!(await this.stateService.getProtectedPin({ userId }));
+    const aUserKeyPinIsSet = !!(await this.stateService.getUserKeyPin({ userId }));
+    const anOldUserKeyPinIsSet = !!(await this.stateService.getEncryptedPinProtected({ userId }));
 
     if (aUserKeyPinIsSet || anOldUserKeyPinIsSet) {
       return "PERSISTANT";
@@ -74,12 +75,12 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     }
   }
 
-  async isBiometricLockSet(): Promise<boolean> {
-    return await this.stateService.getBiometricUnlock();
+  async isBiometricLockSet(userId?: string): Promise<boolean> {
+    return await this.stateService.getBiometricUnlock({ userId });
   }
 
   async getVaultTimeout(userId?: string): Promise<number> {
-    const vaultTimeout = await this.stateService.getVaultTimeout({ userId: userId });
+    const vaultTimeout = await this.stateService.getVaultTimeout({ userId });
 
     if (
       await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
@@ -96,13 +97,17 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
       // ( Apparently I'm the one that reviewed the original PR that added this :) )
       // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
       if (vaultTimeout !== timeout) {
-        await this.stateService.setVaultTimeout(timeout, { userId: userId });
+        await this.stateService.setVaultTimeout(timeout, { userId });
       }
 
       return timeout;
     }
 
     return vaultTimeout;
+  }
+
+  vaultTimeoutAction$(userId?: string) {
+    return defer(() => this.getVaultTimeoutAction(userId));
   }
 
   async getVaultTimeoutAction(userId?: string): Promise<VaultTimeoutAction> {
@@ -142,13 +147,13 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
       : VaultTimeoutAction.Lock;
   }
 
-  private async getAvailableVaultTimeoutActions(): Promise<VaultTimeoutAction[]> {
+  private async getAvailableVaultTimeoutActions(userId?: string): Promise<VaultTimeoutAction[]> {
     const availableActions = [VaultTimeoutAction.LogOut];
 
     const canLock =
-      (await this.userVerificationService.hasMasterPassword()) ||
-      (await this.isPinLockSet()) !== "DISABLED" ||
-      (await this.isBiometricLockSet());
+      (await this.userVerificationService.hasMasterPassword(userId)) ||
+      (await this.isPinLockSet(userId)) !== "DISABLED" ||
+      (await this.isBiometricLockSet(userId));
 
     if (canLock) {
       availableActions.push(VaultTimeoutAction.Lock);

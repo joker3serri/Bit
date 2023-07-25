@@ -366,7 +366,7 @@ export class LockComponent implements OnInit, OnDestroy {
     // if the user has no MP hash via TDE and they get here without biometric / pin as well, they should logout as well.
 
     const availableVaultTimeoutActions = await firstValueFrom(
-      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$
+      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$()
     );
     const supportsLock = availableVaultTimeoutActions.includes(VaultTimeoutAction.Lock);
     if (!supportsLock) {
