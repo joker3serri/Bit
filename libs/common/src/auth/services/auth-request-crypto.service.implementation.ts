@@ -32,12 +32,13 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
       authReqPrivateKey
     );
 
-    // Set masterKey + masterKeyHash in state
+    // Decrypt and set user key in state
+    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
+
+    // Set masterKey + masterKeyHash in state after decryption (in case decryption fails)
     await this.cryptoService.setMasterKey(masterKey);
     await this.cryptoService.setMasterKeyHash(masterKeyHash);
 
-    // Decrypt and set user key in state
-    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
     await this.cryptoService.setUserKey(userKey);
   }
 
