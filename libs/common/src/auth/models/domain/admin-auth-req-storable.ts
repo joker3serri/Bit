@@ -1,5 +1,10 @@
 import { Utils } from "../../../platform/misc/utils";
 
+// TODO: Tech Debt: potentially create a type Storage shape vs using a class here in the future
+// type StorageShape {
+//   id: string;
+//   privateKey: string;
+// }
 export class AdminAuthRequestStorable {
   id: string;
   privateKey: ArrayBuffer;
