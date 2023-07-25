@@ -1,6 +1,7 @@
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
+import { I18nService } from "../../platform/abstractions/i18n.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
@@ -38,7 +39,8 @@ export class SsoLogInStrategy extends LogInStrategy {
     twoFactorService: TwoFactorService,
     private keyConnectorService: KeyConnectorService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
-    private authReqCryptoService: AuthRequestCryptoServiceAbstraction
+    private authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    private i18nService: I18nService
   ) {
     super(
       cryptoService,
@@ -159,6 +161,8 @@ export class SsoLogInStrategy extends LogInStrategy {
         // if we successfully decrypted the user key, we can delete the admin auth request out of state
         // TODO: eventually we post and clean up DB as well once consumed on client
         await this.stateService.setAdminAuthRequest(null);
+
+        this.platformUtilsService.showToast("success", null, this.i18nService.t("loginApproved"));
       }
     }
   }
