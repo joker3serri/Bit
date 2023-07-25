@@ -5,7 +5,7 @@
     </h1>
   </header>
   <div class="content login-page">
-    <ng-container *ngIf="state == State.StandardAuthRequest">
+    <ng-container *ngIf="state == StateEnum.StandardAuthRequest">
       <div>
         <p class="lead">{{ "logInInitiated" | i18n }}</p>
 
@@ -35,7 +35,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="state == State.AdminAuthRequest">
+    <ng-container *ngIf="state == StateEnum.AdminAuthRequest">
       <div>
         <p class="lead">{{ "adminApprovalRequested" | i18n }}</p>
 

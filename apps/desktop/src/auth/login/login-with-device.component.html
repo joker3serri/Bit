@@ -2,7 +2,7 @@
   <div id="content" class="content">
     <img class="logo-image" alt="Bitwarden" />
 
-    <ng-container *ngIf="state == State.StandardAuthRequest">
+    <ng-container *ngIf="state == StateEnum.StandardAuthRequest">
       <p class="lead text-center">{{ "logInInitiated" | i18n }}</p>
 
       <div class="box last">
@@ -39,7 +39,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="state == State.AdminAuthRequest">
+    <ng-container *ngIf="state == StateEnum.AdminAuthRequest">
       <p class="lead text-center">{{ "adminApprovalRequested" | i18n }}</p>
 
       <div class="box last">

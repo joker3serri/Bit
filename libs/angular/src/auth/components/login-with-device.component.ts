@@ -56,7 +56,7 @@ export class LoginWithDeviceComponent
 
   protected adminApprovalRoute = "admin-approval-requested";
 
-  protected State = State;
+  protected StateEnum = State;
   protected state = State.StandardAuthRequest;
 
   protected twoFactorRoute = "2fa";
