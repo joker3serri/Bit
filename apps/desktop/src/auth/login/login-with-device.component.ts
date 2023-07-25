@@ -108,11 +108,11 @@ export class LoginWithDeviceComponent
 
   goToLogin() {
     switch (this.state) {
-      case this.State.StandardAuthRequest:
+      case this.StateEnum.StandardAuthRequest:
         this.router.navigate(["/login"]);
 
         break;
-      case this.State.AdminAuthRequest:
+      case this.StateEnum.AdminAuthRequest:
         this.router.navigate(["/login-initiated"]);
         break;
 
