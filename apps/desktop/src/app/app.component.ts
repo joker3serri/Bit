@@ -29,6 +29,7 @@ import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-con
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -47,7 +48,7 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
-import { MenuUpdateRequest } from "../main/menu/menu.updater";
+import { MenuAccount, MenuUpdateRequest } from "../main/menu/menu.updater";
 import { PremiumComponent } from "../vault/app/accounts/premium.component";
 import { FolderAddEditComponent } from "../vault/app/vault/folder-add-edit.component";
 
@@ -79,7 +80,7 @@ const systemTimeoutOptions = {
     <ng-template #loginApproval></ng-template>
     <app-header></app-header>
 
-    <!-- TODO: remove these new buttons and new goTo method -->
+    <!-- TODO: remove these buttons and new goTo method -->
     <div class="d-flex flex-row justify-content-between">
       <button class="btn btn-primary mr-2" (click)="goTo('/login')">Login</button>
       <button class="btn btn-primary" (click)="goTo('/login-initiated')">Login Initiated</button>
@@ -504,16 +505,21 @@ export class AppComponent implements OnInit, OnDestroy {
         hideChangeMasterPassword: true,
       };
     } else {
-      const accounts: { [userId: string]: any } = {};
+      const accounts: { [userId: string]: MenuAccount } = {};
       for (const i in stateAccounts) {
         if (i != null && stateAccounts[i]?.profile?.userId != null) {
           const userId = stateAccounts[i].profile.userId;
+          const availableTimeoutActions = await firstValueFrom(
+            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId)
+          );
+
           accounts[userId] = {
             isAuthenticated: await this.stateService.getIsAuthenticated({
               userId: userId,
             }),
             isLocked:
               (await this.authService.getAuthStatus(userId)) === AuthenticationStatus.Locked,
+            isLockable: availableTimeoutActions.includes(VaultTimeoutAction.Lock),
             email: stateAccounts[i].profile.email,
             userId: stateAccounts[i].profile.userId,
           };
