@@ -75,6 +75,7 @@ export class SsoLogInStrategy extends LogInStrategy {
 
   protected override async setMasterKey(tokenResponse: IdentityTokenResponse) {
     // TODO: discuss how this is no longer true with TDE
+    // eventually we’ll need to support migration of existing TDE users to Key Connector
     const newSsoUser = tokenResponse.key == null;
 
     if (tokenResponse.keyConnectorUrl != null) {
