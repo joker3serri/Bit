@@ -7,7 +7,7 @@
       "@bitwarden/node/*": ["../node/src/*"],
       "@bitwarden/importer": ["../importer/src"],
       "@bitwarden/exporter/*": ["../exporter/src/*"],
-      "@bitwarden/auth": ["../auth/src/index.ts"]
+      "@bitwarden/auth": ["../auth/src/*"]
     }
   }
 }
