@@ -3,7 +3,6 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { BitValidators } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../../../models/view/service-account.view";
@@ -35,8 +34,7 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public data: AccessTokenOperation,
     private dialogService: DialogServiceAbstraction,
-    private accessService: AccessService,
-    private i18nService: I18nService
+    private accessService: AccessService
   ) {}
 
   async ngOnInit() {
