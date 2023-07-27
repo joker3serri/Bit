@@ -1445,6 +1445,9 @@
   "manage": {
     "message": "Manage"
   },
+  "canManage": {
+    "message": "Can Manage"
+  },
   "disable": {
     "message": "Turn off"
   },

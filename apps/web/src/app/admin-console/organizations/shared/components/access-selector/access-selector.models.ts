@@ -14,6 +14,7 @@ export enum CollectionPermission {
   ViewExceptPass = "viewExceptPass",
   Edit = "edit",
   EditExceptPass = "editExceptPass",
+  Manage = "manage",
 }
 
 export enum AccessItemType {
@@ -84,6 +85,8 @@ export type AccessItemValue = {
 export const convertToPermission = (value: CollectionAccessSelectionView) => {
   if (value.readOnly) {
     return value.hidePasswords ? CollectionPermission.ViewExceptPass : CollectionPermission.View;
+  } else if (value.manage) {
+    return CollectionPermission.Manage;
   } else {
     return value.hidePasswords ? CollectionPermission.EditExceptPass : CollectionPermission.Edit;
   }
@@ -99,6 +102,7 @@ export const convertToSelectionView = (value: AccessItemValue) => {
     id: value.id,
     readOnly: readOnly(value.permission),
     hidePasswords: hidePassword(value.permission),
+    manage: value.permission === CollectionPermission.Manage,
   });
 };
 
