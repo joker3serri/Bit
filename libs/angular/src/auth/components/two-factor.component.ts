@@ -47,6 +47,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   orgIdentifier: string = null;
   onSuccessfulLogin: () => Promise<any>;
   onSuccessfulLoginNavigate: () => Promise<any>;
+  onSuccessfulLoginTde: () => Promise<any>;
 
   protected loginRoute = "login";
 
@@ -300,13 +301,17 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       return await this.handleForcePasswordReset(orgIdentifier);
     }
 
-    // Navigate to TDE page (if user was on trusted device and TDE has decrypted
-    // their user key, the lock guard will redirect them to the vault)
-    this.router.navigate([this.trustedDeviceEncRoute], {
-      queryParams: {
-        identifier: orgIdentifier,
-      },
-    });
+    this.navigateViaCallbackOrRoute(
+      this.onSuccessfulLoginTde,
+      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
+      //  their user key, the login-initiated guard will redirect them to the vault)
+      [this.trustedDeviceEncRoute],
+      {
+        queryParams: {
+          identifier: orgIdentifier,
+        },
+      }
+    );
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {

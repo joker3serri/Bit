@@ -33,6 +33,7 @@ export class SsoComponent {
   onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
   onSuccessfulLoginChangePasswordNavigate: () => Promise<any>;
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
+  onSuccessfulLoginTde: () => Promise<any>;
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "lock";
@@ -276,13 +277,17 @@ export class SsoComponent {
       return await this.handleForcePasswordReset(orgIdentifier);
     }
 
-    // Navigate to TDE page (if user was on trusted device and TDE has decrypted
-    //  their user key, the lock guard will redirect them to the vault)
-    this.router.navigate([this.trustedDeviceEncRoute], {
-      queryParams: {
-        identifier: orgIdentifier,
-      },
-    });
+    this.navigateViaCallbackOrRoute(
+      this.onSuccessfulLoginTde,
+      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
+      //  their user key, the login-initiated guard will redirect them to the vault)
+      [this.trustedDeviceEncRoute],
+      {
+        queryParams: {
+          identifier: orgIdentifier,
+        },
+      }
+    );
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {
