@@ -7,7 +7,7 @@
       "@bitwarden/angular/*": ["../../libs/angular/src/*"],
       "@bitwarden/components": ["../../libs/components/src"],
       "@bitwarden/exporter/*": ["../../libs/exporter/src/*"],
-      "@bitwarden/auth/*": ["../../libs/auth/src/*"]
+      "@bitwarden/auth": ["../../libs/auth/src"]
     }
   },
   "include": ["src/**/*.stories.ts"]
