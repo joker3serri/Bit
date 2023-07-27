@@ -169,6 +169,12 @@
       "rules": {
         "no-restricted-imports": ["error", { "patterns": ["@bitwarden/exporter/*", "src/**/*"] }]
       }
+    },
+    {
+      "files": ["libs/auth/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/auth/*", "src/**/*"] }]
+      }
     }
   ]
 }
