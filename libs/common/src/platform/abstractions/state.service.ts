@@ -28,7 +28,6 @@ import {
   Account,
   AccountDecryptionOptions,
   AccountSettingsSettings,
-  LoginState,
 } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
@@ -478,8 +477,11 @@ export abstract class StateService<T extends Account = Account> {
   setSsoOrganizationIdentifier: (value: string, options?: StorageOptions) => Promise<void>;
   getSsoState: (options?: StorageOptions) => Promise<string>;
   setSsoState: (value: string, options?: StorageOptions) => Promise<void>;
-  getLoginState: (options?: StorageOptions) => Promise<LoginState>;
-  patchLoginState: (value: Partial<LoginState>, options?: StorageOptions) => Promise<void>;
+  getUserSsoOrganizationIdentifier: (options?: StorageOptions) => Promise<string>;
+  setUserSsoOrganizationIdentifier: (
+    value: Partial<string>,
+    options?: StorageOptions
+  ) => Promise<void>;
   getTheme: (options?: StorageOptions) => Promise<ThemeType>;
   setTheme: (value: ThemeType, options?: StorageOptions) => Promise<void>;
   getTwoFactorToken: (options?: StorageOptions) => Promise<string>;

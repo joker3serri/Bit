@@ -76,7 +76,7 @@ export class SsoComponent {
         ) {
           const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state);
           await this.logIn(qParams.code, codeVerifier, ssoOrganizationIdentifier);
-          await this.stateService.patchLoginState({ ssoOrganizationIdentifier });
+          await this.stateService.setUserSsoOrganizationIdentifier(ssoOrganizationIdentifier);
         }
       } else if (
         qParams.clientId != null &&

@@ -141,15 +141,15 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   async loadNewUserData() {
-    const autoEnrollStatus$ = defer(() => this.stateService.getLoginState()).pipe(
-      switchMap((loginState) => {
-        if (loginState?.ssoOrganizationIdentifier == undefined) {
+    const autoEnrollStatus$ = defer(() =>
+      this.stateService.getUserSsoOrganizationIdentifier()
+    ).pipe(
+      switchMap((organizationIdentifier) => {
+        if (organizationIdentifier == undefined) {
           return throwError(() => new Error(this.i18nService.t("ssoIdentifierRequired")));
         }
 
-        return from(
-          this.organizationApiService.getAutoEnrollStatus(loginState.ssoOrganizationIdentifier)
-        );
+        return from(this.organizationApiService.getAutoEnrollStatus(organizationIdentifier));
       }),
       catchError((err: unknown) => {
         this.validationService.showError(err);
