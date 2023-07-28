@@ -26,7 +26,13 @@ import { CollectionView } from "@bitwarden/common/vault/models/view/collection.v
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { ExportHelper } from "../../export-helper";
-import { BitwardenPasswordProtectedFileFormat } from "../bitwarden-password-protected-types";
+import {
+  BitwardenEncryptedIndividualJsonExport,
+  BitwardenEncryptedOrgJsonExport,
+  BitwardenUnEncryptedIndividualJsonExport,
+  BitwardenUnEncryptedOrgJsonExport,
+  BitwardenPasswordProtectedFileFormat,
+} from "../bitwarden-json-export-types";
 
 import { ExportFormat, VaultExportServiceAbstraction } from "./vault-export.service.abstraction";
 
@@ -143,7 +149,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
       return papa.unparse(exportCiphers);
     } else {
-      const jsonDoc: any = {
+      const jsonDoc: BitwardenUnEncryptedIndividualJsonExport = {
         encrypted: false,
         folders: [],
         items: [],
@@ -193,7 +199,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
     const encKeyValidation = await this.cryptoService.encrypt(Utils.newGuid());
 
-    const jsonDoc: any = {
+    const jsonDoc: BitwardenEncryptedIndividualJsonExport = {
       encrypted: true,
       encKeyValidation_DO_NOT_EDIT: encKeyValidation.encryptedString,
       folders: [],
@@ -289,7 +295,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
       return papa.unparse(exportCiphers);
     } else {
-      const jsonDoc: any = {
+      const jsonDoc: BitwardenUnEncryptedOrgJsonExport = {
         encrypted: false,
         collections: [],
         items: [],
@@ -344,7 +350,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
     const encKeyValidation = await this.cryptoService.encrypt(Utils.newGuid(), orgKey);
 
-    const jsonDoc: any = {
+    const jsonDoc: BitwardenEncryptedOrgJsonExport = {
       encrypted: true,
       encKeyValidation_DO_NOT_EDIT: encKeyValidation.encryptedString,
       collections: [],
