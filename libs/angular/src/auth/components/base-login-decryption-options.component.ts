@@ -3,7 +3,6 @@ import { FormBuilder, FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   firstValueFrom,
-  map,
   switchMap,
   Subject,
   catchError,
@@ -11,6 +10,8 @@ import {
   of,
   finalize,
   takeUntil,
+  defer,
+  throwError,
 } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -140,14 +141,19 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   async loadNewUserData() {
-    const autoEnrollStatus$ = this.activatedRoute.queryParamMap.pipe(
-      map((params) => params.get("identifier")),
-      switchMap((identifier) => {
-        if (identifier == null) {
-          return of(null);
+    const autoEnrollStatus$ = defer(() => this.stateService.getLoginState()).pipe(
+      switchMap((loginState) => {
+        if (loginState?.ssoOrganizationIdentifier == undefined) {
+          return throwError(() => new Error(this.i18nService.t("ssoIdentifierRequired")));
         }
 
-        return from(this.organizationApiService.getAutoEnrollStatus(identifier));
+        return from(
+          this.organizationApiService.getAutoEnrollStatus(loginState.ssoOrganizationIdentifier)
+        );
+      }),
+      catchError((err: unknown) => {
+        this.validationService.showError(err);
+        return of(undefined);
       })
     );
 

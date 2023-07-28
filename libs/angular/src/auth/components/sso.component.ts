@@ -74,11 +74,9 @@ export class SsoComponent {
           state != null &&
           this.checkState(state, qParams.state)
         ) {
-          await this.logIn(
-            qParams.code,
-            codeVerifier,
-            this.getOrgIdentifierFromState(qParams.state)
-          );
+          const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state);
+          await this.logIn(qParams.code, codeVerifier, ssoOrganizationIdentifier);
+          await this.stateService.patchLoginState({ ssoOrganizationIdentifier });
         }
       } else if (
         qParams.clientId != null &&
@@ -281,12 +279,7 @@ export class SsoComponent {
       this.onSuccessfulLoginTde,
       // Navigate to TDE page (if user was on trusted device and TDE has decrypted
       //  their user key, the login-initiated guard will redirect them to the vault)
-      [this.trustedDeviceEncRoute],
-      {
-        queryParams: {
-          identifier: orgIdentifier,
-        },
-      }
+      [this.trustedDeviceEncRoute]
     );
   }
 

@@ -305,12 +305,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       this.onSuccessfulLoginTde,
       // Navigate to TDE page (if user was on trusted device and TDE has decrypted
       //  their user key, the login-initiated guard will redirect them to the vault)
-      [this.trustedDeviceEncRoute],
-      {
-        queryParams: {
-          identifier: orgIdentifier,
-        },
-      }
+      [this.trustedDeviceEncRoute]
     );
   }
 

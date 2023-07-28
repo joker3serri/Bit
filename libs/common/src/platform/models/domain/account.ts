@@ -364,6 +364,25 @@ export class AccountDecryptionOptions {
   }
 }
 
+export class LoginState {
+  ssoOrganizationIdentifier?: string;
+
+  constructor(init?: Partial<LoginState>) {
+    if (init) {
+      Object.assign(this, init);
+    }
+  }
+
+  static fromJSON(obj: Jsonify<LoginState>): LoginState {
+    if (obj == null) {
+      return null;
+    }
+
+    const loginState = Object.assign(new LoginState(), obj);
+    return loginState;
+  }
+}
+
 export class Account {
   data?: AccountData = new AccountData();
   keys?: AccountKeys = new AccountKeys();
@@ -371,6 +390,7 @@ export class Account {
   settings?: AccountSettings = new AccountSettings();
   tokens?: AccountTokens = new AccountTokens();
   decryptionOptions?: AccountDecryptionOptions = new AccountDecryptionOptions();
+  loginState?: LoginState = new LoginState();
   adminAuthRequest?: AdminAuthRequestStorable = null;
 
   constructor(init: Partial<Account>) {
@@ -399,6 +419,10 @@ export class Account {
         ...new AccountDecryptionOptions(),
         ...init?.decryptionOptions,
       },
+      loginState: {
+        ...new LoginState(),
+        ...init?.loginState,
+      },
       adminAuthRequest: init?.adminAuthRequest
         ? new AdminAuthRequestStorable(init?.adminAuthRequest)
         : null,
@@ -416,6 +440,7 @@ export class Account {
       settings: AccountSettings.fromJSON(json?.settings),
       tokens: AccountTokens.fromJSON(json?.tokens),
       decryptionOptions: AccountDecryptionOptions.fromJSON(json?.decryptionOptions),
+      loginState: LoginState.fromJSON(json?.loginState),
       adminAuthRequest: AdminAuthRequestStorable.fromJSON(json?.adminAuthRequest),
     });
   }

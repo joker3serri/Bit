@@ -47,6 +47,7 @@ import {
   AccountDecryptionOptions,
   AccountSettings,
   AccountSettingsSettings,
+  LoginState,
 } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { GlobalState } from "../models/domain/global-state";
@@ -2581,6 +2582,26 @@ export class StateService<
     globals.ssoState = value;
     await this.saveGlobals(
       globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
+  async getLoginState(options?: StorageOptions): Promise<LoginState> {
+    return (
+      await this.getAccount(
+        // REVIEW: Please think over if this is the best storage option
+        this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      )
+    )?.loginState;
+  }
+
+  async patchLoginState(value: Partial<LoginState>, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    account.loginState = { ...account.loginState, ...value };
+    await this.saveAccount(
+      account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
