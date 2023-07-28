@@ -317,20 +317,17 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
     promises.push(
       this.apiService.getCollections(organizationId).then((c) => {
-        const collectionPromises: any = [];
         if (c != null && c.data != null && c.data.length > 0) {
           c.data.forEach((r) => {
             const collection = new Collection(new CollectionData(r as CollectionDetailsResponse));
             collections.push(collection);
           });
         }
-        return Promise.all(collectionPromises);
       })
     );
 
     promises.push(
       this.apiService.getCiphersOrganization(organizationId).then((c) => {
-        const cipherPromises: any = [];
         if (c != null && c.data != null && c.data.length > 0) {
           c.data
             .filter((item) => item.deletedDate === null)
@@ -339,7 +336,6 @@ export class VaultExportService implements VaultExportServiceAbstraction {
               ciphers.push(cipher);
             });
         }
-        return Promise.all(cipherPromises);
       })
     );
 
