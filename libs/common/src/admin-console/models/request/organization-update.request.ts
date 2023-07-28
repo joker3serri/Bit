@@ -5,4 +5,5 @@ export class OrganizationUpdateRequest {
   businessName: string;
   billingEmail: string;
   keys: OrganizationKeysRequest;
+  limitCollectionCdOwnerAdmin: boolean;
 }
