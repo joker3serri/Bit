@@ -386,11 +386,10 @@ describe("SsoComponent", () => {
 
           expect(mockAuthService.logIn).toHaveBeenCalledTimes(1);
           expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-          expect(mockRouter.navigate).toHaveBeenCalledWith([_component.trustedDeviceEncRoute], {
-            queryParams: {
-              identifier: orgIdFromState,
-            },
-          });
+          expect(mockRouter.navigate).toHaveBeenCalledWith(
+            [_component.trustedDeviceEncRoute],
+            undefined
+          );
           expect(mockLogService.error).not.toHaveBeenCalled();
         });
       });

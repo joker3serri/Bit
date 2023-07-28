@@ -430,11 +430,10 @@ describe("TwoFactorComponent", () => {
             await component.doSubmit();
 
             expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-            expect(mockRouter.navigate).toHaveBeenCalledWith([_component.trustedDeviceEncRoute], {
-              queryParams: {
-                identifier: component.orgIdentifier,
-              },
-            });
+            expect(mockRouter.navigate).toHaveBeenCalledWith(
+              [_component.trustedDeviceEncRoute],
+              undefined
+            );
           });
         });
       });
