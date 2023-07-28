@@ -27,6 +27,11 @@ import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { ExportHelper } from "../../export-helper";
 import {
+  BitwardenCsvExportType,
+  BitwardenCsvIndividualExportType,
+  BitwardenCsvOrgExportType,
+} from "../bitwarden-csv-export-type";
+import {
   BitwardenEncryptedIndividualJsonExport,
   BitwardenEncryptedOrgJsonExport,
   BitwardenUnEncryptedIndividualJsonExport,
@@ -129,7 +134,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
         }
       });
 
-      const exportCiphers: any[] = [];
+      const exportCiphers: BitwardenCsvIndividualExportType[] = [];
       decCiphers.forEach((c) => {
         // only export logins and secure notes
         if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
@@ -139,7 +144,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
           return;
         }
 
-        const cipher: any = {};
+        const cipher = {} as BitwardenCsvIndividualExportType;
         cipher.folder =
           c.folderId != null && foldersMap.has(c.folderId) ? foldersMap.get(c.folderId).name : null;
         cipher.favorite = c.favorite ? 1 : null;
@@ -275,14 +280,14 @@ export class VaultExportService implements VaultExportServiceAbstraction {
         collectionsMap.set(c.id, c);
       });
 
-      const exportCiphers: any[] = [];
+      const exportCiphers: BitwardenCsvOrgExportType[] = [];
       decCiphers.forEach((c) => {
         // only export logins and secure notes
         if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
           return;
         }
 
-        const cipher: any = {};
+        const cipher = {} as BitwardenCsvOrgExportType;
         cipher.collections = [];
         if (c.collectionIds != null) {
           cipher.collections = c.collectionIds
@@ -371,7 +376,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     return JSON.stringify(jsonDoc, null, "  ");
   }
 
-  private buildCommonCipher(cipher: any, c: CipherView) {
+  private buildCommonCipher(cipher: BitwardenCsvExportType, c: CipherView): BitwardenCsvExportType {
     cipher.type = null;
     cipher.name = c.name;
     cipher.notes = c.notes;
@@ -384,7 +389,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     cipher.login_totp = null;
 
     if (c.fields) {
-      c.fields.forEach((f: any) => {
+      c.fields.forEach((f) => {
         if (!cipher.fields) {
           cipher.fields = "";
         } else {
