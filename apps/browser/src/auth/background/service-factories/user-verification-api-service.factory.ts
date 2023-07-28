@@ -2,14 +2,15 @@ import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/ab
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 
 import {
-  apiServiceFactory,
   ApiServiceInitOptions,
+  apiServiceFactory,
 } from "../../../platform/background/service-factories/api-service.factory";
 import {
+  FactoryOptions,
   CachedServices,
   factory,
-  FactoryOptions,
 } from "../../../platform/background/service-factories/factory-options";
+
 type UserVerificationApiServiceFactoryOptions = FactoryOptions;
 
 export type UserVerificationApiServiceInitOptions = UserVerificationApiServiceFactoryOptions &

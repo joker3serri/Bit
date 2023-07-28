@@ -1,4 +1,4 @@
-import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { UserVerificationService as AbstractUserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 
 import {
@@ -6,13 +6,13 @@ import {
   cryptoServiceFactory,
 } from "../../../platform/background/service-factories/crypto-service.factory";
 import {
+  FactoryOptions,
   CachedServices,
   factory,
-  FactoryOptions,
 } from "../../../platform/background/service-factories/factory-options";
 import {
-  i18nServiceFactory,
   I18nServiceInitOptions,
+  i18nServiceFactory,
 } from "../../../platform/background/service-factories/i18n-service.factory";
 import {
   StateServiceInitOptions,
@@ -20,8 +20,8 @@ import {
 } from "../../../platform/background/service-factories/state-service.factory";
 
 import {
-  userVerificationApiServiceFactory,
   UserVerificationApiServiceInitOptions,
+  userVerificationApiServiceFactory,
 } from "./user-verification-api-service.factory";
 
 type UserVerificationServiceFactoryOptions = FactoryOptions;
@@ -33,9 +33,9 @@ export type UserVerificationServiceInitOptions = UserVerificationServiceFactoryO
   UserVerificationApiServiceInitOptions;
 
 export function userVerificationServiceFactory(
-  cache: { userVerificationService?: UserVerificationServiceAbstraction } & CachedServices,
+  cache: { userVerificationService?: AbstractUserVerificationService } & CachedServices,
   opts: UserVerificationServiceInitOptions
-): Promise<UserVerificationServiceAbstraction> {
+): Promise<AbstractUserVerificationService> {
   return factory(
     cache,
     "userVerificationService",
