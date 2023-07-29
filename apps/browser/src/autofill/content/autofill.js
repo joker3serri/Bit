@@ -323,6 +323,7 @@
               // START MODIFICATION
               var elTagName = el.tagName.toLowerCase();
               addProp(field, 'tagName', elTagName);
+              addProp(field, 'inFocus', el === theView.document.activeElement);
 
               if (elTagName === 'span') {
                   return field;

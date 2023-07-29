@@ -40,4 +40,5 @@ export abstract class AutofillService {
     fromCommand: boolean
   ) => Promise<string>;
   doAutoFillActiveTab: (pageDetails: PageDetail[], fromCommand: boolean) => Promise<string>;
+  doAutoFillGeneratePassword: (pageDetails: PageDetail[]) => void;
 }

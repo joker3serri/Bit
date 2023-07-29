@@ -4,6 +4,7 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType, FieldType, UriMatchType } from "@bitwarden/common/enums";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
@@ -47,7 +48,8 @@ export default class AutofillService implements AutofillServiceInterface {
     private eventCollectionService: EventCollectionService,
     private logService: LogService,
     private settingsService: SettingsService,
-    private userVerificationService: UserVerificationService
+    private userVerificationService: UserVerificationService,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction
   ) {}
 
   getFormsWithPasswordFields(pageDetails: AutofillPageDetails): FormData[] {
@@ -271,6 +273,42 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     return totpCode;
+  }
+
+  /**
+   * Autofills a focused field with the generated password
+   * @param pageDetails The data scraped from the page
+   */
+  async doAutoFillGeneratePassword(pageDetails: PageDetail[]): Promise<void> {
+    const tab = await this.getActiveTab();
+    if (!tab || !tab.url) {
+      return;
+    }
+
+    const [options] = await this.passwordGenerationService.getOptions();
+    const password = await this.passwordGenerationService.generatePassword(options);
+
+    const activeTabPageDetail = pageDetails.find((pd) => pd.tab.id === tab.id);
+    if (!activeTabPageDetail) {
+      return;
+    }
+    const activeField = activeTabPageDetail.details.fields.find((f) => f.inFocus);
+    if (!activeField) {
+      return;
+    }
+
+    const fillScript = new AutofillScript(activeTabPageDetail.details.documentUUID);
+    AutofillService.fillByOpid(fillScript, activeField, password);
+
+    BrowserApi.tabSendMessage(
+      tab,
+      {
+        command: "fillForm",
+        fillScript: fillScript,
+        url: tab.url,
+      },
+      { frameId: activeTabPageDetail.frameId }
+    );
   }
 
   /**

@@ -52,6 +52,9 @@ export default class CommandsBackground {
       case "autofill_login":
         await this.autoFillLogin(sender ? sender.tab : null);
         break;
+      case "autofill_generate_password":
+        await this.autoFillGeneratePassword(sender ? sender.tab : null);
+        break;
       case "open_popup":
         await this.openPopup();
         break;
@@ -98,6 +101,18 @@ export default class CommandsBackground {
     }
 
     await this.main.collectPageDetailsForContentScript(tab, "autofill_cmd");
+  }
+
+  private async autoFillGeneratePassword(tab?: chrome.tabs.Tab) {
+    if (!tab) {
+      tab = await BrowserApi.getTabFromCurrentWindowId();
+    }
+
+    if (tab == null) {
+      return;
+    }
+
+    await this.main.collectPageDetailsForContentScript(tab, "autofill_generate_password_cmd");
   }
 
   private async openPopup() {

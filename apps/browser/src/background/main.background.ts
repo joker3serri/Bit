@@ -518,7 +518,8 @@ export default class MainBackground {
       this.eventCollectionService,
       this.logService,
       this.settingsService,
-      this.userVerificationService
+      this.userVerificationService,
+      this.passwordGenerationService
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
     this.exportService = new VaultExportService(

@@ -176,6 +176,15 @@ export default class RuntimeBackground {
             });
             this.autofillTimeout = setTimeout(async () => await this.autofillPage(msg.tab), 300);
             break;
+          case "autofill_generate_password_cmd":
+            await this.autofillService.doAutoFillGeneratePassword([
+              {
+                frameId: sender.frameId,
+                tab: msg.tab,
+                details: msg.details,
+              },
+            ]);
+            break;
           default:
             break;
         }

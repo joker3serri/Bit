@@ -11,6 +11,10 @@ import {
   eventCollectionServiceFactory,
 } from "../../../background/service-factories/event-collection-service.factory";
 import {
+  passwordGenerationServiceFactory,
+  PasswordGenerationServiceInitOptions,
+} from "../../../background/service-factories/password-generation-service.factory";
+import {
   settingsServiceFactory,
   SettingsServiceInitOptions,
 } from "../../../background/service-factories/settings-service.factory";
@@ -43,7 +47,8 @@ export type AutoFillServiceInitOptions = AutoFillServiceOptions &
   EventCollectionServiceInitOptions &
   LogServiceInitOptions &
   SettingsServiceInitOptions &
-  UserVerificationServiceInitOptions;
+  UserVerificationServiceInitOptions &
+  PasswordGenerationServiceInitOptions;
 
 export function autofillServiceFactory(
   cache: { autofillService?: AbstractAutoFillService } & CachedServices,
@@ -61,7 +66,8 @@ export function autofillServiceFactory(
         await eventCollectionServiceFactory(cache, opts),
         await logServiceFactory(cache, opts),
         await settingsServiceFactory(cache, opts),
-        await userVerificationServiceFactory(cache, opts)
+        await userVerificationServiceFactory(cache, opts),
+        await passwordGenerationServiceFactory(cache, opts)
       )
   );
 }

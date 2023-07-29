@@ -91,6 +91,9 @@
   "autoFill": {
     "message": "Auto-fill"
   },
+  "commandAutofillGeneratePasswordDesc": {
+    "message": "Generate a new password and auto-fill the current field"
+  },
   "generatePasswordCopied": {
     "message": "Generate password (copied)"
   },
