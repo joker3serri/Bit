@@ -50,6 +50,21 @@ export class AutofillTabCommand {
     });
   }
 
+  async doAutoFillGeneratePassword(tab: chrome.tabs.Tab) {
+    if (!tab.id) {
+      throw new Error("Tab does not have an id, cannot complete autofill.");
+    }
+
+    const details = await this.collectPageDetails(tab.id);
+    await this.autofillService.doAutoFillGeneratePassword([
+      {
+        frameId: 0,
+        tab: tab,
+        details: details,
+      },
+    ]);
+  }
+
   private async collectPageDetails(tabId: number): Promise<AutofillPageDetails> {
     return new Promise((resolve, reject) => {
       chrome.tabs.sendMessage(

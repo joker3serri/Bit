@@ -24,6 +24,8 @@ export const onCommandListener = async (command: string, tab: chrome.tabs.Tab) =
     case "generate_password":
       await doGeneratePasswordToClipboard(tab);
       break;
+    case "autofill_generate_password":
+      await doAutoFillGeneratePassword(tab);
   }
 };
 
@@ -107,4 +109,43 @@ const doGeneratePasswordToClipboard = async (tab: chrome.tabs.Tab): Promise<void
     await stateServiceFactory(cache, options)
   );
   command.generatePasswordToClipboard(tab);
+};
+
+const doAutoFillGeneratePassword = async (tab: chrome.tabs.Tab): Promise<void> => {
+  const cachedServices: CachedServices = {};
+  const opts = {
+    cryptoFunctionServiceOptions: {
+      win: self,
+    },
+    encryptServiceOptions: {
+      logMacFailures: true,
+    },
+    logServiceOptions: {
+      isDev: false,
+    },
+    platformUtilsServiceOptions: {
+      clipboardWriteCallback: () => Promise.resolve(),
+      biometricCallback: () => Promise.resolve(false),
+      win: self,
+    },
+    stateServiceOptions: {
+      stateFactory: new StateFactory(GlobalState, Account),
+    },
+    stateMigrationServiceOptions: {
+      stateFactory: new StateFactory(GlobalState, Account),
+    },
+    apiServiceOptions: {
+      logoutCallback: () => Promise.resolve(),
+    },
+    keyConnectorServiceOptions: {
+      logoutCallback: () => Promise.resolve(),
+    },
+    i18nServiceOptions: {
+      systemLanguage: BrowserApi.getUILanguage(self),
+    },
+  };
+  const autofillService = await autofillServiceFactory(cachedServices, opts);
+
+  const command = new AutofillTabCommand(autofillService);
+  await command.doAutoFillGeneratePassword(tab);
 };

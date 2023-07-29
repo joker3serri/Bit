@@ -309,6 +309,7 @@ export default class AutofillService implements AutofillServiceInterface {
       },
       { frameId: activeTabPageDetail.frameId }
     );
+    this.passwordGenerationService.addHistory(password);
   }
 
   /**
