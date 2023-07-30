@@ -7025,7 +7025,7 @@
       }
     }
   },
-  "addAdditionalServiceAccountDesc": {
+  "addAdditionalServiceAccounts": {
     "message": "You can add additional service accounts for $COST$ per month.",
     "placeholders": {
       "cost": {

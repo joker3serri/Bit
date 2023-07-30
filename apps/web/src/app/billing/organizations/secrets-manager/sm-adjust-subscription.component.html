@@ -45,9 +45,7 @@
     <bit-hint>
       <div>
         {{ "includedServiceAccounts" | i18n : options.baseServiceAccountCount }}
-        {{
-          "addAdditionalServiceAccountDesc" | i18n : (monthlyServiceAccountPrice | currency : "$")
-        }}
+        {{ "addAdditionalServiceAccounts" | i18n : (monthlyServiceAccountPrice | currency : "$") }}
       </div>
       <div>
         <strong>{{ "total" | i18n }}:</strong>
