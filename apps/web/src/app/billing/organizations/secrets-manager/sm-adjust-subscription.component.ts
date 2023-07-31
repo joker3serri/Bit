@@ -117,7 +117,7 @@ export class SecretsManagerAdjustSubscriptionComponent implements OnInit, OnDest
 
       if (value.limitServiceAccounts) {
         maxAutoscaleServiceAccountsControl.setValidators([
-          Validators.min(value.additionalServiceAccounts),
+          Validators.min(value.additionalServiceAccounts + this.options.baseServiceAccountCount),
         ]);
         maxAutoscaleServiceAccountsControl.enable({ emitEvent: false });
       } else {
