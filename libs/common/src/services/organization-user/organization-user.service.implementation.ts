@@ -215,7 +215,7 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       "/organizations/" + organizationId + "/users/enable-secrets-manager",
       new OrganizationUserBulkRequest(ids),
       true,
-      true
+      false
     );
   }
 
