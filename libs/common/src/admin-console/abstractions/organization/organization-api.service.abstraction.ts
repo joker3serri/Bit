@@ -18,6 +18,7 @@ import { StorageRequest } from "../../../models/request/storage.request";
 import { VerifyBankRequest } from "../../../models/request/verify-bank.request";
 import { ListResponse } from "../../../models/response/list.response";
 import { OrganizationApiKeyType } from "../../enums";
+import { OrganizationCollectionManagementUpdateRequest } from "../../models/request/organization-collection-management-update.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";
 import { OrganizationKeysRequest } from "../../models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "../../models/request/organization-update.request";
@@ -69,4 +70,8 @@ export class OrganizationApiServiceAbstraction {
   updateSso: (id: string, request: OrganizationSsoRequest) => Promise<OrganizationSsoResponse>;
   selfHostedSyncLicense: (id: string) => Promise<void>;
   subscribeToSecretsManager: (id: string, request: SecretsManagerSubscribeRequest) => Promise<void>;
+  updateCollectionManagement: (
+    id: string,
+    request: OrganizationCollectionManagementUpdateRequest
+  ) => Promise<OrganizationResponse>;
 }

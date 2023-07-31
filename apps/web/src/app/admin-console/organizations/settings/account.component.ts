@@ -7,6 +7,7 @@ import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationCollectionManagementUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-collection-management-update.request";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-update.request";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
@@ -58,6 +59,10 @@ export class AccountComponent {
       { value: "", disabled: true },
       { validators: [Validators.maxLength(50)] }
     ),
+  });
+
+  protected collectionManagementFormGroup = this.formBuilder.group({
+    limitCollectionCdOwnerAdmin: [false],
   });
 
   protected organizationId: string;
@@ -114,6 +119,9 @@ export class AccountComponent {
           billingEmail: this.org.billingEmail,
           businessName: this.org.businessName,
         });
+        this.collectionManagementFormGroup.patchValue({
+          limitCollectionCdOwnerAdmin: this.org.limitCollectionCdOwnerAdmin,
+        });
 
         // Update disabled states - reactive forms prefers not using disabled attribute
         if (!this.selfHosted) {
@@ -156,6 +164,26 @@ export class AccountComponent {
     this.formPromise = this.organizationApiService.save(this.organizationId, request);
     await this.formPromise;
     this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
+  };
+
+  submitCollectionManagement = async () => {
+    const request = new OrganizationCollectionManagementUpdateRequest();
+    request.limitCreateDeleteOwnerAdmin =
+      this.collectionManagementFormGroup.value.limitCollectionCdOwnerAdmin;
+    // eslint-disable-next-line
+    console.log(
+      "value of checkbox on submit: " +
+        this.collectionManagementFormGroup.value.limitCollectionCdOwnerAdmin
+    );
+
+    // TODO Uncomment when ready for end-to-end testing
+    //await this.organizationApiService.updateCollectionManagement(this.organizationId, request);
+
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("collectionManagementUpdated")
+    );
   };
 
   async deleteOrganization() {

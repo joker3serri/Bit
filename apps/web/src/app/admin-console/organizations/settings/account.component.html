@@ -37,6 +37,28 @@
     {{ "save" | i18n }}
   </button>
 </form>
+<form
+  *ngIf="org && !loading"
+  #collectionManagementForm
+  [bitSubmit]="submitCollectionManagement"
+  [formGroup]="collectionManagementFormGroup"
+>
+  <h1 bitTypography="h1" class="tw-mt-16 tw-pb-2.5">{{ "collectionManagement" | i18n }}</h1>
+  <p>{{ "collectionManagementDesc" | i18n }}</p>
+  <bit-form-control>
+    <bit-label>{{ "limitCollectionCdOwnerAdminDesc" | i18n }}</bit-label>
+    <input type="checkbox" bitCheckbox formControlName="limitCollectionCdOwnerAdmin" />
+  </bit-form-control>
+  <button
+    type="submit"
+    bitButton
+    bitFormButton
+    buttonType="primary"
+    id="collectionManagementSubmitButton"
+  >
+    {{ "save" | i18n }}
+  </button>
+</form>
 <ng-container *ngIf="canUseApi">
   <h1 bitTypography="h1" class="tw-mt-16 tw-pb-2.5">{{ "apiKey" | i18n }}</h1>
   <p>
