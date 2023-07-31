@@ -170,14 +170,8 @@ export class AccountComponent {
     const request = new OrganizationCollectionManagementUpdateRequest();
     request.limitCreateDeleteOwnerAdmin =
       this.collectionManagementFormGroup.value.limitCollectionCdOwnerAdmin;
-    // eslint-disable-next-line
-    console.log(
-      "value of checkbox on submit: " +
-        this.collectionManagementFormGroup.value.limitCollectionCdOwnerAdmin
-    );
 
-    // TODO Uncomment when ready for end-to-end testing
-    //await this.organizationApiService.updateCollectionManagement(this.organizationId, request);
+    await this.organizationApiService.updateCollectionManagement(this.organizationId, request);
 
     this.platformUtilsService.showToast(
       "success",
