@@ -1,14 +1,4 @@
 {
-  "pageTitle": {
-    "message": "$APP_NAME$ Web Vault",
-    "description": "The title of the website in the browser window.",
-    "placeholders": {
-      "app_name": {
-        "content": "$1",
-        "example": "Bitwarden"
-      }
-    }
-  },
   "whatTypeOfItem": {
     "message": "What type of item is this?"
   },
@@ -2645,6 +2635,12 @@
   "webVault": {
     "message": "Web vault"
   },
+  "bitWebVault": {
+    "message": "Bitwarden Web vault"
+  },
+  "bitSecretsManager": {
+    "message": "Bitwarden Secrets Manager"
+  },
   "loggedIn": {
     "message": "Logged in"
   },
@@ -4378,8 +4374,8 @@
   "manageUsers": {
     "message": "Manage users"
   },
-  "manageResetPassword": {
-    "message": "Manage password reset"
+  "manageAccountRecovery": {
+    "message": "Manage account recovery"
   },
   "disableRequiredError": {
     "message": "You must manually turn the $POLICYNAME$ policy before this policy can be turned off.",
@@ -6958,6 +6954,9 @@
   },
   "selectedRegionFlag": {
     "message": "Selected region flag"
+  },
+  "inviteUsers": {
+    "message": "Invite Users"
   },
   "secretsManagerForPlan": {
     "message": "Secrets Manager for $PLAN$",
