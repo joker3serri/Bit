@@ -1287,6 +1287,9 @@
   "importDestination": {
     "message": "Import destination"
   },
+  "learnAboutImportOptions": {
+    "message": "Learn about your import options"
+  },
   "selectImportFolder": {
     "message": "Select a folder"
   },  
