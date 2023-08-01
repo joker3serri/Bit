@@ -1304,7 +1304,7 @@
     }
   },
   "importUnassignedItemsError": {
-    "message": "File format requires a collection to be selected."
+    "message": "File contains unassigned items."
   },  
   "selectFormat": {
     "message": "Select the format of the import file"
