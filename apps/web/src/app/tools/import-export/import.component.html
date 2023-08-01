@@ -7,7 +7,12 @@
   <bit-form-field>
     <bit-label>{{ "importDestination" | i18n }}</bit-label>
     <bit-select formControlName="vaultSelector">
-      <bit-option [label]="'myVault' | i18n" value="myVault" icon="bwi-user" />
+      <bit-option
+        *ngIf="!importBlockedByPolicy"
+        [label]="'myVault' | i18n"
+        value="myVault"
+        icon="bwi-user"
+      />
       <bit-option
         *ngFor="let o of organizations$ | async"
         [value]="o.id"
@@ -337,7 +342,6 @@
         type="button"
         class="btn btn-outline-primary"
         (click)="fileSelector.click()"
-        [disabled]="importBlockedByPolicy"
       >
         {{ "chooseFile" | i18n }}
       </button>

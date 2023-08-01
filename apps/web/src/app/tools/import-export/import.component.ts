@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import * as JSZip from "jszip";
-import { concat, Observable, Subject, lastValueFrom } from "rxjs";
+import { concat, Observable, Subject, lastValueFrom, combineLatest } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
@@ -103,6 +103,18 @@ export class ImportComponent implements OnInit, OnDestroy {
       )
     );
 
+    combineLatest([
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+      this.organizations$,
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([policyApplies, orgs]) => {
+        this._importBlockedByPolicy = policyApplies;
+        if (policyApplies && orgs.length == 0) {
+          this.formGroup.disable();
+        }
+      });
+
     if (this.organizationId) {
       this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
       this.formGroup.controls.vaultSelector.disable();
@@ -113,16 +125,6 @@ export class ImportComponent implements OnInit, OnDestroy {
           .then((c) => c.filter((c2) => c2.organizationId === this.organizationId))
       );
     } else {
-      this.policyService
-        .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((policyAppliesToActiveUser) => {
-          this._importBlockedByPolicy = policyAppliesToActiveUser;
-          if (this._importBlockedByPolicy) {
-            this.formGroup.disable();
-          }
-        });
-
       this.folders$ = this.folderService.folderViews$;
       this.formGroup.controls.targetSelector.disable();
 
