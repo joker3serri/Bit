@@ -72,7 +72,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     if (await this.keyConnectorService.getUsesKeyConnector()) {
       const pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();
 
-      let ephemeralPinSet = await this.stateService.getUserKeyPinEphemeral();
+      let ephemeralPinSet = await this.stateService.getPinKeyEncryptedUserKeyEphemeral();
       ephemeralPinSet ||= await this.stateService.getDecryptedPinProtected();
       const pinEnabled =
         (pinStatus === "TRANSIENT" && ephemeralPinSet != null) || pinStatus === "PERSISTANT";
@@ -88,7 +88,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     }
 
     await this.stateService.setEverBeenUnlocked(true, { userId: userId });
-    await this.stateService.setUserKeyAuto(null, { userId: userId });
+    await this.stateService.setUserKeyAutoUnlock(null, { userId: userId });
     await this.stateService.setCryptoMasterKeyAuto(null, { userId: userId });
 
     await this.cryptoService.clearUserKey(false, userId);

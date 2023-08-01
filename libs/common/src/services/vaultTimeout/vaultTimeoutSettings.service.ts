@@ -55,7 +55,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     // we can't check the protected pin for both because old accounts only
     // used it for MP on Restart
     const pinIsEnabled = !!(await this.stateService.getProtectedPin());
-    const aUserKeyPinIsSet = !!(await this.stateService.getUserKeyPin());
+    const aUserKeyPinIsSet = !!(await this.stateService.getPinKeyEncryptedUserKey());
     const anOldUserKeyPinIsSet = !!(await this.stateService.getEncryptedPinProtected());
 
     if (aUserKeyPinIsSet || anOldUserKeyPinIsSet) {
