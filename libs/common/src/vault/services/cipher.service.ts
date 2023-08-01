@@ -630,7 +630,7 @@ export class CipherService implements CipherServiceAbstraction {
   async saveAttachmentRawWithServer(
     cipher: Cipher,
     filename: string,
-    data: ArrayBuffer,
+    data: Uint8Array,
     admin = false
   ): Promise<Cipher> {
     const key = await this.cryptoService.getOrgKey(cipher.organizationId);

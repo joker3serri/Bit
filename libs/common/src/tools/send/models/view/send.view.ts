@@ -13,7 +13,7 @@ export class SendView implements View {
   accessId: string = null;
   name: string = null;
   notes: string = null;
-  key: ArrayBuffer;
+  key: Uint8Array;
   cryptoKey: SymmetricCryptoKey;
   type: SendType = null;
   text = new SendTextView();

@@ -20,7 +20,7 @@ describe("encArrayBuffer", () => {
       array.set(mac, 1 + iv.byteLength);
       array.set(data, 1 + iv.byteLength + mac.byteLength);
 
-      const actual = new EncArrayBuffer(array.buffer);
+      const actual = new EncArrayBuffer(array);
 
       expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
@@ -39,7 +39,7 @@ describe("encArrayBuffer", () => {
       array.set(iv, 1);
       array.set(data, 1 + iv.byteLength);
 
-      const actual = new EncArrayBuffer(array.buffer);
+      const actual = new EncArrayBuffer(array);
 
       expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
@@ -62,9 +62,7 @@ describe("encArrayBuffer", () => {
       invalidArray.set([encType]);
       invalidArray.set(invalidBytes, 1);
 
-      expect(() => new EncArrayBuffer(invalidArray.buffer)).toThrow(
-        "Error parsing encrypted ArrayBuffer"
-      );
+      expect(() => new EncArrayBuffer(invalidArray)).toThrow("Error parsing encrypted ArrayBuffer");
     });
   });
 
