@@ -26,6 +26,7 @@
     <bit-label>{{ organizationId ? ("collection" | i18n) : ("folder" | i18n) }}</bit-label>
     <bit-select formControlName="targetSelector">
       <ng-container *ngIf="!organizationId">
+        <bit-option [value]="null" label="-- {{ 'selectImportFolder' | i18n }} --" />
         <bit-option
           *ngFor="let f of folders$ | async"
           [value]="f.id"
@@ -34,7 +35,7 @@
         />
       </ng-container>
       <ng-container *ngIf="organizationId">
-        <bit-option [value]="null" [label]="'noCollection' | i18n" />
+        <bit-option [value]="null" label="-- {{ 'selectImportCollection' | i18n }} --" />
         <bit-option
           *ngFor="let c of collections$ | async"
           [value]="c.id"

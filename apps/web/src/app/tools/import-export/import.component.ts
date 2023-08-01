@@ -125,7 +125,10 @@ export class ImportComponent implements OnInit, OnDestroy {
           .then((c) => c.filter((c2) => c2.organizationId === this.organizationId))
       );
     } else {
-      this.folders$ = this.folderService.folderViews$;
+      // Filter out the `no folder`-item from folderViews$
+      this.folders$ = this.folderService.folderViews$.pipe(
+        map((folders) => folders.filter((f) => f.id != null))
+      );
       this.formGroup.controls.targetSelector.disable();
 
       this.formGroup.controls.vaultSelector.valueChanges
