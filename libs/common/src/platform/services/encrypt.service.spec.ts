@@ -37,10 +37,8 @@ describe("EncryptService", () => {
 
     describe("encrypts data", () => {
       beforeEach(() => {
-        cryptoFunctionService.randomBytes
-          .calledWith(16)
-          .mockResolvedValueOnce(iv.buffer as CsprngArray);
-        cryptoFunctionService.aesEncrypt.mockResolvedValue(encryptedData.buffer);
+        cryptoFunctionService.randomBytes.calledWith(16).mockResolvedValueOnce(iv as CsprngArray);
+        cryptoFunctionService.aesEncrypt.mockResolvedValue(encryptedData);
       });
 
       it("using a key which supports mac", async () => {
@@ -50,7 +48,7 @@ describe("EncryptService", () => {
 
         key.macKey = makeStaticByteArray(16, 20);
 
-        cryptoFunctionService.hmac.mockResolvedValue(mac.buffer);
+        cryptoFunctionService.hmac.mockResolvedValue(mac);
 
         const actual = await encryptService.encryptToBytes(plainValue, key);
 
@@ -108,7 +106,7 @@ describe("EncryptService", () => {
     it("decrypts data with provided key", async () => {
       const decryptedBytes = makeStaticByteArray(10, 200).buffer;
 
-      cryptoFunctionService.hmac.mockResolvedValue(makeStaticByteArray(1).buffer);
+      cryptoFunctionService.hmac.mockResolvedValue(makeStaticByteArray(1));
       cryptoFunctionService.compare.mockResolvedValue(true);
       cryptoFunctionService.aesDecrypt.mockResolvedValueOnce(decryptedBytes);
 

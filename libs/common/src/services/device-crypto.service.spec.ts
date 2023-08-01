@@ -128,9 +128,9 @@ describe("deviceCryptoService", () => {
       let mockUserSymKey: SymmetricCryptoKey;
 
       const deviceRsaKeyLength = 2048;
-      let mockDeviceRsaKeyPair: [ArrayBuffer, ArrayBuffer];
-      let mockDevicePrivateKey: ArrayBuffer;
-      let mockDevicePublicKey: ArrayBuffer;
+      let mockDeviceRsaKeyPair: [Uint8Array, Uint8Array];
+      let mockDevicePrivateKey: Uint8Array;
+      let mockDevicePublicKey: Uint8Array;
       let mockDevicePublicKeyEncryptedUserSymKey: EncString;
       let mockUserSymKeyEncryptedDevicePublicKey: EncString;
       let mockDeviceKeyEncryptedDevicePrivateKey: EncString;
@@ -163,8 +163,8 @@ describe("deviceCryptoService", () => {
         mockUserSymKey = new SymmetricCryptoKey(mockUserSymKeyRandomBytes);
 
         mockDeviceRsaKeyPair = [
-          new ArrayBuffer(deviceRsaKeyLength),
-          new ArrayBuffer(deviceRsaKeyLength),
+          new Uint8Array(deviceRsaKeyLength),
+          new Uint8Array(deviceRsaKeyLength),
         ];
 
         mockDevicePublicKey = mockDeviceRsaKeyPair[0];

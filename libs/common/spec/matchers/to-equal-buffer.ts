@@ -5,8 +5,8 @@
  * (and optionally, the expected value) and then call toEqual() on the resulting Uint8Arrays.
  */
 export const toEqualBuffer: jest.CustomMatcher = function (
-  received: ArrayBuffer,
-  expected: ArrayBuffer
+  received: ArrayBuffer | Uint8Array,
+  expected: ArrayBuffer | Uint8Array
 ) {
   received = new Uint8Array(received);
   expected = new Uint8Array(expected);
