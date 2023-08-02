@@ -15,7 +15,7 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
  * Only allow access to this route if the vault is locked and has never been decrypted.
  * Otherwise redirect to root.
  */
-export function loginInitiatedGuard(): CanActivateFn {
+export function tdeDecryptionRequiredGuard(): CanActivateFn {
   return async (_: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
     const authService = inject(AuthService);
     const cryptoService = inject(CryptoService);
