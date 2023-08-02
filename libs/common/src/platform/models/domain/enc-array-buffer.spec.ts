@@ -22,7 +22,7 @@ describe("encArrayBuffer", () => {
 
       const actual = new EncArrayBuffer(array);
 
-      expect(actual.encryptionType).toEqualBuffer(encType);
+      expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
       expect(actual.macBytes).toEqualBuffer(mac);
       expect(actual.dataBytes).toEqualBuffer(data);
