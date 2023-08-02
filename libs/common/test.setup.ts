@@ -20,10 +20,8 @@ interface CustomMatchers<R = unknown> {
 declare global {
   namespace jest {
     interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
     interface InverseAsymmetricMatchers extends CustomMatchers {}
-    interface BufferMatchers extends Matchers<Uint8Array | ArrayBuffer> {
-      toEqualBuffer: (expected: Uint8Array | ArrayBuffer) => CustomMatcherResult;
-    }
   }
 }
 /* eslint-enable */
