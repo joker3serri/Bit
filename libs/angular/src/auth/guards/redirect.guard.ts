@@ -41,6 +41,10 @@ export function redirectGuard(overrides: Partial<RedirectRoutes> = {}): CanActiv
       return router.createUrlTree([routes.loggedIn], { queryParams: route.queryParams });
     }
 
+    // If TDE is enabled and the user hasn't decrypted yet, then redirect to the
+    // login decryption options component. This is especially useful for the
+    // Browser Post SSO open popup flow where the user is AuthN and should see
+    // decryption options and not the lock screen.
     const tdeEnabled = await deviceTrustCryptoService.supportsDeviceTrust();
     const everHadUserKey = await cryptoService.getEverHadUserKey();
     if (authStatus === AuthenticationStatus.Locked && tdeEnabled && !everHadUserKey) {
