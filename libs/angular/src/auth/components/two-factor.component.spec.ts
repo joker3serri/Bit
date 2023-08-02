@@ -426,7 +426,7 @@ describe("TwoFactorComponent", () => {
             mockAuthService.logInTwoFactor.mockResolvedValue(authResult);
           });
 
-          it("navigates to the component's defined trusted device encryption route when login is successful", async () => {
+          it("navigates to the component's defined trusted device encryption route when login is successful and onSuccessfulLoginTdeNavigate is undefined", async () => {
             await component.doSubmit();
 
             expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
@@ -434,6 +434,15 @@ describe("TwoFactorComponent", () => {
               [_component.trustedDeviceEncRoute],
               undefined
             );
+          });
+
+          it("calls onSuccessfulLoginTdeNavigate instead of router.navigate when the callback is defined", async () => {
+            component.onSuccessfulLoginTdeNavigate = jest.fn().mockResolvedValue(undefined);
+
+            await component.doSubmit();
+
+            expect(mockRouter.navigate).not.toHaveBeenCalled();
+            expect(component.onSuccessfulLoginTdeNavigate).toHaveBeenCalled();
           });
         });
       });

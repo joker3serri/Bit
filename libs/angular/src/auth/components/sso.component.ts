@@ -33,7 +33,7 @@ export class SsoComponent {
   onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
   onSuccessfulLoginChangePasswordNavigate: () => Promise<any>;
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
-  onSuccessfulLoginTde: () => Promise<any>;
+  onSuccessfulLoginTdeNavigate: () => Promise<any>;
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "lock";
@@ -276,7 +276,7 @@ export class SsoComponent {
     }
 
     this.navigateViaCallbackOrRoute(
-      this.onSuccessfulLoginTde,
+      this.onSuccessfulLoginTdeNavigate,
       // Navigate to TDE page (if user was on trusted device and TDE has decrypted
       //  their user key, the login-initiated guard will redirect them to the vault)
       [this.trustedDeviceEncRoute]

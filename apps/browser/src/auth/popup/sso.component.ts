@@ -70,7 +70,7 @@ export class SsoComponent extends BaseSsoComponent {
       this.win.close();
     };
 
-    super.onSuccessfulLoginTde = async () => {
+    super.onSuccessfulLoginTdeNavigate = async () => {
       this.win.close();
     };
   }

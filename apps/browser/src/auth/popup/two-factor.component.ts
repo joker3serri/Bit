@@ -75,7 +75,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       return syncService.fullSync(true);
     };
 
-    super.onSuccessfulLoginTde = async () => {
+    super.onSuccessfulLoginTdeNavigate = async () => {
       this.win.close();
     };
     super.successRoute = "/tabs/vault";
