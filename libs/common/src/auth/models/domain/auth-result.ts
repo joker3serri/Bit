@@ -5,6 +5,7 @@ import { ForceResetPasswordReason } from "./force-reset-password-reason";
 
 export class AuthResult {
   captchaSiteKey = "";
+  // TODO: Remove this after 3 releases of backwards compatibility.
   /**
    * @deprecated
    * Replace with using AccountDecryptionOptions to determine if the user does
