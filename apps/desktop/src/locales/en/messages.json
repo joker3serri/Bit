@@ -2263,6 +2263,12 @@
     "message": "US",
     "description": "United States"
   },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
   "selfHosted": {
     "message": "Self-hosted"
   },

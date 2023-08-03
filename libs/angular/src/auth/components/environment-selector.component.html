@@ -8,8 +8,12 @@
     aria-controls="cdk-overlay-container"
     [ngSwitch]="selectedEnvironment"
   >
-    <label *ngSwitchCase="ServerEnvironmentType.US" class="text-primary">{{ "us" | i18n }}</label>
-    <label *ngSwitchCase="ServerEnvironmentType.EU" class="text-primary">{{ "eu" | i18n }}</label>
+    <label *ngSwitchCase="ServerEnvironmentType.US" class="text-primary">{{
+      "usDomain" | i18n
+    }}</label>
+    <label *ngSwitchCase="ServerEnvironmentType.EU" class="text-primary">{{
+      "euDomain" | i18n
+    }}</label>
     <label *ngSwitchCase="ServerEnvironmentType.SelfHosted" class="text-primary">{{
       "selfHosted" | i18n
     }}</label>
@@ -41,7 +45,7 @@
           "
         ></i>
         <img class="img-us" alt="" />
-        <span>{{ "us" | i18n }}</span>
+        <span>{{ "usDomain" | i18n }}</span>
       </button>
       <br />
       <button
@@ -59,7 +63,7 @@
           "
         ></i>
         <img class="img-eu" alt="" />
-        <span>{{ "eu" | i18n }}</span>
+        <span>{{ "euDomain" | i18n }}</span>
       </button>
       <br *ngIf="euServerFlagEnabled" />
       <button
