@@ -54,7 +54,7 @@ export class NodeEnvSecureStorageService implements AbstractStorageService {
       throw new Error("Value didn't encrypt.");
     }
 
-    return Utils.fromBufferToB64(encValue.buffer);
+    return Utils.fromBufferToB64(encValue);
   }
 
   private async decrypt(encValue: string): Promise<string> {

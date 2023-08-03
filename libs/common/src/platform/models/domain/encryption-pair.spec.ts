@@ -5,8 +5,8 @@ import { EncryptionPair } from "./account";
 describe("EncryptionPair", () => {
   describe("toJSON", () => {
     it("should populate decryptedSerialized for buffer arrays", () => {
-      const pair = new EncryptionPair<string, ArrayBuffer>();
-      pair.decrypted = Utils.fromByteStringToArray("hello").buffer;
+      const pair = new EncryptionPair<string, Uint8Array>();
+      pair.decrypted = Utils.fromByteStringToArray("hello");
       const json = pair.toJSON();
       expect(json.decrypted).toEqual("hello");
     });

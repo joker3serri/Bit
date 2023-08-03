@@ -58,7 +58,7 @@ describe("encArrayBuffer", () => {
       // Minus 1 to leave room for the encType, minus 1 to make it invalid
       const invalidBytes = makeStaticByteArray(minLength - 2);
 
-      const invalidArray = new Uint8Array(1 + invalidBytes.buffer.byteLength);
+      const invalidArray = new Uint8Array(1 + invalidBytes.byteLength);
       invalidArray.set([encType]);
       invalidArray.set(invalidBytes, 1);
 

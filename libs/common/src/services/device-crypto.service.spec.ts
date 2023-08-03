@@ -57,10 +57,10 @@ describe("deviceCryptoService", () => {
       let makeDeviceKeySpy: jest.SpyInstance;
 
       beforeEach(() => {
-        mockRandomBytes = new Uint8Array(deviceKeyBytesLength).buffer as CsprngArray;
+        mockRandomBytes = new Uint8Array(deviceKeyBytesLength) as CsprngArray;
         mockDeviceKey = new SymmetricCryptoKey(mockRandomBytes);
         existingDeviceKey = new SymmetricCryptoKey(
-          new Uint8Array(deviceKeyBytesLength).buffer as CsprngArray
+          new Uint8Array(deviceKeyBytesLength) as CsprngArray
         ) as DeviceKey;
 
         stateSvcGetDeviceKeySpy = jest.spyOn(stateService, "getDeviceKey");
@@ -97,7 +97,7 @@ describe("deviceCryptoService", () => {
 
     describe("makeDeviceKey", () => {
       it("creates a new non-null 64 byte device key, securely stores it, and returns it", async () => {
-        const mockRandomBytes = new Uint8Array(deviceKeyBytesLength).buffer as CsprngArray;
+        const mockRandomBytes = new Uint8Array(deviceKeyBytesLength) as CsprngArray;
 
         const cryptoFuncSvcRandomBytesSpy = jest
           .spyOn(cryptoFunctionService, "randomBytes")
@@ -156,10 +156,10 @@ describe("deviceCryptoService", () => {
       beforeEach(() => {
         // Setup all spies and default return values for the happy path
 
-        mockDeviceKeyRandomBytes = new Uint8Array(deviceKeyBytesLength).buffer as CsprngArray;
+        mockDeviceKeyRandomBytes = new Uint8Array(deviceKeyBytesLength) as CsprngArray;
         mockDeviceKey = new SymmetricCryptoKey(mockDeviceKeyRandomBytes) as DeviceKey;
 
-        mockUserSymKeyRandomBytes = new Uint8Array(userSymKeyBytesLength).buffer as CsprngArray;
+        mockUserSymKeyRandomBytes = new Uint8Array(userSymKeyBytesLength) as CsprngArray;
         mockUserSymKey = new SymmetricCryptoKey(mockUserSymKeyRandomBytes);
 
         mockDeviceRsaKeyPair = [
