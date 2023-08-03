@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MenuComponent } from "@bitwarden/components";
 
 type ProductSwitcherItem = {
@@ -57,21 +58,21 @@ export class ProductSwitcherContentComponent {
        */
       const products: Record<"pm" | "sm" | "orgs", ProductSwitcherItem> = {
         pm: {
-          name: "Password Manager",
+          name: "passwordManager",
           icon: "bwi-lock",
           appRoute: "/vault",
           marketingRoute: "https://bitwarden.com/products/personal/",
           isActive: !this.router.url.includes("/sm/"),
         },
         sm: {
-          name: "Secrets Manager Beta",
+          name: "secretsManager",
           icon: "bwi-cli",
           appRoute: ["/sm", smOrg?.id],
           marketingRoute: "https://bitwarden.com/products/secrets-manager/",
           isActive: this.router.url.includes("/sm/"),
         },
         orgs: {
-          name: "Organizations",
+          name: "organizations",
           icon: "bwi-business",
           marketingRoute: "https://bitwarden.com/products/business/",
         },
@@ -100,6 +101,7 @@ export class ProductSwitcherContentComponent {
   constructor(
     private organizationService: OrganizationService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private i18nService: I18nService
   ) {}
 }
