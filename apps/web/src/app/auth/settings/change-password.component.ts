@@ -190,20 +190,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     newMasterKey: MasterKey,
     newUserKey: [UserKey, EncString]
   ) {
-    // This is a recreation of what is done in user-verification.service since
-    // TDE accounts might have a master password but they could have logged in
-    // through a trusted device so we have never set a master key for them
-    // into state.
-    let masterKey = await this.cryptoService.getMasterKey();
-    if (!masterKey) {
-      masterKey = await this.cryptoService.makeMasterKey(
-        this.currentMasterPassword,
-        await this.stateService.getEmail(),
-        await this.stateService.getKdfType(),
-        await this.stateService.getKdfConfig()
-      );
-    }
-
+    const masterKey = await this.cryptoService.getOrDeriveMasterKey(this.currentMasterPassword);
     const request = new PasswordRequest();
     request.masterPasswordHash = await this.cryptoService.hashMasterKey(
       this.currentMasterPassword,
