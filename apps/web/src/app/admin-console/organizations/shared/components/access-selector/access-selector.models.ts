@@ -7,7 +7,7 @@ import { SelectItemView } from "@bitwarden/components";
 import { CollectionAccessSelectionView } from "../../../core";
 
 /**
- * Permission options that replace/correspond with readOnly and hidePassword server fields.
+ * Permission options that replace/correspond with manage, readOnly, and hidePassword server fields.
  */
 export enum CollectionPermission {
   View = "view",
@@ -83,10 +83,10 @@ export type AccessItemValue = {
  * @param value
  */
 export const convertToPermission = (value: CollectionAccessSelectionView) => {
-  if (value.readOnly) {
-    return value.hidePasswords ? CollectionPermission.ViewExceptPass : CollectionPermission.View;
-  } else if (value.manage) {
+  if (value.manage) {
     return CollectionPermission.Manage;
+  } else if (value.readOnly) {
+    return value.hidePasswords ? CollectionPermission.ViewExceptPass : CollectionPermission.View;
   } else {
     return value.hidePasswords ? CollectionPermission.EditExceptPass : CollectionPermission.Edit;
   }
@@ -94,7 +94,7 @@ export const convertToPermission = (value: CollectionAccessSelectionView) => {
 
 /**
  * Converts an AccessItemValue back into a CollectionAccessView class using the CollectionPermission
- * to determine the values for `readOnly` and `hidePassword`
+ * to determine the values for `manage`, `readOnly`, and `hidePassword`
  * @param value
  */
 export const convertToSelectionView = (value: AccessItemValue) => {
