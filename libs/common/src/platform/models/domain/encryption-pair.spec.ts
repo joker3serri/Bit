@@ -5,10 +5,17 @@ import { EncryptionPair } from "./account";
 describe("EncryptionPair", () => {
   describe("toJSON", () => {
     it("should populate decryptedSerialized for buffer arrays", () => {
+      const pair = new EncryptionPair<string, ArrayBuffer>();
+      pair.decrypted = Utils.fromByteStringToArray("hello").buffer;
+      const json = pair.toJSON();
+      expect(json.decrypted).toEqual("hello");
+    });
+
+    it("should populate decryptedSerialized for TypesArrays", () => {
       const pair = new EncryptionPair<string, Uint8Array>();
       pair.decrypted = Utils.fromByteStringToArray("hello");
       const json = pair.toJSON();
-      expect(json.decrypted).toEqual("hello");
+      expect(json.decrypted).toEqual(new Uint8Array([104, 101, 108, 108, 111]));
     });
 
     it("should serialize encrypted and decrypted", () => {
