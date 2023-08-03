@@ -360,11 +360,18 @@ describe("Utils Service", () => {
   });
 
   describe("daysRemaining", () => {
-    const now = new Date(2023, 9, 2);
-    jest.spyOn(Date, "now").mockReturnValue(now.getTime());
+    beforeAll(() => {
+      const now = new Date(2023, 9, 2, 10);
+      jest.spyOn(Date, "now").mockReturnValue(now.getTime());
+    });
+
+    afterAll(() => {
+      jest.restoreAllMocks();
+    });
 
     it("should return 0 for equal dates", () => {
       expect(Utils.daysRemaining(new Date(2023, 9, 2))).toBe(0);
+      expect(Utils.daysRemaining(new Date(2023, 9, 2, 12))).toBe(0);
     });
 
     it("should return 0 for dates in the past", () => {
@@ -373,10 +380,10 @@ describe("Utils Service", () => {
     });
 
     it("should handle future dates", () => {
-      expect(Utils.daysRemaining(new Date(2023, 9, 3))).toBe(1);
-      expect(Utils.daysRemaining(new Date(2023, 10, 12))).toBe(41);
+      expect(Utils.daysRemaining(new Date(2023, 9, 3, 10))).toBe(1);
+      expect(Utils.daysRemaining(new Date(2023, 10, 12, 10))).toBe(41);
       // leap year
-      expect(Utils.daysRemaining(new Date(2024, 9, 2))).toBe(366);
+      expect(Utils.daysRemaining(new Date(2024, 9, 2, 10))).toBe(366);
     });
   });
 });
