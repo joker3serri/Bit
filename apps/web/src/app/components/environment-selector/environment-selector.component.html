@@ -29,7 +29,7 @@
     </a>
   </bit-menu>
   <span *ngIf="hasFlags" class="!tw-inline-block !tw-w-52 !tw-min-w-52">
-    <label>{{ "region" | i18n }}:</label>
+    <label>{{ "server" | i18n }}:</label>
     <a
       [routerLink]="[]"
       [bitMenuTriggerFor]="environmentOptions"
@@ -46,7 +46,7 @@
     </a>
   </span>
   <div *ngIf="!hasFlags">
-    {{ "region" | i18n }}:
+    {{ "server" | i18n }}:
     <a [routerLink]="[]" [bitMenuTriggerFor]="environmentOptions">
       <b>{{ isEuServer ? ("euDomain" | i18n) : ("usDomain" | i18n) }}</b
       ><i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
