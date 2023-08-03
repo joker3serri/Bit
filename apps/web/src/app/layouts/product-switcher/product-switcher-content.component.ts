@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MenuComponent } from "@bitwarden/components";
 
 type ProductSwitcherItem = {
@@ -101,7 +100,6 @@ export class ProductSwitcherContentComponent {
   constructor(
     private organizationService: OrganizationService,
     private route: ActivatedRoute,
-    private router: Router,
-    private i18nService: I18nService
+    private router: Router
   ) {}
 }
