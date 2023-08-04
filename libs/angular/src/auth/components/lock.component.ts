@@ -345,6 +345,19 @@ export class LockComponent implements OnInit, OnDestroy {
   private async load() {
     this.pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();
 
+    // The loading of the lock component works as follows:
+    //   1. First, is locking a valid timeout action?  If not, we will log the user out.
+    //   2. If locking IS a valid timeout action, we proceed to show the user the lock screen.
+    //      The user will be able to unlock as follows:
+    //        - If they have a PIN set, they will be presented with the PIN input
+    //        - If they have a master password and no PIN, they will be presented with the master password input
+    //        - If they have biometrics enabled, they will be presented with the biometric prompt
+    //   Note: The following scenario is currently NOT handled:
+    //     - The user has a master password and no PIN
+    //     - The user has logged in with Trusted Device Encryption
+    //     - The user is offline
+    //     - The user locks their vault
+    //   This will result in the user not being able to unlock their vault and having to log out.
     let ephemeralPinSet = await this.stateService.getUserKeyPinEphemeral();
     ephemeralPinSet ||= await this.stateService.getDecryptedPinProtected();
     this.pinEnabled =
