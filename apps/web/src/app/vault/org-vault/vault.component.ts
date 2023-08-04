@@ -517,11 +517,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async editCipherAttachments(cipher: CipherView) {
-    if (
-      cipher != null &&
-      cipher.reprompt != 0 &&
-      !(await this.passwordRepromptService.showPasswordPrompt())
-    ) {
+    if (cipher?.reprompt !== 0 && !(await this.passwordRepromptService.showPasswordPrompt())) {
       this.go({ cipherId: null, itemId: null });
       return;
     }
@@ -604,11 +600,9 @@ export class VaultComponent implements OnInit, OnDestroy {
     additionalComponentParameters?: (comp: AddEditComponent) => void
   ) {
     const cipher = await this.cipherService.get(cipherId);
-    if (cipher != null && cipher.reprompt != 0) {
-      if (!(await this.passwordRepromptService.showPasswordPrompt())) {
-        this.go({ cipherId: null, itemId: null });
-        return;
-      }
+    if (cipher?.reprompt !== 0 && !(await this.passwordRepromptService.showPasswordPrompt())) {
+      this.go({ cipherId: null, itemId: null });
+      return;
     }
 
     const defaultComponentParameters = (comp: AddEditComponent) => {
