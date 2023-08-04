@@ -120,10 +120,10 @@ describe("Cipher Service", () => {
       const fileName = "filename";
       const fileData = new Uint8Array(10).buffer;
       cryptoService.getOrgKey.mockReturnValue(
-        Promise.resolve<any>(new SymmetricCryptoKey(new Uint8Array(32).buffer))
+        Promise.resolve<any>(new SymmetricCryptoKey(new Uint8Array(32)))
       );
       cryptoService.makeEncKey.mockReturnValue(
-        Promise.resolve<any>(new SymmetricCryptoKey(new Uint8Array(32).buffer))
+        Promise.resolve<any>(new SymmetricCryptoKey(new Uint8Array(32)))
       );
       const spy = jest.spyOn(cipherFileUploadService, "upload");
 
