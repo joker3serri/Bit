@@ -2587,10 +2587,7 @@ export class StateService<
 
   async getUserSsoOrganizationIdentifier(options?: StorageOptions): Promise<string> {
     return (
-      await this.getAccount(
-        // REVIEW: Please think over if this is the best storage option
-        this.reconcileOptions(options, await this.defaultOnDiskOptions())
-      )
+      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
     )?.loginState?.ssoOrganizationIdentifier;
   }
 
@@ -2599,12 +2596,12 @@ export class StateService<
     options?: StorageOptions
   ): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
     account.loginState.ssoOrganizationIdentifier = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
   }
 
