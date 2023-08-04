@@ -244,7 +244,7 @@ export class AuthService implements AuthServiceAbstraction {
     }
 
     // If we don't have a user key in memory, we're locked
-    if (!this.cryptoService.hasUserKeyInMemory(userId)) {
+    if (!(await this.cryptoService.hasUserKeyInMemory(userId))) {
       // Check if the user has vault timeout set to never and verify that
       // they've never unlocked their vault
       const neverLock =
