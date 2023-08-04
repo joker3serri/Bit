@@ -107,11 +107,9 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
         // We are dealing with a new account if:
         //  - User does not have admin approval (i.e. has not enrolled into admin reset)
         //  - AND does not have a master password
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("accountSuccessfullyCreated")
-        );
+
+        // TODO: discuss how this doesn't make any sense to show here
+
         this.loadNewUserData();
       } else {
         this.loadUntrustedDeviceData(accountDecryptionOptions);
@@ -245,6 +243,12 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       const { publicKey, privateKey } = await this.cryptoService.initAccount();
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
       await this.apiService.postAccountKeys(keysRequest);
+
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("accountSuccessfullyCreated")
+      );
 
       await this.passwordResetEnrollmentService.enroll(this.data.organizationId);
 
