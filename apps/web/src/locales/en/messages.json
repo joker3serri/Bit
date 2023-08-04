@@ -6802,9 +6802,6 @@
   "enforceOnLoginDesc": {
     "message": "Require existing members to change their passwords"
   },
-  "region": {
-    "message": "Region"
-  },
   "usDomain": {
     "message": "bitwarden.com"
   },
