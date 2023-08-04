@@ -191,7 +191,6 @@ export class AccountProfile {
   entityId?: string;
   entityType?: string;
   everBeenUnlocked?: boolean;
-  everHadUserKey?: boolean;
   forcePasswordResetReason?: ForceResetPasswordReason;
   hasPremiumPersonally?: boolean;
   hasPremiumFromOrganization?: boolean;

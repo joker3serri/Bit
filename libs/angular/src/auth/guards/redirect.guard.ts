@@ -46,8 +46,9 @@ export function redirectGuard(overrides: Partial<RedirectRoutes> = {}): CanActiv
     // Browser Post SSO open popup flow where the user is AuthN and should see
     // decryption options and not the lock screen.
     const tdeEnabled = await deviceTrustCryptoService.supportsDeviceTrust();
-    const everHadUserKey = await cryptoService.getEverHadUserKey();
-    if (authStatus === AuthenticationStatus.Locked && tdeEnabled && !everHadUserKey) {
+    const userKey = await cryptoService.getUserKey();
+
+    if (authStatus === AuthenticationStatus.Locked && tdeEnabled && !userKey) {
       return router.createUrlTree([routes.notDecrypted], { queryParams: route.queryParams });
     }
 
