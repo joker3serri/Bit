@@ -28,12 +28,12 @@ export class SsoComponent {
 
   formPromise: Promise<AuthResult>;
   initiateSsoFormPromise: Promise<SsoPreValidateResponse>;
-  onSuccessfulLogin: () => Promise<any>;
-  onSuccessfulLoginNavigate: () => Promise<any>;
-  onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
-  onSuccessfulLoginChangePasswordNavigate: () => Promise<any>;
-  onSuccessfulLoginForceResetNavigate: () => Promise<any>;
-  onSuccessfulLoginTdeNavigate: () => Promise<any>;
+  onSuccessfulLogin: () => Promise<void>;
+  onSuccessfulLoginNavigate: () => Promise<void>;
+  onSuccessfulLoginTwoFactorNavigate: () => Promise<void>;
+  onSuccessfulLoginChangePasswordNavigate: () => Promise<void>;
+  onSuccessfulLoginForceResetNavigate: () => Promise<void>;
+  onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "lock";
