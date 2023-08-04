@@ -74,6 +74,9 @@ export class SsoComponent {
           state != null &&
           this.checkState(state, qParams.state)
         ) {
+          // We are not using a query param to pass org identifier around specifically
+          // for the browser SSO case when it needs it on extension open after SSO success
+          // on the TDE login decryption options component
           const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state);
           await this.logIn(qParams.code, codeVerifier, ssoOrganizationIdentifier);
           await this.stateService.setUserSsoOrganizationIdentifier(ssoOrganizationIdentifier);
