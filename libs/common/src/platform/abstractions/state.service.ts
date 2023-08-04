@@ -479,7 +479,7 @@ export abstract class StateService<T extends Account = Account> {
   setSsoState: (value: string, options?: StorageOptions) => Promise<void>;
   getUserSsoOrganizationIdentifier: (options?: StorageOptions) => Promise<string>;
   setUserSsoOrganizationIdentifier: (
-    value: Partial<string>,
+    value: string | null,
     options?: StorageOptions
   ) => Promise<void>;
   getTheme: (options?: StorageOptions) => Promise<ThemeType>;

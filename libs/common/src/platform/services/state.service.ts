@@ -2595,7 +2595,7 @@ export class StateService<
   }
 
   async setUserSsoOrganizationIdentifier(
-    value: Partial<string>,
+    value: string | null,
     options?: StorageOptions
   ): Promise<void> {
     const account = await this.getAccount(
