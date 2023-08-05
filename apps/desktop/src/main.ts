@@ -22,7 +22,6 @@ import { ElectronStorageService } from "./platform/services/electron-storage.ser
 import { I18nService } from "./platform/services/i18n.service";
 import { ElectronMainMessagingService } from "./services/electron-main-messaging.service";
 
-const { dialog } = require('electron')
 export class Main {
   logService: ElectronLogService;
   i18nService: I18nService;
@@ -224,9 +223,7 @@ export class Main {
     const enableHardwareRendering =
       await this.stateService.getEnableHardwareAcceleration();
     if (!enableHardwareRendering) {
-      dialog.showErrorBox('Title',"Disabling Hardware Acceleration") 
       app.disableHardwareAcceleration();
-      dialog.showErrorBox('Title', "Disabled!! Hardware Acceleration")
     }
   }
 }
