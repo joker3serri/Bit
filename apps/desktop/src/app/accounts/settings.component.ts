@@ -92,6 +92,7 @@ export class SettingsComponent implements OnInit {
       value: false,
       disabled: true,
     }),
+    enableHardwareAcceleration: false,
     enableDuckDuckGoBrowserIntegration: false,
     theme: [null as ThemeType | null],
     locale: [null as string | null],
@@ -241,6 +242,7 @@ export class SettingsComponent implements OnInit {
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
+      enableHardwareAcceleration: await this.stateService.getEnableHardwareAcceleration(),
       enableDuckDuckGoBrowserIntegration:
         await this.stateService.getEnableDuckDuckGoBrowserIntegration(),
       theme: await this.stateService.getTheme(),
@@ -589,6 +591,10 @@ export class SettingsComponent implements OnInit {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.form.value.enableBrowserIntegrationFingerprint
     );
+  }
+
+  async saveHardwareAcceleration() {
+    await this.stateService.setEnableHardwareAcceleration(this.form.value.enableHardwareAcceleration);
   }
 
   async updateApproveLoginRequests() {

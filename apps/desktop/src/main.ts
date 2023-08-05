@@ -142,6 +142,7 @@ export class Main {
   }
 
   bootstrap() {
+    this.toggleHardwareAcceleration();
     this.desktopCredentialStorageListener.init();
     this.windowMain.init().then(
       async () => {
@@ -216,5 +217,15 @@ export class Main {
           this.messagingService.send("ssoCallback", { code: code, state: receivedState });
         }
       });
+  }
+
+  private async toggleHardwareAcceleration(): Promise<void> {
+    const enableHardwareRendering =
+      await this.stateService.getEnableHardwareAcceleration();
+    if (!enableHardwareRendering) {
+      console.info("Disabling Hardware Acceleration")
+      app.disableHardwareAcceleration();
+      console.info("Disabled!! Hardware Acceleration")
+    }
   }
 }
