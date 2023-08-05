@@ -13,7 +13,6 @@ import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/model
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
@@ -39,7 +38,6 @@ export class AccountComponent {
   loading = true;
   canUseApi = false;
   org: OrganizationResponse;
-  formPromise: Promise<OrganizationResponse>;
   taxFormPromise: Promise<unknown>;
 
   // FormGroup validators taken from server Organization domain object
@@ -76,7 +74,6 @@ export class AccountComponent {
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
     private cryptoService: CryptoService,
-    private logService: LogService,
     private router: Router,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
@@ -89,24 +86,33 @@ export class AccountComponent {
 
     this.route.parent.parent.params
       .pipe(
-        switchMap((params) => {
+        switchMap((params) => this.organizationService.get$(params.organizationId)),
+        switchMap((organization) => {
+          // Set domain level organization variables
+          this.organizationId = organization.id;
+          this.canEditSubscription = organization.canEditSubscription;
+          this.canUseApi = organization.useApi;
+
+          // Update disabled states - reactive forms prefers not using disabled attribute
+          if (!this.selfHosted) {
+            this.formGroup.get("orgName").enable();
+          }
+
+          if (!this.selfHosted || this.canEditSubscription) {
+            this.formGroup.get("billingEmail").enable();
+            this.formGroup.get("businessName").enable();
+          }
+
           return combineLatest([
-            // Organization domain
-            this.organizationService.get$(params.organizationId),
             // OrganizationResponse for form population
-            from(this.organizationApiService.get(params.organizationId)),
+            from(this.organizationApiService.get(organization.id)),
             // Organization Public Key
-            from(this.organizationApiService.getKeys(params.organizationId)),
+            from(this.organizationApiService.getKeys(organization.id)),
           ]);
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(([organization, orgResponse, orgKeys]) => {
-        // Set domain level organization variables
-        this.organizationId = organization.id;
-        this.canEditSubscription = organization.canEditSubscription;
-        this.canUseApi = organization.useApi;
-
+      .subscribe(([orgResponse, orgKeys]) => {
         // Org Response
         this.org = orgResponse;
 
@@ -122,16 +128,6 @@ export class AccountComponent {
         this.collectionManagementFormGroup.patchValue({
           limitCollectionCdOwnerAdmin: this.org.limitCollectionCdOwnerAdmin,
         });
-
-        // Update disabled states - reactive forms prefers not using disabled attribute
-        if (!this.selfHosted) {
-          this.formGroup.get("orgName").enable();
-        }
-
-        if (!this.selfHosted || this.canEditSubscription) {
-          this.formGroup.get("billingEmail").enable();
-          this.formGroup.get("businessName").enable();
-        }
 
         this.loading = false;
       });
@@ -161,8 +157,8 @@ export class AccountComponent {
       request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
     }
 
-    this.formPromise = this.organizationApiService.save(this.organizationId, request);
-    await this.formPromise;
+    await this.organizationApiService.save(this.organizationId, request);
+
     this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
   };
 
