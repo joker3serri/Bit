@@ -92,7 +92,7 @@ export class SettingsComponent implements OnInit {
       value: false,
       disabled: true,
     }),
-    enableHardwareAcceleration: false,
+    enableHardwareAcceleration: true,
     enableDuckDuckGoBrowserIntegration: false,
     theme: [null as ThemeType | null],
     locale: [null as string | null],
