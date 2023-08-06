@@ -183,13 +183,21 @@ export class CryptoService implements CryptoServiceAbstraction {
     }
 
     if (!userKey) {
-      const userKeyMasterKey = await this.stateService.getMasterKeyEncryptedUserKey({
+      let masterKeyEncryptedUserKey = await this.stateService.getMasterKeyEncryptedUserKey({
         userId: userId,
       });
-      if (userKeyMasterKey == null) {
+
+      // Try one more way to get the user key if it still wasn't found.
+      if (masterKeyEncryptedUserKey == null) {
+        masterKeyEncryptedUserKey = await this.stateService.getEncryptedCryptoSymmetricKey({
+          userId: userId,
+        });
+      }
+
+      if (masterKeyEncryptedUserKey == null) {
         throw new Error("No encrypted user key found.");
       }
-      userKey = new EncString(userKeyMasterKey);
+      userKey = new EncString(masterKeyEncryptedUserKey);
     }
 
     let decUserKey: ArrayBuffer;
