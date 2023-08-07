@@ -70,7 +70,7 @@ export default class RuntimeBackground {
 
         if (this.lockedVaultPendingNotifications?.length > 0) {
           item = this.lockedVaultPendingNotifications.pop();
-          await BrowserApi.closeBitwardenPromptWindow();
+          await this.browserPopoutWindowService.closeUnlockPrompt();
         }
 
         await this.main.refreshBadge();
@@ -110,18 +110,15 @@ export default class RuntimeBackground {
         break;
       case "promptForLogin":
       case "bgReopenPromptForLogin":
-        BrowserApi.openBitwardenPromptWindow(sender.tab?.windowId);
+        await this.browserPopoutWindowService.openUnlockPrompt(sender.tab?.windowId);
         break;
       case "passwordReprompt":
         if (cipherId) {
-          const promptWindowPath =
-            `popup/index.html#/view-cipher` +
-            `?uilocation=popout` +
-            `&cipherId=${cipherId}` +
-            `&senderTabId=${sender.tab.id}` +
-            `&action=${msg.data?.action}`;
-
-          BrowserApi.openBitwardenPromptWindow(sender.tab?.windowId, promptWindowPath);
+          await this.browserPopoutWindowService.openPasswordRepromptPrompt(sender.tab?.windowId, {
+            cipherId: cipherId,
+            senderTabId: sender.tab.id,
+            action: msg.data?.action,
+          });
         }
         break;
       case "openAddEditCipher": {

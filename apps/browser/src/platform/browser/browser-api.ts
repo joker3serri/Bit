@@ -201,38 +201,6 @@ export class BrowserApi {
 
   private static registeredMessageListeners: any[] = [];
 
-  static async openBitwardenPromptWindow(senderWindowId?: number, promptWindowURL?: string) {
-    const senderWindow = senderWindowId && (await BrowserApi.getWindow(senderWindowId));
-    await BrowserApi.closeBitwardenPromptWindow();
-
-    const url = chrome.extension.getURL(promptWindowURL || "popup/index.html?uilocation=popout");
-
-    const defaultWindowOptions: chrome.windows.CreateData = {
-      url,
-      type: "normal",
-      focused: true,
-      width: 500,
-      height: 800,
-    };
-    const windowOptions = senderWindow
-      ? {
-          ...defaultWindowOptions,
-          left: senderWindow.left + senderWindow.width - defaultWindowOptions.width - 15,
-          top: senderWindow.top + 90,
-        }
-      : defaultWindowOptions;
-    await chrome.windows.create(windowOptions);
-  }
-
-  static async closeBitwardenPromptWindow(promptWindowURL?: string) {
-    const url = chrome.extension.getURL(promptWindowURL || "popup/index.html?uilocation=popout");
-    const tabs = await BrowserApi.tabsQuery({
-      url,
-      windowType: "popup",
-    });
-    tabs.forEach((tab) => chrome.tabs.remove(tab.id));
-  }
-
   static messageListener(
     name: string,
     callback: (message: any, sender: chrome.runtime.MessageSender, response: any) => void
