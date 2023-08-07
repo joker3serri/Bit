@@ -6,6 +6,7 @@ import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vau
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { KeyConnectorService } from "../../auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
+import { DeviceType } from "../../enums";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
@@ -34,9 +35,17 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     private loggedOutCallback: (expired: boolean, userId?: string) => Promise<void> = null
   ) {}
 
-  init(checkOnInterval: boolean) {
+  async init(checkOnInterval: boolean) {
     if (this.inited) {
       return;
+    }
+    const device = await this.platformUtilsService.getDevice();
+    if (
+      device === DeviceType.WindowsDesktop ||
+      device === DeviceType.MacOsDesktop ||
+      device === DeviceType.LinuxDesktop
+    ) {
+      await this.migrateKeyForNeverLockIfNeeded();
     }
 
     this.inited = true;
@@ -141,5 +150,14 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     timeoutAction === VaultTimeoutAction.LogOut
       ? await this.logOut(userId)
       : await this.lock(userId);
+  }
+
+  private async migrateKeyForNeverLockIfNeeded(): Promise<void> {
+    const accounts = await firstValueFrom(this.stateService.accounts$);
+    for (const userId in accounts) {
+      if (userId != null) {
+        await this.cryptoService.migrateAutoKeyIfNeeded(userId);
+      }
+    }
   }
 }
