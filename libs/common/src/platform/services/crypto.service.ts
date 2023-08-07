@@ -909,14 +909,19 @@ export class CryptoService implements CryptoServiceAbstraction {
       const masterKey = new SymmetricCryptoKey(
         Utils.fromB64ToArray(oldAutoKey).buffer
       ) as MasterKey;
+      const encryptedUserKey = await this.stateService.getEncryptedCryptoSymmetricKey({
+        userId: userId,
+      });
       const userKey = await this.decryptUserKeyWithMasterKey(
         masterKey,
-        new EncString(await this.stateService.getEncryptedCryptoSymmetricKey({ userId: userId })),
+        new EncString(encryptedUserKey),
         userId
       );
       // migrate
       await this.stateService.setUserKeyAutoUnlock(userKey.keyB64, { userId: userId });
       await this.stateService.setCryptoMasterKeyAuto(null, { userId: userId });
+      // set encrypted user key in case user immediately locks without syncing
+      await this.setMasterKeyEncryptedUserKey(encryptedUserKey);
     }
   }
 
