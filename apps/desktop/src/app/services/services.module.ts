@@ -39,6 +39,7 @@ import { SystemService } from "@bitwarden/common/platform/services/system.servic
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
@@ -71,6 +72,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
     NativeMessagingService,
     SearchBarService,
     LoginGuard,
+    DialogService,
     {
       provide: APP_INITIALIZER,
       useFactory: (initService: InitService) => initService.init(),
