@@ -79,7 +79,6 @@ import {
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
-import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
 import { BrowserOrganizationService } from "../../admin-console/services/browser-organization.service";
@@ -103,7 +102,6 @@ import { PasswordRepromptService } from "../../vault/popup/services/password-rep
 import { BrowserFolderService } from "../../vault/services/browser-folder.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
-import { BrowserDialogService } from "./browser-dialog.service";
 import { DebounceNavigationService } from "./debounceNavigationService";
 import { InitService } from "./init.service";
 import { PopupSearchService } from "./popup-search.service";
@@ -501,10 +499,6 @@ function getBgService<T>(service: keyof MainBackground) {
         AuthServiceAbstraction,
         EnvironmentService,
       ],
-    },
-    {
-      provide: DialogService,
-      useClass: BrowserDialogService,
     },
   ],
 })
