@@ -4,9 +4,9 @@ interface BrowserPopoutWindowService {
   openPasswordRepromptPrompt(
     senderWindowId: number,
     promptData: {
+      action: string;
       cipherId: string;
       senderTabId: number;
-      action: string;
     }
   ): Promise<void>;
   closePasswordRepromptPrompt(): Promise<void>;

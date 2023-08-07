@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
@@ -57,6 +58,8 @@ export class ViewComponent extends BaseViewComponent {
   inPopout = false;
   cipherType = CipherType;
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     cipherService: CipherService,
     folderService: FolderService,
@@ -107,10 +110,12 @@ export class ViewComponent extends BaseViewComponent {
   }
 
   ngOnInit() {
-    this.senderTabId =
-      parseInt((this.route.queryParams as any).value?.senderTabId, 10) || undefined;
-    this.loadAction = (this.route.queryParams as any).value?.action;
-    this.uilocation = (this.route.queryParams as any).value?.uilocation;
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.loadAction = value?.action;
+      this.senderTabId = parseInt(value?.senderTabId, 10) || undefined;
+      this.uilocation = value?.uilocation;
+    });
+
     this.inPopout = this.uilocation === "popout" || this.popupUtilsService.inPopout(window);
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
@@ -153,6 +158,8 @@ export class ViewComponent extends BaseViewComponent {
   }
 
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     super.ngOnDestroy();
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
   }

@@ -39,8 +39,8 @@ class BrowserPopoutWindowService implements BrowserPopupWindowServiceInterface {
     await this.closePasswordRepromptPrompt();
 
     const promptWindowPath =
-      `popup/index.html#/view-cipher` +
-      `?uilocation=popout` +
+      "popup/index.html#/view-cipher" +
+      "?uilocation=popout" +
       `&cipherId=${cipherId}` +
       `&senderTabId=${senderTabId}` +
       `&action=${action}`;
