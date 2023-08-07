@@ -39,7 +39,6 @@ import { SystemService } from "@bitwarden/common/platform/services/system.servic
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
-import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
@@ -52,7 +51,6 @@ import { ElectronRendererStorageService } from "../../platform/services/electron
 import { ElectronStateService } from "../../platform/services/electron-state.service";
 import { ElectronStateService as ElectronStateServiceAbstraction } from "../../platform/services/electron-state.service.abstraction";
 import { I18nService } from "../../platform/services/i18n.service";
-import { ElectronDialogService } from "../../services/electron-dialog.service";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
 import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
@@ -177,10 +175,6 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       provide: LoginServiceAbstraction,
       useClass: LoginService,
       deps: [StateServiceAbstraction],
-    },
-    {
-      provide: DialogService,
-      useClass: ElectronDialogService,
     },
     {
       provide: CryptoServiceAbstraction,
