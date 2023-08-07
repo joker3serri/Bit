@@ -185,7 +185,7 @@ export class ViewComponent extends BaseViewComponent {
         break;
     }
 
-    if (this.inPopout) {
+    if (this.inPopout && this.loadAction) {
       this.close();
     }
   }
