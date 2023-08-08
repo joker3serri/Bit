@@ -42,14 +42,21 @@ export class ConfigService implements ConfigServiceAbstraction {
         this._serverConfig.next(serverConfig);
 
         const userAuthStatus = await this.authService.getAuthStatus();
-        if (
-          userAuthStatus === AuthenticationStatus.LoggedOut ||
-          userAuthStatus === AuthenticationStatus.Locked
-        ) {
+        if (userAuthStatus === AuthenticationStatus.LoggedOut) {
+          // if user is unauthenticated, then we can't set server config below
+          // as it is saved on an active account and there isn't one when
+          // the user is logged out
           return serverConfig;
         }
+
         await this.stateService.setServerConfig(data);
         this.environmentService.setCloudWebVaultUrl(data.environment?.cloudRegion);
+
+        // Always return new server config from server to calling method
+        // to ensure up to date information
+        // This change is specifically for the getFeatureFlag > buildServerConfig flow
+        // for locked or logged in users.
+        return serverConfig;
       }
     } catch {
       return null;
