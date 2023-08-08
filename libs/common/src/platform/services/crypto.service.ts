@@ -45,8 +45,15 @@ export class CryptoService implements CryptoServiceAbstraction {
   ) {}
 
   async setUserKey(key: UserKey, userId?: string): Promise<void> {
+    if (key != null) {
+      await this.stateService.setEverHadUserKey(true, { userId: userId });
+    }
     await this.stateService.setUserKey(key, { userId: userId });
     await this.storeAdditionalKeys(key, userId);
+  }
+
+  async getEverHadUserKey(userId?: string): Promise<boolean> {
+    return await this.stateService.getEverHadUserKey({ userId: userId });
   }
 
   async refreshAdditionalKeys(): Promise<void> {
@@ -149,6 +156,16 @@ export class CryptoService implements CryptoServiceAbstraction {
       await this.setMasterKey(masterKey, userId);
     }
     return masterKey;
+  }
+
+  async getOrDeriveMasterKey(password: string, userId?: string) {
+    let masterKey = await this.getMasterKey(userId);
+    return (masterKey ||= await this.makeMasterKey(
+      password,
+      await this.stateService.getEmail({ userId: userId }),
+      await this.stateService.getKdfType({ userId: userId }),
+      await this.stateService.getKdfConfig({ userId: userId })
+    ));
   }
 
   async makeMasterKey(
@@ -319,7 +336,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     const encOrgKeyData = await this.stateService.getEncryptedOrganizationKeys();
     if (encOrgKeyData == null) {
-      return null;
+      return result;
     }
 
     let setKey = false;
@@ -703,6 +720,28 @@ export class CryptoService implements CryptoServiceAbstraction {
     }
 
     return true;
+  }
+
+  /**
+   * Initialize all necessary crypto keys needed for a new account.
+   * Warning! This completely replaces any existing keys!
+   */
+  async initAccount(): Promise<{
+    userKey: UserKey;
+    publicKey: string;
+    privateKey: EncString;
+  }> {
+    const randomBytes = await this.cryptoFunctionService.randomBytes(64);
+    const userKey = new SymmetricCryptoKey(randomBytes) as UserKey;
+    const [publicKey, privateKey] = await this.makeKeyPair(userKey);
+    await this.setUserKey(userKey);
+    await this.stateService.setEncryptedPrivateKey(privateKey.encryptedString);
+
+    return {
+      userKey,
+      publicKey,
+      privateKey,
+    };
   }
 
   /**

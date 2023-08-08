@@ -97,6 +97,22 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     await this.userVerificationApiService.postAccountRequestOTP();
   }
 
+  /**
+   * Check if user has master password or can only use passwordless technologies to log in
+   * Note: This only checks the server, not the local state
+   * @param userId The user id to check. If not provided, the current user is used
+   * @returns True if the user has a master password
+   */
+  async hasMasterPassword(userId?: string): Promise<boolean> {
+    const decryptionOptions = await this.stateService.getAccountDecryptionOptions({ userId });
+
+    if (decryptionOptions?.hasMasterPassword != undefined) {
+      return decryptionOptions.hasMasterPassword;
+    }
+
+    return !(await this.stateService.getUsesKeyConnector({ userId }));
+  }
+
   private validateInput(verification: Verification) {
     if (verification?.secret == null || verification.secret === "") {
       if (verification.type === VerificationType.OTP) {

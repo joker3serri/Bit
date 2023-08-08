@@ -6,7 +6,13 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
-import { Account, AccountProfile, AccountTokens } from "../../platform/models/domain/account";
+import {
+  Account,
+  AccountDecryptionOptions,
+  AccountKeys,
+  AccountProfile,
+  AccountTokens,
+} from "../../platform/models/domain/account";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
@@ -98,12 +104,28 @@ export abstract class LogInStrategy {
 
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
     const accountInformation = await this.tokenService.decodeToken(tokenResponse.accessToken);
+
+    // Must persist existing device key if it exists for trusted device decryption to work
+    // However, we must provide a user id so that the device key can be retrieved
+    // as the state service won't have an active account at this point in time
+    // even though the data exists in local storage.
+    const userId = accountInformation.sub;
+
+    const deviceKey = await this.stateService.getDeviceKey({ userId });
+    const accountKeys = new AccountKeys();
+    if (deviceKey) {
+      accountKeys.deviceKey = deviceKey;
+    }
+
+    // If you don't persist existing admin auth requests on login, they will get deleted.
+    const adminAuthRequest = await this.stateService.getAdminAuthRequest({ userId });
+
     await this.stateService.addAccount(
       new Account({
         profile: {
           ...new AccountProfile(),
           ...{
-            userId: accountInformation.sub,
+            userId,
             name: accountInformation.name,
             email: accountInformation.email,
             hasPremiumPersonally: accountInformation.premium,
@@ -120,6 +142,11 @@ export abstract class LogInStrategy {
             refreshToken: tokenResponse.refreshToken,
           },
         },
+        keys: accountKeys,
+        decryptionOptions: AccountDecryptionOptions.fromResponse(
+          tokenResponse.userDecryptionOptions
+        ),
+        adminAuthRequest: adminAuthRequest?.toJSON(),
       })
     );
   }

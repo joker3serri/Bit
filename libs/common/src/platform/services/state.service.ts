@@ -6,6 +6,7 @@ import { OrganizationData } from "../../admin-console/models/data/organization.d
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
+import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { ForceResetPasswordReason } from "../../auth/models/domain/force-reset-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
@@ -43,6 +44,7 @@ import { ServerConfigData } from "../models/data/server-config.data";
 import {
   Account,
   AccountData,
+  AccountDecryptionOptions,
   AccountSettings,
   AccountSettingsSettings,
 } from "../models/domain/account";
@@ -1310,10 +1312,17 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    return account?.keys?.deviceKey as DeviceKey;
+    const existingDeviceKey = account?.keys?.deviceKey;
+
+    // Must manually instantiate the SymmetricCryptoKey class from the JSON object
+    if (existingDeviceKey != null) {
+      return SymmetricCryptoKey.fromJSON(existingDeviceKey) as DeviceKey;
+    } else {
+      return null;
+    }
   }
 
-  async setDeviceKey(value: DeviceKey, options?: StorageOptions): Promise<void> {
+  async setDeviceKey(value: DeviceKey | null, options?: StorageOptions): Promise<void> {
     options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
 
     if (options?.userId == null) {
@@ -1322,7 +1331,94 @@ export class StateService<
 
     const account = await this.getAccount(options);
 
-    account.keys.deviceKey = value;
+    account.keys.deviceKey = value?.toJSON() ?? null;
+
+    await this.saveAccount(account, options);
+  }
+
+  async getAdminAuthRequest(options?: StorageOptions): Promise<AdminAuthRequestStorable | null> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
+    if (options?.userId == null) {
+      return null;
+    }
+
+    const account = await this.getAccount(options);
+
+    return account?.adminAuthRequest
+      ? AdminAuthRequestStorable.fromJSON(account.adminAuthRequest)
+      : null;
+  }
+
+  async setAdminAuthRequest(
+    adminAuthRequest: AdminAuthRequestStorable,
+    options?: StorageOptions
+  ): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
+    if (options?.userId == null) {
+      return;
+    }
+
+    const account = await this.getAccount(options);
+
+    account.adminAuthRequest = adminAuthRequest?.toJSON();
+
+    await this.saveAccount(account, options);
+  }
+
+  async getShouldTrustDevice(options?: StorageOptions): Promise<boolean> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
+    if (options?.userId == null) {
+      return null;
+    }
+
+    const account = await this.getAccount(options);
+
+    return account?.settings?.trustDeviceChoiceForDecryption ?? false;
+  }
+
+  async setShouldTrustDevice(value: boolean, options?: StorageOptions): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+    if (options?.userId == null) {
+      return;
+    }
+
+    const account = await this.getAccount(options);
+
+    account.settings.trustDeviceChoiceForDecryption = value;
+
+    await this.saveAccount(account, options);
+  }
+
+  async getAccountDecryptionOptions(
+    options?: StorageOptions
+  ): Promise<AccountDecryptionOptions | null> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
+    if (options?.userId == null) {
+      return null;
+    }
+
+    const account = await this.getAccount(options);
+
+    return account?.decryptionOptions as AccountDecryptionOptions;
+  }
+
+  async setAccountDecryptionOptions(
+    value: AccountDecryptionOptions,
+    options?: StorageOptions
+  ): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
+
+    if (options?.userId == null) {
+      return;
+    }
+
+    const account = await this.getAccount(options);
+
+    account.decryptionOptions = value;
 
     await this.saveAccount(account, options);
   }
@@ -1902,6 +1998,24 @@ export class StateService<
     );
   }
 
+  async getEverHadUserKey(options?: StorageOptions): Promise<boolean> {
+    return (
+      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.profile?.everHadUserKey ?? false
+    );
+  }
+
+  async setEverHadUserKey(value: boolean, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    account.profile.everHadUserKey = value;
+    await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
   async getEverBeenUnlocked(options?: StorageOptions): Promise<boolean> {
     return (
       (await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions())))
@@ -2472,6 +2586,26 @@ export class StateService<
     globals.ssoState = value;
     await this.saveGlobals(
       globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
+  async getUserSsoOrganizationIdentifier(options?: StorageOptions): Promise<string> {
+    return (
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+    )?.loginState?.ssoOrganizationIdentifier;
+  }
+
+  async setUserSsoOrganizationIdentifier(
+    value: string | null,
+    options?: StorageOptions
+  ): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    account.loginState.ssoOrganizationIdentifier = value;
+    await this.saveAccount(
+      account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -3057,11 +3191,12 @@ export class StateService<
     }
   }
 
-  // settings persist even on reset, and are not effected by this method
+  // settings persist even on reset, and are not affected by this method
   protected resetAccount(account: TAccount) {
     const persistentAccountInformation = {
       settings: account.settings,
       keys: { deviceKey: account.keys.deviceKey },
+      adminAuthRequest: account.adminAuthRequest,
     };
     return Object.assign(this.createAccount(), persistentAccountInformation);
   }
