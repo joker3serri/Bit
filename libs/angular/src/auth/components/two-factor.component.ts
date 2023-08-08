@@ -320,7 +320,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     if (this.onSuccessfulLogin != null) {
       // Note: awaiting this will currently cause a hang on desktop & browser as they will wait for a full sync to complete
       // before navigating to the success route.
-      await this.onSuccessfulLogin();
+      this.onSuccessfulLogin();
     }
     await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
   }
