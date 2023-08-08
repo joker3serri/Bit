@@ -6,7 +6,6 @@ import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vau
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { KeyConnectorService } from "../../auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
-import { DeviceType } from "../../enums";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
@@ -39,14 +38,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     if (this.inited) {
       return;
     }
-    const device = await this.platformUtilsService.getDevice();
-    if (
-      device === DeviceType.WindowsDesktop ||
-      device === DeviceType.MacOsDesktop ||
-      device === DeviceType.LinuxDesktop
-    ) {
-      await this.migrateKeyForNeverLockIfNeeded();
-    }
+    await this.migrateKeyForNeverLockIfNeeded();
 
     this.inited = true;
     if (checkOnInterval) {
