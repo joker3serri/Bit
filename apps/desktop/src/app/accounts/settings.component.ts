@@ -420,6 +420,13 @@ export class SettingsComponent implements OnInit {
       this.form.controls.pin.setValue(this.userHasPinSet, { emitEvent: false });
     }
     if (!value) {
+      // If user turned off PIN and has biometric + require PIN on restart enabled
+      if (this.form.value.requirePasswordOnStart) {
+        // then must turn that off to prevent user from getting into bad state
+        this.form.controls.requirePasswordOnStart.setValue(false);
+        await this.updateRequirePasswordOnStart();
+      }
+
       await this.vaultTimeoutSettingsService.clear();
     }
   }
