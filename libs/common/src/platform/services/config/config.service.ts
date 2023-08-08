@@ -40,7 +40,12 @@ export class ConfigService implements ConfigServiceAbstraction {
         const data = new ServerConfigData(response);
         const serverConfig = new ServerConfig(data);
         this._serverConfig.next(serverConfig);
-        if ((await this.authService.getAuthStatus()) === AuthenticationStatus.LoggedOut) {
+
+        const userAuthStatus = await this.authService.getAuthStatus();
+        if (
+          userAuthStatus === AuthenticationStatus.LoggedOut ||
+          userAuthStatus === AuthenticationStatus.Locked
+        ) {
           return serverConfig;
         }
         await this.stateService.setServerConfig(data);
