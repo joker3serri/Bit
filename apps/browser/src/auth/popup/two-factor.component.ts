@@ -71,13 +71,17 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       configService
     );
     super.onSuccessfulLogin = () => {
-      this.loginService.clearValues();
+      return syncService.fullSync(true);
+    };
+
+    super.onSuccessfulLoginTde = async () => {
       return syncService.fullSync(true);
     };
 
     super.onSuccessfulLoginTdeNavigate = async () => {
       this.win.close();
     };
+
     super.successRoute = "/tabs/vault";
     // FIXME: Chromium 110 has broken WebAuthn support in extensions via an iframe
     this.webAuthnNewTab = true;
