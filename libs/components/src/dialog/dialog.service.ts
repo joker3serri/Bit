@@ -23,7 +23,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { SimpleConfigurableDialogComponent } from "./simple-dialog/simple-configurable-dialog/simple-configurable-dialog.component";
-import { SimpleDialogOptions, Translation } from "./simple-dialog/types";
+import { SimpleDialogCloseType, SimpleDialogOptions, Translation } from "./simple-dialog/types";
 
 @Injectable()
 export class DialogService extends Dialog implements OnDestroy {
@@ -86,12 +86,12 @@ export class DialogService extends Dialog implements OnDestroy {
    * @returns `boolean` - True if the user accepted the dialog, false otherwise.
    */
   async openSimpleDialog(simpleDialogOptions: SimpleDialogOptions): Promise<boolean> {
-    const dialogRef = this.open(SimpleConfigurableDialogComponent, {
+    const dialogRef = this.open<SimpleDialogCloseType>(SimpleConfigurableDialogComponent, {
       data: simpleDialogOptions,
       disableClose: simpleDialogOptions.disableClose,
     });
 
-    return (await firstValueFrom(dialogRef.closed)) == "accept";
+    return firstValueFrom(dialogRef.closed);
   }
 
   /**

@@ -52,6 +52,6 @@ export type SimpleDialogOptions = {
   disableClose?: boolean;
 };
 
-export type SimpleDialogCloseType = "accept" | "cancel";
+export type SimpleDialogCloseType = boolean;
 
 export type SimpleDialogType = "primary" | "success" | "info" | "warning" | "danger";

@@ -6,7 +6,7 @@
   <div bitDialogContent>{{ content }}</div>
 
   <ng-container bitDialogFooter>
-    <button type="button" bitButton buttonType="primary" (click)="dialogRef.close('accept')">
+    <button type="button" bitButton buttonType="primary" (click)="dialogRef.close(true)">
       {{ acceptButtonText }}
     </button>
 
@@ -15,7 +15,7 @@
       type="button"
       bitButton
       buttonType="secondary"
-      (click)="dialogRef.close('cancel')"
+      (click)="dialogRef.close(false)"
     >
       {{ cancelButtonText }}
     </button>

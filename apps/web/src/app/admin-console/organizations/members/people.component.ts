@@ -371,7 +371,7 @@ export class PeopleComponent
         return;
       }
 
-      if (result == "accept" && this.organization.canEditSubscription) {
+      if (result && this.organization.canEditSubscription) {
         this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
           queryParams: { upgrade: true },
         });
