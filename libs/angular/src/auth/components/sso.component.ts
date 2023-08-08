@@ -33,6 +33,8 @@ export class SsoComponent {
   onSuccessfulLoginTwoFactorNavigate: () => Promise<void>;
   onSuccessfulLoginChangePasswordNavigate: () => Promise<void>;
   onSuccessfulLoginForceResetNavigate: () => Promise<void>;
+
+  onSuccessfulLoginTde: () => Promise<unknown>;
   onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   protected twoFactorRoute = "2fa";
@@ -276,6 +278,10 @@ export class SsoComponent {
 
     if (authResult.forcePasswordReset !== ForceResetPasswordReason.None) {
       return await this.handleForcePasswordReset(orgIdentifier);
+    }
+
+    if (this.onSuccessfulLoginTde != null) {
+      await this.onSuccessfulLoginTde();
     }
 
     this.navigateViaCallbackOrRoute(
