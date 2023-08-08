@@ -1,5 +1,3 @@
-import * as os from "os";
-
 import { Component, OnInit } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 
@@ -55,27 +53,5 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
 
   ngOnDestroy() {
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
-  }
-
-  async warningDialog() {
-    if (this.encryptedFormat) {
-      return await this.dialogService.openSimpleDialog({
-        title: { key: "confirmVaultExport" },
-        content:
-          this.i18nService.t("encExportKeyWarningDesc") +
-          os.EOL +
-          os.EOL +
-          this.i18nService.t("encExportAccountWarningDesc"),
-        acceptButtonText: { key: "exportVault" },
-        type: "warning",
-      });
-    } else {
-      return await this.dialogService.openSimpleDialog({
-        title: { key: "confirmVaultExport" },
-        content: { key: "exportWarningDesc" },
-        acceptButtonText: { key: "exportVault" },
-        type: "warning",
-      });
-    }
   }
 }
