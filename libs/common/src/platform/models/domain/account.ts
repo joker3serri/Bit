@@ -102,8 +102,6 @@ export class AccountKeys {
   userKey?: UserKey;
   masterKey?: MasterKey;
   masterKeyEncryptedUserKey?: string;
-  userKeyAutoUnlock?: string;
-  userKeyBiometric?: string;
   deviceKey?: DeviceKey;
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
