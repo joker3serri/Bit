@@ -420,8 +420,8 @@ export class SettingsComponent implements OnInit {
       this.form.controls.pin.setValue(this.userHasPinSet, { emitEvent: false });
     }
     if (!value) {
-      // If user turned off PIN and has biometric + require PIN on restart enabled
-      if (this.form.value.requirePasswordOnStart) {
+      // If user turned off PIN without having a MP and has biometric + require MP/PIN on restart enabled
+      if (this.form.value.requirePasswordOnStart && !this.userHasMasterPassword) {
         // then must turn that off to prevent user from getting into bad state
         this.form.controls.requirePasswordOnStart.setValue(false);
         await this.updateRequirePasswordOnStart();
