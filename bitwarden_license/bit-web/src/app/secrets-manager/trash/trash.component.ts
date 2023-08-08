@@ -3,9 +3,12 @@ import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { SecretListView } from "../models/view/secret-list.view";
 import { SecretService } from "../secrets/secret.service";
+import { SecretsListComponent } from "../shared/secrets-list.component";
 
 import {
   SecretHardDeleteDialogComponent,
@@ -28,7 +31,9 @@ export class TrashComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private secretService: SecretService,
-    private dialogService: DialogServiceAbstraction
+    private dialogService: DialogServiceAbstraction,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
   ) {}
 
   ngOnInit() {
@@ -64,5 +69,9 @@ export class TrashComponent implements OnInit {
         organizationId: this.organizationId,
       },
     });
+  }
+
+  copySecretUuid(id: string) {
+    SecretsListComponent.copySecretUuid(id, this.platformUtilsService, this.i18nService);
   }
 }
