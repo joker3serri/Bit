@@ -254,6 +254,10 @@ export class ApiService implements ApiServiceAbstraction {
     const r = await this.send("POST", "/auth-requests/", request, false, true);
     return new AuthRequestResponse(r);
   }
+  async postAdminAuthRequest(request: PasswordlessCreateAuthRequest): Promise<AuthRequestResponse> {
+    const r = await this.send("POST", "/auth-requests/admin-request", request, true, true);
+    return new AuthRequestResponse(r);
+  }
 
   async getAuthResponse(id: string, accessCode: string): Promise<AuthRequestResponse> {
     const path = `/auth-requests/${id}/response?code=${accessCode}`;
@@ -881,7 +885,7 @@ export class ApiService implements ApiServiceAbstraction {
   // Plan APIs
 
   async getPlans(): Promise<ListResponse<PlanResponse>> {
-    const r = await this.send("GET", "/plans/", null, false, true);
+    const r = await this.send("GET", "/plans/all", null, false, true);
     return new ListResponse(r, PlanResponse);
   }
 

@@ -18,7 +18,9 @@ import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
 import { MasterKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "../../tools/password-strength";
+import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
+import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
@@ -103,7 +105,9 @@ export class AuthService implements AuthServiceAbstraction {
     protected i18nService: I18nService,
     protected encryptService: EncryptService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
-    protected policyService: PolicyService
+    protected policyService: PolicyService,
+    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    protected authReqCryptoService: AuthRequestCryptoServiceAbstraction
   ) {}
 
   async logIn(
@@ -149,7 +153,10 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.keyConnectorService
+          this.keyConnectorService,
+          this.deviceTrustCryptoService,
+          this.authReqCryptoService,
+          this.i18nService
         );
         break;
       case AuthenticationType.UserApi:
@@ -177,7 +184,8 @@ export class AuthService implements AuthServiceAbstraction {
           this.messagingService,
           this.logService,
           this.stateService,
-          this.twoFactorService
+          this.twoFactorService,
+          this.deviceTrustCryptoService
         );
         break;
     }
@@ -305,24 +313,34 @@ export class AuthService implements AuthServiceAbstraction {
     key: string,
     requestApproved: boolean
   ): Promise<AuthRequestResponse> {
-    // TODO: This currently depends on always having the Master Key and MP Hash
-    // We need to change this to using a different method (possibly server auth code + user key)
     const pubKey = Utils.fromB64ToArray(key);
+
     const masterKey = await this.cryptoService.getMasterKey();
-    if (!masterKey) {
-      throw new Error("Master key not found");
+    let keyToEncrypt;
+    let encryptedMasterKeyHash = null;
+
+    if (masterKey) {
+      keyToEncrypt = masterKey.encKey;
+
+      // Only encrypt the master password hash if masterKey exists as
+      // we won't have a masterKeyHash without a masterKey
+      const masterKeyHash = await this.stateService.getKeyHash();
+      if (masterKeyHash != null) {
+        encryptedMasterKeyHash = await this.cryptoService.rsaEncrypt(
+          Utils.fromUtf8ToArray(masterKeyHash),
+          pubKey.buffer
+        );
+      }
+    } else {
+      const userKey = await this.cryptoService.getUserKey();
+      keyToEncrypt = userKey.key;
     }
-    const encryptedKey = await this.cryptoService.rsaEncrypt(masterKey.encKey, pubKey.buffer);
-    let encryptedMasterPasswordHash = null;
-    if ((await this.stateService.getKeyHash()) != null) {
-      encryptedMasterPasswordHash = await this.cryptoService.rsaEncrypt(
-        Utils.fromUtf8ToArray(await this.stateService.getKeyHash()),
-        pubKey.buffer
-      );
-    }
+
+    const encryptedKey = await this.cryptoService.rsaEncrypt(keyToEncrypt, pubKey.buffer);
+
     const request = new PasswordlessAuthRequest(
       encryptedKey.encryptedString,
-      encryptedMasterPasswordHash.encryptedString,
+      encryptedMasterKeyHash?.encryptedString,
       await this.appIdService.getAppId(),
       requestApproved
     );

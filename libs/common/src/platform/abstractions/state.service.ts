@@ -5,6 +5,7 @@ import { OrganizationData } from "../../admin-console/models/data/organization.d
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
+import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { ForceResetPasswordReason } from "../../auth/models/domain/force-reset-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
@@ -23,7 +24,11 @@ import { CipherView } from "../../vault/models/view/cipher.view";
 import { CollectionView } from "../../vault/models/view/collection.view";
 import { AddEditCipherInfo } from "../../vault/types/add-edit-cipher-info";
 import { ServerConfigData } from "../models/data/server-config.data";
-import { Account, AccountSettingsSettings } from "../models/domain/account";
+import {
+  Account,
+  AccountDecryptionOptions,
+  AccountSettingsSettings,
+} from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
 import {
@@ -257,7 +262,21 @@ export abstract class StateService<T extends Account = Account> {
   getDuckDuckGoSharedKey: (options?: StorageOptions) => Promise<string>;
   setDuckDuckGoSharedKey: (value: string, options?: StorageOptions) => Promise<void>;
   getDeviceKey: (options?: StorageOptions) => Promise<DeviceKey | null>;
-  setDeviceKey: (value: DeviceKey, options?: StorageOptions) => Promise<void>;
+  setDeviceKey: (value: DeviceKey | null, options?: StorageOptions) => Promise<void>;
+  getAdminAuthRequest: (options?: StorageOptions) => Promise<AdminAuthRequestStorable | null>;
+  setAdminAuthRequest: (
+    adminAuthRequest: AdminAuthRequestStorable,
+    options?: StorageOptions
+  ) => Promise<void>;
+  getShouldTrustDevice: (options?: StorageOptions) => Promise<boolean | null>;
+  setShouldTrustDevice: (value: boolean, options?: StorageOptions) => Promise<void>;
+  getAccountDecryptionOptions: (
+    options?: StorageOptions
+  ) => Promise<AccountDecryptionOptions | null>;
+  setAccountDecryptionOptions: (
+    value: AccountDecryptionOptions,
+    options?: StorageOptions
+  ) => Promise<void>;
   getEmail: (options?: StorageOptions) => Promise<string>;
   setEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getEmailVerified: (options?: StorageOptions) => Promise<boolean>;
@@ -366,6 +385,8 @@ export abstract class StateService<T extends Account = Account> {
   setEquivalentDomains: (value: string, options?: StorageOptions) => Promise<void>;
   getEventCollection: (options?: StorageOptions) => Promise<EventData[]>;
   setEventCollection: (value: EventData[], options?: StorageOptions) => Promise<void>;
+  getEverHadUserKey: (options?: StorageOptions) => Promise<boolean>;
+  setEverHadUserKey: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEverBeenUnlocked: (options?: StorageOptions) => Promise<boolean>;
   setEverBeenUnlocked: (value: boolean, options?: StorageOptions) => Promise<void>;
   getForcePasswordResetReason: (options?: StorageOptions) => Promise<ForceResetPasswordReason>;
@@ -456,6 +477,11 @@ export abstract class StateService<T extends Account = Account> {
   setSsoOrganizationIdentifier: (value: string, options?: StorageOptions) => Promise<void>;
   getSsoState: (options?: StorageOptions) => Promise<string>;
   setSsoState: (value: string, options?: StorageOptions) => Promise<void>;
+  getUserSsoOrganizationIdentifier: (options?: StorageOptions) => Promise<string>;
+  setUserSsoOrganizationIdentifier: (
+    value: string | null,
+    options?: StorageOptions
+  ) => Promise<void>;
   getTheme: (options?: StorageOptions) => Promise<ThemeType>;
   setTheme: (value: ThemeType, options?: StorageOptions) => Promise<void>;
   getTwoFactorToken: (options?: StorageOptions) => Promise<string>;

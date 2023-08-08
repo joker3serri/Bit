@@ -28,8 +28,14 @@ export abstract class CryptoService {
    * kicking off a refresh of any additional keys
    * (such as auto, biometrics, or pin)
    */
+  /**
+   * Check if the current sessions has ever had a user key, i.e. has ever been unlocked/decrypted.
+   * This is key for differentiating between TDE locked and standard locked states.
+   * @param userId The desired user
+   * @returns True if the current session has ever had a user key
+   */
+  getEverHadUserKey: (userId?: string) => Promise<boolean>;
   refreshAdditionalKeys: () => Promise<void>;
-
   /**
    * Retrieves the user key
    * @param userId The desired user
@@ -102,6 +108,12 @@ export abstract class CryptoService {
    * @returns The user's master key
    */
   getMasterKey: (userId?: string) => Promise<MasterKey>;
+
+  /**
+   * @param password The user's master password that will be used to derive a master key if one isn't found
+   * @param userId The desired user
+   */
+  getOrDeriveMasterKey: (password: string, userId?: string) => Promise<MasterKey>;
   /**
    * Generates a master key from the provided password
    * @param password The user's master password
@@ -334,6 +346,17 @@ export abstract class CryptoService {
    */
   rsaDecrypt: (encValue: string, privateKeyValue?: ArrayBuffer) => Promise<ArrayBuffer>;
   randomNumber: (min: number, max: number) => Promise<number>;
+
+  /**
+   * Initialize all necessary crypto keys needed for a new account.
+   * Warning! This completely replaces any existing keys!
+   * @returns The user's newly created  public key, private key, and encrypted private key
+   */
+  initAccount: () => Promise<{
+    userKey: UserKey;
+    publicKey: string;
+    privateKey: EncString;
+  }>;
 
   /**
    * @deprecated Left for migration purposes. Use decryptUserKeyWithPin instead.
