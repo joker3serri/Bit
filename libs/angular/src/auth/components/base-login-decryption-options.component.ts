@@ -145,6 +145,9 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     const rememberDeviceFromState = await this.deviceTrustCryptoService.getShouldTrustDevice();
     if (rememberDeviceFromState !== null) {
       this.rememberDevice.setValue(rememberDeviceFromState);
+    } else {
+      // Assume true if not set
+      this.deviceTrustCryptoService.setShouldTrustDevice(true);
     }
   }
 
