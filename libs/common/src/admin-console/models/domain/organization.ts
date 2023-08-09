@@ -64,6 +64,9 @@ export class Organization {
   familySponsorshipValidUntil?: Date;
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
+  /**
+   * Refers to the ability for an organization to limit collection creation and deletion to owners and admins only
+   */
   limitCollectionCdOwnerAdmin: boolean;
 
   constructor(obj?: OrganizationData) {
