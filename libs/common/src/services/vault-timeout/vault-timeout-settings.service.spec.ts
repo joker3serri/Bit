@@ -76,7 +76,7 @@ describe("VaultTimeoutSettingsService", () => {
 
     it("not contains Lock when the user does not have a master password, PIN, or biometrics", async () => {
       userVerificationService.hasMasterPassword.mockResolvedValue(false);
-      stateService.getUserKeyPin.mockResolvedValue(null);
+      stateService.getPinKeyEncryptedUserKey.mockResolvedValue(null);
       stateService.getProtectedPin.mockResolvedValue(null);
       stateService.getBiometricUnlock.mockResolvedValue(false);
 
