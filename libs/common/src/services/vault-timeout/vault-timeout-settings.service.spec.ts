@@ -51,7 +51,7 @@ describe("VaultTimeoutSettingsService", () => {
     });
 
     it("contains Lock when the user has a persistent PIN configured", async () => {
-      stateService.getUserKeyPin.mockResolvedValue(createEncString());
+      stateService.getPinKeyEncryptedUserKey.mockResolvedValue(createEncString());
 
       const result = await firstValueFrom(service.availableVaultTimeoutActions$());
 
