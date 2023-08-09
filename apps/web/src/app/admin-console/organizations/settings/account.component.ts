@@ -1,7 +1,7 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, lastValueFrom, Subject, switchMap, takeUntil, from } from "rxjs";
+import { combineLatest, lastValueFrom, Subject, switchMap, takeUntil, from, of } from "rxjs";
 
 import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -88,22 +88,8 @@ export class AccountComponent {
       .pipe(
         switchMap((params) => this.organizationService.get$(params.organizationId)),
         switchMap((organization) => {
-          // Set domain level organization variables
-          this.organizationId = organization.id;
-          this.canEditSubscription = organization.canEditSubscription;
-          this.canUseApi = organization.useApi;
-
-          // Update disabled states - reactive forms prefers not using disabled attribute
-          if (!this.selfHosted) {
-            this.formGroup.get("orgName").enable();
-          }
-
-          if (!this.selfHosted || this.canEditSubscription) {
-            this.formGroup.get("billingEmail").enable();
-            this.formGroup.get("businessName").enable();
-          }
-
           return combineLatest([
+            of(organization),
             // OrganizationResponse for form population
             from(this.organizationApiService.get(organization.id)),
             // Organization Public Key
@@ -112,7 +98,22 @@ export class AccountComponent {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(([orgResponse, orgKeys]) => {
+      .subscribe(([organization, orgResponse, orgKeys]) => {
+        // Set domain level organization variables
+        this.organizationId = organization.id;
+        this.canEditSubscription = organization.canEditSubscription;
+        this.canUseApi = organization.useApi;
+
+        // Update disabled states - reactive forms prefers not using disabled attribute
+        if (!this.selfHosted) {
+          this.formGroup.get("orgName").enable();
+        }
+
+        if (!this.selfHosted || this.canEditSubscription) {
+          this.formGroup.get("billingEmail").enable();
+          this.formGroup.get("businessName").enable();
+        }
+
         // Org Response
         this.org = orgResponse;
 
