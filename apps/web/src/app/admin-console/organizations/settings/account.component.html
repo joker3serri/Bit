@@ -7,7 +7,7 @@
   ></i>
   <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 </div>
-<form *ngIf="org && !loading" #form [bitSubmit]="submit" [formGroup]="formGroup">
+<form *ngIf="org && !loading" [bitSubmit]="submit" [formGroup]="formGroup">
   <div class="tw-grid tw-grid-cols-2 tw-gap-5">
     <div>
       <bit-form-field>
@@ -54,7 +54,6 @@
 </ng-container>
 <form
   *ngIf="org && !loading"
-  #collectionManagementForm
   [bitSubmit]="submitCollectionManagement"
   [formGroup]="collectionManagementFormGroup"
 >
