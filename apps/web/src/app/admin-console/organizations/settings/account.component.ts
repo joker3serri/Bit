@@ -84,7 +84,7 @@ export class AccountComponent {
   async ngOnInit() {
     this.selfHosted = this.platformUtilsService.isSelfHost();
 
-    this.route.parent.parent.params
+    this.route.params
       .pipe(
         switchMap((params) => this.organizationService.get$(params.organizationId)),
         switchMap((organization) => {
