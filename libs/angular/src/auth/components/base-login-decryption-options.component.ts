@@ -12,7 +12,6 @@ import {
   takeUntil,
   defer,
   throwError,
-  distinctUntilChanged,
 } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -94,10 +93,10 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.loading = true;
 
-    // Persist user choice from state if it exists
-    await this.setRememberDeviceFromStateIfExists();
-
     this.setupRememberDeviceValueChanges();
+
+    // Persist user choice from state if it exists
+    await this.setRememberDeviceDefaultValue();
 
     try {
       const accountDecryptionOptions: AccountDecryptionOptions =
@@ -141,20 +140,20 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async setRememberDeviceFromStateIfExists() {
+  private async setRememberDeviceDefaultValue() {
     const rememberDeviceFromState = await this.deviceTrustCryptoService.getShouldTrustDevice();
+
+    let rememberDevice = true;
     if (rememberDeviceFromState !== null) {
-      this.rememberDevice.setValue(rememberDeviceFromState);
-    } else {
-      // Assume true if not set
-      this.deviceTrustCryptoService.setShouldTrustDevice(true);
+      rememberDevice = rememberDeviceFromState;
     }
+
+    this.rememberDevice.setValue(rememberDevice);
   }
 
   private setupRememberDeviceValueChanges() {
     this.rememberDevice.valueChanges
       .pipe(
-        distinctUntilChanged(),
         switchMap((value) =>
           defer(() => this.deviceTrustCryptoService.setShouldTrustDevice(value))
         ),
