@@ -281,7 +281,6 @@ export class SsoComponent {
     }
 
     if (this.onSuccessfulLoginTde != null) {
-      // TODO: I don't think we can await here OR in the 2FA comp
       await this.onSuccessfulLoginTde();
     }
 
