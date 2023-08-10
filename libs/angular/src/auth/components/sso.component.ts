@@ -28,7 +28,7 @@ export class SsoComponent {
 
   formPromise: Promise<AuthResult>;
   initiateSsoFormPromise: Promise<SsoPreValidateResponse>;
-  onSuccessfulLogin: () => Promise<unknown>;
+  onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginNavigate: () => Promise<void>;
   onSuccessfulLoginTwoFactorNavigate: () => Promise<void>;
   onSuccessfulLoginChangePasswordNavigate: () => Promise<void>;

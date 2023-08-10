@@ -45,7 +45,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   formPromise: Promise<any>;
   emailPromise: Promise<any>;
   orgIdentifier: string = null;
-  onSuccessfulLogin: () => Promise<unknown>;
+  onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginNavigate: () => Promise<void>;
 
   onSuccessfulLoginTde: () => Promise<void>;
