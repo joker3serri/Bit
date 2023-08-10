@@ -34,7 +34,7 @@ export class SsoComponent {
   onSuccessfulLoginChangePasswordNavigate: () => Promise<void>;
   onSuccessfulLoginForceResetNavigate: () => Promise<void>;
 
-  onSuccessfulLoginTde: () => Promise<unknown>;
+  onSuccessfulLoginTde: () => Promise<void>;
   onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   protected twoFactorRoute = "2fa";

@@ -53,7 +53,7 @@ export class SsoComponent extends BaseSsoComponent {
     };
 
     super.onSuccessfulLoginTde = async () => {
-      return syncService.fullSync(true);
+      syncService.fullSync(true);
     };
 
     this.redirectUri = "bitwarden://sso-callback";

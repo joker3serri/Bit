@@ -75,7 +75,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     };
 
     super.onSuccessfulLoginTde = async () => {
-      return syncService.fullSync(true);
+      syncService.fullSync(true);
     };
 
     super.onSuccessfulLoginTdeNavigate = async () => {

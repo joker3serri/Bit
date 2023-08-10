@@ -48,7 +48,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   onSuccessfulLogin: () => Promise<unknown>;
   onSuccessfulLoginNavigate: () => Promise<void>;
 
-  onSuccessfulLoginTde: () => Promise<unknown>;
+  onSuccessfulLoginTde: () => Promise<void>;
   onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   protected loginRoute = "login";
