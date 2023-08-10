@@ -281,7 +281,8 @@ export class SsoComponent {
     }
 
     if (this.onSuccessfulLoginTde != null) {
-      await this.onSuccessfulLoginTde();
+      // Don't await b/c causes hang on desktop (has loading spinny) & browser (awkward hang w/ no loading spinny)
+      this.onSuccessfulLoginTde();
     }
 
     this.navigateViaCallbackOrRoute(
