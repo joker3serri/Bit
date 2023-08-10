@@ -77,6 +77,4 @@ function initializeFido2ContentScript(isFido2FeatureEnabled: boolean) {
   };
 }
 
-(function () {
-  checkFido2FeatureEnabled();
-})();
+checkFido2FeatureEnabled();
