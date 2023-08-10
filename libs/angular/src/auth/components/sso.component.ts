@@ -281,7 +281,7 @@ export class SsoComponent {
     }
 
     if (this.onSuccessfulLoginTde != null) {
-      // Don't await b/c causes hang on desktop (has loading spinny) & browser (awkward hang w/ no loading spinny)
+      // Don't await b/c causes hang on desktop & browser
       this.onSuccessfulLoginTde();
     }
 
@@ -319,7 +319,8 @@ export class SsoComponent {
 
   private async handleSuccessfulLogin() {
     if (this.onSuccessfulLogin != null) {
-      await this.onSuccessfulLogin();
+      // Don't await b/c causes hang on desktop & browser
+      this.onSuccessfulLogin();
     }
 
     await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
