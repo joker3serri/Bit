@@ -20,5 +20,5 @@ export abstract class UserVerificationService {
    * @param userId The user id to check. If not provided, the current user id used
    * @returns True if the user has a master password and has used it in the current session
    */
-  hasMasterPasswordHash: (userId?: string) => Promise<boolean>;
+  hasMasterPasswordAndMasterKeyHash: (userId?: string) => Promise<boolean>;
 }

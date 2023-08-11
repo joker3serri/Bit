@@ -39,6 +39,6 @@ export class PasswordRepromptService implements PasswordRepromptServiceAbstracti
   }
 
   async enabled() {
-    return await this.userVerificationService.hasMasterPasswordHash();
+    return await this.userVerificationService.hasMasterPasswordAndMasterKeyHash();
   }
 }

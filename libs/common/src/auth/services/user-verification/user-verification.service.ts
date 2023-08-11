@@ -113,7 +113,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     return !(await this.stateService.getUsesKeyConnector({ userId }));
   }
 
-  async hasMasterPasswordHash(userId?: string): Promise<boolean> {
+  async hasMasterPasswordAndMasterKeyHash(userId?: string): Promise<boolean> {
     return (
       (await this.hasMasterPassword(userId)) &&
       (await this.cryptoService.getMasterKeyHash()) != null
