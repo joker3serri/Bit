@@ -16,7 +16,7 @@ export class AccountMenu implements IMenubarMenu {
 
   get items(): MenuItemConstructorOptions[] {
     const items = [this.premiumMembership];
-    if (!this._hideMasterPassword) {
+    if (this._hasMasterPassword) {
       items.push(this.changeMasterPassword);
     }
     items.push(this.twoStepLogin);
@@ -31,7 +31,7 @@ export class AccountMenu implements IMenubarMenu {
   private readonly _webVaultUrl: string;
   private readonly _window: BrowserWindow;
   private readonly _isLocked: boolean;
-  private readonly _hideMasterPassword: boolean;
+  private readonly _hasMasterPassword: boolean;
 
   constructor(
     i18nService: I18nService,
@@ -39,14 +39,14 @@ export class AccountMenu implements IMenubarMenu {
     webVaultUrl: string,
     window: BrowserWindow,
     isLocked: boolean,
-    hideMasterPassword: boolean
+    hasMasterPassword: boolean
   ) {
     this._i18nService = i18nService;
     this._messagingService = messagingService;
     this._webVaultUrl = webVaultUrl;
     this._window = window;
     this._isLocked = isLocked;
-    this._hideMasterPassword = hideMasterPassword;
+    this._hasMasterPassword = hasMasterPassword;
   }
 
   private get premiumMembership(): MenuItemConstructorOptions {
