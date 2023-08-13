@@ -71,11 +71,6 @@ export default class RuntimeBackground {
           await this.browserPopoutWindowService.closeLoginPrompt();
         }
 
-        await this.main.refreshBadge();
-        await this.main.refreshMenu(false);
-        this.notificationsService.updateConnection(msg.command === "unlocked");
-        this.systemService.cancelProcessReload();
-
         if (item) {
           await BrowserApi.focusWindow(item.commandToRetry.sender.tab.windowId);
           await BrowserApi.focusTab(item.commandToRetry.sender.tab.id);
@@ -85,6 +80,12 @@ export default class RuntimeBackground {
             item
           );
         }
+
+        await this.main.refreshBadge();
+        await this.main.refreshMenu(false);
+        this.notificationsService.updateConnection(msg.command === "unlocked");
+        this.systemService.cancelProcessReload();
+
         break;
       }
       case "addToLockedVaultPendingNotifications":
@@ -179,9 +180,9 @@ export default class RuntimeBackground {
         try {
           BrowserApi.createNewTab(
             "popup/index.html?uilocation=popout#/sso?code=" +
-              encodeURIComponent(msg.code) +
-              "&state=" +
-              encodeURIComponent(msg.state)
+            encodeURIComponent(msg.code) +
+            "&state=" +
+            encodeURIComponent(msg.state)
           );
         } catch {
           this.logService.error("Unable to open sso popout tab");
