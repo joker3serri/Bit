@@ -247,8 +247,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
           PROJECT_NAME: ${{ matrix.image_name }}
-        run: |
-          docker push bitwardenprod.azurecr.io/$PROJECT_NAME:$IMAGE_TAG
+        run: docker push bitwardenprod.azurecr.io/$PROJECT_NAME:$IMAGE_TAG
 
       - name: Log out of Docker
         run: docker logout
