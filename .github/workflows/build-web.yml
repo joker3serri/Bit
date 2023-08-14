@@ -224,7 +224,7 @@ jobs:
         working-directory: apps/web
         run: unzip web-${{ env._VERSION }}-${{ matrix.artifact_name }}.zip
 
-        - name: Generate image full name
+      - name: Generate image full name
         id: image-name
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
