@@ -50,6 +50,12 @@ export type SimpleDialogOptions = {
 
   /** Whether or not the user can use escape or clicking the backdrop to close the dialog */
   disableClose?: boolean;
+
+  /**
+   * Custom accept action. Runs when the user clicks the accept button and shows a loading spinner until the promise
+   * is resolved.
+   */
+  acceptAction?: () => Promise<void>;
 };
 
 export type SimpleDialogCloseType = boolean;
