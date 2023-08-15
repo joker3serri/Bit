@@ -229,7 +229,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
           PROJECT_NAME: ${{ matrix.image_name }}
-        run: echo "name=bitwardenprod.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        run: echo "name=${_AZ_REGISTRY}/${PROJECT_NAME}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825 # v4.1.1
@@ -241,13 +241,6 @@ jobs:
           tags: ${{ steps.image-name.outputs.name }}
           secrets: |
             "GH_PAT=${{ steps.retrieve-secret-pat.outputs.github-pat-bitwarden-devops-bot-repo-scope }}"
-
-      - name: Push to Prod ACR
-        if: env.is_publish_branch == 'true'
-        env:
-          IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
-          PROJECT_NAME: ${{ matrix.image_name }}
-        run: docker push bitwardenprod.azurecr.io/$PROJECT_NAME:$IMAGE_TAG
 
       - name: Log out of Docker
         run: docker logout
