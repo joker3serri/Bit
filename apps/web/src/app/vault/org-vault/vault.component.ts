@@ -71,10 +71,6 @@ import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,
 } from "../individual-vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
-import {
-  BulkRestoreDialogResult,
-  openBulkRestoreDialog,
-} from "../individual-vault/bulk-action-dialogs/bulk-restore-dialog/bulk-restore-dialog.component";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "../individual-vault/vault-filter/services/routed-vault-filter.service";
 import { createFilterFunction } from "../individual-vault/vault-filter/shared/models/filter-function";
@@ -600,7 +596,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     additionalComponentParameters?: (comp: AddEditComponent) => void
   ) {
     const cipher = await this.cipherService.get(cipherId);
-    if (cipher?.reprompt !== 0 && !(await this.passwordRepromptService.showPasswordPrompt())) {
+    // if cipher exists (cipher is null when new) and MP reprompt
+    // is on for this cipher, then show password reprompt
+    if (
+      cipher &&
+      cipher.reprompt !== 0 &&
+      !(await this.passwordRepromptService.showPasswordPrompt())
+    ) {
+      // didn't pass password prompt, so don't open add / edit modal
       this.go({ cipherId: null, itemId: null });
       return;
     }
@@ -662,16 +665,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "restoreItem" },
-      content: { key: "restoreItemConfirmation" },
-      type: SimpleDialogType.WARNING,
-    });
-
-    if (!confirmed) {
-      return false;
-    }
-
     try {
       const asAdmin = this.organization?.canEditAnyCollection;
       await this.cipherService.restoreWithServer(c.id, asAdmin);
@@ -697,14 +690,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const dialog = openBulkRestoreDialog(this.dialogService, {
-      data: { cipherIds: selectedCipherIds, organization: this.organization },
-    });
-
-    const result = await lastValueFrom(dialog.closed);
-    if (result === BulkRestoreDialogResult.Restored) {
-      this.refresh();
-    }
+    await this.cipherService.restoreManyWithServer(selectedCipherIds);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItems"));
+    this.refresh();
   }
 
   async deleteCipher(c: CipherView): Promise<boolean> {
