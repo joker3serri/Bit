@@ -81,15 +81,13 @@ module.exports = {
       DEFAULT: theme("colors.background"),
       ...theme("colors"),
     }),
-    theme: {
-      screens: {
-        xs: "360px",
-        sm: "676px",
-        md: "768px",
-        lg: "991px",
-        xl: "1200px",
-        "2xl": "1536px",
-      },
+    screens: {
+      xs: "360px",
+      sm: "676px",
+      md: "768px",
+      lg: "991px",
+      xl: "1200px",
+      "2xl": "1536px",
     },
     extend: {
       width: {
