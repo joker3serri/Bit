@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 
 @Component({
   selector: "bit-layout",
@@ -6,8 +6,4 @@ import { Component, OnInit } from "@angular/core";
   standalone: true,
   imports: [],
 })
-export class LayoutComponent implements OnInit {
-  ngOnInit() {
-    document.body.classList.remove("layout_frontend");
-  }
-}
+export class LayoutComponent {}
