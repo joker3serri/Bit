@@ -15,6 +15,9 @@ on:
           - Redeploy
           - Dry Run
 
+env:
+  _AZ_REGISTRY: bitwardenprod.azurecr.io
+
 jobs:
   setup:
     name: Setup
@@ -51,7 +54,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: setup
     env:
-      _AZ_REGISTRY: bitwardenprod.azurecr.io
       _BRANCH_NAME: ${{ github.ref_name }}
       _RELEASE_VERSION: ${{ needs.setup.outputs.release_version }}
       _RELEASE_OPTION: ${{ github.event.inputs.release_type }}
