@@ -40,7 +40,7 @@ type Story = StoryObj<LayoutComponent>;
 export const Empty: Story = {
   render: (args) => ({
     props: args,
-    template: `
+    template: /* HTML */ `
         <bit-layout></bit-layout>
     `,
   }),
@@ -49,7 +49,7 @@ export const Empty: Story = {
 export const WithContent: Story = {
   render: (args) => ({
     props: args,
-    template: /*html*/ `
+    template: /* HTML */ `
           <bit-layout>
             <nav slot="sidebar">
                 <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
