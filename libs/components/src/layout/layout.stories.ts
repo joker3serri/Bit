@@ -19,7 +19,9 @@ export default {
        * https://github.com/storybookjs/storybook/issues/8011#issue-490251969
        */
       (story) =>
-        `<div class="tw-scale-100 tw-border-solid tw-border-2 tw-border-[red]">${story}</div>`
+        /* HTML */ `<div class="tw-scale-100 tw-border-2 tw-border-solid tw-border-[red]">
+          ${story}
+        </div>`
     ),
     moduleMetadata({
       imports: [NavigationModule, RouterTestingModule, CalloutModule],
@@ -40,9 +42,7 @@ type Story = StoryObj<LayoutComponent>;
 export const Empty: Story = {
   render: (args) => ({
     props: args,
-    template: /* HTML */ `
-        <bit-layout></bit-layout>
-    `,
+    template: /* HTML */ ` <bit-layout></bit-layout> `,
   }),
 };
 
@@ -50,18 +50,16 @@ export const WithContent: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-          <bit-layout>
-            <nav slot="sidebar">
-                <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
-                <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
-                <bit-nav-divider></bit-nav-divider>
-                <bit-nav-item text="Item C" icon="bwi-collection"></bit-nav-item>
-                <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
-            </nav>
-            <bit-callout title="Foobar">
-                Hello world!
-            </bit-callout>
-          </bit-layout>
-      `,
+      <bit-layout>
+        <nav slot="sidebar">
+          <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-divider></bit-nav-divider>
+          <bit-nav-item text="Item C" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
+        </nav>
+        <bit-callout title="Foobar"> Hello world! </bit-callout>
+      </bit-layout>
+    `,
   }),
 };
