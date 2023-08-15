@@ -75,10 +75,6 @@ import {
   openBulkMoveDialog,
 } from "./bulk-action-dialogs/bulk-move-dialog/bulk-move-dialog.component";
 import {
-  BulkRestoreDialogResult,
-  openBulkRestoreDialog,
-} from "./bulk-action-dialogs/bulk-restore-dialog/bulk-restore-dialog.component";
-import {
   BulkShareDialogResult,
   openBulkShareDialog,
 } from "./bulk-action-dialogs/bulk-share-dialog/bulk-share-dialog.component";
@@ -603,7 +599,14 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async editCipherId(id: string) {
     const cipher = await this.cipherService.get(id);
-    if (cipher?.reprompt !== 0 && !(await this.passwordRepromptService.showPasswordPrompt())) {
+    // if cipher exists (cipher is null when new) and MP reprompt
+    // is on for this cipher, then show password reprompt
+    if (
+      cipher &&
+      cipher.reprompt !== 0 &&
+      !(await this.passwordRepromptService.showPasswordPrompt())
+    ) {
+      // didn't pass password prompt, so don't open add / edit modal
       this.go({ cipherId: null, itemId: null });
       return;
     }
@@ -675,16 +678,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "restoreItemConfirmation" },
-      content: { key: "restoreItem" },
-      type: "warning",
-    });
-
-    if (!confirmed) {
-      return false;
-    }
-
     try {
       await this.cipherService.restoreWithServer(c.id);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
@@ -709,14 +702,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const dialog = openBulkRestoreDialog(this.dialogService, {
-      data: { cipherIds: selectedCipherIds },
-    });
-
-    const result = await lastValueFrom(dialog.closed);
-    if (result === BulkRestoreDialogResult.Restored) {
-      this.refresh();
-    }
+    await this.cipherService.restoreManyWithServer(selectedCipherIds);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItems"));
+    this.refresh();
   }
 
   async deleteCipher(c: CipherView): Promise<boolean> {
