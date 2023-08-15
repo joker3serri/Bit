@@ -65,8 +65,7 @@ jobs:
   build-artifacts:
     name: Build artifacts
     runs-on: ubuntu-22.04
-    needs:
-      - setup
+    needs: setup
     env:
       _VERSION: ${{ needs.setup.outputs.version }}
     strategy:
@@ -249,8 +248,7 @@ jobs:
   crowdin-push:
     name: Crowdin Push
     if: github.ref == 'refs/heads/master'
-    needs:
-      - build-artifacts
+    needs: build-artifacts
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
