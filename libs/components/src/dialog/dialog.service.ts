@@ -23,7 +23,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { SimpleConfigurableDialogComponent } from "./simple-dialog/simple-configurable-dialog/simple-configurable-dialog.component";
-import { SimpleDialogCloseType, SimpleDialogOptions, Translation } from "./simple-dialog/types";
+import { SimpleDialogOptions, Translation } from "./simple-dialog/types";
 
 @Injectable()
 export class DialogService extends Dialog implements OnDestroy {
@@ -86,7 +86,7 @@ export class DialogService extends Dialog implements OnDestroy {
    * @returns `boolean` - True if the user accepted the dialog, false otherwise.
    */
   async openSimpleDialog(simpleDialogOptions: SimpleDialogOptions): Promise<boolean> {
-    const dialogRef = this.open<SimpleDialogCloseType>(SimpleConfigurableDialogComponent, {
+    const dialogRef = this.open<boolean>(SimpleConfigurableDialogComponent, {
       data: simpleDialogOptions,
       disableClose: simpleDialogOptions.disableClose,
     });
@@ -103,7 +103,7 @@ export class DialogService extends Dialog implements OnDestroy {
    * @param {SimpleDialogOptions} simpleDialogOptions - An object containing options for the dialog.
    * @returns `DialogRef` - The reference to the opened dialog.
    * Contains a closed observable which can be subscribed to for determining which button
-   * a user pressed (see `SimpleDialogCloseType`)
+   * a user pressed
    */
   openSimpleDialogRef(simpleDialogOptions: SimpleDialogOptions): DialogRef {
     return this.open(SimpleConfigurableDialogComponent, {

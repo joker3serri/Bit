@@ -7,7 +7,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { ProductType } from "@bitwarden/common/enums";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { DialogService, SimpleDialogCloseType, SimpleDialogOptions } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
 import { CollectionAdminView } from "../../../vault/core/views/collection-admin.view";
 import { CollectionDialogTabType } from "../../components/collection-dialog";
@@ -121,7 +121,7 @@ export class VaultHeaderComponent {
 
     const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
 
-    firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
+    firstValueFrom(simpleDialog.closed).then((result: boolean | undefined) => {
       if (!result) {
         return;
       }

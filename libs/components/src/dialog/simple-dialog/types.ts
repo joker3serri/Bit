@@ -58,6 +58,4 @@ export type SimpleDialogOptions = {
   acceptAction?: () => Promise<void>;
 };
 
-export type SimpleDialogCloseType = boolean;
-
 export type SimpleDialogType = "primary" | "success" | "info" | "warning" | "danger";
