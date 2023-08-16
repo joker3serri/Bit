@@ -12,10 +12,9 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
-import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
-import { HashPurpose, KdfType, KeySuffixOptions } from "@bitwarden/common/enums";
+import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -181,8 +180,10 @@ export class LockComponent implements OnInit, OnDestroy {
 
       let userKey: UserKey;
       if (oldPinKey) {
-        userKey = await this.decryptAndMigrateOldPinKey(
+        userKey = await this.cryptoService.decryptAndMigrateOldPinKey(
           this.pinStatus === "TRANSIENT",
+          this.pin,
+          this.email,
           kdf,
           kdfConfig,
           oldPinKey
@@ -410,54 +411,5 @@ export class LockComponent implements OnInit, OnDestroy {
       this.masterPassword,
       this.enforcedMasterPasswordOptions
     );
-  }
-
-  /**
-   * Creates a new Pin key that encrypts the user key instead of the
-   * master key. Clears the old Pin key from state.
-   * @param masterPasswordOnRestart True if Master Password on Restart is enabled
-   * @param kdf User's KdfType
-   * @param kdfConfig User's KdfConfig
-   * @param oldPinKey The old Pin key from state (retrieved from different
-   * places depending on if Master Password on Restart was enabled)
-   * @returns The user key
-   */
-  private async decryptAndMigrateOldPinKey(
-    masterPasswordOnRestart: boolean,
-    kdf: KdfType,
-    kdfConfig: KdfConfig,
-    oldPinKey: EncString
-  ): Promise<UserKey> {
-    // Decrypt
-    const masterKey = await this.cryptoService.decryptMasterKeyWithPin(
-      this.pin,
-      this.email,
-      kdf,
-      kdfConfig,
-      oldPinKey
-    );
-    const encUserKey = await this.stateService.getEncryptedCryptoSymmetricKey();
-    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(
-      masterKey,
-      new EncString(encUserKey)
-    );
-    // Migrate
-    const pinKey = await this.cryptoService.makePinKey(this.pin, this.email, kdf, kdfConfig);
-    const pinProtectedKey = await this.cryptoService.encrypt(userKey.key, pinKey);
-    if (masterPasswordOnRestart) {
-      await this.stateService.setDecryptedPinProtected(null);
-      await this.stateService.setPinKeyEncryptedUserKeyEphemeral(pinProtectedKey);
-    } else {
-      await this.stateService.setEncryptedPinProtected(null);
-      await this.stateService.setPinKeyEncryptedUserKey(pinProtectedKey);
-      // We previously only set the protected pin if MP on Restart was enabled
-      // now we set it regardless
-      const encPin = await this.cryptoService.encrypt(this.pin, userKey);
-      await this.stateService.setProtectedPin(encPin.encryptedString);
-    }
-    // This also clears the old Biometrics key since the new Biometrics key will
-    // be created when the user key is set.
-    await this.stateService.setCryptoMasterKeyBiometric(null);
-    return userKey;
   }
 }
