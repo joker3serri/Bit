@@ -99,7 +99,6 @@ jobs:
           fi
 
       - name: Push version
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         run: |
           if [[ "${{ github.event.inputs.release_type }}" == "Dry Run" ]]; then
             docker push $_AZ_REGISTRY/web:dryrun
