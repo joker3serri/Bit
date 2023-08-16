@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { BillingPaymentResponse } from "@bitwarden/common/billing/models/response/billing-payment.response";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
@@ -30,8 +29,8 @@ export class PaymentMethodComponent implements OnInit {
   showAdjustPayment = false;
   showAddCredit = false;
   billing: BillingPaymentResponse;
-  org: OrganizationResponse;
-  sub: SubscriptionResponse | OrganizationSubscriptionResponse;
+  org: OrganizationSubscriptionResponse;
+  sub: SubscriptionResponse;
   paymentMethodType = PaymentMethodType;
   organizationId: string;
   isUnpaid = false;
@@ -87,13 +86,13 @@ export class PaymentMethodComponent implements OnInit {
 
     if (this.forOrganization) {
       const billingPromise = this.organizationApiService.getBilling(this.organizationId);
-      const orgPromise = this.organizationApiService.get(this.organizationId);
-      const subPromise = this.organizationApiService.getSubscription(this.organizationId);
+      const organizationSubscriptionPromise = this.organizationApiService.getSubscription(
+        this.organizationId
+      );
 
-      [this.billing, this.org, this.sub] = await Promise.all([
+      [this.billing, this.org] = await Promise.all([
         billingPromise,
-        orgPromise,
-        subPromise,
+        organizationSubscriptionPromise,
       ]);
     } else {
       const billingPromise = this.apiService.getUserBillingPayment();
@@ -231,6 +230,6 @@ export class PaymentMethodComponent implements OnInit {
   }
 
   get subscription() {
-    return this.sub != null ? this.sub.subscription : null;
+    return this.sub?.subscription ?? this.org?.subscription ?? null;
   }
 }
