@@ -251,6 +251,7 @@ export class ApiService implements ApiServiceAbstraction {
     }
   }
 
+  // TODO: PM-3519: Create and move to AuthRequest Api service
   async postAuthRequest(request: PasswordlessCreateAuthRequest): Promise<AuthRequestResponse> {
     const r = await this.send("POST", "/auth-requests/", request, false, true);
     return new AuthRequestResponse(r);
