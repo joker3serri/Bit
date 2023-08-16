@@ -343,6 +343,8 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async load() {
+    // TODO: Investigate PM-3515
+
     // The loading of the lock component works as follows:
     //   1. First, is locking a valid timeout action?  If not, we will log the user out.
     //   2. If locking IS a valid timeout action, we proceed to show the user the lock screen.
