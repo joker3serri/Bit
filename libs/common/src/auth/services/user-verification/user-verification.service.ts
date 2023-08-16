@@ -110,6 +110,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
       return decryptionOptions.hasMasterPassword;
     }
 
+    // Backwards compatibility
     return !(await this.stateService.getUsesKeyConnector({ userId }));
   }
 

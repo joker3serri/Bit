@@ -1584,7 +1584,9 @@ export class ApiService implements ApiServiceAbstraction {
 
   // Key Connector
 
-  async getUserKeyFromKeyConnector(keyConnectorUrl: string): Promise<KeyConnectorUserKeyResponse> {
+  async getMasterKeyFromKeyConnector(
+    keyConnectorUrl: string
+  ): Promise<KeyConnectorUserKeyResponse> {
     const authHeader = await this.getActiveBearerToken();
 
     const response = await this.fetch(
