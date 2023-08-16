@@ -115,7 +115,7 @@ jobs:
 
 
   ghpages-deploy:
-    name: Deploy to GitHub Pages
+    name: Create Deploy PR for GitHub Pages
     runs-on: ubuntu-22.04
     needs: setup
     env:
