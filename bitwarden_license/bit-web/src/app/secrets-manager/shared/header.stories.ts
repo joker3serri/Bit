@@ -10,8 +10,10 @@ import {
 import { BehaviorSubject, combineLatest, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 import {
   AvatarModule,
   BreadcrumbsModule,
@@ -39,6 +41,12 @@ class MockStateService {
 class MockMessagingService implements MessagingService {
   send(subscriber: string, arg?: any) {
     alert(subscriber);
+  }
+}
+
+class MockVaultTimeoutService {
+  availableVaultTimeoutActions$() {
+    return new BehaviorSubject([VaultTimeoutAction.Lock]).asObservable();
   }
 }
 
@@ -89,6 +97,7 @@ export default {
       declarations: [HeaderComponent, MockProductSwitcher, MockDynamicAvatar],
       providers: [
         { provide: StateService, useClass: MockStateService },
+        { provide: VaultTimeoutSettingsService, useClass: MockVaultTimeoutService },
         {
           provide: MessagingService,
           useFactory: () => {
