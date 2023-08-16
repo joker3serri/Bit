@@ -343,8 +343,6 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async load() {
-    this.pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();
-
     // The loading of the lock component works as follows:
     //   1. First, is locking a valid timeout action?  If not, we will log the user out.
     //   2. If locking IS a valid timeout action, we proceed to show the user the lock screen.
@@ -352,12 +350,17 @@ export class LockComponent implements OnInit, OnDestroy {
     //        - If they have a PIN set, they will be presented with the PIN input
     //        - If they have a master password and no PIN, they will be presented with the master password input
     //        - If they have biometrics enabled, they will be presented with the biometric prompt
-    //   Note: The following scenario is currently NOT handled:
-    //     - The user has a master password and no PIN
-    //     - The user has logged in with Trusted Device Encryption
-    //     - The user is offline
-    //     - The user locks their vault
-    //   This will result in the user not being able to unlock their vault and having to log out.
+
+    const availableVaultTimeoutActions = await firstValueFrom(
+      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$()
+    );
+    const supportsLock = availableVaultTimeoutActions.includes(VaultTimeoutAction.Lock);
+    if (!supportsLock) {
+      return await this.vaultTimeoutService.logOut();
+    }
+
+    this.pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();
+
     let ephemeralPinSet = await this.stateService.getPinKeyEncryptedUserKeyEphemeral();
     ephemeralPinSet ||= await this.stateService.getDecryptedPinProtected();
     this.pinEnabled =
@@ -371,17 +374,6 @@ export class LockComponent implements OnInit, OnDestroy {
         !this.platformUtilsService.supportsSecureStorage());
     this.biometricText = await this.stateService.getBiometricText();
     this.email = await this.stateService.getEmail();
-
-    // TODO: might have to duplicate/extend this check a bit - should it use new AcctDecryptionOptions?
-    // if the user has no MP hash via TDE and they get here without biometric / pin as well, they should logout as well.
-
-    const availableVaultTimeoutActions = await firstValueFrom(
-      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$()
-    );
-    const supportsLock = availableVaultTimeoutActions.includes(VaultTimeoutAction.Lock);
-    if (!supportsLock) {
-      return await this.vaultTimeoutService.logOut();
-    }
 
     const webVaultUrl = this.environmentService.getWebVaultUrl();
     const vaultUrl =
