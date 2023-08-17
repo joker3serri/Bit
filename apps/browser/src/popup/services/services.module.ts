@@ -254,16 +254,12 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: AuthRequestCryptoServiceAbstraction,
-      useFactory: () => {
-        return getBgService<AuthRequestCryptoServiceAbstraction>("authRequestCryptoService")();
-      },
+      useFactory: getBgService<AuthRequestCryptoServiceAbstraction>("authRequestCryptoService"),
       deps: [],
     },
     {
       provide: DeviceTrustCryptoServiceAbstraction,
-      useFactory: () => {
-        return getBgService<DeviceTrustCryptoServiceAbstraction>("deviceTrustCryptoService")();
-      },
+      useFactory: getBgService<DeviceTrustCryptoServiceAbstraction>("deviceTrustCryptoService"),
       deps: [],
     },
     {
