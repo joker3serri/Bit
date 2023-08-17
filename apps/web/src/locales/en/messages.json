@@ -7076,6 +7076,42 @@
   "maxServiceAccountCost": {
     "message": "Max potential service account cost"
   },
+  "goToPage": {
+    "message": "Go to page $PAGE$",
+    "placeholders": {
+      "page": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "lastPage": {
+    "message": "Last page, Page $PAGE$",
+    "placeholders": {
+      "page": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "previousPage": {
+    "message": "Previous page, Page $PAGE$",
+    "placeholders": {
+      "page": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nextPage": {
+    "message": "Next page, Page $PAGE$",
+    "placeholders": {
+      "page": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "smBetaEndedDesc": {
     "message": "The Secrets Manager Beta ended $BETA_ENDING_DATE$. You have $DAYS$ days left to add Secrets Manager to your paid subscription and maintain access to Secrets Manager data. Contact Customer Success to add Secrets Manager to your subscription.",
     "placeholders": {

@@ -1,0 +1,105 @@
+<nav *ngIf="currPage$ | async as currPage">
+  <ul aria-label="table pages" class="tw-flex tw-list-none">
+    <ng-template #dots>
+      <button
+        class="tw-min-w-11"
+        type="button"
+        [disabled]="true"
+        bitButton
+        buttonType="secondary"
+        grouping="inner"
+      >
+        ...
+      </button>
+    </ng-template>
+
+    <ng-template #item let-n="n">
+      <li>
+        <a
+          class="tw-min-w-11"
+          [ngClass]="{ 'tw-z-20': n === currPage }"
+          bitButton
+          [buttonType]="n === currPage ? 'primary' : 'secondary'"
+          routerLink=""
+          [queryParams]="getParams | memo : [queryParam, n]"
+          queryParamsHandling="merge"
+          [grouping]="getGrouping | memo : [totalPages, n]"
+          [attr.aria-label]="(n === totalPages ? 'lastPage' : 'goToPage') | i18n : n"
+          [attr.aria-current]="n === currPage ? 'true' : 'false'"
+          (click)="focusCurrentOnClick()"
+          >{{ n }}</a
+        >
+      </li>
+    </ng-template>
+
+    <ng-template #previous>
+      <li>
+        <button
+          type="button"
+          bitButton
+          [buttonType]="'secondary'"
+          routerLink=""
+          [queryParams]="getParams | memo : [queryParam, currPage - 1]"
+          [disabled]="currPage === 1"
+          grouping="first"
+          [attr.aria-label]="'previousPage' | i18n : currPage - 1"
+        >
+          Previous
+        </button>
+      </li>
+    </ng-template>
+
+    <ng-template #next>
+      <li>
+        <button
+          type="button"
+          bitButton
+          [buttonType]="'secondary'"
+          routerLink=""
+          [queryParams]="getParams | memo : [queryParam, currPage + 1]"
+          [disabled]="currPage === totalPages"
+          grouping="last"
+          [attr.aria-label]="'nextPage' | i18n : currPage + 1"
+        >
+          Next
+        </button>
+      </li>
+    </ng-template>
+
+    <ng-container *ngIf="totalPages <= 7">
+      <ng-container *ngFor="let n of [1, totalPages] | range">
+        <ng-container *ngTemplateOutlet="item; context: { n: n }"></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="totalPages > 7">
+      <ng-container *ngTemplateOutlet="previous"></ng-container>
+      <ng-container *ngTemplateOutlet="item; context: { n: 1 }"></ng-container>
+
+      <ng-container *ngIf="currPage <= 4">
+        <ng-container *ngFor="let n of [2, 5] | range">
+          <ng-container *ngTemplateOutlet="item; context: { n: n }"></ng-container>
+        </ng-container>
+        <ng-container *ngTemplateOutlet="dots"></ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="currPage >= 5 && currPage <= totalPages - 4">
+        <ng-container *ngTemplateOutlet="dots"></ng-container>
+        <ng-container *ngTemplateOutlet="item; context: { n: currPage - 1 }"></ng-container>
+        <ng-container *ngTemplateOutlet="item; context: { n: currPage }"></ng-container>
+        <ng-container *ngTemplateOutlet="item; context: { n: currPage + 1 }"></ng-container>
+        <ng-container *ngTemplateOutlet="dots"></ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="currPage > 4 && currPage > totalPages - 4">
+        <ng-container *ngTemplateOutlet="dots"></ng-container>
+        <ng-container *ngFor="let n of [totalPages - 4, totalPages - 1] | range">
+          <ng-container *ngTemplateOutlet="item; context: { n: n }"></ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngTemplateOutlet="item; context: { n: totalPages }"></ng-container>
+      <ng-container *ngTemplateOutlet="next"></ng-container>
+    </ng-container>
+  </ul>
+</nav>
