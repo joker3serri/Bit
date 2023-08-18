@@ -81,9 +81,15 @@ export class SsoLogInStrategy extends LogInStrategy {
     // eventually we’ll need to support migration of existing TDE users to Key Connector
     const newSsoUser = tokenResponse.key == null;
 
-    if (tokenResponse.keyConnectorUrl != null) {
+    const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
+
+    // TODO: remove tokenResponse.keyConnectorUrl reference after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
+    const keyConnectorUrl =
+      tokenResponse.keyConnectorUrl ?? userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl;
+
+    if (keyConnectorUrl != null) {
       if (!newSsoUser) {
-        await this.keyConnectorService.setMasterKeyFromUrl(tokenResponse.keyConnectorUrl);
+        await this.keyConnectorService.setMasterKeyFromUrl(keyConnectorUrl);
       } else {
         await this.keyConnectorService.convertNewSsoUserToKeyConnector(tokenResponse, this.orgId);
       }
@@ -117,7 +123,7 @@ export class SsoLogInStrategy extends LogInStrategy {
         await this.trySetUserKeyWithDeviceKey(tokenResponse);
       }
     } else if (
-      // TODO: remove tokenResponse.keyConnectorUrl when it's deprecated
+      // TODO: remove tokenResponse.keyConnectorUrl after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
       masterKeyEncryptedUserKey != null &&
       (tokenResponse.keyConnectorUrl || userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl)
     ) {
