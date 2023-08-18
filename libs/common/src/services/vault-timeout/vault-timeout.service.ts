@@ -28,8 +28,8 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     private stateService: StateService,
     private authService: AuthService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-    private lockedCallback: (userId?: string) => Promise<void> = null,
-    private loggedOutCallback: (expired: boolean, userId?: string) => Promise<void> = null
+    private lockedCallback: () => void = null,
+    private loggedOutCallback: (expired: boolean, userId?: string) => void = null
   ) {}
 
   async init(checkOnInterval: boolean) {
@@ -97,13 +97,13 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     this.messagingService.send("locked", { userId: userId });
 
     if (this.lockedCallback != null) {
-      await this.lockedCallback(userId);
+      this.lockedCallback();
     }
   }
 
   async logOut(userId?: string): Promise<void> {
     if (this.loggedOutCallback != null) {
-      await this.loggedOutCallback(false, userId);
+      this.loggedOutCallback(false, userId);
     }
   }
 
