@@ -436,6 +436,15 @@ export default class MainBackground {
       this.authRequestCryptoService
     );
 
+    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
+
+    this.userVerificationService = new UserVerificationService(
+      this.stateService,
+      this.cryptoService,
+      this.i18nService,
+      this.userVerificationApiService
+    );
+
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
       this.cryptoService,
       this.tokenService,
@@ -502,15 +511,6 @@ export default class MainBackground {
       this.eventUploadService
     );
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
-
-    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
-
-    this.userVerificationService = new UserVerificationService(
-      this.stateService,
-      this.cryptoService,
-      this.i18nService,
-      this.userVerificationApiService
-    );
 
     this.autofillService = new AutofillService(
       this.cipherService,
