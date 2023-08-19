@@ -24,7 +24,7 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
     private logService: LogService,
     private organizationService: OrganizationService,
     private cryptoFunctionService: CryptoFunctionService,
-    private logoutCallback: (expired: boolean, userId?: string) => void
+    private logoutCallback: (expired: boolean, userId?: string) => Promise<void>
   ) {}
 
   setUsesKeyConnector(usesKeyConnector: boolean) {
