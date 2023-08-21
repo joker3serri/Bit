@@ -217,11 +217,10 @@ export class SsoLogInStrategy extends LogInStrategy {
     const masterKey = await this.cryptoService.getMasterKey();
 
     if (!masterKey) {
-      throw new Error("Master key not found");
+      return;
     }
 
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
-
     await this.cryptoService.setUserKey(userKey);
   }
 
