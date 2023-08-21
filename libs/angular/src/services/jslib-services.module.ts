@@ -208,8 +208,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: LOGOUT_CALLBACK,
       useFactory:
-        (messagingService: MessagingServiceAbstraction) =>
-        async (expired: boolean, userId?: string) =>
+        (messagingService: MessagingServiceAbstraction) => (expired: boolean, userId?: string) =>
           messagingService.send("logout", { expired: expired, userId: userId }),
       deps: [MessagingServiceAbstraction],
     },
