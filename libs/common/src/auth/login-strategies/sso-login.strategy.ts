@@ -77,21 +77,23 @@ export class SsoLogInStrategy extends LogInStrategy {
   }
 
   protected override async setMasterKey(tokenResponse: IdentityTokenResponse) {
-    // TODO: discuss how this is no longer true with TDE
-    // eventually we’ll need to support migration of existing TDE users to Key Connector
-    const newSsoUser = tokenResponse.key == null;
-
     const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
+    const userHasMasterPassword = userDecryptionOptions?.hasMasterPassword ?? true;
 
     // TODO: remove tokenResponse.keyConnectorUrl reference after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
     const keyConnectorUrl =
       tokenResponse.keyConnectorUrl ?? userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl;
 
-    if (keyConnectorUrl != null) {
-      if (!newSsoUser) {
-        await this.keyConnectorService.setMasterKeyFromUrl(keyConnectorUrl);
-      } else {
+    // If the user org is using key connector, we need to set the master key from Key Connector
+    // If the user has a master password, this means that they need to migrate to Key Connector, so we won't set the key here.
+    if (keyConnectorUrl != null && !userHasMasterPassword) {
+      // TODO: discuss how this is no longer true with TDE
+      // eventually we’ll need to support migration of existing TDE users to Key Connector
+      const newSsoUser = tokenResponse.key == null;
+      if (newSsoUser) {
         await this.keyConnectorService.convertNewSsoUserToKeyConnector(tokenResponse, this.orgId);
+      } else {
+        await this.keyConnectorService.setMasterKeyFromUrl(keyConnectorUrl);
       }
     }
   }
