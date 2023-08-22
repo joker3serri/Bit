@@ -103,6 +103,7 @@ export class SsoLogInStrategy extends LogInStrategy {
 
     // If the user has a master password, this means that they need to migrate to Key Connector, so we won't set the key here.
     // We default to false here because old server versions won't have hasMasterPassword and in that case we want to rely solely on the keyConnectorUrl.
+    // TODO: remove null default after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
     const userHasMasterPassword = userDecryptionOptions?.hasMasterPassword ?? false;
 
     const keyConnectorUrl = this.getKeyConnectorUrl(tokenResponse);
@@ -238,6 +239,10 @@ export class SsoLogInStrategy extends LogInStrategy {
   private async trySetUserKeyWithMasterKey(): Promise<void> {
     const masterKey = await this.cryptoService.getMasterKey();
 
+    // There is a scenario in which the master key is not set here. That will occur if the user
+    // has a master password and is using Key Connector. In that case, we cannot set the master key
+    // because the user hasn't entered their master password yet.
+    // Instead, we'll return here and let the migration to Key Connector handle setting the master key.
     if (!masterKey) {
       return;
     }
