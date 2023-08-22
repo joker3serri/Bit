@@ -148,9 +148,8 @@ export class SsoLogInStrategy extends LogInStrategy {
         await this.trySetUserKeyWithDeviceKey(tokenResponse);
       }
     } else if (
-      // TODO: remove tokenResponse.keyConnectorUrl after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
       masterKeyEncryptedUserKey != null &&
-      (tokenResponse.keyConnectorUrl || userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl)
+      this.getKeyConnectorUrl(tokenResponse) != null
     ) {
       // Key connector enabled for user
       await this.trySetUserKeyWithMasterKey();
