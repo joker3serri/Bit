@@ -77,25 +77,48 @@ export class SsoLogInStrategy extends LogInStrategy {
   }
 
   protected override async setMasterKey(tokenResponse: IdentityTokenResponse) {
-    const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
-    const userHasMasterPassword = userDecryptionOptions?.hasMasterPassword ?? true;
-
-    // TODO: remove tokenResponse.keyConnectorUrl reference after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
-    const keyConnectorUrl =
-      tokenResponse.keyConnectorUrl ?? userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl;
-
-    // If the user org is using key connector, we need to set the master key from Key Connector
-    // If the user has a master password, this means that they need to migrate to Key Connector, so we won't set the key here.
-    if (keyConnectorUrl != null && !userHasMasterPassword) {
-      // TODO: discuss how this is no longer true with TDE
-      // eventually we’ll need to support migration of existing TDE users to Key Connector
+    // The only way we can be setting a master key at this point is if we are using Key Connector.
+    // First, check to make sure that we should do so based on the token response.
+    if (this.shouldSetMasterKeyFromKeyConnector(tokenResponse)) {
+      // A new SSO user here is a user logging in for the first time with SSO that has NOT
+      // previously logged in with a master password.  If they had logged in with a master password previously,
+      // the key would be set.
+      // If they have logged in with a master password previously, we don't set the key here because
+      // it will be handled after the sync runs by detecting that the user has a master password.
       const newSsoUser = tokenResponse.key == null;
       if (newSsoUser) {
         await this.keyConnectorService.convertNewSsoUserToKeyConnector(tokenResponse, this.orgId);
       } else {
+        const keyConnectorUrl = this.getKeyConnectorUrl(tokenResponse);
         await this.keyConnectorService.setMasterKeyFromUrl(keyConnectorUrl);
       }
     }
+  }
+
+  /**
+   * Determines if it is possible set the `masterKey` from Key Connector.
+   * @param tokenResponse
+   * @returns `true` if the master key can be set from Key Connector, `false` otherwise
+   */
+  private shouldSetMasterKeyFromKeyConnector(tokenResponse: IdentityTokenResponse): boolean {
+    const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
+
+    // If the user has a master password, this means that they need to migrate to Key Connector, so we won't set the key here.
+    const userHasMasterPassword = userDecryptionOptions?.hasMasterPassword ?? true;
+
+    const keyConnectorUrl = this.getKeyConnectorUrl(tokenResponse);
+
+    // In order for us to set the master key from Key Connector, we need to have a Key Connector URL
+    // and the user must not have a master password.
+    return keyConnectorUrl != null && !userHasMasterPassword;
+  }
+
+  private getKeyConnectorUrl(tokenResponse: IdentityTokenResponse): string {
+    // TODO: remove tokenResponse.keyConnectorUrl reference after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
+    const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
+    return (
+      tokenResponse.keyConnectorUrl ?? userDecryptionOptions?.keyConnectorOption?.keyConnectorUrl
+    );
   }
 
   // TODO: future passkey login strategy will need to support setting user key (decrypting via TDE or admin approval request)
