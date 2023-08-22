@@ -80,11 +80,9 @@ export class SsoLogInStrategy extends LogInStrategy {
     // The only way we can be setting a master key at this point is if we are using Key Connector.
     // First, check to make sure that we should do so based on the token response.
     if (this.shouldSetMasterKeyFromKeyConnector(tokenResponse)) {
-      // A new SSO user here is a user logging in for the first time with SSO that has NOT
-      // previously logged in with a master password.  If they had logged in with a master password previously,
-      // the key would be set.
-      // If they have logged in with a master password previously, we don't set the key here because
-      // it will be handled after the sync runs by detecting that the user has a master password.
+      // If we're here, we know that the user should use Key Connector (they have a KeyConnectorUrl) and does not have a master password.
+      // We can now check the key on the token response to see whether they are a brand new user or an existing user.
+      // The presence of a masterKeyEncryptedUserKey indicates that the user has already been provisioned in Key Connector.
       const newSsoUser = tokenResponse.key == null;
       if (newSsoUser) {
         await this.keyConnectorService.convertNewSsoUserToKeyConnector(tokenResponse, this.orgId);
@@ -104,7 +102,8 @@ export class SsoLogInStrategy extends LogInStrategy {
     const userDecryptionOptions = tokenResponse?.userDecryptionOptions;
 
     // If the user has a master password, this means that they need to migrate to Key Connector, so we won't set the key here.
-    const userHasMasterPassword = userDecryptionOptions?.hasMasterPassword ?? true;
+    // We default to false here because old server versions won't have hasMasterPassword and in that case we want to rely solely on the keyConnectorUrl.
+    const userHasMasterPassword = userDecryptionOptions?.hasMasterPassword ?? false;
 
     const keyConnectorUrl = this.getKeyConnectorUrl(tokenResponse);
 
