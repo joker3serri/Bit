@@ -31,7 +31,6 @@ export class TrashComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private secretService: SecretService,
-    private dialogService: DialogServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private dialogService: DialogService
