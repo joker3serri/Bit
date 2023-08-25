@@ -11,7 +11,7 @@ import { EnvVariablesData } from "./test-data/psono-json/environment-variables";
 import { FoldersTestData } from "./test-data/psono-json/folders";
 import { GPGData } from "./test-data/psono-json/gpg";
 import { NotesData } from "./test-data/psono-json/notes";
-import { ReducedWebsiteLoginsData } from "./test-data/psono-json/reducded-website-logins";
+import { ReducedWebsiteLoginsData } from "./test-data/psono-json/reduced-website-logins";
 import { TOTPData } from "./test-data/psono-json/totp";
 import { WebsiteLoginsData } from "./test-data/psono-json/website-logins";
 
