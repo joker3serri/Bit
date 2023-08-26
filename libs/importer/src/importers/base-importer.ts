@@ -354,7 +354,7 @@ export abstract class BaseImporter {
 
     let folderIndex = result.folders.length;
     // Replace backslashes with forward slashes, ensuring we create sub-folders
-    folderName = folderName.replace("\\", "/");
+    folderName = folderName.replaceAll("\\", "/");
     let addFolder = true;
 
     for (let i = 0; i < result.folders.length; i++) {
