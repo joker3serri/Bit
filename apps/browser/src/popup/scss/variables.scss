@@ -43,6 +43,10 @@ $button-color: lighten($text-color, 40%);
 $button-color-primary: darken($brand-primary, 8%);
 $button-color-danger: darken($brand-danger, 10%);
 
+$code-color: #c01176;
+$code-color-dark: #f08dc7;
+$code-color-nord: #dbb1d5;
+
 $solarizedDarkBase03: #002b36;
 $solarizedDarkBase02: #073642;
 $solarizedDarkBase01: #586e75;
@@ -59,10 +63,6 @@ $solarizedDarkViolet: #6c71c4;
 $solarizedDarkBlue: #268bd2;
 $solarizedDarkCyan: #2aa198;
 $solarizedDarkGreen: #859900;
-
-$code-color: #c01176;
-$code-color-dark: #f08dc7;
-$code-color-nord: #dbb1d5;
 
 $themes: (
   light: (
