@@ -1,3 +1,4 @@
+import { Subject } from "rxjs";
 import { ApiService } from "../../../abstractions/api.service";
 import { SettingsService } from "../../../abstractions/settings.service";
 import { InternalOrganizationServiceAbstraction } from "../../../admin-console/abstractions/organization/organization.service.abstraction";
@@ -26,24 +27,24 @@ import { SendResponse } from "../../../tools/send/models/response/send.response"
 import { SendApiService } from "../../../tools/send/services/send-api.service.abstraction";
 import { InternalSendService } from "../../../tools/send/services/send.service.abstraction";
 import { CipherService } from "../../../vault/abstractions/cipher.service";
-import { FolderApiServiceAbstraction } from "../../../vault/abstractions/folder/folder-api.service.abstraction";
-import { InternalFolderService } from "../../../vault/abstractions/folder/folder.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "../../../vault/abstractions/sync/sync.service.abstraction";
 import { CipherData } from "../../../vault/models/data/cipher.data";
-import { FolderData } from "../../../vault/models/data/folder.data";
 import { CipherResponse } from "../../../vault/models/response/cipher.response";
-import { FolderResponse } from "../../../vault/models/response/folder.response";
 import { CollectionService } from "../../abstractions/collection.service";
 import { CollectionData } from "../../models/data/collection.data";
 import { CollectionDetailsResponse } from "../../models/response/collection.response";
+import { SyncResponse } from "../../models/response/sync.response";
 
 export class SyncService implements SyncServiceAbstraction {
+  private _sync$ = new Subject<SyncResponse>();
+
   syncInProgress = false;
+
+  readonly sync$ = this._sync$.asObservable();
 
   constructor(
     private apiService: ApiService,
     private settingsService: SettingsService,
-    private folderService: InternalFolderService,
     private cipherService: CipherService,
     private cryptoService: CryptoService,
     private collectionService: CollectionService,
@@ -54,7 +55,6 @@ export class SyncService implements SyncServiceAbstraction {
     private keyConnectorService: KeyConnectorService,
     private stateService: StateService,
     private providerService: ProviderService,
-    private folderApiService: FolderApiServiceAbstraction,
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
     private logoutCallback: (expired: boolean) => Promise<void>
@@ -105,12 +105,14 @@ export class SyncService implements SyncServiceAbstraction {
       const response = await this.apiService.getSync();
 
       await this.syncProfile(response.profile);
-      await this.syncFolders(response.folders);
+      // await this.syncFolders(response.folders);
       await this.syncCollections(response.collections);
       await this.syncCiphers(response.ciphers);
       await this.syncSends(response.sends);
       await this.syncSettings(response.domains);
       await this.syncPolicies(response.policies);
+
+      this._sync$.next(response);
 
       await this.setLastSync(now);
       return this.syncCompleted(true);
@@ -121,40 +123,6 @@ export class SyncService implements SyncServiceAbstraction {
         return this.syncCompleted(false);
       }
     }
-  }
-
-  async syncUpsertFolder(notification: SyncFolderNotification, isEdit: boolean): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      try {
-        const localFolder = await this.folderService.get(notification.id);
-        if (
-          (!isEdit && localFolder == null) ||
-          (isEdit && localFolder != null && localFolder.revisionDate < notification.revisionDate)
-        ) {
-          const remoteFolder = await this.folderApiService.get(notification.id);
-          if (remoteFolder != null) {
-            await this.folderService.upsert(new FolderData(remoteFolder));
-            this.messagingService.send("syncedUpsertedFolder", { folderId: notification.id });
-            return this.syncCompleted(true);
-          }
-        }
-      } catch (e) {
-        this.logService.error(e);
-      }
-    }
-    return this.syncCompleted(false);
-  }
-
-  async syncDeleteFolder(notification: SyncFolderNotification): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      await this.folderService.delete(notification.id);
-      this.messagingService.send("syncedDeletedFolder", { folderId: notification.id });
-      this.syncCompleted(true);
-      return true;
-    }
-    return this.syncCompleted(false);
   }
 
   async syncUpsertCipher(notification: SyncCipherNotification, isEdit: boolean): Promise<boolean> {
@@ -361,13 +329,13 @@ export class SyncService implements SyncServiceAbstraction {
     await this.organizationService.replace(organizations);
   }
 
-  private async syncFolders(response: FolderResponse[]) {
-    const folders: { [id: string]: FolderData } = {};
-    response.forEach((f) => {
-      folders[f.id] = new FolderData(f);
-    });
-    return await this.folderService.replace(folders);
-  }
+  // private async syncFolders(response: FolderResponse[]) {
+  //   const folders: { [id: string]: FolderData } = {};
+  //   response.forEach((f) => {
+  //     folders[f.id] = new FolderData(f);
+  //   });
+  //   return await this.folderService.replace(folders);
+  // }
 
   private async syncCollections(response: CollectionDetailsResponse[]) {
     const collections: { [id: string]: CollectionData } = {};

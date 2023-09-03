@@ -132,10 +132,7 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
-import {
-  FolderService as FolderServiceAbstraction,
-  InternalFolderService,
-} from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -301,17 +298,16 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         CryptoServiceAbstraction,
         I18nServiceAbstraction,
         CipherServiceAbstraction,
+        FolderApiServiceAbstraction,
         StateServiceAbstraction,
+        SyncServiceAbstraction,
+        NotificationsServiceAbstraction,
       ],
-    },
-    {
-      provide: InternalFolderService,
-      useExisting: FolderServiceAbstraction,
     },
     {
       provide: FolderApiServiceAbstraction,
       useClass: FolderApiService,
-      deps: [FolderServiceAbstraction, ApiServiceAbstraction],
+      deps: [ApiServiceAbstraction],
     },
     {
       provide: AccountApiServiceAbstraction,
@@ -414,7 +410,6 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       deps: [
         ApiServiceAbstraction,
         SettingsServiceAbstraction,
-        FolderServiceAbstraction,
         CipherServiceAbstraction,
         CryptoServiceAbstraction,
         CollectionServiceAbstraction,
@@ -425,7 +420,6 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         KeyConnectorServiceAbstraction,
         StateServiceAbstraction,
         ProviderServiceAbstraction,
-        FolderApiServiceAbstraction,
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
         LOGOUT_CALLBACK,
