@@ -1,10 +1,10 @@
 import {
   ReplaySubject,
   Subject,
+  concat,
   concatMap,
   delayWhen,
   filter,
-  first,
   firstValueFrom,
   from,
   map,
@@ -48,26 +48,26 @@ export class ConfigService implements ConfigServiceAbstraction {
     }
 
     // Get config from storage on initial load
-    from(this.stateService.getServerConfig())
-      .pipe(map((data) => (data == null ? null : new ServerConfig(data))))
-      .subscribe((config) => this._serverConfig.next(config));
+    const fromStorage = from(this.stateService.getServerConfig()).pipe(
+      map((data) => (data == null ? null : new ServerConfig(data)))
+    );
 
     // Fetch config from server
     // If you need to fetch a new config when an event occurs, add an observable that emits on that event here
-    merge(
-      this.serverConfig$.pipe(first()), // after the initial load from storage has emitted (to avoid a race condition)
+    const fromServer = merge(
       timer(ONE_HOUR_IN_MILLISECONDS, ONE_HOUR_IN_MILLISECONDS), // after 1 hour, then every hour
-      this.environmentService.urls, // when environment URLs change
+      this.environmentService.urls, // when environment URLs change (including when app is started)
       this._forceFetchConfig // manual
-    )
-      .pipe(
-        concatMap(() => this.configApiService.get()),
-        filter((response) => response != null),
-        map((response) => new ServerConfigData(response)),
-        delayWhen((data) => this.saveConfig(data)),
-        map((data) => new ServerConfig(data))
-      )
-      .subscribe((config) => this._serverConfig.next(config));
+    ).pipe(
+      concatMap(() => this.configApiService.get()),
+      filter((response) => response != null),
+      map((response) => new ServerConfigData(response)),
+      delayWhen((data) => this.saveConfig(data)),
+      map((data) => new ServerConfig(data))
+    );
+
+    // Load from storage first, then fetch from server
+    concat(fromStorage, fromServer).subscribe((config) => this._serverConfig.next(config));
   }
 
   getFeatureFlag$<T extends FeatureFlagValue>(key: FeatureFlag, defaultValue?: T) {
