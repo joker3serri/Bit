@@ -28,6 +28,7 @@ export class ConfigService implements ConfigServiceAbstraction {
   protected _serverConfig = new ReplaySubject<ServerConfig | null>(1);
   serverConfig$ = this._serverConfig.asObservable();
   private _forceFetchConfig = new Subject<void>();
+  private inited = false;
 
   cloudRegion$ = this.serverConfig$.pipe(
     map((config) => config?.environment?.cloudRegion ?? Region.US)
@@ -38,12 +39,13 @@ export class ConfigService implements ConfigServiceAbstraction {
     private configApiService: ConfigApiServiceAbstraction,
     private authService: AuthService,
     private environmentService: EnvironmentService,
+
+    // Used to avoid duplicate subscriptions, e.g. in browser between the background and popup
     private subscribe = true
   ) {}
 
   init() {
-    // Used to avoid duplicate subscriptions, e.g. in browser between the background and popup
-    if (!this.subscribe) {
+    if (!this.subscribe || this.inited) {
       return;
     }
 
@@ -68,6 +70,8 @@ export class ConfigService implements ConfigServiceAbstraction {
 
     // Load from storage first, then fetch from server
     concat(fromStorage, fromServer).subscribe((config) => this._serverConfig.next(config));
+
+    this.inited = true;
   }
 
   getFeatureFlag$<T extends FeatureFlagValue>(key: FeatureFlag, defaultValue?: T) {
