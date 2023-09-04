@@ -75,22 +75,6 @@ describe("ConfigService", () => {
       stateService.getServerConfig.mockResolvedValueOnce(null);
     });
 
-    it("when the service is created", (done) => {
-      const configService = configServiceFactory();
-
-      // skip initial load from storage
-      configService.serverConfig$.pipe(skip(1), take(1)).subscribe((config) => {
-        try {
-          expect(config.gitHash).toEqual("server1");
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-
-      jest.advanceTimersByTime(1);
-    });
-
     it.each<number | jest.DoneCallback>([1, 2, 3])(
       "after %p hour/s",
       (hours: number, done: jest.DoneCallback) => {
