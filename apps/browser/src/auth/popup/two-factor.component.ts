@@ -22,6 +22,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
+import { BrowserRouterService } from "../../platform/popup/services/browser-router.service";
 import { PopupUtilsService } from "../../popup/services/popup-utils.service";
 
 const BroadcasterSubscriptionId = "TwoFactorComponent";
@@ -52,6 +53,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     loginService: LoginService,
     configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
+    private routerService: BrowserRouterService,
     @Inject(WINDOW) protected win: Window
   ) {
     super(
@@ -85,14 +87,13 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     super.successRoute = "/tabs/vault";
 
     super.onSuccessfulLoginNavigate = async () => {
-      // The `redirectUrl` parameter determines the target route after a successful login.
-      // If provided in the URL's query parameters, the user will be redirected
-      // to the specified path once they are authenticated.
-      this.successRoute = this.route.snapshot.queryParams.redirectUrl
-        ? decodeURIComponent(this.route.snapshot.queryParams.redirectUrl)
-        : this.successRoute;
+      const previousUrl = await this.routerService.getPreviousUrl();
 
-      this.router.navigateByUrl(this.successRoute);
+      if (previousUrl) {
+        this.router.navigateByUrl(previousUrl);
+      } else {
+        this.router.navigate([this.successRoute]);
+      }
     };
 
     // FIXME: Chromium 110 has broken WebAuthn support in extensions via an iframe

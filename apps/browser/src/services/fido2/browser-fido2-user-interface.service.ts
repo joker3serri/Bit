@@ -15,7 +15,6 @@ import {
 } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserRequestedFallbackAbortReason } from "@bitwarden/common/vault/abstractions/fido2/fido2-client.service.abstraction";
 import {
@@ -348,8 +347,7 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
       )
     );
 
-    const authStatus = await this.authService.getAuthStatus();
-    this.popout = await this.generatePopOut(authStatus);
+    this.popout = await this.generatePopOut();
 
     if (this.popout.type === "window") {
       const popoutWindow = this.popout;
@@ -378,36 +376,11 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
     await connectPromise;
   }
 
-  private async generatePopOut(authStatus: AuthenticationStatus) {
-    if (authStatus === AuthenticationStatus.Unlocked) {
-      const queryParams = new URLSearchParams({ sessionId: this.sessionId });
-      return this.popupUtilsService.popOut(
-        null,
-        `popup/index.html?uilocation=popout#/fido2?${queryParams.toString()}`,
-        { center: true }
-      );
-    }
-
-    let path: string;
-
-    switch (authStatus) {
-      case AuthenticationStatus.LoggedOut:
-        path = "home";
-        break;
-      case AuthenticationStatus.Locked:
-        path = "lock";
-        break;
-      default:
-        throw new Error(`Unexpected auth status: ${authStatus}`);
-    }
-
-    const redirectUrlParams = new URLSearchParams({ sessionId: this.sessionId });
-    const redirectUrl = `/fido2?${redirectUrlParams.toString()}`;
-
-    const queryParams = new URLSearchParams({ redirectUrl });
+  private async generatePopOut() {
+    const queryParams = new URLSearchParams({ sessionId: this.sessionId });
     return this.popupUtilsService.popOut(
       null,
-      `popup/index.html?uilocation=popout#/${path}?${queryParams.toString()}`,
+      `popup/index.html?uilocation=popout#/fido2?${queryParams.toString()}`,
       { center: true }
     );
   }

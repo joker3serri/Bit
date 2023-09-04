@@ -19,6 +19,7 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { flagEnabled } from "../../platform/flags";
+import { BrowserRouterService } from "../../platform/popup/services/browser-router.service";
 
 @Component({
   selector: "app-login",
@@ -44,7 +45,8 @@ export class LoginComponent extends BaseLoginComponent {
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
     route: ActivatedRoute,
-    loginService: LoginService
+    loginService: LoginService,
+    private routerService: BrowserRouterService
   ) {
     super(
       devicesApiService,
@@ -71,29 +73,14 @@ export class LoginComponent extends BaseLoginComponent {
     super.successRoute = "/tabs/vault";
 
     super.onSuccessfulLoginNavigate = async () => {
-      // The `redirectUrl` parameter determines the target route after a successful login.
-      // If provided in the URL's query parameters, the user will be redirected
-      // to the specified path once they are authenticated.
-      this.successRoute = this.route.snapshot.queryParams.redirectUrl
-        ? decodeURIComponent(this.route.snapshot.queryParams.redirectUrl)
-        : this.successRoute;
+      const previousUrl = await this.routerService.getPreviousUrl();
 
-      this.router.navigateByUrl(this.successRoute);
-    };
-
-    super.onSuccessfulLoginTwoFactorNavigate = async () => {
-      // The `redirectUrl` parameter determines the target route after a successful login.
-      // If provided in the URL's query parameters, the user will be redirected
-      // to the specified path once they are authenticated.
-      const redirectUrl = this.route.snapshot.queryParams.redirectUrl
-        ? decodeURIComponent(this.route.snapshot.queryParams.redirectUrl)
-        : undefined;
-
-      this.router.navigate([this.twoFactorRoute], {
-        queryParams: {
-          redirectUrl: redirectUrl,
-        },
-      });
+      if (previousUrl) {
+        this.router.navigateByUrl(previousUrl);
+      } else {
+        this.loginService.clearValues();
+        this.router.navigate([this.successRoute]);
+      }
     };
 
     this.showPasswordless = flagEnabled("showPasswordless");

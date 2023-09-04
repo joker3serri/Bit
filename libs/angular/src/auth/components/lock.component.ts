@@ -1,5 +1,5 @@
 import { Directive, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { firstValueFrom, Subject } from "rxjs";
 import { concatMap, take, takeUntil } from "rxjs/operators";
 
@@ -43,7 +43,6 @@ export class LockComponent implements OnInit, OnDestroy {
   supportsBiometric: boolean;
   biometricLock: boolean;
   biometricText: string;
-  redirectUrl: string;
 
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
@@ -72,7 +71,6 @@ export class LockComponent implements OnInit, OnDestroy {
     protected policyApiService: PolicyApiServiceAbstraction,
     protected policyService: InternalPolicyService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
-    protected route: ActivatedRoute,
     protected dialogService: DialogService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     protected userVerificationService: UserVerificationService
@@ -315,13 +313,6 @@ export class LockComponent implements OnInit, OnDestroy {
     await this.stateService.setEverBeenUnlocked(true);
     this.messagingService.send("unlocked");
 
-    // The `redirectUrl` parameter determines the target route after a successful login.
-    // If provided in the URL's query parameters, the user will be redirected
-    // to the specified path once they are authenticated.
-    if (this.route.snapshot.queryParams.redirectUrl) {
-      this.successRoute = decodeURIComponent(this.route.snapshot.queryParams.redirectUrl);
-    }
-
     if (evaluatePasswordAfterUnlock) {
       try {
         // If we do not have any saved policies, attempt to load them from the service
@@ -347,7 +338,7 @@ export class LockComponent implements OnInit, OnDestroy {
     if (this.onSuccessfulSubmit != null) {
       await this.onSuccessfulSubmit();
     } else if (this.router != null) {
-      this.router.navigateByUrl(this.successRoute);
+      this.router.navigate([this.successRoute]);
     }
   }
 

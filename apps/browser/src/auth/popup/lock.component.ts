@@ -1,5 +1,5 @@
 import { Component, NgZone } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 
 import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -22,6 +22,7 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { DialogService } from "@bitwarden/components";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
+import { BrowserRouterService } from "../../platform/popup/services/browser-router.service";
 
 @Component({
   selector: "app-lock",
@@ -50,10 +51,10 @@ export class LockComponent extends BaseLockComponent {
     policyService: InternalPolicyService,
     passwordStrengthService: PasswordStrengthServiceAbstraction,
     private authService: AuthService,
-    route: ActivatedRoute,
     dialogService: DialogService,
     deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
-    userVerificationService: UserVerificationService
+    userVerificationService: UserVerificationService,
+    private routerService: BrowserRouterService
   ) {
     super(
       router,
@@ -71,13 +72,21 @@ export class LockComponent extends BaseLockComponent {
       policyApiService,
       policyService,
       passwordStrengthService,
-      route,
       dialogService,
       deviceTrustCryptoService,
       userVerificationService
     );
     this.successRoute = "/tabs/current";
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;
+
+    super.onSuccessfulSubmit = async () => {
+      const previousUrl = await this.routerService.getPreviousUrl();
+      if (previousUrl) {
+        this.router.navigateByUrl(previousUrl);
+      } else {
+        this.router.navigate([this.successRoute]);
+      }
+    };
   }
 
   async ngOnInit() {
