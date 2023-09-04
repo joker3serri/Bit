@@ -14,7 +14,6 @@ import {
   fromEventPattern,
 } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserRequestedFallbackAbortReason } from "@bitwarden/common/vault/abstractions/fido2/fido2-client.service.abstraction";
 import {
@@ -102,7 +101,7 @@ export type BrowserFido2Message = { sessionId: string } & (
 );
 
 export class BrowserFido2UserInterfaceService implements Fido2UserInterfaceServiceAbstraction {
-  constructor(private popupUtilsService: PopupUtilsService, private authService: AuthService) {}
+  constructor(private popupUtilsService: PopupUtilsService) {}
 
   async newSession(
     fallbackSupported: boolean,
@@ -110,7 +109,6 @@ export class BrowserFido2UserInterfaceService implements Fido2UserInterfaceServi
   ): Promise<Fido2UserInterfaceSession> {
     return await BrowserFido2UserInterfaceSession.create(
       this.popupUtilsService,
-      this.authService,
       fallbackSupported,
       abortController
     );
@@ -120,13 +118,11 @@ export class BrowserFido2UserInterfaceService implements Fido2UserInterfaceServi
 export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSession {
   static async create(
     popupUtilsService: PopupUtilsService,
-    authService: AuthService,
     fallbackSupported: boolean,
     abortController?: AbortController
   ): Promise<BrowserFido2UserInterfaceSession> {
     return new BrowserFido2UserInterfaceSession(
       popupUtilsService,
-      authService,
       fallbackSupported,
       abortController
     );
@@ -148,7 +144,6 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
 
   private constructor(
     private readonly popupUtilsService: PopupUtilsService,
-    private readonly authService: AuthService,
     private readonly fallbackSupported: boolean,
     readonly abortController = new AbortController(),
     readonly sessionId = Utils.newGuid()
