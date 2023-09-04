@@ -650,6 +650,12 @@
   "customPasskeyNameInfo": {
     "message": "Name your passkey to help you identify it."
   },
+  "usedForEncryption": {
+    "message": "Used for encryption"
+  },
+  "setUpEncryption": {
+    "message": "Set up encryption"
+  },
   "encryptionNotSupported": {
     "message": "Encryption not supported"
   },
@@ -679,6 +685,24 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "readingPasskeyLoading": {
+    "message": "Reading passkey..."
+  },
+  "readingPasskeyLoadingInfo": {
+    "message": "Keep this window open and follow prompts from your browser."
+  },
+  "errorReadingPasskey": {
+    "message": "Error reading passkey"
+  },
+  "errorReadingPasskeyInfo": {
+    "message": "There was a problem reading your passkey."
+  },
+  "troubleLoggingIn": {
+    "message": "Trouble logging in?"
+  },
+  "useADifferentLogInMethod": {
+    "message": "Use a different log in method"
   },
   "createAccount": {
     "message": "Create account"
@@ -1367,7 +1391,7 @@
   },
   "selectImportFolder": {
     "message": "Select a folder"
-  },  
+  },
   "selectImportCollection": {
     "message": "Select a collection"
   },
@@ -1383,7 +1407,7 @@
   },
   "importUnassignedItemsError": {
     "message": "File contains unassigned items."
-  },  
+  },
   "selectFormat": {
     "message": "Select the format of the import file"
   },
@@ -7124,7 +7148,7 @@
   },
   "userEmailMissing": {
     "message": "User email missing"
-  }, 
+  },
   "deviceTrusted": {
     "message": "Device trusted"
   },

@@ -26,6 +26,7 @@ import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthenticationStatus } from "../enums/authentication-status";
 import { AuthenticationType } from "../enums/authentication-type";
+import { ExtensionLogInStrategy } from "../login-strategies/extension-login.strategy";
 import { PasswordLogInStrategy } from "../login-strategies/password-login.strategy";
 import { PasswordlessLogInStrategy } from "../login-strategies/passwordless-login.strategy";
 import { SsoLogInStrategy } from "../login-strategies/sso-login.strategy";
@@ -33,6 +34,7 @@ import { UserApiLogInStrategy } from "../login-strategies/user-api-login.strateg
 import { AuthResult } from "../models/domain/auth-result";
 import { KdfConfig } from "../models/domain/kdf-config";
 import {
+  ExtensionLogInCredentials,
   PasswordlessLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
@@ -85,7 +87,8 @@ export class AuthService implements AuthServiceAbstraction {
     | UserApiLogInStrategy
     | PasswordLogInStrategy
     | SsoLogInStrategy
-    | PasswordlessLogInStrategy;
+    | PasswordlessLogInStrategy
+    | ExtensionLogInStrategy;
   private sessionTimeout: any;
 
   private pushNotificationSubject = new Subject<string>();
@@ -116,6 +119,7 @@ export class AuthService implements AuthServiceAbstraction {
       | PasswordLogInCredentials
       | SsoLogInCredentials
       | PasswordlessLogInCredentials
+      | ExtensionLogInCredentials
   ): Promise<AuthResult> {
     this.clearState();
 
@@ -123,7 +127,8 @@ export class AuthService implements AuthServiceAbstraction {
       | UserApiLogInStrategy
       | PasswordLogInStrategy
       | SsoLogInStrategy
-      | PasswordlessLogInStrategy;
+      | PasswordlessLogInStrategy
+      | ExtensionLogInStrategy;
 
     switch (credentials.type) {
       case AuthenticationType.Password:
@@ -188,6 +193,19 @@ export class AuthService implements AuthServiceAbstraction {
           this.deviceTrustCryptoService
         );
         break;
+      case AuthenticationType.Extension:
+        strategy = new ExtensionLogInStrategy(
+          this.cryptoService,
+          this.apiService,
+          this.tokenService,
+          this.appIdService,
+          this.platformUtilsService,
+          this.messagingService,
+          this.logService,
+          this.stateService,
+          this.twoFactorService,
+          this
+        );
     }
 
     const result = await strategy.logIn(credentials as any);
@@ -242,6 +260,10 @@ export class AuthService implements AuthServiceAbstraction {
 
   authingWithPasswordless(): boolean {
     return this.logInStrategy instanceof PasswordlessLogInStrategy;
+  }
+
+  authingWithExtension(): boolean {
+    return this.logInStrategy instanceof ExtensionLogInStrategy;
   }
 
   async getAuthStatus(userId?: string): Promise<AuthenticationStatus> {
@@ -353,6 +375,7 @@ export class AuthService implements AuthServiceAbstraction {
       | PasswordLogInStrategy
       | SsoLogInStrategy
       | PasswordlessLogInStrategy
+      | ExtensionLogInStrategy
   ) {
     this.logInStrategy = strategy;
     this.startSessionTimeout();

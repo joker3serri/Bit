@@ -1,10 +1,12 @@
 import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
+import { WebauthnAdminServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-admin.service.abstraction";
+import {
+  WebauthnCredentialPrfStatus,
+  WebauthnCredentialView,
+} from "@bitwarden/common/auth/models/view/webauthn/webauthn-credential.view";
 import { DialogService } from "@bitwarden/components";
-
-import { WebauthnService } from "../../core";
-import { WebauthnCredentialView } from "../../core/views/webauth-credential.view";
 
 import { openCreateCredentialDialog } from "./create-credential-dialog/create-credential-dialog.component";
 import { openDeleteCredentialDialogComponent } from "./delete-credential-dialog/delete-credential-dialog.component";
@@ -20,11 +22,15 @@ export class WebauthnLoginSettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   protected readonly MaxCredentialCount = 5;
+  protected readonly WebauthnCredentialPrfStatus = WebauthnCredentialPrfStatus;
 
   protected credentials?: WebauthnCredentialView[];
   protected loading = true;
 
-  constructor(private webauthnService: WebauthnService, private dialogService: DialogService) {}
+  constructor(
+    private webauthnService: WebauthnAdminServiceAbstraction,
+    private dialogService: DialogService
+  ) {}
 
   @HostBinding("attr.aria-busy")
   get ariaBusy() {

@@ -9,6 +9,7 @@ import {
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
+  ExtensionLogInCredentials,
 } from "../models/domain/log-in-credentials";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
@@ -26,6 +27,7 @@ export abstract class AuthService {
       | PasswordLogInCredentials
       | SsoLogInCredentials
       | PasswordlessLogInCredentials
+      | ExtensionLogInCredentials
   ) => Promise<AuthResult>;
   logInTwoFactor: (
     twoFactor: TokenTwoFactorRequest,
@@ -37,6 +39,7 @@ export abstract class AuthService {
   authingWithSso: () => boolean;
   authingWithPassword: () => boolean;
   authingWithPasswordless: () => boolean;
+  authingWithExtension: () => boolean;
   getAuthStatus: (userId?: string) => Promise<AuthenticationStatus>;
   authResponsePushNotification: (notification: AuthRequestPushNotification) => Promise<any>;
   passwordlessLogin: (

@@ -19,12 +19,14 @@ import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
 import { ForceResetPasswordReason } from "../models/domain/force-reset-password-reason";
 import {
+  ExtensionLogInCredentials,
   PasswordlessLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   UserApiLogInCredentials,
 } from "../models/domain/log-in-credentials";
 import { DeviceRequest } from "../models/request/identity-token/device.request";
+import { ExtensionTokenRequest } from "../models/request/identity-token/extension-token.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
@@ -36,7 +38,11 @@ import { IdentityTwoFactorResponse } from "../models/response/identity-two-facto
 type IdentityResponse = IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse;
 
 export abstract class LogInStrategy {
-  protected abstract tokenRequest: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest;
+  protected abstract tokenRequest:
+    | UserApiTokenRequest
+    | PasswordTokenRequest
+    | SsoTokenRequest
+    | ExtensionTokenRequest;
   protected captchaBypassToken: string = null;
 
   constructor(
@@ -57,6 +63,7 @@ export abstract class LogInStrategy {
       | PasswordLogInCredentials
       | SsoLogInCredentials
       | PasswordlessLogInCredentials
+      | ExtensionLogInCredentials
   ): Promise<AuthResult>;
 
   async logInTwoFactor(

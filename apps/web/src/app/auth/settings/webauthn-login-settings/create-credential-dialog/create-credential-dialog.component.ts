@@ -3,18 +3,18 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { firstValueFrom, map, Observable } from "rxjs";
 
+import { CreatePasskeyFailedIcon } from "@bitwarden/angular/auth/icons/create-passkey-failed.icon";
+import { CreatePasskeyIcon } from "@bitwarden/angular/auth/icons/create-passkey.icon";
+import { WebauthnAdminServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-admin.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
+import { CredentialCreateOptionsView } from "@bitwarden/common/auth/models/view/webauthn/credential-create-options.view";
+import { PendingWebauthnCredentialView } from "@bitwarden/common/auth/models/view/webauthn/pending-webauthn-credential.view";
+import { PendingWebauthnCryptoKeysView } from "@bitwarden/common/auth/models/view/webauthn/pending-webauthn-crypto-keys.view";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
-
-import { WebauthnService } from "../../../core";
-import { CredentialCreateOptionsView } from "../../../core/views/credential-create-options.view";
-
-import { CreatePasskeyFailedIcon } from "./create-passkey-failed.icon";
-import { CreatePasskeyIcon } from "./create-passkey.icon";
 
 export enum CreateCredentialDialogResult {
   Success,
@@ -24,6 +24,7 @@ type Step =
   | "userVerification"
   | "credentialCreation"
   | "credentialCreationFailed"
+  | "prfSetup"
   | "credentialNaming";
 
 @Component({
@@ -44,13 +45,14 @@ export class CreateCredentialDialogComponent implements OnInit {
     }),
   });
   protected credentialOptions?: CredentialCreateOptionsView;
-  protected deviceResponse?: PublicKeyCredential;
+  protected pendingCredential?: PendingWebauthnCredentialView;
+  protected pendingCryptoKeys?: PendingWebauthnCryptoKeysView;
   protected hasPasskeys$?: Observable<boolean>;
 
   constructor(
     private formBuilder: FormBuilder,
     private dialogRef: DialogRef,
-    private webauthnService: WebauthnService,
+    private webauthnService: WebauthnAdminServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private logService: LogService
@@ -73,6 +75,8 @@ export class CreateCredentialDialogComponent implements OnInit {
           return await this.submitCredentialCreationFailed();
         case "credentialCreation":
           return await this.submitCredentialCreation();
+        case "prfSetup":
+          return await this.submitPrfSetup();
         case "credentialNaming":
           return await this.submitCredentialNaming();
       }
@@ -111,9 +115,15 @@ export class CreateCredentialDialogComponent implements OnInit {
   }
 
   protected async submitCredentialCreation() {
-    this.deviceResponse = await this.webauthnService.createCredential(this.credentialOptions);
-    if (this.deviceResponse === undefined) {
+    this.pendingCredential = await this.webauthnService.createCredential(this.credentialOptions);
+    if (this.pendingCredential === undefined) {
       this.currentStep = "credentialCreationFailed";
+      return;
+    }
+
+    if (this.pendingCredential.supportsPrf) {
+      this.currentStep = "prfSetup";
+      await this.submitPrfSetup();
       return;
     }
 
@@ -125,6 +135,11 @@ export class CreateCredentialDialogComponent implements OnInit {
     await this.submitCredentialCreation();
   }
 
+  protected async submitPrfSetup() {
+    this.pendingCryptoKeys = await this.webauthnService.createCryptoKeys(this.pendingCredential);
+    this.currentStep = "credentialNaming";
+  }
+
   protected async submitCredentialNaming() {
     this.formGroup.controls.credentialNaming.markAllAsTouched();
     if (this.formGroup.controls.credentialNaming.invalid) {
@@ -134,9 +149,9 @@ export class CreateCredentialDialogComponent implements OnInit {
     const name = this.formGroup.value.credentialNaming.name;
     try {
       await this.webauthnService.saveCredential(
-        this.credentialOptions,
-        this.deviceResponse,
-        this.formGroup.value.credentialNaming.name
+        this.formGroup.value.credentialNaming.name,
+        this.pendingCredential,
+        this.pendingCryptoKeys
       );
     } catch (error) {
       this.logService?.error(error);

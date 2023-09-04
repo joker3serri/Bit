@@ -25,7 +25,6 @@ import { MemoryStorageService } from "@bitwarden/common/platform/services/memory
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
-import { CoreAuthModule } from "../auth";
 import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
 import { StateMigrationService } from "../core/state-migration.service";
@@ -43,7 +42,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, JslibServicesModule, CoreAuthModule],
+  imports: [CommonModule, JslibServicesModule],
   providers: [
     InitService,
     RouterService,

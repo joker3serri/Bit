@@ -1,4 +1,8 @@
-import { MasterKey, UserKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import {
+  MasterKey,
+  SymmetricCryptoKey,
+  UserKey,
+} from "../../../platform/models/domain/symmetric-crypto-key";
 import { AuthenticationType } from "../../enums/authentication-type";
 import { TokenTwoFactorRequest } from "../request/identity-token/token-two-factor.request";
 
@@ -41,6 +45,16 @@ export class PasswordlessLogInCredentials {
     public decryptedUserKey: UserKey,
     public decryptedMasterKey: MasterKey,
     public decryptedMasterKeyHash: string,
+    public twoFactor?: TokenTwoFactorRequest
+  ) {}
+}
+
+export class ExtensionLogInCredentials {
+  readonly type = AuthenticationType.Extension;
+
+  constructor(
+    public token: string,
+    public prfKey?: SymmetricCryptoKey,
     public twoFactor?: TokenTwoFactorRequest
   ) {}
 }
