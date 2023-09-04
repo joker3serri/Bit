@@ -684,6 +684,7 @@ export default class MainBackground {
     await this.runtimeBackground.init();
     await this.notificationBackground.init();
     await this.commandsBackground.init();
+    (this.configService as BrowserConfigService).init();
 
     this.twoFactorService.init();
 
