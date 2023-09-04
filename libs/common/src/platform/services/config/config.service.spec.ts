@@ -1,5 +1,5 @@
 import { MockProxy, mock } from "jest-mock-extended";
-import { Subject, skip, take } from "rxjs";
+import { ReplaySubject, skip, take } from "rxjs";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
@@ -42,7 +42,7 @@ describe("ConfigService", () => {
     configApiService = mock();
     authService = mock();
     environmentService = mock();
-    environmentService.urls = new Subject();
+    environmentService.urls = new ReplaySubject<void>(1);
 
     serverResponseCount = 1;
     configApiService.get.mockImplementation(() =>
@@ -80,11 +80,11 @@ describe("ConfigService", () => {
       (hours: number, done: jest.DoneCallback) => {
         const configService = configServiceFactory();
 
-        // skip initial load from storage, plus first fetch, plus previous hours (if any)
-        configService.serverConfig$.pipe(skip(hours + 1), take(1)).subscribe((config) => {
+        // skip initial load from storage, plus previous hours (if any)
+        configService.serverConfig$.pipe(skip(hours), take(1)).subscribe((config) => {
           try {
-            expect(config.gitHash).toEqual("server" + (hours + 1));
-            expect(configApiService.get).toHaveBeenCalledTimes(hours + 1);
+            expect(config.gitHash).toEqual("server" + hours);
+            expect(configApiService.get).toHaveBeenCalledTimes(hours);
             done();
           } catch (e) {
             done(e);
@@ -92,7 +92,7 @@ describe("ConfigService", () => {
         });
 
         const oneHourInMs = 1000 * 3600;
-        jest.advanceTimersByTime(oneHourInMs * hours + 10);
+        jest.advanceTimersByTime(oneHourInMs * hours + 1);
       }
     );
 
@@ -109,7 +109,7 @@ describe("ConfigService", () => {
         }
       });
 
-      (environmentService.urls as Subject<void>).next();
+      (environmentService.urls as ReplaySubject<void>).next();
     });
 
     it("when triggerServerConfigFetch() is called", (done) => {
@@ -146,7 +146,7 @@ describe("ConfigService", () => {
       }
     });
 
-    jest.advanceTimersByTime(1);
+    configService.triggerServerConfigFetch();
   });
 });
 

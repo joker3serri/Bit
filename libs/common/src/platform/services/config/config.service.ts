@@ -1,7 +1,6 @@
 import {
   ReplaySubject,
   Subject,
-  concat,
   concatMap,
   delayWhen,
   filter,
@@ -54,22 +53,24 @@ export class ConfigService implements ConfigServiceAbstraction {
       map((data) => (data == null ? null : new ServerConfig(data)))
     );
 
+    fromStorage.subscribe((config) => this._serverConfig.next(config));
+
     // Fetch config from server
     // If you need to fetch a new config when an event occurs, add an observable that emits on that event here
-    const fromServer = merge(
+    merge(
       timer(ONE_HOUR_IN_MILLISECONDS, ONE_HOUR_IN_MILLISECONDS), // after 1 hour, then every hour
       this.environmentService.urls, // when environment URLs change (including when app is started)
       this._forceFetchConfig // manual
-    ).pipe(
-      concatMap(() => this.configApiService.get()),
-      filter((response) => response != null),
-      map((response) => new ServerConfigData(response)),
-      delayWhen((data) => this.saveConfig(data)),
-      map((data) => new ServerConfig(data))
-    );
-
-    // Load from storage first, then fetch from server
-    concat(fromStorage, fromServer).subscribe((config) => this._serverConfig.next(config));
+    )
+      .pipe(
+        delayWhen(() => fromStorage), // wait until storage has emitted first to avoid a race condition
+        concatMap(() => this.configApiService.get()),
+        filter((response) => response != null),
+        map((response) => new ServerConfigData(response)),
+        delayWhen((data) => this.saveConfig(data)),
+        map((data) => new ServerConfig(data))
+      )
+      .subscribe((config) => this._serverConfig.next(config));
 
     this.inited = true;
   }
