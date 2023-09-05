@@ -136,6 +136,10 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       const response = await this.formPromise;
       this.setFormValues();
       await this.loginService.saveEmailSettings();
+      if (response.requiresEncryptionKeyMigration) {
+        this.handleMigrateEncryptionKeyError();
+        return;
+      }
       if (this.handleCaptchaRequired(response)) {
         return;
       } else if (response.requiresTwoFactor) {
@@ -267,6 +271,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   async saveEmailSettings() {
     this.setFormValues();
     await this.loginService.saveEmailSettings();
+  }
+
+  protected handleMigrateEncryptionKeyError() {
+    this.platformUtilsService.showToast(
+      "error",
+      this.i18nService.t("errorOccured"),
+      this.i18nService.t("encryptionKeyMigrationRequired")
+    );
   }
 
   private getErrorToastMessage() {

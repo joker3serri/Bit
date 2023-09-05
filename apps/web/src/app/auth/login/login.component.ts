@@ -210,4 +210,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     }
     await super.submit(false);
   }
+
+  protected override handleMigrateEncryptionKeyError() {
+    this.router.navigate(["migrate-legacy-encryption"]);
+  }
 }

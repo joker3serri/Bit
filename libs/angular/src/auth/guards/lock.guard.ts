@@ -28,6 +28,11 @@ export function lockGuard(): CanActivateFn {
     const router = inject(Router);
     const userVerificationService = inject(UserVerificationService);
 
+    // If legacy user, redirect to migration page
+    if (cryptoService.isLegacyUser()) {
+      return router.createUrlTree(["migrate-legacy-encryption"]);
+    }
+
     const authStatus = await authService.getAuthStatus();
     if (authStatus !== AuthenticationStatus.Locked) {
       return router.createUrlTree(["/"]);

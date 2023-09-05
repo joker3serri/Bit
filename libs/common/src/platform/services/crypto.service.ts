@@ -77,6 +77,12 @@ export class CryptoService implements CryptoServiceAbstraction {
     }
   }
 
+  async isLegacyUser(masterKey?: MasterKey, userId?: string): Promise<boolean> {
+    return await this.validateUserKey(
+      (masterKey ?? (await this.getMasterKey(userId))) as unknown as UserKey
+    );
+  }
+
   async getUserKeyWithLegacySupport(userId?: string): Promise<UserKey> {
     const userKey = await this.getUserKey(userId);
     if (userKey) {
@@ -510,7 +516,8 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async makeKeyPair(key?: SymmetricCryptoKey): Promise<[string, EncString]> {
-    key ||= await this.getUserKey();
+    // Default to user key
+    key ||= await this.getUserKeyWithLegacySupport();
 
     const keyPair = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
     const publicB64 = Utils.fromBufferToB64(keyPair[0]);
