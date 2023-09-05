@@ -137,6 +137,7 @@ jobs:
         run: |
           node --version
           npm --version
+          node-gyp --version
 
       - name: NPM setup
         run: npm ci
@@ -152,24 +153,26 @@ jobs:
         run: gulp ci
 
       - name: Build sources for reviewers
-        shell: cmd
         run: |
-          REM Remove ".git" directory
-          rmdir /S /Q ".git"
+          # Include hidden files in glob copy
+          shopt -s dotglob
+          
+          # Remove ".git" directory
+          rm -r .git
 
-          REM Copy root level files to source directory
+          # Copy root level files to source directory
           mkdir browser-source
-          copy * browser-source
+          cp * browser-source
 
-          REM Copy apps\browser to Browser source directory
-          mkdir browser-source\apps\browser
-          xcopy apps\browser\* browser-source\apps\browser /E
+          # Copy apps/browser to Browser source directory
+          mkdir -p browser-source/apps/browser
+          cp -r apps/browser/* browser-source/apps/browser
 
-          REM Copy libs to Browser source directory
-          mkdir browser-source\libs
-          xcopy libs\* browser-source\libs /E
+          # Copy libs to Browser source directory
+          mkdir browser-source/libs
+          cp -r libs/* browser-source/libs
 
-          call 7z a browser-source.zip "browser-source\*"
+          zip -r browser-source.zip browser-source
         working-directory: ./
 
       - name: Upload Opera artifact
