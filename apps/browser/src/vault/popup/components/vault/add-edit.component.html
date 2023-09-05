@@ -564,6 +564,7 @@
           <select
             id="autofillOnPageLoad"
             name="AutofillOnPageLoad"
+            [disabled]="reprompt"
             [(ngModel)]="cipher.login.autofillOnPageLoad"
           >
             <option *ngFor="let o of autofillOnPageLoadOptions" [ngValue]="o.value">
