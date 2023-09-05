@@ -1,11 +1,9 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, NgZone, OnDestroy, OnInit, SecurityContext } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { NavigationEnd, Router } from "@angular/router";
-import * as jq from "jquery";
+import { Router } from "@angular/router";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
-import Swal from "sweetalert2";
 
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
@@ -198,19 +196,6 @@ export class AppComponent implements OnDestroy, OnInit {
       });
     });
 
-    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        const modals = Array.from(document.querySelectorAll(".modal"));
-        for (const modal of modals) {
-          (jq(modal) as any).modal("hide");
-        }
-
-        if (document.querySelector(".swal-modal") != null) {
-          Swal.close(undefined);
-        }
-      }
-    });
-
     this.policyListService.addPolicies([
       new TwoFactorAuthenticationPolicy(),
       new MasterPasswordPolicy(),
@@ -258,7 +243,6 @@ export class AppComponent implements OnDestroy, OnInit {
       }
 
       await this.stateService.clean({ userId: userId });
-      Swal.close();
       if (redirect) {
         this.router.navigate(["/"]);
       }
