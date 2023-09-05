@@ -178,7 +178,7 @@
               id="length"
               type="number"
               min="5"
-              max="128"
+              max="256"
               [(ngModel)]="passwordOptions.length"
               (change)="savePasswordOptions()"
             />
@@ -186,7 +186,7 @@
               id="lengthRange"
               type="range"
               min="5"
-              max="128"
+              max="256"
               step="1"
               [(ngModel)]="passwordOptions.length"
               (change)="sliderChanged()"
@@ -229,7 +229,7 @@
             />
           </div>
           <div class="box-content-row box-content-row-checkbox" appBoxRow>
-            <label for="special">!@#$%^&*</label>
+            <label for="special">{{'!@#$%^&*()[]{}¿?\\/-_\.€;:\<>=+¡'}}</label>
             <input
               id="special"
               type="checkbox"
@@ -260,7 +260,7 @@
               id="min-special"
               type="number"
               min="0"
-              max="9"
+              max="16"
               (change)="savePasswordOptions()"
               [(ngModel)]="passwordOptions.minSpecial"
             />
