@@ -268,6 +268,10 @@ export class AddEditComponent extends BaseAddEditComponent {
   repromptChanged() {
     super.repromptChanged();
 
+    if (!this.showAutoFillOnPageLoadOptions) {
+      return;
+    }
+
     if (this.reprompt) {
       this.platformUtilsService.showToast(
         "info",
