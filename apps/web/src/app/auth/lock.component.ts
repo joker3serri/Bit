@@ -1,5 +1,5 @@
 import { Component, NgZone } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 
 import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -43,7 +43,6 @@ export class LockComponent extends BaseLockComponent {
     policyApiService: PolicyApiServiceAbstraction,
     policyService: InternalPolicyService,
     passwordStrengthService: PasswordStrengthServiceAbstraction,
-    route: ActivatedRoute,
     dialogService: DialogService,
     deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     userVerificationService: UserVerificationService
@@ -64,7 +63,6 @@ export class LockComponent extends BaseLockComponent {
       policyApiService,
       policyService,
       passwordStrengthService,
-      route,
       dialogService,
       deviceTrustCryptoService,
       userVerificationService
