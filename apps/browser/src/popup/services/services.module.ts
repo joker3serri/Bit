@@ -36,7 +36,6 @@ import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -496,7 +495,7 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [StateServiceAbstraction, PlatformUtilsService],
     },
     {
-      provide: ConfigServiceAbstraction,
+      provide: ConfigService,
       useClass: BrowserConfigService,
       deps: [
         StateServiceAbstraction,
@@ -504,10 +503,6 @@ function getBgService<T>(service: keyof MainBackground) {
         AuthServiceAbstraction,
         EnvironmentService,
       ],
-    },
-    {
-      provide: ConfigService,
-      useExisting: ConfigServiceAbstraction,
     },
   ],
 })
