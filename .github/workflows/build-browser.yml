@@ -164,7 +164,6 @@ jobs:
           mkdir browser-source
           FILES=$(find . -maxdepth 1 -type f)
           for FILE in $FILES; do cp "$FILE" browser-source/; done
-          ls -alh browser-source/
 
           # Copy apps/browser to Browser source directory
           mkdir -p browser-source/apps/browser
