@@ -45,7 +45,7 @@ export class LockComponent extends BaseLockComponent {
     environmentService: EnvironmentService,
     protected override stateService: ElectronStateService,
     apiService: ApiService,
-    route: ActivatedRoute,
+    private route: ActivatedRoute,
     private broadcasterService: BroadcasterService,
     ngZone: NgZone,
     policyApiService: PolicyApiServiceAbstraction,
@@ -72,7 +72,6 @@ export class LockComponent extends BaseLockComponent {
       policyApiService,
       policyService,
       passwordStrengthService,
-      route,
       dialogService,
       deviceTrustCryptoService,
       userVerificationService
