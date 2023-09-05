@@ -108,7 +108,7 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       allCharSet += numberCharSet;
     }
 
-    const specialCharSet = "!@#$%^&*";
+    const specialCharSet = "!@#$%^&*()[]{}¿?\\/-_\.€;:<>=+¡";
     if (o.special) {
       allCharSet += specialCharSet;
     }
@@ -394,8 +394,8 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
 
     if (!options.length || options.length < 5) {
       options.length = 5;
-    } else if (options.length > 128) {
-      options.length = 128;
+    } else if (options.length > 256) {
+      options.length = 256;
     }
 
     if (options.length < enforcedPolicyOptions.minLength) {
@@ -418,8 +418,8 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       options.minSpecial = 0;
     } else if (options.minSpecial > options.length) {
       options.minSpecial = options.length;
-    } else if (options.minSpecial > 9) {
-      options.minSpecial = 9;
+    } else if (options.minSpecial > 16) {
+      options.minSpecial = 16;
     }
 
     if (options.minSpecial < enforcedPolicyOptions.specialCount) {
