@@ -11,7 +11,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { DialogService } from "@bitwarden/components";
@@ -74,12 +73,7 @@ export class AddEditComponent extends BaseAddEditComponent {
 
   submitAndClose = async () => {
     this.formGroup.markAllAsTouched();
-    if (
-      this.formGroup.controls.name.value === "" ||
-      (!this.editMode &&
-        this.formGroup.controls.type.value === SendType.File &&
-        this.formGroup.controls.file.value === null)
-    ) {
+    if (this.formGroup.invalid) {
       return;
     }
 

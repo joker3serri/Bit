@@ -164,6 +164,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.typeChanged();
     });
 
+    this.formGroup.controls.selectedDeletionDatePreset.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((datePreset) => {
+        datePreset === DatePreset.Custom
+          ? this.formGroup.controls.defaultDeletionDateTime.enable()
+          : this.formGroup.controls.defaultDeletionDateTime.disable();
+      });
+
     this.formGroup.controls.hideEmail.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((val) => {
@@ -357,6 +365,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.messagingService.send("emailVerificationRequired");
       }
     }
+    this.type === SendType.Text || this.editMode
+      ? this.formGroup.controls.file.disable()
+      : this.formGroup.controls.file.enable();
   }
 
   toggleOptions() {
