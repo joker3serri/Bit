@@ -162,7 +162,8 @@ jobs:
 
           # Copy root level files to source directory
           mkdir browser-source
-          cp * browser-source
+          for X in *; do cp "$X" browser-source/; done
+          ls -alh browser-source/
 
           # Copy apps/browser to Browser source directory
           mkdir -p browser-source/apps/browser
