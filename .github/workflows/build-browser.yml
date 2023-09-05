@@ -38,7 +38,7 @@ defaults:
 jobs:
   cloc:
     name: CLOC
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
@@ -54,7 +54,7 @@ jobs:
 
   setup:
     name: Setup
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       repo_url: ${{ steps.gen_vars.outputs.repo_url }}
       adj_build_number: ${{ steps.gen_vars.outputs.adj_build_number }}
@@ -71,7 +71,7 @@ jobs:
 
   locales-test:
     name: Locales Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - setup
     defaults:
@@ -108,7 +108,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: windows-2019
+    runs-on: ubuntu-22.04
     needs:
       - setup
       - locales-test
@@ -339,7 +339,7 @@ jobs:
   crowdin-push:
     name: Crowdin Push
     if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build
       - build-safari
@@ -374,7 +374,7 @@ jobs:
   check-failures:
     name: Check for failures
     if: always()
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - cloc
       - setup
