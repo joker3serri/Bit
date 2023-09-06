@@ -136,11 +136,9 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       const response = await this.formPromise;
       this.setFormValues();
       await this.loginService.saveEmailSettings();
-      if (response.requiresEncryptionKeyMigration) {
-        this.handleMigrateEncryptionKeyError();
-        return;
-      }
       if (this.handleCaptchaRequired(response)) {
+        return;
+      } else if (this.handleMigrateEncryptionKey(response)) {
         return;
       } else if (response.requiresTwoFactor) {
         if (this.onSuccessfulLoginTwoFactorNavigate != null) {
@@ -273,12 +271,19 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     await this.loginService.saveEmailSettings();
   }
 
-  protected handleMigrateEncryptionKeyError() {
+  // Legacy accounts used the master key to encrypt data. Migration is required
+  // but only performed on web
+  protected handleMigrateEncryptionKey(result: AuthResult): boolean {
+    if (!result.requiresEncryptionKeyMigration) {
+      return false;
+    }
+
     this.platformUtilsService.showToast(
       "error",
       this.i18nService.t("errorOccured"),
       this.i18nService.t("encryptionKeyMigrationRequired")
     );
+    return true;
   }
 
   private getErrorToastMessage() {

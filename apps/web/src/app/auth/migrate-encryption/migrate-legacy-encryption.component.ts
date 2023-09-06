@@ -12,7 +12,7 @@ import { MigrateFromLegacyEncryptionService } from "./migrate-legacy-encryption.
 // The master key was originally used to encrypt user data, before the user key was introduced.
 // This component is used to migrate from the old encryption scheme to the new one.
 @Component({
-  selector: "migreate-legacy-encryption",
+  selector: "migrate-legacy-encryption",
   templateUrl: "migrate-legacy-encryption.component.html",
 })
 export class MigrateFromLegacyEncryptionComponent {
@@ -38,6 +38,7 @@ export class MigrateFromLegacyEncryptionComponent {
 
     const hasUserKey = await this.cryptoService.hasUserKey();
     if (hasUserKey) {
+      this.messagingService.send("logout");
       throw new Error("User key already exists, cannot migrate legacy encryption.");
     }
 
@@ -49,18 +50,18 @@ export class MigrateFromLegacyEncryptionComponent {
         masterPassword
       );
 
+      // Update admin recover keys
+      await this.migrationService.updateAllAdminRecoveryKeys(masterPassword, newUserKey);
+
+      // Update emergency access
+      await this.migrationService.updateEmergencyAccesses(newUserKey);
+
       // Update keys, folders, ciphers, and sends
       await this.migrationService.updateKeysAndEncryptedData(
         masterPassword,
         newUserKey,
         masterKeyEncUserKey
       );
-
-      // Update emergency access
-      await this.migrationService.updateEmergencyAccesses(newUserKey);
-
-      // Update admin recover keys
-      await this.migrationService.updateAllAdminRecoveryKeys(masterPassword, newUserKey);
 
       this.platformUtilsService.showToast(
         "success",

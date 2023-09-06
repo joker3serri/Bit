@@ -23,7 +23,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CipherWithIdRequest } from "@bitwarden/common/vault/models/request/cipher-with-id.request";
 import { FolderWithIdRequest } from "@bitwarden/common/vault/models/request/folder-with-id.request";
 
-// TODO: This service should be expanded and used for user key rotations in change-password.component.ts
+// TODO: PM-3797 - This service should be expanded and used for user key rotations in change-password.component.ts
 @Injectable()
 export class MigrateFromLegacyEncryptionService {
   constructor(

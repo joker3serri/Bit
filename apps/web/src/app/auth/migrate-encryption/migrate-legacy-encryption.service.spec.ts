@@ -88,7 +88,7 @@ describe("migrateFromLegacyEncryptionService", () => {
 
       await expect(
         migrateFromLegacyEncryptionService.createNewUserKey(mockMasterPassword)
-      ).rejects.toThrowError("Invalid master password or user is not legacy");
+      ).rejects.toThrowError("Invalid master password or user may not be legacy");
     });
   });
 
