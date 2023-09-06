@@ -20,7 +20,6 @@ export class EnvironmentSelectorComponent implements OnInit {
   isUsServer: boolean;
   showRegionSelector = false;
   euServerFlagEnabled: boolean;
-  selectedRegionImageName: string;
 
   async ngOnInit() {
     this.euServerFlagEnabled = await this.configService.getFeatureFlagBool(
@@ -29,15 +28,6 @@ export class EnvironmentSelectorComponent implements OnInit {
     const domain = Utils.getDomain(window.location.href);
     this.isEuServer = domain.includes(RegionDomain.EU);
     this.isUsServer = domain.includes(RegionDomain.US) || domain.includes(RegionDomain.USQA);
-    this.selectedRegionImageName = this.getRegionImage();
     this.showRegionSelector = !this.platformUtilsService.isSelfHost();
-  }
-
-  getRegionImage(): string {
-    if (this.isEuServer) {
-      return "flag-eu";
-    } else {
-      return "flag-us";
-    }
   }
 }
