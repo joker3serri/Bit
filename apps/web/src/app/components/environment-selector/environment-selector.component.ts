@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -15,7 +15,7 @@ export class EnvironmentSelectorComponent implements OnInit {
     private configService: ConfigServiceAbstraction,
     private platformUtilsService: PlatformUtilsService
   ) {}
-  @Input() hasFlags: boolean;
+
   isEuServer: boolean;
   isUsServer: boolean;
   showRegionSelector = false;
