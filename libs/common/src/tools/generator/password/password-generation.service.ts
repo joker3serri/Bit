@@ -53,25 +53,26 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       o.length = minLength;
     }
 
+    function push(type: string, length: number) {
+      for (let i = 0; i < length; i++) {
+        positions.push(type);
+      }
+    }
+
     const positions: string[] = [];
-    if (o.lowercase && o.minLowercase > 0) {
-      for (let i = 0; i < o.minLowercase; i++) {
-        positions.push("l");
+    if (o.lowercase && o.minLowercase > 0) {push("l", o.minLowercase);}
+    if (o.uppercase && o.minUppercase > 0) {push("u", o.minUppercase);}
+    if (o.number && o.minNumber > 0) {push("n", o.minNumber);}
+    if (o.special && o.special2 && o.minSpecial > 0) {
+      const minSpecialHalf = Math.floor(o.minSpecial / 2);
+      push("s", minSpecialHalf);
+      push("s2", o.minSpecial - minSpecialHalf);
+    } else {
+      if (o.special && o.minSpecial > 0) {
+        push("s", o.minSpecial);
       }
-    }
-    if (o.uppercase && o.minUppercase > 0) {
-      for (let i = 0; i < o.minUppercase; i++) {
-        positions.push("u");
-      }
-    }
-    if (o.number && o.minNumber > 0) {
-      for (let i = 0; i < o.minNumber; i++) {
-        positions.push("n");
-      }
-    }
-    if (o.special && o.minSpecial > 0) {
-      for (let i = 0; i < o.minSpecial; i++) {
-        positions.push("s");
+      if (o.special2 && o.minSpecial > 0) {
+        push("s2", o.minSpecial);
       }
     }
     while (positions.length < o.length) {
@@ -113,6 +114,11 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       allCharSet += specialCharSet;
     }
 
+    const specialCharSet2 = "()[]{}?/\\-_.:,;=+<>";
+    if (o.special2) {
+      allCharSet += specialCharSet2;
+    }
+
     let password = "";
     for (let i = 0; i < o.length; i++) {
       let positionChars: string;
@@ -128,6 +134,9 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
           break;
         case "s":
           positionChars = specialCharSet;
+          break;
+        case "s2":
+          positionChars = specialCharSet2;
           break;
         case "a":
           positionChars = allCharSet;
@@ -530,10 +539,14 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       minNumberCalc = 0;
     }
 
-    if (options.special && options.minSpecial <= 0) {
-      minSpecialCalc = 1;
-    } else if (!options.special) {
-      minSpecialCalc = 0;
+    if (options.minSpecial <= 0) {
+      if (options.special && options.special2) {
+        minSpecialCalc = 2;
+      } else if (options.special || options.special2) {
+        minSpecialCalc = 1;
+      } else {
+        minSpecialCalc = 0;
+      }
     }
 
     // This should never happen but is a final safety net

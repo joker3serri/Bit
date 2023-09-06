@@ -239,6 +239,17 @@
               [(ngModel)]="passwordOptions.special"
             />
           </div>
+          <div class="box-content-row box-content-row-checkbox" appBoxRow>
+            <label for="special2">{{ "()[]{}?/\\-_\.:,;=+\<>" }}</label>
+            <input
+              id="special2"
+              type="checkbox"
+              (change)="savePasswordOptions()"
+              attr.aria-label="{{ 'specialCharacters' | i18n }}"
+              [disabled]="enforcedPasswordPolicyOptions.useSpecial"
+              [(ngModel)]="passwordOptions.special2"
+            />
+          </div>
         </div>
       </div>
       <div class="box">

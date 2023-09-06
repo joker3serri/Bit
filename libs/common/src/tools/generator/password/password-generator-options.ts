@@ -8,6 +8,7 @@ export type PasswordGeneratorOptions = {
   number?: boolean;
   minNumber?: number;
   special?: boolean;
+  special2?: boolean;
   minSpecial?: number;
   numWords?: number;
   wordSeparator?: string;
