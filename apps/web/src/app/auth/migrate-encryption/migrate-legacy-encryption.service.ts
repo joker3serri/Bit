@@ -105,13 +105,12 @@ export class MigrateFromLegacyEncryptionService {
   async updateEmergencyAccesses(newUserKey: UserKey) {
     const emergencyAccess = await this.apiService.getEmergencyAccessTrusted();
     // Any Invited or Accepted requests won't have the key yet, so we don't need to update them
-    const allowedStatuses = [
+    const allowedStatuses = new Set([
       EmergencyAccessStatusType.Confirmed,
       EmergencyAccessStatusType.RecoveryInitiated,
       EmergencyAccessStatusType.RecoveryApproved,
-    ];
-
-    const filteredAccesses = emergencyAccess.data.filter((d) => allowedStatuses.includes(d.status));
+    ]);
+    const filteredAccesses = emergencyAccess.data.filter((d) => allowedStatuses.has(d.status));
 
     for (const details of filteredAccesses) {
       // Get public key of grantee
