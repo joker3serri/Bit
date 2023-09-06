@@ -15,8 +15,6 @@ export class Fido2Key extends Domain {
   rpId: EncString;
   userHandle: EncString;
   counter: EncString;
-
-  // Extras
   rpName: EncString;
   userDisplayName: EncString;
 
