@@ -420,6 +420,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       hideEmail: this.send?.hideEmail ?? false,
       disabled: this.send?.disabled ?? false,
       type: this.send.type ?? this.type,
+      password: "",
 
       selectedDeletionDatePreset: this.editMode ? DatePreset.Custom : DatePreset.SevenDays,
       selectedExpirationDatePreset: this.editMode ? DatePreset.Custom : DatePreset.Never,
