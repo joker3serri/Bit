@@ -283,7 +283,6 @@ const devServer =
                   https://api.fastmail.com
                   https://api.forwardemail.net
                   http://localhost:5000
-                  ws://localhost:61840
                 ;object-src
                   'self'
                   blob:
