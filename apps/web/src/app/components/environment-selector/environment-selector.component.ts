@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -13,13 +14,15 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 export class EnvironmentSelectorComponent implements OnInit {
   constructor(
     private configService: ConfigServiceAbstraction,
-    private platformUtilsService: PlatformUtilsService
+    private platformUtilsService: PlatformUtilsService,
+    private router: Router
   ) {}
 
   isEuServer: boolean;
   isUsServer: boolean;
   showRegionSelector = false;
   euServerFlagEnabled: boolean;
+  routeAndParams: string;
 
   async ngOnInit() {
     this.euServerFlagEnabled = await this.configService.getFeatureFlagBool(
@@ -29,5 +32,6 @@ export class EnvironmentSelectorComponent implements OnInit {
     this.isEuServer = domain.includes(RegionDomain.EU);
     this.isUsServer = domain.includes(RegionDomain.US) || domain.includes(RegionDomain.USQA);
     this.showRegionSelector = !this.platformUtilsService.isSelfHost();
+    this.routeAndParams = `/#${this.router.url}`;
   }
 }
