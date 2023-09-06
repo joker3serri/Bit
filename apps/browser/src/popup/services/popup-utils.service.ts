@@ -64,7 +64,7 @@ export class PopupUtilsService {
       href = win.location.href;
     }
 
-    if (typeof chrome !== "undefined" && chrome.windows && chrome.windows.create) {
+    if (chrome?.windows?.create != undefined) {
       if (href.indexOf("?uilocation=") > -1) {
         href = href
           .replace("uilocation=popup", "uilocation=popout")
@@ -95,7 +95,7 @@ export class PopupUtilsService {
       }
 
       return { type: "window", window };
-    } else if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.create) {
+    } else if (chrome?.tabs?.create != undefined) {
       href = href
         .replace("uilocation=popup", "uilocation=tab")
         .replace("uilocation=popout", "uilocation=tab")
