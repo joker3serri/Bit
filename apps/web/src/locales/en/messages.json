@@ -508,9 +508,6 @@
   "maxFileSize": {
     "message": "Maximum file size is 500 MB."
   },
-  "updateKey": {
-    "message": "You cannot use this feature until you update your encryption key."
-  },
   "addedItem": {
     "message": "Item added"
   },
@@ -3472,9 +3469,6 @@
   },
   "keyUpdated": {
     "message": "Key updated"
-  },
-  "updateKeyTitle": {
-    "message": "Update key"
   },
   "updateEncryptionKey": {
     "message": "Update encryption key"
