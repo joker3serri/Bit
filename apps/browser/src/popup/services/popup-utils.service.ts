@@ -109,10 +109,11 @@ export class PopupUtilsService {
   }
 
   closePopOut(popout: Popout): Promise<void> {
-    if (popout.type === "window") {
-      return BrowserApi.removeWindow(popout.window.id);
-    } else {
-      return BrowserApi.removeTab(popout.tab.id);
+    switch (popout.type) {
+      case "window":
+        return BrowserApi.removeWindow(popout.window.id);
+      case "tab":
+        return BrowserApi.removeTab(popout.tab.id);
     }
   }
 
