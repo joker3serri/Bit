@@ -10,6 +10,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ClientType } from "@bitwarden/common/enums";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -34,7 +35,7 @@ export function lockGuard(): CanActivateFn {
 
     // If legacy user on web, redirect to migration page
     if (cryptoService.isLegacyUser()) {
-      if (platformUtilService.getClientType() === "web") {
+      if (platformUtilService.getClientType() === ClientType.Web) {
         return router.createUrlTree(["migrate-legacy-encryption"]);
       }
       // Log out legacy users on other clients

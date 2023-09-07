@@ -14,10 +14,10 @@
             >{{ "learnMore" | i18n }}</a
           >
         </p>
-        <app-callout type="warning">{{ "updateEncryptionKeyWarning" | i18n }}</app-callout>
+        <bit-callout type="warning">{{ "updateEncryptionKeyWarning" | i18n }}</bit-callout>
 
         <bit-form-field>
-          <bit-label for="masterPassword">{{ "masterPass" | i18n }}</bit-label>
+          <bit-label>{{ "masterPass" | i18n }}</bit-label>
           <input
             id="masterPassword"
             bitInput
@@ -25,8 +25,9 @@
             formControlName="masterPassword"
             appAutofocus
           />
+          <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
         </bit-form-field>
-        <button type="submit" bitButton bitFormButton buttonType="primary" [block]="true">
+        <button type="submit" bitButton bitFormButton buttonType="primary" block>
           {{ "updateEncryptionKey" | i18n }}
         </button>
       </div>

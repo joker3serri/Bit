@@ -25,7 +25,6 @@ import { LockComponent } from "./auth/lock.component";
 import { LoginDecryptionOptionsComponent } from "./auth/login/login-decryption-options/login-decryption-options.component";
 import { LoginWithDeviceComponent } from "./auth/login/login-with-device.component";
 import { LoginComponent } from "./auth/login/login.component";
-import { MigrateFromLegacyEncryptionComponent } from "./auth/migrate-encryption/migrate-legacy-encryption.component";
 import { RecoverDeleteComponent } from "./auth/recover-delete.component";
 import { RecoverTwoFactorComponent } from "./auth/recover-two-factor.component";
 import { RemovePasswordComponent } from "./auth/remove-password.component";
@@ -178,7 +177,10 @@ const routes: Routes = [
       },
       {
         path: "migrate-legacy-encryption",
-        component: MigrateFromLegacyEncryptionComponent,
+        loadComponent: () =>
+          import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
+            (mod) => mod.MigrateFromLegacyEncryptionComponent
+          ),
       },
     ],
   },

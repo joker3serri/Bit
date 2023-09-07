@@ -6,13 +6,16 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { SharedModule } from "../../shared";
 
 import { MigrateFromLegacyEncryptionService } from "./migrate-legacy-encryption.service";
 
 // The master key was originally used to encrypt user data, before the user key was introduced.
 // This component is used to migrate from the old encryption scheme to the new one.
 @Component({
-  selector: "migrate-legacy-encryption",
+  standalone: true,
+  imports: [SharedModule],
+  providers: [MigrateFromLegacyEncryptionService],
   templateUrl: "migrate-legacy-encryption.component.html",
 })
 export class MigrateFromLegacyEncryptionComponent {
