@@ -211,9 +211,6 @@ export class BrowserApi {
 
   private static registeredMessageListeners: any[] = [];
 
-  /**
-   * Use ngzone.run() to ensure callback run inside the Angular zone.
-   */
   static messageListener(
     name: string,
     callback: (message: any, sender: chrome.runtime.MessageSender, response: any) => unknown
@@ -246,14 +243,6 @@ export class BrowserApi {
     }
   }
 
-  /**
-   * Creates an observable that listens for messages. While this observable might
-   * operate outside the Angular zone, it's recommended to pipe it with the
-   * utility function `runInsideAngular` to ensure proper triggering of change detection
-   * and other zone-related behaviors.
-   *
-   * @see /libs/angular/src/utils/run-inside-angular.operator.ts
-   */
   static messageListener$() {
     return new Observable<unknown>((subscriber) => {
       const handler = (message: unknown) => {
