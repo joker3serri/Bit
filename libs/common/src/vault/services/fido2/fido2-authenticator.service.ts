@@ -1,5 +1,3 @@
-import { CBOR } from "cbor-redux";
-
 import { LogService } from "../../../platform/abstractions/log.service";
 import { Utils } from "../../../platform/misc/utils";
 import { CipherService } from "../../abstractions/cipher.service";
@@ -19,8 +17,10 @@ import { CipherType } from "../../enums/cipher-type";
 import { CipherView } from "../../models/view/cipher.view";
 import { Fido2KeyView } from "../../models/view/fido2-key.view";
 
+import { CBOR } from "./cbor";
 import { joseToDer } from "./ecdsa-utils";
 import { Fido2Utils } from "./fido2-utils";
+import { guidToRawFormat, guidToStandardFormat } from "./guid-utils";
 
 // AAGUID: 6e8248d5-b479-40db-a3d8-11116f7e8349
 export const AAGUID = new Uint8Array([
@@ -185,7 +185,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
 
       const authData = await generateAuthData({
         rpId: params.rpEntity.id,
-        credentialId: Utils.guidToRawFormat(credentialId),
+        credentialId: guidToRawFormat(credentialId),
         counter: fido2Key.counter,
         userPresence: true,
         userVerification: userVerified,
@@ -200,7 +200,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       );
 
       return {
-        credentialId: Utils.guidToRawFormat(credentialId),
+        credentialId: guidToRawFormat(credentialId),
         attestationObject,
         authData,
         publicKeyAlgorithm: -7,
@@ -292,7 +292,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
 
         const authenticatorData = await generateAuthData({
           rpId: selectedFido2Key.rpId,
-          credentialId: Utils.guidToRawFormat(selectedCredentialId),
+          credentialId: guidToRawFormat(selectedCredentialId),
           counter: selectedFido2Key.counter,
           userPresence: true,
           userVerification: userVerified,
@@ -307,7 +307,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         return {
           authenticatorData,
           selectedCredential: {
-            id: Utils.guidToRawFormat(selectedCredentialId),
+            id: guidToRawFormat(selectedCredentialId),
             userHandle: Fido2Utils.stringToBuffer(selectedFido2Key.userHandle),
           },
           signature,
@@ -331,7 +331,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
 
     for (const credential of credentials) {
       try {
-        ids.push(Utils.guidToStandardFormat(credential.id));
+        ids.push(guidToStandardFormat(credential.id));
         // eslint-disable-next-line no-empty
       } catch {}
     }
@@ -362,7 +362,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
 
     for (const credential of credentials) {
       try {
-        ids.push(Utils.guidToStandardFormat(credential.id));
+        ids.push(guidToStandardFormat(credential.id));
         // eslint-disable-next-line no-empty
       } catch {}
     }
@@ -424,7 +424,7 @@ async function createKeyView(
   fido2Key.userHandle = Fido2Utils.bufferToString(params.userEntity.id);
   fido2Key.counter = 0;
   fido2Key.rpName = params.rpEntity.name;
-  fido2Key.userName = params.userEntity.displayName;
+  fido2Key.userDisplayName = params.userEntity.displayName;
 
   return fido2Key;
 }

@@ -1,6 +1,5 @@
 import { TextEncoder } from "util";
 
-import { CBOR } from "cbor-redux";
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { Utils } from "../../../platform/misc/utils";
@@ -21,8 +20,10 @@ import { CipherView } from "../../models/view/cipher.view";
 import { Fido2KeyView } from "../../models/view/fido2-key.view";
 import { LoginView } from "../../models/view/login.view";
 
+import { CBOR } from "./cbor";
 import { AAGUID, Fido2AuthenticatorService } from "./fido2-authenticator.service";
 import { Fido2Utils } from "./fido2-utils";
+import { guidToRawFormat } from "./guid-utils";
 
 const RpId = "bitwarden.com";
 
@@ -112,7 +113,7 @@ describe("FidoAuthenticatorService", () => {
         params = await createParams({
           excludeCredentialDescriptorList: [
             {
-              id: Utils.guidToRawFormat(excludedCipher.login.fido2Key.credentialId),
+              id: guidToRawFormat(excludedCipher.login.fido2Key.credentialId),
               type: "public-key",
             },
           ],
@@ -187,7 +188,7 @@ describe("FidoAuthenticatorService", () => {
         params = await createParams({
           excludeCredentialDescriptorList: [
             {
-              id: Utils.guidToRawFormat(excludedCipherView.fido2Key.credentialId),
+              id: guidToRawFormat(excludedCipherView.fido2Key.credentialId),
               type: "public-key",
             },
           ],
@@ -323,7 +324,7 @@ describe("FidoAuthenticatorService", () => {
               rpName: params.rpEntity.name,
               userHandle: Fido2Utils.bufferToString(params.userEntity.id),
               counter: 0,
-              userName: params.userEntity.displayName,
+              userDisplayName: params.userEntity.displayName,
             }),
           })
         );
@@ -422,7 +423,7 @@ describe("FidoAuthenticatorService", () => {
                 rpName: params.rpEntity.name,
                 userHandle: Fido2Utils.bufferToString(params.userEntity.id),
                 counter: 0,
-                userName: params.userEntity.displayName,
+                userDisplayName: params.userEntity.displayName,
               }),
             }),
           })
@@ -630,7 +631,7 @@ describe("FidoAuthenticatorService", () => {
         credentialId = Utils.newGuid();
         params = await createParams({
           allowCredentialDescriptorList: [
-            { id: Utils.guidToRawFormat(credentialId), type: "public-key" },
+            { id: guidToRawFormat(credentialId), type: "public-key" },
           ],
           rpId: RpId,
         });
@@ -706,7 +707,7 @@ describe("FidoAuthenticatorService", () => {
         ];
         params = await createParams({
           allowCredentialDescriptorList: credentialIds.map((credentialId) => ({
-            id: Utils.guidToRawFormat(credentialId),
+            id: guidToRawFormat(credentialId),
             type: "public-key",
           })),
           rpId: RpId,
@@ -786,7 +787,7 @@ describe("FidoAuthenticatorService", () => {
             selectedCredentialId = credentialIds[0];
             params = await createParams({
               allowCredentialDescriptorList: credentialIds.map((credentialId) => ({
-                id: Utils.guidToRawFormat(credentialId),
+                id: guidToRawFormat(credentialId),
                 type: "public-key",
               })),
               rpId: RpId,
@@ -839,7 +840,7 @@ describe("FidoAuthenticatorService", () => {
           const flags = encAuthData.slice(32, 33);
           const counter = encAuthData.slice(33, 37);
 
-          expect(result.selectedCredential.id).toEqual(Utils.guidToRawFormat(selectedCredentialId));
+          expect(result.selectedCredential.id).toEqual(guidToRawFormat(selectedCredentialId));
           expect(result.selectedCredential.userHandle).toEqual(
             Fido2Utils.stringToBuffer(fido2Keys[0].userHandle)
           );

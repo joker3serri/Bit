@@ -9,10 +9,8 @@ export class Fido2KeyApi extends BaseResponse {
   rpId: string;
   userHandle: string;
   counter: string;
-
-  // Extras
   rpName: string;
-  userName: string;
+  userDisplayName: string;
 
   constructor(data: any = null) {
     super(data);
@@ -29,6 +27,6 @@ export class Fido2KeyApi extends BaseResponse {
     this.userHandle = this.getResponseProperty("UserHandle");
     this.counter = this.getResponseProperty("Counter");
     this.rpName = this.getResponseProperty("RpName");
-    this.userName = this.getResponseProperty("UserName");
+    this.userDisplayName = this.getResponseProperty("UserDisplayName");
   }
 }

@@ -122,8 +122,7 @@ describe("Login DTO", () => {
           userHandle: "userHandle" as EncryptedString,
           counter: "counter" as EncryptedString,
           rpName: "rpName" as EncryptedString,
-          userName: "userName" as EncryptedString,
-          origin: "origin" as EncryptedString,
+          userDisplayName: "userDisplayName" as EncryptedString,
         },
       });
 
@@ -143,8 +142,7 @@ describe("Login DTO", () => {
           userHandle: "userHandle_fromJSON",
           counter: "counter_fromJSON",
           rpName: "rpName_fromJSON",
-          userName: "userName_fromJSON",
-          origin: "origin_fromJSON",
+          userDisplayName: "userDisplayName_fromJSON",
         },
       });
       expect(actual).toBeInstanceOf(Login);

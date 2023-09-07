@@ -11,13 +11,11 @@ export class Fido2KeyView extends ItemView {
   rpId: string;
   userHandle: string;
   counter: number;
-
-  // Extras
   rpName: string;
-  userName: string;
+  userDisplayName: string;
 
   get subTitle(): string {
-    return this.userName;
+    return this.userDisplayName;
   }
 
   get canLaunch(): boolean {
