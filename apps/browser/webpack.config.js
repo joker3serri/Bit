@@ -127,7 +127,7 @@ const plugins = [
   new AngularWebpackPlugin({
     tsConfigPath: "tsconfig.json",
     entryModule: "src/popup/app.module#AppModule",
-    sourceMap: true,
+    sourceMap: process.env.NODE_ENV !== "production",
   }),
   new CleanWebpackPlugin({
     cleanAfterEveryBuildPatterns: ["!popup/fonts/**/*"],
@@ -135,12 +135,17 @@ const plugins = [
   new webpack.ProvidePlugin({
     process: "process/browser.js",
   }),
-  new webpack.SourceMapDevToolPlugin({
-    exclude: [/content\/.*/, /notification\/.*/],
-    filename: "[file].map",
-  }),
   ...requiredPlugins,
 ];
+
+if (process.env.NODE_ENV !== "production") {
+  plugins.push(
+    new webpack.SourceMapDevToolPlugin({
+      exclude: [/content\/.*/, /notification\/.*/],
+      filename: "[file].map",
+    })
+  );
+}
 
 /**
  * @type {import("webpack").Configuration}
