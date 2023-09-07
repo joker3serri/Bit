@@ -6,6 +6,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+
 import { SharedModule } from "../../shared";
 
 import { MigrateFromLegacyEncryptionService } from "./migrate-legacy-encryption.service";
