@@ -19,6 +19,11 @@ import { MaximumVaultTimeoutPolicyComponent } from "./admin-console/policies/max
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 
+/**
+ * This is the AppModule for the commercial version of Bitwarden.
+ *
+ * You probably do not want to modify this file. Consider editing `oss.module.ts` instead.
+ */
 @NgModule({
   imports: [
     OverlayModule,
