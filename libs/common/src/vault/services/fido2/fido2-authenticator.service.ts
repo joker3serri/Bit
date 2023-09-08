@@ -83,8 +83,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
       }
 
-      //TODO: uncomment this when working on the login flow ticket
-      // await userInterfaceSession.ensureUnlockedVault();
+      await userInterfaceSession.ensureUnlockedVault();
 
       const existingCipherIds = await this.findExcludedCredentials(
         params.excludeCredentialDescriptorList
@@ -238,8 +237,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
 
       let cipherOptions: CipherView[];
 
-      //TODO: uncomment this when working on the login flow ticket
-      // await userInterfaceSession.ensureUnlockedVault();
+      await userInterfaceSession.ensureUnlockedVault();
 
       // eslint-disable-next-line no-empty
       if (params.allowCredentialDescriptorList?.length > 0) {

@@ -8,7 +8,9 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
   providedIn: "root",
 })
 export class BrowserRouterService {
-  constructor(router: Router, private stateService: StateService) {
+  private previousUrl: string = undefined;
+
+  constructor(private router: Router, private stateService: StateService) {
     router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -27,16 +29,11 @@ export class BrowserRouterService {
       });
   }
 
-  async getPreviousUrl() {
-    return this.stateService.getPreviousUrl();
+  getPreviousUrl() {
+    return this.previousUrl;
   }
 
-  // Check validity of previous url
-  async hasPreviousUrl() {
-    return (await this.getPreviousUrl()) != "/";
-  }
-
-  async setPreviousUrl(url: string) {
-    await this.stateService.setPreviousUrl(url);
+  setPreviousUrl(url: string) {
+    this.previousUrl = url;
   }
 }
