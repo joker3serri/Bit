@@ -64,7 +64,7 @@ export class TotpService implements TotpServiceAbstraction {
     const timeHex = this.leftPad(this.decToHex(Math.floor(epoch / period)), 16, "0");
     const timeBytes = Utils.fromHexToArray(timeHex);
     let keyBytes: Uint8Array;
-    if (isSteamAuth) {
+    if (isSteamAuth && !this.isValidB32(keyB32) /* backwards compatibility */) {
       keyBytes = this.b64ToBytes(keyB32);
     } else {
       keyBytes = this.b32ToBytes(keyB32);
@@ -172,6 +172,15 @@ export class TotpService implements TotpServiceAbstraction {
     }
 
     return arr;
+  }
+
+  private isValidB32(str: string): boolean {
+    for (let i = 0; i < str.length; i++) {
+      if (!B32Chars.includes(str[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private async sign(
