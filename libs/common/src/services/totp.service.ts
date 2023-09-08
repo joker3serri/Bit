@@ -56,14 +56,19 @@ export class TotpService implements TotpServiceAbstraction {
         }
       }
     } else if (isSteamAuth) {
-      keyB32 = key.substr("steam://".length);
+      keyB32 = key.substring("steam://".length);
       digits = 5;
     }
 
     const epoch = Math.round(new Date().getTime() / 1000.0);
     const timeHex = this.leftPad(this.decToHex(Math.floor(epoch / period)), 16, "0");
     const timeBytes = Utils.fromHexToArray(timeHex);
-    const keyBytes = this.b32ToBytes(keyB32);
+    let keyBytes: Uint8Array;
+    if (isSteamAuth) {
+      keyBytes = this.b64ToBytes(keyB32);
+    } else {
+      keyBytes = this.b32ToBytes(keyB32);
+    }
 
     if (!keyBytes.length || !timeBytes.length) {
       return null;
@@ -155,6 +160,18 @@ export class TotpService implements TotpServiceAbstraction {
 
   private b32ToBytes(s: string): Uint8Array {
     return Utils.fromHexToArray(this.b32ToHex(s));
+  }
+
+  private b64ToBytes(s: string): Uint8Array {
+    const bin = atob(s);
+    const len = bin.length;
+    const arr = new Uint8Array(len);
+
+    for (let i = 0; i < len; i++) {
+      arr[i] = bin.charCodeAt(i);
+    }
+
+    return arr;
   }
 
   private async sign(
