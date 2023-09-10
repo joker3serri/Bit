@@ -113,10 +113,14 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         }
       } else if (msg.command === "showDialog") {
-        await this.showDialog(msg);
+        this.ngZone.run(async () => {
+          await this.showDialog(msg);
+        });
       } else if (msg.command === "showNativeMessagingFinterprintDialog") {
         // TODO: Should be refactored to live in another service.
-        await this.showNativeMessagingFingerprintDialog(msg);
+        this.ngZone.run(async () => {
+          await this.showNativeMessagingFingerprintDialog(msg);
+        });
       } else if (msg.command === "showToast") {
         this.ngZone.run(() => {
           this.showToast(msg);
