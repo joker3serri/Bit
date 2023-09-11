@@ -253,7 +253,6 @@ export class BrowserApi {
         subscriber.next(message);
       };
 
-      // using the messageListener logic
       BrowserApi.messageListener("message", handler);
 
       return () => chrome.runtime.onMessage.removeListener(handler);

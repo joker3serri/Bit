@@ -78,7 +78,6 @@ export class LoginComponent extends BaseLoginComponent {
       if (previousUrl) {
         this.router.navigateByUrl(previousUrl);
       } else {
-        this.loginService.clearValues();
         this.router.navigate([this.successRoute]);
       }
     };

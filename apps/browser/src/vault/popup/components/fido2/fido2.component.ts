@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   BehaviorSubject,
@@ -12,7 +12,6 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { runInsideAngular } from "@bitwarden/angular/utils/run-inside-angular.operator";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
@@ -49,8 +48,7 @@ export class Fido2Component implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private cipherService: CipherService,
-    private passwordRepromptService: PasswordRepromptService,
-    private ngZone: NgZone
+    private passwordRepromptService: PasswordRepromptService
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +58,7 @@ export class Fido2Component implements OnInit, OnDestroy {
     );
 
     combineLatest([sessionId$, BrowserApi.messageListener$() as Observable<BrowserFido2Message>])
-      .pipe(runInsideAngular(this.ngZone), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(([sessionId, message]) => {
         this.sessionId = sessionId;
         if (message.type === "NewSessionCreatedRequest" && message.sessionId !== sessionId) {
