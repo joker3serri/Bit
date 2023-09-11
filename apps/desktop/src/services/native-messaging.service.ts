@@ -49,121 +49,120 @@ export class NativeMessagingService {
   }
 
   private async messageHandler(msg: LegacyMessageWrapper | Message) {
-    this.ngZone.run(async () => {
-      const outerMessage = msg as Message;
-      if (outerMessage.version) {
-        this.nativeMessageHandler.handleMessage(outerMessage);
+    const outerMessage = msg as Message;
+    if (outerMessage.version) {
+      this.nativeMessageHandler.handleMessage(outerMessage);
+      return;
+    }
+
+    const { appId, message: rawMessage } = msg as LegacyMessageWrapper;
+
+    // Request to setup secure encryption
+    if ("command" in rawMessage && rawMessage.command === "setupEncryption") {
+      const remotePublicKey = Utils.fromB64ToArray(rawMessage.publicKey);
+
+      // Validate the UserId to ensure we are logged into the same account.
+      const accounts = await firstValueFrom(this.stateService.accounts$);
+      const userIds = Object.keys(accounts);
+      if (!userIds.includes(rawMessage.userId)) {
+        ipcRenderer.send("nativeMessagingReply", { command: "wrongUserId", appId: appId });
         return;
       }
 
-      const { appId, message: rawMessage } = msg as LegacyMessageWrapper;
+      if (await this.stateService.getEnableBrowserIntegrationFingerprint()) {
+        ipcRenderer.send("nativeMessagingReply", { command: "verifyFingerprint", appId: appId });
 
-      // Request to setup secure encryption
-      if ("command" in rawMessage && rawMessage.command === "setupEncryption") {
-        const remotePublicKey = Utils.fromB64ToArray(rawMessage.publicKey);
+        const fingerprint = await this.cryptoService.getFingerprint(
+          await this.stateService.getUserId(),
+          remotePublicKey
+        );
 
-        // Validate the UserId to ensure we are logged into the same account.
-        const accounts = await firstValueFrom(this.stateService.accounts$);
-        const userIds = Object.keys(accounts);
-        if (!userIds.includes(rawMessage.userId)) {
-          ipcRenderer.send("nativeMessagingReply", { command: "wrongUserId", appId: appId });
+        this.messagingService.send("setFocus");
+
+        const dialogRef = this.ngZone.run(() =>
+          BrowserSyncVerificationDialogComponent.open(this.dialogService, { fingerprint })
+        );
+
+        const browserSyncVerified = await firstValueFrom(dialogRef.closed);
+
+        if (browserSyncVerified !== true) {
           return;
         }
+      }
 
-        if (await this.stateService.getEnableBrowserIntegrationFingerprint()) {
-          ipcRenderer.send("nativeMessagingReply", { command: "verifyFingerprint", appId: appId });
+      this.secureCommunication(remotePublicKey, appId);
+      return;
+    }
 
-          const fingerprint = await this.cryptoService.getFingerprint(
-            await this.stateService.getUserId(),
-            remotePublicKey
-          );
+    if (this.sharedSecrets.get(appId) == null) {
+      ipcRenderer.send("nativeMessagingReply", { command: "invalidateEncryption", appId: appId });
+      return;
+    }
 
-          this.messagingService.send("setFocus");
+    const message: LegacyMessage = JSON.parse(
+      await this.cryptoService.decryptToUtf8(rawMessage as EncString, this.sharedSecrets.get(appId))
+    );
 
-          const browserSyncVerified = await firstValueFrom(
-            BrowserSyncVerificationDialogComponent.open(this.dialogService, { fingerprint }).closed
-          );
+    // Shared secret is invalidated, force re-authentication
+    if (message == null) {
+      ipcRenderer.send("nativeMessagingReply", { command: "invalidateEncryption", appId: appId });
+      return;
+    }
 
-          if (browserSyncVerified !== true) {
-            return;
-          }
+    if (Math.abs(message.timestamp - Date.now()) > MessageValidTimeout) {
+      this.logService.error("NativeMessage is to old, ignoring.");
+      return;
+    }
+
+    switch (message.command) {
+      case "biometricUnlock": {
+        if (!this.platformUtilService.supportsBiometric()) {
+          return this.send({ command: "biometricUnlock", response: "not supported" }, appId);
         }
 
-        this.secureCommunication(remotePublicKey, appId);
-        return;
-      }
+        if (!(await this.stateService.getBiometricUnlock({ userId: message.userId }))) {
+          this.send({ command: "biometricUnlock", response: "not enabled" }, appId);
 
-      if (this.sharedSecrets.get(appId) == null) {
-        ipcRenderer.send("nativeMessagingReply", { command: "invalidateEncryption", appId: appId });
-        return;
-      }
-
-      const message: LegacyMessage = JSON.parse(
-        await this.cryptoService.decryptToUtf8(
-          rawMessage as EncString,
-          this.sharedSecrets.get(appId)
-        )
-      );
-
-      // Shared secret is invalidated, force re-authentication
-      if (message == null) {
-        ipcRenderer.send("nativeMessagingReply", { command: "invalidateEncryption", appId: appId });
-        return;
-      }
-
-      if (Math.abs(message.timestamp - Date.now()) > MessageValidTimeout) {
-        this.logService.error("NativeMessage is to old, ignoring.");
-        return;
-      }
-
-      switch (message.command) {
-        case "biometricUnlock": {
-          if (!this.platformUtilService.supportsBiometric()) {
-            return this.send({ command: "biometricUnlock", response: "not supported" }, appId);
-          }
-
-          if (!(await this.stateService.getBiometricUnlock({ userId: message.userId }))) {
-            this.send({ command: "biometricUnlock", response: "not enabled" }, appId);
-
-            return this.dialogService.openSimpleDialog({
+          return this.ngZone.run(() =>
+            this.dialogService.openSimpleDialog({
               type: "warning",
               title: { key: "biometricsNotEnabledTitle" },
               content: { key: "biometricsNotEnabledDesc" },
               cancelButtonText: null,
               acceptButtonText: { key: "cancel" },
-            });
-          }
-
-          const userKey = await this.cryptoService.getUserKeyFromStorage(
-            KeySuffixOptions.Biometric,
-            message.userId
+            })
           );
-          const masterKey = await this.cryptoService.getMasterKey(message.userId);
-
-          if (userKey != null) {
-            // we send the master key still for backwards compatibility
-            // with older browser extensions
-            // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3472)
-            this.send(
-              {
-                command: "biometricUnlock",
-                response: "unlocked",
-                keyB64: masterKey?.keyB64,
-                userKeyB64: userKey.keyB64,
-              },
-              appId
-            );
-          } else {
-            this.send({ command: "biometricUnlock", response: "canceled" }, appId);
-          }
-
-          break;
         }
-        default:
-          this.logService.error("NativeMessage, got unknown command.");
-          break;
+
+        const userKey = await this.cryptoService.getUserKeyFromStorage(
+          KeySuffixOptions.Biometric,
+          message.userId
+        );
+        const masterKey = await this.cryptoService.getMasterKey(message.userId);
+
+        if (userKey != null) {
+          // we send the master key still for backwards compatibility
+          // with older browser extensions
+          // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3472)
+          this.send(
+            {
+              command: "biometricUnlock",
+              response: "unlocked",
+              keyB64: masterKey?.keyB64,
+              userKeyB64: userKey.keyB64,
+            },
+            appId
+          );
+        } else {
+          this.send({ command: "biometricUnlock", response: "canceled" }, appId);
+        }
+
+        break;
       }
-    });
+      default:
+        this.logService.error("NativeMessage, got unknown command.");
+        break;
+    }
   }
 
   private async send(message: any, appId: string) {
