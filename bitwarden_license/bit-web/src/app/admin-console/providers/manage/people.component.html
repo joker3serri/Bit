@@ -1,35 +1,27 @@
 <div class="page-header d-flex">
   <h1>{{ "people" | i18n }}</h1>
   <div class="ml-auto d-flex">
-    <div class="btn-group btn-group-sm" role="group">
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        [ngClass]="{ active: status == null }"
-        (click)="filter(null)"
-      >
+    <bit-toggle-group
+      [selected]="status"
+      (selectedChange)="filter($event)"
+      [attr.aria-label]="'memberStatusFilter' | i18n"
+    >
+      <bit-toggle [value]="null">
         {{ "all" | i18n }}
         <span bitBadge badgeType="info" *ngIf="allCount">{{ allCount }}</span>
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        [ngClass]="{ active: status == userStatusType.Invited }"
-        (click)="filter(userStatusType.Invited)"
-      >
+      </bit-toggle>
+
+      <bit-toggle [value]="userStatusType.Invited">
         {{ "invited" | i18n }}
         <span bitBadge badgeType="info" *ngIf="invitedCount">{{ invitedCount }}</span>
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        [ngClass]="{ active: status == userStatusType.Accepted }"
-        (click)="filter(userStatusType.Accepted)"
-      >
+      </bit-toggle>
+
+      <bit-toggle [value]="userStatusType.Accepted">
         {{ "accepted" | i18n }}
         <span bitBadge badgeType="warning" *ngIf="acceptedCount">{{ acceptedCount }}</span>
-      </button>
-    </div>
+      </bit-toggle>
+    </bit-toggle-group>
+
     <div class="ml-3">
       <label class="sr-only" for="search">{{ "search" | i18n }}</label>
       <input
