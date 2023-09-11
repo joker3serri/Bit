@@ -196,13 +196,13 @@
     "message": "Ajutor și feedback"
   },
   "helpCenter": {
-    "message": "Bitwarden Help center"
+    "message": "Centrul de Ajutor Bitwarden"
   },
   "communityForums": {
-    "message": "Explore Bitwarden community forums"
+    "message": "Explorează forumurile comunității Bitwarden"
   },
   "contactSupport": {
-    "message": "Contact Bitwarden support"
+    "message": "Contactați asistența Bitwarden"
   },
   "sync": {
     "message": "Sincronizare"
@@ -338,6 +338,9 @@
   "other": {
     "message": "Altele"
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Set up an unlock method to change your vault timeout action."
+  },
   "rateExtension": {
     "message": "Evaluare extensie"
   },
@@ -439,7 +442,7 @@
     "message": "Este necesară rescrierea parolei principale."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Parola principală trebuie să aibă cel puțin $VALUE$ caractere.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -630,6 +633,12 @@
   "notificationChangeSave": {
     "message": "Actualizare"
   },
+  "notificationUnlockDesc": {
+    "message": "Deblochează seiful Bitwarden pentru a finaliza solicitarea de completare automată."
+  },
+  "notificationUnlock": {
+    "message": "Deblocare"
+  },
   "enableContextMenuItem": {
     "message": "Afișați opțiunile meniului contextual"
   },
@@ -786,8 +795,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB spațiu de stocare criptat pentru atașamente de fișiere."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Opțiuni adiționale de conectare în două etape, cum ar fi YubiKey, FIDO U2F și Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Proprietary two-step login options such as YubiKey and Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Rapoarte privind igiena parolelor, sănătatea contului și breșele de date pentru a vă păstra seiful în siguranță."
@@ -976,7 +985,7 @@
     "message": "Dacă se detectează un formular de autentificare, completați-l automat la încărcarea paginii web."
   },
   "experimentalFeature": {
-    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+    "message": "Site-urile web compromise sau nesigure pot exploata funcția de autocompletare la încărcarea paginii."
   },
   "learnMoreAboutAutofill": {
     "message": "Learn more about auto-fill"
@@ -1440,9 +1449,6 @@
   "restoreItem": {
     "message": "Restabilire articol"
   },
-  "restoreItemConfirmation": {
-    "message": "Sigur doriți să restabiliți acest articol?"
-  },
   "restoredItem": {
     "message": "Articol restabilit"
   },
@@ -1461,8 +1467,35 @@
   "autoFillSuccess": {
     "message": "Articolul s-a completat automat "
   },
+  "insecurePageWarning": {
+    "message": "Avertisment: Aceasta este o pagină HTTP nesecurizată și orice informație pe care o trimiteți poate fi văzută și modificată de alte persoane. Această Parolă a fost salvată inițial pe o pagină securizată (HTTPS)."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Do you still wish to fill this login?"
+  },
+  "autofillIframeWarning": {
+    "message": "The form is hosted by a different domain than the URI of your saved login. Choose OK to auto-fill anyway, or Cancel to stop."
+  },
+  "autofillIframeWarningTip": {
+    "message": "To prevent this warning in the future, save this URI, $HOSTNAME$, to your Bitwarden login item for this site.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Setare parolă principală"
+  },
+  "currentMasterPass": {
+    "message": "Current master password"
+  },
+  "newMasterPass": {
+    "message": "New master password"
+  },
+  "confirmNewMasterPass": {
+    "message": "Confirm new master password"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Una sau mai multe politici ale organizației necesită ca parola principală să îndeplinească următoarele cerințe:"
@@ -1571,6 +1604,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Biometria browserului nu este acceptată pe acest dispozitiv."
+  },
+  "biometricsFailedTitle": {
+    "message": "Biometrics failed"
+  },
+  "biometricsFailedDesc": {
+    "message": "Biometrics cannot be completed, consider using a master password or logging out. If this persists, please contact Bitwarden support."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Permisiunea nu a fost furnizată"
@@ -1844,6 +1883,9 @@
   "updateMasterPasswordWarning": {
     "message": "Parola principală a fost schimbată recent de către un administrator din organizație. Pentru a accesa seiful, trebuie să o actualizați acum. Continuarea vă va deconecta de la sesiunea curentă, cerându-vă să vă conectați din nou. Sesiunile active de pe alte dispozitive pot continua să rămână active timp de până la o oră."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Înscrierea automată"
   },
@@ -1872,6 +1914,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Your organization policies are affecting your vault timeout. Maximum allowed vault timeout is $HOURS$ hour(s) and $MINUTES$ minute(s). Your vault timeout action is set to $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Your organization policies have set your vault timeout action to $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -2003,9 +2071,6 @@
   "disabledOrganizationFilterError": {
     "message": "Articolele din Organizații suspendate nu pot fi accesate. Contactați proprietarul Organizației pentru asistență."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Conectarea la $DOMAIN$",
     "placeholders": {
@@ -2027,8 +2092,8 @@
   "serverVersion": {
     "message": "Versiune server"
   },
-  "selfHosted": {
-    "message": "Autogăzduit"
+  "selfHostedServer": {
+    "message": "self-hosted"
   },
   "thirdParty": {
     "message": "Parte terță"
@@ -2087,8 +2152,8 @@
   "notificationSentDevice": {
     "message": "A notification has been sent to your device."
   },
-  "logInInitiated": {
-    "message": "Log in initiated"
+  "loginInitiated": {
+    "message": "Login initiated"
   },
   "exposedMasterPassword": {
     "message": "Exposed Master Password"
@@ -2120,11 +2185,14 @@
       }
     }
   },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Your organization policies have turned on auto-fill on page load."
+  },
   "howToAutofill": {
     "message": "How to auto-fill"
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page or use the shortcut: $COMMAND$. You can also try auto-fill on page load.",
+  "autofillSelectInfoWithCommand": {
+    "message": "Select an item from this page or use the shortcut: $COMMAND$",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2132,8 +2200,8 @@
       }
     }
   },
-  "autofillSelectInfoNoCommand": {
-    "message": "Select an item from this page or set a shortcut in settings. You can also try auto-fill on page load."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Select an item from this page or set a shortcut in settings."
   },
   "gotIt": {
     "message": "Got it"
@@ -2164,5 +2232,179 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "loggingInOn": {
+    "message": "Logging in on"
+  },
+  "opensInANewWindow": {
+    "message": "Opens in a new window"
+  },
+  "deviceApprovalRequired": {
+    "message": "Device approval required. Select an approval option below:"
+  },
+  "rememberThisDevice": {
+    "message": "Remember this device"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Uncheck if using a public device"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Approve from your other device"
+  },
+  "requestAdminApproval": {
+    "message": "Request admin approval"
+  },
+  "approveWithMasterPassword": {
+    "message": "Approve with master password"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Organization SSO identifier is required."
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "accessDenied": {
+    "message": "Access denied. You do not have permission to view this page."
+  },
+  "general": {
+    "message": "General"
+  },
+  "display": {
+    "message": "Display"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Account successfully created!"
+  },
+  "adminApprovalRequested": {
+    "message": "Admin approval requested"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Your request has been sent to your admin."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "You will be notified once approved."
+  },
+  "troubleLoggingIn": {
+    "message": "Trouble logging in?"
+  },
+  "loginApproved": {
+    "message": "Login approved"
+  },
+  "userEmailMissing": {
+    "message": "User email missing"
+  },
+  "deviceTrusted": {
+    "message": "Device trusted"
+  },
+  "inputRequired": {
+    "message": "Input is required."
+  },
+  "required": {
+    "message": "required"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "inputMinLength": {
+    "message": "Input must be at least $COUNT$ characters long.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Input must not exceed $COUNT$ characters in length.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "The following characters are not allowed: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Input value must be at least $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Input value must not exceed $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 or more emails are invalid"
+  },
+  "inputTrimValidator": {
+    "message": "Input must not contain only whitespace.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Input is not an email address."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ field(s) above need your attention.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Select --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Type to filter --"
+  },
+  "multiSelectLoading": {
+    "message": "Retrieving options..."
+  },
+  "multiSelectNotFound": {
+    "message": "No items found"
+  },
+  "multiSelectClearAll": {
+    "message": "Clear all"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ more",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Submenu"
+  },
+  "toggleCollapse": {
+    "message": "Toggle collapse",
+    "description": "Toggling an expand/collapse state."
   }
 }

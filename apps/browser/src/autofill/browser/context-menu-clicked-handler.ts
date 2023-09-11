@@ -1,11 +1,11 @@
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { EventType } from "@bitwarden/common/enums/eventType";
-import { StateFactory } from "@bitwarden/common/factories/stateFactory";
-import { GlobalState } from "@bitwarden/common/models/domain/global-state";
+import { EventType } from "@bitwarden/common/enums";
+import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
+import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -15,14 +15,14 @@ import {
   AuthServiceInitOptions,
 } from "../../auth/background/service-factories/auth-service.factory";
 import { totpServiceFactory } from "../../auth/background/service-factories/totp-service.factory";
+import { userVerificationServiceFactory } from "../../auth/background/service-factories/user-verification-service.factory";
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
-import { eventCollectionServiceFactory } from "../../background/service_factories/event-collection-service.factory";
-import { CachedServices } from "../../background/service_factories/factory-options";
-import { passwordGenerationServiceFactory } from "../../background/service_factories/password-generation-service.factory";
-import { searchServiceFactory } from "../../background/service_factories/search-service.factory";
-import { stateServiceFactory } from "../../background/service_factories/state-service.factory";
-import { BrowserApi } from "../../browser/browserApi";
+import { eventCollectionServiceFactory } from "../../background/service-factories/event-collection-service.factory";
 import { Account } from "../../models/account";
+import { CachedServices } from "../../platform/background/service-factories/factory-options";
+import { stateServiceFactory } from "../../platform/background/service-factories/state-service.factory";
+import { BrowserApi } from "../../platform/browser/browser-api";
+import { passwordGenerationServiceFactory } from "../../tools/background/service_factories/password-generation-service.factory";
 import {
   cipherServiceFactory,
   CipherServiceInitOptions,
@@ -58,18 +58,15 @@ export class ContextMenuClickedHandler {
     private authService: AuthService,
     private cipherService: CipherService,
     private totpService: TotpService,
-    private eventCollectionService: EventCollectionService
+    private eventCollectionService: EventCollectionService,
+    private userVerificationService: UserVerificationService
   ) {}
 
   static async mv3Create(cachedServices: CachedServices) {
     const stateFactory = new StateFactory(GlobalState, Account);
-    let searchService: SearchService | null = null;
     const serviceOptions: AuthServiceInitOptions & CipherServiceInitOptions = {
       apiServiceOptions: {
         logoutCallback: NOT_IMPLEMENTED,
-      },
-      cipherServiceOptions: {
-        searchServiceFactory: () => searchService,
       },
       cryptoFunctionServiceOptions: {
         win: self,
@@ -91,14 +88,10 @@ export class ContextMenuClickedHandler {
         clipboardWriteCallback: NOT_IMPLEMENTED,
         win: self,
       },
-      stateMigrationServiceOptions: {
-        stateFactory: stateFactory,
-      },
       stateServiceOptions: {
         stateFactory: stateFactory,
       },
     };
-    searchService = await searchServiceFactory(cachedServices, serviceOptions);
 
     const generatePasswordToClipboardCommand = new GeneratePasswordToClipboardCommand(
       await passwordGenerationServiceFactory(cachedServices, serviceOptions),
@@ -116,7 +109,8 @@ export class ContextMenuClickedHandler {
       await authServiceFactory(cachedServices, serviceOptions),
       await cipherServiceFactory(cachedServices, serviceOptions),
       await totpServiceFactory(cachedServices, serviceOptions),
-      await eventCollectionServiceFactory(cachedServices, serviceOptions)
+      await eventCollectionServiceFactory(cachedServices, serviceOptions),
+      await userVerificationServiceFactory(cachedServices, serviceOptions)
     );
   }
 
@@ -210,19 +204,54 @@ export class ContextMenuClickedHandler {
         if (tab == null) {
           return;
         }
-        await this.autofillAction(tab, cipher);
+
+        if (await this.isPasswordRepromptRequired(cipher)) {
+          await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+            cipherId: cipher.id,
+            action: AUTOFILL_ID,
+          });
+        } else {
+          await this.autofillAction(tab, cipher);
+        }
+
         break;
       case COPY_USERNAME_ID:
         this.copyToClipboard({ text: cipher.login.username, tab: tab });
         break;
       case COPY_PASSWORD_ID:
-        this.copyToClipboard({ text: cipher.login.password, tab: tab });
-        this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, cipher.id);
+        if (await this.isPasswordRepromptRequired(cipher)) {
+          await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+            cipherId: cipher.id,
+            action: COPY_PASSWORD_ID,
+          });
+        } else {
+          this.copyToClipboard({ text: cipher.login.password, tab: tab });
+          this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, cipher.id);
+        }
+
         break;
       case COPY_VERIFICATIONCODE_ID:
-        this.copyToClipboard({ text: await this.totpService.getCode(cipher.login.totp), tab: tab });
+        if (await this.isPasswordRepromptRequired(cipher)) {
+          await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+            cipherId: cipher.id,
+            action: COPY_VERIFICATIONCODE_ID,
+          });
+        } else {
+          this.copyToClipboard({
+            text: await this.totpService.getCode(cipher.login.totp),
+            tab: tab,
+          });
+        }
+
         break;
     }
+  }
+
+  private async isPasswordRepromptRequired(cipher: CipherView): Promise<boolean> {
+    return (
+      cipher.reprompt === CipherRepromptType.Password &&
+      (await this.userVerificationService.hasMasterPasswordAndMasterKeyHash())
+    );
   }
 
   private async getIdentifier(tab: chrome.tabs.Tab, info: chrome.contextMenus.OnClickData) {

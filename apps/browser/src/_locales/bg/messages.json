@@ -338,6 +338,9 @@
   "other": {
     "message": "Други"
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Задайте метод за отключване, за да може да промените действието при изтичане на времето за достъп до трезора."
+  },
   "rateExtension": {
     "message": "Оценяване на разширението"
   },
@@ -439,7 +442,7 @@
     "message": "Повторното въвеждане на главната парола е задължително."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Главната парола трябва да е дълга поне $VALUE$ знака.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -630,6 +633,12 @@
   "notificationChangeSave": {
     "message": "Да, нека се обнови сега"
   },
+  "notificationUnlockDesc": {
+    "message": "Отключете трезора си в Битуорден, за да завършите заявката за автоматично попълване."
+  },
+  "notificationUnlock": {
+    "message": "Отключване"
+  },
   "enableContextMenuItem": {
     "message": "Показване на опции в контекстното меню"
   },
@@ -786,8 +795,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB пространство за файлове, които се шифрират."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Двустепенно удостоверяване чрез YubiKey, FIDO U2F и Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Частно двустепенно удостоверяване чрез YubiKey и Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Проверки в списъците с публикувани пароли, проверка на регистрациите и доклади за пробивите в сигурността, което спомага трезорът ви да е допълнително защитен."
@@ -976,7 +985,7 @@
     "message": "При засичане на формуляр за вписване при зареждането на уеб страницата автоматично да се попълват данните на съответстващата регистрация."
   },
   "experimentalFeature": {
-    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+    "message": "Компроментирани и измамни уеб сайтове могат да се възползват от автоматичното попълване при зареждане на страницата."
   },
   "learnMoreAboutAutofill": {
     "message": "Научете повече относно автоматичното попълване"
@@ -1440,9 +1449,6 @@
   "restoreItem": {
     "message": "Възстановяване на запис"
   },
-  "restoreItemConfirmation": {
-    "message": "Сигурни ли сте, че искате да възстановите записа?"
-  },
   "restoredItem": {
     "message": "Записът е възстановен"
   },
@@ -1461,8 +1467,35 @@
   "autoFillSuccess": {
     "message": "Автоматично дописан запис"
   },
+  "insecurePageWarning": {
+    "message": "Внимание: това е незащитена уеб страница (HTTP) и всяка изпратена информация би могла да бъде видяна и променена от някой недоброжелател. Този елемент за вход първоначално е бил записан към страница със защитена връзка (HTTPS)."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Искате ли да попълните данните за вход въпреки това?"
+  },
+  "autofillIframeWarning": {
+    "message": "Формулярът се предоставя от различен домейн от онзи, който е във Вашия запис. Натиснете „Добре“, за да бъдат попълнени данните автоматично, или „Отказ“, за да прекратите операцията."
+  },
+  "autofillIframeWarningTip": {
+    "message": "Ако искате повече да не виждате това предупреждение, запазете този адрес – $HOSTNAME$ – към записа за този уеб сайт.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Задаване на главна парола"
+  },
+  "currentMasterPass": {
+    "message": "Текуща главна парола"
+  },
+  "newMasterPass": {
+    "message": "Нова главна парола"
+  },
+  "confirmNewMasterPass": {
+    "message": "Потвърждаване на новата главна парола"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Поне една политика на организация има следните изисквания към главната ви парола:"
@@ -1571,6 +1604,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Устройството не поддържа потвърждаване с биометрични данни."
+  },
+  "biometricsFailedTitle": {
+    "message": "Неуспешно удостоверяване чрез биометрични данни"
+  },
+  "biometricsFailedDesc": {
+    "message": "Удостоверяването чрез биометрични данни не може да бъде завършено. Опитайте да използвате главната си парола или се отпишете. Ако този проблем продължи да се случва, свържете се с поддръжката на Битуорден."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Правото не е дадено"
@@ -1844,6 +1883,9 @@
   "updateMasterPasswordWarning": {
     "message": "Вашата главна парола наскоро е била сменена от администратор в организацията Ви. За да получите достъп до трезора, трябва първо да я промените. Това означава, че ще бъдете отписан(а) от текущата си сесия и ще трябва да се впишете отново. Активните сесии на други устройства може да продължат да бъдат активни още един час."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Вашата главна парола не отговаря на една или повече политики на организацията Ви. За да получите достъп до трезора, трябва да промените главната си парола сега. Това означава, че ще бъдете отписан(а) от текущата си сесия и ще трябва да се впишете отново. Активните сесии на други устройства може да продължат да бъдат активни още един час."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Автоматично включване"
   },
@@ -1872,6 +1914,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Настройките на организацията Ви влияят върху времето за достъп до трезора Ви. Максималното разрешено време за достъп е $HOURS$ час(а) и $MINUTES$ минута/и. Зададеното действие при изтичане на това време е $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Настройките на организацията Ви задават следното действие при изтичане на времето за достъп до трезора: $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -2003,9 +2071,6 @@
   "disabledOrganizationFilterError": {
     "message": "Записите в изключени организации не са достъпни. Свържете се със собственика на организацията си за помощ."
   },
-  "cardBrandMir": {
-    "message": "Мир"
-  },
   "loggingInTo": {
     "message": "Вписване в $DOMAIN$",
     "placeholders": {
@@ -2027,8 +2092,8 @@
   "serverVersion": {
     "message": "Версия на сървъра"
   },
-  "selfHosted": {
-    "message": "Собствен хостинг"
+  "selfHostedServer": {
+    "message": "self-hosted"
   },
   "thirdParty": {
     "message": "Third-party"
@@ -2087,7 +2152,7 @@
   "notificationSentDevice": {
     "message": "Към устройството Ви е изпратено известие."
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Вписването е стартирано"
   },
   "exposedMasterPassword": {
@@ -2120,11 +2185,14 @@
       }
     }
   },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Автоматичното попълване при зареждане на страница е включено в съответствие с политиките на Вашата организация."
+  },
   "howToAutofill": {
     "message": "Как се ползва автоматичното попълване"
   },
-  "autofillSelectInfo": {
-    "message": "Select an item from this page or use the shortcut: $COMMAND$. You can also try auto-fill on page load.",
+  "autofillSelectInfoWithCommand": {
+    "message": "Изберете елемент от тази страница или използвайте следната комбинация: $COMMAND$",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2132,8 +2200,8 @@
       }
     }
   },
-  "autofillSelectInfoNoCommand": {
-    "message": "Изберете елемент от тази страница или задайте клавишна комбинация в настройките. Можете да опитате и функцията за автоматично попълване при зареждане на страницата."
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Изберете елемент от тази страница или задайте клавишна комбинация в настройките."
   },
   "gotIt": {
     "message": "Разбрано"
@@ -2164,5 +2232,179 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "loggingInOn": {
+    "message": "Вписване в"
+  },
+  "opensInANewWindow": {
+    "message": "Отваря се в нов прозорец"
+  },
+  "deviceApprovalRequired": {
+    "message": "Изисква се одобрение на устройството. Изберете начин за одобрение по-долу:"
+  },
+  "rememberThisDevice": {
+    "message": "Запомняне на това устройство"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Махнете отметката, ако използвате публично устройство"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Одобряване с другото Ви устройство"
+  },
+  "requestAdminApproval": {
+    "message": "Подаване на заявка за одобрение от администратор"
+  },
+  "approveWithMasterPassword": {
+    "message": "Одобряване с главната парола"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Идентификаторът за еднократна идентификация на организация е задължителен."
+  },
+  "eu": {
+    "message": "ЕС",
+    "description": "European Union"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "accessDenied": {
+    "message": "Отказан достъп. Нямате право за преглед на страницата."
+  },
+  "general": {
+    "message": "Общи"
+  },
+  "display": {
+    "message": "Външен вид"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Регистрацията е създадена успешно!"
+  },
+  "adminApprovalRequested": {
+    "message": "Заявено е одобрение от администратор"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Вашата заявка беше изпратена до администратора Ви."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Ще получите известие, когато тя бъде одобрена."
+  },
+  "troubleLoggingIn": {
+    "message": "Имате проблем с вписването?"
+  },
+  "loginApproved": {
+    "message": "Вписването е одобрено"
+  },
+  "userEmailMissing": {
+    "message": "Липсва е-поща на потребителя"
+  },
+  "deviceTrusted": {
+    "message": "Устройството е доверено"
+  },
+  "inputRequired": {
+    "message": "Полето е задължтелно да бъде попълнено."
+  },
+  "required": {
+    "message": "задължително"
+  },
+  "search": {
+    "message": "Търсене"
+  },
+  "inputMinLength": {
+    "message": "Въведеният в полето текст трябва да бъде с дължина поне $COUNT$ знака.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Полето не може да съдържа повече от $COUNT$ знака.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Следните знаци не са позволени: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Въведената стойност трябва да бъде поне $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Въведената стойност не трябва да бъде по-голяма от $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 или повече е-пощи са неправилни"
+  },
+  "inputTrimValidator": {
+    "message": "Въведеното не може да съдържа само интервали.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Въведеният в полето текст не е адрес на е-поща."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ поле(та) по-горе се нуждае/ят от вниманието Ви.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Изберете --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Пишете тук за филтриране --"
+  },
+  "multiSelectLoading": {
+    "message": "Зареждане на опциите…"
+  },
+  "multiSelectNotFound": {
+    "message": "Няма намерени елементи"
+  },
+  "multiSelectClearAll": {
+    "message": "Изчистване на всичко"
+  },
+  "plusNMore": {
+    "message": "+ още $QUANTITY$",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Подменю"
+  },
+  "toggleCollapse": {
+    "message": "Превключване на свиването",
+    "description": "Toggling an expand/collapse state."
   }
 }

@@ -2,24 +2,25 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { EventType } from "@bitwarden/common/enums/eventType";
-import { ProductType } from "@bitwarden/common/enums/productType";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { EventType, ProductType } from "@bitwarden/common/enums";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-vault-add-edit",
@@ -56,7 +57,9 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     protected policyService: PolicyService,
     organizationService: OrganizationService,
     logService: LogService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    sendApiService: SendApiService,
+    dialogService: DialogService
   ) {
     super(
       cipherService,
@@ -71,7 +74,9 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       policyService,
       logService,
       passwordRepromptService,
-      organizationService
+      organizationService,
+      sendApiService,
+      dialogService
     );
   }
 
@@ -148,10 +153,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
 
     if (this.editMode) {
       if (typeI18nKey === "password") {
-        this.eventCollectionService.collect(
-          EventType.Cipher_ClientToggledHiddenFieldVisible,
-          this.cipherId
-        );
+        this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
       } else if (typeI18nKey === "securityCode") {
         this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
       } else if (aType === "H_Field") {
