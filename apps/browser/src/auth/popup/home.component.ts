@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
@@ -32,8 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
-    private loginService: LoginService,
-    protected route: ActivatedRoute
+    private loginService: LoginService
   ) {}
 
   async ngOnInit(): Promise<void> {
