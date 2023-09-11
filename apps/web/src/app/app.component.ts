@@ -1,7 +1,8 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, NgZone, OnDestroy, OnInit, SecurityContext } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
+import * as jq from "jquery";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
 
@@ -194,6 +195,15 @@ export class AppComponent implements OnDestroy, OnInit {
             break;
         }
       });
+    });
+
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const modals = Array.from(document.querySelectorAll(".modal"));
+        for (const modal of modals) {
+          (jq(modal) as any).modal("hide");
+        }
+      }
     });
 
     this.policyListService.addPolicies([
