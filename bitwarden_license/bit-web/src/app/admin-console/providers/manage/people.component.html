@@ -23,18 +23,15 @@
     </bit-toggle-group>
 
     <div class="ml-3">
-      <label class="sr-only" for="search">{{ "search" | i18n }}</label>
-      <input
-        type="search"
-        class="form-control form-control-sm"
-        id="search"
-        placeholder="{{ 'search' | i18n }}"
+      <bit-search
+        class="tw-grow"
         [(ngModel)]="searchText"
-      />
+        [placeholder]="'search' | i18n"
+      ></bit-search>
     </div>
     <div class="dropdown ml-3" appListDropdown>
       <button
-        class="btn btn-sm btn-outline-secondary dropdown-toggle"
+        class="btn btn-outline-secondary dropdown-toggle"
         type="button"
         id="bulkActionsButton"
         data-toggle="dropdown"
@@ -74,7 +71,7 @@
         </button>
       </div>
     </div>
-    <button type="button" class="btn btn-sm btn-outline-primary ml-3" (click)="invite()">
+    <button type="button" class="btn btn-outline-primary ml-3" (click)="invite()">
       <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
       {{ "inviteUser" | i18n }}
     </button>
