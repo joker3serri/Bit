@@ -687,7 +687,6 @@ describe("1Password 1Pux Importer", () => {
     expect(collections[4].name).toBe("Starter Kit");
   });
 
-  //Unit tests for checking custom fields name, "if title null or empty then id else title"
   it("should return the id when title is null or empty", async () => {
     const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(OnePuxExampleFileJson);
