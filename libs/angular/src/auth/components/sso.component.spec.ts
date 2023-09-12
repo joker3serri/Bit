@@ -449,7 +449,7 @@ describe("SsoComponent", () => {
     describe("Force Master Password Reset scenarios", () => {
       [
         ForceResetPasswordReason.AdminForcePasswordReset,
-        ForceResetPasswordReason.WeakMasterPassword,
+        // ForceResetPasswordReason.WeakMasterPassword, -- not possible in SSO flow as set client side
       ].forEach((forceResetPasswordReason) => {
         const reasonString = ForceResetPasswordReason[forceResetPasswordReason];
 
