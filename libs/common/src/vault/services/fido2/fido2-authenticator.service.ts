@@ -193,8 +193,6 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       let cipherOptions: CipherView[];
 
       await userInterfaceSession.ensureUnlockedVault();
-
-      // eslint-disable-next-line no-empty
       if (params.allowCredentialDescriptorList?.length > 0) {
         cipherOptions = await this.findCredentialsById(
           params.allowCredentialDescriptorList,
@@ -311,10 +309,9 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         (cipher) =>
           !cipher.isDeleted &&
           cipher.organizationId == undefined &&
-          ((cipher.type === CipherType.Fido2Key && ids.includes(cipher.fido2Key.credentialId)) ||
-            (cipher.type === CipherType.Login &&
-              cipher.login.fido2Key != undefined &&
-              ids.includes(cipher.login.fido2Key.credentialId)))
+          cipher.type === CipherType.Login &&
+          cipher.login.fido2Key != undefined &&
+          ids.includes(cipher.login.fido2Key.credentialId)
       )
       .map((cipher) => cipher.id);
   }
@@ -364,7 +361,8 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         !cipher.isDeleted &&
         cipher.type === CipherType.Login &&
         cipher.login.fido2Key != undefined &&
-        cipher.login.fido2Key.rpId === rpId
+        cipher.login.fido2Key.rpId === rpId &&
+        cipher.login.fido2Key.discoverable
     );
   }
 }
@@ -400,6 +398,7 @@ async function createKeyView(
   fido2Key.counter = 0;
   fido2Key.rpName = params.rpEntity.name;
   fido2Key.userDisplayName = params.userEntity.displayName;
+  fido2Key.discoverable = params.requireResidentKey;
 
   return fido2Key;
 }
