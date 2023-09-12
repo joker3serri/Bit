@@ -2,13 +2,11 @@
 
 <!-- (mark with an `X`) -->
 
-```
 - [ ] Bug fix
 - [ ] New feature development
 - [ ] Tech debt (refactoring, code cleanup, dependency upgrades, etc)
 - [ ] Build/deploy pipeline (DevOps)
 - [ ] Other
-```
 
 ## Objective
 
