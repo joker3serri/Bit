@@ -75,7 +75,7 @@ export class SsoLogInStrategy extends LogInStrategy {
     this.ssoEmail2FaSessionToken = ssoAuthResult.ssoEmail2FaSessionToken;
 
     // Auth guard currently handles redirects for this.
-    if (ssoAuthResult.forcePasswordReset != ForceResetPasswordReason.None) {
+    if (ssoAuthResult.forcePasswordReset == ForceResetPasswordReason.AdminForcePasswordReset) {
       await this.stateService.setForcePasswordResetReason(ssoAuthResult.forcePasswordReset);
     }
 
