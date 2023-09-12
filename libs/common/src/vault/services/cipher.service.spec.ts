@@ -267,7 +267,7 @@ describe("Cipher Service", () => {
 
         const cipher = await cipherService.encrypt(cipherView);
 
-        expect(cipher.key).toBeUndefined();
+        expect(cipher.key).toBeNull();
       });
 
       it("is defined when enableCipherKeyEncryption flag is true", async () => {
