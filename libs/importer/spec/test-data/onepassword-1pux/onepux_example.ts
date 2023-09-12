@@ -61,6 +61,21 @@ export const OnePuxExampleFile: ExportData = {
                         },
                       },
                       {
+                        title: "First name",
+                        id: "a496b59522104331aff74ae707ce9a86",
+                        value: {
+                          string: "Felipe",
+                        },
+                        guarded: false,
+                        multiline: false,
+                        dontGenerate: false,
+                        inputTraits: {
+                          keyboard: "default",
+                          correction: "default",
+                          capitalization: "default",
+                        },
+                      },
+                      {
                         title: "What was the model of your first car?",
                         id: "2m2qomuycejnfkrg534xznu22y",
                         value: {

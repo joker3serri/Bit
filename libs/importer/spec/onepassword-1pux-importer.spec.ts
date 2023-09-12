@@ -66,7 +66,7 @@ describe("1Password 1Pux Importer", () => {
     expect(cipher.fields.length).toEqual(3);
     validateCustomField(cipher.fields, "terms", "false");
     validateCustomField(cipher.fields, "policies", "true");
-    validateCustomField(cipher.fields, "cyqyggt2otns6tbbqtsl6w2ceu", "username123123");
+    validateCustomField(cipher.fields, "Create an account", "username123123");
   });
 
   it("should parse notes", async () => {
@@ -134,7 +134,7 @@ describe("1Password 1Pux Importer", () => {
 
     const cipher = ciphers.shift();
     const fields = cipher.fields;
-    expect(fields.length).toEqual(1);
+    expect(fields.length).toEqual(5);
 
     const field = fields.shift();
     expect(field.name).toEqual("PIN");
@@ -689,13 +689,14 @@ describe("1Password 1Pux Importer", () => {
 
   //Unit tests for checking custom fields name, "if title null or empty then id else title"
   it("should return the id when title is null or empty", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(OnePuxExampleFileJson);
     expect(result != null).toBe(true);
     const cipher = result.ciphers.shift();
     expect(cipher.fields[0].name).toBe("PIN");
-    expect(cipher.fields[1].name).toBe("What was the model of your first car?");
-    expect(cipher.fields[2].name).toBe("brrpwptxbxr3x7rj4mxxw6ixai");
-    expect(cipher.fields[3].name).toBe("mm67c5aacgyk2ozl4goqmhriva");
+    expect(cipher.fields[1].name).toBe("First name");
+    expect(cipher.fields[2].name).toBe("What was the model of your first car?");
+    expect(cipher.fields[3].name).toBe("brrpwptxbxr3x7rj4mxxw6ixai");
+    expect(cipher.fields[4].name).toBe("mm67c5aacgyk2ozl4goqmhriva");
   });
 });
