@@ -34,7 +34,7 @@ export function lockGuard(): CanActivateFn {
     const userVerificationService = inject(UserVerificationService);
 
     // If legacy user on web, redirect to migration page
-    if (cryptoService.isLegacyUser()) {
+    if (await cryptoService.isLegacyUser()) {
       if (platformUtilService.getClientType() === ClientType.Web) {
         return router.createUrlTree(["migrate-legacy-encryption"]);
       }
