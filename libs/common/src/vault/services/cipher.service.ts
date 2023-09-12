@@ -125,28 +125,7 @@ export class CipherService implements CipherServiceAbstraction {
 
     if (await this.getCipherKeyEncryptionEnabled()) {
       cipher.key = originalCipher?.key ?? null;
-
-      // First, we get the key for cipher key encryption, in its decrypted form
-      let decryptedCipherKey: SymmetricCryptoKey;
-      if (cipher.key == null) {
-        decryptedCipherKey = await this.cryptoService.makeCipherKey();
-      } else {
-        const keyForCipherKeyDecryption = await this.getKeyForCipherKeyDecryption(cipher);
-        decryptedCipherKey = new SymmetricCryptoKey(
-          await this.encryptService.decryptToBytes(cipher.key, keyForCipherKeyDecryption)
-        );
-      }
-
-      // Then, we have to encrypt the cipher key itself with the proper key
-      // If a key is provided as a parameter, we use it, otherwise we use the user key from state.
-      // The key is provided as a parameter during operations in which the key is changing (e.g. rotation)
-      const keyForCipherKeyEncryption = key ?? (await this.getKeyForCipherKeyDecryption(cipher));
-      cipher.key = await this.encryptService.encrypt(
-        decryptedCipherKey.key,
-        keyForCipherKeyEncryption
-      );
-
-      return this.encryptCipher(model, cipher, decryptedCipherKey);
+      return this.encryptCipherWithCipherKey(model, cipher, key);
     } else {
       // We want to ensure that the cipher key is null if cipher key encryption is disabled
       // so that decryption uses the proper key.
@@ -1271,7 +1250,35 @@ export class CipherService implements CipherServiceAbstraction {
     return cipher;
   }
 
-  async getCipherKeyEncryptionEnabled(): Promise<boolean> {
+  private async encryptCipherWithCipherKey(
+    model: CipherView,
+    cipher: Cipher,
+    key: SymmetricCryptoKey
+  ): Promise<Cipher> {
+    // First, we get the key for cipher key encryption, in its decrypted form
+    let decryptedCipherKey: SymmetricCryptoKey;
+    if (cipher.key == null) {
+      decryptedCipherKey = await this.cryptoService.makeCipherKey();
+    } else {
+      const keyForCipherKeyDecryption = await this.getKeyForCipherKeyDecryption(cipher);
+      decryptedCipherKey = new SymmetricCryptoKey(
+        await this.encryptService.decryptToBytes(cipher.key, keyForCipherKeyDecryption)
+      );
+    }
+
+    // Then, we have to encrypt the cipher key itself with the proper key
+    // If a key is provided as a parameter, we use it, otherwise we use the user key from state.
+    // The key is provided as a parameter during operations in which the key is changing (e.g. rotation)
+    const keyForCipherKeyEncryption = key ?? (await this.getKeyForCipherKeyDecryption(cipher));
+    cipher.key = await this.encryptService.encrypt(
+      decryptedCipherKey.key,
+      keyForCipherKeyEncryption
+    );
+
+    return this.encryptCipher(model, cipher, decryptedCipherKey);
+  }
+
+  private async getCipherKeyEncryptionEnabled(): Promise<boolean> {
     return (
       flagEnabled("enableCipherKeyEncryption") &&
       (await this.configService.checkServerMeetsVersionRequirement(
