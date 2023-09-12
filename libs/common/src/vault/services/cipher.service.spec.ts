@@ -283,7 +283,7 @@ describe("Cipher Service", () => {
 
     describe("encryptWithCipherKey", () => {
       beforeEach(() => {
-        jest.spyOn<any, string>(cipherService, "encryptWithCipherKey");
+        jest.spyOn<any, string>(cipherService, "encryptCipherWithCipherKey");
       });
 
       it("is not called when enableCipherKeyEncryption is false", async () => {
@@ -293,7 +293,7 @@ describe("Cipher Service", () => {
 
         await cipherService.encrypt(cipherView);
 
-        expect(cipherService["encryptWithCipherKey"]).not.toHaveBeenCalled();
+        expect(cipherService["encryptCipherWithCipherKey"]).not.toHaveBeenCalled();
       });
 
       it("is called when enableCipherKeyEncryption is true", async () => {
@@ -303,7 +303,7 @@ describe("Cipher Service", () => {
 
         await cipherService.encrypt(cipherView);
 
-        expect(cipherService["encryptWithCipherKey"]).toHaveBeenCalled();
+        expect(cipherService["encryptCipherWithCipherKey"]).toHaveBeenCalled();
       });
     });
   });
