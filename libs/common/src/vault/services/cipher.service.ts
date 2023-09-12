@@ -173,7 +173,27 @@ export class CipherService implements CipherServiceAbstraction {
 
     if (await this.getCipherKeyEncryptionEnabled()) {
       cipher.key = originalCipher?.key ?? null;
-      return this.encryptWithCipherKey(model, cipher);
+
+      // Get the decrypted cipher key used for cipher key encryption
+      const keyForCipherKeyDecryption = await this.getKeyForCipherKeyDecryption(cipher);
+      const decryptedCipherKey = await this.getDecryptedCipherKey(
+        cipher,
+        keyForCipherKeyDecryption
+      );
+
+      // If the cipher key is null, or a different encryption key is passed in, we need to encrypt
+      // the cipher key.
+      if (cipher.key == null || key != null) {
+        // Get the key to use for encrypting the cipher key. If the key is passed in, use that.
+        // A different key will be passed in when rotating. Otherwise use the same key used for decryption.
+        const keyForCipherKeyEncryption = key ?? (await this.getKeyForCipherKeyDecryption(cipher));
+        cipher.key = await this.encryptService.encrypt(
+          decryptedCipherKey.key,
+          keyForCipherKeyEncryption
+        );
+      }
+
+      return this.encryptCipher(model, cipher, decryptedCipherKey);
     }
 
     return this.encryptCipher(model, cipher, key);
@@ -1207,24 +1227,25 @@ export class CipherService implements CipherServiceAbstraction {
     this.sortedCiphersCache.clear();
   }
 
-  private async encryptWithCipherKey(model: CipherView, cipher: Cipher): Promise<Cipher> {
+  /**
+   * Get the encryption key for a cipher. If `cipher` does not have a `key`, a new key will be generated.
+   * @param cipher The cipher whose encryption key is to be determined
+   * @param keyForCipherKeyDecryption The encryption key to be used to decrypt the cipher key
+   * @returns The encryption key for the cipher
+   */
+  private async getDecryptedCipherKey(
+    cipher: Cipher,
+    keyForCipherKeyDecryption: SymmetricCryptoKey
+  ): Promise<SymmetricCryptoKey> {
     let enckey: SymmetricCryptoKey;
     if (cipher.key == null) {
       enckey = await this.cryptoService.makeCipherKey();
-      cipher.key = await this.encryptService.encrypt(
-        enckey.key,
-        await this.getKeyForCipherKeyDecryption(cipher)
-      );
     } else {
       enckey = new SymmetricCryptoKey(
-        await this.encryptService.decryptToBytes(
-          cipher.key,
-          await this.getKeyForCipherKeyDecryption(cipher)
-        )
+        await this.encryptService.decryptToBytes(cipher.key, keyForCipherKeyDecryption)
       );
     }
-
-    return this.encryptCipher(model, cipher, enckey);
+    return enckey;
   }
 
   private async encryptCipher(
