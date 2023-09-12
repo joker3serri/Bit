@@ -5,13 +5,13 @@ export enum ForceResetPasswordReason {
   None,
 
   /**
-   * Occurs when an organization admin forces a user to reset their password.
+   * Occurs when an organization admin forces a user to reset their password. Sent from server as bool.
    */
   AdminForcePasswordReset,
 
   /**
    * Occurs when a user logs in / unlocks their vault with a master password that does not meet an organization's
-   * master password policy that is enforced on login/unlock.
+   * master password policy that is enforced on login/unlock. Only set client side b/c server can't evaluate MP.
    */
   WeakMasterPassword,
 }
