@@ -67,7 +67,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   disableHideEmail = false;
   send: SendView;
   hasPassword: boolean;
-  password: string;
   showPassword = false;
   formPromise: Promise<any>;
   deletePromise: Promise<any>;
@@ -286,11 +285,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (
-      this.formGroup.controls.password.value != null &&
-      this.formGroup.controls.password.value.trim() === ""
-    ) {
-      this.password = null;
+    if (this.send.password != null && this.send.password.trim() === "") {
+      this.send.password = null;
     }
 
     this.formPromise = this.encryptSend(file).then(async (encSend) => {
@@ -379,12 +375,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected async encryptSend(file: File): Promise<[Send, EncArrayBuffer]> {
-    const sendData = await this.sendService.encrypt(
-      this.send,
-      file,
-      this.formGroup.controls.password.value,
-      null
-    );
+    const sendData = await this.sendService.encrypt(this.send, file, this.send.password, null);
 
     // Parse dates
     try {
@@ -420,7 +411,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       hideEmail: this.send?.hideEmail ?? false,
       disabled: this.send?.disabled ?? false,
       type: this.send.type ?? this.type,
-      password: "",
+      password: null,
 
       selectedDeletionDatePreset: this.editMode ? DatePreset.Custom : DatePreset.SevenDays,
       selectedExpirationDatePreset: this.editMode ? DatePreset.Custom : DatePreset.Never,
