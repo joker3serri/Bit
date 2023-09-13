@@ -9,7 +9,6 @@
     aria-controls="cdk-overlay-container"
     [ngSwitch]="selectedEnvironment"
   >
-    <span class="sr-only">{{ "region" | i18n }}:&nbsp;</span>
     <span *ngSwitchCase="ServerEnvironmentType.US" class="text-primary">{{
       "usDomain" | i18n
     }}</span>
