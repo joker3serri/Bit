@@ -11,6 +11,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { Send } from "@bitwarden/common/tools/send/models/domain/send";
@@ -251,7 +252,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.send.disabled = this.formGroup.controls.disabled.value;
     this.send.type = this.type;
 
-    if (this.send.name == null || this.send.name === "") {
+    if (Utils.isNullOrWhitespace(this.send.name)) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -285,7 +286,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.send.password != null && this.send.password.trim() === "") {
+    if (Utils.isNullOrWhitespace(this.send.password)) {
       this.send.password = null;
     }
 
