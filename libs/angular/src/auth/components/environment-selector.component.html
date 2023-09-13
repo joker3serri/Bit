@@ -17,7 +17,7 @@
       "euDomain" | i18n
     }}</span>
     <span *ngSwitchCase="ServerEnvironmentType.SelfHosted" class="text-primary">{{
-      "selfHosted" | i18n
+      "selfHostedServer" | i18n
     }}</span>
     <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
   </button>
@@ -56,7 +56,6 @@
             selectedEnvironment === ServerEnvironmentType.US ? 'visible' : 'hidden'
           "
         ></i>
-        <img class="img-us" alt="" />
         <span>{{ "usDomain" | i18n }}</span>
       </button>
       <br />
@@ -75,7 +74,6 @@
             selectedEnvironment === ServerEnvironmentType.EU ? 'visible' : 'hidden'
           "
         ></i>
-        <img class="img-eu" alt="" />
         <span>{{ "euDomain" | i18n }}</span>
       </button>
       <br *ngIf="euServerFlagEnabled" />
@@ -95,12 +93,7 @@
             selectedEnvironment === ServerEnvironmentType.SelfHosted ? 'visible' : 'hidden'
           "
         ></i>
-        <i
-          class="bwi bwi-fw bwi-md bwi-pencil-square"
-          style="padding-bottom: 1px; margin-right: 5px"
-          aria-hidden="true"
-        ></i>
-        <span>{{ "selfHosted" | i18n }}</span>
+        <span>{{ "selfHostedServer" | i18n }}</span>
       </button>
     </div>
   </div>
