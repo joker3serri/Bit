@@ -144,10 +144,11 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     const accounts = await firstValueFrom(this.stateService.accounts$);
     for (const userId in accounts) {
       if (userId != null) {
+        await this.cryptoService.migrateAutoKeyIfNeeded(userId);
+        // Legacy users should be logged out since we're not on the web vault and can't migrate.
         if (await this.cryptoService.isLegacyUser(null, userId)) {
           await this.logOut(userId);
         }
-        await this.cryptoService.migrateAutoKeyIfNeeded(userId);
       }
     }
   }
