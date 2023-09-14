@@ -1,5 +1,6 @@
 ---
 name: Version Bump
+run-name: Version Bump - ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
@@ -103,6 +104,7 @@ jobs:
           CURRENT_VERSION=$(cat package.json | jq -r '.version')
           VALUE=$([  "${NEW_VERSION}" = "`echo -e "${NEW_VERSION}\n${CURRENT_VERSION}" | sort -V | head -n1`" ])
           echo "VALUE = ${VALUE}"
+        working-directory: apps/browser
 
       ### Browser
       - name: Bump Browser Version
