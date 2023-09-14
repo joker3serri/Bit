@@ -103,7 +103,12 @@ jobs:
           NEW_VERSION: ${{ inputs.version_number }}  
         run: |
           CURRENT_VERSION=$(cat package.json | jq -r '.version')
-          printf '%s\n' "${NEW_VERSION}" "${CURRENT_VERSION}" | sort -C -V | echo $?
+          COMPARE_VALUE=$(printf '%s\n' "${NEW_VERSION}" "${CURRENT_VERSION}" | sort -C -V | echo $?)
+          if [[ $COMPARE_VALUE == 0 ]]; then
+            echo "New version is good"
+          else
+            echo "New version is not good"
+          fi
         working-directory: apps/browser
 
       ### Browser
