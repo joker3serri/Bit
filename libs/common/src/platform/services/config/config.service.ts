@@ -50,7 +50,7 @@ export class ConfigService implements ConfigServiceAbstraction {
       return;
     }
 
-    const fetchFromServer$ = defer(() => this.configApiService.get()).pipe(
+    const latestServerConfig$ = defer(() => this.configApiService.get()).pipe(
       map((response) => new ServerConfigData(response)),
       delayWhen((data) => this.saveConfig(data)),
       catchError((e: unknown) => {
@@ -67,7 +67,7 @@ export class ConfigService implements ConfigServiceAbstraction {
       this._forceFetchConfig // manual
     )
       .pipe(
-        concatMap(() => fetchFromServer$),
+        concatMap(() => latestServerConfig$),
         map((data) => (data == null ? null : new ServerConfig(data)))
       )
       .subscribe((config) => this._serverConfig.next(config));
