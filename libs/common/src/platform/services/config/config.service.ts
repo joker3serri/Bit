@@ -58,7 +58,7 @@ export class ConfigService implements ConfigServiceAbstraction {
         this.logService.error("Unable to fetch ServerConfig: " + (e as Error)?.message);
         return this.stateService.getServerConfig();
       }),
-      map((data: ServerConfigData) => (data == null ? null : new ServerConfig(data)))
+      map((data) => (data == null ? null : new ServerConfig(data)))
     );
 
     // If you need to fetch a new config when an event occurs, add an observable that emits on that event here
@@ -68,7 +68,7 @@ export class ConfigService implements ConfigServiceAbstraction {
       this._forceFetchConfig // manual
     )
       .pipe(concatMap(() => fetchFromServer$))
-      .subscribe((config: ServerConfig) => this._serverConfig.next(config));
+      .subscribe((config) => this._serverConfig.next(config));
 
     this.inited = true;
   }
