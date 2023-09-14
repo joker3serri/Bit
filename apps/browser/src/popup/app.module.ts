@@ -97,6 +97,8 @@ import "../platform/popup/locales";
     ScrollingModule,
     ServicesModule,
     DialogModule,
+
+    AboutComponent,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -151,7 +153,6 @@ import "../platform/popup/locales";
     ViewCustomFieldsComponent,
     RemovePasswordComponent,
     VaultSelectComponent,
-    AboutComponent,
     HelpAndFeedbackComponent,
     AutofillComponent,
     EnvironmentSelectorComponent,
