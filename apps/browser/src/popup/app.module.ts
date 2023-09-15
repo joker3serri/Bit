@@ -61,7 +61,6 @@ import { PrivateModeWarningComponent } from "./components/private-mode-warning.c
 import { SetPinComponent } from "./components/set-pin.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
 import { ServicesModule } from "./services/services.module";
-import { AboutComponent } from "./settings/about.component";
 import { AutofillComponent } from "./settings/autofill.component";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { FoldersComponent } from "./settings/folders.component";
@@ -97,8 +96,6 @@ import "../platform/popup/locales";
     ScrollingModule,
     ServicesModule,
     DialogModule,
-
-    AboutComponent,
   ],
   declarations: [
     ActionButtonsComponent,

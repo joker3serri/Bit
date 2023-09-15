@@ -11,7 +11,6 @@ import { ButtonModule, DialogModule } from "@bitwarden/components";
 import { BrowserApi } from "../../platform/browser/browser-api";
 
 @Component({
-  selector: "app-about",
   templateUrl: "about.component.html",
   standalone: true,
   imports: [CommonModule, JslibModule, DialogModule, ButtonModule],
