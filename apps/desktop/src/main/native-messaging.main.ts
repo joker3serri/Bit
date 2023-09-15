@@ -324,6 +324,7 @@ export class NativeMessagingMain {
         try {
           await list(key);
           found = true;
+          break;
         } catch {
           this.logService.warning(`Not finding registry ${check} skipping.`);
         }
