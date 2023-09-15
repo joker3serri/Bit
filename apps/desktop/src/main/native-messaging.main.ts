@@ -106,7 +106,7 @@ export class NativeMessagingMain {
         this.writeManifest(path.join(destination, "chrome.json"), chromeJson);
 
         this.createWindowsRegistry(
-          ["HKLM\\SOFTWARE\\Mozilla\\Firefox", "HKCU\\SOFTWARE\\Mozilla\\Firefox"],
+          ["HKCU\\SOFTWARE\\Mozilla\\Firefox", "HKLM\\SOFTWARE\\Mozilla\\Firefox"],
           "HKCU\\SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.8bit.bitwarden",
           path.join(destination, "firefox.json")
         );
