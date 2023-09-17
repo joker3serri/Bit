@@ -5,6 +5,7 @@ import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/va
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
+import { ClientType } from "../../enums";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
@@ -37,7 +38,9 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       return;
     }
     // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3483)
-    await this.migrateKeyForNeverLockIfNeeded();
+    if (this.platformUtilsService.getClientType() != ClientType.Web) {
+      await this.migrateKeyForNeverLockIfNeeded();
+    }
 
     this.inited = true;
     if (checkOnInterval) {
