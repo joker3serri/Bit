@@ -192,12 +192,6 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
     });
   }
 
-  fallbackRequested = false;
-
-  get aborted() {
-    return this.abortController.signal.aborted;
-  }
-
   async pickCredential({
     cipherIds,
     userVerification,

@@ -92,7 +92,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.info(
           `[Fido2Authenticator] Aborting due to excluded credential found in vault.`
         );
-        await userInterfaceSession.informExcludedCredential(existingCipherIds, abortController);
+        await userInterfaceSession.informExcludedCredential(existingCipherIds);
         throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
       }
 
@@ -101,14 +101,11 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       let keyPair: CryptoKeyPair;
       let userVerified = false;
       let credentialId: string;
-      const response = await userInterfaceSession.confirmNewCredential(
-        {
-          credentialName: params.rpEntity.name,
-          userName: params.userEntity.displayName,
-          userVerification: params.requireUserVerification,
-        },
-        abortController
-      );
+      const response = await userInterfaceSession.confirmNewCredential({
+        credentialName: params.rpEntity.name,
+        userName: params.userEntity.displayName,
+        userVerification: params.requireUserVerification,
+      });
       const cipherId = response.cipherId;
       userVerified = response.userVerified;
 

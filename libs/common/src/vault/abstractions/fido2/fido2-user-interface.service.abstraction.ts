@@ -54,11 +54,7 @@ export abstract class Fido2UserInterfaceService {
   ) => Promise<Fido2UserInterfaceSession>;
 }
 
-// TODO: Remove abortController from all the function signatures.
 export abstract class Fido2UserInterfaceSession {
-  fallbackRequested = false;
-  aborted = false;
-
   /**
    * Ask the user to pick a credential from a list of existing credentials.
    *
@@ -67,8 +63,7 @@ export abstract class Fido2UserInterfaceSession {
    * @returns The ID of the cipher that contains the credentials the user picked.
    */
   pickCredential: (
-    params: PickCredentialParams,
-    abortController?: AbortController
+    params: PickCredentialParams
   ) => Promise<{ cipherId: string; userVerified: boolean }>;
 
   /**
@@ -79,8 +74,7 @@ export abstract class Fido2UserInterfaceSession {
    * @returns The ID of the cipher where the new credential should be saved.
    */
   confirmNewCredential: (
-    params: NewCredentialParams,
-    abortController?: AbortController
+    params: NewCredentialParams
   ) => Promise<{ cipherId: string; userVerified: boolean }>;
 
   /**
@@ -94,10 +88,7 @@ export abstract class Fido2UserInterfaceSession {
    *
    * @param existingCipherIds The IDs of the excluded credentials.
    */
-  informExcludedCredential: (
-    existingCipherIds: string[],
-    abortController?: AbortController
-  ) => Promise<void>;
+  informExcludedCredential: (existingCipherIds: string[]) => Promise<void>;
 
   /**
    * Inform the user that the operation was cancelled because their vault does not contain any useable credentials.
