@@ -226,6 +226,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     const clientDataJSON = JSON.stringify(collectedClientData);
     const clientDataJSONBytes = Utils.fromByteStringToArray(clientDataJSON);
     const clientDataHash = await crypto.subtle.digest({ name: "SHA-256" }, clientDataJSONBytes);
+    const getAssertionParams = mapToGetAssertionParams({ params, clientDataHash });
 
     if (abortController.signal.aborted) {
       this.logService?.info(`[Fido2Client] Aborted with AbortController`);
@@ -233,21 +234,6 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     }
 
     const timeout = setAbortTimeout(abortController, params.userVerification, params.timeout);
-
-    const allowCredentialDescriptorList: PublicKeyCredentialDescriptor[] =
-      params.allowedCredentialIds.map((id) => ({
-        id: Fido2Utils.stringToBuffer(id),
-        type: "public-key",
-      }));
-
-    const getAssertionParams: Fido2AuthenticatorGetAssertionParams = {
-      rpId,
-      requireUserVerification: params.userVerification === "required",
-      hash: clientDataHash,
-      allowCredentialDescriptorList,
-      extensions: {},
-      fallbackSupported: params.fallbackSupported,
-    };
 
     let getAssertionResult;
     try {
@@ -370,6 +356,32 @@ function mapToMakeCredentialParams({
       id: Fido2Utils.stringToBuffer(params.user.id),
       displayName: params.user.displayName,
     },
+    fallbackSupported: params.fallbackSupported,
+  };
+}
+
+/**
+ * Convert data gathered by the WebAuthn Client to a format that can be used by the authenticator.
+ */
+function mapToGetAssertionParams({
+  params,
+  clientDataHash,
+}: {
+  params: AssertCredentialParams;
+  clientDataHash: ArrayBuffer;
+}): Fido2AuthenticatorGetAssertionParams {
+  const allowCredentialDescriptorList: PublicKeyCredentialDescriptor[] =
+    params.allowedCredentialIds.map((id) => ({
+      id: Fido2Utils.stringToBuffer(id),
+      type: "public-key",
+    }));
+
+  return {
+    rpId: params.rpId,
+    requireUserVerification: params.userVerification === "required",
+    hash: clientDataHash,
+    allowCredentialDescriptorList,
+    extensions: {},
     fallbackSupported: params.fallbackSupported,
   };
 }
