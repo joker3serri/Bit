@@ -87,10 +87,12 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
 
     let credTypesAndPubKeyAlgs: PublicKeyCredentialParam[];
     if (params.pubKeyCredParams?.length > 0) {
+      // Filter out all unsupported algorithms
       credTypesAndPubKeyAlgs = params.pubKeyCredParams.filter(
         (kp) => kp.alg === -7 && kp.type === "public-key"
       );
     } else {
+      // Assign default algorithms
       credTypesAndPubKeyAlgs = [
         { alg: -7, type: "public-key" },
         { alg: -257, type: "public-key" },
@@ -115,6 +117,13 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     const clientDataJSON = JSON.stringify(collectedClientData);
     const clientDataJSONBytes = Utils.fromByteStringToArray(clientDataJSON);
     const clientDataHash = await crypto.subtle.digest({ name: "SHA-256" }, clientDataJSONBytes);
+    const makeCredentialParams = mapToMakeCredentialParams({
+      params,
+      credTypesAndPubKeyAlgs,
+      clientDataHash,
+    });
+
+    // Set timeout before invoking authenticator
     if (abortController.signal.aborted) {
       this.logService?.info(`[Fido2Client] Aborted with AbortController`);
       throw new DOMException(undefined, "AbortError");
@@ -124,34 +133,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       params.authenticatorSelection?.userVerification,
       params.timeout
     );
-    const excludeCredentialDescriptorList: PublicKeyCredentialDescriptor[] =
-      params.excludeCredentials?.map((credential) => ({
-        id: Fido2Utils.stringToBuffer(credential.id),
-        transports: credential.transports,
-        type: credential.type,
-      })) ?? [];
 
-    const makeCredentialParams: Fido2AuthenticatorMakeCredentialsParams = {
-      requireResidentKey:
-        params.authenticatorSelection?.residentKey === "required" ||
-        params.authenticatorSelection?.residentKey === "preferred" ||
-        (params.authenticatorSelection?.residentKey === undefined &&
-          params.authenticatorSelection?.requireResidentKey === true),
-      requireUserVerification: params.authenticatorSelection?.userVerification === "required",
-      enterpriseAttestationPossible: params.attestation === "enterprise",
-      excludeCredentialDescriptorList,
-      credTypesAndPubKeyAlgs,
-      hash: clientDataHash,
-      rpEntity: {
-        id: rpId,
-        name: params.rp.name,
-      },
-      userEntity: {
-        id: Fido2Utils.stringToBuffer(params.user.id),
-        displayName: params.user.displayName,
-      },
-      fallbackSupported: params.fallbackSupported,
-    };
     let makeCredentialResult;
     try {
       makeCredentialResult = await this.authenticator.makeCredential(
@@ -348,4 +330,46 @@ function setAbortTimeout(
   }
 
   return window.setTimeout(() => abortController.abort(), clampedTimeout);
+}
+
+/**
+ * Convert data gathered by the WebAuthn Client to a format that can be used by the authenticator.
+ */
+function mapToMakeCredentialParams({
+  params,
+  credTypesAndPubKeyAlgs,
+  clientDataHash,
+}: {
+  params: CreateCredentialParams;
+  credTypesAndPubKeyAlgs: PublicKeyCredentialParam[];
+  clientDataHash: ArrayBuffer;
+}): Fido2AuthenticatorMakeCredentialsParams {
+  const excludeCredentialDescriptorList: PublicKeyCredentialDescriptor[] =
+    params.excludeCredentials?.map((credential) => ({
+      id: Fido2Utils.stringToBuffer(credential.id),
+      transports: credential.transports,
+      type: credential.type,
+    })) ?? [];
+
+  return {
+    requireResidentKey:
+      params.authenticatorSelection?.residentKey === "required" ||
+      params.authenticatorSelection?.residentKey === "preferred" ||
+      (params.authenticatorSelection?.residentKey === undefined &&
+        params.authenticatorSelection?.requireResidentKey === true),
+    requireUserVerification: params.authenticatorSelection?.userVerification === "required",
+    enterpriseAttestationPossible: params.attestation === "enterprise",
+    excludeCredentialDescriptorList,
+    credTypesAndPubKeyAlgs,
+    hash: clientDataHash,
+    rpEntity: {
+      id: params.rp.id,
+      name: params.rp.name,
+    },
+    userEntity: {
+      id: Fido2Utils.stringToBuffer(params.user.id),
+      displayName: params.user.displayName,
+    },
+    fallbackSupported: params.fallbackSupported,
+  };
 }
