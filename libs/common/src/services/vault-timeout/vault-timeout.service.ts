@@ -38,9 +38,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       return;
     }
     // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3483)
-    if (this.platformUtilsService.getClientType() != ClientType.Web) {
-      await this.migrateKeyForNeverLockIfNeeded();
-    }
+    await this.migrateKeyForNeverLockIfNeeded();
 
     this.inited = true;
     if (checkOnInterval) {
@@ -144,6 +142,10 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   }
 
   private async migrateKeyForNeverLockIfNeeded(): Promise<void> {
+    // Web can't set vault timeout to never
+    if (this.platformUtilsService.getClientType() == ClientType.Web) {
+      return;
+    }
     const accounts = await firstValueFrom(this.stateService.accounts$);
     for (const userId in accounts) {
       if (userId != null) {
