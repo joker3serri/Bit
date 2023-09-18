@@ -329,11 +329,6 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       return [];
     }
 
-    //ensure full sync has completed before getting the ciphers
-    if ((await this.syncService.getLastSync()) == null) {
-      await this.syncService.fullSync(false);
-    }
-
     const ciphers = await this.cipherService.getAllDecrypted();
     return ciphers.filter(
       (cipher) =>
@@ -346,11 +341,6 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
   }
 
   private async findCredentialsByRp(rpId: string): Promise<CipherView[]> {
-    //ensure full sync has completed before getting the ciphers
-    if ((await this.syncService.getLastSync()) == null) {
-      await this.syncService.fullSync(false);
-    }
-
     const ciphers = await this.cipherService.getAllDecrypted();
     return ciphers.filter(
       (cipher) =>
