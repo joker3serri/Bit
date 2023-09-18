@@ -31,8 +31,10 @@ export const AAGUID = new Uint8Array([
 const KeyUsages: KeyUsage[] = ["sign"];
 
 /**
- * Bitwarden implementation of the WebAuthn Authenticator Model described by W3C
+ * Bitwarden implementation of the WebAuthn Authenticator Model as described by W3C
  * https://www.w3.org/TR/webauthn-3/#sctn-authenticator-model
+ *
+ * It is highly recommended that the W3C specification is used a reference when reading this code.
  */
 export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstraction {
   constructor(
@@ -41,6 +43,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
     private syncService: SyncService,
     private logService?: LogService
   ) {}
+
   async makeCredential(
     params: Fido2AuthenticatorMakeCredentialsParams,
     abortController?: AbortController

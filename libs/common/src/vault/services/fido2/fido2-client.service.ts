@@ -27,6 +27,12 @@ import {
 import { isValidRpId } from "./domain-utils";
 import { Fido2Utils } from "./fido2-utils";
 
+/**
+ * Bitwarden implementation of the Web Authentication API as described by W3C
+ * https://www.w3.org/TR/webauthn-3/#sctn-api
+ *
+ * It is highly recommended that the W3C specification is used a reference when reading this code.
+ */
 export class Fido2ClientService implements Fido2ClientServiceAbstraction {
   constructor(
     private authenticator: Fido2AuthenticatorService,
