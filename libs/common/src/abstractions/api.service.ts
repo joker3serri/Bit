@@ -301,7 +301,10 @@ export abstract class ApiService {
     request: CollectionRequest
   ) => Promise<CollectionResponse>;
   deleteCollection: (organizationId: string, id: string) => Promise<any>;
-  deleteManyCollections: (request: CollectionBulkDeleteRequest) => Promise<any>;
+  deleteManyCollections: (
+    organizationId: string,
+    request: CollectionBulkDeleteRequest
+  ) => Promise<any>;
   deleteCollectionUser: (
     organizationId: string,
     id: string,

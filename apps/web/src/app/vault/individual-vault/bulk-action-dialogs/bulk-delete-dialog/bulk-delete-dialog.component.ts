@@ -127,8 +127,8 @@ export class BulkDeleteDialogComponent {
       );
       return;
     }
-    const deleteRequest = new CollectionBulkDeleteRequest(this.collectionIds, this.organization.id);
-    return await this.apiService.deleteManyCollections(deleteRequest);
+    const deleteRequest = new CollectionBulkDeleteRequest(this.collectionIds);
+    return await this.apiService.deleteManyCollections(this.organization.id, deleteRequest);
   }
 
   private close(result: BulkDeleteDialogResult) {
