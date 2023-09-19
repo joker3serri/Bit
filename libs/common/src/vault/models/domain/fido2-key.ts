@@ -126,7 +126,7 @@ export class Fido2Key extends Domain {
     const rpName = EncString.fromJSON(obj.rpName);
     const userDisplayName = EncString.fromJSON(obj.userDisplayName);
     const discoverable = EncString.fromJSON(obj.discoverable);
-    const creationDate = obj.creationDate == null ? null : new Date(obj.creationDate);
+    const creationDate = obj.creationDate != null ? new Date(obj.creationDate) : null;
 
     return Object.assign(new Fido2Key(), obj, {
       credentialId,

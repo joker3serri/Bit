@@ -16,6 +16,7 @@ export class Fido2KeyExport {
     req.counter = "counter";
     req.rpName = "rpName";
     req.userDisplayName = "userDisplayName";
+    req.discoverable = "false";
     req.creationDate = null;
     return req;
   }
@@ -31,6 +32,7 @@ export class Fido2KeyExport {
     view.counter = parseInt(req.counter);
     view.rpName = req.rpName;
     view.userDisplayName = req.userDisplayName;
+    view.discoverable = !!req.discoverable;
     view.creationDate = req.creationDate;
     return view;
   }
@@ -47,6 +49,7 @@ export class Fido2KeyExport {
     domain.rpName = req.rpName != null ? new EncString(req.rpName) : null;
     domain.userDisplayName =
       req.userDisplayName != null ? new EncString(req.userDisplayName) : null;
+    domain.discoverable = req.discoverable != null ? new EncString(req.discoverable) : null;
     domain.creationDate = req.creationDate;
     return domain;
   }
@@ -61,6 +64,7 @@ export class Fido2KeyExport {
   counter: string;
   rpName: string;
   userDisplayName: string;
+  discoverable: string;
   creationDate: Date = null;
 
   constructor(o?: Fido2KeyView | Fido2KeyDomain) {
