@@ -16,11 +16,20 @@ type Handler = (
   abortController?: AbortController
 ) => Promise<Message | undefined>;
 
-// TODO: This class probably duplicates functionality but I'm not especially familiar with
-// the inner workings of the browser extension yet.
-// If you see this in a code review please comment on it!
-
+/**
+ * A class that handles communication between the page and content script. It converts
+ * the browser's broadcasting API into a request/response API with support for seamlessly
+ * handling aborts and exceptions across separate execution contexts.
+ */
 export class Messenger {
+  /**
+   * Creates a messenger that uses the browser's `window.postMessage` API to initiate
+   * requests in the content script. Every request will then create it's own
+   * `MessageChannel` through which all subsequent communication will be sent through.
+   *
+   * @param window the window object to use for communication
+   * @returns a `Messenger` instance
+   */
   static forDOMCommunication(window: Window) {
     const windowOrigin = window.location.origin;
 
@@ -37,7 +46,13 @@ export class Messenger {
     });
   }
 
+  /**
+   * The handler that will be called when a message is recieved. The handler should return
+   * a promise that resolves to the response message. If the handler throws an error, the
+   * error will be sent back to the sender.
+   */
   handler?: Handler;
+
   constructor(private broadcastChannel: Channel) {
     this.broadcastChannel.addEventListener(async (event) => {
       if (this.handler === undefined) {
@@ -74,6 +89,14 @@ export class Messenger {
     });
   }
 
+  /**
+   * Sends a request to the content script and returns the response. If the request is
+   * aborted, the request will be aborted in the content script as well.
+   *
+   * @param request data to send to the content script
+   * @param abortController the abort controller that might be used to abort the request
+   * @returns the response from the content script
+   */
   async request(request: Message, abortController?: AbortController): Promise<Message> {
     const requestId = Date.now().toString();
     const metadata: Metadata = { SENDER, requestId };
@@ -81,29 +104,33 @@ export class Messenger {
     const requestChannel = new MessageChannel();
     const { port1: localPort, port2: remotePort } = requestChannel;
 
-    const promise = new Promise<Message>((resolve) => {
-      localPort.onmessage = (event: MessageEvent<MessageWithMetadata>) => resolve(event.data);
-    });
-
-    const abortListener = () =>
-      localPort.postMessage({
-        metadata: { SENDER, requestId: `${requestId}-abort` },
-        type: MessageType.AbortRequest,
-        abortedRequestId: requestId,
+    try {
+      const promise = new Promise<Message>((resolve) => {
+        localPort.onmessage = (event: MessageEvent<MessageWithMetadata>) => resolve(event.data);
       });
-    abortController?.signal.addEventListener("abort", abortListener);
 
-    this.broadcastChannel.postMessage({ ...request, metadata }, remotePort);
-    const response = await promise;
+      const abortListener = () =>
+        localPort.postMessage({
+          metadata: { SENDER, requestId: `${requestId}-abort` },
+          type: MessageType.AbortRequest,
+          abortedRequestId: requestId,
+        });
+      abortController?.signal.addEventListener("abort", abortListener);
 
-    abortController?.signal.removeEventListener("abort", abortListener);
+      this.broadcastChannel.postMessage({ ...request, metadata }, remotePort);
+      const response = await promise;
 
-    if (response.type === MessageType.ErrorResponse) {
-      const error = new Error();
-      Object.assign(error, JSON.parse(response.error));
-      throw error;
+      abortController?.signal.removeEventListener("abort", abortListener);
+
+      if (response.type === MessageType.ErrorResponse) {
+        const error = new Error();
+        Object.assign(error, JSON.parse(response.error));
+        throw error;
+      }
+
+      return response;
+    } finally {
+      localPort.close();
     }
-
-    return response;
   }
 }
