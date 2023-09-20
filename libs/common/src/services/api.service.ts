@@ -834,14 +834,11 @@ export class ApiService implements ApiServiceAbstraction {
     );
   }
 
-  deleteManyCollections(
-    organizationId: string,
-    request: CollectionBulkDeleteRequest
-  ): Promise<any> {
+  deleteManyCollections(organizationId: string, collectionIds: string[]): Promise<any> {
     return this.send(
       "DELETE",
       "/organizations/" + organizationId + "/collections",
-      request,
+      new CollectionBulkDeleteRequest(collectionIds),
       true,
       false
     );
