@@ -88,8 +88,8 @@ export class Messenger {
   }
 
   /**
-   * Sends a request to the content script and returns the response. If the request is
-   * aborted, the request will be aborted in the content script as well.
+   * Sends a request to the content script and returns the response.
+   * AbortController signals will be forwarded to the content script.
    *
    * @param request data to send to the content script
    * @param abortController the abort controller that might be used to abort the request
