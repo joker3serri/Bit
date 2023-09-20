@@ -1,5 +1,3 @@
-import { Subject } from "rxjs";
-
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Message } from "./message";
@@ -12,6 +10,8 @@ describe("Messenger", () => {
   let handlerB: TestMessageHandler;
 
   beforeEach(() => {
+    window.MessageChannel = MockMessageChannel as any;
+
     const channelPair = new TestChannelPair();
     messengerA = new Messenger(channelPair.channelA);
     messengerB = new Messenger(channelPair.channelB);
@@ -81,20 +81,45 @@ class TestChannelPair {
   readonly channelB: Channel;
 
   constructor() {
-    const subjectA = new Subject<MessageWithMetadata>();
-    const subjectB = new Subject<MessageWithMetadata>();
+    const broadcastChannel = new MockMessageChannel<MessageWithMetadata>();
 
     this.channelA = {
-      messages$: subjectA,
-      postMessage: (message) => {
-        subjectB.next(message);
-      },
+      addEventListener: (listener) => (broadcastChannel.port1.onmessage = listener),
+      postMessage: (message, port) => broadcastChannel.port1.postMessage(message, port),
     };
 
     this.channelB = {
-      messages$: subjectB,
-      postMessage: (message) => subjectA.next(message),
+      addEventListener: (listener) => (broadcastChannel.port2.onmessage = listener),
+      postMessage: (message, port) => broadcastChannel.port2.postMessage(message, port),
     };
+
+    // this.channelB = {
+    //   addEventListener: (listener) => (broadcastChannel.port2.onmessage = listener),
+    //   postMessage: (message, port) => broadcastChannel.port1.postMessage(message, port),
+    // };
+
+    // const subjectA = new Subject<{ message: MessageWithMetadata; port: MessagePort }>();
+    // const subjectB = new Subject<{ message: MessageWithMetadata; port: MessagePort }>();
+
+    // this.channelA = {
+    //   addEventListener: (listener) =>
+    //     subjectA.subscribe(({ message, port }) => {
+    //       listener(new MessageEvent("message", { data: message, ports: [port] }));
+    //     }),
+    //   postMessage: (message, port) => {
+    //     subjectB.next({ message, port });
+    //   },
+    // };
+
+    // this.channelB = {
+    //   addEventListener: (listener) =>
+    //     subjectB.subscribe(({ message, port }) => {
+    //       listener(new MessageEvent("message", { data: message, ports: [port] }));
+    //     }),
+    //   postMessage: (message, port) => {
+    //     subjectA.next({ message, port });
+    //   },
+    // };
   }
 }
 
@@ -127,5 +152,26 @@ class TestMessageHandler {
     const received = this.recievedMessages;
     this.recievedMessages = [];
     return received;
+  }
+}
+
+class MockMessageChannel<T> {
+  port1 = new MockMessagePort<T>();
+  port2 = new MockMessagePort<T>();
+
+  constructor() {
+    this.port1.remotePort = this.port2;
+    this.port2.remotePort = this.port1;
+  }
+}
+
+class MockMessagePort<T> {
+  onmessage: ((ev: MessageEvent<T>) => any) | null;
+  remotePort: MockMessagePort<T>;
+
+  postMessage(message: T, port?: MessagePort) {
+    this.remotePort.onmessage(
+      new MessageEvent("message", { data: message, ports: port ? [port] : [] })
+    );
   }
 }

@@ -58,10 +58,6 @@ export class Messenger {
 
   constructor(private broadcastChannel: Channel) {
     this.broadcastChannel.addEventListener(async (event) => {
-      if (this.handler === undefined) {
-        return;
-      }
-
       const abortController = new AbortController();
       const message = event.data;
       const port = event.ports[0];
