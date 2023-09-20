@@ -9,7 +9,7 @@ export type Channel = {
   postMessage: PostMessageFunction;
 };
 
-export type Metadata = { SENDER: typeof SENDER; requestId: string };
+export type Metadata = { SENDER: typeof SENDER };
 export type MessageWithMetadata = Message & { metadata: Metadata };
 type Handler = (
   message: MessageWithMetadata,
@@ -74,10 +74,10 @@ export class Messenger {
 
       try {
         const handlerResponse = await this.handler(message, abortController);
-        const metadata: Metadata = { SENDER, requestId: message.metadata.requestId };
+        const metadata: Metadata = { SENDER };
         port.postMessage({ ...handlerResponse, metadata });
       } catch (error) {
-        const metadata: Metadata = { SENDER, requestId: message.metadata.requestId };
+        const metadata: Metadata = { SENDER };
         port.postMessage({
           type: MessageType.ErrorResponse,
           metadata,
@@ -98,8 +98,7 @@ export class Messenger {
    * @returns the response from the content script
    */
   async request(request: Message, abortController?: AbortController): Promise<Message> {
-    const requestId = Date.now().toString();
-    const metadata: Metadata = { SENDER, requestId };
+    const metadata: Metadata = { SENDER };
 
     const requestChannel = new MessageChannel();
     const { port1: localPort, port2: remotePort } = requestChannel;
@@ -111,9 +110,8 @@ export class Messenger {
 
       const abortListener = () =>
         localPort.postMessage({
-          metadata: { SENDER, requestId: `${requestId}-abort` },
+          metadata: { SENDER },
           type: MessageType.AbortRequest,
-          abortedRequestId: requestId,
         });
       abortController?.signal.addEventListener("abort", abortListener);
 
