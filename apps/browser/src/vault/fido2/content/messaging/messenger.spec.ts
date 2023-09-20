@@ -10,6 +10,7 @@ describe("Messenger", () => {
   let handlerB: TestMessageHandler;
 
   beforeEach(() => {
+    // jest does not support MessageChannel
     window.MessageChannel = MockMessageChannel as any;
 
     const channelPair = new TestChannelPair();
