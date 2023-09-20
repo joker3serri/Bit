@@ -91,7 +91,7 @@ export type BrowserFido2Message = { sessionId: string } & (
 
 /**
  * Browser implementation of the {@link Fido2UserInterfaceService}.
- * The user interface is implemented as a popout and the service uses the browser's messaging API to communicate with the it.
+ * The user interface is implemented as a popout and the service uses the browser's messaging API to communicate with it.
  */
 export class BrowserFido2UserInterfaceService implements Fido2UserInterfaceServiceAbstraction {
   constructor(private popupUtilsService: PopupUtilsService) {}
