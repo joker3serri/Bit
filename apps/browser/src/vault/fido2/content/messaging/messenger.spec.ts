@@ -93,34 +93,6 @@ class TestChannelPair {
       addEventListener: (listener) => (broadcastChannel.port2.onmessage = listener),
       postMessage: (message, port) => broadcastChannel.port2.postMessage(message, port),
     };
-
-    // this.channelB = {
-    //   addEventListener: (listener) => (broadcastChannel.port2.onmessage = listener),
-    //   postMessage: (message, port) => broadcastChannel.port1.postMessage(message, port),
-    // };
-
-    // const subjectA = new Subject<{ message: MessageWithMetadata; port: MessagePort }>();
-    // const subjectB = new Subject<{ message: MessageWithMetadata; port: MessagePort }>();
-
-    // this.channelA = {
-    //   addEventListener: (listener) =>
-    //     subjectA.subscribe(({ message, port }) => {
-    //       listener(new MessageEvent("message", { data: message, ports: [port] }));
-    //     }),
-    //   postMessage: (message, port) => {
-    //     subjectB.next({ message, port });
-    //   },
-    // };
-
-    // this.channelB = {
-    //   addEventListener: (listener) =>
-    //     subjectB.subscribe(({ message, port }) => {
-    //       listener(new MessageEvent("message", { data: message, ports: [port] }));
-    //     }),
-    //   postMessage: (message, port) => {
-    //     subjectA.next({ message, port });
-    //   },
-    // };
   }
 }
 
