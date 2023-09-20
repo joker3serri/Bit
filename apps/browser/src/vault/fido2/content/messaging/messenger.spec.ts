@@ -174,4 +174,8 @@ class MockMessagePort<T> {
       new MessageEvent("message", { data: message, ports: port ? [port] : [] })
     );
   }
+
+  close() {
+    // Do nothing
+  }
 }
