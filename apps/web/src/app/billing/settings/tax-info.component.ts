@@ -20,6 +20,7 @@ type TaxInfoView = Omit<TaxInfoResponse, "taxIdType"> & {
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class TaxInfoComponent {
+  @Input() hideTaxDisabledCountries = false;
   @Input() trialFlow = false;
   @Output() onCountryChanged = new EventEmitter();
 
