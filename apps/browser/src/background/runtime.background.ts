@@ -12,8 +12,8 @@ import { BrowserApi } from "../platform/browser/browser-api";
 import { BrowserPopoutWindowService } from "../platform/popup/abstractions/browser-popout-window.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import BrowserPlatformUtilsService from "../platform/services/browser-platform-utils.service";
+import { AbortManager } from "../vault/background/abort-manager";
 
-import { AbortManager } from "./abort-manager";
 import MainBackground from "./main.background";
 import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNotificationsItem";
 
