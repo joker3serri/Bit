@@ -32,7 +32,7 @@ export class Fido2KeyExport {
     view.counter = parseInt(req.counter);
     view.rpName = req.rpName;
     view.userDisplayName = req.userDisplayName;
-    view.discoverable = !!req.discoverable;
+    view.discoverable = req.discoverable === "true";
     view.creationDate = req.creationDate;
     return view;
   }
@@ -83,6 +83,8 @@ export class Fido2KeyExport {
       this.counter = String(o.counter);
       this.rpName = o.rpName;
       this.userDisplayName = o.userDisplayName;
+      this.discoverable = String(o.discoverable);
+      this.creationDate = o.creationDate;
     } else {
       this.credentialId = o.credentialId?.encryptedString;
       this.keyType = o.keyType?.encryptedString;
@@ -94,6 +96,8 @@ export class Fido2KeyExport {
       this.counter = o.counter?.encryptedString;
       this.rpName = o.rpName?.encryptedString;
       this.userDisplayName = o.userDisplayName?.encryptedString;
+      this.discoverable = o.discoverable?.encryptedString;
+      this.creationDate = o.creationDate;
     }
   }
 }
