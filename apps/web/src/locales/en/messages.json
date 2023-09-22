@@ -7178,10 +7178,10 @@
   "alreadyHaveAccount": {
     "message": "Already have an account?"
   },
-  "accurateInvoicing": {
-    "message": "For more accurate invoicing, visit the "
+  "customBillingStart": {
+    "message": "Custom billing is not reflected. Visit the "
   },
-  "page": {
-    "message": "page."
+  "customBillingEnd": {
+    "message": " page for latest invoicing."
   }
 }
