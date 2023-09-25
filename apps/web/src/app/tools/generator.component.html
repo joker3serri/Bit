@@ -8,7 +8,7 @@
   <div class="card-body">
     <bit-color-password
       [password]="type === 'password' ? password : username"
-      appSelectCopy
+      [appCopyText]="type === 'password' ? password : username"
     ></bit-color-password>
   </div>
 </div>
@@ -343,6 +343,28 @@
         />
       </div>
     </div>
+    <div class="row" *ngIf="usernameOptions.forwardedService === 'forwardemail'">
+      <div class="form-group col-4">
+        <label for="forwardemail-apikey">{{ "apiAccessToken" | i18n }}</label>
+        <input
+          id="forwardemail-apikey"
+          class="form-control"
+          type="password"
+          [(ngModel)]="usernameOptions.forwardedForwardEmailApiToken"
+          (blur)="saveUsernameOptions()"
+        />
+      </div>
+      <div class="form-group col-4">
+        <label for="forwardemail-domain">{{ "domainName" | i18n }}</label>
+        <input
+          id="forwardemail-domain"
+          class="form-control"
+          type="text"
+          [(ngModel)]="usernameOptions.forwardedForwardEmailDomain"
+          (blur)="saveUsernameOptions()"
+        />
+      </div>
+    </div>
   </ng-container>
   <div class="row" *ngIf="usernameOptions.type === 'subaddress'">
     <div class="form-group col-4">
@@ -399,8 +421,8 @@
     <button
       type="button"
       class="btn btn-submit btn-primary"
-      (click)="regenerate()"
-      [disabled]="$any(form).loading"
+      (click)="$any(form).loading ? false : regenerate()"
+      [attr.aria-disabled]="$any(form).loading ? 'true' : null"
     >
       <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
       <span>{{ "regenerateUsername" | i18n }}</span>

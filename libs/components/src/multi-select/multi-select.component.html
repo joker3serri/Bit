@@ -11,12 +11,13 @@
   notFoundText="{{ 'multiSelectNotFound' | i18n }}"
   clearAllText="{{ 'multiSelectClearAll' | i18n }}"
   [multiple]="true"
-  [selectOnTab]="true"
   [closeOnSelect]="false"
   (close)="onDropdownClosed()"
   [disabled]="disabled"
   [clearSearchOnAdd]="true"
   [labelForId]="labelForId"
+  [keyDownFn]="keyDown"
+  appendTo="body"
 >
   <ng-template ng-loadingspinner-tmp>
     <i class="bwi bwi-spinner bwi-spin tw-mr-1" [title]="loadingText" aria-hidden="true"></i>

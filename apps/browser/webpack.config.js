@@ -16,6 +16,7 @@ const ENV = (process.env.ENV = process.env.NODE_ENV);
 const manifestVersion = process.env.MANIFEST_VERSION == 3 ? 3 : 2;
 
 console.log(`Building Manifest Version ${manifestVersion} app`);
+
 const envConfig = configurator.load(ENV);
 configurator.log(envConfig);
 
@@ -39,6 +40,16 @@ const moduleRules = [
       filename: "popup/images/[name][ext]",
     },
     type: "asset/resource",
+  },
+  {
+    test: /\.css$/,
+    use: [
+      {
+        loader: MiniCssExtractPlugin.loader,
+      },
+      "css-loader",
+      "postcss-loader",
+    ],
   },
   {
     test: /\.scss$/,
@@ -66,6 +77,11 @@ const moduleRules = [
     test: /\.[jt]sx?$/,
     loader: "@ngtools/webpack",
   },
+  {
+    test: /\.wasm$/,
+    loader: "base64-loader",
+    type: "javascript/auto",
+  },
 ];
 
 const requiredPlugins = [
@@ -87,7 +103,7 @@ const plugins = [
     chunks: ["popup/polyfills", "popup/vendor-angular", "popup/vendor", "popup/main"],
   }),
   new HtmlWebpackPlugin({
-    template: "./src/notification/bar.html",
+    template: "./src/autofill/notification/bar.html",
     filename: "notification/bar.html",
     chunks: ["notification/bar"],
   }),
@@ -100,7 +116,7 @@ const plugins = [
       { from: "./src/_locales", to: "_locales" },
       { from: "./src/images", to: "images" },
       { from: "./src/popup/images", to: "popup/images" },
-      { from: "./src/content/autofill.css", to: "content" },
+      { from: "./src/autofill/content/autofill.css", to: "content" },
     ],
   }),
   new MiniCssExtractPlugin({
@@ -136,13 +152,16 @@ const mainConfig = {
   entry: {
     "popup/polyfills": "./src/popup/polyfills.ts",
     "popup/main": "./src/popup/main.ts",
-    "content/autofill": "./src/content/autofill.js",
-    "content/autofiller": "./src/content/autofiller.ts",
-    "content/notificationBar": "./src/content/notificationBar.ts",
-    "content/contextMenuHandler": "./src/content/contextMenuHandler.ts",
-    "content/message_handler": "./src/content/message_handler.ts",
-    "notification/bar": "./src/notification/bar.js",
-    "encrypt-worker": "../../libs/common/src/services/cryptography/encrypt.worker.ts",
+    "content/trigger-autofill-script-injection":
+      "./src/autofill/content/trigger-autofill-script-injection.ts",
+    "content/autofill": "./src/autofill/content/autofill.js",
+    "content/autofill-init": "./src/autofill/content/autofill-init.ts",
+    "content/autofiller": "./src/autofill/content/autofiller.ts",
+    "content/notificationBar": "./src/autofill/content/notification-bar.ts",
+    "content/contextMenuHandler": "./src/autofill/content/context-menu-handler.ts",
+    "content/message_handler": "./src/autofill/content/message_handler.ts",
+    "notification/bar": "./src/autofill/notification/bar.ts",
+    "encrypt-worker": "../../libs/common/src/platform/services/cryptography/encrypt.worker.ts",
   },
   optimization: {
     minimize: ENV !== "development",
@@ -194,22 +213,23 @@ const mainConfig = {
     extensions: [".ts", ".js"],
     symlinks: false,
     modules: [path.resolve("../../node_modules")],
-    alias: {
-      sweetalert2: require.resolve("sweetalert2/dist/sweetalert2.js"),
-      "#sweetalert2": require.resolve("sweetalert2/src/sweetalert2.scss"),
-    },
     fallback: {
       assert: false,
       buffer: require.resolve("buffer/"),
       util: require.resolve("util/"),
       url: require.resolve("url/"),
+      fs: false,
+      path: require.resolve("path-browserify"),
     },
   },
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "build"),
   },
-  module: { rules: moduleRules },
+  module: {
+    noParse: /\.wasm$/,
+    rules: moduleRules,
+  },
   plugins: plugins,
 };
 
@@ -230,7 +250,7 @@ if (manifestVersion == 2) {
   // Manifest V2 uses Background Pages which requires a html page.
   mainConfig.plugins.push(
     new HtmlWebpackPlugin({
-      template: "./src/background.html",
+      template: "./src/platform/background.html",
       filename: "background.html",
       chunks: ["vendor", "background"],
     })
@@ -238,13 +258,13 @@ if (manifestVersion == 2) {
 
   // Manifest V2 background pages can be run through the regular build pipeline.
   // Since it's a standard webpage.
-  mainConfig.entry.background = "./src/background.ts";
+  mainConfig.entry.background = "./src/platform/background.ts";
 
   configs.push(mainConfig);
 } else {
   // Manifest v3 needs an extra helper for utilities in the content script.
   // The javascript output of this should be added to manifest.v3.json
-  mainConfig.entry["content/misc-utils"] = "./src/content/misc-utils.ts";
+  mainConfig.entry["content/misc-utils"] = "./src/autofill/content/misc-utils.ts";
 
   /**
    * @type {import("webpack").Configuration}
@@ -253,7 +273,7 @@ if (manifestVersion == 2) {
     name: "background",
     mode: ENV,
     devtool: false,
-    entry: "./src/background.ts",
+    entry: "./src/platform/background.ts",
     target: "webworker",
     output: {
       filename: "background.js",
@@ -265,13 +285,23 @@ if (manifestVersion == 2) {
           test: /\.tsx?$/,
           loader: "ts-loader",
         },
+        {
+          test: /\.wasm$/,
+          loader: "base64-loader",
+          type: "javascript/auto",
+        },
       ],
+      noParse: /\.wasm$/,
     },
     resolve: {
       extensions: [".ts", ".js"],
       symlinks: false,
       modules: [path.resolve("../../node_modules")],
       plugins: [new TsconfigPathsPlugin()],
+      fallback: {
+        fs: false,
+        path: false,
+      },
     },
     dependencies: ["main"],
     plugins: [...requiredPlugins],

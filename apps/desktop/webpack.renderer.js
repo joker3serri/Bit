@@ -40,6 +40,11 @@ const common = {
         },
         type: "asset/resource",
       },
+      {
+        test: /\.wasm$/,
+        loader: "base64-loader",
+        type: "javascript/auto",
+      },
     ],
   },
   plugins: [],
@@ -105,6 +110,16 @@ const renderer = {
         type: "asset/resource",
       },
       {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          "css-loader",
+          "postcss-loader",
+        ],
+      },
+      {
         test: /\.scss$/,
         use: [
           {
@@ -121,6 +136,11 @@ const renderer = {
       {
         test: /[\/\\]@angular[\/\\].+\.js$/,
         parser: { system: true },
+      },
+      {
+        test: /\.wasm$/,
+        loader: "base64-loader",
+        type: "javascript/auto",
       },
     ],
   },

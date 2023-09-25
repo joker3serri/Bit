@@ -1,28 +1,27 @@
 import * as chalk from "chalk";
 import * as program from "commander";
 
-import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
-import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
+import { LockCommand } from "./auth/commands/lock.command";
+import { LoginCommand } from "./auth/commands/login.command";
+import { LogoutCommand } from "./auth/commands/logout.command";
+import { UnlockCommand } from "./auth/commands/unlock.command";
 import { Main } from "./bw";
 import { CompletionCommand } from "./commands/completion.command";
 import { ConfigCommand } from "./commands/config.command";
 import { EncodeCommand } from "./commands/encode.command";
-import { GenerateCommand } from "./commands/generate.command";
-import { LockCommand } from "./commands/lock.command";
-import { LoginCommand } from "./commands/login.command";
-import { LogoutCommand } from "./commands/logout.command";
 import { ServeCommand } from "./commands/serve.command";
 import { StatusCommand } from "./commands/status.command";
-import { SyncCommand } from "./commands/sync.command";
-import { UnlockCommand } from "./commands/unlock.command";
 import { UpdateCommand } from "./commands/update.command";
 import { Response } from "./models/response";
 import { ListResponse } from "./models/response/list.response";
 import { MessageResponse } from "./models/response/message.response";
 import { StringResponse } from "./models/response/string.response";
 import { TemplateResponse } from "./models/response/template.response";
+import { GenerateCommand } from "./tools/generate.command";
 import { CliUtils } from "./utils";
+import { SyncCommand } from "./vault/sync.command";
 
 const writeLn = CliUtils.writeLn;
 
@@ -145,6 +144,7 @@ export class Program {
             this.main.cryptoFunctionService,
             this.main.environmentService,
             this.main.passwordGenerationService,
+            this.main.passwordStrengthService,
             this.main.platformUtilsService,
             this.main.stateService,
             this.main.cryptoService,
@@ -152,10 +152,12 @@ export class Program {
             this.main.twoFactorService,
             this.main.syncService,
             this.main.keyConnectorService,
+            this.main.policyApiService,
+            this.main.organizationService,
             async () => await this.main.logout()
           );
           const response = await command.run(email, password, options);
-          this.processResponse(response);
+          this.processResponse(response, true);
         }
       });
 
@@ -296,9 +298,12 @@ export class Program {
       .option("-p, --passphrase", "Generate a passphrase.")
       .option("--length <length>", "Length of the password.")
       .option("--words <words>", "Number of words.")
+      .option("--minNumber <count>", "Minimum number of numeric characters.")
+      .option("--minSpecial <count>", "Minimum number of special characters.")
       .option("--separator <separator>", "Word separator.")
       .option("-c, --capitalize", "Title case passphrase.")
       .option("--includeNumber", "Passphrase includes number.")
+      .option("--ambiguous", "Avoid ambiguous characters.")
       .on("--help", () => {
         writeLn("\n  Notes:");
         writeLn("");
@@ -594,11 +599,8 @@ export class Program {
 
   protected async exitIfLocked() {
     await this.exitIfNotAuthed();
-    if (await this.main.cryptoService.hasKeyInMemory()) {
+    if (await this.main.cryptoService.hasUserKey()) {
       return;
-    } else if (await this.main.cryptoService.hasKeyStored(KeySuffixOptions.Auto)) {
-      // load key into memory
-      await this.main.cryptoService.getKey();
     } else if (process.env.BW_NOINTERACTION !== "true") {
       // must unlock
       if (await this.main.keyConnectorService.getUsesKeyConnector()) {

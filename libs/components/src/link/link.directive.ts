@@ -24,6 +24,7 @@ const linkStyles: Record<LinkType, string[]> = {
 };
 
 const commonStyles = [
+  "tw-text-unset",
   "tw-leading-none",
   "tw-p-0",
   "tw-font-semibold",
@@ -57,7 +58,6 @@ const commonStyles = [
   "before:tw-rounded-md",
   "before:tw-transition",
   "focus-visible:before:tw-ring-2",
-  "focus-visible:before:tw-ring-text-contrast",
   "focus-visible:tw-z-10",
 ];
 

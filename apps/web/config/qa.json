@@ -7,10 +7,11 @@
   "dev": {
     "proxyApi": "https://api.qa.bitwarden.pw",
     "proxyIdentity": "https://identity.qa.bitwarden.pw",
-    "proxyEvents": "https://events.qa.bitwarden.pw"
+    "proxyEvents": "https://events.qa.bitwarden.pw",
+    "proxyNotifications": "https://notifications.qa.bitwarden.pw"
   },
   "flags": {
-    "secretsManager": false,
+    "secretsManager": true,
     "showPasswordless": true
   }
 }

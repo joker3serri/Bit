@@ -1,12 +1,10 @@
 import { Component } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
-import { ApiKeyResponse } from "@bitwarden/common/models/response/api-key.response";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
+import { ApiKeyResponse } from "@bitwarden/common/auth/models/response/api-key.response";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Verification } from "@bitwarden/common/types/verification";
-
-import { WebI18nKey } from "../core/web-i18n.service.implementation";
 
 @Component({
   selector: "app-api-key",
@@ -19,9 +17,9 @@ export class ApiKeyComponent {
   entityId: string;
   scope: string;
   grantType: string;
-  apiKeyTitle: WebI18nKey;
-  apiKeyWarning: WebI18nKey;
-  apiKeyDescription: WebI18nKey;
+  apiKeyTitle: string;
+  apiKeyWarning: string;
+  apiKeyDescription: string;
 
   masterPassword: Verification;
   formPromise: Promise<ApiKeyResponse>;

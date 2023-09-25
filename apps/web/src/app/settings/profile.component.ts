@@ -1,45 +1,62 @@
-import { Component, OnInit } from "@angular/core";
+import { ViewChild, ViewContainerRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { Subject, takeUntil } from "rxjs";
 
+import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { UpdateProfileRequest } from "@bitwarden/common/models/request/update-profile.request";
+import { UpdateProfileRequest } from "@bitwarden/common/auth/models/request/update-profile.request";
 import { ProfileResponse } from "@bitwarden/common/models/response/profile.response";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+
+import { ChangeAvatarComponent } from "./change-avatar.component";
 
 @Component({
   selector: "app-profile",
   templateUrl: "profile.component.html",
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   loading = true;
   profile: ProfileResponse;
-  fingerprint: string;
+  fingerprintMaterial: string;
 
   formPromise: Promise<any>;
+  @ViewChild("avatarModalTemplate", { read: ViewContainerRef, static: true })
+  avatarModalRef: ViewContainerRef;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private apiService: ApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private cryptoService: CryptoService,
     private logService: LogService,
-    private keyConnectorService: KeyConnectorService,
-    private stateService: StateService
+    private stateService: StateService,
+    private modalService: ModalService
   ) {}
 
   async ngOnInit() {
     this.profile = await this.apiService.getProfile();
     this.loading = false;
-    const fingerprint = await this.cryptoService.getFingerprint(
-      await this.stateService.getUserId()
+    this.fingerprintMaterial = await this.stateService.getUserId();
+  }
+
+  async ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  async openChangeAvatar() {
+    const modalOpened = await this.modalService.openViewRef(
+      ChangeAvatarComponent,
+      this.avatarModalRef,
+      (modal) => {
+        modal.profile = this.profile;
+        modal.changeColor.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          modalOpened[0].close();
+        });
+      }
     );
-    if (fingerprint != null) {
-      this.fingerprint = fingerprint.join("-");
-    }
   }
 
   async submit() {
