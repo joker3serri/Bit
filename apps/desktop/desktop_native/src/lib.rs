@@ -2,10 +2,10 @@
 extern crate napi_derive;
 
 mod biometric;
+mod clipboard;
 mod crypto;
 mod error;
 mod password;
-mod clipboard;
 
 #[napi]
 pub mod passwords {
