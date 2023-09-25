@@ -569,8 +569,7 @@
         *ngIf="
           cipher.type !== cipherType.SecureNote &&
           !cipher.isDeleted &&
-          (!this.inPopout || this.loadAction) &&
-          cipher.type != cipherType.Fido2Key
+          (!this.inPopout || this.loadAction)
         "
       >
         <div class="row-main text-primary">
@@ -599,7 +598,7 @@
         class="box-content-row"
         appStopClick
         (click)="clone()"
-        *ngIf="!cipher.organizationId && !cipher.isDeleted && cipher.type != cipherType.Fido2Key"
+        *ngIf="!cipher.organizationId && !cipher.isDeleted"
       >
         <div class="row-main text-primary">
           <div class="icon text-primary" aria-hidden="true">

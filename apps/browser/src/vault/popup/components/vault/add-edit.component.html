@@ -21,9 +21,6 @@
       <h2 class="box-header">
         {{ "itemInformation" | i18n }}
       </h2>
-      <div class="box-footer" *ngIf="cipher.type === cipherType.Fido2Key">
-        {{ "passkeyEditInformation" | i18n }}
-      </div>
       <div class="box-content">
         <div class="box-content-row" *ngIf="!editMode" appBoxRow>
           <label for="type">{{ "type" | i18n }}</label>
