@@ -25,7 +25,7 @@ pub fn write(text: &str, password: bool) -> Result<()> {
 fn exclude_from_history(set: Set) -> Set {
     use arboard::SetExtWindows;
 
-    set.exclude_from_history()
+    set.exclude_from_cloud().exclude_from_history()
 }
 
 // NOOP for other platforms
