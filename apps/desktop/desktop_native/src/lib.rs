@@ -118,6 +118,7 @@ pub mod clipboards {
 
     #[napi]
     pub async fn write(text: String, password: bool) -> napi::Result<()> {
-        super::clipboard::write(text, password).map_err(|e| napi::Error::from_reason(e.to_string()))
+        super::clipboard::write(&text, password)
+            .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 }
