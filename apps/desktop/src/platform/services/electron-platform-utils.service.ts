@@ -10,6 +10,7 @@ import {
 
 import { BiometricMessage, BiometricStorageAction } from "../../types/biometric-message";
 import { isDev, isMacAppStore } from "../../utils";
+import { ClipboardWriteMessage } from "../types/clipboard";
 
 export class ElectronPlatformUtilsService implements PlatformUtilsService {
   private deviceCache: DeviceType = null;
@@ -127,7 +128,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
     ipcRenderer.invoke("clipboard.write", {
       text: text,
       password: (options?.allowHistory ?? false) === false, // default to false
-    });
+    } satisfies ClipboardWriteMessage);
 
     if (!clearing) {
       this.messagingService.send("copiedToClipboard", {

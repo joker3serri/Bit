@@ -6,7 +6,6 @@ import { StateFactory } from "@bitwarden/common/platform/factories/state-factory
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 
-import { ClipboardMain } from "./main/clipboard.main";
 import { MenuMain } from "./main/menu/menu.main";
 import { MessagingMain } from "./main/messaging.main";
 import { NativeMessagingMain } from "./main/native-messaging.main";
@@ -16,6 +15,7 @@ import { UpdaterMain } from "./main/updater.main";
 import { WindowMain } from "./main/window.main";
 import { Account } from "./models/account";
 import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main/biometric/index";
+import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
 import { ElectronLogService } from "./platform/services/electron-log.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
