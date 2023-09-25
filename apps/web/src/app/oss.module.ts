@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 
-import { OrganizationManageModule } from "./admin-console/organizations/manage/organization-manage.module";
 import { OrganizationUserModule } from "./admin-console/organizations/users/organization-user.module";
 import { LoginModule } from "./auth/login/login.module";
 import { TrialInitiationModule } from "./auth/trial-initiation/trial-initiation.module";
@@ -15,7 +14,6 @@ import { VaultFilterModule } from "./vault/individual-vault/vault-filter/vault-f
     TrialInitiationModule,
     VaultFilterModule,
     OrganizationBadgeModule,
-    OrganizationManageModule,
     OrganizationUserModule,
     LoginModule,
   ],

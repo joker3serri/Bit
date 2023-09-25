@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { SearchModule } from "@bitwarden/components";
 import { OrganizationPlansComponent } from "@bitwarden/web-vault/app/billing";
 import { OssModule } from "@bitwarden/web-vault/app/oss.module";
 
@@ -34,6 +35,7 @@ import { SetupComponent } from "./setup/setup.component";
     JslibModule,
     ProvidersRoutingModule,
     OrganizationPlansComponent,
+    SearchModule,
   ],
   declarations: [
     AcceptProviderComponent,
