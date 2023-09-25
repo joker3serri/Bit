@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatest, map, Observable, of, switchMap } from "rxjs";
+import { combineLatest, map, Observable } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import type { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 @Component({
   selector: "org-switcher",
@@ -25,12 +23,7 @@ export class OrgSwitcherComponent {
   protected activeOrganization$: Observable<Organization> = combineLatest([
     this.route.paramMap,
     this.organizations$,
-  ]).pipe(
-    switchMap(([params, orgs]) => {
-      const selectedOrg = orgs.find((org) => org.id === params.get("organizationId"));
-      return of(selectedOrg);
-    })
-  );
+  ]).pipe(map(([params, orgs]) => orgs.find((org) => org.id === params.get("organizationId"))));
 
   /**
    * Filter function for displayed organizations in the `org-switcher`
@@ -56,25 +49,11 @@ export class OrgSwitcherComponent {
   @Input()
   hideNewButton = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private organizationService: OrganizationService,
-    private platformUtilsService: PlatformUtilsService,
-    private i18nService: I18nService
-  ) {}
+  constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 
   protected toggle(event?: MouseEvent) {
     event?.stopPropagation();
     this.open = !this.open;
     this.openChange.emit(this.open);
-  }
-
-  protected inactiveOrganizationError(event?: MouseEvent) {
-    event?.stopPropagation();
-    this.platformUtilsService.showToast(
-      "error",
-      null,
-      this.i18nService.t("disabledOrganizationFilterError")
-    );
   }
 }

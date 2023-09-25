@@ -8,7 +8,7 @@ import { Icon, Icons } from "@bitwarden/components";
 @Component({
   templateUrl: "./org-suspended.component.html",
 })
-export class OrgDisabledComponent implements OnInit {
+export class OrgSuspendedComponent implements OnInit {
   constructor(private organizationService: OrganizationService, private route: ActivatedRoute) {}
 
   protected organizationName: string;

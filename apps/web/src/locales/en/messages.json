@@ -3573,7 +3573,7 @@
     "message": "Organization suspended"
   },
   "secretsAccessSuspended": {
-    "message": "Secrets in suspended organizations cannot be accessed. Please contact your organization owner for assistance."
+    "message": "Suspended organizations cannot be accessed. Please contact your organization owner for assistance."
   },  
   "secretsCannotCreate": {
     "message": "Secrets cannot be created in suspended organizations. Please contact your organization owner for assistance."

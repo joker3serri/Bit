@@ -10,7 +10,7 @@
   <i
     slot="end"
     *ngIf="!activeOrganization.enabled"
-    class="bwi bwi-exclamation-triangle pt-1 pr-1 !tw-text-danger"
+    class="bwi bwi-exclamation-triangle tw-mt-1 !tw-text-danger"
   ></i>
   <ng-container *ngIf="organizations$ | async as organizations">
     <bit-nav-item
