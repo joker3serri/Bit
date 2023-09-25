@@ -28,8 +28,15 @@ fn exclude_from_history(set: Set) -> Set {
     set.exclude_from_cloud().exclude_from_history()
 }
 
-// NOOP for other platforms
-#[cfg(not(target_os = "windows"))]
+// Wait for clipboard to be available on linux
+#[cfg(target_os = "linux")]
+fn exclude_from_history(set: Set) -> Set {
+    use arboard::SetExtLinux;
+
+    set.wait()
+}
+
+#[cfg(target_os = "macos")]
 fn exclude_from_history(set: Set) -> Set {
     set
 }
