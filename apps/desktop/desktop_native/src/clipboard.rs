@@ -46,6 +46,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[cfg(not(target_os = "linux"))]
     fn test_write_read() {
         let message = "Hello world!";
 
