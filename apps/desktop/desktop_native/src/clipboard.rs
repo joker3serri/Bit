@@ -42,7 +42,7 @@ mod tests {
     fn test_write_read() {
         let message = "Hello world!";
 
-        assert!(write(message, false).is_ok());
+        write(message, false).unwrap();
         assert_eq!(message, read().unwrap());
     }
 }
