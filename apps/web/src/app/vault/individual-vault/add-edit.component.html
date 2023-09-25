@@ -201,11 +201,7 @@
                     class="form-control"
                     type="text"
                     name="Login.Fido2key"
-                    [value]="
-                      ('dateCreated' | i18n) +
-                      ' ' +
-                      (cipher.login.fido2Keys[0].creationDate | date : 'short')
-                    "
+                    [value]="fido2KeyCreationDateValue"
                     appInputVerbatim
                     disabled
                     readonly
