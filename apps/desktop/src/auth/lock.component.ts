@@ -1,6 +1,7 @@
 import { Component, NgZone } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ipcRenderer } from "electron";
+import { switchMap } from "rxjs";
 
 import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -33,6 +34,8 @@ const BroadcasterSubscriptionId = "LockComponent";
 export class LockComponent extends BaseLockComponent {
   private deferFocus: boolean = null;
   protected biometricReady = false;
+  private biometricAsked = false;
+  private autoPromptBiometric = false;
 
   constructor(
     router: Router,
@@ -80,23 +83,14 @@ export class LockComponent extends BaseLockComponent {
 
   async ngOnInit() {
     await super.ngOnInit();
-    const autoPromptBiometric = !(await this.stateService.getDisableAutoBiometricsPrompt());
+    this.autoPromptBiometric = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.biometricReady = await this.canUseBiometric();
 
     await this.displayBiometricUpdateWarning();
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.route.queryParams.subscribe((params) => {
-      setTimeout(async () => {
-        if (!params.promptBiometric || !this.supportsBiometric || !autoPromptBiometric) {
-          return;
-        }
+    this.delayedAskForBiometric(500);
+    this.route.queryParams.pipe(switchMap((params) => this.delayedAskForBiometric(500, params)));
 
-        if (await ipcRenderer.invoke("windowVisible")) {
-          this.unlockBiometric();
-        }
-      }, 1000);
-    });
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
       this.ngZone.run(() => {
         switch (message.command) {
@@ -118,6 +112,7 @@ export class LockComponent extends BaseLockComponent {
         }
       });
     });
+
     this.messagingService.send("getWindowIsFocused");
   }
 
@@ -128,6 +123,23 @@ export class LockComponent extends BaseLockComponent {
 
   onWindowHidden() {
     this.showPassword = false;
+  }
+
+  private async delayedAskForBiometric(delay: number, params?: any) {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+
+    if (params && !params.promptBiometric) {
+      return;
+    }
+
+    if (!this.supportsBiometric || !this.autoPromptBiometric || this.biometricAsked) {
+      return;
+    }
+
+    this.biometricAsked = true;
+    if (await ipcRenderer.invoke("windowVisible")) {
+      this.unlockBiometric();
+    }
   }
 
   private async canUseBiometric() {
