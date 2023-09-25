@@ -65,7 +65,7 @@ export class Fido2KeyExport {
   rpName: string;
   userDisplayName: string;
   discoverable: string;
-  creationDate: Date = null;
+  creationDate: Date;
 
   constructor(o?: Fido2KeyView | Fido2KeyDomain) {
     if (o == null) {
