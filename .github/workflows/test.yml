@@ -91,6 +91,9 @@ jobs:
       - name: Test Ubuntu
         if: ${{ matrix.os=='ubuntu-latest' }}
         working-directory: ./apps/desktop/desktop_native
+        env:
+          DISPLAY: ":99"
+          RUST_BACKTRACE: 1
         run: |
           eval "$(dbus-launch --sh-syntax)"
           mkdir -p ~/.cache
