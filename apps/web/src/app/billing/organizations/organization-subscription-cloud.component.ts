@@ -13,8 +13,6 @@ import { BitwardenProductType, PlanType } from "@bitwarden/common/billing/enums"
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
 import { ProviderType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -63,7 +61,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private organizationApiService: OrganizationApiServiceAbstraction,
     private route: ActivatedRoute,
     private dialogService: DialogService,
-    private configService: ConfigServiceAbstraction,
     private datePipe: DatePipe
   ) {}
 
@@ -135,13 +132,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       !this.subscriptionMarkedForCancel;
 
     this.loading = false;
-
-    // Remove the remaining lines when the sm-ga-billing flag is deleted
-    const smBillingEnabled = await this.configService.getFeatureFlagBool(
-      FeatureFlag.SecretsManagerBilling
-    );
-    this.showSecretsManagerSubscribe = this.showSecretsManagerSubscribe && smBillingEnabled;
-    this.showAdjustSecretsManager = this.showAdjustSecretsManager && smBillingEnabled;
   }
 
   get subscription() {

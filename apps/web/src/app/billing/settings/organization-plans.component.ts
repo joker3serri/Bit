@@ -23,8 +23,6 @@ import { ProviderOrganizationCreateRequest } from "@bitwarden/common/admin-conso
 import { BitwardenProductType, PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { ProductType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -94,7 +92,6 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   singleOrgPolicyAppliesToActiveUser = false;
   isInTrialFlow = false;
   discount = 0;
-  secretsManagerFeatureFlagEnabled: boolean;
 
   secretsManagerSubscription = secretsManagerSubscribeFormFactory(this.formBuilder);
 
@@ -129,8 +126,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private messagingService: MessagingService,
     private formBuilder: FormBuilder,
-    private organizationApiService: OrganizationApiServiceAbstraction,
-    private configService: ConfigServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
   }
@@ -169,23 +165,12 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         this.singleOrgPolicyAppliesToActiveUser = policyAppliesToActiveUser;
       });
 
-    this.secretsManagerFeatureFlagEnabled = await this.configService.getFeatureFlagBool(
-      FeatureFlag.SecretsManagerBilling,
-      false
-    );
-
     this.loading = false;
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  get showSecretsManagerSubscribe() {
-    return (
-      this.secretsManagerFeatureFlagEnabled && this.planOffersSecretsManager && !this.hasProvider
-    );
   }
 
   get singleOrgPolicyBlock() {
