@@ -217,8 +217,15 @@ export class BrowserApi {
 
   static messageListener(
     name: string,
-    callback: (message: any, sender: chrome.runtime.MessageSender, sendResponse: any) => unknown
+    callback: (
+      message: any,
+      sender: chrome.runtime.MessageSender,
+      sendResponse: any
+    ) => boolean | void
   ) {
+    // updated to pass synchronous callbacks to addListener.
+    // Will not pass async methods because they will default return a Promoise<void>
+    // this causes race conditions in Firefox when a runtime.sendMessage listener receives undefined
     chrome.runtime.onMessage.addListener(callback);
 
     // Keep track of all the events registered in a Safari popup so we can remove
