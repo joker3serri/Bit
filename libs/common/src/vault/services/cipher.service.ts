@@ -52,7 +52,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 
-const CIPHER_KEY_ENC_MIN_SERVER_VER = "2023.9.1";
+const CIPHER_KEY_ENC_MIN_SERVER_VER = new SemVer("2023.9.1");
 
 export class CipherService implements CipherServiceAbstraction {
   private sortedCiphersCache: SortedCiphersCache = new SortedCiphersCache(
@@ -120,9 +120,8 @@ export class CipherService implements CipherServiceAbstraction {
 
     if (await this.getCipherKeyEncryptionEnabled()) {
       cipher.key = originalCipher?.key ?? null;
-      keyForEncryption = keyForEncryption || (await this.getKeyForCipherKeyDecryption(cipher));
-      keyForCipherKeyDecryption =
-        keyForCipherKeyDecryption || (await this.getKeyForCipherKeyDecryption(cipher));
+      keyForEncryption ||= await this.getKeyForCipherKeyDecryption(cipher);
+      keyForCipherKeyDecryption ||= await this.getKeyForCipherKeyDecryption(cipher);
       return this.encryptCipherWithCipherKey(
         model,
         cipher,
@@ -1294,9 +1293,7 @@ export class CipherService implements CipherServiceAbstraction {
     return (
       flagEnabled("enableCipherKeyEncryption") &&
       (await firstValueFrom(
-        this.configService.checkServerMeetsVersionRequirement$(
-          new SemVer(CIPHER_KEY_ENC_MIN_SERVER_VER)
-        )
+        this.configService.checkServerMeetsVersionRequirement$(CIPHER_KEY_ENC_MIN_SERVER_VER)
       ))
     );
   }
