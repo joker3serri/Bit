@@ -86,14 +86,12 @@ import { PurgeVaultComponent } from "../settings/purge-vault.component";
 import { SecurityKeysComponent } from "../settings/security-keys.component";
 import { SecurityComponent } from "../settings/security.component";
 import { SettingsComponent } from "../settings/settings.component";
-import { UpdateKeyComponent } from "../settings/update-key.component";
 import { UpdateLicenseComponent } from "../settings/update-license.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
 import { AccessComponent } from "../tools/send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../tools/send/add-edit.component";
-import { EffluxDatesComponent as SendEffluxDatesComponent } from "../tools/send/efflux-dates.component";
 import { ToolsComponent } from "../tools/tools.component";
 import { PasswordRepromptComponent } from "../vault/components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../vault/components/premium-badge.component";
@@ -198,7 +196,6 @@ import { SharedModule } from "./shared.module";
     SecurityKeysComponent,
     SelectableAvatarComponent,
     SendAddEditComponent,
-    SendEffluxDatesComponent,
     SetPasswordComponent,
     SettingsComponent,
     ShareComponent,
@@ -218,7 +215,6 @@ import { SharedModule } from "./shared.module";
     TwoFactorVerifyComponent,
     TwoFactorWebAuthnComponent,
     TwoFactorYubiKeyComponent,
-    UpdateKeyComponent,
     UpdateLicenseComponent,
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,
@@ -302,7 +298,6 @@ import { SharedModule } from "./shared.module";
     SecurityKeysComponent,
     SelectableAvatarComponent,
     SendAddEditComponent,
-    SendEffluxDatesComponent,
     SetPasswordComponent,
     SettingsComponent,
     ShareComponent,
@@ -322,7 +317,6 @@ import { SharedModule } from "./shared.module";
     TwoFactorVerifyComponent,
     TwoFactorWebAuthnComponent,
     TwoFactorYubiKeyComponent,
-    UpdateKeyComponent,
     UpdateLicenseComponent,
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,

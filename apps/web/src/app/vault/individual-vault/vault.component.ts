@@ -61,7 +61,6 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { DialogService, Icons } from "@bitwarden/components";
 
-import { UpdateKeyComponent } from "../../settings/update-key.component";
 import {
   CollectionDialogAction,
   CollectionDialogTabType,
@@ -120,12 +119,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("share", { read: ViewContainerRef, static: true }) shareModalRef: ViewContainerRef;
   @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
-  @ViewChild("updateKeyTemplate", { read: ViewContainerRef, static: true })
-  updateKeyModalRef: ViewContainerRef;
 
   showVerifyEmail = false;
   showBrowserOutdated = false;
-  showUpdateKey = false;
   showPremiumCallout = false;
   showLowKdf = false;
   trashCleanupWarning: string = null;
@@ -204,7 +200,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         const canAccessPremium = await this.stateService.getCanAccessPremium();
         this.showPremiumCallout =
           !this.showVerifyEmail && !canAccessPremium && !this.platformUtilsService.isSelfHost();
-        this.showUpdateKey = !(await this.cryptoService.hasUserKey());
 
         const cipherId = getCipherIdFromParams(params);
         if (!cipherId) {
@@ -412,11 +407,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   get isShowingCards() {
     return (
-      this.showBrowserOutdated ||
-      this.showPremiumCallout ||
-      this.showUpdateKey ||
-      this.showVerifyEmail ||
-      this.showLowKdf
+      this.showBrowserOutdated || this.showPremiumCallout || this.showVerifyEmail || this.showLowKdf
     );
   }
 
@@ -953,10 +944,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     return permanent
       ? this.cipherService.deleteWithServer(id)
       : this.cipherService.softDeleteWithServer(id);
-  }
-
-  async updateKey() {
-    await this.modalService.openViewRef(UpdateKeyComponent, this.updateKeyModalRef);
   }
 
   async isLowKdfIteration() {
