@@ -57,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Component states must not persist between closing and reopening the popup, otherwise they become dead objects
     // Clear them aggressively to make sure this doesn't occur
     await this.clearComponentStates();
+    const userIdFromState = await this.stateService.getUserId();
 
     this.stateService.activeAccount$.pipe(takeUntil(this.destroy$)).subscribe((userId) => {
       this.activeUserId = userId;
@@ -80,7 +81,7 @@ export class AppComponent implements OnInit, OnDestroy {
       window.onkeypress = () => this.recordActivity();
     });
 
-    (window as any).bitwardenPopupMainMessageListener = async (msg: any, sender: any) => {
+    const bitwardenPopupMainMessageListener = (msg: any, sender: any) => {
       if (msg.command === "doneLoggingOut") {
         this.authService.logOut(async () => {
           if (msg.expired) {
@@ -99,7 +100,9 @@ export class AppComponent implements OnInit, OnDestroy {
       } else if (msg.command === "authBlocked") {
         this.router.navigate(["home"]);
       } else if (msg.command === "locked") {
-        if (msg.userId == null || msg.userId === (await this.stateService.getUserId())) {
+        // the second argument here was written for account switching
+        // this is not available on browser yet.
+        if (msg.userId == null || msg.userId === userIdFromState) {
           this.router.navigate(["lock"]);
         }
       } else if (msg.command === "showDialog") {
@@ -129,7 +132,8 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     };
 
-    BrowserApi.messageListener("app.component", (window as any).bitwardenPopupMainMessageListener);
+    (window as any).bitwardenPopupMainMessageListener = bitwardenPopupMainMessageListener;
+    BrowserApi.messageListener("app.component", bitwardenPopupMainMessageListener);
 
     // eslint-disable-next-line rxjs/no-async-subscribe
     this.router.events.pipe(takeUntil(this.destroy$)).subscribe(async (event) => {
