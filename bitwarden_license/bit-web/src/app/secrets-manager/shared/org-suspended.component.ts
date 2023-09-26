@@ -8,26 +8,17 @@ import { Icon, Icons } from "@bitwarden/components";
 @Component({
   templateUrl: "./org-suspended.component.html",
 })
-export class OrgSuspendedComponent implements OnInit {
+export class OrgSuspendedComponent implements OnInit, OnDestroy {
   constructor(private organizationService: OrganizationService, private route: ActivatedRoute) {}
 
   protected organizationName: string;
-  protected organizationId: string;
   protected NoAccess: Icon = Icons.NoAccess;
   private destroy$ = new Subject<void>();
 
-  async ngOnInit() {
-    this.route.params
-      .pipe(
-        concatMap(async (params) => {
-          this.organizationId = params.organizationId;
-          this.organizationName = await this.organizationService.get(this.organizationId)?.name;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
-
-    this.organizationName = this.organizationService.get(this.organizationId)?.name;
+  ngOnInit() {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.organizationName = this.organizationService.get(params.organizationId)?.name;
+    });
   }
 
   ngOnDestroy() {
