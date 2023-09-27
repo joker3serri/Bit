@@ -260,12 +260,14 @@ export class VaultExportService implements VaultExportServiceAbstraction {
               .filter((c) => c.deletedDate === null)
               .forEach(async (c) => {
                 const cipher = new Cipher(new CipherData(c));
-                exportPromises.push(async () => {
-                  const decCipher = await cipher.decrypt(
-                    await this.cipherService.getKeyForCipherKeyDecryption(cipher)
-                  );
-                  decCiphers.push(decCipher);
-                });
+               exportPromises.push(
+                 this.cipherService
+                   .getKeyForCipherKeyDecryption(cipher)
+                   .then((key) => cipher.decrypt(key))
+                   .then((decCipher) => {
+                     decCiphers.push(decCipher);
+                   })
+               );
               });
           }
         }
