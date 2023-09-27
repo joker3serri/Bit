@@ -73,6 +73,7 @@ jobs:
         id: retrieve-node-version
         working-directory: ./
         run: |
+          ls -la
           NODE_NVMRC=$(cat .nvmrc)
           NODE_VERSION=${NODE_NVMRC/v/''}
           echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
