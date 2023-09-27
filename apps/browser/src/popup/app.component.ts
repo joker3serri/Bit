@@ -57,7 +57,6 @@ export class AppComponent implements OnInit, OnDestroy {
     // Component states must not persist between closing and reopening the popup, otherwise they become dead objects
     // Clear them aggressively to make sure this doesn't occur
     await this.clearComponentStates();
-    const userIdFromState = await this.stateService.getUserId();
 
     this.stateService.activeAccount$.pipe(takeUntil(this.destroy$)).subscribe((userId) => {
       this.activeUserId = userId;
@@ -99,12 +98,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
       } else if (msg.command === "authBlocked") {
         this.router.navigate(["home"]);
-      } else if (msg.command === "locked") {
-        // the second argument here was written for account switching
-        // this is not available on browser yet.
-        if (msg.userId == null || msg.userId === userIdFromState) {
-          this.router.navigate(["lock"]);
-        }
+      } else if (msg.command === "locked" && msg.userId == null) {
+        this.router.navigate(["lock"]);
       } else if (msg.command === "showDialog") {
         this.showDialog(msg);
       } else if (msg.command === "showNativeMessagingFinterprintDialog") {
