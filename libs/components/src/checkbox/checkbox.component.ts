@@ -42,25 +42,35 @@ export class CheckboxComponent implements BitFormControlAbstraction {
     "disabled:tw-border",
     "disabled:tw-bg-secondary-100",
 
-    "[&:is(:checked,:indeterminate)]:tw-bg-primary-500",
-    "[&:is(:checked,:indeterminate)]:tw-border-primary-500",
+    "checked:tw-bg-primary-500",
+    "checked:tw-border-primary-500",
+    "checked:hover:tw-bg-primary-700",
+    "checked:hover:tw-border-primary-700",
+    "[&>label:hover]:checked:tw-bg-primary-700",
+    "[&>label:hover]:checked:tw-border-primary-700",
+    "checked:before:tw-bg-text-contrast",
+    "checked:before:tw-mask-position-[center]",
+    "checked:before:tw-mask-repeat-[no-repeat]",
+    "checked:disabled:tw-border-secondary-100",
+    "checked:disabled:tw-bg-secondary-100",
+    "checked:disabled:before:tw-bg-text-muted",
 
-    "[&:is(:checked,:indeterminate)]:hover:tw-bg-primary-700",
-    "[&:is(:checked,:indeterminate)]:hover:tw-border-primary-700",
-    "[&>label:hover]:[&:is(:checked,:indeterminate)]:tw-bg-primary-700",
-    "[&>label:hover]:[&:is(:checked,:indeterminate)]:tw-border-primary-700",
-
-    "[&:is(:checked,:indeterminate)]:before:tw-bg-text-contrast",
-    "[&:is(:checked,:indeterminate)]:before:tw-mask-position-[center]",
-    "[&:is(:checked,:indeterminate)]:before:tw-mask-repeat-[no-repeat]",
-
-    "[&:is(:checked):not(:indeterminate)]:before:tw-mask-image-[var(--mask-image)]",
+    "[&:not(:indeterminate)]:checked:before:tw-mask-image-[var(--mask-image)]",
     "indeterminate:before:tw-mask-image-[var(--indeterminate-mask-image)]",
 
-    "[&:is(:checked,:indeterminate)]:disabled:tw-border-secondary-100",
-    "[&:is(:checked,:indeterminate)]:disabled:tw-bg-secondary-100",
-
-    "[&:is(:checked,:indeterminate)]:disabled:before:tw-bg-text-muted",
+    "indeterminate:tw-bg-primary-500",
+    "indeterminate:tw-border-primary-500",
+    "indeterminate:hover:tw-bg-primary-700",
+    "indeterminate:hover:tw-border-primary-700",
+    "[&>label:hover]:indeterminate:tw-bg-primary-700",
+    "[&>label:hover]:indeterminate:tw-border-primary-700",
+    "indeterminate:before:tw-bg-text-contrast",
+    "indeterminate:before:tw-mask-position-[center]",
+    "indeterminate:before:tw-mask-repeat-[no-repeat]",
+    "indeterminate:before:tw-mask-image-[var(--indeterminate-mask-image)]",
+    "indeterminate:disabled:tw-border-secondary-100",
+    "indeterminate:disabled:tw-bg-secondary-100",
+    "indeterminate:disabled:before:tw-bg-text-muted",
   ];
 
   constructor(@Optional() @Self() private ngControl?: NgControl) {}
