@@ -52,7 +52,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 
-const CIPHER_KEY_ENC_MIN_SERVER_VER = "2023.9.1";
+const CIPHER_KEY_ENC_MIN_SERVER_VER = new SemVer("2023.9.1");
 
 export class CipherService implements CipherServiceAbstraction {
   private sortedCiphersCache: SortedCiphersCache = new SortedCiphersCache(
@@ -120,9 +120,12 @@ export class CipherService implements CipherServiceAbstraction {
 
     if (await this.getCipherKeyEncryptionEnabled()) {
       cipher.key = originalCipher?.key ?? null;
-      keyForEncryption = keyForEncryption || (await this.getKeyForCipherKeyDecryption(cipher));
-      keyForCipherKeyDecryption =
-        keyForCipherKeyDecryption || (await this.getKeyForCipherKeyDecryption(cipher));
+      const userOrOrgKey = await this.getKeyForCipherKeyDecryption(cipher);
+      // The keyForEncryption is only used for encrypting the cipher key, not the cipher itself, since cipher key encryption is enabled.
+      // If the caller has provided a key for cipher key encryption, use it. Otherwise, use the user or org key.
+      keyForEncryption ||= userOrOrgKey;
+      // If the caller has provided a key for cipher key decryption, use it. Otherwise, use the user or org key.
+      keyForCipherKeyDecryption ||= userOrOrgKey;
       return this.encryptCipherWithCipherKey(
         model,
         cipher,
@@ -1269,7 +1272,7 @@ export class CipherService implements CipherServiceAbstraction {
   private async encryptCipherWithCipherKey(
     model: CipherView,
     cipher: Cipher,
-    keyForEncryption: SymmetricCryptoKey,
+    keyForCipherKeyEncryption: SymmetricCryptoKey,
     keyForCipherKeyDecryption: SymmetricCryptoKey
   ): Promise<Cipher> {
     // First, we get the key for cipher key encryption, in its decrypted form
@@ -1282,11 +1285,13 @@ export class CipherService implements CipherServiceAbstraction {
       );
     }
 
-    // Then, we have to encrypt the cipher key itself with the proper key
-    // If a key is provided as a parameter, we use it, otherwise we use the user key from state.
-    // The key is provided as a parameter during operations in which the key is changing (e.g. rotation)
-    cipher.key = await this.encryptService.encrypt(decryptedCipherKey.key, keyForEncryption);
+    // Then, we have to encrypt the cipher key with the proper key.
+    cipher.key = await this.encryptService.encrypt(
+      decryptedCipherKey.key,
+      keyForCipherKeyEncryption
+    );
 
+    // Finally, we can encrypt the cipher with the decrypted cipher key.
     return this.encryptCipher(model, cipher, decryptedCipherKey);
   }
 
@@ -1294,9 +1299,7 @@ export class CipherService implements CipherServiceAbstraction {
     return (
       flagEnabled("enableCipherKeyEncryption") &&
       (await firstValueFrom(
-        this.configService.checkServerMeetsVersionRequirement$(
-          new SemVer(CIPHER_KEY_ENC_MIN_SERVER_VER)
-        )
+        this.configService.checkServerMeetsVersionRequirement$(CIPHER_KEY_ENC_MIN_SERVER_VER)
       ))
     );
   }
