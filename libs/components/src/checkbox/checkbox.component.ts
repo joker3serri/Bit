@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input, Optional, Self } from "@angular/core";
+import { Component, HostBinding, Input, Optional, Self } from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 
 import { BitFormControlAbstraction } from "../form-control";
@@ -80,15 +80,6 @@ export class CheckboxComponent implements BitFormControlAbstraction {
 
   @HostBinding("style.--indeterminate-mask-image")
   protected indeterminateImage = `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 13 13"%3E%3Cpath stroke="%23fff" stroke-width="2" d="M2.5 6.5h8"/%3E%3C/svg%3E%0A')`;
-
-  @HostBinding()
-  @Input()
-  indeterminate: boolean;
-
-  @HostListener("click")
-  protected handleClick() {
-    this.indeterminate = false;
-  }
 
   @HostBinding()
   @Input()
