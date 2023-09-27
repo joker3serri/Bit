@@ -294,7 +294,7 @@ export class AttachmentsComponent implements OnInit {
     return this.cipherService.get(this.cipherId);
   }
 
-  protected async saveCipherAttachment(file: File) {
+  protected saveCipherAttachment(file: File) {
     return this.cipherService.saveAttachmentWithServer(this.cipherDomain, file);
   }
 
