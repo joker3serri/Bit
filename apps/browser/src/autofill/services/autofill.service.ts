@@ -148,7 +148,7 @@ export default class AutofillService implements AutofillServiceInterface {
       throw new Error("Nothing to auto-fill.");
     }
 
-    let totpPromise: Promise<string> = null;
+    let totpPromise: Promise<string> | null = null;
 
     const canAccessPremium = await this.stateService.getCanAccessPremium();
     const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
@@ -205,8 +205,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (
           options.cipher.type !== CipherType.Login ||
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          totpPromise ||
+          totpPromise !== null ||
           !options.cipher.login.totp ||
           (!canAccessPremium && !options.cipher.organizationUseTotp)
         ) {
