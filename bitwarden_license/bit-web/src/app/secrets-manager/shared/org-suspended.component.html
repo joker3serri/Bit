@@ -1,4 +1,4 @@
-<sm-header [title]="organizationName">
+<sm-header [title]="organizationName$ | async">
   <sm-new-menu></sm-new-menu>
 </sm-header>
 <bit-no-items [icon]="NoAccess">
