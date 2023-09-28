@@ -10,11 +10,7 @@ pub fn read() -> Result<String> {
 pub fn write(text: &str, password: bool) -> Result<()> {
     let mut clipboard = Clipboard::new()?;
 
-    let mut set = clipboard.set();
-
-    if password {
-        set = exclude_from_history(set);
-    }
+    let set = clipboard_set(clipboard.set(), password);
 
     set.text(text)?;
     Ok(())
@@ -22,7 +18,7 @@ pub fn write(text: &str, password: bool) -> Result<()> {
 
 // Exclude from windows clipboard history
 #[cfg(target_os = "windows")]
-fn exclude_from_history(set: Set) -> Set {
+fn clipboard_set(Set: Set, password: bool) -> Set {
     use arboard::SetExtWindows;
 
     set.exclude_from_cloud().exclude_from_history()
@@ -30,14 +26,14 @@ fn exclude_from_history(set: Set) -> Set {
 
 // Wait for clipboard to be available on linux
 #[cfg(target_os = "linux")]
-fn exclude_from_history(set: Set) -> Set {
+fn clipboard_set(set: Set, password: bool) -> Set {
     use arboard::SetExtLinux;
 
     set.wait()
 }
 
 #[cfg(target_os = "macos")]
-fn exclude_from_history(set: Set) -> Set {
+fn clipboard_set(set: Set, password: bool) -> Set {
     set
 }
 
