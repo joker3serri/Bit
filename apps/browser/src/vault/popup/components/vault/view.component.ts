@@ -331,11 +331,14 @@ export class ViewComponent extends BaseViewComponent {
   }
 
   private async doAutofill() {
+    const originalTabURL = this.tab.url;
     if (!(await this.promptPassword())) {
       return false;
     }
 
-    if (this.pageDetails == null || this.pageDetails.length === 0) {
+    const tabUrlChanged = !(originalTabURL && this.tab.url && originalTabURL === this.tab.url);
+
+    if (this.pageDetails == null || this.pageDetails.length === 0 || tabUrlChanged) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("autofillError"));
       return false;
     }
