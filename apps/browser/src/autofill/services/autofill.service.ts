@@ -148,7 +148,7 @@ export default class AutofillService implements AutofillServiceInterface {
       throw new Error("Nothing to auto-fill.");
     }
 
-    let totpPromise: Promise<string> | null = null;
+    let totp: string | null = null;
 
     const canAccessPremium = await this.stateService.getCanAccessPremium();
     const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
@@ -205,14 +205,14 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (
           options.cipher.type !== CipherType.Login ||
-          totpPromise !== null ||
+          totp !== null ||
           !options.cipher.login.totp ||
           (!canAccessPremium && !options.cipher.organizationUseTotp)
         ) {
           return;
         }
 
-        totpPromise = this.stateService.getDisableAutoTotpCopy().then((disabled) => {
+        totp = await this.stateService.getDisableAutoTotpCopy().then((disabled) => {
           if (!disabled) {
             return this.totpService.getCode(options.cipher.login.totp);
           }
@@ -223,8 +223,8 @@ export default class AutofillService implements AutofillServiceInterface {
 
     if (didAutofill) {
       this.eventCollectionService.collect(EventType.Cipher_ClientAutofilled, options.cipher.id);
-      if (totpPromise != null) {
-        return await totpPromise;
+      if (totp !== null) {
+        return totp;
       } else {
         return null;
       }
