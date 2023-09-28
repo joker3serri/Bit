@@ -31,11 +31,7 @@ export class MenuTriggerForDirective implements OnDestroy {
     panelClass: "bit-menu-panel",
     hasBackdrop: true,
     backdropClass: "cdk-overlay-transparent-backdrop",
-    /**
-     * `scrollStrategies.resposition` is not supported in virtual scroll viewports.
-     * @see https://bitwarden.atlassian.net/browse/CL-104
-     */
-    scrollStrategy: this.overlay.scrollStrategies.block(),
+    scrollStrategy: this.overlay.scrollStrategies.reposition(),
     positionStrategy: this.overlay
       .position()
       .flexibleConnectedTo(this.elementRef)
