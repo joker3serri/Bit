@@ -18,7 +18,7 @@ pub fn write(text: &str, password: bool) -> Result<()> {
 
 // Exclude from windows clipboard history
 #[cfg(target_os = "windows")]
-fn clipboard_set(Set: Set, password: bool) -> Set {
+fn clipboard_set(set: Set, password: bool) -> Set {
     use arboard::SetExtWindows;
 
     if password {
