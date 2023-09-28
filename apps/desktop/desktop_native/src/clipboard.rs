@@ -21,7 +21,7 @@ pub fn write(text: &str, password: bool) -> Result<()> {
 fn clipboard_set(Set: Set, password: bool) -> Set {
     use arboard::SetExtWindows;
 
-    if (password) {
+    if password {
         set.exclude_from_cloud().exclude_from_history()
     } else {
         set
