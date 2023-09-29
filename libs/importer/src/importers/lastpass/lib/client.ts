@@ -4,11 +4,12 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
 import { ClientInfo } from "./clientInfo";
-import { Parser } from "./parser";
+import { Chunk, Parser } from "./parser";
 import { ParserOptions } from "./parserOptions";
 import { Platform } from "./platform";
 import { RestClient } from "./restClient";
 import { Session } from "./session";
+import { SharedFolder } from "./sharedFolder";
 import { OobResult, OtpResult, Ui } from "./ui";
 
 enum OtpMethod {
@@ -42,19 +43,64 @@ export class Client {
     password: string,
     clientInfo: ClientInfo,
     ui: Ui,
-    parserOptions: ParserOptions
+    options: ParserOptions
   ): Promise<Account[]> {
     const lowercaseUsername = username.toLowerCase();
     const [session, rest] = await this.login(lowercaseUsername, password, clientInfo, ui);
     try {
-      // const blob = await this.downloadVault(session, rest);
-      // const key = this.deriveKey(lowercaseUsername, password, session.keyIterationCount);
+      const blob = await this.downloadVault(session, rest);
+      const key = await this.deriveKey(lowercaseUsername, password, session.keyIterationCount);
       // TODO: parse private key
-      // TODO: parse vault and return accounts list
-      return null;
+      return this.parseVault(blob, key, null, options);
     } finally {
       await this.logout(session, rest);
     }
+  }
+
+  private async parseVault(
+    blob: Uint8Array,
+    encryptionKey: Uint8Array,
+    privateKey: any,
+    options: ParserOptions
+  ): Promise<Account[]> {
+    // TODO: privatekey type
+    const chunks: any = null; // TODO:  await this.parser.extractChunks(blob);
+    if (!this.isComplete(chunks)) {
+      throw "Blob is truncated or corrupted";
+    }
+    return await this.parseAccounts(chunks, encryptionKey, privateKey, options);
+  }
+
+  private async parseAccounts(
+    chunks: [Chunk],
+    encryptionKey: Uint8Array,
+    privateKey: any,
+    options: ParserOptions
+  ): Promise<Account[]> {
+    // TODO: privatekey type
+    const accounts = new Set<Account>();
+    const folder: SharedFolder = null;
+    for (const chunk of chunks) {
+      if (chunk.id === "ACCT") {
+        const key = folder == null ? encryptionKey : folder.encryptionKey;
+        const account = await this.parser.parseAcct(chunk, key, folder, options);
+        if (account != null) {
+          accounts.add(account);
+        }
+      } else if (chunk.id === "SHAR") {
+        // TODO: parse shared folder
+        // folder = this.parser.parseShar(chunk, encryptionKey, privateKey);
+      }
+    }
+    return Array.from(accounts);
+  }
+
+  private isComplete(chunks: [Chunk]): boolean {
+    if (chunks.length > 0 && chunks[chunks.length - 1].id === "ENDM") {
+      const okChunk = Utils.fromBufferToUtf8(chunks[chunks.length - 1].payload);
+      return okChunk === "OK";
+    }
+    return false;
   }
 
   private async deriveKey(username: string, password: string, iterationCount: number) {

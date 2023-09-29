@@ -3,17 +3,17 @@ import { ParserOptions } from "./parserOptions";
 import { SharedFolder } from "./sharedFolder";
 
 export class Parser {
-  parseAcct(
+  async parseAcct(
     chunk: Chunk,
     encryptionKey: Uint8Array,
     folder: SharedFolder,
     options: ParserOptions
-  ): Account {
+  ): Promise<Account> {
     return null;
   }
 }
 
-class Chunk {
+export class Chunk {
   id: string;
   payload: Uint8Array;
 }
