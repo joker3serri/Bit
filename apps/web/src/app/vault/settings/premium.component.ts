@@ -11,9 +11,11 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { PaymentComponent, TaxInfoComponent } from "../shared";
+import { PaymentComponent } from "../../billing/settings/payment.component";
+import { TaxInfoComponent } from "../../billing/settings/tax-info.component";
 
 @Component({
+  selector: "app-premium",
   templateUrl: "premium.component.html",
 })
 export class PremiumComponent implements OnInit {
