@@ -1,6 +1,16 @@
 import * as path from "path";
 
-import { app, dialog, ipcMain, Menu, MenuItem, nativeTheme, session, Notification } from "electron";
+import {
+  app,
+  dialog,
+  ipcMain,
+  Menu,
+  MenuItem,
+  nativeTheme,
+  session,
+  Notification,
+  shell,
+} from "electron";
 
 import { ThemeType } from "@bitwarden/common/enums";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -67,6 +77,8 @@ export class ElectronMainMessagingService implements MessagingService {
 
       alert.show();
     });
+
+    ipcMain.handle("launchUri", async (event, uri) => shell.openExternal(uri));
 
     nativeTheme.on("updated", () => {
       windowMain.win?.webContents.send(
