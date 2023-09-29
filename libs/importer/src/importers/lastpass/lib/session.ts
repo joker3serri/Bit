@@ -1,6 +1,6 @@
 import { Platform } from "./platform";
 
-export interface Session {
+export class Session {
   id: string;
   keyIterationCount: number;
   token: string;

@@ -1,5 +1,5 @@
 export interface SharedFolder {
   id: string;
   name: string;
-  encryptionKey: string;
+  encryptionKey: Uint8Array;
 }
