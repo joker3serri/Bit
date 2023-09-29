@@ -343,7 +343,8 @@ export class Client {
       body: form,
       credentials: "include",
     };
-    // TODO: set cookies?
+    // Cookies should be already automatically set for this origin by the browser
+    // TODO: set cookies for non-browser?
     const request = new Request(rest.baseServerUrl + "/trust.php", requestInit);
     const response = await fetch(request);
     if (response.status == HttpStatusCode.Ok) {
@@ -366,7 +367,8 @@ export class Client {
       body: form,
       credentials: "include",
     };
-    // TODO: set cookies?
+    // Cookies should be already automatically set for this origin by the browser
+    // TODO: set cookies for non-browser?
     const request = new Request(rest.baseServerUrl + "/logout.php", requestInit);
     const response = await fetch(request);
     if (response.status == HttpStatusCode.Ok) {
@@ -380,7 +382,8 @@ export class Client {
       method: "POST",
       credentials: "include",
     };
-    // TODO: set cookies?
+    // Cookies should be already automatically set for this origin by the browser
+    // TODO: set cookies for non-browser?
     const endpoint =
       "/getaccts.php?mobile=1&b64=1&hash=0.0&hasplugin=3.0.23&requestsrc=" +
       PlatformToUserAgent.get(session.platform);
