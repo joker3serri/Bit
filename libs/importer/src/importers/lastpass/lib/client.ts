@@ -1,4 +1,5 @@
 import { HttpStatusCode } from "@bitwarden/common/enums";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
 import { ClientInfo } from "./clientInfo";
@@ -6,6 +7,7 @@ import { ParserOptions } from "./parserOptions";
 import { Platform } from "./platform";
 import { RestClient } from "./restClient";
 import { Session } from "./session";
+import { OobResult, OtpResult, Ui } from "./ui";
 
 enum OtpMethod {
   GoogleAuth,
@@ -29,10 +31,9 @@ export class Client {
     username: string,
     password: string,
     clientInfo: ClientInfo,
-    ui: any,
+    ui: Ui,
     parserOptions: ParserOptions
   ): Account[] {
-    // TODO: ui type
     // const lowercaseUsername = username.toLowerCase();
     // TODO: login, download, parse etc...
     // TODO: logout
@@ -43,9 +44,8 @@ export class Client {
     username: string,
     password: string,
     clientInfo: ClientInfo,
-    ui: any
+    ui: Ui
   ): Promise<[Session, RestClient]> {
-    // TODO: ui type
     const rest = new RestClient();
     rest.baseServerUrl = "https://lastpass.com";
     /*
@@ -116,17 +116,30 @@ export class Client {
       throw this.makeLoginError(response);
     }
 
-    // 3.1. One-time-password is required
     const optMethod = KnownOtpMethods.get(cause);
     if (optMethod != null) {
-      // TODO
-      session = null;
+      // 3.1. One-time-password is required
+      session = await this.loginWithOtp(
+        username,
+        password,
+        keyIterationCount,
+        optMethod,
+        clientInfo,
+        ui,
+        rest
+      );
     } else if (cause === "outofbandrequired") {
       // 3.2. Some out-of-bound authentication is enabled. This does not require any
       // additional input from the user.
-
-      // TODO
-      session = null;
+      session = await this.loginWithOob(
+        username,
+        password,
+        keyIterationCount,
+        this.getAllErrorAttributes(response),
+        clientInfo,
+        ui,
+        rest
+      );
     }
 
     // Nothing worked
@@ -136,6 +149,218 @@ export class Client {
 
     // All good
     return [session, rest];
+  }
+
+  private async loginWithOtp(
+    username: string,
+    password: string,
+    keyIterationCount: number,
+    method: OtpMethod,
+    clientInfo: ClientInfo,
+    ui: Ui,
+    rest: RestClient
+  ): Promise<Session> {
+    let passcode: OtpResult = null;
+    switch (method) {
+      case OtpMethod.GoogleAuth:
+        passcode = ui.provideGoogleAuthPasscode();
+        break;
+      case OtpMethod.MicrosoftAuth:
+        passcode = ui.provideMicrosoftAuthPasscode();
+        break;
+      case OtpMethod.Yubikey:
+        passcode = ui.provideYubikeyPasscode();
+        break;
+      default:
+        throw "Invalid OTP method";
+    }
+
+    if (passcode == OtpResult.cancel) {
+      throw "Second factor step is canceled by the user";
+    }
+
+    const response = await this.performSingleLoginRequest(
+      username,
+      password,
+      keyIterationCount,
+      new Map<string, any>([["otp", passcode.passcode]]),
+      clientInfo,
+      rest
+    );
+
+    const session = this.extractSessionFromLoginResponse(response, keyIterationCount, clientInfo);
+    if (session == null) {
+      throw this.makeLoginError(response);
+    }
+    if (passcode.rememberMe) {
+      await this.markDeviceAsTrusted(session, clientInfo, rest);
+    }
+    return session;
+  }
+
+  private async loginWithOob(
+    username: string,
+    password: string,
+    keyIterationCount: number,
+    parameters: Map<string, string>,
+    clientInfo: ClientInfo,
+    ui: Ui,
+    rest: RestClient
+  ): Promise<Session> {
+    const answer = this.approveOob(username, parameters, ui, rest);
+    if (answer == OobResult.cancel) {
+      throw "Out of band step is canceled by the user";
+    }
+
+    const extraParameters = new Map<string, any>();
+    if (answer.waitForOutOfBand) {
+      extraParameters.set("outofbandrequest", 1);
+    } else {
+      extraParameters.set("otp", answer.passcode);
+    }
+
+    let session: Session = null;
+    for (;;) {
+      // In case of the OOB auth the server doesn't respond instantly. This works more like a long poll.
+      // The server times out in about 10 seconds so there's no need to back off.
+      const response = await this.performSingleLoginRequest(
+        username,
+        password,
+        keyIterationCount,
+        extraParameters,
+        clientInfo,
+        rest
+      );
+
+      session = this.extractSessionFromLoginResponse(response, keyIterationCount, clientInfo);
+      if (session != null) {
+        break;
+      }
+
+      if (this.getOptionalErrorAttribute(response, "cause") != "outofbandrequired") {
+        throw this.makeLoginError(response);
+      }
+
+      // Retry
+      extraParameters.set("outofbandretry", "1");
+      extraParameters.set("outofbandretryid", this.getErrorAttribute(response, "retryid"));
+    }
+
+    if (answer.rememberMe) {
+      await this.markDeviceAsTrusted(session, clientInfo, rest);
+    }
+    return session;
+  }
+
+  private approveOob(username: string, parameters: Map<string, string>, ui: Ui, rest: RestClient) {
+    const method = parameters.get("outofbandtype");
+    if (method == null) {
+      throw "Out of band method is not specified";
+    }
+    switch (method) {
+      case "lastpassauth":
+        return ui.approveLastPassAuth();
+      case "duo":
+        return this.approveDuo(username, parameters, ui, rest);
+      case "salesforcehash":
+        return ui.approveSalesforceAuth();
+      default:
+        throw "Out of band method " + method + " is not supported";
+    }
+  }
+
+  private approveDuo(
+    username: string,
+    parameters: Map<string, string>,
+    ui: Ui,
+    rest: RestClient
+  ): OobResult {
+    return parameters.get("preferduowebsdk") == "1"
+      ? this.approveDuoWebSdk(username, parameters, ui, rest)
+      : ui.approveDuo();
+  }
+
+  private approveDuoWebSdk(
+    username: string,
+    parameters: Map<string, string>,
+    ui: Ui,
+    rest: RestClient
+  ): OobResult {
+    // TODO: implement this
+    return OobResult.cancel;
+  }
+
+  private async markDeviceAsTrusted(session: Session, clientInfo: ClientInfo, rest: RestClient) {
+    const parameters = new Map<string, string>([
+      ["uuid", clientInfo.id],
+      ["trustlabel", clientInfo.description],
+      ["token", session.token],
+    ]);
+    const form = new FormData();
+    for (const [key, value] of parameters) {
+      form.set(key, value);
+    }
+    const requestInit: RequestInit = {
+      method: "POST",
+      body: form,
+      credentials: "include",
+    };
+    // TODO: set cookies?
+    const request = new Request(rest.baseServerUrl + "/trust.php", requestInit);
+    const response = await fetch(request);
+    if (response.status == HttpStatusCode.Ok) {
+      return;
+    }
+    this.makeError(response);
+  }
+
+  private async logout(session: Session, rest: RestClient) {
+    const parameters = new Map<string, any>([
+      ["method", PlatformToUserAgent.get(session.platform)],
+      ["noredirect", 1],
+    ]);
+    const form = new FormData();
+    for (const [key, value] of parameters) {
+      form.set(key, value);
+    }
+    const requestInit: RequestInit = {
+      method: "POST",
+      body: form,
+      credentials: "include",
+    };
+    // TODO: set cookies?
+    const request = new Request(rest.baseServerUrl + "/logout.php", requestInit);
+    const response = await fetch(request);
+    if (response.status == HttpStatusCode.Ok) {
+      return;
+    }
+    this.makeError(response);
+  }
+
+  private async downloadVault(session: Session, rest: RestClient): Promise<Uint8Array> {
+    const requestInit: RequestInit = {
+      method: "POST",
+      credentials: "include",
+    };
+    // TODO: set cookies?
+    const endpoint =
+      "/getaccts.php?mobile=1&b64=1&hash=0.0&hasplugin=3.0.23&requestsrc=" +
+      PlatformToUserAgent.get(session.platform);
+    const request = new Request(rest.baseServerUrl + endpoint, requestInit);
+    const response = await fetch(request);
+    if (response.status == HttpStatusCode.Ok) {
+      const b64 = await response.text();
+      return Utils.fromB64ToArray(b64);
+    }
+    this.makeError(response);
+  }
+
+  private getErrorAttribute(response: Document, name: string): string {
+    const attr = this.getOptionalErrorAttribute(response, name);
+    if (attr != null) {
+      return attr;
+    }
+    throw "Unknown response schema: attribute " + name + " is missing";
   }
 
   private getOptionalErrorAttribute(response: Document, name: string): string {
@@ -148,6 +373,18 @@ export class Client {
       return null;
     }
     return attr.value;
+  }
+
+  private getAllErrorAttributes(response: Document): Map<string, string> {
+    const error = response.querySelector("response > error");
+    if (error == null) {
+      return null;
+    }
+    const map = new Map<string, string>();
+    for (const attr of error.attributes) {
+      map.set(attr.name, attr.value);
+    }
+    return map;
   }
 
   private extractSessionFromLoginResponse(
