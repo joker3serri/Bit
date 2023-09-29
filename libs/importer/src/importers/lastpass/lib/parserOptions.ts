@@ -1,3 +1,4 @@
-export interface ParserOptions {
-  parseSecureNotesToAccount: boolean;
+export class ParserOptions {
+  static default: ParserOptions = new ParserOptions();
+  parseSecureNotesToAccount = true;
 }
