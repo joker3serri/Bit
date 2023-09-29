@@ -49,17 +49,17 @@ export class Client {
     const rest = new RestClient();
     rest.baseServerUrl = "https://lastpass.com";
     /*
-        1. First we need to request PBKDF2 key iteration count.
-        
-        We no longer request the iteration count from the server in a separate request because it
-        started to fail in weird ways. It seems there's a special combination or the UA and cookies
-        that returns the correct result. And that is not 100% reliable. After two or three attempts
-        it starts to fail again with an incorrect result.
-        
-        So we just went back a few years to the original way LastPass used to handle the iterations.
-        Namely, submit the default value and if it fails, the error would contain the correct value:
-        <response><error iterations="5000" /></response>
-        */
+    1. First we need to request PBKDF2 key iteration count.
+    
+    We no longer request the iteration count from the server in a separate request because it
+    started to fail in weird ways. It seems there's a special combination or the UA and cookies
+    that returns the correct result. And that is not 100% reliable. After two or three attempts
+    it starts to fail again with an incorrect result.
+    
+    So we just went back a few years to the original way LastPass used to handle the iterations.
+    Namely, submit the default value and if it fails, the error would contain the correct value:
+    <response><error iterations="5000" /></response>
+    */
     let keyIterationCount = 100_100;
 
     let response: Document = null;
