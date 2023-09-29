@@ -78,21 +78,21 @@ export class Client {
     options: ParserOptions
   ): Promise<Account[]> {
     // TODO: privatekey type
-    const accounts = new Set<Account>();
+    const accounts = new Array<Account>();
     const folder: SharedFolder = null;
     for (const chunk of chunks) {
       if (chunk.id === "ACCT") {
         const key = folder == null ? encryptionKey : folder.encryptionKey;
         const account = await this.parser.parseAcct(chunk, key, folder, options);
         if (account != null) {
-          accounts.add(account);
+          accounts.push(account);
         }
       } else if (chunk.id === "SHAR") {
         // TODO: parse shared folder
         // folder = this.parser.parseShar(chunk, encryptionKey, privateKey);
       }
     }
-    return Array.from(accounts);
+    return accounts;
   }
 
   private isComplete(chunks: [Chunk]): boolean {
