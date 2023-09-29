@@ -67,7 +67,7 @@ export class AdjustSubscription {
   }
 
   get additionalSeatCount(): number {
-    return this.newSeatCount - this.currentSeatCount;
+    return this.newSeatCount ? this.newSeatCount - this.currentSeatCount : 0;
   }
 
   get additionalMaxSeatCount(): number {
