@@ -6,10 +6,9 @@ import { FormFieldModule } from "@bitwarden/components";
 
 import { OrganizationCreateModule } from "../../admin-console/organizations/create/organization-create.module";
 import { RegisterFormModule } from "../../auth/register-form/register-form.module";
-import { PaymentComponent, TaxInfoComponent } from "../../billing";
 import { BillingComponent } from "../../billing/accounts/trial-initiation/billing.component";
 import { EnvironmentSelectorModule } from "../../components/environment-selector/environment-selector.module";
-import { SharedModule } from "../../shared";
+import { LooseComponentsModule, SharedModule } from "../../shared";
 
 import { ConfirmationDetailsComponent } from "./confirmation-details.component";
 import { AbmEnterpriseContentComponent } from "./content/abm-enterprise-content.component";
@@ -38,9 +37,8 @@ import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.modul
     FormFieldModule,
     RegisterFormModule,
     OrganizationCreateModule,
+    LooseComponentsModule,
     EnvironmentSelectorModule,
-    PaymentComponent,
-    TaxInfoComponent,
   ],
   declarations: [
     TrialInitiationComponent,

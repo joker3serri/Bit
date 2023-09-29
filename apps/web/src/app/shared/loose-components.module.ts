@@ -51,6 +51,7 @@ import { UpdatePasswordComponent } from "../auth/update-password.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
+import { BillingSharedModule } from "../billing/shared";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { FooterComponent } from "../layouts/footer.component";
@@ -107,6 +108,11 @@ import { SharedModule } from "./shared.module";
     EnvironmentSelectorModule,
     AccountFingerprintComponent,
     PasswordCalloutComponent,
+
+    // Temporary export to be removed in AC-1453
+    // Import PaymentComponent and TaxInfoComponent directly into TrialIniationComponent
+    // and remove BillingSharedModule here
+    BillingSharedModule,
   ],
   declarations: [
     AcceptEmergencyComponent,
@@ -279,6 +285,11 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
+
+    // Temporary export to be removed in AC-1453
+    // Import PaymentComponent and TaxInfoComponent directly into TrialIniationComponent
+    // and remove BillingSharedModule here
+    BillingSharedModule,
   ],
 })
 export class LooseComponentsModule {}
