@@ -3,6 +3,7 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
+import { BinaryReader } from "./binaryReader";
 import { ClientInfo } from "./clientInfo";
 import { Chunk, Parser } from "./parser";
 import { ParserOptions } from "./parserOptions";
@@ -60,11 +61,12 @@ export class Client {
   private async parseVault(
     blob: Uint8Array,
     encryptionKey: Uint8Array,
+    // TODO: privatekey type
     privateKey: any,
     options: ParserOptions
   ): Promise<Account[]> {
-    // TODO: privatekey type
-    const chunks: any = null; // TODO:  await this.parser.extractChunks(blob);
+    const reader = new BinaryReader(blob);
+    const chunks = this.parser.extractChunks(reader);
     if (!this.isComplete(chunks)) {
       throw "Blob is truncated or corrupted";
     }
@@ -72,7 +74,7 @@ export class Client {
   }
 
   private async parseAccounts(
-    chunks: [Chunk],
+    chunks: Chunk[],
     encryptionKey: Uint8Array,
     privateKey: any,
     options: ParserOptions
@@ -95,7 +97,7 @@ export class Client {
     return accounts;
   }
 
-  private isComplete(chunks: [Chunk]): boolean {
+  private isComplete(chunks: Chunk[]): boolean {
     if (chunks.length > 0 && chunks[chunks.length - 1].id === "ENDM") {
       const okChunk = Utils.fromBufferToUtf8(chunks[chunks.length - 1].payload);
       return okChunk === "OK";
