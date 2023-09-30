@@ -4,20 +4,18 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
 import { BinaryReader } from "./binaryReader";
+import { Chunk } from "./chunk";
 import { ClientInfo } from "./clientInfo";
-import { Chunk, Parser } from "./parser";
+import { OobResult } from "./oobResult";
+import { OtpMethod } from "./otpMethod";
+import { OtpResult } from "./otpResult";
+import { Parser } from "./parser";
 import { ParserOptions } from "./parserOptions";
 import { Platform } from "./platform";
 import { RestClient } from "./restClient";
 import { Session } from "./session";
 import { SharedFolder } from "./sharedFolder";
-import { OobResult, OtpResult, Ui } from "./ui";
-
-enum OtpMethod {
-  GoogleAuth,
-  MicrosoftAuth,
-  Yubikey,
-}
+import { Ui } from "./ui";
 
 const PlatformToUserAgent = new Map<Platform, string>([
   [Platform.Desktop, "cli"],

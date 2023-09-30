@@ -1,6 +1,6 @@
 import { Platform } from "./platform";
 
-export interface ClientInfo {
+export class ClientInfo {
   platform: Platform;
   id: string;
   description: string;

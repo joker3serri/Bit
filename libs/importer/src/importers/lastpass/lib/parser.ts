@@ -3,6 +3,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
 import { BinaryReader } from "./binaryReader";
+import { Chunk } from "./chunk";
 import { ParserOptions } from "./parserOptions";
 import { SharedFolder } from "./sharedFolder";
 
@@ -438,9 +439,4 @@ export class Parser {
     const plain = await this.cryptoFunctionService.aesDecrypt(data, iv, encryptionKey);
     return Utils.fromBufferToUtf8(plain);
   }
-}
-
-export class Chunk {
-  id: string;
-  payload: Uint8Array;
 }
