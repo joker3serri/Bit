@@ -13,7 +13,7 @@ export class Vault {
   private client: Client;
 
   constructor(cryptoFunctionService: CryptoFunctionService) {
-    const parser = new Parser();
+    const parser = new Parser(cryptoFunctionService);
     this.client = new Client(cryptoFunctionService, parser);
   }
 

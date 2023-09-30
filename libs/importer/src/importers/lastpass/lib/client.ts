@@ -52,7 +52,7 @@ export class Client {
       const blob = await this.downloadVault(session, rest);
       const key = await this.deriveKey(lowercaseUsername, password, session.keyIterationCount);
 
-      let privateKey: any = null;
+      let privateKey: Uint8Array = null;
       if (session.encryptedPrivateKey != null && session.encryptedPrivateKey != "") {
         privateKey = await this.parser.parseEncryptedPrivateKey(session.encryptedPrivateKey, key);
       }
@@ -66,8 +66,7 @@ export class Client {
   private async parseVault(
     blob: Uint8Array,
     encryptionKey: Uint8Array,
-    // TODO: privatekey type
-    privateKey: any,
+    privateKey: Uint8Array,
     options: ParserOptions
   ): Promise<Account[]> {
     const reader = new BinaryReader(blob);
@@ -81,7 +80,7 @@ export class Client {
   private async parseAccounts(
     chunks: Chunk[],
     encryptionKey: Uint8Array,
-    privateKey: any, // TODO: privatekey type
+    privateKey: Uint8Array,
     options: ParserOptions
   ): Promise<Account[]> {
     const accounts = new Array<Account>();
@@ -272,7 +271,7 @@ export class Client {
       username,
       password,
       keyIterationCount,
-      new Map<string, any>([["otp", passcode.passcode]]),
+      new Map<string, string>([["otp", passcode.passcode]]),
       clientInfo,
       rest
     );

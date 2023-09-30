@@ -245,7 +245,7 @@ export class Parser {
   async parseShar(
     chunk: Chunk,
     encryptionKey: Uint8Array,
-    rsaKey: any // TODO: rsa type
+    rsaKey: Uint8Array
   ): Promise<SharedFolder> {
     const reader = new BinaryReader(chunk.payload);
 
@@ -253,8 +253,14 @@ export class Parser {
     const id = Utils.fromBufferToUtf8(this.readItem(reader));
 
     // Key
-    // const rsaEncryptedFolderKey = Utils.fromHexToArray(Utils.fromBufferToUtf8(this.readItem(reader)));
-    const key = new Uint8Array(); // TODO: DecryptRsaSha1
+    const folderKey = this.readItem(reader);
+    const rsaEncryptedFolderKey = Utils.fromHexToArray(Utils.fromBufferToUtf8(folderKey));
+    const decFolderKey = await this.cryptoFunctionService.rsaDecrypt(
+      rsaEncryptedFolderKey,
+      rsaKey,
+      "sha1"
+    );
+    const key = Utils.fromHexToArray(Utils.fromBufferToUtf8(decFolderKey));
 
     // Name
     const encryptedName = this.readItem(reader);
@@ -277,15 +283,13 @@ export class Parser {
 
     const header = "LastPassPrivateKey<";
     const footer = ">LastPassPrivateKey";
-
     if (!decrypted.startsWith(header) || !decrypted.startsWith(footer)) {
       throw "Failed to decrypt private key";
     }
 
-    // const pkcs8 = Utils.fromHexToArray(decrypted.substring(header.length, decrypted.length - footer.length));
-
-    // TODO
-    // return Pem.ParsePrivateKeyPkcs8(pkcs8);
+    const parsedKey = decrypted.substring(header.length, decrypted.length - footer.length);
+    const pkcs8 = Utils.fromHexToArray(parsedKey);
+    return pkcs8;
   }
 
   makeAccountPath(group: string, folder: SharedFolder): string {
