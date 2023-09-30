@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let parentUrl: string = null;
 let parentOrigin: string = null;
 let mobileResponse: boolean = null;
+let mobileCallbackUri = "bitwarden://captcha-callback";
 let sentSuccess = false;
 
 async function init() {
@@ -51,6 +52,9 @@ async function start() {
     return;
   }
   mobileResponse = decodedData.callbackUri != null || decodedData.mobile === true;
+  if (dataObj.callbackUri != null) {
+    mobileCallbackUri = decodedData.callbackUri;
+  }
 
   let src = "https://hcaptcha.com/1/api.js?render=explicit";
 
@@ -82,7 +86,7 @@ async function start() {
 
 function captchaSuccess(response: string) {
   if (mobileResponse) {
-    document.location.replace("bitwarden://captcha-callback?token=" + encodeURIComponent(response));
+    document.location.replace(mobileCallbackUri + "?token=" + encodeURIComponent(response));
   } else {
     success(response);
   }
