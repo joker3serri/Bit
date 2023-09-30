@@ -3,8 +3,6 @@ import { buildDataString, parseWebauthnJson } from "./common-webauthn";
 
 require("./webauthn.scss");
 
-const mobileCallbackUri = "bitwarden://webauthn-callback";
-
 let parsed = false;
 let webauthnJson: any;
 let headerText: string = null;
@@ -13,6 +11,7 @@ let btnReturnText: string = null;
 let parentUrl: string = null;
 let parentOrigin: string = null;
 let mobileResponse = false;
+let mobileCallbackUri = "bitwarden://webauthn-callback";
 let stopWebAuthn = false;
 let sentSuccess = false;
 let obj: any = null;
@@ -92,6 +91,9 @@ function parseParametersV2() {
   }
 
   mobileResponse = dataObj.callbackUri != null || dataObj.mobile === true;
+  if (dataObj.callbackUri != null) {
+    mobileCallbackUri = dataObj.callbackUri;
+  }
   webauthnJson = dataObj.data;
   headerText = dataObj.headerText;
   btnText = dataObj.btnText;
