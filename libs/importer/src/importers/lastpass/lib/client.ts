@@ -51,8 +51,13 @@ export class Client {
     try {
       const blob = await this.downloadVault(session, rest);
       const key = await this.deriveKey(lowercaseUsername, password, session.keyIterationCount);
-      // TODO: parse private key
-      return this.parseVault(blob, key, null, options);
+
+      let privateKey: any = null;
+      if (session.encryptedPrivateKey != null && session.encryptedPrivateKey != "") {
+        privateKey = await this.parser.parseEncryptedPrivateKey(session.encryptedPrivateKey, key);
+      }
+
+      return this.parseVault(blob, key, privateKey, options);
     } finally {
       await this.logout(session, rest);
     }
@@ -76,12 +81,11 @@ export class Client {
   private async parseAccounts(
     chunks: Chunk[],
     encryptionKey: Uint8Array,
-    privateKey: any,
+    privateKey: any, // TODO: privatekey type
     options: ParserOptions
   ): Promise<Account[]> {
-    // TODO: privatekey type
     const accounts = new Array<Account>();
-    const folder: SharedFolder = null;
+    let folder: SharedFolder = null;
     for (const chunk of chunks) {
       if (chunk.id === "ACCT") {
         const key = folder == null ? encryptionKey : folder.encryptionKey;
@@ -90,8 +94,7 @@ export class Client {
           accounts.push(account);
         }
       } else if (chunk.id === "SHAR") {
-        // TODO: parse shared folder
-        // folder = this.parser.parseShar(chunk, encryptionKey, privateKey);
+        folder = await this.parser.parseShar(chunk, encryptionKey, privateKey);
       }
     }
     return accounts;

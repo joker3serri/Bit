@@ -1,7 +1,7 @@
 export class BinaryReader {
-  arr: Uint8Array;
-  position: number;
-  isLittleEndian: boolean;
+  private arr: Uint8Array;
+  private position: number;
+  private isLittleEndian: boolean;
 
   constructor(arr: Uint8Array) {
     this.arr = arr;
@@ -59,6 +59,6 @@ export class BinaryReader {
   }
 
   atEnd(): boolean {
-    return this.position >= this.arr.length;
+    return this.position >= this.arr.length - 1;
   }
 }

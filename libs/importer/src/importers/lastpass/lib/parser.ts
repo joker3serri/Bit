@@ -1,3 +1,4 @@
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
@@ -5,14 +6,294 @@ import { BinaryReader } from "./binaryReader";
 import { ParserOptions } from "./parserOptions";
 import { SharedFolder } from "./sharedFolder";
 
+const AllowedSecureNoteTypes = new Set<string>([
+  "Server",
+  "Email Account",
+  "Database",
+  "Instant Messenger",
+]);
+
 export class Parser {
+  cryptoFunctionService: CryptoFunctionService;
+
+  constructor(cryptoFunctionService: CryptoFunctionService) {
+    this.cryptoFunctionService = cryptoFunctionService;
+  }
+
+  /*
+  May return null when the chunk does not represent an account.
+  All secure notes are ACCTs but not all of them store account information.
+  
+  TODO: Add a test for the folder case!
+  TODO: Add a test case that covers secure note account!
+  */
   async parseAcct(
     chunk: Chunk,
     encryptionKey: Uint8Array,
     folder: SharedFolder,
     options: ParserOptions
   ): Promise<Account> {
-    return null;
+    const placeholder = "decryption failed";
+    const reader = new BinaryReader(chunk.payload);
+
+    // Read all items
+    // 0: id
+    const id = Utils.fromBufferToUtf8(this.readItem(reader));
+
+    // 1: name
+    const name = await this.decryptAes256PlainWithDefault(
+      this.readItem(reader),
+      encryptionKey,
+      placeholder
+    );
+
+    // 2: group
+    const group = await this.decryptAes256PlainWithDefault(
+      this.readItem(reader),
+      encryptionKey,
+      placeholder
+    );
+
+    // 3: url
+    let url = Utils.fromBufferToUtf8(
+      Utils.fromHexToArray(Utils.fromBufferToUtf8(this.readItem(reader)))
+    );
+
+    // Ignore "group" accounts. They have no credentials.
+    if (url == "http://group") {
+      return null;
+    }
+
+    // 4: extra (notes)
+    const notes = await this.decryptAes256PlainWithDefault(
+      this.readItem(reader),
+      encryptionKey,
+      placeholder
+    );
+
+    // 5: fav (is favorite)
+    const isFavorite = Utils.fromBufferToUtf8(this.readItem(reader)) === "1";
+
+    // 6: sharedfromaid (?)
+    this.skipItem(reader);
+
+    // 7: username
+    let username = await this.decryptAes256PlainWithDefault(
+      this.readItem(reader),
+      encryptionKey,
+      placeholder
+    );
+
+    // 8: password
+    let password = await this.decryptAes256PlainWithDefault(
+      this.readItem(reader),
+      encryptionKey,
+      placeholder
+    );
+
+    // 9: pwprotect (?)
+    this.skipItem(reader);
+
+    // 10: genpw (?)
+    this.skipItem(reader);
+
+    // 11: sn (is secure note)
+    const isSecureNote = Utils.fromBufferToUtf8(this.readItem(reader)) === "1";
+
+    // Parse secure note
+    if (options.parseSecureNotesToAccount && isSecureNote) {
+      let type = "";
+      // ParseSecureNoteServer
+      for (const i of notes.split("\n")) {
+        const keyValue = i.split(":", 2);
+        if (keyValue.length < 2) {
+          continue;
+        }
+        switch (keyValue[0]) {
+          case "NoteType":
+            type = keyValue[1];
+            break;
+          case "Hostname":
+            url = keyValue[1];
+            break;
+          case "Username":
+            username = keyValue[1];
+            break;
+          case "Password":
+            password = keyValue[1];
+            break;
+        }
+      }
+
+      // Only the some secure notes contain account-like information
+      if (!AllowedSecureNoteTypes.has(type)) {
+        return null;
+      }
+    }
+
+    // 12: last_touch_gmt (?)
+    this.skipItem(reader);
+
+    // 13: autologin (?)
+    this.skipItem(reader);
+
+    // 14: never_autofill (?)
+    this.skipItem(reader);
+
+    // 15: realm (?)
+    this.skipItem(reader);
+
+    // 16: id_again (?)
+    this.skipItem(reader);
+
+    // 17: custom_js (?)
+    this.skipItem(reader);
+
+    // 18: submit_id (?)
+    this.skipItem(reader);
+
+    // 19: captcha_id (?)
+    this.skipItem(reader);
+
+    // 20: urid (?)
+    this.skipItem(reader);
+
+    // 21: basic_auth (?)
+    this.skipItem(reader);
+
+    // 22: method (?)
+    this.skipItem(reader);
+
+    // 23: action (?)
+    this.skipItem(reader);
+
+    // 24: groupid (?)
+    this.skipItem(reader);
+
+    // 25: deleted (?)
+    this.skipItem(reader);
+
+    // 26: attachkey (?)
+    this.skipItem(reader);
+
+    // 27: attachpresent (?)
+    this.skipItem(reader);
+
+    // 28: individualshare (?)
+    this.skipItem(reader);
+
+    // 29: notetype (?)
+    this.skipItem(reader);
+
+    // 30: noalert (?)
+    this.skipItem(reader);
+
+    // 31: last_modified_gmt (?)
+    this.skipItem(reader);
+
+    // 32: hasbeenshared (?)
+    this.skipItem(reader);
+
+    // 33: last_pwchange_gmt (?)
+    this.skipItem(reader);
+
+    // 34: created_gmt (?)
+    this.skipItem(reader);
+
+    // 35: vulnerable (?)
+    this.skipItem(reader);
+
+    // 36: pwch (?)
+    this.skipItem(reader);
+
+    // 37: breached (?)
+    this.skipItem(reader);
+
+    // 38: template (?)
+    this.skipItem(reader);
+
+    // 39: totp (?)
+    const totp = await this.decryptAes256PlainWithDefault(
+      this.readItem(reader),
+      encryptionKey,
+      placeholder
+    );
+
+    // 3 more left. Don't even bother skipping them.
+
+    // 40: trustedHostnames (?)
+    // 41: last_credential_monitoring_gmt (?)
+    // 42: last_credential_monitoring_stat (?)
+
+    // Adjust the path to include the group and the shared folder, if any.
+    const path = this.makeAccountPath(group, folder);
+
+    const account = new Account();
+    account.id = id;
+    account.name = name;
+    account.username = username;
+    account.password = password;
+    account.url = url;
+    account.path = path;
+    account.notes = notes;
+    account.totp = totp;
+    account.isFavorite = isFavorite;
+    account.isShared = folder != null;
+    return account;
+  }
+
+  async parseShar(
+    chunk: Chunk,
+    encryptionKey: Uint8Array,
+    rsaKey: any // TODO: rsa type
+  ): Promise<SharedFolder> {
+    const reader = new BinaryReader(chunk.payload);
+
+    // Id
+    const id = Utils.fromBufferToUtf8(this.readItem(reader));
+
+    // Key
+    // const rsaEncryptedFolderKey = Utils.fromHexToArray(Utils.fromBufferToUtf8(this.readItem(reader)));
+    const key = new Uint8Array(); // TODO: DecryptRsaSha1
+
+    // Name
+    const encryptedName = this.readItem(reader);
+    const name = await this.decryptAes256Base64(encryptedName, key);
+
+    const folder = new SharedFolder();
+    folder.id = id;
+    folder.name = name;
+    folder.encryptionKey = key;
+    return folder;
+  }
+
+  async parseEncryptedPrivateKey(encryptedPrivateKey: string, encryptionKey: Uint8Array) {
+    const decrypted = await this.decryptAes256(
+      Utils.fromHexToArray(encryptedPrivateKey),
+      encryptionKey,
+      "cbc",
+      encryptionKey.subarray(0, 16)
+    );
+
+    const header = "LastPassPrivateKey<";
+    const footer = ">LastPassPrivateKey";
+
+    if (!decrypted.startsWith(header) || !decrypted.startsWith(footer)) {
+      throw "Failed to decrypt private key";
+    }
+
+    // const pkcs8 = Utils.fromHexToArray(decrypted.substring(header.length, decrypted.length - footer.length));
+
+    // TODO
+    // return Pem.ParsePrivateKeyPkcs8(pkcs8);
+  }
+
+  makeAccountPath(group: string, folder: SharedFolder): string {
+    const groupEmpty = group == null || group.trim() === "";
+    if (folder == null) {
+      return groupEmpty ? "(none)" : group;
+    }
+    return groupEmpty ? folder.name : folder.name + "\\" + group;
   }
 
   extractChunks(reader: BinaryReader): Chunk[] {
@@ -69,6 +350,89 @@ export class Parser {
 
   private readPayload(reader: BinaryReader, size: number): Uint8Array {
     return reader.readBytes(size);
+  }
+
+  // Crypto utils
+
+  private async decryptAes256PlainWithDefault(
+    data: Uint8Array,
+    encryptionKey: Uint8Array,
+    defaultValue: string
+  ) {
+    try {
+      return this.decryptAes256Plain(data, encryptionKey);
+    } catch {
+      return defaultValue;
+    }
+  }
+
+  private async decryptAes256Base64WithDefault(
+    data: Uint8Array,
+    encryptionKey: Uint8Array,
+    defaultValue: string
+  ) {
+    try {
+      return this.decryptAes256Base64(data, encryptionKey);
+    } catch {
+      return defaultValue;
+    }
+  }
+
+  private async decryptAes256Plain(data: Uint8Array, encryptionKey: Uint8Array) {
+    if (data.length === 0) {
+      return "";
+    }
+    // Byte 33 == character '!'
+    if (data[0] === 33 && data.length % 16 === 1 && data.length > 32) {
+      return this.decryptAes256CbcPlain(data, encryptionKey);
+    }
+    return this.decryptAes256EcbPlain(data, encryptionKey);
+  }
+
+  private async decryptAes256Base64(data: Uint8Array, encryptionKey: Uint8Array) {
+    if (data.length === 0) {
+      return "";
+    }
+    // Byte 33 == character '!'
+    if (data[0] === 33) {
+      return this.decryptAes256CbcBase64(data, encryptionKey);
+    }
+    return this.decryptAes256EcbBase64(data, encryptionKey);
+  }
+
+  private async decryptAes256EcbPlain(data: Uint8Array, encryptionKey: Uint8Array) {
+    return this.decryptAes256(data, encryptionKey, "ecb");
+  }
+
+  private async decryptAes256EcbBase64(data: Uint8Array, encryptionKey: Uint8Array) {
+    const d = Utils.fromB64ToArray(Utils.fromBufferToUtf8(data));
+    return this.decryptAes256(d, encryptionKey, "ecb");
+  }
+
+  private async decryptAes256CbcPlain(data: Uint8Array, encryptionKey: Uint8Array) {
+    const d = data.subarray(17);
+    const iv = data.subarray(1, 17);
+    return this.decryptAes256(d, encryptionKey, "cbc", iv);
+  }
+
+  private async decryptAes256CbcBase64(data: Uint8Array, encryptionKey: Uint8Array) {
+    const d = Utils.fromB64ToArray(Utils.fromBufferToUtf8(data.subarray(26)));
+    const iv = Utils.fromB64ToArray(Utils.fromBufferToUtf8(data.subarray(1, 25)));
+    return this.decryptAes256(d, encryptionKey, "cbc", iv);
+  }
+
+  private async decryptAes256(
+    data: Uint8Array,
+    encryptionKey: Uint8Array,
+    mode: "cbc" | "ecb",
+    iv: Uint8Array = new Uint8Array(16)
+  ): Promise<string> {
+    if (data.length === 0) {
+      return "";
+    }
+    // TODO: pass mode
+    const plain = await this.cryptoFunctionService.aesDecrypt(data, iv, encryptionKey);
+    return Utils.fromBufferToUtf8(plain);
   }
 }
 
