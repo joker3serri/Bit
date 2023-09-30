@@ -384,19 +384,12 @@ export class Client {
       ["trustlabel", clientInfo.description],
       ["token", session.token],
     ]);
-    const form = new FormData();
-    for (const [key, value] of parameters) {
-      form.set(key, value);
-    }
-    const requestInit: RequestInit = {
-      method: "POST",
-      body: form,
-      credentials: "include",
-    };
-    // Cookies should be already automatically set for this origin by the browser
-    // TODO: set cookies for non-browser?
-    const request = new Request(rest.baseServerUrl + "/trust.php", requestInit);
-    const response = await fetch(request);
+    const response = await rest.postForm(
+      "trust.php",
+      parameters,
+      null,
+      this.getSessionCookies(session)
+    );
     if (response.status == HttpStatusCode.Ok) {
       return;
     }
@@ -408,19 +401,12 @@ export class Client {
       ["method", PlatformToUserAgent.get(session.platform)],
       ["noredirect", 1],
     ]);
-    const form = new FormData();
-    for (const [key, value] of parameters) {
-      form.set(key, value);
-    }
-    const requestInit: RequestInit = {
-      method: "POST",
-      body: form,
-      credentials: "include",
-    };
-    // Cookies should be already automatically set for this origin by the browser
-    // TODO: set cookies for non-browser?
-    const request = new Request(rest.baseServerUrl + "/logout.php", requestInit);
-    const response = await fetch(request);
+    const response = await rest.postForm(
+      "logout.php",
+      parameters,
+      null,
+      this.getSessionCookies(session)
+    );
     if (response.status == HttpStatusCode.Ok) {
       return;
     }
@@ -428,22 +414,19 @@ export class Client {
   }
 
   private async downloadVault(session: Session, rest: RestClient): Promise<Uint8Array> {
-    const requestInit: RequestInit = {
-      method: "POST",
-      credentials: "include",
-    };
-    // Cookies should be already automatically set for this origin by the browser
-    // TODO: set cookies for non-browser?
     const endpoint =
-      "/getaccts.php?mobile=1&b64=1&hash=0.0&hasplugin=3.0.23&requestsrc=" +
+      "getaccts.php?mobile=1&b64=1&hash=0.0&hasplugin=3.0.23&requestsrc=" +
       PlatformToUserAgent.get(session.platform);
-    const request = new Request(rest.baseServerUrl + endpoint, requestInit);
-    const response = await fetch(request);
+    const response = await rest.get(endpoint, null, this.getSessionCookies(session));
     if (response.status == HttpStatusCode.Ok) {
       const b64 = await response.text();
       return Utils.fromB64ToArray(b64);
     }
     this.makeError(response);
+  }
+
+  private getSessionCookies(session: Session) {
+    return new Map<string, string>([["PHPSESSID", encodeURIComponent(session.id)]]);
   }
 
   private getErrorAttribute(response: Document, name: string): string {
@@ -535,16 +518,7 @@ export class Client {
       parameters.set(key, value);
     }
 
-    const form = new FormData();
-    for (const [key, value] of parameters) {
-      form.set(key, value);
-    }
-    const requestInit: RequestInit = {
-      method: "POST",
-      body: form,
-    };
-    const request = new Request(rest.baseServerUrl + "/login.php", requestInit);
-    const response = await fetch(request);
+    const response = await rest.postForm("login.php", parameters);
     if (response.status == HttpStatusCode.Ok) {
       const text = await response.text();
       const domParser = new window.DOMParser();
