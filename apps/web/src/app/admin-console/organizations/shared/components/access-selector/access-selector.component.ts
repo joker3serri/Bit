@@ -10,7 +10,9 @@ import { Subject, takeUntil } from "rxjs";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { FormSelectionList } from "@bitwarden/angular/utils/form-selection-list";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
@@ -121,8 +123,11 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     { perm: CollectionPermission.ViewExceptPass, labelId: "canViewExceptPass" },
     { perm: CollectionPermission.Edit, labelId: "canEdit" },
     { perm: CollectionPermission.EditExceptPass, labelId: "canEditExceptPass" },
-    { perm: CollectionPermission.Manage, labelId: "canManage" },
   ];
+  protected canManagePermissionListItem = {
+    perm: CollectionPermission.Manage,
+    labelId: "canManage",
+  };
   protected initialPermission = CollectionPermission.View;
 
   disabled: boolean;
@@ -195,7 +200,8 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly i18nService: I18nService
+    private readonly i18nService: I18nService,
+    private readonly configService: ConfigService
   ) {}
 
   /** Required for NG_VALUE_ACCESSOR */
@@ -255,7 +261,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     this.pauseChangeNotification = false;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // Watch the internal formArray for changes and propagate them
     this.selectionList.formArray.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v) => {
       if (!this.notifyOnChange || this.pauseChangeNotification) {
@@ -269,6 +275,10 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
       }
       this.notifyOnChange(v);
     });
+
+    if (await this.configService.getFeatureFlag(FeatureFlag.CanManageCollectionPermission)) {
+      this.permissionList.push(this.canManagePermissionListItem);
+    }
   }
 
   ngOnDestroy() {

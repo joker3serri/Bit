@@ -1,7 +1,17 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, lastValueFrom, Subject, switchMap, takeUntil, from, of } from "rxjs";
+import {
+  combineLatest,
+  lastValueFrom,
+  Subject,
+  switchMap,
+  takeUntil,
+  from,
+  of,
+  Observable,
+  firstValueFrom,
+} from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -10,10 +20,12 @@ import { OrganizationCollectionManagementUpdateRequest } from "@bitwarden/common
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-update.request";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ApiKeyComponent } from "../../../settings/api-key.component";
@@ -39,6 +51,7 @@ export class AccountComponent {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
+  collectionManagementFlag$: Observable<boolean>;
 
   // FormGroup validators taken from server Organization domain object
   protected formGroup = this.formBuilder.group({
@@ -78,7 +91,8 @@ export class AccountComponent {
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private dialogService: DialogService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private configService: ConfigService
   ) {}
 
   async ngOnInit() {
@@ -130,6 +144,11 @@ export class AccountComponent {
           limitCollectionCreationDeletion: this.org.limitCollectionCreationDeletion,
         });
 
+        this.collectionManagementFlag$ = this.configService.getFeatureFlag$(
+          FeatureFlag.CollectionManagement,
+          false
+        );
+
         this.loading = false;
       });
   }
@@ -164,6 +183,10 @@ export class AccountComponent {
   };
 
   submitCollectionManagement = async () => {
+    if (!(await firstValueFrom(this.collectionManagementFlag$))) {
+      return;
+    }
+
     const request = new OrganizationCollectionManagementUpdateRequest();
     request.limitCreateDeleteOwnerAdmin =
       this.collectionManagementFormGroup.value.limitCollectionCreationDeletion;
