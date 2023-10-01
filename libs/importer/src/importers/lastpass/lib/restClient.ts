@@ -1,5 +1,6 @@
 export class RestClient {
-  baseServerUrl: string;
+  baseUrl: string;
+  isBrowser = true;
 
   async get(
     endpoint: string,
@@ -10,16 +11,8 @@ export class RestClient {
       method: "GET",
       credentials: "include",
     };
-    if (headers != null && headers.size > 0) {
-      const headers = new Headers();
-      for (const [key, value] of headers) {
-        headers.set(key, value);
-      }
-      requestInit.headers = headers;
-    }
-    // Cookies should be already automatically set for this origin by the browser
-    // TODO: set cookies for non-browser?
-    const request = new Request(this.baseServerUrl + "/" + endpoint, requestInit);
+    this.setHeaders(requestInit, headers, cookies);
+    const request = new Request(this.baseUrl + "/" + endpoint, requestInit);
     const response = await fetch(request);
     return response;
   }
@@ -41,17 +34,33 @@ export class RestClient {
       }
       requestInit.body = form;
     }
-    if (headers != null && headers.size > 0) {
-      const headers = new Headers();
-      for (const [key, value] of headers) {
-        headers.set(key, value);
-      }
-      requestInit.headers = headers;
-    }
-    // Cookies should be already automatically set for this origin by the browser
-    // TODO: set cookies for non-browser?
-    const request = new Request(this.baseServerUrl + "/" + endpoint, requestInit);
+    this.setHeaders(requestInit, headers, cookies);
+    const request = new Request(this.baseUrl + "/" + endpoint, requestInit);
     const response = await fetch(request);
     return response;
+  }
+
+  private setHeaders(
+    requestInit: RequestInit,
+    headers: Map<string, string> = null,
+    cookies: Map<string, string> = null
+  ) {
+    const requestHeaders = new Headers();
+    if (headers != null && headers.size > 0) {
+      for (const [key, value] of headers) {
+        requestHeaders.set(key, value);
+      }
+    }
+    // Cookies should be already automatically set for this origin by the browser
+    // TODO: set cookies for non-browser scenarios?
+    if (!this.isBrowser && cookies != null && cookies.size > 0) {
+      const cookieString = Array.from(cookies.keys())
+        .map((key) => `${key}=${cookies.get(key)}`)
+        .join("; ");
+      requestHeaders.set("cookie", cookieString);
+    }
+    if (requestHeaders.keys.length > 0) {
+      requestInit.headers = requestHeaders;
+    }
   }
 }
