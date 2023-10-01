@@ -46,7 +46,9 @@ export class RestClient {
     cookies: Map<string, string> = null
   ) {
     const requestHeaders = new Headers();
+    let setHeaders = false;
     if (headers != null && headers.size > 0) {
+      setHeaders = true;
       for (const [key, value] of headers) {
         requestHeaders.set(key, value);
       }
@@ -54,12 +56,13 @@ export class RestClient {
     // Cookies should be already automatically set for this origin by the browser
     // TODO: set cookies for non-browser scenarios?
     if (!this.isBrowser && cookies != null && cookies.size > 0) {
+      setHeaders = true;
       const cookieString = Array.from(cookies.keys())
         .map((key) => `${key}=${cookies.get(key)}`)
         .join("; ");
       requestHeaders.set("cookie", cookieString);
     }
-    if (requestHeaders.keys.length > 0) {
+    if (setHeaders) {
       requestInit.headers = requestHeaders;
     }
   }

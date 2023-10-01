@@ -454,7 +454,7 @@ export class Client {
       return null;
     }
     const map = new Map<string, string>();
-    for (const attr of error.attributes) {
+    for (const attr of Array.from(error.attributes)) {
       map.set(attr.name, attr.value);
     }
     return map;
