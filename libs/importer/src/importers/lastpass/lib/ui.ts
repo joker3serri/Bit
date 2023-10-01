@@ -1,6 +1,6 @@
-import { DuoUi } from "./duoUi";
-import { OobResult } from "./oobResult";
-import { OtpResult } from "./otpResult";
+import { DuoUi } from "./duo-ui";
+import { OobResult } from "./oob-result";
+import { OtpResult } from "./otp-result";
 
 export abstract class Ui extends DuoUi {
   // To cancel return OtpResult.Cancel, otherwise only valid data is expected.

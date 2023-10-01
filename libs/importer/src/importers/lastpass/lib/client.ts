@@ -3,18 +3,18 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
-import { BinaryReader } from "./binaryReader";
+import { BinaryReader } from "./binary-reader";
 import { Chunk } from "./chunk";
-import { ClientInfo } from "./clientInfo";
-import { OobResult } from "./oobResult";
-import { OtpMethod } from "./otpMethod";
-import { OtpResult } from "./otpResult";
+import { ClientInfo } from "./client-info";
+import { OobResult } from "./oob-result";
+import { OtpMethod } from "./otp-method";
+import { OtpResult } from "./otp-result";
 import { Parser } from "./parser";
-import { ParserOptions } from "./parserOptions";
+import { ParserOptions } from "./parser-options";
 import { Platform } from "./platform";
-import { RestClient } from "./restClient";
+import { RestClient } from "./rest-client";
 import { Session } from "./session";
-import { SharedFolder } from "./sharedFolder";
+import { SharedFolder } from "./shared-folder";
 import { Ui } from "./ui";
 
 const PlatformToUserAgent = new Map<Platform, string>([

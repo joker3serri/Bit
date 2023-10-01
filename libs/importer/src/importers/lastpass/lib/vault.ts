@@ -2,9 +2,9 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 
 import { Account } from "./account";
 import { Client } from "./client";
-import { ClientInfo } from "./clientInfo";
+import { ClientInfo } from "./client-info";
 import { Parser } from "./parser";
-import { ParserOptions } from "./parserOptions";
+import { ParserOptions } from "./parser-options";
 import { Ui } from "./ui";
 
 export class Vault {
