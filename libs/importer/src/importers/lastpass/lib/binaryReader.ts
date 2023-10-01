@@ -52,8 +52,11 @@ export class BinaryReader {
   }
 
   seek(position: number) {
+    if (position < 0) {
+      throw "Position cannot be negative";
+    }
     if (position > this.arr.length) {
-      throw "Array not loarge enough";
+      throw "Array not large enough to seek to this position";
     }
     this.position = position;
   }
