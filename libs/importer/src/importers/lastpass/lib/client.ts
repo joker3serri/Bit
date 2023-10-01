@@ -133,7 +133,8 @@ export class Client {
     ui: Ui
   ): Promise<[Session, RestClient]> {
     const rest = new RestClient();
-    rest.baseServerUrl = "https://lastpass.com";
+    rest.baseUrl = "https://lastpass.com";
+
     /*
     1. First we need to request PBKDF2 key iteration count.
     
@@ -173,7 +174,7 @@ export class Client {
       // It's possible we're being redirected to another region.
       const server = this.getOptionalErrorAttribute(response, "server");
       if (server != null && server.trim() != "") {
-        rest.baseServerUrl = "https://" + server;
+        rest.baseUrl = "https://" + server;
         continue;
       }
 
