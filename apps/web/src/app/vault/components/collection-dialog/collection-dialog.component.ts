@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
@@ -96,7 +96,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.tabIndex = params.initialTab ?? CollectionDialogTabType.Info;
   }
@@ -153,6 +154,9 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           groups.map(mapGroupToAccessItemView),
           users.data.map(mapUserToAccessItemView)
         );
+
+        // Force change detection to update the access selector's items
+        this.changeDetectorRef.detectChanges();
 
         if (collectionIds) {
           collections = collections.filter((c) => collectionIds.includes(c.id));
