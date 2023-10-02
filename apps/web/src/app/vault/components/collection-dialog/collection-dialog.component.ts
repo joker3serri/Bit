@@ -21,7 +21,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CollectionResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { DialogService, BitValidators } from "@bitwarden/components";
+import { BitValidators, DialogService } from "@bitwarden/components";
 
 import { GroupService, GroupView } from "../../../admin-console/organizations/core";
 import { PermissionMode } from "../../../admin-console/organizations/shared/components/access-selector/access-selector.component";
@@ -29,6 +29,7 @@ import {
   AccessItemType,
   AccessItemValue,
   AccessItemView,
+  CollectionPermission,
   convertToPermission,
   convertToSelectionView,
   mapGroupToAccessItemView,
@@ -185,7 +186,24 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         } else {
           this.nestOptions = collections;
           const parent = collections.find((c) => c.id === this.params.parentCollectionId);
-          this.formGroup.patchValue({ parent: parent?.name ?? undefined });
+          const currentOrgUserId = users.data.find(
+            (u) => u.userId === this.organization?.userId
+          )?.id;
+          const initialSelection: AccessItemValue[] =
+            currentOrgUserId !== undefined
+              ? [
+                  {
+                    id: currentOrgUserId,
+                    type: AccessItemType.Member,
+                    permission: CollectionPermission.Manage,
+                  },
+                ]
+              : [];
+
+          this.formGroup.patchValue({
+            parent: parent?.name ?? undefined,
+            access: initialSelection,
+          });
         }
 
         this.loading = false;
