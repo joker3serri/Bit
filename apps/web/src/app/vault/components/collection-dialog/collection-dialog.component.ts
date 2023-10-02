@@ -3,6 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
+  from,
   map,
   Observable,
   of,
@@ -119,7 +120,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     } else {
       // Opened from the org vault
       this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
-      this.loadOrg(this.params.organizationId, this.params.collectionIds);
+      await this.loadOrg(this.params.organizationId, this.params.collectionIds);
     }
   }
 
@@ -140,7 +141,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       organization: organization$,
       collections: this.collectionService.getAll(orgId),
       collectionDetails: this.params.collectionId
-        ? this.collectionService.get(orgId, this.params.collectionId)
+        ? from(this.collectionService.get(orgId, this.params.collectionId))
         : of(null),
       groups: groups$,
       users: this.organizationUserService.getAllUsers(orgId),
