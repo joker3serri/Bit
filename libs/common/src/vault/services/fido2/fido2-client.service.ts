@@ -171,11 +171,14 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
         error.errorCode === Fido2AutenticatorErrorCode.InvalidState
       ) {
         this.logService?.warning(`[Fido2Client] Unknown error: ${error}`);
-        throw new DOMException(undefined, "InvalidStateError");
+        throw new DOMException("Unknown error occured.", "InvalidStateError");
       }
 
       this.logService?.info(`[Fido2Client] Aborted by user: ${error}`);
-      throw new DOMException(undefined, "NotAllowedError");
+      throw new DOMException(
+        "The operation either timed out or was not allowed.",
+        "NotAllowedError"
+      );
     }
 
     if (abortController.signal.aborted) {
@@ -286,11 +289,14 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
         error.errorCode === Fido2AutenticatorErrorCode.InvalidState
       ) {
         this.logService?.warning(`[Fido2Client] Unknown error: ${error}`);
-        throw new DOMException(undefined, "InvalidStateError");
+        throw new DOMException("Unknown error occured.", "InvalidStateError");
       }
 
       this.logService?.info(`[Fido2Client] Aborted by user: ${error}`);
-      throw new DOMException(undefined, "NotAllowedError");
+      throw new DOMException(
+        "The operation either timed out or was not allowed.",
+        "NotAllowedError"
+      );
     }
 
     if (abortController.signal.aborted) {
