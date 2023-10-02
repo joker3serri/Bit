@@ -142,7 +142,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     // Set timeout before invoking authenticator
     if (abortController.signal.aborted) {
       this.logService?.info(`[Fido2Client] Aborted with AbortController`);
-      throw new DOMException(undefined, "AbortError");
+      throw new DOMException("The operation either timed out or was not allowed.", "AbortError");
     }
     const timeout = setAbortTimeout(
       abortController,
@@ -183,7 +183,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
 
     if (abortController.signal.aborted) {
       this.logService?.info(`[Fido2Client] Aborted with AbortController`);
-      throw new DOMException(undefined, "AbortError");
+      throw new DOMException("The operation either timed out or was not allowed.", "AbortError");
     }
 
     clearTimeout(timeout);
@@ -263,7 +263,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
 
     if (abortController.signal.aborted) {
       this.logService?.info(`[Fido2Client] Aborted with AbortController`);
-      throw new DOMException(undefined, "AbortError");
+      throw new DOMException("The operation either timed out or was not allowed.", "AbortError");
     }
 
     const timeout = setAbortTimeout(abortController, params.userVerification, params.timeout);
@@ -301,7 +301,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
 
     if (abortController.signal.aborted) {
       this.logService?.info(`[Fido2Client] Aborted with AbortController`);
-      throw new DOMException(undefined, "AbortError");
+      throw new DOMException("The operation either timed out or was not allowed.", "AbortError");
     }
     clearTimeout(timeout);
 
