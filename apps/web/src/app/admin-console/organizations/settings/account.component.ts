@@ -51,7 +51,7 @@ export class AccountComponent {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
-  collectionManagementFlag$: Observable<boolean>;
+  flexibleCollectionsFlag$: Observable<boolean>;
 
   // FormGroup validators taken from server Organization domain object
   protected formGroup = this.formBuilder.group({
@@ -144,8 +144,8 @@ export class AccountComponent {
           limitCollectionCreationDeletion: this.org.limitCollectionCreationDeletion,
         });
 
-        this.collectionManagementFlag$ = this.configService.getFeatureFlag$(
-          FeatureFlag.CollectionManagement,
+        this.flexibleCollectionsFlag$ = this.configService.getFeatureFlag$(
+          FeatureFlag.FlexibleCollections,
           false
         );
 
@@ -183,7 +183,7 @@ export class AccountComponent {
   };
 
   submitCollectionManagement = async () => {
-    if (!(await firstValueFrom(this.collectionManagementFlag$))) {
+    if (!(await firstValueFrom(this.flexibleCollectionsFlag$))) {
       return;
     }
 

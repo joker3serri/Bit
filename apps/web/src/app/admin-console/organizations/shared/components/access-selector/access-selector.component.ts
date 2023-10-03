@@ -276,7 +276,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
       this.notifyOnChange(v);
     });
 
-    if (await this.configService.getFeatureFlag(FeatureFlag.CanManageCollectionPermission)) {
+    if (await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollections)) {
       this.permissionList.push(this.canManagePermissionListItem);
     }
   }
