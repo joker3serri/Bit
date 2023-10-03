@@ -54,6 +54,7 @@
         [editableCollections]="true"
         [cloneableOrganizationCiphers]="true"
         (onEvent)="onVaultItemsEvent($event)"
+        [showBulkEditCollectionAccess]="showBulkEditCollectionAccess | async"
       >
       </app-vault-items>
       <div

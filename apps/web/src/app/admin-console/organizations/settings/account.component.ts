@@ -9,7 +9,6 @@ import {
   takeUntil,
   from,
   of,
-  Observable,
   firstValueFrom,
 } from "rxjs";
 
@@ -51,7 +50,10 @@ export class AccountComponent {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
-  flexibleCollectionsFlag$: Observable<boolean>;
+  flexibleCollectionsFlag$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false
+  );
 
   // FormGroup validators taken from server Organization domain object
   protected formGroup = this.formBuilder.group({
@@ -143,11 +145,6 @@ export class AccountComponent {
         this.collectionManagementFormGroup.patchValue({
           limitCollectionCreationDeletion: this.org.limitCollectionCreationDeletion,
         });
-
-        this.flexibleCollectionsFlag$ = this.configService.getFeatureFlag$(
-          FeatureFlag.FlexibleCollections,
-          false
-        );
 
         this.loading = false;
       });

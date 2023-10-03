@@ -4,6 +4,7 @@ export enum FeatureFlag {
   TrustedDeviceEncryption = "trusted-device-encryption",
   AutofillV2 = "autofill-v2",
   FlexibleCollections = "flexible-collections",
+  BulkEditCollectionAccess = "bulk-edit-collection-access",
 }
 
 // Replace this with a type safe lookup of the feature flag values in PM-2282
