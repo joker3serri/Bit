@@ -77,6 +77,12 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.shadow.appendChild(this.iframe);
   }
 
+  /**
+   * Creates an aria alert element that is used to announce to screen readers
+   * when the iframe is loaded.
+   *
+   * @param ariaAlertText - Text to announce to screen readers when the iframe is loaded
+   */
   private createAriaAlertElement(ariaAlertText: string) {
     this.ariaAlertElement = globalThis.document.createElement("div");
     this.ariaAlertElement.setAttribute("role", "status");
@@ -95,6 +101,11 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.ariaAlertElement.textContent = ariaAlertText;
   }
 
+  /**
+   * Sets up the port message listener to the extension background script. This
+   * listener is used to communicate between the iframe and the background script.
+   * This also facilitates announcing to screen readers when the iframe is loaded.
+   */
   private setupPortMessageListener = () => {
     this.port = chrome.runtime.connect({ name: this.portName });
     this.port.onDisconnect.addListener(this.handlePortDisconnect);
@@ -104,6 +115,9 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.announceAriaAlert();
   };
 
+  /**
+   * Announces the aria alert element to screen readers when the iframe is loaded.
+   */
   private announceAriaAlert() {
     if (!this.ariaAlertElement) {
       return;
@@ -117,6 +131,13 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.ariaAlertTimeout = setTimeout(() => this.shadow.appendChild(this.ariaAlertElement), 2000);
   }
 
+  /**
+   * Handles disconnecting the port message listener from the extension background
+   * script. This also removes the listener that facilitates announcing to screen
+   * readers when the iframe is loaded.
+   *
+   * @param port - The port that is disconnected
+   */
   private handlePortDisconnect = (port: chrome.runtime.Port) => {
     if (port.name !== this.portName) {
       return;
@@ -130,11 +151,19 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.port = null;
   };
 
+  /**
+   * Handles messages sent from the extension background script to the iframe.
+   * Triggers behavior within the iframe as well as on the custom element that
+   * contains the iframe element.
+   *
+   * @param message
+   * @param port
+   */
   private handlePortMessage = (
     message: AutofillOverlayIframeExtensionMessage,
     port: chrome.runtime.Port
   ) => {
-    if (port.name !== this.portName || !this.iframe.contentWindow) {
+    if (port.name !== this.portName) {
       return;
     }
 
@@ -143,7 +172,7 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
       return;
     }
 
-    this.iframe.contentWindow.postMessage(message, "*");
+    this.iframe.contentWindow?.postMessage(message, "*");
   };
 
   private updateIframePosition(position: Partial<CSSStyleDeclaration>) {
@@ -191,9 +220,8 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
    * Chrome returns null for any sandboxed iframe sources.
    * Firefox references the extension URI as its origin.
    * Any other origin value is a security risk.
-   * @param {string} messageOrigin
-   * @returns {boolean}
-   * @private
+   *
+   * @param messageOrigin - The origin of the window message
    */
   private isFromExtensionOrigin(messageOrigin: string): boolean {
     return this.extensionOriginsSet.has(messageOrigin);
