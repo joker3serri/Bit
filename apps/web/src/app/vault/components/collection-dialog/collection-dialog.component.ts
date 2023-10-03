@@ -226,11 +226,19 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     this.formGroup.markAllAsTouched();
 
     if (this.formGroup.invalid) {
-      if (this.tabIndex === CollectionDialogTabType.Access) {
+      const accessTabError = this.formGroup.controls.access.hasError("managePermissionRequired");
+
+      if (this.tabIndex === CollectionDialogTabType.Access && !accessTabError) {
         this.platformUtilsService.showToast(
           "error",
           null,
           this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("collectionInfo"))
+        );
+      } else if (this.tabIndex === CollectionDialogTabType.Info && accessTabError) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("access"))
         );
       }
       return;
