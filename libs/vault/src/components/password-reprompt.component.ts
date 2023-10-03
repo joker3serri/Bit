@@ -34,7 +34,7 @@ import {
 })
 export class PasswordRepromptComponent {
   formGroup = this.formBuilder.group({
-    masterPassword: ["", [Validators.required]],
+    masterPassword: ["", { validators: [Validators.required], updateOn: "submit" }],
   });
 
   constructor(
