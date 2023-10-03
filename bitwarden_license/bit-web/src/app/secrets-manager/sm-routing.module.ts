@@ -1,16 +1,13 @@
 import { NgModule } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  createUrlTreeFromSnapshot,
-  RouterModule,
-  Routes,
-} from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/auth/guards";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/admin-console/organizations/guards/org-permissions.guard";
 import { buildFlaggedRoute } from "@bitwarden/web-vault/app/oss-routing.module";
 
+import { organizationEnabledGuard } from "./guards/sm-org-enabled.guard";
+import { canActivateSM } from "./guards/sm.guard";
 import { LayoutComponent } from "./layout/layout.component";
 import { NavigationComponent } from "./layout/navigation.component";
 import { OverviewModule } from "./overview/overview.module";
@@ -19,7 +16,6 @@ import { SecretsModule } from "./secrets/secrets.module";
 import { ServiceAccountsModule } from "./service-accounts/service-accounts.module";
 import { SettingsModule } from "./settings/settings.module";
 import { OrgSuspendedComponent } from "./shared/org-suspended.component";
-import { canActivateSM } from "./sm.guard";
 import { TrashModule } from "./trash/trash.module";
 
 const routes: Routes = [
@@ -44,23 +40,9 @@ const routes: Routes = [
           },
           {
             path: "",
-            canActivate: [OrganizationPermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard, organizationEnabledGuard],
             data: {
-              organizationPermissions: (org: Organization, route: ActivatedRouteSnapshot) => {
-                if (!org.canAccessSecretsManager) {
-                  return false;
-                }
-
-                if (!org.enabled) {
-                  return createUrlTreeFromSnapshot(route, [
-                    "/sm",
-                    org.id,
-                    "organization-suspended",
-                  ]);
-                }
-
-                return true;
-              },
+              organizationPermissions: (org: Organization) => org.canAccessSecretsManager,
             },
             children: [
               {
