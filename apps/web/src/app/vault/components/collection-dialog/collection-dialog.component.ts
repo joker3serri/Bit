@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
   from,
@@ -82,7 +82,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     name: ["", [Validators.required, BitValidators.forbiddenCharacters(["/"])]],
     externalId: "",
     parent: undefined as string | undefined,
-    access: [[] as AccessItemValue[]],
+    access: [[] as AccessItemValue[], [validateCanManagePermission]],
     selectedOrg: "",
   });
   protected PermissionMode = PermissionMode;
@@ -324,6 +324,16 @@ function mapToAccessSelections(collectionDetails: CollectionAdminView): AccessIt
       permission: convertToPermission(selection),
     }))
   );
+}
+
+/**
+ * Validator to ensure that at least one access item has Manage permission
+ */
+function validateCanManagePermission(control: AbstractControl) {
+  const access = control.value as AccessItemValue[];
+  const hasManagePermission = access.some((a) => a.permission === CollectionPermission.Manage);
+
+  return hasManagePermission ? null : { managePermissionRequired: true };
 }
 
 /**
