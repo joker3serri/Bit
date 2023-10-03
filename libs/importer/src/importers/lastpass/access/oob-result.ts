@@ -1,15 +1,11 @@
 export class OobResult {
-  waitForOutOfBand: boolean;
-  passcode: string;
-  rememberMe: boolean;
-
   static cancel = new OobResult(false, "cancel", false);
 
-  constructor(waitForOutOfBand: boolean, passcode: string, rememberMe: boolean) {
-    this.waitForOutOfBand = waitForOutOfBand;
-    this.passcode = passcode;
-    this.rememberMe = rememberMe;
-  }
+  constructor(
+    public waitForOutOfBand: boolean,
+    public passcode: string,
+    public rememberMe: boolean
+  ) {}
 
   waitForApproval(rememberMe: boolean) {
     return new OobResult(true, "", rememberMe);

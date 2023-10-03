@@ -1,10 +1,8 @@
 export class BinaryReader {
-  private arr: Uint8Array;
   private position: number;
   private isLittleEndian: boolean;
 
-  constructor(arr: Uint8Array) {
-    this.arr = arr;
+  constructor(public arr: Uint8Array) {
     this.position = 0;
 
     const uInt32 = new Uint32Array([0x11223344]);
@@ -23,18 +21,26 @@ export class BinaryReader {
 
   readUInt16(): number {
     const slice = this.readBytes(2);
-    return slice[0] | (slice[1] << 8);
+    const int = slice[0] | (slice[1] << 8);
+    // Convert to unsigned int
+    return int >>> 0;
   }
 
   readUInt32(): number {
     const slice = this.readBytes(4);
-    return slice[0] | (slice[1] << 8) | (slice[2] << 16) | (slice[3] << 24);
+    const int = slice[0] | (slice[1] << 8) | (slice[2] << 16) | (slice[3] << 24);
+    // Convert to unsigned int
+    return int >>> 0;
   }
 
   readUInt16BigEndian(): number {
     let result = this.readUInt16();
     if (this.isLittleEndian) {
-      result = (result << 8) | (result >> 8);
+      // Extract the two bytes
+      const byte1 = result & 0xff;
+      const byte2 = (result >> 8) & 0xff;
+      // Create a big-endian value by swapping the bytes
+      result = (byte1 << 8) | byte2;
     }
     return result;
   }
@@ -42,11 +48,13 @@ export class BinaryReader {
   readUInt32BigEndian(): number {
     let result = this.readUInt32();
     if (this.isLittleEndian) {
-      result =
-        ((result & 0x000000ff) << 24) |
-        ((result & 0x0000ff00) << 8) |
-        ((result & 0x00ff0000) >> 8) |
-        ((result & 0xff000000) >> 24);
+      // Extract individual bytes
+      const byte1 = (result >> 24) & 0xff;
+      const byte2 = (result >> 16) & 0xff;
+      const byte3 = (result >> 8) & 0xff;
+      const byte4 = result & 0xff;
+      // Create a big-endian value by reordering the bytes
+      result = (byte4 << 24) | (byte3 << 16) | (byte2 << 8) | byte1;
     }
     return result;
   }

@@ -1,11 +1,11 @@
 import { HttpStatusCode } from "@bitwarden/common/enums";
-import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Account } from "./account";
 import { BinaryReader } from "./binary-reader";
 import { Chunk } from "./chunk";
 import { ClientInfo } from "./client-info";
+import { CryptoUtils } from "./crypto-utils";
 import { OobResult } from "./oob-result";
 import { OtpMethod } from "./otp-method";
 import { OtpResult } from "./otp-result";
@@ -29,13 +29,7 @@ const KnownOtpMethods = new Map<string, OtpMethod>([
 ]);
 
 export class Client {
-  cryptoFunctionService: CryptoFunctionService;
-  parser: Parser;
-
-  constructor(cryptoFunctionService: CryptoFunctionService, parser: Parser) {
-    this.cryptoFunctionService = cryptoFunctionService;
-    this.parser = parser;
-  }
+  constructor(private parser: Parser, private cryptoUtils: CryptoUtils) {}
 
   async openVault(
     username: string,
@@ -48,7 +42,11 @@ export class Client {
     const [session, rest] = await this.login(lowercaseUsername, password, clientInfo, ui);
     try {
       const blob = await this.downloadVault(session, rest);
-      const key = await this.deriveKey(lowercaseUsername, password, session.keyIterationCount);
+      const key = await this.cryptoUtils.deriveKey(
+        lowercaseUsername,
+        password,
+        session.keyIterationCount
+      );
 
       let privateKey: Uint8Array = null;
       if (session.encryptedPrivateKey != null && session.encryptedPrivateKey != "") {
@@ -103,27 +101,6 @@ export class Client {
       return okChunk === "OK";
     }
     return false;
-  }
-
-  private async deriveKey(username: string, password: string, iterationCount: number) {
-    if (iterationCount < 0) {
-      throw "Iteration count should be positive";
-    }
-    if (iterationCount == 1) {
-      return await this.cryptoFunctionService.hash(username + password, "sha256");
-    }
-    return await this.cryptoFunctionService.pbkdf2(password, username, "sha256", iterationCount);
-  }
-
-  private async deriveKeyHash(username: string, password: string, iterationCount: number) {
-    const key = await this.deriveKey(username, password, iterationCount);
-    if (iterationCount == 1) {
-      return await this.cryptoFunctionService.hash(
-        Utils.fromBufferToHex(key.buffer) + password,
-        "sha256"
-      );
-    }
-    return await this.cryptoFunctionService.pbkdf2(key, password, "sha256", iterationCount);
   }
 
   private async login(
@@ -499,7 +476,7 @@ export class Client {
     clientInfo: ClientInfo,
     rest: RestClient
   ) {
-    const hash = await this.deriveKeyHash(username, password, keyIterationCount);
+    const hash = await this.cryptoUtils.deriveKeyHash(username, password, keyIterationCount);
 
     const parameters = new Map<string, any>([
       ["method", PlatformToUserAgent.get(clientInfo.platform)],

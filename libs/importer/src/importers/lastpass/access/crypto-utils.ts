@@ -2,10 +2,27 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 export class CryptoUtils {
-  cryptoFunctionService: CryptoFunctionService;
+  constructor(private cryptoFunctionService: CryptoFunctionService) {}
 
-  constructor(cryptoFunctionService: CryptoFunctionService) {
-    this.cryptoFunctionService = cryptoFunctionService;
+  async deriveKey(username: string, password: string, iterationCount: number) {
+    if (iterationCount < 0) {
+      throw "Iteration count should be positive";
+    }
+    if (iterationCount == 1) {
+      return await this.cryptoFunctionService.hash(username + password, "sha256");
+    }
+    return await this.cryptoFunctionService.pbkdf2(password, username, "sha256", iterationCount);
+  }
+
+  async deriveKeyHash(username: string, password: string, iterationCount: number) {
+    const key = await this.deriveKey(username, password, iterationCount);
+    if (iterationCount == 1) {
+      return await this.cryptoFunctionService.hash(
+        Utils.fromBufferToHex(key.buffer) + password,
+        "sha256"
+      );
+    }
+    return await this.cryptoFunctionService.pbkdf2(key, password, "sha256", 1);
   }
 
   async decryptAes256PlainWithDefault(

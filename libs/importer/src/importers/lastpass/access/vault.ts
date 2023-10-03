@@ -3,6 +3,7 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { Account } from "./account";
 import { Client } from "./client";
 import { ClientInfo } from "./client-info";
+import { CryptoUtils } from "./crypto-utils";
 import { Parser } from "./parser";
 import { ParserOptions } from "./parser-options";
 import { Ui } from "./ui";
@@ -12,9 +13,10 @@ export class Vault {
 
   private client: Client;
 
-  constructor(cryptoFunctionService: CryptoFunctionService) {
-    const parser = new Parser(cryptoFunctionService);
-    this.client = new Client(cryptoFunctionService, parser);
+  constructor(private cryptoFunctionService: CryptoFunctionService) {
+    const cryptoUtils = new CryptoUtils(cryptoFunctionService);
+    const parser = new Parser(cryptoFunctionService, cryptoUtils);
+    this.client = new Client(parser, cryptoUtils);
   }
 
   async open(

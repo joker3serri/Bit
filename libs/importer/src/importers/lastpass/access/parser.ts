@@ -16,13 +16,10 @@ const AllowedSecureNoteTypes = new Set<string>([
 ]);
 
 export class Parser {
-  cryptoFunctionService: CryptoFunctionService;
-  cryptoUtils: CryptoUtils;
-
-  constructor(cryptoFunctionService: CryptoFunctionService) {
-    this.cryptoFunctionService = cryptoFunctionService;
-    this.cryptoUtils = new CryptoUtils(cryptoFunctionService);
-  }
+  constructor(
+    private cryptoFunctionService: CryptoFunctionService,
+    private cryptoUtils: CryptoUtils
+  ) {}
 
   /*
   May return null when the chunk does not represent an account.
@@ -287,7 +284,7 @@ export class Parser {
 
     const header = "LastPassPrivateKey<";
     const footer = ">LastPassPrivateKey";
-    if (!decrypted.startsWith(header) || !decrypted.startsWith(footer)) {
+    if (!decrypted.startsWith(header) || !decrypted.endsWith(footer)) {
       throw "Failed to decrypt private key";
     }
 
