@@ -149,6 +149,12 @@ import {
   VaultExportService,
   VaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
+import {
+  ImportApiService,
+  ImportApiServiceAbstraction,
+  ImportService,
+  ImportServiceAbstraction,
+} from "@bitwarden/importer";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -484,6 +490,23 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         LogService,
         STATE_FACTORY,
         STATE_SERVICE_USE_CACHE,
+      ],
+    },
+    {
+      provide: ImportApiServiceAbstraction,
+      useClass: ImportApiService,
+      deps: [ApiServiceAbstraction],
+    },
+    {
+      provide: ImportServiceAbstraction,
+      useClass: ImportService,
+      deps: [
+        CipherServiceAbstraction,
+        FolderServiceAbstraction,
+        ImportApiServiceAbstraction,
+        I18nServiceAbstraction,
+        CollectionServiceAbstraction,
+        CryptoServiceAbstraction,
       ],
     },
     {
