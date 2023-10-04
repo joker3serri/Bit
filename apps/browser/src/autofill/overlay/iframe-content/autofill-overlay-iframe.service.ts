@@ -4,6 +4,7 @@ import {
   BackgroundPortMessageHandlers,
   AutofillOverlayIframeService as AutofillOverlayIframeServiceInterface,
   AutofillOverlayIframeExtensionMessage,
+  AutofillOverlayIframeWindowMessageHandlers,
 } from "../abstractions/autofill-overlay-iframe.service";
 
 class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterface {
@@ -29,6 +30,10 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     colorScheme: "normal",
     opacity: "0",
   };
+  private readonly windowMessageHandlers: AutofillOverlayIframeWindowMessageHandlers = {
+    updateAutofillOverlayListHeight: (message) =>
+      this.updateElementStyles(this.iframe, message.styles),
+  };
   private readonly backgroundPortMessageHandlers: BackgroundPortMessageHandlers = {
     updateIframePosition: ({ message }) => this.updateIframePosition(message.styles),
     updateOverlayHidden: ({ message }) => this.updateElementStyles(this.iframe, message.styles),
@@ -40,7 +45,7 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
       "null",
     ]);
 
-    this.iframeMutationObserver = new MutationObserver(this.handleMutationObserver);
+    this.iframeMutationObserver = new MutationObserver(this.handleMutations);
   }
 
   /**
@@ -175,6 +180,12 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.iframe.contentWindow?.postMessage(message, "*");
   };
 
+  /**
+   * Updates the position of the iframe element. Will also announce
+   * to screen readers that the iframe is open.
+   *
+   * @param position - The position styles to apply to the iframe
+   */
   private updateIframePosition(position: Partial<CSSStyleDeclaration>) {
     if (!globalThis.document.hasFocus()) {
       return;
@@ -185,6 +196,12 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.announceAriaAlert();
   }
 
+  /**
+   * Handles messages sent from the iframe. If the message does not have a
+   * specified handler set, it passes the message to the background script.
+   *
+   * @param event - The message event
+   */
   private handleWindowMessage = (event: MessageEvent) => {
     if (
       !this.port ||
@@ -195,14 +212,23 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     }
 
     const message = event.data;
-    if (message.command === "updateAutofillOverlayListHeight") {
-      this.updateElementStyles(this.iframe, { height: `${message.height}px` });
+    if (this.windowMessageHandlers[message.command]) {
+      this.windowMessageHandlers[message.command](message);
       return;
     }
 
     this.port.postMessage(event.data);
   };
 
+  /**
+   * Accepts an element and updates the styles for that element. This method
+   * will also unobserve the element if it is the iframe element. This is
+   * done to ensure that we do not trigger the mutation observer when we
+   * update the styles for the iframe.
+   *
+   * @param customElement - The element to update the styles for
+   * @param styles - The styles to apply to the element
+   */
   private updateElementStyles(customElement: HTMLElement, styles: Partial<CSSStyleDeclaration>) {
     if (!customElement) {
       return;
@@ -227,7 +253,7 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     return this.extensionOriginsSet.has(messageOrigin);
   }
 
-  private handleMutationObserver = (mutations: MutationRecord[]) => {
+  private handleMutations = (mutations: MutationRecord[]) => {
     for (let index = 0; index < mutations.length; index++) {
       const mutation = mutations[index];
       if (mutation.type !== "attributes" || mutation.attributeName !== "style") {

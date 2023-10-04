@@ -1,4 +1,5 @@
 import { EVENTS } from "../../constants";
+import { flushPromises } from "../../jest/testing-utils";
 import { AutofillOverlayPort } from "../../utils/autofill-overlay.enum";
 
 import AutofillOverlayIframeService from "./autofill-overlay-iframe.service";
@@ -250,6 +251,88 @@ describe("AutofillOverlayIframeService", () => {
           expect(shadowAppendSpy).toBeCalledWith(autofillOverlayIframeService["ariaAlertElement"]);
         });
       });
+
+      it("updates the visibility of the iframe", () => {
+        portSpy.onMessage.callListener({
+          command: "updateOverlayHidden",
+          styles: { display: "none" },
+        });
+
+        expect(autofillOverlayIframeService["iframe"].style.display).toBe("none");
+      });
+    });
+
+    describe("handleWindowMessage", () => {
+      it("ignores window messages when the port is not set", () => {
+        autofillOverlayIframeService["port"] = null;
+
+        globalThis.dispatchEvent(new MessageEvent("message", { data: {} }));
+
+        expect(autofillOverlayIframeService["port"]).toBeNull();
+      });
+
+      it("ignores window messages whose source is not the iframe's content window", () => {
+        globalThis.dispatchEvent(
+          new MessageEvent("message", {
+            data: {},
+            source: window,
+          })
+        );
+
+        expect(portSpy.postMessage).not.toBeCalled();
+      });
+
+      it("ignores window messages whose origin is not from the extension origin", () => {
+        globalThis.dispatchEvent(
+          new MessageEvent("message", {
+            data: {},
+            source: autofillOverlayIframeService["iframe"].contentWindow,
+            origin: "https://www.google.com",
+          })
+        );
+
+        expect(portSpy.postMessage).not.toBeCalled();
+      });
+
+      it("passes the window message from an iframe element to the background port", () => {
+        globalThis.dispatchEvent(
+          new MessageEvent("message", {
+            data: { command: "not-a-handled-command" },
+            source: autofillOverlayIframeService["iframe"].contentWindow,
+            origin: "chrome-extension://id",
+          })
+        );
+
+        expect(portSpy.postMessage).toBeCalledWith({ command: "not-a-handled-command" });
+      });
+
+      it("updates the overlay list height", () => {
+        globalThis.dispatchEvent(
+          new MessageEvent("message", {
+            data: { command: "updateAutofillOverlayListHeight", styles: { height: "300px" } },
+            source: autofillOverlayIframeService["iframe"].contentWindow,
+            origin: "chrome-extension://id",
+          })
+        );
+
+        expect(autofillOverlayIframeService["iframe"].style.height).toBe("300px");
+      });
+    });
+  });
+
+  describe("mutation observer", () => {
+    beforeEach(() => {
+      autofillOverlayIframeService.initOverlayIframe({ height: "0px" }, "title", "ariaAlert");
+      autofillOverlayIframeService["iframe"].dispatchEvent(new Event(EVENTS.LOAD));
+    });
+
+    it("will revert any styles changes made directly to the iframe", async () => {
+      jest.useFakeTimers();
+
+      autofillOverlayIframeService["iframe"].style.visibility = "hidden";
+      await flushPromises();
+
+      expect(autofillOverlayIframeService["iframe"].style.visibility).toBe("visible");
     });
   });
 });

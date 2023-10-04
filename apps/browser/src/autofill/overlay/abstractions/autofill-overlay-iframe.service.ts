@@ -3,6 +3,11 @@ type AutofillOverlayIframeExtensionMessage = {
   styles?: Partial<CSSStyleDeclaration>;
 };
 
+type AutofillOverlayIframeWindowMessageHandlers = {
+  [key: string]: CallableFunction;
+  updateAutofillOverlayListHeight: (message: AutofillOverlayIframeExtensionMessage) => void;
+};
+
 type BackgroundPortMessageHandlers = {
   [key: string]: CallableFunction;
   updateIframePosition: ({ message }: { message: AutofillOverlayIframeExtensionMessage }) => void;
@@ -15,6 +20,7 @@ interface AutofillOverlayIframeService {
 
 export {
   AutofillOverlayIframeExtensionMessage,
+  AutofillOverlayIframeWindowMessageHandlers,
   BackgroundPortMessageHandlers,
   AutofillOverlayIframeService,
 };
