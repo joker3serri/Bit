@@ -51,10 +51,10 @@ class AutofillInit implements AutofillInitInterface {
    * Initializes the autofill content script, setting up
    * the extension message listeners. This method should
    * be called once when the content script is loaded.
-   * @public
    */
   init() {
     this.setupExtensionMessageListeners();
+    this.autofillOverlayContentService?.init();
   }
 
   /**
@@ -63,10 +63,9 @@ class AutofillInit implements AutofillInitInterface {
    * parameter is set to true, the page details will be
    * returned to facilitate sending the details in the
    * response to the extension message.
-   * @param {AutofillExtensionMessage} message
-   * @param {boolean} sendDetailsInResponse
-   * @returns {AutofillPageDetails | void}
-   * @private
+   *
+   * @param message - The extension message.
+   * @param sendDetailsInResponse - Determines whether to send the details in the response.
    */
   private async collectPageDetails(
     message: AutofillExtensionMessage,
@@ -88,8 +87,8 @@ class AutofillInit implements AutofillInitInterface {
 
   /**
    * Fills the form with the given fill script.
-   * @param {AutofillScript} fillScript
-   * @private
+   *
+   * @param fillScript - Script used to fill input elements
    */
   private async fillForm(fillScript: AutofillScript) {
     this.updateOverlayIsCurrentlyFilling(true);
@@ -105,6 +104,11 @@ class AutofillInit implements AutofillInitInterface {
     }, 250);
   }
 
+  /**
+   * Handles updating the overlay is currently filling value.
+   *
+   * @param isCurrentlyFilling - Indicates if the overlay is currently filling
+   */
   private updateOverlayIsCurrentlyFilling(isCurrentlyFilling: boolean) {
     if (!this.autofillOverlayContentService) {
       return;
@@ -113,19 +117,24 @@ class AutofillInit implements AutofillInitInterface {
     this.autofillOverlayContentService.isCurrentlyFilling = isCurrentlyFilling;
   }
 
+  /**
+   * Opens the autofill overlay.
+   *
+   * @param data - The extension message data.
+   */
   private openAutofillOverlay({ data }: AutofillExtensionMessage) {
     if (!this.autofillOverlayContentService) {
       return;
     }
 
-    const { isFocusingFieldElement, isOpeningFullOverlay, authStatus } = data;
-    this.autofillOverlayContentService.openAutofillOverlay(
-      isFocusingFieldElement,
-      isOpeningFullOverlay,
-      authStatus
-    );
+    this.autofillOverlayContentService.openAutofillOverlay(data);
   }
 
+  /**
+   * Blurs the most recent overlay field and removes the overlay. Used
+   * in cases where the background unlock or vault item reprompt popout
+   * is opened.
+   */
   private blurAndRemoveOverlay() {
     if (!this.autofillOverlayContentService) {
       return;
@@ -135,6 +144,11 @@ class AutofillInit implements AutofillInitInterface {
     this.removeAutofillOverlay();
   }
 
+  /**
+   * Removes the autofill overlay if the field is not currently focused.
+   * If the autofill is currently filling, only the overlay list will be
+   * removed.
+   */
   private removeAutofillOverlay() {
     if (
       !this.autofillOverlayContentService ||
@@ -151,6 +165,9 @@ class AutofillInit implements AutofillInitInterface {
     this.autofillOverlayContentService.removeAutofillOverlay();
   }
 
+  /**
+   * Adds a new vault item from the overlay.
+   */
   private addNewVaultItemFromOverlay() {
     if (!this.autofillOverlayContentService) {
       return;
@@ -159,6 +176,11 @@ class AutofillInit implements AutofillInitInterface {
     this.autofillOverlayContentService.addNewVaultItem();
   }
 
+  /**
+   * Redirects the overlay focus out of an overlay iframe.
+   *
+   * @param data - Contains the direction to redirect the focus.
+   */
   private redirectOverlayFocusOut({ data }: AutofillExtensionMessage) {
     if (!this.autofillOverlayContentService) {
       return;
@@ -167,13 +189,18 @@ class AutofillInit implements AutofillInitInterface {
     this.autofillOverlayContentService.redirectOverlayFocusOut(data?.direction);
   }
 
+  /**
+   * Updates whether the current tab has ciphers that can populate the overlay list
+   * @param data - Contains the isOverlayCiphersPopulated value
+   *
+   */
   private updateIsOverlayCiphersPopulated({ data }: AutofillExtensionMessage) {
     if (!this.autofillOverlayContentService) {
       return;
     }
 
-    this.autofillOverlayContentService.setIsOverlayCiphersPopulated(
-      Boolean(data?.isOverlayCiphersPopulated)
+    this.autofillOverlayContentService.isOverlayCiphersPopulated = Boolean(
+      data?.isOverlayCiphersPopulated
     );
   }
 
@@ -203,12 +230,12 @@ class AutofillInit implements AutofillInitInterface {
     const command: string = message.command;
     const handler: CallableFunction | undefined = this.extensionMessageHandlers[command];
     if (!handler) {
-      return false;
+      return;
     }
 
     const messageResponse = handler({ message, sender });
     if (!messageResponse) {
-      return false;
+      return;
     }
 
     Promise.resolve(messageResponse).then((response) => sendResponse(response));

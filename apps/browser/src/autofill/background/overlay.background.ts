@@ -35,6 +35,9 @@ import {
 } from "./abstractions/overlay.background";
 
 class OverlayBackground implements OverlayBackgroundInterface {
+  private readonly openUnlockPopout = openUnlockPopout;
+  private readonly openViewVaultItemPopout = openViewVaultItemPopout;
+  private readonly openAddEditVaultItemPopout = openAddEditVaultItemPopout;
   private overlayVisibility: number;
   private overlayLoginCiphers: Map<string, CipherView> = new Map();
   private pageDetailsForTab: Record<number, PageDetail[]> = {};
@@ -69,7 +72,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     checkAutofillOverlayButtonFocused: () => this.checkAutofillOverlayButtonFocused(),
     overlayPageBlurred: () => this.checkAutofillOverlayButtonFocused(),
     unlockVault: ({ port }) => this.unlockVault(port),
-    autofillSelectedListItem: ({ message, port }) => this.autofillOverlayListItem(message, port),
+    fillSelectedListItem: ({ message, port }) => this.fillSelectedOverlayListItem(message, port),
     addNewVaultItem: ({ port }) => this.getNewVaultItemDetails(port),
     viewSelectedCipher: ({ message, port }) => this.viewSelectedCipher(message, port),
     redirectOverlayFocusOut: ({ message, port }) => this.redirectOverlayFocusOut(message, port),
@@ -88,10 +91,21 @@ class OverlayBackground implements OverlayBackgroundInterface {
     this.initOverlayBackground();
   }
 
+  /**
+   * Removes cached page details for a tab
+   * based on the passed tabId.
+   *
+   * @param tabId - Used to reference the page details of a specific tab
+   */
   removePageDetails(tabId: number) {
     delete this.pageDetailsForTab[tabId];
   }
 
+  /**
+   * Updates the overlay list's ciphers and sends the updated list to the overlay list iframe.
+   * Queries all ciphers for the given url, and sorts them by last used. Will not update the
+   * list of ciphers if the extension is not unlocked.
+   */
   async updateAutofillOverlayCiphers() {
     if (this.userAuthStatus !== AuthenticationStatus.Unlocked) {
       return;
@@ -117,22 +131,30 @@ class OverlayBackground implements OverlayBackgroundInterface {
     });
   }
 
+  /**
+   * Sets up the extension message listeners and gets the settings for the
+   * overlay's visibility and the user's authentication status.
+   */
   private async initOverlayBackground() {
     this.setupExtensionMessageListeners();
     await this.getOverlayVisibility();
     await this.getAuthStatus();
   }
 
+  /**
+   * Strips out unnecessary data from the ciphers and returns an array of
+   * objects that contain the cipher data needed for the overlay list.
+   */
   private getOverlayCipherData(): OverlayCipherData[] {
     const isFaviconDisabled = this.settingsService.getDisableFavicon();
     const overlayCiphersArray = Array.from(this.overlayLoginCiphers);
     const overlayCipherData = [];
-    let cipherIconData: WebsiteIconData;
+    let loginCipherIcon: WebsiteIconData;
 
     for (let cipherIndex = 0; cipherIndex < overlayCiphersArray.length; cipherIndex++) {
       const [overlayCipherId, cipher] = overlayCiphersArray[cipherIndex];
-      if (!cipherIconData) {
-        cipherIconData = WebsiteIconService.buildCipherIconData(
+      if (!loginCipherIcon && cipher.type === CipherType.Login) {
+        loginCipherIcon = WebsiteIconService.buildCipherIconData(
           this.iconsServerUrl,
           cipher,
           isFaviconDisabled
@@ -145,7 +167,14 @@ class OverlayBackground implements OverlayBackgroundInterface {
         type: cipher.type,
         reprompt: cipher.reprompt,
         favorite: cipher.favorite,
-        icon: cipherIconData,
+        icon:
+          cipher.type === CipherType.Login
+            ? loginCipherIcon
+            : WebsiteIconService.buildCipherIconData(
+                this.iconsServerUrl,
+                cipher,
+                isFaviconDisabled
+              ),
         login:
           cipher.type === CipherType.Login
             ? { username: this.getObscureName(cipher.login.username) }
@@ -160,6 +189,13 @@ class OverlayBackground implements OverlayBackgroundInterface {
     return overlayCipherData;
   }
 
+  /**
+   * Handles aggregation of page details for a tab. Stores the page details
+   * in association with the tabId of the tab that sent the message.
+   *
+   * @param message - Message received from the `collectPageDetailsResponse` command
+   * @param sender - The sender of the message
+   */
   private storePageDetails(
     message: OverlayBackgroundExtensionMessage,
     sender: chrome.runtime.MessageSender
@@ -178,7 +214,14 @@ class OverlayBackground implements OverlayBackgroundInterface {
     this.pageDetailsForTab[sender.tab.id] = [pageDetails];
   }
 
-  private async autofillOverlayListItem(
+  /**
+   * Triggers autofill for the selected cipher in the overlay list. Also places
+   * the selected cipher at the top of the list of ciphers.
+   *
+   * @param overlayCipherId - Cipher ID corresponding to the overlayLoginCiphers map. Does not correspond to the actual cipher's ID.
+   * @param sender - The sender of the port message
+   */
+  private async fillSelectedOverlayListItem(
     { overlayCipherId }: OverlayBackgroundExtensionMessage,
     { sender }: chrome.runtime.Port
   ) {
@@ -202,6 +245,10 @@ class OverlayBackground implements OverlayBackgroundInterface {
     this.overlayLoginCiphers = new Map([[overlayCipherId, cipher], ...this.overlayLoginCiphers]);
   }
 
+  /**
+   * Checks if the overlay is focused. Will check the overlay list
+   * if it is open, otherwise it will check the overlay button.
+   */
   private checkOverlayFocused() {
     if (this.overlayListPort) {
       this.checkOverlayListFocused();
@@ -212,18 +259,34 @@ class OverlayBackground implements OverlayBackgroundInterface {
     this.checkAutofillOverlayButtonFocused();
   }
 
+  /**
+   * Posts a message to the overlay button iframe to check if it is focused.
+   */
   private checkAutofillOverlayButtonFocused() {
     this.overlayButtonPort?.postMessage({ command: "checkAutofillOverlayButtonFocused" });
   }
 
+  /**
+   * Posts a message to the overlay list iframe to check if it is focused.
+   */
   private checkOverlayListFocused() {
     this.overlayListPort?.postMessage({ command: "checkOverlayListFocused" });
   }
 
+  /**
+   * Sends a message to the sender tab to close the autofill overlay.
+   * @param sender - The sender of the port message
+   */
   private closeAutofillOverlay({ sender }: chrome.runtime.Port) {
     BrowserApi.tabSendMessage(sender.tab, { command: "closeAutofillOverlay" });
   }
 
+  /**
+   * Handles cleanup when an overlay element is closed. Disconnects
+   * the list and button ports and sets them to null.
+   *
+   * @param overlayElement - The overlay element that was closed, either the list or button
+   */
   private overlayElementClosed({ overlayElement }: OverlayBackgroundExtensionMessage) {
     if (overlayElement === AutofillOverlayElement.Button) {
       this.overlayButtonPort?.disconnect();
@@ -236,6 +299,12 @@ class OverlayBackground implements OverlayBackgroundInterface {
     this.overlayListPort = null;
   }
 
+  /**
+   * Updates the position of either the overlay list or button. The position
+   * is based on the focused field's position and dimensions.
+   *
+   * @param overlayElement - The overlay element to update, either the list or button
+   */
   private updateOverlayPosition({ overlayElement }: { overlayElement?: string }) {
     if (!overlayElement) {
       return;
@@ -244,7 +313,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     if (overlayElement === AutofillOverlayElement.Button) {
       this.overlayButtonPort?.postMessage({
         command: "updateIframePosition",
-        position: this.getOverlayButtonPosition(),
+        styles: this.getOverlayButtonPosition(),
       });
 
       return;
@@ -252,10 +321,14 @@ class OverlayBackground implements OverlayBackgroundInterface {
 
     this.overlayListPort?.postMessage({
       command: "updateIframePosition",
-      position: this.getOverlayListPosition(),
+      styles: this.getOverlayListPosition(),
     });
   }
 
+  /**
+   * Gets the position of the focused field and calculates the position
+   * of the overlay button based on the focused field's position and dimensions.
+   */
   private getOverlayButtonPosition() {
     if (!this.focusedFieldData) {
       return;
@@ -282,9 +355,16 @@ class OverlayBackground implements OverlayBackgroundInterface {
     };
   }
 
+  /**
+   * Gets the position of the focused field and calculates the position
+   * of the overlay list based on the focused field's position and dimensions.
+   */
   private getOverlayListPosition() {
-    const { top, left, width, height } = this.focusedFieldData.focusedFieldRects;
+    if (!this.focusedFieldData) {
+      return;
+    }
 
+    const { top, left, width, height } = this.focusedFieldData.focusedFieldRects;
     return {
       width: `${width}px`,
       top: `${top + height}px`,
@@ -292,21 +372,37 @@ class OverlayBackground implements OverlayBackgroundInterface {
     };
   }
 
+  /**
+   * Sets the focused field data to the data passed in the extension message.
+   *
+   * @param focusedFieldData - Contains the rects and styles of the focused field.
+   */
   private setFocusedFieldData({ focusedFieldData }: OverlayBackgroundExtensionMessage) {
     this.focusedFieldData = focusedFieldData;
   }
 
+  /**
+   * Updates the overlay's visibility based on the display property passed in the extension message.
+   *
+   * @param display - The display property of the overlay, either "block" or "none"
+   */
   private updateOverlayHidden({ display }: OverlayBackgroundExtensionMessage) {
     if (!display) {
       return;
     }
 
-    const portMessage = { command: "updateOverlayHidden", display: { display } };
+    const portMessage = { command: "updateOverlayHidden", styles: { display } };
 
     this.overlayButtonPort?.postMessage(portMessage);
     this.overlayListPort?.postMessage(portMessage);
   }
 
+  /**
+   * Sends a message to the currently active tab to open the autofill overlay.
+   *
+   * @param isFocusingFieldElement - Identifies whether the field element should be focused when the overlay is opened
+   * @param isOpeningFullOverlay - Identifies whether the full overlay should be forced open regardless of other states
+   */
   private async openOverlay(isFocusingFieldElement = false, isOpeningFullOverlay = false) {
     const currentTab = await BrowserApi.getTabFromCurrentWindowId();
 
@@ -317,6 +413,14 @@ class OverlayBackground implements OverlayBackgroundInterface {
     });
   }
 
+  /**
+   * Obscures the username by replacing all but the first and last characters with asterisks.
+   * If the username is less than 4 characters, only the first character will be shown.
+   * If the username is 6 or more characters, the first and last characters will be shown.
+   * The domain will not be obscured.
+   *
+   * @param name - The username to obscure
+   */
   private getObscureName(name: string): string {
     if (!name) {
       return "";
@@ -342,12 +446,20 @@ class OverlayBackground implements OverlayBackgroundInterface {
     return domain ? `${obscureName}@${domain}` : obscureName;
   }
 
+  /**
+   * Gets the overlay's visibility setting from the settings service.
+   */
   private async getOverlayVisibility(): Promise<number> {
     this.overlayVisibility = await this.settingsService.getAutoFillOverlayVisibility();
 
     return this.overlayVisibility;
   }
 
+  /**
+   * Gets the user's authentication status from the auth service. If the user's
+   * authentication status has changed, the overlay button's authentication status
+   * will be updated and the overlay list's ciphers will be updated.
+   */
   private async getAuthStatus() {
     const formerAuthStatus = this.userAuthStatus;
     this.userAuthStatus = await this.authService.getAuthStatus();
@@ -363,6 +475,9 @@ class OverlayBackground implements OverlayBackgroundInterface {
     return this.userAuthStatus;
   }
 
+  /**
+   * Sends a message to the overlay button to update its authentication status.
+   */
   private updateAutofillOverlayButtonAuthStatus() {
     this.overlayButtonPort?.postMessage({
       command: "updateAutofillOverlayButtonAuthStatus",
@@ -370,6 +485,13 @@ class OverlayBackground implements OverlayBackgroundInterface {
     });
   }
 
+  /**
+   * Handles the overlay button being clicked. If the user is not authenticated,
+   * the vault will be unlocked. If the user is authenticated, the overlay will
+   * be opened.
+   *
+   * @param port - The port of the overlay button
+   */
   private handleOverlayButtonClicked(port: chrome.runtime.Port) {
     if (this.userAuthStatus !== AuthenticationStatus.Unlocked) {
       this.unlockVault(port);
@@ -379,6 +501,12 @@ class OverlayBackground implements OverlayBackgroundInterface {
     this.openOverlay(false, true);
   }
 
+  /**
+   * Facilitates opening the unlock popout window.
+   *
+   * @param port
+   * @private
+   */
   private async unlockVault(port: chrome.runtime.Port) {
     const { sender } = port;
 
@@ -392,9 +520,16 @@ class OverlayBackground implements OverlayBackgroundInterface {
       "addToLockedVaultPendingNotifications",
       retryMessage
     );
-    await openUnlockPopout(sender.tab, { skipNotification: true });
+    await this.openUnlockPopout(sender.tab, { skipNotification: true });
   }
 
+  /**
+   * Triggers the opening of a vault item popout window associated
+   * with the passed cipher ID.
+   * @param overlayCipherId - Cipher ID corresponding to the overlayLoginCiphers map. Does not correspond to the actual cipher's ID.
+   * @param sender - The sender of the port message
+   * @private
+   */
   private async viewSelectedCipher(
     { overlayCipherId }: OverlayBackgroundExtensionMessage,
     { sender }: chrome.runtime.Port
@@ -404,20 +539,25 @@ class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    await openViewVaultItemPopout(sender.tab, {
+    await this.openViewVaultItemPopout(sender.tab, {
       cipherId: cipher.id,
       action: "show-autofill-button",
     });
   }
 
+  /**
+   * Facilitates redirecting focus to the overlay list.
+   */
   private focusOverlayList() {
-    if (!this.overlayListPort) {
-      return;
-    }
-
-    this.overlayListPort.postMessage({ command: "focusOverlayList" });
+    this.overlayListPort?.postMessage({ command: "focusOverlayList" });
   }
 
+  /**
+   * Updates the authentication status for the user and opens the overlay if
+   * a followup command is present in the message.
+   *
+   * @param message - Extension message received from the `unlockCompleted` command
+   */
   private async unlockCompleted(message: OverlayBackgroundExtensionMessage) {
     await this.getAuthStatus();
 
@@ -426,6 +566,9 @@ class OverlayBackground implements OverlayBackgroundInterface {
     }
   }
 
+  /**
+   * Gets the translations for the overlay page.
+   */
   private getTranslations() {
     if (!this.overlayPageTranslations) {
       this.overlayPageTranslations = {
@@ -448,6 +591,13 @@ class OverlayBackground implements OverlayBackgroundInterface {
     return this.overlayPageTranslations;
   }
 
+  /**
+   * Facilitates redirecting focus out of one of the
+   *  overlay elements to elements on the page.
+   *
+   * @param direction - The direction to redirect focus to (either "next", "previous" or "current)
+   * @param sender - The sender of the port message
+   */
   private redirectOverlayFocusOut(
     { direction }: OverlayBackgroundExtensionMessage,
     { sender }: chrome.runtime.Port
@@ -459,10 +609,23 @@ class OverlayBackground implements OverlayBackgroundInterface {
     BrowserApi.tabSendMessageData(sender.tab, "redirectOverlayFocusOut", { direction });
   }
 
+  /**
+   * Triggers adding a new vault item from the overlay. Gathers data
+   * input by the user before calling to open the add/edit window.
+   *
+   * @param sender - The sender of the port message
+   */
   private getNewVaultItemDetails({ sender }: chrome.runtime.Port) {
     BrowserApi.tabSendMessage(sender.tab, { command: "addNewVaultItemFromOverlay" });
   }
 
+  /**
+   * Handles adding a new vault item from the overlay. Gathers data login
+   * data captured in the extension message.
+   * @param login
+   * @param sender
+   * @private
+   */
   private async addNewVaultItem(
     { login }: OverlayAddNewItemMessage,
     sender: chrome.runtime.MessageSender
@@ -490,14 +653,24 @@ class OverlayBackground implements OverlayBackgroundInterface {
       collectionIds: cipherView.collectionIds,
     });
 
-    await openAddEditVaultItemPopout(sender.tab, { cipherId: cipherView.id });
+    await this.openAddEditVaultItemPopout(sender.tab, { cipherId: cipherView.id });
   }
 
+  /**
+   * Sets up the extension message listeners for the overlay.
+   */
   private setupExtensionMessageListeners() {
     chrome.runtime.onMessage.addListener(this.handleExtensionMessage);
     chrome.runtime.onConnect.addListener(this.handlePortOnConnect);
   }
 
+  /**
+   * Handles extension messages sent to the extension background.
+   *
+   * @param message - The message received from the extension
+   * @param sender - The sender of the message
+   * @param sendResponse - The response to send back to the sender
+   */
   private handleExtensionMessage = (
     message: OverlayBackgroundExtensionMessage,
     sender: chrome.runtime.MessageSender,
@@ -505,18 +678,23 @@ class OverlayBackground implements OverlayBackgroundInterface {
   ) => {
     const handler: CallableFunction | undefined = this.extensionMessageHandlers[message?.command];
     if (!handler) {
-      return false;
+      return;
     }
 
     const messageResponse = handler({ message, sender });
     if (!messageResponse) {
-      return false;
+      return;
     }
 
     Promise.resolve(messageResponse).then((response) => sendResponse(response));
     return true;
   };
 
+  /**
+   * Handles the connection of a port to the extension background.
+   *
+   * @param port - The port that connected to the extension background
+   */
   private handlePortOnConnect = async (port: chrome.runtime.Port) => {
     const isOverlayListPort = port.name === AutofillOverlayPort.List;
 
@@ -541,6 +719,11 @@ class OverlayBackground implements OverlayBackgroundInterface {
     });
   };
 
+  /**
+   * Handles messages sent to the overlay list or button ports.
+   * @param message - The message received from the port
+   * @param port - The port that sent the message
+   */
   private handleOverlayElementPortMessage = (
     message: OverlayBackgroundExtensionMessage,
     port: chrome.runtime.Port
