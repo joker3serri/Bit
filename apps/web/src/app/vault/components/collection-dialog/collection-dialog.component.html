@@ -68,7 +68,7 @@
             class="tw-mb-3 tw-text-danger"
             *ngIf="formGroup.controls.access.hasError('managePermissionRequired')"
           >
-            {{ "managePermissionRequired" | i18n }}
+            <i class="bwi bwi-error"></i> {{ "managePermissionRequired" | i18n }}
           </div>
           <bit-access-selector
             *ngIf="organization.useGroups"
