@@ -59,14 +59,15 @@ export class BinaryReader {
     return result;
   }
 
-  seek(position: number) {
-    if (position < 0) {
+  seekFromCurrentPosition(offset: number) {
+    const newPosition = this.position + offset;
+    if (newPosition < 0) {
       throw "Position cannot be negative";
     }
-    if (position > this.arr.length) {
+    if (newPosition > this.arr.length) {
       throw "Array not large enough to seek to this position";
     }
-    this.position = position;
+    this.position = newPosition;
   }
 
   atEnd(): boolean {

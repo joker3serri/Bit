@@ -342,7 +342,7 @@ export class Parser {
 
   private skipItem(reader: BinaryReader): void {
     // See readItem for item description.
-    reader.seek(this.readSize(reader));
+    reader.seekFromCurrentPosition(this.readSize(reader));
   }
 
   private readId(reader: BinaryReader): string {
