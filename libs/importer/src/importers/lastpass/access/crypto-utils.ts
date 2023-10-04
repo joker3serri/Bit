@@ -25,6 +25,17 @@ export class CryptoUtils {
     return await this.cryptoFunctionService.pbkdf2(key, password, "sha256", 1);
   }
 
+  ExclusiveOr(arr1: Uint8Array, arr2: Uint8Array) {
+    if (arr1.length !== arr2.length) {
+      throw "Arrays must be the same length.";
+    }
+    const result = new Uint8Array(arr1.length);
+    for (let i = 0; i < arr1.length; i++) {
+      result[i] = arr1[i] ^ arr2[i];
+    }
+    return result;
+  }
+
   async decryptAes256PlainWithDefault(
     data: Uint8Array,
     encryptionKey: Uint8Array,
