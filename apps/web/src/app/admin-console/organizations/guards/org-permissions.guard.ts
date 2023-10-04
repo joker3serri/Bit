@@ -9,6 +9,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+
 @Injectable({
   providedIn: "root",
 })
@@ -20,15 +21,18 @@ export class OrganizationPermissionsGuard implements CanActivate {
     private i18nService: I18nService,
     private syncService: SyncService
   ) {}
+
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     // TODO: We need to fix this issue once and for all.
     if ((await this.syncService.getLastSync()) == null) {
       await this.syncService.fullSync(false);
     }
+
     const org = this.organizationService.get(route.params.organizationId);
     if (org == null) {
       return this.router.createUrlTree(["/"]);
     }
+
     if (!org.isOwner && !org.enabled) {
       this.platformUtilsService.showToast(
         "error",
