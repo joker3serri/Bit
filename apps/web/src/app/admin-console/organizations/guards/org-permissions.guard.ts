@@ -58,6 +58,7 @@ export class OrganizationPermissionsGuard implements CanActivate {
           },
         });
       }
+
       this.platformUtilsService.showToast("error", null, this.i18nService.t("accessDenied"));
       return canAccessOrgAdmin(org)
         ? this.router.createUrlTree(["/organizations", org.id])
