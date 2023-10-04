@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import * as JSZip from "jszip";
@@ -21,7 +21,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DialogService } from "@bitwarden/components";
+import { BitSubmitDirective, DialogService } from "@bitwarden/components";
 import {
   ImportOption,
   ImportResult,
@@ -67,6 +67,9 @@ export class ImportComponent implements OnInit, OnDestroy {
     fileContents: [],
     file: [],
   });
+
+  @ViewChild(BitSubmitDirective)
+  bitSubmit: BitSubmitDirective;
 
   constructor(
     protected i18nService: I18nService,

@@ -1,0 +1,14 @@
+<h1 bitTypography="h1">{{ "importData" | i18n }}</h1>
+<app-import #import></app-import>
+<button
+  *ngIf="import.bitSubmit"
+  [disabled]="import.bitSubmit.disabled$ | async"
+  [loading]="import.bitSubmit.loading$ | async"
+  form="importForm"
+  bitButton
+  type="submit"
+  bitFormButton
+  buttonType="primary"
+>
+  {{ "importData" | i18n }}
+</button>

@@ -22,12 +22,14 @@ import {
 } from "./dialog";
 import { ExportComponent } from "./export.component";
 import { ImportExportRoutingModule } from "./import-export-routing.module";
+import { ImportWebComponent } from "./import-web.component";
 import { ImportComponent } from "./import.component";
 
 @NgModule({
   imports: [SharedModule, LooseComponentsModule, ImportExportRoutingModule],
   declarations: [
     ImportComponent,
+    ImportWebComponent,
     ExportComponent,
     FilePasswordPromptComponent,
     ImportErrorDialogComponent,
