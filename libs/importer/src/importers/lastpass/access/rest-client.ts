@@ -23,17 +23,47 @@ export class RestClient {
     headers: Map<string, string> = null,
     cookies: Map<string, string> = null
   ): Promise<Response> {
+    const setBody = (requestInit: RequestInit, headerMap: Map<string, string>) => {
+      if (parameters != null && parameters.size > 0) {
+        const form = new FormData();
+        for (const [key, value] of parameters) {
+          form.set(key, value);
+        }
+        requestInit.body = form;
+      }
+    };
+    return await this.post(endpoint, setBody, headers, cookies);
+  }
+
+  async postJson(
+    endpoint: string,
+    body: any,
+    headers: Map<string, string> = null,
+    cookies: Map<string, string> = null
+  ): Promise<Response> {
+    const setBody = (requestInit: RequestInit, headerMap: Map<string, string>) => {
+      if (body != null) {
+        if (headerMap == null) {
+          headerMap = new Map<string, string>();
+        }
+        headerMap.set("Content-Type", "application/json; charset=utf-8");
+        requestInit.body = JSON.stringify(body);
+      }
+    };
+    return await this.post(endpoint, setBody, headers, cookies);
+  }
+
+  private async post(
+    endpoint: string,
+    setBody: (requestInit: RequestInit, headers: Map<string, string>) => void,
+    headers: Map<string, string> = null,
+    cookies: Map<string, string> = null
+  ) {
     const requestInit: RequestInit = {
       method: "POST",
       credentials: "include",
     };
-    if (parameters != null && parameters.size > 0) {
-      const form = new FormData();
-      for (const [key, value] of parameters) {
-        form.set(key, value);
-      }
-      requestInit.body = form;
-    }
+    setBody(requestInit, headers);
     this.setHeaders(requestInit, headers, cookies);
     const request = new Request(this.baseUrl + "/" + endpoint, requestInit);
     const response = await fetch(request);
