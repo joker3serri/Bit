@@ -28,9 +28,11 @@ window.addEventListener(
 
 const forwardCommands = [
   "promptForLogin",
+  "passwordReprompt",
   "addToLockedVaultPendingNotifications",
   "unlockCompleted",
   "addedCipher",
+  "openAddEditCipher",
 ];
 
 chrome.runtime.onMessage.addListener((event) => {

@@ -1,30 +1,34 @@
 import { firstValueFrom } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
-import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { ThemeType } from "@bitwarden/common/enums/themeType";
-import { Utils } from "@bitwarden/common/misc/utils";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ThemeType } from "@bitwarden/common/enums";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
+import AddUnlockVaultQueueMessage from "../../background/models/add-unlock-vault-queue-message";
 import AddChangePasswordQueueMessage from "../../background/models/addChangePasswordQueueMessage";
 import AddLoginQueueMessage from "../../background/models/addLoginQueueMessage";
 import AddLoginRuntimeMessage from "../../background/models/addLoginRuntimeMessage";
 import ChangePasswordRuntimeMessage from "../../background/models/changePasswordRuntimeMessage";
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { NotificationQueueMessageType } from "../../background/models/notificationQueueMessageType";
-import { BrowserApi } from "../../browser/browserApi";
-import { BrowserStateService } from "../../services/abstractions/browser-state.service";
+import { BrowserApi } from "../../platform/browser/browser-api";
+import { BrowserStateService } from "../../platform/services/abstractions/browser-state.service";
 import { AutofillService } from "../services/abstractions/autofill.service";
 
 export default class NotificationBackground {
-  private notificationQueue: (AddLoginQueueMessage | AddChangePasswordQueueMessage)[] = [];
+  private notificationQueue: (
+    | AddLoginQueueMessage
+    | AddChangePasswordQueueMessage
+    | AddUnlockVaultQueueMessage
+  )[] = [];
 
   constructor(
     private autofillService: AutofillService,
@@ -32,7 +36,8 @@ export default class NotificationBackground {
     private authService: AuthService,
     private policyService: PolicyService,
     private folderService: FolderService,
-    private stateService: BrowserStateService
+    private stateService: BrowserStateService,
+    private environmentService: EnvironmentService
   ) {}
 
   async init() {
@@ -53,10 +58,7 @@ export default class NotificationBackground {
   async processMessage(msg: any, sender: chrome.runtime.MessageSender) {
     switch (msg.command) {
       case "unlockCompleted":
-        if (msg.data.target !== "notification.background") {
-          return;
-        }
-        await this.processMessage(msg.data.commandToRetry.msg, msg.data.commandToRetry.sender);
+        await this.handleUnlockCompleted(msg.data, sender);
         break;
       case "bgGetDataForTab":
         await this.getDataForTab(sender.tab, msg.responseCommand);
@@ -82,7 +84,9 @@ export default class NotificationBackground {
         if ((await this.authService.getAuthStatus()) < AuthenticationStatus.Unlocked) {
           const retryMessage: LockedVaultPendingNotificationsItem = {
             commandToRetry: {
-              msg: msg,
+              msg: {
+                command: msg,
+              },
               sender: sender,
             },
             target: "notification.background",
@@ -95,7 +99,7 @@ export default class NotificationBackground {
           await BrowserApi.tabSendMessageData(sender.tab, "promptForLogin");
           return;
         }
-        await this.saveOrUpdateCredentials(sender.tab, msg.folder);
+        await this.saveOrUpdateCredentials(sender.tab, msg.edit, msg.folder);
         break;
       case "bgNeverSave":
         await this.saveNever(sender.tab);
@@ -113,6 +117,9 @@ export default class NotificationBackground {
           default:
             break;
         }
+        break;
+      case "promptForLogin":
+        await this.unlockVault(sender.tab);
         break;
       default:
         break;
@@ -168,11 +175,22 @@ export default class NotificationBackground {
           typeData: {
             isVaultLocked: this.notificationQueue[i].wasVaultLocked,
             theme: await this.getCurrentTheme(),
+            removeIndividualVault: await this.removeIndividualVault(),
+            webVaultURL: await this.environmentService.getWebVaultUrl(),
           },
         });
       } else if (this.notificationQueue[i].type === NotificationQueueMessageType.ChangePassword) {
         BrowserApi.tabSendMessageData(tab, "openNotificationBar", {
           type: "change",
+          typeData: {
+            isVaultLocked: this.notificationQueue[i].wasVaultLocked,
+            theme: await this.getCurrentTheme(),
+            webVaultURL: await this.environmentService.getWebVaultUrl(),
+          },
+        });
+      } else if (this.notificationQueue[i].type === NotificationQueueMessageType.UnlockVault) {
+        BrowserApi.tabSendMessageData(tab, "openNotificationBar", {
+          type: "unlock",
           typeData: {
             isVaultLocked: this.notificationQueue[i].wasVaultLocked,
             theme: await this.getCurrentTheme(),
@@ -225,10 +243,6 @@ export default class NotificationBackground {
         return;
       }
 
-      if (!(await this.allowPersonalOwnership())) {
-        return;
-      }
-
       this.pushAddLoginToQueue(loginDomain, loginInfo, tab, true);
       return;
     }
@@ -239,10 +253,6 @@ export default class NotificationBackground {
     );
     if (usernameMatches.length === 0) {
       if (disabledAddLogin) {
-        return;
-      }
-
-      if (!(await this.allowPersonalOwnership())) {
         return;
       }
 
@@ -310,6 +320,20 @@ export default class NotificationBackground {
     }
   }
 
+  private async unlockVault(tab: chrome.tabs.Tab) {
+    const currentAuthStatus = await this.authService.getAuthStatus();
+    if (currentAuthStatus !== AuthenticationStatus.Locked || this.notificationQueue.length) {
+      return;
+    }
+
+    const loginDomain = Utils.getDomain(tab.url);
+    if (!loginDomain) {
+      return;
+    }
+
+    this.pushUnlockVaultToQueue(loginDomain, tab);
+  }
+
   private async pushChangePasswordToQueue(
     cipherId: string,
     loginDomain: string,
@@ -332,14 +356,24 @@ export default class NotificationBackground {
     await this.checkNotificationQueue(tab);
   }
 
-  private async saveOrUpdateCredentials(tab: chrome.tabs.Tab, folderId?: string) {
+  private async pushUnlockVaultToQueue(loginDomain: string, tab: chrome.tabs.Tab) {
+    this.removeTabFromNotificationQueue(tab);
+    const message: AddUnlockVaultQueueMessage = {
+      type: NotificationQueueMessageType.UnlockVault,
+      domain: loginDomain,
+      tabId: tab.id,
+      expires: new Date(new Date().getTime() + 0.5 * 60000), // 30 seconds
+      wasVaultLocked: true,
+    };
+    this.notificationQueue.push(message);
+    await this.checkNotificationQueue(tab);
+    this.removeTabFromNotificationQueue(tab);
+  }
+
+  private async saveOrUpdateCredentials(tab: chrome.tabs.Tab, edit: boolean, folderId?: string) {
     for (let i = this.notificationQueue.length - 1; i >= 0; i--) {
       const queueMessage = this.notificationQueue[i];
-      if (
-        queueMessage.tabId !== tab.id ||
-        (queueMessage.type !== NotificationQueueMessageType.AddLogin &&
-          queueMessage.type !== NotificationQueueMessageType.ChangePassword)
-      ) {
+      if (queueMessage.tabId !== tab.id || !(queueMessage.type in NotificationQueueMessageType)) {
         continue;
       }
 
@@ -352,79 +386,87 @@ export default class NotificationBackground {
       BrowserApi.tabSendMessageData(tab, "closeNotificationBar");
 
       if (queueMessage.type === NotificationQueueMessageType.ChangePassword) {
-        const changePasswordMessage = queueMessage as AddChangePasswordQueueMessage;
-        const cipher = await this.getDecryptedCipherById(changePasswordMessage.cipherId);
-        if (cipher == null) {
-          return;
-        }
-        await this.updateCipher(cipher, changePasswordMessage.newPassword);
+        const cipherView = await this.getDecryptedCipherById(queueMessage.cipherId);
+        await this.updatePassword(cipherView, queueMessage.newPassword, edit, tab);
         return;
       }
 
       if (queueMessage.type === NotificationQueueMessageType.AddLogin) {
-        if (!queueMessage.wasVaultLocked) {
-          await this.createNewCipher(queueMessage as AddLoginQueueMessage, folderId);
-          BrowserApi.tabSendMessageData(tab, "addedCipher");
-          return;
-        }
-
         // If the vault was locked, check if a cipher needs updating instead of creating a new one
-        const addLoginMessage = queueMessage as AddLoginQueueMessage;
-        const ciphers = await this.cipherService.getAllDecryptedForUrl(addLoginMessage.uri);
-        const usernameMatches = ciphers.filter(
-          (c) =>
-            c.login.username != null && c.login.username.toLowerCase() === addLoginMessage.username
-        );
+        if (queueMessage.wasVaultLocked) {
+          const allCiphers = await this.cipherService.getAllDecryptedForUrl(queueMessage.uri);
+          const existingCipher = allCiphers.find(
+            (c) =>
+              c.login.username != null && c.login.username.toLowerCase() === queueMessage.username
+          );
 
-        if (usernameMatches.length >= 1) {
-          await this.updateCipher(usernameMatches[0], addLoginMessage.password);
+          if (existingCipher != null) {
+            await this.updatePassword(existingCipher, queueMessage.password, edit, tab);
+            return;
+          }
+        }
+
+        folderId = (await this.folderExists(folderId)) ? folderId : null;
+        const newCipher = AddLoginQueueMessage.toCipherView(queueMessage, folderId);
+
+        if (edit) {
+          await this.editItem(newCipher, tab);
           return;
         }
 
-        await this.createNewCipher(addLoginMessage, folderId);
+        const cipher = await this.cipherService.encrypt(newCipher);
+        await this.cipherService.createWithServer(cipher);
         BrowserApi.tabSendMessageData(tab, "addedCipher");
       }
     }
   }
 
-  private async createNewCipher(queueMessage: AddLoginQueueMessage, folderId: string) {
-    const loginModel = new LoginView();
-    const loginUri = new LoginUriView();
-    loginUri.uri = queueMessage.uri;
-    loginModel.uris = [loginUri];
-    loginModel.username = queueMessage.username;
-    loginModel.password = queueMessage.password;
-    const model = new CipherView();
-    model.name = Utils.getHostname(queueMessage.uri) || queueMessage.domain;
-    model.name = model.name.replace(/^www\./, "");
-    model.type = CipherType.Login;
-    model.login = loginModel;
+  private async updatePassword(
+    cipherView: CipherView,
+    newPassword: string,
+    edit: boolean,
+    tab: chrome.tabs.Tab
+  ) {
+    cipherView.login.password = newPassword;
 
-    if (!Utils.isNullOrWhitespace(folderId)) {
-      const folders = await firstValueFrom(this.folderService.folderViews$);
-      if (folders.some((x) => x.id === folderId)) {
-        model.folderId = folderId;
-      }
+    if (edit) {
+      await this.editItem(cipherView, tab);
+      BrowserApi.tabSendMessage(tab, "editedCipher");
+      return;
     }
 
-    const cipher = await this.cipherService.encrypt(model);
-    await this.cipherService.createWithServer(cipher);
+    const cipher = await this.cipherService.encrypt(cipherView);
+    await this.cipherService.updateWithServer(cipher);
+    // We've only updated the password, no need to broadcast editedCipher message
+    return;
+  }
+
+  private async editItem(cipherView: CipherView, senderTab: chrome.tabs.Tab) {
+    await this.stateService.setAddEditCipherInfo({
+      cipher: cipherView,
+      collectionIds: cipherView.collectionIds,
+    });
+
+    await BrowserApi.tabSendMessageData(senderTab, "openAddEditCipher", {
+      cipherId: cipherView.id,
+    });
+  }
+
+  private async folderExists(folderId: string) {
+    if (Utils.isNullOrWhitespace(folderId) || folderId === "null") {
+      return false;
+    }
+
+    const folders = await firstValueFrom(this.folderService.folderViews$);
+    return folders.some((x) => x.id === folderId);
   }
 
   private async getDecryptedCipherById(cipherId: string) {
     const cipher = await this.cipherService.get(cipherId);
     if (cipher != null && cipher.type === CipherType.Login) {
-      return await cipher.decrypt();
+      return await cipher.decrypt(await this.cipherService.getKeyForCipherKeyDecryption(cipher));
     }
     return null;
-  }
-
-  private async updateCipher(cipher: CipherView, newPassword: string) {
-    if (cipher != null && cipher.type === CipherType.Login) {
-      cipher.login.password = newPassword;
-      const newCipher = await this.cipherService.encrypt(cipher);
-      await this.cipherService.updateWithServer(newCipher);
-    }
   }
 
   private async saveNever(tab: chrome.tabs.Tab) {
@@ -459,9 +501,27 @@ export default class NotificationBackground {
     await BrowserApi.tabSendMessageData(tab, responseCommand, responseData);
   }
 
-  private async allowPersonalOwnership(): Promise<boolean> {
-    return !(await firstValueFrom(
+  private async removeIndividualVault(): Promise<boolean> {
+    return await firstValueFrom(
       this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
-    ));
+    );
+  }
+
+  private async handleUnlockCompleted(
+    messageData: LockedVaultPendingNotificationsItem,
+    sender: chrome.runtime.MessageSender
+  ): Promise<void> {
+    if (messageData.commandToRetry.msg.command === "autofill_login") {
+      await BrowserApi.tabSendMessageData(sender.tab, "closeNotificationBar");
+    }
+
+    if (messageData.target !== "notification.background") {
+      return;
+    }
+
+    await this.processMessage(
+      messageData.commandToRetry.msg.command,
+      messageData.commandToRetry.sender
+    );
   }
 }

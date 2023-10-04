@@ -1,12 +1,21 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
+import { combineLatest, Observable, startWith, switchMap } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
-import { ServiceAccountView } from "../models/view/service-account.view";
+import {
+  ServiceAccountSecretsDetailsView,
+  ServiceAccountView,
+} from "../models/view/service-account.view";
+import { AccessPolicyService } from "../shared/access-policies/access-policy.service";
 
 import {
+  ServiceAccountDeleteDialogComponent,
+  ServiceAccountDeleteOperation,
+} from "./dialog/service-account-delete-dialog.component";
+import {
+  OperationType,
   ServiceAccountDialogComponent,
   ServiceAccountOperation,
 } from "./dialog/service-account-dialog.component";
@@ -17,21 +26,25 @@ import { ServiceAccountService } from "./service-account.service";
   templateUrl: "./service-accounts.component.html",
 })
 export class ServiceAccountsComponent implements OnInit {
-  serviceAccounts$: Observable<ServiceAccountView[]>;
+  protected serviceAccounts$: Observable<ServiceAccountSecretsDetailsView[]>;
+  protected search: string;
 
   private organizationId: string;
 
   constructor(
     private route: ActivatedRoute,
     private dialogService: DialogService,
+    private accessPolicyService: AccessPolicyService,
     private serviceAccountService: ServiceAccountService
   ) {}
 
   ngOnInit() {
-    this.serviceAccounts$ = this.serviceAccountService.serviceAccount$.pipe(
-      startWith(null),
-      combineLatestWith(this.route.params),
-      switchMap(async ([_, params]) => {
+    this.serviceAccounts$ = combineLatest([
+      this.route.params,
+      this.serviceAccountService.serviceAccount$.pipe(startWith(null)),
+      this.accessPolicyService.serviceAccountAccessPolicyChanges$.pipe(startWith(null)),
+    ]).pipe(
+      switchMap(async ([params]) => {
         this.organizationId = params.organizationId;
         return await this.getServiceAccounts();
       })
@@ -42,11 +55,33 @@ export class ServiceAccountsComponent implements OnInit {
     this.dialogService.open<unknown, ServiceAccountOperation>(ServiceAccountDialogComponent, {
       data: {
         organizationId: this.organizationId,
+        operation: OperationType.Add,
       },
     });
   }
 
-  private async getServiceAccounts(): Promise<ServiceAccountView[]> {
-    return await this.serviceAccountService.getServiceAccounts(this.organizationId);
+  openEditServiceAccountDialog(serviceAccountId: string) {
+    this.dialogService.open<unknown, ServiceAccountOperation>(ServiceAccountDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        serviceAccountId: serviceAccountId,
+        operation: OperationType.Edit,
+      },
+    });
+  }
+
+  openDeleteDialog(event: ServiceAccountView[]) {
+    this.dialogService.open<unknown, ServiceAccountDeleteOperation>(
+      ServiceAccountDeleteDialogComponent,
+      {
+        data: {
+          serviceAccounts: event,
+        },
+      }
+    );
+  }
+
+  private async getServiceAccounts(): Promise<ServiceAccountSecretsDetailsView[]> {
+    return await this.serviceAccountService.getServiceAccounts(this.organizationId, true);
   }
 }

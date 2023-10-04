@@ -1,17 +1,19 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { BrowserStateService } from "../../services/abstractions/browser-state.service";
+import { BrowserStateService } from "../../platform/services/abstractions/browser-state.service";
 
 import { MainContextMenuHandler } from "./main-context-menu-handler";
 
 describe("context-menu", () => {
   let stateService: MockProxy<BrowserStateService>;
   let i18nService: MockProxy<I18nService>;
+  let logService: MockProxy<LogService>;
 
   let removeAllSpy: jest.SpyInstance<void, [callback?: () => void]>;
   let createSpy: jest.SpyInstance<
@@ -24,6 +26,7 @@ describe("context-menu", () => {
   beforeEach(() => {
     stateService = mock();
     i18nService = mock();
+    logService = mock();
 
     removeAllSpy = jest
       .spyOn(chrome.contextMenus, "removeAll")
@@ -36,7 +39,7 @@ describe("context-menu", () => {
       return props.id;
     });
 
-    sut = new MainContextMenuHandler(stateService, i18nService);
+    sut = new MainContextMenuHandler(stateService, i18nService, logService);
   });
 
   afterEach(() => jest.resetAllMocks());
@@ -57,7 +60,7 @@ describe("context-menu", () => {
 
       const createdMenu = await sut.init();
       expect(createdMenu).toBeTruthy();
-      expect(createSpy).toHaveBeenCalledTimes(7);
+      expect(createSpy).toHaveBeenCalledTimes(10);
     });
 
     it("has menu enabled and has premium", async () => {
@@ -67,7 +70,7 @@ describe("context-menu", () => {
 
       const createdMenu = await sut.init();
       expect(createdMenu).toBeTruthy();
-      expect(createSpy).toHaveBeenCalledTimes(8);
+      expect(createSpy).toHaveBeenCalledTimes(11);
     });
   });
 
@@ -94,7 +97,7 @@ describe("context-menu", () => {
     };
 
     it("is not a login cipher", async () => {
-      await sut.loadOptions("TEST_TITLE", "1", "", {
+      await sut.loadOptions("TEST_TITLE", "1", {
         ...createCipher(),
         type: CipherType.SecureNote,
       } as any);
@@ -106,7 +109,6 @@ describe("context-menu", () => {
       await sut.loadOptions(
         "TEST_TITLE",
         "1",
-        "",
         createCipher({
           username: "",
           totp: "",
@@ -120,18 +122,18 @@ describe("context-menu", () => {
     it("create entry for each cipher piece", async () => {
       stateService.getCanAccessPremium.mockResolvedValue(true);
 
-      await sut.loadOptions("TEST_TITLE", "1", "", createCipher());
+      await sut.loadOptions("TEST_TITLE", "1", createCipher());
 
       // One for autofill, copy username, copy password, and copy totp code
       expect(createSpy).toHaveBeenCalledTimes(4);
     });
 
-    it("creates noop item for no cipher", async () => {
+    it("creates a login/unlock item for each context menu action option when user is not authenticated", async () => {
       stateService.getCanAccessPremium.mockResolvedValue(true);
 
-      await sut.loadOptions("TEST_TITLE", "NOOP", "");
+      await sut.loadOptions("TEST_TITLE", "NOOP");
 
-      expect(createSpy).toHaveBeenCalledTimes(4);
+      expect(createSpy).toHaveBeenCalledTimes(6);
     });
   });
 });

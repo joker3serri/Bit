@@ -5,5 +5,8 @@
       "base": "https://localhost:8080"
     }
   },
-  "flags": {}
+  "flags": {
+    "showPasswordless": true,
+    "enableCipherKeyEncryption": false
+  }
 }

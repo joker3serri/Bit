@@ -475,8 +475,8 @@
   "maxFileSize": {
     "message": "الحجم الأقصى للملف هو 500 ميجابايت."
   },
-  "updateKey": {
-    "message": "لا يمكنك استخدام هذه الميزة حتى تقوم بتحديث مفتاح التشفير الخاص بك."
+  "encryptionKeyMigrationRequired": {
+    "message": "مطلوب ترحيل مفتاح التشفير. الرجاء تسجيل الدخول بواسطة مخزن الويب لتحديث مفتاح التشفير الخاص بك."
   },
   "editedFolder": {
     "message": "تم تعديل المجلد"
@@ -542,7 +542,14 @@
     "message": "مطلوب إعادة كتابة كلمة المرور الرئيسية."
   },
   "masterPasswordMinlength": {
-    "message": "يجب أن تكون كلمة المرور الرئيسية أكثر من 8 أحرف."
+    "message": "كلمة المرور الرئيسية يجب أن تكون على الأقل $VALUE$ حرفاً.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "لا يتطابق تأكيد كلمة المرور مع كلمة المرور."
@@ -762,6 +769,9 @@
   },
   "contactUs": {
     "message": "اتصل بنا"
+  },
+  "helpAndFeedback": {
+    "message": "المساعدة والملاحظات"
   },
   "getHelp": {
     "message": "الحصول على المساعدة"
@@ -1067,8 +1077,8 @@
   "premiumSignUpStorage": {
     "message": "1 جيغابايت وحدة تخزين مشفرة لمرفقات الملفات."
   },
-  "premiumSignUpTwoStep": {
-    "message": "خيارات تسجيل الدخول الإضافية من خطوتين مثل YubiKey و FIDO U2F و Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "خيارات تسجيل الدخول بخطوتين المملوكة مثل YubiKey و Duo."
   },
   "premiumSignUpReports": {
     "message": "نظافة كلمة المرور، صحة الحساب، وتقارير خرق البيانات للحفاظ على سلامة خزنتك."
@@ -1382,11 +1392,17 @@
   "unlockWithWindowsHello": {
     "message": "فتح مع Windows Hello"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "إعدادات Windows Hello إضافية"
+  },
   "windowsHelloConsentMessage": {
     "message": "تحقق من Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "فتح بواسطة معرف اللمس"
+  },
+  "additionalTouchIdSettings": {
+    "message": "إعدادات معرف اللمس الإضافية"
   },
   "touchIdConsentMessage": {
     "message": "فتح خزنتك"
@@ -1396,6 +1412,12 @@
   },
   "autoPromptTouchId": {
     "message": "اطلب معرف اللمس عند التشغيل"
+  },
+  "requirePasswordOnStart": {
+    "message": "يتطلب كلمة مرور أو رقم التعريف الشخصي عند بدء التطبيق"
+  },
+  "recommendedForSecurity": {
+    "message": "موصى به للأمان."
   },
   "lockWithMasterPassOnRestart": {
     "message": "قفل مع كلمة المرور الرئيسية عند إعادة تشغيل"
@@ -1470,6 +1492,9 @@
   "vaultTimeoutActionLogOutDesc": {
     "message": "تسجيل الخروج من الخزنة يتطلب إعادة المصادقة للوصول إليها مرة أخرى."
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "أعدنّ طريقة إلغاء القُفْل لتغيير إجراء مهلة المخزن الخاص بك."
+  },
   "lock": {
     "message": "قفل",
     "description": "Verb form: to make secure or inaccesible by"
@@ -1489,12 +1514,6 @@
   },
   "permanentlyDeletedItem": {
     "message": "تم حذف العنصر بشكل دائم"
-  },
-  "restoreItem": {
-    "message": "استعادة العنصر"
-  },
-  "restoreItemConfirmation": {
-    "message": "هل أنت متأكد من أنك تريد استعادة هذا العنصر؟"
   },
   "restoredItem": {
     "message": "العنصر المستعاد"
@@ -1516,6 +1535,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "من أجل إكمال تسجيل الدخول باستخدام SSO، يرجى تعيين كلمة مرور رئيسية للوصول وحماية خزنتك."
+  },
+  "currentMasterPass": {
+    "message": "كلمة المرور الرئيسية الحالية"
   },
   "newMasterPass": {
     "message": "كلمة المرور الرئيسية الجديدة"
@@ -1833,6 +1855,9 @@
   "updateMasterPasswordWarning": {
     "message": "تم تغيير كلمة المرور الرئيسية الخاصة بك مؤخرًا من قبل مسؤول في مؤسستك. من أجل الوصول إلى الخزانة، يجب عليك تحديثها الآن. سيتم تسجيل خروجك من الجلسة الحالية، مما يتطلب منك تسجيل الدخول مرة أخرى. وقد تظل الجلسات النشطة على أجهزة أخرى نشطة لمدة تصل إلى ساعة واحدة."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "كلمة المرور الرئيسية الخاصة بك لا تفي بواحدة أو أكثر من سياسات مؤسستك. من أجل الوصول إلى الخزنة، يجب عليك تحديث كلمة المرور الرئيسية الآن. سيتم تسجيل خروجك من الجلسة الحالية، مما يتطلب منك تسجيل الدخول مرة أخرى. وقد تظل الجلسات النشطة على أجهزة أخرى نشطة لمدة تصل إلى ساعة واحدة."
+  },
   "hours": {
     "message": "ساعات"
   },
@@ -1849,6 +1874,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "سياسات مؤسستك تؤثر على مهلة خزنتك. الحد الأقصى المسموح به لمهلة الخزنة هو $HOURS$ ساعة(ساعات) و $MINUTES$ دقيقة(دقائق). يتم تعيين إجراء مهلة المخزن الخاص بك إلى $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "لقد حددت سياسات مؤسستك إجراء مهلة الخزنة الخاصة بك إلى $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1933,8 +1984,8 @@
   "exportingPersonalVaultTitle": {
     "message": "تصدير الخزنة الشخصية"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "سيتم تصدير فقط عناصر الخزنة الشخصية المرتبطة بـ $EMAIL$. لن يتم إدراج عناصر خزنة المؤسسة.",
+  "exportingIndividualVaultDescription": {
+    "message": "سيتم تصدير عناصر المخزن الفردية المرتبطة بـ $EMAIL$ فقط. لن يتم إدراج عناصر مخزن المؤسسة. سيتم تصدير معلومات المنتج فقط ولن تشمل المرفقات المرتبطة بها.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2028,9 +2079,6 @@
   "neverLockWarning": {
     "message": "هل أنت متأكد من أنك تريد استخدام خيار \"مطلقا\"؟ إعداد خيارات القفل إلى \"مطلقا\" يخزن مفتاح تشفير المستودع الخاص بك على جهازك. إذا كنت تستخدم هذا الخيار، يجب أن تتأكد من الحفاظ على حماية جهازك بشكل صحيح."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "vault": {
     "message": "الخزنة"
   },
@@ -2061,8 +2109,314 @@
   "logInWithAnotherDevice": {
     "message": "تسجيل الدخول باستخدام جهاز آخر"
   },
+  "loginInitiated": {
+    "message": "بَدْء تسجيل الدخول"
+  },
+  "notificationSentDevice": {
+    "message": "تم إرسال إشعار إلى جهازك."
+  },
+  "fingerprintMatchInfo": {
+    "message": "الرجاء التأكد من أن المخزن الخاص بك غير مقفل وأن عبارة بصمة الإصبع تطابق الجهاز الآخر."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "عبارة بصمة الإصبع"
+  },
+  "needAnotherOption": {
+    "message": "تسجيل الدخول باستخدام الجهاز يجب أن يتم إعداده في إعدادات تطبيق Bitwarden. هل تحتاج إلى خيار آخر؟"
+  },
+  "viewAllLoginOptions": {
+    "message": "عرض جميع خيارات تسجيل الدخول"
+  },
+  "resendNotification": {
+    "message": "إعادة إرسال الإشعار"
+  },
   "toggleCharacterCount": {
     "message": "تبديل عدد الأحرف",
     "description": "'Character count' describes a feature that displays a number next to each character of the password."
+  },
+  "areYouTryingtoLogin": {
+    "message": "هل تحاول تسجيل الدخول؟"
+  },
+  "logInAttemptBy": {
+    "message": "محاولة تسجيل الدخول بواسطة $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "deviceType": {
+    "message": "نوع الجهاز"
+  },
+  "ipAddress": {
+    "message": "عنوان IP"
+  },
+  "time": {
+    "message": "الوقت"
+  },
+  "confirmLogIn": {
+    "message": "تأكيد تسجيل الدخول"
+  },
+  "denyLogIn": {
+    "message": "رفض تسجيل الدخول"
+  },
+  "approveLoginRequests": {
+    "message": "الموافقة على طلبات تسجيل الدخول"
+  },
+  "logInConfirmedForEmailOnDevice": {
+    "message": "تم تأكيد تسجيل الدخول لـ $EMAIL$ في $DEVICE$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      },
+      "device": {
+        "content": "$2",
+        "example": "iOS"
+      }
+    }
+  },
+  "youDeniedALogInAttemptFromAnotherDevice": {
+    "message": "لقد رفضت محاولة تسجيل الدخول من جهاز آخر. إذا كان هذا بالفعل أنت ، حاول تسجيل الدخول مرة أخرى باستخدام الجهاز."
+  },
+  "justNow": {
+    "message": "للتو الآن"
+  },
+  "requestedXMinutesAgo": {
+    "message": "طلب قبل $MINUTES$ دقائق",
+    "placeholders": {
+      "minutes": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "loginRequestHasAlreadyExpired": {
+    "message": "لقد انتهت صلاحية طلب تسجيل الدخول."
+  },
+  "thisRequestIsNoLongerValid": {
+    "message": "هذا الطلب لم يعد صالحًا."
+  },
+  "approveLoginRequestDesc": {
+    "message": "استخدم هذا الجهاز للموافقة على طلبات تسجيل الدخول من الأجهزة الأخرى."
+  },
+  "confirmLoginAtemptForMail": {
+    "message": "تأكيد محاولة تسجيل الدخول لـ $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "logInRequested": {
+    "message": "طلب تسجيل الدخول"
+  },
+  "exposedMasterPassword": {
+    "message": "كلمة المرور الرئيسية مكشوفة"
+  },
+  "exposedMasterPasswordDesc": {
+    "message": "كلمة المرور موجودة في خرق البيانات. استخدم كلمة مرور فريدة لحماية حسابك. هل أنت متأكد من أنك تريد استخدام كلمة مرور مكشوفة؟"
+  },
+  "weakAndExposedMasterPassword": {
+    "message": "كلمة المرور الرئيسية ضعيفة ومكشوفة"
+  },
+  "weakAndBreachedMasterPasswordDesc": {
+    "message": "كلمة مرور ضعيفة محددة وموجودة في خرق البيانات. استخدم كلمة مرور قوية وفريدة لحماية حسابك. هل أنت متأكد من أنك تريد استخدام كلمة المرور هذه؟"
+  },
+  "checkForBreaches": {
+    "message": "تحقق من خروقات البيانات المعروفة لكلمة المرور هذه"
+  },
+  "important": {
+    "message": "مهم:"
+  },
+  "masterPasswordHint": {
+    "message": "لا يمكن استعادة كلمة المرور الرئيسية إذا نسيتها!"
+  },
+  "characterMinimum": {
+    "message": "$LENGTH$ حرف أدنى",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "يوصي Bitwarden بتحديث إعدادات القياسات الحيوية الخاصة بك لطلب كلمة المرور الرئيسية (أو PIN) عند فتح القفل الأول. هل ترغب في تحديث إعداداتك الآن؟"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "تحديث الإعدادات الموصى بها"
+  },
+  "deviceApprovalRequired": {
+    "message": "موافقة الجهاز مطلوبة. حدد خيار الموافقة أدناه:"
+  },
+  "rememberThisDevice": {
+    "message": "تذكر هذا الجهاز"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "إلغاء تحديد عند استخدام جهاز عام"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "الموافقة من جهازك الآخر"
+  },
+  "requestAdminApproval": {
+    "message": "طلب موافقة المشرف"
+  },
+  "approveWithMasterPassword": {
+    "message": "الموافقة بواسطة كلمة المرور الرئيسية"
+  },
+  "region": {
+    "message": "المنطقة"
+  },
+  "ssoIdentifierRequired": {
+    "message": "معرف الـSSO للمؤسسة مطلوب."
+  },
+  "eu": {
+    "message": "الاتحاد الأوروبي",
+    "description": "European Union"
+  },
+  "loggingInOn": {
+    "message": "جارٍ تسجيل الدخول"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "selfHostedServer": {
+    "message": "استضافة ذاتية"
+  },
+  "accessDenied": {
+    "message": "غير مسموح بالدخول. ليس لديك الصلاحية لعرض هذه الصفحة."
+  },
+  "accountSuccessfullyCreated": {
+    "message": "تم إنشاء الحساب بنجاح!"
+  },
+  "adminApprovalRequested": {
+    "message": "طلبت موافقة المسؤول"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "تم إرسال طلبك إلى المشرف الخاص بك."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "سيتم إعلامك بمجرد الموافقة."
+  },
+  "troubleLoggingIn": {
+    "message": "مشكلة في تسجيل الدخول؟"
+  },
+  "loginApproved": {
+    "message": "تمت الموافقة على تسجيل الدخول"
+  },
+  "userEmailMissing": {
+    "message": "البريد الإلكتروني للمستخدم مفقود"
+  },
+  "deviceTrusted": {
+    "message": "الجهاز موثوق به"
+  },
+  "inputRequired": {
+    "message": "الإدخال مطلوب."
+  },
+  "required": {
+    "message": "مطلوب"
+  },
+  "search": {
+    "message": "بحث"
+  },
+  "inputMinLength": {
+    "message": "الإدخال يجب أن يكون على الأقل $COUNT$ حرفاً.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "الإدخال يجب أن لا يتجاوز أحرف $COUNT$ في الطول.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "الأحرف التالية غير مسموح بها: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "يجب أن تكون قيمة الإدخال على الأقل $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "يجب ألا تتجاوز قيمة الإدخال $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 أو أكثر من رسائل البريد الإلكتروني غير صالحة"
+  },
+  "inputTrimValidator": {
+    "message": "الإدخال يجب أن لا يحتوي على مساحة بيضاء فقط.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "الإدخال ليس عنوان بريد إلكتروني."
+  },
+  "fieldsNeedAttention": {
+    "message": "الحقل (الحقول) $COUNT$ أعلاه بحاجة إلى اهتمامك.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- اختيار --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- اكتب للنصفية --"
+  },
+  "multiSelectLoading": {
+    "message": "استرداد الخيارات..."
+  },
+  "multiSelectNotFound": {
+    "message": "لم يتم العثور على عناصر"
+  },
+  "multiSelectClearAll": {
+    "message": "امسح الكل"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ المزيد",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "قائمة فرعية"
+  },
+  "aliasDomain": {
+    "message": "Alias domain"
   }
 }
