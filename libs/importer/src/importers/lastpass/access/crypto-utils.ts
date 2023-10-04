@@ -91,8 +91,7 @@ export class CryptoUtils {
     if (data.length === 0) {
       return "";
     }
-    // TODO: pass mode
-    const plain = await this.cryptoFunctionService.aesDecrypt(data, iv, encryptionKey);
+    const plain = await this.cryptoFunctionService.aesDecrypt(data, iv, encryptionKey, mode);
     return Utils.fromBufferToUtf8(plain);
   }
 
