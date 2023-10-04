@@ -1,3 +1,4 @@
+import { HttpStatusCode } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
@@ -7,7 +8,9 @@ import { ClientInfo } from "./client-info";
 import { CryptoUtils } from "./crypto-utils";
 import { Parser } from "./parser";
 import { ParserOptions } from "./parser-options";
+import { RestClient } from "./rest-client";
 import { Ui } from "./ui";
+import { UserType } from "./user-type";
 
 export class Vault {
   accounts: Account[];
@@ -47,5 +50,45 @@ export class Vault {
     );
     const hiddenPassword = Utils.fromBufferToB64(hiddenPasswordArr);
     await this.open(username, hiddenPassword, clientInfo, ui, parserOptions);
+  }
+
+  async getUserType(username: string): Promise<UserType> {
+    const lowercaseUsername = username.toLowerCase();
+    const rest = new RestClient();
+    rest.baseUrl = "https://lastpass.com";
+    const endpoint = "lmiapi/login/type?username=" + encodeURIComponent(lowercaseUsername);
+    const response = await rest.get(endpoint);
+    if (response.status === HttpStatusCode.Ok) {
+      const json = await response.json();
+      const userType = new UserType();
+      userType.CompanyId = json.CompanyId;
+      userType.IdentityProviderGUID = json.IdentityProviderGUID;
+      userType.IdentityProviderURL = json.IdentityProviderURL;
+      userType.IsPasswordlessEnabled = json.IsPasswordlessEnabled;
+      userType.OpenIDConnectAuthority = json.OpenIDConnectAuthority;
+      userType.OpenIDConnectClientId = json.OpenIDConnectClientId;
+      userType.PkceEnabled = json.PkceEnabled;
+      userType.Provider = json.Provider;
+      userType.type = json.type;
+      return userType;
+    }
+    throw "Cannot determine LastPass user type.";
+  }
+
+  async getIdentityProviderKey(userType: UserType, idToken: string): Promise<string> {
+    if (!userType.isFederated()) {
+      throw "Cannot get identity provider key for a LastPass user that is not federated.";
+    }
+    const rest = new RestClient();
+    rest.baseUrl = userType.IdentityProviderURL;
+    const response = await rest.postJson("federatedlogin/api/v1/getkey", {
+      company_id: userType.CompanyId,
+      id_token: idToken,
+    });
+    if (response.status === HttpStatusCode.Ok) {
+      const json = await response.json();
+      return json["k2"] as string;
+    }
+    throw "Cannot get identity provider key from LastPass.";
   }
 }
