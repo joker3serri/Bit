@@ -1,5 +1,7 @@
 {
   "name": "Bitwarden Vault",
+  "start_url": "/",
+  "display": "standalone",
   "icons": [
     {
       "src": "images/icons/android-chrome-192x192.png",
@@ -13,5 +15,5 @@
     }
   ],
   "theme_color": "#175DDC",
-  "background_color": "#175DDC"
+  "background_color": "#175DDC",
 }
