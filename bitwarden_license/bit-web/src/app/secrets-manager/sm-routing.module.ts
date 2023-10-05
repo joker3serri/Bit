@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/auth/guards";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { buildFlaggedRoute } from "@bitwarden/web-vault/app/oss-routing.module";
 
 import { organizationEnabledGuard } from "./guards/sm-org-enabled.guard";
@@ -40,9 +39,6 @@ const routes: Routes = [
           {
             path: "",
             canActivate: [organizationEnabledGuard],
-            data: {
-              organizationPermissions: (org: Organization) => org.canAccessSecretsManager,
-            },
             children: [
               {
                 path: "secrets",
