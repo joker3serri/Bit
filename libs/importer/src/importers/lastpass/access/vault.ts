@@ -3,7 +3,6 @@ import { HttpStatusCode } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-
 import { Account } from "./account";
 import { Client } from "./client";
 import { ClientInfo } from "./client-info";
