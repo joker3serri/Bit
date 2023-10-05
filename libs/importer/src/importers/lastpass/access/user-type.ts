@@ -12,8 +12,10 @@ export class UserType {
   CompanyId: number;
   /*
     Provider Values
-    0 = LastPass
-    2 = Okta
+    0 = LastPass/Azure AD?
+    1 = Okta with auth server
+    2 = Okta without auth server
+    3 = Google Workspace
     */
   Provider: number;
   PkceEnabled: boolean;
