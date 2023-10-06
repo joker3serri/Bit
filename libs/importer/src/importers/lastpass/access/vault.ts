@@ -94,24 +94,20 @@ export class Vault {
       throw "Federated user is not set.";
     }
 
+    let k1: Uint8Array = null;
     if (federatedUser.idpUserInfo?.LastPassK1 !== null) {
       return Utils.fromByteStringToArray(federatedUser.idpUserInfo.LastPassK1);
     } else if (this.userType.Provider === Provider.Azure) {
-      const k1 = await this.getK1Azure(federatedUser);
-      if (k1 !== null) {
-        return k1;
-      }
+      k1 = await this.getK1Azure(federatedUser);
     } else if (this.userType.Provider === Provider.Google) {
-      const k1 = await this.getK1Google(federatedUser);
-      if (k1 !== null) {
-        return k1;
-      }
+      k1 = await this.getK1Google(federatedUser);
     } else {
       const b64Encoded = this.userType.Provider === Provider.PingOne;
-      const k1 = this.getK1FromAccessToken(federatedUser, b64Encoded);
-      if (k1 !== null) {
-        return k1;
-      }
+      k1 = this.getK1FromAccessToken(federatedUser, b64Encoded);
+    }
+
+    if (k1 !== null) {
+      return k1;
     }
 
     throw "Cannot get k1.";
