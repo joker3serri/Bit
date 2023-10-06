@@ -12,11 +12,11 @@ import { Parser } from "./parser";
 import { ParserOptions } from "./parser-options";
 import { RestClient } from "./rest-client";
 import { Ui } from "./ui";
-import { UserType } from "./user-type";
+import { Provider, UserTypeContext } from "./user-type-context";
 
 export class Vault {
   accounts: Account[];
-  userType: UserType;
+  userType: UserTypeContext;
 
   private client: Client;
   private cryptoUtils: CryptoUtils;
@@ -59,7 +59,7 @@ export class Vault {
     await this.open(federatedUser.username, hiddenPassword, clientInfo, ui, parserOptions);
   }
 
-  async setUserType(username: string) {
+  async setUserTypeContext(username: string) {
     const lowercaseUsername = username.toLowerCase();
     const rest = new RestClient();
     rest.baseUrl = "https://lastpass.com";
@@ -67,7 +67,7 @@ export class Vault {
     const response = await rest.get(endpoint);
     if (response.status === HttpStatusCode.Ok) {
       const json = await response.json();
-      this.userType = new UserType();
+      this.userType = new UserTypeContext();
       this.userType.CompanyId = json.CompanyId;
       this.userType.IdentityProviderGUID = json.IdentityProviderGUID;
       this.userType.IdentityProviderURL = json.IdentityProviderURL;
@@ -97,8 +97,7 @@ export class Vault {
     const accessTokenAuthHeader = new Map([
       ["Authorization", "Bearer " + federatedUser.accessToken],
     ]);
-    if (this.userType.Provider === 0) {
-      // Azure AD
+    if (this.userType.Provider === Provider.Azure) {
       // Query the Graph API for the k1 field
       const rest = new RestClient();
       rest.baseUrl = "https://graph.microsoft.com";
@@ -113,21 +112,21 @@ export class Vault {
           return Utils.fromB64ToArray(k1);
         }
       }
-    } else if (this.userType.Provider === 1) {
-      // Okta with auth server
+    } else if (
+      this.userType.Provider === Provider.OktaAuthServer ||
+      this.userType.Provider === Provider.OneLogin
+    ) {
       const decodedAccessToken = this.tokenService.decodeToken(federatedUser.accessToken);
       const k1 = decodedAccessToken?.LastPassK1 as string;
       if (k1 !== null) {
         return Utils.fromByteStringToArray(k1);
       }
-    } else if (this.userType.Provider === 2) {
-      // Okta without auth server
+    } else if (this.userType.Provider === Provider.OktaNoAuthServer) {
       const k1 = federatedUser.idpUserInfo?.LastPassK1 as string;
       if (k1 !== null) {
         return Utils.fromByteStringToArray(k1);
       }
-    } else if (this.userType.Provider === 3) {
-      // Google Workspace
+    } else if (this.userType.Provider === Provider.Google) {
       // Query Google Drive for the k1.lp file
       const rest = new RestClient();
       rest.baseUrl = "https://content.googleapis.com";
@@ -158,6 +157,12 @@ export class Vault {
             return Utils.fromB64ToArray(k1);
           }
         }
+      }
+    } else if (this.userType.Provider === Provider.PingOne) {
+      const decodedAccessToken = this.tokenService.decodeToken(federatedUser.accessToken);
+      const k1 = decodedAccessToken?.LastPassK1 as string;
+      if (k1 !== null) {
+        return Utils.fromB64ToArray(k1);
       }
     }
     throw "Cannot get k1.";
