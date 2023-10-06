@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
@@ -34,8 +34,6 @@ const DisallowedPlanTypes = [
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class ClientsComponent implements OnInit {
-  @ViewChild("add", { read: ViewContainerRef, static: true }) addModalRef: ViewContainerRef;
-
   providerId: string;
   searchText: string;
   addableOrganizations: Organization[];
