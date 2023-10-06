@@ -94,78 +94,87 @@ export class Vault {
       throw "Federated user is not set.";
     }
 
-    const accessTokenAuthHeader = new Map([
-      ["Authorization", "Bearer " + federatedUser.accessToken],
-    ]);
-    if (this.userType.Provider === Provider.Azure) {
-      // Query the Graph API for the k1 field
-      const rest = new RestClient();
-      rest.baseUrl = "https://graph.microsoft.com";
-      const response = await rest.get(
-        "v1.0/me?$select=id,displayName,mail&$expand=extensions",
-        accessTokenAuthHeader
-      );
-      if (response.status === HttpStatusCode.Ok) {
-        const json = await response.json();
-        const k1 = json?.extensions?.LastPassK1 as string;
-        if (k1 !== null) {
-          return Utils.fromB64ToArray(k1);
-        }
-      }
-    } else if (
-      this.userType.Provider === Provider.OktaAuthServer ||
-      this.userType.Provider === Provider.OneLogin
-    ) {
-      const decodedAccessToken = this.tokenService.decodeToken(federatedUser.accessToken);
-      const k1 = decodedAccessToken?.LastPassK1 as string;
+    if (federatedUser.idpUserInfo?.LastPassK1 !== null) {
+      return Utils.fromByteStringToArray(federatedUser.idpUserInfo.LastPassK1);
+    } else if (this.userType.Provider === Provider.Azure) {
+      const k1 = await this.getK1Azure(federatedUser);
       if (k1 !== null) {
-        return Utils.fromByteStringToArray(k1);
-      }
-    } else if (this.userType.Provider === Provider.OktaNoAuthServer) {
-      const k1 = federatedUser.idpUserInfo?.LastPassK1 as string;
-      if (k1 !== null) {
-        return Utils.fromByteStringToArray(k1);
+        return k1;
       }
     } else if (this.userType.Provider === Provider.Google) {
-      // Query Google Drive for the k1.lp file
-      const rest = new RestClient();
-      rest.baseUrl = "https://content.googleapis.com";
-      const response = await rest.get(
-        "drive/v3/files?pageSize=1" +
-          "&q=name%20%3D%20%27k1.lp%27" +
-          "&spaces=appDataFolder" +
-          "&fields=nextPageToken%2C%20files(id%2C%20name)",
-        accessTokenAuthHeader
-      );
-      if (response.status === HttpStatusCode.Ok) {
-        const json = await response.json();
-        const files = json?.files as any[];
-        if (
-          files !== null &&
-          files.length > 0 &&
-          files[0].id != null &&
-          files[0].name === "k1.lp"
-        ) {
-          // Open the k1.lp file
-          rest.baseUrl = "https://www.googleapis.com";
-          const response = await rest.get(
-            "drive/v3/files/" + files[0].id + "?alt=media",
-            accessTokenAuthHeader
-          );
-          if (response.status === HttpStatusCode.Ok) {
-            const k1 = await response.text();
-            return Utils.fromB64ToArray(k1);
-          }
-        }
+      const k1 = await this.getK1Google(federatedUser);
+      if (k1 !== null) {
+        return k1;
       }
-    } else if (this.userType.Provider === Provider.PingOne) {
-      const decodedAccessToken = this.tokenService.decodeToken(federatedUser.accessToken);
-      const k1 = decodedAccessToken?.LastPassK1 as string;
+    } else {
+      const b64Encoded = this.userType.Provider === Provider.PingOne;
+      const k1 = this.getK1FromAccessToken(federatedUser, b64Encoded);
+      if (k1 !== null) {
+        return k1;
+      }
+    }
+
+    throw "Cannot get k1.";
+  }
+
+  private async getK1Azure(federatedUser: FederatedUserContext) {
+    // Query the Graph API for the k1 field
+    const rest = new RestClient();
+    rest.baseUrl = "https://graph.microsoft.com";
+    const response = await rest.get(
+      "v1.0/me?$select=id,displayName,mail&$expand=extensions",
+      new Map([["Authorization", "Bearer " + federatedUser.accessToken]])
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      const json = await response.json();
+      const k1 = json?.extensions?.LastPassK1 as string;
       if (k1 !== null) {
         return Utils.fromB64ToArray(k1);
       }
     }
-    throw "Cannot get k1.";
+    return null;
+  }
+
+  private async getK1Google(federatedUser: FederatedUserContext) {
+    // Query Google Drive for the k1.lp file
+    const accessTokenAuthHeader = new Map([
+      ["Authorization", "Bearer " + federatedUser.accessToken],
+    ]);
+    const rest = new RestClient();
+    rest.baseUrl = "https://content.googleapis.com";
+    const response = await rest.get(
+      "drive/v3/files?pageSize=1" +
+        "&q=name%20%3D%20%27k1.lp%27" +
+        "&spaces=appDataFolder" +
+        "&fields=nextPageToken%2C%20files(id%2C%20name)",
+      accessTokenAuthHeader
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      const json = await response.json();
+      const files = json?.files as any[];
+      if (files !== null && files.length > 0 && files[0].id != null && files[0].name === "k1.lp") {
+        // Open the k1.lp file
+        rest.baseUrl = "https://www.googleapis.com";
+        const response = await rest.get(
+          "drive/v3/files/" + files[0].id + "?alt=media",
+          accessTokenAuthHeader
+        );
+        if (response.status === HttpStatusCode.Ok) {
+          const k1 = await response.text();
+          return Utils.fromB64ToArray(k1);
+        }
+      }
+    }
+    return null;
+  }
+
+  private getK1FromAccessToken(federatedUser: FederatedUserContext, b64: boolean) {
+    const decodedAccessToken = this.tokenService.decodeToken(federatedUser.accessToken);
+    const k1 = decodedAccessToken?.LastPassK1 as string;
+    if (k1 !== null) {
+      return b64 ? Utils.fromB64ToArray(k1) : Utils.fromByteStringToArray(k1);
+    }
+    return null;
   }
 
   private async getK2(federatedUser: FederatedUserContext): Promise<Uint8Array> {
