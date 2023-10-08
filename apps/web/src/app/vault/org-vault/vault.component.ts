@@ -49,12 +49,12 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { DialogService, Icons } from "@bitwarden/components";
+import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { GroupService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
@@ -506,9 +506,9 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
       } else if (event.type === "copyField") {
         await this.copy(event.item, event.field);
-      } else if (event.type === "edit") {
+      } else if (event.type === "editCollection") {
         await this.editCollection(event.item, CollectionDialogTabType.Info);
-      } else if (event.type === "viewAccess") {
+      } else if (event.type === "viewCollectionAccess") {
         await this.editCollection(event.item, CollectionDialogTabType.Access);
       } else if (event.type === "bulkEditCollectionAccess") {
         await this.bulkEditCollectionAccess(event.items);
