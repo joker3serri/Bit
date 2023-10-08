@@ -50,7 +50,7 @@ export class AccountComponent {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
-  flexibleCollectionsFlag$ = this.configService.getFeatureFlag$(
+  showCollectionManagementSettings$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollections,
     false
   );
@@ -180,7 +180,7 @@ export class AccountComponent {
   };
 
   submitCollectionManagement = async () => {
-    if (!(await firstValueFrom(this.flexibleCollectionsFlag$))) {
+    if (!(await firstValueFrom(this.showCollectionManagementSettings$))) {
       return;
     }
 
