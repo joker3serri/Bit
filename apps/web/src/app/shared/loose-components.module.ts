@@ -17,7 +17,6 @@ import { ProvidersComponent } from "../admin-console/providers/providers.compone
 import { CreateOrganizationComponent } from "../admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
-import { AuthModule } from "../auth";
 import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
 import { HintComponent } from "../auth/hint.component";
@@ -121,10 +120,6 @@ import { SharedModule } from "./shared.module";
     UserVerificationModule,
     ChangeKdfModule,
     DynamicAvatarComponent,
-    // TODO: Remove `AuthModule` when:
-    //   - All components from auth/settings/* have been moved to `AuthSettingsModule`
-    //   - All teams have moved their settings components into their own modules, and are able to directly import `AuthSettingsModule`
-    AuthModule,
     EnvironmentSelectorModule,
     AccountFingerprintComponent,
 
