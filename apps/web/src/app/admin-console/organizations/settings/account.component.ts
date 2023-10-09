@@ -1,16 +1,7 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  combineLatest,
-  lastValueFrom,
-  Subject,
-  switchMap,
-  takeUntil,
-  from,
-  of,
-  firstValueFrom,
-} from "rxjs";
+import { combineLatest, lastValueFrom, Subject, switchMap, takeUntil, from, of } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -180,10 +171,6 @@ export class AccountComponent {
   };
 
   submitCollectionManagement = async () => {
-    if (!(await firstValueFrom(this.showCollectionManagementSettings$))) {
-      return;
-    }
-
     const request = new OrganizationCollectionManagementUpdateRequest();
     request.limitCreateDeleteOwnerAdmin =
       this.collectionManagementFormGroup.value.limitCollectionCreationDeletion;
