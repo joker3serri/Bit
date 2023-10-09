@@ -13,4 +13,4 @@ import { WebauthnLoginSettingsModule } from "./webauthn-login-settings";
   providers: [],
   exports: [WebauthnLoginSettingsModule, ChangePasswordComponent],
 })
-export class SettingsModule {}
+export class AuthSettingsModule {}
