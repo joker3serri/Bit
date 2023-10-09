@@ -51,7 +51,6 @@ import { UpdatePasswordComponent } from "../auth/update-password.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
-import { BillingSharedModule } from "../billing/shared";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { FooterComponent } from "../layouts/footer.component";
@@ -79,7 +78,6 @@ import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-h
 import { AccessComponent } from "../tools/send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../tools/send/add-edit.component";
 import { ToolsComponent } from "../tools/tools.component";
-import { PasswordRepromptComponent } from "../vault/components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../vault/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../vault/individual-vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/individual-vault/add-edit.component";
@@ -108,11 +106,6 @@ import { SharedModule } from "./shared.module";
     EnvironmentSelectorModule,
     AccountFingerprintComponent,
     PasswordCalloutComponent,
-
-    // Temporary export to be removed in AC-1453
-    // Import PaymentComponent and TaxInfoComponent directly into TrialIniationComponent
-    // and remove BillingSharedModule here
-    BillingSharedModule,
   ],
   declarations: [
     AcceptEmergencyComponent,
@@ -159,7 +152,6 @@ import { SharedModule } from "./shared.module";
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
-    PasswordRepromptComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
     ProfileComponent,
@@ -246,7 +238,6 @@ import { SharedModule } from "./shared.module";
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
-    PasswordRepromptComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
     ProfileComponent,
@@ -285,11 +276,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
-
-    // Temporary export to be removed in AC-1453
-    // Import PaymentComponent and TaxInfoComponent directly into TrialIniationComponent
-    // and remove BillingSharedModule here
-    BillingSharedModule,
   ],
 })
 export class LooseComponentsModule {}
