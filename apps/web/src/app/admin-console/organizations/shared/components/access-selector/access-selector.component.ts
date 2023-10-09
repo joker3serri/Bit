@@ -201,6 +201,8 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly i18nService: I18nService,
+
+    // reminder: remove this dependency from the spec file as well when this feature flag is removed
     private readonly configService: ConfigService
   ) {}
 

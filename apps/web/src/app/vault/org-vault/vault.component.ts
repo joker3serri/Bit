@@ -129,7 +129,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected showMissingCollectionPermissionMessage: boolean;
   protected currentSearchText$: Observable<string>;
   protected showBulkEditCollectionAccess = this.configService.getFeatureFlag$(
-    FeatureFlag.BulkEditCollectionAccess,
+    FeatureFlag.BulkCollectionAccess,
     false
   );
 
