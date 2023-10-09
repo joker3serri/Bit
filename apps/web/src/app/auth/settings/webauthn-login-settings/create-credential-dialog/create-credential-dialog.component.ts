@@ -144,7 +144,7 @@ export class CreateCredentialDialogComponent implements OnInit {
       return;
     }
 
-    if (firstValueFrom(this.hasPasskeys$)) {
+    if (await firstValueFrom(this.hasPasskeys$)) {
       this.platformUtilsService.showToast(
         "success",
         null,
