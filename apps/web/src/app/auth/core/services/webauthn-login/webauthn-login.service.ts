@@ -13,6 +13,8 @@ import { WebauthnLoginApiService } from "./webauthn-login-api.service";
 
 @Injectable()
 export class WebauthnLoginService {
+  static readonly MaxCredentialCount = 5;
+
   private navigatorCredentials: CredentialsContainer;
   private _refresh$ = new BehaviorSubject<void>(undefined);
   private _loading$ = new BehaviorSubject<boolean>(true);
