@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { concatMap, firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -324,18 +324,14 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.showDownloadLicense = !this.showDownloadLicense;
   }
 
-  manageBillingSync() {
-    BillingSyncApiKeyComponent.open(this.dialogService, {
+  async manageBillingSync() {
+    const dialogRef = BillingSyncApiKeyComponent.open(this.dialogService, {
       organizationId: this.organizationId,
       hasBillingToken: this.hasBillingSyncToken,
-    })
-      .closed.pipe(
-        concatMap(async () => {
-          await this.load();
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+    });
+
+    await firstValueFrom(dialogRef.closed);
+    this.load();
   }
 
   closeDownloadLicense() {

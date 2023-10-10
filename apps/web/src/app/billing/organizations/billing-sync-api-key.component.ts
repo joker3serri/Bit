@@ -33,8 +33,7 @@ export class BillingSyncApiKeyComponent {
   showRotateScreen: boolean;
   clientSecret?: string;
   keyRevisionDate?: Date;
-  lastSyncDate?: Date = null;
-  loading: boolean;
+  lastSyncDate?: Date;
 
   constructor(
     @Inject(DIALOG_DATA) protected data: BillingSyncApiModalData,
@@ -54,7 +53,6 @@ export class BillingSyncApiKeyComponent {
   }
 
   submit = async () => {
-    this.loading = true;
     try {
       const request = this.userVerificationService
         .buildRequest(this.formGroup.value.verification, OrganizationApiKeyRequest)
@@ -68,7 +66,6 @@ export class BillingSyncApiKeyComponent {
           return this.organizationApiService.rotateApiKey(this.organizationId, request);
         });
         await this.load(response);
-        this.loading = false;
         this.showRotateScreen = false;
         this.platformUtilsService.showToast(
           "success",
@@ -80,10 +77,8 @@ export class BillingSyncApiKeyComponent {
           return this.organizationApiService.getOrCreateApiKey(this.organizationId, request);
         });
         await this.load(response);
-        this.loading = false;
       }
     } catch (e) {
-      this.loading = false;
       this.logService.error(e);
       throw e;
     }
@@ -95,10 +90,6 @@ export class BillingSyncApiKeyComponent {
     this.hasBillingToken = true;
     const syncStatus = await this.apiService.getSponsorshipSyncStatus(this.organizationId);
     this.lastSyncDate = syncStatus.lastSyncDate;
-  }
-
-  static open(dialogService: DialogService, data: BillingSyncApiModalData) {
-    return dialogService.open(BillingSyncApiKeyComponent, { data });
   }
 
   cancelRotate() {
@@ -134,5 +125,9 @@ export class BillingSyncApiKeyComponent {
 
   get daysBetween(): number {
     return this.dayDiff(this.keyRevisionDate, new Date());
+  }
+
+  static open(dialogService: DialogService, data: BillingSyncApiModalData) {
+    return dialogService.open(BillingSyncApiKeyComponent, { data });
   }
 }
