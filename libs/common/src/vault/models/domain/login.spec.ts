@@ -25,7 +25,7 @@ describe("Login DTO", () => {
       username: null,
       password: null,
       totp: null,
-      fido2Credentials: [],
+      fido2Credentials: null,
     });
   });
 
@@ -57,7 +57,7 @@ describe("Login DTO", () => {
     const login = new Login();
 
     expect(login).toEqual({
-      fido2Credentials: [],
+      fido2Credentials: null,
     });
   });
 
