@@ -333,7 +333,7 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
       )
     );
 
-    const popoutId = await this.browserPopoutWindowService.openFido2Popout(this.tab.windowId, {
+    const popoutId = await this.browserPopoutWindowService.openFido2Popout(this.tab, {
       sessionId: this.sessionId,
       senderTabId: this.tab.id,
       fallbackSupported: this.fallbackSupported,
