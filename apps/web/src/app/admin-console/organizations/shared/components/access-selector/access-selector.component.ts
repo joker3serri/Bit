@@ -11,8 +11,8 @@ import { Subject, takeUntil } from "rxjs";
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { FormSelectionList } from "@bitwarden/angular/utils/form-selection-list";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
@@ -203,7 +203,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     private readonly i18nService: I18nService,
 
     // reminder: remove this dependency from the spec file as well when this feature flag is removed
-    private readonly configService: ConfigService
+    private readonly configService: ConfigServiceAbstraction
   ) {}
 
   /** Required for NG_VALUE_ACCESSOR */
