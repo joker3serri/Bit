@@ -17,7 +17,6 @@ import { RestClient } from "./rest-client";
 import { Ui } from "./ui";
 import { Provider, UserTypeContext } from "./user-type-context";
 
-
 export class Vault {
   accounts: Account[];
   userType: UserTypeContext;
