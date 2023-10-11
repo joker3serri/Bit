@@ -329,7 +329,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.cipher.id = null;
 
       if (this.cipher.type === CipherType.Login && this.cipher.login.fido2Credentials.length > 0) {
-        this.cipher.login.fido2Credentials = [];
+        this.cipher.login.fido2Credentials = null;
       }
     }
 
