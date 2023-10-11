@@ -65,6 +65,10 @@ export class LoginView extends ItemView {
     return this.uris != null && this.uris.length > 0;
   }
 
+  get hasFido2Credentials(): boolean {
+    return this.fido2Credentials != null && this.fido2Credentials.length > 0;
+  }
+
   matchesUri(
     targetUri: string,
     equivalentDomains: Set<string>,
