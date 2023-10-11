@@ -313,10 +313,9 @@ export class AddEditComponent extends BaseAddEditComponent {
   }
 
   private async confirmFido2CredentialResponse(sessionId: string, userVerification: boolean) {
-    let userVerified = false;
-    if (userVerification) {
-      userVerified = await this.passwordRepromptService.showPasswordPrompt();
-    }
+    const userVerified = userVerification
+      ? await this.passwordRepromptService.showPasswordPrompt()
+      : false;
 
     BrowserFido2UserInterfaceSession.confirmNewCredentialResponse(
       sessionId,
