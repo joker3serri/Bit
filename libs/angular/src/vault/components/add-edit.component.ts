@@ -328,7 +328,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (this.cloneMode) {
       this.cipher.id = null;
 
-      if (this.cipher.type === CipherType.Login && this.cipher.login.fido2Credentials.length > 0) {
+      if (this.cipher.type === CipherType.Login && this.cipher.login.hasFido2Credentials) {
         this.cipher.login.fido2Credentials = null;
       }
     }
