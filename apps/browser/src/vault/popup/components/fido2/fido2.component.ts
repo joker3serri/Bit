@@ -221,9 +221,10 @@ export class Fido2Component implements OnInit, OnDestroy {
   async submit() {
     const data = this.message$.value;
     if (data?.type === "PickCredentialRequest") {
-      let userVerified = false;
-      if (data.userVerification) {
-        userVerified = await this.passwordRepromptService.showPasswordPrompt();
+      const userVerified = await this.handleUserVerification(data.userVerification);
+
+      if (!userVerified) {
+        return;
       }
 
       this.send({
@@ -233,8 +234,6 @@ export class Fido2Component implements OnInit, OnDestroy {
         userVerified,
       });
     } else if (data?.type === "ConfirmNewCredentialRequest") {
-      let userVerified = false;
-
       if (this.cipher.login.fido2Credentials.length > 0) {
         const confirmed = await this.dialogService.openSimpleDialog({
           title: { key: "overwritePasskey" },
@@ -247,8 +246,10 @@ export class Fido2Component implements OnInit, OnDestroy {
         }
       }
 
-      if (data.userVerification) {
-        userVerified = await this.passwordRepromptService.showPasswordPrompt();
+      const userVerified = await this.handleUserVerification(data.userVerification);
+
+      if (!userVerified) {
+        return;
       }
 
       this.send({
@@ -403,6 +404,16 @@ export class Fido2Component implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private async handleUserVerification(userVerification: boolean): Promise<boolean> {
+    const masterPasswordRempromptRequired = this.cipher && this.cipher.reprompt !== 0;
+
+    if (!masterPasswordRempromptRequired && !userVerification) {
+      return true;
+    }
+
+    return await this.passwordRepromptService.showPasswordPrompt();
   }
 
   private send(msg: BrowserFido2Message) {
