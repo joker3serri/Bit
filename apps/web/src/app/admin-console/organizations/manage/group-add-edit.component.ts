@@ -24,6 +24,8 @@ import {
   convertToSelectionView,
   PermissionMode,
 } from "../shared/components/access-selector";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 /**
  * Indices for the available tabs in the dialog
@@ -78,6 +80,11 @@ export const openGroupAddEditDialog = (
   templateUrl: "group-add-edit.component.html",
 })
 export class GroupAddEditComponent implements OnInit, OnDestroy {
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false
+  );
+
   protected PermissionMode = PermissionMode;
   protected ResultType = GroupAddEditDialogResultType;
 
@@ -181,7 +188,8 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private formBuilder: FormBuilder,
     private changeDetectorRef: ChangeDetectorRef,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private configService: ConfigServiceAbstraction
   ) {
     this.tabIndex = params.initialTab ?? GroupAddEditTabType.Info;
   }

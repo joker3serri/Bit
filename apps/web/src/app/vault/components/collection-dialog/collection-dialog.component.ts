@@ -70,12 +70,13 @@ export enum CollectionDialogAction {
   templateUrl: "collection-dialog.component.html",
 })
 export class CollectionDialogComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  protected organizations$: Observable<Organization[]>;
-  private flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollections,
     false
   );
+
+  private destroy$ = new Subject<void>();
+  protected organizations$: Observable<Organization[]>;
 
   protected tabIndex: CollectionDialogTabType;
   protected loading = true;

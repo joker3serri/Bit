@@ -10,8 +10,6 @@ import { Subject, takeUntil } from "rxjs";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { FormSelectionList } from "@bitwarden/angular/utils/form-selection-list";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
@@ -198,12 +196,14 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
    */
   @Input() showGroupColumn: boolean;
 
+  /**
+   * Enable Flexible Collections changes (feature flag)
+   */
+  @Input() flexibleCollectionsEnabled: boolean;
+
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly i18nService: I18nService,
-
-    // reminder: remove this dependency from the spec file as well when this feature flag is removed
-    private readonly configService: ConfigServiceAbstraction
+    private readonly i18nService: I18nService
   ) {}
 
   /** Required for NG_VALUE_ACCESSOR */
@@ -278,7 +278,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
       this.notifyOnChange(v);
     });
 
-    if (await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollections)) {
+    if (this.flexibleCollectionsEnabled) {
       this.permissionList.push(this.canManagePermissionListItem);
     }
   }

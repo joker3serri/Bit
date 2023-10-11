@@ -36,6 +36,8 @@ import {
 
 import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
 import { freeOrgSeatLimitReachedValidator } from "./validators/free-org-inv-limit-reached.validator";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 export enum MemberDialogTab {
   Role = 0,
@@ -64,6 +66,11 @@ export enum MemberDialogResult {
   templateUrl: "member-dialog.component.html",
 })
 export class MemberDialogComponent implements OnInit, OnDestroy {
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false
+  );
+
   loading = true;
   editMode = false;
   isRevoked = false;
@@ -134,7 +141,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private groupService: GroupService,
     private userService: UserAdminService,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private configService: ConfigServiceAbstraction
   ) {}
 
   async ngOnInit() {
