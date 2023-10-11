@@ -7,7 +7,7 @@ import {
   OrganizationUserStatusType,
   OrganizationUserType,
 } from "@bitwarden/common/admin-console/enums";
-import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import {
   AvatarModule,
   BadgeModule,
@@ -52,7 +52,7 @@ class TestableAccessSelectorComponent extends AccessSelectorComponent {
 describe("AccessSelectorComponent", () => {
   let component: TestableAccessSelectorComponent;
   let fixture: ComponentFixture<TestableAccessSelectorComponent>;
-  let configService: MockProxy<ConfigService>;
+  let configService: MockProxy<ConfigServiceAbstraction>;
 
   beforeEach(() => {
     configService = mock();
@@ -74,7 +74,7 @@ describe("AccessSelectorComponent", () => {
       declarations: [TestableAccessSelectorComponent, UserTypePipe],
       providers: [
         {
-          provide: ConfigService,
+          provide: ConfigServiceAbstraction,
           useValue: configService,
         },
       ],
