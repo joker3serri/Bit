@@ -221,9 +221,9 @@ export class Fido2Component implements OnInit, OnDestroy {
   async submit() {
     const data = this.message$.value;
     if (data?.type === "PickCredentialRequest") {
-      const userVerified = await this.handleUserVerification(data.userVerification);
+      const userVerified = await this.handleUserVerification(data.userVerification, this.cipher);
 
-      if (!userVerified) {
+      if (userVerified === null) {
         return;
       }
 
@@ -246,9 +246,9 @@ export class Fido2Component implements OnInit, OnDestroy {
         }
       }
 
-      const userVerified = await this.handleUserVerification(data.userVerification);
+      const userVerified = await this.handleUserVerification(data.userVerification, this.cipher);
 
-      if (!userVerified) {
+      if (userVerified === null) {
         return;
       }
 
@@ -406,14 +406,24 @@ export class Fido2Component implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private async handleUserVerification(userVerification: boolean): Promise<boolean> {
-    const masterPasswordRempromptRequired = this.cipher && this.cipher.reprompt !== 0;
+  private async handleUserVerification(
+    userVerification: boolean,
+    cipher: CipherView
+  ): Promise<boolean | null> {
+    const masterPasswordRempromptRequired = cipher && cipher.reprompt !== 0;
 
     if (!masterPasswordRempromptRequired && !userVerification) {
-      return true;
+      return false;
     }
 
-    return await this.passwordRepromptService.showPasswordPrompt();
+    const success = await this.passwordRepromptService.showPasswordPrompt();
+
+    // Return null if master password is enabled on cipher and password prompt fails, otherwise return false.
+    if (!success) {
+      return masterPasswordRempromptRequired ? null : false;
+    }
+
+    return success;
   }
 
   private send(msg: BrowserFido2Message) {
