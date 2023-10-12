@@ -3,8 +3,6 @@ import { HttpStatusCode } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-import { Client } from "./client";
-import { CryptoUtils } from "./crypto-utils";
 import { IdpProvider } from "./enums";
 import {
   Account,
@@ -13,8 +11,7 @@ import {
   ParserOptions,
   UserTypeContext,
 } from "./models";
-import { Parser } from "./parser";
-import { RestClient } from "./rest-client";
+import { Client, CryptoUtils, Parser, RestClient } from "./services";
 import { Ui } from "./ui";
 
 export class Vault {
