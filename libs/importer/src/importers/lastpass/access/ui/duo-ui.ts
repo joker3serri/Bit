@@ -1,4 +1,4 @@
-import { DuoFactor, DuoStatus } from "./enums";
+import { DuoFactor, DuoStatus } from "../enums";
 
 // Adds Duo functionality to the module-specific Ui class.
 export abstract class DuoUi {
