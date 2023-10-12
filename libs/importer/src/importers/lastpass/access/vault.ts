@@ -77,6 +77,7 @@ export class Vault {
       this.userType.PkceEnabled = json.PkceEnabled;
       this.userType.Provider = json.Provider;
       this.userType.type = json.type;
+      return;
     }
     throw "Cannot determine LastPass user type.";
   }
