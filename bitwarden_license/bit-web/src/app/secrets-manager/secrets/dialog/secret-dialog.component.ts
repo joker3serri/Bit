@@ -165,11 +165,7 @@ export class SecretDialogComponent implements OnInit {
 
   submit = async () => {
     if (!this.data.organizationEnabled) {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("secretsAccessSuspended")
-      );
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("secretsCannotCreate"));
       return;
     }
 
