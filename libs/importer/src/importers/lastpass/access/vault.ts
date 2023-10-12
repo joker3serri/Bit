@@ -47,7 +47,7 @@ export class Vault {
     parserOptions: ParserOptions = ParserOptions.default
   ): Promise<void> {
     if (federatedUser == null) {
-      throw "Federated user context is not set.";
+      throw new Error("Federated user context is not set.");
     }
     const k1 = await this.getK1(federatedUser);
     const k2 = await this.getK2(federatedUser);
@@ -79,20 +79,20 @@ export class Vault {
       this.userType.type = json.type;
       return;
     }
-    throw "Cannot determine LastPass user type.";
+    throw new Error("Cannot determine LastPass user type.");
   }
 
   private async getK1(federatedUser: FederatedUserContext): Promise<Uint8Array> {
     if (this.userType == null) {
-      throw "User type is not set.";
+      throw new Error("User type is not set.");
     }
 
     if (!this.userType.isFederated()) {
-      throw "Cannot get k1 for LastPass user that is not federated.";
+      throw new Error("Cannot get k1 for LastPass user that is not federated.");
     }
 
     if (federatedUser == null) {
-      throw "Federated user is not set.";
+      throw new Error("Federated user is not set.");
     }
 
     let k1: Uint8Array = null;
@@ -111,7 +111,7 @@ export class Vault {
       return k1;
     }
 
-    throw "Cannot get k1.";
+    throw new Error("Cannot get k1.");
   }
 
   private async getK1Azure(federatedUser: FederatedUserContext) {
@@ -176,11 +176,11 @@ export class Vault {
 
   private async getK2(federatedUser: FederatedUserContext): Promise<Uint8Array> {
     if (this.userType == null) {
-      throw "User type is not set.";
+      throw new Error("User type is not set.");
     }
 
     if (!this.userType.isFederated()) {
-      throw "Cannot get k2 for LastPass user that is not federated.";
+      throw new Error("Cannot get k2 for LastPass user that is not federated.");
     }
 
     const rest = new RestClient();
@@ -196,6 +196,6 @@ export class Vault {
         return Utils.fromB64ToArray(k2);
       }
     }
-    throw "Cannot get k2.";
+    throw new Error("Cannot get k2.");
   }
 }

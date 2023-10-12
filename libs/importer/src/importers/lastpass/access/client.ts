@@ -68,7 +68,7 @@ export class Client {
     const reader = new BinaryReader(blob);
     const chunks = this.parser.extractChunks(reader);
     if (!this.isComplete(chunks)) {
-      throw "Blob is truncated or corrupted";
+      throw new Error("Blob is truncated or corrupted");
     }
     return await this.parseAccounts(chunks, encryptionKey, privateKey, options);
   }
@@ -236,11 +236,11 @@ export class Client {
         passcode = ui.provideYubikeyPasscode();
         break;
       default:
-        throw "Invalid OTP method";
+        throw new Error("Invalid OTP method");
     }
 
     if (passcode == OtpResult.cancel) {
-      throw "Second factor step is canceled by the user";
+      throw new Error("Second factor step is canceled by the user");
     }
 
     const response = await this.performSingleLoginRequest(
@@ -273,7 +273,7 @@ export class Client {
   ): Promise<Session> {
     const answer = this.approveOob(username, parameters, ui, rest);
     if (answer == OobResult.cancel) {
-      throw "Out of band step is canceled by the user";
+      throw new Error("Out of band step is canceled by the user");
     }
 
     const extraParameters = new Map<string, any>();
@@ -319,7 +319,7 @@ export class Client {
   private approveOob(username: string, parameters: Map<string, string>, ui: Ui, rest: RestClient) {
     const method = parameters.get("outofbandtype");
     if (method == null) {
-      throw "Out of band method is not specified";
+      throw new Error("Out of band method is not specified");
     }
     switch (method) {
       case "lastpassauth":
@@ -329,7 +329,7 @@ export class Client {
       case "salesforcehash":
         return ui.approveSalesforceAuth();
       default:
-        throw "Out of band method " + method + " is not supported";
+        throw new Error("Out of band method " + method + " is not supported");
     }
   }
 
@@ -410,7 +410,7 @@ export class Client {
     if (attr != null) {
       return attr;
     }
-    throw "Unknown response schema: attribute " + name + " is missing";
+    throw new Error("Unknown response schema: attribute " + name + " is missing");
   }
 
   private getOptionalErrorAttribute(response: Document, name: string): string {
@@ -505,7 +505,9 @@ export class Client {
 
   private makeError(response: Response) {
     // TODO: error parsing
-    throw "HTTP request to " + response.url + " failed with status " + response.status + ".";
+    throw new Error(
+      "HTTP request to " + response.url + " failed with status " + response.status + "."
+    );
   }
 
   private makeLoginError(response: Document): string {

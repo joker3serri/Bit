@@ -285,7 +285,7 @@ export class Parser {
     const header = "LastPassPrivateKey<";
     const footer = ">LastPassPrivateKey";
     if (!decrypted.startsWith(header) || !decrypted.endsWith(footer)) {
-      throw "Failed to decrypt private key";
+      throw new Error("Failed to decrypt private key");
     }
 
     const parsedKey = decrypted.substring(header.length, decrypted.length - footer.length);
