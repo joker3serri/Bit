@@ -1,20 +1,21 @@
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-import { Account } from "./account";
 import { BinaryReader } from "./binary-reader";
-import { Chunk } from "./chunk";
-import { ClientInfo } from "./client-info";
 import { CryptoUtils } from "./crypto-utils";
-import { OobResult } from "./oob-result";
-import { OtpMethod } from "./otp-method";
-import { OtpResult } from "./otp-result";
+import { OtpMethod, Platform } from "./enums";
+import {
+  Account,
+  Chunk,
+  ClientInfo,
+  OobResult,
+  OtpResult,
+  ParserOptions,
+  Session,
+  SharedFolder,
+} from "./models";
 import { Parser } from "./parser";
-import { ParserOptions } from "./parser-options";
-import { Platform } from "./platform";
 import { RestClient } from "./rest-client";
-import { Session } from "./session";
-import { SharedFolder } from "./shared-folder";
 import { Ui } from "./ui";
 
 const PlatformToUserAgent = new Map<Platform, string>([

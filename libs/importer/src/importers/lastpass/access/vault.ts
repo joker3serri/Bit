@@ -3,16 +3,14 @@ import { HttpStatusCode } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-import { Account } from "./account";
 import { Client } from "./client";
-import { ClientInfo } from "./client-info";
 import { CryptoUtils } from "./crypto-utils";
-import { FederatedUserContext } from "./federated-user-context";
+import { IdpProvider } from "./enums";
+import { Account, ClientInfo, ParserOptions, UserTypeContext } from "./models";
+import { FederatedUserContext } from "./models/federated-user-context";
 import { Parser } from "./parser";
-import { ParserOptions } from "./parser-options";
 import { RestClient } from "./rest-client";
 import { Ui } from "./ui";
-import { Provider, UserTypeContext } from "./user-type-context";
 
 export class Vault {
   accounts: Account[];
@@ -98,12 +96,12 @@ export class Vault {
     let k1: Uint8Array = null;
     if (federatedUser.idpUserInfo?.LastPassK1 !== null) {
       return Utils.fromByteStringToArray(federatedUser.idpUserInfo.LastPassK1);
-    } else if (this.userType.Provider === Provider.Azure) {
+    } else if (this.userType.Provider === IdpProvider.Azure) {
       k1 = await this.getK1Azure(federatedUser);
-    } else if (this.userType.Provider === Provider.Google) {
+    } else if (this.userType.Provider === IdpProvider.Google) {
       k1 = await this.getK1Google(federatedUser);
     } else {
-      const b64Encoded = this.userType.Provider === Provider.PingOne;
+      const b64Encoded = this.userType.Provider === IdpProvider.PingOne;
       k1 = this.getK1FromAccessToken(federatedUser, b64Encoded);
     }
 
