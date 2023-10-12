@@ -12,7 +12,6 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { BitwardenProductType, PlanType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
-import { ProviderType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -115,8 +114,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     );
 
     this.showSecretsManagerSubscribe =
-      this.userOrg.providerType !== ProviderType.Msp &&
       this.userOrg.canEditSubscription &&
+      !this.userOrg.hasProvider &&
       !this.userOrg.useSecretsManager &&
       !this.subscription?.cancelled &&
       !this.subscriptionMarkedForCancel;
