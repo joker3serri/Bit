@@ -223,10 +223,6 @@ export class Fido2Component implements OnInit, OnDestroy {
     if (data?.type === "PickCredentialRequest") {
       const userVerified = await this.handleUserVerification(data.userVerification, this.cipher);
 
-      if (userVerified === null) {
-        return;
-      }
-
       this.send({
         sessionId: this.sessionId,
         cipherId: this.cipher.id,
@@ -247,10 +243,6 @@ export class Fido2Component implements OnInit, OnDestroy {
       }
 
       const userVerified = await this.handleUserVerification(data.userVerification, this.cipher);
-
-      if (userVerified === null) {
-        return;
-      }
 
       this.send({
         sessionId: this.sessionId,
@@ -409,21 +401,15 @@ export class Fido2Component implements OnInit, OnDestroy {
   private async handleUserVerification(
     userVerification: boolean,
     cipher: CipherView
-  ): Promise<boolean | null> {
-    const masterPasswordRempromptRequired = cipher && cipher.reprompt !== 0;
+  ): Promise<boolean> {
+    const masterPasswordRepromptRequiered = cipher && cipher.reprompt !== 0;
+    const verificationRequired = userVerification || masterPasswordRepromptRequiered;
 
-    if (!masterPasswordRempromptRequired && !userVerification) {
+    if (!verificationRequired) {
       return false;
     }
 
-    const success = await this.passwordRepromptService.showPasswordPrompt();
-
-    // Return null if master password is enabled on cipher and password prompt fails, otherwise return false.
-    if (!success) {
-      return masterPasswordRempromptRequired ? null : false;
-    }
-
-    return success;
+    return await this.passwordRepromptService.showPasswordPrompt();
   }
 
   private send(msg: BrowserFido2Message) {

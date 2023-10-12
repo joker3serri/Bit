@@ -136,6 +136,14 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         cipher = await encrypted.decrypt(
           await this.cipherService.getKeyForCipherKeyDecryption(encrypted)
         );
+
+        if (cipher.reprompt !== 0 && !userVerified) {
+          this.logService?.warning(
+            `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
+          );
+          throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+        }
+
         fido2Credential = await createKeyView(params, keyPair.privateKey);
         cipher.login.fido2Credentials = [fido2Credential];
         const reencrypted = await this.cipherService.encrypt(cipher);
@@ -236,6 +244,13 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       }
 
       if (params.requireUserVerification && !userVerified) {
+        this.logService?.warning(
+          `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
+        );
+        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+      }
+
+      if (selectedCipher.reprompt !== 0 && !userVerified) {
         this.logService?.warning(
           `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
         );
