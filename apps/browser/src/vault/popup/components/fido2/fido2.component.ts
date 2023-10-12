@@ -308,6 +308,12 @@ export class Fido2Component implements OnInit, OnDestroy {
   }
 
   addCipher() {
+    const data = this.message$.value;
+
+    if (data?.type !== "ConfirmNewCredentialRequest") {
+      return;
+    }
+
     this.router.navigate(["/add-cipher"], {
       queryParams: {
         name: Utils.getHostname(this.url),
@@ -315,33 +321,9 @@ export class Fido2Component implements OnInit, OnDestroy {
         uilocation: "popout",
         senderTabId: this.senderTabId,
         sessionId: this.sessionId,
+        userVerification: data.userVerification,
       },
     });
-  }
-
-  buildCipher() {
-    this.cipher = new CipherView();
-    this.cipher.name = Utils.getHostname(this.url);
-    this.cipher.type = CipherType.Login;
-    this.cipher.login = new LoginView();
-    this.cipher.login.uris = [new LoginUriView()];
-    this.cipher.login.uris[0].uri = this.url;
-    this.cipher.card = new CardView();
-    this.cipher.identity = new IdentityView();
-    this.cipher.secureNote = new SecureNoteView();
-    this.cipher.secureNote.type = SecureNoteType.Generic;
-    this.cipher.reprompt = CipherRepromptType.None;
-  }
-
-  async createNewCipher() {
-    this.buildCipher();
-    const cipher = await this.cipherService.encrypt(this.cipher);
-    try {
-      await this.cipherService.createWithServer(cipher);
-      this.cipher.id = cipher.id;
-    } catch (e) {
-      this.logService.error(e);
-    }
   }
 
   async loadLoginCiphers() {
@@ -402,6 +384,31 @@ export class Fido2Component implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private buildCipher() {
+    this.cipher = new CipherView();
+    this.cipher.name = Utils.getHostname(this.url);
+    this.cipher.type = CipherType.Login;
+    this.cipher.login = new LoginView();
+    this.cipher.login.uris = [new LoginUriView()];
+    this.cipher.login.uris[0].uri = this.url;
+    this.cipher.card = new CardView();
+    this.cipher.identity = new IdentityView();
+    this.cipher.secureNote = new SecureNoteView();
+    this.cipher.secureNote.type = SecureNoteType.Generic;
+    this.cipher.reprompt = CipherRepromptType.None;
+  }
+
+  private async createNewCipher() {
+    this.buildCipher();
+    const cipher = await this.cipherService.encrypt(this.cipher);
+    try {
+      await this.cipherService.createWithServer(cipher);
+      this.cipher.id = cipher.id;
+    } catch (e) {
+      this.logService.error(e);
+    }
   }
 
   private send(msg: BrowserFido2Message) {
