@@ -6,8 +6,13 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { Client } from "./client";
 import { CryptoUtils } from "./crypto-utils";
 import { IdpProvider } from "./enums";
-import { Account, ClientInfo, ParserOptions, UserTypeContext } from "./models";
-import { FederatedUserContext } from "./models/federated-user-context";
+import {
+  Account,
+  ClientInfo,
+  FederatedUserContext,
+  ParserOptions,
+  UserTypeContext,
+} from "./models";
 import { Parser } from "./parser";
 import { RestClient } from "./rest-client";
 import { Ui } from "./ui";
