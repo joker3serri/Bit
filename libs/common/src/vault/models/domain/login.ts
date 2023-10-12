@@ -16,7 +16,7 @@ export class Login extends Domain {
   passwordRevisionDate?: Date;
   totp: EncString;
   autofillOnPageLoad: boolean;
-  fido2Credentials: Fido2Credential[] = [];
+  fido2Credentials: Fido2Credential[];
 
   constructor(obj?: LoginData) {
     super();
@@ -97,7 +97,9 @@ export class Login extends Domain {
       });
     }
 
-    l.fido2Credentials = this.fido2Credentials.map((key) => key.toFido2CredentialData());
+    if (this.fido2Credentials != null && this.fido2Credentials.length > 0) {
+      l.fido2Credentials = this.fido2Credentials.map((key) => key.toFido2CredentialData());
+    }
 
     return l;
   }

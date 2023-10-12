@@ -327,7 +327,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
           !cipher.isDeleted &&
           cipher.organizationId == undefined &&
           cipher.type === CipherType.Login &&
-          cipher.login.fido2Credentials.length > 0 &&
+          cipher.login.hasFido2Credentials &&
           ids.includes(cipher.login.fido2Credentials[0].credentialId)
       )
       .map((cipher) => cipher.id);
@@ -355,7 +355,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       (cipher) =>
         !cipher.isDeleted &&
         cipher.type === CipherType.Login &&
-        cipher.login.fido2Credentials.length > 0 &&
+        cipher.login.hasFido2Credentials &&
         cipher.login.fido2Credentials[0].rpId === rpId &&
         ids.includes(cipher.login.fido2Credentials[0].credentialId)
     );
@@ -367,7 +367,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       (cipher) =>
         !cipher.isDeleted &&
         cipher.type === CipherType.Login &&
-        cipher.login.fido2Credentials.length > 0 &&
+        cipher.login.hasFido2Credentials &&
         cipher.login.fido2Credentials[0].rpId === rpId &&
         cipher.login.fido2Credentials[0].discoverable
     );

@@ -19,7 +19,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
@@ -29,6 +28,7 @@ import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
 import { DialogService } from "@bitwarden/components";
+import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import {
@@ -89,6 +89,7 @@ export class Fido2Component implements OnInit, OnDestroy {
       map((queryParamMap) => ({
         sessionId: queryParamMap.get("sessionId"),
         senderTabId: queryParamMap.get("senderTabId"),
+        senderUrl: queryParamMap.get("senderUrl"),
       }))
     );
 
@@ -97,7 +98,7 @@ export class Fido2Component implements OnInit, OnDestroy {
         concatMap(async ([queryParams, message]) => {
           this.sessionId = queryParams.sessionId;
           this.senderTabId = queryParams.senderTabId;
-
+          this.url = queryParams.senderUrl;
           // For a 'NewSessionCreatedRequest', abort if it doesn't belong to the current session.
           if (
             message.type === "NewSessionCreatedRequest" &&
@@ -145,8 +146,6 @@ export class Fido2Component implements OnInit, OnDestroy {
       concatMap(async (message) => {
         switch (message.type) {
           case "ConfirmNewCredentialRequest": {
-            const activeTabs = await BrowserApi.getActiveTabs();
-            this.url = activeTabs[0].url;
             const equivalentDomains = this.settingsService.getEquivalentDomains(this.url);
 
             this.ciphers = (await this.cipherService.getAllDecrypted()).filter(
@@ -230,7 +229,7 @@ export class Fido2Component implements OnInit, OnDestroy {
         userVerified,
       });
     } else if (data?.type === "ConfirmNewCredentialRequest") {
-      if (this.cipher.login.fido2Credentials.length > 0) {
+      if (this.cipher.login.hasFido2Credentials) {
         const confirmed = await this.dialogService.openSimpleDialog({
           title: { key: "overwritePasskey" },
           content: { key: "overwritePasskeyAlert" },
@@ -302,6 +301,12 @@ export class Fido2Component implements OnInit, OnDestroy {
   }
 
   addCipher() {
+    const data = this.message$.value;
+
+    if (data?.type !== "ConfirmNewCredentialRequest") {
+      return;
+    }
+
     this.router.navigate(["/add-cipher"], {
       queryParams: {
         name: Utils.getHostname(this.url),
@@ -309,33 +314,9 @@ export class Fido2Component implements OnInit, OnDestroy {
         uilocation: "popout",
         senderTabId: this.senderTabId,
         sessionId: this.sessionId,
+        userVerification: data.userVerification,
       },
     });
-  }
-
-  buildCipher() {
-    this.cipher = new CipherView();
-    this.cipher.name = Utils.getHostname(this.url);
-    this.cipher.type = CipherType.Login;
-    this.cipher.login = new LoginView();
-    this.cipher.login.uris = [new LoginUriView()];
-    this.cipher.login.uris[0].uri = this.url;
-    this.cipher.card = new CardView();
-    this.cipher.identity = new IdentityView();
-    this.cipher.secureNote = new SecureNoteView();
-    this.cipher.secureNote.type = SecureNoteType.Generic;
-    this.cipher.reprompt = CipherRepromptType.None;
-  }
-
-  async createNewCipher() {
-    this.buildCipher();
-    const cipher = await this.cipherService.encrypt(this.cipher);
-    try {
-      await this.cipherService.createWithServer(cipher);
-      this.cipher.id = cipher.id;
-    } catch (e) {
-      this.logService.error(e);
-    }
   }
 
   async loadLoginCiphers() {
@@ -396,6 +377,31 @@ export class Fido2Component implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private buildCipher() {
+    this.cipher = new CipherView();
+    this.cipher.name = Utils.getHostname(this.url);
+    this.cipher.type = CipherType.Login;
+    this.cipher.login = new LoginView();
+    this.cipher.login.uris = [new LoginUriView()];
+    this.cipher.login.uris[0].uri = this.url;
+    this.cipher.card = new CardView();
+    this.cipher.identity = new IdentityView();
+    this.cipher.secureNote = new SecureNoteView();
+    this.cipher.secureNote.type = SecureNoteType.Generic;
+    this.cipher.reprompt = CipherRepromptType.None;
+  }
+
+  private async createNewCipher() {
+    this.buildCipher();
+    const cipher = await this.cipherService.encrypt(this.cipher);
+    try {
+      await this.cipherService.createWithServer(cipher);
+      this.cipher.id = cipher.id;
+    } catch (e) {
+      this.logService.error(e);
+    }
   }
 
   private async handleUserVerification(

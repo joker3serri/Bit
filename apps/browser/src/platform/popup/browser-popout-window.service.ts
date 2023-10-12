@@ -1,3 +1,5 @@
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+
 import { BrowserApi } from "../browser/browser-api";
 
 import { BrowserPopoutWindowService as BrowserPopupWindowServiceInterface } from "./abstractions/browser-popout-window.service";
@@ -45,12 +47,56 @@ class BrowserPopoutWindowService implements BrowserPopupWindowServiceInterface {
     await this.openSingleActionPopout(senderWindowId, promptWindowPath, "passwordReprompt");
   }
 
+  async openCipherCreation(
+    senderWindowId: number,
+    {
+      cipherType = CipherType.Login,
+      senderTabId,
+      senderTabURI,
+    }: {
+      cipherType?: CipherType;
+      senderTabId: number;
+      senderTabURI: string;
+    }
+  ) {
+    const promptWindowPath =
+      "popup/index.html#/edit-cipher" +
+      "?uilocation=popout" +
+      `&type=${cipherType}` +
+      `&senderTabId=${senderTabId}` +
+      `&uri=${senderTabURI}`;
+
+    await this.openSingleActionPopout(senderWindowId, promptWindowPath, "cipherCreation");
+  }
+
+  async openCipherEdit(
+    senderWindowId: number,
+    {
+      cipherId,
+      senderTabId,
+      senderTabURI,
+    }: {
+      cipherId: string;
+      senderTabId: number;
+      senderTabURI: string;
+    }
+  ) {
+    const promptWindowPath =
+      "popup/index.html#/edit-cipher" +
+      "?uilocation=popout" +
+      `&cipherId=${cipherId}` +
+      `&senderTabId=${senderTabId}` +
+      `&uri=${senderTabURI}`;
+
+    await this.openSingleActionPopout(senderWindowId, promptWindowPath, "cipherEdit");
+  }
+
   async closePasswordRepromptPrompt() {
     await this.closeSingleActionPopout("passwordReprompt");
   }
 
   async openFido2Popout(
-    senderWindowId: number,
+    senderWindow: chrome.tabs.Tab,
     {
       sessionId,
       senderTabId,
@@ -68,12 +114,18 @@ class BrowserPopoutWindowService implements BrowserPopupWindowServiceInterface {
       "?uilocation=popout" +
       `&sessionId=${sessionId}` +
       `&fallbackSupported=${fallbackSupported}` +
-      `&senderTabId=${senderTabId}`;
+      `&senderTabId=${senderTabId}` +
+      `&senderUrl=${encodeURIComponent(senderWindow.url)}`;
 
-    return await this.openSingleActionPopout(senderWindowId, promptWindowPath, "fido2Popout", {
-      width: 200,
-      height: 500,
-    });
+    return await this.openSingleActionPopout(
+      senderWindow.windowId,
+      promptWindowPath,
+      "fido2Popout",
+      {
+        width: 200,
+        height: 500,
+      }
+    );
   }
 
   async closeFido2Popout(): Promise<void> {
