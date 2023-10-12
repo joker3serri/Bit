@@ -1,9 +1,10 @@
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
+import { Account, Chunk, ParserOptions, SharedFolder } from "../models";
+
 import { BinaryReader } from "./binary-reader";
 import { CryptoUtils } from "./crypto-utils";
-import { Account, Chunk, ParserOptions, SharedFolder } from "./models";
 
 const AllowedSecureNoteTypes = new Set<string>([
   "Server",

@@ -1,9 +1,7 @@
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-import { BinaryReader } from "./binary-reader";
-import { CryptoUtils } from "./crypto-utils";
-import { OtpMethod, Platform } from "./enums";
+import { OtpMethod, Platform } from "../enums";
 import {
   Account,
   Chunk,
@@ -13,10 +11,13 @@ import {
   ParserOptions,
   Session,
   SharedFolder,
-} from "./models";
+} from "../models";
+import { Ui } from "../ui";
+
+import { BinaryReader } from "./binary-reader";
+import { CryptoUtils } from "./crypto-utils";
 import { Parser } from "./parser";
 import { RestClient } from "./rest-client";
-import { Ui } from "./ui";
 
 const PlatformToUserAgent = new Map<Platform, string>([
   [Platform.Desktop, "cli"],
