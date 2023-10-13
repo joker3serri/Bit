@@ -29,7 +29,7 @@ export class UserTypeContext {
     return scope;
   }
 
-  get cleanOidcAuthority(): string {
+  get baseOpenIDConnectAuthority(): string {
     return this.OpenIDConnectAuthority.replace("/.well-known/openid-configuration", "");
   }
 
