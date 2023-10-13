@@ -155,7 +155,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     if (this.vault.userType.isFederated()) {
       this.oidcClient = new OidcClient({
         authority: this.vault.userType.openIDConnectAuthorityBase,
-        client_id: this.vault.userType.OpenIDConnectClientId,
+        client_id: this.vault.userType.openIDConnectClientId,
         // TODO: this is different per client
         redirect_uri: "bitwarden://sso-callback-lp",
         response_type: "code",

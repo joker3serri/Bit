@@ -71,14 +71,14 @@ export class Vault {
     if (response.status === HttpStatusCode.Ok) {
       const json = await response.json();
       this.userType = new UserTypeContext();
-      this.userType.CompanyId = json.CompanyId;
-      this.userType.IdentityProviderGUID = json.IdentityProviderGUID;
-      this.userType.IdentityProviderURL = json.IdentityProviderURL;
-      this.userType.IsPasswordlessEnabled = json.IsPasswordlessEnabled;
-      this.userType.OpenIDConnectAuthority = json.OpenIDConnectAuthority;
-      this.userType.OpenIDConnectClientId = json.OpenIDConnectClientId;
-      this.userType.PkceEnabled = json.PkceEnabled;
-      this.userType.Provider = json.Provider;
+      this.userType.companyId = json.CompanyId;
+      this.userType.identityProviderGUID = json.IdentityProviderGUID;
+      this.userType.identityProviderURL = json.IdentityProviderURL;
+      this.userType.isPasswordlessEnabled = json.IsPasswordlessEnabled;
+      this.userType.openIDConnectAuthority = json.OpenIDConnectAuthority;
+      this.userType.openIDConnectClientId = json.OpenIDConnectClientId;
+      this.userType.pkceEnabled = json.PkceEnabled;
+      this.userType.provider = json.Provider;
       this.userType.type = json.type;
       return;
     }
@@ -116,12 +116,12 @@ export class Vault {
     let k1: Uint8Array = null;
     if (federatedUser.idpUserInfo?.LastPassK1 !== null) {
       return Utils.fromByteStringToArray(federatedUser.idpUserInfo.LastPassK1);
-    } else if (this.userType.Provider === IdpProvider.Azure) {
+    } else if (this.userType.provider === IdpProvider.Azure) {
       k1 = await this.getK1Azure(federatedUser);
-    } else if (this.userType.Provider === IdpProvider.Google) {
+    } else if (this.userType.provider === IdpProvider.Google) {
       k1 = await this.getK1Google(federatedUser);
     } else {
-      const b64Encoded = this.userType.Provider === IdpProvider.PingOne;
+      const b64Encoded = this.userType.provider === IdpProvider.PingOne;
       k1 = this.getK1FromAccessToken(federatedUser, b64Encoded);
     }
 
@@ -202,9 +202,9 @@ export class Vault {
     }
 
     const rest = new RestClient();
-    rest.baseUrl = this.userType.IdentityProviderURL;
+    rest.baseUrl = this.userType.identityProviderURL;
     const response = await rest.postJson("federatedlogin/api/v1/getkey", {
-      company_id: this.userType.CompanyId,
+      company_id: this.userType.companyId,
       id_token: federatedUser.idToken,
     });
     if (response.status === HttpStatusCode.Ok) {
