@@ -16,6 +16,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PasswordGenerationService } from "@bitwarden/common/tools/generator/password";
 import {
   CalloutModule,
   CheckboxModule,
@@ -26,8 +27,9 @@ import {
 } from "@bitwarden/components";
 
 import { ClientInfo, Vault } from "../importers/lastpass/access";
-
 // import { LastPassMultifactorPromptComponent } from "./dialog/lastpass-multifactor-prompt.component";
+import { FederatedUserContext } from "../importers/lastpass/access/models";
+
 import { ImportErrorDialogComponent } from "./dialog";
 import { LastPassPasswordPromptComponent } from "./dialog/lastpass-password-prompt.component";
 // import { Ui } from "../importers/lastpass/access/ui";
@@ -55,8 +57,6 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   private vault: Vault;
 
   private oidcClient: OidcClient;
-  private oidcCode: string;
-  private oidcState: string;
 
   private _parentFormGroup: FormGroup;
   protected formGroup = this.formBuilder.group({
@@ -84,6 +84,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     tokenService: TokenService,
     cryptoFunctionService: CryptoFunctionService,
     private platformUtilsService: PlatformUtilsService,
+    private passwordGenerationService: PasswordGenerationService,
     private formBuilder: FormBuilder,
     private controlContainer: ControlContainer,
     private dialogService: DialogService,
@@ -165,17 +166,38 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       });
 
       const request = await this.oidcClient.createSigninRequest({
-        state: { lastpass: true, email: this.formGroup.controls.email.value },
-        // TODO: what is the best way to generate random string? password generation services?
-        nonce: "randomstring123",
+        state: {
+          email: this.formGroup.controls.email.value,
+          // Anything else that we need to preserve in userState?
+        },
+        nonce: await this.passwordGenerationService.generatePassword({
+          length: 20,
+          uppercase: true,
+          lowercase: true,
+          number: true,
+        }),
       });
       this.platformUtilsService.launchUri(request.url);
 
       // TODO: do something while waiting on SSO to callback and finish?
+      // Need to return code and state from the SSO callback
+
+      const oidcCode = "";
+      const oidcState = "";
+      const response = await this.oidcClient.processSigninResponse(
+        this.oidcClient.settings.redirect_uri + "&code=" + oidcCode + "&state=" + oidcState
+      );
+      const userState = response.userState as any;
+
+      const federatedUser = new FederatedUserContext();
+      federatedUser.idToken = response.access_token;
+      federatedUser.accessToken = response.access_token;
+      federatedUser.idpUserInfo = response.profile;
+      federatedUser.username = userState.email;
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       // const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
-      // await this.vault.openFederated(null, ClientInfo.createClientInfo(), null);
+      // await this.vault.openFederated(federatedUser, ClientInfo.createClientInfo(), null);
     } else {
       // TODO Pass in to handleImport?
       const email = this.formGroup.controls.email.value;
