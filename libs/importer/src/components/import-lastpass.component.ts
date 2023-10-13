@@ -171,6 +171,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       });
       this.platformUtilsService.launchUri(request.url);
 
+      // TODO: do something while waiting on SSO to callback and finish?
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       // const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
       // await this.vault.openFederated(null, ClientInfo.createClientInfo(), null);
