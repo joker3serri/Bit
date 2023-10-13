@@ -14,6 +14,7 @@ import {
 } from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
 import { Fido2UserInterfaceService } from "../../abstractions/fido2/fido2-user-interface.service.abstraction";
 import { SyncService } from "../../abstractions/sync/sync.service.abstraction";
+import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
 import { CipherView } from "../../models/view/cipher.view";
 import { Fido2CredentialView } from "../../models/view/fido2-credential.view";
@@ -122,13 +123,6 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
       }
 
-      if (params.requireUserVerification && !userVerified) {
-        this.logService?.warning(
-          `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
-        );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
-      }
-
       try {
         keyPair = await createKeyPair();
 
@@ -137,7 +131,10 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
           await this.cipherService.getKeyForCipherKeyDecryption(encrypted)
         );
 
-        if (cipher.reprompt !== 0 && !userVerified) {
+        if (
+          !userVerified &&
+          (params.requireUserVerification || cipher.reprompt !== CipherRepromptType.None)
+        ) {
           this.logService?.warning(
             `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
           );
@@ -243,14 +240,10 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
       }
 
-      if (params.requireUserVerification && !userVerified) {
-        this.logService?.warning(
-          `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
-        );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
-      }
-
-      if (selectedCipher.reprompt !== 0 && !userVerified) {
+      if (
+        !userVerified &&
+        (params.requireUserVerification || selectedCipher.reprompt !== CipherRepromptType.None)
+      ) {
         this.logService?.warning(
           `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
         );
