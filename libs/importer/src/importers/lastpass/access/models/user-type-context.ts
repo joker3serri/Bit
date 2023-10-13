@@ -21,7 +21,7 @@ export class UserTypeContext {
     );
   }
 
-  oidcScope(): string {
+  get oidcScope(): string {
     let scope = "openid profile email";
     if (this.Provider === IdpProvider.PingOne) {
       scope += " lastpass";
@@ -29,7 +29,7 @@ export class UserTypeContext {
     return scope;
   }
 
-  oidcAuthorityCleaned(): string {
+  get cleanOidcAuthority(): string {
     return this.OpenIDConnectAuthority.replace("/.well-known/openid-configuration", "");
   }
 

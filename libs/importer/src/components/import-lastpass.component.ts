@@ -35,7 +35,6 @@ import { LastPassPasswordPromptComponent } from "./dialog/lastpass-password-prom
 // import { OobResult } from "../importers/lastpass/access/oob-result";
 // import { OtpResult } from "../importers/lastpass/access/otp-result";
 
-
 /** TODO: add I18n */
 @Component({
   selector: "import-lastpass",
@@ -155,12 +154,12 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   async handleImport() {
     if (this.vault.userType.isFederated()) {
       this.oidcClient = new OidcClient({
-        authority: this.vault.userType.oidcAuthorityCleaned(),
+        authority: this.vault.userType.cleanOidcAuthority,
         client_id: this.vault.userType.OpenIDConnectClientId,
         // TODO: this is different per client
         redirect_uri: "bitwarden://sso-callback-lp",
         response_type: "code",
-        scope: this.vault.userType.oidcScope(),
+        scope: this.vault.userType.oidcScope,
         response_mode: "query",
         loadUserInfo: true,
       });
