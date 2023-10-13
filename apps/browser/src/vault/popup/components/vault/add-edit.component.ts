@@ -331,11 +331,9 @@ export class AddEditComponent extends BaseAddEditComponent {
     sessionId: string,
     userVerification: boolean
   ): Promise<boolean> {
-    if (userVerification) {
-      if (!(await this.passwordRepromptService.showPasswordPrompt())) {
-        BrowserFido2UserInterfaceSession.abortPopout(sessionId);
-        return false;
-      }
+    if (userVerification && !(await this.passwordRepromptService.showPasswordPrompt())) {
+      BrowserFido2UserInterfaceSession.abortPopout(sessionId);
+      return false;
     }
 
     return true;
