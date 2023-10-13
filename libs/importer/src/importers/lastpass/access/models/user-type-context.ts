@@ -2,6 +2,7 @@ import { IdpProvider, LastpassLoginType } from "../enums";
 
 export class UserTypeContext {
   type: LastpassLoginType;
+  // TODO: camelCase these property names
   IdentityProviderGUID: string;
   IdentityProviderURL: string;
   OpenIDConnectAuthority: string;
@@ -18,6 +19,18 @@ export class UserTypeContext {
       this.hasValue(this.OpenIDConnectAuthority) &&
       this.hasValue(this.OpenIDConnectClientId)
     );
+  }
+
+  oidcScope(): string {
+    let scope = "openid profile email";
+    if (this.Provider === IdpProvider.PingOne) {
+      scope += " lastpass";
+    }
+    return scope;
+  }
+
+  oidcAuthorityCleaned(): string {
+    return this.OpenIDConnectAuthority.replace("/.well-known/openid-configuration", "");
   }
 
   private hasValue(str: string) {
