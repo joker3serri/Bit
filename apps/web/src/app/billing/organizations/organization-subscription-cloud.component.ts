@@ -22,10 +22,9 @@ import {
   BillingSyncApiKeyComponent,
   BillingSyncApiModalData,
 } from "./billing-sync-api-key.component";
-import { SecretsManagerSubscriptionOptions } from "./secrets-manager/sm-adjust-subscription.component";
+import { SecretsManagerSubscriptionOptions } from "./sm-adjust-subscription.component";
 
 @Component({
-  selector: "app-org-subscription-cloud",
   templateUrl: "organization-subscription-cloud.component.html",
 })
 export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy {
@@ -116,6 +115,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
     this.showSecretsManagerSubscribe =
       this.userOrg.canEditSubscription &&
+      !this.userOrg.hasProvider &&
       !this.userOrg.useSecretsManager &&
       !this.subscription?.cancelled &&
       !this.subscriptionMarkedForCancel;
@@ -138,6 +138,10 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   get nextInvoice() {
     return this.sub != null ? this.sub.upcomingInvoice : null;
+  }
+
+  get discount() {
+    return this.sub != null ? this.sub.discount : null;
   }
 
   get isExpired() {
