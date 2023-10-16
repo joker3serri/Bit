@@ -61,6 +61,7 @@
         <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
       </button>
       <button
+        *ngIf="usernameOptions.type === 'subaddress' || usernameOptions.type === 'word'"
         type="button"
         appStopClick
         appA11yTitle="{{ 'regenerateUsername' | i18n }}"
