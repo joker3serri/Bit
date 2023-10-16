@@ -60,6 +60,11 @@ export class GeneratorComponent implements OnInit {
     ];
     this.usernameTypeOptions = [
       {
+        name: i18nService.t("defaultEmailAddress"),
+        value: "defaultemail",
+        desc: i18nService.t("defaultEmailAddressDesc"),
+      },
+      {
         name: i18nService.t("plusAddressedEmail"),
         value: "subaddress",
         desc: i18nService.t("plusAddressedEmailDesc"),
