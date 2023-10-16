@@ -36,16 +36,21 @@ export class UsernameGenerationService implements UsernameGenerationServiceAbstr
   ) {}
 
   generateUsername(options: UsernameGeneratorOptions): Promise<string> {
-    if (options.type === "catchall") {
-      return this.generateCatchall(options);
-    } else if (options.type === "subaddress") {
-      return this.generateSubaddress(options);
-    } else if (options.type === "forwarded") {
-      return this.generateForwarded(options);
-    } else if (options.type === "defaultemail") {
-      return this.getDefaultEmailAddress();
-    } else {
-      return this.generateWord(options);
+    switch (options.type) {
+      case "catchall":
+        return this.generateCatchall(options);
+
+      case "subaddress":
+        return this.generateSubaddress(options);
+
+      case "forwarded":
+        return this.generateForwarded(options);
+
+      case "defaultemail":
+        return this.getDefaultEmailAddress();
+
+      default:
+        this.generateWord(options);
     }
   }
 
