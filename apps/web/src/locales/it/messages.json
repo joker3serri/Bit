@@ -5588,7 +5588,7 @@
   "usernameType": {
     "message": "Tipo di nome utente"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "Indirizzo email alternativo",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

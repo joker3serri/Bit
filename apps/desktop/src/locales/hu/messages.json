@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "Felhasználónév típusa"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "További címzési email cím",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

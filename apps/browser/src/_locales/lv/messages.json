@@ -2036,7 +2036,7 @@
   "usernameType": {
     "message": "Lietotājvārda veids"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "E-pasta adrese ar plusu",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "Kullanıcı adı türü"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "Artı adresli e-posta",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

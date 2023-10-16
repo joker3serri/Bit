@@ -5588,7 +5588,7 @@
   "usernameType": {
     "message": "نوع نام کاربری"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "به علاوه نشانی ایمیل داده شده",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

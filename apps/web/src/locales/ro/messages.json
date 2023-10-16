@@ -5588,7 +5588,7 @@
   "usernameType": {
     "message": "Tip de nume de utilizator"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "E-mail Plus adresat",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

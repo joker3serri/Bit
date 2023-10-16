@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "Tipo de nombre de usuario"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "Dirección adicional de correo electrónico",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

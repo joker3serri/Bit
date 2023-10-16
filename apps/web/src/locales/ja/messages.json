@@ -5588,7 +5588,7 @@
   "usernameType": {
     "message": "ユーザー名の種類"
   },
- "plusAddressedEmail": {
+  "plusAddressedEmail": {
     "message": "プラス付きのメールアドレス",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },
