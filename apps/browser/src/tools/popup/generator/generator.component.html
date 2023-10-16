@@ -308,16 +308,16 @@
             appBoxRow
             *ngFor="let o of usernameTypeOptions"
           >
-            <input
-              type="radio"
-              [(ngModel)]="usernameOptions.type"
-              name="UsernameType"
-              id="type_{{ o.value }}"
-              [value]="o.value"
-              (change)="saveUsernameOptions()"
-              [checked]="usernameOptions.type === o.value"
-            />
-            <label for="type_{{ o.value }}">
+            <label for="type_{{ o.value }}" class="tw-cursor-pointer">
+              <input
+                type="radio"
+                [(ngModel)]="usernameOptions.type"
+                name="UsernameType"
+                id="type_{{ o.value }}"
+                [value]="o.value"
+                (change)="saveUsernameOptions()"
+                [checked]="usernameOptions.type === o.value"
+              />
               {{ o.name }}
               <div class="small text-muted" *ngIf="o.desc">
                 {{ o.desc }}
