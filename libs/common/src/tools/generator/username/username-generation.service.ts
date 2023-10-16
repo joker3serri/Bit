@@ -17,7 +17,7 @@ import { UsernameGeneratorOptions } from "./username-generation-options";
 import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";
 
 const DefaultOptions: UsernameGeneratorOptions = {
-  type: "word",
+  type: "defaultemail",
   wordCapitalize: true,
   wordIncludeNumber: true,
   subaddressType: "random",
@@ -42,6 +42,8 @@ export class UsernameGenerationService implements UsernameGenerationServiceAbstr
       return this.generateSubaddress(options);
     } else if (options.type === "forwarded") {
       return this.generateForwarded(options);
+    } else if (options.type === "defaultemail") {
+      return this.getDefaultEmailAddress();
     } else {
       return this.generateWord(options);
     }
@@ -94,6 +96,10 @@ export class UsernameGenerationService implements UsernameGenerationServiceAbstr
       subaddressString = o.website;
     }
     return emailBeginning + "+" + subaddressString + "@" + emailEnding;
+  }
+
+  async getDefaultEmailAddress(): Promise<string> {
+    return this.stateService.getEmail();
   }
 
   async generateCatchall(options: UsernameGeneratorOptions): Promise<string> {
