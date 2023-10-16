@@ -2036,7 +2036,7 @@
   "usernameType": {
     "message": "İstifadəçi adı növü"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Plyus ünvanlı e-poçt",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

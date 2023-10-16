@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "Typ používateľského mena"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "E-mail s plusovým aliasom",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

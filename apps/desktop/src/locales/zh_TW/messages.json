@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "使用者名稱類型"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "加號地址電子郵件",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

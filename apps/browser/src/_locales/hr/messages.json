@@ -2036,7 +2036,7 @@
   "usernameType": {
     "message": "Tip korisničkog imena"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Plus adresa e-pošte",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

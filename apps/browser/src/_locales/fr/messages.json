@@ -2036,7 +2036,7 @@
   "usernameType": {
     "message": "Type de nom d'utilisateur"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Courriel sous-adressé",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

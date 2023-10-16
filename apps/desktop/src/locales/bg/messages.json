@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "Тип потребителско име"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Адрес на е-поща с плюс",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

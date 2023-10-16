@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "用户名类型"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "附加地址电子邮件",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

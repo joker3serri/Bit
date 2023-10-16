@@ -2036,7 +2036,7 @@
   "usernameType": {
     "message": "Rodzaj nazwy użytkownika"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Adres e-mail z plusem",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

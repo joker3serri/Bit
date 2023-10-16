@@ -2036,7 +2036,7 @@
   "usernameType": {
     "message": "Uri ng username"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Plus na naka-address na email",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

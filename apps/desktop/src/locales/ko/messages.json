@@ -2017,7 +2017,7 @@
   "usernameType": {
     "message": "아이디 유형"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "플러스 주소 이메일",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },

@@ -5588,7 +5588,7 @@
   "usernameType": {
     "message": "Erabiltzaile izen mota"
   },
-  "plusAddressedEmail": {
+ "plusAddressedEmail": {
     "message": "Atzizkidun emaila",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },
