@@ -188,7 +188,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       authData: Fido2Utils.bufferToString(makeCredentialResult.authData),
       clientDataJSON: Fido2Utils.bufferToString(clientDataJSONBytes),
       publicKeyAlgorithm: makeCredentialResult.publicKeyAlgorithm,
-      transports: ["hybrid"],
+      transports: ["internal"],
     };
   }
 
@@ -209,13 +209,6 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     if (authStatus === AuthenticationStatus.LoggedOut) {
       this.logService?.warning(`[Fido2Client] Fido2VaultCredential is not enabled`);
       throw new FallbackRequestedError();
-    }
-
-    if (!params.sameOriginWithAncestors) {
-      this.logService?.warning(
-        `[Fido2Client] Invalid 'sameOriginWithAncestors' value: ${params.sameOriginWithAncestors}`
-      );
-      throw new DOMException("Invalid 'sameOriginWithAncestors' value", "NotAllowedError");
     }
 
     const { domain: effectiveDomain } = parse(params.origin, { allowPrivateDomains: true });
