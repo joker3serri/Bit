@@ -14,6 +14,7 @@ import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { openViewVaultItemPopout } from "../../vault/popup/utils/vault-popout-window";
+import { SHOW_AUTOFILL_BUTTON } from "../constants";
 import { AutofillService, PageDetail } from "../services/abstractions/autofill.service";
 import { AutofillOverlayElement, AutofillOverlayPort } from "../utils/autofill-overlay.enum";
 
@@ -510,7 +511,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
 
     await this.openViewVaultItemPopout(sender.tab, {
       cipherId: cipher.id,
-      action: "show-autofill-button",
+      action: SHOW_AUTOFILL_BUTTON,
     });
   }
 

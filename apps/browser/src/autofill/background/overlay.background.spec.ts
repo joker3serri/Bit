@@ -12,6 +12,7 @@ import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
+import { SHOW_AUTOFILL_BUTTON } from "../constants";
 import {
   createAutofillPageDetailsMock,
   createChromeTabMock,
@@ -1110,7 +1111,7 @@ describe("OverlayBackground", () => {
             listPortSpy.sender.tab,
             {
               cipherId: cipher.id,
-              action: "show-autofill-button",
+              action: SHOW_AUTOFILL_BUTTON,
             }
           );
         });
