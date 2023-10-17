@@ -483,6 +483,7 @@ describe("OverlayBackground", () => {
     it("will set up onMessage and onConnect listeners", () => {
       overlayBackground["setupExtensionMessageListeners"]();
 
+      // eslint-disable-next-line
       expect(chrome.runtime.onMessage.addListener).toHaveBeenCalled();
       expect(chrome.runtime.onConnect.addListener).toHaveBeenCalled();
     });
