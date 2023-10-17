@@ -1,7 +1,7 @@
 import { DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { FormControl, Validators } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -23,18 +23,21 @@ import {
     AsyncActionsModule,
     ButtonModule,
     IconButtonModule,
+    ReactiveFormsModule,
   ],
 })
 export class FilePasswordPromptComponent {
-  filePassword = new FormControl("", Validators.required);
+  formGroup = this.formBuilder.group({
+    filePassword: ["", Validators.required],
+  });
 
-  constructor(public dialogRef: DialogRef) {}
+  constructor(public dialogRef: DialogRef, protected formBuilder: FormBuilder) {}
 
-  submit() {
-    this.filePassword.markAsTouched();
-    if (!this.filePassword.valid) {
+  submit = () => {
+    this.formGroup.markAsTouched();
+    if (!this.formGroup.valid) {
       return;
     }
-    this.dialogRef.close(this.filePassword.value);
-  }
+    this.dialogRef.close(this.formGroup.value.filePassword);
+  };
 }
