@@ -88,7 +88,7 @@ function createChromeTabMock(customFields = {}): chrome.tabs.Tab {
     discarded: false,
     autoDiscardable: false,
     groupId: 2,
-    url: "https://tacos.com",
+    url: "https://jest-testing-website.com",
     ...customFields,
   };
 }
@@ -101,7 +101,7 @@ function createGenerateFillScriptOptionsMock(customFields = {}): GenerateFillScr
     fillNewPassword: false,
     allowTotpAutofill: false,
     cipher: mock<CipherView>(),
-    tabUrl: "https://tacos.com",
+    tabUrl: "https://jest-testing-website.com",
     defaultUriMatch: UriMatchType.Domain,
     ...customFields,
   };
@@ -160,7 +160,7 @@ function createInitAutofillOverlayButtonMessageMock(
   return {
     command: "initAutofillOverlayButton",
     translations: overlayPagesTranslations,
-    styleSheetUrl: "https://tacos.com",
+    styleSheetUrl: "https://jest-testing-website.com",
     authStatus: AuthenticationStatus.Unlocked,
     ...customFields,
   };
@@ -175,8 +175,8 @@ function createAutofillOverlayCipherDataMock(index: number, customFields = {}): 
     favorite: false,
     icon: {
       imageEnabled: true,
-      image: "https://tacos.com/image.png",
-      fallbackImage: "https://tacos.com/fallback.png",
+      image: "https://jest-testing-website.com/image.png",
+      fallbackImage: "https://jest-testing-website.com/fallback.png",
       icon: "bw-icon",
     },
     ...customFields,
@@ -189,14 +189,14 @@ function createInitAutofillOverlayListMessageMock(
   return {
     command: "initAutofillOverlayList",
     translations: overlayPagesTranslations,
-    styleSheetUrl: "https://tacos.com",
+    styleSheetUrl: "https://jest-testing-website.com",
     theme: "light",
     authStatus: AuthenticationStatus.Unlocked,
     ciphers: [
       createAutofillOverlayCipherDataMock(1, {
         icon: {
           imageEnabled: true,
-          image: "https://tacos.com/image.png",
+          image: "https://jest-testing-website.com/image.png",
           fallbackImage: "",
           icon: "bw-icon",
         },
@@ -205,7 +205,7 @@ function createInitAutofillOverlayListMessageMock(
         icon: {
           imageEnabled: true,
           image: "",
-          fallbackImage: "https://tacos.com/fallback.png",
+          fallbackImage: "https://jest-testing-website.com/fallback.png",
           icon: "bw-icon",
         },
       }),

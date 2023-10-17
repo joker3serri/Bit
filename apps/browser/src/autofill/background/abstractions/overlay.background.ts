@@ -47,7 +47,7 @@ type OverlayCipherData = {
   favorite: boolean;
   icon: { imageEnabled: boolean; image: string; fallbackImage: string; icon: string };
   login?: { username: string };
-  card?: { brand: string; partialNumber: string };
+  card?: string;
 };
 
 type BackgroundMessageParam = {
