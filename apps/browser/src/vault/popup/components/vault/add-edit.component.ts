@@ -18,6 +18,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
@@ -38,6 +39,7 @@ export class AddEditComponent extends BaseAddEditComponent {
   senderTabId?: number;
   uilocation?: "popout" | "popup" | "sidebar" | "tab";
   inPopout = false;
+  commonUsernames: string[];
 
   constructor(
     cipherService: CipherService,
@@ -112,6 +114,7 @@ export class AddEditComponent extends BaseAddEditComponent {
       if (params.selectedVault) {
         this.organizationId = params.selectedVault;
       }
+
       await this.load();
 
       if (!this.editMode || this.cloneMode) {
@@ -156,6 +159,8 @@ export class AddEditComponent extends BaseAddEditComponent {
     this.showAutoFillOnPageLoadOptions =
       this.cipher.type === CipherType.Login &&
       (await this.stateService.getEnableAutoFillOnPageLoad());
+
+    this.cipher.type === CipherType.Login && (await this.setCommonUsernames());
   }
 
   async submit(): Promise<boolean> {
@@ -312,5 +317,26 @@ export class AddEditComponent extends BaseAddEditComponent {
       null,
       this.i18nService.t("autofillOnPageLoadSetToDefault")
     );
+  }
+
+  protected getAllCiphers(): Promise<CipherView[]> {
+    return this.cipherService.getAllDecrypted();
+  }
+
+  async setCommonUsernames() {
+    const allCiphers = await this.getAllCiphers();
+    const commonUsernames = Object.values(
+      allCiphers.reduce((obj: Record<string, { login: string; occurrences: number }>, c) => {
+        const login = c.login.username;
+        obj[login] = obj[login] || { login, occurrences: 0 };
+        obj[login].occurrences++;
+        return obj;
+      }, {})
+    )
+      .sort((a, b) => b.occurrences - a.occurrences)
+      .slice(0, 5)
+      .map((x) => x.login);
+
+    this.commonUsernames = commonUsernames;
   }
 }

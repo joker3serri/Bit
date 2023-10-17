@@ -48,10 +48,17 @@
                 type="text"
                 name="Login.Username"
                 [(ngModel)]="cipher.login.username"
+                list="commonUsernames"
                 inputmode="email"
                 appInputVerbatim
                 [readonly]="!cipher.edit && editMode"
               />
+              <!-- TODO: Hide the datalist caret -->
+              <datalist id="commonUsernames">
+                <option *ngFor="let commonUsername of commonUsernames" [ngValue]="commonUsername">
+                  {{ commonUsername }}
+                </option>
+              </datalist>
             </div>
             <div class="action-buttons">
               <button
