@@ -53,7 +53,7 @@
                   *ngFor="let cipherItem of displayedCiphers"
                   [cipher]="cipherItem"
                   [isSearching]="searchPending"
-                  title="{{ 'fido2Item' | i18n }}"
+                  title="{{ 'passkeyItem' | i18n }}"
                   (onSelected)="selectedPasskey($event)"
                   [isSelected]="cipher === cipherItem"
                 ></app-fido2-cipher-row>
@@ -108,7 +108,7 @@
               <app-fido2-cipher-row
                 *ngFor="let cipherItem of displayedCiphers"
                 [cipher]="cipherItem"
-                title="{{ 'fido2Item' | i18n }}"
+                title="{{ 'passkeyItem' | i18n }}"
                 (onSelected)="selectedPasskey($event)"
                 [isSelected]="cipher === cipherItem"
               ></app-fido2-cipher-row>
@@ -131,9 +131,9 @@
       </ng-container>
     </ng-container>
     <div class="useBrowserlink">
-      <a [routerLink]="[]" *ngIf="data.fallbackSupported" (click)="abort(true)">
+      <button *ngIf="data.fallbackSupported" appStopClick type="button" (click)="abort(true)">
         {{ "useBrowserName" | i18n }}
-      </a>
+      </button>
     </div>
   </div>
 </ng-container>

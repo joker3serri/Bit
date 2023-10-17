@@ -274,7 +274,16 @@ export class BrowserApi {
 
       BrowserApi.messageListener("message", handler);
 
-      return () => chrome.runtime.onMessage.removeListener(handler);
+      return () => {
+        chrome.runtime.onMessage.removeListener(handler);
+
+        if (BrowserApi.isSafariApi) {
+          const index = BrowserApi.registeredMessageListeners.indexOf(handler);
+          if (index !== -1) {
+            BrowserApi.registeredMessageListeners.splice(index, 1);
+          }
+        }
+      };
     });
   }
 

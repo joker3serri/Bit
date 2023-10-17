@@ -64,7 +64,7 @@ export class PopupUtilsService {
       href = win.location.href;
     }
 
-    if (chrome?.windows?.create != null) {
+    if (typeof chrome !== "undefined" && chrome?.windows?.create != null) {
       if (href.indexOf("?uilocation=") > -1) {
         href = href
           .replace("uilocation=popup", "uilocation=popout")

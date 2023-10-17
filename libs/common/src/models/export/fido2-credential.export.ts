@@ -2,7 +2,14 @@ import { EncString } from "../../platform/models/domain/enc-string";
 import { Fido2Credential } from "../../vault/models/domain/fido2-credential";
 import { Fido2CredentialView } from "../../vault/models/view/fido2-credential.view";
 
+/**
+ * Represents format of Fido2 Credentials in JSON exports.
+ */
 export class Fido2CredentialExport {
+  /**
+   * Generates a template for Fido2CredentialExport
+   * @returns Instance of Fido2CredentialExport with predefined values.
+   */
   static template(): Fido2CredentialExport {
     const req = new Fido2CredentialExport();
     req.credentialId = "keyId";
@@ -20,6 +27,12 @@ export class Fido2CredentialExport {
     return req;
   }
 
+  /**
+   * Converts a Fido2CredentialExport object to its view representation.
+   * @param req - The Fido2CredentialExport object to be converted.
+   * @param view - (Optional) The Fido2CredentialView object to popualte with Fido2CredentialExport data
+   * @returns Fido2CredentialView - The populated view, or a new instance if none was provided.
+   */
   static toView(req: Fido2CredentialExport, view = new Fido2CredentialView()) {
     view.credentialId = req.credentialId;
     view.keyType = req.keyType as "public-key";
@@ -36,6 +49,12 @@ export class Fido2CredentialExport {
     return view;
   }
 
+  /**
+   * Converts a Fido2CredentialExport object to its domain representation.
+   * @param req - The Fido2CredentialExport object to be converted.
+   * @param domain - (Optional) The Fido2Credential object to popualte with Fido2CredentialExport data
+   * @returns Fido2Credential - The populated domain, or a new instance if none was provided.
+   */
   static toDomain(req: Fido2CredentialExport, domain = new Fido2Credential()) {
     domain.credentialId = req.credentialId != null ? new EncString(req.credentialId) : null;
     domain.keyType = req.keyType != null ? new EncString(req.keyType) : null;
@@ -66,6 +85,11 @@ export class Fido2CredentialExport {
   discoverable: string;
   creationDate: Date;
 
+  /**
+   * Constructs a new Fid2CredentialExport instance.
+   *
+   * @param o - The credential storing the data being exported. When not provided, an empty export is created instead.
+   */
   constructor(o?: Fido2CredentialView | Fido2Credential) {
     if (o == null) {
       return;

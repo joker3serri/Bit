@@ -7269,12 +7269,6 @@
   "typePasskey": {
     "message": "Passkey"
   },
-  "application": {
-    "message": "Application"
-  },
-  "duplicatePasskey": {
-    "message": "A passkey with this ID already exists in this organization."
-  },
   "passkeyNotCopied": {
     "message": "Passkey will not be copied"
   },

@@ -2503,8 +2503,8 @@
   "choosePasskey": {
     "message": "Choose a login to save this passkey to"
   },
-  "fido2Item": {
-    "message": "Fido2 Item"
+  "passkeyItem": {
+    "message": "Passkey Item"
   },
   "overwritePasskey": {
     "message": "Overwrite passkey?"

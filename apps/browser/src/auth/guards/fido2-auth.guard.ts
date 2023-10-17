@@ -11,6 +11,10 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 
 import { BrowserRouterService } from "../../platform/popup/services/browser-router.service";
 
+/**
+ * This guard verifies the user's authetication status.
+ * If "Locked", it saves the intended route in memory and redirects to the lock screen. Otherwise, the intended route is allowed.
+ */
 export const fido2AuthGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
