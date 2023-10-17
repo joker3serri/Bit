@@ -2,6 +2,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
@@ -14,6 +15,7 @@ import { stateServiceFactory } from "../../platform/background/service-factories
 import { BrowserStateService } from "../../platform/services/abstractions/browser-state.service";
 import IconDetails from "../../vault/background/models/icon-details";
 import { cipherServiceFactory } from "../../vault/background/service_factories/cipher-service.factory";
+import { environmentServiceFactory } from "../background/service-factories/environment-service.factory";
 import { BrowserApi } from "../browser/browser-api";
 import BrowserPlatformUtilsService from "../services/browser-platform-utils.service";
 
@@ -26,6 +28,7 @@ export class UpdateBadge {
   private authService: AuthService;
   private stateService: BrowserStateService;
   private cipherService: CipherService;
+  private environmentService: EnvironmentService;
   private badgeAction: typeof chrome.action | typeof chrome.browserAction;
   private sidebarAction: OperaSidebarAction | FirefoxSidebarAction;
   private inited = false;
@@ -109,6 +112,11 @@ export class UpdateBadge {
 
     await this.setBadgeBackgroundColor();
 
+    const tab = await this.getTab(opts?.tabId, opts?.windowId);
+    const badgeOpts: BadgeOptions = { tab, windowId: tab?.windowId };
+
+    let badgeText: string;
+
     switch (authStatus) {
       case AuthenticationStatus.LoggedOut: {
         await this.setLoggedOut();
@@ -119,11 +127,13 @@ export class UpdateBadge {
         break;
       }
       case AuthenticationStatus.Unlocked: {
-        const tab = await this.getTab(opts?.tabId, opts?.windowId);
-        await this.setUnlocked({ tab, windowId: tab?.windowId });
+        // Cipher count
+        badgeText = await this.setUnlocked(badgeOpts);
         break;
       }
     }
+
+    await this.setTrustedBadge(tab, badgeText);
   }
 
   async setLoggedOut(): Promise<void> {
@@ -163,6 +173,7 @@ export class UpdateBadge {
       countText = "9+";
     }
     await this.setBadgeText(countText, opts?.tab?.id);
+    return countText;
   }
 
   setBadgeBackgroundColor(color = "#294e5f") {
@@ -192,6 +203,23 @@ export class UpdateBadge {
 
     await this.setActionIcon(options);
     await this.setSidebarActionIcon(options);
+  }
+
+  /**
+   * If the web vault host and tab host match, display a green badge with a checkmark or `badgeText`.
+   */
+  private async setTrustedBadge(tab: chrome.tabs.Tab, badgeText?: string) {
+    await this.initServices();
+
+    const isTrustedHost = await this.environmentService.isTrustedHost(tab.url);
+    if (!isTrustedHost) {
+      return;
+    }
+
+    await Promise.all([
+      this.setBadgeText(badgeText || "✓", tab.id),
+      this.setBadgeBackgroundColor(/** green */ "#017E45"),
+    ]);
   }
 
   private setActionText(text: string, tabId?: number) {
@@ -285,6 +313,8 @@ export class UpdateBadge {
     this.stateService = await stateServiceFactory(serviceCache, opts);
     this.authService = await authServiceFactory(serviceCache, opts);
     this.cipherService = await cipherServiceFactory(serviceCache, opts);
+
+    this.environmentService = await environmentServiceFactory(serviceCache, opts);
 
     // Needed for cipher decryption
     if (!self.bitwardenContainerService) {
