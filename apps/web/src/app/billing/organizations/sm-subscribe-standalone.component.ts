@@ -52,7 +52,11 @@ export class SecretsManagerSubscribeStandaloneComponent {
     });
     await this.organizationService.upsert(organizationData);
 
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("subscribedToSecretsManager")
+    );
 
     this.onSubscribe.emit();
   };
