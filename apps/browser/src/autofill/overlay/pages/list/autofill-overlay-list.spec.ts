@@ -70,6 +70,18 @@ describe("AutofillOverlayList", () => {
       it("creates the views for the no results overlay", () => {
         expect(autofillOverlayList["overlayListContainer"]).toMatchSnapshot();
       });
+
+      it("allows the user to add a vault item", () => {
+        const addVaultItemButton =
+          autofillOverlayList["overlayListContainer"].querySelector("#new-item-button");
+
+        addVaultItemButton.dispatchEvent(new Event("click"));
+
+        expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
+          { command: "addNewVaultItem" },
+          "https://localhost/"
+        );
+      });
     });
 
     describe("the list of ciphers for an authenticated user", () => {
@@ -117,6 +129,18 @@ describe("AutofillOverlayList", () => {
       describe("fill cipher button event listeners", () => {
         beforeEach(() => {
           postWindowMessage(createInitAutofillOverlayListMessageMock());
+        });
+
+        it("allows the user to fill a cipher on click", () => {
+          const fillCipherButton =
+            autofillOverlayList["overlayListContainer"].querySelector(".fill-cipher-button");
+
+          fillCipherButton.dispatchEvent(new Event("click"));
+
+          expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
+            { command: "fillSelectedListItem", overlayCipherId: "1" },
+            "https://localhost/"
+          );
         });
 
         it("allows the user to move keyboard focus to the next cipher element on ArrowDown", () => {
@@ -302,6 +326,17 @@ describe("AutofillOverlayList", () => {
         postWindowMessage({ command: "focusOverlayList" });
 
         expect((unlockButton as HTMLElement).focus).toBeCalled();
+      });
+
+      it("focuses the new item button element if the cipher list is empty", () => {
+        postWindowMessage(createInitAutofillOverlayListMessageMock({ ciphers: [] }));
+        const newItemButton =
+          autofillOverlayList["overlayListContainer"].querySelector("#new-item-button");
+        jest.spyOn(newItemButton as HTMLElement, "focus");
+
+        postWindowMessage({ command: "focusOverlayList" });
+
+        expect((newItemButton as HTMLElement).focus).toBeCalled();
       });
 
       it("focuses the first cipher button element if the cipher list is populated", () => {

@@ -6,6 +6,7 @@ import { ThemeType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { I18nService } from "@bitwarden/common/platform/services/i18n.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
@@ -592,6 +593,43 @@ describe("OverlayBackground", () => {
         });
       });
 
+      describe("autofillOverlayAddNewVaultItem message handler", () => {
+        let sender: chrome.runtime.MessageSender;
+        beforeEach(() => {
+          sender = mock<chrome.runtime.MessageSender>({ tab: { id: 1 } });
+          jest
+            .spyOn(overlayBackground["stateService"], "setAddEditCipherInfo")
+            .mockImplementation();
+          jest.spyOn(overlayBackground as any, "openAddEditVaultItemPopout").mockImplementation();
+        });
+
+        it("will not open the add edit popout window if the message does not have a login cipher provided", () => {
+          sendExtensionRuntimeMessage({ command: "autofillOverlayAddNewVaultItem" }, sender);
+
+          expect(overlayBackground["stateService"].setAddEditCipherInfo).not.toHaveBeenCalled();
+          expect(overlayBackground["openAddEditVaultItemPopout"]).not.toHaveBeenCalled();
+        });
+
+        it("will open the add edit popout window after creating a new cipher", async () => {
+          sendExtensionRuntimeMessage(
+            {
+              command: "autofillOverlayAddNewVaultItem",
+              login: {
+                uri: "https://tacos.com",
+                hostname: "",
+                username: "username",
+                password: "password",
+              },
+            },
+            sender
+          );
+          await flushPromises();
+
+          expect(overlayBackground["stateService"].setAddEditCipherInfo).toHaveBeenCalled();
+          expect(overlayBackground["openAddEditVaultItemPopout"]).toHaveBeenCalled();
+        });
+      });
+
       describe("getAutofillOverlayVisibility message handler", () => {
         beforeEach(() => {
           jest
@@ -877,6 +915,19 @@ describe("OverlayBackground", () => {
         });
       });
 
+      describe("addEditCipherSubmitted message handler", () => {
+        it("updates the overlay ciphers", () => {
+          const message = {
+            command: "addEditCipherSubmitted",
+          };
+          jest.spyOn(overlayBackground as any, "updateOverlayCiphers").mockImplementation();
+
+          sendExtensionRuntimeMessage(message);
+
+          expect(overlayBackground["updateOverlayCiphers"]).toHaveBeenCalled();
+        });
+      });
+
       describe("deletedCipher message handler", () => {
         it("updates the overlay ciphers", () => {
           const message = {
@@ -1068,6 +1119,103 @@ describe("OverlayBackground", () => {
             listPortSpy.sender.tab,
             true
           );
+        });
+      });
+
+      describe("fillSelectedListItem", () => {
+        let getLoginCiphersSpy: jest.SpyInstance;
+        let isPasswordRepromptRequiredSpy: jest.SpyInstance;
+        let doAutoFillSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+          getLoginCiphersSpy = jest.spyOn(overlayBackground["overlayLoginCiphers"], "get");
+          isPasswordRepromptRequiredSpy = jest.spyOn(
+            overlayBackground["autofillService"],
+            "isPasswordRepromptRequired"
+          );
+          doAutoFillSpy = jest.spyOn(overlayBackground["autofillService"], "doAutoFill");
+        });
+
+        it("ignores the fill request if the overlay cipher id is not provided", async () => {
+          listPortSpy.onMessage.callListener({ command: "fillSelectedListItem" });
+          await flushPromises();
+
+          expect(getLoginCiphersSpy).not.toHaveBeenCalled();
+          expect(isPasswordRepromptRequiredSpy).not.toHaveBeenCalled();
+          expect(doAutoFillSpy).not.toHaveBeenCalled();
+        });
+
+        it("ignores the fill request if a master password reprompt is required", async () => {
+          const cipher = mock<CipherView>({
+            reprompt: CipherRepromptType.Password,
+            type: CipherType.Login,
+          });
+          overlayBackground["overlayLoginCiphers"] = new Map([["overlay-cipher-1", cipher]]);
+          getLoginCiphersSpy = jest.spyOn(overlayBackground["overlayLoginCiphers"], "get");
+          isPasswordRepromptRequiredSpy.mockResolvedValue(true);
+
+          listPortSpy.onMessage.callListener({
+            command: "fillSelectedListItem",
+            overlayCipherId: "overlay-cipher-1",
+          });
+          await flushPromises();
+
+          expect(getLoginCiphersSpy).toHaveBeenCalled();
+          expect(isPasswordRepromptRequiredSpy).toHaveBeenCalledWith(
+            cipher,
+            listPortSpy.sender.tab
+          );
+          expect(doAutoFillSpy).not.toHaveBeenCalled();
+        });
+
+        it("auto-fills the selected cipher and move it to the top of the front of the ciphers map", async () => {
+          const cipher1 = mock<CipherView>({ id: "overlay-cipher-1" });
+          const cipher2 = mock<CipherView>({ id: "overlay-cipher-2" });
+          const cipher3 = mock<CipherView>({ id: "overlay-cipher-3" });
+          overlayBackground["overlayLoginCiphers"] = new Map([
+            ["overlay-cipher-1", cipher1],
+            ["overlay-cipher-2", cipher2],
+            ["overlay-cipher-3", cipher3],
+          ]);
+          isPasswordRepromptRequiredSpy.mockResolvedValue(false);
+
+          listPortSpy.onMessage.callListener({
+            command: "fillSelectedListItem",
+            overlayCipherId: "overlay-cipher-2",
+          });
+          await flushPromises();
+
+          expect(isPasswordRepromptRequiredSpy).toHaveBeenCalledWith(
+            cipher2,
+            listPortSpy.sender.tab
+          );
+          expect(doAutoFillSpy).toHaveBeenCalledWith({
+            tab: listPortSpy.sender.tab,
+            cipher: cipher2,
+            pageDetails: undefined,
+            fillNewPassword: true,
+            allowTotpAutofill: true,
+          });
+          expect(overlayBackground["overlayLoginCiphers"].entries()).toStrictEqual(
+            new Map([
+              ["overlay-cipher-2", cipher2],
+              ["overlay-cipher-1", cipher1],
+              ["overlay-cipher-3", cipher3],
+            ]).entries()
+          );
+        });
+      });
+
+      describe("getNewVaultItemDetails", () => {
+        it("will send an addNewVaultItemFromOverlay message", async () => {
+          jest.spyOn(BrowserApi, "tabSendMessage");
+
+          listPortSpy.onMessage.callListener({ command: "addNewVaultItem" });
+          await flushPromises();
+
+          expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(listPortSpy.sender.tab, {
+            command: "addNewVaultItemFromOverlay",
+          });
         });
       });
 

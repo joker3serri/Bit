@@ -5,15 +5,21 @@ import { ThemeType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { WebsiteIconService } from "@bitwarden/common/services/website-icon.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { BrowserApi } from "../../platform/browser/browser-api";
-import { openViewVaultItemPopout } from "../../vault/popup/utils/vault-popout-window";
+import {
+  openViewVaultItemPopout,
+  openAddEditVaultItemPopout,
+} from "../../vault/popup/utils/vault-popout-window";
 import { SHOW_AUTOFILL_BUTTON } from "../constants";
 import { AutofillService, PageDetail } from "../services/abstractions/autofill.service";
 import { AutofillOverlayElement, AutofillOverlayPort } from "../utils/autofill-overlay.enum";
@@ -26,6 +32,7 @@ import {
   OverlayListPortMessageHandlers,
   OverlayBackground as OverlayBackgroundInterface,
   OverlayBackgroundExtensionMessage,
+  OverlayAddNewItemMessage,
   OverlayPortMessage,
   WebsiteIconData,
 } from "./abstractions/overlay.background";
@@ -33,6 +40,7 @@ import {
 class OverlayBackground implements OverlayBackgroundInterface {
   private readonly openUnlockPopout = openUnlockPopout;
   private readonly openViewVaultItemPopout = openViewVaultItemPopout;
+  private readonly openAddEditVaultItemPopout = openAddEditVaultItemPopout;
   private overlayVisibility: number;
   private overlayLoginCiphers: Map<string, CipherView> = new Map();
   private pageDetailsForTab: Record<number, PageDetail[]> = {};
@@ -45,6 +53,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
   private readonly extensionMessageHandlers: OverlayBackgroundExtensionMessageHandlers = {
     openAutofillOverlay: () => this.openOverlay(false),
     autofillOverlayElementClosed: ({ message }) => this.overlayElementClosed(message),
+    autofillOverlayAddNewVaultItem: ({ message, sender }) => this.addNewVaultItem(message, sender),
     getAutofillOverlayVisibility: () => this.getOverlayVisibility(),
     checkAutofillOverlayFocused: () => this.checkOverlayFocused(),
     focusAutofillOverlayList: () => this.focusOverlayList(),
@@ -53,6 +62,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     updateFocusedFieldData: ({ message }) => this.setFocusedFieldData(message),
     collectPageDetailsResponse: ({ message, sender }) => this.storePageDetails(message, sender),
     unlockCompleted: ({ message }) => this.unlockCompleted(message),
+    addEditCipherSubmitted: () => this.updateOverlayCiphers(),
     deletedCipher: () => this.updateOverlayCiphers(),
   };
   private readonly overlayButtonPortMessageHandlers: OverlayButtonPortMessageHandlers = {
@@ -65,6 +75,8 @@ class OverlayBackground implements OverlayBackgroundInterface {
     checkAutofillOverlayButtonFocused: () => this.checkOverlayButtonFocused(),
     overlayPageBlurred: () => this.checkOverlayButtonFocused(),
     unlockVault: ({ port }) => this.unlockVault(port),
+    fillSelectedListItem: ({ message, port }) => this.fillSelectedOverlayListItem(message, port),
+    addNewVaultItem: ({ port }) => this.getNewVaultItemDetails(port),
     viewSelectedCipher: ({ message, port }) => this.viewSelectedCipher(message, port),
     redirectOverlayFocusOut: ({ message, port }) => this.redirectOverlayFocusOut(message, port),
   };
@@ -199,6 +211,37 @@ class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     this.pageDetailsForTab[sender.tab.id] = [pageDetails];
+  }
+
+  /**
+   * Triggers autofill for the selected cipher in the overlay list. Also places
+   * the selected cipher at the top of the list of ciphers.
+   *
+   * @param overlayCipherId - Cipher ID corresponding to the overlayLoginCiphers map. Does not correspond to the actual cipher's ID.
+   * @param sender - The sender of the port message
+   */
+  private async fillSelectedOverlayListItem(
+    { overlayCipherId }: OverlayPortMessage,
+    { sender }: chrome.runtime.Port
+  ) {
+    if (!overlayCipherId) {
+      return;
+    }
+
+    const cipher = this.overlayLoginCiphers.get(overlayCipherId);
+
+    if (await this.autofillService.isPasswordRepromptRequired(cipher, sender.tab)) {
+      return;
+    }
+    await this.autofillService.doAutoFill({
+      tab: sender.tab,
+      cipher: cipher,
+      pageDetails: this.pageDetailsForTab[sender.tab.id],
+      fillNewPassword: true,
+      allowTotpAutofill: true,
+    });
+
+    this.overlayLoginCiphers = new Map([[overlayCipherId, cipher], ...this.overlayLoginCiphers]);
   }
 
   /**
@@ -577,6 +620,53 @@ class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     BrowserApi.tabSendMessageData(sender.tab, "redirectOverlayFocusOut", { direction });
+  }
+
+  /**
+   * Triggers adding a new vault item from the overlay. Gathers data
+   * input by the user before calling to open the add/edit window.
+   *
+   * @param sender - The sender of the port message
+   */
+  private getNewVaultItemDetails({ sender }: chrome.runtime.Port) {
+    BrowserApi.tabSendMessage(sender.tab, { command: "addNewVaultItemFromOverlay" });
+  }
+
+  /**
+   * Handles adding a new vault item from the overlay. Gathers data login
+   * data captured in the extension message.
+   *
+   * @param login - The login data captured from the extension message
+   * @param sender - The sender of the extension message
+   */
+  private async addNewVaultItem(
+    { login }: OverlayAddNewItemMessage,
+    sender: chrome.runtime.MessageSender
+  ) {
+    if (!login) {
+      return;
+    }
+
+    const uriView = new LoginUriView();
+    uriView.uri = login.uri;
+
+    const loginView = new LoginView();
+    loginView.uris = [uriView];
+    loginView.username = login.username || "";
+    loginView.password = login.password || "";
+
+    const cipherView = new CipherView();
+    cipherView.name = (Utils.getHostname(login.uri) || login.hostname).replace(/^www\./, "");
+    cipherView.folderId = null;
+    cipherView.type = CipherType.Login;
+    cipherView.login = loginView;
+
+    await this.stateService.setAddEditCipherInfo({
+      cipher: cipherView,
+      collectionIds: cipherView.collectionIds,
+    });
+
+    await this.openAddEditVaultItemPopout(sender.tab, { cipherId: cipherView.id });
   }
 
   /**

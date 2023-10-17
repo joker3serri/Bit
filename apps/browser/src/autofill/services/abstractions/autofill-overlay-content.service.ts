@@ -22,6 +22,7 @@ interface AutofillOverlayContentService {
   removeAutofillOverlay(): void;
   removeAutofillOverlayButton(): void;
   removeAutofillOverlayList(): void;
+  addNewVaultItem(): void;
   redirectOverlayFocusOut(direction: "previous" | "next"): void;
   focusMostRecentOverlayField(): void;
   blurMostRecentOverlayField(): void;

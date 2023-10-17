@@ -307,6 +307,23 @@ describe("AutofillInit", () => {
         });
       });
 
+      describe("addNewVaultItemFromOverlay", () => {
+        it("will not add a new vault item if the autofillOverlayContentService is not present", () => {
+          const newAutofillInit = new AutofillInit(undefined);
+          newAutofillInit.init();
+
+          sendExtensionRuntimeMessage({ command: "addNewVaultItemFromOverlay" });
+
+          expect(newAutofillInit["autofillOverlayContentService"]).toBe(undefined);
+        });
+
+        it("will add a new vault item", () => {
+          sendExtensionRuntimeMessage({ command: "addNewVaultItemFromOverlay" });
+
+          expect(autofillInit["autofillOverlayContentService"].addNewVaultItem).toHaveBeenCalled();
+        });
+      });
+
       describe("redirectOverlayFocusOut", () => {
         const message = {
           command: "redirectOverlayFocusOut",
