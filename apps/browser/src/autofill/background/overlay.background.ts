@@ -395,7 +395,7 @@ class OverlayBackground {
    * Sets up the extension message listeners for the overlay.
    */
   private setupExtensionMessageListeners() {
-    chrome.runtime.onMessage.addListener(this.handleExtensionMessage);
+    BrowserApi.messageListener("overlay.background", this.handleExtensionMessage);
     chrome.runtime.onConnect.addListener(this.handlePortOnConnect);
   }
 
