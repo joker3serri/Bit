@@ -34,7 +34,7 @@ describe("AutofillOverlayPageElement", () => {
     it("initializes the button overlay page", () => {
       const linkElement = autofillOverlayPageElement["initOverlayPage"](
         "button",
-        "https://tacos.com",
+        "https://jest-testing-website.com",
         translations
       );
 
@@ -45,7 +45,7 @@ describe("AutofillOverlayPageElement", () => {
       expect(globalThis.document.head.title).toEqual(translations.buttonPageTitle);
       expect(globalThis.document.createElement).toHaveBeenCalledWith("link");
       expect(linkElement.getAttribute("rel")).toEqual("stylesheet");
-      expect(linkElement.getAttribute("href")).toEqual("https://tacos.com");
+      expect(linkElement.getAttribute("href")).toEqual("https://jest-testing-website.com");
     });
   });
 
@@ -57,12 +57,12 @@ describe("AutofillOverlayPageElement", () => {
     });
 
     it("posts a message to the parent", () => {
-      autofillOverlayPageElement["messageOrigin"] = "https://tacos.com";
+      autofillOverlayPageElement["messageOrigin"] = "https://jest-testing-website.com";
       autofillOverlayPageElement["postMessageToParent"]({ command: "test" });
 
       expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
         { command: "test" },
-        "https://tacos.com"
+        "https://jest-testing-website.com"
       );
     });
   });
@@ -112,11 +112,13 @@ describe("AutofillOverlayPageElement", () => {
       globalThis.dispatchEvent(
         new MessageEvent("message", {
           data: { command: "initAutofillOverlayButton" },
-          origin: "https://tacos.com",
+          origin: "https://jest-testing-website.com",
         })
       );
 
-      expect(autofillOverlayPageElement["messageOrigin"]).toEqual("https://tacos.com");
+      expect(autofillOverlayPageElement["messageOrigin"]).toEqual(
+        "https://jest-testing-website.com"
+      );
     });
 
     it("handles window messages that are part of the passed windowMessageHandlers object", () => {
@@ -147,7 +149,7 @@ describe("AutofillOverlayPageElement", () => {
     });
 
     it("posts a message to the parent when the window is blurred", () => {
-      autofillOverlayPageElement["messageOrigin"] = "https://tacos.com";
+      autofillOverlayPageElement["messageOrigin"] = "https://jest-testing-website.com";
       autofillOverlayPageElement["setupGlobalListeners"](
         mock<OverlayButtonWindowMessageHandlers>()
       );
@@ -156,7 +158,7 @@ describe("AutofillOverlayPageElement", () => {
 
       expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
         { command: "overlayPageBlurred" },
-        "https://tacos.com"
+        "https://jest-testing-website.com"
       );
     });
 
@@ -171,7 +173,7 @@ describe("AutofillOverlayPageElement", () => {
     });
 
     it("redirects the overlay focus out to the previous element on KeyDown of the `Tab+Shift` keys", () => {
-      autofillOverlayPageElement["messageOrigin"] = "https://tacos.com";
+      autofillOverlayPageElement["messageOrigin"] = "https://jest-testing-website.com";
       autofillOverlayPageElement["setupGlobalListeners"](
         mock<OverlayButtonWindowMessageHandlers>()
       );
@@ -182,12 +184,12 @@ describe("AutofillOverlayPageElement", () => {
 
       expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
         { command: "redirectOverlayFocusOut", direction: "previous" },
-        "https://tacos.com"
+        "https://jest-testing-website.com"
       );
     });
 
     it("redirects the overlay focus out to the next element on KeyDown of the `Tab` key", () => {
-      autofillOverlayPageElement["messageOrigin"] = "https://tacos.com";
+      autofillOverlayPageElement["messageOrigin"] = "https://jest-testing-website.com";
       autofillOverlayPageElement["setupGlobalListeners"](
         mock<OverlayButtonWindowMessageHandlers>()
       );
@@ -196,12 +198,12 @@ describe("AutofillOverlayPageElement", () => {
 
       expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
         { command: "redirectOverlayFocusOut", direction: "next" },
-        "https://tacos.com"
+        "https://jest-testing-website.com"
       );
     });
 
     it("redirects the overlay focus out to the current element on KeyDown of the `Escape` key", () => {
-      autofillOverlayPageElement["messageOrigin"] = "https://tacos.com";
+      autofillOverlayPageElement["messageOrigin"] = "https://jest-testing-website.com";
       autofillOverlayPageElement["setupGlobalListeners"](
         mock<OverlayButtonWindowMessageHandlers>()
       );
@@ -210,7 +212,7 @@ describe("AutofillOverlayPageElement", () => {
 
       expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
         { command: "redirectOverlayFocusOut", direction: "current" },
-        "https://tacos.com"
+        "https://jest-testing-website.com"
       );
     });
   });

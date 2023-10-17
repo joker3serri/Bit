@@ -167,12 +167,9 @@ class OverlayBackground implements OverlayBackgroundInterface {
               ),
         login:
           cipher.type === CipherType.Login
-            ? { username: this.getObscureName(cipher.login.username) }
+            ? { username: this.obscureName(cipher.login.username) }
             : null,
-        card:
-          cipher.type === CipherType.Card
-            ? { brand: cipher.card.brand, partialNumber: `*${cipher.card.number?.slice(-4)}` }
-            : null,
+        card: cipher.type === CipherType.Card ? cipher.card.subTitle : null,
       });
     }
 
@@ -412,7 +409,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    *
    * @param name - The username to obscure
    */
-  private getObscureName(name: string): string {
+  private obscureName(name: string): string {
     if (!name) {
       return "";
     }

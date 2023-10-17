@@ -26,7 +26,7 @@ exports[`AutofillOverlayList initAutofillOverlayList the list of ciphers for an 
           <span
             aria-hidden="true"
             class="cipher-icon"
-            style="background-image: url(https://tacos.com/image.png);"
+            style="background-image: url(https://jest-testing-website.com/image.png);"
           />
           <span
             class="cipher-details"
@@ -306,7 +306,7 @@ exports[`AutofillOverlayList initAutofillOverlayList the list of ciphers for an 
           <span
             aria-hidden="true"
             class="cipher-icon"
-            style="background-image: url(https://tacos.com/image.png);"
+            style="background-image: url(https://jest-testing-website.com/image.png);"
           />
           <span
             class="cipher-details"
@@ -376,7 +376,7 @@ exports[`AutofillOverlayList initAutofillOverlayList the list of ciphers for an 
           <span
             aria-hidden="true"
             class="cipher-icon"
-            style="background-image: url(https://tacos.com/image.png);"
+            style="background-image: url(https://jest-testing-website.com/image.png);"
           />
           <span
             class="cipher-details"
