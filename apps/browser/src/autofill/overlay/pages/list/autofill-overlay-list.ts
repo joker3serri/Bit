@@ -4,7 +4,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 
 import { OverlayCipherData } from "../../../background/abstractions/overlay.background";
 import { EVENTS } from "../../../constants";
-import { globeIcon, lockIcon, viewCipherIcon } from "../../../utils/svg-icons";
+import { globeIcon, lockIcon, plusIcon, viewCipherIcon } from "../../../utils/svg-icons";
 import { buildSvgDomElement } from "../../../utils/utils";
 import {
   InitAutofillOverlayListMessage,
@@ -121,6 +121,7 @@ class AutofillOverlayList extends AutofillOverlayPageElement {
     this.overlayListContainer.innerHTML = "";
 
     if (!ciphers?.length) {
+      this.buildNoResultsOverlayList();
       return;
     }
 
@@ -133,6 +134,42 @@ class AutofillOverlayList extends AutofillOverlayPageElement {
 
     this.overlayListContainer.appendChild(this.ciphersList);
   }
+
+  /**
+   * Overlay view that is presented when no ciphers are found for a given page.
+   * Facilitates the ability to add a new vault item from the overlay.
+   */
+  private buildNoResultsOverlayList() {
+    const noItemsMessage = globalThis.document.createElement("div");
+    noItemsMessage.classList.add("no-items", "overlay-list-message");
+    noItemsMessage.textContent = this.getTranslation("noItemsToShow");
+
+    const newItemButton = globalThis.document.createElement("button");
+    newItemButton.tabIndex = -1;
+    newItemButton.id = "new-item-button";
+    newItemButton.classList.add("add-new-item-button", "overlay-list-button");
+    newItemButton.textContent = this.getTranslation("newItem");
+    newItemButton.setAttribute(
+      "aria-label",
+      `${this.getTranslation("addNewVaultItem")}, ${this.getTranslation("opensInANewWindow")}`
+    );
+    newItemButton.prepend(buildSvgDomElement(plusIcon));
+    newItemButton.addEventListener(EVENTS.CLICK, this.handeNewItemButtonClick);
+
+    const overlayListButtonContainer = globalThis.document.createElement("div");
+    overlayListButtonContainer.classList.add("overlay-list-button-container");
+    overlayListButtonContainer.appendChild(newItemButton);
+
+    this.overlayListContainer.append(noItemsMessage, overlayListButtonContainer);
+  }
+
+  /**
+   * Handles the click event for the new item button.
+   * Sends a message to the parent window to add a new vault item.
+   */
+  private handeNewItemButtonClick = () => {
+    this.postMessageToParent({ command: "addNewVaultItem" });
+  };
 
   /**
    * Loads a page of ciphers into the overlay list container.
@@ -452,6 +489,14 @@ class AutofillOverlayList extends AutofillOverlayPageElement {
     ) as HTMLElement;
     if (unlockButtonElement) {
       unlockButtonElement.focus();
+      return;
+    }
+
+    const newItemButtonElement = this.overlayListContainer.querySelector(
+      "#new-item-button"
+    ) as HTMLElement;
+    if (newItemButtonElement) {
+      newItemButtonElement.focus();
       return;
     }
 

@@ -10,6 +10,15 @@ type WebsiteIconData = {
   icon: string;
 };
 
+type OverlayAddNewItemMessage = {
+  login?: {
+    uri?: string;
+    hostname: string;
+    username: string;
+    password: string;
+  };
+};
+
 type OverlayBackgroundExtensionMessage = {
   [key: string]: any;
   command: string;
@@ -25,7 +34,7 @@ type OverlayBackgroundExtensionMessage = {
       };
     };
   };
-};
+} & OverlayAddNewItemMessage;
 
 type OverlayPortMessage = {
   [key: string]: any;
@@ -62,6 +71,7 @@ type OverlayBackgroundExtensionMessageHandlers = {
   [key: string]: CallableFunction;
   openAutofillOverlay: () => void;
   autofillOverlayElementClosed: ({ message }: BackgroundMessageParam) => void;
+  autofillOverlayAddNewVaultItem: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   getAutofillOverlayVisibility: () => void;
   checkAutofillOverlayFocused: () => void;
   focusAutofillOverlayList: () => void;
@@ -70,6 +80,7 @@ type OverlayBackgroundExtensionMessageHandlers = {
   updateFocusedFieldData: ({ message }: BackgroundMessageParam) => void;
   collectPageDetailsResponse: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   unlockCompleted: ({ message }: BackgroundMessageParam) => void;
+  addEditCipherSubmitted: () => void;
   deletedCipher: () => void;
 };
 
@@ -95,6 +106,7 @@ type OverlayListPortMessageHandlers = {
   overlayPageBlurred: () => void;
   unlockVault: ({ port }: PortConnectionParam) => void;
   fillSelectedListItem: ({ message, port }: PortOnMessageHandlerParams) => void;
+  addNewVaultItem: ({ port }: PortConnectionParam) => void;
   viewSelectedCipher: ({ message, port }: PortOnMessageHandlerParams) => void;
   redirectOverlayFocusOut: ({ message, port }: PortOnMessageHandlerParams) => void;
 };
@@ -111,6 +123,7 @@ export {
   OverlayPortMessage,
   FocusedFieldData,
   OverlayCipherData,
+  OverlayAddNewItemMessage,
   OverlayBackgroundExtensionMessageHandlers,
   OverlayButtonPortMessageHandlers,
   OverlayListPortMessageHandlers,

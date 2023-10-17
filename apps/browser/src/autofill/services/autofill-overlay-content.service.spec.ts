@@ -376,6 +376,50 @@ describe("AutofillOverlayContentService", () => {
           jest.spyOn(globalThis.customElements, "define").mockImplementation();
         });
 
+        it("ignores span elements that trigger the listener", async () => {
+          const spanAutofillFieldElement = document.createElement(
+            "span"
+          ) as ElementWithOpId<HTMLSpanElement>;
+          jest.spyOn(autofillOverlayContentService as any, "storeModifiedFormElement");
+
+          await autofillOverlayContentService.setupAutofillOverlayListenerOnField(
+            spanAutofillFieldElement,
+            autofillFieldData
+          );
+
+          spanAutofillFieldElement.dispatchEvent(new Event("input"));
+
+          expect(autofillOverlayContentService["storeModifiedFormElement"]).not.toHaveBeenCalled();
+        });
+
+        it("stores the field as a user filled field if the form field data indicates that it is for a username", async () => {
+          await autofillOverlayContentService.setupAutofillOverlayListenerOnField(
+            autofillFieldElement,
+            autofillFieldData
+          );
+          autofillFieldElement.dispatchEvent(new Event("input"));
+
+          expect(autofillOverlayContentService["userFilledFields"].username).toEqual(
+            autofillFieldElement
+          );
+        });
+
+        it("stores the field as a user filled field if the form field is of type password", async () => {
+          const passwordFieldElement = document.getElementById(
+            "password-field"
+          ) as ElementWithOpId<FormFieldElement>;
+
+          await autofillOverlayContentService.setupAutofillOverlayListenerOnField(
+            passwordFieldElement,
+            autofillFieldData
+          );
+          passwordFieldElement.dispatchEvent(new Event("input"));
+
+          expect(autofillOverlayContentService["userFilledFields"].password).toEqual(
+            passwordFieldElement
+          );
+        });
+
         it("removes the overlay if the form field element has a value and the user is not authed", async () => {
           jest.spyOn(autofillOverlayContentService as any, "isUserAuthed").mockReturnValue(false);
           const removeAutofillOverlayListSpy = jest.spyOn(
@@ -879,6 +923,64 @@ describe("AutofillOverlayContentService", () => {
 
       expect(sendExtensionMessageSpy).toHaveBeenCalledWith("autofillOverlayElementClosed", {
         overlayElement: AutofillOverlayElement.List,
+      });
+    });
+  });
+
+  describe("addNewVaultItem", () => {
+    it("skips sending the message if the overlay list is not visible", () => {
+      autofillOverlayContentService["isOverlayListVisible"] = false;
+
+      autofillOverlayContentService.addNewVaultItem();
+
+      expect(sendExtensionMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it("sends a message that facilitates adding a new vault item with empty fields", () => {
+      autofillOverlayContentService["isOverlayListVisible"] = true;
+
+      autofillOverlayContentService.addNewVaultItem();
+
+      expect(sendExtensionMessageSpy).toHaveBeenCalledWith("autofillOverlayAddNewVaultItem", {
+        login: {
+          username: "",
+          password: "",
+          uri: "http://localhost/",
+          hostname: "localhost",
+        },
+      });
+    });
+
+    it("sends a message that facilitates adding a new vault item with data from user filled fields", () => {
+      document.body.innerHTML = `
+      <form id="validFormId">
+        <input type="text" id="username-field" placeholder="username" />
+        <input type="password" id="password-field" placeholder="password" />
+      </form>
+      `;
+      const usernameField = document.getElementById(
+        "username-field"
+      ) as ElementWithOpId<HTMLInputElement>;
+      const passwordField = document.getElementById(
+        "password-field"
+      ) as ElementWithOpId<HTMLInputElement>;
+      usernameField.value = "test-username";
+      passwordField.value = "test-password";
+      autofillOverlayContentService["isOverlayListVisible"] = true;
+      autofillOverlayContentService["userFilledFields"] = {
+        username: usernameField,
+        password: passwordField,
+      };
+
+      autofillOverlayContentService.addNewVaultItem();
+
+      expect(sendExtensionMessageSpy).toHaveBeenCalledWith("autofillOverlayAddNewVaultItem", {
+        login: {
+          username: "test-username",
+          password: "test-password",
+          uri: "http://localhost/",
+          hostname: "localhost",
+        },
       });
     });
   });

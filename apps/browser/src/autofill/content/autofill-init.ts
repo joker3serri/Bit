@@ -22,6 +22,7 @@ class AutofillInit implements AutofillInitInterface {
     fillForm: ({ message }) => this.fillForm(message.fillScript),
     openAutofillOverlay: ({ message }) => this.openAutofillOverlay(message),
     closeAutofillOverlay: () => this.removeAutofillOverlay(),
+    addNewVaultItemFromOverlay: () => this.addNewVaultItemFromOverlay(),
     redirectOverlayFocusOut: ({ message }) => this.redirectOverlayFocusOut(message),
     updateIsOverlayCiphersPopulated: ({ message }) => this.updateIsOverlayCiphersPopulated(message),
     bgUnlockPopoutOpened: () => this.blurAndRemoveOverlay(),
@@ -163,6 +164,17 @@ class AutofillInit implements AutofillInitInterface {
     }
 
     this.autofillOverlayContentService.removeAutofillOverlay();
+  }
+
+  /**
+   * Adds a new vault item from the overlay.
+   */
+  private addNewVaultItemFromOverlay() {
+    if (!this.autofillOverlayContentService) {
+      return;
+    }
+
+    this.autofillOverlayContentService.addNewVaultItem();
   }
 
   /**

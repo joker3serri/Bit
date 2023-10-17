@@ -57,6 +57,33 @@ describe("AutofillOverlayList", () => {
       });
     });
 
+    describe("the overlay with an empty list of ciphers", () => {
+      beforeEach(() => {
+        postWindowMessage(
+          createInitAutofillOverlayListMessageMock({
+            authStatus: AuthenticationStatus.Unlocked,
+            ciphers: [],
+          })
+        );
+      });
+
+      it("creates the views for the no results overlay", () => {
+        expect(autofillOverlayList["overlayListContainer"]).toMatchSnapshot();
+      });
+
+      it("allows the user to add a vault item", () => {
+        const addVaultItemButton =
+          autofillOverlayList["overlayListContainer"].querySelector("#new-item-button");
+
+        addVaultItemButton.dispatchEvent(new Event("click"));
+
+        expect(globalThis.parent.postMessage).toHaveBeenCalledWith(
+          { command: "addNewVaultItem" },
+          "https://localhost/"
+        );
+      });
+    });
+
     describe("the list of ciphers for an authenticated user", () => {
       beforeEach(() => {
         postWindowMessage(createInitAutofillOverlayListMessageMock());
@@ -299,6 +326,17 @@ describe("AutofillOverlayList", () => {
         postWindowMessage({ command: "focusOverlayList" });
 
         expect((unlockButton as HTMLElement).focus).toBeCalled();
+      });
+
+      it("focuses the new item button element if the cipher list is empty", () => {
+        postWindowMessage(createInitAutofillOverlayListMessageMock({ ciphers: [] }));
+        const newItemButton =
+          autofillOverlayList["overlayListContainer"].querySelector("#new-item-button");
+        jest.spyOn(newItemButton as HTMLElement, "focus");
+
+        postWindowMessage({ command: "focusOverlayList" });
+
+        expect((newItemButton as HTMLElement).focus).toBeCalled();
       });
 
       it("focuses the first cipher button element if the cipher list is populated", () => {

@@ -593,6 +593,43 @@ describe("OverlayBackground", () => {
         });
       });
 
+      describe("autofillOverlayAddNewVaultItem message handler", () => {
+        let sender: chrome.runtime.MessageSender;
+        beforeEach(() => {
+          sender = mock<chrome.runtime.MessageSender>({ tab: { id: 1 } });
+          jest
+            .spyOn(overlayBackground["stateService"], "setAddEditCipherInfo")
+            .mockImplementation();
+          jest.spyOn(overlayBackground as any, "openAddEditVaultItemPopout").mockImplementation();
+        });
+
+        it("will not open the add edit popout window if the message does not have a login cipher provided", () => {
+          sendExtensionRuntimeMessage({ command: "autofillOverlayAddNewVaultItem" }, sender);
+
+          expect(overlayBackground["stateService"].setAddEditCipherInfo).not.toHaveBeenCalled();
+          expect(overlayBackground["openAddEditVaultItemPopout"]).not.toHaveBeenCalled();
+        });
+
+        it("will open the add edit popout window after creating a new cipher", async () => {
+          sendExtensionRuntimeMessage(
+            {
+              command: "autofillOverlayAddNewVaultItem",
+              login: {
+                uri: "https://tacos.com",
+                hostname: "",
+                username: "username",
+                password: "password",
+              },
+            },
+            sender
+          );
+          await flushPromises();
+
+          expect(overlayBackground["stateService"].setAddEditCipherInfo).toHaveBeenCalled();
+          expect(overlayBackground["openAddEditVaultItemPopout"]).toHaveBeenCalled();
+        });
+      });
+
       describe("getAutofillOverlayVisibility message handler", () => {
         beforeEach(() => {
           jest
@@ -878,6 +915,19 @@ describe("OverlayBackground", () => {
         });
       });
 
+      describe("addEditCipherSubmitted message handler", () => {
+        it("updates the overlay ciphers", () => {
+          const message = {
+            command: "addEditCipherSubmitted",
+          };
+          jest.spyOn(overlayBackground as any, "updateOverlayCiphers").mockImplementation();
+
+          sendExtensionRuntimeMessage(message);
+
+          expect(overlayBackground["updateOverlayCiphers"]).toHaveBeenCalled();
+        });
+      });
+
       describe("deletedCipher message handler", () => {
         it("updates the overlay ciphers", () => {
           const message = {
@@ -1153,6 +1203,19 @@ describe("OverlayBackground", () => {
               ["overlay-cipher-3", cipher3],
             ]).entries()
           );
+        });
+      });
+
+      describe("getNewVaultItemDetails", () => {
+        it("will send an addNewVaultItemFromOverlay message", async () => {
+          jest.spyOn(BrowserApi, "tabSendMessage");
+
+          listPortSpy.onMessage.callListener({ command: "addNewVaultItem" });
+          await flushPromises();
+
+          expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(listPortSpy.sender.tab, {
+            command: "addNewVaultItemFromOverlay",
+          });
         });
       });
 
