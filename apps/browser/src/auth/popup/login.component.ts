@@ -26,7 +26,6 @@ import { flagEnabled } from "../../platform/flags";
 })
 export class LoginComponent extends BaseLoginComponent {
   showPasswordless = false;
-
   constructor(
     devicesApiService: DevicesApiServiceAbstraction,
     appIdService: AppIdService,
@@ -67,9 +66,7 @@ export class LoginComponent extends BaseLoginComponent {
     super.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);
     };
-
     super.successRoute = "/tabs/vault";
-
     this.showPasswordless = flagEnabled("showPasswordless");
 
     if (this.showPasswordless) {

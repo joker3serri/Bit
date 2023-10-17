@@ -83,7 +83,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     };
 
     super.successRoute = "/tabs/vault";
-
     // FIXME: Chromium 110 has broken WebAuthn support in extensions via an iframe
     this.webAuthnNewTab = true;
   }
