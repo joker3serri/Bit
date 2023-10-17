@@ -111,7 +111,7 @@ describe("OverlayBackground", () => {
   });
 
   describe("updateOverlayCiphers", () => {
-    const url = "https://tacos.com";
+    const url = "https://jest-testing-website.com";
     const tab = createChromeTabMock({ url });
     const cipher1 = mock<CipherView>({
       id: "id-1",
@@ -192,7 +192,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//tacos.com/icon.png",
+              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             id: "overlay-cipher-0",
@@ -209,7 +209,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//tacos.com/icon.png",
+              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             id: "overlay-cipher-1",
@@ -231,7 +231,7 @@ describe("OverlayBackground", () => {
   });
 
   describe("getOverlayCipherData", () => {
-    const url = "https://tacos.com";
+    const url = "https://jest-testing-website.com";
     const cipher1 = mock<CipherView>({
       id: "id-1",
       localData: { lastUsedDate: 222 },
@@ -251,14 +251,14 @@ describe("OverlayBackground", () => {
       localData: { lastUsedDate: 333 },
       name: "name-3",
       type: CipherType.Card,
-      card: { number: "123456789", brand: "visa" },
+      card: { subTitle: "Visa, *6789" },
     });
     const cipher4 = mock<CipherView>({
       id: "id-4",
       localData: { lastUsedDate: 444 },
       name: "name-4",
       type: CipherType.Card,
-      card: { number: null, brand: "mastercard" },
+      card: { subTitle: "Mastercard, *1234" },
     });
 
     it("formats and returns the cipher data", () => {
@@ -278,7 +278,7 @@ describe("OverlayBackground", () => {
           icon: {
             fallbackImage: "images/bwi-globe.png",
             icon: "bwi-globe",
-            image: "https://icons.bitwarden.com//tacos.com/icon.png",
+            image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
             imageEnabled: true,
           },
           id: "overlay-cipher-0",
@@ -295,7 +295,7 @@ describe("OverlayBackground", () => {
           icon: {
             fallbackImage: "images/bwi-globe.png",
             icon: "bwi-globe",
-            image: "https://icons.bitwarden.com//tacos.com/icon.png",
+            image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
             imageEnabled: true,
           },
           id: "overlay-cipher-1",
@@ -307,10 +307,7 @@ describe("OverlayBackground", () => {
           type: 1,
         },
         {
-          card: {
-            brand: "visa",
-            partialNumber: "*6789",
-          },
+          card: "Visa, *6789",
           favorite: cipher3.favorite,
           icon: {
             fallbackImage: "",
@@ -325,10 +322,7 @@ describe("OverlayBackground", () => {
           type: 3,
         },
         {
-          card: {
-            brand: "mastercard",
-            partialNumber: "*undefined",
-          },
+          card: "Mastercard, *1234",
           favorite: cipher4.favorite,
           icon: {
             fallbackImage: "",
@@ -346,11 +340,11 @@ describe("OverlayBackground", () => {
     });
   });
 
-  describe("getObscureName", () => {
+  describe("obscureName", () => {
     it("returns an empty string if the name is falsy", () => {
       const name: string = undefined;
 
-      const obscureName = overlayBackground["getObscureName"](name);
+      const obscureName = overlayBackground["obscureName"](name);
 
       expect(obscureName).toBe("");
     });
@@ -358,7 +352,7 @@ describe("OverlayBackground", () => {
     it("will not attempt to obscure a username that is only a domain", () => {
       const name = "@domain.com";
 
-      const obscureName = overlayBackground["getObscureName"](name);
+      const obscureName = overlayBackground["obscureName"](name);
 
       expect(obscureName).toBe(name);
     });
@@ -366,7 +360,7 @@ describe("OverlayBackground", () => {
     it("will obscure all characters of a name that is less than 5 characters expect for the first character", () => {
       const name = "name@domain.com";
 
-      const obscureName = overlayBackground["getObscureName"](name);
+      const obscureName = overlayBackground["obscureName"](name);
 
       expect(obscureName).toBe("n***@domain.com");
     });
@@ -374,7 +368,7 @@ describe("OverlayBackground", () => {
     it("will obscure all characters of a name that is greater than 4 characters by less than 6 ", () => {
       const name = "name1@domain.com";
 
-      const obscureName = overlayBackground["getObscureName"](name);
+      const obscureName = overlayBackground["obscureName"](name);
 
       expect(obscureName).toBe("na***@domain.com");
     });
@@ -382,7 +376,7 @@ describe("OverlayBackground", () => {
     it("will obscure all characters of a name that is greater than 5 characters except for the first two characters and the last character", () => {
       const name = "name12@domain.com";
 
-      const obscureName = overlayBackground["getObscureName"](name);
+      const obscureName = overlayBackground["obscureName"](name);
 
       expect(obscureName).toBe("na***2@domain.com");
     });

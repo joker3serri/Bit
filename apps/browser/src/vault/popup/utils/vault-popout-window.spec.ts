@@ -44,11 +44,11 @@ describe("VaultPopoutWindow", () => {
   describe("openAddEditVaultItemPopout", () => {
     it("opens a popout window that facilitates adding a vault item", async () => {
       await openAddEditVaultItemPopout(
-        mock<chrome.tabs.Tab>({ windowId: 1, url: "https://tacos.com" })
+        mock<chrome.tabs.Tab>({ windowId: 1, url: "https://jest-testing-website.com" })
       );
 
       expect(openPopoutSpy).toHaveBeenCalledWith(
-        "popup/index.html#/edit-cipher?uilocation=popout&uri=https://tacos.com",
+        "popup/index.html#/edit-cipher?uilocation=popout&uri=https://jest-testing-website.com",
         {
           singleActionKey: VaultPopoutType.addEditVaultItem,
           senderWindowId: 1,
@@ -57,12 +57,15 @@ describe("VaultPopoutWindow", () => {
     });
 
     it("opens a popout window that facilitates adding a specific type of vault item", () => {
-      openAddEditVaultItemPopout(mock<chrome.tabs.Tab>({ windowId: 1, url: "https://tacos.com" }), {
-        cipherType: CipherType.Identity,
-      });
+      openAddEditVaultItemPopout(
+        mock<chrome.tabs.Tab>({ windowId: 1, url: "https://jest-testing-website.com" }),
+        {
+          cipherType: CipherType.Identity,
+        }
+      );
 
       expect(openPopoutSpy).toHaveBeenCalledWith(
-        `popup/index.html#/edit-cipher?uilocation=popout&type=${CipherType.Identity}&uri=https://tacos.com`,
+        `popup/index.html#/edit-cipher?uilocation=popout&type=${CipherType.Identity}&uri=https://jest-testing-website.com`,
         {
           singleActionKey: `${VaultPopoutType.addEditVaultItem}_${CipherType.Identity}`,
           senderWindowId: 1,
@@ -72,14 +75,14 @@ describe("VaultPopoutWindow", () => {
 
     it("opens a popout window that facilitates editing a vault item", async () => {
       await openAddEditVaultItemPopout(
-        mock<chrome.tabs.Tab>({ windowId: 1, url: "https://tacos.com" }),
+        mock<chrome.tabs.Tab>({ windowId: 1, url: "https://jest-testing-website.com" }),
         {
           cipherId: "cipherId",
         }
       );
 
       expect(openPopoutSpy).toHaveBeenCalledWith(
-        "popup/index.html#/edit-cipher?uilocation=popout&cipherId=cipherId&uri=https://tacos.com",
+        "popup/index.html#/edit-cipher?uilocation=popout&cipherId=cipherId&uri=https://jest-testing-website.com",
         {
           singleActionKey: `${VaultPopoutType.addEditVaultItem}_cipherId`,
           senderWindowId: 1,
