@@ -26,13 +26,10 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
-import { ClientInfo, Vault } from "../importers/lastpass/access";
-// import { LastPassMultifactorPromptComponent } from "./dialog/lastpass-multifactor-prompt.component";
-import { FederatedUserContext } from "../importers/lastpass/access/models";
+import { ClientInfo, Vault } from "../../importers/lastpass/access";
+import { FederatedUserContext } from "../../importers/lastpass/access/models";
 
-// import { ImportErrorDialogComponent } from "./dialog";
-import { LastPassAwaitSSODialogComponent } from "./dialog/lastpass-await-sso-dialog.component";
-import { LastPassPasswordPromptComponent } from "./dialog/lastpass-password-prompt.component";
+import { LastPassAwaitSSODialogComponent, LastPassPasswordPromptComponent } from "./dialog";
 // import { Ui } from "../importers/lastpass/access/ui";
 // import { DuoDevice, DuoChoice, DuoStatus } from "../importers/lastpass/access/duo-ui";
 // import { OobResult } from "../importers/lastpass/access/oob-result";

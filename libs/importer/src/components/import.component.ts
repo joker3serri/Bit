@@ -59,7 +59,7 @@ import {
   ImportErrorDialogComponent,
   ImportSuccessDialogComponent,
 } from "./dialog";
-import { ImportLastPassComponent } from "./import-lastpass.component";
+import { ImportLastPassComponent } from "./lastpass";
 
 @Component({
   selector: "tools-import",
