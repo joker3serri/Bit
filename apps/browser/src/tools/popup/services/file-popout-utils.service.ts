@@ -4,8 +4,14 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 
 import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
 
+/**
+ * Service for determining whether to display file popout callout messages.
+ */
 @Injectable()
 export class FilePopoutUtilsService {
+  /**
+   * Creates an instance of FilePopoutUtilsService.
+   */
   constructor(
     private platformUtilsService: PlatformUtilsService,
     private popupUtilsService: PopupUtilsService
