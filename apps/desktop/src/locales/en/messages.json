@@ -2565,5 +2565,11 @@
   },
   "lastPassAuthRequired": {
     "message": "LastPass authentication required"
+  },
+  "awaitingSSO": {
+    "message": "Awaiting SSO authentication"
+  },
+  "awaitingSSODesc": {
+    "message": "Please continue logging in with your SSO provider."
   }
 }

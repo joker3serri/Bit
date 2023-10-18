@@ -1,11 +1,11 @@
 <bit-simple-dialog>
-  <span bitDialogTitle>{{ "Awaiting SSO" }}</span>
+  <span bitDialogTitle>{{ "awaitingSSO" | i18n }}</span>
   <span bitDialogContent>
-    {{ "TODO: Awaiting SSO description" }}
+    {{ "awaitingSSODesc" | i18n }}
   </span>
   <ng-container bitDialogFooter>
     <button bitButton type="button" buttonType="secondary" [bitDialogClose]="true">
-      {{ "close" | i18n }}
+      {{ "cancel" | i18n }}
     </button>
   </ng-container>
 </bit-simple-dialog>
