@@ -14,26 +14,39 @@ import { LastPassMultifactorPromptComponent } from "./dialog";
 export class LastPassDirectImportService implements Ui {
   constructor(private dialogSerive: DialogService) {}
 
-  private async getResult() {
+  private async getOTPResult() {
     const passcode = await LastPassMultifactorPromptComponent.open(this.dialogSerive);
     return new OtpResult(passcode, false);
   }
 
+  private async getOOBResult() {
+    const passcode = await LastPassMultifactorPromptComponent.open(this.dialogSerive);
+    return new OobResult(false, passcode, false);
+  }
+
   async provideGoogleAuthPasscode() {
-    return this.getResult();
+    return this.getOTPResult();
   }
 
   async provideMicrosoftAuthPasscode() {
-    return this.getResult();
+    return this.getOTPResult();
   }
 
   async provideYubikeyPasscode() {
-    return this.getResult();
+    return this.getOTPResult();
   }
 
-  approveLastPassAuth: () => Promise<OobResult>;
-  approveDuo: () => Promise<OobResult>;
-  approveSalesforceAuth: () => Promise<OobResult>;
+  async approveLastPassAuth() {
+    return this.getOOBResult();
+  }
+  async approveDuo() {
+    return this.getOOBResult();
+  }
+  async approveSalesforceAuth() {
+    return this.getOOBResult();
+  }
+
+  /** These aren't used anywhere. Are they needed? */
   chooseDuoFactor: (devices: [DuoDevice]) => DuoChoice;
   provideDuoPasscode: (device: DuoDevice) => string;
   updateDuoStatus: (status: DuoStatus, text: string) => void;
