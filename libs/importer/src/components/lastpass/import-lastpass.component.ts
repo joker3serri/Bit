@@ -125,6 +125,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   private getValidationErrorI18nKey(error: any): string {
     const message = typeof error === "string" ? error : error?.message;
     switch (message) {
+      case "SSO auth cancelled":
       case "Second factor step is canceled by the user":
       case "Out of band step is canceled by the user":
         return "Multifactor authentication was cancelled.";
@@ -144,7 +145,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
 
   private async handleImport() {
     if (this.vault.userType.isFederated()) {
-      await this.handleFederatedLogin();
+      const oidc = await this.handleFederatedLogin();
+      await this.handleFederatedImport(oidc.oidcCode, oidc.oidcState);
       return;
     }
 
@@ -178,6 +180,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       loadUserInfo: true,
     });
 
+    const ssoCallbackPromsie = firstValueFrom(this.lastpassDirectImportService.ssoCallback$);
+
     const request = await this.oidcClient.createSigninRequest({
       state: {
         email: this.formGroup.controls.email.value,
@@ -200,21 +204,14 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     return Promise.race<{
       oidcCode: string;
       oidcState: string;
-    }>([
-      cancelled,
-      // SSOMessageCallbackPromise
-    ]);
+    }>([cancelled, ssoCallbackPromsie]).finally(() => {
+      cancelDialogRef.close();
+    });
   }
 
-  //TODO Call this when message is received from callback
-  private async handleFederatedImport() {
-    // TODO: do something while waiting on SSO to callback and finish?
-    // Need to return code and state from the SSO callback
-
-    const oidcCode = "";
-    const oidcState = "";
+  private async handleFederatedImport(oidcCode: string, oidcState: string) {
     const response = await this.oidcClient.processSigninResponse(
-      this.oidcClient.settings.redirect_uri + "&code=" + oidcCode + "&state=" + oidcState
+      this.oidcClient.settings.redirect_uri + "/?code=" + oidcCode + "&state=" + oidcState
     );
     const userState = response.userState as any;
 
@@ -224,8 +221,6 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     federatedUser.idpUserInfo = response.profile;
     federatedUser.username = userState.email;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
     await this.vault.openFederated(
       federatedUser,
       ClientInfo.createClientInfo(),

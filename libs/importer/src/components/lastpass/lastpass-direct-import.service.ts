@@ -1,5 +1,7 @@
-import { Injectable } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
+import { Subject } from "rxjs";
 
+import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { DialogService } from "@bitwarden/components";
 
 import { DuoStatus } from "../../importers/lastpass/access/enums";
@@ -12,7 +14,27 @@ import { LastPassMultifactorPromptComponent } from "./dialog";
   providedIn: "root",
 })
 export class LastPassDirectImportService implements Ui {
-  constructor(private dialogService: DialogService) {}
+  private _ssoCallback$ = new Subject<{ oidcCode: string; oidcState: string }>();
+  ssoCallback$ = this._ssoCallback$.asObservable();
+
+  constructor(
+    private dialogService: DialogService,
+    private broadcasterService: BroadcasterService,
+    private ngZone: NgZone
+  ) {
+    /** TODO: remove this in favor of dedicated service */
+    this.broadcasterService.subscribe("LastPassDirectImportService", (message: any) => {
+      this.ngZone.run(async () => {
+        switch (message.command) {
+          case "ssoCallbackLastPass":
+            this._ssoCallback$.next({ oidcCode: message.code, oidcState: message.state });
+            break;
+          default:
+            break;
+        }
+      });
+    });
+  }
 
   private async getOTPResult() {
     const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
