@@ -1,5 +1,5 @@
 export type UsernameGeneratorOptions = {
-  type?: "word" | "subaddress" | "catchall" | "forwarded" | "defaultemail";
+  type?: "word" | "subaddress" | "catchall" | "forwarded";
   wordCapitalize?: boolean;
   wordIncludeNumber?: boolean;
   subaddressType?: "random" | "website-name";
