@@ -30,10 +30,7 @@ import { ClientInfo, Vault } from "../../importers/lastpass/access";
 import { FederatedUserContext } from "../../importers/lastpass/access/models";
 
 import { LastPassAwaitSSODialogComponent, LastPassPasswordPromptComponent } from "./dialog";
-// import { Ui } from "../importers/lastpass/access/ui";
-// import { DuoDevice, DuoChoice, DuoStatus } from "../importers/lastpass/access/duo-ui";
-// import { OobResult } from "../importers/lastpass/access/oob-result";
-// import { OtpResult } from "../importers/lastpass/access/otp-result";
+import { LastPassDirectImportService } from "./lastpass-direct-import.service";
 
 /** TODO: add I18n */
 @Component({
@@ -86,7 +83,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private controlContainer: ControlContainer,
     private dialogService: DialogService,
-    private logService: LogService
+    private logService: LogService,
+    private lastpassDirectImportService: LastPassDirectImportService
   ) {
     this.vault = new Vault(cryptoFunctionService, tokenService);
 
@@ -104,18 +102,6 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   }
 
   submit(): AsyncValidatorFn {
-    // class UiImplementation implements Ui {
-    //   provideGoogleAuthPasscode: () => OtpResult;
-    //   provideMicrosoftAuthPasscode: () => OtpResult;
-    //   provideYubikeyPasscode: () => OtpResult;
-    //   approveLastPassAuth: () => OobResult;
-    //   approveDuo: () => OobResult;
-    //   approveSalesforceAuth: () => OobResult;
-    //   chooseDuoFactor: (devices: [DuoDevice]) => DuoChoice;
-    //   provideDuoPasscode: (device: DuoDevice) => string;
-    //   updateDuoStatus: (status: DuoStatus, text: string) => void;
-    // }
-
     return async () => {
       try {
         const email = this.formGroup.controls.email.value;
@@ -162,7 +148,12 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     const email = this.formGroup.controls.email.value;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const password = await LastPassPasswordPromptComponent.open(this.dialogService);
-    await this.vault.open(email, password, ClientInfo.createClientInfo(), null);
+    await this.vault.open(
+      email,
+      password,
+      ClientInfo.createClientInfo(),
+      this.lastpassDirectImportService
+    );
 
     this.transformCSV();
   }
@@ -227,7 +218,11 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
-    await this.vault.openFederated(federatedUser, ClientInfo.createClientInfo(), null);
+    await this.vault.openFederated(
+      federatedUser,
+      ClientInfo.createClientInfo(),
+      this.lastpassDirectImportService
+    );
 
     this.transformCSV();
   }
