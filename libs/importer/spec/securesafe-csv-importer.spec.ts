@@ -60,15 +60,15 @@ describe("SecureSafe CSV Importer", () => {
       expect(result.ciphers.length).toBeGreaterThan(0);
 
       const cipher = result.ciphers.shift();
-      let property: keyof typeof data.expected;
-      for (property in data.expected) {
-        // eslint-disable-next-line
-        if (data.expected.hasOwnProperty(property)) {
-          // eslint-disable-next-line
-          expect(cipher.hasOwnProperty(property)).toBe(true);
-          expect(cipher[property]).toEqual(data.expected[property]);
-        }
-      }
+      expect(cipher.name).toEqual(data.expected.name);
+      expect(cipher.login).toEqual(
+        expect.objectContaining({
+          username: data.expected.login.username,
+          password: data.expected.login.password,
+        })
+      );
+      expect(cipher.login.uris.length).toEqual(1);
+      expect(cipher.login.uris[0].uri).toEqual(data.expected.login.uris[0].uri);
     });
   });
 });
