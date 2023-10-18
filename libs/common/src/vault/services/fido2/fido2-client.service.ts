@@ -370,7 +370,7 @@ function mapToMakeCredentialParams({
 
   return {
     requireResidentKey,
-    requireUserVerification: requireUserVerification,
+    requireUserVerification,
     enterpriseAttestationPossible: params.attestation === "enterprise",
     excludeCredentialDescriptorList,
     credTypesAndPubKeyAlgs,
