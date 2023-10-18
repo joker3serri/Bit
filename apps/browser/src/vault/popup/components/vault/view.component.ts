@@ -1,7 +1,7 @@
 import { Location } from "@angular/common";
 import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { ViewComponent as BaseViewComponent } from "@bitwarden/angular/vault/components/view.component";
@@ -29,6 +29,10 @@ import { PasswordRepromptService } from "@bitwarden/vault";
 import { AutofillService } from "../../../../autofill/services/abstractions/autofill.service";
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../platform/popup/browser-popup-utils";
+import {
+  BrowserFido2UserInterfaceSession,
+  fido2PopoutSessionData$,
+} from "../../../fido2/browser-fido2-user-interface.service";
 import { closeViewVaultItemPopout, VaultPopoutType } from "../../utils/vault-popout-window";
 
 const BroadcasterSubscriptionId = "ChildViewComponent";
@@ -60,6 +64,7 @@ export class ViewComponent extends BaseViewComponent {
   loadPageDetailsTimeout: number;
   inPopout = false;
   cipherType = CipherType;
+  private fido2PopoutSessionData$ = fido2PopoutSessionData$();
 
   private destroy$ = new Subject<void>();
 
@@ -305,7 +310,13 @@ export class ViewComponent extends BaseViewComponent {
     return false;
   }
 
-  close() {
+  async close() {
+    const sessionData = await firstValueFrom(this.fido2PopoutSessionData$);
+    if (this.inPopout && sessionData.isFido2Session) {
+      BrowserFido2UserInterfaceSession.abortPopout(sessionData.sessionId);
+      return;
+    }
+
     if (
       BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) &&
       this.senderTabId
