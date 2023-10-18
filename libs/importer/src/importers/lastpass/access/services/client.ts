@@ -530,6 +530,7 @@ export class Client {
       switch (cause.value) {
         case "unknownemail":
           return "Invalid username";
+        case "password_invalid":
         case "unknownpassword":
           return "Invalid password";
         case "googleauthfailed":

@@ -106,32 +106,40 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       try {
         const email = this.formGroup.controls.email.value;
 
-        try {
-          await this.vault.setUserTypeContext(email);
-        } catch {
-          return {
-            accountNotFound: {
-              message: "Cannot retrieve account",
-            },
-          };
-        }
-
+        await this.vault.setUserTypeContext(email);
         await this.handleImport();
 
         return null;
       } catch (error) {
-        // this.dialogService.open<unknown, Error>(ImportErrorDialogComponent, {
-        //   data: error,
-        // });
-        const message = error?.message || error;
-        this.logService.error(`LP importer error: ${message}`);
+        this.logService.error(`LP importer error: ${error}`);
         return {
           errors: {
-            message,
+            message: this.getValidationErrorI18nKey(error),
           },
         };
       }
     };
+  }
+
+  /** TODO: add to messages.json and use i18nService */
+  private getValidationErrorI18nKey(error: any): string {
+    const message = typeof error === "string" ? error : error?.message;
+    switch (message) {
+      case "Second factor step is canceled by the user":
+      case "Out of band step is canceled by the user":
+        return "Multifactor authentication was cancelled.";
+      case "No accounts to transform":
+      case "Vault has not opened any accounts.":
+        return "No LastPass accounts found.";
+      case "Invalid username":
+      case "Invalid password":
+        return "Incorrect username or password.";
+      case "Second factor code is incorrect":
+      case "Out of band authentication failed":
+        return "Multifactor authentication failed.";
+      default:
+        return "An error has occurred.";
+    }
   }
 
   private async handleImport() {
