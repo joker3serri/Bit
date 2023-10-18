@@ -295,9 +295,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   private async setCallout() {
     this.showHowToAutofill =
       this.loginCiphers.length > 0 &&
-      !(
-        (await this.stateService.getAutoFillOverlayVisibility()) !== AutofillOverlayVisibility.Off
-      ) &&
+      (await this.stateService.getAutoFillOverlayVisibility()) === AutofillOverlayVisibility.Off &&
       !(await this.stateService.getEnableAutoFillOnPageLoad()) &&
       !(await this.stateService.getDismissedAutofillCallout());
 
