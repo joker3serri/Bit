@@ -86,7 +86,9 @@ jobs:
 
   cfpages-deploy:
     name: Deploy Web Vault to ${{ inputs.environment }} CloudFlare Pages branch
-    needs: artifact-check
+    needs:
+      - setup
+      - artifact-check
     runs-on: ubuntu-22.04
     env:
       _ENVIRONMENT: ${{ needs.setup.outputs.environment }}
