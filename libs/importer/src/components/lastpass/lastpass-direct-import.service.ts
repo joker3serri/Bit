@@ -12,15 +12,15 @@ import { LastPassMultifactorPromptComponent } from "./dialog";
   providedIn: "root",
 })
 export class LastPassDirectImportService implements Ui {
-  constructor(private dialogSerive: DialogService) {}
+  constructor(private dialogService: DialogService) {}
 
   private async getOTPResult() {
-    const passcode = await LastPassMultifactorPromptComponent.open(this.dialogSerive);
+    const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
     return new OtpResult(passcode, false);
   }
 
   private async getOOBResult() {
-    const passcode = await LastPassMultifactorPromptComponent.open(this.dialogSerive);
+    const passcode = await LastPassMultifactorPromptComponent.open(this.dialogService);
     return new OobResult(false, passcode, false);
   }
 
