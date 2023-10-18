@@ -2541,5 +2541,29 @@
   },
   "multifactorAuthenticationFailed": {
     "message": "Multifactor authentication failed"
+  },
+  "includeSharedFolders": {
+    "message": "Include shared folders"
+  },
+  "lastPassEmail": {
+    "message": "LastPass Email"
+  },
+  "importingYourAccount": {
+    "message": "Importing your account..."
+  },
+  "lastPassMFARequired": {
+    "message": "LastPass multifactor authentication required"
+  },
+  "lastPassMFADesc": {
+    "message": "Enter your one-time passcode from your authentication app"
+  },
+  "passcode": {
+    "message": "Passcode"
+  },
+  "lastPassMasterPassword": {
+    "message": "LastPass master password"
+  },
+  "lastPassAuthRequired": {
+    "message": "LastPass authentication required"
   }
 }

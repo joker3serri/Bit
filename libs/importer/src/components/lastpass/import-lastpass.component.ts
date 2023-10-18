@@ -69,7 +69,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   protected emailHint$ = this.formGroup.controls.email.statusChanges.pipe(
     map((status) => {
       if (status === "PENDING") {
-        return "Finding your account...";
+        return this.i18nService.t("importingYourAccount");
       }
     })
   );

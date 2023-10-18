@@ -1,6 +1,6 @@
 <form [formGroup]="formGroup" (keydown.enter)="$event.preventDefault()">
   <bit-form-field>
-    <bit-label>LastPass email</bit-label>
+    <bit-label>{{ "lastPassEmail" | i18n }}</bit-label>
     <input bitInput type="text" formControlName="email" />
     <bit-hint>{{ emailHint$ | async }}</bit-hint>
   </bit-form-field>
@@ -11,6 +11,6 @@
       formControlName="includeSharedFolders"
       id="includeSharedFolders"
     />
-    <bit-label>Include shared folders</bit-label>
+    <bit-label>{{ "includeSharedFolders" | i18n }}</bit-label>
   </bit-form-control>
 </form>

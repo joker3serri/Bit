@@ -1,13 +1,13 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit">
   <bit-dialog>
     <span bitDialogTitle>
-      {{ "LastPass multifactor authentication required" }}
+      {{ "lastPassMFARequired" | i18n }}
     </span>
 
     <div bitDialogContent>
-      <p>Enter your one-time passcode from your authentication app</p>
+      <p>{{ "lastPassMFADesc" | i18n }}</p>
       <bit-form-field class="!tw-mb-0">
-        <bit-label>{{ "Passcode" }}</bit-label>
+        <bit-label>{{ "passcode" | i18n }}</bit-label>
         <input
           bitInput
           type="text"
@@ -16,7 +16,7 @@
           appAutofocus
           appInputVerbatim
         />
-        <bit-hint>Confirm your identity to continue</bit-hint>
+        <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
       </bit-form-field>
     </div>
 
