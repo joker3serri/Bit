@@ -325,18 +325,20 @@ export class AddEditComponent extends BaseAddEditComponent {
 
   async setCommonUsernames() {
     const allCiphers = await this.getAllCiphers();
-    const commonUsernames = Object.values(
-      allCiphers.reduce((obj: Record<string, { login: string; occurrences: number }>, c) => {
-        const login = c.login.username;
-        obj[login] = obj[login] || { login, occurrences: 0 };
-        obj[login].occurrences++;
-        return obj;
-      }, {})
-    )
-      .sort((a, b) => b.occurrences - a.occurrences)
-      .slice(0, 5)
-      .map((x) => x.login);
+    const usernameCounts: Record<string, number> = {};
 
-    this.commonUsernames = commonUsernames;
+    for (const cipher of allCiphers) {
+      const login = cipher.login.username;
+      if (login) {
+        // This ensures non-truthy values like null, undefined, or empty strings are skipped
+        usernameCounts[login] = (usernameCounts[login] || 0) + 1;
+      }
+    }
+
+    const sortedUsernames = Object.keys(usernameCounts)
+      .sort((a, b) => usernameCounts[b] - usernameCounts[a])
+      .slice(0, 10);
+
+    this.commonUsernames = sortedUsernames;
   }
 }
