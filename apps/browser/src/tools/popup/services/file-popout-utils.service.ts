@@ -11,6 +11,11 @@ export class FilePopoutUtilsService {
     private popupUtilsService: PopupUtilsService
   ) {}
 
+  /**
+   * Determines whether to show any file popout callout message in the current browser.
+   * @param win - The window context in which the check should be performed.
+   * @returns True if a file popout callout message should be displayed; otherwise, false.
+   */
   showFilePopoutMessage(win: Window): boolean {
     return (
       this.showFirefoxFileWarning(win) ||
@@ -19,6 +24,11 @@ export class FilePopoutUtilsService {
     );
   }
 
+  /**
+   * Determines whether to show a file popout callout message for the Firefox browser
+   * @param win - The window context in which the check should be performed.
+   * @returns True if the extension is not in a sidebar or popout; otherwise, false.
+   */
   showFirefoxFileWarning(win: Window): boolean {
     return (
       this.platformUtilsService.isFirefox() &&
@@ -26,10 +36,20 @@ export class FilePopoutUtilsService {
     );
   }
 
+  /**
+   * Determines whether to show a file popout message for the Safari browser
+   * @param win - The window context in which the check should be performed.
+   * @returns True if the extension is not in a popout; otherwise, false.
+   */
   showSafariFileWarning(win: Window): boolean {
     return this.platformUtilsService.isSafari() && !this.popupUtilsService.inPopout(win);
   }
 
+  /**
+   * Determines whether to show a file popout callout message for Chromium-based browsers in Linux and Mac OS X Big Sur
+   * @param win - The window context in which the check should be performed.
+   * @returns True if the extension is not in a sidebar or popout; otherwise, false.
+   */
   showChromiumFileWarning(win: Window): boolean {
     return (
       (this.isLinux(win) || this.isUnsupportedMac(win)) &&
