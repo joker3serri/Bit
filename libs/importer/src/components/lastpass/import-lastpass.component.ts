@@ -14,6 +14,7 @@ import { firstValueFrom, map } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
@@ -84,7 +85,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     private controlContainer: ControlContainer,
     private dialogService: DialogService,
     private logService: LogService,
-    private lastpassDirectImportService: LastPassDirectImportService
+    private lastpassDirectImportService: LastPassDirectImportService,
+    private i18nService: I18nService
   ) {
     this.vault = new Vault(cryptoFunctionService, tokenService);
 
@@ -114,32 +116,31 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
         this.logService.error(`LP importer error: ${error}`);
         return {
           errors: {
-            message: this.getValidationErrorI18nKey(error),
+            message: this.i18nService.t(this.getValidationErrorI18nKey(error)),
           },
         };
       }
     };
   }
 
-  /** TODO: add to messages.json and use i18nService */
   private getValidationErrorI18nKey(error: any): string {
     const message = typeof error === "string" ? error : error?.message;
     switch (message) {
       case "SSO auth cancelled":
       case "Second factor step is canceled by the user":
       case "Out of band step is canceled by the user":
-        return "Multifactor authentication was cancelled.";
+        return "multifactorAuthenticationCancelled";
       case "No accounts to transform":
       case "Vault has not opened any accounts.":
-        return "No LastPass accounts found.";
+        return "noLastPassDataFound";
       case "Invalid username":
       case "Invalid password":
-        return "Incorrect username or password.";
+        return "incorrectUsernameOrPassword";
       case "Second factor code is incorrect":
       case "Out of band authentication failed":
-        return "Multifactor authentication failed.";
+        return "multifactorAuthenticationFailed";
       default:
-        return "An error has occurred.";
+        return "errorOccurred";
     }
   }
 

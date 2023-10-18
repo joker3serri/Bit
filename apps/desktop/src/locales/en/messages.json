@@ -2529,5 +2529,17 @@
   },
   "confirmFilePassword": {
     "message": "Confirm file password"
+  },
+  "multifactorAuthenticationCancelled": {
+    "message": "Multifactor authentication cancelled"
+  },
+  "noLastPassDataFound": {
+    "message": "No LastPass data found"
+  },
+  "incorrectUsernameOrPassword": {
+    "message": "Incorrect username or password"
+  },
+  "multifactorAuthenticationFailed": {
+    "message": "Multifactor authentication failed"
   }
 }
