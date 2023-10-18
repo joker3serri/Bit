@@ -157,7 +157,6 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   private async handleStandardImport() {
     // TODO Pass in to handleImport?
     const email = this.formGroup.controls.email.value;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const password = await LastPassPasswordPromptComponent.open(this.dialogService);
     await this.vault.open(
       email,
