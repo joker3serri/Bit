@@ -171,6 +171,8 @@ const mainConfig = {
     "content/notificationBar": "./src/autofill/content/notification-bar.ts",
     "content/contextMenuHandler": "./src/autofill/content/context-menu-handler.ts",
     "content/message_handler": "./src/autofill/content/message_handler.ts",
+    "content/fido2/content-script": "./src/vault/fido2/content/content-script.ts",
+    "content/fido2/page-script": "./src/vault/fido2/content/page-script.ts",
     "notification/bar": "./src/autofill/notification/bar.ts",
     "overlay/button": "./src/autofill/overlay/pages/button/bootstrap-autofill-overlay-button.ts",
     "overlay/list": "./src/autofill/overlay/pages/list/bootstrap-autofill-overlay-list.ts",
