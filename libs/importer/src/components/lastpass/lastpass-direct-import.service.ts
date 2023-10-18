@@ -69,7 +69,13 @@ export class LastPassDirectImportService implements Ui {
   }
 
   /** These aren't used anywhere. Are they needed? */
-  chooseDuoFactor: (devices: [DuoDevice]) => DuoChoice;
-  provideDuoPasscode: (device: DuoDevice) => string;
-  updateDuoStatus: (status: DuoStatus, text: string) => void;
+  chooseDuoFactor: (devices: [DuoDevice]) => DuoChoice = () => {
+    throw new Error("Not implemented");
+  };
+  provideDuoPasscode: (device: DuoDevice) => string = () => {
+    throw new Error("Not implemented");
+  };
+  updateDuoStatus: (status: DuoStatus, text: string) => void = () => {
+    throw new Error("Not implemented");
+  };
 }
