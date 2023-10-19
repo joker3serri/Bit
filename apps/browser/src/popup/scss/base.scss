@@ -187,6 +187,11 @@ header:not(bit-callout header) {
     border-bottom-color: themed("headerBorderColor");
   }
 
+  .header-content {
+    display: flex;
+    flex: 1 1 auto;
+  }
+
   .left,
   .right {
     flex: 1;

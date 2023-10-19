@@ -1,0 +1,11 @@
+<header>
+  <div class="header-content">
+    <ng-content select=".left"></ng-content>
+    <ng-content select=".center"></ng-content>
+    <ng-content select=".right"></ng-content>
+  </div>
+  <ng-container *ngIf="authedAccounts$ | async">
+    TODO: Current Account
+    <!-- <app-current-account></app-current-account> -->
+  </ng-container>
+</header>
