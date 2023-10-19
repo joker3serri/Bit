@@ -42,6 +42,12 @@ export function makeStaticByteArray(length: number, start = 0) {
  */
 export const mockFromJson = (stub: any) => (stub + "_fromJSON") as any;
 
+/**
+* Returns an array that will hold all emissions of the tracked observable.
+* call this function before you expect any emissions and then use code that
+* will use the emit values to the observable, then assert after all expected emissions
+* have occurred.
+*/
 export function trackEmissions<T>(observable: Observable<T>): T[] {
   const emissions: T[] = [];
   observable.subscribe((value) => {
