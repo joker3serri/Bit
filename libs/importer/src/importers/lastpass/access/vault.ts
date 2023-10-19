@@ -143,7 +143,7 @@ export class Vault {
     if (response.status === HttpStatusCode.Ok) {
       const json = await response.json();
       const k1 = json?.extensions?.LastPassK1 as string;
-      if (k1 !== null) {
+      if (k1 != null) {
         return Utils.fromB64ToArray(k1);
       }
     }
@@ -167,7 +167,7 @@ export class Vault {
     if (response.status === HttpStatusCode.Ok) {
       const json = await response.json();
       const files = json?.files as any[];
-      if (files !== null && files.length > 0 && files[0].id != null && files[0].name === "k1.lp") {
+      if (files != null && files.length > 0 && files[0].id != null && files[0].name === "k1.lp") {
         // Open the k1.lp file
         rest.baseUrl = "https://www.googleapis.com";
         const response = await rest.get(
@@ -186,7 +186,7 @@ export class Vault {
   private async getK1FromAccessToken(federatedUser: FederatedUserContext, b64: boolean) {
     const decodedAccessToken = await this.tokenService.decodeToken(federatedUser.accessToken);
     const k1 = decodedAccessToken?.LastPassK1 as string;
-    if (k1 !== null) {
+    if (k1 != null) {
       return b64 ? Utils.fromB64ToArray(k1) : Utils.fromByteStringToArray(k1);
     }
     return null;
@@ -210,7 +210,7 @@ export class Vault {
     if (response.status === HttpStatusCode.Ok) {
       const json = await response.json();
       const k2 = json?.k2 as string;
-      if (k2 !== null) {
+      if (k2 != null) {
         return Utils.fromB64ToArray(k2);
       }
     }
