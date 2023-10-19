@@ -173,7 +173,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     this.oidcClient = new OidcClient({
       authority: this.vault.userType.openIDConnectAuthorityBase,
       client_id: this.vault.userType.openIDConnectClientId,
-      redirect_uri: this.getOidcCallbackUrl(),
+      redirect_uri: this.getOidcRedirectUrl(),
       response_type: "code",
       scope: this.vault.userType.oidcScope,
       response_mode: "query",
@@ -209,21 +209,9 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getOidcCallbackUrl() {
-    const deviceType = this.platformUtilsService.getDevice();
-    switch (deviceType) {
-      case DeviceType.WindowsDesktop:
-      case DeviceType.MacOsDesktop:
-      case DeviceType.LinuxDesktop:
-        return "bitwarden://sso-callback-lp";
-      default:
-        return window.location.origin + "/sso-connector.html?lp=1";
-    }
-  }
-
   private async handleFederatedImport(oidcCode: string, oidcState: string) {
     const response = await this.oidcClient.processSigninResponse(
-      this.oidcClient.settings.redirect_uri + "/?code=" + oidcCode + "&state=" + oidcState
+      this.getRedirectUrlWithParams(oidcCode, oidcState)
     );
     const userState = response.userState as any;
 
@@ -240,6 +228,27 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     );
 
     this.transformCSV();
+  }
+
+  private getRedirectUrlWithParams(oidcCode: string, oidcState: string) {
+    const redirectUri = this.oidcClient.settings.redirect_uri;
+    if (redirectUri.indexOf("bitwarden://") === 0) {
+      return redirectUri + "/?code=" + oidcCode + "&state=" + oidcState;
+    } else {
+      return redirectUri + "&code=" + oidcCode + "&state=" + oidcState;
+    }
+  }
+
+  private getOidcRedirectUrl() {
+    const deviceType = this.platformUtilsService.getDevice();
+    switch (deviceType) {
+      case DeviceType.WindowsDesktop:
+      case DeviceType.MacOsDesktop:
+      case DeviceType.LinuxDesktop:
+        return "bitwarden://sso-callback-lp";
+      default:
+        return window.location.origin + "/sso-connector.html?lp=1";
+    }
   }
 
   private transformCSV() {
