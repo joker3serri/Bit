@@ -211,7 +211,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
 
   private async handleFederatedImport(oidcCode: string, oidcState: string) {
     const response = await this.oidcClient.processSigninResponse(
-      this.getRedirectUrlWithParams(oidcCode, oidcState)
+      this.getOidcRedirectUrlWithParams(oidcCode, oidcState)
     );
     const userState = response.userState as any;
 
@@ -230,7 +230,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     this.transformCSV();
   }
 
-  private getRedirectUrlWithParams(oidcCode: string, oidcState: string) {
+  private getOidcRedirectUrlWithParams(oidcCode: string, oidcState: string) {
     const redirectUri = this.oidcClient.settings.redirect_uri;
     const params = "code=" + oidcCode + "&state=" + oidcState;
     if (redirectUri.indexOf("bitwarden://") === 0) {
