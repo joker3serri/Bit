@@ -2579,6 +2579,6 @@
     "message": "Awaiting SSO authentication"
   },
   "awaitingSSODesc": {
-    "message": "Please continue logging in with your SSO provider."
+    "message": "Please continue to log in using your company credentials."
   }
 }
