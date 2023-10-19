@@ -60,10 +60,13 @@ describe("VaultPopoutWindow", () => {
       );
     });
 
-    it("opens a popout window that facilitates adding a specific type of vault item", () => {
-      openAddEditVaultItemPopout(mock<chrome.tabs.Tab>({ windowId: 1, url: "https://tacos.com" }), {
-        cipherType: CipherType.Identity,
-      });
+    it("opens a popout window that facilitates adding a specific type of vault item", async () => {
+      await openAddEditVaultItemPopout(
+        mock<chrome.tabs.Tab>({ windowId: 1, url: "https://tacos.com" }),
+        {
+          cipherType: CipherType.Identity,
+        }
+      );
 
       expect(openPopoutSpy).toHaveBeenCalledWith(
         `popup/index.html#/edit-cipher?uilocation=popout&type=${CipherType.Identity}&uri=https://tacos.com`,
@@ -93,14 +96,14 @@ describe("VaultPopoutWindow", () => {
   });
 
   describe("closeAddEditVaultItemPopout", () => {
-    it("closes the add/edit vault item popout window", () => {
-      closeAddEditVaultItemPopout();
+    it("closes the add/edit vault item popout window", async () => {
+      await closeAddEditVaultItemPopout();
 
       expect(closeSingleActionPopoutSpy).toHaveBeenCalledWith(VaultPopoutType.addEditVaultItem, 0);
     });
 
-    it("closes the add/edit vault item popout window after a delay", () => {
-      closeAddEditVaultItemPopout(1000);
+    it("closes the add/edit vault item popout window after a delay", async () => {
+      await closeAddEditVaultItemPopout(1000);
 
       expect(closeSingleActionPopoutSpy).toHaveBeenCalledWith(
         VaultPopoutType.addEditVaultItem,
@@ -136,10 +139,10 @@ describe("VaultPopoutWindow", () => {
   });
 
   describe("closeFido2Popout", () => {
-    it("closes the fido2 popout window", () => {
+    it("closes the fido2 popout window", async () => {
       const sessionId = "sessionId";
 
-      closeFido2Popout(sessionId);
+      await closeFido2Popout(sessionId);
 
       expect(closeSingleActionPopoutSpy).toHaveBeenCalledWith(
         `${VaultPopoutType.fido2Popout}_${sessionId}`
