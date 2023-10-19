@@ -1,7 +1,6 @@
 /**
  * Monkey patch `chrome.runtime.onMessage` event listeners to run in the Angular zone.
  */
-
 Zone.__load_patch("ChromeRuntimeOnMessage", (global: any, Zone: ZoneType, api: _ZonePrivate) => {
   if (typeof global?.chrome?.runtime?.onMessage === "undefined") {
     return;
