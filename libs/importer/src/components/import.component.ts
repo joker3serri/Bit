@@ -14,7 +14,6 @@ import { concat, Observable, Subject, lastValueFrom, combineLatest } from "rxjs"
 import { map, takeUntil } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import {
   canAccessImportExport,
   OrganizationService,
@@ -22,12 +21,10 @@ import {
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -45,12 +42,7 @@ import {
 } from "@bitwarden/components";
 
 import { ImportOption, ImportResult, ImportType } from "../models";
-import {
-  ImportApiService,
-  ImportApiServiceAbstraction,
-  ImportService,
-  ImportServiceAbstraction,
-} from "../services";
+import { ImportServiceAbstraction } from "../services";
 
 import {
   FilePasswordPromptComponent,
@@ -73,25 +65,7 @@ import {
     CalloutModule,
     ReactiveFormsModule,
   ],
-  providers: [
-    {
-      provide: ImportApiServiceAbstraction,
-      useClass: ImportApiService,
-      deps: [ApiService],
-    },
-    {
-      provide: ImportServiceAbstraction,
-      useClass: ImportService,
-      deps: [
-        CipherService,
-        FolderService,
-        ImportApiServiceAbstraction,
-        I18nService,
-        CollectionService,
-        CryptoService,
-      ],
-    },
-  ],
+  // PM-4406: Currently `providers` can't be added here, even though the component is marked as standalone, because of the way services are constructed for the popup in browser. Providers would work fine for web and desktop.
 })
 export class ImportComponent implements OnInit, OnDestroy {
   featuredImportOptions: ImportOption[];
