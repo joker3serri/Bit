@@ -12,7 +12,7 @@ function loadSsoConnector() {
     window.location.href =
       "/popup/index.html?uilocation=popout#/import?code=" + code + "&state=" + state;
   }
-});
+}
 
 function getQsParam(name: string) {
   const url = window.location.href;
