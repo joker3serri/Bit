@@ -41,14 +41,14 @@ export const AUTOFILL_ID = "autofill";
 export const SHOW_AUTOFILL_BUTTON = "show-autofill-button";
 export const COPY_USERNAME_ID = "copy-username";
 export const COPY_PASSWORD_ID = "copy-password";
-export const COPY_VERIFICATIONCODE_ID = "copy-totp";
+export const COPY_VERIFICATION_CODE_ID = "copy-totp";
 
 type LoadAction =
   | typeof AUTOFILL_ID
   | typeof SHOW_AUTOFILL_BUTTON
   | typeof COPY_USERNAME_ID
   | typeof COPY_PASSWORD_ID
-  | typeof COPY_VERIFICATIONCODE_ID;
+  | typeof COPY_VERIFICATION_CODE_ID;
 
 @Component({
   selector: "app-vault-view",
@@ -187,7 +187,7 @@ export class ViewComponent extends BaseViewComponent {
       case COPY_PASSWORD_ID:
         await this.copy(this.cipher.login.password, "password", "Password");
         break;
-      case COPY_VERIFICATIONCODE_ID:
+      case COPY_VERIFICATION_CODE_ID:
         await this.copy(this.totpCode, "verificationCodeTotp", "TOTP");
         break;
       default:
