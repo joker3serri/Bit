@@ -5,7 +5,7 @@
     </span>
 
     <div bitDialogContent>
-      <p>{{ "lastPassMFADesc" | i18n }}</p>
+      <p>{{ description | i18n }}</p>
       <bit-form-field class="!tw-mb-0">
         <bit-label>{{ "passcode" | i18n }}</bit-label>
         <input
@@ -22,7 +22,7 @@
 
     <ng-container bitDialogFooter>
       <button bitButton buttonType="primary" type="submit" bitFormButton>
-        <span>{{ "submit" | i18n }}</span>
+        <span>{{ "continue" | i18n }}</span>
       </button>
       <button bitButton bitDialogClose="cancel" buttonType="secondary" type="button" bitFormButton>
         <span>{{ "cancel" | i18n }}</span>

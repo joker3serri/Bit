@@ -1,8 +1,7 @@
-import { DialogRef } from "@angular/cdk/dialog";
+import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -14,6 +13,10 @@ import {
   IconButtonModule,
   TypographyModule,
 } from "@bitwarden/components";
+
+type LastPassMultifactorPromptData = {
+  isOOB?: boolean;
+};
 
 @Component({
   templateUrl: "lastpass-multifactor-prompt.component.html",
@@ -31,6 +34,8 @@ import {
   ],
 })
 export class LastPassMultifactorPromptComponent {
+  protected description = this.data?.isOOB ? "lastPassOOBDesc" : "lastPassMFADesc";
+
   formGroup = new FormGroup({
     passcode: new FormControl("", {
       validators: Validators.required,
@@ -38,7 +43,10 @@ export class LastPassMultifactorPromptComponent {
     }),
   });
 
-  constructor(public dialogRef: DialogRef) {}
+  constructor(
+    public dialogRef: DialogRef,
+    @Inject(DIALOG_DATA) protected data: LastPassMultifactorPromptData
+  ) {}
 
   submit = () => {
     this.formGroup.markAsTouched();
@@ -49,8 +57,7 @@ export class LastPassMultifactorPromptComponent {
     return false;
   };
 
-  static open(dialogService: DialogService) {
-    const dialogRef = dialogService.open<string>(LastPassMultifactorPromptComponent);
-    return firstValueFrom(dialogRef.closed);
+  static open(dialogService: DialogService, data?: LastPassMultifactorPromptData) {
+    return dialogService.open<string>(LastPassMultifactorPromptComponent, { data });
   }
 }
