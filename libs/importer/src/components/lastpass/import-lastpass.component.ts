@@ -235,9 +235,9 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     const params = "code=" + oidcCode + "&state=" + oidcState;
     if (redirectUri.indexOf("bitwarden://") === 0) {
       return redirectUri + "/?" + params;
-    } else {
-      return redirectUri + "&" + params;
     }
+    
+    return redirectUri + "&" + params;
   }
 
   private getOidcRedirectUrl() {
