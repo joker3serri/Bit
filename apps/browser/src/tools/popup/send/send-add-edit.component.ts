@@ -17,6 +17,7 @@ import { DialogService } from "@bitwarden/components";
 
 import { BrowserStateService } from "../../../platform/services/abstractions/browser-state.service";
 import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
+import { FilePopoutUtilsService } from "../services/file-popout-utils.service";
 
 @Component({
   selector: "app-send-add-edit",
@@ -29,6 +30,7 @@ export class SendAddEditComponent extends BaseAddEditComponent {
   // File visibility
   isFirefox = false;
   inPopout = false;
+  showFileSelector = false;
 
   constructor(
     i18nService: I18nService,
@@ -46,7 +48,8 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     logService: LogService,
     sendApiService: SendApiService,
     dialogService: DialogService,
-    formBuilder: FormBuilder
+    formBuilder: FormBuilder,
+    private filePopoutUtilsService: FilePopoutUtilsService
   ) {
     super(
       i18nService,
@@ -64,18 +67,16 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     );
   }
 
-  get showFileSelector(): boolean {
-    return !this.editMode;
-  }
-
   popOutWindow() {
     this.popupUtilsService.popOut(window);
   }
 
   async ngOnInit() {
     // File visibility
-    this.isFirefox = this.platformUtilsService.isFirefox();
+    this.showFileSelector =
+      !this.editMode && !this.filePopoutUtilsService.showFilePopoutMessage(window);
     this.inPopout = this.popupUtilsService.inPopout(window);
+    this.isFirefox = this.platformUtilsService.isFirefox();
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (params) => {
