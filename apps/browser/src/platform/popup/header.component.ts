@@ -4,7 +4,7 @@ import { Observable, map } from "rxjs";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
-import { devFlagEnabled } from "../flags";
+import { flagEnabled } from "../flags";
 
 @Component({
   selector: "app-header",
@@ -15,7 +15,7 @@ export class HeaderComponent {
   constructor(accountService: AccountService) {
     this.authedAccounts$ = accountService.accounts$.pipe(
       map((accounts) => {
-        if (!devFlagEnabled("accountSwitching")) {
+        if (!flagEnabled("accountSwitching")) {
           return false;
         }
 
