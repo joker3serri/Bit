@@ -26,4 +26,7 @@ export abstract class Ui extends DuoUi {
   approveLastPassAuth: () => Promise<OobResult>;
   approveDuo: () => Promise<OobResult>;
   approveSalesforceAuth: () => Promise<OobResult>;
+
+  /** Close MFA dialog on import success or error */
+  closeMFADialog: () => void;
 }

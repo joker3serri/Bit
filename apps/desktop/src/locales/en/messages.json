@@ -2566,6 +2566,9 @@
   "lastPassMFADesc": {
     "message": "Enter your one-time passcode from your authentication app"
   },
+  "lastPassOOBDesc": {
+    "message": "Approve the login request in your authentication app or enter a one-time passcode."
+  },
   "passcode": {
     "message": "Passcode"
   },
