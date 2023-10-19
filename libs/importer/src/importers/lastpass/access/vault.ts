@@ -114,7 +114,7 @@ export class Vault {
     }
 
     let k1: Uint8Array = null;
-    if (federatedUser.idpUserInfo?.LastPassK1 !== null) {
+    if (federatedUser.idpUserInfo?.LastPassK1 != null) {
       return Utils.fromByteStringToArray(federatedUser.idpUserInfo.LastPassK1);
     } else if (this.userType.provider === IdpProvider.Azure) {
       k1 = await this.getK1Azure(federatedUser);
@@ -122,10 +122,10 @@ export class Vault {
       k1 = await this.getK1Google(federatedUser);
     } else {
       const b64Encoded = this.userType.provider === IdpProvider.PingOne;
-      k1 = this.getK1FromAccessToken(federatedUser, b64Encoded);
+      k1 = await this.getK1FromAccessToken(federatedUser, b64Encoded);
     }
 
-    if (k1 !== null) {
+    if (k1 != null) {
       return k1;
     }
 
@@ -183,8 +183,8 @@ export class Vault {
     return null;
   }
 
-  private getK1FromAccessToken(federatedUser: FederatedUserContext, b64: boolean) {
-    const decodedAccessToken = this.tokenService.decodeToken(federatedUser.accessToken);
+  private async getK1FromAccessToken(federatedUser: FederatedUserContext, b64: boolean) {
+    const decodedAccessToken = await this.tokenService.decodeToken(federatedUser.accessToken);
     const k1 = decodedAccessToken?.LastPassK1 as string;
     if (k1 !== null) {
       return b64 ? Utils.fromB64ToArray(k1) : Utils.fromByteStringToArray(k1);
