@@ -216,7 +216,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     const userState = response.userState as any;
 
     const federatedUser = new FederatedUserContext();
-    federatedUser.idToken = response.access_token;
+    federatedUser.idToken = response.id_token;
     federatedUser.accessToken = response.access_token;
     federatedUser.idpUserInfo = response.profile;
     federatedUser.username = userState.email;
