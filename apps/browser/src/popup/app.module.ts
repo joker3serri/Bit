@@ -16,6 +16,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 
+import { SetPinComponent } from "../auth/popup/components/set-pin.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
@@ -39,6 +40,9 @@ import { SendTypeComponent } from "../tools/popup/send/send-type.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
 import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
 import { CipherRowComponent } from "../vault/popup/components/cipher-row.component";
+import { Fido2CipherRowComponent } from "../vault/popup/components/fido2/fido2-cipher-row.component";
+import { Fido2UseBrowserLinkComponent } from "../vault/popup/components/fido2/fido2-use-browser-link.component";
+import { Fido2Component } from "../vault/popup/components/fido2/fido2.component";
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
@@ -57,7 +61,6 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { PopOutComponent } from "./components/pop-out.component";
 import { PrivateModeWarningComponent } from "./components/private-mode-warning.component";
-import { SetPinComponent } from "./components/set-pin.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
 import { ServicesModule } from "./services/services.module";
 import { AutofillComponent } from "./settings/autofill.component";
@@ -111,6 +114,8 @@ import "../platform/popup/locales";
     EnvironmentComponent,
     ExcludedDomainsComponent,
     ExportComponent,
+    Fido2CipherRowComponent,
+    Fido2UseBrowserLinkComponent,
     FolderAddEditComponent,
     FoldersComponent,
     VaultFilterComponent,
@@ -148,6 +153,7 @@ import "../platform/popup/locales";
     ViewCustomFieldsComponent,
     RemovePasswordComponent,
     VaultSelectComponent,
+    Fido2Component,
     HelpAndFeedbackComponent,
     AutofillComponent,
     EnvironmentSelectorComponent,
