@@ -20,6 +20,18 @@ export class UserTypeContext {
     );
   }
 
+  get oidcScope(): string {
+    let scope = "openid profile email";
+    if (this.provider === IdpProvider.PingOne) {
+      scope += " lastpass";
+    }
+    return scope;
+  }
+
+  get openIDConnectAuthorityBase(): string {
+    return this.openIDConnectAuthority.replace("/.well-known/openid-configuration", "");
+  }
+
   private hasValue(str: string) {
     return str != null && str.trim() !== "";
   }
