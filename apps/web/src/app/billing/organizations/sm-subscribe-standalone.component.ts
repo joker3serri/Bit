@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationData } from "@bitwarden/common/admin-console/models/data/organization.data";
@@ -26,6 +27,7 @@ export class SecretsManagerSubscribeStandaloneComponent {
   formGroup = secretsManagerSubscribeFormFactory(this.formBuilder);
 
   constructor(
+    private apiService: ApiService,
     private formBuilder: FormBuilder,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
@@ -51,6 +53,7 @@ export class SecretsManagerSubscribeStandaloneComponent {
       isProviderUser: this.organization.isProviderUser,
     });
     await this.organizationService.upsert(organizationData);
+    await this.apiService.refreshIdentityToken();
 
     this.platformUtilsService.showToast(
       "success",
