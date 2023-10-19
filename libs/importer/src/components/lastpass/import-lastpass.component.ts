@@ -13,6 +13,7 @@ import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { DeviceType } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -172,8 +173,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     this.oidcClient = new OidcClient({
       authority: this.vault.userType.openIDConnectAuthorityBase,
       client_id: this.vault.userType.openIDConnectClientId,
-      // TODO: this is different per client
-      redirect_uri: "bitwarden://sso-callback-lp",
+      redirect_uri: this.getOidcCallbackUrl(),
       response_type: "code",
       scope: this.vault.userType.oidcScope,
       response_mode: "query",
@@ -207,6 +207,18 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     }>([cancelled, ssoCallbackPromsie]).finally(() => {
       cancelDialogRef.close();
     });
+  }
+
+  private getOidcCallbackUrl() {
+    const deviceType = this.platformUtilsService.getDevice();
+    switch (deviceType) {
+      case DeviceType.WindowsDesktop:
+      case DeviceType.MacOsDesktop:
+      case DeviceType.LinuxDesktop:
+        return "bitwarden://sso-callback-lp";
+      default:
+        return window.location.origin + "/sso-connector.html?lp=1";
+    }
   }
 
   private async handleFederatedImport(oidcCode: string, oidcState: string) {
