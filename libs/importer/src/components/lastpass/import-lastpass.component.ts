@@ -232,10 +232,11 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
 
   private getRedirectUrlWithParams(oidcCode: string, oidcState: string) {
     const redirectUri = this.oidcClient.settings.redirect_uri;
+    const params = "code=" + oidcCode + "&state=" + oidcState;
     if (redirectUri.indexOf("bitwarden://") === 0) {
-      return redirectUri + "/?code=" + oidcCode + "&state=" + oidcState;
+      return redirectUri + "/?" + params;
     } else {
-      return redirectUri + "&code=" + oidcCode + "&state=" + oidcState;
+      return redirectUri + "&" + params;
     }
   }
 
