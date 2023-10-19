@@ -1,4 +1,10 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadSsoConnector);
+} else {
+  loadSsoConnector();
+}
+
+function loadSsoConnector() {
   const lastPass = getQsParam("lp");
   const code = getQsParam("code");
   const state = getQsParam("state");
