@@ -1,3 +1,5 @@
+import * as papa from "papaparse";
+
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -7,6 +9,7 @@ import { IdpProvider } from "./enums";
 import {
   Account,
   ClientInfo,
+  ExportedAccount,
   FederatedUserContext,
   ParserOptions,
   UserTypeContext,
@@ -80,6 +83,21 @@ export class Vault {
       return;
     }
     throw new Error("Cannot determine LastPass user type.");
+  }
+
+  accountsToExportedCsvString(skipShared = false): string {
+    if (this.accounts == null) {
+      throw new Error("Vault has not opened any accounts.");
+    }
+
+    const exportedAccounts = this.accounts
+      .filter((a) => !a.isShared || (a.isShared && !skipShared))
+      .map((a) => new ExportedAccount(a));
+
+    if (exportedAccounts.length === 0) {
+      throw new Error("No accounts to transform");
+    }
+    return papa.unparse(exportedAccounts);
   }
 
   private async getK1(federatedUser: FederatedUserContext): Promise<Uint8Array> {
