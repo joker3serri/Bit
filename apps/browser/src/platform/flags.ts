@@ -19,7 +19,6 @@ export type Flags = {
 export type DevFlags = {
   storeSessionDecrypted?: boolean;
   managedEnvironment?: GroupPolicyEnvironment;
-  accountSwitching?: boolean;
 } & SharedDevFlags;
 
 export function flagEnabled(flag: keyof Flags): boolean {
