@@ -356,9 +356,9 @@ export class Client {
     parameters: Map<string, string>,
     ui: Ui,
     rest: RestClient
-  ): OobResult {
-    // TODO: implement this
-    return OobResult.cancel;
+  ): Promise<OobResult> {
+    // TODO: implement this instead of calling `approveDuo`
+    return ui.approveDuo();
   }
 
   private async markDeviceAsTrusted(session: Session, clientInfo: ClientInfo, rest: RestClient) {
