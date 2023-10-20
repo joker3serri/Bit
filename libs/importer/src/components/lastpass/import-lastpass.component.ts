@@ -8,13 +8,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { OidcClient, Log as OidcLog } from "oidc-client-ts";
 import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { DeviceType } from "@bitwarden/common/enums";
-import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -27,9 +23,6 @@ import {
   IconButtonModule,
   TypographyModule,
 } from "@bitwarden/components";
-
-import { ClientInfo, Vault } from "../../importers/lastpass/access";
-import { FederatedUserContext } from "../../importers/lastpass/access/models";
 
 import { LastPassAwaitSSODialogComponent, LastPassPasswordPromptComponent } from "./dialog";
 import { LastPassDirectImportService } from "./lastpass-direct-import.service";
@@ -51,10 +44,6 @@ import { LastPassDirectImportService } from "./lastpass-direct-import.service";
   ],
 })
 export class ImportLastPassComponent implements OnInit, OnDestroy {
-  private vault: Vault;
-
-  private oidcClient: OidcClient;
-
   private _parentFormGroup: FormGroup;
   protected formGroup = this.formBuilder.group({
     email: [
@@ -78,22 +67,15 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   @Output() csvDataLoaded = new EventEmitter<string>();
 
   constructor(
-    tokenService: TokenService,
-    cryptoFunctionService: CryptoFunctionService,
     private platformUtilsService: PlatformUtilsService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private formBuilder: FormBuilder,
     private controlContainer: ControlContainer,
     private dialogService: DialogService,
     private logService: LogService,
-    private lastpassDirectImportService: LastPassDirectImportService,
+    private importService: LastPassDirectImportService,
     private i18nService: I18nService
-  ) {
-    this.vault = new Vault(cryptoFunctionService, tokenService);
-
-    OidcLog.setLogger(console);
-    OidcLog.setLevel(OidcLog.DEBUG);
-  }
+  ) {}
 
   ngOnInit(): void {
     this._parentFormGroup = this.controlContainer.control as FormGroup;
@@ -109,7 +91,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       try {
         const email = this.formGroup.controls.email.value;
 
-        await this.vault.setUserTypeContext(email);
+        await this.importService.verifyLastPassAccountExists(email);
         await this.handleImport();
 
         return null;
@@ -146,54 +128,31 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   }
 
   private async handleImport() {
-    if (this.vault.userType.isFederated()) {
+    if (this.importService.isAccountFederated) {
       const oidc = await this.handleFederatedLogin();
-      await this.handleFederatedImport(oidc.oidcCode, oidc.oidcState);
+      const csvData = await this.importService.handleFederatedImport(
+        oidc.oidcCode,
+        oidc.oidcState,
+        this.formGroup.value.includeSharedFolders
+      );
+      this.csvDataLoaded.emit(csvData);
       return;
     }
 
-    await this.handleStandardImport();
-  }
-
-  private async handleStandardImport() {
-    // TODO Pass in to handleImport?
     const email = this.formGroup.controls.email.value;
     const password = await LastPassPasswordPromptComponent.open(this.dialogService);
-    await this.vault.open(
+    const csvData = await this.importService.handleStandardImport(
       email,
       password,
-      ClientInfo.createClientInfo(),
-      this.lastpassDirectImportService
+      this.formGroup.value.includeSharedFolders
     );
 
-    this.transformCSV();
+    this.csvDataLoaded.emit(csvData);
   }
 
   private async handleFederatedLogin() {
-    this.oidcClient = new OidcClient({
-      authority: this.vault.userType.openIDConnectAuthorityBase,
-      client_id: this.vault.userType.openIDConnectClientId,
-      redirect_uri: this.getOidcRedirectUrl(),
-      response_type: "code",
-      scope: this.vault.userType.oidcScope,
-      response_mode: "query",
-      loadUserInfo: true,
-    });
-
-    const ssoCallbackPromsie = firstValueFrom(this.lastpassDirectImportService.ssoCallback$);
-
-    const request = await this.oidcClient.createSigninRequest({
-      state: {
-        email: this.formGroup.controls.email.value,
-        // Anything else that we need to preserve in userState?
-      },
-      nonce: await this.passwordGenerationService.generatePassword({
-        length: 20,
-        uppercase: true,
-        lowercase: true,
-        number: true,
-      }),
-    });
+    const ssoCallbackPromise = firstValueFrom(this.importService.ssoCallback$);
+    const request = await this.importService.createOidcSigninRequest();
     this.platformUtilsService.launchUri(request.url);
 
     const cancelDialogRef = LastPassAwaitSSODialogComponent.open(this.dialogService);
@@ -204,58 +163,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     return Promise.race<{
       oidcCode: string;
       oidcState: string;
-    }>([cancelled, ssoCallbackPromsie]).finally(() => {
+    }>([cancelled, ssoCallbackPromise]).finally(() => {
       cancelDialogRef.close();
     });
-  }
-
-  private async handleFederatedImport(oidcCode: string, oidcState: string) {
-    const response = await this.oidcClient.processSigninResponse(
-      this.getOidcRedirectUrlWithParams(oidcCode, oidcState)
-    );
-    const userState = response.userState as any;
-
-    const federatedUser = new FederatedUserContext();
-    federatedUser.idToken = response.id_token;
-    federatedUser.accessToken = response.access_token;
-    federatedUser.idpUserInfo = response.profile;
-    federatedUser.username = userState.email;
-
-    await this.vault.openFederated(
-      federatedUser,
-      ClientInfo.createClientInfo(),
-      this.lastpassDirectImportService
-    );
-
-    this.transformCSV();
-  }
-
-  private getOidcRedirectUrlWithParams(oidcCode: string, oidcState: string) {
-    const redirectUri = this.oidcClient.settings.redirect_uri;
-    const params = "code=" + oidcCode + "&state=" + oidcState;
-    if (redirectUri.indexOf("bitwarden://") === 0) {
-      return redirectUri + "/?" + params;
-    }
-
-    return redirectUri + "&" + params;
-  }
-
-  private getOidcRedirectUrl() {
-    const deviceType = this.platformUtilsService.getDevice();
-    switch (deviceType) {
-      case DeviceType.WindowsDesktop:
-      case DeviceType.MacOsDesktop:
-      case DeviceType.LinuxDesktop:
-        return "bitwarden://sso-callback-lp";
-      default:
-        return window.location.origin + "/sso-connector.html?lp=1";
-    }
-  }
-
-  private transformCSV() {
-    const csvData = this.vault.accountsToExportedCsvString(
-      this.formGroup.value.includeSharedFolders
-    );
-    this.csvDataLoaded.emit(csvData);
   }
 }
