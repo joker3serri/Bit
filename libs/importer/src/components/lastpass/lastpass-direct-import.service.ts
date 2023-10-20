@@ -171,7 +171,6 @@ export class LastPassDirectImportService {
     const appId = await this.appIdService.getAppId();
     const id = appId + email;
     const idHash = await this.cryptoFunctionService.hash(id, "sha256");
-    const clientInfo = ClientInfo.createClientInfo(Utils.fromBufferToHex(idHash));
-    return clientInfo;
+    return ClientInfo.createClientInfo(Utils.fromBufferToHex(idHash));
   }
 }
