@@ -260,23 +260,23 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
+    await this.asyncValidatorsFinished();
+
     if (this.formGroup.invalid) {
       this.formGroup.markAllAsTouched();
       return;
     }
 
-    /** Wait for pending AsyncValidators before submitting */
+    await this.performImport();
+  };
+
+  private async asyncValidatorsFinished() {
     if (this.formGroup.pending) {
       await firstValueFrom(
         this.formGroup.statusChanges.pipe(filter((status) => status !== "PENDING"))
       );
-
-      await this.submit();
-      return;
     }
-
-    await this.performImport();
-  };
+  }
 
   protected async performImport() {
     if (this.organization) {
