@@ -179,12 +179,15 @@ header:not(bit-callout header) {
   min-height: 44px;
   max-height: 44px;
   display: flex;
-  border-bottom: 1px solid #000000;
 
-  @include themify($themes) {
-    color: themed("headerColor");
-    background-color: themed("headerBackgroundColor");
-    border-bottom-color: themed("headerBorderColor");
+  &:not(.no-theme) {
+    border-bottom: 1px solid #000000;
+
+    @include themify($themes) {
+      color: themed("headerColor");
+      background-color: themed("headerBackgroundColor");
+      border-bottom-color: themed("headerBorderColor");
+    }
   }
 
   .header-content {
@@ -234,11 +237,6 @@ header:not(bit-callout header) {
     align-items: center;
     height: 100%;
     white-space: pre;
-
-    @include themify($themes) {
-      color: themed("headerColor");
-      background-color: themed("headerBackgroundColor");
-    }
 
     &:hover,
     &:focus {
