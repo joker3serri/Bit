@@ -139,7 +139,7 @@ export class LastPassDirectImportService {
     password: string,
     includeSharedFolders: boolean
   ): Promise<string> {
-    const clientInfo = await this.createClientInfo();
+    const clientInfo = await this.createClientInfo(email);
     await this.vault.open(email, password, clientInfo, this.lastPassDirectImportUIService);
 
     return this.vault.accountsToExportedCsvString(!includeSharedFolders);
@@ -161,17 +161,18 @@ export class LastPassDirectImportService {
     federatedUser.idpUserInfo = response.profile;
     federatedUser.username = userState.email;
 
-    const clientInfo = await this.createClientInfo();
+    const clientInfo = await this.createClientInfo(federatedUser.username);
     await this.vault.openFederated(federatedUser, clientInfo, this.lastPassDirectImportUIService);
 
     return this.vault.accountsToExportedCsvString(!includeSharedFolders);
   }
 
-  private async createClientInfo(): Promise<ClientInfo> {
+  private async createClientInfo(email: string): Promise<ClientInfo> {
     const clientInfo = ClientInfo.createClientInfo();
     const appId = await this.appIdService.getAppId();
-    const hash = await this.cryptoFunctionService.hash(appId, "sha256");
-    clientInfo.id = Utils.fromBufferToHex(hash);
+    const id = appId + email;
+    const idHash = await this.cryptoFunctionService.hash(id, "sha256");
+    clientInfo.id = Utils.fromBufferToHex(idHash);
     return clientInfo;
   }
 }
