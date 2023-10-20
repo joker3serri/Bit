@@ -8,26 +8,21 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { firstValueFrom, map } from "rxjs";
+import { map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import {
   CalloutModule,
   CheckboxModule,
-  DialogService,
   FormFieldModule,
   IconButtonModule,
   TypographyModule,
 } from "@bitwarden/components";
 
-import { LastPassAwaitSSODialogComponent, LastPassPasswordPromptComponent } from "./dialog";
 import { LastPassDirectImportService } from "./lastpass-direct-import.service";
 
-/** TODO: add I18n */
 @Component({
   selector: "import-lastpass",
   templateUrl: "import-lastpass.component.html",
@@ -50,7 +45,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       "",
       {
         validators: [Validators.required, Validators.email],
-        asyncValidators: [this.submit()],
+        asyncValidators: [this.validateAndEmitData()],
         updateOn: "submit",
       },
     ],
@@ -67,13 +62,10 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   @Output() csvDataLoaded = new EventEmitter<string>();
 
   constructor(
-    private platformUtilsService: PlatformUtilsService,
-    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private formBuilder: FormBuilder,
     private controlContainer: ControlContainer,
-    private dialogService: DialogService,
     private logService: LogService,
-    private importService: LastPassDirectImportService,
+    private lastPassDirectImportService: LastPassDirectImportService,
     private i18nService: I18nService
   ) {}
 
@@ -86,14 +78,20 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     this._parentFormGroup.removeControl("lastpassOptions");
   }
 
-  submit(): AsyncValidatorFn {
+  /**
+   * Attempts to login to the provided LastPass email and retrieve account contents.
+   * Will return a validation error if unable to login or fetch.
+   * Emits account contents to `csvDataLoaded`
+   */
+  validateAndEmitData(): AsyncValidatorFn {
     return async () => {
       try {
-        const email = this.formGroup.controls.email.value;
-
-        await this.importService.verifyLastPassAccountExists(email);
-        await this.handleImport();
-
+        const { email, includeSharedFolders } = this.formGroup.value;
+        const csvData = await this.lastPassDirectImportService.handleImport(
+          email,
+          includeSharedFolders
+        );
+        this.csvDataLoaded.emit(csvData);
         return null;
       } catch (error) {
         this.logService.error(`LP importer error: ${error}`);
@@ -125,46 +123,5 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       default:
         return "errorOccurred";
     }
-  }
-
-  private async handleImport() {
-    if (this.importService.isAccountFederated) {
-      const oidc = await this.handleFederatedLogin();
-      const csvData = await this.importService.handleFederatedImport(
-        oidc.oidcCode,
-        oidc.oidcState,
-        this.formGroup.value.includeSharedFolders
-      );
-      this.csvDataLoaded.emit(csvData);
-      return;
-    }
-
-    const email = this.formGroup.controls.email.value;
-    const password = await LastPassPasswordPromptComponent.open(this.dialogService);
-    const csvData = await this.importService.handleStandardImport(
-      email,
-      password,
-      this.formGroup.value.includeSharedFolders
-    );
-
-    this.csvDataLoaded.emit(csvData);
-  }
-
-  private async handleFederatedLogin() {
-    const ssoCallbackPromise = firstValueFrom(this.importService.ssoCallback$);
-    const request = await this.importService.createOidcSigninRequest();
-    this.platformUtilsService.launchUri(request.url);
-
-    const cancelDialogRef = LastPassAwaitSSODialogComponent.open(this.dialogService);
-    const cancelled = firstValueFrom(cancelDialogRef.closed).then((didCancel) => {
-      throw Error("SSO auth cancelled");
-    });
-
-    return Promise.race<{
-      oidcCode: string;
-      oidcState: string;
-    }>([cancelled, ssoCallbackPromise]).finally(() => {
-      cancelDialogRef.close();
-    });
   }
 }

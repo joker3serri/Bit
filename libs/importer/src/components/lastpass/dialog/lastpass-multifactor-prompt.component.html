@@ -8,14 +8,7 @@
       <p>{{ description | i18n }}</p>
       <bit-form-field class="!tw-mb-0">
         <bit-label>{{ "passcode" | i18n }}</bit-label>
-        <input
-          bitInput
-          type="text"
-          name="passcode"
-          formControlName="passcode"
-          appAutofocus
-          appInputVerbatim
-        />
+        <input bitInput type="text" formControlName="passcode" appAutofocus appInputVerbatim />
         <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
       </bit-form-field>
     </div>

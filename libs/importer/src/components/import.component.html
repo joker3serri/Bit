@@ -78,17 +78,17 @@
     </ng-container>
     <ng-container *ngIf="format === 'lastpasscsv'">
       <p bitTypography="body1">
-        See detailed instructions on our help site at
+        {{ "seeDetailedInstructions" | i18n }}
         <a target="_blank" rel="noopener" href="https://bitwarden.com/help/import-from-lastpass/">
           https://bitwarden.com/help/import-from-lastpass/</a
         >
       </p>
       <bit-radio-group *ngIf="showLastPassToggle" formControlName="lastPassType">
         <bit-radio-button class="tw-block" id="import-direct" value="direct">
-          <bit-label>Import directly from LastPass</bit-label>
+          <bit-label>{{ "importDirectlyFromLastPass" | i18n }}</bit-label>
         </bit-radio-button>
         <bit-radio-button class="tw-block" id="import-csv" value="csv">
-          <bit-label>Import from CSV</bit-label>
+          <bit-label>{{ "importFromCSV" | i18n }}</bit-label>
         </bit-radio-button>
       </bit-radio-group>
     </ng-container>
@@ -360,7 +360,7 @@
     (csvDataLoaded)="this.formGroup.controls.fileContents.setValue($event)"
   ></import-lastpass>
   <div [hidden]="showLastPassOptions">
-    <bit-form-field>
+    <bit-form-field *ngIf="!hideFileSelector">
       <bit-label>{{ "selectImportFile" | i18n }}</bit-label>
       <div class="file-selector">
         <button bitButton type="button" buttonType="secondary" (click)="fileSelector.click()">
@@ -373,8 +373,6 @@
         #fileSelector
         type="file"
         id="file"
-        class="form-control-file"
-        name="file"
         formControlName="file"
         (change)="setSelectedFile($event)"
         hidden
@@ -383,9 +381,8 @@
     <bit-form-field>
       <bit-label>{{ "orCopyPasteFileContents" | i18n }}</bit-label>
       <textarea
-        id="fileContents"
+        id="import_textarea_fileContents"
         bitInput
-        name="FileContents"
         formControlName="fileContents"
       ></textarea>
     </bit-form-field>
