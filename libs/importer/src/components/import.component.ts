@@ -120,7 +120,7 @@ export class ImportComponent implements OnInit, OnDestroy {
       });
   }
 
-  @Input() showFileSelector: boolean;
+  @Input() hideFileSelector: boolean;
 
   protected organization: Organization;
   protected destroy$ = new Subject<void>();

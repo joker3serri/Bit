@@ -27,12 +27,12 @@ export class ImportBrowserComponent implements OnInit {
   protected disabled = false;
   protected loading = false;
 
-  protected showFileSelector = true;
+  protected hideFileSelector = false;
 
   constructor(private router: Router, private filePopoutUtilsService: FilePopoutUtilsService) {}
 
   ngOnInit(): void {
-    this.showFileSelector = !this.filePopoutUtilsService.showFilePopoutMessage(window);
+    this.hideFileSelector = this.filePopoutUtilsService.showFilePopoutMessage(window);
   }
   protected async onSuccessfulImport(organizationId: string): Promise<void> {
     this.router.navigate(["/tabs/settings"]);
