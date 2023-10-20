@@ -53,6 +53,11 @@ export class SecretsManagerSubscribeStandaloneComponent {
       isProviderUser: this.organization.isProviderUser,
     });
     await this.organizationService.upsert(organizationData);
+
+    /*
+      Because subscribing to Secrets Manager automatically provides access to Secrets Manager for the
+      subscribing user, we need to refresh the identity token to account for their updated permissions.
+    */
     await this.apiService.refreshIdentityToken();
 
     this.platformUtilsService.showToast(
