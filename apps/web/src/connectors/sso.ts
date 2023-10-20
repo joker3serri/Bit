@@ -7,10 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const state = getQsParam("state");
   const lastpass = getQsParam("lp");
 
-  if (state != null && state.includes(":clientId=browser")) {
-    initiateBrowserSso(code, state, false);
-  } else if (lastpass === "1") {
+  if (lastpass === "1") {
     initiateBrowserSso(code, state, true);
+  } else if (state != null && state.includes(":clientId=browser")) {
+    initiateBrowserSso(code, state, false);
   } else {
     window.location.href = window.location.origin + "/#/sso?code=" + code + "&state=" + state;
     // Match any characters between "_returnUri='" and the next "'"
