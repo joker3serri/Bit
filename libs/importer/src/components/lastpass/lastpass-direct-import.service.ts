@@ -1,30 +1,41 @@
-import { DialogRef } from "@angular/cdk/dialog";
 import { Injectable, NgZone } from "@angular/core";
-import { Subject, firstValueFrom } from "rxjs";
+import { OidcClient, Log as OidcLog } from "oidc-client-ts";
+import { Subject } from "rxjs";
 
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { DialogService } from "@bitwarden/components";
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
-import { DuoStatus } from "../../importers/lastpass/access/enums";
-import { OtpResult, OobResult } from "../../importers/lastpass/access/models";
-import { DuoChoice, DuoDevice, Ui } from "../../importers/lastpass/access/ui";
+import { ClientInfo, Vault } from "../../importers/lastpass/access";
+import { FederatedUserContext } from "../../importers/lastpass/access/models";
 
-import { LastPassMultifactorPromptComponent } from "./dialog";
+import { LastPassDirectImportUIService } from "./lastpass-direct-import-ui.service";
 
 @Injectable({
   providedIn: "root",
 })
-export class LastPassDirectImportService implements Ui {
+export class LastPassDirectImportService {
+  private vault: Vault;
+
+  private oidcClient: OidcClient;
+
   private _ssoCallback$ = new Subject<{ oidcCode: string; oidcState: string }>();
   ssoCallback$ = this._ssoCallback$.asObservable();
 
-  private mfaDialogRef: DialogRef<string>;
-
   constructor(
-    private dialogService: DialogService,
+    private tokenService: TokenService,
+    private cryptoFunctionService: CryptoFunctionService,
+    private lastPassDirectImportUIService: LastPassDirectImportUIService,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private broadcasterService: BroadcasterService,
     private ngZone: NgZone
   ) {
+    this.vault = new Vault(this.cryptoFunctionService, this.tokenService);
+
+    OidcLog.setLogger(console);
+    OidcLog.setLevel(OidcLog.DEBUG);
+
     /** TODO: remove this in favor of dedicated service */
     this.broadcasterService.subscribe("LastPassDirectImportService", (message: any) => {
       this.ngZone.run(async () => {
@@ -39,54 +50,73 @@ export class LastPassDirectImportService implements Ui {
     });
   }
 
-  private async getOTPResult() {
-    this.mfaDialogRef = LastPassMultifactorPromptComponent.open(this.dialogService);
-    const passcode = await firstValueFrom(this.mfaDialogRef.closed);
-    return new OtpResult(passcode, false);
+  async verifyLastPassAccountExists(email: string) {
+    await this.vault.setUserTypeContext(email);
   }
 
-  private async getOOBResult() {
-    this.mfaDialogRef = LastPassMultifactorPromptComponent.open(this.dialogService, {
-      isOOB: true,
+  get isAccountFederated(): boolean {
+    return this.vault.userType.isFederated();
+  }
+
+  async handleStandardImport(
+    email: string,
+    password: string,
+    includeSharedFolders: boolean
+  ): Promise<string> {
+    await this.vault.open(
+      email,
+      password,
+      ClientInfo.createClientInfo(),
+      this.lastPassDirectImportUIService
+    );
+
+    return this.vault.accountsToExportedCsvString(!includeSharedFolders);
+  }
+
+  async createOidcSigninRequest() {
+    this.oidcClient = new OidcClient({
+      authority: this.vault.userType.openIDConnectAuthorityBase,
+      client_id: this.vault.userType.openIDConnectClientId,
+      // TODO: this is different per client
+      redirect_uri: "bitwarden://sso-callback-lp",
+      response_type: "code",
+      scope: this.vault.userType.oidcScope,
+      response_mode: "query",
+      loadUserInfo: true,
     });
-    const passcode = await firstValueFrom(this.mfaDialogRef.closed);
-    return new OobResult(false, passcode, false);
+
+    return await this.oidcClient.createSigninRequest({
+      nonce: await this.passwordGenerationService.generatePassword({
+        length: 20,
+        uppercase: true,
+        lowercase: true,
+        number: true,
+      }),
+    });
   }
 
-  closeMFADialog() {
-    this.mfaDialogRef?.close();
-  }
+  async handleFederatedImport(
+    oidcCode: string,
+    oidcState: string,
+    includeSharedFolders: boolean
+  ): Promise<string> {
+    const response = await this.oidcClient.processSigninResponse(
+      this.oidcClient.settings.redirect_uri + "/?code=" + oidcCode + "&state=" + oidcState
+    );
+    const userState = response.userState as any;
 
-  async provideGoogleAuthPasscode() {
-    return this.getOTPResult();
-  }
+    const federatedUser = new FederatedUserContext();
+    federatedUser.idToken = response.id_token;
+    federatedUser.accessToken = response.access_token;
+    federatedUser.idpUserInfo = response.profile;
+    federatedUser.username = userState.email;
 
-  async provideMicrosoftAuthPasscode() {
-    return this.getOTPResult();
-  }
+    await this.vault.openFederated(
+      federatedUser,
+      ClientInfo.createClientInfo(),
+      this.lastPassDirectImportUIService
+    );
 
-  async provideYubikeyPasscode() {
-    return this.getOTPResult();
+    return this.vault.accountsToExportedCsvString(!includeSharedFolders);
   }
-
-  async approveLastPassAuth() {
-    return this.getOOBResult();
-  }
-  async approveDuo() {
-    return this.getOOBResult();
-  }
-  async approveSalesforceAuth() {
-    return this.getOOBResult();
-  }
-
-  /** These aren't used anywhere. Are they needed? */
-  chooseDuoFactor: (devices: [DuoDevice]) => DuoChoice = () => {
-    throw new Error("Not implemented");
-  };
-  provideDuoPasscode: (device: DuoDevice) => string = () => {
-    throw new Error("Not implemented");
-  };
-  updateDuoStatus: (status: DuoStatus, text: string) => void = () => {
-    throw new Error("Not implemented");
-  };
 }
