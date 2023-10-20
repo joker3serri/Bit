@@ -46,7 +46,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       "",
       {
         validators: [Validators.required, Validators.email],
-        asyncValidators: [this.submit()],
+        asyncValidators: [this.validateAndEmitData()],
         updateOn: "submit",
       },
     ],
@@ -79,7 +79,12 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     this._parentFormGroup.removeControl("lastpassOptions");
   }
 
-  submit(): AsyncValidatorFn {
+  /**
+   * Attempts to login to the provided LastPass email and retrieve account contents.
+   * Will return a validation error if unable to login or fetch.
+   * Emits account contents to `csvDataLoaded`
+   */
+  validateAndEmitData(): AsyncValidatorFn {
     return async () => {
       try {
         const { email, includeSharedFolders } = this.formGroup.value;
