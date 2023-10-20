@@ -23,7 +23,6 @@ import {
 
 import { LastPassDirectImportService } from "./lastpass-direct-import.service";
 
-/** TODO: add I18n */
 @Component({
   selector: "import-lastpass",
   templateUrl: "import-lastpass.component.html",
