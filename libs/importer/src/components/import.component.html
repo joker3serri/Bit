@@ -373,8 +373,6 @@
         #fileSelector
         type="file"
         id="file"
-        class="form-control-file"
-        name="file"
         formControlName="file"
         (change)="setSelectedFile($event)"
         hidden
@@ -382,12 +380,7 @@
     </bit-form-field>
     <bit-form-field>
       <bit-label>{{ "orCopyPasteFileContents" | i18n }}</bit-label>
-      <textarea
-        id="fileContents"
-        bitInput
-        name="FileContents"
-        formControlName="fileContents"
-      ></textarea>
+      <textarea id="fileContents" bitInput formControlName="fileContents"></textarea>
     </bit-form-field>
   </div>
 </form>

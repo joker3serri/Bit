@@ -82,8 +82,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
   submit(): AsyncValidatorFn {
     return async () => {
       try {
-        const email = this.formGroup.controls.email.value;
-        const includeSharedFolders = this.formGroup.controls.includeSharedFolders.value;
+        const { email, includeSharedFolders } = this.formGroup.value;
         const csvData = await this.lastPassDirectImportService.handleImport(
           email,
           includeSharedFolders

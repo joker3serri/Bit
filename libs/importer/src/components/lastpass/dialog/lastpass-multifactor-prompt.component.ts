@@ -36,7 +36,7 @@ type LastPassMultifactorPromptData = {
 export class LastPassMultifactorPromptComponent {
   protected description = this.data?.isOOB ? "lastPassOOBDesc" : "lastPassMFADesc";
 
-  formGroup = new FormGroup({
+  protected formGroup = new FormGroup({
     passcode: new FormControl("", {
       validators: Validators.required,
       updateOn: "submit",
@@ -53,7 +53,7 @@ export class LastPassMultifactorPromptComponent {
     if (!this.formGroup.valid) {
       return;
     }
-    this.dialogRef.close(this.formGroup.controls.passcode.value);
+    this.dialogRef.close(this.formGroup.value.passcode);
     return false;
   };
 
