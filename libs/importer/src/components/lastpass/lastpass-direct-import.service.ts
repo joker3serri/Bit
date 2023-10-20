@@ -66,7 +66,7 @@ export class LastPassDirectImportService {
     await this.verifyLastPassAccountExists(email);
 
     if (this.isAccountFederated) {
-      const oidc = await this.handleFederatedLogin();
+      const oidc = await this.handleFederatedLogin(email);
       const csvData = await this.handleFederatedImport(
         oidc.oidcCode,
         oidc.oidcState,
@@ -88,9 +88,9 @@ export class LastPassDirectImportService {
     await this.vault.setUserTypeContext(email);
   }
 
-  private async handleFederatedLogin() {
+  private async handleFederatedLogin(email: string) {
     const ssoCallbackPromise = firstValueFrom(this.ssoCallback$);
-    const request = await this.createOidcSigninRequest();
+    const request = await this.createOidcSigninRequest(email);
     this.platformUtilsService.launchUri(request.url);
 
     const cancelDialogRef = LastPassAwaitSSODialogComponent.open(this.dialogService);
@@ -106,7 +106,7 @@ export class LastPassDirectImportService {
     });
   }
 
-  private async createOidcSigninRequest() {
+  private async createOidcSigninRequest(email: string) {
     this.oidcClient = new OidcClient({
       authority: this.vault.userType.openIDConnectAuthorityBase,
       client_id: this.vault.userType.openIDConnectClientId,
@@ -119,6 +119,9 @@ export class LastPassDirectImportService {
     });
 
     return await this.oidcClient.createSigninRequest({
+      state: {
+        email,
+      },
       nonce: await this.passwordGenerationService.generatePassword({
         length: 20,
         uppercase: true,
