@@ -168,11 +168,10 @@ export class LastPassDirectImportService {
   }
 
   private async createClientInfo(email: string): Promise<ClientInfo> {
-    const clientInfo = ClientInfo.createClientInfo();
     const appId = await this.appIdService.getAppId();
     const id = appId + email;
     const idHash = await this.cryptoFunctionService.hash(id, "sha256");
-    clientInfo.id = Utils.fromBufferToHex(idHash);
+    const clientInfo = ClientInfo.createClientInfo(Utils.fromBufferToHex(idHash));
     return clientInfo;
   }
 }
