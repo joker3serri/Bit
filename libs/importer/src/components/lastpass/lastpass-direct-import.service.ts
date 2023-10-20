@@ -140,7 +140,7 @@ export class LastPassDirectImportService {
 
   private getOidcRedirectUrl() {
     const clientType = this.platformUtilsService.getClientType();
-    if (clientType == ClientType.Desktop) {
+    if (clientType === ClientType.Desktop) {
       return "bitwarden://sso-callback-lp";
     }
     return window.location.origin + "/sso-connector.html?lp=1";
