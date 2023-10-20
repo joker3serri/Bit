@@ -199,10 +199,3 @@ summary.tw-list-none::-webkit-details-marker {
 .cdk-overlay-pane {
   z-index: 2000 !important;
 }
-
-fieldset {
-  min-width: 0;
-  padding: 0;
-  margin: 0;
-  border: 0;
-}
