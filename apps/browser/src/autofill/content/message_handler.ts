@@ -6,12 +6,21 @@ window.addEventListener(
     }
 
     if (event.data.command && event.data.command === "authResult") {
-      chrome.runtime.sendMessage({
-        command: event.data.command,
-        code: event.data.code,
-        state: event.data.state,
-        referrer: event.source.location.hostname,
-      });
+      if (event.data.lastpass) {
+        chrome.runtime.sendMessage({
+          command: "lastpassAuthResult",
+          code: event.data.code,
+          state: event.data.state,
+          referrer: event.source.location.hostname,
+        });
+      } else {
+        chrome.runtime.sendMessage({
+          command: event.data.command,
+          code: event.data.code,
+          state: event.data.state,
+          referrer: event.source.location.hostname,
+        });
+      }
     }
 
     if (event.data.command && event.data.command === "webAuthnResult") {
