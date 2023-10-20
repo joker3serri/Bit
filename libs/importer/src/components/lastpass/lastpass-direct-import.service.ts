@@ -6,6 +6,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { ClientType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
@@ -31,6 +32,7 @@ export class LastPassDirectImportService {
   constructor(
     private tokenService: TokenService,
     private cryptoFunctionService: CryptoFunctionService,
+    private environmentService: EnvironmentService,
     private lastPassDirectImportUIService: LastPassDirectImportUIService,
     private platformUtilsService: PlatformUtilsService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
@@ -143,7 +145,8 @@ export class LastPassDirectImportService {
     if (clientType === ClientType.Desktop) {
       return "bitwarden://sso-callback-lp";
     }
-    return window.location.origin + "/sso-connector.html?lp=1";
+    const webUrl = this.environmentService.getWebVaultUrl();
+    return webUrl + "/sso-connector.html?lp=1";
   }
 
   private async handleStandardImport(
