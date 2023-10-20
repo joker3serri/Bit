@@ -14,7 +14,6 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import {
   CalloutModule,
   CheckboxModule,
@@ -68,7 +67,6 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
-    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private formBuilder: FormBuilder,
     private controlContainer: ControlContainer,
     private dialogService: DialogService,
