@@ -5,6 +5,7 @@ import { firstValueFrom } from "rxjs";
 import { DialogService } from "@bitwarden/components";
 
 import { OtpResult, OobResult } from "../../importers/lastpass/access/models";
+import { Ui } from "../../importers/lastpass/access/ui";
 
 import { LastPassMultifactorPromptComponent } from "./dialog";
 
