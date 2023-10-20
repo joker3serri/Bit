@@ -259,26 +259,20 @@ export default class RuntimeBackground {
           return;
         }
 
-        try {
-          BrowserApi.createNewTab(
-            "popup/index.html?uilocation=popout#/sso?code=" +
-              encodeURIComponent(msg.code) +
-              "&state=" +
-              encodeURIComponent(msg.state)
-          );
-        } catch {
-          this.logService.error("Unable to open sso popout tab");
+        if (msg.lastpass) {
+          // TODO: Send `msg.code` and `msg.state` along to lastpass import components somehow.
+        } else {
+          try {
+            BrowserApi.createNewTab(
+              "popup/index.html?uilocation=popout#/sso?code=" +
+                encodeURIComponent(msg.code) +
+                "&state=" +
+                encodeURIComponent(msg.state)
+            );
+          } catch {
+            this.logService.error("Unable to open sso popout tab");
+          }
         }
-        break;
-      }
-      case "lastpassAuthResult": {
-        const vaultUrl = this.environmentService.getWebVaultUrl();
-
-        if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
-          return;
-        }
-
-        // TODO: Send `msg.code` and `msg.state` along to import components somehow.
         break;
       }
       case "webAuthnResult": {

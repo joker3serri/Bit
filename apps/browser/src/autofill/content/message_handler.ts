@@ -7,9 +7,10 @@ window.addEventListener(
 
     if (event.data.command && event.data.command === "authResult") {
       chrome.runtime.sendMessage({
-        command: event.data.lastpass ? "lastpassAuthResult" : event.data.command,
+        command: event.data.command,
         code: event.data.code,
         state: event.data.state,
+        lastpass: event.data.lastpass,
         referrer: event.source.location.hostname,
       });
     }
