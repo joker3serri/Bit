@@ -3,7 +3,7 @@ import { OidcClient, Log as OidcLog } from "oidc-client-ts";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { DeviceType } from "@bitwarden/common/enums";
+import { ClientType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -139,15 +139,11 @@ export class LastPassDirectImportService {
   }
 
   private getOidcRedirectUrl() {
-    const deviceType = this.platformUtilsService.getDevice();
-    switch (deviceType) {
-      case DeviceType.WindowsDesktop:
-      case DeviceType.MacOsDesktop:
-      case DeviceType.LinuxDesktop:
-        return "bitwarden://sso-callback-lp";
-      default:
-        return window.location.origin + "/sso-connector.html?lp=1";
+    const clientType = this.platformUtilsService.getClientType();
+    if (clientType == ClientType.Desktop) {
+      return "bitwarden://sso-callback-lp";
     }
+    return window.location.origin + "/sso-connector.html?lp=1";
   }
 
   private async handleStandardImport(
