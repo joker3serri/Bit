@@ -6,6 +6,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AsyncActionsModule, ButtonModule, DialogModule } from "@bitwarden/components";
 import { ImportComponent } from "@bitwarden/importer/ui";
 
+import { FilePopoutCalloutComponent } from "../../components/file-popout-callout.component";
 @Component({
   templateUrl: "import-browser.component.html",
   standalone: true,
@@ -17,6 +18,7 @@ import { ImportComponent } from "@bitwarden/importer/ui";
     AsyncActionsModule,
     ButtonModule,
     ImportComponent,
+    FilePopoutCalloutComponent,
   ],
 })
 export class ImportBrowserComponent {
