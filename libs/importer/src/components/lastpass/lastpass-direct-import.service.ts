@@ -3,9 +3,11 @@ import { OidcClient, Log as OidcLog } from "oidc-client-ts";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { DialogService } from "../../../../components/src/dialog";
@@ -30,6 +32,7 @@ export class LastPassDirectImportService {
   constructor(
     private tokenService: TokenService,
     private cryptoFunctionService: CryptoFunctionService,
+    private appIdService: AppIdService,
     private lastPassDirectImportUIService: LastPassDirectImportUIService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private broadcasterService: BroadcasterService,
@@ -136,12 +139,8 @@ export class LastPassDirectImportService {
     password: string,
     includeSharedFolders: boolean
   ): Promise<string> {
-    await this.vault.open(
-      email,
-      password,
-      ClientInfo.createClientInfo(),
-      this.lastPassDirectImportUIService
-    );
+    const clientInfo = await this.createClientInfo();
+    await this.vault.open(email, password, clientInfo, this.lastPassDirectImportUIService);
 
     return this.vault.accountsToExportedCsvString(!includeSharedFolders);
   }
@@ -162,12 +161,17 @@ export class LastPassDirectImportService {
     federatedUser.idpUserInfo = response.profile;
     federatedUser.username = userState.email;
 
-    await this.vault.openFederated(
-      federatedUser,
-      ClientInfo.createClientInfo(),
-      this.lastPassDirectImportUIService
-    );
+    const clientInfo = await this.createClientInfo();
+    await this.vault.openFederated(federatedUser, clientInfo, this.lastPassDirectImportUIService);
 
     return this.vault.accountsToExportedCsvString(!includeSharedFolders);
+  }
+
+  private async createClientInfo(): Promise<ClientInfo> {
+    const clientInfo = ClientInfo.createClientInfo();
+    const appId = await this.appIdService.getAppId();
+    const hash = await this.cryptoFunctionService.hash(appId, "sha256");
+    clientInfo.id = Utils.fromBufferToHex(hash);
+    return clientInfo;
   }
 }
