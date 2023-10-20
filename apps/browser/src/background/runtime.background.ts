@@ -271,6 +271,16 @@ export default class RuntimeBackground {
         }
         break;
       }
+      case "lastpassAuthResult": {
+        const vaultUrl = this.environmentService.getWebVaultUrl();
+
+        if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
+          return;
+        }
+
+        // TODO: Send `msg.code` and `msg.state` along to import components somehow.
+        break;
+      }
       case "webAuthnResult": {
         const vaultUrl = this.environmentService.getWebVaultUrl();
 
