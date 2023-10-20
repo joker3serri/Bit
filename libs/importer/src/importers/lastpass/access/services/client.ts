@@ -552,6 +552,8 @@ export class Client {
           return "Second factor code is incorrect";
         case "multifactorresponsefailed":
           return "Out of band authentication failed";
+        case "unifiedloginresult":
+          return "unifiedloginresult";
         default:
           return message?.value ?? cause.value;
       }

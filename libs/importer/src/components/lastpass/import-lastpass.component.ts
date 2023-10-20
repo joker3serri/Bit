@@ -119,6 +119,8 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
       case "Second factor code is incorrect":
       case "Out of band authentication failed":
         return "multifactorAuthenticationFailed";
+      case "unifiedloginresult":
+        return "lastPassTryAgainCheckEmail";
       default:
         return "errorOccurred";
     }
