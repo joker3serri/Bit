@@ -107,11 +107,6 @@ const plugins = [
     filename: "notification/bar.html",
     chunks: ["notification/bar"],
   }),
-  new HtmlWebpackPlugin({
-    template: "./src/connectors/sso.html",
-    filename: "sso-connector.html",
-    chunks: ["connectors/sso"],
-  }),
   new CopyWebpackPlugin({
     patterns: [
       manifestVersion == 3
@@ -168,7 +163,6 @@ const mainConfig = {
     "content/fido2/content-script": "./src/vault/fido2/content/content-script.ts",
     "content/fido2/page-script": "./src/vault/fido2/content/page-script.ts",
     "notification/bar": "./src/autofill/notification/bar.ts",
-    "connectors/sso": "./src/connectors/sso.ts",
     "encrypt-worker": "../../libs/common/src/platform/services/cryptography/encrypt.worker.ts",
   },
   optimization: {
