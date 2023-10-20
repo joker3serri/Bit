@@ -236,7 +236,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     if (redirectUri.indexOf("bitwarden://") === 0) {
       return redirectUri + "/?" + params;
     }
-    
+
     return redirectUri + "&" + params;
   }
 
