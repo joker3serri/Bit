@@ -2593,5 +2593,8 @@
   },
   "importFromCSV": {
     "message": "Import from CSV"
+  },
+  "lastPassTryAgainCheckEmail": {
+    "message": "Try again or look for an email from LastPass to verify it's you."
   }
 }

@@ -4,10 +4,12 @@ import { Subject, firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { ClientType } from "@bitwarden/common/enums";
+import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { DialogService } from "../../../../components/src/dialog";
@@ -33,6 +35,7 @@ export class LastPassDirectImportService {
     private tokenService: TokenService,
     private cryptoFunctionService: CryptoFunctionService,
     private environmentService: EnvironmentService,
+    private appIdService: AppIdService,
     private lastPassDirectImportUIService: LastPassDirectImportUIService,
     private platformUtilsService: PlatformUtilsService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
@@ -69,7 +72,7 @@ export class LastPassDirectImportService {
     await this.verifyLastPassAccountExists(email);
 
     if (this.isAccountFederated) {
-      const oidc = await this.handleFederatedLogin();
+      const oidc = await this.handleFederatedLogin(email);
       const csvData = await this.handleFederatedImport(
         oidc.oidcCode,
         oidc.oidcState,
@@ -91,9 +94,9 @@ export class LastPassDirectImportService {
     await this.vault.setUserTypeContext(email);
   }
 
-  private async handleFederatedLogin() {
+  private async handleFederatedLogin(email: string) {
     const ssoCallbackPromise = firstValueFrom(this.ssoCallback$);
-    const request = await this.createOidcSigninRequest();
+    const request = await this.createOidcSigninRequest(email);
     this.platformUtilsService.launchUri(request.url);
 
     const cancelDialogRef = LastPassAwaitSSODialogComponent.open(this.dialogService);
@@ -109,7 +112,7 @@ export class LastPassDirectImportService {
     });
   }
 
-  private async createOidcSigninRequest() {
+  private async createOidcSigninRequest(email: string) {
     this.oidcClient = new OidcClient({
       authority: this.vault.userType.openIDConnectAuthorityBase,
       client_id: this.vault.userType.openIDConnectClientId,
@@ -121,6 +124,9 @@ export class LastPassDirectImportService {
     });
 
     return await this.oidcClient.createSigninRequest({
+      state: {
+        email,
+      },
       nonce: await this.passwordGenerationService.generatePassword({
         length: 20,
         uppercase: true,
@@ -154,12 +160,8 @@ export class LastPassDirectImportService {
     password: string,
     includeSharedFolders: boolean
   ): Promise<string> {
-    await this.vault.open(
-      email,
-      password,
-      ClientInfo.createClientInfo(),
-      this.lastPassDirectImportUIService
-    );
+    const clientInfo = await this.createClientInfo(email);
+    await this.vault.open(email, password, clientInfo, this.lastPassDirectImportUIService);
 
     return this.vault.accountsToExportedCsvString(!includeSharedFolders);
   }
@@ -180,12 +182,16 @@ export class LastPassDirectImportService {
     federatedUser.idpUserInfo = response.profile;
     federatedUser.username = userState.email;
 
-    await this.vault.openFederated(
-      federatedUser,
-      ClientInfo.createClientInfo(),
-      this.lastPassDirectImportUIService
-    );
+    const clientInfo = await this.createClientInfo(federatedUser.username);
+    await this.vault.openFederated(federatedUser, clientInfo, this.lastPassDirectImportUIService);
 
     return this.vault.accountsToExportedCsvString(!includeSharedFolders);
+  }
+
+  private async createClientInfo(email: string): Promise<ClientInfo> {
+    const appId = await this.appIdService.getAppId();
+    const id = appId + email;
+    const idHash = await this.cryptoFunctionService.hash(id, "sha256");
+    return ClientInfo.createClientInfo(Utils.fromBufferToHex(idHash));
   }
 }

@@ -125,8 +125,6 @@ export class ImportComponent implements OnInit, OnDestroy {
       });
   }
 
-  @Input() hideFileSelector: boolean;
-
   protected organization: Organization;
   protected destroy$ = new Subject<void>();
 
@@ -190,8 +188,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   protected get showLastPassToggle(): boolean {
     return (
       this.format === "lastpasscsv" &&
-      (this.platformUtilsService.getClientType() === ClientType.Browser ||
-        this.platformUtilsService.getClientType() === ClientType.Desktop)
+      this.platformUtilsService.getClientType() === ClientType.Desktop
     );
   }
   protected get showLastPassOptions(): boolean {
