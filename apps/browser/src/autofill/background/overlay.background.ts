@@ -336,7 +336,11 @@ class OverlayBackground implements OverlayBackgroundInterface {
 
     const { top, left, width, height } = this.focusedFieldData.focusedFieldRects;
     const { paddingRight, paddingLeft } = this.focusedFieldData.focusedFieldStyles;
-    const elementOffset = height * 0.37;
+    let elementOffset = height * 0.37;
+    if (height >= 35) {
+      elementOffset = height >= 50 ? height * 0.47 : height * 0.42;
+    }
+
     const elementHeight = height - elementOffset;
     const elementTopPosition = top + elementOffset / 2;
     let elementLeftPosition = left + width - height + elementOffset / 2;

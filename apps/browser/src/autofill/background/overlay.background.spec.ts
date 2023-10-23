@@ -743,6 +743,40 @@ describe("OverlayBackground", () => {
           });
         });
 
+        it("modifies the overlay button's height for medium sized input elements", () => {
+          const focusedFieldData = createFocusedFieldDataMock({
+            focusedFieldRects: { top: 1, left: 2, height: 35, width: 4 },
+          });
+          sendExtensionRuntimeMessage({ command: "updateFocusedFieldData", focusedFieldData });
+
+          sendExtensionRuntimeMessage({
+            command: "updateAutofillOverlayPosition",
+            overlayElement: AutofillOverlayElement.Button,
+          });
+
+          expect(buttonPortSpy.postMessage).toHaveBeenCalledWith({
+            command: "updateIframePosition",
+            styles: { height: "20px", left: "-22px", top: "8px", width: "20px" },
+          });
+        });
+
+        it("modifies the overlay button's height for large sized input elements", () => {
+          const focusedFieldData = createFocusedFieldDataMock({
+            focusedFieldRects: { top: 1, left: 2, height: 50, width: 4 },
+          });
+          sendExtensionRuntimeMessage({ command: "updateFocusedFieldData", focusedFieldData });
+
+          sendExtensionRuntimeMessage({
+            command: "updateAutofillOverlayPosition",
+            overlayElement: AutofillOverlayElement.Button,
+          });
+
+          expect(buttonPortSpy.postMessage).toHaveBeenCalledWith({
+            command: "updateIframePosition",
+            styles: { height: "27px", left: "-32px", top: "13px", width: "27px" },
+          });
+        });
+
         it("takes into account the right padding of the focused field in positioning the button if the right padding of the field is larger than the left padding", () => {
           const focusedFieldData = createFocusedFieldDataMock({
             focusedFieldStyles: { paddingRight: "20px", paddingLeft: "6px" },
