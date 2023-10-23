@@ -2,6 +2,7 @@ import * as path from "path";
 
 import { app } from "electron";
 
+import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
@@ -15,6 +16,7 @@ import { UpdaterMain } from "./main/updater.main";
 import { WindowMain } from "./main/window.main";
 import { Account } from "./models/account";
 import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main/biometric/index";
+import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
 import { ElectronLogService } from "./platform/services/electron-log.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
@@ -39,6 +41,7 @@ export class Main {
   trayMain: TrayMain;
   biometricsService: BiometricsServiceAbstraction;
   nativeMessagingMain: NativeMessagingMain;
+  clipboardMain: ClipboardMain;
 
   constructor() {
     // Set paths for portable builds
@@ -91,6 +94,7 @@ export class Main {
       this.memoryStorageService,
       this.logService,
       new StateFactory(GlobalState, Account),
+      new AccountServiceImplementation(null, this.logService), // will not broadcast logouts. This is a hack until we can remove messaging dependency
       false // Do not use disk caching because this will get out of sync with the renderer service
     );
 
@@ -138,6 +142,9 @@ export class Main {
       app.getPath("userData"),
       app.getPath("exe")
     );
+
+    this.clipboardMain = new ClipboardMain();
+    this.clipboardMain.init();
   }
 
   bootstrap() {
