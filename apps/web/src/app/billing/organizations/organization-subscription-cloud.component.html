@@ -69,7 +69,7 @@
       <bit-table>
         <ng-template body>
           <ng-container *ngIf="subscription">
-            <tr bitRow *ngFor="let i of lineItems">
+            <tr bitRow *ngFor="let i of subscriptionLineItems">
               <td bitCell [ngClass]="{ 'tw-pl-20': i.addonSubscriptionItem }">
                 <span *ngIf="!i.addonSubscriptionItem">{{ i.productName }} -</span>
                 {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} @
@@ -139,6 +139,7 @@
       <sm-subscribe-standalone
         [plan]="sub.plan"
         [organization]="userOrg"
+        [customerDiscount]="customerDiscount"
         (onSubscribe)="subscriptionAdjusted()"
       ></sm-subscribe-standalone>
     </div>

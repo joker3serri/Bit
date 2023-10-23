@@ -47,4 +47,10 @@ export class BillingCustomerDiscount extends BaseResponse {
     this.active = this.getResponseProperty("Active");
     this.percentOff = this.getResponseProperty("PercentOff");
   }
+
+  discountPrice = (price: number) => {
+    const discount = this !== null && this.active ? price * (this.percentOff / 100) : 0;
+
+    return price - discount;
+  };
 }
