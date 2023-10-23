@@ -359,7 +359,7 @@
     [formGroup]="formGroup"
     (csvDataLoaded)="this.formGroup.controls.fileContents.setValue($event)"
   ></import-lastpass>
-  <div [hidden]="showLastPassOptions">
+  <div *ngIf="!showLastPassOptions">
     <bit-form-field>
       <bit-label>{{ "selectImportFile" | i18n }}</bit-label>
       <div class="file-selector">
