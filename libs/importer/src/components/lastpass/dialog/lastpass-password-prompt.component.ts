@@ -31,7 +31,7 @@ import {
   ],
 })
 export class LastPassPasswordPromptComponent {
-  formGroup = new FormGroup({
+  protected formGroup = new FormGroup({
     password: new FormControl("", {
       validators: Validators.required,
       updateOn: "submit",
