@@ -260,7 +260,10 @@ export default class RuntimeBackground {
         }
 
         if (msg.lastpass) {
-          // TODO: Send `msg.code` and `msg.state` along to lastpass import components somehow.
+          this.messagingService.send("importCallbackLastPass", {
+            code: msg.code,
+            state: msg.state,
+          });
         } else {
           try {
             BrowserApi.createNewTab(
