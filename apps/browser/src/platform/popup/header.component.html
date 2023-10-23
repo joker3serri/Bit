@@ -1,5 +1,6 @@
 <header [ngClass]="{ 'no-theme': noTheme }">
   <div class="header-content">
+    <ng-content select=".sr-only"></ng-content>
     <ng-content select=".left"></ng-content>
     <ng-content select=".center"></ng-content>
     <div class="right">
