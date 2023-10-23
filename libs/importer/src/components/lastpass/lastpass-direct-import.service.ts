@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { OidcClient, Log as OidcLog } from "oidc-client-ts";
+import { OidcClient } from "oidc-client-ts";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -41,9 +41,6 @@ export class LastPassDirectImportService {
     private platformUtilsService: PlatformUtilsService
   ) {
     this.vault = new Vault(this.cryptoFunctionService, this.tokenService);
-
-    OidcLog.setLogger(console);
-    OidcLog.setLevel(OidcLog.DEBUG);
 
     /** TODO: remove this in favor of dedicated service */
     this.broadcasterService.subscribe("LastPassDirectImportService", (message: any) => {
