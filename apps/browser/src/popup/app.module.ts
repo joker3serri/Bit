@@ -15,7 +15,10 @@ import { BitwardenToastModule } from "@bitwarden/angular/components/toastr.compo
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
+import { AvatarModule } from "@bitwarden/components";
 
+import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
+import { CurrentAccountComponent } from "../auth/popup/account-switching/current-account.component";
 import { SetPinComponent } from "../auth/popup/components/set-pin.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
@@ -99,6 +102,7 @@ import "../platform/popup/locales";
     ScrollingModule,
     ServicesModule,
     DialogModule,
+    AvatarModule,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -159,6 +163,8 @@ import "../platform/popup/locales";
     HelpAndFeedbackComponent,
     AutofillComponent,
     EnvironmentSelectorComponent,
+    CurrentAccountComponent,
+    AccountSwitcherComponent,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],
