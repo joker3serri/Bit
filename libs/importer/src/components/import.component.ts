@@ -319,7 +319,7 @@ export class ImportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const fileEl = document.getElementById("file") as HTMLInputElement;
+    const fileEl = document.getElementById("import_input_file") as HTMLInputElement;
     const files = fileEl.files;
     let fileContents = this.formGroup.controls.fileContents.value;
     if ((files == null || files.length === 0) && (fileContents == null || fileContents === "")) {

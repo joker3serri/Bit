@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { OidcClient, Log as OidcLog } from "oidc-client-ts";
+import { OidcClient } from "oidc-client-ts";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -28,8 +28,8 @@ export class LastPassDirectImportService {
 
   private oidcClient: OidcClient;
 
-  private _ssoCallback$ = new Subject<{ oidcCode: string; oidcState: string }>();
-  ssoCallback$ = this._ssoCallback$.asObservable();
+  private _ssoImportCallback$ = new Subject<{ oidcCode: string; oidcState: string }>();
+  ssoImportCallback$ = this._ssoImportCallback$.asObservable();
 
   constructor(
     private tokenService: TokenService,
@@ -45,15 +45,12 @@ export class LastPassDirectImportService {
   ) {
     this.vault = new Vault(this.cryptoFunctionService, this.tokenService);
 
-    OidcLog.setLogger(console);
-    OidcLog.setLevel(OidcLog.DEBUG);
-
     /** TODO: remove this in favor of dedicated service */
     this.broadcasterService.subscribe("LastPassDirectImportService", (message: any) => {
       this.ngZone.run(async () => {
         switch (message.command) {
-          case "ssoCallbackLastPass":
-            this._ssoCallback$.next({ oidcCode: message.code, oidcState: message.state });
+          case "importCallbackLastPass":
+            this._ssoImportCallback$.next({ oidcCode: message.code, oidcState: message.state });
             break;
           default:
             break;
@@ -95,7 +92,7 @@ export class LastPassDirectImportService {
   }
 
   private async handleFederatedLogin(email: string) {
-    const ssoCallbackPromise = firstValueFrom(this.ssoCallback$);
+    const ssoCallbackPromise = firstValueFrom(this.ssoImportCallback$);
     const request = await this.createOidcSigninRequest(email);
     this.platformUtilsService.launchUri(request.url);
 
@@ -149,7 +146,7 @@ export class LastPassDirectImportService {
   private getOidcRedirectUrl() {
     const clientType = this.platformUtilsService.getClientType();
     if (clientType === ClientType.Desktop) {
-      return "bitwarden://sso-callback-lp";
+      return "bitwarden://import-callback-lp";
     }
     const webUrl = this.environmentService.getWebVaultUrl();
     return webUrl + "/sso-connector.html?lp=1";
@@ -190,7 +187,7 @@ export class LastPassDirectImportService {
 
   private async createClientInfo(email: string): Promise<ClientInfo> {
     const appId = await this.appIdService.getAppId();
-    const id = appId + email;
+    const id = "lastpass" + appId + email;
     const idHash = await this.cryptoFunctionService.hash(id, "sha256");
     return ClientInfo.createClientInfo(Utils.fromBufferToHex(idHash));
   }
