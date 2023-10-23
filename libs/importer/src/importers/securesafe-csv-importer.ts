@@ -13,12 +13,12 @@ export class SecureSafeCsvImporter extends BaseImporter implements Importer {
     }
 
     // The url field can be in different case formats.
-    const url = Object.keys(results[0]).find((k) => /url/i.test(k));
+    const urlField = Object.keys(results[0]).find((k) => /url/i.test(k));
     results.forEach((value) => {
       const cipher = this.initLoginCipher();
       cipher.name = this.getValueOrDefault(value.Title);
       cipher.notes = this.getValueOrDefault(value.Comment);
-      cipher.login.uris = this.makeUriArray(value[url]);
+      cipher.login.uris = this.makeUriArray(value[urlField]);
       cipher.login.password = this.getValueOrDefault(value.Password);
       cipher.login.username = this.getValueOrDefault(value.Username);
       this.cleanupCipher(cipher);
