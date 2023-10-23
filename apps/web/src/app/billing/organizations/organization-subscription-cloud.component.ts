@@ -138,8 +138,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return this.sub != null ? this.sub.upcomingInvoice : null;
   }
 
-  get discount() {
-    return this.sub != null ? this.sub.discount : null;
+  get customerDiscount() {
+    return this.sub != null ? this.sub.customerDiscount : null;
   }
 
   get isExpired() {
