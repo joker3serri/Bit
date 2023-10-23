@@ -1,0 +1,6 @@
+<div *ngIf="currentAccount$ | async as currentAccount">
+  <!-- TODO: Use avatar component -->
+  <div (click)="currentAccountClicked()">
+    <bit-avatar [id]="currentAccount.id" [text]="currentAccount.name"></bit-avatar>
+  </div>
+</div>
