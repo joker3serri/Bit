@@ -534,12 +534,12 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         ? NoopNotificationsService
         : NotificationsService,
       deps: [
+        LogService,
         SyncServiceAbstraction,
         AppIdServiceAbstraction,
         ApiServiceAbstraction,
         EnvironmentServiceAbstraction,
         LOGOUT_CALLBACK,
-        LogService,
         StateServiceAbstraction,
         AuthServiceAbstraction,
         MessagingServiceAbstraction,
