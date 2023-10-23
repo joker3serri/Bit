@@ -26,8 +26,8 @@ export class LastPassDirectImportService {
 
   private oidcClient: OidcClient;
 
-  private _ssoCallback$ = new Subject<{ oidcCode: string; oidcState: string }>();
-  ssoCallback$ = this._ssoCallback$.asObservable();
+  private _ssoImportCallback$ = new Subject<{ oidcCode: string; oidcState: string }>();
+  ssoImportCallback$ = this._ssoImportCallback$.asObservable();
 
   constructor(
     private tokenService: TokenService,
@@ -49,8 +49,8 @@ export class LastPassDirectImportService {
     this.broadcasterService.subscribe("LastPassDirectImportService", (message: any) => {
       this.ngZone.run(async () => {
         switch (message.command) {
-          case "ssoCallbackLastPass":
-            this._ssoCallback$.next({ oidcCode: message.code, oidcState: message.state });
+          case "importCallbackLastPass":
+            this._ssoImportCallback$.next({ oidcCode: message.code, oidcState: message.state });
             break;
           default:
             break;
@@ -92,7 +92,7 @@ export class LastPassDirectImportService {
   }
 
   private async handleFederatedLogin(email: string) {
-    const ssoCallbackPromise = firstValueFrom(this.ssoCallback$);
+    const ssoCallbackPromise = firstValueFrom(this.ssoImportCallback$);
     const request = await this.createOidcSigninRequest(email);
     this.platformUtilsService.launchUri(request.url);
 
@@ -114,7 +114,7 @@ export class LastPassDirectImportService {
       authority: this.vault.userType.openIDConnectAuthorityBase,
       client_id: this.vault.userType.openIDConnectClientId,
       // TODO: this is different per client
-      redirect_uri: "bitwarden://sso-callback-lp",
+      redirect_uri: "bitwarden://import-callback-lp",
       response_type: "code",
       scope: this.vault.userType.oidcScope,
       response_mode: "query",
