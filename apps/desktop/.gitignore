@@ -1,5 +1,3 @@
-config/local.json
-
 dist-safari/
 *.nupkg
 *.env
