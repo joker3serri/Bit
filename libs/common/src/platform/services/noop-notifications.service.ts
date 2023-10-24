@@ -2,12 +2,12 @@ import { NotificationsService as NotificationsServiceAbstraction } from "../../a
 import { LogService } from "../abstractions/log.service";
 
 export class NoopNotificationsService implements NotificationsServiceAbstraction {
-  constructor(private logService: LogService) {
-    logService.debug("NoopNotificationsService");
-  }
+  constructor(private logService: LogService) {}
 
   init(): Promise<void> {
-    this.logService.info("Initializing notification service");
+    this.logService.info(
+      "Initializing no-op notification service, no push notifications will be received"
+    );
     return Promise.resolve();
   }
 
