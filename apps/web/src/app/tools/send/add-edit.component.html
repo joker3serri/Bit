@@ -25,9 +25,7 @@
       </bit-form-field>
       <div class="tw-flex" *ngIf="!editMode">
         <bit-radio-group formControlName="type">
-          <div class="tw-mb-4">
-            <bit-label>{{ "whatTypeOfSend" | i18n }}</bit-label>
-          </div>
+          <bit-label>{{ "whatTypeOfSend" | i18n }}</bit-label>
 
           <bit-radio-button
             *ngFor="let o of typeOptions"
