@@ -10,14 +10,17 @@ export class NoopNotificationsService implements NotificationsServiceAbstraction
     this.logService.info("Initializing notification service");
     return Promise.resolve();
   }
+
   updateConnection(sync?: boolean): Promise<void> {
     this.logService.info("Updating notification service connection");
     return Promise.resolve();
   }
+
   reconnectFromActivity(): Promise<void> {
     this.logService.info("Reconnecting notification service from activity");
     return Promise.resolve();
   }
+
   disconnectFromInactivity(): Promise<void> {
     this.logService.info("Disconnecting notification service from inactivity");
     return Promise.resolve();
