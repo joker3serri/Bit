@@ -110,3 +110,4 @@ apps/web/src/locales/en/messages.json
 **/Dockerfile @bitwarden/dept-devops
 **/*.Dockerfile @bitwarden/dept-devops
 **/.dockerignore @bitwarden/dept-devops
+**/entrypoint.sh @bitwarden/dept-devops
