@@ -376,7 +376,8 @@ export class ViewComponent extends BaseViewComponent {
       loadActionSuccess = await this.fillCipher();
     }
 
-    if ([COPY_USERNAME_ID, COPY_PASSWORD_ID, COPY_VERIFICATION_CODE_ID].includes(this.loadAction)) {
+    const copyActions = new Set([COPY_USERNAME_ID, COPY_PASSWORD_ID, COPY_VERIFICATION_CODE_ID]);
+    if (copyActions.has(this.loadAction)) {
       const { username, password } = this.cipher.login;
       const copyParams: Record<CopyAction, Record<string, string>> = {
         [COPY_USERNAME_ID]: { value: username, type: "username", name: "Username" },
