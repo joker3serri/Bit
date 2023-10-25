@@ -59,6 +59,11 @@ export class ViewComponent extends BaseViewComponent {
   tab: any;
   senderTabId?: number;
   loadAction?: LoadAction;
+  private static readonly copyActions = new Set([
+    COPY_USERNAME_ID,
+    COPY_PASSWORD_ID,
+    COPY_VERIFICATION_CODE_ID,
+  ]);
   uilocation?: "popout" | "popup" | "sidebar" | "tab";
   loadPageDetailsTimeout: number;
   inPopout = false;
@@ -376,8 +381,7 @@ export class ViewComponent extends BaseViewComponent {
       loadActionSuccess = await this.fillCipher();
     }
 
-    const copyActions = new Set([COPY_USERNAME_ID, COPY_PASSWORD_ID, COPY_VERIFICATION_CODE_ID]);
-    if (copyActions.has(this.loadAction)) {
+    if (ViewComponent.copyActions.has(this.loadAction)) {
       const { username, password } = this.cipher.login;
       const copyParams: Record<CopyAction, Record<string, string>> = {
         [COPY_USERNAME_ID]: { value: username, type: "username", name: "Username" },
