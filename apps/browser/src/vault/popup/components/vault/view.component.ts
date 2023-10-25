@@ -43,12 +43,11 @@ export const COPY_USERNAME_ID = "copy-username";
 export const COPY_PASSWORD_ID = "copy-password";
 export const COPY_VERIFICATION_CODE_ID = "copy-totp";
 
-type LoadAction =
-  | typeof AUTOFILL_ID
-  | typeof SHOW_AUTOFILL_BUTTON
+type CopyAction =
   | typeof COPY_USERNAME_ID
   | typeof COPY_PASSWORD_ID
   | typeof COPY_VERIFICATION_CODE_ID;
+type LoadAction = typeof AUTOFILL_ID | typeof SHOW_AUTOFILL_BUTTON | CopyAction;
 
 @Component({
   selector: "app-vault-view",
@@ -174,29 +173,7 @@ export class ViewComponent extends BaseViewComponent {
   async load() {
     await super.load();
     await this.loadPageDetails();
-
-    switch (this.loadAction) {
-      case SHOW_AUTOFILL_BUTTON:
-        return;
-      case AUTOFILL_ID:
-        await this.fillCipher();
-        break;
-      case COPY_USERNAME_ID:
-        await this.copy(this.cipher.login.username, "username", "Username");
-        break;
-      case COPY_PASSWORD_ID:
-        await this.copy(this.cipher.login.password, "password", "Password");
-        break;
-      case COPY_VERIFICATION_CODE_ID:
-        await this.copy(this.totpCode, "verificationCodeTotp", "TOTP");
-        break;
-      default:
-        break;
-    }
-
-    if (this.inPopout && this.loadAction) {
-      setTimeout(() => this.close(), 1000);
-    }
+    await this.handleLoadAction();
   }
 
   async edit() {
@@ -248,6 +225,8 @@ export class ViewComponent extends BaseViewComponent {
     if (didAutofill) {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("autoFillSuccess"));
     }
+
+    return didAutofill;
   }
 
   async fillCipherAndSave() {
@@ -385,5 +364,35 @@ export class ViewComponent extends BaseViewComponent {
     }
 
     return true;
+  }
+
+  private async handleLoadAction() {
+    if (!this.loadAction || this.loadAction === SHOW_AUTOFILL_BUTTON) {
+      return;
+    }
+
+    let loadActionSuccess = false;
+    if (this.loadAction === AUTOFILL_ID) {
+      loadActionSuccess = await this.fillCipher();
+    }
+
+    if ([COPY_USERNAME_ID, COPY_PASSWORD_ID, COPY_VERIFICATION_CODE_ID].includes(this.loadAction)) {
+      const { username, password } = this.cipher.login;
+      const copyParams: Record<CopyAction, Record<string, string>> = {
+        [COPY_USERNAME_ID]: { value: username, type: "username", name: "Username" },
+        [COPY_PASSWORD_ID]: { value: password, type: "password", name: "Password" },
+        [COPY_VERIFICATION_CODE_ID]: {
+          value: this.totpCode,
+          type: "verificationCodeTotp",
+          name: "TOTP",
+        },
+      };
+      const { value, type, name } = copyParams[this.loadAction as CopyAction];
+      loadActionSuccess = await this.copy(value, type, name);
+    }
+
+    if (this.inPopout) {
+      setTimeout(() => this.close(), loadActionSuccess ? 1000 : 0);
+    }
   }
 }
