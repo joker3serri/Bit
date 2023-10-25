@@ -200,11 +200,6 @@ header:not(bit-callout header) {
     height: 100%;
   }
 
-  .header-content {
-    display: flex;
-    flex: 1 1 auto;
-  }
-
   .left,
   .right {
     flex: 1;
