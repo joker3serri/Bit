@@ -13,7 +13,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 
-import { AccountRecoveryService } from "../core/services/account-recovery/account-recovery.service";
+import { AccountRecoveryService } from "../members/services/account-recovery/account-recovery.service";
 
 interface EnrollMasterPasswordResetData {
   organization: Organization;
