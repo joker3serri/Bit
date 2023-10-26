@@ -16,6 +16,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationCreateRequest } from "@bitwarden/common/admin-console/models/request/organization-create.request";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpgradeRequest } from "@bitwarden/common/admin-console/models/request/organization-upgrade.request";
@@ -113,6 +114,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   passwordManagerPlans: PlanResponse[];
   secretsManagerPlans: PlanResponse[];
+  organization: Organization;
 
   private destroy$ = new Subject<void>();
 
@@ -163,6 +165,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         this.singleOrgPolicyAppliesToActiveUser = policyAppliesToActiveUser;
       });
 
+    if (this.organizationId) {
+      this.organization = this.organizationService.get(this.organizationId);
+    }
+
     this.loading = false;
   }
 
@@ -177,6 +183,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   get createOrganization() {
     return this.organizationId == null;
+  }
+
+  get upgradeFreeOrganization() {
+    return this.organization?.planProductType === ProductType.Free && !this.showFree;
   }
 
   get selectedPlan() {

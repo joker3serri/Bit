@@ -339,7 +339,10 @@
     <small class="text-muted font-italic mb-3 d-block">
       {{ paymentDesc }}
     </small>
-    <app-payment *ngIf="createOrganization" [hideCredit]="true"></app-payment>
+    <app-payment
+      *ngIf="createOrganization || upgradeFreeOrganization"
+      [hideCredit]="true"
+    ></app-payment>
     <app-tax-info (onCountryChanged)="changedCountry()"></app-tax-info>
     <div id="price" class="my-4">
       <div class="text-muted text-sm">
