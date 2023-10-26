@@ -105,7 +105,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
     const clearing = options?.clearing === true;
     const clearMs = options?.clearMs ?? null;
 
-    ipc.platform.clipboardWrite({
+    ipc.platform.clipboard.write({
       text: text,
       password: (options?.allowHistory ?? false) === false, // default to false
     } satisfies ClipboardWriteMessage);
@@ -120,7 +120,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
   }
 
   readFromClipboard(): Promise<string> {
-    return ipc.platform.clipboardRead();
+    return ipc.platform.clipboard.read();
   }
 
   async supportsBiometric(): Promise<boolean> {

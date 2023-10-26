@@ -14,6 +14,7 @@ import {
 
 import { ThemeType } from "@bitwarden/common/enums";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { SafeUrls } from "@bitwarden/common/platform/misc/safe-urls";
 
 import { WindowMain } from "../main/window.main";
 import { RendererMenuItem } from "../utils";
@@ -78,7 +79,11 @@ export class ElectronMainMessagingService implements MessagingService {
       alert.show();
     });
 
-    ipcMain.handle("launchUri", async (event, uri) => shell.openExternal(uri));
+    ipcMain.handle("launchUri", async (event, uri) => {
+      if (SafeUrls.canLaunch(uri)) {
+        shell.openExternal(uri);
+      }
+    });
 
     nativeTheme.on("updated", () => {
       windowMain.win?.webContents.send(
