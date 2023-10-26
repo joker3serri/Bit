@@ -1,6 +1,10 @@
 import { EVENTS } from "../../constants";
-import { flushPromises } from "../../jest/testing-utils";
-import { PortSpy } from "../../jest/typings";
+import { createPortSpyMock } from "../../jest/autofill-mocks";
+import {
+  flushPromises,
+  sendPortMessage,
+  triggerPortOnDisconnectEvent,
+} from "../../jest/testing-utils";
 import { AutofillOverlayPort } from "../../utils/autofill-overlay.enum";
 
 import AutofillOverlayIframeService from "./autofill-overlay-iframe.service";
@@ -8,7 +12,7 @@ import AutofillOverlayIframeService from "./autofill-overlay-iframe.service";
 describe("AutofillOverlayIframeService", () => {
   const iframePath = "overlay/list.html";
   let autofillOverlayIframeService: AutofillOverlayIframeService;
-  let portSpy: PortSpy;
+  let portSpy: chrome.runtime.Port;
   let shadowAppendSpy: jest.SpyInstance;
   let handlePortDisconnectSpy: jest.SpyInstance;
   let handlePortMessageSpy: jest.SpyInstance;
@@ -28,6 +32,9 @@ describe("AutofillOverlayIframeService", () => {
     );
     handlePortMessageSpy = jest.spyOn(autofillOverlayIframeService as any, "handlePortMessage");
     handleWindowMessageSpy = jest.spyOn(autofillOverlayIframeService as any, "handleWindowMessage");
+    chrome.runtime.connect = jest.fn((connectInfo: chrome.runtime.ConnectInfo) =>
+      createPortSpyMock(connectInfo.name)
+    ) as unknown as typeof chrome.runtime.connect;
   });
 
   afterEach(() => {
@@ -70,7 +77,7 @@ describe("AutofillOverlayIframeService", () => {
         jest.spyOn(globalThis, "addEventListener");
 
         autofillOverlayIframeService["iframe"].dispatchEvent(new Event(EVENTS.LOAD));
-        portSpy = autofillOverlayIframeService["port"] as PortSpy;
+        portSpy = autofillOverlayIframeService["port"];
 
         expect(chrome.runtime.connect).toBeCalledWith({ name: AutofillOverlayPort.Button });
         expect(portSpy.onDisconnect.addListener).toBeCalledWith(handlePortDisconnectSpy);
@@ -114,19 +121,19 @@ describe("AutofillOverlayIframeService", () => {
         writable: true,
       });
       jest.spyOn(autofillOverlayIframeService["iframe"].contentWindow, "postMessage");
-      portSpy = autofillOverlayIframeService["port"] as PortSpy;
+      portSpy = autofillOverlayIframeService["port"];
     });
 
     describe("handlePortDisconnect", () => {
       it("ignores ports that do not have the correct port name", () => {
         portSpy.name = "wrong-port-name";
-        portSpy.onDisconnect.callListener();
+        triggerPortOnDisconnectEvent(portSpy);
 
         expect(autofillOverlayIframeService["port"]).not.toBeNull();
       });
 
       it("resets the iframe element's opacity, height, and display styles", () => {
-        portSpy.onDisconnect.callListener();
+        triggerPortOnDisconnectEvent(portSpy);
 
         expect(autofillOverlayIframeService["iframe"].style.opacity).toBe("0");
         expect(autofillOverlayIframeService["iframe"].style.height).toBe("0px");
@@ -136,7 +143,7 @@ describe("AutofillOverlayIframeService", () => {
       it("removes the global message listener", () => {
         jest.spyOn(globalThis, "removeEventListener");
 
-        portSpy.onDisconnect.callListener();
+        triggerPortOnDisconnectEvent(portSpy);
 
         expect(globalThis.removeEventListener).toBeCalledWith(
           EVENTS.MESSAGE,
@@ -145,19 +152,19 @@ describe("AutofillOverlayIframeService", () => {
       });
 
       it("removes the port's onMessage listener", () => {
-        portSpy.onDisconnect.callListener();
+        triggerPortOnDisconnectEvent(portSpy);
 
         expect(portSpy.onMessage.removeListener).toBeCalledWith(handlePortMessageSpy);
       });
 
       it("removes the port's onDisconnect listener", () => {
-        portSpy.onDisconnect.callListener();
+        triggerPortOnDisconnectEvent(portSpy);
 
         expect(portSpy.onDisconnect.removeListener).toBeCalledWith(handlePortDisconnectSpy);
       });
 
       it("disconnects the port", () => {
-        portSpy.onDisconnect.callListener();
+        triggerPortOnDisconnectEvent(portSpy);
 
         expect(portSpy.disconnect).toBeCalled();
         expect(autofillOverlayIframeService["port"]).toBeNull();
@@ -167,7 +174,7 @@ describe("AutofillOverlayIframeService", () => {
     describe("handlePortMessage", () => {
       it("ignores port messages that do not correlate to the correct port name", () => {
         portSpy.name = "wrong-port-name";
-        portSpy.onMessage.callListener({});
+        sendPortMessage(portSpy, {});
 
         expect(autofillOverlayIframeService["iframe"].contentWindow.postMessage).not.toBeCalled();
       });
@@ -175,7 +182,7 @@ describe("AutofillOverlayIframeService", () => {
       it("passes on the message to the iframe if the message is not registered with the message handlers", () => {
         const message = { command: "unregisteredMessage" };
 
-        portSpy.onMessage.callListener(message);
+        sendPortMessage(portSpy, message);
 
         expect(autofillOverlayIframeService["iframe"].contentWindow.postMessage).toBeCalledWith(
           message,
@@ -186,7 +193,7 @@ describe("AutofillOverlayIframeService", () => {
       it("handles port messages that are registered with the message handlers and does not pass the message on to the iframe", () => {
         jest.spyOn(autofillOverlayIframeService as any, "updateIframePosition");
 
-        portSpy.onMessage.callListener({ command: "updateIframePosition" });
+        sendPortMessage(portSpy, { command: "updateIframePosition" });
 
         expect(autofillOverlayIframeService["iframe"].contentWindow.postMessage).not.toBeCalled();
       });
@@ -207,7 +214,7 @@ describe("AutofillOverlayIframeService", () => {
             theme: "theme_light",
           };
 
-          portSpy.onMessage.callListener(message);
+          sendPortMessage(portSpy, message);
 
           expect(updateElementStylesSpy).not.toBeCalled();
           expect(autofillOverlayIframeService["iframe"].contentWindow.postMessage).toBeCalledWith(
@@ -222,7 +229,7 @@ describe("AutofillOverlayIframeService", () => {
             theme: "theme_dark",
           };
 
-          portSpy.onMessage.callListener(message);
+          sendPortMessage(portSpy, message);
 
           expect(updateElementStylesSpy).toBeCalledWith(autofillOverlayIframeService["iframe"], {
             borderColor: "#4c525f",
@@ -235,7 +242,7 @@ describe("AutofillOverlayIframeService", () => {
             theme: "theme_nord",
           };
 
-          portSpy.onMessage.callListener(message);
+          sendPortMessage(portSpy, message);
 
           expect(updateElementStylesSpy).toBeCalledWith(autofillOverlayIframeService["iframe"], {
             borderColor: "#2E3440",
@@ -248,7 +255,7 @@ describe("AutofillOverlayIframeService", () => {
             theme: "theme_solarizedDark",
           };
 
-          portSpy.onMessage.callListener(message);
+          sendPortMessage(portSpy, message);
 
           expect(updateElementStylesSpy).toBeCalledWith(autofillOverlayIframeService["iframe"], {
             borderColor: "#073642",
@@ -265,7 +272,7 @@ describe("AutofillOverlayIframeService", () => {
           jest.spyOn(autofillOverlayIframeService as any, "updateElementStyles");
           jest.spyOn(globalThis.document, "hasFocus").mockReturnValue(false);
 
-          portSpy.onMessage.callListener({
+          sendPortMessage(portSpy, {
             command: "updateIframePosition",
             styles: { top: 100, left: 100 },
           });
@@ -276,7 +283,7 @@ describe("AutofillOverlayIframeService", () => {
         it("updates the iframe position if the document has focus", () => {
           const styles = { top: "100px", left: "100px" };
 
-          portSpy.onMessage.callListener({
+          sendPortMessage(portSpy, {
             command: "updateIframePosition",
             styles,
           });
@@ -289,7 +296,7 @@ describe("AutofillOverlayIframeService", () => {
           jest.useFakeTimers();
           const styles = { top: "100px", left: "100px" };
 
-          portSpy.onMessage.callListener({
+          sendPortMessage(portSpy, {
             command: "updateIframePosition",
             styles,
           });
@@ -303,7 +310,7 @@ describe("AutofillOverlayIframeService", () => {
           jest.useFakeTimers();
           const styles = { top: "100px", left: "100px" };
 
-          portSpy.onMessage.callListener({
+          sendPortMessage(portSpy, {
             command: "updateIframePosition",
             styles,
           });
@@ -314,7 +321,7 @@ describe("AutofillOverlayIframeService", () => {
       });
 
       it("updates the visibility of the iframe", () => {
-        portSpy.onMessage.callListener({
+        sendPortMessage(portSpy, {
           command: "updateOverlayHidden",
           styles: { display: "none" },
         });

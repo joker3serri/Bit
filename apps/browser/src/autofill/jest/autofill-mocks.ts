@@ -11,8 +11,6 @@ import { InitAutofillOverlayButtonMessage } from "../overlay/abstractions/autofi
 import { InitAutofillOverlayListMessage } from "../overlay/abstractions/autofill-overlay-list";
 import { GenerateFillScriptOptions, PageDetail } from "../services/abstractions/autofill.service";
 
-import { PortSpy } from "./typings";
-
 function createAutofillFieldMock(customFields = {}): AutofillField {
   return {
     opid: "default-input-field-opid",
@@ -192,25 +190,21 @@ function createFocusedFieldDataMock(customFields = {}) {
   };
 }
 
-function createPortSpyMock(name: string, portOnMessageListener: CallableFunction): PortSpy {
-  const portSpy: PortSpy = mock<PortSpy>({
+function createPortSpyMock(name: string) {
+  return mock<chrome.runtime.Port>({
     name,
     onMessage: {
-      addListener: jest.fn((listener) => (portOnMessageListener = listener)),
-      removeListener: jest.fn(() => {
-        if (portOnMessageListener) {
-          portOnMessageListener = undefined;
-        }
-      }),
-      callListener: jest.fn((message) => portOnMessageListener(message, portSpy)),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    },
+    onDisconnect: {
+      addListener: jest.fn(),
     },
     postMessage: jest.fn(),
     sender: {
       tab: createChromeTabMock(),
     },
   });
-
-  return portSpy;
 }
 
 export {

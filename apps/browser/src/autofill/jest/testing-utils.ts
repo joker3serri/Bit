@@ -1,3 +1,5 @@
+import { mock } from "jest-mock-extended";
+
 function triggerTestFailure() {
   expect(true).toBe("Test has failed.");
 }
@@ -18,34 +20,55 @@ function sendExtensionRuntimeMessage(
   sender?: chrome.runtime.MessageSender,
   sendResponse?: CallableFunction
 ) {
-  const onMessageMock = chrome.runtime.onMessage as any;
-  let returnValue: any;
-  if (onMessageMock.callListener) {
-    returnValue = onMessageMock.callListener(message, sender, sendResponse);
-  }
+  (chrome.runtime.onMessage.addListener as unknown as jest.SpyInstance).mock.calls.forEach(
+    (call) => {
+      const callback = call[0];
+      callback(
+        message || {},
+        sender || mock<chrome.runtime.MessageSender>(),
+        sendResponse || jest.fn()
+      );
+    }
+  );
+}
 
-  return returnValue;
+function sendPortMessage(port: chrome.runtime.Port, message: any) {
+  (port.onMessage.addListener as unknown as jest.SpyInstance).mock.calls.forEach((call) => {
+    const callback = call[0];
+    callback(message || {}, port);
+  });
+}
+
+function triggerPortOnDisconnectEvent(port: chrome.runtime.Port) {
+  (port.onDisconnect.addListener as unknown as jest.SpyInstance).mock.calls.forEach((call) => {
+    const callback = call[0];
+    callback(port);
+  });
 }
 
 function triggerWindowOnFocusedChangedEvent(windowId: number) {
-  const onFocusChangedMock = chrome.windows.onFocusChanged as any;
-  if (onFocusChangedMock.callListener) {
-    onFocusChangedMock.callListener(windowId);
-  }
+  (chrome.windows.onFocusChanged.addListener as unknown as jest.SpyInstance).mock.calls.forEach(
+    (call) => {
+      const callback = call[0];
+      callback(windowId);
+    }
+  );
 }
 
 function triggerTabOnActivatedEvent(activeInfo: chrome.tabs.TabActiveInfo) {
-  const onActivatedMock = chrome.tabs.onActivated as any;
-  if (onActivatedMock.callListener) {
-    onActivatedMock.callListener(activeInfo);
-  }
+  (chrome.tabs.onActivated.addListener as unknown as jest.SpyInstance).mock.calls.forEach(
+    (call) => {
+      const callback = call[0];
+      callback(activeInfo);
+    }
+  );
 }
 
 function triggerTabOnReplacedEvent(addedTabId: number, removedTabId: number) {
-  const onReplacedMock = chrome.tabs.onReplaced as any;
-  if (onReplacedMock.callListener) {
-    onReplacedMock.callListener(addedTabId, removedTabId);
-  }
+  (chrome.tabs.onReplaced.addListener as unknown as jest.SpyInstance).mock.calls.forEach((call) => {
+    const callback = call[0];
+    callback(addedTabId, removedTabId);
+  });
 }
 
 function triggerTabOnUpdatedEvent(
@@ -53,17 +76,17 @@ function triggerTabOnUpdatedEvent(
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab
 ) {
-  const onUpdatedMock = chrome.tabs.onUpdated as any;
-  if (onUpdatedMock.callListener) {
-    onUpdatedMock.callListener(tabId, changeInfo, tab);
-  }
+  (chrome.tabs.onUpdated.addListener as unknown as jest.SpyInstance).mock.calls.forEach((call) => {
+    const callback = call[0];
+    callback(tabId, changeInfo, tab);
+  });
 }
 
 function triggerTabOnRemovedEvent(tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) {
-  const onRemovedMock = chrome.tabs.onRemoved as any;
-  if (onRemovedMock.callListener) {
-    onRemovedMock.callListener(tabId, removeInfo);
-  }
+  (chrome.tabs.onRemoved.addListener as unknown as jest.SpyInstance).mock.calls.forEach((call) => {
+    const callback = call[0];
+    callback(tabId, removeInfo);
+  });
 }
 
 export {
@@ -71,6 +94,8 @@ export {
   flushPromises,
   postWindowMessage,
   sendExtensionRuntimeMessage,
+  sendPortMessage,
+  triggerPortOnDisconnectEvent,
   triggerWindowOnFocusedChangedEvent,
   triggerTabOnActivatedEvent,
   triggerTabOnReplacedEvent,

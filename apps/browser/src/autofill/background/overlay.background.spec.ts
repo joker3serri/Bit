@@ -10,8 +10,7 @@ import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
 import { createFocusedFieldDataMock, createPortSpyMock } from "../jest/autofill-mocks";
-import { flushPromises, sendExtensionRuntimeMessage } from "../jest/testing-utils";
-import { PortSpy } from "../jest/typings";
+import { flushPromises, sendExtensionRuntimeMessage, sendPortMessage } from "../jest/testing-utils";
 import {
   AutofillOverlayElement,
   AutofillOverlayPort,
@@ -22,10 +21,8 @@ import {
 import OverlayBackground from "./overlay.background";
 
 describe("OverlayBackground", () => {
-  let buttonPortSpy: PortSpy;
-  let buttonPortOnMessageListener: CallableFunction;
-  let listPortSpy: PortSpy;
-  let listPortOnMessageListener: CallableFunction;
+  let buttonPortSpy: chrome.runtime.Port;
+  let listPortSpy: chrome.runtime.Port;
   let overlayBackground: OverlayBackground;
   const cipherService = mock<CipherService>();
   const authService = mock<AuthService>();
@@ -35,17 +32,13 @@ describe("OverlayBackground", () => {
   const initOverlayElementPorts = (options = { initList: true, initButton: true }) => {
     const { initList, initButton } = options;
     if (initButton) {
-      overlayBackground["handlePortOnConnect"](
-        createPortSpyMock(AutofillOverlayPort.Button, buttonPortOnMessageListener)
-      );
-      buttonPortSpy = overlayBackground["overlayButtonPort"] as PortSpy;
+      overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.Button));
+      buttonPortSpy = overlayBackground["overlayButtonPort"];
     }
 
     if (initList) {
-      overlayBackground["handlePortOnConnect"](
-        createPortSpyMock(AutofillOverlayPort.List, listPortOnMessageListener)
-      );
-      listPortSpy = overlayBackground["overlayListPort"] as PortSpy;
+      overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.List));
+      listPortSpy = overlayBackground["overlayListPort"];
     }
 
     return { buttonPortSpy, listPortSpy };
@@ -344,18 +337,11 @@ describe("OverlayBackground", () => {
       });
 
       describe("updateAutofillOverlayPosition message handler", () => {
-        let buttonPortOnMessageListener: CallableFunction;
-        let listPortOnMessageListener: CallableFunction;
-
         beforeEach(() => {
-          overlayBackground["handlePortOnConnect"](
-            createPortSpyMock(AutofillOverlayPort.List, listPortOnMessageListener)
-          );
-          listPortSpy = overlayBackground["overlayListPort"] as PortSpy;
-          overlayBackground["handlePortOnConnect"](
-            createPortSpyMock(AutofillOverlayPort.Button, buttonPortOnMessageListener)
-          );
-          buttonPortSpy = overlayBackground["overlayButtonPort"] as PortSpy;
+          overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.List));
+          listPortSpy = overlayBackground["overlayListPort"];
+          overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.Button));
+          buttonPortSpy = overlayBackground["overlayButtonPort"];
         });
 
         it("ignores updating the position if the overlay element type is not provided", () => {
@@ -572,7 +558,7 @@ describe("OverlayBackground", () => {
     it("ignores port messages that do not contain a handler", () => {
       jest.spyOn(overlayBackground as any, "checkOverlayButtonFocused").mockImplementation();
 
-      buttonPortSpy.onMessage.callListener({ command: "checkAutofillOverlayButtonFocused" });
+      sendPortMessage(buttonPortSpy, { command: "checkAutofillOverlayButtonFocused" });
 
       expect(overlayBackground["checkOverlayButtonFocused"]).not.toHaveBeenCalled();
     });
@@ -582,7 +568,7 @@ describe("OverlayBackground", () => {
         overlayBackground["userAuthStatus"] = AuthenticationStatus.LoggedOut;
         jest.spyOn(overlayBackground as any, "unlockVault").mockImplementation();
 
-        buttonPortSpy.onMessage.callListener({ command: "overlayButtonClicked" });
+        sendPortMessage(buttonPortSpy, { command: "overlayButtonClicked" });
 
         expect(overlayBackground["unlockVault"]).toHaveBeenCalled();
       });
@@ -590,7 +576,7 @@ describe("OverlayBackground", () => {
       it("opens the autofill overlay if the auth status is unlocked", () => {
         jest.spyOn(overlayBackground as any, "openOverlay").mockImplementation();
 
-        buttonPortSpy.onMessage.callListener({ command: "overlayButtonClicked" });
+        sendPortMessage(buttonPortSpy, { command: "overlayButtonClicked" });
 
         expect(overlayBackground["openOverlay"]).toHaveBeenCalled();
       });
@@ -599,7 +585,7 @@ describe("OverlayBackground", () => {
         it("sends a `closeOverlay` message to the sender tab", () => {
           jest.spyOn(BrowserApi, "tabSendMessage");
 
-          buttonPortSpy.onMessage.callListener({ command: "closeAutofillOverlay" });
+          sendPortMessage(buttonPortSpy, { command: "closeAutofillOverlay" });
 
           expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(buttonPortSpy.sender.tab, {
             command: "closeAutofillOverlay",
@@ -611,7 +597,7 @@ describe("OverlayBackground", () => {
         it("checks if the overlay list is focused", () => {
           jest.spyOn(overlayBackground as any, "checkOverlayListFocused");
 
-          buttonPortSpy.onMessage.callListener({ command: "overlayPageBlurred" });
+          sendPortMessage(buttonPortSpy, { command: "overlayPageBlurred" });
 
           expect(overlayBackground["checkOverlayListFocused"]).toHaveBeenCalled();
         });
@@ -623,13 +609,13 @@ describe("OverlayBackground", () => {
         });
 
         it("ignores the redirect message if the direction is not provided", () => {
-          buttonPortSpy.onMessage.callListener({ command: "redirectOverlayFocusOut" });
+          sendPortMessage(buttonPortSpy, { command: "redirectOverlayFocusOut" });
 
           expect(BrowserApi.tabSendMessageData).not.toHaveBeenCalled();
         });
 
         it("sends the redirect message if the direction is provided", () => {
-          buttonPortSpy.onMessage.callListener({
+          sendPortMessage(buttonPortSpy, {
             command: "redirectOverlayFocusOut",
             direction: RedirectFocusDirection.Next,
           });
@@ -648,7 +634,7 @@ describe("OverlayBackground", () => {
         it("checks on the focus state of the overlay button", () => {
           jest.spyOn(overlayBackground as any, "checkOverlayButtonFocused").mockImplementation();
 
-          listPortSpy.onMessage.callListener({ command: "checkAutofillOverlayButtonFocused" });
+          sendPortMessage(listPortSpy, { command: "checkAutofillOverlayButtonFocused" });
 
           expect(overlayBackground["checkOverlayButtonFocused"]).toHaveBeenCalled();
         });
@@ -658,7 +644,7 @@ describe("OverlayBackground", () => {
         it("checks on the focus state of the overlay button", () => {
           jest.spyOn(overlayBackground as any, "checkOverlayButtonFocused").mockImplementation();
 
-          listPortSpy.onMessage.callListener({ command: "overlayPageBlurred" });
+          sendPortMessage(listPortSpy, { command: "overlayPageBlurred" });
 
           expect(overlayBackground["checkOverlayButtonFocused"]).toHaveBeenCalled();
         });
@@ -670,7 +656,7 @@ describe("OverlayBackground", () => {
           jest.spyOn(overlayBackground as any, "openUnlockPopout").mockImplementation();
           jest.spyOn(BrowserApi, "tabSendMessageData").mockImplementation();
 
-          listPortSpy.onMessage.callListener({ command: "unlockVault" });
+          sendPortMessage(listPortSpy, { command: "unlockVault" });
           await flushPromises();
 
           expect(overlayBackground["closeOverlay"]).toHaveBeenCalledWith(listPortSpy);
@@ -703,7 +689,7 @@ describe("OverlayBackground", () => {
             "redirectOverlayFocusOut"
           );
 
-          listPortSpy.onMessage.callListener(message);
+          sendPortMessage(listPortSpy, message);
           await flushPromises();
 
           expect(redirectOverlayFocusOutSpy).toHaveBeenCalledWith(message, listPortSpy);
