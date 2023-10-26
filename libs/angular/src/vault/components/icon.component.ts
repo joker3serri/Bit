@@ -10,7 +10,7 @@ import {
 
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { WebsiteIconService } from "@bitwarden/common/services/website-icon.service";
+import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 @Component({
@@ -44,10 +44,6 @@ export class IconComponent implements OnInit {
     this.data$ = combineLatest([
       this.settingsService.disableFavicon$.pipe(distinctUntilChanged()),
       this.cipher$.pipe(filter((c) => c !== undefined)),
-    ]).pipe(
-      map(([disableFavicon, cipher]) =>
-        WebsiteIconService.buildCipherIconData(iconsUrl, cipher, disableFavicon)
-      )
-    );
+    ]).pipe(map(([disableFavicon, cipher]) => buildCipherIcon(iconsUrl, cipher, disableFavicon)));
   }
 }
