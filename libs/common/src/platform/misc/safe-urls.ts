@@ -1,3 +1,5 @@
+import { Utils } from "./utils";
+
 const CanLaunchWhitelist = [
   "https://",
   "http://",
@@ -16,7 +18,7 @@ const CanLaunchWhitelist = [
 
 export class SafeUrls {
   static canLaunch(uri: string): boolean {
-    if (uri == null || uri === "") {
+    if (Utils.isNullOrWhitespace(uri)) {
       return false;
     }
 
