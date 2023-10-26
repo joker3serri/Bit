@@ -247,20 +247,14 @@ export class Fido2Component implements OnInit, OnDestroy {
   protected async saveNewLogin() {
     const data = this.message$.value;
     if (data?.type === "ConfirmNewCredentialRequest") {
-      let userVerified = false;
-      if (data.userVerification) {
-        userVerified = await this.passwordRepromptService.showPasswordPrompt();
-      }
+      await this.createNewCipher();
 
-      if (!data.userVerification || userVerified) {
-        await this.createNewCipher();
-      }
-
+      // We are bypassing user verification pending implementation of PIN and biometric support.
       this.send({
         sessionId: this.sessionId,
         cipherId: this.cipher?.id,
         type: "ConfirmNewCredentialResponse",
-        userVerified,
+        userVerified: data.userVerification,
       });
     }
 
@@ -372,17 +366,17 @@ export class Fido2Component implements OnInit, OnDestroy {
   }
 
   private async handleUserVerification(
-    userVerification: boolean,
+    userVerificationRequested: boolean,
     cipher: CipherView
   ): Promise<boolean> {
-    const masterPasswordRepromptRequiered = cipher && cipher.reprompt !== 0;
-    const verificationRequired = userVerification || masterPasswordRepromptRequiered;
+    const masterPasswordRepromptRequired = cipher && cipher.reprompt !== 0;
 
-    if (!verificationRequired) {
-      return false;
+    if (masterPasswordRepromptRequired) {
+      return await this.passwordRepromptService.showPasswordPrompt();
     }
 
-    return await this.passwordRepromptService.showPasswordPrompt();
+    // We are bypassing user verification pending implementation of PIN and biometric support.
+    return userVerificationRequested;
   }
 
   private send(msg: BrowserFido2Message) {
