@@ -73,7 +73,6 @@ apps/web/src/translation-constants.ts @bitwarden/team-platform-dev
 
 ## Autofill team files ##
 apps/browser/src/autofill @bitwarden/team-autofill-dev
-libs/common/src/services/website-icon.service.ts @bitwarden/team-autofill-dev
 
 ## Component Library ##
 .storybook @bitwarden/team-component-library
