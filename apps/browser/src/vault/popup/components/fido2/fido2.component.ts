@@ -122,20 +122,6 @@ export class Fido2Component implements OnInit, OnDestroy {
             return;
           }
 
-          // Show dialog if user account does not have master password
-          if (!(await this.passwordRepromptService.enabled())) {
-            await this.dialogService.openSimpleDialog({
-              title: { key: "featureNotSupported" },
-              content: { key: "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword" },
-              acceptButtonText: { key: "ok" },
-              cancelButtonText: null,
-              type: "info",
-            });
-
-            this.abort(true);
-            return;
-          }
-
           return message;
         }),
         filter((message) => !!message),
