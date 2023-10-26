@@ -53,7 +53,7 @@ import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
 import { flagEnabled } from "../../../../utils/flags";
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
-import { BasePeopleComponent } from "../../../common/base.people.component";
+import { BasePeopleComponent } from "../../common/base.people.component";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 
@@ -449,16 +449,13 @@ export class PeopleComponent
       return;
     }
 
-    const ref = this.modalService.open(BulkRestoreRevokeComponent, {
-      allowMultipleModals: true,
-      data: {
-        organizationId: this.organization.id,
-        users: this.getCheckedUsers(),
-        isRevoking: isRevoking,
-      },
+    const ref = BulkRestoreRevokeComponent.open(this.dialogService, {
+      organizationId: this.organization.id,
+      users: this.getCheckedUsers(),
+      isRevoking: isRevoking,
     });
 
-    await ref.onClosedPromise();
+    await firstValueFrom(ref.closed);
     await this.load();
   }
 
