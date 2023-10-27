@@ -7,7 +7,6 @@ export class PlanResponse extends BaseResponse {
   product: ProductType;
   name: string;
   isAnnual: boolean;
-  isStarterPlan: boolean;
   nameLocalizationKey: string;
   descriptionLocalizationKey: string;
   canBeUsedByBusiness: boolean;
@@ -36,7 +35,6 @@ export class PlanResponse extends BaseResponse {
     this.product = this.getResponseProperty("Product");
     this.name = this.getResponseProperty("Name");
     this.isAnnual = this.getResponseProperty("IsAnnual");
-    this.isStarterPlan = this.getResponseProperty("IsStarterPlan");
     this.nameLocalizationKey = this.getResponseProperty("NameLocalizationKey");
     this.descriptionLocalizationKey = this.getResponseProperty("DescriptionLocalizationKey");
     this.canBeUsedByBusiness = this.getResponseProperty("CanBeUsedByBusiness");
@@ -53,7 +51,7 @@ export class PlanResponse extends BaseResponse {
     this.hasResetPassword = this.getResponseProperty("HasResetPassword");
     this.usersGetPremium = this.getResponseProperty("UsersGetPremium");
     this.upgradeSortOrder = this.getResponseProperty("UpgradeSortOrder");
-    this.displaySortOrder = this.getResponseProperty("SortOrder");
+    this.displaySortOrder = this.getResponseProperty("DisplaySortOrder");
     this.legacyYear = this.getResponseProperty("LegacyYear");
     this.disabled = this.getResponseProperty("Disabled");
     const passwordManager = this.getResponseProperty("PasswordManager");

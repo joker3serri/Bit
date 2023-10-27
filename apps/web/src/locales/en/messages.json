@@ -2378,6 +2378,9 @@
   "planDescTeams": {
     "message": "For businesses and other team organizations."
   },
+  "planNameTeamsStarter": {
+    "message": "Teams Starter"
+  },
   "planNameEnterprise": {
     "message": "Enterprise"
   },

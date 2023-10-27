@@ -58,7 +58,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   @Input() showFree = true;
   @Input() showCancel = false;
   @Input() acceptingSponsorship = false;
-  @Input() currentPlanType: PlanType;
+  @Input() currentProductType: ProductType;
 
   @Input()
   get product(): ProductType {
@@ -205,51 +205,35 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       return [familyPlan];
     }
 
-    const isBusinessOwnedIsSelected = this.formGroup.controls.businessOwned.value;
+    const businessOwnedIsChecked = this.formGroup.controls.businessOwned.value;
 
-    return this.passwordManagerPlans.filter((plan) => {
-      const productHasStarterPlan = this.passwordManagerPlans.some(
-        (p) =>
-          this.currentPlanType !== PlanType.TeamsStarter &&
-          p.product === plan.product &&
-          p.isStarterPlan
-      );
-
-      const planIsNonStarterTeamsOrEnterprise =
-        (plan.type >= PlanType.TeamsMonthly2019 && plan.type <= PlanType.EnterpriseAnnually2019) ||
-        (plan.type >= PlanType.TeamsMonthly2020 && plan.type <= PlanType.EnterpriseAnnually);
-
-      const planIsAnnualOrStarterOrFree =
-        (!productHasStarterPlan && plan.isAnnual) ||
-        (productHasStarterPlan && plan.isStarterPlan) ||
-        plan.product === this.productTypes.Free;
-
-      return (
+    const result = this.passwordManagerPlans.filter(
+      (plan) =>
         plan.type !== PlanType.Custom &&
-        (!isBusinessOwnedIsSelected || plan.canBeUsedByBusiness) &&
+        (!businessOwnedIsChecked || plan.canBeUsedByBusiness) &&
         (this.showFree || plan.product !== ProductType.Free) &&
-        (this.currentPlanType !== PlanType.TeamsStarter || planIsNonStarterTeamsOrEnterprise) &&
         this.planIsEnabled(plan) &&
-        planIsAnnualOrStarterOrFree
-      );
-    });
+        (plan.isAnnual ||
+          plan.product === ProductType.Free ||
+          plan.product === ProductType.TeamsStarter) &&
+        (this.currentProductType !== ProductType.TeamsStarter ||
+          plan.product === ProductType.Teams ||
+          plan.product === ProductType.Enterprise)
+    );
+
+    result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
+
+    return result;
   }
 
   get selectablePlans() {
-    const selectedProduct = this.formGroup.controls.product.value;
-    const selectedProductHasStarterPlan = this.passwordManagerPlans?.some(
-      (plan) => plan.product === selectedProduct && plan.isStarterPlan
+    const selectedProductType = this.formGroup.controls.product.value;
+    const result = this.passwordManagerPlans?.filter(
+      (plan) => this.planIsEnabled(plan) && plan.product === selectedProductType
     );
-    const currentPlanIsStarter = this.currentPlanType === PlanType.TeamsStarter;
 
-    return this.passwordManagerPlans?.filter(
-      (plan) =>
-        plan.product === selectedProduct &&
-        this.planIsEnabled(plan) &&
-        (!selectedProductHasStarterPlan ||
-          (currentPlanIsStarter && !plan.isStarterPlan) ||
-          (!currentPlanIsStarter && plan.isStarterPlan))
-    );
+    result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
+    return result;
   }
 
   get hasProvider() {
