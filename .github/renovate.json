@@ -71,7 +71,7 @@
         "webpack-node-externals"
       ],
       "description": "Admin Console owned dependencies",
-      "labels": "team:admin-console"
+      "reviewers": ["team:team-admin-console-dev"]
     },
 
     {
@@ -85,7 +85,7 @@
         "regedit"
       ],
       "description": "Auth owned dependencies",
-      "labels": "team:auth"
+      "reviewers": ["team:team-auth-dev"]
     },
 
     {
@@ -107,13 +107,13 @@
         "wait-on"
       ],
       "description": "Autofill owned dependencies",
-      "labels": "team:autofill"
+      "reviewers": ["team:team-autofill-dev"]
     },
 
     {
       "matchPackageNames": ["braintree-web-drop-in"],
       "description": "Billing owned dependencies",
-      "labels": "team:billing"
+      "reviewers": ["team:team-billing-dev"]
     },
 
     {
@@ -149,7 +149,7 @@
         "zone.js"
       ],
       "description": "Platform owned dependencies",
-      "labels": "team:platform"
+      "reviewers": ["team:team-platform-dev"]
     },
 
     {
@@ -173,7 +173,7 @@
         "tailwindcss"
       ],
       "description": "Component library owned dependencies",
-      "labels": "team:platform"
+      "reviewers": ["team:team-platform-dev"]
     },
 
     {
@@ -200,7 +200,7 @@
         "ts-jest"
       ],
       "description": "SM owned dependencies",
-      "labels": "team:secrets-manager"
+      "reviewers": ["team:team-secrets-manager-dev"]
     },
 
     {
@@ -222,7 +222,7 @@
         "utf-8-validate"
       ],
       "description": "Tools owned dependencies",
-      "labels": "team:tools"
+      "reviewers": ["team:team-tools-dev"]
     },
 
     {
@@ -259,7 +259,7 @@
         "proper-lockfile"
       ],
       "description": "Vault owned dependencies",
-      "labels": "team:vault"
+      "reviewers": ["team:team-vault-dev"]
     }
   ],
   "ignoreDeps": ["@types/koa-bodyparser", "bootstrap", "node-ipc", "regedit", "zone.js"]
