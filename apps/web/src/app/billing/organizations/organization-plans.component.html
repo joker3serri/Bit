@@ -118,15 +118,23 @@
       </ng-template>
       <span *ngIf="selectableProduct.product != productTypes.Free">
         <ng-container *ngIf="selectableProduct.PasswordManager.basePrice && !acceptingSponsorship">
-          {{ selectableProduct.PasswordManager.basePrice / 12 | currency : "$" }} /{{
-            "month" | i18n
-          }},
+          {{
+            (selectableProduct.isAnnual
+              ? selectableProduct.PasswordManager.basePrice / 12
+              : selectableProduct.PasswordManager.basePrice
+            ) | currency : "$"
+          }}
+          /{{ "month" | i18n }},
           {{ "includesXUsers" | i18n : selectableProduct.PasswordManager.baseSeats }}
           <ng-container *ngIf="selectableProduct.PasswordManager.hasAdditionalSeatsOption">
             {{ ("additionalUsers" | i18n).toLowerCase() }}
-            {{ selectableProduct.PasswordManager.seatPrice / 12 | currency : "$" }} /{{
-              "month" | i18n
+            {{
+              (selectableProduct.isAnnual
+                ? selectableProduct.PasswordManager.seatPrice / 12
+                : selectableProduct.PasswordManager.seatPrice
+              ) | currency : "$"
             }}
+            /{{ "month" | i18n }}
           </ng-container>
         </ng-container>
       </span>
@@ -137,7 +145,13 @@
         "
       >
         {{
-          "costPerUser" | i18n : (selectableProduct.PasswordManager.seatPrice / 12 | currency : "$")
+          "costPerUser"
+            | i18n
+              : ((selectableProduct.isAnnual
+                  ? selectableProduct.PasswordManager.seatPrice / 12
+                  : selectableProduct.PasswordManager.seatPrice
+                )
+                  | currency : "$")
         }}
         /{{ "month" | i18n }}
       </span>
@@ -249,7 +263,13 @@
           {{ "annually" | i18n }}
           <small *ngIf="selectablePlan.PasswordManager.basePrice">
             {{ "basePrice" | i18n }}:
-            {{ selectablePlan.PasswordManager.basePrice / 12 | currency : "$" }} &times; 12
+            {{
+              (selectablePlan.isAnnual
+                ? selectablePlan.PasswordManager.basePrice / 12
+                : selectablePlan.PasswordManager.basePrice
+              ) | currency : "$"
+            }}
+            &times; 12
             {{ "monthAbbr" | i18n }}
             =
             <ng-container *ngIf="acceptingSponsorship; else notAcceptingSponsorship">
@@ -269,8 +289,13 @@
             >
             <span *ngIf="!selectablePlan.PasswordManager.baseSeats">{{ "users" | i18n }}:</span>
             {{ formGroup.controls["additionalSeats"].value || 0 }} &times;
-            {{ selectablePlan.PasswordManager.seatPrice / 12 | currency : "$" }} &times; 12
-            {{ "monthAbbr" | i18n }} =
+            {{
+              (selectablePlan.isAnnual
+                ? selectablePlan.PasswordManager.seatPrice / 12
+                : selectablePlan.PasswordManager.seatPrice
+              ) | currency : "$"
+            }}
+            &times; 12 {{ "monthAbbr" | i18n }} =
             {{
               passwordManagerSeatTotal(selectablePlan, formGroup.value.additionalSeats)
                 | currency : "$"
@@ -280,7 +305,12 @@
           <small *ngIf="selectablePlan.PasswordManager.hasAdditionalStorageOption">
             {{ "additionalStorageGb" | i18n }}:
             {{ formGroup.controls["additionalStorage"].value || 0 }} &times;
-            {{ selectablePlan.PasswordManager.additionalStoragePricePerGb / 12 | currency : "$" }}
+            {{
+              (selectablePlan.isAnnual
+                ? selectablePlan.PasswordManager.additionalStoragePricePerGb / 12
+                : selectablePlan.PasswordManager.additionalStoragePricePerGb
+              ) | currency : "$"
+            }}
             &times; 12 {{ "monthAbbr" | i18n }} =
             {{ additionalStorageTotal(selectablePlan) | currency : "$" }} /{{ "year" | i18n }}
           </small>

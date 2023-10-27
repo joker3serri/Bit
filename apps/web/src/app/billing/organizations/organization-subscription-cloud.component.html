@@ -127,6 +127,7 @@
       </button>
       <app-change-plan
         [organizationId]="organizationId"
+        [currentPlanType]="sub.planType"
         (onChanged)="closeChangePlan()"
         (onCanceled)="closeChangePlan()"
         *ngIf="showChangePlan"

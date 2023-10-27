@@ -58,6 +58,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   @Input() showFree = true;
   @Input() showCancel = false;
   @Input() acceptingSponsorship = false;
+  @Input() currentPlanType: PlanType;
 
   @Input()
   get product(): ProductType {
@@ -196,38 +197,58 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   get selectableProducts() {
-    let validPlans = this.passwordManagerPlans.filter((plan) => plan.type !== PlanType.Custom);
-
-    if (this.formGroup.controls.businessOwned.value) {
-      validPlans = validPlans.filter((plan) => plan.canBeUsedByBusiness);
-    }
-
-    if (!this.showFree) {
-      validPlans = validPlans.filter((plan) => plan.product !== ProductType.Free);
-    }
-
-    validPlans = validPlans.filter(
-      (plan) =>
-        !plan.legacyYear &&
-        !plan.disabled &&
-        (plan.isAnnual || plan.product === this.productTypes.Free)
-    );
-
     if (this.acceptingSponsorship) {
       const familyPlan = this.passwordManagerPlans.find(
         (plan) => plan.type === PlanType.FamiliesAnnually
       );
       this.discount = familyPlan.PasswordManager.basePrice;
-      validPlans = [familyPlan];
+      return [familyPlan];
     }
 
-    return validPlans;
+    const isBusinessOwnedIsSelected = this.formGroup.controls.businessOwned.value;
+
+    return this.passwordManagerPlans.filter((plan) => {
+      const productHasStarterPlan = this.passwordManagerPlans.some(
+        (p) =>
+          this.currentPlanType !== PlanType.TeamsStarter &&
+          p.product === plan.product &&
+          p.isStarterPlan
+      );
+
+      const planIsNonStarterTeamsOrEnterprise =
+        (plan.type >= PlanType.TeamsMonthly2019 && plan.type <= PlanType.EnterpriseAnnually2019) ||
+        (plan.type >= PlanType.TeamsMonthly2020 && plan.type <= PlanType.EnterpriseAnnually);
+
+      const planIsAnnualOrStarterOrFree =
+        (!productHasStarterPlan && plan.isAnnual) ||
+        (productHasStarterPlan && plan.isStarterPlan) ||
+        plan.product === this.productTypes.Free;
+
+      return (
+        plan.type !== PlanType.Custom &&
+        (!isBusinessOwnedIsSelected || plan.canBeUsedByBusiness) &&
+        (this.showFree || plan.product !== ProductType.Free) &&
+        (this.currentPlanType !== PlanType.TeamsStarter || planIsNonStarterTeamsOrEnterprise) &&
+        this.planIsEnabled(plan) &&
+        planIsAnnualOrStarterOrFree
+      );
+    });
   }
 
   get selectablePlans() {
+    const selectedProduct = this.formGroup.controls.product.value;
+    const selectedProductHasStarterPlan = this.passwordManagerPlans?.some(
+      (plan) => plan.product === selectedProduct && plan.isStarterPlan
+    );
+    const currentPlanIsStarter = this.currentPlanType === PlanType.TeamsStarter;
+
     return this.passwordManagerPlans?.filter(
       (plan) =>
-        !plan.legacyYear && !plan.disabled && plan.product === this.formGroup.controls.product.value
+        plan.product === selectedProduct &&
+        this.planIsEnabled(plan) &&
+        (!selectedProductHasStarterPlan ||
+          (currentPlanIsStarter && !plan.isStarterPlan) ||
+          (!currentPlanIsStarter && plan.isStarterPlan))
     );
   }
 
@@ -393,7 +414,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       return;
     }
     this.formGroup.controls.product.setValue(ProductType.Teams);
-    this.formGroup.controls.plan.setValue(PlanType.TeamsAnnually);
+    this.formGroup.controls.plan.setValue(PlanType.TeamsStarter);
     this.changedProduct();
   }
 
@@ -645,5 +666,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.secretsManagerForm.controls.enabled.setValue(true);
       this.changedProduct();
     }
+  }
+
+  private planIsEnabled(plan: PlanResponse) {
+    return !plan.disabled && !plan.legacyYear;
   }
 }

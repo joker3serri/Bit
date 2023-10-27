@@ -234,6 +234,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return (
       this.sub.planType === PlanType.EnterpriseAnnually ||
       this.sub.planType === PlanType.EnterpriseMonthly ||
+      this.sub.planType === PlanType.EnterpriseAnnually2020 ||
+      this.sub.planType === PlanType.EnterpriseMonthly2020 ||
       this.sub.planType === PlanType.EnterpriseAnnually2019 ||
       this.sub.planType === PlanType.EnterpriseMonthly2019
     );
@@ -406,7 +408,11 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   };
 
   get showChangePlanButton() {
-    return this.subscription == null && this.sub.planType === PlanType.Free && !this.showChangePlan;
+    return (
+      ((this.subscription == null && this.sub.planType === PlanType.Free) ||
+        (this.subscription != null && this.sub.planType === PlanType.TeamsStarter)) &&
+      !this.showChangePlan
+    );
   }
 }
 

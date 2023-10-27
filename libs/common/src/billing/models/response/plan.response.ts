@@ -7,6 +7,7 @@ export class PlanResponse extends BaseResponse {
   product: ProductType;
   name: string;
   isAnnual: boolean;
+  isStarterPlan: boolean;
   nameLocalizationKey: string;
   descriptionLocalizationKey: string;
   canBeUsedByBusiness: boolean;
@@ -35,6 +36,7 @@ export class PlanResponse extends BaseResponse {
     this.product = this.getResponseProperty("Product");
     this.name = this.getResponseProperty("Name");
     this.isAnnual = this.getResponseProperty("IsAnnual");
+    this.isStarterPlan = this.getResponseProperty("IsStarterPlan");
     this.nameLocalizationKey = this.getResponseProperty("NameLocalizationKey");
     this.descriptionLocalizationKey = this.getResponseProperty("DescriptionLocalizationKey");
     this.canBeUsedByBusiness = this.getResponseProperty("CanBeUsedByBusiness");
