@@ -44,7 +44,6 @@ const tabs = {
   executeScript: jest.fn(),
   sendMessage: jest.fn(),
   query: jest.fn(),
-  remove: jest.fn(),
   onActivated: {
     addListener: jest.fn(),
     removeListener: jest.fn(),
@@ -72,6 +71,7 @@ const windows = {
   get: jest.fn(),
   getCurrent: jest.fn(),
   update: jest.fn(),
+  remove: jest.fn(),
   onFocusChanged: {
     addListener: jest.fn(),
     removeListener: jest.fn(),
