@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -16,7 +15,6 @@ export class AccountSwitcherService {
   constructor(
     private accountService: AccountService,
     private stateService: StateService,
-    private router: Router,
     private messagingService: MessagingService
   ) {}
 
@@ -53,12 +51,10 @@ export class AccountSwitcherService {
     if (id === SPECIAL_ADD_ACCOUNT_VALUE) {
       await this.stateService.setActiveUser(null);
       await this.stateService.setRememberedEmail(null);
-      this.router.navigate(["/home"]);
       return;
     }
 
     this.accountService.switchAccount(id as UserId);
     this.messagingService.send("switchAccount", { userId: id });
-    this.router.navigate(["/home"]);
   }
 }

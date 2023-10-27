@@ -1,12 +1,13 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { AccountSwitcherService } from "../services/account-switching.service";
+import { AccountSwitcherService } from "../services/account-switcher.service";
 
 @Component({
   templateUrl: "account-switcher.component.html",
 })
 export class AccountSwitcherComponent {
-  constructor(private accountSwitcherService: AccountSwitcherService) {}
+  constructor(private accountSwitcherService: AccountSwitcherService, private router: Router) {}
 
   get accountOptions$() {
     return this.accountSwitcherService.accountOptions$;
@@ -14,5 +15,6 @@ export class AccountSwitcherComponent {
 
   async selectAccount(id: string) {
     await this.accountSwitcherService.selectAccount(id);
+    this.router.navigate(["/home"]);
   }
 }
