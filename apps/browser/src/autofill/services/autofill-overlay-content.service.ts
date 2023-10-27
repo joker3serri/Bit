@@ -9,7 +9,7 @@ import { EVENTS } from "../constants";
 import AutofillField from "../models/autofill-field";
 import AutofillOverlayButtonIframe from "../overlay/iframe-content/autofill-overlay-button-iframe";
 import AutofillOverlayListIframe from "../overlay/iframe-content/autofill-overlay-list-iframe";
-import { ElementWithOpId, FormFieldElement } from "../types";
+import { ElementWithOpId, FillableFormFieldElement, FormFieldElement } from "../types";
 import {
   AutofillOverlayElement,
   RedirectFocusDirection,
@@ -30,9 +30,11 @@ import { AutoFillConstants } from "./autofill-constants";
 class AutofillOverlayContentService implements AutofillOverlayContentServiceInterface {
   isFieldCurrentlyFocused = false;
   isCurrentlyFilling = false;
+  isOverlayCiphersPopulated = false;
   private readonly findTabs = tabbable;
   private readonly sendExtensionMessage = sendExtensionMessage;
   private autofillOverlayVisibility: number;
+  private userFilledFields: Record<string, FillableFormFieldElement> = {};
   private authStatus: AuthenticationStatus;
   private focusableElements: FocusableElement[] = [];
   private isOverlayButtonVisible = false;
@@ -187,6 +189,25 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     this.sendExtensionMessage("autofillOverlayElementClosed", {
       overlayElement: AutofillOverlayElement.List,
     });
+  }
+
+  /**
+   * Formats any found user filled fields for a login cipher and sends a message
+   * to the background script to add a new cipher.
+   */
+  addNewVaultItem() {
+    if (!this.isOverlayListVisible) {
+      return;
+    }
+
+    const login = {
+      username: this.userFilledFields["username"]?.value || "",
+      password: this.userFilledFields["password"]?.value || "",
+      uri: globalThis.document.URL,
+      hostname: globalThis.document.location.hostname,
+    };
+
+    this.sendExtensionMessage("autofillOverlayAddNewVaultItem", { login });
   }
 
   /**
@@ -367,12 +388,35 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
       return;
     }
 
-    if (formFieldElement.value && !this.isUserAuthed()) {
+    this.storeModifiedFormElement(formFieldElement);
+
+    if (formFieldElement.value && (this.isOverlayCiphersPopulated || !this.isUserAuthed())) {
       this.removeAutofillOverlayList();
       return;
     }
 
     this.openAutofillOverlay();
+  }
+
+  /**
+   * Stores the modified form element data for use when the user attempts to add a new
+   * vault item. This method will also store the most recently focused field, if it is
+   * not already stored.
+   *
+   * @param formFieldElement
+   * @private
+   */
+  private storeModifiedFormElement(formFieldElement: ElementWithOpId<FillableFormFieldElement>) {
+    if (formFieldElement === this.mostRecentlyFocusedField) {
+      this.mostRecentlyFocusedField = formFieldElement;
+    }
+
+    if (formFieldElement.type === "password") {
+      this.userFilledFields.password = formFieldElement;
+      return;
+    }
+
+    this.userFilledFields.username = formFieldElement;
   }
 
   /**
@@ -438,7 +482,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
       this.removeAutofillOverlayList();
     }
 
-    if (!formElementHasValue || this.isUserAuthed()) {
+    if (!formElementHasValue || (!this.isOverlayCiphersPopulated && this.isUserAuthed())) {
       this.sendExtensionMessage("openAutofillOverlay");
       return;
     }

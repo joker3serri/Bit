@@ -307,6 +307,23 @@ describe("AutofillInit", () => {
         });
       });
 
+      describe("addNewVaultItemFromOverlay", () => {
+        it("will not add a new vault item if the autofillOverlayContentService is not present", () => {
+          const newAutofillInit = new AutofillInit(undefined);
+          newAutofillInit.init();
+
+          sendExtensionRuntimeMessage({ command: "addNewVaultItemFromOverlay" });
+
+          expect(newAutofillInit["autofillOverlayContentService"]).toBe(undefined);
+        });
+
+        it("will add a new vault item", () => {
+          sendExtensionRuntimeMessage({ command: "addNewVaultItemFromOverlay" });
+
+          expect(autofillInit["autofillOverlayContentService"].addNewVaultItem).toHaveBeenCalled();
+        });
+      });
+
       describe("redirectOverlayFocusOut", () => {
         const message = {
           command: "redirectOverlayFocusOut",
@@ -333,6 +350,32 @@ describe("AutofillInit", () => {
         });
       });
 
+      describe("updateIsOverlayCiphersPopulated", () => {
+        const message = {
+          command: "updateIsOverlayCiphersPopulated",
+          data: {
+            isOverlayCiphersPopulated: true,
+          },
+        };
+
+        it("skips updating whether the ciphers are populated if the autofillOverlayContentService does note exist", () => {
+          const newAutofillInit = new AutofillInit(undefined);
+          newAutofillInit.init();
+
+          sendExtensionRuntimeMessage(message);
+
+          expect(newAutofillInit["autofillOverlayContentService"]).toBe(undefined);
+        });
+
+        it("updates whether the overlay ciphers are populated", () => {
+          sendExtensionRuntimeMessage(message);
+
+          expect(autofillInit["autofillOverlayContentService"].isOverlayCiphersPopulated).toEqual(
+            message.data.isOverlayCiphersPopulated
+          );
+        });
+      });
+
       describe("bgUnlockPopoutOpened", () => {
         it("skips attempting to blur and remove the overlay if the autofillOverlayContentService is not present", () => {
           const newAutofillInit = new AutofillInit(undefined);
@@ -350,6 +393,31 @@ describe("AutofillInit", () => {
           jest.spyOn(autofillInit as any, "removeAutofillOverlay");
 
           sendExtensionRuntimeMessage({ command: "bgUnlockPopoutOpened" });
+
+          expect(
+            autofillInit["autofillOverlayContentService"].blurMostRecentOverlayField
+          ).toHaveBeenCalled();
+          expect(autofillInit["removeAutofillOverlay"]).toHaveBeenCalled();
+        });
+      });
+
+      describe("bgVaultItemRepromptPopoutOpened", () => {
+        it("skips attempting to blur and remove the overlay if the autofillOverlayContentService is not present", () => {
+          const newAutofillInit = new AutofillInit(undefined);
+          newAutofillInit.init();
+          jest.spyOn(newAutofillInit as any, "removeAutofillOverlay");
+
+          sendExtensionRuntimeMessage({ command: "bgVaultItemRepromptPopoutOpened" });
+
+          expect(newAutofillInit["autofillOverlayContentService"]).toBe(undefined);
+          expect(newAutofillInit["removeAutofillOverlay"]).not.toHaveBeenCalled();
+        });
+
+        it("blurs the most recently focused feel and remove the autofill overlay", () => {
+          jest.spyOn(autofillInit["autofillOverlayContentService"], "blurMostRecentOverlayField");
+          jest.spyOn(autofillInit as any, "removeAutofillOverlay");
+
+          sendExtensionRuntimeMessage({ command: "bgVaultItemRepromptPopoutOpened" });
 
           expect(
             autofillInit["autofillOverlayContentService"].blurMostRecentOverlayField

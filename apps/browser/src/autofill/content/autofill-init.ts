@@ -22,8 +22,11 @@ class AutofillInit implements AutofillInitInterface {
     fillForm: ({ message }) => this.fillForm(message.fillScript),
     openAutofillOverlay: ({ message }) => this.openAutofillOverlay(message),
     closeAutofillOverlay: () => this.removeAutofillOverlay(),
+    addNewVaultItemFromOverlay: () => this.addNewVaultItemFromOverlay(),
     redirectOverlayFocusOut: ({ message }) => this.redirectOverlayFocusOut(message),
+    updateIsOverlayCiphersPopulated: ({ message }) => this.updateIsOverlayCiphersPopulated(message),
     bgUnlockPopoutOpened: () => this.blurAndRemoveOverlay(),
+    bgVaultItemRepromptPopoutOpened: () => this.blurAndRemoveOverlay(),
   };
 
   /**
@@ -164,6 +167,17 @@ class AutofillInit implements AutofillInitInterface {
   }
 
   /**
+   * Adds a new vault item from the overlay.
+   */
+  private addNewVaultItemFromOverlay() {
+    if (!this.autofillOverlayContentService) {
+      return;
+    }
+
+    this.autofillOverlayContentService.addNewVaultItem();
+  }
+
+  /**
    * Redirects the overlay focus out of an overlay iframe.
    *
    * @param data - Contains the direction to redirect the focus.
@@ -174,6 +188,22 @@ class AutofillInit implements AutofillInitInterface {
     }
 
     this.autofillOverlayContentService.redirectOverlayFocusOut(data?.direction);
+  }
+
+  /**
+   * Updates whether the current tab has ciphers that can populate the overlay list
+   *
+   * @param data - Contains the isOverlayCiphersPopulated value
+   *
+   */
+  private updateIsOverlayCiphersPopulated({ data }: AutofillExtensionMessage) {
+    if (!this.autofillOverlayContentService) {
+      return;
+    }
+
+    this.autofillOverlayContentService.isOverlayCiphersPopulated = Boolean(
+      data?.isOverlayCiphersPopulated
+    );
   }
 
   /**

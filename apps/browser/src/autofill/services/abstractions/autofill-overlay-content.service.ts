@@ -12,6 +12,7 @@ type OpenAutofillOverlayOptions = {
 interface AutofillOverlayContentService {
   isFieldCurrentlyFocused: boolean;
   isCurrentlyFilling: boolean;
+  isOverlayCiphersPopulated: boolean;
   init(): void;
   setupAutofillOverlayListenerOnField(
     autofillFieldElement: ElementWithOpId<FormFieldElement>,
@@ -21,6 +22,7 @@ interface AutofillOverlayContentService {
   removeAutofillOverlay(): void;
   removeAutofillOverlayButton(): void;
   removeAutofillOverlayList(): void;
+  addNewVaultItem(): void;
   redirectOverlayFocusOut(direction: "previous" | "next"): void;
   focusMostRecentOverlayField(): void;
   blurMostRecentOverlayField(): void;
