@@ -11,6 +11,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { PlanType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
+import { ProductType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -42,6 +43,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   private readonly _smBetaEndingDate = new Date(2023, 7, 15);
   private readonly _smGracePeriodEndingDate = new Date(2023, 10, 14);
+
+  protected readonly teamsStarter = ProductType.TeamsStarter;
 
   private destroy$ = new Subject<void>();
 
@@ -408,11 +411,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   };
 
   get showChangePlanButton() {
-    return (
-      ((this.subscription == null && this.sub.planType === PlanType.Free) ||
-        (this.subscription != null && this.sub.planType === PlanType.TeamsStarter)) &&
-      !this.showChangePlan
-    );
+    return this.subscription == null && this.sub.planType === PlanType.Free && !this.showChangePlan;
   }
 }
 
