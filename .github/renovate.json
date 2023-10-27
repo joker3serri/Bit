@@ -39,7 +39,6 @@
       "matchPackageNames": ["@types/jest", "jest", "ts-jest", "jest-preset-angular"],
       "matchUpdateTypes": "major"
     },
-
     {
       "matchPackageNames": [
         "@ngtools/webpack",
@@ -73,7 +72,6 @@
       "description": "Admin Console owned dependencies",
       "reviewers": ["team:team-admin-console-dev"]
     },
-
     {
       "matchPackageNames": [
         "@types/duo_web_sdk",
@@ -87,7 +85,6 @@
       "description": "Auth owned dependencies",
       "reviewers": ["team:team-auth-dev"]
     },
-
     {
       "matchPackageNames": [
         "concurrently",
@@ -109,13 +106,11 @@
       "description": "Autofill owned dependencies",
       "reviewers": ["team:team-autofill-dev"]
     },
-
     {
       "matchPackageNames": ["braintree-web-drop-in"],
       "description": "Billing owned dependencies",
       "reviewers": ["team:team-billing-dev"]
     },
-
     {
       "matchPackageNames": [
         "@angular-devkit/build-angular",
@@ -151,7 +146,6 @@
       "description": "Platform owned dependencies",
       "reviewers": ["team:team-platform-dev"]
     },
-
     {
       "matchPackageNames": [
         "@compodoc/compodoc",
@@ -175,7 +169,6 @@
       "description": "Component library owned dependencies",
       "reviewers": ["team:team-platform-dev"]
     },
-
     {
       "matchPackageNames": [
         "@angular-eslint/eslint-plugin",
@@ -202,7 +195,6 @@
       "description": "SM owned dependencies",
       "reviewers": ["team:team-secrets-manager-dev"]
     },
-
     {
       "matchPackageNames": [
         "@electron/notarize",
@@ -224,7 +216,6 @@
       "description": "Tools owned dependencies",
       "reviewers": ["team:team-tools-dev"]
     },
-
     {
       "matchPackageNames": [
         "@koa/multer",
