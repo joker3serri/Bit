@@ -71,7 +71,7 @@
         "webpack-node-externals"
       ],
       "description": "Admin Console owned dependencies",
-      "labels": "team:ac"
+      "labels": "team:admin-console"
     },
 
     {
@@ -200,7 +200,7 @@
         "ts-jest"
       ],
       "description": "SM owned dependencies",
-      "labels": "team:sm"
+      "labels": "team:secrets-manager"
     },
 
     {
