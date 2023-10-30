@@ -52,9 +52,7 @@
     <label class="form-check-label" for="product{{ selectableProduct.product }}">
       {{ selectableProduct.nameLocalizationKey | i18n }}
       <small class="mb-1">{{ selectableProduct.descriptionLocalizationKey | i18n : "1" }}</small>
-      <ng-container
-        *ngIf="selectableProduct.product === productTypes.Enterprise; else fullFeatureList"
-      >
+      <ng-container *ngIf="selectableProduct.product === productTypes.Enterprise">
         <small>• {{ "includeAllTeamsFeatures" | i18n }}</small>
         <small *ngIf="selectableProduct.hasSelfHost">• {{ "onPremHostingOptional" | i18n }}</small>
         <small *ngIf="selectableProduct.hasSso">• {{ "includeSsoAuthentication" | i18n }}</small>
@@ -66,6 +64,19 @@
           {{ "xDayFreeTrial" | i18n : selectableProduct.trialPeriodDays }}
         </small>
       </ng-container>
+      <ng-container
+        *ngIf="
+          teamsStarterPlanFeatureFlagIsEnabled && selectableProduct.product === productTypes.Teams;
+          else fullFeatureList
+        "
+      >
+        <small>• {{ "includeAllTeamsStarterFeatures" | i18n }}</small>
+        <small>• {{ "chooseMonthlyOrAnnualBilling" | i18n }}</small>
+        <small>• {{ "abilityToAddMoreThanNMembers" | i18n : 10 }}</small>
+        <small *ngIf="selectableProduct.trialPeriodDays && createOrganization">
+          • {{ "xDayFreeTrial" | i18n : selectableProduct.trialPeriodDays }}
+        </small>
+      </ng-container>
       <ng-template #fullFeatureList>
         <small *ngIf="selectableProduct.product == productTypes.Free"
           >• {{ "limitedUsers" | i18n : selectableProduct.PasswordManager.maxSeats }}</small
@@ -73,6 +84,7 @@
         <small
           *ngIf="
             selectableProduct.product != productTypes.Free &&
+            selectableProduct.product != productTypes.TeamsStarter &&
             selectableProduct.PasswordManager.maxSeats
           "
           >• {{ "addShareLimitedUsers" | i18n : selectableProduct.PasswordManager.maxSeats }}</small

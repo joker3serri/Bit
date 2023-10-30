@@ -236,6 +236,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  get teamsStarterPlanFeatureFlagIsEnabled(): boolean {
+    return this.passwordManagerPlans.some((plan) => plan.product === ProductType.TeamsStarter);
+  }
+
   get hasProvider() {
     return this.providerId != null;
   }

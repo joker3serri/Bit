@@ -258,6 +258,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       }
     } else if (this.sub.maxAutoscaleSeats === this.sub.seats && this.sub.seats != null) {
       return this.i18nService.t("subscriptionMaxReached", this.sub.seats.toString());
+    } else if (this.userOrg.planProductType === ProductType.TeamsStarter) {
+      return this.i18nService.t("subscriptionUserSeatsWithoutAdditionalSeatsOption", 10);
     } else if (this.sub.maxAutoscaleSeats == null) {
       return this.i18nService.t("subscriptionUserSeatsUnlimitedAutoscale");
     } else {
