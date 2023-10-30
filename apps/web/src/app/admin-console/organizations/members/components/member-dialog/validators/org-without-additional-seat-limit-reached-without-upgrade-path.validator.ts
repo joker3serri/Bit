@@ -11,7 +11,7 @@ import { ProductType } from "@bitwarden/common/enums";
  * @param errorMessage A localized string to display if validation fails
  * @returns A function that validates an `AbstractControl` and returns `ValidationErrors` or `null`
  */
-export function orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
+export function orgWithoutAdditionalSeatLimitReachedWithoutUpgradePathValidator(
   organization: Organization,
   allOrganizationUserEmails: string[],
   errorMessage: string
@@ -36,9 +36,10 @@ export function orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
       )
     );
 
-    return organization.planProductType === ProductType.Free &&
+    return (organization.planProductType === ProductType.Families ||
+      organization.planProductType === ProductType.TeamsStarter) &&
       allOrganizationUserEmails.length + newEmailsToAdd.length > organization.seats
-      ? { freePlanLimitReached: { message: errorMessage } }
+      ? { orgSeatLimitReachedWithoutUpgradePath: { message: errorMessage } }
       : null;
   };
 }
