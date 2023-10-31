@@ -35,6 +35,7 @@ enum ValidLayoutParams {
   teams = "teams",
   teams1 = "teams1",
   teams2 = "teams2",
+  teams3 = "teams3",
   enterprise = "enterprise",
   enterprise1 = "enterprise1",
   enterprise2 = "enterprise2",
@@ -244,6 +245,14 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
   previousStep() {
     this.verticalStepper.previous();
+  }
+
+  get orgDisplayName() {
+    if (this.org === "teamsStarter") {
+      return "teams starter";
+    }
+
+    return this.org;
   }
 
   private setupFamilySponsorship(sponsorshipToken: string) {
