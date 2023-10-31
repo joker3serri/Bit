@@ -114,36 +114,7 @@ describe("orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator", () => {
     expect(result).toStrictEqual({ freePlanLimitReached: { message: errorMessage } });
   });
 
-  it("should return validation error when max seats are exceeded on teams starter plan", () => {
-    organization = orgFactory({
-      planProductType: ProductType.TeamsStarter,
-      seats: 10,
-    });
-    const errorMessage = "You cannot invite more than 10 members without upgrading your plan.";
-    validatorFn = orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
-      organization,
-      allOrganizationUserEmails,
-      "You cannot invite more than 10 members without upgrading your plan."
-    );
-    const control = new FormControl(
-      "user2@example.com," +
-        "user3@example.com," +
-        "user4@example.com," +
-        "user5@example.com," +
-        "user6@example.com," +
-        "user7@example.com," +
-        "user8@example.com," +
-        "user9@example.com," +
-        "user10@example.com," +
-        "user11@example.com"
-    );
-
-    const result = validatorFn(control);
-
-    expect(result).toStrictEqual({ freePlanLimitReached: { message: errorMessage } });
-  });
-
-  it("should return null when not on free plan or teams starter plan", () => {
+  it("should return null when not on free plan", () => {
     const control = new FormControl("user2@example.com,user3@example.com");
     organization = orgFactory({
       planProductType: ProductType.Enterprise,
