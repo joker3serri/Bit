@@ -24,6 +24,7 @@ enum ValidOrgParams {
   families = "families",
   enterprise = "enterprise",
   teams = "teams",
+  teamsStarter = "teamsStarter",
   individual = "individual",
   premium = "premium",
   free = "free",
@@ -64,6 +65,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   trialFlowOrgs: string[] = [
     ValidOrgParams.teams,
+    ValidOrgParams.teamsStarter,
     ValidOrgParams.enterprise,
     ValidOrgParams.families,
   ];
@@ -143,8 +145,11 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
         if (this.org === ValidOrgParams.families) {
           this.plan = PlanType.FamiliesAnnually;
           this.product = ProductType.Families;
-        } else if (this.org === ValidOrgParams.teams) {
+        } else if (this.org === ValidOrgParams.teamsStarter) {
           this.plan = PlanType.TeamsStarter;
+          this.product = ProductType.TeamsStarter;
+        } else if (this.org === ValidOrgParams.teams) {
+          this.plan = PlanType.TeamsAnnually;
           this.product = ProductType.Teams;
         } else if (this.org === ValidOrgParams.enterprise) {
           this.plan = PlanType.EnterpriseAnnually;

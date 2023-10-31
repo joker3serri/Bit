@@ -401,8 +401,13 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     if (!this.formGroup.controls.businessOwned.value || this.selectedPlan.canBeUsedByBusiness) {
       return;
     }
-    this.formGroup.controls.product.setValue(ProductType.Teams);
-    this.formGroup.controls.plan.setValue(PlanType.TeamsStarter);
+    if (this.teamsStarterPlanFeatureFlagIsEnabled) {
+      this.formGroup.controls.product.setValue(ProductType.TeamsStarter);
+      this.formGroup.controls.plan.setValue(PlanType.TeamsStarter);
+    } else {
+      this.formGroup.controls.product.setValue(ProductType.Teams);
+      this.formGroup.controls.plan.setValue(PlanType.TeamsAnnually);
+    }
     this.changedProduct();
   }
 
