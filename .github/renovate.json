@@ -200,7 +200,7 @@
         "lint-staged",
         "ts-jest"
       ],
-      "description": "SM owned dependencies",
+      "description": "Secrets Manager owned dependencies",
       "commitMessagePrefix": "[deps] SM:",
       "reviewers": ["team:team-secrets-manager-dev"]
     },
