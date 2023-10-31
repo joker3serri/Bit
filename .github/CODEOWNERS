@@ -31,7 +31,8 @@ libs/common/src/models/export @bitwarden/team-tools-dev
 libs/common/src/tools @bitwarden/team-tools-dev
 libs/exporter @bitwarden/team-tools-dev
 libs/importer @bitwarden/team-tools-dev
-## Localization/Crowdin
+
+## Localization/Crowdin (Tools team)
 apps/browser/src/_locales @bitwarden/team-tools-dev
 apps/cli/src/locales @bitwarden/team-tools-dev
 apps/desktop/src/locales @bitwarden/team-tools-dev
