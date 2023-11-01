@@ -10,8 +10,9 @@ import { PolicyResponse } from "../../models/response/policy.response";
 
 export abstract class PolicyService {
   /**
-   * All policies for the active user (from sync data).
+   * All {@link Policy} objects for the active user (from sync data).
    * May include policies that are disabled or otherwise do not apply to the user.
+   * @see {@link get$} or {@link policyAppliesToActiveUser$} if you want to know when a policy applies to a user.
    */
   policies$: Observable<Policy[]>;
 
@@ -24,15 +25,16 @@ export abstract class PolicyService {
   get$: (policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) => Observable<Policy>;
 
   /**
-   * All policies received in sync data for the user.
+   * All {@link Policy} objects for the specified user (from sync data).
    * May include policies that are disabled or otherwise do not apply to the user.
+   * @see {@link policyAppliesToUser} if you want to know when a policy applies to the user.
    * @deprecated Use {@link policies$} instead
    */
   getAll: (type?: PolicyType, userId?: string) => Promise<Policy[]>;
 
   /**
-   * @returns a boolean indicating whether the {@link PolicyType} applies to the current user.
-   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * @returns true if the {@link PolicyType} applies to the current user, otherwise false.
+   * @remarks A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    */
   policyAppliesToActiveUser$: (
     policyType: PolicyType,
@@ -40,9 +42,9 @@ export abstract class PolicyService {
   ) => Observable<boolean>;
 
   /**
-   * @returns a boolean indicating whether the {@link PolicyType} applies to the specified user.
-   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
-   * Use {@link policyAppliesToActiveUser$} instead if you only want to know about the current user.
+   * @returns true if the {@link PolicyType} applies to the specified user, otherwise false.
+   * @remarks A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * @see {@link policyAppliesToActiveUser$} if you only want to know about the current user.
    */
   policyAppliesToUser: (
     policyType: PolicyType,
@@ -55,7 +57,7 @@ export abstract class PolicyService {
   /**
    * Combines all Master Password policies that apply to the user.
    * @returns a set of options which represent the minimum Master Password settings that the user must
-   * comply with in order to comply with all Master Password policies.
+   * comply with in order to comply with **all** Master Password policies.
    */
   masterPasswordPolicyOptions$: (policies?: Policy[]) => Observable<MasterPasswordPolicyOptions>;
 
