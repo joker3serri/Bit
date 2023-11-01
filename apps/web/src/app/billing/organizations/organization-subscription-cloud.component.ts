@@ -98,8 +98,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
             const seatPriceTotal = this.sub.plan?.SecretsManager?.seatPrice * item.quantity;
             item.productName =
               itemTotalAmount === seatPriceTotal || item.name.includes("Service Accounts")
-                ? "SecretsManager"
-                : "PasswordManager";
+                ? "secretsManager"
+                : "passwordManager";
             return item;
           })
           .sort(sortSubscriptionItems);
