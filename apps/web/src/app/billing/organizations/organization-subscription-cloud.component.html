@@ -133,9 +133,6 @@
         *ngIf="showChangePlan"
       ></app-change-plan>
     </div>
-    <p *ngIf="!showChangePlan && sub.plan.product === teamsStarter" bitTypography="body1">
-      {{ "contactSupportBillingPlanUpgrade" | i18n }}
-    </p>
   </ng-container>
 
   <ng-container *ngIf="showSecretsManagerSubscribe">
