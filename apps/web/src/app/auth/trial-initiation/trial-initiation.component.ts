@@ -212,7 +212,9 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
     // Set org info sub label
     if (event.selectedIndex === 1 && this.orgInfoFormGroup.controls.name.value === "") {
       this.orgInfoSubLabel =
-        "Enter your " + this.titleCasePipe.transform(this.org) + " organization information";
+        "Enter your " +
+        this.titleCasePipe.transform(this.orgDisplayName) +
+        " organization information";
     } else if (event.previouslySelectedIndex === 1) {
       this.orgInfoSubLabel = this.orgInfoFormGroup.controls.name.value;
     }
@@ -249,7 +251,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
   get orgDisplayName() {
     if (this.org === "teamsStarter") {
-      return "teams starter";
+      return "Teams Starter";
     }
 
     return this.org;
