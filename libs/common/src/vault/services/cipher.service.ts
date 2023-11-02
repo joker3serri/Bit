@@ -294,6 +294,7 @@ export class CipherService implements CipherServiceAbstraction {
     const orgKeys = await this.cryptoService.getOrgKeys();
     const userKey = await this.cryptoService.getUserKeyWithLegacySupport();
     if (orgKeys == null && userKey == null) {
+      // return early if there are no keys to decrypt with
       return;
     }
 
