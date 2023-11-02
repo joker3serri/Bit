@@ -81,6 +81,8 @@ export class PeopleComponent
   groupsModalRef: ViewContainerRef;
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
+  @ViewChild("resetPasswordTemplate", { read: ViewContainerRef, static: true })
+  resetPasswordModalRef: ViewContainerRef;
   @ViewChild("bulkStatusTemplate", { read: ViewContainerRef, static: true })
   bulkStatusModalRef: ViewContainerRef;
   @ViewChild("bulkConfirmTemplate", { read: ViewContainerRef, static: true })
@@ -100,7 +102,6 @@ export class PeopleComponent
   private destroy$ = new Subject<void>();
 
   constructor(
-    private viewContainerRef: ViewContainerRef,
     apiService: ApiService,
     private route: ActivatedRoute,
     i18nService: I18nService,
@@ -601,10 +602,9 @@ export class PeopleComponent
   }
 
   async resetPassword(user: OrganizationUserView) {
-    // Pass viewContainerRef to allow accountRecoveryService to be injected
     const [modal] = await this.modalService.openViewRef(
       ResetPasswordComponent,
-      this.viewContainerRef,
+      this.resetPasswordModalRef,
       (comp) => {
         comp.name = this.userNamePipe.transform(user);
         comp.email = user != null ? user.email : null;

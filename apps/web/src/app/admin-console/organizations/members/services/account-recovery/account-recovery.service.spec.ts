@@ -1,15 +1,15 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
-import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
+import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationKeysResponse } from "@bitwarden/common/admin-console/models/response/organization-keys.response";
 import { OrganizationApiService } from "@bitwarden/common/admin-console/services/organization/organization-api.service";
-import { EncryptionType, KdfType } from "@bitwarden/common/enums";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { EncryptionType, KdfType } from "@bitwarden/common/platform/enums";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import {
   MasterKey,
@@ -45,7 +45,7 @@ describe("AccountRecoveryService", () => {
       organizationService,
       organizationUserService,
       organizationApiService,
-      i18nService
+      i18nService,
     );
   });
 
@@ -65,7 +65,7 @@ describe("AccountRecoveryService", () => {
         new OrganizationKeysResponse({
           privateKey: "test-private-key",
           publicKey: "test-public-key",
-        })
+        }),
       );
 
       const mockRandomBytes = new Uint8Array(64) as CsprngArray;
@@ -73,7 +73,7 @@ describe("AccountRecoveryService", () => {
       cryptoService.getUserKey.mockResolvedValue(mockUserKey);
 
       cryptoService.rsaEncrypt.mockResolvedValue(
-        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey")
+        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey"),
       );
     });
 
@@ -121,7 +121,7 @@ describe("AccountRecoveryService", () => {
           kdfIterations: 5000,
           resetPasswordKey: "test-reset-password-key",
           encryptedPrivateKey: "test-encrypted-private-key",
-        })
+        }),
       );
 
       const mockRandomBytes = new Uint8Array(64) as CsprngArray;
@@ -149,14 +149,14 @@ describe("AccountRecoveryService", () => {
     it("should throw an error if the user details are null", async () => {
       organizationUserService.getOrganizationUserResetPasswordDetails.mockResolvedValue(null);
       await expect(
-        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId)
+        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId),
       ).rejects.toThrow();
     });
 
     it("should throw an error if the org key is null", async () => {
       cryptoService.getOrgKey.mockResolvedValue(null);
       await expect(
-        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId)
+        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId),
       ).rejects.toThrow();
     });
   });
@@ -171,10 +171,10 @@ describe("AccountRecoveryService", () => {
         new OrganizationKeysResponse({
           privateKey: "test-private-key",
           publicKey: "test-public-key",
-        })
+        }),
       );
       cryptoService.rsaEncrypt.mockResolvedValue(
-        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey")
+        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey"),
       );
     });
 
@@ -183,10 +183,10 @@ describe("AccountRecoveryService", () => {
         new OrganizationKeysResponse({
           privateKey: "test-private-key",
           publicKey: "test-public-key",
-        })
+        }),
       );
       cryptoService.rsaEncrypt.mockResolvedValue(
-        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey")
+        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey"),
       );
       organizationService.getAll.mockResolvedValue([
         createOrganization("1", "org1"),
@@ -195,11 +195,11 @@ describe("AccountRecoveryService", () => {
 
       await sut.rotate(
         new SymmetricCryptoKey(new Uint8Array(64)) as UserKey,
-        "test-master-password-hash"
+        "test-master-password-hash",
       );
 
       expect(
-        organizationUserService.putOrganizationUserResetPasswordEnrollment
+        organizationUserService.putOrganizationUserResetPasswordEnrollment,
       ).toHaveBeenCalledTimes(2);
     });
   });

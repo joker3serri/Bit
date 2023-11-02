@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 
-import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import {
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
-} from "@bitwarden/common/abstractions/organization-user/requests";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationApiService } from "@bitwarden/common/admin-console/services/organization/organization-api.service";
+} from "@bitwarden/common/admin-console/abstractions/organization-user/requests";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -18,15 +18,17 @@ import {
   UserKey,
 } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class AccountRecoveryService {
   constructor(
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private organizationService: OrganizationService,
     private organizationUserService: OrganizationUserService,
-    private organizationApiService: OrganizationApiService,
-    private i18nService: I18nService
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private i18nService: I18nService,
   ) {}
 
   /**
@@ -65,11 +67,11 @@ export class AccountRecoveryService {
     newMasterPassword: string,
     email: string,
     orgUserId: string,
-    orgId: string
+    orgId: string,
   ): Promise<void> {
     const response = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
       orgId,
-      orgUserId
+      orgUserId,
     );
 
     if (response == null) {
@@ -83,7 +85,7 @@ export class AccountRecoveryService {
     }
     const decPrivateKey = await this.encryptService.decryptToBytes(
       new EncString(response.encryptedPrivateKey),
-      orgSymKey
+      orgSymKey,
     );
 
     // Decrypt User's Reset Password Key to get UserKey
@@ -95,17 +97,17 @@ export class AccountRecoveryService {
       newMasterPassword,
       email.trim().toLowerCase(),
       response.kdf,
-      new KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism)
+      new KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism),
     );
     const newMasterKeyHash = await this.cryptoService.hashMasterKey(
       newMasterPassword,
-      newMasterKey
+      newMasterKey,
     );
 
     // Create new encrypted user key for the User
     const newUserKey = await this.cryptoService.encryptUserKeyWithMasterKey(
       newMasterKey,
-      existingUserKey
+      existingUserKey,
     );
 
     // Create request
@@ -143,7 +145,7 @@ export class AccountRecoveryService {
         await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
           org.id,
           org.userId,
-          request
+          request,
         );
       } catch (e) {
         // If enrollment fails, continue to next org

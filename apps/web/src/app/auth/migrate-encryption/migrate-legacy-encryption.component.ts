@@ -7,7 +7,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { AccountRecoveryModule } from "../../admin-console/organizations/members/services/account-recovery/account-recovery.module";
 import { SharedModule } from "../../shared";
 import { EmergencyAccessModule } from "../emergency-access";
 
@@ -17,7 +16,7 @@ import { MigrateFromLegacyEncryptionService } from "./migrate-legacy-encryption.
 // This component is used to migrate from the old encryption scheme to the new one.
 @Component({
   standalone: true,
-  imports: [SharedModule, EmergencyAccessModule, AccountRecoveryModule],
+  imports: [SharedModule, EmergencyAccessModule],
   providers: [MigrateFromLegacyEncryptionService],
   templateUrl: "migrate-legacy-encryption.component.html",
 })
