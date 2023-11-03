@@ -23,6 +23,13 @@ describe("validateRpId", () => {
     expect(isValidRpId(rpId, origin)).toBe(false);
   });
 
+  it("should not be valid when rpId and origin are both different TLD", () => {
+    const rpId = "bitwarden";
+    const origin = "localhost";
+
+    expect(isValidRpId(rpId, origin)).toBe(false);
+  });
+
   it("should be valid when domains of rpId and origin are localhost", () => {
     const rpId = "localhost";
     const origin = "https://localhost:8080";
