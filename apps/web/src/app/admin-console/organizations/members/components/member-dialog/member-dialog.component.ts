@@ -11,6 +11,7 @@ import {
 } from "@bitwarden/common/admin-console/enums";
 import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { ProductType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -373,10 +374,12 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       await this.userService.save(userView);
     } else {
       userView.id = this.params.organizationUserId;
+      const maxEmailsCount =
+        this.organization.planProductType === ProductType.TeamsStarter ? 10 : 20;
       const emails = [...new Set(this.formGroup.value.emails.trim().split(/\s*,\s*/))];
-      if (emails.length > 20) {
+      if (emails.length > maxEmailsCount) {
         this.formGroup.controls.emails.setErrors({
-          tooManyEmails: { message: this.i18nService.t("tooManyEmails", 20) },
+          tooManyEmails: { message: this.i18nService.t("tooManyEmails", maxEmailsCount) },
         });
         return;
       }
@@ -513,6 +516,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       type: "warning",
     });
   }
+
+  protected readonly ProductType = ProductType;
 }
 
 function mapCollectionToAccessItemView(
