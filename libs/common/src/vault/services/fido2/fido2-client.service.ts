@@ -228,6 +228,12 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
     params.rpId = params.rpId ?? parsedOrigin.hostname;
 
+    const neverDomains = await this.stateService.getNeverDomains();
+    if (neverDomains != null && parsedOrigin.hostname in neverDomains) {
+      this.logService?.warning(`[Fido2Client] Excluded domain`);
+      throw new FallbackRequestedError();
+    }
+
     if (parsedOrigin.hostname == undefined || !params.origin.startsWith("https://")) {
       this.logService?.warning(`[Fido2Client] Invalid https origin: ${params.origin}`);
       throw new DOMException("'origin' is not a valid https origin", "SecurityError");

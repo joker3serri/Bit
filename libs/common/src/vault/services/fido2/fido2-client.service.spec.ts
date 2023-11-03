@@ -310,6 +310,17 @@ describe("FidoAuthenticatorService", () => {
         await rejects.toBeInstanceOf(DOMException);
       });
 
+      it("should fallback if origin hostname is found in neverDomains", async () => {
+        const params = createParams({
+          origin: "https://bitwarden.com",
+        });
+        stateService.getNeverDomains.mockResolvedValue({ "bitwarden.com": null });
+
+        const result = async () => await client.assertCredential(params, tab);
+
+        await expect(result).rejects.toThrow(FallbackRequestedError);
+      });
+
       it("should throw error if origin is not an http domain", async () => {
         const params = createParams({
           origin: "http://passwordless.dev",
