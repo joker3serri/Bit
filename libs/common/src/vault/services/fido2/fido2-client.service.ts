@@ -219,12 +219,6 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       throw new FallbackRequestedError();
     }
 
-    const { domain: effectiveDomain } = parse(params.origin, { allowPrivateDomains: true });
-    if (effectiveDomain == undefined) {
-      this.logService?.warning(`[Fido2Client] Invalid origin: ${params.origin}`);
-      throw new DOMException("'origin' is not a valid domain", "SecurityError");
-    }
-
     const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
     params.rpId = params.rpId ?? parsedOrigin.hostname;
 

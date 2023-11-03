@@ -5,7 +5,9 @@ export function isValidRpId(rpId: string, origin: string) {
   const parsedRpId = parse(rpId, { allowPrivateDomains: true });
 
   return (
-    parsedOrigin.domain === parsedRpId.domain &&
-    parsedOrigin.subdomain.endsWith(parsedRpId.subdomain)
+    (parsedOrigin.domain === parsedRpId.domain &&
+      parsedOrigin.subdomain != null &&
+      parsedOrigin.subdomain.endsWith(parsedRpId.subdomain)) ||
+    parsedOrigin.subdomain == null
   );
 }
