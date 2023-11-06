@@ -259,15 +259,22 @@ export default class RuntimeBackground {
           return;
         }
 
-        try {
-          BrowserApi.createNewTab(
-            "popup/index.html?uilocation=popout#/sso?code=" +
-              encodeURIComponent(msg.code) +
-              "&state=" +
-              encodeURIComponent(msg.state)
-          );
-        } catch {
-          this.logService.error("Unable to open sso popout tab");
+        if (msg.lastpass) {
+          this.messagingService.send("importCallbackLastPass", {
+            code: msg.code,
+            state: msg.state,
+          });
+        } else {
+          try {
+            BrowserApi.createNewTab(
+              "popup/index.html?uilocation=popout#/sso?code=" +
+                encodeURIComponent(msg.code) +
+                "&state=" +
+                encodeURIComponent(msg.state)
+            );
+          } catch {
+            this.logService.error("Unable to open sso popout tab");
+          }
         }
         break;
       }
@@ -305,12 +312,36 @@ export default class RuntimeBackground {
       case "checkFido2FeatureEnabled":
         return await this.main.fido2ClientService.isFido2FeatureEnabled();
       case "fido2RegisterCredentialRequest":
-        return await this.abortManager.runWithAbortController(msg.requestId, (abortController) =>
-          this.main.fido2ClientService.createCredential(msg.data, sender.tab, abortController)
+        return await this.abortManager.runWithAbortController(
+          msg.requestId,
+          async (abortController) => {
+            try {
+              return await this.main.fido2ClientService.createCredential(
+                msg.data,
+                sender.tab,
+                abortController
+              );
+            } finally {
+              await BrowserApi.focusTab(sender.tab.id);
+              await BrowserApi.focusWindow(sender.tab.windowId);
+            }
+          }
         );
       case "fido2GetCredentialRequest":
-        return await this.abortManager.runWithAbortController(msg.requestId, (abortController) =>
-          this.main.fido2ClientService.assertCredential(msg.data, sender.tab, abortController)
+        return await this.abortManager.runWithAbortController(
+          msg.requestId,
+          async (abortController) => {
+            try {
+              return await this.main.fido2ClientService.assertCredential(
+                msg.data,
+                sender.tab,
+                abortController
+              );
+            } finally {
+              await BrowserApi.focusTab(sender.tab.id);
+              await BrowserApi.focusWindow(sender.tab.windowId);
+            }
+          }
         );
     }
   }
