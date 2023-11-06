@@ -3,7 +3,7 @@ import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 import { WebauthnLoginCredentialPrfStatus } from "../../../enums/webauthn-login-credential-prf-status.enum";
 
 /**
- * A webauthn login credential recieved from the server.
+ * A webauthn login credential received from the server.
  */
 export class WebauthnLoginCredentialResponse extends BaseResponse {
   id: string;
