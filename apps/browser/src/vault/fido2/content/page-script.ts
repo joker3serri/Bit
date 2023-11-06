@@ -67,9 +67,9 @@ navigator.credentials.create = async (
   abortController?: AbortController
 ): Promise<Credential> => {
   const fallbackSupported =
-    (options?.publicKey?.authenticatorSelection.authenticatorAttachment === "platform" &&
+    (options?.publicKey?.authenticatorSelection?.authenticatorAttachment === "platform" &&
       browserNativeWebauthnPlatformAuthenticatorSupport) ||
-    (options?.publicKey?.authenticatorSelection.authenticatorAttachment !== "platform" &&
+    (options?.publicKey?.authenticatorSelection?.authenticatorAttachment !== "platform" &&
       browserNativeWebauthnSupport);
   try {
     const isNotIframe = isSameOriginWithAncestors();
