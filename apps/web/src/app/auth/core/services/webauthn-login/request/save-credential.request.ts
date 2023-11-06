@@ -5,7 +5,7 @@ import { WebauthnLoginAttestationResponseRequest } from "./webauthn-login-attest
  */
 export class SaveCredentialRequest {
   /**
-   * The response recieved from the authenticator.
+   * The response received from the authenticator.
    * This contains all information needed for future authentication flows.
    */
   deviceResponse: WebauthnLoginAttestationResponseRequest;
