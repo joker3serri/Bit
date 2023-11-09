@@ -1,6 +1,10 @@
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
+import { Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
+import { MockProxy, mock } from "jest-mock-extended";
+import { of } from "rxjs";
+
 import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -21,21 +25,23 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { DialogService } from "@bitwarden/components";
 
 // eslint-disable-next-line no-restricted-imports
-import { Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 
-import { ipcRenderer } from "electron";
-import { MockProxy, mock } from "jest-mock-extended";
-import { of } from "rxjs";
+
 import { ElectronStateService } from "../platform/services/electron-state.service.abstraction";
+
 import { LockComponent } from "./lock.component";
 
-jest.mock("electron", () => ({
-  ipcRenderer: {
-    invoke: jest.fn(),
+//  ipc mock global
+(global as any).ipc = {
+  platform: {
+    biometric: {
+      enabled: jest.fn(),
+    },
+    isWindowVisible: jest.fn(),
   },
-}));
+};
 
-describe("GeneratorComponent", () => {
+describe("LockComponent", () => {
   let component: LockComponent;
   let fixture: ComponentFixture<LockComponent>;
   let stateServiceSubstitute: SubstituteOf<ElectronStateService>;
@@ -340,9 +346,9 @@ describe("GeneratorComponent", () => {
     }));
 
     it("should call unlockBiometric() if biometricAsked is false and window is visible", fakeAsync(async () => {
+      ipc.platform.isWindowVisible.mockResolvedValue(true);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = false;
-      ipcRenderer.invoke = jest.fn().mockResolvedValue(true);
       component["delayedAskForBiometric"](5000);
       tick(5000);
 
@@ -350,9 +356,9 @@ describe("GeneratorComponent", () => {
     }));
 
     it("should not call unlockBiometric() if biometricAsked is false and window is not visible", fakeAsync(async () => {
+      ipc.platform.isWindowVisible.mockResolvedValue(false);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = false;
-      ipcRenderer.invoke = jest.fn().mockResolvedValue(false);
       component["delayedAskForBiometric"](5000);
       tick(5000);
 
@@ -360,9 +366,9 @@ describe("GeneratorComponent", () => {
     }));
 
     it("should not call unlockBiometric() if biometricAsked is true", fakeAsync(async () => {
+      ipc.platform.isWindowVisible.mockResolvedValue(true);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = true;
-      ipcRenderer.invoke = jest.fn().mockResolvedValue(true);
 
       component["delayedAskForBiometric"](5000);
       tick(5000);
@@ -372,28 +378,11 @@ describe("GeneratorComponent", () => {
   });
 
   describe("canUseBiometric", () => {
-    it('should return true if "ipcRenderer.invoke(biometric)" resolves to true', async () => {
+    it("should call getUserId() on stateService", async () => {
       stateServiceSubstitute.getUserId().resolves("userId");
-      ipcRenderer.invoke = jest.fn().mockResolvedValue(true);
-      const result = await component["canUseBiometric"]();
+      await component["canUseBiometric"]();
 
-      expect(result).toEqual(true);
-    });
-
-    it('should return false if "ipcRenderer.invoke(biometric)" resolves to false', async () => {
-      stateServiceSubstitute.getUserId().resolves("userId");
-      ipcRenderer.invoke = jest.fn().mockResolvedValue(false);
-      const result = await component["canUseBiometric"]();
-
-      expect(result).toEqual(false);
-    });
-
-    it('should return null if "ipcRenderer.invoke(biometric)" resolves to null', async () => {
-      stateServiceSubstitute.getUserId().resolves("userId");
-      ipcRenderer.invoke = jest.fn().mockResolvedValue(null);
-      const result = await component["canUseBiometric"]();
-
-      expect(result).toEqual(null);
+      expect(ipc.platform.biometric.enabled.mock.calls[1][0]).toBe("userId");
     });
   });
 
