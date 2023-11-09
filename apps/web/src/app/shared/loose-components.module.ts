@@ -16,7 +16,6 @@ import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from 
 import { ProvidersComponent } from "../admin-console/providers/providers.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
-import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
 import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
@@ -25,15 +24,14 @@ import { RecoverTwoFactorComponent } from "../auth/recover-two-factor.component"
 import { RegisterFormModule } from "../auth/register-form/register-form.module";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
-import { ChangePasswordComponent } from "../auth/settings/change-password.component";
 import { DeauthorizeSessionsComponent } from "../auth/settings/deauthorize-sessions.component";
+import { EmergencyAccessAttachmentsComponent } from "../auth/settings/emergency-access/attachments/emergency-access-attachments.component";
+import { EmergencyAccessConfirmComponent } from "../auth/settings/emergency-access/confirm/emergency-access-confirm.component";
 import { EmergencyAccessAddEditComponent } from "../auth/settings/emergency-access/emergency-access-add-edit.component";
-import { EmergencyAccessAttachmentsComponent } from "../auth/settings/emergency-access/emergency-access-attachments.component";
-import { EmergencyAccessConfirmComponent } from "../auth/settings/emergency-access/emergency-access-confirm.component";
-import { EmergencyAccessTakeoverComponent } from "../auth/settings/emergency-access/emergency-access-takeover.component";
-import { EmergencyAccessViewComponent } from "../auth/settings/emergency-access/emergency-access-view.component";
 import { EmergencyAccessComponent } from "../auth/settings/emergency-access/emergency-access.component";
-import { EmergencyAddEditComponent } from "../auth/settings/emergency-access/emergency-add-edit.component";
+import { EmergencyAccessTakeoverComponent } from "../auth/settings/emergency-access/takeover/emergency-access-takeover.component";
+import { EmergencyAccessViewComponent } from "../auth/settings/emergency-access/view/emergency-access-view.component";
+import { EmergencyAddEditCipherComponent } from "../auth/settings/emergency-access/view/emergency-add-edit-cipher.component";
 import { TwoFactorAuthenticatorComponent } from "../auth/settings/two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "../auth/settings/two-factor-duo.component";
 import { TwoFactorEmailComponent } from "../auth/settings/two-factor-email.component";
@@ -51,7 +49,6 @@ import { UpdatePasswordComponent } from "../auth/update-password.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
-import { BillingSharedModule } from "../billing/shared";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { FooterComponent } from "../layouts/footer.component";
@@ -79,7 +76,6 @@ import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-h
 import { AccessComponent } from "../tools/send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../tools/send/add-edit.component";
 import { ToolsComponent } from "../tools/tools.component";
-import { PasswordRepromptComponent } from "../vault/components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../vault/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../vault/individual-vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/individual-vault/add-edit.component";
@@ -108,14 +104,8 @@ import { SharedModule } from "./shared.module";
     EnvironmentSelectorModule,
     AccountFingerprintComponent,
     PasswordCalloutComponent,
-
-    // Temporary export to be removed in AC-1453
-    // Import PaymentComponent and TaxInfoComponent directly into TrialIniationComponent
-    // and remove BillingSharedModule here
-    BillingSharedModule,
   ],
   declarations: [
-    AcceptEmergencyComponent,
     AcceptFamilySponsorshipComponent,
     AcceptOrganizationComponent,
     AccessComponent,
@@ -126,7 +116,6 @@ import { SharedModule } from "./shared.module";
     ApiKeyComponent,
     AttachmentsComponent,
     ChangeEmailComponent,
-    ChangePasswordComponent,
     CollectionsComponent,
     DeauthorizeSessionsComponent,
     DeleteAccountComponent,
@@ -137,7 +126,7 @@ import { SharedModule } from "./shared.module";
     EmergencyAccessConfirmComponent,
     EmergencyAccessTakeoverComponent,
     EmergencyAccessViewComponent,
-    EmergencyAddEditComponent,
+    EmergencyAddEditCipherComponent,
     FolderAddEditComponent,
     FooterComponent,
     FrontendLayoutComponent,
@@ -159,7 +148,6 @@ import { SharedModule } from "./shared.module";
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
-    PasswordRepromptComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
     ProfileComponent,
@@ -202,7 +190,6 @@ import { SharedModule } from "./shared.module";
   exports: [
     UserVerificationModule,
     PremiumBadgeComponent,
-    AcceptEmergencyComponent,
     AcceptOrganizationComponent,
     AccessComponent,
     AccountComponent,
@@ -212,7 +199,6 @@ import { SharedModule } from "./shared.module";
     ApiKeyComponent,
     AttachmentsComponent,
     ChangeEmailComponent,
-    ChangePasswordComponent,
     CollectionsComponent,
     DeauthorizeSessionsComponent,
     DeleteAccountComponent,
@@ -224,7 +210,7 @@ import { SharedModule } from "./shared.module";
     EmergencyAccessConfirmComponent,
     EmergencyAccessTakeoverComponent,
     EmergencyAccessViewComponent,
-    EmergencyAddEditComponent,
+    EmergencyAddEditCipherComponent,
     FolderAddEditComponent,
     FooterComponent,
     FrontendLayoutComponent,
@@ -246,7 +232,6 @@ import { SharedModule } from "./shared.module";
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
-    PasswordRepromptComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
     ProfileComponent,
@@ -285,11 +270,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
-
-    // Temporary export to be removed in AC-1453
-    // Import PaymentComponent and TaxInfoComponent directly into TrialIniationComponent
-    // and remove BillingSharedModule here
-    BillingSharedModule,
   ],
 })
 export class LooseComponentsModule {}
