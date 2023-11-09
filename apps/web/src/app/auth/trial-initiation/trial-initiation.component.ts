@@ -123,8 +123,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.route.queryParams.subscribe((qParams) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((qParams) => {
       this.referenceData = new ReferenceEventRequest();
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email = qParams.email;
