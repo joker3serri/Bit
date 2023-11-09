@@ -600,7 +600,7 @@
     "message": "خیر"
   },
   "loginOrCreateNewAccount": {
-    "message": "وارد شوید یا یک حساب کاربری بسازید تا به گاوصندوق امنتان دسترسی یابید."
+    "message": "وارد شوید یا یک حساب کاربری بسازید تا به گاوصندوق امن‌تان دسترسی یابید."
   },
   "loginWithDevice": {
     "message": "ورود با دستگاه"
@@ -681,7 +681,7 @@
     "message": "ایجاد حساب کاربری"
   },
   "newAroundHere": {
-    "message": "اینجا جدیده؟"
+    "message": "اینجا تازه واردی؟"
   },
   "startTrial": {
     "message": "شروع دوره آزمایشی"
@@ -1544,6 +1544,9 @@
   },
   "manage": {
     "message": "مدیریت"
+  },
+  "canManage": {
+    "message": "Can manage"
   },
   "disable": {
     "message": "خاموش کردن"
@@ -3461,6 +3464,9 @@
   "subscriptionUpdated": {
     "message": "اشتراک به‌روز شد"
   },
+  "subscribedToSecretsManager": {
+    "message": "Subscription updated. You now have access to Secrets Manager."
+  },
   "additionalOptions": {
     "message": "گزینه‌های اضافی"
   },
@@ -3637,6 +3643,18 @@
   },
   "organizationIsDisabled": {
     "message": "سازمان از کار افتاده است"
+  },
+  "secretsAccessSuspended": {
+    "message": "سازمان‌های تعلیق شده قابل دسترسی نیستند. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "secretsCannotCreate": {
+    "message": "در سازمان‌های معلق نمی‌توان اسرار ایجاد کرد. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "projectsCannotCreate": {
+    "message": "پروژه‌ها را نمی‌توان در سازمان‌های معلق ایجاد کرد. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "serviceAccountsCannotCreate": {
+    "message": "حساب‌های خدماتی را نمی‌توان در سازمان‌های معلق ایجاد کرد. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
   },
   "disabledOrganizationFilterError": {
     "message": "موارد موجود در سازمان‌های غیرفعال، قابل دسترسی نیستند. برای دریافت کمک با مالک سازمان خود تماس بگیرید."
@@ -3983,8 +4001,9 @@
   "ssoIdentifier": {
     "message": "شناسه SSO"
   },
-  "ssoIdentifierHint": {
-    "message": "این شناسه را در اختیار اعضای خود قرار دهید تا با SSO وارد شوند."
+  "ssoIdentifierHintPartOne": {
+    "message": "این شناسه را در اختیار اعضای خود قرار دهید تا با SSO وارد شوند. برای دور زدن این مرحله، راه‌اندازی کنید ",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Provide this ID to your members to login with SSO. To bypass this step, set up Domain verification'"
   },
   "unlinkSso": {
     "message": "لغو پیوند SSO"
@@ -7205,6 +7224,18 @@
       }
     }
   },
+  "collectionManagement": {
+    "message": "Collection management"
+  },
+  "collectionManagementDesc": {
+    "message": "Manage the collection behavior for the organization"
+  },
+  "limitCollectionCreationDeletionDesc": {
+    "message": "Limit collection creation and deletion to owners and admins"
+  },
+  "collectionManagementUpdated": {
+    "message": "Collection management behavior saved"
+  },
   "passwordManagerPlanPrice": {
     "message": "قیمت طرح مدیریت کلمه عبور"
   },
@@ -7251,6 +7282,12 @@
   "beta": {
     "message": "آزمایشی"
   },
+  "assignCollectionAccess": {
+    "message": "Assign collection access"
+  },
+  "editedCollections": {
+    "message": "Edited collections"
+  },
   "baseUrl": {
     "message": "نشانی اینترنتی سرور"
   },
@@ -7261,9 +7298,25 @@
     "message": "پیشتر حساب کاربری داشته اید؟"
   },
   "customBillingStart": {
-    "message": "صورتحساب سفارشی منعکس نمی‌شود. بازدید کنید "
+    "message": "Custom billing is not reflected. Visit the "
   },
   "customBillingEnd": {
-    "message": " صفحه برای آخرین صورتحساب"
+    "message": " page for latest invoicing."
+  },
+  "managePermissionRequired": {
+    "message": "At least one member or group must have can manage permission."
+  },
+  "typePasskey": {
+    "message": "کلید عبور"
+  },
+  "passkeyNotCopied": {
+    "message": "کلید عبور کپی نمی‌شود"
+  },
+  "passkeyNotCopiedAlert": {
+    "message": "کلید عبور در مورد شبیه سازی شده کپی نمی‌شود. آیا می‌خواهید به شبیه سازی این مورد ادامه دهید؟"
+  },
+  "seeDetailedInstructions": {
+    "message": "See detailed instructions on our help site at",
+    "description": "This is followed a by a hyperlink to the help website."
   }
 }
