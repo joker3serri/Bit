@@ -611,6 +611,72 @@
   "loginWithMasterPassword": {
     "message": "Přihlásit se pomocí hlavního hesla"
   },
+  "loginWithPasskey": {
+    "message": "Přihlásit se pomocí přístupového klíče"
+  },
+  "loginWithPasskeyInfo": {
+    "message": "Použijte vygenerovaný přístupový klíč, který Vás automaticky přihlásí bez hesla. Biometriky, jako je rozpoznávání obličeje, otisky prstů nebo jiná bezpečnostní metoda FIDO2 ověří Vaši totožnost."
+  },
+  "newPasskey": {
+    "message": "Nové přístupový klíč"
+  },
+  "learnMoreAboutPasswordless": {
+    "message": "Další informace o přihlášení bez hesla"
+  },
+  "passkeyEnterMasterPassword": {
+    "message": "Zadejte Vaše hlavní heslo pro úpravu dvoufázového přihlášení."
+  },
+  "creatingPasskeyLoading": {
+    "message": "Vytváření přístupového klíče..."
+  },
+  "creatingPasskeyLoadingInfo": {
+    "message": "Ponechte toto okno otevřené a postupujte podle dotazů z Vašeho prohlížeče."
+  },
+  "errorCreatingPasskey": {
+    "message": "Chyba při vytváření přístupového klíče"
+  },
+  "errorCreatingPasskeyInfo": {
+    "message": "Vyskytl se problém při vytváření přístupového klíče."
+  },
+  "passkeySuccessfullyCreated": {
+    "message": "Přístupový klíč byl úspěšně vytvořen!"
+  },
+  "customName": {
+    "message": "Vlastní název"
+  },
+  "customPasskeyNameInfo": {
+    "message": "Pojmenujte Váš přístupový klíč, abyste jej mohli snáze identifikovat."
+  },
+  "encryptionNotSupported": {
+    "message": "Šifrování není podporováno"
+  },
+  "loginWithPasskeyEnabled": {
+    "message": "Přihlásit se se zapnutým přístupovým klíčem"
+  },
+  "passkeySaved": {
+    "message": "$NAME$ uloženo",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Personal yubikey"
+      }
+    }
+  },
+  "passkeyRemoved": {
+    "message": "Přístupový klíč byl odebrán"
+  },
+  "removePasskey": {
+    "message": "Odebrat přístupový klíč"
+  },
+  "removePasskeyInfo": {
+    "message": "Pokud budou odebrány všechny přístupové klíče, nebudete se moci přihlásit do nových zařízení bez hlavního hesla."
+  },
+  "passkeyLimitReachedInfo": {
+    "message": "Byl dosažen limit přístupového klíče. Chcete-li přidat další, odeberte nějaký."
+  },
+  "tryAgain": {
+    "message": "Zkusit znovu"
+  },
   "createAccount": {
     "message": "Vytvořit účet"
   },
@@ -1478,6 +1544,9 @@
   },
   "manage": {
     "message": "Spravovat"
+  },
+  "canManage": {
+    "message": "Může spravovat"
   },
   "disable": {
     "message": "Vypnout"
@@ -3395,6 +3464,9 @@
   "subscriptionUpdated": {
     "message": "Předplatné bylo aktualizováno"
   },
+  "subscribedToSecretsManager": {
+    "message": "Předplatné bylo aktualizováno. Nyní máte přístup ke správci tajných klíčů."
+  },
   "additionalOptions": {
     "message": "Další volby"
   },
@@ -3571,6 +3643,18 @@
   },
   "organizationIsDisabled": {
     "message": "Organizace byla deaktivována"
+  },
+  "secretsAccessSuspended": {
+    "message": "K deaktivované organizaci nemáte přístup. Požádejte o pomoc vlastníka organizace."
+  },
+  "secretsCannotCreate": {
+    "message": "Tajné klíče nelze vytvořit v pozastavených organizacích. Požádejte o pomoc vlastníka organizace."
+  },
+  "projectsCannotCreate": {
+    "message": "Projekty nelze vytvořit v pozastavených organizacích. Požádejte o pomoc vlastníka organizace."
+  },
+  "serviceAccountsCannotCreate": {
+    "message": "Servisní účty nelze vytvořit v pozastavených organizacích. Požádejte o pomoc vlastníka organizace."
   },
   "disabledOrganizationFilterError": {
     "message": "K položkám v deaktivované organizaci nemáte přístup. Požádejte o pomoc vlastníka organizace."
@@ -3917,8 +4001,9 @@
   "ssoIdentifier": {
     "message": "SSO identifikátor"
   },
-  "ssoIdentifierHint": {
-    "message": "Pro přihlášení pomocí SSO poskytněte toto ID svým členům."
+  "ssoIdentifierHintPartOne": {
+    "message": "Poskytněte toto ID Vašim členům pro přihlášení pomocí SSO. Chcete-li obejít tento krok, nastavte ",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Provide this ID to your members to login with SSO. To bypass this step, set up Domain verification'"
   },
   "unlinkSso": {
     "message": "Zrušit propojení s SSO"
@@ -5406,6 +5491,19 @@
   "required": {
     "message": "vyžadováno"
   },
+  "charactersCurrentAndMaximum": {
+    "message": "$CURRENT$/$MAX$ znaků maximálně",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "0"
+      },
+      "max": {
+        "content": "$2",
+        "example": "100"
+      }
+    }
+  },
   "characterMaximum": {
     "message": "Maximálně $MAX$ znaků",
     "placeholders": {
@@ -5753,6 +5851,9 @@
   },
   "on": {
     "message": "Zapnuto"
+  },
+  "off": {
+    "message": "VYP."
   },
   "members": {
     "message": "Členové"
@@ -7096,8 +7197,8 @@
       }
     }
   },
-  "addSecretsManager": {
-    "message": "Přidat správce tajných klíčů"
+  "subscribeToSecretsManager": {
+    "message": "Přihlásit se ke správci klíčů"
   },
   "addSecretsManagerUpgradeDesc": {
     "message": "Přidáním správce klíčů k aktualizovanému plánu si zachováte přístup ke všem klíčům vytvořeným v předchozím plánu."
@@ -7122,6 +7223,18 @@
         "example": "$0.50"
       }
     }
+  },
+  "collectionManagement": {
+    "message": "Správa kolekce"
+  },
+  "collectionManagementDesc": {
+    "message": "Spravuje chování kolekce pro organizaci"
+  },
+  "limitCollectionCreationDeletionDesc": {
+    "message": "Omezí vytváření a mazání kolekce na vlastníky a správce"
+  },
+  "collectionManagementUpdated": {
+    "message": "Chování správy kolekce bylo uloženo"
   },
   "passwordManagerPlanPrice": {
     "message": "Cena předplatného správce hesel"
@@ -7169,6 +7282,12 @@
   "beta": {
     "message": "Beta"
   },
+  "assignCollectionAccess": {
+    "message": "Přiřadit přístup ke kolekci"
+  },
+  "editedCollections": {
+    "message": "Upravené kolekce"
+  },
   "baseUrl": {
     "message": "URL serveru"
   },
@@ -7183,5 +7302,21 @@
   },
   "customBillingEnd": {
     "message": " pro nejnovější faktury."
+  },
+  "managePermissionRequired": {
+    "message": "Alespoň jeden člen nebo skupina musí mít možnost spravovat oprávnění."
+  },
+  "typePasskey": {
+    "message": "Přístupový klíč"
+  },
+  "passkeyNotCopied": {
+    "message": "Přístupový klíč nebude zkopírován"
+  },
+  "passkeyNotCopiedAlert": {
+    "message": "Přístupový klíč nebude zkopírován do duplikované položky. Chete pokračovat v duplikování této položky?"
+  },
+  "seeDetailedInstructions": {
+    "message": "Podívejte se na podrobné pokyny na našem webu s nápovědou na",
+    "description": "This is followed a by a hyperlink to the help website."
   }
 }

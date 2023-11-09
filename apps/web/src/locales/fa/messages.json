@@ -600,7 +600,7 @@
     "message": "خیر"
   },
   "loginOrCreateNewAccount": {
-    "message": "وارد شوید یا یک حساب کاربری بسازید تا به گاوصندوق امنتان دسترسی یابید."
+    "message": "وارد شوید یا یک حساب کاربری بسازید تا به گاوصندوق امن‌تان دسترسی یابید."
   },
   "loginWithDevice": {
     "message": "ورود با دستگاه"
@@ -611,11 +611,77 @@
   "loginWithMasterPassword": {
     "message": "با کلمه عبور اصلی وارد شوید"
   },
+  "loginWithPasskey": {
+    "message": "با کلید عبور وارد شوید"
+  },
+  "loginWithPasskeyInfo": {
+    "message": "از یک کلمه عبور ایجاد شده استفاده کنید که به طور خودکار بدون کلمه عبور شما را وارد می‌کند. بیومتریک‌ها، مانند تشخیص چهره یا اثر انگشت، یا سایر روش‌های امنیتی FIDO2 هویت شما را تأیید می‌کنند."
+  },
+  "newPasskey": {
+    "message": "کلمه عبور جدید"
+  },
+  "learnMoreAboutPasswordless": {
+    "message": "درباره بدون کلمه عبور بیشتر بدانید"
+  },
+  "passkeyEnterMasterPassword": {
+    "message": "کلمه عبور اصلی خود را برای تغییر ورود با تنظیمات کلید عبور وارد کنید."
+  },
+  "creatingPasskeyLoading": {
+    "message": "ایجاد کلید عبور..."
+  },
+  "creatingPasskeyLoadingInfo": {
+    "message": "این پنجره را باز نگه دارید و دستورهای مرورگر خود را دنبال کنید."
+  },
+  "errorCreatingPasskey": {
+    "message": "خطا در ایجاد کلید عبور"
+  },
+  "errorCreatingPasskeyInfo": {
+    "message": "مشکلی در ایجاد کلید عبور شما وجود داشت."
+  },
+  "passkeySuccessfullyCreated": {
+    "message": "کلید عبور با موفقیت ایجاد شد!"
+  },
+  "customName": {
+    "message": "نام سفارشی"
+  },
+  "customPasskeyNameInfo": {
+    "message": "کلید عبور خود را برای کمک به شناسایی آن نام ببرید."
+  },
+  "encryptionNotSupported": {
+    "message": "رمزگذاری پشتیبانی نمی‌شود"
+  },
+  "loginWithPasskeyEnabled": {
+    "message": "با فعال بودن کلید ورود وارد شوید"
+  },
+  "passkeySaved": {
+    "message": "$NAME$ ذخیره شد",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Personal yubikey"
+      }
+    }
+  },
+  "passkeyRemoved": {
+    "message": "کلید عبور حذف شد"
+  },
+  "removePasskey": {
+    "message": "حذف کلید عبور"
+  },
+  "removePasskeyInfo": {
+    "message": "اگر همه کلیدهای عبور حذف شوند، نمی‌توانید بدون کلمه عبور اصلی خود وارد دستگاه‌های جدید شوید."
+  },
+  "passkeyLimitReachedInfo": {
+    "message": "به حد مجاز کلید عبور رسیده است. برای افزودن کلید عبور دیگر، کلید عبور را حذف کنید."
+  },
+  "tryAgain": {
+    "message": "دوباره امتحان کن"
+  },
   "createAccount": {
     "message": "ایجاد حساب کاربری"
   },
   "newAroundHere": {
-    "message": "اینجا جدیده؟"
+    "message": "اینجا تازه واردی؟"
   },
   "startTrial": {
     "message": "شروع دوره آزمایشی"
@@ -1478,6 +1544,9 @@
   },
   "manage": {
     "message": "مدیریت"
+  },
+  "canManage": {
+    "message": "Can manage"
   },
   "disable": {
     "message": "خاموش کردن"
@@ -3395,6 +3464,9 @@
   "subscriptionUpdated": {
     "message": "اشتراک به‌روز شد"
   },
+  "subscribedToSecretsManager": {
+    "message": "Subscription updated. You now have access to Secrets Manager."
+  },
   "additionalOptions": {
     "message": "گزینه‌های اضافی"
   },
@@ -3571,6 +3643,18 @@
   },
   "organizationIsDisabled": {
     "message": "سازمان از کار افتاده است"
+  },
+  "secretsAccessSuspended": {
+    "message": "سازمان‌های تعلیق شده قابل دسترسی نیستند. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "secretsCannotCreate": {
+    "message": "در سازمان‌های معلق نمی‌توان اسرار ایجاد کرد. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "projectsCannotCreate": {
+    "message": "پروژه‌ها را نمی‌توان در سازمان‌های معلق ایجاد کرد. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "serviceAccountsCannotCreate": {
+    "message": "حساب‌های خدماتی را نمی‌توان در سازمان‌های معلق ایجاد کرد. لطفاً برای کمک با مالک سازمان خود تماس بگیرید."
   },
   "disabledOrganizationFilterError": {
     "message": "موارد موجود در سازمان‌های غیرفعال، قابل دسترسی نیستند. برای دریافت کمک با مالک سازمان خود تماس بگیرید."
@@ -3917,8 +4001,9 @@
   "ssoIdentifier": {
     "message": "شناسه SSO"
   },
-  "ssoIdentifierHint": {
-    "message": "این شناسه را در اختیار اعضای خود قرار دهید تا با SSO وارد شوند."
+  "ssoIdentifierHintPartOne": {
+    "message": "این شناسه را در اختیار اعضای خود قرار دهید تا با SSO وارد شوند. برای دور زدن این مرحله، راه‌اندازی کنید ",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Provide this ID to your members to login with SSO. To bypass this step, set up Domain verification'"
   },
   "unlinkSso": {
     "message": "لغو پیوند SSO"
@@ -5406,6 +5491,19 @@
   "required": {
     "message": "الزامی است"
   },
+  "charactersCurrentAndMaximum": {
+    "message": "حداکثر کاراکتر $CURRENT$/$MAX$",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "0"
+      },
+      "max": {
+        "content": "$2",
+        "example": "100"
+      }
+    }
+  },
   "characterMaximum": {
     "message": "حداکثر کاراکتر $MAX$",
     "placeholders": {
@@ -5753,6 +5851,9 @@
   },
   "on": {
     "message": "روشن"
+  },
+  "off": {
+    "message": "خاموش"
   },
   "members": {
     "message": "اعضا"
@@ -7096,8 +7197,8 @@
       }
     }
   },
-  "addSecretsManager": {
-    "message": "افزودن مدیر رازها"
+  "subscribeToSecretsManager": {
+    "message": "دنبال کردن مدیر اسرار"
   },
   "addSecretsManagerUpgradeDesc": {
     "message": "مدیر رازها را به برنامه ارتقا یافته خود اضافه کنید تا دسترسی به رازهای ایجاد شده با برنامه قبلی خود را حفظ کنید."
@@ -7122,6 +7223,18 @@
         "example": "$0.50"
       }
     }
+  },
+  "collectionManagement": {
+    "message": "Collection management"
+  },
+  "collectionManagementDesc": {
+    "message": "Manage the collection behavior for the organization"
+  },
+  "limitCollectionCreationDeletionDesc": {
+    "message": "Limit collection creation and deletion to owners and admins"
+  },
+  "collectionManagementUpdated": {
+    "message": "Collection management behavior saved"
   },
   "passwordManagerPlanPrice": {
     "message": "قیمت طرح مدیریت کلمه عبور"
@@ -7169,6 +7282,12 @@
   "beta": {
     "message": "آزمایشی"
   },
+  "assignCollectionAccess": {
+    "message": "Assign collection access"
+  },
+  "editedCollections": {
+    "message": "Edited collections"
+  },
   "baseUrl": {
     "message": "نشانی اینترنتی سرور"
   },
@@ -7179,9 +7298,25 @@
     "message": "پیشتر حساب کاربری داشته اید؟"
   },
   "customBillingStart": {
-    "message": "صورتحساب سفارشی منعکس نمی‌شود. بازدید کنید "
+    "message": "Custom billing is not reflected. Visit the "
   },
   "customBillingEnd": {
-    "message": " صفحه برای آخرین صورتحساب"
+    "message": " page for latest invoicing."
+  },
+  "managePermissionRequired": {
+    "message": "At least one member or group must have can manage permission."
+  },
+  "typePasskey": {
+    "message": "کلید عبور"
+  },
+  "passkeyNotCopied": {
+    "message": "کلید عبور کپی نمی‌شود"
+  },
+  "passkeyNotCopiedAlert": {
+    "message": "کلید عبور در مورد شبیه سازی شده کپی نمی‌شود. آیا می‌خواهید به شبیه سازی این مورد ادامه دهید؟"
+  },
+  "seeDetailedInstructions": {
+    "message": "See detailed instructions on our help site at",
+    "description": "This is followed a by a hyperlink to the help website."
   }
 }
