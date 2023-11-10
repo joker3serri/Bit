@@ -64,11 +64,11 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    */
   init() {
     if (globalThis.document.readyState === "loading") {
-      globalThis.document.addEventListener(EVENTS.DOMCONTENTLOADED, this.setupMutationObserver);
+      globalThis.document.addEventListener(EVENTS.DOMCONTENTLOADED, this.setupGlobalEventListeners);
       return;
     }
 
-    this.setupMutationObserver();
+    this.setupGlobalEventListeners();
   }
 
   /**
@@ -859,6 +859,31 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
       clearTimeout(this.userInteractionEventTimeout);
     }
   }
+
+  /**
+   * Sets up global event listeners and the mutation
+   * observer to facilitate required changes to the
+   * overlay elements.
+   */
+  private setupGlobalEventListeners() {
+    document.addEventListener("visibilitychange", this.handleVisibilityChangeEvent);
+    this.setupMutationObserver();
+  }
+
+  /**
+   * Handles removing the autofill overlay when the document
+   * visibility changes to hidden. This method will also clear
+   * the most recently focused field to ensure that the overlay
+   * positioning is fresh when re-opening the overlay.
+   */
+  private handleVisibilityChangeEvent = () => {
+    if (document.visibilityState === "visible") {
+      return;
+    }
+
+    this.mostRecentlyFocusedField = null;
+    this.removeAutofillOverlay();
+  };
 
   /**
    * Sets up mutation observers for the overlay elements, the body element, and the
