@@ -55,6 +55,7 @@ describe("AutofillOverlayContentService", () => {
 
     beforeEach(() => {
       jest.spyOn(document, "addEventListener");
+      jest.spyOn(window, "addEventListener");
       setupGlobalEventListenersSpy = jest.spyOn(
         autofillOverlayContentService as any,
         "setupGlobalEventListeners"
@@ -80,18 +81,15 @@ describe("AutofillOverlayContentService", () => {
       expect(setupGlobalEventListenersSpy).not.toHaveBeenCalled();
     });
 
-    it("sets up a visibility change listener for the DOM", () => {
-      const handleVisibilityChangeEventSpy = jest.spyOn(
+    it("sets up a focus out listener for the window", () => {
+      const handleFormFieldBlurEventSpy = jest.spyOn(
         autofillOverlayContentService as any,
-        "handleVisibilityChangeEvent"
+        "handleFormFieldBlurEvent"
       );
 
       autofillOverlayContentService.init();
 
-      expect(document.addEventListener).toHaveBeenCalledWith(
-        "visibilitychange",
-        handleVisibilityChangeEventSpy
-      );
+      expect(window.addEventListener).toHaveBeenCalledWith("focusout", handleFormFieldBlurEventSpy);
     });
 
     it("sets up mutation observers for the body and html element", () => {
@@ -1565,42 +1563,6 @@ describe("AutofillOverlayContentService", () => {
       await flushPromises();
 
       expect(blurMostRecentOverlayFieldSpy).toHaveBeenCalled();
-      expect(removeAutofillOverlaySpy).toHaveBeenCalled();
-    });
-  });
-
-  describe("handleVisibilityChangeEvent", () => {
-    let removeAutofillOverlaySpy: jest.SpyInstance;
-    beforeEach(() => {
-      removeAutofillOverlaySpy = jest.spyOn(
-        autofillOverlayContentService as any,
-        "removeAutofillOverlay"
-      );
-      autofillOverlayContentService["mostRecentlyFocusedField"] = document.createElement(
-        "div"
-      ) as ElementWithOpId<FormFieldElement>;
-    });
-
-    it("skips removing the autofill overlay if the visibility state is `visible`", () => {
-      Object.defineProperty(document, "visibilityState", {
-        value: "visible",
-        writable: true,
-      });
-
-      autofillOverlayContentService["handleVisibilityChangeEvent"]();
-
-      expect(removeAutofillOverlaySpy).not.toHaveBeenCalled();
-    });
-
-    it("resets the most recently focused field and removes the autofill overlay if the visibility state is not `visible`", () => {
-      Object.defineProperty(document, "visibilityState", {
-        value: "hidden",
-        writable: true,
-      });
-
-      autofillOverlayContentService["handleVisibilityChangeEvent"]();
-
-      expect(autofillOverlayContentService["mostRecentlyFocusedField"]).toEqual(null);
       expect(removeAutofillOverlaySpy).toHaveBeenCalled();
     });
   });

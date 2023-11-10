@@ -748,6 +748,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     this.overlayButtonElement = globalThis.document.createElement(customElementName);
 
     this.updateCustomElementDefaultStyles(this.overlayButtonElement);
+    this.moveDocumentElementChildrenToBody(globalThis.document.documentElement.childNodes);
   }
 
   /**
@@ -865,24 +866,9 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * observer to facilitate required changes to the
    * overlay elements.
    */
-  private setupGlobalEventListeners() {
-    document.addEventListener("visibilitychange", this.handleVisibilityChangeEvent);
+  private setupGlobalEventListeners = () => {
+    window.addEventListener("focusout", this.handleFormFieldBlurEvent);
     this.setupMutationObserver();
-  }
-
-  /**
-   * Handles removing the autofill overlay when the document
-   * visibility changes to hidden. This method will also clear
-   * the most recently focused field to ensure that the overlay
-   * positioning is fresh when re-opening the overlay.
-   */
-  private handleVisibilityChangeEvent = () => {
-    if (document.visibilityState === "visible") {
-      return;
-    }
-
-    this.mostRecentlyFocusedField = null;
-    this.removeAutofillOverlay();
   };
 
   /**
@@ -1048,21 +1034,35 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
       return;
     }
 
-    const ignoredElements = new Set([globalThis.document.body, globalThis.document.head]);
     for (const record of mutationRecords) {
       if (record.type !== "childList" || record.addedNodes.length === 0) {
         continue;
       }
 
-      for (const node of record.addedNodes) {
-        if (ignoredElements.has(node as HTMLElement)) {
-          continue;
-        }
-
-        globalThis.document.body.appendChild(node);
-      }
+      this.moveDocumentElementChildrenToBody(record.addedNodes);
     }
   };
+
+  /**
+   * Moves the passed nodes to the body element. This method is used to ensure that
+   * any elements added to the document element are higher in the DOM than the overlay
+   * elements.
+   *
+   * @param nodes - The nodes to move to the body element.
+   */
+  private moveDocumentElementChildrenToBody(nodes: NodeList) {
+    const ignoredElements = new Set([globalThis.document.body, globalThis.document.head]);
+    for (const node of nodes) {
+      if (ignoredElements.has(node as HTMLElement)) {
+        continue;
+      }
+
+      // This is a workaround for an issue where the document element's children
+      // are not appended to the body element. This forces the children to be
+      // appended on the next tick of the event loop.
+      setTimeout(() => globalThis.document.body.appendChild(node), 0);
+    }
+  }
 
   /**
    * Identifies if the mutation observer is triggering excessive iterations.
