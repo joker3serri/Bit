@@ -1523,7 +1523,8 @@ describe("AutofillOverlayContentService", () => {
       expect(globalThis.document.body.appendChild).not.toHaveBeenCalled();
     });
 
-    it("appends the identified node to the body", () => {
+    it("appends the identified node to the body", async () => {
+      jest.useFakeTimers();
       const injectedElement = document.createElement("div");
       injectedElement.id = "test";
       document.documentElement.appendChild(injectedElement);
@@ -1533,6 +1534,7 @@ describe("AutofillOverlayContentService", () => {
           addedNodes: document.querySelectorAll("#test"),
         } as unknown as MutationRecord,
       ]);
+      jest.advanceTimersByTime(10);
 
       expect(globalThis.document.body.appendChild).toHaveBeenCalledWith(injectedElement);
     });
