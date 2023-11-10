@@ -867,8 +867,22 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * overlay elements.
    */
   private setupGlobalEventListeners = () => {
+    document.addEventListener("visibilitychange", this.handleVisibilityChangeEvent);
     window.addEventListener("focusout", this.handleFormFieldBlurEvent);
     this.setupMutationObserver();
+  };
+
+  /**
+   * Handles the visibility change event. This method will remove the
+   * autofill overlay if the document is not visible.
+   */
+  private handleVisibilityChangeEvent = () => {
+    if (document.visibilityState === "visible") {
+      return;
+    }
+
+    this.mostRecentlyFocusedField = null;
+    this.removeAutofillOverlay();
   };
 
   /**

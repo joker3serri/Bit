@@ -81,6 +81,20 @@ describe("AutofillOverlayContentService", () => {
       expect(setupGlobalEventListenersSpy).not.toHaveBeenCalled();
     });
 
+    it("sets up a visibility change listener for the DOM", () => {
+      const handleVisibilityChangeEventSpy = jest.spyOn(
+        autofillOverlayContentService as any,
+        "handleVisibilityChangeEvent"
+      );
+
+      autofillOverlayContentService.init();
+
+      expect(document.addEventListener).toHaveBeenCalledWith(
+        "visibilitychange",
+        handleVisibilityChangeEventSpy
+      );
+    });
+
     it("sets up a focus out listener for the window", () => {
       const handleFormFieldBlurEventSpy = jest.spyOn(
         autofillOverlayContentService as any,
@@ -1564,6 +1578,28 @@ describe("AutofillOverlayContentService", () => {
 
       expect(blurMostRecentOverlayFieldSpy).toHaveBeenCalled();
       expect(removeAutofillOverlaySpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("handleVisibilityChangeEvent", () => {
+    it("skips removing the overlay if the document is visible", () => {
+      jest.spyOn(autofillOverlayContentService as any, "removeAutofillOverlay");
+
+      autofillOverlayContentService["handleVisibilityChangeEvent"]();
+
+      expect(autofillOverlayContentService["removeAutofillOverlay"]).not.toHaveBeenCalled();
+    });
+
+    it("removes the overlay if the document is not visible", () => {
+      Object.defineProperty(document, "visibilityState", {
+        value: "hidden",
+        writable: true,
+      });
+      jest.spyOn(autofillOverlayContentService as any, "removeAutofillOverlay");
+
+      autofillOverlayContentService["handleVisibilityChangeEvent"]();
+
+      expect(autofillOverlayContentService["removeAutofillOverlay"]).toHaveBeenCalled();
     });
   });
 });
