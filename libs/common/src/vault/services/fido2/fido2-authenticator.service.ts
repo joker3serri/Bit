@@ -3,8 +3,8 @@ import { Utils } from "../../../platform/misc/utils";
 import { CipherService } from "../../abstractions/cipher.service";
 import {
   Fido2AlgorithmIdentifier,
-  Fido2AutenticatorError,
-  Fido2AutenticatorErrorCode,
+  Fido2AuthenticatorError,
+  Fido2AuthenticatorErrorCode,
   Fido2AuthenticatorGetAssertionParams,
   Fido2AuthenticatorGetAssertionResult,
   Fido2AuthenticatorMakeCredentialResult,
@@ -12,6 +12,7 @@ import {
   Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction,
   PublicKeyCredentialDescriptor,
 } from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
+import { FallbackRequestedError } from "../../abstractions/fido2/fido2-client.service.abstraction";
 import { Fido2UserInterfaceService } from "../../abstractions/fido2/fido2-user-interface.service.abstraction";
 import { SyncService } from "../../abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
@@ -24,7 +25,7 @@ import { joseToDer } from "./ecdsa-utils";
 import { Fido2Utils } from "./fido2-utils";
 import { guidToRawFormat, guidToStandardFormat } from "./guid-utils";
 
-// AAGUID: 6e8248d5-b479-40db-a3d8-11116f7e8349
+// AAGUID: d548826e-79b4-db40-a3d8-11116f7e8349
 export const AAGUID = new Uint8Array([
   0xd5, 0x48, 0x82, 0x6e, 0x79, 0xb4, 0xdb, 0x40, 0xa3, 0xd8, 0x11, 0x11, 0x6f, 0x7e, 0x83, 0x49,
 ]);
@@ -62,7 +63,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.warning(
           `[Fido2Authenticator] No compatible algorithms found, RP requested: ${requestedAlgorithms}`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotSupported);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotSupported);
       }
 
       if (
@@ -74,7 +75,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
             params.requireResidentKey
           )}`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.Unknown);
       }
 
       if (
@@ -86,7 +87,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
             params.requireUserVerification
           )}`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.Unknown);
       }
 
       await userInterfaceSession.ensureUnlockedVault();
@@ -100,7 +101,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
           `[Fido2Authenticator] Aborting due to excluded credential found in vault.`
         );
         await userInterfaceSession.informExcludedCredential(existingCipherIds);
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
       let cipher: CipherView;
@@ -120,7 +121,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.warning(
           `[Fido2Authenticator] Aborting because user confirmation was not recieved.`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
       try {
@@ -138,7 +139,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
           this.logService?.warning(
             `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
           );
-          throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+          throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
         }
 
         fido2Credential = await createKeyView(params, keyPair.privateKey);
@@ -150,7 +151,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.error(
           `[Fido2Authenticator] Aborting because of unknown error when creating credential: ${error}`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.Unknown);
       }
 
       const authData = await generateAuthData({
@@ -200,7 +201,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
             params.requireUserVerification
           )}`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.Unknown);
       }
 
       let cipherOptions: CipherView[];
@@ -221,8 +222,13 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.info(
           `[Fido2Authenticator] Aborting because no matching credentials were found in the vault.`
         );
+
+        if (params.fallbackSupported) {
+          throw new FallbackRequestedError();
+        }
+
         await userInterfaceSession.informCredentialNotFound();
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
       const response = await userInterfaceSession.pickCredential({
@@ -237,7 +243,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.error(
           `[Fido2Authenticator] Aborting because the selected credential could not be found.`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
       if (
@@ -247,7 +253,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.warning(
           `[Fido2Authenticator] Aborting because user verification was unsuccessful.`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.NotAllowed);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
       try {
@@ -289,7 +295,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.error(
           `[Fido2Authenticator] Aborting because of unknown error when asserting credential: ${error}`
         );
-        throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
+        throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.Unknown);
       }
     } finally {
       userInterfaceSession.close();
@@ -383,7 +389,7 @@ async function createKeyView(
   keyValue: CryptoKey
 ): Promise<Fido2CredentialView> {
   if (keyValue.algorithm.name !== "ECDSA" && (keyValue.algorithm as any).namedCurve !== "P-256") {
-    throw new Fido2AutenticatorError(Fido2AutenticatorErrorCode.Unknown);
+    throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.Unknown);
   }
 
   const pkcs8Key = await crypto.subtle.exportKey("pkcs8", keyValue);
