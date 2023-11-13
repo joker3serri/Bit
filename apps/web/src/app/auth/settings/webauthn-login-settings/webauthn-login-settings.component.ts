@@ -5,8 +5,9 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { DialogService } from "@bitwarden/components";
 
-import { WebauthnLoginService } from "../../core";
-import { WebauthnCredentialView } from "../../core/views/webauth-credential.view";
+import { WebauthnLoginAdminService } from "../../core";
+import { WebauthnLoginCredentialPrfStatus } from "../../core/enums/webauthn-login-credential-prf-status.enum";
+import { WebauthnLoginCredentialView } from "../../core/views/webauthn-login-credential.view";
 
 import { openCreateCredentialDialog } from "./create-credential-dialog/create-credential-dialog.component";
 import { openDeleteCredentialDialogComponent } from "./delete-credential-dialog/delete-credential-dialog.component";
@@ -21,13 +22,14 @@ import { openDeleteCredentialDialogComponent } from "./delete-credential-dialog/
 export class WebauthnLoginSettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  protected readonly MaxCredentialCount = WebauthnLoginService.MaxCredentialCount;
+  protected readonly MaxCredentialCount = WebauthnLoginAdminService.MaxCredentialCount;
+  protected readonly WebauthnLoginCredentialPrfStatus = WebauthnLoginCredentialPrfStatus;
 
-  protected credentials?: WebauthnCredentialView[];
+  protected credentials?: WebauthnLoginCredentialView[];
   protected loading = true;
 
   constructor(
-    private webauthnService: WebauthnLoginService,
+    private webauthnService: WebauthnLoginAdminService,
     private dialogService: DialogService,
     private policyService: PolicyService
   ) {}
