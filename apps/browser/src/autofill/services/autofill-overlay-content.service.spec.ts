@@ -939,12 +939,11 @@ describe("AutofillOverlayContentService", () => {
       autofillOverlayContentService.removeAutofillOverlay();
 
       expect(globalThis.removeEventListener).toHaveBeenCalledWith(
-        EVENTS.WHEEL,
-        handleOverlayRepositionEventSpy
-      );
-      expect(globalThis.removeEventListener).toHaveBeenCalledWith(
-        EVENTS.TOUCHMOVE,
-        handleOverlayRepositionEventSpy
+        EVENTS.SCROLL,
+        handleOverlayRepositionEventSpy,
+        {
+          capture: true,
+        }
       );
       expect(globalThis.removeEventListener).toHaveBeenCalledWith(
         EVENTS.RESIZE,
@@ -1171,7 +1170,7 @@ describe("AutofillOverlayContentService", () => {
     });
 
     it("hides the overlay elements", () => {
-      globalThis.dispatchEvent(new Event(EVENTS.WHEEL));
+      globalThis.dispatchEvent(new Event(EVENTS.SCROLL));
 
       expect(sendExtensionMessageSpy).toHaveBeenCalledWith("updateAutofillOverlayHidden", {
         display: "none",
@@ -1185,7 +1184,7 @@ describe("AutofillOverlayContentService", () => {
       const clearTimeoutSpy = jest.spyOn(globalThis, "clearTimeout");
       autofillOverlayContentService["userInteractionEventTimeout"] = setTimeout(jest.fn(), 123);
 
-      globalThis.dispatchEvent(new Event(EVENTS.WHEEL));
+      globalThis.dispatchEvent(new Event(EVENTS.SCROLL));
 
       expect(clearTimeoutSpy).toHaveBeenCalledWith(expect.anything());
     });
@@ -1201,7 +1200,7 @@ describe("AutofillOverlayContentService", () => {
       );
       autofillOverlayContentService["mostRecentlyFocusedField"] = undefined;
 
-      globalThis.dispatchEvent(new Event(EVENTS.TOUCHMOVE));
+      globalThis.dispatchEvent(new Event(EVENTS.SCROLL));
       jest.advanceTimersByTime(800);
 
       expect(sendExtensionMessageSpy).toHaveBeenCalledWith("updateAutofillOverlayHidden", {
@@ -1229,7 +1228,7 @@ describe("AutofillOverlayContentService", () => {
         "clearUserInteractionEventTimeout"
       );
 
-      globalThis.dispatchEvent(new Event(EVENTS.WHEEL));
+      globalThis.dispatchEvent(new Event(EVENTS.SCROLL));
       jest.advanceTimersByTime(800);
       await flushPromises();
 
@@ -1259,7 +1258,7 @@ describe("AutofillOverlayContentService", () => {
         "removeAutofillOverlay"
       );
 
-      globalThis.dispatchEvent(new Event(EVENTS.TOUCHMOVE));
+      globalThis.dispatchEvent(new Event(EVENTS.SCROLL));
       jest.advanceTimersByTime(800);
       await flushPromises();
 

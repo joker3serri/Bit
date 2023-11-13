@@ -797,8 +797,9 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * the autofill overlay on scroll or resize.
    */
   private setOverlayRepositionEventListeners() {
-    globalThis.addEventListener(EVENTS.WHEEL, this.handleOverlayRepositionEvent);
-    globalThis.addEventListener(EVENTS.TOUCHMOVE, this.handleOverlayRepositionEvent);
+    globalThis.addEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent, {
+      capture: true,
+    });
     globalThis.addEventListener(EVENTS.RESIZE, this.handleOverlayRepositionEvent);
   }
 
@@ -807,8 +808,9 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * the autofill overlay on scroll or resize.
    */
   private removeOverlayRepositionEventListeners() {
-    globalThis.removeEventListener(EVENTS.WHEEL, this.handleOverlayRepositionEvent);
-    globalThis.removeEventListener(EVENTS.TOUCHMOVE, this.handleOverlayRepositionEvent);
+    globalThis.removeEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent, {
+      capture: true,
+    });
     globalThis.removeEventListener(EVENTS.RESIZE, this.handleOverlayRepositionEvent);
   }
 
