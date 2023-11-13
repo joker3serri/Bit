@@ -362,8 +362,9 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * the overlay will be opened and the list will be focused after a short delay. Ensures
    * that the overlay list is focused when the user presses the down arrow key.
    */
-  private focusOverlayList() {
-    if (!this.isOverlayListVisible) {
+  private async focusOverlayList() {
+    if (!this.isOverlayListVisible && this.mostRecentlyFocusedField) {
+      await this.updateMostRecentlyFocusedField(this.mostRecentlyFocusedField);
       this.openAutofillOverlay({ isOpeningFullOverlay: true });
       setTimeout(() => this.sendExtensionMessage("focusAutofillOverlayList"), 125);
       return;
@@ -796,8 +797,9 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * the autofill overlay on scroll or resize.
    */
   private setOverlayRepositionEventListeners() {
-    globalThis.document.body?.addEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent);
-    globalThis.addEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent);
+    globalThis.addEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent, {
+      capture: true,
+    });
     globalThis.addEventListener(EVENTS.RESIZE, this.handleOverlayRepositionEvent);
   }
 
@@ -806,8 +808,9 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * the autofill overlay on scroll or resize.
    */
   private removeOverlayRepositionEventListeners() {
-    globalThis.document.body?.removeEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent);
-    globalThis.removeEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent);
+    globalThis.removeEventListener(EVENTS.SCROLL, this.handleOverlayRepositionEvent, {
+      capture: true,
+    });
     globalThis.removeEventListener(EVENTS.RESIZE, this.handleOverlayRepositionEvent);
   }
 
@@ -867,8 +870,8 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * overlay elements.
    */
   private setupGlobalEventListeners = () => {
-    globalThis.document.addEventListener("visibilitychange", this.handleVisibilityChangeEvent);
-    globalThis.addEventListener("focusout", this.handleFormFieldBlurEvent);
+    globalThis.document.addEventListener(EVENTS.VISIBILITYCHANGE, this.handleVisibilityChangeEvent);
+    globalThis.addEventListener(EVENTS.FOCUSOUT, this.handleFormFieldBlurEvent);
     this.setupMutationObserver();
   };
 
