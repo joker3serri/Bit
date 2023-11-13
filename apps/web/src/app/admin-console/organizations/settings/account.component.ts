@@ -41,8 +41,12 @@ export class AccountComponent {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
-  showCollectionManagementSettings$ = this.configService.getFeatureFlag$(
+  flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollections,
+    false
+  );
+  flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollectionsV1,
     false
   );
 
