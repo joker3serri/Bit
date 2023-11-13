@@ -870,8 +870,8 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * overlay elements.
    */
   private setupGlobalEventListeners = () => {
-    globalThis.document.addEventListener("visibilitychange", this.handleVisibilityChangeEvent);
-    globalThis.addEventListener("focusout", this.handleFormFieldBlurEvent);
+    globalThis.document.addEventListener(EVENTS.VISIBILITYCHANGE, this.handleVisibilityChangeEvent);
+    globalThis.addEventListener(EVENTS.FOCUSOUT, this.handleFormFieldBlurEvent);
     this.setupMutationObserver();
   };
 
