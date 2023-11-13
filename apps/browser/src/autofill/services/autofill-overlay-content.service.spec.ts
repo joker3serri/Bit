@@ -380,8 +380,12 @@ describe("AutofillOverlayContentService", () => {
           expect(handleOverlayRepositionEventSpy).not.toHaveBeenCalled();
         });
 
-        it("opens the overlay list and focuses it after a delay if it is not visible when the `ArrowDown` key is pressed", () => {
+        it("opens the overlay list and focuses it after a delay if it is not visible when the `ArrowDown` key is pressed", async () => {
           jest.useFakeTimers();
+          const updateMostRecentlyFocusedFieldSpy = jest.spyOn(
+            autofillOverlayContentService as any,
+            "updateMostRecentlyFocusedField"
+          );
           const openAutofillOverlaySpy = jest.spyOn(
             autofillOverlayContentService as any,
             "openAutofillOverlay"
@@ -389,8 +393,10 @@ describe("AutofillOverlayContentService", () => {
           autofillOverlayContentService["isOverlayListVisible"] = false;
 
           autofillFieldElement.dispatchEvent(new KeyboardEvent("keyup", { code: "ArrowDown" }));
+          await flushPromises();
 
-          expect(openAutofillOverlaySpy).toHaveBeenCalled();
+          expect(updateMostRecentlyFocusedFieldSpy).toHaveBeenCalledWith(autofillFieldElement);
+          expect(openAutofillOverlaySpy).toHaveBeenCalledWith({ isOpeningFullOverlay: true });
           expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("focusAutofillOverlayList");
 
           jest.advanceTimersByTime(150);
@@ -932,12 +938,12 @@ describe("AutofillOverlayContentService", () => {
 
       autofillOverlayContentService.removeAutofillOverlay();
 
-      expect(globalThis.document.body.removeEventListener).toHaveBeenCalledWith(
-        EVENTS.SCROLL,
+      expect(globalThis.removeEventListener).toHaveBeenCalledWith(
+        EVENTS.WHEEL,
         handleOverlayRepositionEventSpy
       );
       expect(globalThis.removeEventListener).toHaveBeenCalledWith(
-        EVENTS.SCROLL,
+        EVENTS.TOUCHMOVE,
         handleOverlayRepositionEventSpy
       );
       expect(globalThis.removeEventListener).toHaveBeenCalledWith(
@@ -1159,13 +1165,13 @@ describe("AutofillOverlayContentService", () => {
       autofillOverlayContentService["isOverlayButtonVisible"] = false;
       autofillOverlayContentService["isOverlayListVisible"] = false;
 
-      globalThis.dispatchEvent(new Event("resize"));
+      globalThis.dispatchEvent(new Event(EVENTS.RESIZE));
 
       expect(sendExtensionMessageSpy).not.toHaveBeenCalled();
     });
 
     it("hides the overlay elements", () => {
-      globalThis.document.body.dispatchEvent(new Event("scroll"));
+      globalThis.dispatchEvent(new Event(EVENTS.WHEEL));
 
       expect(sendExtensionMessageSpy).toHaveBeenCalledWith("updateAutofillOverlayHidden", {
         display: "none",
@@ -1179,7 +1185,7 @@ describe("AutofillOverlayContentService", () => {
       const clearTimeoutSpy = jest.spyOn(globalThis, "clearTimeout");
       autofillOverlayContentService["userInteractionEventTimeout"] = setTimeout(jest.fn(), 123);
 
-      globalThis.dispatchEvent(new Event("scroll"));
+      globalThis.dispatchEvent(new Event(EVENTS.WHEEL));
 
       expect(clearTimeoutSpy).toHaveBeenCalledWith(expect.anything());
     });
@@ -1195,7 +1201,7 @@ describe("AutofillOverlayContentService", () => {
       );
       autofillOverlayContentService["mostRecentlyFocusedField"] = undefined;
 
-      globalThis.dispatchEvent(new Event("scroll"));
+      globalThis.dispatchEvent(new Event(EVENTS.TOUCHMOVE));
       jest.advanceTimersByTime(800);
 
       expect(sendExtensionMessageSpy).toHaveBeenCalledWith("updateAutofillOverlayHidden", {
@@ -1223,7 +1229,7 @@ describe("AutofillOverlayContentService", () => {
         "clearUserInteractionEventTimeout"
       );
 
-      globalThis.dispatchEvent(new Event("scroll"));
+      globalThis.dispatchEvent(new Event(EVENTS.WHEEL));
       jest.advanceTimersByTime(800);
       await flushPromises();
 
@@ -1253,7 +1259,7 @@ describe("AutofillOverlayContentService", () => {
         "removeAutofillOverlay"
       );
 
-      globalThis.dispatchEvent(new Event("scroll"));
+      globalThis.dispatchEvent(new Event(EVENTS.TOUCHMOVE));
       jest.advanceTimersByTime(800);
       await flushPromises();
 

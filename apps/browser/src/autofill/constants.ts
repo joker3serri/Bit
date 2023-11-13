@@ -18,6 +18,8 @@ export const EVENTS = {
   DOMCONTENTLOADED: "DOMContentLoaded",
   LOAD: "load",
   MESSAGE: "message",
+  WHEEL: "wheel",
+  TOUCHMOVE: "touchmove",
 } as const;
 
 /* Context Menu item Ids */
