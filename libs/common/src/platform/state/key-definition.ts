@@ -42,7 +42,9 @@ export class KeyDefinition<T> {
     private readonly options: KeyDefinitionOptions<T>
   ) {
     if (options.deserializer == null) {
-      throw new Error("'deserializer' is a required property.");
+      throw new Error(
+        `'deserializer' is a required property on key ${stateDefinition.name} > ${key}`
+      );
     }
   }
 
