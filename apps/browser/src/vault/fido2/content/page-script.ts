@@ -53,28 +53,6 @@ const browserCredentials = {
 };
 
 const messenger = ((window as any).messenger = Messenger.forDOMCommunication(window));
-
-// window.messenger.request({
-//   type: 2,
-//   data: {
-//     origin: "accounts.shopify.com",
-//     sameOriginWithAncestors: true,
-//     allowedCredentialIds: [],
-//     rpId: "accounts.shopify.com",
-//     challenge: "QWxhZGRpbjpvcGVuIHNlc2FtZQ",
-//     timeout: 60000,
-//     fallbackSupported: true,
-//   },
-// });
-
-// function isSameOriginWithAncestors() {
-//   try {
-//     return window.self === window.top;
-//   } catch {
-//     return false;
-//   }
-// }
-
 navigator.credentials.create = async (
   options?: CredentialCreationOptions,
   abortController?: AbortController
@@ -89,17 +67,10 @@ navigator.credentials.create = async (
     (options?.publicKey?.authenticatorSelection.authenticatorAttachment !== "platform" &&
       browserNativeWebauthnSupport);
   try {
-    // const isNotIframe = isSameOriginWithAncestors();
-
     const response = await messenger.request(
       {
         type: MessageType.CredentialCreationRequest,
-        data: WebauthnUtils.mapCredentialCreationOptions(
-          options,
-          // window.location.origin,
-          // isNotIframe,
-          fallbackSupported
-        ),
+        data: WebauthnUtils.mapCredentialCreationOptions(options, fallbackSupported),
       },
       abortController
     );
