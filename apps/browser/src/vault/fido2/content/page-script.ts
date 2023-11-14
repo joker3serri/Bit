@@ -52,15 +52,28 @@ const browserCredentials = {
   get: navigator.credentials.get.bind(navigator.credentials) as typeof navigator.credentials.get,
 };
 
-const messenger = Messenger.forDOMCommunication(window);
+const messenger = ((window as any).messenger = Messenger.forDOMCommunication(window));
 
-function isSameOriginWithAncestors() {
-  try {
-    return window.self === window.top;
-  } catch {
-    return false;
-  }
-}
+// window.messenger.request({
+//   type: 2,
+//   data: {
+//     origin: "accounts.shopify.com",
+//     sameOriginWithAncestors: true,
+//     allowedCredentialIds: [],
+//     rpId: "accounts.shopify.com",
+//     challenge: "QWxhZGRpbjpvcGVuIHNlc2FtZQ",
+//     timeout: 60000,
+//     fallbackSupported: true,
+//   },
+// });
+
+// function isSameOriginWithAncestors() {
+//   try {
+//     return window.self === window.top;
+//   } catch {
+//     return false;
+//   }
+// }
 
 navigator.credentials.create = async (
   options?: CredentialCreationOptions,
@@ -76,15 +89,15 @@ navigator.credentials.create = async (
     (options?.publicKey?.authenticatorSelection.authenticatorAttachment !== "platform" &&
       browserNativeWebauthnSupport);
   try {
-    const isNotIframe = isSameOriginWithAncestors();
+    // const isNotIframe = isSameOriginWithAncestors();
 
     const response = await messenger.request(
       {
         type: MessageType.CredentialCreationRequest,
         data: WebauthnUtils.mapCredentialCreationOptions(
           options,
-          window.location.origin,
-          isNotIframe,
+          // window.location.origin,
+          // isNotIframe,
           fallbackSupported
         ),
       },
@@ -124,12 +137,7 @@ navigator.credentials.get = async (
     const response = await messenger.request(
       {
         type: MessageType.CredentialGetRequest,
-        data: WebauthnUtils.mapCredentialRequestOptions(
-          options,
-          window.location.origin,
-          true,
-          fallbackSupported
-        ),
+        data: WebauthnUtils.mapCredentialRequestOptions(options, fallbackSupported),
       },
       abortController
     );
