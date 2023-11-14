@@ -171,7 +171,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
     });
   });
 
-  it("realistic browser who has two users, one account toggled the setting to the original value and one didn't touch the value, should have it be disabled.", async () => {
+  it("unrealistic browser who has two users, one account toggled the setting to the original value and one didn't touch the value, should have it be disabled.", async () => {
     const testInput: TestState = {
       authenticatedAccounts: ["user1", "user2"],
       global: {
@@ -213,6 +213,63 @@ describe("MoveBrowserSettingsToGlobal", () => {
 
     expect(output["user2"]).toEqual({
       settings: { region: "Self-hosted" },
+    });
+  });
+
+  it("realistic browser who has two users, but only one of which that is in the authenticatedAccounts one account toggled the setting to the original value and one didn't touch the value, should have it be disabled.", async () => {
+    const testInput: TestState = {
+      authenticatedAccounts: ["user1"],
+      global: {
+        theme: "system", // A real global setting that should persist after migration
+      },
+      user1: {
+        settings: {
+          disableAddLoginNotification: true,
+          disableChangedPasswordNotification: true,
+          neverDomains: {
+            "example.com": null,
+          },
+          region: "Self-hosted",
+        },
+      },
+      user2: {
+        settings: {
+          disableAddLoginNotification: false,
+          disableChangedPasswordNotification: false,
+          neverDomains: {
+            "example2.com": null,
+          },
+          region: "Self-hosted",
+        },
+      },
+    };
+
+    const output = await runMigrator(myMigrator, testInput);
+
+    // The false settings should be respected over the true values
+    // neverDomains should be combined into a single object
+    expect(output["global"]).toEqual({
+      theme: "system",
+      disableAddLoginNotification: true,
+      disableChangedPasswordNotification: true,
+      neverDomains: {
+        "example.com": null,
+      },
+    });
+
+    expect(output["user1"]).toEqual({
+      settings: { region: "Self-hosted" },
+    });
+
+    expect(output["user2"]).toEqual({
+      settings: {
+        disableAddLoginNotification: false,
+        disableChangedPasswordNotification: false,
+        neverDomains: {
+          "example2.com": null,
+        },
+        region: "Self-hosted",
+      },
     });
   });
 });
