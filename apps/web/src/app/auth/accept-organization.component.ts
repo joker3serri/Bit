@@ -203,7 +203,9 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
 
     // if user exists, send user to login
     if (orgUserHasExistingUser) {
-      this.router.navigate(["/login"]);
+      this.router.navigate(["/login"], {
+        queryParams: { email: qParams.email },
+      });
       return;
     }
 
