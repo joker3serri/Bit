@@ -32,6 +32,10 @@ export class FakeStorageService implements AbstractStorageService {
     this.store = store;
   }
 
+  get internalStore() {
+    return this.store;
+  }
+
   get updates$() {
     return this.updatesSubject.asObservable();
   }

@@ -36,4 +36,7 @@ export class GlobalState {
   enableBrowserIntegrationFingerprint?: boolean;
   enableDuckDuckGoBrowserIntegration?: boolean;
   region?: string;
+  neverDomains?: { [id: string]: any };
+  disableAddLoginNotification?: boolean;
+  disableChangedPasswordNotification?: boolean;
 }

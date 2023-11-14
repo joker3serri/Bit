@@ -1121,18 +1121,18 @@ export class StateService<
 
   async getDisableAddLoginNotification(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disableAddLoginNotification ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disableAddLoginNotification ?? false
     );
   }
 
   async setDisableAddLoginNotification(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+    const global = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disableAddLoginNotification = value;
-    await this.saveAccount(
-      account,
+    global.disableAddLoginNotification = value;
+    await this.saveGlobals(
+      global,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -1193,8 +1193,8 @@ export class StateService<
 
   async getDisableChangedPasswordNotification(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disableChangedPasswordNotification ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disableChangedPasswordNotification ?? false
     );
   }
 
@@ -1202,12 +1202,12 @@ export class StateService<
     value: boolean,
     options?: StorageOptions
   ): Promise<void> {
-    const account = await this.getAccount(
+    const global = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disableChangedPasswordNotification = value;
-    await this.saveAccount(
-      account,
+    global.disableChangedPasswordNotification = value;
+    await this.saveGlobals(
+      global,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -2295,19 +2295,20 @@ export class StateService<
     );
   }
 
-  async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: any }> {
+  // TODO: Make sure I didn't break anyone with now returning unknown
+  async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: unknown }> {
     return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.settings?.neverDomains;
+      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+    )?.neverDomains;
   }
 
-  async setNeverDomains(value: { [id: string]: any }, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+  async setNeverDomains(value: { [id: string]: unknown }, options?: StorageOptions): Promise<void> {
+    const global = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.neverDomains = value;
-    await this.saveAccount(
-      account,
+    global.neverDomains = value;
+    await this.saveGlobals(
+      global,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
