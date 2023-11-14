@@ -84,6 +84,11 @@ export abstract class PolicyService {
   /**
    * Instantiates {@link Policy} objects from {@link PolicyResponse} objects.
    */
+  mapPolicyFromResponse: (policyResponse: PolicyResponse) => Policy;
+
+  /**
+   * Instantiates {@link Policy} objects from {@link ListResponse<PolicyResponse>} objects.
+   */
   mapPoliciesFromToken: (policiesResponse: ListResponse<PolicyResponse>) => Policy[];
 }
 
