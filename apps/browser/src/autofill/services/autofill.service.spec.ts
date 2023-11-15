@@ -443,6 +443,7 @@ describe("AutofillService", () => {
             untrustedIframe: false,
           },
           url: currentAutofillPageDetails.tab.url,
+          pageDetailsUrl: "url",
         },
         {
           frameId: currentAutofillPageDetails.frameId,

@@ -174,8 +174,28 @@ describe("AutofillInit", () => {
           jest.spyOn(autofillInit["insertAutofillContentService"], "fillForm").mockImplementation();
         });
 
+        it("skips calling the InsertAutofillContentService and does not fill the form if the url to fill is not equal to the current tab url", async () => {
+          const fillScript = mock<AutofillScript>();
+          const message = {
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: "https://a-different-url.com",
+          };
+
+          sendExtensionRuntimeMessage(message);
+          await flushPromises();
+
+          expect(autofillInit["insertAutofillContentService"].fillForm).not.toHaveBeenCalledWith(
+            fillScript
+          );
+        });
+
         it("calls the InsertAutofillContentService to fill the form", async () => {
-          sendExtensionRuntimeMessage({ command: "fillForm", fillScript });
+          sendExtensionRuntimeMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+          });
           await flushPromises();
 
           expect(autofillInit["insertAutofillContentService"].fillForm).toHaveBeenCalledWith(
@@ -190,7 +210,11 @@ describe("AutofillInit", () => {
             .spyOn(autofillInit["autofillOverlayContentService"], "focusMostRecentOverlayField")
             .mockImplementation();
 
-          sendExtensionRuntimeMessage({ command: "fillForm", fillScript });
+          sendExtensionRuntimeMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+          });
           await flushPromises();
           jest.advanceTimersByTime(300);
 
@@ -213,7 +237,11 @@ describe("AutofillInit", () => {
             .spyOn(newAutofillInit["insertAutofillContentService"], "fillForm")
             .mockImplementation();
 
-          sendExtensionRuntimeMessage({ command: "fillForm", fillScript });
+          sendExtensionRuntimeMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+          });
           await flushPromises();
           jest.advanceTimersByTime(300);
 
