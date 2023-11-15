@@ -194,11 +194,6 @@ export default class AutofillService implements AutofillServiceInterface {
           return;
         }
 
-        /** TODO REMOVE BEFORE MERGING IN! */
-        const delay = new Promise((resolve) => setTimeout(() => resolve(undefined), 5000));
-        await delay;
-        /** TODO REMOVE BEFORE MERGING IN! */
-
         // Add a small delay between operations
         fillScript.properties.delay_between_operations = 20;
 
