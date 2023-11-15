@@ -2817,5 +2817,8 @@
   },
   "server": {
     "message": "server"
+  },
+  "hostedAt": {
+    "message": "hosted at"
   }
 }
