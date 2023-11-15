@@ -2295,7 +2295,6 @@ export class StateService<
     );
   }
 
-  // TODO: Make sure I didn't break anyone with now returning unknown
   async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: unknown }> {
     return (
       await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
