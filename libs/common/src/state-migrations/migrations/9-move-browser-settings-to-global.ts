@@ -40,7 +40,7 @@ export class MoveBrowserSettingsToGlobal extends Migrator<8, 9> {
     let globalDisableAddLoginNotificationValue;
     if (globalDisableAddLoginNotificationHasValue) {
       globalDisableAddLoginNotificationValue = !accounts.some(({ account }) => {
-        return account.settings?.disableAddLoginNotification === false;
+        return (account.settings?.disableAddLoginNotification ?? false) === false;
       });
     }
 
@@ -52,7 +52,7 @@ export class MoveBrowserSettingsToGlobal extends Migrator<8, 9> {
     let globalDisableChangedPasswordNotificationValue;
     if (globalDisableChangedPasswordNotificationHasValue) {
       globalDisableChangedPasswordNotificationValue = !accounts.some(({ account }) => {
-        return account.settings?.disableChangedPasswordNotification === false;
+        return (account.settings?.disableChangedPasswordNotification ?? false) === false;
       });
     }
 
