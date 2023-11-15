@@ -20,6 +20,10 @@ type TargetGlobalState = {
 };
 
 export class MoveBrowserSettingsToGlobal extends Migrator<8, 9> {
+  // Will first check if any of the accounts have a value from the given accountSelector
+  // if they do have a value it will set that value into global state but if multiple
+  // users have differing values it will prefer the false setting,
+  // if all users have true then it will take true.
   tryAddSetting(
     accounts: { userId: string; account: ExpectedAccountType }[],
     accountSelector: (account: ExpectedAccountType) => boolean | undefined,
