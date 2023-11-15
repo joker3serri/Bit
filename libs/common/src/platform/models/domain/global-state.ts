@@ -39,4 +39,5 @@ export class GlobalState {
   neverDomains?: { [id: string]: unknown };
   disableAddLoginNotification?: boolean;
   disableChangedPasswordNotification?: boolean;
+  disableContextMenuItem?: boolean;
 }

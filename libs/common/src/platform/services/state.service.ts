@@ -1127,12 +1127,12 @@ export class StateService<
   }
 
   async setDisableAddLoginNotification(value: boolean, options?: StorageOptions): Promise<void> {
-    const global = await this.getGlobals(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    global.disableAddLoginNotification = value;
+    globals.disableAddLoginNotification = value;
     await this.saveGlobals(
-      global,
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -1202,30 +1202,30 @@ export class StateService<
     value: boolean,
     options?: StorageOptions
   ): Promise<void> {
-    const global = await this.getGlobals(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    global.disableChangedPasswordNotification = value;
+    globals.disableChangedPasswordNotification = value;
     await this.saveGlobals(
-      global,
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
 
   async getDisableContextMenuItem(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disableContextMenuItem ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disableContextMenuItem ?? false
     );
   }
 
   async setDisableContextMenuItem(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disableContextMenuItem = value;
-    await this.saveAccount(
-      account,
+    globals.disableContextMenuItem = value;
+    await this.saveGlobals(
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -2302,12 +2302,12 @@ export class StateService<
   }
 
   async setNeverDomains(value: { [id: string]: unknown }, options?: StorageOptions): Promise<void> {
-    const global = await this.getGlobals(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    global.neverDomains = value;
+    globals.neverDomains = value;
     await this.saveGlobals(
-      global,
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }

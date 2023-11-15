@@ -8,6 +8,7 @@ type ExpectedAccountType = {
     neverDomains?: NeverDomains;
     disableAddLoginNotification?: boolean;
     disableChangedPasswordNotification?: boolean;
+    disableContextMenuItem?: boolean;
   };
 };
 
@@ -15,9 +16,28 @@ type TargetGlobalState = {
   neverDomains?: NeverDomains;
   disableAddLoginNotification?: boolean;
   disableChangedPasswordNotification?: boolean;
+  disableContextMenuItem?: boolean;
 };
 
 export class MoveBrowserSettingsToGlobal extends Migrator<8, 9> {
+  tryAddSetting(
+    accounts: { userId: string; account: ExpectedAccountType }[],
+    accountSelector: (account: ExpectedAccountType) => boolean | undefined,
+    globalSetter: (value: boolean | undefined) => void
+  ): void {
+    const hasValue = accounts.some(({ account }) => {
+      return accountSelector(account) !== undefined;
+    });
+
+    if (hasValue) {
+      const value = !accounts.some(({ account }) => {
+        return (accountSelector(account) ?? false) === false;
+      });
+
+      globalSetter(value);
+    }
+  }
+
   async migrate(helper: MigrationHelper): Promise<void> {
     const global = await helper.get<object>("global");
 
@@ -32,43 +52,29 @@ export class MoveBrowserSettingsToGlobal extends Migrator<8, 9> {
       return accumulator;
     }, undefined as NeverDomains);
 
-    // Has disableAddLoginNotification been set to a value for any account
-    const globalDisableAddLoginNotificationHasValue = accounts.some(({ account }) => {
-      return account.settings?.disableAddLoginNotification !== undefined;
-    });
-
-    let globalDisableAddLoginNotificationValue;
-    if (globalDisableAddLoginNotificationHasValue) {
-      globalDisableAddLoginNotificationValue = !accounts.some(({ account }) => {
-        return (account.settings?.disableAddLoginNotification ?? false) === false;
-      });
-    }
-
-    // Has disableChangedPasswordNotification been set to a value for any account
-    const globalDisableChangedPasswordNotificationHasValue = accounts.some(({ account }) => {
-      return account.settings?.disableChangedPasswordNotification !== undefined;
-    });
-
-    let globalDisableChangedPasswordNotificationValue;
-    if (globalDisableChangedPasswordNotificationHasValue) {
-      globalDisableChangedPasswordNotificationValue = !accounts.some(({ account }) => {
-        return (account.settings?.disableChangedPasswordNotification ?? false) === false;
-      });
-    }
-
     const targetGlobalState: TargetGlobalState = {};
+
     if (globalNeverDomainsValue != null) {
       targetGlobalState.neverDomains = globalNeverDomainsValue;
     }
 
-    if (globalDisableAddLoginNotificationValue !== undefined) {
-      targetGlobalState.disableAddLoginNotification = globalDisableAddLoginNotificationValue;
-    }
+    this.tryAddSetting(
+      accounts,
+      (a) => a.settings?.disableAddLoginNotification,
+      (v) => (targetGlobalState.disableAddLoginNotification = v)
+    );
 
-    if (globalDisableChangedPasswordNotificationValue !== undefined) {
-      targetGlobalState.disableChangedPasswordNotification =
-        globalDisableChangedPasswordNotificationValue;
-    }
+    this.tryAddSetting(
+      accounts,
+      (a) => a.settings?.disableChangedPasswordNotification,
+      (v) => (targetGlobalState.disableChangedPasswordNotification = v)
+    );
+
+    this.tryAddSetting(
+      accounts,
+      (a) => a.settings?.disableContextMenuItem,
+      (v) => (targetGlobalState.disableContextMenuItem = v)
+    );
 
     await helper.set<TargetGlobalState>("global", {
       ...global,
@@ -79,6 +85,7 @@ export class MoveBrowserSettingsToGlobal extends Migrator<8, 9> {
       accounts.map(async ({ userId, account }) => {
         delete account.settings?.disableAddLoginNotification;
         delete account.settings?.disableChangedPasswordNotification;
+        delete account.settings?.disableContextMenuItem;
         delete account.settings?.neverDomains;
         await helper.set(userId, account);
       })

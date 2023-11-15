@@ -64,6 +64,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: false,
           disableChangedPasswordNotification: false,
+          disableContextMenuItem: false,
           neverDomains: {
             "example.com": null,
           },
@@ -79,6 +80,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       theme: "system",
       disableAddLoginNotification: false,
       disableChangedPasswordNotification: false,
+      disableContextMenuItem: false,
       neverDomains: {
         "example.com": null,
       },
@@ -101,6 +103,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: true,
           disableChangedPasswordNotification: true,
+          disableContextMenuItem: true,
           neverDomains: {
             "example.com": null,
           },
@@ -116,6 +119,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       theme: "system",
       disableAddLoginNotification: true,
       disableChangedPasswordNotification: true,
+      disableContextMenuItem: true,
       neverDomains: {
         "example.com": null,
       },
@@ -139,6 +143,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: true,
           disableChangedPasswordNotification: true,
+          disableContextMenuItem: true,
           neverDomains: {
             "example.com": null,
           },
@@ -149,6 +154,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: false,
           disableChangedPasswordNotification: false,
+          disableContextMenuItem: false,
           neverDomains: {
             "example2.com": null,
           },
@@ -165,6 +171,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       theme: "system",
       disableAddLoginNotification: false,
       disableChangedPasswordNotification: false,
+      disableContextMenuItem: false,
       neverDomains: {
         "example.com": null,
         "example2.com": null,
@@ -198,6 +205,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: false,
           disableChangedPasswordNotification: false,
+          disableContextMenuItem: false,
           neverDomains: {
             "example.com": null,
           },
@@ -214,6 +222,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       theme: "system",
       disableAddLoginNotification: false,
       disableChangedPasswordNotification: false,
+      disableContextMenuItem: false,
       neverDomains: {
         "example.com": null,
       },
@@ -246,6 +255,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: true,
           disableChangedPasswordNotification: true,
+          disableContextMenuItem: true,
           neverDomains: {
             "example.com": null,
           },
@@ -262,6 +272,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       theme: "system",
       disableAddLoginNotification: false,
       disableChangedPasswordNotification: false,
+      disableContextMenuItem: false,
       neverDomains: {
         "example.com": null,
       },
@@ -290,6 +301,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: true,
           disableChangedPasswordNotification: true,
+          disableContextMenuItem: true,
           neverDomains: {
             "example.com": null,
           },
@@ -300,6 +312,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
         settings: {
           disableAddLoginNotification: false,
           disableChangedPasswordNotification: false,
+          disableContextMenuItem: false,
           neverDomains: {
             "example2.com": null,
           },
@@ -317,6 +330,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       theme: "system",
       disableAddLoginNotification: true,
       disableChangedPasswordNotification: true,
+      disableContextMenuItem: true,
       neverDomains: {
         "example.com": null,
       },
@@ -330,6 +344,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
       settings: {
         disableAddLoginNotification: false,
         disableChangedPasswordNotification: false,
+        disableContextMenuItem: false,
         neverDomains: {
           "example2.com": null,
         },
