@@ -28,6 +28,7 @@ describe("WebAuthnLoginService", () => {
 
   let originalPublicKeyCredential: PublicKeyCredential | any;
   let originalAuthenticatorAssertionResponse: AuthenticatorAssertionResponse | any;
+  let originalNavigator: Navigator;
 
   beforeAll(() => {
     // Save off the original classes so we can restore them after all tests are done if they exist
@@ -38,6 +39,18 @@ describe("WebAuthnLoginService", () => {
     // assertCredential(...) tests.
     global.PublicKeyCredential = MockPublicKeyCredential;
     global.AuthenticatorAssertionResponse = MockAuthenticatorAssertionResponse;
+
+    // Save the original navigator
+    originalNavigator = global.window.navigator;
+
+    // Mock the window.navigator with mocked CredentialsContainer
+    Object.defineProperty(global.window, "navigator", {
+      value: {
+        ...originalNavigator,
+        credentials: navigatorCredentials,
+      },
+      configurable: true,
+    });
   });
 
   beforeEach(() => {
@@ -48,6 +61,12 @@ describe("WebAuthnLoginService", () => {
     // Restore global after all tests are done
     global.PublicKeyCredential = originalPublicKeyCredential;
     global.AuthenticatorAssertionResponse = originalAuthenticatorAssertionResponse;
+
+    // Restore the original navigator
+    Object.defineProperty(global.window, "navigator", {
+      value: originalNavigator,
+      configurable: true,
+    });
   });
 
   function createService(config: { featureEnabled: boolean }): WebAuthnLoginService {
@@ -56,7 +75,7 @@ describe("WebAuthnLoginService", () => {
       webAuthnLoginApiService,
       authService,
       configService,
-      navigatorCredentials,
+      window,
       logService
     );
   }

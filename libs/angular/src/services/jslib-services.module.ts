@@ -174,7 +174,6 @@ import {
   LOG_MAC_FAILURES,
   LOGOUT_CALLBACK,
   MEMORY_STORAGE,
-  NAVIGATOR_CREDENTIALS,
   SECURE_STORAGE,
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
@@ -230,11 +229,6 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: LOG_MAC_FAILURES,
       useValue: true,
-    },
-    {
-      provide: NAVIGATOR_CREDENTIALS,
-      useFactory: (window: Window) => window.navigator.credentials,
-      deps: [WINDOW],
     },
     {
       provide: AppIdServiceAbstraction,
@@ -769,7 +763,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         WebAuthnLoginApiServiceAbstraction,
         AuthServiceAbstraction,
         ConfigServiceAbstraction,
-        NAVIGATOR_CREDENTIALS,
+        WINDOW,
         LogService,
       ],
     },

@@ -18,14 +18,17 @@ import { WebAuthnLoginAssertionResponseRequest } from "./request/webauthn-login-
 export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
   readonly enabled$: Observable<boolean>;
 
+  private navigatorCredentials: CredentialsContainer;
+
   constructor(
     private webAuthnLoginApiService: WebAuthnLoginApiServiceAbstraction,
     private authService: AuthService,
     private configService: ConfigServiceAbstraction,
-    private navigatorCredentials: CredentialsContainer,
+    private window: Window,
     private logService?: LogService
   ) {
     this.enabled$ = this.configService.getFeatureFlag$(FeatureFlag.PasswordlessLogin, false);
+    this.navigatorCredentials = this.window.navigator.credentials;
   }
 
   async getCredentialAssertionOptions(): Promise<WebAuthnLoginCredentialAssertionOptionsView> {
