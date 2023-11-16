@@ -172,10 +172,13 @@ jobs:
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
   azure-deploy:
-    name: Deploy to Azure
+    name: Deploy Web Vault to ${{ inputs.environment }}
+    needs:
+      - setup
+      - artifact-check
     runs-on: ubuntu-22.04
     env:
-      _WEB_ARTIFACT: "web-*-cloud-euqa.zip"
+      _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
     steps:
       - name: Login to Azure - EU Subscription
         uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
@@ -196,11 +199,11 @@ jobs:
           path: apps/web
           workflow_conclusion: success
           branch: ${{ github.event.inputs.tag }}
-          artifacts: ${{ env._WEB_ARTIFACT }}
+          artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Unzip build asset
         working-directory: apps/web
-        run: unzip ${{ env._WEB_ARTIFACT }}
+        run: unzip ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Empty container in Storage Account
         run: |
