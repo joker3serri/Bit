@@ -16,9 +16,7 @@ export abstract class WebAuthnLoginServiceAbstraction {
    * (whether user verification is required, the relying party id, timeout duration for the process to complete, etc.)
    * for the authenticator.
    */
-  getCredentialAssertionOptions: () => Promise<
-    WebAuthnLoginCredentialAssertionOptionsView | undefined
-  >;
+  getCredentialAssertionOptions: () => Promise<WebAuthnLoginCredentialAssertionOptionsView>;
 
   /**
    * Asserts the credential. This involves user interaction with the authenticator
