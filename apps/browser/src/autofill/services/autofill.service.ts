@@ -12,6 +12,7 @@ import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserStateService } from "../../platform/services/abstractions/browser-state.service";
+import { openVaultItemPasswordRepromptPopout } from "../../vault/popup/utils/vault-popout-window";
 import AutofillField from "../models/autofill-field";
 import AutofillPageDetails from "../models/autofill-page-details";
 import AutofillScript from "../models/autofill-script";
@@ -30,6 +31,10 @@ import {
 } from "./autofill-constants";
 
 export default class AutofillService implements AutofillServiceInterface {
+  private openVaultItemPasswordRepromptPopout = openVaultItemPasswordRepromptPopout;
+  private openPasswordRepromptPopoutDebounce: NodeJS.Timeout;
+  private currentlyOpeningPasswordRepromptPopout = false;
+
   constructor(
     private cipherService: CipherService,
     private stateService: BrowserStateService,
@@ -148,10 +153,14 @@ export default class AutofillService implements AutofillServiceInterface {
       throw new Error("Nothing to auto-fill.");
     }
 
-    let totpPromise: Promise<string> = null;
+    let totp: string | null = null;
 
     const canAccessPremium = await this.stateService.getCanAccessPremium();
     const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
+
+    if (!canAccessPremium) {
+      options.cipher.login.totp = null;
+    }
 
     let didAutofill = false;
     await Promise.all(
@@ -199,21 +208,22 @@ export default class AutofillService implements AutofillServiceInterface {
             command: "fillForm",
             fillScript: fillScript,
             url: tab.url,
+            pageDetailsUrl: pd.details.url,
           },
           { frameId: pd.frameId }
         );
 
+        // Skip getting the TOTP code for clipboard in these cases
         if (
           options.cipher.type !== CipherType.Login ||
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          totpPromise ||
+          totp !== null ||
           !options.cipher.login.totp ||
           (!canAccessPremium && !options.cipher.organizationUseTotp)
         ) {
           return;
         }
 
-        totpPromise = this.stateService.getDisableAutoTotpCopy().then((disabled) => {
+        totp = await this.stateService.getDisableAutoTotpCopy().then((disabled) => {
           if (!disabled) {
             return this.totpService.getCode(options.cipher.login.totp);
           }
@@ -224,8 +234,8 @@ export default class AutofillService implements AutofillServiceInterface {
 
     if (didAutofill) {
       this.eventCollectionService.collect(EventType.Cipher_ClientAutofilled, options.cipher.id);
-      if (totpPromise != null) {
-        return await totpPromise;
+      if (totp !== null) {
+        return totp;
       } else {
         return null;
       }
@@ -268,13 +278,14 @@ export default class AutofillService implements AutofillServiceInterface {
     if (
       cipher.reprompt === CipherRepromptType.Password &&
       // If the master password has is not available, reprompt will error
-      (await this.userVerificationService.hasMasterPasswordAndMasterKeyHash())
+      (await this.userVerificationService.hasMasterPasswordAndMasterKeyHash()) &&
+      !this.isDebouncingPasswordRepromptPopout()
     ) {
       if (fromCommand) {
         this.cipherService.updateLastUsedIndexForUrl(tab.url);
       }
 
-      await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+      await this.openVaultItemPasswordRepromptPopout(tab, {
         cipherId: cipher.id,
         action: "autofill",
       });
@@ -314,6 +325,10 @@ export default class AutofillService implements AutofillServiceInterface {
     fromCommand: boolean,
     cipherType?: CipherType
   ): Promise<string | null> {
+    if (!pageDetails[0]?.details?.fields?.length) {
+      return null;
+    }
+
     const tab = await this.getActiveTab();
 
     if (!tab || !tab.url) {
@@ -1819,5 +1834,23 @@ export default class AutofillService implements AutofillServiceInterface {
    */
   static forCustomFieldsOnly(field: AutofillField): boolean {
     return field.tagName === "span";
+  }
+
+  /**
+   * Handles debouncing the opening of the master password reprompt popout.
+   */
+  private isDebouncingPasswordRepromptPopout() {
+    if (this.currentlyOpeningPasswordRepromptPopout) {
+      return true;
+    }
+
+    this.currentlyOpeningPasswordRepromptPopout = true;
+    clearTimeout(this.openPasswordRepromptPopoutDebounce);
+
+    this.openPasswordRepromptPopoutDebounce = setTimeout(() => {
+      this.currentlyOpeningPasswordRepromptPopout = false;
+    }, 100);
+
+    return false;
   }
 }

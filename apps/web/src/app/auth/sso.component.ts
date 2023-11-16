@@ -4,8 +4,8 @@ import { first } from "rxjs/operators";
 
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
-import { OrganizationDomainSsoDetailsResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain-sso-details.response";
+import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
+import { OrganizationDomainSsoDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/organization-domain-sso-details.response";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";

@@ -4,6 +4,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { EventType } from "@bitwarden/common/enums";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -17,6 +18,7 @@ import {
 } from "../../auth/background/service-factories/auth-service.factory";
 import { totpServiceFactory } from "../../auth/background/service-factories/totp-service.factory";
 import { userVerificationServiceFactory } from "../../auth/background/service-factories/user-verification-service.factory";
+import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { eventCollectionServiceFactory } from "../../background/service-factories/event-collection-service.factory";
 import { Account } from "../../models/account";
@@ -28,6 +30,10 @@ import {
   cipherServiceFactory,
   CipherServiceInitOptions,
 } from "../../vault/background/service_factories/cipher-service.factory";
+import {
+  openAddEditVaultItemPopout,
+  openVaultItemPasswordRepromptPopout,
+} from "../../vault/popup/utils/vault-popout-window";
 import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import { copyToClipboard, GeneratePasswordToClipboardCommand } from "../clipboard";
 import { AutofillTabCommand } from "../commands/autofill-tab-command";
@@ -63,6 +69,7 @@ export class ContextMenuClickedHandler {
     private autofillAction: AutofillAction,
     private authService: AuthService,
     private cipherService: CipherService,
+    private stateService: StateService,
     private totpService: TotpService,
     private eventCollectionService: EventCollectionService,
     private userVerificationService: UserVerificationService
@@ -114,6 +121,7 @@ export class ContextMenuClickedHandler {
       (tab, cipher) => autofillCommand.doAutofillTabWithCipherCommand(tab, cipher),
       await authServiceFactory(cachedServices, serviceOptions),
       await cipherServiceFactory(cachedServices, serviceOptions),
+      await stateServiceFactory(cachedServices, serviceOptions),
       await totpServiceFactory(cachedServices, serviceOptions),
       await eventCollectionServiceFactory(cachedServices, serviceOptions),
       await userVerificationServiceFactory(cachedServices, serviceOptions)
@@ -184,7 +192,7 @@ export class ContextMenuClickedHandler {
         retryMessage
       );
 
-      await BrowserApi.tabSendMessageData(tab, "promptForLogin");
+      await openUnlockPopout(tab);
       return;
     }
 
@@ -224,6 +232,7 @@ export class ContextMenuClickedHandler {
       return;
     }
 
+    this.stateService.setLastActive(new Date().getTime());
     switch (info.parentMenuItemId) {
       case AUTOFILL_ID:
       case AUTOFILL_IDENTITY_ID:
@@ -231,14 +240,12 @@ export class ContextMenuClickedHandler {
         const cipherType = this.getCipherCreationType(menuItemId);
 
         if (cipherType) {
-          await BrowserApi.tabSendMessageData(tab, "openAddEditCipher", {
-            cipherType,
-          });
+          await openAddEditVaultItemPopout(tab, { cipherType });
           break;
         }
 
         if (await this.isPasswordRepromptRequired(cipher)) {
-          await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+          await openVaultItemPasswordRepromptPopout(tab, {
             cipherId: cipher.id,
             // The action here is passed on to the single-use reprompt window and doesn't change based on cipher type
             action: AUTOFILL_ID,
@@ -251,9 +258,7 @@ export class ContextMenuClickedHandler {
       }
       case COPY_USERNAME_ID:
         if (menuItemId === CREATE_LOGIN_ID) {
-          await BrowserApi.tabSendMessageData(tab, "openAddEditCipher", {
-            cipherType: CipherType.Login,
-          });
+          await openAddEditVaultItemPopout(tab, { cipherType: CipherType.Login });
           break;
         }
 
@@ -261,16 +266,14 @@ export class ContextMenuClickedHandler {
         break;
       case COPY_PASSWORD_ID:
         if (menuItemId === CREATE_LOGIN_ID) {
-          await BrowserApi.tabSendMessageData(tab, "openAddEditCipher", {
-            cipherType: CipherType.Login,
-          });
+          await openAddEditVaultItemPopout(tab, { cipherType: CipherType.Login });
           break;
         }
 
         if (await this.isPasswordRepromptRequired(cipher)) {
-          await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+          await openVaultItemPasswordRepromptPopout(tab, {
             cipherId: cipher.id,
-            action: info.parentMenuItemId,
+            action: COPY_PASSWORD_ID,
           });
         } else {
           this.copyToClipboard({ text: cipher.login.password, tab: tab });
@@ -280,16 +283,14 @@ export class ContextMenuClickedHandler {
         break;
       case COPY_VERIFICATIONCODE_ID:
         if (menuItemId === CREATE_LOGIN_ID) {
-          await BrowserApi.tabSendMessageData(tab, "openAddEditCipher", {
-            cipherType: CipherType.Login,
-          });
+          await openAddEditVaultItemPopout(tab, { cipherType: CipherType.Login });
           break;
         }
 
         if (await this.isPasswordRepromptRequired(cipher)) {
-          await BrowserApi.tabSendMessageData(tab, "passwordReprompt", {
+          await openVaultItemPasswordRepromptPopout(tab, {
             cipherId: cipher.id,
-            action: info.parentMenuItemId,
+            action: COPY_VERIFICATIONCODE_ID,
           });
         } else {
           this.copyToClipboard({
