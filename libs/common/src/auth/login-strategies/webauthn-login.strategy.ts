@@ -64,13 +64,11 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     return Promise.resolve();
   }
 
-  // TODO: should this be here?
   async logInTwoFactor(
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string
   ): Promise<AuthResult> {
-    // this.tokenRequest.captchaResponse = captchaResponse ?? this.captchaBypassToken;
-    return super.logInTwoFactor(twoFactor, captchaResponse);
+    throw new Error("2FA not supported yet for WebAuthn Login.");
   }
 
   async logIn(credentials: WebAuthnLoginCredentials) {
