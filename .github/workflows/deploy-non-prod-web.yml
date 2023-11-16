@@ -172,7 +172,7 @@ jobs:
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
   azure-deploy:
-    name: Deploy Web Vault to ${{ inputs.environment }}
+    name: Deploy Web Vault to ${{ inputs.environment }} Storage Account
     needs:
       - setup
       - artifact-check
