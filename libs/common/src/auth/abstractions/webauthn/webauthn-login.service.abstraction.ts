@@ -24,6 +24,8 @@ export abstract class WebAuthnLoginServiceAbstraction {
    *
    * @param {WebAuthnLoginCredentialAssertionOptionsView} credentialAssertionOptions - The options provided by the
    * getCredentialAssertionOptions method, including the challenge and other data.
+   * @returns {WebAuthnLoginCredentialAssertionView} The assertion obtained from the authenticator.
+   * If the assertion is not successfully obtained, it returns undefined.
    */
   assertCredential: (
     credentialAssertionOptions: WebAuthnLoginCredentialAssertionOptionsView
