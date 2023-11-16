@@ -184,14 +184,26 @@ export class Organization {
     return this.canEditAnyCollection || this.canDeleteAnyCollection;
   }
 
+  /**
+   * @deprecated
+   * This is deprecated with the introduction of Flexible Collections.
+   */
   get canEditAssignedCollections() {
     return this.isManager || this.permissions.editAssignedCollections;
   }
 
+  /**
+   * @deprecated
+   * This is deprecated with the introduction of Flexible Collections.
+   */
   get canDeleteAssignedCollections() {
     return this.isManager || this.permissions.deleteAssignedCollections;
   }
 
+  /**
+   * @deprecated
+   * This is deprecated with the introduction of Flexible Collections.
+   */
   get canViewAssignedCollections() {
     return this.canDeleteAssignedCollections || this.canEditAssignedCollections;
   }
