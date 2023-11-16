@@ -1020,6 +1020,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
       }
 
       if (
+        this.autofillOverlayContentService &&
         this.isNodeFormFieldElement(node) &&
         !this.autofillFieldElements.get(node as ElementWithOpId<FormFieldElement>)
       ) {
