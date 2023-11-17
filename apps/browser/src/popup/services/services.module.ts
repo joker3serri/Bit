@@ -363,9 +363,7 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: AbstractStorageService,
-      useFactory: () => {
-        return new BrowserLocalStorageService();
-      },
+      useClass: BrowserLocalStorageService,
       deps: [],
     },
     { provide: AppIdService, useFactory: getBgService<AppIdService>("appIdService"), deps: [] },
@@ -447,9 +445,7 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: SECURE_STORAGE,
-      useFactory: () => {
-        return new BrowserLocalStorageService();
-      },
+      useClass: BrowserLocalStorageService,
       deps: [],
     },
     {
