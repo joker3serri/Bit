@@ -5,8 +5,12 @@ import { Utils } from "../../../platform/misc/utils";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
-export function canAccessVaultTab(org: Organization): boolean {
-  return org.canViewAssignedCollections || org.canViewAllCollections;
+export function canAccessVaultTab(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
+  if (flexibleCollectionsEnabled) {
+    return org.canViewAllCollections;
+  } else {
+    return org.canViewAssignedCollections || org.canViewAllCollections;
+  }
 }
 
 export function canAccessSettingsTab(org: Organization): boolean {
@@ -36,14 +40,14 @@ export function canAccessBillingTab(org: Organization): boolean {
   return org.isOwner;
 }
 
-export function canAccessOrgAdmin(org: Organization): boolean {
+export function canAccessOrgAdmin(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
   return (
     canAccessMembersTab(org) ||
     canAccessGroupsTab(org) ||
     canAccessReportingTab(org) ||
     canAccessBillingTab(org) ||
     canAccessSettingsTab(org) ||
-    canAccessVaultTab(org)
+    canAccessVaultTab(org, flexibleCollectionsEnabled)
   );
 }
 
@@ -51,9 +55,11 @@ export function getOrganizationById(id: string) {
   return map<Organization[], Organization | undefined>((orgs) => orgs.find((o) => o.id === id));
 }
 
-export function canAccessAdmin(i18nService: I18nService) {
+export function canAccessAdmin(i18nService: I18nService, flexibleCollectionsEnabled: boolean) {
   return map<Organization[], Organization[]>((orgs) =>
-    orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(i18nService, "name"))
+    orgs
+      .filter((org) => canAccessOrgAdmin(org, flexibleCollectionsEnabled))
+      .sort(Utils.getSortFunction(i18nService, "name"))
   );
 }
 

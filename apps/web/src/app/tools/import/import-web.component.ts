@@ -6,6 +6,8 @@ import {
   OrganizationService,
   canAccessVaultTab,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { ImportComponent } from "@bitwarden/importer/ui";
 
 import { SharedModule } from "../../shared";
@@ -20,14 +22,20 @@ export class ImportWebComponent implements OnInit {
   protected loading = false;
   protected disabled = false;
 
+  private flexibleCollectionsEnabled: boolean;
+
   constructor(
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
-    private router: Router
+    private router: Router,
+    private configService: ConfigServiceAbstraction
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.routeOrgId = this.route.snapshot.paramMap.get("organizationId");
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
   }
 
   /**
@@ -44,7 +52,7 @@ export class ImportWebComponent implements OnInit {
       return;
     }
 
-    if (canAccessVaultTab(organization)) {
+    if (canAccessVaultTab(organization, this.flexibleCollectionsEnabled)) {
       await this.router.navigate(["organizations", organizationId, "vault"]);
     }
   }

@@ -132,6 +132,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.BulkCollectionAccess,
     false
   );
+  protected flexibleCollectionsEnabled: boolean;
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -750,8 +751,12 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async deleteCollection(collection: CollectionView): Promise<void> {
+    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false
+    );
     if (
-      !this.organization.canDeleteAssignedCollections &&
+      (flexibleCollectionsEnabled || !this.organization.canDeleteAssignedCollections) &&
       !this.organization.canDeleteAnyCollection
     ) {
       this.platformUtilsService.showToast(

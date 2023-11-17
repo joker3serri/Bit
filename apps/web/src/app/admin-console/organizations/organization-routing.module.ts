@@ -78,8 +78,11 @@ const routes: Routes = [
   },
 ];
 
-function getOrganizationRoute(organization: Organization): string {
-  if (canAccessVaultTab(organization)) {
+function getOrganizationRoute(
+  organization: Organization,
+  flexibleCollectionsEnabled: boolean
+): string {
+  if (canAccessVaultTab(organization, flexibleCollectionsEnabled)) {
     return "vault";
   }
   if (canAccessMembersTab(organization)) {

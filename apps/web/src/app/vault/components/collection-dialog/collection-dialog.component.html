@@ -109,7 +109,10 @@
         {{ "cancel" | i18n }}
       </button>
       <button
-        *ngIf="editMode && organization?.canDeleteAssignedCollections"
+        *ngIf="
+          editMode &&
+          ((flexibleCollectionsEnabled$ | async) || organization?.canDeleteAssignedCollections)
+        "
         type="button"
         bitIconButton="bwi-trash"
         buttonType="danger"

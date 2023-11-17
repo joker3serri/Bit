@@ -6,6 +6,8 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -19,7 +21,8 @@ export class OrganizationPermissionsGuard implements CanActivate {
     private organizationService: OrganizationService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private syncService: SyncService
+    private syncService: SyncService,
+    private configService: ConfigServiceAbstraction
   ) {}
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -42,9 +45,17 @@ export class OrganizationPermissionsGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    const permissionsCallback: (organization: Organization) => boolean =
-      route.data?.organizationPermissions;
-    const hasPermissions = permissionsCallback == null || permissionsCallback(org);
+    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false
+    );
+
+    const permissionsCallback: (
+      organization: Organization,
+      flexibleCollectionsEnabled: boolean
+    ) => boolean = route.data?.organizationPermissions;
+    const hasPermissions =
+      permissionsCallback == null || permissionsCallback(org, flexibleCollectionsEnabled);
 
     if (!hasPermissions) {
       // Handle linkable ciphers for organizations the user only has view access to
@@ -60,7 +71,7 @@ export class OrganizationPermissionsGuard implements CanActivate {
       }
 
       this.platformUtilsService.showToast("error", null, this.i18nService.t("accessDenied"));
-      return canAccessOrgAdmin(org)
+      return canAccessOrgAdmin(org, flexibleCollectionsEnabled)
         ? this.router.createUrlTree(["/organizations", org.id])
         : this.router.createUrlTree(["/"]);
     }

@@ -687,7 +687,14 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async deleteCollection(collection: CollectionView): Promise<void> {
     const organization = this.organizationService.get(collection.organizationId);
-    if (!organization.canDeleteAssignedCollections && !organization.canDeleteAnyCollection) {
+    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false
+    );
+    if (
+      (flexibleCollectionsEnabled || !organization.canDeleteAssignedCollections) &&
+      !organization.canDeleteAnyCollection
+    ) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
