@@ -27,7 +27,7 @@ export class OrganizationRedirectGuard implements CanActivate {
 
     const customRedirect = route.data?.autoRedirectCallback;
     if (customRedirect) {
-      let redirectPath = customRedirect(org);
+      let redirectPath = customRedirect(org, flexibleCollectionsEnabled);
       if (typeof redirectPath === "string") {
         redirectPath = [redirectPath];
       }
