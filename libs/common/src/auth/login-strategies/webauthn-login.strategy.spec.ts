@@ -124,7 +124,7 @@ describe("WebAuthnLoginStrategy", () => {
     return identityTokenResponseFactory(null, userDecryptionOpts);
   };
 
-  it("successfully logs in with valid credentials", async () => {
+  it("returns successful authResult when api service returns valid credentials", async () => {
     // Arrange
     const idTokenResponse: IdentityTokenResponse = identityTokenResponseFactory(
       null,
