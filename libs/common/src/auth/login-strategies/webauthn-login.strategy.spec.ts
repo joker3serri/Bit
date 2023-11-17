@@ -25,25 +25,25 @@ import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { WebAuthnLoginStrategy } from "./webauthn-login.strategy";
 
 describe("WebAuthnLoginStrategy", () => {
-  let cryptoService: MockProxy<CryptoService>;
-  let apiService: MockProxy<ApiService>;
-  let tokenService: MockProxy<TokenService>;
-  let appIdService: MockProxy<AppIdService>;
-  let platformUtilsService: MockProxy<PlatformUtilsService>;
-  let messagingService: MockProxy<MessagingService>;
-  let logService: MockProxy<LogService>;
-  let stateService: MockProxy<StateService>;
-  let twoFactorService: MockProxy<TwoFactorService>;
+  let cryptoService!: MockProxy<CryptoService>;
+  let apiService!: MockProxy<ApiService>;
+  let tokenService!: MockProxy<TokenService>;
+  let appIdService!: MockProxy<AppIdService>;
+  let platformUtilsService!: MockProxy<PlatformUtilsService>;
+  let messagingService!: MockProxy<MessagingService>;
+  let logService!: MockProxy<LogService>;
+  let stateService!: MockProxy<StateService>;
+  let twoFactorService!: MockProxy<TwoFactorService>;
 
-  let webAuthnLoginStrategy: WebAuthnLoginStrategy;
+  let webAuthnLoginStrategy!: WebAuthnLoginStrategy;
 
   const token = "mockToken";
   const deviceId = Utils.newGuid();
 
-  let webAuthnCredentials: WebAuthnLoginCredentials;
+  let webAuthnCredentials!: WebAuthnLoginCredentials;
 
-  let originalPublicKeyCredential: PublicKeyCredential | any;
-  let originalAuthenticatorAssertionResponse: AuthenticatorAssertionResponse | any;
+  let originalPublicKeyCredential!: PublicKeyCredential | any;
+  let originalAuthenticatorAssertionResponse!: AuthenticatorAssertionResponse | any;
 
   beforeAll(() => {
     // Save off the original classes so we can restore them after all tests are done if they exist
