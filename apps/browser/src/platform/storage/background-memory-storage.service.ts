@@ -50,7 +50,7 @@ export class BackgroundMemoryStorageService extends MemoryStorageService {
         break;
       }
       case "save":
-        await this.save(message.key, message.data);
+        await this.save(message.key, JSON.parse(message.data as string) as unknown);
         break;
       case "remove":
         await this.remove(message.key);
@@ -60,7 +60,7 @@ export class BackgroundMemoryStorageService extends MemoryStorageService {
     this.sendMessage({
       id: message.id,
       key: message.key,
-      data: result,
+      data: JSON.stringify(result),
     });
   }
 

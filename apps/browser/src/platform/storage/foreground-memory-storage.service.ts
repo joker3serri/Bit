@@ -78,7 +78,7 @@ export class ForegroundMemoryStorageService extends AbstractMemoryStorageService
     const response = firstValueFrom(
       this._backgroundResponses$.pipe(
         filter((message) => message.id === id),
-        map((message) => message.data as T)
+        map((message) => JSON.parse(message.data as string) as T)
       )
     );
 
@@ -86,7 +86,7 @@ export class ForegroundMemoryStorageService extends AbstractMemoryStorageService
       id: id,
       key: key,
       action: action,
-      data: data,
+      data: JSON.stringify(data),
     });
 
     const result = await response;
