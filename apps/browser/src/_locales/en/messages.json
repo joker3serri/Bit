@@ -619,6 +619,9 @@
   "addLoginNotificationDesc": {
     "message": "Ask to add an item if one isn't found in your vault."
   },
+  "addLoginNotificationDescAlt": {
+    "message": "Ask to update an item if one isn't found in your vault. Applies to all logged in accounts."
+  },
   "showCardsCurrentTab": {
     "message": "Show cards on Tab page"
   },
@@ -651,6 +654,9 @@
   "changedPasswordNotificationDesc": {
     "message": "Ask to update a login's password when a change is detected on a website."
   },
+  "changedPasswordNotificationDescAlt": {
+    "message": "Ask to add an item's password when change is detected on a website. Applies to all logged in accounts."
+  },
   "notificationChangeDesc": {
     "message": "Do you want to update this password in Bitwarden?"
   },
@@ -667,7 +673,10 @@
     "message": "Show context menu options"
   },
   "contextMenuItemDesc": {
-    "message": "Use a secondary click to access password generation and matching logins for the website. "
+    "message": "Use a secondary click to access password generation and matching logins for the website."
+  },
+  "contextMenuItemDescAlt": {
+    "message": "Use a secondary click to access password generation and matching logins for the website. Applies to all logged in accounts."
   },
   "defaultUriMatchDetection": {
     "message": "Default URI match detection",
@@ -681,6 +690,9 @@
   },
   "themeDesc": {
     "message": "Change the application's color theme."
+  },
+  "themeDescAlt": {
+    "message": "Change the application's color theme. Applies to all logged in accounts."
   },
   "dark": {
     "message": "Dark",
