@@ -15,7 +15,7 @@ export class AssertionOptionsResponse
 
   constructor(response: unknown) {
     super(response);
-    this.allowCredentials = this.getResponseProperty("allowCredentials").map((c: any) => ({
+    this.allowCredentials = this.getResponseProperty("allowCredentials")?.map((c: any) => ({
       ...c,
       id: Utils.fromUrlB64ToArray(c.id).buffer,
     }));
