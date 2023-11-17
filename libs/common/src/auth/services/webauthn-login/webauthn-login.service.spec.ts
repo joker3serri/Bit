@@ -312,7 +312,7 @@ class MockPublicKeyCredential implements PublicKeyCredential {
   id = "mockCredentialId";
   type = "public-key";
   rawId: ArrayBuffer = randomBytes(32).buffer;
-  rawIdB64Str = Utils.fromBufferToB64(this.rawId);
+  rawIdB64Str = Utils.fromBufferToUrlB64(this.rawId);
 
   response: MockAuthenticatorAssertionResponse = new MockAuthenticatorAssertionResponse();
 
