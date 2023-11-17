@@ -24,70 +24,6 @@ import { WebAuthnLoginAssertionResponseRequest } from "../services/webauthn-logi
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { WebAuthnLoginStrategy } from "./webauthn-login.strategy";
 
-// Save off the original classes so we can restore them after all tests are done if they exist
-const originalPublicKeyCredential = global.PublicKeyCredential;
-const originalAuthenticatorAssertionResponse = global.AuthenticatorAssertionResponse;
-
-function randomBytes(length: number): Uint8Array {
-  return new Uint8Array(Array.from({ length }, (_, k) => k % 255));
-}
-
-// AuthenticatorAssertionResponse && PublicKeyCredential are only available in secure contexts
-// so we need to mock them and assign them to the global object to make them available
-// for the tests
-class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionResponse {
-  clientDataJSON: ArrayBuffer = randomBytes(32).buffer;
-  authenticatorData: ArrayBuffer = randomBytes(196).buffer;
-  signature: ArrayBuffer = randomBytes(72).buffer;
-  userHandle: ArrayBuffer = randomBytes(16).buffer;
-
-  clientDataJSONB64Str = Utils.fromBufferToUrlB64(this.clientDataJSON);
-  authenticatorDataB64Str = Utils.fromBufferToUrlB64(this.authenticatorData);
-  signatureB64Str = Utils.fromBufferToUrlB64(this.signature);
-  userHandleB64Str = Utils.fromBufferToUrlB64(this.userHandle);
-}
-
-class MockPublicKeyCredential implements PublicKeyCredential {
-  authenticatorAttachment = "cross-platform";
-  id = "mockCredentialId";
-  type = "public-key";
-  rawId: ArrayBuffer = randomBytes(32).buffer;
-  rawIdB64Str = Utils.fromBufferToB64(this.rawId);
-
-  response: MockAuthenticatorAssertionResponse = new MockAuthenticatorAssertionResponse();
-
-  // Use random 64 character hex string (32 bytes - matters for symmetric key creation)
-  // to represent the prf key binary data and convert to ArrayBuffer
-  // Creating the array buffer from a known hex value allows us to
-  // assert on the value in tests
-  private prfKeyArrayBuffer: ArrayBuffer = Utils.hexStringToArrayBuffer(
-    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-  );
-
-  getClientExtensionResults(): any {
-    return {
-      prf: {
-        results: {
-          first: this.prfKeyArrayBuffer,
-        },
-      },
-    };
-  }
-
-  static isConditionalMediationAvailable(): Promise<boolean> {
-    return Promise.resolve(false);
-  }
-
-  static isUserVerifyingPlatformAuthenticatorAvailable(): Promise<boolean> {
-    return Promise.resolve(false);
-  }
-}
-
-// We must do this to make the mocked classes available for all the
-// assertCredential(...) tests.
-global.PublicKeyCredential = MockPublicKeyCredential;
-global.AuthenticatorAssertionResponse = MockAuthenticatorAssertionResponse;
-
 describe("WebAuthnLoginStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
@@ -105,6 +41,20 @@ describe("WebAuthnLoginStrategy", () => {
   const deviceId = Utils.newGuid();
 
   let webAuthnCredentials: WebAuthnLoginCredentials;
+
+  let originalPublicKeyCredential: PublicKeyCredential | any;
+  let originalAuthenticatorAssertionResponse: AuthenticatorAssertionResponse | any;
+
+  beforeAll(() => {
+    // Save off the original classes so we can restore them after all tests are done if they exist
+    originalPublicKeyCredential = global.PublicKeyCredential;
+    originalAuthenticatorAssertionResponse = global.AuthenticatorAssertionResponse;
+
+    // We must do this to make the mocked classes available for all the
+    // assertCredential(...) tests.
+    global.PublicKeyCredential = MockPublicKeyCredential;
+    global.AuthenticatorAssertionResponse = MockAuthenticatorAssertionResponse;
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -329,3 +279,59 @@ describe("WebAuthnLoginStrategy", () => {
     expect(cryptoService.setUserKey).not.toHaveBeenCalled();
   });
 });
+
+// Helpers and mocks
+function randomBytes(length: number): Uint8Array {
+  return new Uint8Array(Array.from({ length }, (_, k) => k % 255));
+}
+
+// AuthenticatorAssertionResponse && PublicKeyCredential are only available in secure contexts
+// so we need to mock them and assign them to the global object to make them available
+// for the tests
+class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionResponse {
+  clientDataJSON: ArrayBuffer = randomBytes(32).buffer;
+  authenticatorData: ArrayBuffer = randomBytes(196).buffer;
+  signature: ArrayBuffer = randomBytes(72).buffer;
+  userHandle: ArrayBuffer = randomBytes(16).buffer;
+
+  clientDataJSONB64Str = Utils.fromBufferToUrlB64(this.clientDataJSON);
+  authenticatorDataB64Str = Utils.fromBufferToUrlB64(this.authenticatorData);
+  signatureB64Str = Utils.fromBufferToUrlB64(this.signature);
+  userHandleB64Str = Utils.fromBufferToUrlB64(this.userHandle);
+}
+
+class MockPublicKeyCredential implements PublicKeyCredential {
+  authenticatorAttachment = "cross-platform";
+  id = "mockCredentialId";
+  type = "public-key";
+  rawId: ArrayBuffer = randomBytes(32).buffer;
+  rawIdB64Str = Utils.fromBufferToB64(this.rawId);
+
+  response: MockAuthenticatorAssertionResponse = new MockAuthenticatorAssertionResponse();
+
+  // Use random 64 character hex string (32 bytes - matters for symmetric key creation)
+  // to represent the prf key binary data and convert to ArrayBuffer
+  // Creating the array buffer from a known hex value allows us to
+  // assert on the value in tests
+  private prfKeyArrayBuffer: ArrayBuffer = Utils.hexStringToArrayBuffer(
+    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+  );
+
+  getClientExtensionResults(): any {
+    return {
+      prf: {
+        results: {
+          first: this.prfKeyArrayBuffer,
+        },
+      },
+    };
+  }
+
+  static isConditionalMediationAvailable(): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+
+  static isUserVerifyingPlatformAuthenticatorAvailable(): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+}
