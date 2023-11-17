@@ -286,18 +286,18 @@ describe("Utils Service", () => {
     });
   });
 
-  describe("fromB64ToArrayBuffer(...)", () => {
-    runInBothEnvironments("should convert a b64 string to an ArrayBuffer", () => {
+  describe("fromB64ToArray(...)", () => {
+    runInBothEnvironments("should convert a b64 string to an Uint8Array", () => {
       const expectedArray = new Uint8Array(asciiHelloWorldArray);
-      const buffer = Utils.fromB64ToArrayBuffer(b64HelloWorldString);
-      // compare the byte values of the buffers (can't compare the buffers directly)
-      const resultArray = new Uint8Array(buffer);
+
+      const resultArray = Utils.fromB64ToArray(b64HelloWorldString);
+
       expect(resultArray).toEqual(expectedArray);
     });
 
     runInBothEnvironments("should return null for null input", () => {
-      const buffer = Utils.fromB64ToArrayBuffer(null);
-      expect(buffer).toBeNull();
+      const expectedArray = Utils.fromB64ToArray(null);
+      expect(expectedArray).toBeNull();
     });
 
     // Hmmm... this passes in browser but not in node
@@ -332,7 +332,7 @@ describe("Utils Service", () => {
         const b64String = Utils.fromBufferToB64(originalBuffer);
 
         // Convert that base64 string back to an ArrayBuffer
-        const roundTrippedBuffer = Utils.fromB64ToArrayBuffer(b64String);
+        const roundTrippedBuffer = Utils.fromB64ToArray(b64String).buffer;
         const roundTrippedArray = new Uint8Array(roundTrippedBuffer);
 
         // Compare the original ArrayBuffer with the round-tripped ArrayBuffer
@@ -344,7 +344,7 @@ describe("Utils Service", () => {
       "should correctly round trip convert from base64 to ArrayBuffer and back",
       () => {
         // Convert known base64 string to ArrayBuffer
-        const bufferFromB64 = Utils.fromB64ToArrayBuffer(b64HelloWorldString);
+        const bufferFromB64 = Utils.fromB64ToArray(b64HelloWorldString).buffer;
 
         // Convert the ArrayBuffer back to a base64 string
         const roundTrippedB64String = Utils.fromBufferToB64(bufferFromB64);
