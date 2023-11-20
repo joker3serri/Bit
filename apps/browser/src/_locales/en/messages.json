@@ -620,7 +620,7 @@
     "message": "Ask to add an item if one isn't found in your vault."
   },
   "addLoginNotificationDescAlt": {
-    "message": "Ask to update an item if one isn't found in your vault. Applies to all logged in accounts."
+    "message": "Ask to add an item if one isn't found in your vault. Applies to all logged in accounts."
   },
   "showCardsCurrentTab": {
     "message": "Show cards on Tab page"
@@ -655,7 +655,7 @@
     "message": "Ask to update a login's password when a change is detected on a website."
   },
   "changedPasswordNotificationDescAlt": {
-    "message": "Ask to add an item's password when change is detected on a website. Applies to all logged in accounts."
+    "message": "Ask to update a login's password when a change is detected on a website. Applies to all logged in accounts."
   },
   "notificationChangeDesc": {
     "message": "Do you want to update this password in Bitwarden?"
