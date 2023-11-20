@@ -4,7 +4,7 @@ import { DeviceRequest } from "./device.request";
 import { TokenTwoFactorRequest } from "./token-two-factor.request";
 import { TokenRequest } from "./token.request";
 
-export class WebAuthnTokenRequest extends TokenRequest {
+export class WebAuthnLoginTokenRequest extends TokenRequest {
   constructor(
     public token: string,
     public deviceResponse: WebAuthnLoginAssertionResponseRequest,

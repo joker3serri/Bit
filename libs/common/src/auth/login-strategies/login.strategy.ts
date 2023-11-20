@@ -31,7 +31,7 @@ import { PasswordTokenRequest } from "../models/request/identity-token/password-
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
-import { WebAuthnTokenRequest } from "../models/request/identity-token/webauthn-token.request";
+import { WebAuthnLoginTokenRequest } from "../models/request/identity-token/webauthn-login-token.request";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
@@ -43,7 +43,7 @@ export abstract class LoginStrategy {
     | UserApiTokenRequest
     | PasswordTokenRequest
     | SsoTokenRequest
-    | WebAuthnTokenRequest;
+    | WebAuthnLoginTokenRequest;
   protected captchaBypassToken: string = null;
 
   constructor(

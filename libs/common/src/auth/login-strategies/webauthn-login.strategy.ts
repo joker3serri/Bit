@@ -2,7 +2,7 @@ import { SymmetricCryptoKey, UserKey } from "../../platform/models/domain/symmet
 import { AuthResult } from "../models/domain/auth-result";
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
-import { WebAuthnTokenRequest } from "../models/request/identity-token/webauthn-token.request";
+import { WebAuthnLoginTokenRequest } from "../models/request/identity-token/webauthn-login-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 import { LoginStrategy } from "./login.strategy";
@@ -24,7 +24,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     return "";
   }
 
-  tokenRequest: WebAuthnTokenRequest;
+  tokenRequest: WebAuthnLoginTokenRequest;
   private credentials: WebAuthnLoginCredentials;
 
   protected setMasterKey(response: IdentityTokenResponse) {
@@ -74,7 +74,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
   async logIn(credentials: WebAuthnLoginCredentials) {
     this.credentials = credentials;
 
-    this.tokenRequest = new WebAuthnTokenRequest(
+    this.tokenRequest = new WebAuthnLoginTokenRequest(
       credentials.token,
       credentials.deviceResponse,
       await this.buildTwoFactor(credentials.twoFactor),
