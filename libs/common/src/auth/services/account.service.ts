@@ -1,7 +1,11 @@
 import { Subject, combineLatestWith, map, distinctUntilChanged, shareReplay } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { AccountInfo, InternalAccountService } from "../../auth/abstractions/account.service";
+import {
+  AccountInfo,
+  InternalAccountService,
+  accountInfoEqual,
+} from "../../auth/abstractions/account.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import {
@@ -125,9 +129,7 @@ export class AccountServiceImplementation implements InternalAccountService {
             throw new Error("Account does not exist");
           }
 
-          return (
-            JSON.stringify(accounts[userId]) !== JSON.stringify(newAccountInfo(accounts[userId]))
-          );
+          return accountInfoEqual(accounts[userId], newAccountInfo(accounts[userId]));
         },
       }
     );
