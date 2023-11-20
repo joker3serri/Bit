@@ -89,7 +89,7 @@ export class AccountComponent {
   ) {}
 
   async ngOnInit() {
-    this.selfHosted = !this.platformUtilsService.isSelfHost();
+    this.selfHosted = this.platformUtilsService.isSelfHost();
 
     this.route.params
       .pipe(
