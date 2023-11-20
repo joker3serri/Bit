@@ -19,12 +19,12 @@ export class ForegroundMemoryStorageService extends AbstractMemoryStorageService
   get valuesRequireDeserialization(): boolean {
     return true;
   }
-  get updates$(): Observable<StorageUpdate> {
-    return this.updatesSubject.asObservable();
-  }
+  updates$;
 
   constructor() {
     super();
+
+    this.updates$ = this.updatesSubject.asObservable();
 
     this._port = chrome.runtime.connect({ name: portName(chrome.storage.session) });
     this._backgroundResponses$ = fromChromeEvent(this._port.onMessage).pipe(
