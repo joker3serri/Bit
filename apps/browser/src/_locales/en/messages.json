@@ -1018,6 +1018,9 @@
     "message": "Show auto-fill menu on form fields",
     "description": "Represents the message for allowing the user to enable the auto-fill overlay"
   },
+  "showAutoFillMenuOnFormFieldsDescAlt": {
+    "message": "Applies to all logged in accounts."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Off",
     "description": "Overlay setting select option for disabling autofill overlay"
