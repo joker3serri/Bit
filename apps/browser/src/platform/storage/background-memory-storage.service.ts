@@ -17,10 +17,13 @@ export class BackgroundMemoryStorageService extends MemoryStorageService {
       }
 
       this._ports.push(port);
+
+      const listenerCallback = this.onMessageFromForeground.bind(this);
       port.onDisconnect.addListener(() => {
         this._ports.splice(this._ports.indexOf(port), 1);
+        port.onMessage.removeListener(listenerCallback);
       });
-      port.onMessage.addListener(this.onMessageFromForeground.bind(this));
+      port.onMessage.addListener(listenerCallback);
       // Initialize the new memory storage service with existing data
       this.sendMessage({
         action: "initialization",
