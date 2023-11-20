@@ -173,6 +173,8 @@ import {
   LOG_MAC_FAILURES,
   LOGOUT_CALLBACK,
   MEMORY_STORAGE,
+  OBSERVABLE_DISK_STORAGE,
+  OBSERVABLE_MEMORY_STORAGE,
   SECURE_STORAGE,
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
@@ -753,7 +755,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: GlobalStateProvider,
       useClass: DefaultGlobalStateProvider,
-      deps: [MEMORY_STORAGE, AbstractStorageService],
+      deps: [OBSERVABLE_MEMORY_STORAGE, OBSERVABLE_DISK_STORAGE],
     },
   ],
 })

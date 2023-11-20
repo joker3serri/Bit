@@ -2,13 +2,16 @@ import { Observable, mergeMap } from "rxjs";
 
 import {
   AbstractStorageService,
+  ObservableStorageService,
   StorageUpdate,
   StorageUpdateType,
 } from "@bitwarden/common/platform/abstractions/storage.service";
 
 import { fromChromeEvent } from "../../browser/from-chrome-event";
 
-export default abstract class AbstractChromeStorageService implements AbstractStorageService {
+export default abstract class AbstractChromeStorageService
+  implements AbstractStorageService, ObservableStorageService
+{
   constructor(protected chromeStorageApi: chrome.storage.StorageArea) {}
 
   get valuesRequireDeserialization(): boolean {

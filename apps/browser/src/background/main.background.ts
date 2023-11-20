@@ -283,8 +283,8 @@ export default class MainBackground {
           )
         : new BackgroundMemoryStorageService();
     this.globalStateProvider = new DefaultGlobalStateProvider(
-      this.memoryStorageService,
-      this.storageService
+      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.storageService as BrowserLocalStorageService
     );
     this.accountService = new AccountServiceImplementation(
       this.messagingService,

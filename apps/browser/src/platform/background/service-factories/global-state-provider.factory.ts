@@ -6,8 +6,8 @@ import { CachedServices, FactoryOptions, factory } from "./factory-options";
 import {
   DiskStorageServiceInitOptions,
   MemoryStorageServiceInitOptions,
-  diskStorageServiceFactory,
-  memoryStorageServiceFactory,
+  observableDiskStorageServiceFactory,
+  observableMemoryStorageServiceFactory,
 } from "./storage-service.factory";
 
 type GlobalStateProviderFactoryOptions = FactoryOptions;
@@ -26,8 +26,8 @@ export async function globalStateProviderFactory(
     opts,
     async () =>
       new DefaultGlobalStateProvider(
-        await memoryStorageServiceFactory(cache, opts),
-        await diskStorageServiceFactory(cache, opts)
+        await observableMemoryStorageServiceFactory(cache, opts),
+        await observableDiskStorageServiceFactory(cache, opts)
       )
   );
 }

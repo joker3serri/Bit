@@ -1,7 +1,12 @@
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
-import { MEMORY_STORAGE, SECURE_STORAGE } from "@bitwarden/angular/services/injection-tokens";
+import {
+  MEMORY_STORAGE,
+  OBSERVABLE_DISK_STORAGE,
+  OBSERVABLE_MEMORY_STORAGE,
+  SECURE_STORAGE,
+} from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
@@ -445,13 +450,20 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: SECURE_STORAGE,
-      useClass: BrowserLocalStorageService,
-      deps: [],
+      useFactory: getBgService<AbstractStorageService>("secureStorageService"),
     },
     {
       provide: MEMORY_STORAGE,
+      useFactory: getBgService<AbstractStorageService>("memoryStorageService"),
+    },
+    {
+      provide: OBSERVABLE_MEMORY_STORAGE,
       useClass: ForegroundMemoryStorageService,
       deps: [],
+    },
+    {
+      provide: OBSERVABLE_DISK_STORAGE,
+      useExisting: AbstractStorageService,
     },
     {
       provide: StateServiceAbstraction,
