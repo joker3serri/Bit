@@ -651,6 +651,12 @@
   "changedPasswordNotificationDesc": {
     "message": "Ask to update a login's password when a change is detected on a website."
   },
+  "enableUsePasskeys": {
+    "message": "Ask to save and use passkeys"
+  },
+  "usePasskeysDesc": {
+    "message": "Ask to save a new passkey if one isn’t found, or log in with passkeys stored in your vault. Applies to all logged in accounts."
+  },
   "notificationChangeDesc": {
     "message": "Do you want to update this password in Bitwarden?"
   },

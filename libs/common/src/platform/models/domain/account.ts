@@ -225,6 +225,7 @@ export class AccountSettings {
   disableAutoBiometricsPrompt?: boolean;
   disableAutoTotpCopy?: boolean;
   disableBadgeCounter?: boolean;
+  disablePasskeys?: boolean;
   disableGa?: boolean;
   dismissedAutoFillOnPageLoadCallout?: boolean;
   dontShowCardsCurrentTab?: boolean;
