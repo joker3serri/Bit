@@ -209,8 +209,10 @@ export class Main {
       this.storageService
     );
 
+    this.messagingService = new NoopMessagingService();
+
     this.accountService = new AccountServiceImplementation(
-      null,
+      this.messagingService,
       this.logService,
       this.globalStateProvider
     );
@@ -234,7 +236,6 @@ export class Main {
 
     this.appIdService = new AppIdService(this.storageService);
     this.tokenService = new TokenService(this.stateService);
-    this.messagingService = new NoopMessagingService();
     this.environmentService = new EnvironmentService(this.stateService);
 
     const customUserAgent =

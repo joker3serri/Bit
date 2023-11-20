@@ -29,19 +29,11 @@ export class AccountServiceImplementation implements InternalAccountService {
   private accountsState: GlobalState<Record<UserId, AccountInfo>>;
   private activeAccountIdState: GlobalState<UserId | undefined>;
 
-  get accounts$() {
-    return this.accountsState.state$.pipe(map((accounts) => (accounts == null ? {} : accounts)));
-  }
-  get activeAccount$() {
-    return this.activeAccountIdState.state$.pipe(
-      combineLatestWith(this.accounts$),
-      map(([id, accounts]) => (id ? { id, ...accounts[id] } : undefined)),
-      distinctUntilChanged(),
-      shareReplay({ bufferSize: 1, refCount: false })
-    );
-  }
+  accounts$;
+  activeAccount$;
   accountLock$ = this.lock.asObservable();
   accountLogout$ = this.logout.asObservable();
+
   constructor(
     private messagingService: MessagingService,
     private logService: LogService,
@@ -49,6 +41,16 @@ export class AccountServiceImplementation implements InternalAccountService {
   ) {
     this.accountsState = this.globalStateProvider.get(ACCOUNT_ACCOUNTS);
     this.activeAccountIdState = this.globalStateProvider.get(ACCOUNT_ACTIVE_ACCOUNT_ID);
+
+    this.accounts$ = this.accountsState.state$.pipe(
+      map((accounts) => (accounts == null ? {} : accounts))
+    );
+    this.activeAccount$ = this.activeAccountIdState.state$.pipe(
+      combineLatestWith(this.accounts$),
+      map(([id, accounts]) => (id ? { id, ...accounts[id] } : undefined)),
+      distinctUntilChanged(),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
   }
 
   addAccount(userId: UserId, accountData: AccountInfo): void {
