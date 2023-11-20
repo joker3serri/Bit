@@ -15,7 +15,7 @@ export type State = "assert" | "assertFailed";
 export class BaseLoginViaWebAuthnComponent implements OnInit {
   protected currentState: State = "assert";
 
-  protected twoFactorRoute = "/2fa";
+  // protected twoFactorRoute = "/2fa";
   protected successRoute = "/vault";
   protected forcePasswordResetRoute = "/update-temp-password";
 
@@ -49,12 +49,16 @@ export class BaseLoginViaWebAuthnComponent implements OnInit {
     try {
       const authResult = await this.webAuthnLoginService.logIn(assertion);
 
-      // 2FA not yet supported with WebAuthn login
-      // if (authResult.requiresTwoFactor) {
-      //   await this.router.navigate([this.twoFactorRoute]);
-      // }
-
-      if (authResult.forcePasswordReset == ForceSetPasswordReason.AdminForcePasswordReset) {
+      if (authResult.requiresTwoFactor) {
+        // We currently do not implement 2FA for webauthn logins as
+        // passkey should perform user verification and 2FA is not needed (currently)
+        // await this.router.navigate([this.twoFactorRoute]);
+        // so show error if this case happens
+        this.validationService.showError(
+          this.i18nService.t("twoFactorForPasskeysNotSupportedOnClientUpdateToLogIn")
+        );
+        this.currentState = "assertFailed";
+      } else if (authResult.forcePasswordReset == ForceSetPasswordReason.AdminForcePasswordReset) {
         await this.router.navigate([this.forcePasswordResetRoute]);
       } else {
         await this.router.navigate([this.successRoute]);
