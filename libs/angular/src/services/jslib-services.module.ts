@@ -55,6 +55,7 @@ import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/comm
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { WebAuthnLoginApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-api.service.abstraction";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AccountApiServiceImplementation } from "@bitwarden/common/auth/services/account-api.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
@@ -71,6 +72,7 @@ import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.ser
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { WebAuthnLoginApiService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-api.service";
+import { WebAuthnLoginPrfCryptoService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-prf-crypto.service";
 import { WebAuthnLoginService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -752,6 +754,11 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       deps: [CryptoServiceAbstraction],
     },
     {
+      provide: WebAuthnLoginPrfCryptoServiceAbstraction,
+      useClass: WebAuthnLoginPrfCryptoService,
+      deps: [CryptoFunctionServiceAbstraction],
+    },
+    {
       provide: WebAuthnLoginApiServiceAbstraction,
       useClass: WebAuthnLoginApiService,
       deps: [ApiServiceAbstraction, EnvironmentServiceAbstraction],
@@ -763,6 +770,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         WebAuthnLoginApiServiceAbstraction,
         AuthServiceAbstraction,
         ConfigServiceAbstraction,
+        WebAuthnLoginPrfCryptoServiceAbstraction,
         WINDOW,
         LogService,
       ],

@@ -7,11 +7,11 @@ import { Utils } from "../../../platform/misc/utils";
 import { PrfKey, SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { AuthService } from "../../abstractions/auth.service";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { AuthResult } from "../../models/domain/auth-result";
 import { WebAuthnLoginCredentials } from "../../models/domain/login-credentials";
 import { WebAuthnLoginCredentialAssertionOptionsView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion-options.view";
 import { WebAuthnLoginCredentialAssertionView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion.view";
-import * as webAuthnUtils from "../../utils/webauthn-utils";
 
 import { WebAuthnLoginAssertionResponseRequest } from "./request/webauthn-login-assertion-response.request";
 import { CredentialAssertionOptionsResponse } from "./response/credential-assertion-options.response";
@@ -23,6 +23,7 @@ describe("WebAuthnLoginService", () => {
   const webAuthnLoginApiService = mock<WebAuthnLoginApiServiceAbstraction>();
   const authService = mock<AuthService>();
   const configService = mock<ConfigServiceAbstraction>();
+  const webAuthnLoginPrfCryptoService = mock<WebAuthnLoginPrfCryptoServiceAbstraction>();
   const navigatorCredentials = mock<CredentialsContainer>();
   const logService = mock<LogService>();
 
@@ -75,6 +76,7 @@ describe("WebAuthnLoginService", () => {
       webAuthnLoginApiService,
       authService,
       configService,
+      webAuthnLoginPrfCryptoService,
       window,
       logService
     );
@@ -163,13 +165,8 @@ describe("WebAuthnLoginService", () => {
         publicKeyCredential.getClientExtensionResults().prf?.results?.first;
       const prfKey = new SymmetricCryptoKey(new Uint8Array(prfResult)) as PrfKey;
 
-      jest.mock("../../utils/webauthn-utils");
-      const getLoginWithPrfSaltSpy = jest
-        .spyOn(webAuthnUtils, "getLoginWithPrfSalt")
-        .mockResolvedValue(saltArrayBuffer);
-      const createSymmetricKeyFromPrfSpy = jest
-        .spyOn(webAuthnUtils, "createSymmetricKeyFromPrf")
-        .mockReturnValue(prfKey);
+      webAuthnLoginPrfCryptoService.getLoginWithPrfSalt.mockResolvedValue(saltArrayBuffer);
+      webAuthnLoginPrfCryptoService.createSymmetricKeyFromPrf.mockResolvedValue(prfKey);
 
       // Mock implementations
       navigatorCredentials.get.mockResolvedValue(publicKeyCredential);
@@ -179,7 +176,7 @@ describe("WebAuthnLoginService", () => {
 
       // Assert
 
-      expect(getLoginWithPrfSaltSpy).toHaveBeenCalled();
+      expect(webAuthnLoginPrfCryptoService.getLoginWithPrfSalt).toHaveBeenCalled();
 
       expect(navigatorCredentials.get).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -196,7 +193,9 @@ describe("WebAuthnLoginService", () => {
         })
       );
 
-      expect(createSymmetricKeyFromPrfSpy).toHaveBeenCalledWith(prfResult);
+      expect(webAuthnLoginPrfCryptoService.createSymmetricKeyFromPrf).toHaveBeenCalledWith(
+        prfResult
+      );
 
       expect(result).toBeInstanceOf(WebAuthnLoginCredentialAssertionView);
       expect(result.token).toEqual(credentialAssertionOptions.token);
