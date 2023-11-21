@@ -1215,18 +1215,18 @@ export class StateService<
 
   async getDisablePasskeys(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disablePasskeys ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disablePasskeys ?? false
     );
   }
 
   async setDisablePasskeys(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disablePasskeys = value;
-    await this.saveAccount(
-      account,
+    globals.disablePasskeys = value;
+    await this.saveGlobals(
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
