@@ -3,8 +3,8 @@ import { BehaviorSubject, filter, from, map, Observable, shareReplay, switchMap,
 
 import { PrfKeySet } from "@bitwarden/auth";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { Verification } from "@bitwarden/common/auth/types/verification";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Verification } from "@bitwarden/common/types/verification";
 
 import { CredentialCreateOptionsView } from "../../views/credential-create-options.view";
 import { PendingWebauthnLoginCredentialView } from "../../views/pending-webauthn-login-credential.view";

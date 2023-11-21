@@ -1,4 +1,4 @@
-import { SecureNoteType } from "@bitwarden/common/enums";
+import { SecureNoteType } from "@bitwarden/common/vault/enums";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 
