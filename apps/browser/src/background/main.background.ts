@@ -123,6 +123,7 @@ import { BrowserOrganizationService } from "../admin-console/services/browser-or
 import { BrowserPolicyService } from "../admin-console/services/browser-policy.service";
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
+import OverlayBackground from "../autofill/background/overlay.background";
 import TabsBackground from "../autofill/background/tabs.background";
 import { CipherContextMenuHandler } from "../autofill/browser/cipher-context-menu-handler";
 import { ContextMenuClickedHandler } from "../autofill/browser/context-menu-clicked-handler";
@@ -240,6 +241,7 @@ export default class MainBackground {
   private contextMenusBackground: ContextMenusBackground;
   private idleBackground: IdleBackground;
   private notificationBackground: NotificationBackground;
+  private overlayBackground: OverlayBackground;
   private runtimeBackground: RuntimeBackground;
   private tabsBackground: TabsBackground;
   private webRequestBackground: WebRequestBackground;
@@ -321,7 +323,7 @@ export default class MainBackground {
       },
       window
     );
-    this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(window), this.stateService);
+    this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
     this.encryptService = flagEnabled("multithreadDecryption")
       ? new MultithreadEncryptServiceImplementation(
           this.cryptoFunctionService,
@@ -667,8 +669,20 @@ export default class MainBackground {
       this.stateService,
       this.environmentService
     );
-
-    this.tabsBackground = new TabsBackground(this, this.notificationBackground);
+    this.overlayBackground = new OverlayBackground(
+      this.cipherService,
+      this.autofillService,
+      this.authService,
+      this.environmentService,
+      this.settingsService,
+      this.stateService,
+      this.i18nService
+    );
+    this.tabsBackground = new TabsBackground(
+      this,
+      this.notificationBackground,
+      this.overlayBackground
+    );
     if (!this.popupOnlyContext) {
       const contextMenuClickedHandler = new ContextMenuClickedHandler(
         (options) => this.platformUtilsService.copyToClipboard(options.text, { window: self }),
@@ -749,6 +763,8 @@ export default class MainBackground {
 
     this.configService.init();
     this.twoFactorService.init();
+
+    await this.overlayBackground.init();
 
     await this.tabsBackground.init();
     if (!this.popupOnlyContext) {
