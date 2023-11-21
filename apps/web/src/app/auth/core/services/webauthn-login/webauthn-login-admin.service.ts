@@ -3,10 +3,7 @@ import { BehaviorSubject, filter, from, map, Observable, shareReplay, switchMap,
 
 import { PrfKeySet } from "@bitwarden/auth";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import {
-  createSymmetricKeyFromPrf,
-  getLoginWithPrfSalt,
-} from "@bitwarden/common/auth/utils/webauthn-utils";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Verification } from "@bitwarden/common/types/verification";
 
@@ -38,6 +35,7 @@ export class WebauthnLoginAdminService {
     private apiService: WebAuthnLoginAdminApiService,
     private userVerificationService: UserVerificationService,
     private rotateableKeySetService: RotateableKeySetService,
+    private webAuthnLoginPrfCryptoService: WebAuthnLoginPrfCryptoServiceAbstraction,
     @Optional() navigatorCredentials?: CredentialsContainer,
     @Optional() private logService?: LogService
   ) {
@@ -90,7 +88,9 @@ export class WebauthnLoginAdminService {
         userVerification:
           pendingCredential.createOptions.options.authenticatorSelection.userVerification,
         // TODO: Remove `any` when typescript typings add support for PRF
-        extensions: { prf: { eval: { first: await getLoginWithPrfSalt() } } } as any,
+        extensions: {
+          prf: { eval: { first: await this.webAuthnLoginPrfCryptoService.getLoginWithPrfSalt() } },
+        } as any,
       },
     };
 
@@ -107,7 +107,9 @@ export class WebauthnLoginAdminService {
         return undefined;
       }
 
-      const symmetricPrfKey = createSymmetricKeyFromPrf(prfResult);
+      const symmetricPrfKey = await this.webAuthnLoginPrfCryptoService.createSymmetricKeyFromPrf(
+        prfResult
+      );
       return await this.rotateableKeySetService.createKeySet(symmetricPrfKey);
     } catch (error) {
       this.logService?.error(error);

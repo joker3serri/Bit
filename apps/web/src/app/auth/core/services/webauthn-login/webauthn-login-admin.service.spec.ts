@@ -1,6 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 
 import { CredentialCreateOptionsView } from "../../views/credential-create-options.view";
 import { PendingWebauthnLoginCredentialView } from "../../views/pending-webauthn-login-credential.view";
@@ -13,6 +14,7 @@ describe("WebauthnAdminService", () => {
   let apiService!: MockProxy<WebAuthnLoginAdminApiService>;
   let userVerificationService!: MockProxy<UserVerificationService>;
   let rotateableKeySetService!: MockProxy<RotateableKeySetService>;
+  let webAuthnLoginPrfCryptoService!: MockProxy<WebAuthnLoginPrfCryptoServiceAbstraction>;
   let credentials: MockProxy<CredentialsContainer>;
   let service!: WebauthnLoginAdminService;
 
@@ -23,11 +25,13 @@ describe("WebauthnAdminService", () => {
     apiService = mock<WebAuthnLoginAdminApiService>();
     userVerificationService = mock<UserVerificationService>();
     rotateableKeySetService = mock<RotateableKeySetService>();
+    webAuthnLoginPrfCryptoService = mock<WebAuthnLoginPrfCryptoServiceAbstraction>();
     credentials = mock<CredentialsContainer>();
     service = new WebauthnLoginAdminService(
       apiService,
       userVerificationService,
       rotateableKeySetService,
+      webAuthnLoginPrfCryptoService,
       credentials
     );
   });

@@ -6,12 +6,12 @@ import { LogService } from "../../../platform/abstractions/log.service";
 import { PrfKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { AuthService } from "../../abstractions/auth.service";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "../../abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "../../models/domain/auth-result";
 import { WebAuthnLoginCredentials } from "../../models/domain/login-credentials";
 import { WebAuthnLoginCredentialAssertionOptionsView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion-options.view";
 import { WebAuthnLoginCredentialAssertionView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion.view";
-import { createSymmetricKeyFromPrf, getLoginWithPrfSalt } from "../../utils/webauthn-utils";
 
 import { WebAuthnLoginAssertionResponseRequest } from "./request/webauthn-login-assertion-response.request";
 
@@ -24,6 +24,7 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
     private webAuthnLoginApiService: WebAuthnLoginApiServiceAbstraction,
     private authService: AuthService,
     private configService: ConfigServiceAbstraction,
+    private webAuthnLoginPrfCryptoService: WebAuthnLoginPrfCryptoServiceAbstraction,
     private window: Window,
     private logService?: LogService
   ) {
@@ -44,7 +45,7 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
     };
     // TODO: Remove `any` when typescript typings add support for PRF
     nativeOptions.publicKey.extensions = {
-      prf: { eval: { first: await getLoginWithPrfSalt() } },
+      prf: { eval: { first: await this.webAuthnLoginPrfCryptoService.getLoginWithPrfSalt() } },
     } as any;
 
     try {
@@ -56,7 +57,9 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
       const prfResult = (response.getClientExtensionResults() as any).prf?.results?.first;
       let symmetricPrfKey: PrfKey | undefined;
       if (prfResult != undefined) {
-        symmetricPrfKey = createSymmetricKeyFromPrf(prfResult);
+        symmetricPrfKey = await this.webAuthnLoginPrfCryptoService.createSymmetricKeyFromPrf(
+          prfResult
+        );
       }
 
       const deviceResponse = new WebAuthnLoginAssertionResponseRequest(response);
