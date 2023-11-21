@@ -1,6 +1,7 @@
 import { ipcRenderer } from "electron";
 
-import { DeviceType, ThemeType, KeySuffixOptions } from "@bitwarden/common/enums";
+import { DeviceType } from "@bitwarden/common/enums";
+import { KeySuffixOptions, ThemeType } from "@bitwarden/common/platform/enums";
 
 import { EncryptedMessageResponse, UnencryptedMessageResponse } from "../models/native-messaging";
 import { BiometricMessage, BiometricAction } from "../types/biometric-message";

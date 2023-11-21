@@ -1,16 +1,16 @@
 import { mock, mockReset } from "jest-mock-extended";
 
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
+import { EventType } from "@bitwarden/common/enums";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
+import { SettingsService } from "@bitwarden/common/services/settings.service";
 import {
-  EventType,
   FieldType,
   LinkedIdType,
   LoginLinkedId,
   UriMatchType,
-} from "@bitwarden/common/enums";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
-import { SettingsService } from "@bitwarden/common/services/settings.service";
+} from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";

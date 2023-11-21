@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
+import { ThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 
 @Injectable()

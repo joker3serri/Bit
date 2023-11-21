@@ -14,7 +14,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { EventType, FieldType } from "@bitwarden/common/enums";
+import { EventType } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -27,6 +27,7 @@ import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-arr
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
+import { FieldType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";

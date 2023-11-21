@@ -1,10 +1,10 @@
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
+import { ThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { MEMORY_STORAGE, SECURE_STORAGE } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
