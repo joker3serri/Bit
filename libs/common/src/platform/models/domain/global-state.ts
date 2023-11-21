@@ -35,5 +35,10 @@ export class GlobalState {
   enableBrowserIntegrationFingerprint?: boolean;
   enableDuckDuckGoBrowserIntegration?: boolean;
   region?: string;
+  neverDomains?: { [id: string]: unknown };
+  disableAddLoginNotification?: boolean;
+  disableChangedPasswordNotification?: boolean;
+  disableContextMenuItem?: boolean;
+  autoFillOverlayVisibility?: number;
   deepLinkRedirectUrl?: string;
 }
