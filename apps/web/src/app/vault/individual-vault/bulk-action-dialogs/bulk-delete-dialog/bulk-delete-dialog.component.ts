@@ -135,7 +135,9 @@ export class BulkDeleteDialogComponent {
     // From org vault
     if (this.organization) {
       if (
-        (flexibleCollectionsEnabled || !this.organization.canDeleteAssignedCollections) &&
+        (flexibleCollectionsEnabled
+          ? this.collections.some((c) => !c.canDelete)
+          : !this.organization.canDeleteAssignedCollections) &&
         !this.organization.canDeleteAnyCollection
       ) {
         this.platformUtilsService.showToast(
@@ -151,7 +153,9 @@ export class BulkDeleteDialogComponent {
       const deletePromises: Promise<any>[] = [];
       for (const organization of this.organizations) {
         if (
-          (flexibleCollectionsEnabled || !this.organization.canDeleteAssignedCollections) &&
+          (flexibleCollectionsEnabled
+            ? this.collections.some((c) => !c.canDelete)
+            : !this.organization.canDeleteAssignedCollections) &&
           !organization.canDeleteAnyCollection
         ) {
           this.platformUtilsService.showToast(
