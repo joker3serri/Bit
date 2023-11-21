@@ -1,3 +1,5 @@
+import { FallbackRequestedError } from "@bitwarden/common/vault/abstractions/fido2/fido2-client.service.abstraction";
+
 import { Message, MessageType } from "./message";
 
 const SENDER = "bitwarden-webauthn";
@@ -133,7 +135,7 @@ export class Messenger {
 
       let onDestroyListener;
       const destroyPromise: Promise<never> = new Promise((_, reject) => {
-        onDestroyListener = () => reject(new Error("Extension is being destroyed"));
+        onDestroyListener = () => reject(new FallbackRequestedError());
         this.onDestroy.addEventListener("destroy", onDestroyListener);
       });
 
