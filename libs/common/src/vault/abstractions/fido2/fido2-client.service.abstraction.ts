@@ -121,6 +121,7 @@ export interface CreateCredentialResult {
   clientDataJSON: string;
   attestationObject: string;
   authData: string;
+  publicKey: string;
   publicKeyAlgorithm: number;
   transports: string[];
 }
