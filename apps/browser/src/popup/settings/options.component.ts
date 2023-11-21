@@ -9,6 +9,8 @@ import { ThemeType } from "@bitwarden/common/platform/enums";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { UriMatchType } from "@bitwarden/common/vault/enums";
 
+import { flagEnabled } from "../../platform/flags";
+
 @Component({
   selector: "app-options",
   templateUrl: "options.component.html",
@@ -35,6 +37,7 @@ export class OptionsComponent implements OnInit {
   showGeneral = true;
   showAutofill = true;
   showDisplay = true;
+  accountSwitcherEnabled = false;
 
   constructor(
     private messagingService: MessagingService,
@@ -72,6 +75,8 @@ export class OptionsComponent implements OnInit {
       { name: i18nService.t("autoFillOnPageLoadYes"), value: true },
       { name: i18nService.t("autoFillOnPageLoadNo"), value: false },
     ];
+
+    this.accountSwitcherEnabled = flagEnabled("accountSwitching");
   }
 
   async ngOnInit() {
