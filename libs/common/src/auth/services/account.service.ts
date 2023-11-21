@@ -129,7 +129,7 @@ export class AccountServiceImplementation implements InternalAccountService {
             throw new Error("Account does not exist");
           }
 
-          return accountInfoEqual(accounts[userId], newAccountInfo(accounts[userId]));
+          return !accountInfoEqual(accounts[userId], newAccountInfo(accounts[userId]));
         },
       }
     );
