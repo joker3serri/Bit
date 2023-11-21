@@ -662,7 +662,7 @@
   },
   "usePasskeysDesc": {
     "message": "Ask to save a new passkey if one isn’t found, or log in with passkeys stored in your vault. Applies to all logged in accounts."
-  }
+  },
   "notificationChangeDesc": {
     "message": "Do you want to update this password in Bitwarden?"
   },
