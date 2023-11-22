@@ -106,14 +106,23 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
         this.formGroup.value.accessPolicies
       );
 
-    if (await this.handleAccessRemovalWarning(showAccessRemovalWarning)) {
+    if (
+      await this.handleAccessRemovalWarning(showAccessRemovalWarning, this.currentAccessPolicies)
+    ) {
       return;
     }
 
     try {
-      const peoplePoliciesViews = await this.updateServiceAccountPeopleAccessPolicies();
+      const peoplePoliciesViews = await this.updateServiceAccountPeopleAccessPolicies(
+        this.serviceAccountId,
+        this.formGroup.value.accessPolicies
+      );
 
-      await this.handleAccessTokenAvailableWarning(showAccessRemovalWarning);
+      await this.handleAccessTokenAvailableWarning(
+        showAccessRemovalWarning,
+        this.currentAccessPolicies,
+        this.formGroup.value.accessPolicies
+      );
 
       this.currentAccessPolicies = convertToAccessPolicyItemViews(peoplePoliciesViews);
 
@@ -153,38 +162,43 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     return this.formGroup.invalid;
   }
 
-  private async handleAccessRemovalWarning(showAccessRemovalWarning: boolean): Promise<boolean> {
+  private async handleAccessRemovalWarning(
+    showAccessRemovalWarning: boolean,
+    currentAccessPolicies: ApItemViewType[]
+  ): Promise<boolean> {
     if (showAccessRemovalWarning) {
       const confirmed = await this.showWarning();
       if (!confirmed) {
-        this.setSelected(this.currentAccessPolicies);
+        this.setSelected(currentAccessPolicies);
         return true;
       }
     }
     return false;
   }
 
-  private async updateServiceAccountPeopleAccessPolicies() {
+  private async updateServiceAccountPeopleAccessPolicies(
+    serviceAccountId: string,
+    selectedPolicies: ApItemValueType[]
+  ) {
     const serviceAccountPeopleView = convertToServiceAccountPeopleAccessPoliciesView(
-      this.serviceAccountId,
-      this.formGroup.value.accessPolicies
+      serviceAccountId,
+      selectedPolicies
     );
     return await this.accessPolicyService.putServiceAccountPeopleAccessPolicies(
-      this.serviceAccountId,
+      serviceAccountId,
       serviceAccountPeopleView
     );
   }
 
   private async handleAccessTokenAvailableWarning(
-    showAccessRemovalWarning: boolean
+    showAccessRemovalWarning: boolean,
+    currentAccessPolicies: ApItemViewType[],
+    selectedPolicies: ApItemValueType[]
   ): Promise<void> {
     if (showAccessRemovalWarning) {
       this.router.navigate(["sm", this.organizationId, "service-accounts"]);
     } else if (
-      this.accessPolicySelectorService.isAccessRemoval(
-        this.currentAccessPolicies,
-        this.formGroup.value.accessPolicies
-      )
+      this.accessPolicySelectorService.isAccessRemoval(currentAccessPolicies, selectedPolicies)
     ) {
       await this.showAccessTokenStillAvailableWarning();
     }
