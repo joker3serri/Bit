@@ -43,10 +43,10 @@ jobs:
           echo "environment-name=Web Vault - ${{ inputs.environment }}" >> $GITHUB_OUTPUT
           echo "environment-branch=cf-pages-$ENV_NAME_LOWER" >> $GITHUB_OUTPUT
           echo "environment-artifact=web-*-cloud-${{ inputs.environment }}.zip" >> $GITHUB_OUTPUT
-          if [ ${{ inputs.environment }} == "qa" ]; then
+          if [ ${{ inputs.environment }} == "QA" ]; then
             echo "azure-login-creds=AZURE_KV_US_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
             echo "retrieve-secrets-keyvault=bw-webvault-rlktusqa-kv" >> $GITHUB_OUTPUT
-          elif [ ${{ inputs.environment }} == "euqa" ]; then
+          elif [ ${{ inputs.environment }} == "EUQA" ]; then
             echo "azure-login-creds=AZURE_KV_EU_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
             echo "retrieve-secrets-keyvault=webvaulteu-westeurope-qa" >> $GITHUB_OUTPUT
           fi
