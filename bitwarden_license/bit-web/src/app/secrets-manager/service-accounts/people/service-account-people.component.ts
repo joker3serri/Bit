@@ -131,6 +131,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
       if (showAccessRemovalWarning) {
         this.router.navigate(["sm", this.organizationId, "service-accounts"]);
       }
+      await this.showAccessTokenStillAvailableWarning();
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -171,5 +172,15 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
       type: "warning",
     });
     return confirmed;
+  }
+
+  private async showAccessTokenStillAvailableWarning(): Promise<void> {
+    await this.dialogService.openSimpleDialog({
+      title: { key: "saPeopleWarningTitle" },
+      content: { key: "saPeopleWarningMessage" },
+      type: "warning",
+      acceptButtonText: { key: "close" },
+      cancelButtonText: null,
+    });
   }
 }
