@@ -8,22 +8,6 @@ import { IdentityTokenResponse } from "../models/response/identity-token.respons
 import { LoginStrategy } from "./login.strategy";
 
 export class WebAuthnLoginStrategy extends LoginStrategy {
-  get email() {
-    if ("email" in this.tokenRequest) {
-      return this.tokenRequest.email;
-    }
-
-    return "";
-  }
-
-  get accessCode() {
-    return "";
-  }
-
-  get authRequestId() {
-    return "";
-  }
-
   tokenRequest: WebAuthnLoginTokenRequest;
   private credentials: WebAuthnLoginCredentials;
 
