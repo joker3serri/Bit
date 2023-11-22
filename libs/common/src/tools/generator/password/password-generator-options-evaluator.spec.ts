@@ -296,7 +296,6 @@ describe("Password generator options builder", () => {
       }
     );
 
-    // TODO: test length, minNumber, and minSpecial
     it.each([1, 2, 3, 4])(
       "should set `options.length` (= %i) to the minimum it is less than the minimum length",
       (length) => {
