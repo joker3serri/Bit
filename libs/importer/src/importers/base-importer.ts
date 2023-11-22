@@ -409,7 +409,7 @@ export abstract class BaseImporter {
   }
 
   private validateNoExternalEntities(data: string): boolean {
-    const regex = new RegExp("(<!ENTITY)", "i");
+    const regex = new RegExp("<!ENTITY", "i");
     const hasExternalEntities = regex.test(data);
     return !hasExternalEntities;
   }

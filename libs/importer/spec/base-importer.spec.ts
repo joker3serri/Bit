@@ -108,7 +108,7 @@ describe("BaseImporter class", () => {
       }
     );
 
-    it("should reject xml with external entities", async () => {
+    it("parse XML should reject xml with external entities", async () => {
       const xml = `<?xml version="1.0" encoding="ISO-8859-1"?>
         <!DOCTYPE replace [
         <!ELEMENT replace ANY>
