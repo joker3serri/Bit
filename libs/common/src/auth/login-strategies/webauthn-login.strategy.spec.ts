@@ -195,10 +195,10 @@ describe("WebAuthnLoginStrategy", () => {
       mockPrfPrivateKey
     );
     expect(cryptoService.setUserKey).toHaveBeenCalledWith(mockUserKey);
+    expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(idTokenResponse.privateKey);
 
     // Master key and private key should not be set
     expect(cryptoService.setMasterKey).not.toHaveBeenCalled();
-    expect(cryptoService.setPrivateKey).not.toHaveBeenCalled();
   });
 
   it("does not try to set the user key when prfKey is missing", async () => {

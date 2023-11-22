@@ -11,11 +11,11 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
   tokenRequest: WebAuthnLoginTokenRequest;
   private credentials: WebAuthnLoginCredentials;
 
-  protected setMasterKey(response: IdentityTokenResponse) {
+  protected override async setMasterKey(_: IdentityTokenResponse) {
     return Promise.resolve();
   }
 
-  protected async setUserKey(idTokenResponse: IdentityTokenResponse) {
+  protected override async setUserKey(idTokenResponse: IdentityTokenResponse) {
     const userDecryptionOptions = idTokenResponse?.userDecryptionOptions;
 
     if (userDecryptionOptions?.webAuthnPrfOption) {
@@ -44,8 +44,10 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     }
   }
 
-  protected setPrivateKey(response: IdentityTokenResponse): Promise<void> {
-    return Promise.resolve();
+  protected override async setPrivateKey(response: IdentityTokenResponse): Promise<void> {
+    await this.cryptoService.setPrivateKey(
+      response.privateKey ?? (await this.createKeyPairForOldAccount())
+    );
   }
 
   async logInTwoFactor(
