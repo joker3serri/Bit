@@ -1,7 +1,6 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { merge, startWith, Subject, takeUntil } from "rxjs";
-import zxcvbn from "zxcvbn";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -24,7 +23,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
   filePasswordValue: string = null;
-  passwordStrengthResult: zxcvbn.ZXCVBNResult;
   formPromise: Promise<string>;
   private _disabledByPolicy = false;
 
@@ -220,9 +218,5 @@ export class ExportComponent implements OnInit, OnDestroy {
       blobData: csv,
       blobOptions: { type: "text/plain" },
     });
-  }
-
-  getStrengthResult(result: zxcvbn.ZXCVBNResult) {
-    this.passwordStrengthResult = result;
   }
 }
