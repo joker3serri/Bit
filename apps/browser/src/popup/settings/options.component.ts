@@ -101,7 +101,7 @@ export class OptionsComponent implements OnInit {
 
     this.enableBadgeCounter = !(await this.stateService.getDisableBadgeCounter());
 
-    this.enablePasskeys = !(await this.stateService.getDisablePasskeys());
+    this.enablePasskeys = await this.stateService.getEnablePasskeys();
 
     this.theme = await this.stateService.getTheme();
 
@@ -122,7 +122,7 @@ export class OptionsComponent implements OnInit {
   }
 
   async updateEnablePasskeys() {
-    await this.stateService.setDisablePasskeys(!this.enablePasskeys);
+    await this.stateService.setEnablePasskeys(this.enablePasskeys);
   }
 
   async updateContextMenuItem() {

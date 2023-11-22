@@ -1213,18 +1213,18 @@ export class StateService<
     );
   }
 
-  async getDisablePasskeys(options?: StorageOptions): Promise<boolean> {
+  async getEnablePasskeys(options?: StorageOptions): Promise<boolean> {
     return (
       (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.disablePasskeys ?? false
+        ?.enablePasskeys ?? true
     );
   }
 
-  async setDisablePasskeys(value: boolean, options?: StorageOptions): Promise<void> {
+  async setEnablePasskeys(value: boolean, options?: StorageOptions): Promise<void> {
     const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    globals.disablePasskeys = value;
+    globals.enablePasskeys = value;
     await this.saveGlobals(
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
