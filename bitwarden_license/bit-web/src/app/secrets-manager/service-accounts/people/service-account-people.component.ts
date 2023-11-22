@@ -96,9 +96,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
-    this.formGroup.markAllAsTouched();
-
-    if (this.formGroup.invalid) {
+    if (this.isFormInvalid()) {
       return;
     }
 
@@ -108,30 +106,17 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
         this.formGroup.value.accessPolicies
       );
 
-    if (showAccessRemovalWarning) {
-      const confirmed = await this.showWarning();
-      if (!confirmed) {
-        this.setSelected(this.currentAccessPolicies);
-        return;
-      }
+    if (await this.handleAccessRemovalWarning(showAccessRemovalWarning)) {
+      return;
     }
 
     try {
-      const serviceAccountPeopleView = convertToServiceAccountPeopleAccessPoliciesView(
-        this.serviceAccountId,
-        this.formGroup.value.accessPolicies
-      );
-      const peoplePoliciesViews =
-        await this.accessPolicyService.putServiceAccountPeopleAccessPolicies(
-          this.serviceAccountId,
-          serviceAccountPeopleView
-        );
+      const peoplePoliciesViews = await this.updateServiceAccountPeopleAccessPolicies();
+
+      await this.handleAccessTokenAvailableWarning(showAccessRemovalWarning);
+
       this.currentAccessPolicies = convertToAccessPolicyItemViews(peoplePoliciesViews);
 
-      if (showAccessRemovalWarning) {
-        this.router.navigate(["sm", this.organizationId, "service-accounts"]);
-      }
-      await this.showAccessTokenStillAvailableWarning();
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -161,6 +146,48 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
       });
     }
     this.loading = false;
+  }
+
+  private isFormInvalid(): boolean {
+    this.formGroup.markAllAsTouched();
+    return this.formGroup.invalid;
+  }
+
+  private async handleAccessRemovalWarning(showAccessRemovalWarning: boolean): Promise<boolean> {
+    if (showAccessRemovalWarning) {
+      const confirmed = await this.showWarning();
+      if (!confirmed) {
+        this.setSelected(this.currentAccessPolicies);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private async updateServiceAccountPeopleAccessPolicies() {
+    const serviceAccountPeopleView = convertToServiceAccountPeopleAccessPoliciesView(
+      this.serviceAccountId,
+      this.formGroup.value.accessPolicies
+    );
+    return await this.accessPolicyService.putServiceAccountPeopleAccessPolicies(
+      this.serviceAccountId,
+      serviceAccountPeopleView
+    );
+  }
+
+  private async handleAccessTokenAvailableWarning(
+    showAccessRemovalWarning: boolean
+  ): Promise<void> {
+    if (showAccessRemovalWarning) {
+      this.router.navigate(["sm", this.organizationId, "service-accounts"]);
+    } else if (
+      this.accessPolicySelectorService.isAccessRemoval(
+        this.currentAccessPolicies,
+        this.formGroup.value.accessPolicies
+      )
+    ) {
+      await this.showAccessTokenStillAvailableWarning();
+    }
   }
 
   private async showWarning(): Promise<boolean> {
