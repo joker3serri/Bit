@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - QA
+          - EUQA
 
   workflow_call:
     inputs:
@@ -29,6 +30,8 @@ jobs:
       environment-name: ${{ steps.config.outputs.environment-name }}
       environment-branch: ${{ steps.config.outputs.environment-branch }}
       environment-artifact: ${{ steps.config.outputs.environment-artifact }}
+      azure-login-creds: ${{ steps.config.outputs.azure-login-creds }}
+      retrieve-secrets-keyvault: ${{ steps.config.outputs.retrieve-secrets-keyvault }}
     steps:
       - name: Configure
         id: config
@@ -40,6 +43,13 @@ jobs:
           echo "environment-name=Web Vault - ${{ inputs.environment }}" >> $GITHUB_OUTPUT
           echo "environment-branch=cf-pages-$ENV_NAME_LOWER" >> $GITHUB_OUTPUT
           echo "environment-artifact=web-*-cloud-${{ inputs.environment }}.zip" >> $GITHUB_OUTPUT
+          if [ ${{ inputs.environment }} == "qa" ]; then
+            echo "azure-login-creds=AZURE_KV_US_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
+            echo "retrieve-secrets-keyvault=bw-webvault-rlktusqa-kv" >> $GITHUB_OUTPUT
+          elif [ ${{ inputs.environment }} == "euqa" ]; then
+            echo "azure-login-creds=AZURE_KV_EU_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
+            echo "retrieve-secrets-keyvault=webvaulteu-westeurope-qa" >> $GITHUB_OUTPUT
+          fi
 
   artifact-check:
     name: Check if Web artifact is present
@@ -86,6 +96,7 @@ jobs:
 
   cfpages-deploy:
     name: Deploy Web Vault to ${{ inputs.environment }} CloudFlare Pages branch
+    if : ${{ inputs.environment == 'QA' }}
     needs:
       - setup
       - artifact-check
@@ -183,13 +194,13 @@ jobs:
       - name: Login to Azure
         uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
         with:
-          creds: ${{ secrets.AZURE_KV_US_QA_SERVICE_PRINCIPAL }}
+          creds: ${{ secrets[needs.setup.outputs.azure-login-creds] }}
 
       - name: Retrieve Storage Account connection string
         id: retrieve-secrets
         uses: bitwarden/gh-actions/get-keyvault-secrets@main
         with:
-          keyvault: bw-webvault-rlktusqa-kv
+          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
           secrets: "sa-bitwarden-web-vault-dev-key-temp"
 
       - name: Download latest cloud asset
