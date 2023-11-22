@@ -319,7 +319,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected canDelete$ = this.flexibleCollectionsEnabled$.pipe(
     switchMap(async (flexibleCollectionsEnabled) => {
       return (
-        this.editMode && this.collection?.canDelete(this.organization!, flexibleCollectionsEnabled)
+        this.editMode && this.collection.canDelete(this.organization, flexibleCollectionsEnabled)
       );
     })
   );

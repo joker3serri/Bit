@@ -6,7 +6,6 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -45,17 +44,12 @@ export class OrganizationPermissionsGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-      false
-    );
-
     const permissionsCallback: (
       organization: Organization,
-      flexibleCollectionsEnabled: boolean
-    ) => boolean = route.data?.organizationPermissions;
+      configService: ConfigServiceAbstraction
+    ) => Promise<boolean> = route.data?.organizationPermissions;
     const hasPermissions =
-      permissionsCallback == null || permissionsCallback(org, flexibleCollectionsEnabled);
+      permissionsCallback == null || (await permissionsCallback(org, this.configService));
 
     if (!hasPermissions) {
       // Handle linkable ciphers for organizations the user only has view access to
@@ -71,7 +65,7 @@ export class OrganizationPermissionsGuard implements CanActivate {
       }
 
       this.platformUtilsService.showToast("error", null, this.i18nService.t("accessDenied"));
-      return canAccessOrgAdmin(org, flexibleCollectionsEnabled)
+      return (await canAccessOrgAdmin(org, this.configService))
         ? this.router.createUrlTree(["/organizations", org.id])
         : this.router.createUrlTree(["/"]);
     }

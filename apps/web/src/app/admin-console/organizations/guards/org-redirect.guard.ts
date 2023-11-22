@@ -5,7 +5,6 @@ import {
   canAccessOrgAdmin,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 @Injectable({
@@ -20,21 +19,17 @@ export class OrganizationRedirectGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const org = this.organizationService.get(route.params.organizationId);
-    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-      false
-    );
 
     const customRedirect = route.data?.autoRedirectCallback;
     if (customRedirect) {
-      let redirectPath = customRedirect(org, flexibleCollectionsEnabled);
+      let redirectPath = await customRedirect(org, this.configService);
       if (typeof redirectPath === "string") {
         redirectPath = [redirectPath];
       }
       return this.router.createUrlTree([state.url, ...redirectPath]);
     }
 
-    if (canAccessOrgAdmin(org, flexibleCollectionsEnabled)) {
+    if (await canAccessOrgAdmin(org, this.configService)) {
       return this.router.createUrlTree(["/organizations", org.id]);
     }
     return this.router.createUrlTree(["/"]);

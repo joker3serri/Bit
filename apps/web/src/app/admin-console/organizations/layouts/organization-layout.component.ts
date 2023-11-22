@@ -56,8 +56,8 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
     this._destroy.complete();
   }
 
-  canShowVaultTab(organization: Organization): boolean {
-    return canAccessVaultTab(organization, this.flexibleCollectionsEnabled);
+  async canShowVaultTab(organization: Organization): Promise<boolean> {
+    return await canAccessVaultTab(organization, this.configService);
   }
 
   canShowSettingsTab(organization: Organization): boolean {

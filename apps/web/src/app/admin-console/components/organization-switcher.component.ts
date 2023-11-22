@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { combineLatest, map, Observable } from "rxjs";
+import { Observable, switchMap } from "rxjs";
 
 import {
   canAccessAdmin,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -28,13 +27,10 @@ export class OrganizationSwitcherComponent implements OnInit {
   loaded = false;
 
   async ngOnInit() {
-    this.organizations$ = combineLatest([
-      this.organizationService.memberOrganizations$,
-      this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollections, false),
-    ]).pipe(
-      map(([orgs, flexibleCollectionsEnabled]) => {
-        const canAccess = canAccessAdmin(this.i18nService, flexibleCollectionsEnabled);
-        return canAccess ? orgs.sort(Utils.getSortFunction(this.i18nService, "name")) : [];
+    this.organizations$ = this.organizationService.memberOrganizations$.pipe(
+      switchMap(async (orgs) => {
+        const canAccess = await canAccessAdmin(this.i18nService, this.configService);
+        return canAccess ? orgs.sort(Utils.getSortFunction(this.i18nService, "name")) : orgs;
       })
     );
 

@@ -1,11 +1,21 @@
 import { map, Observable } from "rxjs";
 
+import { FeatureFlag } from "../../../enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { Utils } from "../../../platform/misc/utils";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
-export function canAccessVaultTab(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
+export async function canAccessVaultTab(
+  org: Organization,
+  configService: ConfigServiceAbstraction
+): Promise<boolean> {
+  const flexibleCollectionsEnabled = await configService.getFeatureFlag(
+    FeatureFlag.FlexibleCollections,
+    false
+  );
+
   if (flexibleCollectionsEnabled) {
     return org.canViewAllCollections;
   } else {
@@ -40,14 +50,17 @@ export function canAccessBillingTab(org: Organization): boolean {
   return org.isOwner;
 }
 
-export function canAccessOrgAdmin(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
+export async function canAccessOrgAdmin(
+  org: Organization,
+  configService: ConfigServiceAbstraction
+): Promise<boolean> {
   return (
     canAccessMembersTab(org) ||
     canAccessGroupsTab(org) ||
     canAccessReportingTab(org) ||
     canAccessBillingTab(org) ||
     canAccessSettingsTab(org) ||
-    canAccessVaultTab(org, flexibleCollectionsEnabled)
+    (await canAccessVaultTab(org, configService))
   );
 }
 
@@ -55,12 +68,18 @@ export function getOrganizationById(id: string) {
   return map<Organization[], Organization | undefined>((orgs) => orgs.find((o) => o.id === id));
 }
 
-export function canAccessAdmin(i18nService: I18nService, flexibleCollectionsEnabled: boolean) {
-  return map<Organization[], Organization[]>((orgs) =>
-    orgs
-      .filter((org) => canAccessOrgAdmin(org, flexibleCollectionsEnabled))
-      .sort(Utils.getSortFunction(i18nService, "name"))
-  );
+export async function canAccessAdmin(
+  i18nService: I18nService,
+  configService: ConfigServiceAbstraction
+) {
+  return async (orgs: Organization[]): Promise<Organization[]> => {
+    const orgsPromises = orgs.map(async (org) => {
+      const canAccess = await canAccessOrgAdmin(org, configService);
+      return canAccess ? org : null;
+    });
+    const results = (await Promise.all(orgsPromises)).filter((org) => org !== null);
+    return results.sort(Utils.getSortFunction(i18nService, "name"));
+  };
 }
 
 export function canAccessImportExport(i18nService: I18nService) {

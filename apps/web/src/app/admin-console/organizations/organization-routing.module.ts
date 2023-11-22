@@ -11,6 +11,7 @@ import {
   canAccessSettingsTab,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
@@ -78,11 +79,11 @@ const routes: Routes = [
   },
 ];
 
-function getOrganizationRoute(
+async function getOrganizationRoute(
   organization: Organization,
-  flexibleCollectionsEnabled: boolean
-): string {
-  if (canAccessVaultTab(organization, flexibleCollectionsEnabled)) {
+  configService: ConfigServiceAbstraction
+): Promise<string> {
+  if (await canAccessVaultTab(organization, configService)) {
     return "vault";
   }
   if (canAccessMembersTab(organization)) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { combineLatest, map, Observable } from "rxjs";
+import { map, Observable, switchMap } from "rxjs";
 
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import {
@@ -9,7 +9,6 @@ import {
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { Provider } from "@bitwarden/common/models/domain/provider";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -60,13 +59,10 @@ export class NavbarComponent implements OnInit {
     }
     this.providers = await this.providerService.getAll();
 
-    this.organizations$ = combineLatest([
-      this.organizationService.memberOrganizations$,
-      this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollections, false),
-    ]).pipe(
-      map(([organizations, featureFlag]) => {
-        const canAccess = canAccessAdmin(this.i18nService, featureFlag);
-        return canAccess ? organizations : [];
+    this.organizations$ = this.organizationService.memberOrganizations$.pipe(
+      switchMap(async (orgs) => {
+        const isAdmin = await canAccessAdmin(this.i18nService, this.configService);
+        return isAdmin ? orgs : [];
       })
     );
     this.canLock$ = this.vaultTimeoutSettingsService
