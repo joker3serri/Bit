@@ -15,7 +15,11 @@ import { RotateableKeySetService } from "../rotateable-key-set.service";
 import { SaveCredentialRequest } from "./request/save-credential.request";
 import { WebauthnLoginAttestationResponseRequest } from "./request/webauthn-login-attestation-response.request";
 import { WebAuthnLoginAdminApiService } from "./webauthn-login-admin-api.service";
+
 @Injectable({ providedIn: "root" })
+/**
+ * Service for managing WebAuthnLogin credentials.
+ */
 export class WebauthnLoginAdminService {
   static readonly MaxCredentialCount = 5;
 
@@ -29,6 +33,10 @@ export class WebauthnLoginAdminService {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
+  /**
+   * An Observable that emits a boolean indicating whether the service is currently fetching
+   * WebAuthnLogin credentials from the server.
+   */
   readonly loading$ = this._loading$.asObservable();
 
   constructor(
@@ -43,6 +51,14 @@ export class WebauthnLoginAdminService {
     this.navigatorCredentials = navigatorCredentials ?? navigator.credentials;
   }
 
+  /**
+   * Get the credential attestation options needed for initiating the WebAuthnLogin credentail creation process.
+   * The options contains a challenge and other data for the authenticator.
+   * This method requires user verification.
+   *
+   * @param verification User verification data to be used for the request.
+   * @returns The credential attestation options and a token to be used for the credential creation request.
+   */
   async getCredentialCreateOptions(
     verification: Verification
   ): Promise<CredentialCreateOptionsView> {
@@ -51,6 +67,12 @@ export class WebauthnLoginAdminService {
     return new CredentialCreateOptionsView(response.options, response.token);
   }
 
+  /**
+   * Create a credential using the given options. This triggers the browsers WebAuthn API to create a credential.
+   *
+   * @param credentialOptions Options received from the server using `getCredentialCreateOptions`.
+   * @returns A pending credential that can be saved to server directly or be used to create a key set.
+   */
   async createCredential(
     credentialOptions: CredentialCreateOptionsView
   ): Promise<PendingWebauthnLoginCredentialView | undefined> {
@@ -76,6 +98,13 @@ export class WebauthnLoginAdminService {
     }
   }
 
+  /**
+   * Create a key set from the given pending credential. The credential must support PRF.
+   * This will trigger the browsers WebAuthn API to generate a PRF-output.
+   *
+   * @param pendingCredential A credential created using `createCredential`.
+   * @returns A key set that can be saved to the server. Undefined is returned if the credential doesn't support PRF.
+   */
   async createKeySet(
     pendingCredential: PendingWebauthnLoginCredentialView
   ): Promise<PrfKeySet | undefined> {
@@ -117,6 +146,13 @@ export class WebauthnLoginAdminService {
     }
   }
 
+  /**
+   * Save a pending credential to the server. This will also save the key set if it is provided.
+   *
+   * @param name User provided name for the credential.
+   * @param credential A pending credential created using `createCredential`.
+   * @param prfKeySet A key set created using `createKeySet`.
+   */
   async saveCredential(
     name: string,
     credential: PendingWebauthnLoginCredentialView,
@@ -148,6 +184,12 @@ export class WebauthnLoginAdminService {
     return this.credentials$;
   }
 
+  /**
+   * Subscribe to a single credential by id.
+   *
+   * @param credentialId The id of the credential to subscribe to.
+   * @returns An observable that emits the credential with the given id.
+   */
   getCredential$(credentialId: string): Observable<WebauthnLoginCredentialView> {
     return this.credentials$.pipe(
       map((credentials) => credentials.find((c) => c.id === credentialId)),
@@ -155,6 +197,13 @@ export class WebauthnLoginAdminService {
     );
   }
 
+  /**
+   * Delete a credential from the server. This method requires user verification.
+   *
+   * @param credentialId The id of the credential to delete.
+   * @param verification User verification data to be used for the request.
+   * @returns A promise that resolves when the credential has been deleted.
+   */
   async deleteCredential(credentialId: string, verification: Verification): Promise<void> {
     const request = await this.userVerificationService.buildRequest(verification);
     await this.apiService.deleteCredential(credentialId, request);
