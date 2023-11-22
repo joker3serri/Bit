@@ -56,7 +56,6 @@ export class WebAuthnLoginCredentials {
   constructor(
     public token: string,
     public deviceResponse: WebAuthnLoginAssertionResponseRequest,
-    public prfKey?: SymmetricCryptoKey,
-    public twoFactor?: TokenTwoFactorRequest
+    public prfKey?: SymmetricCryptoKey
   ) {}
 }

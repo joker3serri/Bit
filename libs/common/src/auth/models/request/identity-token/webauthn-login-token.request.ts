@@ -1,17 +1,15 @@
 import { WebAuthnLoginAssertionResponseRequest } from "../../../services/webauthn-login/request/webauthn-login-assertion-response.request";
 
 import { DeviceRequest } from "./device.request";
-import { TokenTwoFactorRequest } from "./token-two-factor.request";
 import { TokenRequest } from "./token.request";
 
 export class WebAuthnLoginTokenRequest extends TokenRequest {
   constructor(
     public token: string,
     public deviceResponse: WebAuthnLoginAssertionResponseRequest,
-    protected twoFactor: TokenTwoFactorRequest,
     device?: DeviceRequest
   ) {
-    super(twoFactor, device);
+    super(undefined, device);
   }
 
   toIdentityToken(clientId: string) {

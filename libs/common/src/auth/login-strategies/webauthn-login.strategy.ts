@@ -1,7 +1,6 @@
 import { SymmetricCryptoKey, UserKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { AuthResult } from "../models/domain/auth-result";
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
-import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 import { WebAuthnLoginTokenRequest } from "../models/request/identity-token/webauthn-login-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
@@ -11,7 +10,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
   tokenRequest: WebAuthnLoginTokenRequest;
   private credentials: WebAuthnLoginCredentials;
 
-  protected override async setMasterKey(_: IdentityTokenResponse) {
+  protected override async setMasterKey() {
     return Promise.resolve();
   }
 
@@ -50,10 +49,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     );
   }
 
-  async logInTwoFactor(
-    twoFactor: TokenTwoFactorRequest,
-    captchaResponse: string
-  ): Promise<AuthResult> {
+  async logInTwoFactor(): Promise<AuthResult> {
     throw new Error("2FA not supported yet for WebAuthn Login.");
   }
 
@@ -63,7 +59,6 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     this.tokenRequest = new WebAuthnLoginTokenRequest(
       credentials.token,
       credentials.deviceResponse,
-      await this.buildTwoFactor(credentials.twoFactor),
       await this.buildDeviceRequest()
     );
 

@@ -146,10 +146,6 @@ describe("WebAuthnLoginStrategy", () => {
         device: expect.objectContaining({
           identifier: deviceId,
         }),
-        twoFactor: expect.objectContaining({
-          provider: null,
-          token: null,
-        }),
       })
     );
 
