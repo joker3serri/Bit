@@ -17,19 +17,21 @@ import { AcceptFamilySponsorshipComponent } from "./admin-console/organizations/
 import { FamiliesForEnterpriseSetupComponent } from "./admin-console/organizations/sponsorships/families-for-enterprise-setup.component";
 import { CreateOrganizationComponent } from "./admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "./admin-console/settings/sponsored-families.component";
-import { AcceptEmergencyComponent } from "./auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "./auth/accept-organization.component";
+import { AcceptEmergencyComponent } from "./auth/emergency-access/accept/accept-emergency.component";
+import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
 import { LoginDecryptionOptionsComponent } from "./auth/login/login-decryption-options/login-decryption-options.component";
 import { LoginViaAuthRequestComponent } from "./auth/login/login-via-auth-request.component";
+import { LoginViaWebAuthnComponent } from "./auth/login/login-via-webauthn/login-via-webauthn.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { RecoverDeleteComponent } from "./auth/recover-delete.component";
 import { RecoverTwoFactorComponent } from "./auth/recover-two-factor.component";
 import { RemovePasswordComponent } from "./auth/remove-password.component";
 import { SetPasswordComponent } from "./auth/set-password.component";
-import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/emergency-access-view.component";
 import { EmergencyAccessComponent } from "./auth/settings/emergency-access/emergency-access.component";
+import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/view/emergency-access-view.component";
 import { SsoComponent } from "./auth/sso.component";
 import { TrialInitiationComponent } from "./auth/trial-initiation/trial-initiation.component";
 import { TwoFactorComponent } from "./auth/two-factor.component";
@@ -68,6 +70,11 @@ const routes: Routes = [
         path: "login-with-device",
         component: LoginViaAuthRequestComponent,
         data: { titleId: "loginWithDevice" },
+      },
+      {
+        path: "login-with-passkey",
+        component: LoginViaWebAuthnComponent,
+        data: { titleId: "loginWithPasskey" },
       },
       {
         path: "admin-approval-requested",
@@ -114,22 +121,29 @@ const routes: Routes = [
       {
         path: "lock",
         component: LockComponent,
-        canActivate: [lockGuard()],
+        canActivate: [deepLinkGuard(), lockGuard()],
       },
       { path: "verify-email", component: VerifyEmailTokenComponent },
       {
         path: "accept-organization",
         component: AcceptOrganizationComponent,
+        canActivate: [deepLinkGuard()],
         data: { titleId: "joinOrganization", doNotSaveUrl: false },
       },
       {
         path: "accept-emergency",
         component: AcceptEmergencyComponent,
+        canActivate: [deepLinkGuard()],
         data: { titleId: "acceptEmergency", doNotSaveUrl: false },
+        loadComponent: () =>
+          import("./auth/emergency-access/accept/accept-emergency.component").then(
+            (mod) => mod.AcceptEmergencyComponent
+          ),
       },
       {
         path: "accept-families-for-enterprise",
         component: AcceptFamilySponsorshipComponent,
+        canActivate: [deepLinkGuard()],
         data: { titleId: "acceptFamilySponsorship", doNotSaveUrl: false },
       },
       { path: "recover", pathMatch: "full", redirectTo: "recover-2fa" },
@@ -186,7 +200,7 @@ const routes: Routes = [
   {
     path: "",
     component: UserLayoutComponent,
-    canActivate: [AuthGuard],
+    canActivate: [deepLinkGuard(), AuthGuard],
     children: [
       {
         path: "vault",
