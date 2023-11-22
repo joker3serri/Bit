@@ -9,9 +9,9 @@ export class WebAuthnLoginApiService implements WebAuthnLoginApiServiceAbstracti
 
   async getCredentialAssertionOptions(): Promise<CredentialAssertionOptionsResponse> {
     const response = await this.apiService.send(
-      "POST",
+      "GET",
       `/accounts/webauthn/assertion-options`,
-      {},
+      null,
       false,
       true,
       this.environmentService.getIdentityUrl()
