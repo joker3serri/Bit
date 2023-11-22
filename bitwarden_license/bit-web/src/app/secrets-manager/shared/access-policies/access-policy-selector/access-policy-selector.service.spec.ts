@@ -343,6 +343,8 @@ function createApItemValueType(options: Partial<ApItemValueType> = {}) {
 function createApItemViewType(options: Partial<ApItemViewType> = {}) {
   return {
     id: options?.id ?? "test",
+    listName: options?.listName ?? "test",
+    labelName: options?.labelName ?? "test",
     type: options?.type ?? ApItemEnum.User,
     permission: options?.permission ?? ApPermissionEnum.CanRead,
   };
