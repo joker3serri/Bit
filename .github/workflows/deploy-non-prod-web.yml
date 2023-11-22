@@ -151,7 +151,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: always()
     needs:
-      - cfpages-deploy
+      - azure-deploy
       - setup
     steps:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
