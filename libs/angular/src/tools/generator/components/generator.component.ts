@@ -14,6 +14,7 @@ import {
   PasswordGenerationServiceAbstraction,
   PasswordGeneratorOptions,
 } from "@bitwarden/common/tools/generator/password";
+import { DefaultBoundaries } from "@bitwarden/common/tools/generator/password/password-generator-options-evaluator";
 import {
   UsernameGenerationServiceAbstraction,
   UsernameGeneratorOptions,
@@ -43,9 +44,11 @@ export class GeneratorComponent implements OnInit {
 
   // update screen reader minimum password length with 500ms debounce
   // so that the user isn't flooded with status updates
-  private _passwordOptionsMinLengthForReader = new BehaviorSubject<number>(5);
+  private _passwordOptionsMinLengthForReader = new BehaviorSubject<number>(
+    DefaultBoundaries.length.min
+  );
   protected passwordOptionsMinLengthForReader$ = this._passwordOptionsMinLengthForReader.pipe(
-    map((val) => val || 5),
+    map((val) => val || DefaultBoundaries.length.min),
     debounceTime(500)
   );
 
