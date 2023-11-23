@@ -396,6 +396,7 @@ function mapToMakeCredentialParams({
     userEntity: {
       id: Fido2Utils.stringToBuffer(params.user.id),
       displayName: params.user.displayName,
+      name: params.user.name,
     },
     fallbackSupported: params.fallbackSupported,
   };
