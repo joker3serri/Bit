@@ -616,7 +616,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: OrganizationServiceAbstraction,
       useClass: OrganizationService,
-      deps: [StateServiceAbstraction],
+      deps: [StateServiceAbstraction, ConfigServiceAbstraction],
     },
     {
       provide: InternalOrganizationServiceAbstraction,
