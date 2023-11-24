@@ -132,7 +132,9 @@ jobs:
       - name: Deploy to Azure Storage Account
         working-directory: apps/web
         run: |
-          azcopy sync "./build" "$web" --recursive --delete-destination --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
+          BLOB_ENDPOINT=$(echo "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" | grep -oP 'BlobEndpoint=\K[^;]+')
+          azcopy login --identity
+          azcopy sync "./build" "${BLOB_ENDPOINT}\$web" --recursive --delete-destination=true
 
   notify:
     name: Notify Slack with result
