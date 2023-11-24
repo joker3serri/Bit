@@ -129,12 +129,22 @@ jobs:
         working-directory: apps/web
         run: unzip ${{ env._ENVIRONMENT_ARTIFACT }}
 
+      - name: Empty container in Storage Account
+        run: |
+          az storage blob delete-batch \
+            --source '$web' \
+            --pattern '*' \
+            --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
+
       - name: Deploy to Azure Storage Account
         working-directory: apps/web
         run: |
-          BLOB_ENDPOINT=$(echo "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" | grep -oP 'BlobEndpoint=\K[^;]+')
-          azcopy login --identity
-          azcopy sync "./build" "${BLOB_ENDPOINT}\$web" --recursive --delete-destination=true
+          az storage blob upload-batch \
+            --source "./build" \
+            --destination '$web' \
+            --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
+            --overwrite \
+            --no-progress
 
   notify:
     name: Notify Slack with result
