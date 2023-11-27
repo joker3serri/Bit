@@ -71,7 +71,10 @@ export class AccountComponent {
 
   protected collectionManagementFormGroup = this.formBuilder.group({
     limitCollectionCreationDeletion: this.formBuilder.control({ value: false, disabled: true }),
-    allowAdminAccessToAllCollectionItems: [false],
+    allowAdminAccessToAllCollectionItems: this.formBuilder.control({
+      value: false,
+      disabled: true,
+    }),
   });
 
   protected organizationId: string;
@@ -120,6 +123,7 @@ export class AccountComponent {
         if (!this.selfHosted) {
           this.formGroup.get("orgName").enable();
           this.collectionManagementFormGroup.get("limitCollectionCreationDeletion").enable();
+          this.collectionManagementFormGroup.get("allowAdminAccessToAllCollectionItems").enable();
         }
 
         if (!this.selfHosted || this.canEditSubscription) {
