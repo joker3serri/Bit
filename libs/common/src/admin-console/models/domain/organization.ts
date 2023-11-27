@@ -187,6 +187,7 @@ export class Organization {
   /**
    * @deprecated
    * This is deprecated with the introduction of Flexible Collections.
+   * This will always return false if FlexibleCollections flag is on.
    */
   get canEditAssignedCollections() {
     return this.isManager || this.permissions.editAssignedCollections;
@@ -195,6 +196,7 @@ export class Organization {
   /**
    * @deprecated
    * This is deprecated with the introduction of Flexible Collections.
+   * This will always return false if FlexibleCollections flag is on.
    */
   get canDeleteAssignedCollections() {
     return this.isManager || this.permissions.deleteAssignedCollections;
@@ -203,6 +205,7 @@ export class Organization {
   /**
    * @deprecated
    * This is deprecated with the introduction of Flexible Collections.
+   * This will always return false if FlexibleCollections flag is on.
    */
   get canViewAssignedCollections() {
     return this.canDeleteAssignedCollections || this.canEditAssignedCollections;
