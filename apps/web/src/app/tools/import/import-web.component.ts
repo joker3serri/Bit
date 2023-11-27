@@ -6,7 +6,6 @@ import {
   OrganizationService,
   canAccessVaultTab,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { ImportComponent } from "@bitwarden/importer/ui";
 
 import { SharedModule } from "../../shared";
@@ -24,8 +23,7 @@ export class ImportWebComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
-    private router: Router,
-    private configService: ConfigServiceAbstraction
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +44,7 @@ export class ImportWebComponent implements OnInit {
       return;
     }
 
-    if (await canAccessVaultTab(organization, this.configService)) {
+    if (canAccessVaultTab(organization)) {
       await this.router.navigate(["organizations", organizationId, "vault"]);
     }
   }

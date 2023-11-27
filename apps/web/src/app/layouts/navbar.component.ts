@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { map, Observable, switchMap } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import {
@@ -11,7 +11,6 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { Provider } from "@bitwarden/common/models/domain/provider";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -39,8 +38,7 @@ export class NavbarComponent implements OnInit {
     private syncService: SyncService,
     private organizationService: OrganizationService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-    private i18nService: I18nService,
-    private configService: ConfigServiceAbstraction
+    private i18nService: I18nService
   ) {
     this.selfHosted = this.platformUtilsService.isSelfHost();
   }
@@ -60,10 +58,7 @@ export class NavbarComponent implements OnInit {
     this.providers = await this.providerService.getAll();
 
     this.organizations$ = this.organizationService.memberOrganizations$.pipe(
-      switchMap(async (orgs) => {
-        const isAdmin = await canAccessAdmin(this.i18nService, this.configService);
-        return isAdmin ? orgs : [];
-      })
+      canAccessAdmin(this.i18nService)
     );
     this.canLock$ = this.vaultTimeoutSettingsService
       .availableVaultTimeoutActions$()

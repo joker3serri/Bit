@@ -6,7 +6,6 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -20,8 +19,7 @@ export class OrganizationPermissionsGuard implements CanActivate {
     private organizationService: OrganizationService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private syncService: SyncService,
-    private configService: ConfigServiceAbstraction
+    private syncService: SyncService
   ) {}
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -44,12 +42,9 @@ export class OrganizationPermissionsGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    const permissionsCallback: (
-      organization: Organization,
-      configService: ConfigServiceAbstraction
-    ) => Promise<boolean> = route.data?.organizationPermissions;
-    const hasPermissions =
-      permissionsCallback == null || (await permissionsCallback(org, this.configService));
+    const permissionsCallback: (organization: Organization) => boolean =
+      route.data?.organizationPermissions;
+    const hasPermissions = permissionsCallback == null || permissionsCallback(org);
 
     if (!hasPermissions) {
       // Handle linkable ciphers for organizations the user only has view access to
@@ -65,7 +60,7 @@ export class OrganizationPermissionsGuard implements CanActivate {
       }
 
       this.platformUtilsService.showToast("error", null, this.i18nService.t("accessDenied"));
-      return (await canAccessOrgAdmin(org, this.configService))
+      return canAccessOrgAdmin(org)
         ? this.router.createUrlTree(["/organizations", org.id])
         : this.router.createUrlTree(["/"]);
     }

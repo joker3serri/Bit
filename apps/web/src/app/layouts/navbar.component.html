@@ -22,15 +22,9 @@
           class="nav-item"
           routerLinkActive="active"
         >
-          <ng-container *ngIf="{ orgs: organizations$ | async } as data">
-            <a
-              *ngIf="data.orgs?.length > 0"
-              class="nav-link"
-              [routerLink]="['/organizations', data.orgs[0].id]"
-            >
-              {{ "organizations" | i18n }}
-            </a>
-          </ng-container>
+          <a class="nav-link" [routerLink]="['/organizations', (organizations$ | async)[0].id]">{{
+            "organizations" | i18n
+          }}</a>
         </li>
         <ng-container *ngIf="providers.length >= 1">
           <li class="nav-item" routerLinkActive="active" *ngIf="providers.length == 1">

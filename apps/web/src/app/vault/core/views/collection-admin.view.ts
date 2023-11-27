@@ -33,7 +33,7 @@ export class CollectionAdminView extends CollectionView {
 
   override canEdit(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
     if (flexibleCollectionsEnabled) {
-      return org?.canEditAnyCollection || this.assigned;
+      return org?.canEditAnyCollection;
     } else {
       return org?.canEditAnyCollection || (org?.canEditAssignedCollections && this.assigned);
     }
