@@ -270,6 +270,10 @@ export class Organization {
     return this.providerId != null || this.providerName != null;
   }
 
+  get hasReseller() {
+    return this.hasProvider && this.providerType === ProviderType.Reseller;
+  }
+
   get canAccessSecretsManager() {
     return this.useSecretsManager && this.accessSecretsManager;
   }
