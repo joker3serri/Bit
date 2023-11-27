@@ -11,7 +11,7 @@ import { EncryptedString, EncString } from "@bitwarden/common/platform/models/do
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { Folder } from "@bitwarden/common/vault/models/domain/folder";
 import { Login } from "@bitwarden/common/vault/models/domain/login";

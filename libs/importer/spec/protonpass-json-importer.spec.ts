@@ -2,8 +2,7 @@ import { MockProxy } from "jest-mock-extended";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { FieldType } from "@bitwarden/common/vault/enums";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { FieldType , CipherType } from "@bitwarden/common/vault/enums";
 
 import { ProtonPassJsonImporter } from "../src/importers";
 
