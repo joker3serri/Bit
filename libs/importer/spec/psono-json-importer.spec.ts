@@ -1,4 +1,4 @@
-import { FieldType , CipherType } from "@bitwarden/common/vault/enums";
+import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 
 import { PsonoJsonImporter } from "../src/importers";

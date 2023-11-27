@@ -1,4 +1,4 @@
-import { UriMatchType , CipherType } from "@bitwarden/common/vault/enums";
+import { UriMatchType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import AutofillField from "../../models/autofill-field";

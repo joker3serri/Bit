@@ -18,7 +18,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SecureNoteType , CipherType } from "@bitwarden/common/vault/enums";
+import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";

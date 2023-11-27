@@ -1,4 +1,4 @@
-import { FieldType, SecureNoteType , CipherType } from "@bitwarden/common/vault/enums";
+import { FieldType, SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
