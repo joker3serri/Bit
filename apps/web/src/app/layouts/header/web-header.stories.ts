@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import { Component, Injectable, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
@@ -66,6 +67,8 @@ class MockProductSwitcher {}
 @Component({
   selector: "dynamic-avatar",
   template: `<bit-avatar [text]="name$ | async"></bit-avatar>`,
+  standalone: true,
+  imports: [CommonModule, AvatarModule],
 })
 class MockDynamicAvatar {
   protected name$ = combineLatest([
@@ -99,8 +102,9 @@ export default {
         TabsModule,
         TypographyModule,
         NavigationModule,
+        MockDynamicAvatar,
       ],
-      declarations: [WebHeaderComponent, MockProductSwitcher, MockDynamicAvatar],
+      declarations: [WebHeaderComponent, MockProductSwitcher],
       providers: [
         { provide: StateService, useClass: MockStateService },
         { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },
