@@ -622,7 +622,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: OrganizationServiceAbstraction,
       useClass: OrganizationService,
-      deps: [StateServiceAbstraction, ConfigServiceAbstraction],
+      deps: [StateServiceAbstraction],
     },
     {
       provide: InternalOrganizationServiceAbstraction,
