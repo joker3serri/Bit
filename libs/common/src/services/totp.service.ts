@@ -16,6 +16,7 @@ export class TotpService implements TotpServiceAbstraction {
     if (key == null) {
       return null;
     }
+    key = key.trim();
     let period = 30;
     let alg: "sha1" | "sha256" | "sha512" = "sha1";
     let digits = 6;
