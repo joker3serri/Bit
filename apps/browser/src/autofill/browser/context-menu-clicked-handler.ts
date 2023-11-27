@@ -16,7 +16,6 @@ import {
   authServiceFactory,
   AuthServiceInitOptions,
 } from "../../auth/background/service-factories/auth-service.factory";
-import { totpServiceFactory } from "../../auth/background/service-factories/totp-service.factory";
 import { userVerificationServiceFactory } from "../../auth/background/service-factories/user-verification-service.factory";
 import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
@@ -30,6 +29,7 @@ import {
   cipherServiceFactory,
   CipherServiceInitOptions,
 } from "../../vault/background/service_factories/cipher-service.factory";
+import { totpServiceFactory } from "../../vault/background/service_factories/totp-service.factory";
 import {
   openAddEditVaultItemPopout,
   openVaultItemPasswordRepromptPopout,
