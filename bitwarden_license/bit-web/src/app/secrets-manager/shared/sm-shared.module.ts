@@ -8,8 +8,8 @@ import {
 } from "@bitwarden/components";
 import { CoreOrganizationModule } from "@bitwarden/web-vault/app/admin-console/organizations/core";
 import { DynamicAvatarComponent } from "@bitwarden/web-vault/app/components/dynamic-avatar.component";
+import { HeaderModule } from "@bitwarden/web-vault/app/layouts/header/header.module";
 import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
-import { HeaderComponent } from "@bitwarden/web-vault/app/layouts/web-header.component";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
 
 import { AccessPolicySelectorComponent } from "./access-policies/access-policy-selector/access-policy-selector.component";
@@ -32,7 +32,7 @@ import { SecretsListComponent } from "./secrets-list.component";
     SelectModule,
     DynamicAvatarComponent,
     SearchModule,
-    HeaderComponent,
+    HeaderModule,
   ],
   exports: [
     AccessPolicySelectorComponent,
@@ -40,7 +40,7 @@ import { SecretsListComponent } from "./secrets-list.component";
     AccessSelectorComponent,
     BulkConfirmationDialogComponent,
     BulkStatusDialogComponent,
-    HeaderComponent,
+    HeaderModule,
     NewMenuComponent,
     NoItemsModule,
     ProjectsListComponent,

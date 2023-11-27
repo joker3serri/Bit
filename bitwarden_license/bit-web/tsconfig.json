@@ -10,6 +10,5 @@
       "@bitwarden/vault": ["../../libs/vault/src"],
       "@bitwarden/web-vault/*": ["../../apps/web/src/*"]
     }
-  },
-  "include": ["src/**/*.stories.ts"]
+  }
 }

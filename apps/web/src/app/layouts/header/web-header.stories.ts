@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { Component, Injectable, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
@@ -29,9 +28,8 @@ import {
   InputModule,
 } from "@bitwarden/components";
 
-import { PreloadedEnglishI18nModule } from "../core/tests";
-
-import { HeaderComponent } from "./web-header.component";
+import { PreloadedEnglishI18nModule } from "../../core/tests";
+import { WebHeaderComponent } from "../header/web-header.component";
 
 @Injectable({
   providedIn: "root",
@@ -62,16 +60,12 @@ class MockPlatformUtilsService {
 @Component({
   selector: "product-switcher",
   template: `<button bitIconButton="bwi-filter"></button>`,
-  standalone: true,
-  imports: [CommonModule, IconButtonModule],
 })
 class MockProductSwitcher {}
 
 @Component({
   selector: "dynamic-avatar",
   template: `<bit-avatar [text]="name$ | async"></bit-avatar>`,
-  standalone: true,
-  imports: [CommonModule, AvatarModule],
 })
 class MockDynamicAvatar {
   protected name$ = combineLatest([
@@ -87,7 +81,7 @@ class MockDynamicAvatar {
 
 export default {
   title: "Web/Header",
-  component: HeaderComponent,
+  component: WebHeaderComponent,
   decorators: [
     componentWrapperDecorator(
       (story) => `<div class="tw-min-h-screen tw-flex-1 tw-p-6 tw-text-main">${story}</div>`
@@ -95,7 +89,6 @@ export default {
     moduleMetadata({
       imports: [
         JslibModule,
-        RouterModule,
         AvatarModule,
         BreadcrumbsModule,
         ButtonModule,
@@ -107,7 +100,7 @@ export default {
         TypographyModule,
         NavigationModule,
       ],
-      declarations: [HeaderComponent, MockProductSwitcher, MockDynamicAvatar],
+      declarations: [WebHeaderComponent, MockProductSwitcher, MockDynamicAvatar],
       providers: [
         { provide: StateService, useClass: MockStateService },
         { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },
