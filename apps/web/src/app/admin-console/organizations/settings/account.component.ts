@@ -70,7 +70,7 @@ export class AccountComponent {
   });
 
   protected collectionManagementFormGroup = this.formBuilder.group({
-    limitCollectionCreationDeletion: [false],
+    limitCollectionCreationDeletion: this.formBuilder.control({ value: false, disabled: true }),
     allowAdminAccessToAllCollectionItems: [false],
   });
 
@@ -119,6 +119,7 @@ export class AccountComponent {
         // Update disabled states - reactive forms prefers not using disabled attribute
         if (!this.selfHosted) {
           this.formGroup.get("orgName").enable();
+          this.collectionManagementFormGroup.get("limitCollectionCreationDeletion").enable();
         }
 
         if (!this.selfHosted || this.canEditSubscription) {
@@ -177,6 +178,11 @@ export class AccountComponent {
   };
 
   submitCollectionManagement = async () => {
+    // Early exit if self-hosted
+    if (this.selfHosted) {
+      return;
+    }
+
     const request = new OrganizationCollectionManagementUpdateRequest();
     request.limitCreateDeleteOwnerAdmin =
       this.collectionManagementFormGroup.value.limitCollectionCreationDeletion;
