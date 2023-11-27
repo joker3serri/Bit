@@ -46,7 +46,11 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
   ) {}
 
   async isFido2FeatureEnabled(): Promise<boolean> {
-    return await this.configService.getFeatureFlag<boolean>(FeatureFlag.Fido2VaultCredentials);
+    const featureFlagEnabled = await this.configService.getFeatureFlag<boolean>(
+      FeatureFlag.Fido2VaultCredentials
+    );
+    const userEnabledPasskeys = await this.stateService.getEnablePasskeys();
+    return featureFlagEnabled && userEnabledPasskeys;
   }
 
   async createCredential(
@@ -196,7 +200,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       authData: Fido2Utils.bufferToString(makeCredentialResult.authData),
       clientDataJSON: Fido2Utils.bufferToString(clientDataJSONBytes),
       publicKeyAlgorithm: makeCredentialResult.publicKeyAlgorithm,
-      transports: ["internal"],
+      transports: params.rp.id === "google.com" ? ["internal", "usb"] : ["internal"],
     };
   }
 
@@ -395,6 +399,7 @@ function mapToMakeCredentialParams({
     userEntity: {
       id: Fido2Utils.stringToBuffer(params.user.id),
       displayName: params.user.displayName,
+      name: params.user.name,
     },
     fallbackSupported: params.fallbackSupported,
   };
