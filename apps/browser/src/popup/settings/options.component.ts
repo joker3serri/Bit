@@ -25,6 +25,7 @@ export class OptionsComponent implements OnInit {
   enableContextMenuItem = false;
   enableAddLoginNotification = false;
   enableChangedPasswordNotification = false;
+  enablePasskeys = true;
   showCardsCurrentTab = false;
   showIdentitiesCurrentTab = false;
   showClearClipboard = true;
@@ -101,6 +102,8 @@ export class OptionsComponent implements OnInit {
 
     this.enableBadgeCounter = !(await this.stateService.getDisableBadgeCounter());
 
+    this.enablePasskeys = await this.stateService.getEnablePasskeys();
+
     this.theme = await this.stateService.getTheme();
 
     const defaultUriMatch = await this.stateService.getDefaultUriMatch();
@@ -117,6 +120,10 @@ export class OptionsComponent implements OnInit {
     await this.stateService.setDisableChangedPasswordNotification(
       !this.enableChangedPasswordNotification
     );
+  }
+
+  async updateEnablePasskeys() {
+    await this.stateService.setEnablePasskeys(this.enablePasskeys);
   }
 
   async updateContextMenuItem() {
