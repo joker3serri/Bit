@@ -450,6 +450,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         FolderApiServiceAbstraction,
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
+        ConfigServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },

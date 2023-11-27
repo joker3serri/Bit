@@ -1,13 +1,10 @@
 import { BehaviorSubject, concatMap, map, Observable } from "rxjs";
 
-import { FeatureFlag } from "../../../enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { StateService } from "../../../platform/abstractions/state.service";
 import {
   InternalOrganizationServiceAbstraction,
   isMember,
 } from "../../abstractions/organization/organization.service.abstraction";
-import { OrganizationUserType } from "../../enums";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
@@ -17,7 +14,7 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
   organizations$ = this._organizations.asObservable();
   memberOrganizations$ = this.organizations$.pipe(map((orgs) => orgs.filter(isMember)));
 
-  constructor(private stateService: StateService, private configService: ConfigServiceAbstraction) {
+  constructor(private stateService: StateService) {
     this.stateService.activeAccountUnlocked$
       .pipe(
         concatMap(async (unlocked) => {
@@ -106,20 +103,6 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
   }
 
   async replace(organizations: { [id: string]: OrganizationData }) {
-    // If Flexible Collections is enabled, treat Managers as Users and ignore deprecated permissions
-    if (await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollections)) {
-      Object.values(organizations).forEach((o) => {
-        if (o.type === OrganizationUserType.Manager) {
-          o.type = OrganizationUserType.User;
-        }
-
-        if (o.permissions != null) {
-          o.permissions.editAssignedCollections = false;
-          o.permissions.deleteAssignedCollections = false;
-        }
-      });
-    }
-
     await this.stateService.setOrganizations(organizations);
     this.updateObservables(organizations);
   }
