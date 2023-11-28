@@ -18,9 +18,8 @@
       </div>
     </div>
     <div bitDialogFooter>
-      <button bitButton type="submit" buttonType="danger" [disabled]="form.loading || !secret">
-        <i class="bwi bwi-spinner bwi-spin" [hidden]="!form.loading" aria-hidden="true"></i>
-        <span [hidden]="form.loading">{{ "deleteAccount" | i18n }}</span>
+      <button bitButton bitFormButton type="submit" buttonType="danger" [disabled]="!secret">
+        {{ "deleteAccount" | i18n }}
       </button>
       <button
         bitButton
