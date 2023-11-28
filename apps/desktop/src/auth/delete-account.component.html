@@ -1,11 +1,11 @@
-<form #form [appApiAction]="formPromise" (ngSubmit)="submit()" [formGroup]="deleteForm">
+<form #form [bitSubmit]="submit" [formGroup]="deleteForm">
   <bit-dialog>
     <div bitDialogTitle>{{ "deleteAccount" | i18n }}</div>
     <div bitDialogContent class="box">
       <p class="modal-text">{{ "deleteAccountDesc" | i18n }}</p>
-      <app-callout type="warning" title="{{ 'warning' | i18n }}">
+      <bit-callout type="warning" title="{{ 'warning' | i18n }}">
         {{ "deleteAccountWarning" | i18n }}
-      </app-callout>
+      </bit-callout>
       <div class="box-content">
         <app-user-verification
           ngDefaultControl

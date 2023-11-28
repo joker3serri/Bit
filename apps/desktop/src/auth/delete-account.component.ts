@@ -15,8 +15,6 @@ import { DialogService } from "../../../../libs/components/src/dialog";
   templateUrl: "delete-account.component.html",
 })
 export class DeleteAccountComponent {
-  formPromise: Promise<void>;
-
   deleteForm = this.formBuilder.group({
     verification: undefined as Verification | undefined,
   });
@@ -37,11 +35,10 @@ export class DeleteAccountComponent {
     return this.deleteForm.get("verification")?.value?.secret;
   }
 
-  async submit() {
+  submit = async () => {
     try {
       const verification = this.deleteForm.get("verification").value;
-      this.formPromise = this.accountApiService.deleteAccount(verification);
-      await this.formPromise;
+      await this.accountApiService.deleteAccount(verification);
       this.platformUtilsService.showToast(
         "success",
         this.i18nService.t("accountDeleted"),
@@ -50,5 +47,5 @@ export class DeleteAccountComponent {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 }
