@@ -11,5 +11,5 @@
       "@bitwarden/web-vault/*": ["../../apps/web/src/*"]
     }
   },
-  "exclude": ["src/**/*.stories.ts"]
+  "include": ["src/**/*.stories.ts"]
 }
