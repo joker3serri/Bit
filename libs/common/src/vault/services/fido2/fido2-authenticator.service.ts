@@ -12,6 +12,7 @@ import {
   Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction,
   PublicKeyCredentialDescriptor,
 } from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
+import { FallbackRequestedError } from "../../abstractions/fido2/fido2-client.service.abstraction";
 import { Fido2UserInterfaceService } from "../../abstractions/fido2/fido2-user-interface.service.abstraction";
 import { SyncService } from "../../abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
@@ -108,6 +109,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       let keyPair: CryptoKeyPair;
       let userVerified = false;
       let credentialId: string;
+      let pubKeyDer: ArrayBuffer;
       const response = await userInterfaceSession.confirmNewCredential({
         credentialName: params.rpEntity.name,
         userName: params.userEntity.displayName,
@@ -125,7 +127,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
 
       try {
         keyPair = await createKeyPair();
-
+        pubKeyDer = await crypto.subtle.exportKey("spki", keyPair.publicKey);
         const encrypted = await this.cipherService.get(cipherId);
         cipher = await encrypted.decrypt(
           await this.cipherService.getKeyForCipherKeyDecryption(encrypted)
@@ -173,6 +175,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         credentialId: guidToRawFormat(credentialId),
         attestationObject,
         authData,
+        publicKey: pubKeyDer,
         publicKeyAlgorithm: -7,
       };
     } finally {
@@ -221,6 +224,11 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         this.logService?.info(
           `[Fido2Authenticator] Aborting because no matching credentials were found in the vault.`
         );
+
+        if (params.fallbackSupported) {
+          throw new FallbackRequestedError();
+        }
+
         await userInterfaceSession.informCredentialNotFound();
         throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
@@ -395,6 +403,7 @@ async function createKeyView(
   fido2Credential.keyValue = Fido2Utils.bufferToString(pkcs8Key);
   fido2Credential.rpId = params.rpEntity.id;
   fido2Credential.userHandle = Fido2Utils.bufferToString(params.userEntity.id);
+  fido2Credential.userName = params.userEntity.name;
   fido2Credential.counter = 0;
   fido2Credential.rpName = params.rpEntity.name;
   fido2Credential.userDisplayName = params.userEntity.displayName;
