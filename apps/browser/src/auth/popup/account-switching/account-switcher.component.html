@@ -28,11 +28,11 @@
     </p>
   </div>
 
-  <div class="tw-mt-8" *ngIf="currentAccount$ | async">
+  <div class="tw-mt-8" *ngIf="currentAccount$ | async as currentAccount">
     <div class="tw-mb-2 tw-uppercase tw-text-muted">{{ "options" | i18n }}</div>
     <div class="tw-grid tw-gap-2">
       <button
-        *ngIf="activeUserCanLock"
+        *ngIf="activeUserCanLock && currentAccount.status !== lockedStatus"
         type="button"
         class="tw-flex tw-w-full tw-items-center tw-gap-3 tw-rounded-md tw-bg-background tw-p-3 hover:tw-bg-background-alt"
         (click)="lock()"
