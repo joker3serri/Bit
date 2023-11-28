@@ -1,3 +1,4 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import { Component } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
@@ -6,6 +7,8 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Verification } from "@bitwarden/common/types/verification";
+
+import { DialogService } from "../../../../libs/components/src/dialog";
 
 @Component({
   selector: "app-delete-account",
@@ -25,6 +28,10 @@ export class DeleteAccountComponent {
     private accountApiService: AccountApiService,
     private logService: LogService
   ) {}
+
+  static open(dialogService: DialogService): DialogRef<DeleteAccountComponent> {
+    return dialogService.open(DeleteAccountComponent);
+  }
 
   get secret() {
     return this.deleteForm.get("verification")?.value?.secret;
