@@ -10,6 +10,7 @@ import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
+import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,
@@ -17,6 +18,7 @@ import {
   SyncSendNotification,
 } from "../../../models/response/notification.response";
 import { ProfileResponse } from "../../../models/response/profile.response";
+import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { MessagingService } from "../../../platform/abstractions/messaging.service";
@@ -59,6 +61,7 @@ export class SyncService implements SyncServiceAbstraction {
     private folderApiService: FolderApiServiceAbstraction,
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
+    private configService: ConfigServiceAbstraction,
     private logoutCallback: (expired: boolean) => Promise<void>
   ) {}
 
@@ -393,6 +396,20 @@ export class SyncService implements SyncServiceAbstraction {
         organizations[o.id].isProviderUser = true;
       }
     });
+
+    // If Flexible Collections is enabled, treat Managers as Users and ignore deprecated permissions
+    if (await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollections)) {
+      Object.values(organizations).forEach((o) => {
+        if (o.type === OrganizationUserType.Manager) {
+          o.type = OrganizationUserType.User;
+        }
+
+        if (o.permissions != null) {
+          o.permissions.editAssignedCollections = false;
+          o.permissions.deleteAssignedCollections = false;
+        }
+      });
+    }
 
     await this.organizationService.replace(organizations);
   }

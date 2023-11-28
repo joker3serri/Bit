@@ -536,6 +536,7 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
+      this.configService,
       logoutCallback
     );
     this.eventUploadService = new EventUploadService(
