@@ -6,6 +6,7 @@ import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-a
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Verification } from "@bitwarden/common/types/verification";
 
 import { DialogService } from "../../../../libs/components/src/dialog";
@@ -24,7 +25,8 @@ export class DeleteAccountComponent {
     private platformUtilsService: PlatformUtilsService,
     private formBuilder: FormBuilder,
     private accountApiService: AccountApiService,
-    private logService: LogService
+    private logService: LogService,
+    private validationService: ValidationService
   ) {}
 
   static open(dialogService: DialogService): DialogRef<DeleteAccountComponent> {
@@ -45,6 +47,7 @@ export class DeleteAccountComponent {
         this.i18nService.t("accountDeletedDesc")
       );
     } catch (e) {
+      this.validationService.showError(e);
       this.logService.error(e);
     }
   };
