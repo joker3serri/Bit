@@ -179,7 +179,8 @@ export class CryptoService implements CryptoServiceAbstraction {
   /**
    * Derive a master key from a password and email.
    *
-   * Note: Does not validate the kdf config to ensure it satisfies the minimum requirements for the given kdf type.
+   * @remarks
+   * Does not validate the kdf config to ensure it satisfies the minimum requirements for the given kdf type.
    */
   async makeMasterKey(
     password: string,
