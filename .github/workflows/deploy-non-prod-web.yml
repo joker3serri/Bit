@@ -226,10 +226,9 @@ jobs:
         run: |
           az storage blob sync \
             --source "./build" \
-            --destination '$web' \
+            --container '$web' \
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
-            --delete-destination \
-            --no-progress
+            --delete-destination=true
 
   notify:
     name: Notify Slack with result
