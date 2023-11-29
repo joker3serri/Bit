@@ -8,8 +8,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-
-import { DialogService } from "../../../../libs/components/src/dialog";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-delete-account",
