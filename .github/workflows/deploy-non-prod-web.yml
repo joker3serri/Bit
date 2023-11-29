@@ -222,21 +222,13 @@ jobs:
         working-directory: apps/web
         run: unzip ${{ env._ENVIRONMENT_ARTIFACT }}
 
-      - name: Empty container in Storage Account
+      - name: Sync blobs recursively to a Storage Account Blob container
         run: |
-          az storage blob delete-batch \
-            --source '$web' \
-            --pattern '*' \
-            --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
-
-      - name: Deploy to Azure Storage Account
-        working-directory: apps/web
-        run: |
-          az storage blob upload-batch \
+          az storage blob sync \
             --source "./build" \
             --destination '$web' \
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
-            --overwrite \
+            --delete-destination \
             --no-progress
 
   notify:
