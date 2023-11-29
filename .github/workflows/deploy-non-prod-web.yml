@@ -225,7 +225,7 @@ jobs:
       - name: Sync blobs recursively to a Storage Account Blob container
         run: |
           az storage blob sync \
-            --source "./build" \
+            --source "./build/" \
             --container '$web' \
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
             --delete-destination=true
