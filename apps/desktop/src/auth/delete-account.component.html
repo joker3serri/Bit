@@ -2,18 +2,18 @@
   <bit-dialog>
     <div bitDialogTitle>{{ "deleteAccount" | i18n }}</div>
     <div bitDialogContent class="box">
-      <p class="modal-text">{{ "deleteAccountDesc" | i18n }}</p>
+      <p>{{ "deleteAccountDesc" | i18n }}</p>
       <bit-callout type="warning" title="{{ 'warning' | i18n }}">
         {{ "deleteAccountWarning" | i18n }}
       </bit-callout>
-      <div class="box-content">
+      <div>
         <app-user-verification
           ngDefaultControl
           formControlName="verification"
           name="verification"
         ></app-user-verification>
       </div>
-      <div id="confirmIdentityHelp" class="box-footer">
+      <div id="confirmIdentityHelp">
         <p>{{ "confirmIdentity" | i18n }}</p>
       </div>
     </div>
@@ -21,13 +21,7 @@
       <button bitButton bitFormButton type="submit" buttonType="danger" [disabled]="!secret">
         {{ "deleteAccount" | i18n }}
       </button>
-      <button
-        bitButton
-        type="button"
-        buttonType="secondary"
-        [disabled]="form.loading"
-        bitDialogClose
-      >
+      <button bitButton type="button" buttonType="secondary" bitFormButton bitDialogClose>
         {{ "cancel" | i18n }}
       </button>
     </div>
