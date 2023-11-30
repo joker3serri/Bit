@@ -2,7 +2,7 @@ import {
   GlobalState,
   GlobalStateProvider,
   KeyDefinition,
-  UserState,
+  ActiveUserState,
   UserStateProvider,
 } from "../src/platform/state";
 
@@ -22,16 +22,16 @@ export class FakeGlobalStateProvider implements GlobalStateProvider {
 
   getFake<T>(keyDefinition: KeyDefinition<T>): FakeGlobalState<T> {
     const key = Array.from(this.states.keys()).find(
-      (k) => k.stateDefinition === keyDefinition.stateDefinition && k.key === keyDefinition.key,
+      (k) => k.stateDefinition === keyDefinition.stateDefinition && k.key === keyDefinition.key
     );
     return this.get(key) as FakeGlobalState<T>;
   }
 }
 
 export class FakeUserStateProvider implements UserStateProvider {
-  states: Map<KeyDefinition<unknown>, UserState<unknown>> = new Map();
-  get<T>(keyDefinition: KeyDefinition<T>): UserState<T> {
-    let result = this.states.get(keyDefinition) as UserState<T>;
+  states: Map<KeyDefinition<unknown>, ActiveUserState<unknown>> = new Map();
+  get<T>(keyDefinition: KeyDefinition<T>): ActiveUserState<T> {
+    let result = this.states.get(keyDefinition) as ActiveUserState<T>;
 
     if (result == null) {
       result = new FakeUserState<T>();
@@ -42,7 +42,7 @@ export class FakeUserStateProvider implements UserStateProvider {
 
   getFake<T>(keyDefinition: KeyDefinition<T>): FakeUserState<T> {
     const key = Array.from(this.states.keys()).find(
-      (k) => k.stateDefinition === keyDefinition.stateDefinition && k.key === keyDefinition.key,
+      (k) => k.stateDefinition === keyDefinition.stateDefinition && k.key === keyDefinition.key
     );
     return this.get(key) as FakeUserState<T>;
   }

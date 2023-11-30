@@ -14,7 +14,7 @@ import { UserId } from "../../../types/guid";
 import { KeyDefinition } from "../key-definition";
 import { StateDefinition } from "../state-definition";
 
-import { DefaultUserState } from "./default-user-state";
+import { DefaultActiveUserState } from "./default-active-user-state";
 
 class TestState {
   date: Date;
@@ -41,18 +41,18 @@ describe("DefaultUserState", () => {
   const accountService = mock<AccountService>();
   let diskStorageService: FakeStorageService;
   let activeAccountSubject: BehaviorSubject<{ id: UserId } & AccountInfo>;
-  let userState: DefaultUserState<TestState>;
+  let userState: DefaultActiveUserState<TestState>;
 
   beforeEach(() => {
     activeAccountSubject = new BehaviorSubject<{ id: UserId } & AccountInfo>(undefined);
     accountService.activeAccount$ = activeAccountSubject;
 
     diskStorageService = new FakeStorageService();
-    userState = new DefaultUserState(
+    userState = new DefaultActiveUserState(
       testKeyDefinition,
       accountService,
       null, // Not testing anything with encrypt service
-      diskStorageService,
+      diskStorageService
     );
   });
 
@@ -111,17 +111,17 @@ describe("DefaultUserState", () => {
     expect(diskStorageService.mock.get).toHaveBeenNthCalledWith(
       1,
       "user_00000000-0000-1000-a000-000000000001_fake_fake",
-      any(),
+      any()
     );
     expect(diskStorageService.mock.get).toHaveBeenNthCalledWith(
       2,
       "user_00000000-0000-1000-a000-000000000001_fake_fake",
-      any(),
+      any()
     );
     expect(diskStorageService.mock.get).toHaveBeenNthCalledWith(
       3,
       "user_00000000-0000-1000-a000-000000000002_fake_fake",
-      any(),
+      any()
     );
 
     // Should only have saved data for the first user
@@ -129,7 +129,7 @@ describe("DefaultUserState", () => {
     expect(diskStorageService.mock.save).toHaveBeenNthCalledWith(
       1,
       "user_00000000-0000-1000-a000-000000000001_fake_fake",
-      any(),
+      any()
     );
   });
 
@@ -275,7 +275,7 @@ describe("DefaultUserState", () => {
         },
         {
           combineLatestWith: of(combinedDependencies),
-        },
+        }
       );
       await awaitAsync();
 
@@ -295,7 +295,7 @@ describe("DefaultUserState", () => {
         },
         {
           shouldUpdate: () => false,
-        },
+        }
       );
 
       await awaitAsync();

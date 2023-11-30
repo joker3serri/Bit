@@ -5,12 +5,12 @@ import {
   AbstractStorageService,
   ObservableStorageService,
 } from "../../abstractions/storage.service";
+import { UserState } from "../active-user-state";
 import { KeyDefinition } from "../key-definition";
 import { StorageLocation } from "../state-definition";
-import { UserState } from "../user-state";
 import { UserStateProvider } from "../user-state.provider";
 
-import { DefaultUserState } from "./default-user-state";
+import { DefaultActiveUserState } from "./default-active-user-state";
 
 export class DefaultUserStateProvider implements UserStateProvider {
   private userStateCache: Record<string, UserState<unknown>> = {};
@@ -19,7 +19,7 @@ export class DefaultUserStateProvider implements UserStateProvider {
     protected accountService: AccountService,
     protected encryptService: EncryptService,
     protected memoryStorage: AbstractMemoryStorageService & ObservableStorageService,
-    protected diskStorage: AbstractStorageService & ObservableStorageService,
+    protected diskStorage: AbstractStorageService & ObservableStorageService
   ) {}
 
   get<T>(keyDefinition: KeyDefinition<T>): UserState<T> {
@@ -28,7 +28,7 @@ export class DefaultUserStateProvider implements UserStateProvider {
     if (existingUserState != null) {
       // I have to cast out of the unknown generic but this should be safe if rules
       // around domain token are made
-      return existingUserState as DefaultUserState<T>;
+      return existingUserState as DefaultActiveUserState<T>;
     }
 
     const newUserState = this.buildUserState(keyDefinition);
@@ -37,11 +37,11 @@ export class DefaultUserStateProvider implements UserStateProvider {
   }
 
   protected buildUserState<T>(keyDefinition: KeyDefinition<T>): UserState<T> {
-    return new DefaultUserState<T>(
+    return new DefaultActiveUserState<T>(
       keyDefinition,
       this.accountService,
       this.encryptService,
-      this.getLocation(keyDefinition.stateDefinition.storageLocation),
+      this.getLocation(keyDefinition.stateDefinition.storageLocation)
     );
   }
 
