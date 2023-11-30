@@ -4,7 +4,11 @@
  * Enforces constraints to ensure min > default > max.
  */
 export class RangeWithDefault {
-  constructor(readonly min: number, readonly max: number, readonly defaultValue: number) {
+  constructor(
+    readonly min: number,
+    readonly max: number,
+    readonly defaultValue: number,
+  ) {
     if (min > max) {
       throw new Error(`${min} is greater than ${max}.`);
     }
