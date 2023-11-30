@@ -110,7 +110,6 @@ export class LockComponent extends BaseLockComponent {
         }
       });
     });
-
     this.messagingService.send("getWindowIsFocused");
   }
 

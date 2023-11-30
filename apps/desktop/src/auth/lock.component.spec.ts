@@ -1,7 +1,6 @@
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
@@ -24,9 +23,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { DialogService } from "@bitwarden/components";
 
-// eslint-disable-next-line no-restricted-imports
-
-
 import { ElectronStateService } from "../platform/services/electron-state.service.abstraction";
 
 import { LockComponent } from "./lock.component";
@@ -44,23 +40,29 @@ import { LockComponent } from "./lock.component";
 describe("LockComponent", () => {
   let component: LockComponent;
   let fixture: ComponentFixture<LockComponent>;
-  let stateServiceSubstitute: SubstituteOf<ElectronStateService>;
+  let stateServiceMock: MockProxy<ElectronStateService>;
   let messagingServiceMock: MockProxy<MessagingService>;
   let broadcasterServiceMock: MockProxy<BroadcasterService>;
   let platformUtilsServiceMock: MockProxy<PlatformUtilsService>;
+  let activatedRouteMock: MockProxy<ActivatedRoute>;
 
   beforeEach(() => {
-    stateServiceSubstitute = Substitute.for<ElectronStateService>();
+    stateServiceMock = mock<ElectronStateService>();
+    stateServiceMock.activeAccount$ = of(null);
+
     messagingServiceMock = mock<MessagingService>();
     broadcasterServiceMock = mock<BroadcasterService>();
     platformUtilsServiceMock = mock<PlatformUtilsService>();
+
+    activatedRouteMock = mock<ActivatedRoute>();
+    activatedRouteMock.queryParams = mock<ActivatedRoute["queryParams"]>();
 
     TestBed.configureTestingModule({
       declarations: [LockComponent, I18nPipe],
       providers: [
         {
           provide: I18nService,
-          useClass: Substitute.for<I18nService>(),
+          useValue: mock<I18nService>(),
         },
         {
           provide: PlatformUtilsService,
@@ -72,31 +74,31 @@ describe("LockComponent", () => {
         },
         {
           provide: CryptoService,
-          useClass: Substitute.for<CryptoService>(),
+          useValue: mock<CryptoService>(),
         },
         {
           provide: VaultTimeoutService,
-          useClass: Substitute.for<VaultTimeoutService>(),
+          useValue: mock<VaultTimeoutService>(),
         },
         {
           provide: VaultTimeoutSettingsService,
-          useClass: Substitute.for<VaultTimeoutSettingsService>(),
+          useValue: mock<VaultTimeoutSettingsService>(),
         },
         {
           provide: EnvironmentService,
-          useClass: Substitute.for<EnvironmentService>(),
+          useValue: mock<EnvironmentService>(),
         },
         {
           provide: ElectronStateService,
-          useValue: stateServiceSubstitute,
+          useValue: stateServiceMock,
         },
         {
           provide: ApiService,
-          useClass: Substitute.for<ApiService>(),
+          useValue: mock<ApiService>(),
         },
         {
           provide: ActivatedRoute,
-          useClass: Substitute.for<ActivatedRoute>(),
+          useValue: activatedRouteMock,
         },
         {
           provide: BroadcasterService,
@@ -104,31 +106,31 @@ describe("LockComponent", () => {
         },
         {
           provide: PolicyApiServiceAbstraction,
-          useClass: Substitute.for<PolicyApiServiceAbstraction>(),
+          useValue: mock<PolicyApiServiceAbstraction>(),
         },
         {
           provide: InternalPolicyService,
-          useClass: Substitute.for<InternalPolicyService>(),
+          useValue: mock<InternalPolicyService>(),
         },
         {
           provide: PasswordStrengthServiceAbstraction,
-          useClass: Substitute.for<PasswordStrengthServiceAbstraction>(),
+          useValue: mock<PasswordStrengthServiceAbstraction>(),
         },
         {
           provide: LogService,
-          useClass: Substitute.for<LogService>(),
+          useValue: mock<LogService>(),
         },
         {
           provide: DialogService,
-          useClass: Substitute.for<DialogService>(),
+          useValue: mock<DialogService>(),
         },
         {
           provide: DeviceTrustCryptoServiceAbstraction,
-          useClass: Substitute.for<DeviceTrustCryptoServiceAbstraction>(),
+          useValue: mock<DeviceTrustCryptoServiceAbstraction>(),
         },
         {
           provide: UserVerificationService,
-          useClass: Substitute.for<UserVerificationService>(),
+          useValue: mock<UserVerificationService>(),
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -150,14 +152,14 @@ describe("LockComponent", () => {
     });
 
     it('should set "autoPromptBiometric" to true if "stateService.getDisableAutoBiometricsPrompt()" resolves to false', async () => {
-      stateServiceSubstitute.getDisableAutoBiometricsPrompt().resolves(false);
+      stateServiceMock.getDisableAutoBiometricsPrompt.mockResolvedValue(false);
 
       await component.ngOnInit();
       expect(component["autoPromptBiometric"]).toBe(true);
     });
 
     it('should set "autoPromptBiometric" to false if "stateService.getDisableAutoBiometricsPrompt()" resolves to true', async () => {
-      stateServiceSubstitute.getDisableAutoBiometricsPrompt().resolves(true);
+      stateServiceMock.getDisableAutoBiometricsPrompt.mockResolvedValue(true);
 
       await component.ngOnInit();
       expect(component["autoPromptBiometric"]).toBe(false);
@@ -191,10 +193,7 @@ describe("LockComponent", () => {
     });
 
     it("should call delayedAskForBiometric when queryParams change", async () => {
-      component["route"].queryParams.pipe = jest
-        .fn()
-        .mockReturnValue(of({ promptBiometric: true }));
-
+      activatedRouteMock.queryParams = of({ promptBiometric: true });
       component["delayedAskForBiometric"] = jest.fn();
       await component.ngOnInit();
 
@@ -379,10 +378,10 @@ describe("LockComponent", () => {
 
   describe("canUseBiometric", () => {
     it("should call getUserId() on stateService", async () => {
-      stateServiceSubstitute.getUserId().resolves("userId");
+      stateServiceMock.getUserId.mockResolvedValue("userId");
       await component["canUseBiometric"]();
 
-      expect(ipc.platform.biometric.enabled.mock.calls[1][0]).toBe("userId");
+      expect(ipc.platform.biometric.enabled).toHaveBeenCalledWith("userId");
     });
   });
 
