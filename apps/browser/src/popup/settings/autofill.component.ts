@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
-import { UriMatchType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { UriMatchType } from "@bitwarden/common/vault/enums";
 import { DialogService } from "@bitwarden/components";
 
 import { AutofillOverlayVisibility } from "../../autofill/utils/autofill-overlay.enum";
@@ -37,7 +37,7 @@ export class AutofillComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private configService: ConfigServiceAbstraction,
     private settingsService: SettingsService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
   ) {
     this.autoFillOverlayVisibilityOptions = [
       {
@@ -75,7 +75,7 @@ export class AutofillComponent implements OnInit {
     this.defaultBrowserAutofillDisabled = await this.browserAutofillSettingCurrentlyOverridden();
 
     this.isAutoFillOverlayFlagEnabled = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.AutofillOverlay
+      FeatureFlag.AutofillOverlay,
     );
     this.autoFillOverlayVisibility =
       (await this.settingsService.getAutoFillOverlayVisibility()) || AutofillOverlayVisibility.Off;
