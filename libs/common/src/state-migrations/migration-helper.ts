@@ -35,6 +35,13 @@ export class MigrationHelper {
     );
   }
 
+  /**
+   * Builds a user storage key appropriate for the current version.
+   *
+   * @param userId userId to use in the key
+   * @param keyDefinition state and key to use in the key
+   * @returns
+   */
   getUserKey(
     userId: string,
     keyDefinition: {
@@ -49,6 +56,12 @@ export class MigrationHelper {
     }
   }
 
+  /**
+   * Builds a global storage key appropriate for the current version.
+   *
+   * @param keyDefinition state and key to use in the key
+   * @returns
+   */
   getGlobalKey(keyDefinition: { stateDefinition: { name: string }; key: string }): string {
     if (this.currentVersion < 10) {
       return globalKeyBuilderPre10(keyDefinition);
@@ -59,9 +72,7 @@ export class MigrationHelper {
 }
 
 /**
- * Represents the user key builder used by state providers.
- *
- * When these key builders are updated, rename this function to `userKeyBuilderXToY` where `X` is the version number it
+ * When this is updated, rename this function to `userKeyBuilderXToY` where `X` is the version number it
  * became relevant, and `Y` prior to the version it was updated.
  *
  * Be sure to update the map in `MigrationHelper` to point to the appropriate function for the current version.
@@ -84,9 +95,7 @@ export function userKeyBuilderPre10(
 }
 
 /**
- * Represents the global key builder used by state providers.
- *
- * When these key builders are updated, rename this function to `globalKeyBuilderXToY` where `X` is the version number
+ * When this is updated, rename this function to `globalKeyBuilderXToY` where `X` is the version number
  * it became relevant, and `Y` prior to the version it was updated.
  *
  * Be sure to update the map in `MigrationHelper` to point to the appropriate function for the current version.
