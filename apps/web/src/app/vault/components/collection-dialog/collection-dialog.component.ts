@@ -203,15 +203,14 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);
             const currentOrgUserId = users.data.find((u) => u.userId === this.organization?.userId)
               ?.id;
-            const initialSelection: AccessItemValue[] =
-              currentOrgUserId !== undefined
+            const initialSelection = !flexibleCollections
+              ? mapToAccessSelections(collectionDetails)
+              : currentOrgUserId !== undefined
                 ? [
                     {
                       id: currentOrgUserId,
                       type: AccessItemType.Member,
-                      permission: flexibleCollections
-                        ? CollectionPermission.Manage
-                        : CollectionPermission.Edit,
+                      permission: CollectionPermission.Manage,
                     },
                   ]
                 : [];
