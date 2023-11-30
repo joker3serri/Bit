@@ -58,10 +58,44 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 
     it("should handle missing authenticatedAccounts", async () => {
       storage.get.mockImplementation((key) =>
-        key === "authenticatedAccounts" ? undefined : (exampleJSON as any)[key],
+        key === "authenticatedAccounts" ? undefined : (exampleJSON as any)[key]
       );
       const accounts = await sut.getAccounts();
       expect(accounts).toEqual([]);
+    });
+  });
+
+  describe("getUserKey", () => {
+    it("should return the correct key", () => {
+      sut.currentVersion = 10;
+      const key = sut.getUserKey("userId", {
+        stateDefinition: { name: "serviceName" },
+        key: "key",
+      });
+      expect(key).toEqual("user_userId_serviceName_key");
+    });
+
+    it("should throw if the current version is less than 10", () => {
+      expect(() =>
+        sut.getUserKey("userId", { stateDefinition: { name: "serviceName" }, key: "key" })
+      ).toThrowError("No key builder should be used for versions prior to 10.");
+    });
+  });
+
+  describe("getGlobalKey", () => {
+    it("should return the correct key", () => {
+      sut.currentVersion = 10;
+      const key = sut.getGlobalKey({
+        stateDefinition: { name: "serviceName" },
+        key: "key",
+      });
+      expect(key).toEqual("global_serviceName_key");
+    });
+
+    it("should throw if the current version is less than 10", () => {
+      expect(() =>
+        sut.getGlobalKey({ stateDefinition: { name: "serviceName" }, key: "key" })
+      ).toThrowError("No key builder should be used for versions prior to 10.");
     });
   });
 });

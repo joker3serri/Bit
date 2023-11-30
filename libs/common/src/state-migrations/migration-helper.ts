@@ -7,7 +7,7 @@ export class MigrationHelper {
   constructor(
     public currentVersion: number,
     private storageService: AbstractStorageService,
-    public logService: LogService,
+    public logService: LogService
   ) {}
 
   get<T>(key: string): Promise<T> {
@@ -31,7 +31,78 @@ export class MigrationHelper {
       userIds.map(async (userId) => ({
         userId,
         account: await this.get<ExpectedAccountType>(userId),
-      })),
+      }))
     );
   }
+
+  getUserKey(
+    userId: string,
+    keyDefinition: {
+      stateDefinition: { name: string };
+      key: string;
+    }
+  ): string {
+    if (this.currentVersion < 10) {
+      return userKeyBuilderPre10(userId, keyDefinition);
+    } else {
+      return userKeyBuilder(userId, keyDefinition);
+    }
+  }
+
+  getGlobalKey(keyDefinition: { stateDefinition: { name: string }; key: string }): string {
+    if (this.currentVersion < 10) {
+      return globalKeyBuilderPre10(keyDefinition);
+    } else {
+      return globalKeyBuilder(keyDefinition);
+    }
+  }
+}
+
+/**
+ * Represents the user key builder used by state providers.
+ *
+ * When these key builders are updated, rename this function to `userKeyBuilderXToY` where `X` is the version number it
+ * became relevant, and `Y` prior to the version it was updated.
+ *
+ * Be sure to update the map in `MigrationHelper` to point to the appropriate function for the current version.
+ * @param userId The userId of the user you want the key to be for.
+ * @param keyDefinition the key definition of which data the key should point to.
+ * @returns
+ */
+export function userKeyBuilder(
+  userId: string,
+  keyDefinition: { stateDefinition: { name: string }; key: string }
+): string {
+  return `user_${userId}_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
+}
+
+export function userKeyBuilderPre10(
+  userId: string,
+  keyDefinition: { stateDefinition: { name: string }; key: string }
+): string {
+  throw Error("No key builder should be used for versions prior to 10.");
+}
+
+/**
+ * Represents the global key builder used by state providers.
+ *
+ * When these key builders are updated, rename this function to `globalKeyBuilderXToY` where `X` is the version number
+ * it became relevant, and `Y` prior to the version it was updated.
+ *
+ * Be sure to update the map in `MigrationHelper` to point to the appropriate function for the current version.
+ * @param keyDefinition the key definition of which data the key should point to.
+ * @returns
+ */
+export function globalKeyBuilder(keyDefinition: {
+  stateDefinition: { name: string };
+  key: string;
+}): string {
+  return `global_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
+}
+
+export function globalKeyBuilderPre10(keyDefinition: {
+  stateDefinition: { name: string };
+  key: string;
+}): string {
+  throw Error("No key builder should be used for versions prior to 10.");
 }
