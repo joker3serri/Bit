@@ -39,7 +39,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
     private userId: UserId,
     private keyDefinition: KeyDefinition<T>,
     private encryptService: EncryptService,
-    private chosenLocation: AbstractStorageService & ObservableStorageService
+    private chosenLocation: AbstractStorageService & ObservableStorageService,
   ) {
     this.storageKey = userKeyBuilder(this.userId, this.keyDefinition);
 
@@ -52,10 +52,10 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
         return await getStoredValue(
           this.storageKey,
           this.chosenLocation,
-          this.keyDefinition.deserializer
+          this.keyDefinition.deserializer,
         );
       }),
-      shareReplay({ bufferSize: 1, refCount: false })
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.state$ = defer(() => {
@@ -72,17 +72,17 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
           complete: () => {
             storageUpdateSubscription.unsubscribe();
           },
-        })
+        }),
       );
     }).pipe(
       shareReplay({ refCount: false, bufferSize: 1 }),
-      filter<T>((i) => i != FAKE_DEFAULT)
+      filter<T>((i) => i != FAKE_DEFAULT),
     );
   }
 
   async update<TCombine>(
     configureState: (state: T, dependency: TCombine) => T,
-    options: StateUpdateOptions<T, TCombine> = {}
+    options: StateUpdateOptions<T, TCombine> = {},
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
     const currentState = await this.getGuaranteedState();
@@ -113,7 +113,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
     return await getStoredValue(
       this.storageKey,
       this.chosenLocation,
-      this.keyDefinition.deserializer
+      this.keyDefinition.deserializer,
     );
   }
 }

@@ -48,7 +48,7 @@ describe("DefaultSingleUserState", () => {
       userId,
       testKeyDefinition,
       null, // Not testing anything with encrypt service
-      diskStorageService
+      diskStorageService,
     );
   });
 
@@ -86,7 +86,7 @@ describe("DefaultSingleUserState", () => {
       expect(diskStorageService.mock.get).toHaveBeenCalledTimes(1);
       expect(diskStorageService.mock.get).toHaveBeenCalledWith(
         `user_${userId}_fake_fake`,
-        undefined
+        undefined,
       );
       expect(state).toBeTruthy();
     });
@@ -131,7 +131,7 @@ describe("DefaultSingleUserState", () => {
         },
         {
           combineLatestWith: of(combinedDependencies),
-        }
+        },
       );
 
       await awaitAsync();
@@ -151,7 +151,7 @@ describe("DefaultSingleUserState", () => {
         },
         {
           shouldUpdate: () => false,
-        }
+        },
       );
 
       expect(diskStorageService.mock.save).not.toHaveBeenCalled();
