@@ -7,7 +7,7 @@ export class MigrationHelper {
   constructor(
     public currentVersion: number,
     private storageService: AbstractStorageService,
-    public logService: LogService
+    public logService: LogService,
   ) {}
 
   get<T>(key: string): Promise<T> {
@@ -31,7 +31,7 @@ export class MigrationHelper {
       userIds.map(async (userId) => ({
         userId,
         account: await this.get<ExpectedAccountType>(userId),
-      }))
+      })),
     );
   }
 
@@ -47,7 +47,7 @@ export class MigrationHelper {
     keyDefinition: {
       stateDefinition: { name: string };
       key: string;
-    }
+    },
   ): string {
     if (this.currentVersion < 10) {
       return userKeyBuilderPre10(userId, keyDefinition);
@@ -82,14 +82,14 @@ export class MigrationHelper {
  */
 export function userKeyBuilder(
   userId: string,
-  keyDefinition: { stateDefinition: { name: string }; key: string }
+  keyDefinition: { stateDefinition: { name: string }; key: string },
 ): string {
   return `user_${userId}_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
 }
 
 export function userKeyBuilderPre10(
   userId: string,
-  keyDefinition: { stateDefinition: { name: string }; key: string }
+  keyDefinition: { stateDefinition: { name: string }; key: string },
 ): string {
   throw Error("No key builder should be used for versions prior to 10.");
 }
