@@ -5,9 +5,7 @@ import { FormBuilder } from "@angular/forms";
 import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
 import { Verification } from "@bitwarden/common/auth/types/verification";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { DialogService } from "@bitwarden/components";
 
 @Component({
@@ -23,9 +21,7 @@ export class DeleteAccountComponent {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private formBuilder: FormBuilder,
-    private accountApiService: AccountApiService,
-    private logService: LogService,
-    private validationService: ValidationService
+    private accountApiService: AccountApiService
   ) {}
 
   static open(dialogService: DialogService): DialogRef<DeleteAccountComponent> {
@@ -37,17 +33,12 @@ export class DeleteAccountComponent {
   }
 
   submit = async () => {
-    try {
-      const verification = this.deleteForm.get("verification").value;
-      await this.accountApiService.deleteAccount(verification);
-      this.platformUtilsService.showToast(
-        "success",
-        this.i18nService.t("accountDeleted"),
-        this.i18nService.t("accountDeletedDesc")
-      );
-    } catch (e) {
-      this.validationService.showError(e);
-      this.logService.error(e);
-    }
+    const verification = this.deleteForm.get("verification").value;
+    await this.accountApiService.deleteAccount(verification);
+    this.platformUtilsService.showToast(
+      "success",
+      this.i18nService.t("accountDeleted"),
+      this.i18nService.t("accountDeletedDesc")
+    );
   };
 }
