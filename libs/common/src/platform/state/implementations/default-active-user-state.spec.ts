@@ -37,7 +37,7 @@ const testKeyDefinition = new KeyDefinition<TestState>(testStateDefinition, "fak
   deserializer: TestState.fromJSON,
 });
 
-describe("DefaultUserState", () => {
+describe("DefaultActiveUserState", () => {
   const accountService = mock<AccountService>();
   let diskStorageService: FakeStorageService;
   let activeAccountSubject: BehaviorSubject<{ id: UserId } & AccountInfo>;

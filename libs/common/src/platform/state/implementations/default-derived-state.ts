@@ -1,8 +1,8 @@
 import { Observable, switchMap } from "rxjs";
 
 import { EncryptService } from "../../abstractions/encrypt.service";
-import { Converter, DeriveContext, UserState } from "../active-user-state";
 import { DerivedUserState } from "../derived-user-state";
+import { Converter, DeriveContext, UserState } from "../user-state";
 
 export class DefaultDerivedUserState<TFrom, TTo> implements DerivedUserState<TTo> {
   state$: Observable<TTo>;
