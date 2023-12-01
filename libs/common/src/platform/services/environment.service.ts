@@ -52,6 +52,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   constructor(private stateService: StateService) {
     this.stateService.activeAccount$
       .pipe(
+        // Use == here to not trigger on undefined -> null transition
         distinctUntilChanged((oldUserId: string, newUserId: string) => oldUserId == newUserId),
         concatMap(async () => {
           if (!this.initialized) {
