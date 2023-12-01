@@ -207,6 +207,16 @@ jobs:
     env:
       _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
     steps:
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@d42cde7132fcec920de534fffc3be83794335c00 # v2.0.5
+        id: deployment
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          initial-status: 'in_progress'
+          environment-url: ${{ env._ENVIRONMENT_URL }}
+          environment: ${{ env._ENVIRONMENT_NAME }}
+          description: 'Deployment from branch ${{ github.ref_name }}'
+
       - name: Login to Azure
         uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
         with:
@@ -239,6 +249,24 @@ jobs:
             --container '$web' \
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
             --delete-destination=true
+
+      - name: Update deployment status to Success
+        if: ${{ success() }}
+        uses: chrnorm/deployment-status@2afb7d27101260f4a764219439564d954d10b5b0 # v2.0.1
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: ${{ env._ENVIRONMENT_URL }}
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status to Failure
+        if: ${{ failure() }}
+        uses: chrnorm/deployment-status@2afb7d27101260f4a764219439564d954d10b5b0 # v2.0.1
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: ${{ env._ENVIRONMENT_URL }}
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
   notify:
     name: Notify Slack with result
