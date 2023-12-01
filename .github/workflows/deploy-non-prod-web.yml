@@ -281,6 +281,6 @@ jobs:
           project: Web
           environment: ${{ inputs.environment }} Cloud
           tag: ${{ github.event.inputs.tag }}
-          slack-channel: team-eng-qa-devops
+          slack-channel: devops-alerts-test
           failure: ${{ needs.azure-deploy.result == 'failure' }}
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
