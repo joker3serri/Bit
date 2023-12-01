@@ -27,13 +27,14 @@ import { ElectronStateService } from "../platform/services/electron-state.servic
 
 import { LockComponent } from "./lock.component";
 
-//  ipc mock global
+// ipc mock global
+const isWindowVisibleMock = jest.fn();
 (global as any).ipc = {
   platform: {
     biometric: {
       enabled: jest.fn(),
     },
-    isWindowVisible: jest.fn(),
+    isWindowVisible: isWindowVisibleMock,
   },
 };
 
@@ -345,7 +346,7 @@ describe("LockComponent", () => {
     }));
 
     it("should call unlockBiometric() if biometricAsked is false and window is visible", fakeAsync(async () => {
-      ipc.platform.isWindowVisible.mockResolvedValue(true);
+      isWindowVisibleMock.mockResolvedValue(true);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = false;
       component["delayedAskForBiometric"](5000);
@@ -355,7 +356,7 @@ describe("LockComponent", () => {
     }));
 
     it("should not call unlockBiometric() if biometricAsked is false and window is not visible", fakeAsync(async () => {
-      ipc.platform.isWindowVisible.mockResolvedValue(false);
+      isWindowVisibleMock.mockResolvedValue(false);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = false;
       component["delayedAskForBiometric"](5000);
@@ -365,7 +366,7 @@ describe("LockComponent", () => {
     }));
 
     it("should not call unlockBiometric() if biometricAsked is true", fakeAsync(async () => {
-      ipc.platform.isWindowVisible.mockResolvedValue(true);
+      isWindowVisibleMock.mockResolvedValue(true);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = true;
 
