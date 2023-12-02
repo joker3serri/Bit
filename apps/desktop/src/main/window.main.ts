@@ -137,6 +137,7 @@ export class WindowMain {
     );
     this.enableAlwaysOnTop = await this.stateService.getEnableAlwaysOnTop();
 
+    const hidden = this.session === undefined && isMac() && app.isHidden();
     this.session = session.fromPartition("persist:bitwarden", { cache: false });
 
     // Create the browser window.
@@ -172,7 +173,9 @@ export class WindowMain {
     }
 
     // Show it later since it might need to be maximized.
-    this.win.show();
+    if (!hidden) {
+      this.win.show();
+    }
 
     // and load the index.html of the app.
     this.win.loadURL(
