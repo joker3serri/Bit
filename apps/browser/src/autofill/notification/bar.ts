@@ -2,10 +2,7 @@ import type { Jsonify } from "type-fest";
 
 import type { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import {
-  FilelessImportPortNames,
-  FilelessImportType,
-} from "../../tools/enums/fileless-import.enums";
+import { FilelessImportPort, FilelessImportType } from "../../tools/enums/fileless-import.enums";
 
 require("./bar.scss");
 
@@ -231,7 +228,7 @@ function handleTypeUnlock() {
  */
 function handleTypeFilelessImport() {
   const importType = getQueryVariable("importType");
-  const port = chrome.runtime.connect({ name: FilelessImportPortNames.NotificationBar });
+  const port = chrome.runtime.connect({ name: FilelessImportPort.NotificationBar });
   setContent(document.getElementById("template-fileless-import") as HTMLTemplateElement);
 
   const startFilelessImportButton = document.getElementById("start-fileless-import");
