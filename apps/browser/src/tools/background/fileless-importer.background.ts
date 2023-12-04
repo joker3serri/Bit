@@ -25,7 +25,6 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
   private importNotificationsPort: chrome.runtime.Port;
   private lpImporterPort: chrome.runtime.Port;
   private readonly importNotificationsPortMessageHandlers: ImportNotificationMessageHandlers = {
-    startFilelessImport: ({ message }) => this.startFilelessImport(message.importType),
     cancelFilelessImport: ({ message, port }) =>
       this.cancelFilelessImport(message.importType, port.sender),
   };
@@ -40,17 +39,6 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     private policyService: PolicyService,
     private notificationBackground: NotificationBackground,
   ) {}
-
-  /**
-   * Starts an import of the export data pulled from the tab.
-   *
-   * @param importType - The type of import to start. Identifies the used content script.
-   */
-  private startFilelessImport(importType: string) {
-    if (importType === FilelessImportType.LP) {
-      // Start import
-    }
-  }
 
   /**
    * Cancels an import of the export data pulled from the tab. This closes any
