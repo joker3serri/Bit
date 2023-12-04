@@ -3,7 +3,6 @@ import {
   GlobalStateProvider,
   KeyDefinition,
   ActiveUserState,
-  UserStateProvider,
   SingleUserState,
 } from "../src/platform/state";
 import { UserId } from "../src/types/guid";
@@ -30,38 +29,38 @@ export class FakeGlobalStateProvider implements GlobalStateProvider {
   }
 }
 
-export class FakeUserStateProvider implements UserStateProvider {
-  activeStates: Map<string, ActiveUserState<unknown>> = new Map();
-  singleStates: Map<string, SingleUserState<unknown>> = new Map();
+export class FakeSingleUserStateProvider {
+  states: Map<string, SingleUserState<unknown>> = new Map();
+  get<T>(userId: UserId, keyDefinition: KeyDefinition<T>): SingleUserState<T> {
+    let result = this.states.get(keyDefinition.buildCacheKey("user", userId)) as SingleUserState<T>;
+
+    if (result == null) {
+      result = new FakeSingleUserState<T>(userId);
+      this.states.set(keyDefinition.buildCacheKey("user", userId), result);
+    }
+    return result;
+  }
+
+  getFake<T>(userId: UserId, keyDefinition: KeyDefinition<T>): FakeSingleUserState<T> {
+    return this.get(userId, keyDefinition) as FakeSingleUserState<T>;
+  }
+}
+
+export class FakeActiveUserStateProvider {
+  states: Map<string, ActiveUserState<unknown>> = new Map();
   get<T>(keyDefinition: KeyDefinition<T>): ActiveUserState<T> {
-    let result = this.activeStates.get(
+    let result = this.states.get(
       keyDefinition.buildCacheKey("user", "active"),
     ) as ActiveUserState<T>;
 
     if (result == null) {
       result = new FakeActiveUserState<T>();
-      this.activeStates.set(keyDefinition.buildCacheKey("user", "active"), result);
+      this.states.set(keyDefinition.buildCacheKey("user", "active"), result);
     }
     return result;
   }
 
   getFake<T>(keyDefinition: KeyDefinition<T>): FakeActiveUserState<T> {
     return this.get(keyDefinition) as FakeActiveUserState<T>;
-  }
-
-  getFor<T>(userId: UserId, keyDefinition: KeyDefinition<T>): SingleUserState<T> {
-    let result = this.singleStates.get(
-      keyDefinition.buildCacheKey("user", userId),
-    ) as SingleUserState<T>;
-
-    if (result == null) {
-      result = new FakeSingleUserState<T>(userId);
-      this.singleStates.set(keyDefinition.buildCacheKey("user", userId), result);
-    }
-    return result;
-  }
-
-  getForFake<T>(userId: UserId, keyDefinition: KeyDefinition<T>): FakeSingleUserState<T> {
-    return this.getFor(userId, keyDefinition) as FakeSingleUserState<T>;
   }
 }
