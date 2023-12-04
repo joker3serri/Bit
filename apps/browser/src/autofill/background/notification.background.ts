@@ -374,6 +374,13 @@ export default class NotificationBackground {
     this.pushUnlockVaultToQueue(loginDomain, tab);
   }
 
+  /**
+   * Sets up a notification to request a fileless import when the user
+   * attempts to trigger an import from a third party website.
+   *
+   * @param tab - The tab that we are sending the notification to
+   * @param importType - The type of import that is being requested
+   */
   async requestFilelessImport(tab: chrome.tabs.Tab, importType: string) {
     const currentAuthStatus = await this.authService.getAuthStatus();
     if (currentAuthStatus !== AuthenticationStatus.Unlocked || this.notificationQueue.length) {
@@ -424,6 +431,15 @@ export default class NotificationBackground {
     this.removeTabFromNotificationQueue(tab);
   }
 
+  /**
+   * Pushes a request to start a fileless import to the notification queue.
+   * This will display a notification bar to the user, prompting them to
+   * start the import.
+   *
+   * @param loginDomain - The domain of the tab that we are sending the notification to
+   * @param tab - The tab that we are sending the notification to
+   * @param importType - The type of import that is being requested
+   */
   private async pushRequestFilelessImportToQueue(
     loginDomain: string,
     tab: chrome.tabs.Tab,
@@ -433,7 +449,7 @@ export default class NotificationBackground {
     const message: AddRequestFilelessImportQueueMessage = {
       type: NotificationQueueMessageType.RequestFilelessImport,
       domain: loginDomain,
-      tab: tab,
+      tab,
       expires: new Date(new Date().getTime() + 0.5 * 60000), // 30 seconds
       wasVaultLocked: false,
       importType,
