@@ -11,7 +11,11 @@ import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 
 import NotificationBackground from "../../autofill/background/notification.background";
 import { BrowserApi } from "../../platform/browser/browser-api";
-import { FilelessImportPort, FilelessImportType } from "../enums/fileless-import.enums";
+import {
+  FilelessImportPort,
+  FilelessImportType,
+  FilelessImportTypeKeys,
+} from "../enums/fileless-import.enums";
 
 import {
   ImportNotificationMessageHandlers,
@@ -59,7 +63,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    *
    * @param importType - The type of import to start. Identifies the used content script.
    */
-  private startFilelessImport(importType: FilelessImportType) {
+  private startFilelessImport(importType: FilelessImportTypeKeys) {
     if (importType === FilelessImportType.LP) {
       this.lpImporterPort?.postMessage({ command: "startLpFilelessImport" });
     }
@@ -74,7 +78,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    * @param sender - The sender of the message.
    */
   private async cancelFilelessImport(
-    importType: FilelessImportType,
+    importType: FilelessImportTypeKeys,
     sender: chrome.runtime.MessageSender,
   ) {
     if (importType === FilelessImportType.LP) {
