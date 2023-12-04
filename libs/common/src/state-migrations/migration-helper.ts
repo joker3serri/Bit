@@ -10,10 +10,25 @@ export class MigrationHelper {
     public logService: LogService,
   ) {}
 
+  /**
+   * Gets a value from the storage service at the given key.
+   *
+   * This is a brute force method to just get a value from the storage service. If you can use {@link getFromGlobal} or {@link getFromUser}, you should.
+   * @param key location
+   * @returns the value at the location
+   */
   get<T>(key: string): Promise<T> {
     return this.storageService.get<T>(key);
   }
 
+  /**
+   * Sets a value in the storage service at the given key.
+   *
+   * This is a brute force method to just set a value in the storage service. If you can use {@link setToGlobal} or {@link setToUser}, you should.
+   * @param key location
+   * @param value the value to set
+   * @returns
+   */
   set<T>(key: string, value: T): Promise<void> {
     this.logService.info(`Setting ${key}`);
     return this.storageService.save(key, value);
@@ -85,6 +100,13 @@ export class MigrationHelper {
     this.logService.info(message);
   }
 
+  /**
+   * Helper method to read all Account objects stored by the State Service.
+   *
+   * This is useful from creating migrations off of this paradigm, but should not be used once a value is migrated to a state provider.
+   *
+   * @returns a list of all accounts that have been authenticated with state service, cast the the expected type.
+   */
   async getAccounts<ExpectedAccountType>(): Promise<
     { userId: string; account: ExpectedAccountType }[]
   > {
