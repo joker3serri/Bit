@@ -9,7 +9,11 @@ export class DefaultStateProvider implements StateProvider {
     private readonly globalStateProvider: GlobalStateProvider,
   ) {}
 
-  getActive = this.activeUserStateProvider.get;
-  getUser = this.singleUserStateProvider.get;
-  getGlobal = this.globalStateProvider.get;
+  getActive: InstanceType<typeof ActiveUserStateProvider>["get"] =
+    this.activeUserStateProvider.get.bind(this.activeUserStateProvider);
+  getUser: InstanceType<typeof SingleUserStateProvider>["get"] =
+    this.singleUserStateProvider.get.bind(this.singleUserStateProvider);
+  getGlobal: InstanceType<typeof GlobalStateProvider>["get"] = this.globalStateProvider.get.bind(
+    this.globalStateProvider,
+  );
 }

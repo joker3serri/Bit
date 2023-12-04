@@ -10,22 +10,19 @@ import { UserId } from "../src/types/guid";
 import { FakeActiveUserState, FakeGlobalState, FakeSingleUserState } from "./fake-state";
 
 export class FakeGlobalStateProvider implements GlobalStateProvider {
-  states: Map<KeyDefinition<unknown>, GlobalState<unknown>> = new Map();
+  states: Map<string, GlobalState<unknown>> = new Map();
   get<T>(keyDefinition: KeyDefinition<T>): GlobalState<T> {
-    let result = this.states.get(keyDefinition) as GlobalState<T>;
+    let result = this.states.get(keyDefinition.buildCacheKey("global")) as GlobalState<T>;
 
     if (result == null) {
       result = new FakeGlobalState<T>();
-      this.states.set(keyDefinition, result);
+      this.states.set(keyDefinition.buildCacheKey("global"), result);
     }
     return result;
   }
 
   getFake<T>(keyDefinition: KeyDefinition<T>): FakeGlobalState<T> {
-    const key = Array.from(this.states.keys()).find(
-      (k) => k.stateDefinition === keyDefinition.stateDefinition && k.key === keyDefinition.key,
-    );
-    return this.get(key) as FakeGlobalState<T>;
+    return this.get(keyDefinition) as FakeGlobalState<T>;
   }
 }
 
