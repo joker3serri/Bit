@@ -1,6 +1,5 @@
 type LpFilelessImporterMessage = {
-  [key: string]: any;
-  command: string;
+  command?: string;
   data?: string;
   filelessImportEnabled?: boolean;
 };

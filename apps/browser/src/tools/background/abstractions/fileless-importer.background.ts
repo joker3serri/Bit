@@ -1,6 +1,6 @@
 type FilelessImportPortMessage = {
-  command: string;
-  importType: string;
+  command?: string;
+  importType?: string;
   data?: string;
 };
 
@@ -24,4 +24,9 @@ interface FilelessImporterBackground {
   init(): void;
 }
 
-export { ImportNotificationMessageHandlers, LpImporterMessageHandlers, FilelessImporterBackground };
+export {
+  FilelessImportPortMessage,
+  ImportNotificationMessageHandlers,
+  LpImporterMessageHandlers,
+  FilelessImporterBackground,
+};

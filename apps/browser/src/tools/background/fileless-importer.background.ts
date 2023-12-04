@@ -17,6 +17,7 @@ import {
   ImportNotificationMessageHandlers,
   LpImporterMessageHandlers,
   FilelessImporterBackground as FilelessImporterBackgroundInterface,
+  FilelessImportPortMessage,
 } from "./abstractions/fileless-importer.background";
 
 class FilelessImporterBackground implements FilelessImporterBackgroundInterface {
@@ -194,7 +195,10 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    * @param message - The message that was sent.
    * @param port - The port that the message was sent from.
    */
-  private handleImporterPortMessage = (message: any, port: chrome.runtime.Port) => {
+  private handleImporterPortMessage = (
+    message: FilelessImportPortMessage,
+    port: chrome.runtime.Port,
+  ) => {
     let handler: CallableFunction | undefined;
 
     if (port.name === FilelessImportPort.LpImporter) {
