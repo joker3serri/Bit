@@ -9,7 +9,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 
 import NotificationBackground from "../../autofill/background/notification.background";
 import { BrowserApi } from "../../platform/browser/browser-api";
-import { FilelessImportPortNames, FilelessImportType } from "../enums/fileless-import.enums";
+import { FilelessImportPort, FilelessImportType } from "../enums/fileless-import.enums";
 
 import {
   ImportNotificationMessageHandlers,
@@ -19,8 +19,8 @@ import {
 
 class FilelessImporterBackground implements FilelessImporterBackgroundInterface {
   private static readonly filelessImporterPortNames: Set<string> = new Set([
-    FilelessImportPortNames.LpImporter,
-    FilelessImportPortNames.NotificationBar,
+    FilelessImportPort.LpImporter,
+    FilelessImportPort.NotificationBar,
   ]);
   private importNotificationsPort: chrome.runtime.Port;
   private lpImporterPort: chrome.runtime.Port;
@@ -41,6 +41,13 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
   ) {}
 
   /**
+   * Initializes the fileless importer background logic.
+   */
+  init() {
+    this.setupPortMessageListeners();
+  }
+
+  /**
    * Cancels an import of the export data pulled from the tab. This closes any
    * existing notifications that are present in the tab, and triggers importer
    * specific behavior based on the import type.
@@ -53,7 +60,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
       this.triggerLpImporterCsvDownload();
     }
 
-    await BrowserApi.tabSendMessageData(sender.tab, "closeNotificationBar");
+    await BrowserApi.tabSendMessage(sender.tab, { command: "closeNotificationBar" });
   }
 
   /**
@@ -65,13 +72,6 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    */
   private async displayFilelessImportNotification(tab: chrome.tabs.Tab, importType: string) {
     await this.notificationBackground.requestFilelessImport(tab, importType);
-  }
-
-  /**
-   * Initializes the fileless importer background logic.
-   */
-  init() {
-    this.setupPortMessageListeners();
   }
 
   /**
@@ -128,11 +128,11 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     port.onMessage.addListener(this.handleImporterPortMessage);
     port.onDisconnect.addListener(this.handleImporterPortDisconnect);
 
-    if (port.name === FilelessImportPortNames.LpImporter) {
+    if (port.name === FilelessImportPort.LpImporter) {
       this.lpImporterPort = port;
     }
 
-    if (port.name === FilelessImportPortNames.NotificationBar) {
+    if (port.name === FilelessImportPort.NotificationBar) {
       this.importNotificationsPort = port;
     }
   };
@@ -145,11 +145,11 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
   private handleImporterPortMessage = (message: any, port: chrome.runtime.Port) => {
     let handler: CallableFunction | undefined;
 
-    if (port.name === FilelessImportPortNames.LpImporter) {
+    if (port.name === FilelessImportPort.LpImporter) {
       handler = this.lpImporterPortMessageHandlers[message.command];
     }
 
-    if (port.name === FilelessImportPortNames.NotificationBar) {
+    if (port.name === FilelessImportPort.NotificationBar) {
       handler = this.importNotificationsPortMessageHandlers[message.command];
     }
 
@@ -165,11 +165,11 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    * @param port - The port that was disconnected.
    */
   private handleImporterPortDisconnect = (port: chrome.runtime.Port) => {
-    if (port.name === FilelessImportPortNames.LpImporter) {
+    if (port.name === FilelessImportPort.LpImporter) {
       this.lpImporterPort = null;
     }
 
-    if (port.name === FilelessImportPortNames.NotificationBar) {
+    if (port.name === FilelessImportPort.NotificationBar) {
       this.importNotificationsPort = null;
     }
   };

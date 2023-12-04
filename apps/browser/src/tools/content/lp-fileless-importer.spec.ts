@@ -2,13 +2,13 @@ import { mock } from "jest-mock-extended";
 
 import { createPortSpyMock } from "../../autofill/jest/autofill-mocks";
 import { sendPortMessage } from "../../autofill/jest/testing-utils";
-import { FilelessImportPortNames } from "../enums/fileless-import.enums";
+import { FilelessImportPort } from "../enums/fileless-import.enums";
 
 import { LpFilelessImporter } from "./abstractions/lp-fileless-importer";
 
 describe("LpFilelessImporter", () => {
   let lpFilelessImporter: LpFilelessImporter & { [key: string]: any };
-  const portSpy: chrome.runtime.Port = createPortSpyMock(FilelessImportPortNames.LpImporter);
+  const portSpy: chrome.runtime.Port = createPortSpyMock(FilelessImportPort.LpImporter);
   chrome.runtime.connect = jest.fn(() => portSpy);
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe("LpFilelessImporter", () => {
       lpFilelessImporter.init();
 
       expect(chrome.runtime.connect).toHaveBeenCalledWith({
-        name: FilelessImportPortNames.LpImporter,
+        name: FilelessImportPort.LpImporter,
       });
     });
   });

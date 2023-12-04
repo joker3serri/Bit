@@ -1,4 +1,4 @@
-import { FilelessImportPortNames } from "../enums/fileless-import.enums";
+import { FilelessImportPort } from "../enums/fileless-import.enums";
 
 import {
   LpFilelessImporter as LpFilelessImporterInterface,
@@ -164,7 +164,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
    * background script and the content script.
    */
   private setupMessagePort() {
-    this.messagePort = chrome.runtime.connect({ name: FilelessImportPortNames.LpImporter });
+    this.messagePort = chrome.runtime.connect({ name: FilelessImportPort.LpImporter });
     this.messagePort.onMessage.addListener(this.handlePortMessage);
   }
 

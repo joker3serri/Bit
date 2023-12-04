@@ -2,9 +2,9 @@ const FilelessImportType = {
   LP: "LP",
 } as const;
 
-const FilelessImportPortNames = {
+const FilelessImportPort = {
   NotificationBar: "fileless-importer-notification-bar",
   LpImporter: "lp-fileless-importer",
 } as const;
 
-export { FilelessImportType, FilelessImportPortNames };
+export { FilelessImportType, FilelessImportPort };
