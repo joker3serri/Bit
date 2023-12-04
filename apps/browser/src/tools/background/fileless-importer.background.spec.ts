@@ -5,7 +5,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { ImportServiceAbstraction } from "@bitwarden/importer";
+import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 
 import NotificationBackground from "../../autofill/background/notification.background";
 import { FilelessImportPortNames } from "../enums/fileless-import.enums";
@@ -72,7 +72,7 @@ describe("FilelessImporterBackground ", () => {
       policyService,
       notificationBackground,
       importService,
-      syncService
+      syncService,
     );
     filelessImporterBackground.init();
   });

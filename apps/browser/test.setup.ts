@@ -20,6 +20,7 @@ const storage = {
 const runtime = {
   onMessage: {
     addListener: jest.fn(),
+    removeListener: jest.fn(),
   },
   sendMessage: jest.fn(),
   getManifest: jest.fn(),
@@ -27,6 +28,10 @@ const runtime = {
     addListener: jest.fn(),
   },
   getURL: jest.fn((path) => `chrome-extension://id/${path}`),
+  connect: jest.fn(),
+  onConnect: {
+    addListener: jest.fn(),
+  },
 };
 
 const contextMenus = {
@@ -36,12 +41,29 @@ const contextMenus = {
 
 const i18n = {
   getMessage: jest.fn(),
+  getUILanguage: jest.fn(),
 };
 
 const tabs = {
   executeScript: jest.fn(),
   sendMessage: jest.fn(),
   query: jest.fn(),
+  onActivated: {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
+  onReplaced: {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
+  onUpdated: {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
+  onRemoved: {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
 };
 
 const scripting = {
@@ -54,6 +76,18 @@ const windows = {
   getCurrent: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
+  onFocusChanged: {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
+};
+
+const port = {
+  onMessage: {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
+  postMessage: jest.fn(),
 };
 
 // set chrome
@@ -65,4 +99,5 @@ global.chrome = {
   tabs,
   scripting,
   windows,
+  port,
 } as any;

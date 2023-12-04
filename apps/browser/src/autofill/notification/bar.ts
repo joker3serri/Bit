@@ -223,6 +223,12 @@ function handleTypeUnlock() {
   });
 }
 
+/**
+ * Sets up a port to communicate with the fileless importer content script.
+ * This connection to the background script is used to trigger the action of
+ * downloading the CSV file from the LP importer or importing the data into
+ * the Bitwarden vault.
+ */
 function handleTypeFilelessImport() {
   const importType = getQueryVariable("importType");
   const port = chrome.runtime.connect({ name: FilelessImportPortNames.NotificationBar });
@@ -249,7 +255,7 @@ function handleTypeFilelessImport() {
 
     if (msg.command === "filelessImportCompleted") {
       document.getElementById("fileless-import-buttons").innerHTML = chrome.i18n.getMessage(
-        "dataSuccessfullyImported"
+        "dataSuccessfullyImported",
       );
       document.getElementById("fileless-import-buttons").classList.add("success-message");
       return;

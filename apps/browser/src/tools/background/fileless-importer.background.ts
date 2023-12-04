@@ -7,7 +7,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { ImportServiceAbstraction } from "@bitwarden/importer";
+import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 
 import NotificationBackground from "../../autofill/background/notification.background";
 import { BrowserApi } from "../../platform/browser/browser-api";
@@ -43,7 +43,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     private policyService: PolicyService,
     private notificationBackground: NotificationBackground,
     private importService: ImportServiceAbstraction,
-    private syncService: SyncService
+    private syncService: SyncService,
   ) {}
 
   /**
@@ -116,7 +116,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     const importer = this.importService.getImporter(
       "lastpasscsv",
       promptForPassword_callback,
-      null
+      null,
     );
 
     try {
@@ -140,7 +140,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    */
   private async removeIndividualVault(): Promise<boolean> {
     return await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
     );
   }
 
@@ -163,7 +163,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     }
 
     const filelessImportFeatureFlagEnabled = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.BrowserFilelessImport
+      FeatureFlag.BrowserFilelessImport,
     );
     const userAuthStatus = await this.authService.getAuthStatus();
     const removeIndividualVault = await this.removeIndividualVault();

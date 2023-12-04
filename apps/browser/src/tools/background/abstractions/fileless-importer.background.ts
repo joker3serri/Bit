@@ -1,6 +1,5 @@
 type ImportNotificationMessageHandlers = {
   [key: string]: ({ message, port }: { message: any; port: chrome.runtime.Port }) => void;
-  startFilelessImport: ({ message }: { message: any }) => void;
   cancelFilelessImport: ({ message, port }: { message: any; port: chrome.runtime.Port }) => void;
 };
 
