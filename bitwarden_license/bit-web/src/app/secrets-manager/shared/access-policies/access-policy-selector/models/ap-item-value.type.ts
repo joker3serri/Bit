@@ -20,7 +20,7 @@ export type ApItemValueType = {
 
 export function convertToProjectPeopleAccessPoliciesView(
   projectId: string,
-  selectedPolicyValues: ApItemValueType[]
+  selectedPolicyValues: ApItemValueType[],
 ): ProjectPeopleAccessPoliciesView {
   const view = new ProjectPeopleAccessPoliciesView();
   view.userAccessPolicies = selectedPolicyValues
@@ -49,7 +49,7 @@ export function convertToProjectPeopleAccessPoliciesView(
 
 export function convertToServiceAccountPeopleAccessPoliciesView(
   serviceAccountId: string,
-  selectedPolicyValues: ApItemValueType[]
+  selectedPolicyValues: ApItemValueType[],
 ): ServiceAccountPeopleAccessPoliciesView {
   const view = new ServiceAccountPeopleAccessPoliciesView();
   view.userAccessPolicies = selectedPolicyValues

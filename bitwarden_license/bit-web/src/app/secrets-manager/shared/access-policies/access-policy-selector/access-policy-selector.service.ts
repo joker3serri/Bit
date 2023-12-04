@@ -15,7 +15,7 @@ export class AccessPolicySelectorService {
 
   async showAccessRemovalWarning(
     organizationId: string,
-    selectedPoliciesValues: ApItemValueType[]
+    selectedPoliciesValues: ApItemValueType[],
   ): Promise<boolean> {
     const organization = this.organizationService.get(organizationId);
     if (organization.isOwner || organization.isAdmin) {
@@ -26,14 +26,14 @@ export class AccessPolicySelectorService {
       (s) =>
         s.type === ApItemEnum.User &&
         s.currentUser &&
-        s.permission === ApPermissionEnum.CanReadWrite
+        s.permission === ApPermissionEnum.CanReadWrite,
     );
 
     const selectedGroupReadWritePolicies = selectedPoliciesValues.filter(
       (s) =>
         s.type === ApItemEnum.Group &&
         s.permission == ApPermissionEnum.CanReadWrite &&
-        s.currentUserInGroup
+        s.currentUserInGroup,
     );
 
     if (selectedGroupReadWritePolicies == null || selectedGroupReadWritePolicies.length == 0) {
@@ -61,7 +61,7 @@ export class AccessPolicySelectorService {
 
   private isAnyCurrentIdNotInSelectedIds(
     current: ApItemViewType[],
-    selected: ApItemValueType[]
+    selected: ApItemValueType[],
   ): boolean {
     const currentIds = current.map((x) => x.id);
     const selectedIds = selected.map((x) => x.id);

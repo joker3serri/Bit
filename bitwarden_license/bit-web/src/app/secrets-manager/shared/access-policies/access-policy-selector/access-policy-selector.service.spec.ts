@@ -67,7 +67,7 @@ describe("AccessPolicySelectorService", () => {
         createApItemValueType({
           permission: ApPermissionEnum.CanRead,
           currentUser: true,
-        })
+        }),
       );
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -328,7 +328,7 @@ const orgFactory = (props: Partial<Organization> = {}) =>
       enabled: true,
       type: OrganizationUserType.Admin,
     },
-    props
+    props,
   );
 
 function createApItemValueType(options: Partial<ApItemValueType> = {}) {

@@ -38,12 +38,12 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
         .getServiceAccountPeopleAccessPolicies(params.serviceAccountId)
         .then((policies) => {
           return convertToAccessPolicyItemViews(policies);
-        })
+        }),
     ),
     catchError(() => {
       this.router.navigate(["/sm", this.organizationId, "service-accounts"]);
       return EMPTY;
-    })
+    }),
   );
 
   private potentialGrantees$ = combineLatest([this.route.params]).pipe(
@@ -52,8 +52,8 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
         .getPeoplePotentialGrantees(params.organizationId)
         .then((grantees) => {
           return convertPotentialGranteesToApItemViewType(grantees);
-        })
-    )
+        }),
+    ),
   );
 
   protected formGroup = new FormGroup({
@@ -73,7 +73,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     private router: Router,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private accessPolicySelectorService: AccessPolicySelectorService
+    private accessPolicySelectorService: AccessPolicySelectorService,
   ) {}
 
   ngOnInit(): void {
@@ -103,7 +103,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     const showAccessRemovalWarning =
       await this.accessPolicySelectorService.showAccessRemovalWarning(
         this.organizationId,
-        this.formGroup.value.accessPolicies
+        this.formGroup.value.accessPolicies,
       );
 
     if (
@@ -115,13 +115,13 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     try {
       const peoplePoliciesViews = await this.updateServiceAccountPeopleAccessPolicies(
         this.serviceAccountId,
-        this.formGroup.value.accessPolicies
+        this.formGroup.value.accessPolicies,
       );
 
       await this.handleAccessTokenAvailableWarning(
         showAccessRemovalWarning,
         this.currentAccessPolicies,
-        this.formGroup.value.accessPolicies
+        this.formGroup.value.accessPolicies,
       );
 
       this.currentAccessPolicies = convertToAccessPolicyItemViews(peoplePoliciesViews);
@@ -129,7 +129,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("serviceAccountAccessUpdated")
+        this.i18nService.t("serviceAccountAccessUpdated"),
       );
     } catch (e) {
       this.validationService.showError(e);
@@ -164,7 +164,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
 
   private async handleAccessRemovalWarning(
     showAccessRemovalWarning: boolean,
-    currentAccessPolicies: ApItemViewType[]
+    currentAccessPolicies: ApItemViewType[],
   ): Promise<boolean> {
     if (showAccessRemovalWarning) {
       const confirmed = await this.showWarning();
@@ -178,22 +178,22 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
 
   private async updateServiceAccountPeopleAccessPolicies(
     serviceAccountId: string,
-    selectedPolicies: ApItemValueType[]
+    selectedPolicies: ApItemValueType[],
   ) {
     const serviceAccountPeopleView = convertToServiceAccountPeopleAccessPoliciesView(
       serviceAccountId,
-      selectedPolicies
+      selectedPolicies,
     );
     return await this.accessPolicyService.putServiceAccountPeopleAccessPolicies(
       serviceAccountId,
-      serviceAccountPeopleView
+      serviceAccountPeopleView,
     );
   }
 
   private async handleAccessTokenAvailableWarning(
     showAccessRemovalWarning: boolean,
     currentAccessPolicies: ApItemViewType[],
-    selectedPolicies: ApItemValueType[]
+    selectedPolicies: ApItemValueType[],
   ): Promise<void> {
     if (showAccessRemovalWarning) {
       this.router.navigate(["sm", this.organizationId, "service-accounts"]);
