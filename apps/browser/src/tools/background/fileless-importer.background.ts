@@ -59,7 +59,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    *
    * @param importType - The type of import to start. Identifies the used content script.
    */
-  private startFilelessImport(importType: string) {
+  private startFilelessImport(importType: FilelessImportType) {
     if (importType === FilelessImportType.LP) {
       this.lpImporterPort?.postMessage({ command: "startLpFilelessImport" });
     }
@@ -73,7 +73,10 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    * @param importType - The type of import to cancel. Identifies the used content script.
    * @param sender - The sender of the message.
    */
-  private async cancelFilelessImport(importType: string, sender: chrome.runtime.MessageSender) {
+  private async cancelFilelessImport(
+    importType: FilelessImportType,
+    sender: chrome.runtime.MessageSender,
+  ) {
     if (importType === FilelessImportType.LP) {
       this.triggerLpImporterCsvDownload();
     }

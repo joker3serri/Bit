@@ -1,6 +1,8 @@
+import { FilelessImportType } from "../../enums/fileless-import.enums";
+
 type FilelessImportPortMessage = {
   command?: string;
-  importType?: string;
+  importType?: FilelessImportType;
   data?: string;
 };
 
