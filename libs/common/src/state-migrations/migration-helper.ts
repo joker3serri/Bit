@@ -19,6 +19,68 @@ export class MigrationHelper {
     return this.storageService.save(key, value);
   }
 
+  /**
+   * Gets a globally scoped value from a location derived through the key definition
+   *
+   * This is for use with the state providers framework, DO NOT use for values stored with {@link StateService},
+   * use {@link get} for those.
+   * @param keyDefinition unique key definition
+   * @returns value from store
+   */
+  getFromGlobal<T>(keyDefinition: { stateDefinition: { name: string }; key: string }): Promise<T> {
+    return this.get<T>(this.getGlobalKey(keyDefinition));
+  }
+
+  /**
+   * Sets a globally scoped value to a location derived through the key definition
+   *
+   * This is for use with the state providers framework, DO NOT use for values stored with {@link StateService},
+   * use {@link set} for those.
+   * @param keyDefinition unique key definition
+   * @param value value to store
+   * @returns void
+   */
+  setToGlobal<T>(
+    keyDefinition: { stateDefinition: { name: string }; key: string },
+    value: T,
+  ): Promise<void> {
+    return this.set(this.getGlobalKey(keyDefinition), value);
+  }
+
+  /**
+   * Gets a user scoped value from a location derived through the user id and key definition
+   *
+   * This is for use with the state providers framework, DO NOT use for values stored with {@link StateService},
+   * use {@link get} for those.
+   * @param userId userId to use in the key
+   * @param keyDefinition unique key definition
+   * @returns value from store
+   */
+  getFromUser<T>(
+    userId: string,
+    keyDefinition: { stateDefinition: { name: string }; key: string },
+  ): Promise<T> {
+    return this.get<T>(this.getUserKey(userId, keyDefinition));
+  }
+
+  /**
+   * Sets a user scoped value to a location derived through the user id and key definition
+   *
+   * This is for use with the state providers framework, DO NOT use for values stored with {@link StateService},
+   * use {@link set} for those.
+   * @param userId userId to use in the key
+   * @param keyDefinition unique key definition
+   * @param value value to store
+   * @returns void
+   */
+  setToUser<T>(
+    userId: string,
+    keyDefinition: { stateDefinition: { name: string }; key: string },
+    value: T,
+  ): Promise<void> {
+    return this.set(this.getUserKey(userId, keyDefinition), value);
+  }
+
   info(message: string): void {
     this.logService.info(message);
   }
@@ -42,7 +104,7 @@ export class MigrationHelper {
    * @param keyDefinition state and key to use in the key
    * @returns
    */
-  getUserKey(
+  private getUserKey(
     userId: string,
     keyDefinition: {
       stateDefinition: { name: string };
@@ -50,7 +112,7 @@ export class MigrationHelper {
     },
   ): string {
     if (this.currentVersion < 10) {
-      return userKeyBuilderPre10(userId, keyDefinition);
+      return userKeyBuilderPre10();
     } else {
       return userKeyBuilder(userId, keyDefinition);
     }
@@ -62,9 +124,9 @@ export class MigrationHelper {
    * @param keyDefinition state and key to use in the key
    * @returns
    */
-  getGlobalKey(keyDefinition: { stateDefinition: { name: string }; key: string }): string {
+  private getGlobalKey(keyDefinition: { stateDefinition: { name: string }; key: string }): string {
     if (this.currentVersion < 10) {
-      return globalKeyBuilderPre10(keyDefinition);
+      return globalKeyBuilderPre10();
     } else {
       return globalKeyBuilder(keyDefinition);
     }
@@ -80,17 +142,14 @@ export class MigrationHelper {
  * @param keyDefinition the key definition of which data the key should point to.
  * @returns
  */
-export function userKeyBuilder(
+function userKeyBuilder(
   userId: string,
   keyDefinition: { stateDefinition: { name: string }; key: string },
 ): string {
   return `user_${userId}_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
 }
 
-export function userKeyBuilderPre10(
-  userId: string,
-  keyDefinition: { stateDefinition: { name: string }; key: string },
-): string {
+function userKeyBuilderPre10(): string {
   throw Error("No key builder should be used for versions prior to 10.");
 }
 
@@ -102,16 +161,13 @@ export function userKeyBuilderPre10(
  * @param keyDefinition the key definition of which data the key should point to.
  * @returns
  */
-export function globalKeyBuilder(keyDefinition: {
+function globalKeyBuilder(keyDefinition: {
   stateDefinition: { name: string };
   key: string;
 }): string {
   return `global_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
 }
 
-export function globalKeyBuilderPre10(keyDefinition: {
-  stateDefinition: { name: string };
-  key: string;
-}): string {
+function globalKeyBuilderPre10(): string {
   throw Error("No key builder should be used for versions prior to 10.");
 }
