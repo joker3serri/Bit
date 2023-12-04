@@ -47,6 +47,13 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
   ) {}
 
   /**
+   * Initializes the fileless importer background logic.
+   */
+  init() {
+    this.setupPortMessageListeners();
+  }
+
+  /**
    * Starts an import of the export data pulled from the tab.
    *
    * @param importType - The type of import to start. Identifies the used content script.
@@ -55,13 +62,6 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     if (importType === FilelessImportType.LP) {
       this.lpImporterPort?.postMessage({ command: "startLpFilelessImport" });
     }
-  }
-
-  /**
-   * Initializes the fileless importer background logic.
-   */
-  init() {
-    this.setupPortMessageListeners();
   }
 
   /**

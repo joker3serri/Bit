@@ -5,7 +5,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { ImportServiceAbstraction } from "@bitwarden/importer/core";
+import { Importer, ImportResult, ImportServiceAbstraction } from "@bitwarden/importer/core";
 
 import NotificationBackground from "../../autofill/background/notification.background";
 import { createPortSpyMock } from "../../autofill/jest/autofill-mocks";
@@ -143,6 +143,19 @@ describe("FilelessImporterBackground ", () => {
     });
 
     describe("import notification port messages", () => {
+      describe("startFilelessImport", () => {
+        it("sends a message to start the fileless import within the content script", () => {
+          sendPortMessage(notificationPort, {
+            command: "startFilelessImport",
+            importType: FilelessImportType.LP,
+          });
+
+          expect(lpImporterPort.postMessage).toHaveBeenCalledWith({
+            command: "startLpFilelessImport",
+          });
+        });
+      });
+
       describe("cancelFilelessImport", () => {
         it("sends a message to close the notification bar", async () => {
           sendPortMessage(notificationPort, { command: "cancelFilelessImport" });
@@ -187,6 +200,72 @@ describe("FilelessImporterBackground ", () => {
           expect(
             filelessImporterBackground["notificationBackground"].requestFilelessImport,
           ).toHaveBeenCalledWith(lpImporterPort.sender.tab, FilelessImportType.LP);
+        });
+      });
+
+      describe("startLpImport", () => {
+        it("ignores the message if the message does not contain data", () => {
+          sendPortMessage(lpImporterPort, {
+            command: "startLpImport",
+          });
+
+          expect(filelessImporterBackground["importService"].import).not.toHaveBeenCalled();
+        });
+
+        it("triggers the import of the LastPass vault", async () => {
+          const data = "url,username,password";
+          const importer = mock<Importer>();
+          jest
+            .spyOn(filelessImporterBackground["importService"], "getImporter")
+            .mockReturnValue(importer);
+          jest.spyOn(filelessImporterBackground["importService"], "import").mockResolvedValue(
+            mock<ImportResult>({
+              success: true,
+            }),
+          );
+          jest.spyOn(filelessImporterBackground["syncService"], "fullSync");
+
+          sendPortMessage(lpImporterPort, {
+            command: "startLpImport",
+            data,
+          });
+          await flushPromises();
+
+          expect(filelessImporterBackground["importService"].import).toHaveBeenCalledWith(
+            importer,
+            data,
+            null,
+            null,
+            false,
+          );
+          expect(
+            filelessImporterBackground["importNotificationsPort"].postMessage,
+          ).toHaveBeenCalledWith({ command: "filelessImportCompleted" });
+          expect(filelessImporterBackground["syncService"].fullSync).toHaveBeenCalledWith(true);
+        });
+
+        it("posts a failed message if the import fails", async () => {
+          const data = "url,username,password";
+          const importer = mock<Importer>();
+          jest
+            .spyOn(filelessImporterBackground["importService"], "getImporter")
+            .mockReturnValue(importer);
+          jest
+            .spyOn(filelessImporterBackground["importService"], "import")
+            .mockImplementation(() => {
+              throw new Error("error");
+            });
+          jest.spyOn(filelessImporterBackground["syncService"], "fullSync");
+
+          sendPortMessage(lpImporterPort, {
+            command: "startLpImport",
+            data,
+          });
+          await flushPromises();
+
+          expect(
+            filelessImporterBackground["importNotificationsPort"].postMessage,
+          ).toHaveBeenCalledWith({ command: "filelessImportFailed" });
         });
       });
     });
