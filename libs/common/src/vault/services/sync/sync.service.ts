@@ -62,7 +62,7 @@ export class SyncService implements SyncServiceAbstraction {
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
     private configService: ConfigServiceAbstraction,
-    private logoutCallback: (expired: boolean) => Promise<void>
+    private logoutCallback: (expired: boolean) => Promise<void>,
   ) {}
 
   async getLastSync(): Promise<Date> {
@@ -321,7 +321,11 @@ export class SyncService implements SyncServiceAbstraction {
 
     await this.setForceSetPasswordReasonIfNeeded(response);
 
-    await this.syncProfileOrganizations(response);
+    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false,
+    );
+    await this.syncProfileOrganizations(response, flexibleCollectionsEnabled);
 
     const providers: { [id: string]: ProviderData } = {};
     response.providers.forEach((p) => {
@@ -342,7 +346,7 @@ export class SyncService implements SyncServiceAbstraction {
     // The `forcePasswordReset` flag indicates an admin has reset the user's password and must be updated
     if (profileResponse.forcePasswordReset) {
       await this.stateService.setForceSetPasswordReason(
-        ForceSetPasswordReason.AdminForcePasswordReset
+        ForceSetPasswordReason.AdminForcePasswordReset,
       );
     }
 
@@ -372,12 +376,15 @@ export class SyncService implements SyncServiceAbstraction {
       // TDE user w/out MP went from having no password reset permission to having it.
       // Must set the force password reset reason so the auth guard will redirect to the set password page.
       await this.stateService.setForceSetPasswordReason(
-        ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission
+        ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
       );
     }
   }
 
-  private async syncProfileOrganizations(response: ProfileResponse) {
+  private async syncProfileOrganizations(
+    response: ProfileResponse,
+    flexibleCollectionsEnabled: boolean,
+  ) {
     const organizations: { [id: string]: OrganizationData } = {};
     response.organizations.forEach((o) => {
       organizations[o.id] = new OrganizationData(o, {
@@ -397,21 +404,7 @@ export class SyncService implements SyncServiceAbstraction {
       }
     });
 
-    // If Flexible Collections is enabled, treat Managers as Users and ignore deprecated permissions
-    if (await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollections)) {
-      Object.values(organizations).forEach((o) => {
-        if (o.type === OrganizationUserType.Manager) {
-          o.type = OrganizationUserType.User;
-        }
-
-        if (o.permissions != null) {
-          o.permissions.editAssignedCollections = false;
-          o.permissions.deleteAssignedCollections = false;
-        }
-      });
-    }
-
-    await this.organizationService.replace(organizations);
+    await this.organizationService.replace(organizations, flexibleCollectionsEnabled);
   }
 
   private async syncFolders(response: FolderResponse[]) {
