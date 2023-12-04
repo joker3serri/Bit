@@ -55,7 +55,7 @@ export class FakeUserStateProvider implements UserStateProvider {
     ) as SingleUserState<T>;
 
     if (result == null) {
-      result = new FakeSingleUserState<T>();
+      result = new FakeSingleUserState<T>(userId);
       this.singleStates.set(keyDefinition.buildCacheKey("user", userId), result);
     }
     return result;

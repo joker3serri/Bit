@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 
+import { UserId } from "../../types/guid";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { UserKey } from "../models/domain/symmetric-crypto-key";
 
@@ -46,10 +47,9 @@ export interface UserState<T> {
 }
 
 export const activeMarker: unique symbol = Symbol("active");
-export const singleMarker: unique symbol = Symbol("single");
 export interface ActiveUserState<T> extends UserState<T> {
   readonly [activeMarker]: true;
 }
 export interface SingleUserState<T> extends UserState<T> {
-  readonly [singleMarker]: true;
+  readonly userId: UserId;
 }

@@ -19,14 +19,13 @@ import {
 import { DerivedUserState } from "../derived-user-state";
 import { KeyDefinition, userKeyBuilder } from "../key-definition";
 import { StateUpdateOptions, populateOptionsWithDefault } from "../state-update-options";
-import { Converter, SingleUserState, singleMarker } from "../user-state";
+import { Converter, SingleUserState } from "../user-state";
 
 import { DefaultDerivedUserState } from "./default-derived-state";
 import { getStoredValue } from "./util";
 const FAKE_DEFAULT = Symbol("fakeDefault");
 
 export class DefaultSingleUserState<T> implements SingleUserState<T> {
-  [singleMarker]: true;
   private storageKey: string;
 
   protected stateSubject: BehaviorSubject<T | typeof FAKE_DEFAULT> = new BehaviorSubject<
@@ -36,7 +35,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
   state$: Observable<T>;
 
   constructor(
-    private userId: UserId,
+    readonly userId: UserId,
     private keyDefinition: KeyDefinition<T>,
     private encryptService: EncryptService,
     private chosenLocation: AbstractStorageService & ObservableStorageService,
