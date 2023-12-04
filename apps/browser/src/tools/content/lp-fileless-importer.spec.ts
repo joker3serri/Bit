@@ -192,5 +192,32 @@ describe("LpFilelessImporter", () => {
 
       expect(lpFilelessImporter.triggerCsvDownload).toHaveBeenCalled();
     });
+
+    describe("handles the port message that triggers the LastPass fileless import", () => {
+      beforeEach(() => {
+        jest.spyOn(lpFilelessImporter as any, "postPortMessage");
+      });
+
+      it("skips the import of the export data is not populated", () => {
+        const message = { command: "startLpFilelessImport" };
+
+        sendPortMessage(portSpy, message);
+
+        expect(lpFilelessImporter.postPortMessage).not.toHaveBeenCalled();
+      });
+
+      it("starts the last pass fileless import", () => {
+        const message = { command: "startLpFilelessImport" };
+        const exportData = "url,username,password";
+        lpFilelessImporter["exportData"] = exportData;
+
+        sendPortMessage(portSpy, message);
+
+        expect(lpFilelessImporter.postPortMessage).toHaveBeenCalledWith({
+          command: "startLpImport",
+          data: exportData,
+        });
+      });
+    });
   });
 });
