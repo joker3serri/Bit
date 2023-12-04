@@ -1,8 +1,12 @@
 import { UserId } from "../../types/guid";
 
 import { GlobalState } from "./global-state";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in docs
+import { GlobalStateProvider } from "./global-state.provider";
 import { KeyDefinition } from "./key-definition";
 import { ActiveUserState, SingleUserState } from "./user-state";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in docs
+import { ActiveUserStateProvider, SingleUserStateProvider } from "./user-state.provider";
 
 /** Convenience wrapper class for {@link ActiveUserStateProvider}, {@link SingleUserStateProvider},
  * and {@link GlobalStateProvider}.
