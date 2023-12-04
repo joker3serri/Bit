@@ -34,11 +34,11 @@ export enum BulkDeleteDialogResult {
  */
 export const openBulkDeleteDialog = (
   dialogService: DialogService,
-  config: DialogConfig<BulkDeleteDialogParams>
+  config: DialogConfig<BulkDeleteDialogParams>,
 ) => {
   return dialogService.open<BulkDeleteDialogResult, BulkDeleteDialogParams>(
     BulkDeleteDialogComponent,
-    config
+    config,
   );
 };
 
@@ -61,7 +61,7 @@ export class BulkDeleteDialogComponent {
     private i18nService: I18nService,
     private apiService: ApiService,
     private collectionService: CollectionService,
-    private configService: ConfigServiceAbstraction
+    private configService: ConfigServiceAbstraction,
   ) {
     this.cipherIds = params.cipherIds ?? [];
     this.collectionIds = params.collectionIds ?? [];
@@ -95,7 +95,7 @@ export class BulkDeleteDialogComponent {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t(this.permanent ? "permanentlyDeletedItems" : "deletedItems")
+        this.i18nService.t(this.permanent ? "permanentlyDeletedItems" : "deletedItems"),
       );
     }
     if (this.collectionIds.length) {
@@ -103,7 +103,7 @@ export class BulkDeleteDialogComponent {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("deletedCollections")
+        this.i18nService.t("deletedCollections"),
       );
     }
     this.close(BulkDeleteDialogResult.Deleted);
@@ -130,20 +130,17 @@ export class BulkDeleteDialogComponent {
   private async deleteCollections(): Promise<any> {
     const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
       FeatureFlag.FlexibleCollections,
-      false
+      false,
     );
     // From org vault
     if (this.organization) {
       if (
-        (flexibleCollectionsEnabled
-          ? this.collections.some((c) => !c.canDelete)
-          : !this.organization.canDeleteAssignedCollections) &&
-        !this.organization.canDeleteAnyCollection
+        this.collections.some((c) => !c.canDelete(this.organization, flexibleCollectionsEnabled))
       ) {
         this.platformUtilsService.showToast(
           "error",
           this.i18nService.t("errorOccurred"),
-          this.i18nService.t("missingPermissions")
+          this.i18nService.t("missingPermissions"),
         );
         return;
       }
@@ -152,16 +149,11 @@ export class BulkDeleteDialogComponent {
     } else if (this.organizations && this.collections) {
       const deletePromises: Promise<any>[] = [];
       for (const organization of this.organizations) {
-        if (
-          (flexibleCollectionsEnabled
-            ? this.collections.some((c) => !c.canDelete)
-            : !this.organization.canDeleteAssignedCollections) &&
-          !organization.canDeleteAnyCollection
-        ) {
+        if (this.collections.some((c) => !c.canDelete(organization, flexibleCollectionsEnabled))) {
           this.platformUtilsService.showToast(
             "error",
             this.i18nService.t("errorOccurred"),
-            this.i18nService.t("missingPermissions")
+            this.i18nService.t("missingPermissions"),
           );
           return;
         }
@@ -169,7 +161,7 @@ export class BulkDeleteDialogComponent {
           .filter((o) => o.organizationId === organization.id)
           .map((c) => c.id);
         deletePromises.push(
-          this.apiService.deleteManyCollections(this.organization.id, orgCollections)
+          this.apiService.deleteManyCollections(this.organization.id, orgCollections),
         );
       }
       return await Promise.all(deletePromises);
