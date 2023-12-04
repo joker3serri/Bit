@@ -45,15 +45,17 @@ describe("TotpService", () => {
 
   it("should handle otpauth different period", async () => {
     const key = "otpauth://totp/test-account?secret=WQIQ25BRKZYCJVYP&period=60";
+    const result = await totpService.getCode(key);
+    expect(result).toBe("730364");
 
     const period = totpService.getTimeInterval(key);
     expect(period).toBe(60);
   });
 
   it("should handle steam keys", async () => {
-    const key = "steam://cnOgv/KdpLoP6Nbh0GMkXkPXALQ=";
+    const key = "steam://HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ";
     const result = await totpService.getCode(key);
-    expect(result).toBe("V2TBV");
+    expect(result).toBe("7W6CJ");
 
     const period = totpService.getTimeInterval(key);
     expect(period).toBe(30);
