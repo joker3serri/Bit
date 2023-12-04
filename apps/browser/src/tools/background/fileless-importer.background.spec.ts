@@ -66,7 +66,7 @@ describe("FilelessImporterBackground ", () => {
       configService,
       authService,
       policyService,
-      notificationBackground
+      notificationBackground,
     );
     filelessImporterBackground.init();
   });

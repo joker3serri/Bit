@@ -242,7 +242,7 @@ function handleTypeFilelessImport() {
   const handlePortMessage = (msg: any) => {
     if (msg.command === "lpImportCompleted") {
       document.getElementById("fileless-import-buttons").innerHTML = chrome.i18n.getMessage(
-        "dataSuccessfullyImported"
+        "dataSuccessfullyImported",
       );
       document.getElementById("fileless-import-buttons").classList.add("success-message");
       port.disconnect();
