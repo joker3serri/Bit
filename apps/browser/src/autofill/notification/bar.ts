@@ -1,10 +1,13 @@
 import type { Jsonify } from "type-fest";
 
+import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import type { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { FilelessImportPort, FilelessImportType } from "../../tools/enums/fileless-import.enums";
 
 require("./bar.scss");
+
+const logService = new ConsoleLogService(false);
 
 document.addEventListener("DOMContentLoaded", () => {
   // delay 50ms so that we get proper body dimensions
@@ -261,8 +264,7 @@ function handleTypeFilelessImport() {
     document.getElementById("fileless-import-buttons").textContent =
       chrome.i18n.getMessage("dataImportFailed");
     document.getElementById("fileless-import-buttons").classList.add("error-message");
-    // eslint-disable-next-line no-console
-    console.error("Error: ", msg.importErrorMessage);
+    logService.error(`Error Encountered During Import: ${msg.importErrorMessage}`);
   };
   port.onMessage.addListener(handlePortMessage);
 }
