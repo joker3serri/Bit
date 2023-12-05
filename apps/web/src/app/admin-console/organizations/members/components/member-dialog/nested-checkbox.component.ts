@@ -13,6 +13,7 @@ export class NestedCheckboxComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   @Input() parentId: string;
+  @Input() titlecaseTitles = false;
   @Input() checkboxes: FormGroup<Record<string, FormControl<boolean>>>;
   @Output() onSavedUser = new EventEmitter();
   @Output() onDeletedUser = new EventEmitter();
