@@ -268,7 +268,7 @@
                       formControlName="accessEventLogs"
                     />
                     <label class="!tw-font-normal" for="accessEventLogs">
-                      {{ "accessEventLogs" | i18n | titlecase }}
+                      {{ "accessEventLogs" | i18n }}
                     </label>
                   </div>
                   <div>
@@ -279,7 +279,7 @@
                       formControlName="accessImportExport"
                     />
                     <label class="!tw-font-normal" for="accessImportExport">
-                      {{ "accessImportExport" | i18n | titlecase }}
+                      {{ "accessImportExport" | i18n }}
                     </label>
                   </div>
                   <div>
@@ -290,14 +290,13 @@
                       formControlName="accessReports"
                     />
                     <label class="!tw-font-normal" for="accessReports">
-                      {{ "accessReports" | i18n | titlecase }}
+                      {{ "accessReports" | i18n }}
                     </label>
                   </div>
                 </div>
                 <div class="col-4">
                   <app-nested-checkbox
                     parentId="manageAllCollections"
-                    [titlecaseTitles]="true"
                     [checkboxes]="permissionsGroup.controls.manageAllCollectionsGroup"
                   >
                   </app-nested-checkbox>
@@ -312,7 +311,7 @@
                         formControlName="manageGroups"
                       />
                       <label class="!tw-font-normal" for="manageGroups">
-                        {{ "manageGroups" | i18n | titlecase }}
+                        {{ "manageGroups" | i18n }}
                       </label>
                     </div>
                     <div>
@@ -323,7 +322,7 @@
                         formControlName="manageSso"
                       />
                       <label class="!tw-font-normal" for="manageSso">
-                        {{ "manageSso" | i18n | titlecase }}
+                        {{ "manageSso" | i18n }}
                       </label>
                     </div>
                     <div>
@@ -334,7 +333,7 @@
                         formControlName="managePolicies"
                       />
                       <label class="!tw-font-normal" for="managePolicies">
-                        {{ "managePolicies" | i18n | titlecase }}
+                        {{ "managePolicies" | i18n }}
                       </label>
                     </div>
                     <div>
@@ -346,7 +345,7 @@
                         (change)="handleDependentPermissions()"
                       />
                       <label class="!tw-font-normal" for="manageUsers">
-                        {{ "manageUsers" | i18n | titlecase }}
+                        {{ "manageUsers" | i18n }}
                       </label>
                     </div>
                     <div>
@@ -358,7 +357,7 @@
                         (change)="handleDependentPermissions()"
                       />
                       <label class="!tw-font-normal" for="manageResetPassword">
-                        {{ "manageAccountRecovery" | i18n | titlecase }}
+                        {{ "manageAccountRecovery" | i18n }}
                       </label>
                     </div>
                   </div>
