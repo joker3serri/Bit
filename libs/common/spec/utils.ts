@@ -69,6 +69,10 @@ export function trackEmissions<T>(observable: Observable<T>): T[] {
       case "boolean":
         emissions.push(value);
         break;
+      case "symbol":
+        // Cheating types to make symbols work at all
+        emissions.push(value.toString() as T);
+        break;
       default: {
         emissions.push(clone(value));
       }
