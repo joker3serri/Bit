@@ -40,7 +40,7 @@ export class DeleteAccountComponent {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private formBuilder: FormBuilder,
-    private accountApiService: AccountApiService,
+    private accountApiService: AccountApiService
   ) {}
 
   static open(dialogService: DialogService): DialogRef<DeleteAccountComponent> {
@@ -57,7 +57,7 @@ export class DeleteAccountComponent {
     this.platformUtilsService.showToast(
       "success",
       this.i18nService.t("accountDeleted"),
-      this.i18nService.t("accountDeletedDesc"),
+      this.i18nService.t("accountDeletedDesc")
     );
   };
 }
