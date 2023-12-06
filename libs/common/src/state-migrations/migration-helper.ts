@@ -3,6 +3,12 @@ import { LogService } from "../platform/abstractions/log.service";
 // eslint-disable-next-line import/no-restricted-paths -- Needed to interface with storage locations
 import { AbstractStorageService } from "../platform/abstractions/storage.service";
 
+export type StateDefinitionLike = { name: string };
+export type KeyDefinitionLike = {
+  stateDefinition: StateDefinitionLike;
+  key: string;
+};
+
 export class MigrationHelper {
   constructor(
     public currentVersion: number,
@@ -42,7 +48,7 @@ export class MigrationHelper {
    * @param keyDefinition unique key definition
    * @returns value from store
    */
-  getFromGlobal<T>(keyDefinition: { stateDefinition: { name: string }; key: string }): Promise<T> {
+  getFromGlobal<T>(keyDefinition: KeyDefinitionLike): Promise<T> {
     return this.get<T>(this.getGlobalKey(keyDefinition));
   }
 
@@ -55,10 +61,7 @@ export class MigrationHelper {
    * @param value value to store
    * @returns void
    */
-  setToGlobal<T>(
-    keyDefinition: { stateDefinition: { name: string }; key: string },
-    value: T,
-  ): Promise<void> {
+  setToGlobal<T>(keyDefinition: KeyDefinitionLike, value: T): Promise<void> {
     return this.set(this.getGlobalKey(keyDefinition), value);
   }
 
@@ -71,10 +74,7 @@ export class MigrationHelper {
    * @param keyDefinition unique key definition
    * @returns value from store
    */
-  getFromUser<T>(
-    userId: string,
-    keyDefinition: { stateDefinition: { name: string }; key: string },
-  ): Promise<T> {
+  getFromUser<T>(userId: string, keyDefinition: KeyDefinitionLike): Promise<T> {
     return this.get<T>(this.getUserKey(userId, keyDefinition));
   }
 
@@ -88,11 +88,7 @@ export class MigrationHelper {
    * @param value value to store
    * @returns void
    */
-  setToUser<T>(
-    userId: string,
-    keyDefinition: { stateDefinition: { name: string }; key: string },
-    value: T,
-  ): Promise<void> {
+  setToUser<T>(userId: string, keyDefinition: KeyDefinitionLike, value: T): Promise<void> {
     return this.set(this.getUserKey(userId, keyDefinition), value);
   }
 
@@ -126,13 +122,7 @@ export class MigrationHelper {
    * @param keyDefinition state and key to use in the key
    * @returns
    */
-  private getUserKey(
-    userId: string,
-    keyDefinition: {
-      stateDefinition: { name: string };
-      key: string;
-    },
-  ): string {
+  private getUserKey(userId: string, keyDefinition: KeyDefinitionLike): string {
     if (this.currentVersion < 10) {
       return userKeyBuilderPre10();
     } else {
@@ -146,7 +136,7 @@ export class MigrationHelper {
    * @param keyDefinition state and key to use in the key
    * @returns
    */
-  private getGlobalKey(keyDefinition: { stateDefinition: { name: string }; key: string }): string {
+  private getGlobalKey(keyDefinition: KeyDefinitionLike): string {
     if (this.currentVersion < 10) {
       return globalKeyBuilderPre10();
     } else {
@@ -164,10 +154,7 @@ export class MigrationHelper {
  * @param keyDefinition the key definition of which data the key should point to.
  * @returns
  */
-function userKeyBuilder(
-  userId: string,
-  keyDefinition: { stateDefinition: { name: string }; key: string },
-): string {
+function userKeyBuilder(userId: string, keyDefinition: KeyDefinitionLike): string {
   return `user_${userId}_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
 }
 
@@ -183,10 +170,7 @@ function userKeyBuilderPre10(): string {
  * @param keyDefinition the key definition of which data the key should point to.
  * @returns
  */
-function globalKeyBuilder(keyDefinition: {
-  stateDefinition: { name: string };
-  key: string;
-}): string {
+function globalKeyBuilder(keyDefinition: KeyDefinitionLike): string {
   return `global_${keyDefinition.stateDefinition.name}_${keyDefinition.key}`;
 }
 
