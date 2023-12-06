@@ -25,10 +25,10 @@ import {
   AllValidationErrors,
   FormValidationErrorsService,
 } from "../../platform/abstractions/form-validation-errors.service";
-import { PasswordColorText } from "../../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputs-field-match.validator";
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
+import { PasswordColorText } from "./password-strength.component";
 
 @Directive()
 export class RegisterComponent extends CaptchaProtectedComponent implements OnInit {

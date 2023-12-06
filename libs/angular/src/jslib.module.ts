@@ -2,6 +2,7 @@ import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
+import { PasswordStrengthComponent } from "./auth/components/password-strength.component";
 import { CalloutComponent } from "./components/callout.component";
 import { BitwardenToastModule } from "./components/toastr.component";
 import { A11yInvalidDirective } from "./directives/a11y-invalid.directive";
@@ -28,7 +29,6 @@ import { UserTypePipe } from "./pipes/user-type.pipe";
 import { EllipsisPipe } from "./platform/pipes/ellipsis.pipe";
 import { FingerprintPipe } from "./platform/pipes/fingerprint.pipe";
 import { I18nPipe } from "./platform/pipes/i18n.pipe";
-import { PasswordStrengthComponent } from "./shared/components/password-strength/password-strength.component";
 import { ExportScopeCalloutComponent } from "./tools/export/components/export-scope-callout.component";
 import { IconComponent } from "./vault/components/icon.component";
 
