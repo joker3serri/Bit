@@ -60,7 +60,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 
     it("should handle missing authenticatedAccounts", async () => {
       storage.get.mockImplementation((key) =>
-        key === "authenticatedAccounts" ? undefined : (exampleJSON as any)[key]
+        key === "authenticatedAccounts" ? undefined : (exampleJSON as any)[key],
       );
       const accounts = await sut.getAccounts();
       expect(accounts).toEqual([]);
@@ -79,7 +79,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 
     it("should throw if the current version is less than 10", () => {
       expect(() =>
-        sut.getFromGlobal({ stateDefinition: { name: "serviceName" }, key: "key" })
+        sut.getFromGlobal({ stateDefinition: { name: "serviceName" }, key: "key" }),
       ).toThrowError("No key builder should be used for versions prior to 10.");
     });
   });
@@ -95,8 +95,8 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
       expect(() =>
         sut.setToGlobal(
           { stateDefinition: { name: "serviceName" }, key: "key" },
-          "global_serviceName_key"
-        )
+          "global_serviceName_key",
+        ),
       ).toThrowError("No key builder should be used for versions prior to 10.");
     });
   });
@@ -113,7 +113,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 
     it("should throw if the current version is less than 10", () => {
       expect(() =>
-        sut.getFromUser("userId", { stateDefinition: { name: "serviceName" }, key: "key" })
+        sut.getFromUser("userId", { stateDefinition: { name: "serviceName" }, key: "key" }),
       ).toThrowError("No key builder should be used for versions prior to 10.");
     });
   });
@@ -124,7 +124,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
       await sut.setToUser(
         "userId",
         { stateDefinition: { name: "serviceName" }, key: "key" },
-        "new_value"
+        "new_value",
       );
       expect(storage.save).toHaveBeenCalledWith("user_userId_serviceName_key", "new_value");
     });
@@ -134,8 +134,8 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
         sut.setToUser(
           "userId",
           { stateDefinition: { name: "serviceName" }, key: "key" },
-          "new_value"
-        )
+          "new_value",
+        ),
       ).toThrowError("No key builder should be used for versions prior to 10.");
     });
   });
