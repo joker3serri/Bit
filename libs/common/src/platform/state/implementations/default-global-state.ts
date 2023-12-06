@@ -20,11 +20,6 @@ import { getStoredValue } from "./util";
 const FAKE_DEFAULT = Symbol("fakeDefault");
 
 export class DefaultGlobalState<T> implements GlobalState<T> {
-  // store all subscribers to count them
-  // implement a destroy after x time if no subscribers
-  // store new subscribers during update
-  // update new subscribers if not update
-
   private storageKey: string;
   private updatePromise: Promise<T> | null = null;
   private storageUpdateSubscription: Subscription;
