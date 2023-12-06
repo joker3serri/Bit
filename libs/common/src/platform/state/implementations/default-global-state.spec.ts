@@ -28,9 +28,10 @@ class TestState {
 }
 
 const testStateDefinition = new StateDefinition("fake", "disk");
-
+const cleanupDelayMs = 10;
 const testKeyDefinition = new KeyDefinition<TestState>(testStateDefinition, "fake", {
   deserializer: TestState.fromJSON,
+  cleanupDelayMs,
 });
 const globalKey = globalKeyBuilder(testKeyDefinition);
 
@@ -265,6 +266,88 @@ describe("DefaultGlobalState", () => {
       await globalState.update((state) => {
         return newData;
       });
+    });
+  });
+
+  describe("cleanup", () => {
+    async function assertClean() {
+      const emissions = trackEmissions(globalState["stateSubject"]);
+      const initial = structuredClone(emissions);
+
+      diskStorageService.save(globalKey, newData);
+      await awaitAsync(); // storage updates are behind a promise
+
+      expect(emissions).toEqual(initial); // no longer listening to storage updates
+    }
+
+    it("should cleanup after last subscriber", async () => {
+      const subscription = globalState.state$.subscribe();
+      await awaitAsync(); // storage updates are behind a promise
+
+      subscription.unsubscribe();
+      expect(globalState["subscriberCount"].getValue()).toBe(0);
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      await assertClean();
+    });
+
+    it("should not cleanup if there are still subscribers", async () => {
+      const subscription1 = globalState.state$.subscribe();
+      const sub2Emissions: TestState[] = [];
+      const subscription2 = globalState.state$.subscribe((v) => sub2Emissions.push(v));
+      await awaitAsync(); // storage updates are behind a promise
+
+      subscription1.unsubscribe();
+
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      expect(globalState["subscriberCount"].getValue()).toBe(1);
+
+      // Still be listening to storage updates
+      diskStorageService.save(globalKey, newData);
+      await awaitAsync(); // storage updates are behind a promise
+      expect(sub2Emissions).toEqual([null, newData]);
+
+      subscription2.unsubscribe();
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      await assertClean();
+    });
+
+    it("can re-initialize after cleanup", async () => {
+      const subscription = globalState.state$.subscribe();
+      await awaitAsync();
+
+      subscription.unsubscribe();
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      const emissions = trackEmissions(globalState.state$);
+      await awaitAsync();
+
+      diskStorageService.save(globalKey, newData);
+      await awaitAsync();
+
+      expect(emissions).toEqual([null, newData]);
+    });
+
+    it("should not cleanup if a subscriber joins during the cleanup delay", async () => {
+      const subscription = globalState.state$.subscribe();
+      await awaitAsync();
+
+      await diskStorageService.save(globalKey, newData);
+      await awaitAsync();
+
+      subscription.unsubscribe();
+      expect(globalState["subscriberCount"].getValue()).toBe(0);
+      // Do not wait long enough for cleanup
+      await awaitAsync(cleanupDelayMs / 2);
+
+      expect(globalState["stateSubject"].value).toEqual(newData); // digging in to check that it hasn't been cleared
+      expect(globalState["storageUpdateSubscription"]).not.toBeNull(); // still listening to storage updates
     });
   });
 });

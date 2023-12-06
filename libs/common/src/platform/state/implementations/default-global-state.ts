@@ -1,4 +1,12 @@
-import { BehaviorSubject, Observable, filter, firstValueFrom, switchMap, timeout } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  filter,
+  firstValueFrom,
+  switchMap,
+  timeout,
+} from "rxjs";
 
 import {
   AbstractStorageService,
@@ -19,6 +27,8 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
 
   private storageKey: string;
   private updatePromise: Promise<T> | null = null;
+  private storageUpdateSubscription: Subscription;
+  private subscriberCount = new BehaviorSubject<number>(0);
   private stateObservable: Observable<T>;
 
   protected stateSubject: BehaviorSubject<T | typeof FAKE_DEFAULT> = new BehaviorSubject<
@@ -81,9 +91,14 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
       }),
     );
 
-    // TODO MDG: handle this subscription
-    storageUpdates$.subscribe((value) => {
+    this.storageUpdateSubscription = storageUpdates$.subscribe((value) => {
       this.stateSubject.next(value);
+    });
+
+    this.subscriberCount.subscribe((count) => {
+      if (count === 0 && this.stateObservable != null) {
+        this.triggerCleanup();
+      }
     });
 
     // Intentionally un-awaited promise, we don't want to delay return of observable, but we do want to
@@ -93,6 +108,14 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
     });
 
     return new Observable<T>((subscriber) => {
+      this.incrementSubscribers();
+
+      const prevUnsubscribe = subscriber.unsubscribe.bind(subscriber);
+      subscriber.unsubscribe = () => {
+        this.decrementSubscribers();
+        prevUnsubscribe();
+      };
+
       return this.stateSubject
         .pipe(
           // Filter out fake default, which is used to indicate that state is not ready to be emitted yet.
@@ -121,5 +144,26 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
       this.chosenLocation,
       this.keyDefinition.deserializer,
     );
+  }
+
+  private incrementSubscribers() {
+    this.subscriberCount.next(this.subscriberCount.value + 1);
+  }
+
+  private decrementSubscribers() {
+    this.subscriberCount.next(this.subscriberCount.value - 1);
+  }
+
+  private triggerCleanup() {
+    setTimeout(() => {
+      if (this.subscriberCount.value === 0) {
+        this.updatePromise = null;
+        this.storageUpdateSubscription.unsubscribe();
+        this.stateObservable = null;
+        this.subscriberCount.complete();
+        this.subscriberCount = new BehaviorSubject<number>(0);
+        this.stateSubject.next(FAKE_DEFAULT);
+      }
+    }, this.keyDefinition.cleanupDelayMs);
   }
 }
