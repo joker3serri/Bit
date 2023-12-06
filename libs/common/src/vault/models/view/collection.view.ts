@@ -38,11 +38,10 @@ export class CollectionView implements View, ITreeNodeObject {
         "Id of the organization provided does not match the org id of the collection.",
       );
     }
-    if (flexibleCollectionsEnabled) {
-      return org?.canEditAnyCollection || this.manage;
-    } else {
-      return org?.canEditAnyCollection || org?.canEditAssignedCollections;
-    }
+
+    return flexibleCollectionsEnabled
+      ? org?.canEditAnyCollection || this.manage
+      : org?.canEditAnyCollection || org?.canEditAssignedCollections;
   }
 
   // For deleting a collection, not the items within it.
@@ -53,10 +52,8 @@ export class CollectionView implements View, ITreeNodeObject {
       );
     }
 
-    if (flexibleCollectionsEnabled) {
-      return org?.canDeleteAnyCollection || (!org?.limitCollectionCreationDeletion && this.manage);
-    } else {
-      return org?.canDeleteAnyCollection || org?.canDeleteAssignedCollections;
-    }
+    return flexibleCollectionsEnabled
+      ? org?.canDeleteAnyCollection || (!org?.limitCollectionCreationDeletion && this.manage)
+      : org?.canDeleteAnyCollection || org?.canDeleteAssignedCollections;
   }
 }

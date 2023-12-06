@@ -32,18 +32,14 @@ export class CollectionAdminView extends CollectionView {
   }
 
   override canEdit(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
-    if (flexibleCollectionsEnabled) {
-      return org?.canEditAnyCollection;
-    } else {
-      return org?.canEditAnyCollection || (org?.canEditAssignedCollections && this.assigned);
-    }
+    return flexibleCollectionsEnabled
+      ? org?.canEditAnyCollection
+      : org?.canEditAnyCollection || (org?.canEditAssignedCollections && this.assigned);
   }
 
   override canDelete(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
-    if (flexibleCollectionsEnabled) {
-      return org?.canDeleteAnyCollection;
-    } else {
-      return org?.canDeleteAnyCollection || (org?.canDeleteAssignedCollections && this.assigned);
-    }
+    return flexibleCollectionsEnabled
+      ? org?.canDeleteAnyCollection
+      : org?.canDeleteAnyCollection || (org?.canDeleteAssignedCollections && this.assigned);
   }
 }
