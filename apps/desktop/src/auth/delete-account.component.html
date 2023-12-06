@@ -6,7 +6,8 @@
       <bit-callout type="warning" title="{{ 'warning' | i18n }}">
         {{ "deleteAccountWarning" | i18n }}
       </bit-callout>
-      <div>
+      <!-- Temporary border styles. TODO: Remove when app-user-verification is migrated to the CL. -->
+      <div class="tw-border-solid tw-border tw-rounded tw-border-info-500/25 tw-mb-2">
         <app-user-verification
           ngDefaultControl
           formControlName="verification"
