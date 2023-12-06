@@ -223,6 +223,7 @@
         "electron-updater",
         "jsdom",
         "jszip",
+        "oidc-client-ts",
         "papaparse",
         "utf-8-validate"
       ],
