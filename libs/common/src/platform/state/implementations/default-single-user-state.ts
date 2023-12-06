@@ -89,19 +89,17 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
   }
 
   private initializeObservable() {
-    const storageUpdates$ = this.chosenLocation.updates$.pipe(
-      filter((update) => update.key === this.storageKey),
-      switchMap(async (update) => {
-        if (update.updateType === "remove") {
-          return null;
-        }
-        return await this.getFromState();
-      }),
-    );
-
-    this.storageUpdateSubscription = storageUpdates$.subscribe((value) => {
-      this.stateSubject.next(value);
-    });
+    this.storageUpdateSubscription = this.chosenLocation.updates$
+      .pipe(
+        filter((update) => update.key === this.storageKey),
+        switchMap(async (update) => {
+          if (update.updateType === "remove") {
+            return null;
+          }
+          return await this.getFromState();
+        }),
+      )
+      .subscribe((v) => this.stateSubject.next(v));
 
     this.subscriberCount.subscribe((count) => {
       if (count === 0 && this.stateObservable != null) {
