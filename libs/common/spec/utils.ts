@@ -85,7 +85,7 @@ function clone(value: any): any {
   }
 }
 
-export async function awaitAsync(ms = 0) {
+export async function awaitAsync(ms = 1) {
   if (ms < 1) {
     await Promise.resolve();
   } else {
