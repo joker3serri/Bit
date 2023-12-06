@@ -1,4 +1,4 @@
-import { AccountService } from "../../../auth/abstractions/account.service";
+import { UserId } from "../../../types/guid";
 import { EncryptService } from "../../abstractions/encrypt.service";
 import {
   AbstractMemoryStorageService,
@@ -7,39 +7,41 @@ import {
 } from "../../abstractions/storage.service";
 import { KeyDefinition } from "../key-definition";
 import { StorageLocation } from "../state-definition";
-import { UserState } from "../user-state";
-import { UserStateProvider } from "../user-state.provider";
+import { SingleUserState } from "../user-state";
+import { SingleUserStateProvider } from "../user-state.provider";
 
-import { DefaultUserState } from "./default-user-state";
+import { DefaultSingleUserState } from "./default-single-user-state";
 
-export class DefaultUserStateProvider implements UserStateProvider {
-  private userStateCache: Record<string, UserState<unknown>> = {};
+export class DefaultSingleUserStateProvider implements SingleUserStateProvider {
+  private cache: Record<string, SingleUserState<unknown>> = {};
 
   constructor(
-    protected accountService: AccountService,
     protected encryptService: EncryptService,
     protected memoryStorage: AbstractMemoryStorageService & ObservableStorageService,
     protected diskStorage: AbstractStorageService & ObservableStorageService
   ) {}
 
-  get<T>(keyDefinition: KeyDefinition<T>): UserState<T> {
-    const cacheKey = keyDefinition.buildCacheKey();
-    const existingUserState = this.userStateCache[cacheKey];
+  get<T>(userId: UserId, keyDefinition: KeyDefinition<T>): SingleUserState<T> {
+    const cacheKey = keyDefinition.buildCacheKey("user", userId);
+    const existingUserState = this.cache[cacheKey];
     if (existingUserState != null) {
       // I have to cast out of the unknown generic but this should be safe if rules
       // around domain token are made
-      return existingUserState as DefaultUserState<T>;
+      return existingUserState as SingleUserState<T>;
     }
 
-    const newUserState = this.buildUserState(keyDefinition);
-    this.userStateCache[cacheKey] = newUserState;
+    const newUserState = this.buildSingleUserState(userId, keyDefinition);
+    this.cache[cacheKey] = newUserState;
     return newUserState;
   }
 
-  protected buildUserState<T>(keyDefinition: KeyDefinition<T>): UserState<T> {
-    return new DefaultUserState<T>(
+  protected buildSingleUserState<T>(
+    userId: UserId,
+    keyDefinition: KeyDefinition<T>
+  ): SingleUserState<T> {
+    return new DefaultSingleUserState<T>(
+      userId,
       keyDefinition,
-      this.accountService,
       this.encryptService,
       this.getLocation(keyDefinition.stateDefinition.storageLocation)
     );

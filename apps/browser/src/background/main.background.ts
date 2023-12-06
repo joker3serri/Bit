@@ -24,6 +24,8 @@ import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthRequestCryptoServiceImplementation } from "@bitwarden/common/auth/services/auth-request-crypto.service.implementation";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
@@ -87,6 +89,7 @@ import {
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { InternalSendService as InternalSendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
+import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/vault/abstractions/collection.service";
 import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/vault/abstractions/fido2/fido2-authenticator.service.abstraction";
@@ -125,6 +128,7 @@ import ContextMenusBackground from "../autofill/background/context-menus.backgro
 import NotificationBackground from "../autofill/background/notification.background";
 import OverlayBackground from "../autofill/background/overlay.background";
 import TabsBackground from "../autofill/background/tabs.background";
+import WebRequestBackground from "../autofill/background/web-request.background";
 import { CipherContextMenuHandler } from "../autofill/browser/cipher-context-menu-handler";
 import { ContextMenuClickedHandler } from "../autofill/browser/context-menu-clicked-handler";
 import { MainContextMenuHandler } from "../autofill/browser/main-context-menu-handler";
@@ -159,7 +163,6 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
-import WebRequestBackground from "./webRequest.background";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -621,7 +624,8 @@ export default class MainBackground {
       this.messagingService,
       this.platformUtilsService,
       systemUtilsServiceReloadCallback,
-      this.stateService
+      this.stateService,
+      this.vaultTimeoutSettingsService
     );
 
     // Other fields
@@ -829,6 +833,43 @@ export default class MainBackground {
     }
   }
 
+  /**
+   * Switch accounts to indicated userId -- null is no active user
+   */
+  async switchAccount(userId: UserId) {
+    try {
+      await this.stateService.setActiveUser(userId);
+
+      if (userId == null) {
+        await this.stateService.setRememberedEmail(null);
+        await this.refreshBadge();
+        await this.refreshMenu();
+        return;
+      }
+
+      const status = await this.authService.getAuthStatus(userId);
+      const forcePasswordReset =
+        (await this.stateService.getForceSetPasswordReason({ userId: userId })) !=
+        ForceSetPasswordReason.None;
+
+      await this.systemService.clearPendingClipboard();
+      await this.notificationsService.updateConnection(false);
+
+      if (status === AuthenticationStatus.Locked) {
+        this.messagingService.send("locked", { userId: userId });
+      } else if (forcePasswordReset) {
+        this.messagingService.send("update-temp-password", { userId: userId });
+      } else {
+        this.messagingService.send("unlocked", { userId: userId });
+        await this.refreshBadge();
+        await this.refreshMenu();
+        await this.syncService.fullSync(false);
+      }
+    } finally {
+      this.messagingService.send("switchAccountFinish", { userId: userId });
+    }
+  }
+
   async logout(expired: boolean, userId?: string) {
     await this.eventUploadService.uploadEvents(userId);
 
@@ -849,7 +890,15 @@ export default class MainBackground {
     //Needs to be checked before state is cleaned
     const needStorageReseed = await this.needsStorageReseed();
 
-    await this.stateService.clean({ userId: userId });
+    const newActiveUser = await this.stateService.clean({ userId: userId });
+
+    if (newActiveUser != null) {
+      // we have a new active user, do not continue tearing down application
+      await this.switchAccount(newActiveUser as UserId);
+      this.messagingService.send("switchAccountFinish");
+      this.messagingService.send("doneLoggingOut", { expired: expired, userId: userId });
+      return;
+    }
 
     if (userId == null || userId === (await this.stateService.getUserId())) {
       this.searchService.clearIndex();
