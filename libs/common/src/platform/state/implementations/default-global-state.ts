@@ -52,13 +52,15 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
     options: StateUpdateOptions<T, TCombine> = {},
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
-
-    this.updatePromise = this.getGuaranteedState().then((currentState) =>
-      this.internalUpdate(currentState, configureState, options),
-    );
-    const newState = await this.updatePromise;
-    this.updatePromise = null;
-    return newState;
+    try {
+      this.updatePromise = this.getGuaranteedState().then((currentState) =>
+        this.internalUpdate(currentState, configureState, options),
+      );
+      const newState = await this.updatePromise;
+      return newState;
+    } finally {
+      this.updatePromise = null;
+    }
   }
 
   private async internalUpdate<TCombine>(
