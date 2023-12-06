@@ -19,6 +19,11 @@ type KeyDefinitionOptions<T> = {
    * @returns The fully typed version of your state.
    */
   readonly deserializer: (jsonValue: Jsonify<T>) => T;
+  /**
+   * The number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
+   * Defaults to 1000ms.
+   */
+  readonly cleanupDelayMs?: number;
 };
 
 /**
@@ -53,6 +58,13 @@ export class KeyDefinition<T> {
    */
   get deserializer() {
     return this.options.deserializer;
+  }
+
+  /**
+   * Gets the number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
+   */
+  get cleanupDelayMs() {
+    return this.options.cleanupDelayMs ?? 1000;
   }
 
   /**
