@@ -107,6 +107,7 @@
         "prettier-plugin-tailwindcss",
         "rimraf",
         "tabbable",
+        "tldts",
         "wait-on"
       ],
       "description": "Autofill owned dependencies",
@@ -221,7 +222,6 @@
         "electron-updater",
         "jszip",
         "papaparse",
-        "tldts",
         "utf-8-validate"
       ],
       "description": "Tools owned dependencies",
