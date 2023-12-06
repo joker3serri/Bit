@@ -149,7 +149,8 @@ export class BulkDeleteDialogComponent {
     } else if (this.organizations && this.collections) {
       const deletePromises: Promise<any>[] = [];
       for (const organization of this.organizations) {
-        if (this.collections.some((c) => !c.canDelete(organization, flexibleCollectionsEnabled))) {
+        const orgCollections = this.collections.filter((o) => o.organizationId === organization.id);
+        if (orgCollections.some((c) => !c.canDelete(organization, flexibleCollectionsEnabled))) {
           this.platformUtilsService.showToast(
             "error",
             this.i18nService.t("errorOccurred"),
@@ -157,11 +158,9 @@ export class BulkDeleteDialogComponent {
           );
           return;
         }
-        const orgCollections = this.collections
-          .filter((o) => o.organizationId === organization.id)
-          .map((c) => c.id);
+        const orgCollectionIds = orgCollections.map((c) => c.id);
         deletePromises.push(
-          this.apiService.deleteManyCollections(this.organization.id, orgCollections),
+          this.apiService.deleteManyCollections(this.organization.id, orgCollectionIds),
         );
       }
       return await Promise.all(deletePromises);
