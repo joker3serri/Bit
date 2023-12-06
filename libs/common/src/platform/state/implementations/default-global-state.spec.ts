@@ -215,7 +215,7 @@ describe("DefaultGlobalState", () => {
   });
 
   describe("update races", () => {
-    it("subscriptions during an update should not emit until update is complete", async () => {
+    test("subscriptions during an update should not emit until update is complete", async () => {
       // Seed with interesting data
       const initialData = { date: new Date(2020, 1, 1) };
       await globalState.update((state, dependencies) => {
@@ -230,9 +230,7 @@ describe("DefaultGlobalState", () => {
 
       const originalSave = diskStorageService.save.bind(diskStorageService);
       diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
-        await expect(() =>
-          firstValueFrom(globalState.state$.pipe(timeout(100))),
-        ).rejects.toThrowError();
+        await expect(() => firstValueFrom(globalState.state$.pipe(timeout(100)))).rejects.toThrow();
         await originalSave(key, obj);
       });
 
@@ -246,7 +244,7 @@ describe("DefaultGlobalState", () => {
       expect(emissions).toEqual([initialData, newData]);
     });
 
-    it("updates should should wait until previous update is complete", async () => {
+    test("updates should wait until previous update is complete", async () => {
       trackEmissions(globalState.state$);
       await awaitAsync(); // storage updates are behind a promise
 
