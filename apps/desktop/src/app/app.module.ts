@@ -7,12 +7,7 @@ import { NgModule } from "@angular/core";
 
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
-import {
-  AsyncActionsModule,
-  ButtonModule,
-  CalloutModule,
-  DialogModule,
-} from "@bitwarden/components";
+import { DialogModule } from "@bitwarden/components";
 
 import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
 import { SetPinComponent } from "../auth/components/set-pin.component";
@@ -66,9 +61,8 @@ import { SendComponent } from "./tools/send/send.component";
     VaultFilterModule,
     LoginModule,
     DialogModule,
-    ButtonModule,
-    CalloutModule,
-    AsyncActionsModule,
+    DeleteAccountComponent,
+    UserVerificationComponent,
   ],
   declarations: [
     AccessibilityCookieComponent,
@@ -81,7 +75,6 @@ import { SendComponent } from "./tools/send/send.component";
     CollectionsComponent,
     ColorPasswordPipe,
     ColorPasswordCountPipe,
-    DeleteAccountComponent,
     EnvironmentComponent,
     ExportComponent,
     FolderAddEditComponent,
@@ -106,7 +99,6 @@ import { SendComponent } from "./tools/send/send.component";
     TwoFactorComponent,
     TwoFactorOptionsComponent,
     UpdateTempPasswordComponent,
-    UserVerificationComponent,
     VaultComponent,
     VaultTimeoutInputComponent,
     ViewComponent,
