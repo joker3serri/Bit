@@ -43,15 +43,15 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     protected keyDefinition: KeyDefinition<T>,
     private accountService: AccountService,
     private encryptService: EncryptService,
-    private chosenStorageLocation: AbstractStorageService & ObservableStorageService
+    private chosenStorageLocation: AbstractStorageService & ObservableStorageService,
   ) {
     this.formattedKey$ = this.accountService.activeAccount$.pipe(
       map((account) =>
         account != null && account.id != null
           ? userKeyBuilder(account.id, this.keyDefinition)
-          : null
+          : null,
       ),
-      shareReplay({ bufferSize: 1, refCount: false })
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     const activeAccountData$ = this.formattedKey$.pipe(
@@ -62,11 +62,11 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
         return await getStoredValue(
           key,
           this.chosenStorageLocation,
-          this.keyDefinition.deserializer
+          this.keyDefinition.deserializer,
         );
       }),
       // Share the execution
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: false, bufferSize: 1 }),
     );
 
     const storageUpdates$ = this.chosenStorageLocation.updates$.pipe(
@@ -79,10 +79,10 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
         const data = await getStoredValue(
           key,
           this.chosenStorageLocation,
-          this.keyDefinition.deserializer
+          this.keyDefinition.deserializer,
         );
         return data;
-      })
+      }),
     );
 
     // Whomever subscribes to this data, should be notified of updated data
@@ -101,7 +101,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
             accountChangeSubscription.unsubscribe();
             storageUpdateSubscription.unsubscribe();
           },
-        })
+        }),
       );
     })
       // I fake the generic here because I am filtering out the other union type
@@ -111,7 +111,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
 
   async update<TCombine>(
     configureState: (state: T, dependency: TCombine) => T,
-    options: StateUpdateOptions<T, TCombine> = {}
+    options: StateUpdateOptions<T, TCombine> = {},
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
     const key = await this.createKey();
@@ -156,7 +156,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     const value = await getStoredValue(
       key,
       this.chosenStorageLocation,
-      this.keyDefinition.deserializer
+      this.keyDefinition.deserializer,
     );
     this.stateSubject.next(value);
     return value;

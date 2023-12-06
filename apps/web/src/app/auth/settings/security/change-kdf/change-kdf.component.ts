@@ -30,7 +30,10 @@ export class ChangeKdfComponent implements OnInit {
   protected ARGON2_MEMORY = ARGON2_MEMORY;
   protected ARGON2_PARALLELISM = ARGON2_PARALLELISM;
 
-  constructor(private stateService: StateService, private dialogService: DialogService) {
+  constructor(
+    private stateService: StateService,
+    private dialogService: DialogService,
+  ) {
     this.kdfOptions = [
       { name: "PBKDF2 SHA-256", value: KdfType.PBKDF2_SHA256 },
       { name: "Argon2id", value: KdfType.Argon2id },
@@ -49,7 +52,7 @@ export class ChangeKdfComponent implements OnInit {
       this.kdfConfig = new KdfConfig(
         ARGON2_ITERATIONS.defaultValue,
         ARGON2_MEMORY.defaultValue,
-        ARGON2_PARALLELISM.defaultValue
+        ARGON2_PARALLELISM.defaultValue,
       );
     } else {
       throw new Error("Unknown KDF type.");

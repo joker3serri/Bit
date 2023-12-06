@@ -28,7 +28,7 @@ export class AccountRecoveryService {
     private organizationService: OrganizationService,
     private organizationUserService: OrganizationUserService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private i18nService: I18nService
+    private i18nService: I18nService,
   ) {}
 
   /**
@@ -67,11 +67,11 @@ export class AccountRecoveryService {
     newMasterPassword: string,
     email: string,
     orgUserId: string,
-    orgId: string
+    orgId: string,
   ): Promise<void> {
     const response = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
       orgId,
-      orgUserId
+      orgUserId,
     );
 
     if (response == null) {
@@ -85,7 +85,7 @@ export class AccountRecoveryService {
     }
     const decPrivateKey = await this.encryptService.decryptToBytes(
       new EncString(response.encryptedPrivateKey),
-      orgSymKey
+      orgSymKey,
     );
 
     // Decrypt User's Reset Password Key to get UserKey
@@ -97,17 +97,17 @@ export class AccountRecoveryService {
       newMasterPassword,
       email.trim().toLowerCase(),
       response.kdf,
-      new KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism)
+      new KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism),
     );
     const newMasterKeyHash = await this.cryptoService.hashMasterKey(
       newMasterPassword,
-      newMasterKey
+      newMasterKey,
     );
 
     // Create new encrypted user key for the User
     const newUserKey = await this.cryptoService.encryptUserKeyWithMasterKey(
       newMasterKey,
-      existingUserKey
+      existingUserKey,
     );
 
     // Create request
@@ -145,7 +145,7 @@ export class AccountRecoveryService {
         await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
           org.id,
           org.userId,
-          request
+          request,
         );
       } catch (e) {
         // If enrollment fails, continue to next org

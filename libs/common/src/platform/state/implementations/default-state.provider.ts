@@ -6,7 +6,7 @@ export class DefaultStateProvider implements StateProvider {
   constructor(
     private readonly activeUserStateProvider: ActiveUserStateProvider,
     private readonly singleUserStateProvider: SingleUserStateProvider,
-    private readonly globalStateProvider: GlobalStateProvider
+    private readonly globalStateProvider: GlobalStateProvider,
   ) {}
 
   getActive: InstanceType<typeof ActiveUserStateProvider>["get"] =
@@ -14,6 +14,6 @@ export class DefaultStateProvider implements StateProvider {
   getUser: InstanceType<typeof SingleUserStateProvider>["get"] =
     this.singleUserStateProvider.get.bind(this.singleUserStateProvider);
   getGlobal: InstanceType<typeof GlobalStateProvider>["get"] = this.globalStateProvider.get.bind(
-    this.globalStateProvider
+    this.globalStateProvider,
   );
 }

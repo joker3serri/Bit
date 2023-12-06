@@ -74,7 +74,7 @@ describe("VaultTimeoutService", () => {
       authService,
       vaultTimeoutSettingsService,
       lockedCallback,
-      loggedOutCallback
+      loggedOutCallback,
     );
   });
 
@@ -94,7 +94,7 @@ describe("VaultTimeoutService", () => {
     globalSetups?: {
       userId?: string;
       isViewOpen?: boolean;
-    }
+    },
   ) => {
     // Both are available by default and the specific test can change this per test
     availableVaultTimeoutActionsSubject.next([VaultTimeoutAction.Lock, VaultTimeoutAction.LogOut]);
@@ -130,7 +130,7 @@ describe("VaultTimeoutService", () => {
         accounts[userId]?.availableTimeoutActions ?? [
           VaultTimeoutAction.Lock,
           VaultTimeoutAction.LogOut,
-        ]
+        ],
       );
     });
 
@@ -140,7 +140,7 @@ describe("VaultTimeoutService", () => {
         newPartial[key] = null; // No values actually matter on this other than the key
         return Object.assign(agg, newPartial);
       },
-      {} as Record<string, Account>
+      {} as Record<string, Account>,
     );
     accountsSubject.next(accountsSubjectValue);
   };
@@ -179,7 +179,7 @@ describe("VaultTimeoutService", () => {
         });
 
         expectNoAction("1");
-      }
+      },
     );
 
     it.each([
@@ -202,7 +202,7 @@ describe("VaultTimeoutService", () => {
         await vaultTimeoutService.checkVaultTimeout();
 
         expectNoAction("1");
-      }
+      },
     );
 
     it.each([undefined, null])(
@@ -219,7 +219,7 @@ describe("VaultTimeoutService", () => {
         await vaultTimeoutService.checkVaultTimeout();
 
         expectNoAction("1");
-      }
+      },
     );
 
     it("should lock an account that isn't active and has immediate as their timeout when view is not open", async () => {
@@ -241,7 +241,7 @@ describe("VaultTimeoutService", () => {
         },
         {
           isViewOpen: false,
-        }
+        },
       );
 
       // Act
@@ -284,7 +284,7 @@ describe("VaultTimeoutService", () => {
             availableTimeoutActions: [VaultTimeoutAction.LogOut],
           },
         },
-        { userId: "2", isViewOpen: false } // Treat user 2 as the active user
+        { userId: "2", isViewOpen: false }, // Treat user 2 as the active user
       );
 
       await vaultTimeoutService.checkVaultTimeout();
@@ -311,7 +311,7 @@ describe("VaultTimeoutService", () => {
             vaultTimeout: 1, // Vault timeout of 1 minute
           },
         },
-        { userId: "2", isViewOpen: true }
+        { userId: "2", isViewOpen: true },
       );
 
       await vaultTimeoutService.checkVaultTimeout();
@@ -329,7 +329,7 @@ describe("VaultTimeoutService", () => {
             vaultTimeout: 1, // Vault timeout of 1 minute
           },
         },
-        { userId: "1", isViewOpen: true } // They are the currently active user
+        { userId: "1", isViewOpen: true }, // They are the currently active user
       );
 
       await vaultTimeoutService.checkVaultTimeout();

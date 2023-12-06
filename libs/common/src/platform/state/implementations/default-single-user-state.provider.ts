@@ -18,7 +18,7 @@ export class DefaultSingleUserStateProvider implements SingleUserStateProvider {
   constructor(
     protected encryptService: EncryptService,
     protected memoryStorage: AbstractMemoryStorageService & ObservableStorageService,
-    protected diskStorage: AbstractStorageService & ObservableStorageService
+    protected diskStorage: AbstractStorageService & ObservableStorageService,
   ) {}
 
   get<T>(userId: UserId, keyDefinition: KeyDefinition<T>): SingleUserState<T> {
@@ -37,13 +37,13 @@ export class DefaultSingleUserStateProvider implements SingleUserStateProvider {
 
   protected buildSingleUserState<T>(
     userId: UserId,
-    keyDefinition: KeyDefinition<T>
+    keyDefinition: KeyDefinition<T>,
   ): SingleUserState<T> {
     return new DefaultSingleUserState<T>(
       userId,
       keyDefinition,
       this.encryptService,
-      this.getLocation(keyDefinition.stateDefinition.storageLocation)
+      this.getLocation(keyDefinition.stateDefinition.storageLocation),
     );
   }
 

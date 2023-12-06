@@ -47,7 +47,7 @@ export class FakeActiveUserStateProvider {
   states: Map<string, ActiveUserState<unknown>> = new Map();
   get<T>(keyDefinition: KeyDefinition<T>): ActiveUserState<T> {
     let result = this.states.get(
-      keyDefinition.buildCacheKey("user", "active")
+      keyDefinition.buildCacheKey("user", "active"),
     ) as ActiveUserState<T>;
 
     if (result == null) {

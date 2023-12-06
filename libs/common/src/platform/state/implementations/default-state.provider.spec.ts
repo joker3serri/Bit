@@ -22,7 +22,7 @@ describe("DefaultStateProvider", () => {
     sut = new DefaultStateProvider(
       activeUserStateProvider,
       singleUserStateProvider,
-      globalStateProvider
+      globalStateProvider,
     );
   });
 
