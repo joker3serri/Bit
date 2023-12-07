@@ -1,12 +1,10 @@
 import {
   BehaviorSubject,
   Observable,
-  Subscriber,
   Subscription,
   filter,
   firstValueFrom,
   switchMap,
-  tap,
   timeout,
 } from "rxjs";
 
@@ -24,7 +22,6 @@ const FAKE_DEFAULT = Symbol("fakeDefault");
 export class DefaultGlobalState<T> implements GlobalState<T> {
   private storageKey: string;
   private updatePromise: Promise<T> | null = null;
-  private toCatchUpSubscribers: Subscriber<T>[] | null = null;
   private storageUpdateSubscription: Subscription;
   private subscriberCount = new BehaviorSubject<number>(0);
   private stateObservable: Observable<T>;
@@ -74,8 +71,6 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
         : null;
 
     if (!options.shouldUpdate(currentState, combinedDependencies)) {
-      this.toCatchUpSubscribers?.forEach((s) => s.next(currentState));
-      this.toCatchUpSubscribers = null;
       return currentState;
     }
 
@@ -118,27 +113,10 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
         prevUnsubscribe();
       };
 
-      let hasEmitted = false;
-
       return this.stateSubject
         .pipe(
           // Filter out fake default, which is used to indicate that state is not ready to be emitted yet.
           filter<T>((i) => i != FAKE_DEFAULT),
-          // New subscriptions during an update will be pushed to as part of the update, or as a get,
-          // in which case updatePromise will be null
-          filter<T>(() => {
-            if (this.updatePromise != null) {
-              if (hasEmitted) {
-                return true;
-              } else {
-                this.toCatchUpSubscribers = this.toCatchUpSubscribers ?? [];
-                this.toCatchUpSubscribers.push(subscriber);
-                return false;
-              }
-            }
-            return true;
-          }),
-          tap(() => (hasEmitted = true)),
         )
         .subscribe(subscriber);
     });
@@ -180,7 +158,6 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
         this.subscriberCount.complete();
         this.subscriberCount = new BehaviorSubject<number>(0);
         this.stateSubject.next(FAKE_DEFAULT);
-        this.toCatchUpSubscribers = null;
       }
     }, this.keyDefinition.cleanupDelayMs);
   }
