@@ -692,7 +692,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       FeatureFlag.FlexibleCollections,
       false,
     );
-    if (collection.canDelete(organization, flexibleCollectionsEnabled)) {
+    if (!collection.canDelete(organization, flexibleCollectionsEnabled)) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
