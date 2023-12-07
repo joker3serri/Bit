@@ -2,7 +2,7 @@
  * need to update test environment so trackEmissions works appropriately
  * @jest-environment ../shared/test.environment.ts
  */
-import { any, mock } from "jest-mock-extended";
+import { any, anySymbol, mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of, timeout } from "rxjs";
 import { Jsonify } from "type-fest";
 
@@ -11,7 +11,7 @@ import { FakeStorageService } from "../../../../spec/fake-storage.service";
 import { AccountInfo, AccountService } from "../../../auth/abstractions/account.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { UserId } from "../../../types/guid";
-import { KeyDefinition } from "../key-definition";
+import { KeyDefinition, userKeyBuilder } from "../key-definition";
 import { StateDefinition } from "../state-definition";
 
 import { DefaultActiveUserState } from "./default-active-user-state";
@@ -32,9 +32,10 @@ class TestState {
 }
 
 const testStateDefinition = new StateDefinition("fake", "disk");
-
+const cleanupDelayMs = 10;
 const testKeyDefinition = new KeyDefinition<TestState>(testStateDefinition, "fake", {
   deserializer: TestState.fromJSON,
+  cleanupDelayMs,
 });
 
 describe("DefaultActiveUserState", () => {
@@ -56,8 +57,12 @@ describe("DefaultActiveUserState", () => {
     );
   });
 
+  const makeUserId = (id: string) => {
+    return id != null ? (`00000000-0000-1000-a000-00000000000${id}` as UserId) : undefined;
+  };
+
   const changeActiveUser = async (id: string) => {
-    const userId = id != null ? `00000000-0000-1000-a000-00000000000${id}` : undefined;
+    const userId = makeUserId(id);
     activeAccountSubject.next({
       id: userId as UserId,
       email: `test${id}@example.com`,
@@ -90,7 +95,7 @@ describe("DefaultActiveUserState", () => {
     const emissions = trackEmissions(userState.state$);
 
     // User signs in
-    changeActiveUser("1");
+    await changeActiveUser("1");
     await awaitAsync();
 
     // Service does an update
@@ -111,17 +116,17 @@ describe("DefaultActiveUserState", () => {
     expect(diskStorageService.mock.get).toHaveBeenNthCalledWith(
       1,
       "user_00000000-0000-1000-a000-000000000001_fake_fake",
-      any(),
+      any(), // options
     );
     expect(diskStorageService.mock.get).toHaveBeenNthCalledWith(
       2,
       "user_00000000-0000-1000-a000-000000000001_fake_fake",
-      any(),
+      any(), // options
     );
     expect(diskStorageService.mock.get).toHaveBeenNthCalledWith(
       3,
       "user_00000000-0000-1000-a000-000000000002_fake_fake",
-      any(),
+      any(), // options
     );
 
     // Should only have saved data for the first user
@@ -129,7 +134,8 @@ describe("DefaultActiveUserState", () => {
     expect(diskStorageService.mock.save).toHaveBeenNthCalledWith(
       1,
       "user_00000000-0000-1000-a000-000000000001_fake_fake",
-      any(),
+      updatedState,
+      any(), // options
     );
   });
 
@@ -183,15 +189,17 @@ describe("DefaultActiveUserState", () => {
   });
 
   it("should not emit a previous users value if that user is no longer active", async () => {
+    const user1Data: Jsonify<TestState> = {
+      date: "2020-09-21T13:14:17.648Z",
+      array: ["value"],
+    };
+    const user2Data: Jsonify<TestState> = {
+      date: "2020-09-21T13:14:17.648Z",
+      array: [],
+    };
     diskStorageService.internalUpdateStore({
-      "user_00000000-0000-1000-a000-000000000001_fake_fake": {
-        date: "2020-09-21T13:14:17.648Z",
-        array: ["value"],
-      } as Jsonify<TestState>,
-      "user_00000000-0000-1000-a000-000000000002_fake_fake": {
-        date: "2020-09-21T13:14:17.648Z",
-        array: [],
-      } as Jsonify<TestState>,
+      "user_00000000-0000-1000-a000-000000000001_fake_fake": user1Data,
+      "user_00000000-0000-1000-a000-000000000002_fake_fake": user2Data,
     });
 
     // This starts one subscription on the observable for tracking emissions throughout
@@ -203,7 +211,7 @@ describe("DefaultActiveUserState", () => {
 
     // This should always return a value right await
     const value = await firstValueFrom(userState.state$);
-    expect(value).toBeTruthy();
+    expect(value).toEqual(user1Data);
 
     // Make it such that there is no active user
     await changeActiveUser(undefined);
@@ -222,20 +230,20 @@ describe("DefaultActiveUserState", () => {
         rejectedError = err;
       });
 
-    expect(resolvedValue).toBeFalsy();
-    expect(rejectedError).toBeTruthy();
+    expect(resolvedValue).toBeUndefined();
+    expect(rejectedError).not.toBeUndefined();
     expect(rejectedError.message).toBe("Timeout has occurred");
 
     // We need to figure out if something should be emitted
     // when there becomes no active user, if we don't want that to emit
     // this value is correct.
-    expect(emissions).toHaveLength(2);
+    expect(emissions).toEqual([user1Data]);
   });
 
   describe("update", () => {
     const newData = { date: new Date(), array: ["test"] };
     beforeEach(async () => {
-      changeActiveUser("1");
+      await changeActiveUser("1");
     });
 
     it("should save on update", async () => {
@@ -315,6 +323,8 @@ describe("DefaultActiveUserState", () => {
         return initialData;
       });
 
+      await awaitAsync();
+
       await userState.update((state, dependencies) => {
         expect(state).toEqual(initialData);
         return newData;
@@ -327,6 +337,171 @@ describe("DefaultActiveUserState", () => {
         initialData,
         newData,
       ]);
+    });
+  });
+
+  describe("update races", () => {
+    const newData = { date: new Date(), array: ["test"] };
+    const userId = makeUserId("1");
+
+    beforeEach(async () => {
+      await changeActiveUser("1");
+      await awaitAsync();
+    });
+
+    test("subscriptions during an update should not emit until update is complete", async () => {
+      // Seed with interesting data
+      const initialData = { date: new Date(2020, 1, 1), array: ["value1", "value2"] };
+      await userState.update(() => {
+        return initialData;
+      });
+
+      const emissions = trackEmissions(userState.state$);
+      await awaitAsync();
+      expect(emissions).toEqual([initialData]);
+
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
+        await expect(() => firstValueFrom(userState.state$.pipe(timeout(100)))).rejects.toThrow();
+        await originalSave(key, obj);
+      });
+
+      const val = await userState.update((state) => {
+        return newData;
+      });
+
+      await awaitAsync();
+
+      expect(val).toEqual(newData);
+      expect(emissions).toEqual([initialData, newData]);
+    });
+
+    // test("updates should wait until previous update is complete", async () => {
+    //   trackEmissions(userState.state$);
+    //   await awaitAsync(); // storage updates are behind a promise
+
+    //   diskStorageService.save = jest
+    //     .fn()
+    //     .mockImplementationOnce(async (key: string, obj: any) => {
+    //       let resolved = false;
+    //       await Promise.race([
+    //         userState.update(() => {
+    //           // deadlocks
+    //           resolved = true;
+    //           return newData;
+    //         }),
+    //         awaitAsync(100), // limit test to 100ms
+    //       ]);
+    //       expect(resolved).toBe(false);
+    //     })
+    //     .mockResolvedValue(undefined);
+
+    //   await userState.update((state) => {
+    //     return newData;
+    //   });
+    // });
+
+    test("updates with FAKE_DEFAULT initial value should resolve correctly", async () => {
+      expect(userState["stateSubject"].value).toEqual(anySymbol()); // FAKE_DEFAULT
+      const val = await userState.update((state) => {
+        return newData;
+      });
+
+      expect(val).toEqual(newData);
+      const call = diskStorageService.mock.save.mock.calls[0];
+      expect(call[0]).toEqual(`user_${userId}_fake_fake`);
+      expect(call[1]).toEqual(newData);
+    });
+  });
+
+  describe("cleanup", () => {
+    const newData = { date: new Date(), array: ["test"] };
+    const userId = makeUserId("1");
+    let userKey: string;
+
+    beforeEach(async () => {
+      await changeActiveUser("1");
+      userKey = userKeyBuilder(userId, testKeyDefinition);
+    });
+
+    async function assertClean() {
+      const emissions = trackEmissions(userState["stateSubject"]);
+      const initial = structuredClone(emissions);
+
+      diskStorageService.save(userKey, newData);
+      await awaitAsync(); // storage updates are behind a promise
+
+      expect(emissions).toEqual(initial); // no longer listening to storage updates
+    }
+
+    it("should cleanup after last subscriber", async () => {
+      const subscription = userState.state$.subscribe();
+      await awaitAsync(); // storage updates are behind a promise
+
+      subscription.unsubscribe();
+      expect(userState["subscriberCount"].getValue()).toBe(0);
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      await assertClean();
+    });
+
+    it("should not cleanup if there are still subscribers", async () => {
+      const subscription1 = userState.state$.subscribe();
+      const sub2Emissions: TestState[] = [];
+      const subscription2 = userState.state$.subscribe((v) => sub2Emissions.push(v));
+      await awaitAsync(); // storage updates are behind a promise
+
+      subscription1.unsubscribe();
+
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      expect(userState["subscriberCount"].getValue()).toBe(1);
+
+      // Still be listening to storage updates
+      diskStorageService.save(userKey, newData);
+      await awaitAsync(); // storage updates are behind a promise
+      expect(sub2Emissions).toEqual([null, newData]);
+
+      subscription2.unsubscribe();
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      await assertClean();
+    });
+
+    it("can re-initialize after cleanup", async () => {
+      const subscription = userState.state$.subscribe();
+      await awaitAsync();
+
+      subscription.unsubscribe();
+      // Wait for cleanup
+      await awaitAsync(cleanupDelayMs * 2);
+
+      const emissions = trackEmissions(userState.state$);
+      await awaitAsync();
+
+      diskStorageService.save(userKey, newData);
+      await awaitAsync();
+
+      expect(emissions).toEqual([null, newData]);
+    });
+
+    it("should not cleanup if a subscriber joins during the cleanup delay", async () => {
+      const subscription = userState.state$.subscribe();
+      await awaitAsync();
+
+      await diskStorageService.save(userKey, newData);
+      await awaitAsync();
+
+      subscription.unsubscribe();
+      expect(userState["subscriberCount"].getValue()).toBe(0);
+      // Do not wait long enough for cleanup
+      await awaitAsync(cleanupDelayMs / 2);
+
+      expect(userState["stateSubject"].value).toEqual(newData); // digging in to check that it hasn't been cleared
+      expect(userState["storageUpdateSubscription"]).not.toBeNull(); // still listening to storage updates
     });
   });
 });
