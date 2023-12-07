@@ -55,9 +55,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
     try {
-      this.updatePromise = this.getGuaranteedState().then((currentState) =>
-        this.internalUpdate(currentState, configureState, options),
-      );
+      this.updatePromise = this.internalUpdate(configureState, options);
       const newState = await this.updatePromise;
       return newState;
     } finally {
@@ -70,10 +68,10 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
   }
 
   private async internalUpdate<TCombine>(
-    currentState: T,
     configureState: (state: T, dependency: TCombine) => T,
     options: StateUpdateOptions<T, TCombine>,
   ): Promise<T> {
+    const currentState = await this.getGuaranteedState();
     const combinedDependencies =
       options.combineLatestWith != null
         ? await firstValueFrom(options.combineLatestWith.pipe(timeout(options.msTimeout)))
