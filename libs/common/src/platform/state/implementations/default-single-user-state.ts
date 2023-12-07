@@ -75,7 +75,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
     configureState: (state: T, dependency: TCombine) => T,
     options: StateUpdateOptions<T, TCombine>,
   ): Promise<T> {
-    const currentState = await this.getGuaranteedState();
+    const currentState = await this.getStateForUpdate();
     const combinedDependencies =
       options.combineLatestWith != null
         ? await firstValueFrom(options.combineLatestWith.pipe(timeout(options.msTimeout)))
@@ -138,7 +138,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
   /** For use in update methods, does not wait for update to complete before yielding state.
    * The expectation is that that await is already done
    */
-  private async getGuaranteedState() {
+  private async getStateForUpdate() {
     const currentValue = this.stateSubject.getValue();
     return currentValue === FAKE_DEFAULT ? await this.getFromState() : currentValue;
   }
