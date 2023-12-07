@@ -10,6 +10,10 @@ export class OrganizationUserResponse extends BaseResponse {
   type: OrganizationUserType;
   status: OrganizationUserStatusType;
   externalId: string;
+  /**
+   * @deprecated
+   * To be removed alongside `FeatureFlag.FlexibleCollections`.
+   **/
   accessAll: boolean;
   accessSecretsManager: boolean;
   permissions: PermissionsApi;
@@ -26,10 +30,6 @@ export class OrganizationUserResponse extends BaseResponse {
     this.status = this.getResponseProperty("Status");
     this.permissions = new PermissionsApi(this.getResponseProperty("Permissions"));
     this.externalId = this.getResponseProperty("ExternalId");
-    /**
-     * @deprecated
-     * To be removed alongside `FeatureFlag.FlexibleCollections`.
-     **/
     this.accessAll = this.getResponseProperty("AccessAll");
     this.accessSecretsManager = this.getResponseProperty("AccessSecretsManager");
     this.resetPasswordEnrolled = this.getResponseProperty("ResetPasswordEnrolled");
