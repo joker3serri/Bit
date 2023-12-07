@@ -240,6 +240,20 @@ describe("DefaultActiveUserState", () => {
     expect(emissions).toEqual([user1Data]);
   });
 
+  it("should not emit twice if there are two listeners", async () => {
+    await changeActiveUser("1");
+    const emissions = trackEmissions(userState.state$);
+    const emissions2 = trackEmissions(userState.state$);
+    await awaitAsync();
+
+    expect(emissions).toEqual([
+      null, // Initial value
+    ]);
+    expect(emissions2).toEqual([
+      null, // Initial value
+    ]);
+  });
+
   describe("update", () => {
     const newData = { date: new Date(), array: ["test"] };
     beforeEach(async () => {
