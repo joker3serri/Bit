@@ -128,6 +128,7 @@ import ContextMenusBackground from "../autofill/background/context-menus.backgro
 import NotificationBackground from "../autofill/background/notification.background";
 import OverlayBackground from "../autofill/background/overlay.background";
 import TabsBackground from "../autofill/background/tabs.background";
+import WebRequestBackground from "../autofill/background/web-request.background";
 import { CipherContextMenuHandler } from "../autofill/browser/cipher-context-menu-handler";
 import { ContextMenuClickedHandler } from "../autofill/browser/context-menu-clicked-handler";
 import { MainContextMenuHandler } from "../autofill/browser/main-context-menu-handler";
@@ -162,7 +163,6 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
-import WebRequestBackground from "./webRequest.background";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -625,6 +625,7 @@ export default class MainBackground {
       this.platformUtilsService,
       systemUtilsServiceReloadCallback,
       this.stateService,
+      this.vaultTimeoutSettingsService,
     );
 
     // Other fields
@@ -832,28 +833,39 @@ export default class MainBackground {
     }
   }
 
+  /**
+   * Switch accounts to indicated userId -- null is no active user
+   */
   async switchAccount(userId: UserId) {
-    if (userId != null) {
+    try {
       await this.stateService.setActiveUser(userId);
-    }
 
-    const status = await this.authService.getAuthStatus(userId);
-    const forcePasswordReset =
-      (await this.stateService.getForceSetPasswordReason({ userId: userId })) !=
-      ForceSetPasswordReason.None;
+      if (userId == null) {
+        await this.stateService.setRememberedEmail(null);
+        await this.refreshBadge();
+        await this.refreshMenu();
+        return;
+      }
 
-    await this.systemService.clearPendingClipboard();
-    await this.notificationsService.updateConnection(false);
+      const status = await this.authService.getAuthStatus(userId);
+      const forcePasswordReset =
+        (await this.stateService.getForceSetPasswordReason({ userId: userId })) !=
+        ForceSetPasswordReason.None;
 
-    if (status === AuthenticationStatus.Locked) {
-      this.messagingService.send("locked", { userId: userId });
-    } else if (forcePasswordReset) {
-      this.messagingService.send("update-temp-password", { userId: userId });
-    } else {
-      this.messagingService.send("unlocked", { userId: userId });
-      await this.refreshBadge();
-      await this.refreshMenu();
-      await this.syncService.fullSync(false);
+      await this.systemService.clearPendingClipboard();
+      await this.notificationsService.updateConnection(false);
+
+      if (status === AuthenticationStatus.Locked) {
+        this.messagingService.send("locked", { userId: userId });
+      } else if (forcePasswordReset) {
+        this.messagingService.send("update-temp-password", { userId: userId });
+      } else {
+        this.messagingService.send("unlocked", { userId: userId });
+        await this.refreshBadge();
+        await this.refreshMenu();
+        await this.syncService.fullSync(false);
+      }
+    } finally {
       this.messagingService.send("switchAccountFinish", { userId: userId });
     }
   }
@@ -882,8 +894,9 @@ export default class MainBackground {
 
     if (newActiveUser != null) {
       // we have a new active user, do not continue tearing down application
-      this.switchAccount(newActiveUser as UserId);
+      await this.switchAccount(newActiveUser as UserId);
       this.messagingService.send("switchAccountFinish");
+      this.messagingService.send("doneLoggingOut", { expired: expired, userId: userId });
       return;
     }
 
