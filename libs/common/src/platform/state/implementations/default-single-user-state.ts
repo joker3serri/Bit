@@ -54,6 +54,10 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
     options: StateUpdateOptions<T, TCombine> = {},
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
+    if (this.updatePromise != null) {
+      await this.updatePromise;
+    }
+
     try {
       this.updatePromise = this.internalUpdate(configureState, options);
       const newState = await this.updatePromise;
@@ -131,10 +135,10 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
     });
   }
 
+  /** For use in update methods, does not wait for update to complete before yielding state.
+   * The expectation is that that await is already done
+   */
   private async getGuaranteedState() {
-    if (this.updatePromise != null) {
-      return await this.updatePromise;
-    }
     const currentValue = this.stateSubject.getValue();
     return currentValue === FAKE_DEFAULT ? await this.getFromState() : currentValue;
   }
