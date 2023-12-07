@@ -3,6 +3,7 @@
  * @jest-environment ../shared/test.environment.ts
  */
 
+import { anySymbol } from "jest-mock-extended";
 import { firstValueFrom, of, timeout } from "rxjs";
 import { Jsonify } from "type-fest";
 
@@ -264,6 +265,18 @@ describe("DefaultGlobalState", () => {
       await globalState.update((state) => {
         return newData;
       });
+    });
+
+    test("updates with FAKE_DEFAULT initial value should resolve correctly", async () => {
+      expect(globalState["stateSubject"].value).toEqual(anySymbol()); // FAKE_DEFAULT
+      const val = await globalState.update((state) => {
+        return newData;
+      });
+
+      expect(val).toEqual(newData);
+      const call = diskStorageService.mock.save.mock.calls[0];
+      expect(call[0]).toEqual("global_fake_fake");
+      expect(call[1]).toEqual(newData);
     });
   });
 
