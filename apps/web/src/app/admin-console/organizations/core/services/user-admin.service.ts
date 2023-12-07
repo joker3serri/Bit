@@ -16,19 +16,19 @@ import { OrganizationUserAdminView } from "../views/organization-user-admin-view
 export class UserAdminService {
   constructor(
     private configService: ConfigServiceAbstraction,
-    private organizationUserService: OrganizationUserService
+    private organizationUserService: OrganizationUserService,
   ) {}
 
   async get(
     organizationId: string,
-    organizationUserId: string
+    organizationUserId: string,
   ): Promise<OrganizationUserAdminView | undefined> {
     const userResponse = await this.organizationUserService.getOrganizationUser(
       organizationId,
       organizationUserId,
       {
         includeGroups: true,
-      }
+      },
     );
 
     if (userResponse == null) {
@@ -67,7 +67,7 @@ export class UserAdminService {
 
   private async decryptMany(
     organizationId: string,
-    users: OrganizationUserDetailsResponse[]
+    users: OrganizationUserDetailsResponse[],
   ): Promise<OrganizationUserAdminView[]> {
     const promises = users.map(async (u) => {
       const view = new OrganizationUserAdminView();
@@ -80,7 +80,7 @@ export class UserAdminService {
       view.externalId = u.externalId;
       view.accessAll = (await this.configService.getFeatureFlag(
         FeatureFlag.FlexibleCollections,
-        false
+        false,
       ))
         ? false
         : u.accessAll;
