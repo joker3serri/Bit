@@ -4,7 +4,7 @@
  */
 
 import { anySymbol } from "jest-mock-extended";
-import { firstValueFrom, of, timeout } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { trackEmissions, awaitAsync } from "../../../../spec";
@@ -216,37 +216,11 @@ describe("DefaultGlobalState", () => {
   });
 
   describe("update races", () => {
-    test("subscriptions during an update should not emit until update is complete", async () => {
-      // Seed with interesting data
-      const initialData = { date: new Date(2020, 1, 1) };
-      await globalState.update((state, dependencies) => {
-        return initialData;
+    test("subscriptions during an update should receive the current and  latest data", async () => {
+      const oldData = { date: new Date(2019, 1, 1) };
+      await globalState.update(() => {
+        return oldData;
       });
-
-      await awaitAsync();
-
-      const emissions = trackEmissions(globalState.state$);
-      await awaitAsync();
-      expect(emissions).toEqual([initialData]);
-
-      const originalSave = diskStorageService.save.bind(diskStorageService);
-      diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
-        await expect(() => firstValueFrom(globalState.state$.pipe(timeout(100)))).rejects.toThrow();
-        await originalSave(key, obj);
-      });
-
-      const val = await globalState.update(() => {
-        return newData;
-      });
-
-      await awaitAsync();
-
-      expect(val).toEqual(newData);
-      expect(emissions).toEqual([initialData, newData]);
-    });
-
-    test("subscriptions during an update should receive the latest value", async () => {
-      // Seed with interesting data
       const initialData = { date: new Date(2020, 1, 1) };
       await globalState.update(() => {
         return initialData;
@@ -273,7 +247,7 @@ describe("DefaultGlobalState", () => {
 
       expect(val).toEqual(newData);
       expect(emissions).toEqual([initialData, newData]);
-      expect(emissions2).toEqual([newData]);
+      expect(emissions2).toEqual([initialData, newData]);
     });
 
     test("subscription during an aborted update should receive the last value", async () => {

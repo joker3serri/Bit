@@ -363,31 +363,72 @@ describe("DefaultActiveUserState", () => {
       await awaitAsync();
     });
 
-    test("subscriptions during an update should not emit until update is complete", async () => {
+    test("subscriptions during an update should receive the current and latest", async () => {
+      const oldData = { date: new Date(2019, 1, 1), array: ["oldValue1"] };
+      await userState.update(() => {
+        return oldData;
+      });
+      const initialData = { date: new Date(2020, 1, 1), array: ["value1", "value2"] };
+      await userState.update(() => {
+        return initialData;
+      });
+
+      await awaitAsync();
+
+      const emissions = trackEmissions(userState.state$);
+      await awaitAsync();
+      expect(emissions).toEqual([initialData]);
+
+      let emissions2: TestState[];
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
+        emissions2 = trackEmissions(userState.state$);
+        await originalSave(key, obj);
+      });
+
+      const val = await userState.update(() => {
+        return newData;
+      });
+
+      await awaitAsync(10);
+
+      expect(val).toEqual(newData);
+      expect(emissions).toEqual([initialData, newData]);
+      expect(emissions2).toEqual([initialData, newData]);
+    });
+
+    test("subscription during an aborted update should receive the last value", async () => {
       // Seed with interesting data
       const initialData = { date: new Date(2020, 1, 1), array: ["value1", "value2"] };
       await userState.update(() => {
         return initialData;
       });
 
+      await awaitAsync();
+
       const emissions = trackEmissions(userState.state$);
       await awaitAsync();
       expect(emissions).toEqual([initialData]);
 
-      const originalSave = diskStorageService.save.bind(diskStorageService);
-      diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
-        await expect(() => firstValueFrom(userState.state$.pipe(timeout(100)))).rejects.toThrow();
-        await originalSave(key, obj);
-      });
-
-      const val = await userState.update((state) => {
-        return newData;
-      });
+      let emissions2: TestState[];
+      const val = await userState.update(
+        (state) => {
+          return newData;
+        },
+        {
+          shouldUpdate: () => {
+            emissions2 = trackEmissions(userState.state$);
+            return false;
+          },
+        },
+      );
 
       await awaitAsync();
 
-      expect(val).toEqual(newData);
-      expect(emissions).toEqual([initialData, newData]);
+      expect(val).toEqual(initialData);
+      expect(emissions).toEqual([initialData]);
+
+      expect(emissions2).toEqual([initialData]);
     });
 
     test("updates should wait until previous update is complete", async () => {

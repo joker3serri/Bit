@@ -158,8 +158,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
         .pipe(
           // Filter out fake default, which is used to indicate that state is not ready to be emitted yet.
           filter((i) => i !== FAKE_DEFAULT),
-          // We don't want to emit during an update, so they are filtered
-          filter(() => this.updatePromise == null),
         )
         .subscribe(subscriber);
     });
