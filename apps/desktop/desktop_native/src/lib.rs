@@ -6,6 +6,7 @@ mod clipboard;
 mod crypto;
 mod error;
 mod password;
+mod webauthn;
 
 #[napi]
 pub mod passwords {
@@ -113,12 +114,23 @@ pub mod biometrics {
 pub mod clipboards {
     #[napi]
     pub async fn read() -> napi::Result<String> {
-        super::clipboard::read().map_err(|e| napi::Error::from_reason(e.to_string()))
+        super::clipboard::read().map_err(|e: anyhow::Error| napi::Error::from_reason(e.to_string()))
     }
 
     #[napi]
     pub async fn write(text: String, password: bool) -> napi::Result<()> {
         super::clipboard::write(&text, password)
             .map_err(|e| napi::Error::from_reason(e.to_string()))
+    }
+}
+
+#[napi]
+pub mod webauthns {
+    #[napi]
+    pub async fn webauthn_create(
+        window_handle: napi::bindgen_prelude::Buffer,
+    ) -> napi::Result<String> {
+        let window_handle = u64::from_le_bytes(window_handle.as_ref().try_into().unwrap());
+        super::webauthn::create(window_handle).map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 }

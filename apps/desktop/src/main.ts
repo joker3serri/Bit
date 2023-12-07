@@ -10,6 +10,8 @@ import { NoopMessagingService } from "@bitwarden/common/platform/services/noop-m
 // eslint-disable-next-line import/no-restricted-paths -- We need the implementation to inject, but generally this should not be accessed
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
 
+import { NativeWebauthnMain } from "./auth/webauthn-login/main/native-webauthn.main";
+import { NativeWebauthnMainAbstraction } from "./auth/webauthn-login/main/native-webauthn.main.abstraction";
 import { MenuMain } from "./main/menu/menu.main";
 import { MessagingMain } from "./main/messaging.main";
 import { NativeMessagingMain } from "./main/native-messaging.main";
@@ -45,6 +47,7 @@ export class Main {
   biometricsService: BiometricsServiceAbstraction;
   nativeMessagingMain: NativeMessagingMain;
   clipboardMain: ClipboardMain;
+  webauthnMain: NativeWebauthnMainAbstraction;
 
   constructor() {
     // Set paths for portable builds
@@ -157,6 +160,8 @@ export class Main {
 
     this.clipboardMain = new ClipboardMain();
     this.clipboardMain.init();
+
+    this.webauthnMain = new NativeWebauthnMain(this.windowMain);
   }
 
   bootstrap() {
@@ -215,6 +220,8 @@ export class Main {
         this.windowMain.win.on("minimize", () => {
           this.messagingService.send("windowHidden");
         });
+
+        this.webauthnMain.init();
       },
       (e: any) => {
         // eslint-disable-next-line
@@ -243,3 +250,7 @@ export class Main {
       });
   }
 }
+
+process.on("uncaughtException", function (err) {
+  console.log("Caught exception: " + err);
+});

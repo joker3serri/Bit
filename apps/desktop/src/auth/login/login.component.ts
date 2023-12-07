@@ -24,6 +24,7 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { EnvironmentComponent } from "../environment.component";
+import { WebauthnPlatformApiService } from "../webauthn-login/webauthn-platform-api.service";
 
 const BroadcasterSubscriptionId = "LoginComponent";
 
@@ -73,6 +74,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     formValidationErrorService: FormValidationErrorsService,
     route: ActivatedRoute,
     loginService: LoginService,
+    private webauthnPlatformApiService: WebauthnPlatformApiService,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
     super(
@@ -130,6 +132,13 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
     this.componentDestroyed$.next();
     this.componentDestroyed$.complete();
+  }
+
+  async testWebauthn() {
+    const result = await this.webauthnPlatformApiService.create();
+    // eslint-disable-next-line no-console
+    console.log(result);
+    this.platformUtilsService.showToast("info", "native webauthn test", result);
   }
 
   async settings() {
