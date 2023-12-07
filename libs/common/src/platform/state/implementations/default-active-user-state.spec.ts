@@ -415,6 +415,82 @@ describe("DefaultActiveUserState", () => {
       expect(call[0]).toEqual(`user_${userId}_fake_fake`);
       expect(call[1]).toEqual(newData);
     });
+
+    it("does not await updates if the active user changes", async () => {
+      const initialUserId = (await firstValueFrom(accountService.activeAccount$)).id;
+      expect(initialUserId).toBe(userId);
+      trackEmissions(userState.state$);
+      await awaitAsync(); // storage updates are behind a promise
+
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest
+        .fn()
+        .mockImplementationOnce(async (key: string, obj: any) => {
+          let resolved = false;
+          await changeActiveUser("2");
+          await Promise.race([
+            userState.update(() => {
+              // should not deadlock because we updated the user
+              resolved = true;
+              return newData;
+            }),
+            awaitAsync(100), // limit test to 100ms
+          ]);
+          expect(resolved).toBe(true);
+        })
+        .mockImplementation((...args) => {
+          return originalSave(...args);
+        });
+
+      await userState.update(() => {
+        return newData;
+      });
+    });
+
+    it("stores updates for users in the correct place when active user changes mid-update", async () => {
+      trackEmissions(userState.state$);
+      await awaitAsync(); // storage updates are behind a promise
+
+      const user2Data = { date: new Date(), array: ["user 2 data"] };
+
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest
+        .fn()
+        .mockImplementationOnce(async (key: string, obj: any) => {
+          let resolved = false;
+          await changeActiveUser("2");
+          await Promise.race([
+            userState.update(() => {
+              // should not deadlock because we updated the user
+              resolved = true;
+              return user2Data;
+            }),
+            awaitAsync(100), // limit test to 100ms
+          ]);
+          expect(resolved).toBe(true);
+          await originalSave(key, obj);
+        })
+        .mockImplementation((...args) => {
+          return originalSave(...args);
+        });
+
+      await userState.update(() => {
+        return newData;
+      });
+      await awaitAsync(1000);
+      await awaitAsync();
+      await awaitAsync();
+      await awaitAsync();
+      await awaitAsync();
+
+      expect(diskStorageService.mock.save).toHaveBeenCalledTimes(2);
+      const innerCall = diskStorageService.mock.save.mock.calls[0];
+      expect(innerCall[0]).toEqual(`user_${makeUserId("2")}_fake_fake`);
+      expect(innerCall[1]).toEqual(user2Data);
+      const outerCall = diskStorageService.mock.save.mock.calls[1];
+      expect(outerCall[0]).toEqual(`user_${makeUserId("1")}_fake_fake`);
+      expect(outerCall[1]).toEqual(newData);
+    });
   });
 
   describe("cleanup", () => {
