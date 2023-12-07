@@ -376,30 +376,33 @@ describe("DefaultActiveUserState", () => {
       expect(emissions).toEqual([initialData, newData]);
     });
 
-    // test("updates should wait until previous update is complete", async () => {
-    //   trackEmissions(userState.state$);
-    //   await awaitAsync(); // storage updates are behind a promise
+    test("updates should wait until previous update is complete", async () => {
+      trackEmissions(userState.state$);
+      await awaitAsync(); // storage updates are behind a promise
 
-    //   diskStorageService.save = jest
-    //     .fn()
-    //     .mockImplementationOnce(async (key: string, obj: any) => {
-    //       let resolved = false;
-    //       await Promise.race([
-    //         userState.update(() => {
-    //           // deadlocks
-    //           resolved = true;
-    //           return newData;
-    //         }),
-    //         awaitAsync(100), // limit test to 100ms
-    //       ]);
-    //       expect(resolved).toBe(false);
-    //     })
-    //     .mockResolvedValue(undefined);
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest
+        .fn()
+        .mockImplementationOnce(async (key: string, obj: any) => {
+          let resolved = false;
+          await Promise.race([
+            userState.update(() => {
+              // deadlocks
+              resolved = true;
+              return newData;
+            }),
+            awaitAsync(100), // limit test to 100ms
+          ]);
+          expect(resolved).toBe(false);
+        })
+        .mockImplementation((...args) => {
+          return originalSave(...args);
+        });
 
-    //   await userState.update((state) => {
-    //     return newData;
-    //   });
-    // });
+      await userState.update(() => {
+        return newData;
+      });
+    });
 
     test("updates with FAKE_DEFAULT initial value should resolve correctly", async () => {
       expect(userState["stateSubject"].value).toEqual(anySymbol()); // FAKE_DEFAULT
