@@ -32,7 +32,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
   [activeMarker]: true;
   private formattedKey$: Observable<string>;
   private updatePromise: Promise<T> | null = null;
-  private updatingKey: string | null = null;
   private storageUpdateSubscription: Subscription;
   private activeAccountUpdateSubscription: Subscription;
   private subscriberCount = new BehaviorSubject<number>(0);
@@ -74,12 +73,14 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
     try {
+      if (this.updatePromise != null) {
+        await this.updatePromise;
+      }
       this.updatePromise = this.internalUpdate(configureState, options);
       const newState = await this.updatePromise;
       return newState;
     } finally {
       this.updatePromise = null;
-      this.updatingKey = null;
     }
   }
 
@@ -98,7 +99,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     options: StateUpdateOptions<T, TCombine>,
   ) {
     const key = await this.createKey();
-    const currentState = await this.getGuaranteedState(key);
+    const currentState = await this.getStateForUpdate(key);
     const combinedDependencies =
       options.combineLatestWith != null
         ? await firstValueFrom(options.combineLatestWith.pipe(timeout(options.msTimeout)))
@@ -111,13 +112,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     const newState = configureState(currentState, combinedDependencies);
     await this.saveToStorage(key, newState);
     return newState;
-  }
-
-  private async getState(key: string): Promise<T> {
-    if (this.updatePromise != null && this.updatingKey === key) {
-      return await this.updatePromise;
-    }
-    return await getStoredValue(key, this.chosenStorageLocation, this.keyDefinition.deserializer);
   }
 
   private initializeObservable() {
@@ -179,12 +173,22 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     return formattedKey;
   }
 
-  protected async getGuaranteedState(key: string) {
-    if (this.updatePromise != null && this.updatingKey === key) {
-      return await this.updatePromise;
-    }
+  /** For use in update methods, does not wait for update to complete before yielding state.
+   * The expectation is that that await is already done
+   */
+  protected async getStateForUpdate(key: string) {
     const currentValue = this.stateSubject.getValue();
-    return currentValue === FAKE_DEFAULT ? await this.getState(key) : currentValue;
+    return currentValue === FAKE_DEFAULT
+      ? await getStoredValue(key, this.chosenStorageLocation, this.keyDefinition.deserializer)
+      : currentValue;
+  }
+
+  /** To be used in observables. Awaits updates to ensure they are complete */
+  private async getState(key: string): Promise<T> {
+    if (this.updatePromise != null) {
+      await this.updatePromise;
+    }
+    return await getStoredValue(key, this.chosenStorageLocation, this.keyDefinition.deserializer);
   }
 
   protected saveToStorage(key: string, data: T): Promise<void> {
@@ -203,7 +207,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     setTimeout(() => {
       if (this.subscriberCount.value === 0) {
         this.updatePromise = null;
-        this.updatingKey = null;
         this.storageUpdateSubscription?.unsubscribe();
         this.activeAccountUpdateSubscription?.unsubscribe();
         this.stateObservable = null;
