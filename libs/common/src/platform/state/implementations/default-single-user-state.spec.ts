@@ -246,18 +246,22 @@ describe("DefaultSingleUserState", () => {
       trackEmissions(userState.state$);
       await awaitAsync(); // storage updates are behind a promise
 
-      diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
-        let resolved = false;
-        await Promise.race([
-          userState.update(() => {
-            // deadlocks
-            resolved = true;
-            return newData;
-          }),
-          awaitAsync(100), // limit test to 100ms
-        ]);
-        expect(resolved).toBe(false);
-      });
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest
+        .fn()
+        .mockImplementationOnce(async () => {
+          let resolved = false;
+          await Promise.race([
+            userState.update(() => {
+              // deadlocks
+              resolved = true;
+              return newData;
+            }),
+            awaitAsync(100), // limit test to 100ms
+          ]);
+          expect(resolved).toBe(false);
+        })
+        .mockImplementation(originalSave);
 
       await userState.update((state) => {
         return newData;
