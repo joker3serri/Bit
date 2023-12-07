@@ -235,7 +235,7 @@ describe("DefaultGlobalState", () => {
         await originalSave(key, obj);
       });
 
-      const val = await globalState.update((state) => {
+      const val = await globalState.update(() => {
         return newData;
       });
 
@@ -243,6 +243,71 @@ describe("DefaultGlobalState", () => {
 
       expect(val).toEqual(newData);
       expect(emissions).toEqual([initialData, newData]);
+    });
+
+    test("subscriptions during an update should receive the latest value", async () => {
+      // Seed with interesting data
+      const initialData = { date: new Date(2020, 1, 1) };
+      await globalState.update(() => {
+        return initialData;
+      });
+
+      await awaitAsync();
+
+      const emissions = trackEmissions(globalState.state$);
+      await awaitAsync();
+      expect(emissions).toEqual([initialData]);
+
+      let emissions2: TestState[];
+      const originalSave = diskStorageService.save.bind(diskStorageService);
+      diskStorageService.save = jest.fn().mockImplementation(async (key: string, obj: any) => {
+        emissions2 = trackEmissions(globalState.state$);
+        await originalSave(key, obj);
+      });
+
+      const val = await globalState.update(() => {
+        return newData;
+      });
+
+      await awaitAsync(10);
+
+      expect(val).toEqual(newData);
+      expect(emissions).toEqual([initialData, newData]);
+      expect(emissions2).toEqual([newData]);
+    });
+
+    test("subscription during an aborted update should receive the last value", async () => {
+      // Seed with interesting data
+      const initialData = { date: new Date(2020, 1, 1) };
+      await globalState.update(() => {
+        return initialData;
+      });
+
+      await awaitAsync();
+
+      const emissions = trackEmissions(globalState.state$);
+      await awaitAsync();
+      expect(emissions).toEqual([initialData]);
+
+      let emissions2: TestState[];
+      const val = await globalState.update(
+        () => {
+          return newData;
+        },
+        {
+          shouldUpdate: () => {
+            emissions2 = trackEmissions(globalState.state$);
+            return false;
+          },
+        },
+      );
+
+      await awaitAsync();
+
+      expect(val).toEqual(initialData);
+      expect(emissions).toEqual([initialData]);
+
+      expect(emissions2).toEqual([initialData]);
     });
 
     test("updates should wait until previous update is complete", async () => {
