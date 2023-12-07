@@ -1,10 +1,13 @@
 import type { Jsonify } from "type-fest";
 
+import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import type { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { FilelessImportPort, FilelessImportType } from "../../tools/enums/fileless-import.enums";
 
 require("./bar.scss");
+
+const logService = new ConsoleLogService(false);
 
 document.addEventListener("DOMContentLoaded", () => {
   // delay 50ms so that we get proper body dimensions
@@ -234,7 +237,8 @@ function handleTypeFilelessImport() {
   const startFilelessImportButton = document.getElementById("start-fileless-import");
   startFilelessImportButton.addEventListener("click", () => {
     port.postMessage({ command: "startFilelessImport", importType });
-    document.getElementById("import-buttons").innerHTML = chrome.i18n.getMessage("importing");
+    document.getElementById("fileless-import-buttons").textContent =
+      chrome.i18n.getMessage("importing");
   });
 
   const cancelFilelessImportButton = document.getElementById("cancel-fileless-import");
@@ -243,14 +247,24 @@ function handleTypeFilelessImport() {
   });
 
   const handlePortMessage = (msg: any) => {
-    if (msg.command === "lpImportCompleted") {
-      document.getElementById("fileless-import-buttons").innerHTML = chrome.i18n.getMessage(
+    if (msg.command !== "filelessImportCompleted" && msg.command !== "filelessImportFailed") {
+      return;
+    }
+
+    port.disconnect();
+
+    if (msg.command === "filelessImportCompleted") {
+      document.getElementById("fileless-import-buttons").textContent = chrome.i18n.getMessage(
         "dataSuccessfullyImported",
       );
       document.getElementById("fileless-import-buttons").classList.add("success-message");
-      port.disconnect();
       return;
     }
+
+    document.getElementById("fileless-import-buttons").textContent =
+      chrome.i18n.getMessage("dataImportFailed");
+    document.getElementById("fileless-import-buttons").classList.add("error-message");
+    logService.error(`Error Encountered During Import: ${msg.importErrorMessage}`);
   };
   port.onMessage.addListener(handlePortMessage);
 }

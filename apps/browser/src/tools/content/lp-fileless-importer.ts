@@ -2,6 +2,7 @@ import { FilelessImportPort } from "../enums/fileless-import.enums";
 
 import {
   LpFilelessImporter as LpFilelessImporterInterface,
+  LpFilelessImporterMessage,
   LpFilelessImporterMessageHandlers,
 } from "./abstractions/lp-fileless-importer";
 
@@ -12,6 +13,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
   private readonly portMessageHandlers: LpFilelessImporterMessageHandlers = {
     verifyFeatureFlag: ({ message }) => this.handleFeatureFlagVerification(message),
     triggerCsvDownload: () => this.triggerCsvDownload(),
+    startLpFilelessImport: () => this.startLpImport(),
   };
 
   /**
@@ -28,7 +30,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
    *
    * @param message - The port message, contains the feature flag indicator.
    */
-  handleFeatureFlagVerification(message: any) {
+  handleFeatureFlagVerification(message: LpFilelessImporterMessage) {
     if (!message.filelessImportEnabled) {
       this.messagePort?.disconnect();
       return;
@@ -142,11 +144,24 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
   };
 
   /**
+   * If the export data is present, sends a message to the background with
+   * the export data to start the import process.
+   */
+  private startLpImport() {
+    if (!this.exportData) {
+      return;
+    }
+
+    this.postPortMessage({ command: "startLpImport", data: this.exportData });
+    this.messagePort?.disconnect();
+  }
+
+  /**
    * Posts a message to the background script.
    *
    * @param message - The message to post.
    */
-  private postPortMessage(message: any) {
+  private postPortMessage(message: LpFilelessImporterMessage) {
     this.messagePort?.postMessage(message);
   }
 
@@ -155,7 +170,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
    *
    * @param message - The message to post.
    */
-  private postWindowMessage(message: any) {
+  private postWindowMessage(message: LpFilelessImporterMessage) {
     globalThis.postMessage(message, "https://lastpass.com");
   }
 
@@ -174,7 +189,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
    * @param message - The message that was sent.
    * @param port - The port that the message was sent from.
    */
-  private handlePortMessage = (message: any, port: chrome.runtime.Port) => {
+  private handlePortMessage = (message: LpFilelessImporterMessage, port: chrome.runtime.Port) => {
     const handler = this.portMessageHandlers[message.command];
     if (!handler) {
       return;
