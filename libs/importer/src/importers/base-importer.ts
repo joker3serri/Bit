@@ -1,10 +1,9 @@
 import * as papa from "papaparse";
 
-import { FieldType, SecureNoteType } from "@bitwarden/common/enums";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { FieldType, SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
@@ -151,7 +150,7 @@ export abstract class BaseImporter {
     const parseOptions: papa.ParseConfig<string> = Object.assign(
       { header: header },
       this.parseCsvOptions,
-      options
+      options,
     );
     data = this.splitNewLine(data).join("\n").trim();
     const result = papa.parse(data, parseOptions);
@@ -326,7 +325,7 @@ export abstract class BaseImporter {
     cipher: CipherView,
     key: string,
     value: string,
-    type: FieldType = FieldType.Text
+    type: FieldType = FieldType.Text,
   ) {
     if (this.isNullOrWhitespace(value)) {
       return;
