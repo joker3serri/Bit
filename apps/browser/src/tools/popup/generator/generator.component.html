@@ -261,8 +261,8 @@
               type="number"
               min="0"
               max="9"
-              [ngModel]="passwordOptions.minNumber"
-              (ngModelChange)="setPasswordOptionsMinNumber($event)"
+              [(ngModel)]="passwordOptions.minNumber"
+              (input)="onPasswordOptionsMinNumberInput($event)"
             />
           </div>
           <div class="box-content-row box-content-row-input" appBoxRow>
@@ -272,8 +272,8 @@
               type="number"
               min="0"
               max="9"
-              [ngModel]="passwordOptions.minSpecial"
-              (ngModelChange)="setPasswordOptionsMinSpecial($event)"
+              [(ngModel)]="passwordOptions.minSpecial"
+              (input)="onPasswordOptionsMinSpecialInput($event)"
             />
           </div>
           <div class="box-content-row box-content-row-checkbox" appBoxRow>

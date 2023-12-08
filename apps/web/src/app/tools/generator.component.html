@@ -142,8 +142,8 @@
           type="number"
           min="0"
           max="9"
-          [ngModel]="passwordOptions.minNumber"
-          (ngModelChange)="setPasswordOptionsMinNumber($event)"
+          [(ngModel)]="passwordOptions.minNumber"
+          (input)="onPasswordOptionsMinNumberInput($event)"
           (change)="minNumberChanged()"
         />
       </div>
@@ -155,8 +155,8 @@
           type="number"
           min="0"
           max="9"
-          [ngModel]="passwordOptions.minSpecial"
-          (ngModelChange)="setPasswordOptionsMinSpecial($event)"
+          [(ngModel)]="passwordOptions.minSpecial"
+          (input)="onPasswordOptionsMinSpecialInput($event)"
           (change)="minSpecialChanged()"
         />
       </div>

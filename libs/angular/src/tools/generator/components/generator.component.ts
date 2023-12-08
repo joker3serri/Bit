@@ -45,11 +45,11 @@ export class GeneratorComponent implements OnInit {
   // update screen reader minimum password length with 500ms debounce
   // so that the user isn't flooded with status updates
   private _passwordOptionsMinLengthForReader = new BehaviorSubject<number>(
-    DefaultBoundaries.length.min
+    DefaultBoundaries.length.min,
   );
   protected passwordOptionsMinLengthForReader$ = this._passwordOptionsMinLengthForReader.pipe(
     map((val) => val || DefaultBoundaries.length.min),
-    debounceTime(500)
+    debounceTime(500),
   );
 
   constructor(
@@ -156,12 +156,15 @@ export class GeneratorComponent implements OnInit {
     await this.passwordGenerationService.addHistory(this.password);
   }
 
-  async setPasswordOptionsMinNumber($event: number) {
-    this.passwordOptions.minNumber = $event;
+  async onPasswordOptionsMinNumberInput($event: Event) {
     // `savePasswordOptions()` replaces the null
     this.passwordOptions.number = null;
 
     await this.savePasswordOptions();
+
+    // fixes UI desync that occurs when minNumber has a fixed value
+    // that is reset through normalization
+    ($event.target as HTMLInputElement).value = `${this.passwordOptions.minNumber}`;
   }
 
   async setPasswordOptionsNumber($event: boolean) {
@@ -172,12 +175,15 @@ export class GeneratorComponent implements OnInit {
     await this.savePasswordOptions();
   }
 
-  async setPasswordOptionsMinSpecial($event: number) {
-    this.passwordOptions.minSpecial = $event;
+  async onPasswordOptionsMinSpecialInput($event: Event) {
     // `savePasswordOptions()` replaces the null
     this.passwordOptions.special = null;
 
     await this.savePasswordOptions();
+
+    // fixes UI desync that occurs when minSpecial has a fixed value
+    // that is reset through normalization
+    ($event.target as HTMLInputElement).value = `${this.passwordOptions.minSpecial}`;
   }
 
   async setPasswordOptionsSpecial($event: boolean) {
