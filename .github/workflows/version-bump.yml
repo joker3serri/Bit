@@ -257,15 +257,15 @@ jobs:
         run: git commit -m "Bumped ${CLIENT} version to ${VERSION}" -a
 
       - name: Push changes
-        if: ${{ (github.ref == 'refs/heads/master') && (steps.version-changed.outputs.changes_to_commit == 'TRUE') }}
+        if: ${{ (github.ref == 'refs/heads/main') && (steps.version-changed.outputs.changes_to_commit == 'TRUE') }}
         env:
           BRANCH: ${{ steps.branch.outputs.branch }}
         run: git push -u origin ${BRANCH}
 
       - name: Create Bump Version PR
-        if: ${{ (github.ref == 'refs/heads/master') && (steps.version-changed.outputs.changes_to_commit == 'TRUE') }}
+        if: ${{ (github.ref == 'refs/heads/main') && (steps.version-changed.outputs.changes_to_commit == 'TRUE') }}
         env:
-          BASE_BRANCH: master
+          BASE_BRANCH: main
           BRANCH: ${{ steps.branch.outputs.branch }}
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           TITLE: "Bump ${{ steps.branch.outputs.client }} version to ${{ inputs.version_number }}"
