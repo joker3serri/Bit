@@ -532,10 +532,6 @@ describe("DefaultActiveUserState", () => {
       await userState.update(() => {
         return newData;
       });
-      await awaitAsync(1000);
-      await awaitAsync();
-      await awaitAsync();
-      await awaitAsync();
       await awaitAsync();
 
       expect(diskStorageService.mock.save).toHaveBeenCalledTimes(2);
