@@ -43,7 +43,7 @@ describe("WebauthnAdminService", () => {
       userVerificationService,
       rotateableKeySetService,
       webAuthnLoginPrfCryptoService,
-      credentials
+      credentials,
     );
 
     // Save original global class

@@ -164,7 +164,9 @@ export class Organization {
 
   get canCreateNewCollections() {
     return (
-      !this.limitCollectionCreationDeletion || this.isAdmin || this.permissions.createNewCollections
+      !this.limitCollectionCreationDeletion ||
+      this.isManager ||
+      this.permissions.createNewCollections
     );
   }
 
@@ -184,14 +186,29 @@ export class Organization {
     return this.canEditAnyCollection || this.canDeleteAnyCollection;
   }
 
+  /**
+   * @deprecated
+   * This is deprecated with the introduction of Flexible Collections.
+   * This will always return false if FlexibleCollections flag is on.
+   */
   get canEditAssignedCollections() {
     return this.isManager || this.permissions.editAssignedCollections;
   }
 
+  /**
+   * @deprecated
+   * This is deprecated with the introduction of Flexible Collections.
+   * This will always return false if FlexibleCollections flag is on.
+   */
   get canDeleteAssignedCollections() {
     return this.isManager || this.permissions.deleteAssignedCollections;
   }
 
+  /**
+   * @deprecated
+   * This is deprecated with the introduction of Flexible Collections.
+   * This will always return false if FlexibleCollections flag is on.
+   */
   get canViewAssignedCollections() {
     return this.canDeleteAssignedCollections || this.canEditAssignedCollections;
   }
