@@ -56,7 +56,7 @@ export class WebauthnLoginAdminService {
 
   /**
    * Get the credential assertion options needed for initiating the WebAuthnLogin credential update process.
-   * The options contains a assertion options and other data for the authenticator.
+   * The options contains assertion options and other data for the authenticator.
    * This method requires user verification.
    *
    * @param verification User verification data to be used for the request.
@@ -191,12 +191,20 @@ export class WebauthnLoginAdminService {
 
   /**
    * Enable encryption for a credential that has already been saved to the server.
-   * This will update the KeySet in the database.
+   * This will update the KeySet associated with the credential in the database.
+   * We short circuit the process here incase the WebAuthnLoginCredential doesn't support PRF or
+   * if there was a problem with the Credential Assertion.
    *
    * @param assertionOptions Options received from the server using `getCredentialAssertOptions`.
-   * @returns A key set that can be saved to the server.
+   * @returns void
    */
-  async enableCredentialEncryption(assertionOptions: WebAuthnLoginCredentialAssertionView) {
+  async enableCredentialEncryption(
+    assertionOptions: WebAuthnLoginCredentialAssertionView
+  ): Promise<void> {
+    if (assertionOptions === undefined || assertionOptions?.prfKey === undefined) {
+      throw new Error("invalid credential");
+    }
+
     const prfKeySet: PrfKeySet = await this.rotateableKeySetService.createKeySet(
       assertionOptions.prfKey
     );

@@ -53,8 +53,7 @@ export class WebAuthnLoginAdminApiService {
     await this.apiService.send("POST", `/webauthn/${credentialId}/delete`, request, true, true);
   }
 
-  async updateCredential(request: EnableCredentialEncryptionRequest): Promise<boolean> {
-    const response = await this.apiService.send("PUT", `/webauthn`, request, true, true);
-    return response;
+  async updateCredential(request: EnableCredentialEncryptionRequest): Promise<void> {
+    await this.apiService.send("PUT", `/webauthn`, request, true, true);
   }
 }
