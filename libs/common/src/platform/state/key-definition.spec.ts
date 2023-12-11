@@ -38,24 +38,14 @@ describe("KeyDefinition", () => {
       expect(keyDefinition.cleanupDelayMs).toBe(500);
     });
 
-    it("can be overridden with 0", () => {
-      const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
-        deserializer: (value) => value,
-        cleanupDelayMs: 0,
-      });
-
-      expect(keyDefinition).toBeTruthy();
-      expect(keyDefinition.cleanupDelayMs).toBe(0);
-    });
-
-    it("can be overridden with negative", () => {
-      const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
-        deserializer: (value) => value,
-        cleanupDelayMs: -1,
-      });
-
-      expect(keyDefinition).toBeTruthy();
-      expect(keyDefinition.cleanupDelayMs).toBe(0);
+    it.each([0, -1])("throws on 0 or negative (%s)", (testValue: number) => {
+      expect(
+        () =>
+          new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
+            deserializer: (value) => value,
+            cleanupDelayMs: testValue,
+          }),
+      ).toThrow();
     });
   });
 
