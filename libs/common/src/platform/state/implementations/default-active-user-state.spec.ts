@@ -64,7 +64,7 @@ describe("DefaultActiveUserState", () => {
   const changeActiveUser = async (id: string) => {
     const userId = makeUserId(id);
     activeAccountSubject.next({
-      id: userId as UserId,
+      id: userId,
       email: `test${id}@example.com`,
       name: `Test User ${id}`,
       status: AuthenticationStatus.Unlocked,
