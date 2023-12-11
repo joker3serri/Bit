@@ -47,8 +47,12 @@ export class KeyDefinition<T> {
     private readonly options: KeyDefinitionOptions<T>,
   ) {
     if (options.deserializer == null) {
+      throw new Error(`'deserializer' is a required property on key ${this.errorKeyName}`);
+    }
+
+    if (options.cleanupDelayMs <= 0) {
       throw new Error(
-        `'deserializer' is a required property on key ${stateDefinition.name} > ${key}`,
+        `'cleanupDelayMs' must be greater than 0. Value of ${options.cleanupDelayMs} passed to key ${this.errorKeyName} `,
       );
     }
   }
@@ -148,6 +152,10 @@ export class KeyDefinition<T> {
     return userId === null
       ? `${scope}_${userId}_${this.stateDefinition.name}_${this.key}`
       : `${scope}_${this.stateDefinition.name}_${this.key}`;
+  }
+
+  private get errorKeyName() {
+    return `${this.stateDefinition.name} > ${this.key}`;
   }
 }
 
