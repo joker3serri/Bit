@@ -45,7 +45,7 @@ describe("state definitions", () => {
       expect(name).not.toContain(" "); // There should be no spaces in a state name
       expect(name).not.toContain("_"); // We should not be doing snake_case for state name
 
-      // TODO: Should we expect any details about the export name?
+      // NOTE: We could expect some details about the export name as well
 
       trackedNames.push([exportName, fullName]);
     },

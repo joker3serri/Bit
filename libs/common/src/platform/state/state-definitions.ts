@@ -15,8 +15,6 @@ import { StateDefinition } from "./state-definition";
  * 8. Teams should only use state definitions they have created
  * 9. StateDefinitions should only be used for keys relating to the state name they chose
  *
- * We reserve the right to make up rules on the spot in PR review, but if you follow
- * these rules you will likely have a very speedy review from platform.
  */
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
