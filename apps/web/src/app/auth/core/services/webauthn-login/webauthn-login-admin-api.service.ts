@@ -22,20 +22,20 @@ export class WebAuthnLoginAdminApiService {
       "/webauthn/attestation-options",
       request,
       true,
-      true
+      true,
     );
     return new WebauthnLoginCredentialCreateOptionsResponse(response);
   }
 
   async getCredentialAssertionOptions(
-    request: SecretVerificationRequest
+    request: SecretVerificationRequest,
   ): Promise<CredentialAssertionOptionsResponse> {
     const response = await this.apiService.send(
       "POST",
       "/webauthn/assertion-options",
       request,
       true,
-      true
+      true,
     );
     return new CredentialAssertionOptionsResponse(response);
   }

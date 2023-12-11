@@ -110,7 +110,7 @@ describe("WebauthnAdminService", () => {
         new WebAuthnLoginCredentialAssertionView(
           "enable_credential_encryption_test_token",
           new WebAuthnLoginAssertionResponseRequest(response),
-          {} as PrfKey
+          {} as PrfKey,
         );
 
       const request = new EnableCredentialEncryptionRequest();
@@ -142,7 +142,7 @@ describe("WebauthnAdminService", () => {
         new WebAuthnLoginCredentialAssertionView(
           "enable_credential_encryption_test_token",
           new WebAuthnLoginAssertionResponseRequest(response),
-          undefined
+          undefined,
         );
 
       // Mock the necessary methods and services
@@ -262,7 +262,7 @@ class MockPublicKeyCredential implements PublicKeyCredential {
   // Creating the array buffer from a known hex value allows us to
   // assert on the value in tests
   private prfKeyArrayBuffer: ArrayBuffer = Utils.hexStringToArrayBuffer(
-    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
   );
 
   getClientExtensionResults(): any {

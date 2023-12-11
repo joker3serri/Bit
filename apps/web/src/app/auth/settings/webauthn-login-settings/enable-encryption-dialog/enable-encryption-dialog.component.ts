@@ -39,7 +39,7 @@ export class EnableEncryptionDialogComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private dialogRef: DialogRef,
     private webauthnService: WebauthnLoginAdminService,
-    private webauthnLoginService: WebAuthnLoginServiceAbstraction
+    private webauthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {}
 
   ngOnInit(): void {
@@ -57,10 +57,10 @@ export class EnableEncryptionDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.disableClose = true;
     try {
       this.credentialOptions = await this.webauthnService.getCredentialAssertOptions(
-        this.formGroup.value.userVerification.secret
+        this.formGroup.value.userVerification.secret,
       );
       await this.webauthnService.enableCredentialEncryption(
-        await this.webauthnLoginService.assertCredential(this.credentialOptions)
+        await this.webauthnLoginService.assertCredential(this.credentialOptions),
       );
     } catch (error) {
       if (error instanceof ErrorResponse && error.statusCode === 400) {
@@ -85,7 +85,7 @@ export class EnableEncryptionDialogComponent implements OnInit, OnDestroy {
  */
 export const openEnableCredentialDialogComponent = (
   dialogService: DialogService,
-  config: DialogConfig<EnableEncryptionDialogParams>
+  config: DialogConfig<EnableEncryptionDialogParams>,
 ) => {
   return dialogService.open<unknown>(EnableEncryptionDialogComponent, config);
 };

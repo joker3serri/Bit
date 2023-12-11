@@ -63,7 +63,7 @@ export class WebauthnLoginAdminService {
    * @returns The credential assertion options and a token to be used for the credential update request.
    */
   async getCredentialAssertOptions(
-    verification: Verification
+    verification: Verification,
   ): Promise<WebAuthnLoginCredentialAssertionOptionsView> {
     const request = await this.userVerificationService.buildRequest(verification);
     const response = await this.apiService.getCredentialAssertionOptions(request);
@@ -80,7 +80,7 @@ export class WebauthnLoginAdminService {
    */
 
   async getCredentialAttestationOptions(
-    verification: Verification
+    verification: Verification,
   ): Promise<CredentialCreateOptionsView> {
     const request = await this.userVerificationService.buildRequest(verification);
     const response = await this.apiService.getCredentialCreateOptions(request);
@@ -199,14 +199,14 @@ export class WebauthnLoginAdminService {
    * @returns void
    */
   async enableCredentialEncryption(
-    assertionOptions: WebAuthnLoginCredentialAssertionView
+    assertionOptions: WebAuthnLoginCredentialAssertionView,
   ): Promise<void> {
     if (assertionOptions === undefined || assertionOptions?.prfKey === undefined) {
       throw new Error("invalid credential");
     }
 
     const prfKeySet: PrfKeySet = await this.rotateableKeySetService.createKeySet(
-      assertionOptions.prfKey
+      assertionOptions.prfKey,
     );
 
     const request = new EnableCredentialEncryptionRequest();
