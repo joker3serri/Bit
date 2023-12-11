@@ -157,7 +157,7 @@ class TestChannelPair {
 class TestMessageHandler {
   readonly handler: (
     message: TestMessage,
-    abortController?: AbortController
+    abortController?: AbortController,
   ) => Promise<Message | undefined>;
 
   private receivedMessages: {
@@ -206,7 +206,7 @@ class MockMessagePort<T> {
         data: message,
         ports: port ? [port] : [],
         origin: "https://bitwarden.com",
-      })
+      }),
     );
   }
 

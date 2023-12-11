@@ -1,3 +1,8 @@
+import {
+  AssertCredentialParams,
+  CreateCredentialParams,
+} from "@bitwarden/common/vault/abstractions/fido2/fido2-client.service.abstraction";
+
 import { Message, MessageType } from "./messaging/message";
 import { Messenger } from "./messaging/messenger";
 
@@ -5,7 +10,7 @@ function isFido2FeatureEnabled(): Promise<boolean> {
   return new Promise((resolve) => {
     chrome.runtime.sendMessage(
       { command: "checkFido2FeatureEnabled" },
-      (response: { result?: boolean }) => resolve(response.result)
+      (response: { result?: boolean }) => resolve(response.result),
     );
   });
 }
@@ -40,6 +45,14 @@ async function hasActiveUser() {
   return activeUserStorageValue[activeUserIdKey] !== undefined;
 }
 
+function isSameOriginWithAncestors() {
+  try {
+    return window.self === window.top;
+  } catch {
+    return false;
+  }
+}
+
 const messenger = Messenger.forDOMCommunication(window);
 
 function injectPageScript() {
@@ -72,10 +85,16 @@ function initializeFido2ContentScript() {
 
     if (message.type === MessageType.CredentialCreationRequest) {
       return new Promise<Message | undefined>((resolve, reject) => {
+        const data: CreateCredentialParams = {
+          ...message.data,
+          origin: window.location.origin,
+          sameOriginWithAncestors: isSameOriginWithAncestors(),
+        };
+
         chrome.runtime.sendMessage(
           {
             command: "fido2RegisterCredentialRequest",
-            data: message.data,
+            data,
             requestId: requestId,
           },
           (response) => {
@@ -87,17 +106,23 @@ function initializeFido2ContentScript() {
               type: MessageType.CredentialCreationResponse,
               result: response.result,
             });
-          }
+          },
         );
       });
     }
 
     if (message.type === MessageType.CredentialGetRequest) {
       return new Promise<Message | undefined>((resolve, reject) => {
+        const data: AssertCredentialParams = {
+          ...message.data,
+          origin: window.location.origin,
+          sameOriginWithAncestors: isSameOriginWithAncestors(),
+        };
+
         chrome.runtime.sendMessage(
           {
             command: "fido2GetCredentialRequest",
-            data: message.data,
+            data,
             requestId: requestId,
           },
           (response) => {
@@ -109,10 +134,10 @@ function initializeFido2ContentScript() {
               type: MessageType.CredentialGetResponse,
               result: response.result,
             });
-          }
+          },
         );
       }).finally(() =>
-        abortController.signal.removeEventListener("abort", abortHandler)
+        abortController.signal.removeEventListener("abort", abortHandler),
       ) as Promise<Message>;
     }
 

@@ -16,7 +16,7 @@ export type Metadata = { SENDER: typeof SENDER; senderId: string };
 export type MessageWithMetadata = Message & Metadata;
 type Handler = (
   message: MessageWithMetadata,
-  abortController?: AbortController
+  abortController?: AbortController,
 ) => void | Promise<Message | undefined>;
 
 /**
@@ -86,7 +86,7 @@ export class Messenger {
 
       this.broadcastChannel.postMessage(
         { ...request, SENDER, senderId: this.messengerId },
-        remotePort
+        remotePort,
       );
       const response = await promise;
 
