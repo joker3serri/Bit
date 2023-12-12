@@ -114,7 +114,7 @@ jobs:
           workflow: build-web.yml
           path: apps/web
           workflow_conclusion: success
-          branch: ${{ github.ref_name }}
+          branch: ${{ github.event.inputs.tag }}
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Login to Azure
@@ -139,7 +139,7 @@ jobs:
           repo: clients
           github_token: ${{ steps.retrieve-secret.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
           workflow_file_name: build-web.yml
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.event.inputs.tag }}
           wait_interval: 100
 
   azure-deploy:
@@ -164,7 +164,7 @@ jobs:
           environment-url: ${{ env._ENVIRONMENT_URL }}
           environment: ${{ env._ENVIRONMENT_NAME }}
           task: 'deploy'
-          description: 'Deployment from branch ${{ github.ref_name }}'
+          description: 'Deployment from branch ${{ github.event.inputs.tag }}'
 
       - name: Login to Azure
         uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
