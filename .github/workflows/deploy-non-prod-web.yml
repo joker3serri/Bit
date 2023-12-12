@@ -152,6 +152,7 @@ jobs:
           initial-status: 'in_progress'
           environment-url: ${{ env._ENVIRONMENT_URL }}
           environment: ${{ env._ENVIRONMENT_NAME }}
+          task: 'deploy'
           description: 'Deployment from branch ${{ github.ref_name }}'
 
       - name: Login to Azure
