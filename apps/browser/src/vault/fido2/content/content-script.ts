@@ -73,10 +73,12 @@ function injectPageScript() {
     s.src = chrome.runtime.getURL("content/fido2/page-script.js");
     s.id = "bw-fido2-page-script";
     (document.head || document.documentElement).appendChild(s);
-  } else {
-    // If the page-script already exists, send a reconnect message to the page-script
-    messenger.sendReconnectCommand();
+    
+    return;
   }
+  
+  // If the page-script already exists, send a reconnect message to the page-script
+  messenger.sendReconnectCommand();
 }
 
 function initializeFido2ContentScript() {
