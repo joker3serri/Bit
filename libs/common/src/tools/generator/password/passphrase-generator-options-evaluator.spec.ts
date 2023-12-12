@@ -34,7 +34,7 @@ describe("Password generator options builder", () => {
         const builder = new PassphraseGeneratorOptionsEvaluator(policy);
 
         expect(builder.numWords).toEqual(DefaultBoundaries.numWords);
-      }
+      },
     );
 
     it.each([8, 12, 18])(
@@ -47,7 +47,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.numWords.min).toEqual(minNumberWords);
         expect(builder.numWords.max).toEqual(DefaultBoundaries.numWords.max);
-      }
+      },
     );
 
     it.each([150, 300, 9000])(
@@ -60,7 +60,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.numWords.min).toEqual(minNumberWords);
         expect(builder.numWords.max).toEqual(minNumberWords);
-      }
+      },
     );
   });
 
@@ -131,7 +131,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.numWords).toBe(builder.numWords.min);
-      }
+      },
     );
 
     it.each([3, 8, 18, 20])(
@@ -147,7 +147,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.numWords).toBe(numWords);
-      }
+      },
     );
 
     it.each([21, 30, 50, 100])(
@@ -162,7 +162,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.numWords).toBe(builder.numWords.max);
-      }
+      },
     );
 
     it("should preserve unknown properties", () => {

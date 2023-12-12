@@ -41,7 +41,7 @@ describe("Password generator options builder", () => {
         const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
         expect(builder.length).toEqual(DefaultBoundaries.length);
-      }
+      },
     );
 
     it.each([8, 20, 100])(
@@ -57,7 +57,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.length.min).toEqual(expectedLength);
         expect(builder.length.max).toEqual(DefaultBoundaries.length.max);
-      }
+      },
     );
 
     it.each([150, 300, 9000])(
@@ -72,7 +72,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.length.min).toEqual(expectedLength);
         expect(builder.length.max).toEqual(expectedLength);
-      }
+      },
     );
 
     it.each([3, 5, 8, 9])(
@@ -88,7 +88,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.minDigits.min).toEqual(expectedMinDigits);
         expect(builder.minDigits.max).toEqual(DefaultBoundaries.minDigits.max);
-      }
+      },
     );
 
     it.each([10, 20, 400])(
@@ -103,17 +103,17 @@ describe("Password generator options builder", () => {
 
         expect(builder.minDigits.min).toEqual(expectedMinDigits);
         expect(builder.minDigits.max).toEqual(expectedMinDigits);
-      }
+      },
     );
 
     it.each([2, 4, 6])(
       "should use `policy.specialCount` (= %i) when it is greater than the default minimum special characters",
       (expectedSpecialCharacters) => {
         expect(expectedSpecialCharacters).toBeGreaterThan(
-          DefaultBoundaries.minSpecialCharacters.min
+          DefaultBoundaries.minSpecialCharacters.min,
         );
         expect(expectedSpecialCharacters).toBeLessThanOrEqual(
-          DefaultBoundaries.minSpecialCharacters.max
+          DefaultBoundaries.minSpecialCharacters.max,
         );
 
         const policy = new PasswordGeneratorPolicyOptions();
@@ -123,16 +123,16 @@ describe("Password generator options builder", () => {
 
         expect(builder.minSpecialCharacters.min).toEqual(expectedSpecialCharacters);
         expect(builder.minSpecialCharacters.max).toEqual(
-          DefaultBoundaries.minSpecialCharacters.max
+          DefaultBoundaries.minSpecialCharacters.max,
         );
-      }
+      },
     );
 
     it.each([10, 20, 400])(
       "should use `policy.specialCount` (= %i) when it is greater than the default special characters boundaries",
       (expectedSpecialCharacters) => {
         expect(expectedSpecialCharacters).toBeGreaterThan(
-          DefaultBoundaries.minSpecialCharacters.max
+          DefaultBoundaries.minSpecialCharacters.max,
         );
 
         const policy = new PasswordGeneratorPolicyOptions();
@@ -142,7 +142,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.minSpecialCharacters.min).toEqual(expectedSpecialCharacters);
         expect(builder.minSpecialCharacters.max).toEqual(expectedSpecialCharacters);
-      }
+      },
     );
 
     it.each([
@@ -161,7 +161,7 @@ describe("Password generator options builder", () => {
         const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
         expect(builder.length.min).toBeGreaterThanOrEqual(expectedLength);
-      }
+      },
     );
   });
 
@@ -183,7 +183,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.uppercase).toEqual(expectedUppercase);
-      }
+      },
     );
 
     it.each([false, true, undefined])(
@@ -197,7 +197,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.uppercase).toEqual(true);
-      }
+      },
     );
 
     it.each([
@@ -215,7 +215,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.lowercase).toEqual(expectedLowercase);
-      }
+      },
     );
 
     it.each([false, true, undefined])(
@@ -229,7 +229,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.lowercase).toEqual(true);
-      }
+      },
     );
 
     it.each([
@@ -247,7 +247,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.number).toEqual(expectedNumber);
-      }
+      },
     );
 
     it.each([false, true, undefined])(
@@ -261,7 +261,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.number).toEqual(true);
-      }
+      },
     );
 
     it.each([
@@ -279,7 +279,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.special).toEqual(expectedSpecial);
-      }
+      },
     );
 
     it.each([false, true, undefined])(
@@ -293,7 +293,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.special).toEqual(true);
-      }
+      },
     );
 
     it.each([1, 2, 3, 4])(
@@ -308,7 +308,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.length).toEqual(builder.length.min);
-      }
+      },
     );
 
     it.each([5, 10, 50, 100, 128])(
@@ -324,7 +324,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.length).toEqual(length);
-      }
+      },
     );
 
     it.each([129, 500, 9000])(
@@ -339,7 +339,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.length).toEqual(builder.length.max);
-      }
+      },
     );
 
     it.each([
@@ -359,7 +359,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.number).toEqual(expectedNumber);
-      }
+      },
     );
 
     it("should set `options.minNumber` to the minimum value when `options.number` is true", () => {
@@ -395,7 +395,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.minNumber).toEqual(builder.minDigits.min);
-      }
+      },
     );
 
     it.each([1, 3, 5, 7, 9])(
@@ -411,7 +411,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.minNumber).toEqual(minNumber);
-      }
+      },
     );
 
     it.each([10, 20, 400])(
@@ -426,7 +426,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.minNumber).toEqual(builder.minDigits.max);
-      }
+      },
     );
 
     it.each([
@@ -446,7 +446,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.special).toEqual(expectedSpecial);
-      }
+      },
     );
 
     it("should set `options.minSpecial` to the minimum value when `options.special` is true", () => {
@@ -482,7 +482,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.minSpecial).toEqual(builder.minSpecialCharacters.min);
-      }
+      },
     );
 
     it.each([1, 3, 5, 7, 9])(
@@ -498,7 +498,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.minSpecial).toEqual(minSpecial);
-      }
+      },
     );
 
     it.each([10, 20, 400])(
@@ -513,7 +513,7 @@ describe("Password generator options builder", () => {
         const sanitizedOptions = builder.applyPolicy(options);
 
         expect(sanitizedOptions.minSpecial).toEqual(builder.minSpecialCharacters.max);
-      }
+      },
     );
 
     it("should preserve unknown properties", () => {
@@ -547,7 +547,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.minLowercase).toEqual(expectedMinLowercase);
-      }
+      },
     );
 
     it.each([
@@ -563,7 +563,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.minUppercase).toEqual(expectedMinUppercase);
-      }
+      },
     );
 
     it.each([
@@ -579,7 +579,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.minNumber).toEqual(expectedMinNumber);
-      }
+      },
     );
 
     it.each([
@@ -597,7 +597,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.number).toEqual(expectedNumber);
-      }
+      },
     );
 
     it.each([
@@ -613,7 +613,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.minSpecial).toEqual(expectedMinSpecial);
-      }
+      },
     );
 
     it.each([
@@ -631,7 +631,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.special).toEqual(expectedSpecial);
-      }
+      },
     );
 
     it.each([
@@ -658,7 +658,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.minLength).toEqual(builder.length.min);
-      }
+      },
     );
 
     it.each([
@@ -683,7 +683,7 @@ describe("Password generator options builder", () => {
         const actual = builder.sanitize(options);
 
         expect(actual.minLength).toEqual(expectedMinLength);
-      }
+      },
     );
 
     it("should preserve unknown properties", () => {

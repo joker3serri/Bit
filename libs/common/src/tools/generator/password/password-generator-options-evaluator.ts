@@ -82,7 +82,7 @@ export class PasswordGeneratorOptionsEvaluator {
     this.minDigits = createBoundary(policy.numberCount, DefaultBoundaries.minDigits);
     this.minSpecialCharacters = createBoundary(
       policy.specialCount,
-      DefaultBoundaries.minSpecialCharacters
+      DefaultBoundaries.minSpecialCharacters,
     );
 
     // the overall length should be at least as long as the sum of the minimums
