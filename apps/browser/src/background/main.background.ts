@@ -724,6 +724,7 @@ export default class MainBackground {
       this.vaultTimeoutService,
       this.stateService,
       this.notificationsService,
+      this.accountService,
     );
     this.webRequestBackground = new WebRequestBackground(
       this.platformUtilsService,
