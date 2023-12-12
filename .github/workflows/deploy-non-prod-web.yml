@@ -74,8 +74,17 @@ jobs:
             echo "environment-url=http://vault.bitwarden.eu" >> $GITHUB_OUTPUT
           fi
 
+  approval:
+    name: Approval for Deployment to ${{ needs.setup.outputs.environment-name }}
+    runs-on: ubuntu-22.04
+    environment: ${{ needs.setup.outputs.environment-name }}
+    steps:
+      - name: Success Code
+        run: exit 0
+
   notify-start:
     name: Notify Slack with start message
+    needs: approval
     runs-on: ubuntu-22.04
     if: always()
     steps:
@@ -137,6 +146,7 @@ jobs:
     needs:
       - setup
       - artifact-check
+      - approval
     runs-on: ubuntu-22.04
     env:
       _ENVIRONMENT: ${{ needs.setup.outputs.environment }}
