@@ -76,6 +76,7 @@ jobs:
 
   approval:
     name: Approval for Deployment to ${{ needs.setup.outputs.environment-name }}
+    needs: setup
     runs-on: ubuntu-22.04
     environment: ${{ needs.setup.outputs.environment-name }}
     steps:
