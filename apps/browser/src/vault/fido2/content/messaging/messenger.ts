@@ -107,11 +107,7 @@ export class Messenger {
   private createMessageEventListener() {
     return async (event: MessageEvent<MessageWithMetadata>) => {
       const windowOrigin = window.location.origin;
-      if (event.origin !== windowOrigin) {
-        return;
-      }
-
-      if (this.handler === undefined) {
+      if (event.origin !== windowOrigin || !this.handler) {
         return;
       }
 
