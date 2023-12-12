@@ -7322,6 +7322,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "对所有者和管理员限制集合的创建和删除"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "所有者和管理员可以管理所有集合和项目"
+  },
   "collectionManagementUpdated": {
     "message": "集合管理行为已保存"
   },
@@ -7404,6 +7407,15 @@
   "passkeyNotCopiedAlert": {
     "message": "通行密钥将不会被复制到克隆的项目。要继续克隆这个项目吗？"
   },
+  "modifiedCollectionManagement": {
+    "message": "修改了集合管理设置 $ID$。",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "seeDetailedInstructions": {
     "message": "请参阅我们的帮助网站上的详细说明：",
     "description": "This is followed a by a hyperlink to the help website."
@@ -7422,5 +7434,11 @@
   },
   "seatLimitReachedContactYourProvider": {
     "message": "已达到席位限制。请联系您的供应商购买更多席位。"
+  },
+  "collectionAccessRestricted": {
+    "message": "访问集合受限"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "服务账户访问权限已更新"
   }
 }

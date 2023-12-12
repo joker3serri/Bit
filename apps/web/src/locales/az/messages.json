@@ -7322,6 +7322,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Kolleksiya yaradılmasını və silinməsini sahibləri və adminləri ilə məhdudlaşdır"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Sahiblər və adminlər bütün kolleksiyaları və elementləri idarə edə bilər"
+  },
   "collectionManagementUpdated": {
     "message": "Kolleksiya idarəetmə davranışı saxlanıldı"
   },
@@ -7404,6 +7407,15 @@
   "passkeyNotCopiedAlert": {
     "message": "Keçid açarı, klonlanmış elementə kopyalanmayacaq. Bu elementi klonlamağa davam etmək istəyirsiniz?"
   },
+  "modifiedCollectionManagement": {
+    "message": "Kolleksiya idarəetmə ayarı $ID$ dəyişdirildi.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "seeDetailedInstructions": {
     "message": "Kömək saytımızda detallı təlimatlara baxın",
     "description": "This is followed a by a hyperlink to the help website."
@@ -7422,5 +7434,11 @@
   },
   "seatLimitReachedContactYourProvider": {
     "message": "Yer limitinə çatıldı. Əlavə yer satın almaq üçün provayderinizlə əlaqə saxlayın."
+  },
+  "collectionAccessRestricted": {
+    "message": "Kolleksiya müraciəti məhdudlaşdırıldı"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Service account access updated"
   }
 }
