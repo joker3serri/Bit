@@ -84,7 +84,7 @@ jobs:
           project: Web
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ github.event.inputs.tag }}
-          slack-channel: team-eng-qa-devops
+          slack-channel: devops-alerts-test
           event: 'start'
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
