@@ -81,7 +81,7 @@ jobs:
     steps:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
         with:
-          project: Web
+          project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ github.event.inputs.tag }}
           slack-channel: devops-alerts-test
@@ -224,7 +224,7 @@ jobs:
     steps:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
         with:
-          project: Web
+          project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ github.event.inputs.tag }}
           slack-channel: devops-alerts-test
