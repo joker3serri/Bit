@@ -27,6 +27,9 @@ on:
         default: 'QA'
         type: string
 
+permissions:
+  deployments: write
+
 jobs:
   setup:
     name: Setup
