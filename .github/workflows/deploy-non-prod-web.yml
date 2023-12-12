@@ -82,8 +82,8 @@ jobs:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
         with:
           project: Web
-          environment: US ${{ inputs.environment }} Cloud
-          tag: ${{ github.ref_name }}
+          environment: ${{ needs.setup.outputs.environment-name }}
+          tag: ${{ github.event.inputs.tag }}
           slack-channel: team-eng-qa-devops
           event: 'start'
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
