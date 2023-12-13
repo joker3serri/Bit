@@ -1,6 +1,6 @@
 ---
-name: Deploy Web - Non-Prod
-run-name: Deploy Web ${{ inputs.environment }}
+name: Deploy Web Vault
+run-name: Deploy Web Vault to ${{ inputs.environment }}
 
 on:
   workflow_dispatch:
