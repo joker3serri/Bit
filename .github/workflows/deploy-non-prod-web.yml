@@ -10,7 +10,7 @@ on:
         default: 'QA'
         type: choice
         options:
-          - QA
+          - USQA
           - EUQA
           - USPROD
           - EUPROD
@@ -24,7 +24,7 @@ on:
     inputs:
       environment:
         description: 'Environment'
-        default: 'QA'
+        default: 'USQA'
         type: string
 
 permissions:
@@ -48,7 +48,7 @@ jobs:
           ENV_NAME_LOWER=$(echo "${{ inputs.environment }}" | awk '{print tolower($0)}')
           echo "configuring the Web deploy for ${{ inputs.environment }}"
           echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
-          if [ ${{ inputs.environment }} == "QA" ]; then
+          if [ ${{ inputs.environment }} == "USQA" ]; then
             echo "azure-login-creds=AZURE_KV_US_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
             echo "retrieve-secrets-keyvault=bw-webvault-rlktusqa-kv" >> $GITHUB_OUTPUT
             echo "environment-artifact=web-*-cloud-QA.zip" >> $GITHUB_OUTPUT
