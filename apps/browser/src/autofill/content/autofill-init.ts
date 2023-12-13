@@ -20,7 +20,7 @@ class AutofillInit implements AutofillInitInterface {
     collectPageDetailsImmediately: ({ message }) => this.collectPageDetails(message, true),
     fillForm: ({ message }) => this.fillForm(message),
     openAutofillOverlay: ({ message }) => this.openAutofillOverlay(message),
-    closeAutofillOverlay: () => this.removeAutofillOverlay(),
+    closeAutofillOverlay: ({ message }) => this.removeAutofillOverlay(message),
     addNewVaultItemFromOverlay: () => this.addNewVaultItemFromOverlay(),
     redirectOverlayFocusOut: ({ message }) => this.redirectOverlayFocusOut(message),
     updateIsOverlayCiphersPopulated: ({ message }) => this.updateIsOverlayCiphersPopulated(message),
@@ -39,11 +39,11 @@ class AutofillInit implements AutofillInitInterface {
     this.domElementVisibilityService = new DomElementVisibilityService();
     this.collectAutofillContentService = new CollectAutofillContentService(
       this.domElementVisibilityService,
-      this.autofillOverlayContentService
+      this.autofillOverlayContentService,
     );
     this.insertAutofillContentService = new InsertAutofillContentService(
       this.domElementVisibilityService,
-      this.collectAutofillContentService
+      this.collectAutofillContentService,
     );
   }
 
@@ -69,7 +69,7 @@ class AutofillInit implements AutofillInitInterface {
    */
   private async collectPageDetails(
     message: AutofillExtensionMessage,
-    sendDetailsInResponse = false
+    sendDetailsInResponse = false,
   ): Promise<AutofillPageDetails | void> {
     const pageDetails: AutofillPageDetails =
       await this.collectAutofillContentService.getPageDetails();
@@ -153,7 +153,12 @@ class AutofillInit implements AutofillInitInterface {
    * If the autofill is currently filling, only the overlay list will be
    * removed.
    */
-  private removeAutofillOverlay() {
+  private removeAutofillOverlay(message?: AutofillExtensionMessage) {
+    if (message?.data?.forceCloseOverlay) {
+      this.autofillOverlayContentService?.removeAutofillOverlay();
+      return;
+    }
+
     if (
       !this.autofillOverlayContentService ||
       this.autofillOverlayContentService.isFieldCurrentlyFocused
@@ -205,7 +210,7 @@ class AutofillInit implements AutofillInitInterface {
     }
 
     this.autofillOverlayContentService.isOverlayCiphersPopulated = Boolean(
-      data?.isOverlayCiphersPopulated
+      data?.isOverlayCiphersPopulated,
     );
   }
 
@@ -226,7 +231,7 @@ class AutofillInit implements AutofillInitInterface {
   private handleExtensionMessage = (
     message: AutofillExtensionMessage,
     sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: any) => void
+    sendResponse: (response?: any) => void,
   ): boolean => {
     const command: string = message.command;
     const handler: CallableFunction | undefined = this.extensionMessageHandlers[command];
