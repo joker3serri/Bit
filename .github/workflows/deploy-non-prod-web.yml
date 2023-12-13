@@ -148,6 +148,7 @@ jobs:
       - setup
       - artifact-check
       - approval
+      - notify-start
     runs-on: ubuntu-22.04
     env:
       _ENVIRONMENT: ${{ needs.setup.outputs.environment }}
