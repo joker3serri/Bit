@@ -7,8 +7,8 @@ import { StateDefinition } from "./state-definition";
  *
  * 1. (tested) Names should not be null or undefined
  * 2. (tested) Name and storage location should be unique
- * 3. (tested) Name and storage location can't differ another export only by casing
- * 4. (tested) Name should be longer than a 3 characters (at least, it should be descriptive but brief)
+ * 3. (tested) Name and storage location can't differ from another export by only casing
+ * 4. (tested) Name should be longer than 3 characters. It should be descriptive, but brief.
  * 5. (tested) Name should not contain spaces or underscores
  * 6. Name should be human readable
  * 7. Name should be in camelCase format (unit tests ensure the first character is lowercase)
