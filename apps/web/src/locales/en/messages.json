@@ -7171,5 +7171,8 @@
   },
   "alreadyHaveAccount": {
     "message": "Already have an account?"
+  },
+  "skipToContent": {
+    "message": "Skip to content"
   }
 }
