@@ -1,4 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
+
+export type LayoutVariant = "primary" | "secondary";
 
 import { LinkModule } from "../link";
 import { SharedModule } from "../shared";
@@ -9,4 +11,6 @@ import { SharedModule } from "../shared";
   standalone: true,
   imports: [SharedModule, LinkModule],
 })
-export class LayoutComponent {}
+export class LayoutComponent {
+  @Input() variant: LayoutVariant = "primary";
+}
