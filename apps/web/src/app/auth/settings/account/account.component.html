@@ -2,12 +2,11 @@
   <h1>{{ "myAccount" | i18n }}</h1>
 </div>
 <app-profile></app-profile>
-<ng-container *ngIf="showChangeEmail">
-  <div class="secondary-header">
-    <h1>{{ "changeEmail" | i18n }}</h1>
-  </div>
+
+<div *ngIf="showChangeEmail" class="tw-mt-16">
+  <h1 bitTypography="h1">{{ "changeEmail" | i18n }}</h1>
   <app-change-email></app-change-email>
-</ng-container>
+</div>
 
 <app-danger-zone>
   <button type="button" bitButton buttonType="danger" (click)="deauthorizeSessions()">
