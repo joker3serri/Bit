@@ -93,7 +93,7 @@ jobs:
         with:
           project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
-          tag: ${{ github.event.inputs.tag }}
+          tag: ${{ inputs.tag }}
           slack-channel: devops-alerts-test
           event: 'start'
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
