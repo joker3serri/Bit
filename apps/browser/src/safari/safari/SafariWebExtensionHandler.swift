@@ -116,6 +116,38 @@ func handleSleep(_ context: NSExtensionContext, _ response: NSExtensionItem) {
     }
 }
 
+let notSupportedResponse: [String: Any] = [
+    SFExtensionMessageKey: [
+        "message": [
+            "command": "biometricUnlock",
+            "response": "not supported",
+            "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
+        ],
+    ],
+]
+
+let notEnabledResponse: [String: Any] = [
+    SFExtensionMessageKey: [
+        "message": [
+            "command": "biometricUnlock",
+            "response": "not enabled",
+            "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
+        ],
+    ],
+]
+
+func createResponse(_ response: String, _ result: String? = nil) -> [String: Any] {
+    var message: [String: Any] = [
+        "command": "biometricUnlock",
+        "response": response,
+        "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
+    ]
+    if let result = result {
+        message["userKeyB64"] = result.replacingOccurrences(of: "\"", with: "")
+    }
+    return [SFExtensionMessageKey: ["message": message]]
+}
+
 func handleBiometricUnlock(_ message: [String: Any]?, _ context: NSExtensionContext, _ response: inout NSExtensionItem) {
     var error: NSError?
     let laContext = LAContext()
@@ -123,30 +155,15 @@ func handleBiometricUnlock(_ message: [String: Any]?, _ context: NSExtensionCont
     laContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
 
     if let e = error, e.code != kLAErrorBiometryLockout {
-        response.userInfo = [
-            SFExtensionMessageKey: [
-                "message": [
-                    "command": "biometricUnlock",
-                    "response": "not supported",
-                    "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
-                ],
-            ],
-        ]
-        break
+        response.userInfo = notSupportedResponse
+        return
     }
 
     guard let accessControl = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, [.privateKeyUsage, .userPresence], nil) else {
-        response.userInfo = [
-            SFExtensionMessageKey: [
-                "message": [
-                    "command": "biometricUnlock",
-                    "response": "not supported",
-                    "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
-                ],
-            ],
-        ]
-        break
+        response.userInfo = notSupportedResponse
+        return
     }
+
     laContext.evaluateAccessControl(accessControl, operation: .useKeySign, localizedReason: "Bitwarden Safari Extension") { (success, error) in
         if success {
             guard let userId = message?["userId"] as? String else {
@@ -170,26 +187,11 @@ func handleBiometricUnlock(_ message: [String: Any]?, _ context: NSExtensionCont
 
             if status == errSecSuccess {
                 let result = NSString(bytes: passwordPtr!, length: Int(passwordLength), encoding: String.Encoding.utf8.rawValue) as String?
-                            SecKeychainItemFreeContent(nil, passwordPtr)
+                SecKeychainItemFreeContent(nil, passwordPtr)
 
-                response.userInfo = [ SFExtensionMessageKey: [
-                    "message": [
-                        "command": "biometricUnlock",
-                        "response": "unlocked",
-                        "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
-                        "userKeyB64": result!.replacingOccurrences(of: "\"", with: ""),
-                    ],
-                ]]
+                response.userInfo = createResponse("unlocked", result)
             } else {
-                response.userInfo = [
-                    SFExtensionMessageKey: [
-                        "message": [
-                            "command": "biometricUnlock",
-                            "response": "not enabled",
-                            "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
-                        ],
-                    ],
-                ]
+                response.userInfo = notEnabledResponse
             }
         }
 
