@@ -47,6 +47,7 @@ interface ViewData {
   styleUrls: [],
 })
 export class Fido2Component implements OnInit, OnDestroy {
+  isOverlay: boolean = false;
   private destroy$ = new Subject<void>();
   private hasSearched = false;
 
@@ -338,6 +339,10 @@ export class Fido2Component implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  setShowOverlay() {
+    this.isOverlay = true;
   }
 
   private buildCipher() {

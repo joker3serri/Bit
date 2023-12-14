@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
-import { Component } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -48,6 +48,8 @@ export class Fido2UseBrowserLinkComponent {
       offsetY: 5,
     },
   ];
+  @Output() showOverlay = new EventEmitter<void>();
+
   protected fido2PopoutSessionData$ = fido2PopoutSessionData$();
 
   constructor(
@@ -69,13 +71,15 @@ export class Fido2UseBrowserLinkComponent {
    * @param excludeDomain - Identifies if the domain should be excluded from future FIDO2 prompts.
    */
   protected async abort(excludeDomain = true) {
+    this.close();
     const sessionData = await firstValueFrom(this.fido2PopoutSessionData$);
 
     if (!excludeDomain) {
       this.abortSession(sessionData.sessionId);
       return;
     }
-
+    // Show overlay to prevent the user from interacting with the page.
+    this.showOverlay.emit();
     await this.handleDomainExclusion(sessionData.senderUrl);
     // Give the user a chance to see the toast before closing the popout.
     await Utils.delay(2000);
