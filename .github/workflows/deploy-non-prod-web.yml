@@ -26,6 +26,10 @@ on:
         description: 'Environment'
         default: 'USQA'
         type: string
+      tag:
+        description: "Branch name to deploy (examples: 'main', 'feature/sm')"
+        type: string
+        default: main
 
 permissions:
   deployments: write
