@@ -165,7 +165,7 @@ jobs:
           environment-url: ${{ env._ENVIRONMENT_URL }}
           environment: ${{ env._ENVIRONMENT_NAME }}
           task: 'deploy'
-          description: 'Deployment from branch ${{ github.event.inputs.tag }}'
+          description: 'Deployment from branch ${{ inputs.tag }}'
 
       - name: Login to Azure
         uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
