@@ -1,5 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from "@storybook/angular";
+import { userEvent } from "@storybook/testing-library";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
@@ -133,6 +134,13 @@ export const WithContent: Story = {
       </bit-layout>
     `,
   }),
+};
+
+export const SkipLinks: Story = {
+  ...WithContent,
+  play: async () => {
+    await userEvent.tab();
+  },
 };
 
 export const Secondary: Story = {
