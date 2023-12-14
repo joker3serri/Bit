@@ -114,7 +114,7 @@ jobs:
           workflow: build-web.yml
           path: apps/web
           workflow_conclusion: success
-          branch: ${{ github.event.inputs.tag }}
+          branch: ${{ inputs.tag }}
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Login to Azure
