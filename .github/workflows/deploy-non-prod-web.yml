@@ -139,7 +139,7 @@ jobs:
           repo: clients
           github_token: ${{ steps.retrieve-secret.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
           workflow_file_name: build-web.yml
-          ref: ${{ github.event.inputs.tag }}
+          ref: ${{ inputs.tag }}
           wait_interval: 100
 
   azure-deploy:
