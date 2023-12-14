@@ -97,7 +97,7 @@ jobs:
           project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ inputs.tag }}
-          slack-channel: devops-alerts-test
+          slack-channel: team-eng-qa-devops
           event: 'start'
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
@@ -243,7 +243,7 @@ jobs:
           project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ inputs.tag }}
-          slack-channel: devops-alerts-test
+          slack-channel: team-eng-qa-devops
           event: ${{ needs.azure-deploy.result }}
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
