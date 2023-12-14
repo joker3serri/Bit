@@ -16,7 +16,6 @@ on:
           - EUPROD
       tag:
         description: "Branch name to deploy (examples: 'main', 'feature/sm')"
-        required: true
         type: string
         default: main
 
