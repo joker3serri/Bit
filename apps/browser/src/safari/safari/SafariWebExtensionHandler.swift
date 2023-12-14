@@ -70,42 +70,43 @@ func handleShowPopover() {
     }
 }
 
-func handleDownloadFile(_ message: [String: Any]?) {
-    guard let jsonData = message?["data"] as? String else {
-        return
-    }
-    guard let dlMsg: DownloadFileMessage = jsonDeserialize(json: jsonData) else {
-        return
-    }
-    var blobData: Data?
+func createBlobData(from dlMsg: DownloadFileMessage) -> Data? {
     if dlMsg.blobOptions?.type == "text/plain" {
-        blobData = dlMsg.blobData?.data(using: .utf8)
+        return dlMsg.blobData?.data(using: .utf8)
     } else if let blob = dlMsg.blobData {
-        blobData = Data(base64Encoded: blob)
+        return Data(base64Encoded: blob)
     }
-    guard let data = blobData else {
+    return nil
+}
+
+func writeFile(data: Data, to url: URL) {
+    do {
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: url.absoluteString) {
+            fileManager.createFile(atPath: url.absoluteString, contents: Data(),
+                                    attributes: nil)
+        }
+        try data.write(to: url)
+    } catch {
+        print(error)
+        NSLog("ERROR in downloadFile, \(error)")
+    }
+}
+
+func handleDownloadFile(_ message: [String: Any]?) {
+    guard let jsonData = message?["data"] as? String,
+          let dlMsg: DownloadFileMessage = jsonDeserialize(json: jsonData),
+          let blobData = createBlobData(from: dlMsg) else {
         return
     }
 
     let panel = NSSavePanel()
     panel.canCreateDirectories = true
     panel.nameFieldStringValue = dlMsg.fileName
-    let response = panel.runModal();
+    let response = panel.runModal()
 
-    if response == NSApplication.ModalResponse.OK {
-        if let url = panel.url {
-            do {
-                let fileManager = FileManager.default
-                if !fileManager.fileExists(atPath: url.absoluteString) {
-                    fileManager.createFile(atPath: url.absoluteString, contents: Data(),
-                                            attributes: nil)
-                }
-                try data.write(to: url)
-            } catch {
-                print(error)
-                NSLog("ERROR in downloadFile, \(error)")
-            }
-        }
+    if response == NSApplication.ModalResponse.OK, let url = panel.url {
+        writeFile(data: blobData, to: url)
     }
 }
 
