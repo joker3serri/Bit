@@ -44,15 +44,22 @@ export class BadgeDirective {
       "focus:tw-ring-offset-2",
       "focus:tw-ring-primary-700",
     ]
-      .concat(styles[this.badgeType])
-      .concat(this.hasHoverEffects ? hoverStyles[this.badgeType] : [])
+      .concat(styles[this.variant])
+      .concat(this.hasHoverEffects ? hoverStyles[this.variant] : [])
       .concat(this.truncate ? ["tw-truncate", "tw-max-w-40"] : []);
   }
   @HostBinding("attr.title") get title() {
     return this.truncate ? this.el.nativeElement.textContent.trim() : null;
   }
 
-  @Input() badgeType: BadgeVariant = "primary";
+  /**
+   * Variant, sets the background color of the badge.
+   */
+  @Input() variant: BadgeVariant = "primary";
+
+  /**
+   * Truncate long text
+   */
   @Input() truncate = true;
 
   private hasHoverEffects = false;

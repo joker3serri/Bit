@@ -12,7 +12,7 @@ export class BadgeListComponent implements OnChanges {
   protected filteredItems: string[] = [];
   protected isFiltered = false;
 
-  @Input() badgeType: BadgeVariant = "primary";
+  @Input() variant: BadgeVariant = "primary";
   @Input() items: string[] = [];
   @Input() truncate = true;
 
