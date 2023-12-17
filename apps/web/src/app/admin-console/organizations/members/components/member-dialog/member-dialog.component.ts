@@ -501,6 +501,12 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     this.close(MemberDialogResult.Restored);
   };
 
+  async blurAndSubmit(e: Event) {
+    const input = e.target as HTMLElement;
+    input.dispatchEvent(new Event("blur"));
+    await this.submit();
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();

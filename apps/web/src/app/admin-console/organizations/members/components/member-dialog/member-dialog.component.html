@@ -22,7 +22,14 @@
             <p>{{ "inviteUserDesc" | i18n }}</p>
             <bit-form-field>
               <bit-label>{{ "email" | i18n }}</bit-label>
-              <input id="emails" type="text" appAutoFocus bitInput formControlName="emails" />
+              <input
+                id="emails"
+                type="text"
+                appAutoFocus
+                bitInput
+                formControlName="emails"
+                (keyup.enter)="blurAndSubmit($event)"
+              />
               <bit-hint>{{
                 "inviteMultipleEmailDesc"
                   | i18n : (organization.planProductType === ProductType.TeamsStarter ? "10" : "20")
