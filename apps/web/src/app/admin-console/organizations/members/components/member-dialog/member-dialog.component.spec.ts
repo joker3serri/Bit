@@ -22,8 +22,6 @@ import { MembersModule } from "../../members.module";
 
 import { MemberDialogComponent, MemberDialogTab } from "./member-dialog.component";
 
-
-
 describe("MemberDialogComponent", () => {
   let component: MemberDialogComponent;
   let fixture: ComponentFixture<MemberDialogComponent>;
@@ -113,7 +111,7 @@ describe("MemberDialogComponent", () => {
     emailInput.dispatchEvent(new Event("input"));
 
     // Trigger keyup.enter, which should submit form.
-    emailInput.dispatchEvent(new KeyboardEvent("keyup", { key: "enter" }));
+    emailInput.dispatchEvent(new KeyboardEvent("keydown", { key: "enter" }));
 
     expect(userServiceMock.invite).toHaveBeenCalledWith(["test@mydomain.com"], expect.anything());
   }));

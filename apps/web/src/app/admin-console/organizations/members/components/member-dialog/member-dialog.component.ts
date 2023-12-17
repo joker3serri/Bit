@@ -502,6 +502,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   };
 
   async blurAndSubmit(e: Event) {
+    e.preventDefault();
+
     const input = e.target as HTMLElement;
     input.dispatchEvent(new Event("blur"));
     await this.submit();

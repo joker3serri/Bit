@@ -28,7 +28,7 @@
                 appAutoFocus
                 bitInput
                 formControlName="emails"
-                (keyup.enter)="blurAndSubmit($event)"
+                (keydown.enter)="blurAndSubmit($event)"
               />
               <bit-hint>{{
                 "inviteMultipleEmailDesc"
