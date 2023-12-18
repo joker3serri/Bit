@@ -489,7 +489,7 @@ export class CipherService implements CipherServiceAbstraction {
     if (!domains) {
       domains = {};
     }
-    domains[domain] = null;
+    domains[domain] = UriMatchType.Domain;
     await this.stateService.setNeverDomains(domains);
   }
 

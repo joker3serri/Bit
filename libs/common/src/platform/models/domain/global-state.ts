@@ -1,5 +1,6 @@
 import { EnvironmentUrls } from "../../../auth/models/domain/environment-urls";
 import { WindowState } from "../../../models/domain/window-state";
+import { UriMatchType } from "../../../vault/enums";
 import { ThemeType } from "../../enums";
 
 export class GlobalState {
@@ -35,7 +36,7 @@ export class GlobalState {
   enableBrowserIntegrationFingerprint?: boolean;
   enableDuckDuckGoBrowserIntegration?: boolean;
   region?: string;
-  neverDomains?: { [id: string]: unknown };
+  neverDomains?: { [id: string]: UriMatchType | null };
   enablePasskeys?: boolean;
   disableAddLoginNotification?: boolean;
   disableChangedPasswordNotification?: boolean;

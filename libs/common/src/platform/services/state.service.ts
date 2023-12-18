@@ -2343,13 +2343,16 @@ export class StateService<
     );
   }
 
-  async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: unknown }> {
+  async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: UriMatchType | null }> {
     return (
       await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
     )?.neverDomains;
   }
 
-  async setNeverDomains(value: { [id: string]: unknown }, options?: StorageOptions): Promise<void> {
+  async setNeverDomains(
+    value: { [id: string]: UriMatchType | null },
+    options?: StorageOptions,
+  ): Promise<void> {
     const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );

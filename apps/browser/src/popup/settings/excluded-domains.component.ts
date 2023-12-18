@@ -6,12 +6,13 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { NeverDomain } from "@bitwarden/common/types/never-domain";
+import { UriMatchType } from "@bitwarden/common/vault/enums";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { flagEnabled } from "../../platform/flags";
 
-interface ExcludedDomain {
-  uri: string;
+interface ExcludedDomainShowing extends NeverDomain {
   showCurrentUris: boolean;
 }
 
@@ -22,9 +23,16 @@ const BroadcasterSubscriptionId = "excludedDomains";
   templateUrl: "excluded-domains.component.html",
 })
 export class ExcludedDomainsComponent implements OnInit, OnDestroy {
-  excludedDomains: ExcludedDomain[] = [];
-  existingExcludedDomains: ExcludedDomain[] = [];
+  excludedDomains: ExcludedDomainShowing[] = [];
+  existingExcludedDomains: ExcludedDomainShowing[] = [];
   currentUris: string[];
+  matchTypes: { [i18nKey: string]: UriMatchType } = {
+    domainName: UriMatchType.Domain,
+    host: UriMatchType.Host,
+    startsWith: UriMatchType.StartsWith,
+    exact: UriMatchType.Exact,
+    regEx: UriMatchType.RegularExpression,
+  };
   loadCurrentUrisTimeout: number;
   accountSwitcherEnabled = false;
 
@@ -42,9 +50,17 @@ export class ExcludedDomainsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const savedDomains = await this.stateService.getNeverDomains();
     if (savedDomains) {
-      for (const uri of Object.keys(savedDomains)) {
-        this.excludedDomains.push({ uri: uri, showCurrentUris: false });
-        this.existingExcludedDomains.push({ uri: uri, showCurrentUris: false });
+      for (const [uri, match] of Object.entries(savedDomains)) {
+        this.excludedDomains.push({
+          uri: uri,
+          match: match ?? UriMatchType.Domain,
+          showCurrentUris: false,
+        });
+        this.existingExcludedDomains.push({
+          uri: uri,
+          match: match ?? UriMatchType.Domain,
+          showCurrentUris: false,
+        });
       }
     }
 
@@ -75,7 +91,7 @@ export class ExcludedDomainsComponent implements OnInit, OnDestroy {
   }
 
   async addUri() {
-    this.excludedDomains.push({ uri: "", showCurrentUris: false });
+    this.excludedDomains.push({ uri: "", match: UriMatchType.Domain, showCurrentUris: false });
   }
 
   async removeUri(i: number) {
@@ -83,24 +99,37 @@ export class ExcludedDomainsComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    const savedDomains: { [name: string]: null } = {};
+    const savedDomains: { [uri: string]: UriMatchType } = {};
     const newExcludedDomains = this.getNewlyAddedDomains(this.excludedDomains);
     for (const domain of this.excludedDomains) {
       const resp = newExcludedDomains.filter((e) => e.uri === domain.uri);
       if (resp.length === 0) {
-        savedDomains[domain.uri] = null;
+        savedDomains[domain.uri] = domain.match ?? UriMatchType.Domain;
       } else {
         if (domain.uri && domain.uri !== "") {
-          const validDomain = Utils.getHostname(domain.uri);
-          if (!validDomain) {
-            this.platformUtilsService.showToast(
-              "error",
-              null,
-              this.i18nService.t("excludedDomainsInvalidDomain", domain.uri),
-            );
-            return;
+          if (domain.match === UriMatchType.RegularExpression) {
+            try {
+              new RegExp(domain.uri);
+              savedDomains[domain.uri] = domain.match;
+            } catch (e) {
+              this.platformUtilsService.showToast(
+                "error",
+                null,
+                this.i18nService.t("excludedDomainsInvalidRegex", domain.uri),
+              );
+              return;
+            }
+          } else {
+            if (!Utils.getHostname(domain.uri)) {
+              this.platformUtilsService.showToast(
+                "error",
+                null,
+                this.i18nService.t("excludedDomainsInvalidDomain", domain.uri),
+              );
+              return;
+            }
+            savedDomains[domain.uri] = domain.match ?? UriMatchType.Domain;
           }
-          savedDomains[validDomain] = null;
         }
       }
     }
@@ -113,7 +142,7 @@ export class ExcludedDomainsComponent implements OnInit, OnDestroy {
     return index;
   }
 
-  getNewlyAddedDomains(domain: ExcludedDomain[]): ExcludedDomain[] {
+  getNewlyAddedDomains(domain: NeverDomain[]): NeverDomain[] {
     const result = this.excludedDomains.filter(
       (newDomain) =>
         !this.existingExcludedDomains.some((oldDomain) => newDomain.uri === oldDomain.uri),
@@ -121,7 +150,7 @@ export class ExcludedDomainsComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  toggleUriInput(domain: ExcludedDomain) {
+  toggleUriInput(domain: ExcludedDomainShowing) {
     domain.showCurrentUris = !domain.showCurrentUris;
   }
 

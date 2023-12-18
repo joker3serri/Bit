@@ -426,8 +426,11 @@ export abstract class StateService<T extends Account = Account> {
   setMainWindowSize: (value: number, options?: StorageOptions) => Promise<void>;
   getMinimizeOnCopyToClipboard: (options?: StorageOptions) => Promise<boolean>;
   setMinimizeOnCopyToClipboard: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getNeverDomains: (options?: StorageOptions) => Promise<{ [id: string]: unknown }>;
-  setNeverDomains: (value: { [id: string]: unknown }, options?: StorageOptions) => Promise<void>;
+  getNeverDomains: (options?: StorageOptions) => Promise<{ [id: string]: UriMatchType | null }>;
+  setNeverDomains: (
+    value: { [id: string]: UriMatchType | null },
+    options?: StorageOptions,
+  ) => Promise<void>;
   getNoAutoPromptBiometricsText: (options?: StorageOptions) => Promise<string>;
   setNoAutoPromptBiometricsText: (value: string, options?: StorageOptions) => Promise<void>;
   getOpenAtLogin: (options?: StorageOptions) => Promise<boolean>;

@@ -48,9 +48,21 @@
                 inputmode="url"
                 appInputVerbatim
               />
-              <label for="currentUris{{ i }}" class="sr-only">
-                {{ "currentUri" | i18n }} {{ i + 1 }}
+              <label for="match-currentUris{{ i }}" class="sr-only">
+                {{ "match" | i18n }} {{ i + 1 }}
               </label>
+              <select
+                id="match-currentUris{{ i }}"
+                name="match-currentUris{{ i }}"
+                [(ngModel)]="domain.match"
+              >
+                <option *ngFor="let match of matchTypes | keyvalue" [ngValue]="match.value">
+                  {{ match.key | i18n }}
+                </option>
+              </select>
+              <label for="currentUris{{ i }}" class="sr-only"
+                >{{ "currentUri" | i18n }} {{ i + 1 }}</label
+              >
               <select
                 *ngIf="currentUris && currentUris.length"
                 id="currentUris{{ i }}"

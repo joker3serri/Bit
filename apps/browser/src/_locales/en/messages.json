@@ -1729,6 +1729,15 @@
       }
     }
   },
+  "excludedDomainsInvalidRegex": {
+    "message": "$EXPRESSION$ is not a valid regular expression.",
+    "placeholders": {
+      "expression": {
+        "content": "$1",
+        "example": "[a-z+"
+      }
+    }
+  },
   "send": {
     "message": "Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
