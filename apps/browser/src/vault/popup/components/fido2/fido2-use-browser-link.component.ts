@@ -38,7 +38,7 @@ import {
   ],
 })
 export class Fido2UseBrowserLinkComponent {
-  isOverlay: boolean = false;
+  showOverlay: boolean = false;
   isOpen = false;
   overlayPosition: ConnectedPosition[] = [
     {
@@ -79,7 +79,7 @@ export class Fido2UseBrowserLinkComponent {
       return;
     }
     // Show overlay to prevent the user from interacting with the page.
-    this.setShowOverlay();
+    this.showOverlay = true;
     await this.handleDomainExclusion(sessionData.senderUrl);
     // Give the user a chance to see the toast before closing the popout.
     await Utils.delay(2000);
@@ -110,9 +110,5 @@ export class Fido2UseBrowserLinkComponent {
 
   private abortSession(sessionId: string) {
     BrowserFido2UserInterfaceSession.abortPopout(sessionId, true);
-  }
-
-  private setShowOverlay() {
-    this.isOverlay = true;
   }
 }
