@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -38,6 +38,7 @@ import {
   ],
 })
 export class Fido2UseBrowserLinkComponent {
+  isOverlay: boolean = false;
   isOpen = false;
   overlayPosition: ConnectedPosition[] = [
     {
@@ -48,7 +49,6 @@ export class Fido2UseBrowserLinkComponent {
       offsetY: 5,
     },
   ];
-  @Output() showOverlay = new EventEmitter<void>();
 
   protected fido2PopoutSessionData$ = fido2PopoutSessionData$();
 
@@ -79,7 +79,7 @@ export class Fido2UseBrowserLinkComponent {
       return;
     }
     // Show overlay to prevent the user from interacting with the page.
-    this.showOverlay.emit();
+    this.setShowOverlay();
     await this.handleDomainExclusion(sessionData.senderUrl);
     // Give the user a chance to see the toast before closing the popout.
     await Utils.delay(2000);
@@ -110,5 +110,9 @@ export class Fido2UseBrowserLinkComponent {
 
   private abortSession(sessionId: string) {
     BrowserFido2UserInterfaceSession.abortPopout(sessionId, true);
+  }
+
+  private setShowOverlay() {
+    this.isOverlay = true;
   }
 }
