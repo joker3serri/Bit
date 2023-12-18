@@ -116,7 +116,7 @@ jobs:
     env:
       _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
     steps:
-      - name: Download latest cloud asset
+      - name: Download latest cloud asset from branch ${{ inputs.tag }}'
         uses: bitwarden/gh-actions/download-artifacts@main
         id: download-artifacts
         continue-on-error: true
@@ -141,7 +141,7 @@ jobs:
           keyvault: "bitwarden-ci"
           secrets: "github-pat-bitwarden-devops-bot-repo-scope"
 
-      - name: Trigger build web for missing branch
+      - name: Trigger build web for missing branch ${{ inputs.tag }}'
         if: ${{ steps.download-artifacts.outcome == 'failure' }}
         uses: convictional/trigger-workflow-and-wait@f69fa9eedd3c62a599220f4d5745230e237904be # v1.6.5
         with:
@@ -195,7 +195,7 @@ jobs:
           workflow: build-web.yml
           path: apps/web
           workflow_conclusion: success
-          branch: ${{ github.event.inputs.tag }}
+          branch: ${{ inputs.tag }}
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Unzip build asset
