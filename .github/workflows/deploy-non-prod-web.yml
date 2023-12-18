@@ -93,7 +93,9 @@ jobs:
 
   notify-start:
     name: Notify Slack with start message
-    needs: approval
+    needs:
+      - approval
+      - setup
     runs-on: ubuntu-22.04
     if: always()
     steps:
