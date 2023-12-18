@@ -1,3 +1,5 @@
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+
 import AutofillField from "../models/autofill-field";
 import { WatchedForm } from "../models/watched-form";
 import AddLoginRuntimeMessage from "../notification/models/add-login-runtime-message";
@@ -98,7 +100,8 @@ async function loadNotificationBar() {
   const userSettingsStorageValue = await getFromLocalStorage(activeUserId);
   if (userSettingsStorageValue[activeUserId]) {
     const userSettings: UserSettings = userSettingsStorageValue[activeUserId].settings;
-    const globalSettings: GlobalSettings = await getFromLocalStorage("global");
+    const globalSettingsValue = await getFromLocalStorage("global");
+    const globalSettings: GlobalSettings = globalSettingsValue["global"];
 
     // Do not show the notification bar on the Bitwarden vault
     // because they can add logins and change passwords there
@@ -108,9 +111,10 @@ async function loadNotificationBar() {
       // NeverDomains is a dictionary of domains that the user has chosen to never
       // show the notification bar on (for login detail collection or password change).
       // It is managed in the Settings > Excluded Domains page in the browser extension.
-      // Example: '{"bitwarden.com":null}'
+      // The key is the domain and the value is an nullable UriMatchType enum value.
+      // Example: '{"bitwarden.com": UriMatchType.Domain, "google.com": null}'
       const excludedDomainsDict = globalSettings.neverDomains;
-      if (!excludedDomainsDict || !(window.location.hostname in excludedDomainsDict)) {
+      if (!excludedDomainsDict || !Utils.isDomainExcluded(excludedDomainsDict, window.location)) {
         // Set local disabled preferences
         disabledAddLoginNotification = globalSettings.disableAddLoginNotification;
         disabledChangedPasswordNotification = globalSettings.disableChangedPasswordNotification;

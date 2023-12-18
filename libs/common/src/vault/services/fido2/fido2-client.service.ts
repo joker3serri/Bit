@@ -87,14 +87,14 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       throw new TypeError("Invalid 'user.id' length");
     }
 
-    const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
-    params.rp.id = params.rp.id ?? parsedOrigin.hostname;
-
     const neverDomains = await this.stateService.getNeverDomains();
-    if (neverDomains != null && parsedOrigin.hostname in neverDomains) {
+    if (neverDomains != null && Utils.isDomainExcluded(neverDomains, new URL(params.origin))) {
       this.logService?.warning(`[Fido2Client] Excluded domain`);
       throw new FallbackRequestedError();
     }
+
+    const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
+    params.rp.id = params.rp.id ?? parsedOrigin.hostname;
 
     if (parsedOrigin.hostname == undefined || !params.origin.startsWith("https://")) {
       this.logService?.warning(`[Fido2Client] Invalid https origin: ${params.origin}`);
@@ -224,14 +224,14 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       throw new FallbackRequestedError();
     }
 
-    const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
-    params.rpId = params.rpId ?? parsedOrigin.hostname;
-
     const neverDomains = await this.stateService.getNeverDomains();
-    if (neverDomains != null && parsedOrigin.hostname in neverDomains) {
+    if (neverDomains != null && Utils.isDomainExcluded(neverDomains, new URL(params.origin))) {
       this.logService?.warning(`[Fido2Client] Excluded domain`);
       throw new FallbackRequestedError();
     }
+
+    const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
+    params.rpId = params.rpId ?? parsedOrigin.hostname;
 
     if (parsedOrigin.hostname == undefined || !params.origin.startsWith("https://")) {
       this.logService?.warning(`[Fido2Client] Invalid https origin: ${params.origin}`);

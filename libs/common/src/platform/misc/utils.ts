@@ -2,9 +2,10 @@
 import * as path from "path";
 
 import { Observable, of, switchMap } from "rxjs";
-import { getHostname, parse } from "tldts";
+import { getDomain, getHostname, parse } from "tldts";
 import { Merge } from "type-fest";
 
+import { UriMatchType } from "../../vault/enums";
 import { CryptoService } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { I18nService } from "../abstractions/i18n.service";
@@ -617,6 +618,50 @@ export class Utils {
     }
 
     return null;
+  }
+
+  /**
+   * Determine if a domain is configured to be ignored by the user, given the
+   * list of their excluded domains, and their associated matching strategies.
+   */
+  static isDomainExcluded(
+    excludedDomains: { [uri: string]: UriMatchType | null },
+    location: Pick<URL, "href" | "host">,
+  ): boolean {
+    for (const [uri, match] of Object.entries(excludedDomains)) {
+      switch (match ?? UriMatchType.Domain) {
+        case UriMatchType.Domain:
+          if (
+            getDomain(location.href, { validHosts: this.validHosts, allowPrivateDomains: true }) ===
+            getDomain(uri, { validHosts: this.validHosts, allowPrivateDomains: true })
+          ) {
+            return true;
+          }
+          break;
+        case UriMatchType.Host:
+          if (location.host === new URL(uri).host) {
+            return true;
+          }
+          break;
+        case UriMatchType.StartsWith:
+          if (uri.startsWith(location.href)) {
+            return true;
+          }
+          break;
+        case UriMatchType.RegularExpression:
+          if (new RegExp(uri).test(location.href)) {
+            return true;
+          }
+          break;
+        case UriMatchType.Exact:
+          if (location.href === uri) {
+            return true;
+          }
+          break;
+      }
+    }
+
+    return false;
   }
 }
 
