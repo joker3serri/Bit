@@ -26,7 +26,7 @@ on:
         default: 'USQA'
         type: string
       branch-or-tag:
-        description: "Branch name to deploy (examples: 'main', 'feature/sm')"
+        description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
 
