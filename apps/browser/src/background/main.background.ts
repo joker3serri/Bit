@@ -308,6 +308,15 @@ export default class MainBackground {
       this.memoryStorageService as BackgroundMemoryStorageService,
       this.storageService as BrowserLocalStorageService,
     );
+
+    this.encryptService = flagEnabled("multithreadDecryption")
+      ? new MultithreadEncryptServiceImplementation(
+          this.cryptoFunctionService,
+          this.logService,
+          true,
+        )
+      : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
+
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       this.encryptService,
       this.memoryStorageService as BackgroundMemoryStorageService,
@@ -360,13 +369,7 @@ export default class MainBackground {
       window,
     );
     this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
-    this.encryptService = flagEnabled("multithreadDecryption")
-      ? new MultithreadEncryptServiceImplementation(
-          this.cryptoFunctionService,
-          this.logService,
-          true,
-        )
-      : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
+
     this.cryptoService = new BrowserCryptoService(
       this.cryptoFunctionService,
       this.encryptService,
