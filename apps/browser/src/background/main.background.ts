@@ -496,6 +496,7 @@ export default class MainBackground {
       this.cipherService,
       this.collectionService,
       this.policyService,
+      this.accountService,
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(
@@ -905,14 +906,15 @@ export default class MainBackground {
     const currentUserId = await this.stateService.getUserId();
     const newActiveUser = await this.stateService.clean({ userId: userId });
 
+    if (userId == null || userId === currentUserId) {
+      this.searchService.clearIndex();
+    }
+
     if (newActiveUser != null) {
       // we have a new active user, do not continue tearing down application
       await this.switchAccount(newActiveUser as UserId);
       this.messagingService.send("switchAccountFinish");
-    }
-
-    if (userId == null || userId === currentUserId) {
-      this.searchService.clearIndex();
+    } else {
       this.messagingService.send("doneLoggingOut", { expired: expired, userId: userId });
     }
 
