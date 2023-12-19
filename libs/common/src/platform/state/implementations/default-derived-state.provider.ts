@@ -7,12 +7,12 @@ import {
 import { DeriveDefinition } from "../derivation-definition";
 import { DerivedStateProvider } from "../derived-state.provider";
 
-import { DefaultDerivedUserState } from "./default-derived-state";
+import { DefaultDerivedState } from "./default-derived-state";
 
 export class DefaultDerivedStateProvider implements DerivedStateProvider {
   private cache: Record<
     string,
-    DefaultDerivedUserState<unknown, unknown, Record<string, Type<unknown>>>
+    DefaultDerivedState<unknown, unknown, Record<string, Type<unknown>>>
   > = {};
 
   constructor(private memoryStorage: AbstractStorageService & ObservableStorageService) {}
@@ -21,13 +21,13 @@ export class DefaultDerivedStateProvider implements DerivedStateProvider {
     parentState$: Observable<TFrom>,
     deriveDefinition: DeriveDefinition<TFrom, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,
-  ): DefaultDerivedUserState<TFrom, TTo, TDeps> {
+  ): DefaultDerivedState<TFrom, TTo, TDeps> {
     const cacheKey = deriveDefinition.buildCacheKey();
     const existingDerivedState = this.cache[cacheKey];
     if (existingDerivedState != null) {
       // I have to cast out of the unknown generic but this should be safe if rules
       // around domain token are made
-      return existingDerivedState as DefaultDerivedUserState<TFrom, TTo, TDeps>;
+      return existingDerivedState as DefaultDerivedState<TFrom, TTo, TDeps>;
     }
 
     const newDerivedState = this.buildDerivedState(parentState$, deriveDefinition, dependencies);
@@ -40,7 +40,7 @@ export class DefaultDerivedStateProvider implements DerivedStateProvider {
     deriveDefinition: DeriveDefinition<TFrom, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,
   ) {
-    return new DefaultDerivedUserState<TFrom, TTo, TDeps>(
+    return new DefaultDerivedState<TFrom, TTo, TDeps>(
       parentState$,
       deriveDefinition,
       this.memoryStorage,

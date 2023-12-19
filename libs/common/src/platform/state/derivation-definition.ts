@@ -1,13 +1,16 @@
+import { Jsonify } from "type-fest";
+
 import { StateDefinition } from "./state-definition";
 
 type DeriveDefinitionOptions<TFrom, TTo, TDeps extends Record<string, Type<unknown>> = never> = {
   derive: (state: TFrom, deps: ShapeToInstances<TDeps>) => TTo | Promise<TTo>;
+  deserializer: (serialized: Jsonify<TTo>) => TTo;
   dependencyShape?: TDeps;
   /**
    * The number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
    * Defaults to 1000ms.
    */
-  msTimeout?: number;
+  cleanupDelayMs?: number;
 };
 
 export class DeriveDefinition<TFrom, TTo, TDeps extends Record<string, Type<unknown>>> {
@@ -21,8 +24,8 @@ export class DeriveDefinition<TFrom, TTo, TDeps extends Record<string, Type<unkn
     return this.options.derive;
   }
 
-  get msTimeout() {
-    return this.options.msTimeout < 0 ? 0 : this.options.msTimeout ?? 1000;
+  get cleanupDelayMs() {
+    return this.options.cleanupDelayMs < 0 ? 0 : this.options.cleanupDelayMs ?? 1000;
   }
 
   buildCacheKey(): string {

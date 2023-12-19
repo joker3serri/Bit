@@ -10,7 +10,7 @@ import { DerivedState } from "../derived-state";
 /**
  * Default derived state
  */
-export class DefaultDerivedUserState<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>
+export class DefaultDerivedState<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>
   implements DerivedState<TTo>
 {
   private readonly storageKey: string;
@@ -97,6 +97,6 @@ export class DefaultDerivedUserState<TFrom, TTo, TDeps extends Record<string, Ty
         this.subscriberCount = new BehaviorSubject<number>(0);
         this.reinitialize = true;
       }
-    }, this.deriveDefinition.msTimeout);
+    }, this.deriveDefinition.cleanupDelayMs);
   }
 }
