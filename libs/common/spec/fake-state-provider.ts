@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 import {
   GlobalState,
   GlobalStateProvider,
@@ -7,10 +9,18 @@ import {
   SingleUserStateProvider,
   StateProvider,
   ActiveUserStateProvider,
+  DerivedState,
+  DeriveDefinition,
+  DerivedStateProvider,
 } from "../src/platform/state";
 import { UserId } from "../src/types/guid";
 
-import { FakeActiveUserState, FakeGlobalState, FakeSingleUserState } from "./fake-state";
+import {
+  FakeActiveUserState,
+  FakeDerivedState,
+  FakeGlobalState,
+  FakeSingleUserState,
+} from "./fake-state";
 
 export class FakeGlobalStateProvider implements GlobalStateProvider {
   states: Map<string, GlobalState<unknown>> = new Map();
@@ -78,7 +88,29 @@ export class FakeStateProvider implements StateProvider {
     return this.singleUser.get(userId, keyDefinition);
   }
 
+  getDerived<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(parentState$: Observable<TFrom>,deriveDefinition: DeriveDefinition<unknown, TTo, TDeps>, dependencies: ShapeToInstances<TDeps>): DerivedState<TTo> {
+    return this.derived.get(parentState$, deriveDefinition, dependencies);
+  }
+
   global: FakeGlobalStateProvider = new FakeGlobalStateProvider();
   singleUser: FakeSingleUserStateProvider = new FakeSingleUserStateProvider();
   activeUser: FakeActiveUserStateProvider = new FakeActiveUserStateProvider();
+  derived: FakeDerivedStateProvider = new FakeDerivedStateProvider();
+}
+
+export class FakeDerivedStateProvider implements DerivedStateProvider {
+  states: Map<string, DerivedState<unknown>> = new Map();
+  get<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
+    parentState$: Observable<TFrom>,
+    deriveDefinition: DeriveDefinition<TFrom, TTo, TDeps>,
+    dependencies: ShapeToInstances<TDeps>,
+  ): DerivedState<TTo> {
+    let result = this.states.get(deriveDefinition.buildCacheKey()) as DerivedState<TTo>;
+
+    if (result == null) {
+      result = new FakeDerivedState<TTo>();
+      this.states.set(deriveDefinition.buildCacheKey(), result);
+    }
+    return result;
+  }
 }

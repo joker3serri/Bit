@@ -1,5 +1,6 @@
 import {
   FakeActiveUserStateProvider,
+  FakeDerivedStateProvider,
   FakeGlobalStateProvider,
   FakeSingleUserStateProvider,
 } from "../../../../spec/fake-state-provider";
@@ -14,15 +15,18 @@ describe("DefaultStateProvider", () => {
   let activeUserStateProvider: FakeActiveUserStateProvider;
   let singleUserStateProvider: FakeSingleUserStateProvider;
   let globalStateProvider: FakeGlobalStateProvider;
+  let derivedStateProvider: FakeDerivedStateProvider;
 
   beforeEach(() => {
     activeUserStateProvider = new FakeActiveUserStateProvider();
     singleUserStateProvider = new FakeSingleUserStateProvider();
     globalStateProvider = new FakeGlobalStateProvider();
+    derivedStateProvider = new FakeDerivedStateProvider();
     sut = new DefaultStateProvider(
       activeUserStateProvider,
       singleUserStateProvider,
       globalStateProvider,
+      derivedStateProvider,
     );
   });
 

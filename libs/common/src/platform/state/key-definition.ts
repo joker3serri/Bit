@@ -1,4 +1,4 @@
-import { Jsonify, Opaque } from "type-fest";
+import { Jsonify } from "type-fest";
 
 import { UserId } from "../../types/guid";
 import { Utils } from "../misc/utils";
@@ -158,8 +158,6 @@ export class KeyDefinition<T> {
     return `${this.stateDefinition.name} > ${this.key}`;
   }
 }
-
-export type StorageKey = Opaque<string, "StorageKey">;
 
 /**
  * Creates a {@link StorageKey} that points to the data at the given key definition for the specified user.
