@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 import { DeriveDefinition } from "../derivation-definition";
 import { DerivedState } from "../derived-state";
 import { DerivedStateProvider } from "../derived-state.provider";
@@ -20,8 +22,9 @@ export class DefaultStateProvider implements StateProvider {
   getGlobal: InstanceType<typeof GlobalStateProvider>["get"] = this.globalStateProvider.get.bind(
     this.globalStateProvider,
   );
-  getDerived: <TTo, TDeps extends Record<string, Type<unknown>>>(
+  getDerived: <TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
+    parentState$: Observable<TFrom>,
     deriveDefinition: DeriveDefinition<unknown, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,
-  ) => DerivedState<TTo>;
+  ) => DerivedState<TTo> = this.derivedStateProvider.get.bind(this.derivedStateProvider);
 }

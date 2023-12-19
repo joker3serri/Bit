@@ -1,3 +1,5 @@
+import { of } from "rxjs";
+
 import {
   FakeActiveUserStateProvider,
   FakeDerivedStateProvider,
@@ -5,6 +7,7 @@ import {
   FakeSingleUserStateProvider,
 } from "../../../../spec/fake-state-provider";
 import { UserId } from "../../../types/guid";
+import { DeriveDefinition } from "../derivation-definition";
 import { KeyDefinition } from "../key-definition";
 import { StateDefinition } from "../state-definition";
 
@@ -55,6 +58,16 @@ describe("DefaultStateProvider", () => {
     });
     const existing = globalStateProvider.get(keyDefinition);
     const actual = sut.getGlobal(keyDefinition);
+    expect(actual).toBe(existing);
+  });
+
+  it("should bind the derivedStateProvider", () => {
+    const derivedDefinition = new DeriveDefinition(new StateDefinition("test", "disk"), "test", {
+      derive: () => null,
+    });
+    const parentState$ = of(null);
+    const existing = derivedStateProvider.get(parentState$, derivedDefinition, {});
+    const actual = sut.getDerived(parentState$, derivedDefinition, {});
     expect(actual).toBe(existing);
   });
 });
