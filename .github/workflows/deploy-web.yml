@@ -105,7 +105,7 @@ jobs:
       - approval
       - setup
     runs-on: ubuntu-22.04
-    if: always()
+    if: ${{ always() && contains( inputs.environment , 'QA' ) }}
     steps:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
         with:
@@ -248,7 +248,7 @@ jobs:
   notify:
     name: Notify Slack with result
     runs-on: ubuntu-22.04
-    if: always()
+    if: ${{ always() && contains( inputs.environment , 'QA' ) }}
     needs:
       - azure-deploy
       - setup
