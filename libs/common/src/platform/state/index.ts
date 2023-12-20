@@ -1,4 +1,4 @@
-export { DeriveDefinition } from "./derivation-definition";
+export { DeriveDefinition } from "./derive-definition";
 export { DerivedStateProvider } from "./derived-state.provider";
 export { DerivedState } from "./derived-state";
 export { GlobalState } from "./global-state";

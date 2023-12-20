@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 
 import { UserId } from "../../types/guid";
 
-import { DeriveDefinition } from "./derivation-definition";
+import { DeriveDefinition } from "./derive-definition";
 import { DerivedState } from "./derived-state";
 import { GlobalState } from "./global-state";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in docs

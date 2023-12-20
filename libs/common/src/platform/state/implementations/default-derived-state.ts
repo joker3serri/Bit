@@ -4,7 +4,7 @@ import {
   AbstractStorageService,
   ObservableStorageService,
 } from "../../abstractions/storage.service";
-import { DeriveDefinition, derivedKeyBuilder } from "../derivation-definition";
+import { DeriveDefinition, derivedKeyBuilder } from "../derive-definition";
 import { DerivedState } from "../derived-state";
 
 /**

@@ -7,7 +7,7 @@ import {
   FakeSingleUserStateProvider,
 } from "../../../../spec/fake-state-provider";
 import { UserId } from "../../../types/guid";
-import { DeriveDefinition } from "../derivation-definition";
+import { DeriveDefinition } from "../derive-definition";
 import { KeyDefinition } from "../key-definition";
 import { StateDefinition } from "../state-definition";
 

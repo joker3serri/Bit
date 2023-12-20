@@ -4,7 +4,7 @@ import {
   AbstractStorageService,
   ObservableStorageService,
 } from "../../abstractions/storage.service";
-import { DeriveDefinition } from "../derivation-definition";
+import { DeriveDefinition } from "../derive-definition";
 import { DerivedStateProvider } from "../derived-state.provider";
 
 import { DefaultDerivedState } from "./default-derived-state";

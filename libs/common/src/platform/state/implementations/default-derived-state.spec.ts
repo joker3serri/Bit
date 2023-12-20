@@ -6,7 +6,7 @@ import { Subject, firstValueFrom } from "rxjs";
 
 import { awaitAsync, trackEmissions } from "../../../../spec";
 import { FakeStorageService } from "../../../../spec/fake-storage.service";
-import { DeriveDefinition } from "../derivation-definition";
+import { DeriveDefinition } from "../derive-definition";
 import { StateDefinition } from "../state-definition";
 
 import { DefaultDerivedState } from "./default-derived-state";

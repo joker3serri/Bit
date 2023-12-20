@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { DeriveDefinition } from "../derivation-definition";
+import { DeriveDefinition } from "../derive-definition";
 import { DerivedState } from "../derived-state";
 import { DerivedStateProvider } from "../derived-state.provider";
 import { GlobalStateProvider } from "../global-state.provider";
