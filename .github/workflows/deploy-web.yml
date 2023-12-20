@@ -14,6 +14,7 @@ on:
           - EUQA
           - USPROD
           - EUPROD
+          - USDEV
       branch-or-tag:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
@@ -79,6 +80,13 @@ jobs:
               echo "environment-artifact=web-*-cloud-euprd.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - EU Production Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.bitwarden.eu" >> $GITHUB_OUTPUT
+              ;;
+            "USDEV")
+              echo "azure-login-creds=AZURE_KV_US_DEV_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
+              echo "retrieve-secrets-keyvault=webvault-eastus-dev" >> $GITHUB_OUTPUT
+              echo "environment-artifact=web-*-cloud-usdev".zip" >> $GITHUB_OUTPUT
+              echo "environment-name=Web Vault - US Development Cloud" >> $GITHUB_OUTPUT
+              echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
               ;;
           esac
 
