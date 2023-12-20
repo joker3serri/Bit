@@ -5,15 +5,13 @@ import {
   ObservableStorageService,
 } from "../../abstractions/storage.service";
 import { DeriveDefinition } from "../derive-definition";
+import { DerivedState } from "../derived-state";
 import { DerivedStateProvider } from "../derived-state.provider";
 
 import { DefaultDerivedState } from "./default-derived-state";
 
 export class DefaultDerivedStateProvider implements DerivedStateProvider {
-  private cache: Record<
-    string,
-    DefaultDerivedState<unknown, unknown, Record<string, Type<unknown>>>
-  > = {};
+  private cache: Record<string, DerivedState<unknown>> = {};
 
   constructor(private memoryStorage: AbstractStorageService & ObservableStorageService) {}
 
@@ -21,7 +19,7 @@ export class DefaultDerivedStateProvider implements DerivedStateProvider {
     parentState$: Observable<TFrom>,
     deriveDefinition: DeriveDefinition<TFrom, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,
-  ): DefaultDerivedState<TFrom, TTo, TDeps> {
+  ): DerivedState<TTo> {
     const cacheKey = deriveDefinition.buildCacheKey();
     const existingDerivedState = this.cache[cacheKey];
     if (existingDerivedState != null) {
@@ -35,11 +33,11 @@ export class DefaultDerivedStateProvider implements DerivedStateProvider {
     return newDerivedState;
   }
 
-  private buildDerivedState<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
+  protected buildDerivedState<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
     parentState$: Observable<TFrom>,
     deriveDefinition: DeriveDefinition<TFrom, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,
-  ) {
+  ): DerivedState<TTo> {
     return new DefaultDerivedState<TFrom, TTo, TDeps>(
       parentState$,
       deriveDefinition,
