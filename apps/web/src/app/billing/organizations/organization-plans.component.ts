@@ -224,7 +224,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     return this.selectedPlan.isAnnual ? "year" : "month";
   }
 
-  isProviderCreationDateValid() {
+  isProviderQualifiedFor2020Plan() {
     const targetDate = new Date("2023-11-06");
 
     if (!this.provider || !this.provider.creationDate) {
@@ -258,8 +258,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
           plan.product === ProductType.Teams ||
           plan.product === ProductType.Enterprise) &&
         (!this.providerId || plan.product !== ProductType.TeamsStarter) &&
-        ((!this.isProviderCreationDateValid() && this.planIsEnabled(plan)) ||
-          (this.isProviderCreationDateValid() && Allowed2020PlanTypes.includes(plan.type))),
+        ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
+          (this.isProviderQualifiedFor2020Plan() && Allowed2020PlanTypes.includes(plan.type))),
     );
 
     result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
@@ -269,15 +269,16 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   get selectablePlans() {
     const selectedProductType = this.formGroup.controls.product.value;
-    const result = this.passwordManagerPlans?.filter(
-      (plan) =>
-        (!this.isProviderCreationDateValid() &&
-          this.planIsEnabled(plan) &&
-          plan.product === selectedProductType) ||
-        (this.isProviderCreationDateValid() &&
+    const result = this.passwordManagerPlans?.filter((plan) => {
+      const productMatch = plan.product === selectedProductType;
+
+      return (
+        (!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan) && productMatch) ||
+        (this.isProviderQualifiedFor2020Plan() &&
           Allowed2020PlanTypes.includes(plan.type) &&
-          plan.product === selectedProductType),
-    );
+          productMatch)
+      );
+    });
 
     result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
     return result;
