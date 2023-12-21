@@ -235,11 +235,13 @@ function handleTypeFilelessImport() {
   setContent(document.getElementById("template-fileless-import") as HTMLTemplateElement);
 
   const startFilelessImportButton = document.getElementById("start-fileless-import");
-  startFilelessImportButton.addEventListener("click", () => {
+  const startFilelessImport = () => {
     port.postMessage({ command: "startFilelessImport", importType });
     document.getElementById("fileless-import-buttons").textContent =
       chrome.i18n.getMessage("importing");
-  });
+    startFilelessImportButton.removeEventListener("click", startFilelessImport);
+  };
+  startFilelessImportButton.addEventListener("click", startFilelessImport);
 
   const cancelFilelessImportButton = document.getElementById("cancel-fileless-import");
   cancelFilelessImportButton.addEventListener("click", () => {

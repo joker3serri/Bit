@@ -144,7 +144,7 @@ describe("FilelessImporterBackground ", () => {
 
     describe("import notification port messages", () => {
       describe("startFilelessImport", () => {
-        it("sends a message to start the fileless import within the content script", () => {
+        it("sends a message to start the LastPass fileless import within the content script", () => {
           sendPortMessage(notificationPort, {
             command: "startFilelessImport",
             importType: FilelessImportType.LP,
