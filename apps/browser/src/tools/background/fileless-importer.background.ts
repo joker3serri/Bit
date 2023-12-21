@@ -42,6 +42,16 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     startLpImport: ({ message }) => this.triggerLpImport(message.data),
   };
 
+  /**
+   * Creates a new instance of the fileless importer background logic.
+   *
+   * @param configService - Identifies if the feature flag is enabled.
+   * @param authService - Verifies if the auth status of the user.
+   * @param policyService - Identifies if the user account has a policy that disables personal ownership.
+   * @param notificationBackground - Used to inject the notification bar into the tab.
+   * @param importService - Used to import the export data into the vault.
+   * @param syncService - Used to trigger a full sync after the import is completed.
+   */
   constructor(
     private configService: ConfigServiceAbstraction,
     private authService: AuthService,
@@ -93,7 +103,6 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    *
    * @param tab
    * @param importType
-   * @private
    */
   private async displayFilelessImportNotification(tab: chrome.tabs.Tab, importType: string) {
     await this.notificationBackground.requestFilelessImport(tab, importType);
