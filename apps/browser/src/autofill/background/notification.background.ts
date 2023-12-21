@@ -169,13 +169,12 @@ export default class NotificationBackground {
       return;
     }
 
-    this.notificationQueue.forEach((queueMessage) => {
-      if (queueMessage.tab.id !== tab.id || queueMessage.domain !== tabDomain) {
-        return;
-      }
-
+    const queueMessage = this.notificationQueue.find(
+      (message) => message.tab.id === tab.id && message.domain === tabDomain,
+    );
+    if (queueMessage) {
       this.sendNotificationQueueMessage(tab, queueMessage);
-    });
+    }
   }
 
   private async sendNotificationQueueMessage(
