@@ -197,12 +197,13 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     port.onMessage.addListener(this.handleImporterPortMessage);
     port.onDisconnect.addListener(this.handleImporterPortDisconnect);
 
-    if (port.name === FilelessImportPort.LpImporter) {
-      this.lpImporterPort = port;
-    }
-
-    if (port.name === FilelessImportPort.NotificationBar) {
-      this.importNotificationsPort = port;
+    switch (port.name) {
+      case FilelessImportPort.LpImporter:
+        this.lpImporterPort = port;
+        break;
+      case FilelessImportPort.NotificationBar:
+        this.importNotificationsPort = port;
+        break;
     }
   };
 
@@ -217,12 +218,13 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
   ) => {
     let handler: CallableFunction | undefined;
 
-    if (port.name === FilelessImportPort.LpImporter) {
-      handler = this.lpImporterPortMessageHandlers[message.command];
-    }
-
-    if (port.name === FilelessImportPort.NotificationBar) {
-      handler = this.importNotificationsPortMessageHandlers[message.command];
+    switch (port.name) {
+      case FilelessImportPort.LpImporter:
+        handler = this.lpImporterPortMessageHandlers[message.command];
+        break;
+      case FilelessImportPort.NotificationBar:
+        handler = this.importNotificationsPortMessageHandlers[message.command];
+        break;
     }
 
     if (!handler) {
@@ -237,12 +239,13 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    * @param port - The port that was disconnected.
    */
   private handleImporterPortDisconnect = (port: chrome.runtime.Port) => {
-    if (port.name === FilelessImportPort.LpImporter) {
-      this.lpImporterPort = null;
-    }
-
-    if (port.name === FilelessImportPort.NotificationBar) {
-      this.importNotificationsPort = null;
+    switch (port.name) {
+      case FilelessImportPort.LpImporter:
+        this.lpImporterPort = null;
+        break;
+      case FilelessImportPort.NotificationBar:
+        this.importNotificationsPort = null;
+        break;
     }
   };
 }
