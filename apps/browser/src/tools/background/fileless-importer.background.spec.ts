@@ -161,7 +161,7 @@ describe("FilelessImporterBackground ", () => {
           sendPortMessage(notificationPort, { command: "cancelFilelessImport" });
 
           expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(
-            1,
+            notificationPort.sender.tab.id,
             {
               command: "closeNotificationBar",
             },
