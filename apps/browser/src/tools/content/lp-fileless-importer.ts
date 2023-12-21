@@ -135,6 +135,8 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
         this.exportData = textContent;
         this.postPortMessage({ command: "displayLpImportNotification" });
         this.mutationObserver.disconnect();
+
+        return;
       }
     }
   };
