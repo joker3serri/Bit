@@ -350,11 +350,9 @@ export default class NotificationBackground {
     }
 
     const loginDomain = Utils.getDomain(tab.url);
-    if (!loginDomain) {
-      return;
+    if (loginDomain) {
+      this.pushUnlockVaultToQueue(loginDomain, tab);
     }
-
-    this.pushUnlockVaultToQueue(loginDomain, tab);
   }
 
   /**
@@ -371,11 +369,9 @@ export default class NotificationBackground {
     }
 
     const loginDomain = Utils.getDomain(tab.url);
-    if (!loginDomain) {
-      return;
+    if (loginDomain) {
+      this.pushRequestFilelessImportToQueue(loginDomain, tab, importType);
     }
-
-    this.pushRequestFilelessImportToQueue(loginDomain, tab, importType);
   }
 
   private async pushChangePasswordToQueue(
