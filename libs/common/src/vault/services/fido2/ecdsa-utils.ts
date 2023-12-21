@@ -67,7 +67,8 @@ function countPadding(
   return { padding, needs0x00 };
 }
 
-export function joseToDer(signature: Uint8Array, alg: Alg) {
+export function p1363ToDer(signature: Uint8Array) {
+  const alg = "ES256";
   const paramBytes = getParamBytesForAlg(alg);
 
   const signatureBytes = signature.length;

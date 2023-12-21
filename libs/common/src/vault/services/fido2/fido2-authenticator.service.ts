@@ -21,7 +21,7 @@ import { CipherView } from "../../models/view/cipher.view";
 import { Fido2CredentialView } from "../../models/view/fido2-credential.view";
 
 import { CBOR } from "./cbor";
-import { joseToDer } from "./ecdsa-utils";
+import { p1363ToDer } from "./ecdsa-utils";
 import { Fido2Utils } from "./fido2-utils";
 import { guidToRawFormat, guidToStandardFormat } from "./guid-utils";
 
@@ -519,7 +519,7 @@ async function generateSignature(params: SignatureParams) {
     ),
   );
 
-  const asn1Der_signature = joseToDer(p1363_signature, "ES256");
+  const asn1Der_signature = p1363ToDer(p1363_signature);
 
   return asn1Der_signature;
 }

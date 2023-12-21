@@ -1,84 +1,83 @@
-import { joseToDer } from "./ecdsa-utils";
-import { Fido2Utils } from "./fido2-utils";
+import { p1363ToDer } from "./ecdsa-utils";
 
-describe("joseToDer", () => {
+describe("p1363ToDer", () => {
+  let r: Uint8Array;
+  let s: Uint8Array;
+
+  beforeEach(() => {
+    r = randomBytes(32);
+    s = randomBytes(32);
+  });
+
   it("should convert P1336 to DER when 'R' is positive and 'S' is positive", () => {
-    const signature = Fido2Utils.stringToBuffer(
-      "9-J_oWz5j36r6LEPB_VN2ejq0qKgXMzdy1XPESqmA3fMheRGN5LkMwTD2EmoqIptOXaVoCTDAPQB6vG6V8DZsw",
-    );
+    r[0] = 0x14;
+    s[0] = 0x32;
+    const signature = new Uint8Array([...r, ...s]);
 
-    const result = joseToDer(signature, "ES256");
+    const result = p1363ToDer(signature);
 
-    const expected = Fido2Utils.stringToBuffer(
-      "MEYCIQD34n-hbPmPfqvosQ8H9U3Z6OrSoqBczN3LVc8RKqYDdwIhAMyF5EY3kuQzBMPYSaioim05dpWgJMMA9AHq8bpXwNmz",
-    );
-    expect(result).toEqual(expected);
+    expect(result).toEqual(new Uint8Array([0x30, 0x44, 0x02, 0x20, ...r, 0x02, 0x20, ...s]));
   });
 
   it("should convert P1336 to DER when 'R' is negative and 'S' is negative", () => {
-    const signature = Fido2Utils.stringToBuffer(
-      "ACEVACu78c59E0lmfw9kQhXlTnrN2Cha8-YUjgpzgIIcqHfzOATDb62pQA01FsYFtQ8IXkEjWyqMLrf6Gy1vZQ",
-    );
+    r[0] = 0x94;
+    s[0] = 0xaa;
+    const signature = new Uint8Array([...r, ...s]);
 
-    const result = joseToDer(signature, "ES256");
+    const result = p1363ToDer(signature);
 
-    const expected = Fido2Utils.stringToBuffer(
-      "MEMCHyEVACu78c59E0lmfw9kQhXlTnrN2Cha8-YUjgpzgIICIByod_M4BMNvralADTUWxgW1DwheQSNbKowut_obLW9l",
+    expect(result).toEqual(
+      new Uint8Array([0x30, 0x46, 0x02, 0x21, 0x00, ...r, 0x02, 0x21, 0x00, ...s]),
     );
-    expect(result).toEqual(expected);
   });
 
   it("should convert P1336 to DER when 'R' is negative and 'S' is positive", () => {
-    const signature = Fido2Utils.stringToBuffer(
-      "9-J_oWz5j36r6LEPB_VN2ejq0qKgXMzdy1XPESqmA3dMheRGN5LkMwTD2EmoqIptOXaVoCTDAPQB6vG6V8DZsw",
-    );
+    r[0] = 0x94;
+    s[0] = 0x32;
+    const signature = new Uint8Array([...r, ...s]);
 
-    const result = joseToDer(signature, "ES256");
+    const result = p1363ToDer(signature);
 
-    const expected = Fido2Utils.stringToBuffer(
-      "MEUCIQD34n-hbPmPfqvosQ8H9U3Z6OrSoqBczN3LVc8RKqYDdwIgTIXkRjeS5DMEw9hJqKiKbTl2laAkwwD0AerxulfA2bM",
-    );
-    expect(result).toEqual(expected);
+    expect(result).toEqual(new Uint8Array([0x30, 0x45, 0x02, 0x21, 0x00, ...r, 0x02, 0x20, ...s]));
   });
 
   it("should convert P1336 to DER when 'R' is positive and 'S' is negative", () => {
-    const signature = Fido2Utils.stringToBuffer(
-      "d-J_oWz5j36r6LEPB_VN2ejq0qKgXMzdy1XPESqmA3fMheRGN5LkMwTD2EmoqIptOXaVoCTDAPQB6vG6V8DZsw",
-    );
+    r[0] = 0x32;
+    s[0] = 0x94;
+    const signature = new Uint8Array([...r, ...s]);
 
-    const result = joseToDer(signature, "ES256");
+    const result = p1363ToDer(signature);
 
-    const expected = Fido2Utils.stringToBuffer(
-      "MEUCIHfif6Fs-Y9-q-ixDwf1Tdno6tKioFzM3ctVzxEqpgN3AiEAzIXkRjeS5DMEw9hJqKiKbTl2laAkwwD0AerxulfA2bM",
-    );
-    expect(result).toEqual(expected);
+    expect(result).toEqual(new Uint8Array([0x30, 0x45, 0x02, 0x20, ...r, 0x02, 0x21, 0x00, ...s]));
   });
 
   it("should convert P1336 to DER when 'R' has leading zero and is negative and 'S' is positive", () => {
-    const signature = Fido2Utils.stringToBuffer(
-      "AKq25+LDn+n6XCsDiIKQc0z5MCjGESXBAwAT/U5iZPFCGeQbD2EEnoQrinxvrHGqH0g0e7ohnNa6EKdpX9GEXA==",
+    r[0] = 0x00;
+    r[1] = 0x94;
+    s[0] = 0x32;
+    const signature = new Uint8Array([...r, ...s]);
+
+    const result = p1363ToDer(signature);
+
+    expect(result).toEqual(
+      new Uint8Array([0x30, 0x44, 0x02, 0x20, 0x00, ...r.slice(1), 0x02, 0x20, ...s]),
     );
-
-    const result = joseToDer(signature, "ES256");
-
-    const expected = Fido2Utils.stringToBuffer(
-      "MEQCIACqtufiw5/p+lwrA4iCkHNM+TAoxhElwQMAE/1OYmTxAiBCGeQbD2EEnoQrinxvrHGqH0g0e7ohnNa6EKdpX9GEXA==",
-    );
-
-    expect(result).toEqual(expected);
   });
 
   it("should convert P1336 to DER when 'R' is positive and 'S' has leading zero and is negative ", () => {
-    const signature = Fido2Utils.stringToBuffer(
-      "KKq25+LDn+n6XCsDiIKQc0z5MCjGESXBAwAT/U5iZPEAyOQbD2EEnoQrinxvrHGqH0g0e7ohnNa6EKdpX9GEXA==",
+    r[0] = 0x32;
+    s[0] = 0x00;
+    s[1] = 0x94;
+    const signature = new Uint8Array([...r, ...s]);
+
+    const result = p1363ToDer(signature);
+
+    expect(result).toEqual(
+      new Uint8Array([0x30, 0x44, 0x02, 0x20, ...r, 0x02, 0x20, 0x00, ...s.slice(1)]),
     );
-
-    const result = joseToDer(signature, "ES256");
-
-    const expected = Fido2Utils.stringToBuffer(
-      "MEQCICiqtufiw5/p+lwrA4iCkHNM+TAoxhElwQMAE/1OYmTxAiAAyOQbD2EEnoQrinxvrHGqH0g0e7ohnNa6EKdpX9GEXA==",
-    );
-
-    expect(result).toEqual(expected);
   });
 });
+
+function randomBytes(length: number): Uint8Array {
+  return new Uint8Array(Array.from({ length }, (_, k) => k % 255));
+}
