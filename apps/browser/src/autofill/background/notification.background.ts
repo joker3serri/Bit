@@ -405,9 +405,7 @@ export default class NotificationBackground {
       expires: new Date(new Date().getTime() + 0.5 * 60000), // 30 seconds
       wasVaultLocked: true,
     };
-    this.notificationQueue.push(message);
-    await this.checkNotificationQueue(tab);
-    this.removeTabFromNotificationQueue(tab);
+    await this.sendNotificationQueueMessage(tab, message);
   }
 
   /**
