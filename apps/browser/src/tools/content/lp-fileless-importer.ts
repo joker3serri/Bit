@@ -112,11 +112,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
    * @param mutations - The mutations that were observed.
    */
   private handleMutation = (mutations: MutationRecord[]) => {
-    if (!mutations?.length) {
-      return;
-    }
-
-    for (let index = 0; index < mutations.length; index++) {
+    for (let index = 0; index < mutations?.length; index++) {
       const mutation: MutationRecord = mutations[index];
       if (!mutation.addedNodes?.length) {
         continue;
