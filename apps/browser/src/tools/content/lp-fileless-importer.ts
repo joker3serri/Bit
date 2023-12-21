@@ -114,30 +114,19 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
   private handleMutation = (mutations: MutationRecord[]) => {
     for (let index = 0; index < mutations?.length; index++) {
       const mutation: MutationRecord = mutations[index];
-      if (!mutation.addedNodes?.length) {
+
+      const textContent = Array.from(mutation.addedNodes)
+        .filter((node) => node.nodeName.toLowerCase() === "pre")
+        .map((node) => (node as HTMLPreElement).textContent?.trim())
+        .find((text) => text?.indexOf("url,username,password") >= 0);
+      if (!textContent) {
         continue;
       }
 
-      for (let index = 0; index < mutation.addedNodes.length; index++) {
-        const addedNode: Node = mutation.addedNodes[index];
-
-        const tagName: string = addedNode.nodeName.toLowerCase();
-        if (tagName !== "pre") {
-          continue;
-        }
-
-        const preElement: HTMLPreElement = addedNode as HTMLPreElement;
-        const textContent: string = preElement.textContent?.trim();
-        if (!textContent || textContent.indexOf("url,username,password") === -1) {
-          continue;
-        }
-
-        this.exportData = textContent;
-        this.postPortMessage({ command: "displayLpImportNotification" });
-        this.mutationObserver.disconnect();
-
-        return;
-      }
+      this.exportData = textContent;
+      this.postPortMessage({ command: "displayLpImportNotification" });
+      this.mutationObserver.disconnect();
+      break;
     }
   };
 

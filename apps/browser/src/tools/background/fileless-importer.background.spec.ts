@@ -173,7 +173,7 @@ describe("FilelessImporterBackground ", () => {
           });
         });
 
-        it("triggers a download of the LP importer CSV", () => {
+        it("sends a message to trigger a download of the LP importer CSV", () => {
           sendPortMessage(notificationPort, {
             command: "cancelFilelessImport",
             importType: FilelessImportType.LP,
