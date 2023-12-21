@@ -1,5 +1,7 @@
 import { Jsonify } from "type-fest";
 
+import { Type, ShapeToInstances, StorageKey } from "../../types/state";
+
 import { StateDefinition } from "./state-definition";
 
 /**
@@ -86,6 +88,10 @@ export class DeriveDefinition<TFrom, TTo, TDeps extends Record<string, Type<unkn
 
   get derive() {
     return this.options.derive;
+  }
+
+  deserialize(serialized: Jsonify<TTo>): TTo {
+    return this.options.deserializer(serialized);
   }
 
   get cleanupDelayMs() {

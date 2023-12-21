@@ -1,5 +1,7 @@
 import { Observable } from "rxjs";
 
+import { Type, ShapeToInstances } from "../../types/state";
+
 import { DeriveDefinition } from "./derive-definition";
 import { DerivedState } from "./derived-state";
 

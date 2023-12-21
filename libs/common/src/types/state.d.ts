@@ -1,5 +1,6 @@
-declare const marker: unique symbol;
-type StorageKey = string & { [marker]: "StorageKey" };
+import { Opaque } from "type-fest";
+
+type StorageKey = Opaque<string, "StorageKey">;
 
 /**
  * A helper type defining Constructor types for javascript and `typeof T` types for Typescript

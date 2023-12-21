@@ -14,6 +14,7 @@ import {
   DerivedStateProvider,
 } from "../src/platform/state";
 import { UserId } from "../src/types/guid";
+import { Type, ShapeToInstances } from "../src/types/state";
 
 import {
   FakeActiveUserState,

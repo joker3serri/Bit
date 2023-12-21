@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 
+import { ShapeToInstances, Type } from "../../../types/state";
 import {
   AbstractStorageService,
   ObservableStorageService,
@@ -13,7 +14,7 @@ import { DefaultDerivedState } from "./default-derived-state";
 export class DefaultDerivedStateProvider implements DerivedStateProvider {
   private cache: Record<string, DerivedState<unknown>> = {};
 
-  constructor(private memoryStorage: AbstractStorageService & ObservableStorageService) {}
+  constructor(protected memoryStorage: AbstractStorageService & ObservableStorageService) {}
 
   get<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
     parentState$: Observable<TFrom>,
