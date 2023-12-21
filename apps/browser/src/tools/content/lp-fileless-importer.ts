@@ -120,6 +120,7 @@ class LpFilelessImporter implements LpFilelessImporterInterface {
         .filter((node) => node.nodeName.toLowerCase() === "pre")
         .map((node) => (node as HTMLPreElement).textContent?.trim())
         .find((text) => text?.indexOf("url,username,password") >= 0);
+
       if (textContent) {
         break;
       }
