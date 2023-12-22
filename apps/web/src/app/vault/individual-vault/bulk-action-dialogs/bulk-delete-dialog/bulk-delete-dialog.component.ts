@@ -160,7 +160,7 @@ export class BulkDeleteDialogComponent {
         }
         const orgCollectionIds = orgCollections.map((c) => c.id);
         deletePromises.push(
-          this.apiService.deleteManyCollections(this.organization.id, orgCollectionIds),
+          this.apiService.deleteManyCollections(organization.id, orgCollectionIds),
         );
       }
       return await Promise.all(deletePromises);
