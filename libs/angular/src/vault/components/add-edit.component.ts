@@ -111,7 +111,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     protected sendApiService: SendApiService,
     protected dialogService: DialogService,
-    protected win: Window
+    protected win: Window,
     protected datePipe: DatePipe,
   ) {
     this.typeOptions = [
@@ -665,7 +665,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.platformUtilsService.showToast(
       "info",
       null,
-      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey))
+      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey)),
     );
 
     if (typeI18nKey === "password") {
