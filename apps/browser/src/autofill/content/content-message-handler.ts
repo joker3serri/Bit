@@ -27,6 +27,7 @@ class ContentMessageHandler implements ContentMessageHandlerInterface {
    */
   private handleWindowMessage = (event: MessageEvent) => {
     const { source, data } = event;
+
     if (source !== window || !data?.command) {
       return;
     }
