@@ -258,11 +258,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
           plan.product === ProductType.Free ||
           plan.product === ProductType.TeamsStarter) &&
         (!this.currentPlan || this.currentPlan.upgradeSortOrder < plan.upgradeSortOrder) &&
-        (!this.providerId || plan.product !== ProductType.TeamsStarter) &&
-        (this.currentPlan.product !== ProductType.TeamsStarter ||
-          plan.product === ProductType.Teams ||
-          plan.product === ProductType.Enterprise) &&
-        (!this.providerId || plan.product !== ProductType.TeamsStarter) &&
+        (!this.hasProvider || plan.product !== ProductType.TeamsStarter) &&
         ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
           (this.isProviderQualifiedFor2020Plan() && Allowed2020PlanTypes.includes(plan.type))),
     );
@@ -274,16 +270,12 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   get selectablePlans() {
     const selectedProductType = this.formGroup.controls.product.value;
-    const result = this.passwordManagerPlans?.filter((plan) => {
-      const productMatch = plan.product === selectedProductType;
-
-      return (
-        (!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan) && productMatch) ||
-        (this.isProviderQualifiedFor2020Plan() &&
-          Allowed2020PlanTypes.includes(plan.type) &&
-          productMatch)
-      );
-    });
+    const result = this.passwordManagerPlans?.filter(
+      (plan) =>
+        plan.product === selectedProductType &&
+        ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
+          (this.isProviderQualifiedFor2020Plan() && Allowed2020PlanTypes.includes(plan.type))),
+    );
 
     result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
     return result;
