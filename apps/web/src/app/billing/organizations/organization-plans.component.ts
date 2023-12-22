@@ -21,6 +21,7 @@ import { OrganizationCreateRequest } from "@bitwarden/common/admin-console/model
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { OrganizationUpgradeRequest } from "@bitwarden/common/admin-console/models/request/organization-upgrade.request";
 import { ProviderOrganizationCreateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-organization-create.request";
+import { ProviderResponse } from "@bitwarden/common/admin-console/models/response/provider/provider.response";
 import { PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
 import { PaymentRequest } from "@bitwarden/common/billing/models/request/payment.request";
 import { BillingResponse } from "@bitwarden/common/billing/models/response/billing.response";
@@ -47,6 +48,13 @@ import { TaxInfoComponent } from "../shared/tax-info.component";
 interface OnSuccessArgs {
   organizationId: string;
 }
+
+const Allowed2020PlanTypes = [
+  PlanType.TeamsMonthly2020,
+  PlanType.TeamsAnnually2020,
+  PlanType.EnterpriseAnnually2020,
+  PlanType.EnterpriseMonthly2020,
+];
 
 @Component({
   selector: "app-organization-plans",
@@ -121,6 +129,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   organization: Organization;
   sub: OrganizationSubscriptionResponse;
   billing: BillingResponse;
+  provider: ProviderResponse;
 
   private destroy$ = new Subject<void>();
 
@@ -161,6 +170,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     if (this.hasProvider) {
       this.formGroup.controls.businessOwned.setValue(true);
       this.changedOwnedBusiness();
+      this.provider = await this.apiService.getProvider(this.providerId);
     }
 
     if (!this.createOrganization) {
@@ -217,6 +227,17 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     return this.selectedPlan.isAnnual ? "year" : "month";
   }
 
+  isProviderQualifiedFor2020Plan() {
+    const targetDate = new Date("2023-11-06");
+
+    if (!this.provider || !this.provider.creationDate) {
+      return false;
+    }
+
+    const creationDate = new Date(this.provider.creationDate);
+    return creationDate < targetDate;
+  }
+
   get selectableProducts() {
     if (this.acceptingSponsorship) {
       const familyPlan = this.passwordManagerPlans.find(
@@ -233,12 +254,17 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         plan.type !== PlanType.Custom &&
         (!businessOwnedIsChecked || plan.canBeUsedByBusiness) &&
         (this.showFree || plan.product !== ProductType.Free) &&
-        this.planIsEnabled(plan) &&
         (plan.isAnnual ||
           plan.product === ProductType.Free ||
           plan.product === ProductType.TeamsStarter) &&
         (!this.currentPlan || this.currentPlan.upgradeSortOrder < plan.upgradeSortOrder) &&
-        (!this.providerId || plan.product !== ProductType.TeamsStarter),
+        (!this.providerId || plan.product !== ProductType.TeamsStarter) &&
+        (this.currentPlan.product !== ProductType.TeamsStarter ||
+          plan.product === ProductType.Teams ||
+          plan.product === ProductType.Enterprise) &&
+        (!this.providerId || plan.product !== ProductType.TeamsStarter) &&
+        ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
+          (this.isProviderQualifiedFor2020Plan() && Allowed2020PlanTypes.includes(plan.type))),
     );
 
     result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
@@ -248,9 +274,16 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   get selectablePlans() {
     const selectedProductType = this.formGroup.controls.product.value;
-    const result = this.passwordManagerPlans?.filter(
-      (plan) => this.planIsEnabled(plan) && plan.product === selectedProductType,
-    );
+    const result = this.passwordManagerPlans?.filter((plan) => {
+      const productMatch = plan.product === selectedProductType;
+
+      return (
+        (!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan) && productMatch) ||
+        (this.isProviderQualifiedFor2020Plan() &&
+          Allowed2020PlanTypes.includes(plan.type) &&
+          productMatch)
+      );
+    });
 
     result.sort((planA, planB) => planA.displaySortOrder - planB.displaySortOrder);
     return result;
