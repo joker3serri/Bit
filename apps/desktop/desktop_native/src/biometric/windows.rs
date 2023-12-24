@@ -37,7 +37,7 @@ use crate::{
 pub struct Biometric {}
 
 impl super::BiometricTrait for Biometric {
-    fn prompt(hwnd: Vec<u8>, message: String) -> Result<bool> {
+    fn prompt(hwnd: Vec<u8>, message: String, _fallback_message: Option<String>) -> Result<bool> {
         let h = isize::from_le_bytes(hwnd.clone().try_into().unwrap());
         let window = HWND(h);
 

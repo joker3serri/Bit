@@ -51,8 +51,9 @@ pub mod biometrics {
     pub async fn prompt(
         hwnd: napi::bindgen_prelude::Buffer,
         message: String,
+        fallback_message: Option<String>,
     ) -> napi::Result<bool> {
-        Biometric::prompt(hwnd.into(), message).map_err(|e| napi::Error::from_reason(e.to_string()))
+        Biometric::prompt(hwnd.into(), message, fallback_message).map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
     #[napi]

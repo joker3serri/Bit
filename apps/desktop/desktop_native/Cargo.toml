@@ -50,6 +50,7 @@ keytar = "=0.1.6"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-foundation = "=0.9.4"
+localauthentication-rs = { git = "https://github.com/danielr18/localauthentication-rs.git" }
 security-framework = "=2.9.2"
 security-framework-sys = "=2.9.1"
 
