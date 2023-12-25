@@ -1226,29 +1226,15 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     if (fillFields.name && (identity.firstName || identity.lastName)) {
-      let fullName = "";
-      if (AutofillService.hasValue(identity.firstName)) {
-        fullName = identity.firstName;
-      }
-      if (AutofillService.hasValue(identity.middleName)) {
-        if (fullName !== "") {
-          fullName += " ";
-        }
-        fullName += identity.middleName;
-      }
-      if (AutofillService.hasValue(identity.lastName)) {
-        if (fullName !== "") {
-          fullName += " ";
-        }
-        fullName += identity.lastName;
-      }
-
+      const fullName = [identity.firstName, identity.middleName, identity.lastName]
+        .filter((x) => !!x)
+        .join(" ");
       this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields);
     }
 
     if (fillFields.address && AutofillService.hasValue(identity.address1)) {
       const address = [identity.address1, identity.address2, identity.address3]
-        .filter(AutofillService.hasValue)
+        .filter((x) => !!x)
         .join(", ");
       this.makeScriptActionWithValue(fillScript, address, fillFields.address, filledFields);
     }
