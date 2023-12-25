@@ -465,7 +465,7 @@ export default class AutofillService implements AutofillServiceInterface {
       const fieldNames: string[] = [];
 
       fields.forEach((f) => {
-        if (AutofillService.hasValue(f.name)) {
+        if (f.name) {
           fieldNames.push(f.name.toLowerCase());
         }
       });
@@ -804,7 +804,7 @@ export default class AutofillService implements AutofillServiceInterface {
     this.makeScriptAction(fillScript, card, fillFields, filledFields, "code");
     this.makeScriptAction(fillScript, card, fillFields, filledFields, "brand");
 
-    if (fillFields.expMonth && AutofillService.hasValue(card.expMonth)) {
+    if (fillFields.expMonth && !!card.expMonth) {
       let expMonth: string = card.expMonth;
 
       if (fillFields.expMonth.selectInfo && fillFields.expMonth.selectInfo.options) {
@@ -842,7 +842,7 @@ export default class AutofillService implements AutofillServiceInterface {
       AutofillService.fillByOpid(fillScript, fillFields.expMonth, expMonth);
     }
 
-    if (fillFields.expYear && AutofillService.hasValue(card.expYear)) {
+    if (fillFields.expYear && !!card.expYear) {
       let expYear: string = card.expYear;
       if (fillFields.expYear.selectInfo && fillFields.expYear.selectInfo.options) {
         for (let i = 0; i < fillFields.expYear.selectInfo.options.length; i++) {
@@ -888,11 +888,7 @@ export default class AutofillService implements AutofillServiceInterface {
       AutofillService.fillByOpid(fillScript, fillFields.expYear, expYear);
     }
 
-    if (
-      fillFields.exp &&
-      AutofillService.hasValue(card.expMonth) &&
-      AutofillService.hasValue(card.expYear)
-    ) {
+    if (!!fillFields.exp && !!card.expMonth && !!card.expYear) {
       const fullMonth = ("0" + card.expMonth).slice(-2);
 
       let fullYear: string = card.expYear;
@@ -1232,7 +1228,7 @@ export default class AutofillService implements AutofillServiceInterface {
       this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields);
     }
 
-    if (fillFields.address && AutofillService.hasValue(identity.address1)) {
+    if (fillFields.address && !!identity.address1) {
       const address = [identity.address1, identity.address2, identity.address3]
         .filter((x) => !!x)
         .join(", ");
@@ -1332,15 +1328,12 @@ export default class AutofillService implements AutofillServiceInterface {
     filledFields: { [id: string]: AutofillField },
   ) {
     let doFill = false;
-    if (AutofillService.hasValue(dataValue) && field) {
+    if (!!dataValue && field) {
       if (field.type === "select-one" && field.selectInfo && field.selectInfo.options) {
         for (let i = 0; i < field.selectInfo.options.length; i++) {
           const option = field.selectInfo.options[i];
           for (let j = 0; j < option.length; j++) {
-            if (
-              AutofillService.hasValue(option[j]) &&
-              option[j].toLowerCase() === dataValue.toLowerCase()
-            ) {
+            if (!!option[j] && option[j].toLowerCase() === dataValue.toLowerCase()) {
               doFill = true;
               if (option.length > 1) {
                 dataValue = option[1];
@@ -1589,7 +1582,7 @@ export default class AutofillService implements AutofillServiceInterface {
    */
   private fieldPropertyIsMatch(field: any, property: string, name: string): boolean {
     let fieldVal = field[property] as string;
-    if (!AutofillService.hasValue(fieldVal)) {
+    if (!fieldVal) {
       return false;
     }
 
@@ -1607,14 +1600,9 @@ export default class AutofillService implements AutofillServiceInterface {
     } else if (name.startsWith("csv=")) {
       const csvParts = name.split("=", 2);
       if (csvParts.length === 2) {
-        const csvVals = csvParts[1].split(",");
-        for (let i = 0; i < csvVals.length; i++) {
-          const val = csvVals[i];
-          if (val != null && val.trim().toLowerCase() === fieldVal.toLowerCase()) {
-            return true;
-          }
-        }
-        return false;
+        return csvParts[1]
+          .split(",")
+          .some((val) => val != null && val.trim().toLowerCase() === fieldVal.toLowerCase());
       }
     }
 
@@ -1637,7 +1625,7 @@ export default class AutofillService implements AutofillServiceInterface {
       field["label-left"],
       field["label-top"],
       field["label-aria"],
-    ].some((param) => AutofillService.hasValue(param) && this.fuzzyMatch(names, param));
+    ].some((param) => !!param && this.fuzzyMatch(names, param));
   }
 
   /**
