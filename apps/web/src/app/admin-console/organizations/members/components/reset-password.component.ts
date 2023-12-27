@@ -20,7 +20,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { DialogService } from "@bitwarden/components";
 
-import { AccountRecoveryService } from "../services/account-recovery/account-recovery.service";
+import { OrganizationUserResetPasswordService } from "../services/organization-user-reset-password/organization-user-reset-password.service";
 
 @Component({
   selector: "app-reset-password",
@@ -43,13 +43,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private accountRecoveryService: AccountRecoveryService,
+    private resetPasswordService: OrganizationUserResetPasswordService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private policyService: PolicyService,
     private logService: LogService,
-    private dialogService: DialogService,
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {
@@ -58,7 +58,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         (enforcedPasswordPolicyOptions) =>
-          (this.enforcedPolicyOptions = enforcedPasswordPolicyOptions),
+          (this.enforcedPolicyOptions = enforcedPasswordPolicyOptions)
       );
   }
 
@@ -91,7 +91,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.platformUtilsService.showToast(
       "info",
       null,
-      this.i18nService.t("valueCopied", this.i18nService.t("password")),
+      this.i18nService.t("valueCopied", this.i18nService.t("password"))
     );
   }
 
@@ -101,7 +101,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordRequired"),
+        this.i18nService.t("masterPasswordRequired")
       );
       return false;
     }
@@ -110,7 +110,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordMinlength", Utils.minimumPasswordLength),
+        this.i18nService.t("masterPasswordMinlength", Utils.minimumPasswordLength)
       );
       return false;
     }
@@ -120,13 +120,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       !this.policyService.evaluateMasterPassword(
         this.passwordStrengthResult.score,
         this.newPassword,
-        this.enforcedPolicyOptions,
+        this.enforcedPolicyOptions
       )
     ) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordPolicyRequirementsNotMet"),
+        this.i18nService.t("masterPasswordPolicyRequirementsNotMet")
       );
       return;
     }
@@ -144,17 +144,17 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.formPromise = this.accountRecoveryService.resetMasterPassword(
+      this.formPromise = this.resetPasswordService.resetMasterPassword(
         this.newPassword,
         this.email,
         this.id,
-        this.organizationId,
+        this.organizationId
       );
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("resetPasswordSuccess"),
+        this.i18nService.t("resetPasswordSuccess")
       );
       this.onPasswordReset.emit();
     } catch (e) {

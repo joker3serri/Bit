@@ -13,7 +13,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 
-import { AccountRecoveryService } from "../members/services/account-recovery/account-recovery.service";
+import { OrganizationUserResetPasswordService } from "../members/services/organization-user-reset-password/organization-user-reset-password.service";
 
 interface EnrollMasterPasswordResetData {
   organization: Organization;
@@ -33,13 +33,13 @@ export class EnrollMasterPasswordReset {
   constructor(
     private dialogRef: DialogRef,
     @Inject(DIALOG_DATA) protected data: EnrollMasterPasswordResetData,
-    private accountRecoveryService: AccountRecoveryService,
+    private resetPasswordService: OrganizationUserResetPasswordService,
     private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private syncService: SyncService,
     private logService: LogService,
-    private organizationUserService: OrganizationUserService,
+    private organizationUserService: OrganizationUserService
   ) {
     this.organization = data.organization;
   }
@@ -49,17 +49,17 @@ export class EnrollMasterPasswordReset {
       await this.userVerificationService
         .buildRequest(
           this.formGroup.value.verification,
-          OrganizationUserResetPasswordEnrollmentRequest,
+          OrganizationUserResetPasswordEnrollmentRequest
         )
         .then(async (request) => {
           // Create request and execute enrollment
-          request.resetPasswordKey = await this.accountRecoveryService.buildRecoveryKey(
-            this.organization.id,
+          request.resetPasswordKey = await this.resetPasswordService.buildRecoveryKey(
+            this.organization.id
           );
           await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
             this.organization.id,
             this.organization.userId,
-            request,
+            request
           );
 
           await this.syncService.fullSync(true);
@@ -67,7 +67,7 @@ export class EnrollMasterPasswordReset {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("enrollPasswordResetSuccess"),
+        this.i18nService.t("enrollPasswordResetSuccess")
       );
       this.dialogRef.close();
     } catch (e) {

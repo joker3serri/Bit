@@ -19,10 +19,10 @@ import {
 } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 
-import { AccountRecoveryService } from "./account-recovery.service";
+import { OrganizationUserResetPasswordService } from "./organization-user-reset-password.service";
 
-describe("AccountRecoveryService", () => {
-  let sut: AccountRecoveryService;
+describe("OrganizationUserResetPasswordService", () => {
+  let sut: OrganizationUserResetPasswordService;
 
   let cryptoService: MockProxy<CryptoService>;
   let encryptService: MockProxy<EncryptService>;
@@ -39,13 +39,13 @@ describe("AccountRecoveryService", () => {
     organizationApiService = mock<OrganizationApiService>();
     i18nService = mock<I18nService>();
 
-    sut = new AccountRecoveryService(
+    sut = new OrganizationUserResetPasswordService(
       cryptoService,
       encryptService,
       organizationService,
       organizationUserService,
       organizationApiService,
-      i18nService,
+      i18nService
     );
   });
 
@@ -65,7 +65,7 @@ describe("AccountRecoveryService", () => {
         new OrganizationKeysResponse({
           privateKey: "test-private-key",
           publicKey: "test-public-key",
-        }),
+        })
       );
 
       const mockRandomBytes = new Uint8Array(64) as CsprngArray;
@@ -73,7 +73,7 @@ describe("AccountRecoveryService", () => {
       cryptoService.getUserKey.mockResolvedValue(mockUserKey);
 
       cryptoService.rsaEncrypt.mockResolvedValue(
-        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey"),
+        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey")
       );
     });
 
@@ -121,7 +121,7 @@ describe("AccountRecoveryService", () => {
           kdfIterations: 5000,
           resetPasswordKey: "test-reset-password-key",
           encryptedPrivateKey: "test-encrypted-private-key",
-        }),
+        })
       );
 
       const mockRandomBytes = new Uint8Array(64) as CsprngArray;
@@ -149,19 +149,19 @@ describe("AccountRecoveryService", () => {
     it("should throw an error if the user details are null", async () => {
       organizationUserService.getOrganizationUserResetPasswordDetails.mockResolvedValue(null);
       await expect(
-        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId),
+        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId)
       ).rejects.toThrow();
     });
 
     it("should throw an error if the org key is null", async () => {
       cryptoService.getOrgKey.mockResolvedValue(null);
       await expect(
-        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId),
+        sut.resetMasterPassword(mockNewMP, mockEmail, mockOrgUserId, mockOrgId)
       ).rejects.toThrow();
     });
   });
 
-  describe("rotate", () => {
+  describe("getRotatedKeys", () => {
     beforeEach(() => {
       organizationService.getAll.mockResolvedValue([
         createOrganization("1", "org1"),
@@ -171,36 +171,19 @@ describe("AccountRecoveryService", () => {
         new OrganizationKeysResponse({
           privateKey: "test-private-key",
           publicKey: "test-public-key",
-        }),
+        })
       );
       cryptoService.rsaEncrypt.mockResolvedValue(
-        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey"),
+        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey")
       );
     });
 
-    it("should rotate all of the user's recovery key", async () => {
-      organizationApiService.getKeys.mockResolvedValue(
-        new OrganizationKeysResponse({
-          privateKey: "test-private-key",
-          publicKey: "test-public-key",
-        }),
-      );
-      cryptoService.rsaEncrypt.mockResolvedValue(
-        new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "mockEncryptedUserKey"),
-      );
-      organizationService.getAll.mockResolvedValue([
-        createOrganization("1", "org1"),
-        createOrganization("2", "org2"),
-      ]);
-
-      await sut.rotate(
-        new SymmetricCryptoKey(new Uint8Array(64)) as UserKey,
-        "test-master-password-hash",
+    it("should return all re-encrypted account recovery keys", async () => {
+      const result = await sut.getRotatedKeys(
+        new SymmetricCryptoKey(new Uint8Array(64)) as UserKey
       );
 
-      expect(
-        organizationUserService.putOrganizationUserResetPasswordEnrollment,
-      ).toHaveBeenCalledTimes(2);
+      expect(result).toHaveLength(2);
     });
   });
 });
