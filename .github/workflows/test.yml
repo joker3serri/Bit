@@ -7,7 +7,7 @@ on:
     branches:
       - "main"
       - "rc"
-      - "hotfix-rc"
+      - "hotfix-rc-*"
   pull_request:
 
 defaults:
