@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, ReplaySubject, Subscription, concatMap } from "rxjs";
 
-import { Type, ShapeToInstances } from "../../../types/state";
+import { ShapeToInstances, DerivedStateDependencies } from "../../../types/state";
 import {
   AbstractStorageService,
   ObservableStorageService,
@@ -11,7 +11,7 @@ import { DerivedState } from "../derived-state";
 /**
  * Default derived state
  */
-export class DefaultDerivedState<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>
+export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependencies>
   implements DerivedState<TTo>
 {
   private readonly storageKey: string;

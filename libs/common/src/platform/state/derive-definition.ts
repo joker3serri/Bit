@@ -1,13 +1,13 @@
 import { Jsonify } from "type-fest";
 
-import { Type, ShapeToInstances, StorageKey } from "../../types/state";
+import { DerivedStateDependencies, ShapeToInstances, StorageKey } from "../../types/state";
 
 import { StateDefinition } from "./state-definition";
 
 /**
  * A set of options for customizing the behavior of a {@link DeriveDefinition}
  */
-type DeriveDefinitionOptions<TFrom, TTo, TDeps extends Record<string, Type<unknown>> = never> = {
+type DeriveDefinitionOptions<TFrom, TTo, TDeps extends DerivedStateDependencies = never> = {
   /**
    * A function to use to convert values from TFrom to TTo. This is called on each emit of the parent state observable
    * and the resulting value will be emitted from the derived state observable.
@@ -56,7 +56,7 @@ type DeriveDefinitionOptions<TFrom, TTo, TDeps extends Record<string, Type<unkno
  * be calculated once regardless of multiple execution contexts.
  */
 
-export class DeriveDefinition<TFrom, TTo, TDeps extends Record<string, Type<unknown>>> {
+export class DeriveDefinition<TFrom, TTo, TDeps extends DerivedStateDependencies> {
   /**
    * Creates a new instance of a DeriveDefinition
    * @param stateDefinition The state definition for which this key belongs to.

@@ -7,6 +7,8 @@ type StorageKey = Opaque<string, "StorageKey">;
  */
 type Type<T> = abstract new (...args: any[]) => T;
 
+type DerivedStateDependencies = Record<string, Type<unknown>>;
+
 /**
  * Converts an object of types to an object of instances
  */

@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
 import { UserId } from "../../types/guid";
-import { Type, ShapeToInstances } from "../../types/state";
+import { ShapeToInstances, DerivedStateDependencies } from "../../types/state";
 
 import { DeriveDefinition } from "./derive-definition";
 import { DerivedState } from "./derived-state";
@@ -23,7 +23,7 @@ export abstract class StateProvider {
   getUser: <T>(userId: UserId, keyDefinition: KeyDefinition<T>) => SingleUserState<T>;
   /** @see{@link GlobalStateProvider.get} */
   getGlobal: <T>(keyDefinition: KeyDefinition<T>) => GlobalState<T>;
-  getDerived: <TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
+  getDerived: <TFrom, TTo, TDeps extends DerivedStateDependencies>(
     parentState$: Observable<TFrom>,
     deriveDefinition: DeriveDefinition<unknown, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,

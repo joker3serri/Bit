@@ -14,7 +14,7 @@ import {
   DerivedStateProvider,
 } from "../src/platform/state";
 import { UserId } from "../src/types/guid";
-import { Type, ShapeToInstances } from "../src/types/state";
+import { ShapeToInstances, DerivedStateDependencies } from "../src/types/state";
 
 import {
   FakeActiveUserState,
@@ -89,7 +89,11 @@ export class FakeStateProvider implements StateProvider {
     return this.singleUser.get(userId, keyDefinition);
   }
 
-  getDerived<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(parentState$: Observable<TFrom>,deriveDefinition: DeriveDefinition<unknown, TTo, TDeps>, dependencies: ShapeToInstances<TDeps>): DerivedState<TTo> {
+  getDerived<TFrom, TTo, TDeps extends DerivedStateDependencies>(
+    parentState$: Observable<TFrom>,
+    deriveDefinition: DeriveDefinition<unknown, TTo, TDeps>,
+    dependencies: ShapeToInstances<TDeps>,
+  ): DerivedState<TTo> {
     return this.derived.get(parentState$, deriveDefinition, dependencies);
   }
 
@@ -101,7 +105,7 @@ export class FakeStateProvider implements StateProvider {
 
 export class FakeDerivedStateProvider implements DerivedStateProvider {
   states: Map<string, DerivedState<unknown>> = new Map();
-  get<TFrom, TTo, TDeps extends Record<string, Type<unknown>>>(
+  get<TFrom, TTo, TDeps extends DerivedStateDependencies>(
     parentState$: Observable<TFrom>,
     deriveDefinition: DeriveDefinition<TFrom, TTo, TDeps>,
     dependencies: ShapeToInstances<TDeps>,
