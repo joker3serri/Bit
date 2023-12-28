@@ -26,6 +26,9 @@ export class LoginDecryptionOptionsComponent extends BaseLoginDecryptionOptionsC
     // wait for messages
     const command = await messagePromise;
 
+    // We should be routed/routing very soon but just in case, turn loading back off.
+    this.loading = false;
+
     // doneLoggingOut already has a message handler that will navigate us
     if (command === "switchAccountFinish") {
       this.router.navigate(["/"]);
