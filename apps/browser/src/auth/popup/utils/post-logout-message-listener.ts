@@ -12,9 +12,9 @@ import { fromChromeEvent } from "../../../platform/browser/from-chrome-event";
  * const message = await messagePromise;
  * ```
  */
-export const postLogoutMessageListener$ = fromChromeEvent<[message: { command: string }]>(
-  chrome.runtime.onMessage,
-).pipe(
+export const postLogoutMessageListener$ = fromChromeEvent<
+  [message?: { command: "switchAccountFinish" | "doneLoggingOut" }]
+>(chrome.runtime.onMessage).pipe(
   map(([message]) => message?.command),
   filter((command) => command === "switchAccountFinish" || command === "doneLoggingOut"),
   timeout({
