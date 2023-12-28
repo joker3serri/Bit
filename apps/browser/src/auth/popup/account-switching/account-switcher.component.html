@@ -19,17 +19,12 @@
           *ngFor="let availableAccount of availableAccounts; first as isFirst"
           role="option"
         >
-          <ng-container>
-            <li *ngIf="availableAccount.isActive" class="tw-mb-4">
-              <auth-account
-                [account]="availableAccount"
-                (loading)="loading = $event"
-              ></auth-account>
-            </li>
-            <div *ngIf="isFirst" class="tw-uppercase tw-text-muted">
-              {{ "availableAccounts" | i18n }}
-            </div>
-          </ng-container>
+          <li *ngIf="availableAccount.isActive" class="tw-mb-4">
+            <auth-account [account]="availableAccount" (loading)="loading = $event"></auth-account>
+          </li>
+          <div *ngIf="isFirst" class="tw-uppercase tw-text-muted">
+            {{ "availableAccounts" | i18n }}
+          </div>
           <li *ngIf="!availableAccount.isActive">
             <auth-account [account]="availableAccount" (loading)="loading = $event"></auth-account>
           </li>
