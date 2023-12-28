@@ -3,7 +3,6 @@
  * @jest-environment ../shared/test.environment.ts
  */
 
-import { anySymbol } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
@@ -46,17 +45,20 @@ describe("DefaultSingleUserState", () => {
 
   beforeEach(() => {
     diskStorageService = new FakeStorageService();
-    userState = new DefaultSingleUserState(
-      userId,
-      testKeyDefinition,
-      null, // Not testing anything with encrypt service
-      diskStorageService,
-    );
+    userState = new DefaultSingleUserState(userId, testKeyDefinition, diskStorageService);
   });
 
   afterEach(() => {
     jest.resetAllMocks();
   });
+
+  const getInternalValue = (): TestState => {
+    return userState["replaySubject"]["_buffer"][0];
+  };
+
+  const getSubscriberCount = () => {
+    return userState["replaySubject"]["observers"].length;
+  };
 
   describe("state$", () => {
     it("should emit when storage updates", async () => {
@@ -74,7 +76,12 @@ describe("DefaultSingleUserState", () => {
       const emissions = trackEmissions(userState.state$);
       await diskStorageService.save("wrong_key", newData);
 
-      expect(emissions).toHaveLength(0);
+      // Give userState a chance to emit it's initial value
+      // as well as wrongly emit the different key.
+      await awaitAsync();
+
+      // Just the initial value
+      expect(emissions).toHaveLength(1);
     });
 
     it("should emit initial storage value on first subscribe", async () => {
@@ -91,6 +98,50 @@ describe("DefaultSingleUserState", () => {
         undefined,
       );
       expect(state).toBeTruthy();
+    });
+  });
+
+  describe("combinedState$", () => {
+    it("should emit when storage updates", async () => {
+      const emissions = trackEmissions(userState.combinedState$);
+      await diskStorageService.save(userKey, newData);
+      await awaitAsync();
+
+      expect(emissions).toEqual([
+        [userId, null], // Initial value
+        [userId, newData],
+      ]);
+    });
+
+    it("should not emit when update key does not match", async () => {
+      const emissions = trackEmissions(userState.combinedState$);
+      await diskStorageService.save("wrong_key", newData);
+
+      // Give userState a chance to emit it's initial value
+      // as well as wrongly emit the different key.
+      await awaitAsync();
+
+      // Just the initial value
+      expect(emissions).toHaveLength(1);
+    });
+
+    it("should emit initial storage value on first subscribe", async () => {
+      const initialStorage: Record<string, TestState> = {};
+      initialStorage[userKey] = TestState.fromJSON({
+        date: "2022-09-21T13:14:17.648Z",
+      });
+      diskStorageService.internalUpdateStore(initialStorage);
+
+      const combinedState = await firstValueFrom(userState.combinedState$);
+      expect(diskStorageService.mock.get).toHaveBeenCalledTimes(1);
+      expect(diskStorageService.mock.get).toHaveBeenCalledWith(
+        `user_${userId}_fake_fake`,
+        undefined,
+      );
+      expect(combinedState).toBeTruthy();
+      const [stateUserId, state] = combinedState;
+      expect(stateUserId).toBe(userId);
+      expect(state).toBe(initialStorage[userKey]);
     });
   });
 
@@ -309,7 +360,6 @@ describe("DefaultSingleUserState", () => {
     });
 
     test("updates with FAKE_DEFAULT initial value should resolve correctly", async () => {
-      expect(userState["stateSubject"].value).toEqual(anySymbol()); // FAKE_DEFAULT
       const val = await userState.update((state) => {
         return newData;
       });
@@ -323,7 +373,7 @@ describe("DefaultSingleUserState", () => {
 
   describe("cleanup", () => {
     async function assertClean() {
-      const emissions = trackEmissions(userState["stateSubject"]);
+      const emissions = trackEmissions(userState["replaySubject"]);
       const initial = structuredClone(emissions);
 
       diskStorageService.save(userKey, newData);
@@ -337,7 +387,7 @@ describe("DefaultSingleUserState", () => {
       await awaitAsync(); // storage updates are behind a promise
 
       subscription.unsubscribe();
-      expect(userState["subscriberCount"].getValue()).toBe(0);
+      expect(getSubscriberCount()).toBe(0);
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
@@ -355,7 +405,7 @@ describe("DefaultSingleUserState", () => {
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      expect(userState["subscriberCount"].getValue()).toBe(1);
+      expect(getSubscriberCount()).toBe(1);
 
       // Still be listening to storage updates
       diskStorageService.save(userKey, newData);
@@ -394,12 +444,11 @@ describe("DefaultSingleUserState", () => {
       await awaitAsync();
 
       subscription.unsubscribe();
-      expect(userState["subscriberCount"].getValue()).toBe(0);
+      expect(getSubscriberCount()).toBe(0);
       // Do not wait long enough for cleanup
       await awaitAsync(cleanupDelayMs / 2);
 
-      expect(userState["stateSubject"].value).toEqual(newData); // digging in to check that it hasn't been cleared
-      expect(userState["storageUpdateSubscription"]).not.toBeNull(); // still listening to storage updates
+      expect(getInternalValue()).toEqual(newData); // digging in to check that it hasn't been cleared
     });
 
     it("state$ observables are durable to cleanup", async () => {

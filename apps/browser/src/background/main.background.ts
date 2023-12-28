@@ -320,7 +320,6 @@ export default class MainBackground {
       : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
-      this.encryptService,
       this.memoryStorageService as BackgroundMemoryStorageService,
       this.storageService as BrowserLocalStorageService,
     );
@@ -331,7 +330,6 @@ export default class MainBackground {
     );
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
-      this.encryptService,
       this.memoryStorageService as BackgroundMemoryStorageService,
       this.storageService as BrowserLocalStorageService,
     );

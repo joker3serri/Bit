@@ -798,17 +798,12 @@ import { ModalService } from "./modal.service";
     {
       provide: ActiveUserStateProvider,
       useClass: DefaultActiveUserStateProvider,
-      deps: [
-        AccountServiceAbstraction,
-        EncryptService,
-        OBSERVABLE_MEMORY_STORAGE,
-        OBSERVABLE_DISK_STORAGE,
-      ],
+      deps: [AccountServiceAbstraction, OBSERVABLE_MEMORY_STORAGE, OBSERVABLE_DISK_STORAGE],
     },
     {
       provide: SingleUserStateProvider,
       useClass: DefaultSingleUserStateProvider,
-      deps: [EncryptService, OBSERVABLE_MEMORY_STORAGE, OBSERVABLE_DISK_STORAGE],
+      deps: [OBSERVABLE_MEMORY_STORAGE, OBSERVABLE_DISK_STORAGE],
     },
     {
       provide: StateProvider,
