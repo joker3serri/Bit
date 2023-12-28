@@ -669,7 +669,6 @@ describe("DefaultActiveUserState", () => {
       await awaitAsync(cleanupDelayMs / 2);
 
       expect(getInternalValue()).toEqual(newData); // digging in to check that it hasn't been cleared
-      // expect(userState["storageUpdateSubscription"]).not.toBeNull(); // still listening to storage updates
     });
 
     it("state$ observables are durable to cleanup", async () => {
