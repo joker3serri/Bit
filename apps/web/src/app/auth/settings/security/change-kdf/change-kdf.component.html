@@ -63,6 +63,7 @@
             class="form-control"
             [(ngModel)]="kdfConfig.iterations"
             required
+            step="100000"
           />
         </ng-container>
         <ng-container *ngIf="kdf == kdfType.Argon2id">
