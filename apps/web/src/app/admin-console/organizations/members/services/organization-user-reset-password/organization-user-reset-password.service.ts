@@ -28,7 +28,7 @@ export class OrganizationUserResetPasswordService {
     private organizationService: OrganizationService,
     private organizationUserService: OrganizationUserService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private i18nService: I18nService
+    private i18nService: I18nService,
   ) {}
 
   /**
@@ -67,11 +67,11 @@ export class OrganizationUserResetPasswordService {
     newMasterPassword: string,
     email: string,
     orgUserId: string,
-    orgId: string
+    orgId: string,
   ): Promise<void> {
     const response = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
       orgId,
-      orgUserId
+      orgUserId,
     );
 
     if (response == null) {
@@ -85,7 +85,7 @@ export class OrganizationUserResetPasswordService {
     }
     const decPrivateKey = await this.encryptService.decryptToBytes(
       new EncString(response.encryptedPrivateKey),
-      orgSymKey
+      orgSymKey,
     );
 
     // Decrypt User's Reset Password Key to get UserKey
@@ -97,17 +97,17 @@ export class OrganizationUserResetPasswordService {
       newMasterPassword,
       email.trim().toLowerCase(),
       response.kdf,
-      new KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism)
+      new KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism),
     );
     const newMasterKeyHash = await this.cryptoService.hashMasterKey(
       newMasterPassword,
-      newMasterKey
+      newMasterKey,
     );
 
     // Create new encrypted user key for the User
     const newUserKey = await this.cryptoService.encryptUserKeyWithMasterKey(
       newMasterKey,
-      existingUserKey
+      existingUserKey,
     );
 
     // Create request
@@ -125,7 +125,7 @@ export class OrganizationUserResetPasswordService {
    * @throws Error if new user key is null
    */
   async getRotatedKeys(
-    newUserKey: UserKey
+    newUserKey: UserKey,
   ): Promise<OrganizationUserResetPasswordWithIdRequest[] | null> {
     if (newUserKey == null) {
       throw new Error("New user key is required for rotation.");
@@ -163,7 +163,7 @@ export class OrganizationUserResetPasswordService {
    */
   async postLegacyRotation(
     userId: string,
-    requests: OrganizationUserResetPasswordWithIdRequest[]
+    requests: OrganizationUserResetPasswordWithIdRequest[],
   ): Promise<void> {
     if (requests == null) {
       return;
@@ -172,7 +172,7 @@ export class OrganizationUserResetPasswordService {
       await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
         request.organizationId,
         userId,
-        request
+        request,
       );
     }
   }

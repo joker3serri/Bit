@@ -45,7 +45,7 @@ export default class RuntimeBackground {
     private logService: LogService,
     private configService: ConfigServiceAbstraction,
     private fido2Service: Fido2Service,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
   ) {
     // onInstalled listener must be wired up before anything else, so we do it in the ctor
     chrome.runtime.onInstalled.addListener((details: any) => {
@@ -62,7 +62,7 @@ export default class RuntimeBackground {
     const backgroundMessageListener = (
       msg: any,
       sender: chrome.runtime.MessageSender,
-      sendResponse: any
+      sendResponse: any,
     ) => {
       const messagesWithResponse = [
         "checkFido2FeatureEnabled",
@@ -73,7 +73,7 @@ export default class RuntimeBackground {
       if (messagesWithResponse.includes(msg.command)) {
         this.processMessage(msg, sender).then(
           (value) => sendResponse({ result: value }),
-          (error) => sendResponse({ error: { ...error, message: error.message } })
+          (error) => sendResponse({ error: { ...error, message: error.message } }),
         );
         return true;
       }
@@ -110,7 +110,7 @@ export default class RuntimeBackground {
           await BrowserApi.tabSendMessageData(
             item.commandToRetry.sender.tab,
             "unlockCompleted",
-            item
+            item,
           );
         }
         break;
@@ -163,7 +163,7 @@ export default class RuntimeBackground {
                   details: msg.details,
                 },
               ],
-              msg.sender === "autofill_cmd"
+              msg.sender === "autofill_cmd",
             );
             if (totpCode != null) {
               this.platformUtilsService.copyToClipboard(totpCode, { window: window });
@@ -180,7 +180,7 @@ export default class RuntimeBackground {
                 },
               ],
               false,
-              CipherType.Card
+              CipherType.Card,
             );
             break;
           }
@@ -194,7 +194,7 @@ export default class RuntimeBackground {
                 },
               ],
               false,
-              CipherType.Identity
+              CipherType.Identity,
             );
             break;
           }
@@ -273,13 +273,13 @@ export default class RuntimeBackground {
               return await this.main.fido2ClientService.createCredential(
                 msg.data,
                 sender.tab,
-                abortController
+                abortController,
               );
             } finally {
               await BrowserApi.focusTab(sender.tab.id);
               await BrowserApi.focusWindow(sender.tab.windowId);
             }
-          }
+          },
         );
       case "fido2GetCredentialRequest":
         return await this.abortManager.runWithAbortController(
@@ -289,13 +289,13 @@ export default class RuntimeBackground {
               return await this.main.fido2ClientService.assertCredential(
                 msg.data,
                 sender.tab,
-                abortController
+                abortController,
               );
             } finally {
               await BrowserApi.focusTab(sender.tab.id);
               await BrowserApi.focusWindow(sender.tab.windowId);
             }
-          }
+          },
         );
       case "switchAccount": {
         await this.main.switchAccount(msg.userId);
@@ -329,7 +329,7 @@ export default class RuntimeBackground {
         if (this.onInstalledReason === "install") {
           BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
           await this.settingsService.setAutoFillOverlayVisibility(
-            AutofillOverlayVisibility.OnFieldFocus
+            AutofillOverlayVisibility.OnFieldFocus,
           );
 
           if (await this.environmentService.hasManagedEnvironment()) {

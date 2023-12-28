@@ -39,7 +39,7 @@ export class EnrollMasterPasswordReset {
     private i18nService: I18nService,
     private syncService: SyncService,
     private logService: LogService,
-    private organizationUserService: OrganizationUserService
+    private organizationUserService: OrganizationUserService,
   ) {
     this.organization = data.organization;
   }
@@ -49,17 +49,17 @@ export class EnrollMasterPasswordReset {
       await this.userVerificationService
         .buildRequest(
           this.formGroup.value.verification,
-          OrganizationUserResetPasswordEnrollmentRequest
+          OrganizationUserResetPasswordEnrollmentRequest,
         )
         .then(async (request) => {
           // Create request and execute enrollment
           request.resetPasswordKey = await this.resetPasswordService.buildRecoveryKey(
-            this.organization.id
+            this.organization.id,
           );
           await this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
             this.organization.id,
             this.organization.userId,
-            request
+            request,
           );
 
           await this.syncService.fullSync(true);
@@ -67,7 +67,7 @@ export class EnrollMasterPasswordReset {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("enrollPasswordResetSuccess")
+        this.i18nService.t("enrollPasswordResetSuccess"),
       );
       this.dialogRef.close();
     } catch (e) {

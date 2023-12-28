@@ -21,7 +21,7 @@ export class SetPinComponent implements OnInit {
     private cryptoService: CryptoService,
     private userVerificationService: UserVerificationService,
     private stateService: StateService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) {}
 
   async ngOnInit() {
@@ -44,7 +44,7 @@ export class SetPinComponent implements OnInit {
       pin,
       await this.stateService.getEmail(),
       await this.stateService.getKdfType(),
-      await this.stateService.getKdfConfig()
+      await this.stateService.getKdfConfig(),
     );
     const userKey = await this.cryptoService.getUserKey();
     const pinProtectedKey = await this.cryptoService.encrypt(userKey.key, pinKey);

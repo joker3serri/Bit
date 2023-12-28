@@ -207,7 +207,7 @@ export class OnePassword1PuxImporter extends BaseImporter implements Importer {
     category: CategoryEnum,
     fields: FieldsEntity[],
     cipher: CipherView,
-    sectionTitle: string
+    sectionTitle: string,
   ) {
     fields.forEach((field: FieldsEntity) => {
       const valueKey = Object.keys(field.value)[0];
@@ -458,7 +458,7 @@ export class OnePassword1PuxImporter extends BaseImporter implements Importer {
     field: FieldsEntity,
     fieldValue: string,
     cipher: CipherView,
-    valueKey: string
+    valueKey: string,
   ): boolean {
     if (this.isNullOrWhitespace(cipher.identity.firstName) && field.id === "firstname") {
       cipher.identity.firstName = fieldValue;

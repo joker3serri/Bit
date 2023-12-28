@@ -119,7 +119,7 @@ describe("SendService", () => {
 
     it("throws if the new user key is null", async () => {
       await expect(sendService.getRotatedKeys(null)).rejects.toThrowError(
-        "New user key is required for rotation."
+        "New user key is required for rotation.",
       );
     });
   });

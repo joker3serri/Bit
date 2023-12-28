@@ -56,7 +56,7 @@ const MAX_OCTET = 0x80,
 function countPadding(
   buf: Uint8Array,
   start: number,
-  end: number
+  end: number,
 ): { padding: number; needs0x00: boolean } {
   let padding = 0;
   while (start + padding < end && buf[start + padding] === 0) {
@@ -80,7 +80,7 @@ export function p1363ToDer(signature: Uint8Array) {
         paramBytes * 2 +
         '" bytes, saw "' +
         signatureBytes +
-        '"'
+        '"',
     );
   }
 
@@ -88,7 +88,7 @@ export function p1363ToDer(signature: Uint8Array) {
   const { padding: sPadding, needs0x00: sNeeds0x00 } = countPadding(
     signature,
     paramBytes,
-    signature.length
+    signature.length,
   );
 
   const rActualLength = paramBytes - rPadding;

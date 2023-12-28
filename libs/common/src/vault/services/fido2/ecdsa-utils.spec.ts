@@ -27,7 +27,7 @@ describe("p1363ToDer", () => {
     const result = p1363ToDer(signature);
 
     expect(result).toEqual(
-      new Uint8Array([0x30, 0x46, 0x02, 0x21, 0x00, ...r, 0x02, 0x21, 0x00, ...s])
+      new Uint8Array([0x30, 0x46, 0x02, 0x21, 0x00, ...r, 0x02, 0x21, 0x00, ...s]),
     );
   });
 
@@ -60,7 +60,7 @@ describe("p1363ToDer", () => {
     const result = p1363ToDer(signature);
 
     expect(result).toEqual(
-      new Uint8Array([0x30, 0x44, 0x02, 0x20, 0x00, ...r.slice(1), 0x02, 0x20, ...s])
+      new Uint8Array([0x30, 0x44, 0x02, 0x20, 0x00, ...r.slice(1), 0x02, 0x20, ...s]),
     );
   });
 
@@ -73,7 +73,7 @@ describe("p1363ToDer", () => {
     const result = p1363ToDer(signature);
 
     expect(result).toEqual(
-      new Uint8Array([0x30, 0x44, 0x02, 0x20, ...r, 0x02, 0x20, 0x00, ...s.slice(1)])
+      new Uint8Array([0x30, 0x44, 0x02, 0x20, ...r, 0x02, 0x20, 0x00, ...s.slice(1)]),
     );
   });
 });

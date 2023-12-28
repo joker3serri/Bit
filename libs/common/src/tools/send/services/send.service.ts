@@ -30,7 +30,7 @@ export class SendService implements InternalSendServiceAbstraction {
     private cryptoService: CryptoService,
     private i18nService: I18nService,
     private cryptoFunctionService: CryptoFunctionService,
-    private stateService: StateService
+    private stateService: StateService,
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
@@ -48,7 +48,7 @@ export class SendService implements InternalSendServiceAbstraction {
           const data = await this.stateService.getEncryptedSends();
 
           await this.updateObservables(data);
-        })
+        }),
       )
       .subscribe();
   }
@@ -61,7 +61,7 @@ export class SendService implements InternalSendServiceAbstraction {
     model: SendView,
     file: File | ArrayBuffer,
     password: string,
-    key?: SymmetricCryptoKey
+    key?: SymmetricCryptoKey,
   ): Promise<[Send, EncArrayBuffer]> {
     let fileData: EncArrayBuffer = null;
     const send = new Send();
@@ -79,7 +79,7 @@ export class SendService implements InternalSendServiceAbstraction {
         password,
         model.key,
         "sha256",
-        SEND_KDF_ITERATIONS
+        SEND_KDF_ITERATIONS,
       );
       send.password = Utils.fromBufferToB64(passwordHash);
     }
@@ -97,7 +97,7 @@ export class SendService implements InternalSendServiceAbstraction {
           const [name, data] = await this.encryptFileData(
             model.file.fileName,
             file,
-            model.cryptoKey
+            model.cryptoKey,
           );
           send.file.fileName = name;
           fileData = data;
@@ -223,7 +223,7 @@ export class SendService implements InternalSendServiceAbstraction {
         const sendKey = await this.cryptoService.decryptToBytes(send.key);
         send.key = await this.cryptoService.encrypt(sendKey, newUserKey);
         return new SendWithIdRequest(send);
-      })
+      }),
     );
     // separate return for easier debugging
     return requests;
@@ -238,7 +238,7 @@ export class SendService implements InternalSendServiceAbstraction {
           const [name, data] = await this.encryptFileData(
             file.name,
             evt.target.result as ArrayBuffer,
-            key
+            key,
           );
           send.file.fileName = name;
           resolve(data);
@@ -255,7 +255,7 @@ export class SendService implements InternalSendServiceAbstraction {
   private async encryptFileData(
     fileName: string,
     data: ArrayBuffer,
-    key: SymmetricCryptoKey
+    key: SymmetricCryptoKey,
   ): Promise<[EncString, EncArrayBuffer]> {
     const encFileName = await this.cryptoService.encrypt(fileName, key);
     const encFileData = await this.cryptoService.encryptToBytes(new Uint8Array(data), key);

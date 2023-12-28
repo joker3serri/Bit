@@ -18,7 +18,7 @@ function postWindowMessage(data: any, origin = "https://localhost/", source = wi
 function sendExtensionRuntimeMessage(
   message: any,
   sender?: chrome.runtime.MessageSender,
-  sendResponse?: CallableFunction
+  sendResponse?: CallableFunction,
 ) {
   (chrome.runtime.onMessage.addListener as unknown as jest.SpyInstance).mock.calls.forEach(
     (call) => {
@@ -26,9 +26,9 @@ function sendExtensionRuntimeMessage(
       callback(
         message || {},
         sender || mock<chrome.runtime.MessageSender>(),
-        sendResponse || jest.fn()
+        sendResponse || jest.fn(),
       );
-    }
+    },
   );
 }
 
@@ -37,7 +37,7 @@ function triggerRuntimeOnConnectEvent(port: chrome.runtime.Port) {
     (call) => {
       const callback = call[0];
       callback(port);
-    }
+    },
   );
 }
 
@@ -60,7 +60,7 @@ function triggerWindowOnFocusedChangedEvent(windowId: number) {
     (call) => {
       const callback = call[0];
       callback(windowId);
-    }
+    },
   );
 }
 
@@ -69,7 +69,7 @@ function triggerTabOnActivatedEvent(activeInfo: chrome.tabs.TabActiveInfo) {
     (call) => {
       const callback = call[0];
       callback(activeInfo);
-    }
+    },
   );
 }
 
@@ -83,7 +83,7 @@ function triggerTabOnReplacedEvent(addedTabId: number, removedTabId: number) {
 function triggerTabOnUpdatedEvent(
   tabId: number,
   changeInfo: chrome.tabs.TabChangeInfo,
-  tab: chrome.tabs.Tab
+  tab: chrome.tabs.Tab,
 ) {
   (chrome.tabs.onUpdated.addListener as unknown as jest.SpyInstance).mock.calls.forEach((call) => {
     const callback = call[0];

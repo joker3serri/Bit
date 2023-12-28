@@ -67,7 +67,7 @@ describe("KeyRotationService", () => {
       mockCryptoService,
       mockEncryptService,
       mockStateService,
-      mockConfigService
+      mockConfigService,
     );
   });
 
@@ -121,7 +121,7 @@ describe("KeyRotationService", () => {
         encryptedFolder.id = folder.id;
         encryptedFolder.name = new EncString(
           EncryptionType.AesCbc256_HmacSha256_B64,
-          "Encrypted: " + folder.name
+          "Encrypted: " + folder.name,
         );
         return Promise.resolve(encryptedFolder);
       });
@@ -131,7 +131,7 @@ describe("KeyRotationService", () => {
         encryptedCipher.id = cipher.id;
         encryptedCipher.name = new EncString(
           EncryptionType.AesCbc256_HmacSha256_B64,
-          "Encrypted: " + cipher.name
+          "Encrypted: " + cipher.name,
         );
         return Promise.resolve(encryptedCipher);
       });
@@ -154,7 +154,7 @@ describe("KeyRotationService", () => {
       mockCryptoService.makeMasterKey.mockResolvedValueOnce(null);
 
       await expect(
-        keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword")
+        keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword"),
       ).rejects.toThrow();
     });
 
@@ -162,7 +162,7 @@ describe("KeyRotationService", () => {
       mockCryptoService.makeUserKey.mockResolvedValueOnce([null, null]);
 
       await expect(
-        keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword")
+        keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword"),
       ).rejects.toThrow();
     });
 
@@ -186,7 +186,7 @@ describe("KeyRotationService", () => {
       mockApiService.postUserKeyUpdate.mockRejectedValueOnce(new Error("mockError"));
 
       await expect(
-        keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword")
+        keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword"),
       ).rejects.toThrow();
     });
   });

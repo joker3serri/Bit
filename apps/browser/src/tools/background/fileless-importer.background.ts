@@ -58,7 +58,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     private policyService: PolicyService,
     private notificationBackground: NotificationBackground,
     private importService: ImportServiceAbstraction,
-    private syncService: SyncService
+    private syncService: SyncService,
   ) {}
 
   /**
@@ -89,7 +89,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    */
   private async cancelFilelessImport(
     importType: FilelessImportTypeKeys,
-    sender: chrome.runtime.MessageSender
+    sender: chrome.runtime.MessageSender,
   ) {
     if (importType === FilelessImportType.LP) {
       this.triggerLpImporterCsvDownload();
@@ -133,7 +133,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     const importer = this.importService.getImporter(
       "lastpasscsv",
       promptForPassword_callback,
-      null
+      null,
     );
 
     try {
@@ -157,7 +157,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    */
   private async removeIndividualVault(): Promise<boolean> {
     return await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
     );
   }
 
@@ -180,7 +180,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     }
 
     const filelessImportFeatureFlagEnabled = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.BrowserFilelessImport
+      FeatureFlag.BrowserFilelessImport,
     );
     const userAuthStatus = await this.authService.getAuthStatus();
     const removeIndividualVault = await this.removeIndividualVault();
@@ -214,7 +214,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    */
   private handleImporterPortMessage = (
     message: FilelessImportPortMessage,
-    port: chrome.runtime.Port
+    port: chrome.runtime.Port,
   ) => {
     let handler: CallableFunction | undefined;
 

@@ -53,7 +53,7 @@ describe("LpFilelessImporter", () => {
       expect(document.createElement).toHaveBeenCalledWith("script");
       expect(document.documentElement.appendChild).toHaveBeenCalled();
       expect(script.textContent).toContain(
-        "const defaultAppendChild = Element.prototype.appendChild;"
+        "const defaultAppendChild = Element.prototype.appendChild;",
       );
     });
 
@@ -72,7 +72,7 @@ describe("LpFilelessImporter", () => {
 
       expect(document.addEventListener).toHaveBeenCalledWith(
         "DOMContentLoaded",
-        (lpFilelessImporter as any).loadImporter
+        (lpFilelessImporter as any).loadImporter,
       );
     });
 
@@ -87,11 +87,11 @@ describe("LpFilelessImporter", () => {
       lpFilelessImporter.handleFeatureFlagVerification(message);
 
       expect(window.MutationObserver).toHaveBeenCalledWith(
-        (lpFilelessImporter as any).handleMutation
+        (lpFilelessImporter as any).handleMutation,
       );
       expect((lpFilelessImporter as any).mutationObserver.observe).toHaveBeenCalledWith(
         document.body,
-        { childList: true, subtree: true }
+        { childList: true, subtree: true },
       );
     });
   });
@@ -104,7 +104,7 @@ describe("LpFilelessImporter", () => {
 
       expect(globalThis.postMessage).toHaveBeenCalledWith(
         { command: "triggerCsvDownload" },
-        "https://lastpass.com"
+        "https://lastpass.com",
       );
     });
   });
@@ -150,7 +150,7 @@ describe("LpFilelessImporter", () => {
     it("will store the export data, display the import notification, and disconnect the mutation observer when the export data is appended", () => {
       const observerDisconnectSpy = jest.spyOn(
         lpFilelessImporter["mutationObserver"],
-        "disconnect"
+        "disconnect",
       );
 
       lpFilelessImporter["handleMutation"]([

@@ -34,7 +34,7 @@ describe("FilelessImporterBackground ", () => {
       policyService,
       notificationBackground,
       importService,
-      syncService
+      syncService,
     );
     filelessImporterBackground.init();
   });
@@ -166,7 +166,7 @@ describe("FilelessImporterBackground ", () => {
               command: "closeNotificationBar",
             },
             null,
-            expect.anything()
+            expect.anything(),
           );
           expect(lpImporterPort.postMessage).not.toHaveBeenCalledWith({
             command: "triggerCsvDownload",
@@ -198,7 +198,7 @@ describe("FilelessImporterBackground ", () => {
           await flushPromises();
 
           expect(
-            filelessImporterBackground["notificationBackground"].requestFilelessImport
+            filelessImporterBackground["notificationBackground"].requestFilelessImport,
           ).toHaveBeenCalledWith(lpImporterPort.sender.tab, FilelessImportType.LP);
         });
       });
@@ -221,7 +221,7 @@ describe("FilelessImporterBackground ", () => {
           jest.spyOn(filelessImporterBackground["importService"], "import").mockResolvedValue(
             mock<ImportResult>({
               success: true,
-            })
+            }),
           );
           jest.spyOn(filelessImporterBackground["syncService"], "fullSync");
 
@@ -236,10 +236,10 @@ describe("FilelessImporterBackground ", () => {
             data,
             null,
             null,
-            false
+            false,
           );
           expect(
-            filelessImporterBackground["importNotificationsPort"].postMessage
+            filelessImporterBackground["importNotificationsPort"].postMessage,
           ).toHaveBeenCalledWith({ command: "filelessImportCompleted" });
           expect(filelessImporterBackground["syncService"].fullSync).toHaveBeenCalledWith(true);
         });
@@ -264,7 +264,7 @@ describe("FilelessImporterBackground ", () => {
           await flushPromises();
 
           expect(
-            filelessImporterBackground["importNotificationsPort"].postMessage
+            filelessImporterBackground["importNotificationsPort"].postMessage,
           ).toHaveBeenCalledWith({ command: "filelessImportFailed" });
         });
       });

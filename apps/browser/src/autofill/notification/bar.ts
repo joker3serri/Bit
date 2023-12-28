@@ -257,7 +257,7 @@ function handleTypeFilelessImport() {
 
     if (msg.command === "filelessImportCompleted") {
       document.getElementById("fileless-import-buttons").textContent = chrome.i18n.getMessage(
-        "dataSuccessfullyImported"
+        "dataSuccessfullyImported",
       );
       document.getElementById("fileless-import-buttons").classList.add("success-message");
       return;

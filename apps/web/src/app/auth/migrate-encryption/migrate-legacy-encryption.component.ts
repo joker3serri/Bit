@@ -29,7 +29,7 @@ export class MigrateFromLegacyEncryptionComponent {
     private platformUtilsService: PlatformUtilsService,
     private cryptoService: CryptoService,
     private messagingService: MessagingService,
-    private logService: LogService
+    private logService: LogService,
   ) {}
 
   submit = async () => {
@@ -54,7 +54,7 @@ export class MigrateFromLegacyEncryptionComponent {
         "success",
         this.i18nService.t("keyUpdated"),
         this.i18nService.t("logBackInOthersToo"),
-        { timeout: 15000 }
+        { timeout: 15000 },
       );
       this.messagingService.send("logout");
     } catch (e) {

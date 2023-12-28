@@ -53,7 +53,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     dialogService: DialogService,
     private userVerificationService: UserVerificationService,
     private configService: ConfigServiceAbstraction,
-    private keyRotationService: UserKeyRotationService
+    private keyRotationService: UserKeyRotationService,
   ) {
     super(
       i18nService,
@@ -63,13 +63,13 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       platformUtilsService,
       policyService,
       stateService,
-      dialogService
+      dialogService,
     );
   }
 
   async ngOnInit() {
     this.showWebauthnLoginSettings$ = this.configService.getFeatureFlag$(
-      FeatureFlag.PasswordlessLogin
+      FeatureFlag.PasswordlessLogin,
     );
 
     if (!(await this.userVerificationService.hasMasterPassword())) {
@@ -106,7 +106,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
 
         if (learnMore) {
           this.platformUtilsService.launchUri(
-            "https://bitwarden.com/help/attachments/#add-storage-space"
+            "https://bitwarden.com/help/attachments/#add-storage-space",
           );
         }
         this.rotateUserKey = false;
@@ -135,7 +135,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("hintEqualsPassword")
+        this.i18nService.t("hintEqualsPassword"),
       );
       return;
     }
@@ -153,7 +153,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordRequired")
+        this.i18nService.t("masterPasswordRequired"),
       );
       return false;
     }
@@ -168,13 +168,13 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
   async performSubmitActions(
     newMasterPasswordHash: string,
     newMasterKey: MasterKey,
-    newUserKey: [UserKey, EncString]
+    newUserKey: [UserKey, EncString],
   ) {
     const masterKey = await this.cryptoService.getOrDeriveMasterKey(this.currentMasterPassword);
     const request = new PasswordRequest();
     request.masterPasswordHash = await this.cryptoService.hashMasterKey(
       this.currentMasterPassword,
-      masterKey
+      masterKey,
     );
     request.masterPasswordHint = this.masterPasswordHint;
     request.newMasterPasswordHash = newMasterPasswordHash;
@@ -194,7 +194,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       this.platformUtilsService.showToast(
         "success",
         this.i18nService.t("masterPasswordChanged"),
-        this.i18nService.t("logBackIn")
+        this.i18nService.t("logBackIn"),
       );
       this.messagingService.send("logout");
     } catch {

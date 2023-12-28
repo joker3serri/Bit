@@ -34,7 +34,7 @@ export class UserKeyRotationService {
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private stateService: StateService,
-    private configService: ConfigServiceAbstraction
+    private configService: ConfigServiceAbstraction,
   ) {}
 
   /**
@@ -51,7 +51,7 @@ export class UserKeyRotationService {
       masterPassword,
       await this.stateService.getEmail(),
       await this.stateService.getKdfType(),
-      await this.stateService.getKdfConfig()
+      await this.stateService.getKdfConfig(),
     );
 
     if (!masterKey) {
@@ -111,7 +111,7 @@ export class UserKeyRotationService {
       ciphers.map(async (cipher) => {
         const encryptedCipher = await this.cipherService.encrypt(cipher, newUserKey);
         return new CipherWithIdRequest(encryptedCipher);
-      })
+      }),
     );
   }
 
@@ -125,7 +125,7 @@ export class UserKeyRotationService {
       folders.map(async (folder) => {
         const encryptedFolder = await this.folderService.encrypt(folder, newUserKey);
         return new FolderWithIdRequest(encryptedFolder);
-      })
+      }),
     );
   }
 
