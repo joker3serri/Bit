@@ -1,6 +1,6 @@
 import { DerivedStateProvider } from "@bitwarden/common/platform/state";
-// eslint-disable-next-line import/no-restricted-paths -- We need the implementation to inject, but generally this should not be accessed
-import { DefaultDerivedStateProvider } from "@bitwarden/common/platform/state/implementations/default-derived-state.provider";
+
+import { BackgroundDerivedStateProvider } from "../../state/background-derived-state.provider";
 
 import { CachedServices, FactoryOptions, factory } from "./factory-options";
 import {
@@ -22,6 +22,6 @@ export async function derivedStateProviderFactory(
     "derivedStateProvider",
     opts,
     async () =>
-      new DefaultDerivedStateProvider(await observableMemoryStorageServiceFactory(cache, opts)),
+      new BackgroundDerivedStateProvider(await observableMemoryStorageServiceFactory(cache, opts)),
   );
 }
