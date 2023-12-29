@@ -64,6 +64,7 @@ describe("DefaultStateProvider", () => {
   it("should bind the derivedStateProvider", () => {
     const derivedDefinition = new DeriveDefinition(new StateDefinition("test", "disk"), "test", {
       derive: () => null,
+      deserializer: () => null,
     });
     const parentState$ = of(null);
     const existing = derivedStateProvider.get(parentState$, derivedDefinition, {});
