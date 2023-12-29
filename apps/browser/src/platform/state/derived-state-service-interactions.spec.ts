@@ -78,5 +78,35 @@ describe("foreground background derived state interactions", () => {
 
       expect(emissions).toEqual([new Date(dateString)]);
     });
+
+    it("should not create new ports if already connected", async () => {
+      // establish port with subscription
+      trackEmissions(foreground.state$);
+
+      const connectMock = chrome.runtime.connect as jest.Mock;
+      const initialConnectCalls = connectMock.mock.calls.length;
+
+      expect(foreground["port"]).toBeDefined();
+      const newDate = new Date();
+      foreground.forceValue(newDate);
+      await awaitAsync();
+
+      expect(connectMock.mock.calls.length).toBe(initialConnectCalls);
+      expect(background["replaySubject"]["_buffer"][0]).toEqual(newDate);
+    });
+
+    it("should create a port if not connected", async () => {
+      const connectMock = chrome.runtime.connect as jest.Mock;
+      const initialConnectCalls = connectMock.mock.calls.length;
+
+      expect(foreground["port"]).toBeUndefined();
+      const newDate = new Date();
+      foreground.forceValue(newDate);
+      await awaitAsync();
+
+      expect(connectMock.mock.calls.length).toBe(initialConnectCalls + 1);
+      expect(foreground["port"]).toBeNull();
+      expect(background["replaySubject"]["_buffer"][0]).toEqual(newDate);
+    });
   });
 });
