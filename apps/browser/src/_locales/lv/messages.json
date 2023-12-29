@@ -268,6 +268,9 @@
   "length": {
     "message": "Garums"
   },
+  "passwordMinLength": {
+    "message": "Mazākais pieļaujamais paroles garums"
+  },
   "uppercase": {
     "message": "Lielie burti (A-Z)"
   },
@@ -365,6 +368,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Jāuzstāda atslēgšanas veids, lai mainītu glabātavas noildzes darbību."
   },
+  "unlockMethodNeeded": {
+    "message": "Jāuzstāda atslēgšanas veids iestatījumos"
+  },
   "rateExtension": {
     "message": "Novērtēt paplašinājumu"
   },
@@ -404,6 +410,9 @@
   },
   "lockNow": {
     "message": "Aizslēgt"
+  },
+  "lockAll": {
+    "message": "Aizslēgt visu"
   },
   "immediately": {
     "message": "Nekavējoties"
@@ -1027,6 +1036,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Attiecas uz visiem pieslēgtajiem kontiem."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Jāizslēdz sava pārlūka iebūvētā paroļu pārvaldnieka iestatījumi, lai izvairītos no nesaderībām."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Mainīt pārlūka iestatījumus."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Izslēgts",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1145,9 @@
   },
   "faviconDesc": {
     "message": "Attēlot atpazīstamu attēlu pie katra pieteikšanās vienuma."
+  },
+  "faviconDescAlt": {
+    "message": "Parādīt atpazīstamu attēlu pie katra pieteikšanās vienuma. Attiecas uz visiem kontiem, kuros ir notikusi pieteikšanās."
   },
   "enableBadgeCounter": {
     "message": "Rādīt skaita nozīmīti"
@@ -1707,7 +1725,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2264,7 +2282,7 @@
     "message": "Kā automātiski aizpildīt"
   },
   "autofillSelectInfoWithCommand": {
-    "message": "Select an item from this screen, use the shortcut $COMMAND$, or explore other options in settings.",
+    "message": "Jāizvēlas šī skata vienums, jāizmanto īsceļš $COMMAND$ vai iestatījumos jāizpēta citas iespējas.",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2273,7 +2291,7 @@
     }
   },
   "autofillSelectInfoWithoutCommand": {
-    "message": "Select an item from this screen, or explore other options in settings."
+    "message": "Jāizvēlas šī skata vienums vai iestatījumos jāizpēta citas iespējas."
   },
   "gotIt": {
     "message": "Sapratu"
@@ -2494,6 +2512,9 @@
     "message": "Jāizslēdz galvenās paroles pārvaicāšana, lai labotu šo lauku",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   },
+  "skipToContent": {
+    "message": "Pāriet uz saturu"
+  },
   "bitwardenOverlayButton": {
     "message": "Bitwarden automātiskās aizpildes izvēlnes poga",
     "description": "Page title for the iframe containing the overlay button"
@@ -2538,35 +2559,11 @@
     "message": "Ir pieejama Bitwarden automātiskās aizpildes izvēlne. Jānospiež poga ar bultu uz leju, lai atlasītu.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Aizvietot pārlūka automātisko aizpildi?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Šī iestatījuma neieslēgšana var radīt nesaderības starp Bitwarden automātiskās aizpildes izvēlni un pārlūku.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Šī iestatījuma neieslēgšana var radīt nesaderības starp Bitwarden automātiskās aizpildes izvēlni un pārlūku. Ieslēgšana pārsāknēs Bitwarden paplašinājumu.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Ieslēgt"
   },
   "ignore": {
     "message": "Neņemt vērā"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Aizvietot pārlūka automātiskās aizpildes iestatījumus",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Nebija iespējams aizvietot pārlūka automātisko aizpildi",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden ir jābūt piekļuvei paplašinājuma privātuma atļaujai, lai aizvietotu pārlūka automātiskās aizpildes iestatījumus.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Ievietot datus",
@@ -2680,7 +2677,7 @@
     "message": "Apstiprināt datnes paroli"
   },
   "typePasskey": {
-    "message": "Passkey"
+    "message": "Piekļuves atslēga"
   },
   "passkeyNotCopied": {
     "message": "Piekļuves atslēga netiks ievietota starpliktuvē"
@@ -2729,9 +2726,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "Nepieciešama apstiprinājums, lai izmantotu piekļuves atslēgu. Jāapliecina sava identitāte, lai turpinātu."
-  },
-  "useBrowserName": {
-    "message": "Izmantot pārlūku"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Daudzpakāpju pieteikšanās atcelta"
@@ -2796,5 +2790,53 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Jāievieto ar LastPass kontu sasaistītā YubiKey datora USB ligzdā, tad jāpieskaras tās pogai."
+  },
+  "switchAccount": {
+    "message": "Pārslēgties starp kontiem"
+  },
+  "switchAccounts": {
+    "message": "Pārslēgties starp kontiem"
+  },
+  "switchToAccount": {
+    "message": "Pārslēgties uz kontu"
+  },
+  "activeAccount": {
+    "message": "Pašlaik izmantotais konts"
+  },
+  "accountLimitReached": {
+    "message": "Sasniegti konta ierobežojumi. Jāizrakstās no konta, lai pievienotu citu."
+  },
+  "active": {
+    "message": "izmantots"
+  },
+  "locked": {
+    "message": "aizslēgts"
+  },
+  "unlocked": {
+    "message": "atslēgta"
+  },
+  "server": {
+    "message": "serveris"
+  },
+  "hostedAt": {
+    "message": "izvietots"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Jāizmanto sava ierīce vai aparatūras atslēga"
+  },
+  "justOnce": {
+    "message": "Tikai vienreiz"
+  },
+  "alwaysForThisSite": {
+    "message": "Vienmēr šai vietnei"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ pievienots neiekļautajiem domēniem.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

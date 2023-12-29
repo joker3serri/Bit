@@ -268,6 +268,9 @@
   "length": {
     "message": "Comprimento"
   },
+  "passwordMinLength": {
+    "message": "Comprimento mínimo da palavra-passe"
+  },
   "uppercase": {
     "message": "Maiúsculas (A-Z)"
   },
@@ -365,6 +368,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Configure um método de desbloqueio para alterar a ação de tempo limite do seu cofre."
   },
+  "unlockMethodNeeded": {
+    "message": "Definir um método de desbloqueio nas Definições"
+  },
   "rateExtension": {
     "message": "Avaliar a extensão"
   },
@@ -404,6 +410,9 @@
   },
   "lockNow": {
     "message": "Bloquear agora"
+  },
+  "lockAll": {
+    "message": "Bloquear tudo"
   },
   "immediately": {
     "message": "Imediatamente"
@@ -1027,6 +1036,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Aplica-se a todas as contas com sessão iniciada."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Desative as definições do gestor de palavras-passe incorporado do seu navegador para evitar conflitos."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Editar as definições do navegador."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Desligado",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1145,9 @@
   },
   "faviconDesc": {
     "message": "Mostrar uma imagem reconhecível junto a cada credencial."
+  },
+  "faviconDescAlt": {
+    "message": "Mostrar uma imagem reconhecível junto a cada credencial. Aplica-se a todas as contas com sessão iniciada."
   },
   "enableBadgeCounter": {
     "message": "Mostrar distintivo de contador"
@@ -1707,7 +1725,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2494,6 +2512,9 @@
     "message": "Desativar o pedido para reintroduzir a palavra-passe mestra para editar este campo",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   },
+  "skipToContent": {
+    "message": "Avançar para o conteúdo"
+  },
   "bitwardenOverlayButton": {
     "message": "Botão de menu de preenchimento automático Bitwarden",
     "description": "Page title for the iframe containing the overlay button"
@@ -2538,35 +2559,11 @@
     "message": "Menu de preenchimento automático Bitwarden disponível. Prima a tecla de seta para baixo para selecionar.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Anular o preenchimento automático do navegador?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Deixar esta definição desativada pode causar conflitos entre o menu de preenchimento automático do Bitwarden e o do seu navegador.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Deixar esta configuração desativada pode causar conflitos entre o menu de preenchimento automático do Bitwarden e o do seu navegador. Ativar esta opção reiniciará a extensão Bitwarden.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Ativar"
   },
   "ignore": {
     "message": "Ignorar"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Substituir as definições de preenchimento automático do navegador",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Não é possível anular o preenchimento automático do navegador",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "O Bitwarden deve ter acesso à permissão de privacidade da extensão para substituir as definições de preenchimento automático do navegador.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Importar dados",
@@ -2730,9 +2727,6 @@
   "yourPasskeyIsLocked": {
     "message": "É necessária a autenticação para utilizar a chave de acesso. Verifique a sua identidade para continuar."
   },
-  "useBrowserName": {
-    "message": "Utilizar o navegador"
-  },
   "multifactorAuthenticationCancelled": {
     "message": "Autenticação multifator cancelada"
   },
@@ -2796,5 +2790,53 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Insira a YubiKey associada à sua conta LastPass na porta USB do seu computador e, em seguida, toque no respetivo botão."
+  },
+  "switchAccount": {
+    "message": "Mudar de conta"
+  },
+  "switchAccounts": {
+    "message": "Mudar de contas"
+  },
+  "switchToAccount": {
+    "message": "Mudar para conta"
+  },
+  "activeAccount": {
+    "message": "Conta ativa"
+  },
+  "accountLimitReached": {
+    "message": "Limite de contas atingido. Termine a sessão de uma das contas para adicionar outra."
+  },
+  "active": {
+    "message": "ativa"
+  },
+  "locked": {
+    "message": "bloqueado"
+  },
+  "unlocked": {
+    "message": "desbloqueado"
+  },
+  "server": {
+    "message": "servidor"
+  },
+  "hostedAt": {
+    "message": "hospedado em"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Utilize o seu dispositivo ou chave de hardware"
+  },
+  "justOnce": {
+    "message": "Apenas uma vez"
+  },
+  "alwaysForThisSite": {
+    "message": "Sempre para este site"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ adicionado aos domínios excluídos.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }
