@@ -14,7 +14,6 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -100,7 +99,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     selectedOrg: "",
   });
   protected PermissionMode = PermissionMode;
-  protected allowAdminAccessToAllCollectionItems: boolean;
   protected showDeleteButton = false;
 
   constructor(
@@ -108,7 +106,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private dialogRef: DialogRef<CollectionDialogResult>,
     private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiServiceAbstraction,
     private groupService: GroupService,
     private collectionService: CollectionAdminService,
     private i18nService: I18nService,
@@ -170,28 +167,15 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       groups: groups$,
       users: this.organizationUserService.getAllUsers(orgId),
       flexibleCollections: this.flexibleCollectionsEnabled$,
-      allowAdminAccessToAllCollectionItems: this.organizationApiService
-        .get(orgId)
-        .then((orgResponse) => orgResponse.allowAdminAccessToAllCollectionItems),
     })
       .pipe(takeUntil(this.formGroup.controls.selectedOrg.valueChanges), takeUntil(this.destroy$))
       .subscribe(
-        ({
-          organization,
-          collections,
-          collectionDetails,
-          groups,
-          users,
-          flexibleCollections,
-          allowAdminAccessToAllCollectionItems,
-        }) => {
+        ({ organization, collections, collectionDetails, groups, users, flexibleCollections }) => {
           this.organization = organization;
           this.accessItems = [].concat(
             groups.map(mapGroupToAccessItemView),
             users.data.map(mapUserToAccessItemView),
           );
-
-          this.allowAdminAccessToAllCollectionItems = allowAdminAccessToAllCollectionItems;
 
           // Force change detection to update the access selector's items
           this.changeDetectorRef.detectChanges();
