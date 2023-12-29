@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subject, concatMap, merge, share, timer } from "rxjs";
+import { Observable, ReplaySubject, Subject, concatMap, merge, share, tap, timer } from "rxjs";
 
 import { ShapeToInstances, DerivedStateDependencies } from "../../../types/state";
 import {
@@ -47,7 +47,10 @@ export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependenc
           this.replaySubject = new ReplaySubject<TTo>(1);
           return this.replaySubject;
         },
-        resetOnRefCountZero: () => timer(this.deriveDefinition.cleanupDelayMs),
+        resetOnRefCountZero: () =>
+          timer(this.deriveDefinition.cleanupDelayMs).pipe(
+            tap(() => this.replaySubject.complete()),
+          ),
       }),
     );
   }

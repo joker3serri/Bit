@@ -173,6 +173,18 @@ describe("DefaultDerivedState", () => {
       await assertClean();
     });
 
+    it("should complete the replay subject after cleanup", async () => {
+      const subscription = sut.state$.subscribe();
+      const replaySubject = sut["replaySubject"];
+      const completeSpy = jest.spyOn(replaySubject, "complete");
+
+      subscription.unsubscribe();
+      expect(subscriberCount(sut)).toBe(0);
+      await awaitAsync(cleanupDelayMs * 2);
+
+      expect(completeSpy).toHaveBeenCalled();
+    });
+
     it("should not cleanup if there are still subscribers", async () => {
       const subscription1 = sut.state$.subscribe();
       const sub2Emissions: Date[] = [];
