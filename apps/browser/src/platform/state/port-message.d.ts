@@ -1,4 +1,4 @@
-type DerivedStateActions = "nextState" | "resolve" | "initialized";
+type DerivedStateActions = "nextState" | "resolve";
 type DerivedStateMessage = {
   id: string;
   action: DerivedStateActions;

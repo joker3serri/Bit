@@ -23,7 +23,6 @@ export class BackgroundDerivedState<
     { subscription: Subscription; delaySubject: Subject<void> }
   > = new Map();
   private portName: string;
-  private hasEmitted = false;
 
   constructor(
     parentState$: Observable<TFrom>,
@@ -55,13 +54,16 @@ export class BackgroundDerivedState<
 
       const delaySubject = new Subject<void>();
       const stateSubscription = this.state$.subscribe((state) => {
-        this.sendNewMessage(
-          {
-            action: "nextState",
-            data: JSON.stringify(state),
-          },
-          port,
-        );
+        // delay to allow the foreground to connect. This may just be needed for testing
+        setTimeout(() => {
+          this.sendNewMessage(
+            {
+              action: "nextState",
+              data: JSON.stringify(state),
+            },
+            port,
+          );
+        }, 0);
       });
 
       this.portSubscriptions.set(port, { subscription: stateSubscription, delaySubject });
@@ -85,10 +87,6 @@ export class BackgroundDerivedState<
           },
           port,
         );
-        break;
-      }
-      case "initialized": {
-        this.portSubscriptions.get(port)?.delaySubject.next();
         break;
       }
     }

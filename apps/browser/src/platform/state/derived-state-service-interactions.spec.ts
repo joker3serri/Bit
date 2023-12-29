@@ -49,7 +49,7 @@ describe("foreground background derived state interactions", () => {
     const backgroundEmissions = trackEmissions(background.state$);
 
     parentState$.next(initialParent);
-    await awaitAsync();
+    await awaitAsync(10);
 
     expect(foregroundEmissions).toEqual([new Date(initialParent)]);
     expect(backgroundEmissions).toEqual([new Date(initialParent)]);
@@ -57,12 +57,14 @@ describe("foreground background derived state interactions", () => {
 
   it("should initialize a late-connected foreground", async () => {
     const newForeground = new ForegroundDerivedState(deriveDefinition);
+    const backgroundEmissions = trackEmissions(background.state$);
     parentState$.next(initialParent);
     await awaitAsync();
 
     const foregroundEmissions = trackEmissions(newForeground.state$);
-    await awaitAsync();
+    await awaitAsync(10);
 
+    expect(backgroundEmissions).toEqual([new Date(initialParent)]);
     expect(foregroundEmissions).toEqual([new Date(initialParent)]);
   });
 
