@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, ReplaySubject, Subscription, concatMap } from "rxjs";
+import { Observable, ReplaySubject, Subject, concatMap, merge, share, timer } from "rxjs";
 
 import { ShapeToInstances, DerivedStateDependencies } from "../../../types/state";
 import {
@@ -15,16 +15,11 @@ export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependenc
   implements DerivedState<TTo>
 {
   private readonly storageKey: string;
-  private parentStateSubscription: Subscription;
-  private stateSubject = new ReplaySubject<TTo>(1);
-  private subscriberCount = new BehaviorSubject<number>(0);
-  private stateObservable: Observable<TTo> | null = null;
-  private reinitialize = false;
+  private forcedValueSubject = new Subject<TTo>();
+  // for testing purposes
+  private replaySubject: ReplaySubject<TTo>;
 
-  get state$() {
-    this.stateObservable = this.stateObservable ?? this.initializeObservable();
-    return this.stateObservable;
-  }
+  state$: Observable<TTo>;
 
   constructor(
     private parentState$: Observable<TFrom>,
@@ -33,71 +28,33 @@ export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependenc
     private dependencies: ShapeToInstances<TDeps>,
   ) {
     this.storageKey = derivedKeyBuilder(deriveDefinition);
+
+    const derivedState$ = this.parentState$.pipe(
+      concatMap(async (state) => {
+        let derivedStateOrPromise = this.deriveDefinition.derive(state, this.dependencies);
+        if (derivedStateOrPromise instanceof Promise) {
+          derivedStateOrPromise = await derivedStateOrPromise;
+        }
+        const derivedState = derivedStateOrPromise;
+        await this.memoryStorage.save(this.storageKey, derivedState);
+        return derivedState;
+      }),
+    );
+
+    this.state$ = merge(this.forcedValueSubject, derivedState$).pipe(
+      share({
+        connector: () => {
+          this.replaySubject = new ReplaySubject<TTo>(1);
+          return this.replaySubject;
+        },
+        resetOnRefCountZero: () => timer(this.deriveDefinition.cleanupDelayMs),
+      }),
+    );
   }
 
   async forceValue(value: TTo) {
     await this.memoryStorage.save(this.storageKey, value);
-    this.stateSubject.next(value);
+    this.forcedValueSubject.next(value);
     return value;
-  }
-
-  private initializeObservable() {
-    this.parentStateSubscription = this.parentState$
-      .pipe(
-        concatMap(async (state) => {
-          let derivedStateOrPromise = this.deriveDefinition.derive(state, this.dependencies);
-          if (derivedStateOrPromise instanceof Promise) {
-            derivedStateOrPromise = await derivedStateOrPromise;
-          }
-          const derivedState = derivedStateOrPromise;
-          await this.memoryStorage.save(this.storageKey, derivedState);
-          return derivedState;
-        }),
-      )
-      .subscribe((derivedState) => this.stateSubject.next(derivedState));
-
-    this.subscriberCount.subscribe((count) => {
-      if (count === 0 && this.stateObservable != null) {
-        this.triggerCleanup();
-      }
-    });
-
-    return new Observable<TTo>((subscriber) => {
-      this.incrementSubscribers();
-
-      if (this.reinitialize) {
-        this.reinitialize = false;
-        this.initializeObservable();
-      }
-
-      const prevUnsubscribe = subscriber.unsubscribe.bind(subscriber);
-      subscriber.unsubscribe = () => {
-        prevUnsubscribe();
-        this.decrementSubscribers();
-      };
-
-      return this.stateSubject.subscribe(subscriber);
-    });
-  }
-
-  private incrementSubscribers() {
-    this.subscriberCount.next(this.subscriberCount.value + 1);
-  }
-
-  private decrementSubscribers() {
-    this.subscriberCount.next(this.subscriberCount.value - 1);
-  }
-
-  private triggerCleanup() {
-    setTimeout(() => {
-      if (this.subscriberCount.value === 0) {
-        this.stateSubject.complete();
-        this.stateSubject = new ReplaySubject<TTo>(1);
-        this.parentStateSubscription.unsubscribe();
-        this.subscriberCount.complete();
-        this.subscriberCount = new BehaviorSubject<number>(0);
-        this.reinitialize = true;
-      }
-    }, this.deriveDefinition.cleanupDelayMs);
   }
 }

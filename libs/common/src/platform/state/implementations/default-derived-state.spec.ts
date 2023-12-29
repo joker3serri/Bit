@@ -96,36 +96,63 @@ describe("DefaultDerivedState", () => {
     const forced = new Date("2020-02-02");
     let emissions: Date[];
 
-    beforeEach(async () => {
-      emissions = trackEmissions(sut.state$);
-      parentState$.next(initialParentValue);
-      await awaitAsync();
+    describe("without observers", () => {
+      beforeEach(async () => {
+        parentState$.next(initialParentValue);
+        await awaitAsync();
+      });
+
+      it("should store the forced value", async () => {
+        await sut.forceValue(forced);
+        expect(memoryStorage.internalStore[deriveDefinition.buildCacheKey()]).toEqual(forced);
+      });
     });
 
-    it("should force the value", async () => {
-      await sut.forceValue(forced);
-      expect(emissions).toEqual([new Date(initialParentValue), forced]);
-    });
+    describe("with observers", () => {
+      beforeEach(async () => {
+        emissions = trackEmissions(sut.state$);
+        parentState$.next(initialParentValue);
+        await awaitAsync();
+      });
 
-    it("should only force the value once", async () => {
-      await sut.forceValue(forced);
+      it("should store the forced value", async () => {
+        await sut.forceValue(forced);
+        expect(memoryStorage.internalStore[deriveDefinition.buildCacheKey()]).toEqual(forced);
+      });
 
-      parentState$.next(initialParentValue);
-      await awaitAsync();
+      it("should force the value", async () => {
+        await sut.forceValue(forced);
+        expect(emissions).toEqual([new Date(initialParentValue), forced]);
+      });
 
-      expect(emissions).toEqual([
-        new Date(initialParentValue),
-        forced,
-        new Date(initialParentValue),
-      ]);
+      it("should only force the value once", async () => {
+        await sut.forceValue(forced);
+
+        parentState$.next(initialParentValue);
+        await awaitAsync();
+
+        expect(emissions).toEqual([
+          new Date(initialParentValue),
+          forced,
+          new Date(initialParentValue),
+        ]);
+      });
     });
   });
 
   describe("cleanup", () => {
     const newDate = "2020-02-02";
 
+    function subscriberCount(sut: DefaultDerivedState<unknown, unknown, any>) {
+      return sut["replaySubject"]["observers"].length;
+    }
+
+    function bufferValue(sut: DefaultDerivedState<unknown, unknown, any>) {
+      return sut["replaySubject"]["_buffer"][0];
+    }
+
     async function assertClean() {
-      const emissions = trackEmissions(sut["stateSubject"]);
+      const emissions = trackEmissions(sut["replaySubject"]);
       const initial = structuredClone(emissions);
 
       parentState$.next(newDate);
@@ -139,7 +166,7 @@ describe("DefaultDerivedState", () => {
       await awaitAsync();
 
       subscription.unsubscribe();
-      expect(sut["subscriberCount"].getValue()).toBe(0);
+      expect(subscriberCount(sut)).toBe(0);
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
@@ -157,7 +184,7 @@ describe("DefaultDerivedState", () => {
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      expect(sut["subscriberCount"].getValue()).toBe(1);
+      expect(subscriberCount(sut)).toBe(1);
 
       // Still be listening to parent updates
       parentState$.next(newDate);
@@ -196,12 +223,12 @@ describe("DefaultDerivedState", () => {
       await awaitAsync();
 
       subscription.unsubscribe();
-      expect(sut["subscriberCount"].getValue()).toBe(0);
+      expect(subscriberCount(sut)).toBe(0);
       // Do not wait long enough for cleanup
       await awaitAsync(cleanupDelayMs / 2);
 
-      expect(sut["stateSubject"]["_buffer"][0]).toEqual(new Date(newDate)); // digging in to check that it hasn't been cleared
-      expect(sut["parentStateSubscription"]).not.toBeNull(); // still listening to parent updates
+      expect(bufferValue(sut)).toEqual(new Date(newDate)); // digging in to check that it hasn't been cleared
+      expect(parentState$.observers.length).toBe(1); // still listening to parent
 
       const emissions = trackEmissions(sut.state$);
       expect(emissions).toEqual([new Date(newDate)]); // still listening to parent
