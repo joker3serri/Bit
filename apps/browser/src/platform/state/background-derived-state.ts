@@ -22,7 +22,6 @@ export class BackgroundDerivedState<
     chrome.runtime.Port,
     { subscription: Subscription; delaySubject: Subject<void> }
   > = new Map();
-  private portName: string;
 
   constructor(
     parentState$: Observable<TFrom>,
@@ -31,11 +30,11 @@ export class BackgroundDerivedState<
     dependencies: ShapeToInstances<TDeps>,
   ) {
     super(parentState$, deriveDefinition, memoryStorage, dependencies);
-    this.portName = deriveDefinition.buildCacheKey();
+    const portName = deriveDefinition.buildCacheKey();
 
     // listen for foreground derived states to connect
     BrowserApi.addListener(chrome.runtime.onConnect, (port) => {
-      if (port.name !== this.portName) {
+      if (port.name !== portName) {
         return;
       }
 
