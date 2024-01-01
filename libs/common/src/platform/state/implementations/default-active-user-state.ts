@@ -90,7 +90,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
       filter(([storageUpdate, [_userId, fullKey]]) => storageUpdate.key === fullKey),
       switchMap(async ([storageUpdate, [userId, fullKey]]) => {
         // We can shortcut on updateType of "remove"
-        // and just emit null. 
+        // and just emit null.
         if (storageUpdate.updateType === "remove") {
           return [userId, null] as CombinedState<T>;
         }
