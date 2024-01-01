@@ -117,7 +117,6 @@ describe("DefaultActiveUserState", () => {
     // #1 initial state from user1
     // #2 updated state for user1
     // #3 switched state to initial state for user2
-    expect(emissions).toHaveLength(3);
     expect(emissions).toEqual([state1, updatedState, state2]);
 
     // Should be called three time to get state, once for each user and once for the update

@@ -78,26 +78,17 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
       // Use withLatestFrom so that we do NOT emit when activeUserId changes because that
       // is taken care of above, but we do want to have the latest user id
       // when we get a storage update so we can filter the full key
-      withLatestFrom(this.activeUserId$),
-      switchMap(async ([storageUpdate, userId]) => {
-        if (userId == null) {
-          // Technically we could return undefined here and everything should work
-          // because the above observable should already be producing FAKE
-          // when there is no active user so this will likely just overwrite that.
-          // So as long as we return a value that doesn't make it's way to the consumer
-          // (undefined or FAKE), we are good.
-          return FAKE;
-        }
-
-        const fullKey = userKeyBuilder(userId, this.keyDefinition);
-        if (storageUpdate.key !== fullKey) {
-          // This is an update that is not applicable to us,
-          // return undefined and filter out undefined below
-          // don't return FAKE here because we don't want this
-          // scenario to fill up the replay subjects buffer
-          return undefined;
-        }
-
+      withLatestFrom(
+        this.activeUserId$.pipe(
+          // Null userId is already taken care of through the userChange observable above
+          filter((u) => u != null),
+          // Take the userId and build the fullKey that we can now create
+          map((userId) => [userId, userKeyBuilder(userId, this.keyDefinition)] as const),
+        ),
+      ),
+      // Filter to only storage updates that pertain to our key
+      filter(([storageUpdate, [_userId, fullKey]]) => storageUpdate.key === fullKey),
+      switchMap(async ([storageUpdate, [userId, fullKey]]) => {
         // We can shortcut on updateType of "remove"
         // and just emit null. Currently, "remove" is rarely,
         // if ever, called.
@@ -114,10 +105,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
           ),
         ] as CombinedState<T>;
       }),
-      // Filter out our special-ish value that denotes this method
-      // ran and produced a value that is not actually applicable to us
-      // at all.
-      filter((d) => d !== undefined),
     );
 
     this.combinedState$ = merge(userChangeAndInitial$, latestStorage$).pipe(

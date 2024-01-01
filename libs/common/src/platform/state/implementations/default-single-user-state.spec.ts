@@ -81,7 +81,7 @@ describe("DefaultSingleUserState", () => {
       await awaitAsync();
 
       // Just the initial value
-      expect(emissions).toHaveLength(1);
+      expect(emissions).toEqual([null]);
     });
 
     it("should emit initial storage value on first subscribe", async () => {
