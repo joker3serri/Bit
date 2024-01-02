@@ -41,6 +41,7 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
   private mutationObserverIterations = 0;
   private mutationObserverIterationsResetTimeout: NodeJS.Timeout;
   private readonly windowMessageHandlers: AutofillOverlayIframeWindowMessageHandlers = {
+    getPageColorScheme: () => this.updatePageColorScheme(),
     updateAutofillOverlayListHeight: (message) =>
       this.updateElementStyles(this.iframe, message.styles),
   };
@@ -236,6 +237,22 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
     this.updateElementStyles(this.iframe, position);
     setTimeout(() => this.updateElementStyles(this.iframe, { opacity: "1" }), 0);
     this.announceAriaAlert();
+  }
+
+  /**
+   * Gets the page color scheme meta tag and sends a message to the iframe
+   * to update its color scheme. Will default to "normal" if the meta tag
+   * does not exist.
+   */
+  private updatePageColorScheme() {
+    const colorSchemeValue = globalThis.document
+      .querySelector("meta[name='color-scheme']")
+      ?.getAttribute("content");
+
+    this.iframe.contentWindow?.postMessage(
+      { command: "updatePageColorScheme", colorScheme: colorSchemeValue || "normal" },
+      "*",
+    );
   }
 
   /**
