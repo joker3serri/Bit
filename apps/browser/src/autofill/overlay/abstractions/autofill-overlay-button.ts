@@ -18,7 +18,7 @@ type OverlayButtonWindowMessageHandlers = {
   }: {
     message: UpdateAuthStatusMessage;
   }) => void;
-  updatePageColorScheme: ({ message }: { message: OverlayButtonMessage }) => void;
+  updateOverlayPageColorScheme: ({ message }: { message: OverlayButtonMessage }) => void;
 };
 
 export {

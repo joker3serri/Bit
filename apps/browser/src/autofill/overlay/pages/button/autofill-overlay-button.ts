@@ -22,7 +22,7 @@ class AutofillOverlayButton extends AutofillOverlayPageElement {
     checkAutofillOverlayButtonFocused: () => this.checkButtonFocused(),
     updateAutofillOverlayButtonAuthStatus: ({ message }) =>
       this.updateAuthStatus(message.authStatus),
-    updatePageColorScheme: ({ message }) => this.updatePageColorScheme(message),
+    updateOverlayPageColorScheme: ({ message }) => this.updatePageColorScheme(message),
   };
 
   constructor() {
