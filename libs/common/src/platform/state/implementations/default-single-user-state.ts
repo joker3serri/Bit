@@ -28,9 +28,6 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
   private storageKey: string;
   private updatePromise: Promise<T> | null = null;
 
-  // Available for testing, don't generally use
-  private replaySubject: ReplaySubject<T>;
-
   state$: Observable<T>;
   combinedState$: Observable<CombinedState<T>>;
 
@@ -61,12 +58,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
 
     this.state$ = merge(initialStorageGet$, latestStorage$).pipe(
       share({
-        connector: () => {
-          const newSubject = new ReplaySubject<T>(1);
-          // Save the reference to the subject just for testing
-          this.replaySubject = newSubject;
-          return newSubject;
-        },
+        connector: () => new ReplaySubject<T>(1),
         resetOnRefCountZero: () => timer(this.keyDefinition.cleanupDelayMs),
       }),
     );

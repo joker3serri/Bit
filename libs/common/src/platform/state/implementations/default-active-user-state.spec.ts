@@ -56,17 +56,6 @@ describe("DefaultActiveUserState", () => {
     return id != null ? (`00000000-0000-1000-a000-00000000000${id}` as UserId) : undefined;
   };
 
-  const getSubscriberCount = () => {
-    return userState["replaySubject"]["observers"].length;
-  };
-
-  const getInternalValue = (): TestState => {
-    // We use a replay subject to store the combined state
-    // this gets the first value from the buffer and returns only
-    // the value, not the UserId
-    return userState["replaySubject"]["_buffer"][0][1];
-  };
-
   const changeActiveUser = async (id: string) => {
     const userId = makeUserId(id);
     activeAccountSubject.next({
@@ -497,7 +486,7 @@ describe("DefaultActiveUserState", () => {
     });
 
     test("updates with FAKE_DEFAULT initial value should resolve correctly", async () => {
-      expect(userState["replaySubject"]?.["_buffer"]?.length ?? 0).toBe(0); // FAKE_DEFAULT
+      expect(diskStorageService["updatesSubject"]["observers"]).toHaveLength(0);
       const val = await userState.update((state) => {
         return newData;
       });
@@ -591,14 +580,9 @@ describe("DefaultActiveUserState", () => {
       userKey = userKeyBuilder(userId, testKeyDefinition);
     });
 
-    async function assertClean() {
-      const emissions = trackEmissions(userState["replaySubject"]);
-      const initial = structuredClone(emissions);
-
-      diskStorageService.save(userKey, newData);
-      await awaitAsync(); // storage updates are behind a promise
-
-      expect(emissions).toEqual(initial); // no longer listening to storage updates
+    function assertClean() {
+      expect(activeAccountSubject["observers"]).toHaveLength(0);
+      expect(diskStorageService["updatesSubject"]["observers"]).toHaveLength(0);
     }
 
     it("should cleanup after last subscriber", async () => {
@@ -606,11 +590,11 @@ describe("DefaultActiveUserState", () => {
       await awaitAsync(); // storage updates are behind a promise
 
       subscription.unsubscribe();
-      expect(getSubscriberCount()).toBe(0);
+      expect(diskStorageService["updatesSubject"]["observers"]).toHaveLength(1);
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      await assertClean();
+      assertClean();
     });
 
     it("should not cleanup if there are still subscribers", async () => {
@@ -624,7 +608,7 @@ describe("DefaultActiveUserState", () => {
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      expect(getSubscriberCount()).toBe(1);
+      expect(diskStorageService["updatesSubject"]["observers"]).toHaveLength(1);
 
       // Still be listening to storage updates
       diskStorageService.save(userKey, newData);
@@ -635,7 +619,7 @@ describe("DefaultActiveUserState", () => {
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      await assertClean();
+      assertClean();
     });
 
     it("can re-initialize after cleanup", async () => {
@@ -663,11 +647,16 @@ describe("DefaultActiveUserState", () => {
       await awaitAsync();
 
       subscription.unsubscribe();
-      expect(getSubscriberCount()).toBe(0);
       // Do not wait long enough for cleanup
       await awaitAsync(cleanupDelayMs / 2);
 
-      expect(getInternalValue()).toEqual(newData); // digging in to check that it hasn't been cleared
+      const state = await firstValueFrom(userState.state$);
+
+      expect(state).toEqual(newData); // digging in to check that it hasn't been cleared
+
+      // Should be called once for the initial subscription and once from the save
+      // but should NOT be called for the second subscription from the `firstValueFrom`
+      expect(diskStorageService.mock.get).toHaveBeenCalledTimes(2);
     });
 
     it("state$ observables are durable to cleanup", async () => {

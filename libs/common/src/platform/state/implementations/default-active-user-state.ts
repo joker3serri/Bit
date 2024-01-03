@@ -35,9 +35,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
 
   private activeUserId$: Observable<UserId | null>;
 
-  // Only here for testing
-  private replaySubject: ReplaySubject<typeof FAKE | CombinedState<T>>;
-
   combinedState$: Observable<CombinedState<T>>;
   state$: Observable<T>;
 
@@ -108,12 +105,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
 
     this.combinedState$ = merge(userChangeAndInitial$, latestStorage$).pipe(
       share({
-        connector: () => {
-          const newSubject = new ReplaySubject<CombinedState<T> | typeof FAKE>(1);
-          // Save the reference to the subject for testing
-          this.replaySubject = newSubject;
-          return newSubject;
-        },
+        connector: () => new ReplaySubject<CombinedState<T> | typeof FAKE>(1),
         resetOnRefCountZero: () => timer(this.keyDefinition.cleanupDelayMs),
       }),
       // Filter out FAKE AFTER the share so that we can fill the ReplaySubjects
