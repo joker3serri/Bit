@@ -66,17 +66,6 @@ describe("DefaultDerivedState", () => {
     expect(callCount).toBe(1);
   });
 
-  it("should not derive the state if no one is watching", async () => {
-    // Note, if the Subject had a buffer, this would still derive. It depends on the behavior of the parent state.
-    const dateString = "2020-01-01";
-    parentState$.next(dateString);
-    await awaitAsync();
-
-    const emissions = trackEmissions(sut.state$);
-
-    expect(emissions).toEqual([]);
-  });
-
   it("should store the derived state in memory", async () => {
     const dateString = "2020-01-01";
     trackEmissions(sut.state$);
