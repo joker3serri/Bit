@@ -2,6 +2,7 @@ import { Jsonify } from "type-fest";
 
 import { DerivedStateDependencies, ShapeToInstances, StorageKey } from "../../types/state";
 
+import { KeyDefinition } from "./key-definition";
 import { StateDefinition } from "./state-definition";
 
 declare const depShapeMarker: unique symbol;
@@ -59,7 +60,9 @@ type DeriveDefinitionOptions<TFrom, TTo, TDeps extends DerivedStateDependencies 
 
 export class DeriveDefinition<TFrom, TTo, TDeps extends DerivedStateDependencies> {
   /**
-   * Creates a new instance of a DeriveDefinition
+   * Creates a new instance of a DeriveDefinition. Derived state is always stored in memory, so the storage location
+   * defined in @link{StateDefinition} is ignored.
+   *
    * @param stateDefinition The state definition for which this key belongs to.
    * @param uniqueDerivationName The name of the key, this should be unique per domain.
    * @param options A set of options to customize the behavior of {@link DeriveDefinition}.
@@ -86,6 +89,21 @@ export class DeriveDefinition<TFrom, TTo, TDeps extends DerivedStateDependencies
     readonly uniqueDerivationName: string,
     readonly options: DeriveDefinitionOptions<TFrom, TTo, TDeps>,
   ) {}
+
+  /**
+   * Factory that produces a {@link DeriveDefinition} from a {@link KeyDefinition} and a set of options. The returned
+   * definition will have the same key as the given key definition, but will not collide with it in storage, even if
+   * they both reside in memory.
+   * @param keyDefinition
+   * @param options
+   * @returns
+   */
+  static from<TFrom, TTo, TDeps extends DerivedStateDependencies = never>(
+    keyDefinition: KeyDefinition<TFrom>,
+    options: DeriveDefinitionOptions<TFrom, TTo, TDeps>,
+  ) {
+    return new DeriveDefinition(keyDefinition.stateDefinition, keyDefinition.key, options);
+  }
 
   get derive() {
     return this.options.derive;
