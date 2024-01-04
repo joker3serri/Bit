@@ -1,6 +1,6 @@
 import { Observable, ReplaySubject, firstValueFrom, map, timeout } from "rxjs";
 
-import { GlobalState, SingleUserState, ActiveUserState } from "../src/platform/state";
+import { DerivedState, GlobalState, SingleUserState, ActiveUserState } from "../src/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- using unexposed options for clean typing in test class
 import { StateUpdateOptions } from "../src/platform/state/state-update-options";
 // eslint-disable-next-line import/no-restricted-paths -- using unexposed options for clean typing in test class
@@ -100,8 +100,22 @@ export class FakeSingleUserState<T> extends FakeUserState<T> implements SingleUs
 }
 export class FakeActiveUserState<T> extends FakeUserState<T> implements ActiveUserState<T> {
   [activeMarker]: true;
-
   changeActiveUser(userId: UserId) {
     this.userId = userId;
+  }
+}
+
+export class FakeDerivedState<T> implements DerivedState<T> {
+  // eslint-disable-next-line rxjs/no-exposed-subjects -- exposed for testing setup
+  stateSubject = new ReplaySubject<T>(1);
+
+  forceValue(value: T): Promise<T> {
+    this.stateSubject.next(value);
+    return Promise.resolve(value);
+  }
+  forceValueMock = this.forceValue as jest.MockedFunction<typeof this.forceValue>;
+
+  get state$() {
+    return this.stateSubject.asObservable();
   }
 }
