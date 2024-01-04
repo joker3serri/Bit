@@ -5,7 +5,7 @@
 
 import { FakeStorageService } from "@bitwarden/common/../spec/fake-storage.service";
 import { awaitAsync, trackEmissions } from "@bitwarden/common/../spec/utils";
-import { Subject } from "rxjs";
+import { Subject, firstValueFrom } from "rxjs";
 
 import { DeriveDefinition } from "@bitwarden/common/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- needed to define a derive definition
@@ -92,7 +92,7 @@ describe("foreground background derived state interactions", () => {
       await awaitAsync();
 
       expect(connectMock.mock.calls.length).toBe(initialConnectCalls);
-      expect(background["replaySubject"]["_buffer"][0]).toEqual(newDate);
+      expect(await firstValueFrom(background.state$)).toEqual(newDate);
     });
 
     it("should create a port if not connected", async () => {
@@ -106,7 +106,7 @@ describe("foreground background derived state interactions", () => {
 
       expect(connectMock.mock.calls.length).toBe(initialConnectCalls + 1);
       expect(foreground["port"]).toBeNull();
-      expect(background["replaySubject"]["_buffer"][0]).toEqual(newDate);
+      expect(await firstValueFrom(background.state$)).toEqual(newDate);
     });
   });
 });
