@@ -14,22 +14,23 @@ import { DefaultDerivedState } from "./default-derived-state";
 let callCount = 0;
 const cleanupDelayMs = 10;
 const stateDefinition = new StateDefinition("test", "memory");
-const deriveDefinition = new DeriveDefinition(stateDefinition, "test", {
-  derive: (dateString: string) => {
-    callCount++;
-    return new Date(dateString);
+const deriveDefinition = new DeriveDefinition<string, Date, { date: typeof Date }>(
+  stateDefinition,
+  "test",
+  {
+    derive: (dateString: string) => {
+      callCount++;
+      return new Date(dateString);
+    },
+    deserializer: (dateString: string) => new Date(dateString),
+    cleanupDelayMs,
   },
-  deserializer: (dateString: string) => new Date(dateString),
-  cleanupDelayMs,
-  dependencyShape: {
-    date: Date,
-  },
-});
+);
 
 describe("DefaultDerivedState", () => {
   let parentState$: Subject<string>;
   let memoryStorage: FakeStorageService;
-  let sut: DefaultDerivedState<string, Date, { date: DateConstructor }>;
+  let sut: DefaultDerivedState<string, Date, { date: typeof Date }>;
   const deps = {
     date: new Date(),
   };

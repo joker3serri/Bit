@@ -5,7 +5,7 @@ type StorageKey = Opaque<string, "StorageKey">;
 /**
  * A helper type defining Constructor types for javascript and `typeof T` types for Typescript
  */
-type Type<T> = abstract new (...args: any[]) => T;
+type Type<T> = abstract new (...args: unknown[]) => T;
 
 type DerivedStateDependencies = Record<string, Type<unknown>>;
 

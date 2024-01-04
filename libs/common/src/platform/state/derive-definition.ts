@@ -4,6 +4,7 @@ import { DerivedStateDependencies, ShapeToInstances, StorageKey } from "../../ty
 
 import { StateDefinition } from "./state-definition";
 
+declare const depShapeMarker: unique symbol;
 /**
  * A set of options for customizing the behavior of a {@link DeriveDefinition}
  */
@@ -40,7 +41,7 @@ type DeriveDefinitionOptions<TFrom, TTo, TDeps extends DerivedStateDependencies 
    * }
    * ```
    */
-  dependencyShape?: TDeps;
+  [depShapeMarker]?: TDeps;
   /**
    * The number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
    * Defaults to 1000ms.
