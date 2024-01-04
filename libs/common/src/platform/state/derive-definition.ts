@@ -102,15 +102,12 @@ export class DeriveDefinition<TFrom, TTo, TDeps extends DerivedStateDependencies
   buildCacheKey(): string {
     return `derived_${this.stateDefinition.name}_${this.uniqueDerivationName}`;
   }
-}
 
-/**
- * Creates a {@link StorageKey} that points to the data for the given derived definition.
- * @param derivedDefinition The derived definition of which data the key should point to.
- * @returns A key that is ready to be used in a storage service to get data.
- */
-export function derivedKeyBuilder(
-  deriveDefinition: DeriveDefinition<unknown, unknown, any>,
-): StorageKey {
-  return `derived_${deriveDefinition.stateDefinition.name}_${deriveDefinition.uniqueDerivationName}` as StorageKey;
+  /**
+   * Creates a {@link StorageKey} that points to the data for the given derived definition.
+   * @returns A key that is ready to be used in a storage service to get data.
+   */
+  get storageKey(): StorageKey {
+    return `derived_${this.stateDefinition.name}_${this.uniqueDerivationName}` as StorageKey;
+  }
 }

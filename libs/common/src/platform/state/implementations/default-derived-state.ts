@@ -5,7 +5,7 @@ import {
   AbstractStorageService,
   ObservableStorageService,
 } from "../../abstractions/storage.service";
-import { DeriveDefinition, derivedKeyBuilder } from "../derive-definition";
+import { DeriveDefinition } from "../derive-definition";
 import { DerivedState } from "../derived-state";
 
 /**
@@ -27,7 +27,7 @@ export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependenc
     private memoryStorage: AbstractStorageService & ObservableStorageService,
     private dependencies: ShapeToInstances<TDeps>,
   ) {
-    this.storageKey = derivedKeyBuilder(deriveDefinition);
+    this.storageKey = deriveDefinition.storageKey;
 
     const derivedState$ = this.parentState$.pipe(
       concatMap(async (state) => {
