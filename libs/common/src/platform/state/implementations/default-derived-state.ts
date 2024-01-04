@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subject, concatMap, merge, share, tap, timer } from "rxjs";
+import { Observable, ReplaySubject, Subject, concatMap, merge, share, timer } from "rxjs";
 
 import { ShapeToInstances, DerivedStateDependencies } from "../../../types/state";
 import {
@@ -16,8 +16,6 @@ export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependenc
 {
   private readonly storageKey: string;
   private forcedValueSubject = new Subject<TTo>();
-  // for testing purposes
-  private replaySubject: ReplaySubject<TTo>;
 
   state$: Observable<TTo>;
 
@@ -44,13 +42,9 @@ export class DefaultDerivedState<TFrom, TTo, TDeps extends DerivedStateDependenc
     this.state$ = merge(this.forcedValueSubject, derivedState$).pipe(
       share({
         connector: () => {
-          this.replaySubject = new ReplaySubject<TTo>(1);
-          return this.replaySubject;
+          return new ReplaySubject<TTo>(1);
         },
-        resetOnRefCountZero: () =>
-          timer(this.deriveDefinition.cleanupDelayMs).pipe(
-            tap(() => this.replaySubject.complete()),
-          ),
+        resetOnRefCountZero: () => timer(this.deriveDefinition.cleanupDelayMs),
       }),
     );
   }

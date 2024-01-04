@@ -133,46 +133,15 @@ describe("DefaultDerivedState", () => {
   describe("cleanup", () => {
     const newDate = "2020-02-02";
 
-    function subscriberCount(sut: DefaultDerivedState<unknown, unknown, any>) {
-      return sut["replaySubject"]["observers"].length;
-    }
-
-    function bufferValue(sut: DefaultDerivedState<unknown, unknown, any>) {
-      return sut["replaySubject"]["_buffer"][0];
-    }
-
-    async function assertClean() {
-      const emissions = trackEmissions(sut["replaySubject"]);
-      const initial = structuredClone(emissions);
-
-      parentState$.next(newDate);
-      await awaitAsync();
-
-      expect(emissions).toEqual(initial); // no longer listening to parent updates
-    }
-
     it("should cleanup after last subscriber", async () => {
       const subscription = sut.state$.subscribe();
       await awaitAsync();
 
       subscription.unsubscribe();
-      expect(subscriberCount(sut)).toBe(0);
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      await assertClean();
-    });
-
-    it("should complete the replay subject after cleanup", async () => {
-      const subscription = sut.state$.subscribe();
-      const replaySubject = sut["replaySubject"];
-      const completeSpy = jest.spyOn(replaySubject, "complete");
-
-      subscription.unsubscribe();
-      expect(subscriberCount(sut)).toBe(0);
-      await awaitAsync(cleanupDelayMs * 2);
-
-      expect(completeSpy).toHaveBeenCalled();
+      expect(parentState$.observed).toBe(false);
     });
 
     it("should not cleanup if there are still subscribers", async () => {
@@ -186,8 +155,6 @@ describe("DefaultDerivedState", () => {
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      expect(subscriberCount(sut)).toBe(1);
-
       // Still be listening to parent updates
       parentState$.next(newDate);
       await awaitAsync();
@@ -197,7 +164,7 @@ describe("DefaultDerivedState", () => {
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
-      await assertClean();
+      expect(parentState$.observed).toBe(false);
     });
 
     it("can re-initialize after cleanup", async () => {
@@ -225,15 +192,13 @@ describe("DefaultDerivedState", () => {
       await awaitAsync();
 
       subscription.unsubscribe();
-      expect(subscriberCount(sut)).toBe(0);
       // Do not wait long enough for cleanup
       await awaitAsync(cleanupDelayMs / 2);
 
-      expect(bufferValue(sut)).toEqual(new Date(newDate)); // digging in to check that it hasn't been cleared
-      expect(parentState$.observers.length).toBe(1); // still listening to parent
+      expect(parentState$.observed).toBe(true); // still listening to parent
 
       const emissions = trackEmissions(sut.state$);
-      expect(emissions).toEqual([new Date(newDate)]); // still listening to parent
+      expect(emissions).toEqual([new Date(newDate)]); // we didn't lose our buffered value
     });
 
     it("state$ observables are durable to cleanup", async () => {
