@@ -7083,6 +7083,14 @@
       }
     }
   },
+  "defaultUserVerificationDialogTitle" : {
+    "message": "Verification required",
+    "description": "Default title for the user verification dialog."
+  },
+  "defaultUserVerificationDialogConfirmBtnText" : {
+    "message": "Submit",
+    "description": "Default confirm button text for the user verification dialog."
+  },
   "recoverAccount": {
     "message": "Recover account"
   },
