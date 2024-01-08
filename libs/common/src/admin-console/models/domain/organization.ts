@@ -177,11 +177,12 @@ export class Organization {
   }
 
   get canCreateNewCollections() {
-    return (
-      !this.limitCollectionCreationDeletion ||
-      this.isManager ||
-      this.permissions.createNewCollections
-    );
+    if (this.flexibleCollections && !this.limitCollectionCreationDeletion) {
+      // Can always create collections if using Flexible Collections and Collection Management Setting allows it
+      return true;
+    }
+
+    return this.isManager || this.permissions.createNewCollections;
   }
 
   get canEditAnyCollection() {
