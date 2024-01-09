@@ -1,6 +1,4 @@
 export enum FeatureFlag {
-  DisplayLowKdfIterationWarningFlag = "display-kdf-iteration-warning",
-  Fido2VaultCredentials = "fido2-vault-credentials",
   PasswordlessLogin = "passwordless-login",
   AutofillV2 = "autofill-v2",
   AutofillOverlay = "autofill-overlay",
