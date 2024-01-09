@@ -108,7 +108,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     return this._activeClientVerificationOptionSubject.getValue();
   }
 
-  get hasMultipleVerificationMethods(): boolean {
+  get hasMultipleClientVerificationOptions(): boolean {
     let optionsCount = 0;
     if (this.userVerificationOptions.client.masterPassword) {
       optionsCount++;

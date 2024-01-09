@@ -55,10 +55,10 @@
       <p>None</p>
     </ng-container>
 
-    <!-- Different method options -->
+    <!-- Alternate verification options if user has more than 1 -->
     <div
       class="tw-flex tw-flex-col tw-items-center tw-justify-center"
-      *ngIf="hasMultipleVerificationMethods"
+      *ngIf="hasMultipleClientVerificationOptions"
     >
       <p class="tw-mb-1">Need a different method?</p>
       <button
