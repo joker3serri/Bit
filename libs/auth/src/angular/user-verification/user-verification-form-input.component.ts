@@ -108,6 +108,20 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     return this._activeClientVerificationOptionSubject.getValue();
   }
 
+  get hasMultipleVerificationMethods(): boolean {
+    let optionsCount = 0;
+    if (this.userVerificationOptions.client.masterPassword) {
+      optionsCount++;
+    }
+    if (this.userVerificationOptions.client.pin) {
+      optionsCount++;
+    }
+    if (this.userVerificationOptions.client.biometrics) {
+      optionsCount++;
+    }
+    return optionsCount >= 2;
+  }
+
   private _invalidSecret = false;
   @Input()
   get invalidSecret() {

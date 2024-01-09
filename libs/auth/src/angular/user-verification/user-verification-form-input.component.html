@@ -56,7 +56,10 @@
     </ng-container>
 
     <!-- Different method options -->
-    <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
+    <div
+      class="tw-flex tw-flex-col tw-items-center tw-justify-center"
+      *ngIf="hasMultipleVerificationMethods"
+    >
       <p class="tw-mb-1">Need a different method?</p>
       <button
         *ngIf="userVerificationOptions.client.masterPassword"
