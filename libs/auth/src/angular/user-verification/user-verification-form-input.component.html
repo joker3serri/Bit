@@ -1,28 +1,97 @@
-<ng-container *ngIf="userVerificationOptions.client">
-  <ng-container *ngIf="userVerificationOptions.client.masterPassword">
-    <ng-container *ngTemplateOutlet="masterPasswordFormField"></ng-container
-  ></ng-container>
-  <ng-container *ngIf="userVerificationOptions.client.pin">
-    <!-- TODO: test this -->
-    <bit-form-field disableMargin>
-      <bit-label>{{ "masterPass" | i18n }}</bit-label>
-      <input
-        bitInput
-        id="pin"
-        type="password"
-        name="pin"
-        [formControl]="secret"
-        appAutofocus
-        appInputVerbatim
-      />
-      <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
-      <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
-    </bit-form-field>
-  </ng-container>
-  <ng-container *ngIf="userVerificationOptions.client.biometrics"> </ng-container>
+<ng-container *ngIf="verificationType === 'client'">
+  <div class="tw-flex tw-flex-col">
+    <!-- Master password -->
+    <ng-container
+      *ngIf="
+        userVerificationOptions.client.masterPassword &&
+        activeClientVerificationOption == ActiveClientVerificationOption.MasterPassword
+      "
+    >
+      <ng-container *ngTemplateOutlet="masterPasswordFormField"></ng-container>
+    </ng-container>
+
+    <!-- PIN -->
+    <ng-container
+      *ngIf="
+        userVerificationOptions.client.pin &&
+        activeClientVerificationOption == ActiveClientVerificationOption.Pin
+      "
+    >
+      <bit-form-field disableMargin>
+        <bit-label>{{ "pin" | i18n }}</bit-label>
+        <input
+          bitInput
+          id="pin"
+          type="password"
+          name="pin"
+          [formControl]="secret"
+          appAutofocus
+          appInputVerbatim
+        />
+        <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
+        <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
+      </bit-form-field>
+    </ng-container>
+
+    <!-- Biometrics -->
+    <ng-container
+      *ngIf="
+        userVerificationOptions.client.biometrics &&
+        activeClientVerificationOption == ActiveClientVerificationOption.Biometrics
+      "
+    >
+      <p>biometrics</p>
+    </ng-container>
+
+    <!-- None  -->
+    <ng-container
+      *ngIf="
+        !userVerificationOptions.client.masterPassword &&
+        !userVerificationOptions.client.pin &&
+        !userVerificationOptions.client.biometrics &&
+        activeClientVerificationOption == ActiveClientVerificationOption.None
+      "
+    >
+      <p>None</p>
+    </ng-container>
+
+    <!-- Different method options -->
+    <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
+      <p class="tw-mb-1">Need a different method?</p>
+      <button
+        *ngIf="userVerificationOptions.client.masterPassword"
+        type="button"
+        class="tw-mb-1"
+        bitLink
+        linkType="primary"
+        (click)="activeClientVerificationOption = ActiveClientVerificationOption.MasterPassword"
+      >
+        Use master password
+      </button>
+      <button
+        *ngIf="userVerificationOptions.client.pin"
+        type="button"
+        class="tw-mb-1"
+        bitLink
+        linkType="primary"
+        (click)="activeClientVerificationOption = ActiveClientVerificationOption.Pin"
+      >
+        Use PIN
+      </button>
+      <button
+        *ngIf="userVerificationOptions.client.biometrics"
+        type="button"
+        bitLink
+        linkType="primary"
+        (click)="activeClientVerificationOption = ActiveClientVerificationOption.Biometrics"
+      >
+        Use biometrics
+      </button>
+    </div>
+  </div>
 </ng-container>
 
-<ng-container *ngIf="userVerificationOptions.server">
+<ng-container *ngIf="verificationType === 'server'">
   <ng-container *ngIf="userVerificationOptions.server.masterPassword">
     <ng-container *ngTemplateOutlet="masterPasswordFormField"></ng-container>
   </ng-container>
@@ -69,3 +138,10 @@
     <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
   </bit-form-field>
 </ng-template>
+
+<!-- Add warning if dev forgot to pass in verification type -->
+<ng-container *ngIf="!verificationType">
+  <app-callout type="error">
+    <p>Verification type of "server" or "client" is required for user-verification-form-input</p>
+  </app-callout>
+</ng-container>

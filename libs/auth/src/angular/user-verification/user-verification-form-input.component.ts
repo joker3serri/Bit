@@ -8,7 +8,7 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -18,21 +18,31 @@ import { Verification } from "@bitwarden/common/auth/types/verification";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { AsyncActionsModule, FormFieldModule, IconButtonModule } from "@bitwarden/components";
+import {
+  AsyncActionsModule,
+  FormFieldModule,
+  IconButtonModule,
+  LinkModule,
+} from "@bitwarden/components";
 
 type UserVerificationOptions = {
-  server?: {
+  server: {
     otp: boolean;
     masterPassword: boolean;
   };
-  client?: {
+  client: {
     masterPassword: boolean;
     pin: boolean;
     biometrics: boolean;
   };
 };
 
-type ActiveClientVerificationOption = "masterPassword" | "pin" | "biometrics" | "none";
+enum ActiveClientVerificationOption {
+  MasterPassword = "masterPassword",
+  Pin = "pin",
+  Biometrics = "biometrics",
+  None = "none",
+}
 
 /**
  * Used for general-purpose user verification throughout the app.
@@ -63,6 +73,7 @@ type ActiveClientVerificationOption = "masterPassword" | "pin" | "biometrics" | 
     FormFieldModule,
     AsyncActionsModule,
     IconButtonModule,
+    LinkModule,
   ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -70,9 +81,32 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   @Input() verificationType: "server" | "client";
 
   // This represents what verification methods are available to the user.
-  userVerificationOptions: UserVerificationOptions;
+  userVerificationOptions: UserVerificationOptions = {
+    server: {
+      otp: false,
+      masterPassword: false,
+    },
+    client: {
+      masterPassword: false,
+      pin: false,
+      biometrics: false,
+    },
+  };
 
-  activeClientVerificationOption: ActiveClientVerificationOption;
+  ActiveClientVerificationOption = ActiveClientVerificationOption;
+
+  private _activeClientVerificationOptionSubject =
+    new BehaviorSubject<ActiveClientVerificationOption>(null);
+
+  activeClientVerificationOption$ = this._activeClientVerificationOptionSubject.asObservable();
+
+  set activeClientVerificationOption(value: ActiveClientVerificationOption) {
+    this._activeClientVerificationOptionSubject.next(value);
+  }
+
+  get activeClientVerificationOption(): ActiveClientVerificationOption {
+    return this._activeClientVerificationOptionSubject.getValue();
+  }
 
   private _invalidSecret = false;
   @Input()
@@ -147,7 +181,9 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       };
 
       this.setActiveClientVerificationOption();
+      this.setupClientVerificationOptionChangeHandler();
     } else {
+      // server
       const userHasMasterPassword =
         await this.userVerificationService.hasMasterPasswordAndMasterKeyHash();
 
@@ -159,22 +195,37 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   }
 
   private setActiveClientVerificationOption(): void {
-    // TODO: do we have priorities for which of these should be the default if multiple are enabled?
+    // Priorities should be Bio > Pin > Master Password for speed based on design
+    if (this.userVerificationOptions.client.biometrics) {
+      this.activeClientVerificationOption = ActiveClientVerificationOption.Biometrics;
+    } else if (this.userVerificationOptions.client.pin) {
+      this.activeClientVerificationOption = ActiveClientVerificationOption.Pin;
+    } else if (this.userVerificationOptions.client.masterPassword) {
+      this.activeClientVerificationOption = ActiveClientVerificationOption.MasterPassword;
+    } else {
+      this.activeClientVerificationOption = ActiveClientVerificationOption.None;
+    }
+  }
 
-    const clientVerificationOptions: (keyof typeof this.userVerificationOptions.client)[] = [
-      "masterPassword",
-      "pin",
-      "biometrics",
-    ];
-    this.activeClientVerificationOption =
-      (clientVerificationOptions.find(
-        (method) => this.userVerificationOptions.client[method],
-      ) as ActiveClientVerificationOption) || "none";
+  private setupClientVerificationOptionChangeHandler(): void {
+    this.activeClientVerificationOption$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((activeClientVerificationOption: ActiveClientVerificationOption) => {
+        this.handleActiveClientVerificationOptionChange(activeClientVerificationOption);
+      });
+  }
 
-    // TODO: whenever we change the active verification option, we need to clear the secret field
-    // and if the user chose biometrics, we need to prompt them for biometrics
-    // Might be worth wrapping the setting of the active verification option in an behavior subject
-    // or maybe a setter that does this for us
+  // TODO: consider more direct methods of handling this
+  private async handleActiveClientVerificationOptionChange(
+    activeClientVerificationOption: ActiveClientVerificationOption,
+  ): Promise<void> {
+    // clear secret value when switching verification methods
+    this.secret.setValue(null);
+
+    // if changing to biometrics, we need to prompt for biometrics
+    if (activeClientVerificationOption === "biometrics") {
+      await this.userVerificationService.verifyUser({ type: VerificationType.Biometrics });
+    }
   }
 
   requestOTP = async () => {
