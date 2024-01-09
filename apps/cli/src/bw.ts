@@ -516,6 +516,7 @@ export class Main {
       this.cryptoFunctionService,
       this.stateService,
     );
+
     this.exportService = new VaultExportService(
       this.individualExportService,
       this.organizationExportService,

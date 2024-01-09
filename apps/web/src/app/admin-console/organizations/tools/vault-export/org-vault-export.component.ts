@@ -68,12 +68,12 @@ export class OrganizationVaultExportComponent extends ExportComponent {
 
   getExportData() {
     if (this.isFileEncryptedExport) {
-      return this.exportService.getOrgnizationPasswordProtectedExport(
+      return this.exportService.getOrganizationPasswordProtectedExport(
         this.organizationId,
         this.filePassword,
       );
     } else {
-      return this.exportService.getOrganizationExport(this.organizationId, this.format);
+      return this.exportService.getOrganizationExport(null, this.format);
     }
   }
 

@@ -623,18 +623,20 @@ export default class MainBackground {
       this.cryptoService,
     );
 
-    (this.individualVaultExportService = new IndividualVaultExportService(
+    this.individualVaultExportService = new IndividualVaultExportService(
       this.folderService,
       this.cipherService,
       this.cryptoService,
       this.cryptoFunctionService,
       this.stateService,
-    )),
-      (this.exportService = new VaultExportService(
-        this.individualVaultExportService,
-        //Setting OrgVaultExportService as null as Browser and Desktop doesn't support Organizational Export
-        null,
-      ));
+    );
+
+    this.exportService = new VaultExportService(
+      this.individualVaultExportService,
+      //Setting OrgVaultExportService as null as Browser and Desktop doesn't support Organizational Export
+      null,
+    );
+
     this.notificationsService = new NotificationsService(
       this.logService,
       this.syncService,

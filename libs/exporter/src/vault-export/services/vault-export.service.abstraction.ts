@@ -5,7 +5,7 @@ export abstract class VaultExportServiceAbstraction {
   getExport: (format?: ExportFormat) => Promise<string>;
   getPasswordProtectedExport: (password: string) => Promise<string>;
   getOrganizationExport: (organizationId: string, format: ExportFormat) => Promise<string>;
-  getOrgnizationPasswordProtectedExport: (
+  getOrganizationPasswordProtectedExport: (
     organizationId: string,
     password: string,
   ) => Promise<string>;

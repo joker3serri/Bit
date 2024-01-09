@@ -39,9 +39,8 @@ export class IndividualVaultExportService
   async getExport(format: ExportFormat = "csv"): Promise<string> {
     if (format === "encrypted_json") {
       return this.getEncryptedExport();
-    } else {
-      return this.getDecryptedExport(format);
     }
+    return this.getDecryptedExport(format);
   }
 
   async getPasswordProtectedExport(password: string): Promise<string> {
@@ -69,60 +68,10 @@ export class IndividualVaultExportService
     await Promise.all(promises);
 
     if (format === "csv") {
-      const foldersMap = new Map<string, FolderView>();
-      decFolders.forEach((f) => {
-        if (f.id != null) {
-          foldersMap.set(f.id, f);
-        }
-      });
-
-      const exportCiphers: BitwardenCsvIndividualExportType[] = [];
-      decCiphers.forEach((c) => {
-        // only export logins and secure notes
-        if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
-          return;
-        }
-        if (c.organizationId != null) {
-          return;
-        }
-
-        const cipher = {} as BitwardenCsvIndividualExportType;
-        cipher.folder =
-          c.folderId != null && foldersMap.has(c.folderId) ? foldersMap.get(c.folderId).name : null;
-        cipher.favorite = c.favorite ? 1 : null;
-        this.buildCommonCipher(cipher, c);
-        exportCiphers.push(cipher);
-      });
-
-      return papa.unparse(exportCiphers);
-    } else {
-      const jsonDoc: BitwardenUnEncryptedIndividualJsonExport = {
-        encrypted: false,
-        folders: [],
-        items: [],
-      };
-
-      decFolders.forEach((f) => {
-        if (f.id == null) {
-          return;
-        }
-        const folder = new FolderWithIdExport();
-        folder.build(f);
-        jsonDoc.folders.push(folder);
-      });
-
-      decCiphers.forEach((c) => {
-        if (c.organizationId != null) {
-          return;
-        }
-        const cipher = new CipherWithIdExport();
-        cipher.build(c);
-        cipher.collectionIds = null;
-        jsonDoc.items.push(cipher);
-      });
-
-      return JSON.stringify(jsonDoc, null, "  ");
+      return this.buildCsvExport(decFolders, decCiphers);
     }
+
+    return this.buildJsonExport(decFolders, decCiphers);
   }
 
   private async getEncryptedExport(): Promise<string> {
@@ -163,6 +112,64 @@ export class IndividualVaultExportService
     });
 
     ciphers.forEach((c) => {
+      if (c.organizationId != null) {
+        return;
+      }
+      const cipher = new CipherWithIdExport();
+      cipher.build(c);
+      cipher.collectionIds = null;
+      jsonDoc.items.push(cipher);
+    });
+
+    return JSON.stringify(jsonDoc, null, "  ");
+  }
+
+  private buildCsvExport(decFolders: FolderView[], decCiphers: CipherView[]): string {
+    const foldersMap = new Map<string, FolderView>();
+    decFolders.forEach((f) => {
+      if (f.id != null) {
+        foldersMap.set(f.id, f);
+      }
+    });
+
+    const exportCiphers: BitwardenCsvIndividualExportType[] = [];
+    decCiphers.forEach((c) => {
+      // only export logins and secure notes
+      if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
+        return;
+      }
+      if (c.organizationId != null) {
+        return;
+      }
+
+      const cipher = {} as BitwardenCsvIndividualExportType;
+      cipher.folder =
+        c.folderId != null && foldersMap.has(c.folderId) ? foldersMap.get(c.folderId).name : null;
+      cipher.favorite = c.favorite ? 1 : null;
+      this.buildCommonCipher(cipher, c);
+      exportCiphers.push(cipher);
+    });
+
+    return papa.unparse(exportCiphers);
+  }
+
+  private buildJsonExport(decFolders: FolderView[], decCiphers: CipherView[]): string {
+    const jsonDoc: BitwardenUnEncryptedIndividualJsonExport = {
+      encrypted: false,
+      folders: [],
+      items: [],
+    };
+
+    decFolders.forEach((f) => {
+      if (f.id == null) {
+        return;
+      }
+      const folder = new FolderWithIdExport();
+      folder.build(f);
+      jsonDoc.folders.push(folder);
+    });
+
+    decCiphers.forEach((c) => {
       if (c.organizationId != null) {
         return;
       }

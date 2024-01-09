@@ -40,7 +40,7 @@ export class OrganizationVaultExportService
     super(cryptoService, cryptoFunctionService, stateService);
   }
 
-  async getPasswordProtectedExport(password: string, organizationId?: string): Promise<string> {
+  async getPasswordProtectedExport(password: string, organizationId: string): Promise<string> {
     const clearText = await this.getOrganizationExport(organizationId, "json");
 
     return this.buildPasswordExport(clearText, password);
@@ -52,9 +52,9 @@ export class OrganizationVaultExportService
   ): Promise<string> {
     if (format === "encrypted_json") {
       return this.getOrganizationEncryptedExport(organizationId);
-    } else {
-      return this.getOrganizationDecryptedExport(organizationId, format);
     }
+
+    return this.getOrganizationDecryptedExport(organizationId, format);
   }
 
   private async getOrganizationDecryptedExport(
@@ -102,50 +102,9 @@ export class OrganizationVaultExportService
     await Promise.all(promises);
 
     if (format === "csv") {
-      const collectionsMap = new Map<string, CollectionView>();
-      decCollections.forEach((c) => {
-        collectionsMap.set(c.id, c);
-      });
-
-      const exportCiphers: BitwardenCsvOrgExportType[] = [];
-      decCiphers.forEach((c) => {
-        // only export logins and secure notes
-        if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
-          return;
-        }
-
-        const cipher = {} as BitwardenCsvOrgExportType;
-        cipher.collections = [];
-        if (c.collectionIds != null) {
-          cipher.collections = c.collectionIds
-            .filter((id) => collectionsMap.has(id))
-            .map((id) => collectionsMap.get(id).name);
-        }
-        this.buildCommonCipher(cipher, c);
-        exportCiphers.push(cipher);
-      });
-
-      return papa.unparse(exportCiphers);
-    } else {
-      const jsonDoc: BitwardenUnEncryptedOrgJsonExport = {
-        encrypted: false,
-        collections: [],
-        items: [],
-      };
-
-      decCollections.forEach((c) => {
-        const collection = new CollectionWithIdExport();
-        collection.build(c);
-        jsonDoc.collections.push(collection);
-      });
-
-      decCiphers.forEach((c) => {
-        const cipher = new CipherWithIdExport();
-        cipher.build(c);
-        jsonDoc.items.push(cipher);
-      });
-      return JSON.stringify(jsonDoc, null, "  ");
+      return this.buildCsvExport(decCollections, decCiphers);
     }
+    return this.buildJsonExport(decCollections, decCiphers);
   }
 
   private async getOrganizationEncryptedExport(organizationId: string): Promise<string> {
@@ -196,6 +155,54 @@ export class OrganizationVaultExportService
     });
 
     ciphers.forEach((c) => {
+      const cipher = new CipherWithIdExport();
+      cipher.build(c);
+      jsonDoc.items.push(cipher);
+    });
+    return JSON.stringify(jsonDoc, null, "  ");
+  }
+
+  private buildCsvExport(decCollections: CollectionView[], decCiphers: CipherView[]): string {
+    const collectionsMap = new Map<string, CollectionView>();
+    decCollections.forEach((c) => {
+      collectionsMap.set(c.id, c);
+    });
+
+    const exportCiphers: BitwardenCsvOrgExportType[] = [];
+    decCiphers.forEach((c) => {
+      // only export logins and secure notes
+      if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
+        return;
+      }
+
+      const cipher = {} as BitwardenCsvOrgExportType;
+      cipher.collections = [];
+      if (c.collectionIds != null) {
+        cipher.collections = c.collectionIds
+          .filter((id) => collectionsMap.has(id))
+          .map((id) => collectionsMap.get(id).name);
+      }
+      this.buildCommonCipher(cipher, c);
+      exportCiphers.push(cipher);
+    });
+
+    return papa.unparse(exportCiphers);
+  }
+
+  private buildJsonExport(decCollections: CollectionView[], decCiphers: CipherView[]): string {
+    const jsonDoc: BitwardenUnEncryptedOrgJsonExport = {
+      encrypted: false,
+      collections: [],
+      items: [],
+    };
+
+    decCollections.forEach((c) => {
+      const collection = new CollectionWithIdExport();
+      collection.build(c);
+      jsonDoc.collections.push(collection);
+    });
+
+    decCiphers.forEach((c) => {
       const cipher = new CipherWithIdExport();
       cipher.build(c);
       jsonDoc.items.push(cipher);

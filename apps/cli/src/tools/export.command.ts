@@ -71,7 +71,7 @@ export class ExportCommand {
     } else {
       return organizationId == null
         ? await this.exportService.getPasswordProtectedExport(password)
-        : await this.exportService.getOrgnizationPasswordProtectedExport(password, organizationId);
+        : await this.exportService.getOrganizationPasswordProtectedExport(password, organizationId);
     }
   }
 

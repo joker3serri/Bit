@@ -1,7 +1,7 @@
 import { ExportFormat } from "./vault-export.service.abstraction";
 
 export abstract class IndividualVaultExportServiceAbstraction {
-  getExport: (format?: ExportFormat) => Promise<string>;
+  getExport: (format: ExportFormat) => Promise<string>;
   getPasswordProtectedExport: (password: string) => Promise<string>;
   getFileName: (prefix?: string, extension?: string) => string;
 }
