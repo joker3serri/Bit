@@ -78,13 +78,11 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.showOnboarding && changes?.ciphers) {
-      if (this.showOnboarding) {
-        this.saveCompletedTasks({
-          createAccount: true,
-          importData: this.ciphers.length > 0,
-          installExtension: false,
-        });
-      }
+      this.saveCompletedTasks({
+        createAccount: true,
+        importData: this.ciphers.length > 0,
+        installExtension: false,
+      });
     }
   }
 
