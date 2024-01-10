@@ -251,9 +251,6 @@ export default class MainBackground {
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
   fido2Service: Fido2ServiceAbstraction;
-  singleUserStateProvider: SingleUserStateProvider;
-  activeUserStateProvider: ActiveUserStateProvider;
-  stateProvider: StateProvider;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
