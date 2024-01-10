@@ -12,7 +12,6 @@ import { SsoLoginCredentials } from "@bitwarden/common/auth/models/domain/login-
 import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
 import { UserDecryptionOptions } from "@bitwarden/common/auth/models/domain/user-decryption-options/user-decryption-options";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -252,11 +251,7 @@ export class SsoComponent {
   private async isTrustedDeviceEncEnabled(
     trustedDeviceOption: TrustedDeviceUserDecryptionOption,
   ): Promise<boolean> {
-    const trustedDeviceEncryptionFeatureActive = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.TrustedDeviceEncryption,
-    );
-
-    return trustedDeviceEncryptionFeatureActive && trustedDeviceOption !== undefined;
+    return trustedDeviceOption !== undefined;
   }
 
   private async handleTwoFactorRequired(orgIdentifier: string) {
