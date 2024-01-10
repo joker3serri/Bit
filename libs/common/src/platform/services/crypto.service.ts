@@ -48,9 +48,7 @@ export const USER_EVER_HAD_USER_KEY = new KeyDefinition<boolean>(CRYPTO_DISK, "e
 export class CryptoService implements CryptoServiceAbstraction {
   private activeUserEverHadUserKey: ActiveUserState<boolean>;
 
-  get everHadUserKey$() {
-    return this.activeUserEverHadUserKey.state$.pipe(map((x) => x ?? false));
-  }
+  readonly everHadUserKey$;
 
   constructor(
     protected cryptoFunctionService: CryptoFunctionService,
@@ -62,6 +60,8 @@ export class CryptoService implements CryptoServiceAbstraction {
     protected stateProvider: StateProvider,
   ) {
     this.activeUserEverHadUserKey = stateProvider.getActive(USER_EVER_HAD_USER_KEY);
+
+    this.everHadUserKey$ = this.activeUserEverHadUserKey.state$.pipe(map((x) => x ?? false));
   }
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {
