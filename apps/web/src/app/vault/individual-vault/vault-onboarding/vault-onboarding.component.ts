@@ -74,6 +74,24 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     this.setOnboardingTasks();
     this.setInstallExtLink();
     this.individualVaultPolicyCheck();
+    this.checkForBrowserExtension();
+  }
+
+  checkForBrowserExtension() {
+    if (this.showOnboarding) {
+      window.postMessage({ command: "checkIfBWExtensionInstalled" });
+      window.addEventListener("message", (event) => this.getMessages(event));
+    }
+  }
+
+  getMessages(event: any) {
+    if (event.data.command === "hasBWInstalled" && this.showOnboarding) {
+      this.saveCompletedTasks({
+        createAccount: this.onboardingTasks$.getValue().createAccount,
+        importData: this.onboardingTasks$.getValue().importData,
+        installExtension: true,
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -82,7 +100,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         this.saveCompletedTasks({
           createAccount: true,
           importData: this.ciphers.length > 0,
-          installExtension: false,
+          installExtension: this.onboardingTasks$.getValue().installExtension,
         });
       }
     }

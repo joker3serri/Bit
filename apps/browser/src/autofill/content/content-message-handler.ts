@@ -35,6 +35,10 @@ class ContentMessageHandler implements ContentMessageHandlerInterface {
     const { command } = data;
     const referrer = source.location.hostname;
 
+    if (command === "checkIfBWExtensionInstalled") {
+      window.postMessage({ command: "hasBWInstalled" });
+    }
+
     if (command === "authResult") {
       const { lastpass, code, state } = data;
       chrome.runtime.sendMessage({ command, code, state, lastpass, referrer });
