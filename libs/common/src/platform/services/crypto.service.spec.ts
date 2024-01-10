@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState, FakeSingleUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
-import { AccountService } from "../../auth/abstractions/account.service";
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
@@ -29,13 +29,14 @@ describe("cryptoService", () => {
   const platformUtilService = mock<PlatformUtilsService>();
   const logService = mock<LogService>();
   const stateService = mock<StateService>();
-  const accountService = mock<AccountService>();
   let stateProvider: FakeStateProvider;
 
   const mockUserId = Utils.newGuid() as UserId;
+  let accountService: FakeAccountService;
 
   beforeEach(() => {
-    stateProvider = new FakeStateProvider();
+    accountService = mockAccountServiceWith(mockUserId);
+    stateProvider = new FakeStateProvider(accountService);
 
     cryptoService = new CryptoService(
       cryptoFunctionService,
@@ -135,19 +136,19 @@ describe("cryptoService", () => {
     });
 
     it("should return true when stored value is true", async () => {
-      everHadUserKeyState.stateSubject.next(true);
+      everHadUserKeyState.nextState(true);
 
       expect(await firstValueFrom(cryptoService.everHadUserKey$)).toBe(true);
     });
 
     it("should return false when stored value is false", async () => {
-      everHadUserKeyState.stateSubject.next(false);
+      everHadUserKeyState.nextState(false);
 
       expect(await firstValueFrom(cryptoService.everHadUserKey$)).toBe(false);
     });
 
     it("should return false when stored value is null", async () => {
-      everHadUserKeyState.stateSubject.next(null);
+      everHadUserKeyState.nextState(null);
 
       expect(await firstValueFrom(cryptoService.everHadUserKey$)).toBe(false);
     });
@@ -163,7 +164,7 @@ describe("cryptoService", () => {
       everHadUserKeyState = stateProvider.singleUser.getFake(mockUserId, USER_EVER_HAD_USER_KEY);
 
       // Initialize storage
-      everHadUserKeyState.stateSubject.next(null);
+      everHadUserKeyState.nextState(null);
     });
 
     it("should set everHadUserKey if key is not null to true", async () => {
