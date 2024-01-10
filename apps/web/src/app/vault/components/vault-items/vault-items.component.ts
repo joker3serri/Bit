@@ -29,7 +29,7 @@ const MaxSelectionCount = 500;
 export class VaultItemsComponent {
   protected RowHeight = RowHeight;
 
-  private flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsEnabled: boolean;
 
   @Input() disabled: boolean;
   @Input() showOwner: boolean;
@@ -46,6 +46,7 @@ export class VaultItemsComponent {
   @Input() allCollections: CollectionView[] = [];
   @Input() allGroups: GroupView[] = [];
   @Input() showBulkEditCollectionAccess = false;
+  @Input() showPermissionsColumn = false;
 
   private _ciphers?: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -75,7 +76,7 @@ export class VaultItemsComponent {
 
   async ngOnInit() {
     this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections
+      FeatureFlag.FlexibleCollections,
     );
   }
 
@@ -106,7 +107,7 @@ export class VaultItemsComponent {
     }
 
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
-    return collection.canEdit(organization);
+    return collection.canEdit(organization, this.flexibleCollectionsEnabled);
   }
 
   protected canDeleteCollection(collection: CollectionView): boolean {
@@ -179,7 +180,7 @@ export class VaultItemsComponent {
     this.editableItems = items.filter(
       (item) =>
         item.cipher !== undefined ||
-        (item.collection !== undefined && this.canDeleteCollection(item.collection))
+        (item.collection !== undefined && this.canDeleteCollection(item.collection)),
     );
     this.dataSource.data = items;
   }

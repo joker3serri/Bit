@@ -1,41 +1,45 @@
 import { Observable } from "rxjs";
 
 import { UserId } from "../../types/guid";
-import { EncryptService } from "../abstractions/encrypt.service";
-import { UserKey } from "../models/domain/symmetric-crypto-key";
 
-import { DerivedUserState } from ".";
+import { StateUpdateOptions } from "./state-update-options";
 
-export class DeriveContext {
-  constructor(readonly activeUserKey: UserKey, readonly encryptService: EncryptService) {}
-}
-
-export type Converter<TFrom, TTo> = (data: TFrom, context: DeriveContext) => Promise<TTo>;
+export type CombinedState<T> = readonly [userId: UserId, state: T];
 
 /**
  * A helper object for interacting with state that is scoped to a specific user.
  */
 export interface UserState<T> {
+  /**
+   * Emits a stream of data.
+   */
   readonly state$: Observable<T>;
-  readonly getFromState: () => Promise<T>;
+
+  /**
+   * Emits a stream of data alongside the user id the data corresponds to.
+   */
+  readonly combinedState$: Observable<CombinedState<T>>;
+
   /**
    * Updates backing stores for the active user.
    * @param configureState function that takes the current state and returns the new state
-   * @returns The new state
-   */
-  readonly update: (configureState: (state: T) => T) => Promise<T>;
-  /**
-   * Updates backing stores for the given userId, which may or may not be active.
-   * @param userId the UserId to target the update for
-   * @param configureState function that takes the current state for the targeted user and returns the new state
-   * @returns The new state
-   */
-  readonly updateFor: (userId: UserId, configureState: (state: T) => T) => Promise<T>;
+   * @param options Defaults to @see {module:state-update-options#DEFAULT_OPTIONS}
+   * @param options.shouldUpdate A callback for determining if you want to update state. Defaults to () => true
+   * @param options.combineLatestWith An observable that you want to combine with the current state for callbacks. Defaults to null
+   * @param options.msTimeout A timeout for how long you are willing to wait for a `combineLatestWith` option to complete. Defaults to 1000ms. Only applies if `combineLatestWith` is set.
 
-  /**
-   * Creates a derives state from the current state. Derived states are always tied to the active user.
-   * @param converter
-   * @returns
+   * @returns The new state
    */
-  createDerived: <TTo>(converter: Converter<T, TTo>) => DerivedUserState<TTo>;
+  readonly update: <TCombine>(
+    configureState: (state: T, dependencies: TCombine) => T,
+    options?: StateUpdateOptions<T, TCombine>,
+  ) => Promise<T>;
+}
+
+export const activeMarker: unique symbol = Symbol("active");
+export interface ActiveUserState<T> extends UserState<T> {
+  readonly [activeMarker]: true;
+}
+export interface SingleUserState<T> extends UserState<T> {
+  readonly userId: UserId;
 }
