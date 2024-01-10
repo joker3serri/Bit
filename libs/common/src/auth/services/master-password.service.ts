@@ -38,16 +38,16 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     this.forceSetPasswordReason$ = this.forceSetPasswordReasonState.state$;
   }
 
-  getMasterKey$(userId: UserId): Observable<MasterKey> {
+  masterKey$(userId: UserId): Observable<MasterKey> {
     return this.stateProvider.getUser(userId, MASTER_KEY).state$;
+  }
+
+  masterKeyHash$(userId: UserId): Observable<string> {
+    return this.stateProvider.getUser(userId, MASTER_KEY_HASH).state$;
   }
 
   async setMasterKey(masterKey: MasterKey, userId: UserId): Promise<void> {
     await this.stateProvider.getUser(userId, MASTER_KEY).update((_) => masterKey);
-  }
-
-  getMasterKeyHash$(userId: UserId): Observable<string> {
-    return this.stateProvider.getUser(userId, MASTER_KEY_HASH).state$;
   }
 
   async setMasterKeyHash(masterKeyHash: string, userId: UserId): Promise<void> {

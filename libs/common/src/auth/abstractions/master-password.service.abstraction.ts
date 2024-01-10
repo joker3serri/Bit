@@ -6,8 +6,8 @@ import { ForceSetPasswordReason } from "../models/domain/force-set-password-reas
 
 export abstract class MasterPasswordServiceAbstraction {
   forceSetPasswordReason$: Observable<ForceSetPasswordReason>;
-  getMasterKey$: (userId: UserId) => Observable<MasterKey>;
-  getMasterKeyHash$: (userId: UserId) => Observable<string>;
+  masterKey$: (userId: UserId) => Observable<MasterKey>;
+  masterKeyHash$: (userId: UserId) => Observable<string>;
 }
 
 export abstract class InternalMasterPasswordServiceAbstraction extends MasterPasswordServiceAbstraction {
