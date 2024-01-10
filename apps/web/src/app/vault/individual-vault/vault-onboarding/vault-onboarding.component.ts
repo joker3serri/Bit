@@ -111,10 +111,6 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  addCipher() {
-    this.onAddCipher.emit();
-  }
-
   protected hideOnboarding() {
     this.showOnboarding = false;
     this.saveCompletedTasks({
