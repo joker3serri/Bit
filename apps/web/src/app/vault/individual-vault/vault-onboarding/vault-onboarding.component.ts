@@ -65,13 +65,13 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     private configService: ConfigServiceAbstraction,
   ) {}
 
-  ngOnInit() {
-    this.checkOnboardingFlag();
+  async ngOnInit() {
+    await this.checkOnboardingFlag();
     this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
       this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
     });
 
-    this.setOnboardingTasks();
+    await this.setOnboardingTasks();
     this.setInstallExtLink();
     this.individualVaultPolicyCheck();
   }
@@ -136,7 +136,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.showOnboarding) {
-      this.checkCreationDate();
+      await this.checkCreationDate();
     }
   }
 

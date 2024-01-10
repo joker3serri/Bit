@@ -17,7 +17,9 @@
     >
       <p class="tw-pl-1">
         {{ "onboardingImportDataDetailsPartOne" | i18n }}
-        <a (click)="emitToAddCipher()" class="link"> new item </a>
+        <a (click)="emitToAddCipher()" class="link">
+          {{ "onboardingImportDataDetailsLink" | i18n }}
+        </a>
         {{ "onboardingImportDataDetailsPartTwo" | i18n }}
       </p>
     </app-onboarding-task>
