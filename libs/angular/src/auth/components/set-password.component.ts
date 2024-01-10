@@ -96,7 +96,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
           } else {
             // Try to get orgSsoId from state as fallback
             // Note: this is primarily for the TDE user w/out MP obtains admin MP reset permission scenario.
-            return this.ssoLoginService.getActiveUserOrganizationIdentifier();
+            return this.ssoLoginService.getActiveUserOrganizationSsoIdentifier();
           }
         }),
         filter((orgSsoId) => orgSsoId != null),

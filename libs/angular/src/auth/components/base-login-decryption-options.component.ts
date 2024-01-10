@@ -163,7 +163,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   async loadNewUserData() {
     const autoEnrollStatus$ = defer(() =>
-      this.ssoLoginService.getActiveUserOrganizationIdentifier(),
+      this.ssoLoginService.getActiveUserOrganizationSsoIdentifier(),
     ).pipe(
       switchMap((organizationIdentifier) => {
         if (organizationIdentifier == undefined) {

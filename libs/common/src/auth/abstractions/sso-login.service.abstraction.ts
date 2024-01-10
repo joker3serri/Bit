@@ -40,30 +40,30 @@ export abstract class SsoLoginServiceAbstraction {
    */
   setSsoState: (ssoState: string) => Promise<void>;
   /**
-   * Gets the value of the user's organization identifier.
+   * Gets the value of the user's organization sso identifier.
    *
    * This should only be used during the SSO flow to identify the organization that the user is attempting to log in to.
    * Do not use this value outside of the SSO login flow.
    * @returns The user's organization identifier.
    */
-  getOrganizationIdentifier: () => Promise<string>;
+  getOrganizationSsoIdentifier: () => Promise<string>;
   /**
-   * Sets the value of the user's organization identifier.
+   * Sets the value of the user's organization sso identifier.
    *
    * This should only be used during the SSO flow to identify the organization that the user is attempting to log in to.
    * Do not use this value outside of the SSO login flow.
    */
-  setOrganizationIdentifier: (organizationIdentifier: string) => Promise<void>;
+  setOrganizationSsoIdentifier: (organizationIdentifier: string) => Promise<void>;
   /**
-   * Gets the value of the active user's organization identifier.
+   * Gets the value of the active user's organization sso identifier.
    *
    * This should only be used post successful SSO login once the user is initialized.
    */
-  getActiveUserOrganizationIdentifier: () => Promise<string>;
+  getActiveUserOrganizationSsoIdentifier: () => Promise<string>;
   /**
-   * Sets the value of the active user's organization identifier.
+   * Sets the value of the active user's organization sso identifier.
    *
    * This should only be used post successful SSO login once the user is initialized.
    */
-  setActiveUserOrganizationIdentifier: (organizationIdentifier: string) => Promise<void>;
+  setActiveUserOrganizationSsoIdentifier: (organizationIdentifier: string) => Promise<void>;
 }

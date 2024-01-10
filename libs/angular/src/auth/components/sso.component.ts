@@ -207,7 +207,7 @@ export class SsoComponent {
       // - TDE login decryption options component
       // - Browser SSO on extension open
       // Note: you cannot set this in state before 2FA b/c there won't be an account in state.
-      await this.ssoLoginService.setActiveUserOrganizationIdentifier(orgSsoIdentifier);
+      await this.ssoLoginService.setActiveUserOrganizationSsoIdentifier(orgSsoIdentifier);
 
       // Users enrolled in admin acct recovery can be forced to set a new password after
       // having the admin set a temp password for them (affects TDE & standard users)

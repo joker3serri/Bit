@@ -23,23 +23,29 @@ const SSO_STATE = new KeyDefinition<string>(SSO_DISK, "ssoState", {
 });
 
 /**
- * Uses disk storage so that the organization identifier can be persisted across sso redirects.
+ * Uses disk storage so that the organization sso identifier can be persisted across sso redirects.
  */
-const ORGANIZATION_IDENTIFIER = new KeyDefinition<string>(SSO_DISK, "ssoOrganizationIdentifier", {
-  deserializer: (organizationIdentifier) => organizationIdentifier,
-});
+const ORGANIZATION_SSO_IDENTIFIER = new KeyDefinition<string>(
+  SSO_DISK,
+  "organizationSsoIdentifier",
+  {
+    deserializer: (organizationIdentifier) => organizationIdentifier,
+  },
+);
 
 export class SsoLoginService {
   private codeVerifierState: GlobalState<string>;
   private ssoState: GlobalState<string>;
-  private orgIdentifierState: GlobalState<string>;
-  private activeUserOrgIdentifierState: ActiveUserState<string>;
+  private orgSsoIdentifierState: GlobalState<string>;
+  private activeUserOrgSsoIdentifierState: ActiveUserState<string>;
 
   constructor(private stateProvider: StateProvider) {
     this.codeVerifierState = this.stateProvider.getGlobal(CODE_VERIFIER);
     this.ssoState = this.stateProvider.getGlobal(SSO_STATE);
-    this.orgIdentifierState = this.stateProvider.getGlobal(ORGANIZATION_IDENTIFIER);
-    this.activeUserOrgIdentifierState = this.stateProvider.getActive(ORGANIZATION_IDENTIFIER);
+    this.orgSsoIdentifierState = this.stateProvider.getGlobal(ORGANIZATION_SSO_IDENTIFIER);
+    this.activeUserOrgSsoIdentifierState = this.stateProvider.getActive(
+      ORGANIZATION_SSO_IDENTIFIER,
+    );
   }
 
   getCodeVerifier(): Promise<string> {
@@ -58,19 +64,19 @@ export class SsoLoginService {
     await this.ssoState.update((_) => ssoState);
   }
 
-  getOrganizationIdentifier(): Promise<string> {
-    return firstValueFrom(this.orgIdentifierState.state$);
+  getOrganizationSsoIdentifier(): Promise<string> {
+    return firstValueFrom(this.orgSsoIdentifierState.state$);
   }
 
-  async setOrganizationIdentifier(organizationIdentifier: string): Promise<void> {
-    await this.orgIdentifierState.update((_) => organizationIdentifier);
+  async setOrganizationSsoIdentifier(organizationIdentifier: string): Promise<void> {
+    await this.orgSsoIdentifierState.update((_) => organizationIdentifier);
   }
 
-  getActiveUserOrganizationIdentifier(): Promise<string> {
-    return firstValueFrom(this.activeUserOrgIdentifierState.state$);
+  getActiveUserOrganizationSsoIdentifier(): Promise<string> {
+    return firstValueFrom(this.activeUserOrgSsoIdentifierState.state$);
   }
 
-  async setActiveUserOrganizationIdentifier(organizationIdentifier: string): Promise<void> {
-    await this.activeUserOrgIdentifierState.update((_) => organizationIdentifier);
+  async setActiveUserOrganizationSsoIdentifier(organizationIdentifier: string): Promise<void> {
+    await this.activeUserOrgSsoIdentifierState.update((_) => organizationIdentifier);
   }
 }

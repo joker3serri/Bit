@@ -95,7 +95,7 @@ export class SsoComponent extends BaseSsoComponent {
         }
 
         // Fallback to state svc if domain is unclaimed
-        const storedIdentifier = await this.ssoLoginService.getOrganizationIdentifier();
+        const storedIdentifier = await this.ssoLoginService.getOrganizationSsoIdentifier();
         if (storedIdentifier != null) {
           this.identifier = storedIdentifier;
         }
@@ -119,7 +119,7 @@ export class SsoComponent extends BaseSsoComponent {
   }
 
   async submit() {
-    await this.ssoLoginService.setOrganizationIdentifier(this.identifier);
+    await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
     if (this.clientId === "browser") {
       document.cookie = `ssoHandOffMessage=${this.i18nService.t("ssoHandOff")};SameSite=strict`;
     }
