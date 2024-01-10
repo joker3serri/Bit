@@ -189,14 +189,7 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   protected getExportData() {
-    if (
-      this.format === "encrypted_json" &&
-      this.fileEncryptionType === EncryptedExportType.FileEncrypted
-    ) {
-      return this.exportService.getPasswordProtectedExport(this.filePassword);
-    } else {
-      return this.exportService.getExport(this.format);
-    }
+    return this.exportService.getExport(this.format, this.filePassword);
   }
 
   protected getFileName(prefix?: string) {

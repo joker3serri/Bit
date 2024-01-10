@@ -124,6 +124,8 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import {
   IndividualVaultExportService,
   IndividualVaultExportServiceAbstraction,
+  OrganizationVaultExportService,
+  OrganizationVaultExportServiceAbstraction,
   VaultExportService,
   VaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
@@ -254,6 +256,7 @@ export default class MainBackground {
   stateProvider: StateProvider;
   fido2Service: Fido2ServiceAbstraction;
   individualVaultExportService: IndividualVaultExportServiceAbstraction;
+  organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -631,10 +634,17 @@ export default class MainBackground {
       this.stateService,
     );
 
+    this.organizationVaultExportService = new OrganizationVaultExportService(
+      this.cipherService,
+      this.apiService,
+      this.cryptoService,
+      this.cryptoFunctionService,
+      this.stateService,
+    );
+
     this.exportService = new VaultExportService(
       this.individualVaultExportService,
-      //Setting OrgVaultExportService as null as Browser and Desktop doesn't support Organizational Export
-      null,
+      this.organizationVaultExportService,
     );
 
     this.notificationsService = new NotificationsService(

@@ -47,10 +47,16 @@ export class ExportCommand {
 
     let exportContent: string = null;
     try {
+      const password = await this.promptPassword(options.password);
+
       exportContent =
-        format === "encrypted_json"
-          ? await this.getProtectedExport(options.password, options.organizationid)
-          : await this.getUnprotectedExport(format, options.organizationid);
+        options.organizationid == null
+          ? await this.exportService.getExport(format, password)
+          : await this.exportService.getOrganizationExport(
+              options.organizationid,
+              format,
+              password,
+            );
 
       const eventType = options.organizationid
         ? EventType.Organization_ClientExportedVault
@@ -60,25 +66,6 @@ export class ExportCommand {
       return Response.error(e);
     }
     return await this.saveFile(exportContent, options, format);
-  }
-
-  private async getProtectedExport(passwordOption: string | boolean, organizationId?: string) {
-    const password = await this.promptPassword(passwordOption);
-    if (password == null) {
-      return organizationId == null
-        ? await this.exportService.getExport("encrypted_json")
-        : await this.exportService.getOrganizationExport(organizationId, "encrypted_json");
-    } else {
-      return organizationId == null
-        ? await this.exportService.getPasswordProtectedExport(password)
-        : await this.exportService.getOrganizationPasswordProtectedExport(password, organizationId);
-    }
-  }
-
-  private async getUnprotectedExport(format: ExportFormat, organizationId?: string) {
-    return organizationId == null
-      ? this.exportService.getExport(format)
-      : this.exportService.getOrganizationExport(organizationId, format);
   }
 
   private async saveFile(

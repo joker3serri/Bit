@@ -7,37 +7,37 @@ import { ExportFormat, VaultExportServiceAbstraction } from "./vault-export.serv
 export class VaultExportService implements VaultExportServiceAbstraction {
   constructor(
     private individualVaultExportService: IndividualVaultExportServiceAbstraction,
-    private organizationVaultExportService?: OrganizationVaultExportServiceAbstraction,
+    private organizationVaultExportService: OrganizationVaultExportServiceAbstraction,
   ) {}
-  async getExport(format: ExportFormat = "csv"): Promise<string> {
+
+  async getExport(format: ExportFormat = "csv", password: string): Promise<string> {
+    if (!Utils.isNullOrWhitespace(password)) {
+      if (format == "csv") {
+        throw new Error("CSV does not support password protected export");
+      }
+
+      return this.individualVaultExportService.getPasswordProtectedExport(password);
+    }
     return this.individualVaultExportService.getExport(format);
   }
 
-  async getPasswordProtectedExport(password: string): Promise<string> {
-    return this.individualVaultExportService.getPasswordProtectedExport(password);
-  }
+  async getOrganizationExport(
+    organizationId: string,
+    format: ExportFormat,
+    password: string,
+  ): Promise<string> {
+    if (!Utils.isNullOrWhitespace(password)) {
+      if (format == "csv") {
+        throw new Error("CSV does not support password protected export");
+      }
 
-  async getOrganizationExport(organizationId: string, format?: ExportFormat): Promise<string> {
-    if (this.organizationVaultExportService == null) {
-      throw new Error("Organization export service must be set");
-    }
-
-    if (Utils.isNullOrWhitespace(organizationId)) {
-      throw new Error("OrganizationId must be set");
+      return this.organizationVaultExportService.getPasswordProtectedExport(
+        password,
+        organizationId,
+      );
     }
 
     return this.organizationVaultExportService.getOrganizationExport(organizationId, format);
-  }
-
-  async getOrganizationPasswordProtectedExport(
-    organizationId: string,
-    password: string,
-  ): Promise<string> {
-    if (this.organizationVaultExportService == null) {
-      return;
-    }
-
-    return this.organizationVaultExportService.getPasswordProtectedExport(password, organizationId);
   }
 
   getFileName(prefix?: string, extension?: string): string {

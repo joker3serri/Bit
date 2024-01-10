@@ -50,6 +50,10 @@ export class OrganizationVaultExportService
     organizationId: string,
     format: ExportFormat = "csv",
   ): Promise<string> {
+    if (Utils.isNullOrWhitespace(organizationId)) {
+      throw new Error("OrganizationId must be set");
+    }
+
     if (format === "encrypted_json") {
       return this.getOrganizationEncryptedExport(organizationId);
     }
