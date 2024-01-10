@@ -1,7 +1,17 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import {
+  Observable,
+  Subject,
+  combineLatest,
+  concat,
+  concatMap,
+  firstValueFrom,
+  map,
+  of,
+  takeUntil,
+} from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
@@ -15,8 +25,15 @@ import {
   SecretsManagerImportErrorDialogComponent,
   SecretsManagerImportErrorDialogOperation,
 } from "../dialog/sm-import-error-dialog.component";
+import { ImportOption, SecretsManagerImporter } from "../importers/importer.abstraction";
 import { SecretsManagerImportError } from "../models/error/sm-import-error";
 import { SecretsManagerPortingApiService } from "../services/sm-porting-api.service";
+
+type ImportForm = {
+  selectedImporter: FormControl<string>;
+  importerOptions: FormGroup<Record<string, FormControl<string>>>;
+  pastedContents: FormControl<string>;
+};
 
 @Component({
   selector: "sm-import",
@@ -24,11 +41,18 @@ import { SecretsManagerPortingApiService } from "../services/sm-porting-api.serv
 })
 export class SecretsManagerImportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  protected orgId: string = null;
+  private organizationId$: Observable<string>;
   protected selectedFile: File;
-  protected formGroup = new FormGroup({
-    pastedContents: new FormControl(""),
-  });
+
+  protected formGroup: FormGroup<ImportForm>;
+
+  selectableImporters = this.importers.map((i) => ({
+    label:
+      typeof i.displayInfo === "string" ? i.displayInfo : this.i18nService.t(i.displayInfo.key),
+    value: i.id,
+  }));
+  selectedImporter$: Observable<SecretsManagerImporter>;
+  selectedImporterOptions$: Observable<ImportOption[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,12 +63,51 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private secretsManagerPortingApiService: SecretsManagerPortingApiService,
     private dialogService: DialogService,
-  ) {}
+    private fb: FormBuilder,
+    @Inject(SecretsManagerImporter) private importers: SecretsManagerImporter[],
+  ) {
+    this.formGroup = this.fb.group({
+      selectedImporter: this.fb.control(""),
+      importerOptions: this.fb.group({}),
+      pastedContents: this.fb.control(""),
+    });
+  }
 
   async ngOnInit() {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.orgId = params.organizationId;
-    });
+    this.organizationId$ = this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .pipe(map((params) => params.organizationId));
+
+    const defaultImporter = this.importers[0];
+
+    this.selectedImporter$ = concat(
+      of(defaultImporter),
+      this.formGroup.controls.selectedImporter.valueChanges.pipe(
+        map((importerId) => this.importers.find((i) => i.id === importerId) ?? defaultImporter),
+      ),
+    );
+
+    this.formGroup.controls.selectedImporter.setValue(defaultImporter.id);
+
+    this.selectedImporterOptions$ = combineLatest([
+      this.selectedImporter$,
+      this.organizationId$,
+    ]).pipe(
+      concatMap(async ([importer, organizationId]) => {
+        const options = await importer.buildOptions(organizationId);
+        const importerOptionsGroup = this.fb.group(
+          options.reduce(
+            (agg, option) => {
+              agg[option.key] = this.fb.control(option.value);
+              return agg;
+            },
+            {} as Record<string, FormControl<string>>,
+          ),
+        );
+        this.formGroup.controls.importerOptions = importerOptionsGroup;
+        return options;
+      }),
+    );
   }
 
   async ngOnDestroy() {
@@ -68,8 +131,24 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const importer = this.importers.find(
+      (i) => i.id === this.formGroup.controls.selectedImporter.value,
+    );
+
+    if (importer == null) {
+      this.logService.warning("Invalid importer selection");
+      return;
+    }
+
     try {
-      const error = await this.secretsManagerPortingApiService.import(this.orgId, importContents);
+      const importData = await importer.createImportData(
+        importContents,
+        this.formGroup.controls.importerOptions.value,
+      );
+
+      const organizationId = await firstValueFrom(this.organizationId$);
+
+      const error = await this.secretsManagerPortingApiService.import(organizationId, importData);
 
       if (error?.lines?.length > 0) {
         this.openImportErrorDialog(error);
