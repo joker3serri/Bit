@@ -19,6 +19,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthRequestCryptoServiceImplementation } from "@bitwarden/common/auth/services/auth-request-crypto.service.implementation";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
@@ -27,6 +28,7 @@ import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
+import { UserDecryptionOptionsService } from "@bitwarden/common/auth/services/user-decryption-options.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { ClientType } from "@bitwarden/common/enums";
@@ -139,6 +141,7 @@ export class Main {
   eventUploadService: EventUploadServiceAbstraction;
   passwordGenerationService: PasswordGenerationServiceAbstraction;
   passwordStrengthService: PasswordStrengthServiceAbstraction;
+  userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction;
   totpService: TotpService;
   containerService: ContainerService;
   auditService: AuditService;
@@ -364,6 +367,8 @@ export class Main {
       this.stateService,
     );
 
+    this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
+
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
     this.deviceTrustCryptoService = new DeviceTrustCryptoService(
       this.cryptoFunctionService,
@@ -374,6 +379,7 @@ export class Main {
       this.devicesApiService,
       this.i18nService,
       this.platformUtilsService,
+      this.userDecryptionOptionsService,
     );
 
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
@@ -396,6 +402,7 @@ export class Main {
       this.policyService,
       this.deviceTrustCryptoService,
       this.authRequestCryptoService,
+      this.userDecryptionOptionsService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
@@ -438,6 +445,7 @@ export class Main {
       this.cryptoService,
       this.i18nService,
       this.userVerificationApiService,
+      this.userDecryptionOptionsService,
     );
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
@@ -481,6 +489,7 @@ export class Main {
       this.organizationService,
       this.sendApiService,
       this.configService,
+      this.userDecryptionOptionsService,
       async (expired: boolean) => await this.logout(),
     );
 
