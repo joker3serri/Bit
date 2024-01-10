@@ -18,3 +18,5 @@ import { StateDefinition } from "./state-definition";
  */
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
+export const MASTER_PASSWORD_MEMORY = new StateDefinition("masterPassword", "memory");
+export const KDF_DISK = new StateDefinition("kdf", "disk");
