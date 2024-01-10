@@ -6,6 +6,7 @@ import { Observable, of } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -53,6 +54,7 @@ describe("SsoComponent", () => {
   let mockQueryParams: Observable<any>;
   let mockActivatedRoute: ActivatedRoute;
 
+  let mockSsoLoginService: MockProxy<SsoLoginServiceAbstraction>;
   let mockStateService: MockProxy<StateService>;
   let mockPlatformUtilsService: MockProxy<PlatformUtilsService>;
   let mockApiService: MockProxy<ApiService>;
@@ -99,6 +101,7 @@ describe("SsoComponent", () => {
       queryParams: mockQueryParams,
     } as any as ActivatedRoute;
 
+    mockSsoLoginService = mock<SsoLoginServiceAbstraction>();
     mockStateService = mock<StateService>();
     mockPlatformUtilsService = mock<PlatformUtilsService>();
     mockApiService = mock<ApiService>();
@@ -167,6 +170,7 @@ describe("SsoComponent", () => {
     TestBed.configureTestingModule({
       declarations: [TestSsoComponent],
       providers: [
+        { provide: SsoLoginServiceAbstraction, useValue: mockSsoLoginService },
         { provide: AuthService, useValue: mockAuthService },
         { provide: Router, useValue: mockRouter },
         { provide: I18nService, useValue: mockI18nService },
