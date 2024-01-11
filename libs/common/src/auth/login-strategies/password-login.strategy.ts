@@ -92,7 +92,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
       !result.requiresCaptcha &&
       this.forcePasswordResetReason != ForceSetPasswordReason.None
     ) {
-      await this.stateService.setForceSetPasswordReason(this.forcePasswordResetReason);
+      await this.masterPasswordService.setForceSetPasswordReason(this.forcePasswordResetReason);
       result.forcePasswordReset = this.forcePasswordResetReason;
     }
 
@@ -139,7 +139,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
           this.forcePasswordResetReason = ForceSetPasswordReason.WeakMasterPassword;
         } else {
           // Authentication was successful, save the force update password options with the state service
-          await this.stateService.setForceSetPasswordReason(
+          await this.masterPasswordService.setForceSetPasswordReason(
             ForceSetPasswordReason.WeakMasterPassword,
           );
           authResult.forcePasswordReset = ForceSetPasswordReason.WeakMasterPassword;
@@ -150,8 +150,9 @@ export class PasswordLoginStrategy extends LoginStrategy {
   }
 
   protected override async setMasterKey(response: IdentityTokenResponse) {
-    await this.cryptoService.setMasterKey(this.masterKey);
-    await this.cryptoService.setMasterKeyHash(this.localMasterKeyHash);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    await this.masterPasswordService.setMasterKey(this.masterKey, userId);
+    await this.masterPasswordService.setMasterKeyHash(this.localMasterKeyHash, userId);
   }
 
   protected override async setUserKey(response: IdentityTokenResponse): Promise<void> {

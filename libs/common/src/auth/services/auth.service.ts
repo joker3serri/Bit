@@ -1,4 +1,4 @@
-import { Observable, Subject } from "rxjs";
+import { firstValueFrom, Observable, Subject } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -18,10 +18,12 @@ import { KdfType, KeySuffixOptions } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
 import { MasterKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "../../tools/password-strength";
+import { AccountService } from "../abstractions/account.service";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
+import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthenticationStatus } from "../enums/authentication-status";
@@ -94,6 +96,8 @@ export class AuthService implements AuthServiceAbstraction {
   private pushNotificationSubject = new Subject<string>();
 
   constructor(
+    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    protected accountService: AccountService,
     protected cryptoService: CryptoService,
     protected apiService: ApiService,
     protected tokenService: TokenService,
@@ -133,6 +137,8 @@ export class AuthService implements AuthServiceAbstraction {
     switch (credentials.type) {
       case AuthenticationType.Password:
         strategy = new PasswordLoginStrategy(
+          this.accountService,
+          this.masterPasswordService,
           this.cryptoService,
           this.apiService,
           this.tokenService,
@@ -149,6 +155,8 @@ export class AuthService implements AuthServiceAbstraction {
         break;
       case AuthenticationType.Sso:
         strategy = new SsoLoginStrategy(
+          this.accountService,
+          this.masterPasswordService,
           this.cryptoService,
           this.apiService,
           this.tokenService,
@@ -166,6 +174,8 @@ export class AuthService implements AuthServiceAbstraction {
         break;
       case AuthenticationType.UserApi:
         strategy = new UserApiLoginStrategy(
+          this.accountService,
+          this.masterPasswordService,
           this.cryptoService,
           this.apiService,
           this.tokenService,
@@ -181,6 +191,8 @@ export class AuthService implements AuthServiceAbstraction {
         break;
       case AuthenticationType.AuthRequest:
         strategy = new AuthRequestLoginStrategy(
+          this.accountService,
+          this.masterPasswordService,
           this.cryptoService,
           this.apiService,
           this.tokenService,
@@ -195,6 +207,8 @@ export class AuthService implements AuthServiceAbstraction {
         break;
       case AuthenticationType.WebAuthn:
         strategy = new WebAuthnLoginStrategy(
+          this.accountService,
+          this.masterPasswordService,
           this.cryptoService,
           this.apiService,
           this.tokenService,
@@ -335,7 +349,8 @@ export class AuthService implements AuthServiceAbstraction {
   ): Promise<AuthRequestResponse> {
     const pubKey = Utils.fromB64ToArray(key);
 
-    const masterKey = await this.cryptoService.getMasterKey();
+    const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+    const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     let keyToEncrypt;
     let encryptedMasterKeyHash = null;
 
@@ -344,7 +359,7 @@ export class AuthService implements AuthServiceAbstraction {
 
       // Only encrypt the master password hash if masterKey exists as
       // we won't have a masterKeyHash without a masterKey
-      const masterKeyHash = await this.stateService.getKeyHash();
+      const masterKeyHash = await firstValueFrom(this.masterPasswordService.masterKeyHash$(userId));
       if (masterKeyHash != null) {
         encryptedMasterKeyHash = await this.cryptoService.rsaEncrypt(
           Utils.fromUtf8ToArray(masterKeyHash),
