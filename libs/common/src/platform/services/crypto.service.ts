@@ -7,6 +7,7 @@ import { ProfileOrganizationResponse } from "../../admin-console/models/response
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 import { AccountService } from "../../auth/abstractions/account.service";
+import { MasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
@@ -51,6 +52,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   readonly everHadUserKey$;
 
   constructor(
+    protected masterPasswordService: MasterPasswordServiceAbstraction,
     protected cryptoFunctionService: CryptoFunctionService,
     protected encryptService: EncryptService,
     protected platformUtilService: PlatformUtilsService,
@@ -97,12 +99,16 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async isLegacyUser(masterKey?: MasterKey, userId?: UserId): Promise<boolean> {
-    return await this.validateUserKey(
-      (masterKey ?? (await this.getMasterKey(userId))) as unknown as UserKey,
-    );
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    masterKey ??= await firstValueFrom(this.masterPasswordService.masterKey$(userId));
+
+    return await this.validateUserKey(masterKey as unknown as UserKey);
   }
 
+  // TODO: legacy support for user key is no longer needed since we require users to migrate on login
   async getUserKeyWithLegacySupport(userId?: UserId): Promise<UserKey> {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     const userKey = await this.getUserKey(userId);
     if (userKey) {
       return userKey;
@@ -110,7 +116,8 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     // Legacy support: encryption used to be done with the master key (derived from master password).
     // Users who have not migrated will have a null user key and must use the master key instead.
-    return (await this.getMasterKey(userId)) as unknown as UserKey;
+    const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
+    return masterKey as unknown as UserKey;
   }
 
   async getUserKeyFromStorage(keySuffix: KeySuffixOptions, userId?: UserId): Promise<UserKey> {
@@ -139,7 +146,10 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async makeUserKey(masterKey: MasterKey): Promise<[UserKey, EncString]> {
-    masterKey ||= await this.getMasterKey();
+    if (!masterKey) {
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
+    }
     if (masterKey == null) {
       throw new Error("No Master Key found.");
     }
@@ -187,8 +197,10 @@ export class CryptoService implements CryptoServiceAbstraction {
     return masterKey;
   }
 
+  // TODO: Move to MasterPasswordService
   async getOrDeriveMasterKey(password: string, userId?: UserId) {
-    let masterKey = await this.getMasterKey(userId);
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     return (masterKey ||= await this.makeMasterKey(
       password,
       await this.stateService.getEmail({ userId: userId }),
@@ -229,7 +241,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     userKey?: EncString,
     userId?: UserId,
   ): Promise<UserKey> {
-    masterKey ||= await this.getMasterKey(userId);
+    masterKey ??= await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (masterKey == null) {
       throw new Error("No master key found.");
     }
@@ -273,7 +285,10 @@ export class CryptoService implements CryptoServiceAbstraction {
     key: MasterKey,
     hashPurpose?: HashPurpose,
   ): Promise<string> {
-    key ||= await this.getMasterKey();
+    if (!key) {
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      key = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
+    }
 
     if (password == null || key == null) {
       throw new Error("Invalid parameters.");
