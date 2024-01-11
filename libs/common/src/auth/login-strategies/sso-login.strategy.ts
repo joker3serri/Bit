@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "../../abstractions/api.service";
 import { AuthRequestResponse } from "../../auth/models/response/auth-request.response";
 import { HttpStatusCode } from "../../enums";
@@ -9,9 +11,11 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { AccountService } from "../abstractions/account.service";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
+import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
@@ -32,6 +36,8 @@ export class SsoLoginStrategy extends LoginStrategy {
   email?: string; // email not preserved through SSO process so get from server
 
   constructor(
+    accountService: AccountService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,
@@ -47,6 +53,8 @@ export class SsoLoginStrategy extends LoginStrategy {
     private i18nService: I18nService,
   ) {
     super(
+      accountService,
+      masterPasswordService,
       cryptoService,
       apiService,
       tokenService,
@@ -248,7 +256,8 @@ export class SsoLoginStrategy extends LoginStrategy {
   }
 
   private async trySetUserKeyWithMasterKey(): Promise<void> {
-    const masterKey = await this.cryptoService.getMasterKey();
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
 
     // There is a scenario in which the master key is not set here. That will occur if the user
     // has a master password and is using Key Connector. In that case, we cannot set the master key

@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
+import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -12,6 +13,7 @@ import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService } from "@bitwarden/components";
 
 import { BrowserSyncVerificationDialogComponent } from "../app/components/browser-sync-verification-dialog.component";
@@ -29,6 +31,7 @@ export class NativeMessagingService {
   private sharedSecrets = new Map<string, SymmetricCryptoKey>();
 
   constructor(
+    private masterPasswordService: MasterPasswordServiceAbstraction,
     private cryptoFunctionService: CryptoFunctionService,
     private cryptoService: CryptoService,
     private platformUtilService: PlatformUtilsService,
@@ -150,7 +153,9 @@ export class NativeMessagingService {
           KeySuffixOptions.Biometric,
           message.userId,
         );
-        const masterKey = await this.cryptoService.getMasterKey(message.userId);
+        const masterKey = await firstValueFrom(
+          this.masterPasswordService.masterKey$(message.userId as UserId),
+        );
 
         if (userKey != null) {
           // we send the master key still for backwards compatibility

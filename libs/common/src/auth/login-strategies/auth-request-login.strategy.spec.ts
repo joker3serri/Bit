@@ -1,5 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -14,11 +15,13 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
+import { UserId } from "../../types/guid";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
+import { FakeMasterPasswordService } from "../services/master-password/fake-master-password.service";
 
 import { AuthRequestLoginStrategy } from "./auth-request-login.strategy";
 import { identityTokenResponseFactory } from "./login.strategy.spec";
@@ -34,6 +37,10 @@ describe("AuthRequestLoginStrategy", () => {
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
+
+  const mockUserId = Utils.newGuid() as UserId;
+  let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
 
   let authRequestLoginStrategy: AuthRequestLoginStrategy;
   let credentials: AuthRequestLoginCredentials;
@@ -62,11 +69,16 @@ describe("AuthRequestLoginStrategy", () => {
     twoFactorService = mock<TwoFactorService>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
 
+    accountService = mockAccountServiceWith(mockUserId);
+    masterPasswordService = new FakeMasterPasswordService();
+
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.mockResolvedValue({});
 
     authRequestLoginStrategy = new AuthRequestLoginStrategy(
+      accountService,
+      masterPasswordService,
       cryptoService,
       apiService,
       tokenService,
@@ -96,7 +108,7 @@ describe("AuthRequestLoginStrategy", () => {
     const masterKey = new SymmetricCryptoKey(new Uint8Array(64).buffer as CsprngArray) as MasterKey;
     const userKey = new SymmetricCryptoKey(new Uint8Array(64).buffer as CsprngArray) as UserKey;
 
-    cryptoService.getMasterKey.mockResolvedValue(masterKey);
+    masterPasswordService.masterKeySubject.next(masterKey);
     cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
     await authRequestLoginStrategy.logIn(credentials);

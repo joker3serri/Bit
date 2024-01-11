@@ -16,6 +16,7 @@ import {
   FakeAccountService,
   mockAccountServiceWith,
 } from "../../../../../libs/common/spec/fake-account-service";
+import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 
 import { ElectronCryptoService } from "./electron-crypto.service";
 import { ElectronStateService } from "./electron-state.service.abstraction";
@@ -28,6 +29,7 @@ describe("electronCryptoService", () => {
   const platformUtilService = mock<PlatformUtilsService>();
   const logService = mock<LogService>();
   const stateService = mock<ElectronStateService>();
+  let masterPasswordService: FakeMasterPasswordService;
   let accountService: FakeAccountService;
   let stateProvider: FakeStateProvider;
 
@@ -35,9 +37,11 @@ describe("electronCryptoService", () => {
 
   beforeEach(() => {
     accountService = mockAccountServiceWith("userId" as UserId);
+    masterPasswordService = new FakeMasterPasswordService();
     stateProvider = new FakeStateProvider(accountService);
 
     electronCryptoService = new ElectronCryptoService(
+      masterPasswordService,
       cryptoFunctionService,
       encryptService,
       platformUtilService,

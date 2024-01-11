@@ -1,5 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { FakeAccountService } from "../../../spec/fake-account-service";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -19,12 +20,16 @@ import { AuthResult } from "../models/domain/auth-result";
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IUserDecryptionOptionsServerResponse } from "../models/response/user-decryption-options/user-decryption-options.response";
+import { FakeMasterPasswordService } from "../services/master-password/fake-master-password.service";
 import { WebAuthnLoginAssertionResponseRequest } from "../services/webauthn-login/request/webauthn-login-assertion-response.request";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { WebAuthnLoginStrategy } from "./webauthn-login.strategy";
 
 describe("WebAuthnLoginStrategy", () => {
+  let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
+
   let cryptoService!: MockProxy<CryptoService>;
   let apiService!: MockProxy<ApiService>;
   let tokenService!: MockProxy<TokenService>;
@@ -59,6 +64,9 @@ describe("WebAuthnLoginStrategy", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    accountService = new FakeAccountService(null);
+    masterPasswordService = new FakeMasterPasswordService();
+
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
@@ -74,6 +82,8 @@ describe("WebAuthnLoginStrategy", () => {
     tokenService.decodeToken.mockResolvedValue({});
 
     webAuthnLoginStrategy = new WebAuthnLoginStrategy(
+      accountService,
+      masterPasswordService,
       cryptoService,
       apiService,
       tokenService,

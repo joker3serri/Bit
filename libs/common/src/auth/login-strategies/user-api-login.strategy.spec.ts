@@ -1,5 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -15,15 +16,20 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
+import { UserId } from "../../types/guid";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
+import { FakeMasterPasswordService } from "../services/master-password/fake-master-password.service";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { UserApiLoginStrategy } from "./user-api-login.strategy";
 
 describe("UserApiLoginStrategy", () => {
+  let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
+
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -39,12 +45,16 @@ describe("UserApiLoginStrategy", () => {
   let apiLogInStrategy: UserApiLoginStrategy;
   let credentials: UserApiLoginCredentials;
 
+  const userId = Utils.newGuid() as UserId;
   const deviceId = Utils.newGuid();
   const keyConnectorUrl = "KEY_CONNECTOR_URL";
   const apiClientId = "API_CLIENT_ID";
   const apiClientSecret = "API_CLIENT_SECRET";
 
   beforeEach(async () => {
+    accountService = mockAccountServiceWith(userId);
+    masterPasswordService = new FakeMasterPasswordService();
+
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
@@ -62,6 +72,8 @@ describe("UserApiLoginStrategy", () => {
     tokenService.decodeToken.mockResolvedValue({});
 
     apiLogInStrategy = new UserApiLoginStrategy(
+      accountService,
+      masterPasswordService,
       cryptoService,
       apiService,
       tokenService,
@@ -139,7 +151,7 @@ describe("UserApiLoginStrategy", () => {
 
     apiService.postIdentityToken.mockResolvedValue(tokenResponse);
     environmentService.getKeyConnectorUrl.mockReturnValue(keyConnectorUrl);
-    cryptoService.getMasterKey.mockResolvedValue(masterKey);
+    masterPasswordService.masterKeySubject.next(masterKey);
     cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
     await apiLogInStrategy.logIn(credentials);

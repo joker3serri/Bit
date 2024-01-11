@@ -14,6 +14,8 @@ import {
   AccountProfile,
   AccountTokens,
 } from "../../platform/models/domain/account";
+import { AccountService } from "../abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
@@ -47,6 +49,8 @@ export abstract class LoginStrategy {
   protected captchaBypassToken: string = null;
 
   constructor(
+    protected accountService: AccountService,
+    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected cryptoService: CryptoService,
     protected apiService: ApiService,
     protected tokenService: TokenService,

@@ -1,5 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { ApiService } from "../../abstractions/api.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
@@ -28,6 +29,7 @@ import {
   PasswordStrengthServiceAbstraction,
 } from "../../tools/password-strength";
 import { CsprngArray } from "../../types/csprng";
+import { UserId } from "../../types/guid";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
@@ -42,6 +44,7 @@ import { IdentityTokenResponse } from "../models/response/identity-token.respons
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 import { MasterPasswordPolicyResponse } from "../models/response/master-password-policy.response";
 import { IUserDecryptionOptionsServerResponse } from "../models/response/user-decryption-options/user-decryption-options.response";
+import { FakeMasterPasswordService } from "../services/master-password/fake-master-password.service";
 
 import { PasswordLoginStrategy } from "./password-login.strategy";
 
@@ -56,7 +59,7 @@ const privateKey = "PRIVATE_KEY";
 const captchaSiteKey = "CAPTCHA_SITE_KEY";
 const kdf = 0;
 const kdfIterations = 10000;
-const userId = Utils.newGuid();
+const userId = Utils.newGuid() as UserId;
 const masterPasswordHash = "MASTER_PASSWORD_HASH";
 const name = "NAME";
 const defaultUserDecryptionOptionsServerResponse: IUserDecryptionOptionsServerResponse = {
@@ -97,6 +100,9 @@ export function identityTokenResponseFactory(
 
 // TODO: add tests for latest changes to base class for TDE
 describe("LoginStrategy", () => {
+  let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
+
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -114,6 +120,9 @@ describe("LoginStrategy", () => {
   let credentials: PasswordLoginCredentials;
 
   beforeEach(async () => {
+    accountService = mockAccountServiceWith(userId);
+    masterPasswordService = new FakeMasterPasswordService();
+
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
@@ -132,6 +141,8 @@ describe("LoginStrategy", () => {
 
     // The base class is abstract so we test it via PasswordLoginStrategy
     passwordLoginStrategy = new PasswordLoginStrategy(
+      accountService,
+      masterPasswordService,
       cryptoService,
       apiService,
       tokenService,
@@ -245,7 +256,7 @@ describe("LoginStrategy", () => {
       });
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
-      cryptoService.getMasterKey.mockResolvedValue(masterKey);
+      masterPasswordService.masterKeySubject.next(masterKey);
       cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       const result = await passwordLoginStrategy.logIn(credentials);
@@ -264,7 +275,7 @@ describe("LoginStrategy", () => {
       cryptoService.makeKeyPair.mockResolvedValue(["PUBLIC_KEY", new EncString("PRIVATE_KEY")]);
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
-      cryptoService.getMasterKey.mockResolvedValue(masterKey);
+      masterPasswordService.masterKeySubject.next(masterKey);
       cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await passwordLoginStrategy.logIn(credentials);

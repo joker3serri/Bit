@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "../../abstractions/api.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { TwoFactorService } from "../../auth/abstractions/two-factor.service";
@@ -8,7 +10,9 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { AccountService } from "../abstractions/account.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
+import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
 import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -19,6 +23,8 @@ export class UserApiLoginStrategy extends LoginStrategy {
   tokenRequest: UserApiTokenRequest;
 
   constructor(
+    accountService: AccountService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,
@@ -32,6 +38,8 @@ export class UserApiLoginStrategy extends LoginStrategy {
     private keyConnectorService: KeyConnectorService,
   ) {
     super(
+      accountService,
+      masterPasswordService,
       cryptoService,
       apiService,
       tokenService,
@@ -67,7 +75,8 @@ export class UserApiLoginStrategy extends LoginStrategy {
     await this.cryptoService.setMasterKeyEncryptedUserKey(response.key);
 
     if (response.apiUseKeyConnector) {
-      const masterKey = await this.cryptoService.getMasterKey();
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
       if (masterKey) {
         const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
         await this.cryptoService.setUserKey(userKey);

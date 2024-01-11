@@ -1,15 +1,18 @@
 import { Observable } from "rxjs";
 
-import { MasterKey, SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
+import {
+  MasterKey,
+  SymmetricCryptoKey,
+} from "../../../platform/models/domain/symmetric-crypto-key";
 import {
   ActiveUserState,
   KeyDefinition,
   MASTER_PASSWORD_MEMORY,
   StateProvider,
-} from "../../platform/state";
-import { UserId } from "../../types/guid";
-import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
-import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
+} from "../../../platform/state";
+import { UserId } from "../../../types/guid";
+import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
+import { ForceSetPasswordReason } from "../../models/domain/force-set-password-reason";
 
 const MASTER_KEY = new KeyDefinition<MasterKey>(MASTER_PASSWORD_MEMORY, "masterKey", {
   deserializer: (masterKey) => SymmetricCryptoKey.fromJSON(masterKey) as MasterKey,

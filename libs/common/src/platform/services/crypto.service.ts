@@ -214,6 +214,7 @@ export class CryptoService implements CryptoServiceAbstraction {
    *
    * @remarks
    * Does not validate the kdf config to ensure it satisfies the minimum requirements for the given kdf type.
+   * TODO: Move to MasterPasswordService
    */
   async makeMasterKey(
     password: string,
