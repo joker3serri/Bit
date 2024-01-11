@@ -1,5 +1,7 @@
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
+import { ExportHelper } from "../../export-helper";
+
 import { IndividualVaultExportServiceAbstraction } from "./individual-vault-export.service.abstraction";
 import { OrganizationVaultExportServiceAbstraction } from "./org-vault-export.service.abstraction";
 import { ExportFormat, VaultExportServiceAbstraction } from "./vault-export.service.abstraction";
@@ -32,15 +34,15 @@ export class VaultExportService implements VaultExportServiceAbstraction {
       }
 
       return this.organizationVaultExportService.getPasswordProtectedExport(
-        password,
         organizationId,
+        password,
       );
     }
 
     return this.organizationVaultExportService.getOrganizationExport(organizationId, format);
   }
 
-  getFileName(prefix?: string, extension?: string): string {
-    return this.individualVaultExportService.getFileName(prefix, extension);
+  getFileName(prefix: string = null, extension = "csv"): string {
+    return ExportHelper.getFileName(prefix, extension);
   }
 }

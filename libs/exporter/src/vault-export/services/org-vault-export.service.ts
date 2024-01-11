@@ -40,7 +40,7 @@ export class OrganizationVaultExportService
     super(cryptoService, cryptoFunctionService, stateService);
   }
 
-  async getPasswordProtectedExport(password: string, organizationId: string): Promise<string> {
+  async getPasswordProtectedExport(organizationId: string, password: string): Promise<string> {
     const clearText = await this.getOrganizationExport(organizationId, "json");
 
     return this.buildPasswordExport(clearText, password);

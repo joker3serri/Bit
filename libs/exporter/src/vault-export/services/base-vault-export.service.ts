@@ -7,7 +7,6 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { ExportHelper } from "../../export-helper";
 import { BitwardenCsvExportType } from "../bitwarden-csv-export-type";
 import { BitwardenPasswordProtectedFileFormat } from "../bitwarden-json-export-types";
 
@@ -41,10 +40,6 @@ export class BaseVaultExportService {
     };
 
     return JSON.stringify(jsonDoc, null, "  ");
-  }
-
-  getFileName(prefix: string = null, extension = "csv"): string {
-    return ExportHelper.getFileName(prefix, extension);
   }
 
   protected buildCommonCipher(

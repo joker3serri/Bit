@@ -20,11 +20,12 @@ import {
 } from "../bitwarden-json-export-types";
 
 import { BaseVaultExportService } from "./base-vault-export.service";
+import { IndividualVaultExportServiceAbstraction } from "./individual-vault-export.service.abstraction";
 import { ExportFormat } from "./vault-export.service.abstraction";
 
 export class IndividualVaultExportService
   extends BaseVaultExportService
-  implements IndividualVaultExportService
+  implements IndividualVaultExportServiceAbstraction
 {
   constructor(
     private folderService: FolderService,

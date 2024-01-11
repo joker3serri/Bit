@@ -32,7 +32,14 @@ export class ExportCommand {
       );
     }
 
-    const format = options.format ?? "csv";
+    let password = options.password;
+
+    // has password and format is 'json' => should have the same behaviour as 'encrypted_json'
+    // format is 'undefined' => Defaults to 'csv'
+    // Any other case => returns the options.format
+    const format =
+      password && options.format == "json" ? "encrypted_json" : options.format ?? "csv";
+
     if (!this.isSupportedExportFormat(format)) {
       return Response.badRequest(
         `'${format}' is not a supported export format. Supported formats: ${EXPORT_FORMATS.join(
@@ -47,7 +54,9 @@ export class ExportCommand {
 
     let exportContent: string = null;
     try {
-      const password = await this.promptPassword(options.password);
+      if (format === "encrypted_json") {
+        password = await this.promptPassword(password);
+      }
 
       exportContent =
         options.organizationid == null
