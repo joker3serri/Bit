@@ -8,7 +8,7 @@ import { KeyDefinition, CRYPTO_DISK, DeriveDefinition } from "../../state";
 export const USER_ENCRYPTED_ORGANIZATION_KEYS = KeyDefinition.record<
   EncryptedOrganizationKeyData,
   OrgId
->(CRYPTO_DISK, "orgKeys", {
+>(CRYPTO_DISK, "organizationKeys", {
   deserializer: (obj) => obj,
 });
 
