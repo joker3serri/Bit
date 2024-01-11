@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
-import { firstValueFrom, map } from "rxjs";
+import { Observable, firstValueFrom } from "rxjs";
 
 import { ExportComponent as BaseExportComponent } from "@bitwarden/angular/tools/export/components/export.component";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -25,9 +25,8 @@ export class ExportComponent extends BaseExportComponent {
   encryptedExportType = EncryptedExportType;
   protected showFilePassword: boolean;
 
-  protected flexibleCollectionsEnabled$ = this.organizationService
-    .get$(this.organizationId)
-    .pipe(map((o) => o?.flexibleCollections));
+  // Used in the OrganizationVaultExport subclass
+  protected flexibleCollectionsEnabled$ = new Observable<boolean>();
 
   constructor(
     i18nService: I18nService,

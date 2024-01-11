@@ -37,6 +37,8 @@ import {
 } from "../../../admin-console/organizations/shared/components/access-selector/access-selector.models";
 import { CollectionAdminService } from "../../core/collection-admin.service";
 import { CollectionAdminView } from "../../core/views/collection-admin.view";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 export enum CollectionDialogTabType {
   Info = 0,
@@ -107,6 +109,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private organizationUserService: OrganizationUserService,
+    private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {

@@ -15,6 +15,7 @@ import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
 import { ExportComponent } from "../../../../tools/vault-export/export.component";
+import { map, switchMap } from "rxjs";
 
 @Component({
   selector: "app-org-export",
@@ -60,6 +61,12 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
     });
+
+    this.flexibleCollectionsEnabled$ = this.route.parent.parent.params.pipe(
+      switchMap((params) => this.organizationService.get$(params.organizationId)),
+      map((organization) => organization.flexibleCollections),
+    );
+
     await super.ngOnInit();
   }
 
