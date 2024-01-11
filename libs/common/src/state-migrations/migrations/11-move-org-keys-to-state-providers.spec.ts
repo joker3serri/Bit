@@ -90,17 +90,12 @@ describe("OrganizationKeysMigrator", () => {
 
     it("should remove organizationKeys from all accounts", async () => {
       await sut.migrate(helper);
+      expect(helper.set).toHaveBeenCalledTimes(1);
       expect(helper.set).toHaveBeenCalledWith("user-1", {
         keys: {
           otherStuff: "overStuff2",
         },
         otherStuff: "otherStuff3",
-      });
-      expect(helper.set).toHaveBeenCalledWith("user-2", {
-        keys: {
-          otherStuff: "otherStuff4",
-        },
-        otherStuff: "otherStuff5",
       });
     });
 

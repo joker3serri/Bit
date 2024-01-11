@@ -8,7 +8,7 @@ import { ProfileProviderResponse } from "../../admin-console/models/response/pro
 import { AccountService } from "../../auth/abstractions/account.service";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
-import { OrgId, UserId } from "../../types/guid";
+import { OrganizationId, UserId } from "../../types/guid";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
@@ -49,11 +49,11 @@ import { USER_EVER_HAD_USER_KEY } from "./key-state/user-key.state";
 export class CryptoService implements CryptoServiceAbstraction {
   private readonly activeUserEverHadUserKey: ActiveUserState<boolean>;
   private readonly activeUserEncryptedOrgKeysState: ActiveUserState<
-    Record<OrgId, EncryptedOrganizationKeyData>
+    Record<OrganizationId, EncryptedOrganizationKeyData>
   >;
-  private readonly ActiveUserOrgKeysState: DerivedState<Record<OrgId, OrgKey>>;
+  private readonly activeUserOrgKeysState: DerivedState<Record<OrganizationId, OrgKey>>;
 
-  readonly activeUserOrgKeys$: Observable<Record<OrgId, OrgKey>>;
+  readonly activeUserOrgKeys$: Observable<Record<OrganizationId, OrgKey>>;
 
   readonly everHadUserKey$;
 
@@ -70,14 +70,14 @@ export class CryptoService implements CryptoServiceAbstraction {
     this.activeUserEncryptedOrgKeysState = stateProvider.getActive(
       USER_ENCRYPTED_ORGANIZATION_KEYS,
     );
-    this.ActiveUserOrgKeysState = stateProvider.getDerived(
+    this.activeUserOrgKeysState = stateProvider.getDerived(
       this.activeUserEncryptedOrgKeysState.state$,
       USER_ORGANIZATION_KEYS,
       { cryptoService: this },
     );
 
     this.everHadUserKey$ = this.activeUserEverHadUserKey.state$.pipe(map((x) => x ?? false));
-    this.activeUserOrgKeys$ = this.ActiveUserOrgKeysState.state$; // null handled by `derive` function
+    this.activeUserOrgKeys$ = this.activeUserOrgKeysState.state$; // null handled by `derive` function
   }
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {
@@ -365,7 +365,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     });
   }
 
-  async getOrgKey(orgId: OrgId): Promise<OrgKey> {
+  async getOrgKey(orgId: OrganizationId): Promise<OrgKey> {
     return (await firstValueFrom(this.activeUserOrgKeys$))[orgId];
   }
 
@@ -390,7 +390,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     const userIdIsActive = userId == null || userId === activeUserId;
     if (memoryOnly && userIdIsActive) {
       // org keys are only cached for active users
-      await this.ActiveUserOrgKeysState.forceValue({});
+      await this.activeUserOrgKeysState.forceValue({});
     } else {
       if (userId == null && activeUserId == null) {
         // nothing to do

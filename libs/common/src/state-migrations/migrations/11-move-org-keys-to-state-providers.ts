@@ -30,8 +30,8 @@ export class OrganizationKeyMigrator extends Migrator<10, 11> {
       if (value != null) {
         await helper.setToUser(userId, USER_ENCRYPTED_ORGANIZATION_KEYS, value);
         delete account.keys.organizationKeys;
+        await helper.set(userId, account);
       }
-      await helper.set(userId, account);
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);

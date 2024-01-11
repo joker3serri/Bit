@@ -44,7 +44,7 @@ export async function migrate(
     .with(MoveStateVersionMigrator, 7, 8)
     .with(MoveBrowserSettingsToGlobal, 8, 9)
     .with(EverHadUserKeyMigrator, 9, 10)
-    .with(OrganizationKeyMigrator, 10, 11)
+    .with(OrganizationKeyMigrator, 10, CURRENT_VERSION)
 
     .migrate(migrationHelper);
 }

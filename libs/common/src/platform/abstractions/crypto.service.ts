@@ -4,7 +4,7 @@ import { ProfileOrganizationResponse } from "../../admin-console/models/response
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
-import { OrgId } from "../../types/guid";
+import { OrganizationId } from "../../types/guid";
 import { KeySuffixOptions, KdfType, HashPurpose } from "../enums";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
@@ -207,7 +207,7 @@ export abstract class CryptoService {
     orgs: ProfileOrganizationResponse[],
     providerOrgs: ProfileProviderOrganizationResponse[],
   ) => Promise<void>;
-  activeUserOrgKeys$: Observable<Record<OrgId, OrgKey>>;
+  activeUserOrgKeys$: Observable<Record<OrganizationId, OrgKey>>;
   /**
    * Returns the organization's symmetric key
    * @deprecated Use the observable activeUserOrgKeys$ and `map` to the desired orgKey instead
