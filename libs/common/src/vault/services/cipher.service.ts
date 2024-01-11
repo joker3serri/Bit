@@ -293,7 +293,7 @@ export class CipherService implements CipherServiceAbstraction {
     const ciphers = await this.getAll();
     const orgKeys = await this.cryptoService.getOrgKeys();
     const userKey = await this.cryptoService.getUserKeyWithLegacySupport();
-    if (orgKeys?.size === 0 && userKey == null) {
+    if (Object.keys(orgKeys).length === 0 && userKey == null) {
       // return early if there are no keys to decrypt with
       return;
     }
@@ -311,7 +311,7 @@ export class CipherService implements CipherServiceAbstraction {
     const decCiphers = (
       await Promise.all(
         Object.entries(grouped).map(([orgId, groupedCiphers]) =>
-          this.encryptService.decryptItems(groupedCiphers, orgKeys.get(orgId) ?? userKey),
+          this.encryptService.decryptItems(groupedCiphers, orgKeys[orgId] ?? userKey),
         ),
       )
     )

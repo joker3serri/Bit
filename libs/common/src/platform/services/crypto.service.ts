@@ -1,5 +1,5 @@
 import * as bigInt from "big-integer";
-import { firstValueFrom, map } from "rxjs";
+import { Observable, firstValueFrom, map } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../admin-console/models/domain/encrypted-organization-key";
@@ -9,7 +9,7 @@ import { ProfileProviderResponse } from "../../admin-console/models/response/pro
 import { AccountService } from "../../auth/abstractions/account.service";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
-import { UserId } from "../../types/guid";
+import { OrgId, UserId } from "../../types/guid";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
@@ -39,14 +39,62 @@ import {
   SymmetricCryptoKey,
   UserKey,
 } from "../models/domain/symmetric-crypto-key";
-import { ActiveUserState, CRYPTO_DISK, KeyDefinition, StateProvider } from "../state";
+import {
+  ActiveUserState,
+  CRYPTO_DISK,
+  DeriveDefinition,
+  DerivedState,
+  KeyDefinition,
+  StateProvider,
+} from "../state";
 
 export const USER_EVER_HAD_USER_KEY = new KeyDefinition<boolean>(CRYPTO_DISK, "everHadUserKey", {
   deserializer: (obj) => obj,
 });
 
+export const USER_ENCRYPTED_ORGANIZATION_KEYS = KeyDefinition.record<
+  EncryptedOrganizationKeyData,
+  OrgId
+>(CRYPTO_DISK, "orgKeys", {
+  deserializer: (obj) => obj,
+});
+
+export const USER_ORGANIZATION_KEYS = DeriveDefinition.from<
+  Record<OrgId, EncryptedOrganizationKeyData>,
+  Record<OrgId, OrgKey>,
+  { cryptoService: CryptoService }
+>(USER_ENCRYPTED_ORGANIZATION_KEYS, {
+  deserializer: (obj) => {
+    const result: Record<OrgId, OrgKey> = {};
+    for (const orgId of Object.keys(obj ?? {}).map((x) => x as OrgId)) {
+      result[orgId] = SymmetricCryptoKey.fromJSON(obj[orgId]) as OrgKey;
+    }
+    return result;
+  },
+  derive: async (from, { cryptoService }) => {
+    const result: Record<OrgId, OrgKey> = {};
+    for (const orgId of Object.keys(from ?? {}).map((x) => x as OrgId)) {
+      if (result[orgId] != null) {
+        continue;
+      }
+      const encrypted = BaseEncryptedOrganizationKey.fromData(from[orgId]);
+      const decrypted = await encrypted.decrypt(cryptoService);
+
+      result[orgId] = decrypted;
+    }
+
+    return result;
+  },
+});
+
 export class CryptoService implements CryptoServiceAbstraction {
   private activeUserEverHadUserKey: ActiveUserState<boolean>;
+  private activeUserEncryptedOrgKeysState: ActiveUserState<
+    Record<OrgId, EncryptedOrganizationKeyData>
+  >;
+  private ActiveUserOrgKeysState: DerivedState<Record<OrgId, OrgKey>>;
+
+  activeUserOrgKeys$: Observable<Record<OrgId, OrgKey>>;
 
   readonly everHadUserKey$;
 
@@ -60,8 +108,17 @@ export class CryptoService implements CryptoServiceAbstraction {
     protected stateProvider: StateProvider,
   ) {
     this.activeUserEverHadUserKey = stateProvider.getActive(USER_EVER_HAD_USER_KEY);
+    this.activeUserEncryptedOrgKeysState = stateProvider.getActive(
+      USER_ENCRYPTED_ORGANIZATION_KEYS,
+    );
+    this.ActiveUserOrgKeysState = stateProvider.getDerived(
+      this.activeUserEncryptedOrgKeysState.state$,
+      USER_ORGANIZATION_KEYS,
+      { cryptoService: this },
+    );
 
     this.everHadUserKey$ = this.activeUserEverHadUserKey.state$.pipe(map((x) => x ?? false));
+    this.activeUserOrgKeys$ = this.ActiveUserOrgKeysState.state$; // null handled by `derive` function
   }
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {
@@ -348,51 +405,13 @@ export class CryptoService implements CryptoServiceAbstraction {
     return await this.stateService.setEncryptedOrganizationKeys(encOrgKeyData);
   }
 
-  async getOrgKey(orgId: string): Promise<OrgKey> {
-    if (orgId == null) {
-      return null;
-    }
-
-    const orgKeys = await this.getOrgKeys();
-    if (orgKeys == null || !orgKeys.has(orgId)) {
-      return null;
-    }
-
-    return orgKeys.get(orgId);
+  async getOrgKey(orgId: OrgId): Promise<OrgKey> {
+    return (await firstValueFrom(this.activeUserOrgKeys$))[orgId];
   }
 
   @sequentialize(() => "getOrgKeys")
-  async getOrgKeys(): Promise<Map<string, OrgKey>> {
-    const result: Map<string, OrgKey> = new Map<string, OrgKey>();
-    const decryptedOrganizationKeys = await this.stateService.getDecryptedOrganizationKeys();
-    if (decryptedOrganizationKeys != null && decryptedOrganizationKeys.size > 0) {
-      return decryptedOrganizationKeys as Map<string, OrgKey>;
-    }
-
-    const encOrgKeyData = await this.stateService.getEncryptedOrganizationKeys();
-    if (encOrgKeyData == null) {
-      return result;
-    }
-
-    let setKey = false;
-
-    for (const orgId of Object.keys(encOrgKeyData)) {
-      if (result.has(orgId)) {
-        continue;
-      }
-
-      const encOrgKey = BaseEncryptedOrganizationKey.fromData(encOrgKeyData[orgId]);
-      const decOrgKey = (await encOrgKey.decrypt(this)) as OrgKey;
-      result.set(orgId, decOrgKey);
-
-      setKey = true;
-    }
-
-    if (setKey) {
-      await this.stateService.setDecryptedOrganizationKeys(result);
-    }
-
-    return result;
+  async getOrgKeys(): Promise<Record<string, OrgKey>> {
+    return await firstValueFrom(this.activeUserOrgKeys$);
   }
 
   async makeDataEncKey<T extends OrgKey | UserKey>(
