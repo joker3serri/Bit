@@ -15,6 +15,7 @@ import {
   DialogService,
 } from "@bitwarden/components";
 
+import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
 import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
 
 /**
@@ -54,6 +55,8 @@ export class UserVerificationDialogComponent {
   }
 
   invalidSecret = false;
+  activeClientVerificationOption: ActiveClientVerificationOption;
+  ActiveClientVerificationOption = ActiveClientVerificationOption;
 
   constructor(
     @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogParams,
@@ -68,6 +71,21 @@ export class UserVerificationDialogComponent {
     return dialogService.open<boolean>(UserVerificationDialogComponent, {
       data,
     });
+  }
+
+  handleActiveClientVerificationOptionChange(
+    activeClientVerificationOption: ActiveClientVerificationOption,
+  ) {
+    this.activeClientVerificationOption = activeClientVerificationOption;
+  }
+
+  handleBiometricsVerificationResultChange(biometricsVerificationResult: boolean) {
+    if (biometricsVerificationResult) {
+      this.close(true);
+
+      // TODO: evaluate how invalid secret should play into biometrics flows.
+      // this.invalidSecret = false;
+    }
   }
 
   submit = async () => {
@@ -87,6 +105,8 @@ export class UserVerificationDialogComponent {
       return;
     }
 
+    // TOOD: change return type to more complex object and include verificationSuccess boolean
+    // and noAvailableVerificationMethods boolean so that the caller can decide what to do next
     this.close(true);
   };
 

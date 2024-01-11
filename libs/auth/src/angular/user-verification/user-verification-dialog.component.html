@@ -11,13 +11,27 @@
       <p bitTypography="body1" *ngIf="dialogParams.dialogBodyText">
         {{ dialogParams.dialogBodyText | i18n }}
       </p>
+
+      <!-- TODO: add optional call out with configurable - default to warning if not provided -->
+
       <app-user-verification-form-input
         [(invalidSecret)]="invalidSecret"
         formControlName="secret"
+        [verificationType]="dialogParams.clientSideOnlyVerification ? 'client' : 'server'"
+        (activeClientVerificationOptionChange)="handleActiveClientVerificationOptionChange($event)"
+        (biometricsVerificationResultChange)="handleBiometricsVerificationResultChange($event)"
       ></app-user-verification-form-input>
     </ng-container>
     <ng-container bitDialogFooter>
-      <button type="submit" bitButton bitFormButton buttonType="primary">
+      <!-- TODO: make button types configurable -->
+
+      <button
+        type="submit"
+        bitButton
+        bitFormButton
+        buttonType="primary"
+        *ngIf="activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics"
+      >
         {{
           dialogParams.confirmButtonText
             ? (dialogParams.confirmButtonText | i18n)
