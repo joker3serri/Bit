@@ -21,6 +21,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { LinkModule } from "@bitwarden/components";
 
 import { OnboardingModule } from "../../../shared/components/onboarding/onboarding.module";
 
@@ -32,7 +33,7 @@ export type VaultOnboardingTasks = {
 
 @Component({
   standalone: true,
-  imports: [OnboardingModule, CommonModule, JslibModule],
+  imports: [OnboardingModule, CommonModule, JslibModule, LinkModule],
   selector: "app-vault-onboarding",
   templateUrl: "vault-onboarding.component.html",
 })
