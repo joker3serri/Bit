@@ -343,25 +343,26 @@ export class CryptoService implements CryptoServiceAbstraction {
     orgs: ProfileOrganizationResponse[] = [],
     providerOrgs: ProfileProviderOrganizationResponse[] = [],
   ): Promise<void> {
-    const encOrgKeyData: { [orgId: string]: EncryptedOrganizationKeyData } = {};
+    this.activeUserEncryptedOrgKeysState.update((_) => {
+      const encOrgKeyData: { [orgId: string]: EncryptedOrganizationKeyData } = {};
 
-    orgs.forEach((org) => {
-      encOrgKeyData[org.id] = {
-        type: "organization",
-        key: org.key,
-      };
+      orgs.forEach((org) => {
+        encOrgKeyData[org.id] = {
+          type: "organization",
+          key: org.key,
+        };
+      });
+
+      providerOrgs.forEach((org) => {
+        encOrgKeyData[org.id] = {
+          type: "provider",
+          providerId: org.providerId,
+          key: org.key,
+        };
+      });
+
+      return encOrgKeyData;
     });
-
-    providerOrgs.forEach((org) => {
-      encOrgKeyData[org.id] = {
-        type: "provider",
-        providerId: org.providerId,
-        key: org.key,
-      };
-    });
-
-    await this.stateService.setDecryptedOrganizationKeys(null);
-    return await this.stateService.setEncryptedOrganizationKeys(encOrgKeyData);
   }
 
   async getOrgKey(orgId: OrgId): Promise<OrgKey> {
@@ -385,9 +386,19 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearOrgKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    await this.stateService.setDecryptedOrganizationKeys(null, { userId: userId });
-    if (!memoryOnly) {
-      await this.stateService.setEncryptedOrganizationKeys(null, { userId: userId });
+    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const userIdIsActive = userId == null || userId === activeUserId;
+    if (memoryOnly && userIdIsActive) {
+      // org keys are only cached for active users
+      await this.ActiveUserOrgKeysState.forceValue({});
+    } else {
+      if (userId == null && activeUserId == null) {
+        // nothing to do
+        return;
+      }
+      await this.stateProvider
+        .getUser(userId ?? activeUserId, USER_ENCRYPTED_ORGANIZATION_KEYS)
+        .update(() => null);
     }
   }
 
