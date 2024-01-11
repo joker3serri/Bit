@@ -2,7 +2,6 @@ import * as bigInt from "big-integer";
 import { Observable, firstValueFrom, map } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
-import { BaseEncryptedOrganizationKey } from "../../admin-console/models/domain/encrypted-organization-key";
 import { ProfileOrganizationResponse } from "../../admin-console/models/response/profile-organization.response";
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
@@ -39,53 +38,13 @@ import {
   SymmetricCryptoKey,
   UserKey,
 } from "../models/domain/symmetric-crypto-key";
+import { ActiveUserState, DerivedState, StateProvider } from "../state";
+
 import {
-  ActiveUserState,
-  CRYPTO_DISK,
-  DeriveDefinition,
-  DerivedState,
-  KeyDefinition,
-  StateProvider,
-} from "../state";
-
-export const USER_EVER_HAD_USER_KEY = new KeyDefinition<boolean>(CRYPTO_DISK, "everHadUserKey", {
-  deserializer: (obj) => obj,
-});
-
-export const USER_ENCRYPTED_ORGANIZATION_KEYS = KeyDefinition.record<
-  EncryptedOrganizationKeyData,
-  OrgId
->(CRYPTO_DISK, "orgKeys", {
-  deserializer: (obj) => obj,
-});
-
-export const USER_ORGANIZATION_KEYS = DeriveDefinition.from<
-  Record<OrgId, EncryptedOrganizationKeyData>,
-  Record<OrgId, OrgKey>,
-  { cryptoService: CryptoService }
->(USER_ENCRYPTED_ORGANIZATION_KEYS, {
-  deserializer: (obj) => {
-    const result: Record<OrgId, OrgKey> = {};
-    for (const orgId of Object.keys(obj ?? {}).map((x) => x as OrgId)) {
-      result[orgId] = SymmetricCryptoKey.fromJSON(obj[orgId]) as OrgKey;
-    }
-    return result;
-  },
-  derive: async (from, { cryptoService }) => {
-    const result: Record<OrgId, OrgKey> = {};
-    for (const orgId of Object.keys(from ?? {}).map((x) => x as OrgId)) {
-      if (result[orgId] != null) {
-        continue;
-      }
-      const encrypted = BaseEncryptedOrganizationKey.fromData(from[orgId]);
-      const decrypted = await encrypted.decrypt(cryptoService);
-
-      result[orgId] = decrypted;
-    }
-
-    return result;
-  },
-});
+  USER_ENCRYPTED_ORGANIZATION_KEYS,
+  USER_ORGANIZATION_KEYS,
+} from "./key-state/org-keys.state";
+import { USER_EVER_HAD_USER_KEY } from "./key-state/user-key.state";
 
 export class CryptoService implements CryptoServiceAbstraction {
   private activeUserEverHadUserKey: ActiveUserState<boolean>;
