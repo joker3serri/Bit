@@ -47,7 +47,7 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
       // We only care about the UserId but we do want to know about no user as well.
       map((a) => a?.id),
       // To avoid going to storage when we don't need to, only get updates when there is a true change.
-      distinctUntilChanged((a, b) => a == null || b == null ? a == b : a === b), // Treat null and undefined as equal
+      distinctUntilChanged((a, b) => (a == null || b == null ? a == b : a === b)), // Treat null and undefined as equal
     );
 
     const userChangeAndInitial$ = this.activeUserId$.pipe(
