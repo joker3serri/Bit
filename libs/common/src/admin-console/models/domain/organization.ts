@@ -177,9 +177,12 @@ export class Organization {
   }
 
   get canCreateNewCollections() {
-    if (this.flexibleCollections && !this.limitCollectionCreationDeletion) {
-      // Can always create collections if using Flexible Collections and Collection Management Setting allows it
-      return true;
+    if (this.flexibleCollections) {
+      return (
+        !this.limitCollectionCreationDeletion ||
+        this.isAdmin ||
+        this.permissions.createNewCollections
+      );
     }
 
     return this.isManager || this.permissions.createNewCollections;
