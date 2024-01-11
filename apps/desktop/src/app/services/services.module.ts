@@ -1,5 +1,6 @@
 import { APP_INITIALIZER, InjectionToken, NgModule } from "@angular/core";
 
+import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import {
   SECURE_STORAGE,
   STATE_FACTORY,
@@ -11,7 +12,7 @@ import {
   OBSERVABLE_DISK_STORAGE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -36,6 +37,7 @@ import { StateFactory } from "@bitwarden/common/platform/factories/state-factory
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { DialogService } from "@bitwarden/components";
@@ -114,6 +116,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         PlatformUtilsServiceAbstraction,
         RELOAD_CALLBACK,
         StateServiceAbstraction,
+        VaultTimeoutSettingsService,
       ],
     },
     {
@@ -178,6 +181,8 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         PlatformUtilsServiceAbstraction,
         LogService,
         StateServiceAbstraction,
+        AccountServiceAbstraction,
+        StateProvider,
       ],
     },
   ],

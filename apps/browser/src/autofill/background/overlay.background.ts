@@ -1,26 +1,27 @@
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ThemeType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { ThemeType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
-import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import {
   openViewVaultItemPopout,
   openAddEditVaultItemPopout,
 } from "../../vault/popup/utils/vault-popout-window";
 import { SHOW_AUTOFILL_BUTTON } from "../constants";
+import LockedVaultPendingNotificationsItem from "../notification/models/locked-vault-pending-notifications-item";
 import { AutofillService, PageDetail } from "../services/abstractions/autofill.service";
 import { AutofillOverlayElement, AutofillOverlayPort } from "../utils/autofill-overlay.enum";
 
@@ -68,11 +69,13 @@ class OverlayBackground implements OverlayBackgroundInterface {
   private readonly overlayButtonPortMessageHandlers: OverlayButtonPortMessageHandlers = {
     overlayButtonClicked: ({ port }) => this.handleOverlayButtonClicked(port),
     closeAutofillOverlay: ({ port }) => this.closeOverlay(port),
+    forceCloseAutofillOverlay: ({ port }) => this.closeOverlay(port, true),
     overlayPageBlurred: () => this.checkOverlayListFocused(),
     redirectOverlayFocusOut: ({ message, port }) => this.redirectOverlayFocusOut(message, port),
   };
   private readonly overlayListPortMessageHandlers: OverlayListPortMessageHandlers = {
     checkAutofillOverlayButtonFocused: () => this.checkOverlayButtonFocused(),
+    forceCloseAutofillOverlay: ({ port }) => this.closeOverlay(port, true),
     overlayPageBlurred: () => this.checkOverlayButtonFocused(),
     unlockVault: ({ port }) => this.unlockVault(port),
     fillSelectedListItem: ({ message, port }) => this.fillSelectedOverlayListItem(message, port),
@@ -88,7 +91,8 @@ class OverlayBackground implements OverlayBackgroundInterface {
     private environmentService: EnvironmentService,
     private settingsService: SettingsService,
     private stateService: StateService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
+    private platformUtilsService: PlatformUtilsService,
   ) {
     this.iconsServerUrl = this.environmentService.getIconsUrl();
   }
@@ -130,7 +134,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
 
     this.overlayLoginCiphers = new Map();
     const ciphersViews = (await this.cipherService.getAllDecryptedForUrl(currentTab.url)).sort(
-      (a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b)
+      (a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b),
     );
     for (let cipherIndex = 0; cipherIndex < ciphersViews.length; cipherIndex++) {
       this.overlayLoginCiphers.set(`overlay-cipher-${cipherIndex}`, ciphersViews[cipherIndex]);
@@ -189,7 +193,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private storePageDetails(
     message: OverlayBackgroundExtensionMessage,
-    sender: chrome.runtime.MessageSender
+    sender: chrome.runtime.MessageSender,
   ) {
     const pageDetails = {
       frameId: sender.frameId,
@@ -214,7 +218,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private async fillSelectedOverlayListItem(
     { overlayCipherId }: OverlayPortMessage,
-    { sender }: chrome.runtime.Port
+    { sender }: chrome.runtime.Port,
   ) {
     if (!overlayCipherId) {
       return;
@@ -225,13 +229,17 @@ class OverlayBackground implements OverlayBackgroundInterface {
     if (await this.autofillService.isPasswordRepromptRequired(cipher, sender.tab)) {
       return;
     }
-    await this.autofillService.doAutoFill({
+    const totpCode = await this.autofillService.doAutoFill({
       tab: sender.tab,
       cipher: cipher,
       pageDetails: this.pageDetailsForTab[sender.tab.id],
       fillNewPassword: true,
       allowTotpAutofill: true,
     });
+
+    if (totpCode) {
+      this.platformUtilsService.copyToClipboard(totpCode, { window });
+    }
 
     this.overlayLoginCiphers = new Map([[overlayCipherId, cipher], ...this.overlayLoginCiphers]);
   }
@@ -268,9 +276,10 @@ class OverlayBackground implements OverlayBackgroundInterface {
    * Sends a message to the sender tab to close the autofill overlay.
    *
    * @param sender - The sender of the port message
+   * @param forceCloseOverlay - Identifies whether the overlay should be force closed
    */
-  private closeOverlay({ sender }: chrome.runtime.Port) {
-    BrowserApi.tabSendMessage(sender.tab, { command: "closeAutofillOverlay" });
+  private closeOverlay({ sender }: chrome.runtime.Port, forceCloseOverlay = false) {
+    BrowserApi.tabSendMessageData(sender.tab, "closeAutofillOverlay", { forceCloseOverlay });
   }
 
   /**
@@ -528,7 +537,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     await BrowserApi.tabSendMessageData(
       sender.tab,
       "addToLockedVaultPendingNotifications",
-      retryMessage
+      retryMessage,
     );
     await this.openUnlockPopout(sender.tab, true);
   }
@@ -541,7 +550,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private async viewSelectedCipher(
     { overlayCipherId }: OverlayPortMessage,
-    { sender }: chrome.runtime.Port
+    { sender }: chrome.runtime.Port,
   ) {
     const cipher = this.overlayLoginCiphers.get(overlayCipherId);
     if (!cipher) {
@@ -609,7 +618,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private redirectOverlayFocusOut(
     { direction }: OverlayPortMessage,
-    { sender }: chrome.runtime.Port
+    { sender }: chrome.runtime.Port,
   ) {
     if (!direction) {
       return;
@@ -637,7 +646,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private async addNewVaultItem(
     { login }: OverlayAddNewItemMessage,
-    sender: chrome.runtime.MessageSender
+    sender: chrome.runtime.MessageSender,
   ) {
     if (!login) {
       return;
@@ -670,7 +679,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private setupExtensionMessageListeners() {
     BrowserApi.messageListener("overlay.background", this.handleExtensionMessage);
-    chrome.runtime.onConnect.addListener(this.handlePortOnConnect);
+    BrowserApi.addListener(chrome.runtime.onConnect, this.handlePortOnConnect);
   }
 
   /**
@@ -683,7 +692,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
   private handleExtensionMessage = (
     message: OverlayBackgroundExtensionMessage,
     sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: any) => void
+    sendResponse: (response?: any) => void,
   ) => {
     const handler: CallableFunction | undefined = this.extensionMessageHandlers[message?.command];
     if (!handler) {
@@ -742,7 +751,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private handleOverlayElementPortMessage = (
     message: OverlayBackgroundExtensionMessage,
-    port: chrome.runtime.Port
+    port: chrome.runtime.Port,
   ) => {
     const command = message?.command;
     let handler: CallableFunction | undefined;

@@ -5,6 +5,7 @@ import { AbstractStorageService } from "../platform/abstractions/storage.service
 
 import { MigrationBuilder } from "./migration-builder";
 import { MigrationHelper } from "./migration-helper";
+import { EverHadUserKeyMigrator } from "./migrations/10-move-ever-had-user-key-to-state-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -15,17 +16,17 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 2;
-export const CURRENT_VERSION = 9;
+export const CURRENT_VERSION = 10;
 export type MinVersion = typeof MIN_VERSION;
 
 export async function migrate(
   storageService: AbstractStorageService,
-  logService: LogService
+  logService: LogService,
 ): Promise<void> {
   const migrationHelper = new MigrationHelper(
     await currentVersion(storageService, logService),
     storageService,
-    logService
+    logService,
   );
   if (migrationHelper.currentVersion < 0) {
     // Cannot determine state, assuming empty so we don't repeatedly apply a migration.
@@ -40,13 +41,14 @@ export async function migrate(
     .with(RemoveLegacyEtmKeyMigrator, 5, 6)
     .with(MoveBiometricAutoPromptToAccount, 6, 7)
     .with(MoveStateVersionMigrator, 7, 8)
-    .with(MoveBrowserSettingsToGlobal, 8, CURRENT_VERSION)
+    .with(MoveBrowserSettingsToGlobal, 8, 9)
+    .with(EverHadUserKeyMigrator, 9, CURRENT_VERSION)
     .migrate(migrationHelper);
 }
 
 export async function currentVersion(
   storageService: AbstractStorageService,
-  logService: LogService
+  logService: LogService,
 ) {
   let state = await storageService.get<number>("stateVersion");
   if (state == null) {
