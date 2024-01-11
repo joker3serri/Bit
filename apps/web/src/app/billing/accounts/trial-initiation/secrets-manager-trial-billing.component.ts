@@ -81,7 +81,7 @@ export class SecretsManagerTrialBillingComponent implements OnInit {
     private formBuilder: FormBuilder,
     private messagingService: MessagingService,
     private organizationApiService: OrganizationApiService,
-    private platformUtilsService: PlatformUtilsService,
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -106,7 +106,7 @@ export class SecretsManagerTrialBillingComponent implements OnInit {
     this.platformUtilsService.showToast(
       "success",
       this.i18nService.t("organizationCreated"),
-      this.i18nService.t("organizationReadyToGo"),
+      this.i18nService.t("organizationReadyToGo")
     );
 
     this.organizationCreated.emit({
@@ -138,7 +138,7 @@ export class SecretsManagerTrialBillingComponent implements OnInit {
     request.key = keys.encryptedKey.encryptedString;
     request.keys = new OrganizationKeysRequest(
       keys.publicKey,
-      keys.encryptedPrivateKey.encryptedString,
+      keys.encryptedPrivateKey.encryptedString
     );
     request.collectionName = keys.encryptedCollectionName.encryptedString;
 
@@ -165,6 +165,8 @@ export class SecretsManagerTrialBillingComponent implements OnInit {
       request.billingAddressCity = this.taxInfoComponent.taxInfo.city;
       request.billingAddressState = this.taxInfoComponent.taxInfo.state;
     }
+
+    request.isFromSecretsManagerTrial = true;
 
     const organization = await this.organizationApiService.create(request);
     return organization.id;
@@ -211,7 +213,7 @@ export class SecretsManagerTrialBillingComponent implements OnInit {
     const [publicKey, encryptedPrivateKey] = await this.cryptoService.makeKeyPair(key);
     const encryptedCollectionName = await this.encryptService.encrypt(
       this.i18nService.t("defaultCollection"),
-      key,
+      key
     );
     return {
       encryptedKey,
