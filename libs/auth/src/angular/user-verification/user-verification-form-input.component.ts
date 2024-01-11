@@ -15,15 +15,22 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { Verification } from "@bitwarden/common/auth/types/verification";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
   FormFieldModule,
   IconButtonModule,
+  IconModule,
   LinkModule,
 } from "@bitwarden/components";
+
+import { UserVerificationBiometricsIcon } from "../icons";
+
+import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
 
 type UserVerificationOptions = {
   server: {
@@ -36,13 +43,6 @@ type UserVerificationOptions = {
     biometrics: boolean;
   };
 };
-
-enum ActiveClientVerificationOption {
-  MasterPassword = "masterPassword",
-  Pin = "pin",
-  Biometrics = "biometrics",
-  None = "none",
-}
 
 /**
  * Used for general-purpose user verification throughout the app.
@@ -73,11 +73,14 @@ enum ActiveClientVerificationOption {
     FormFieldModule,
     AsyncActionsModule,
     IconButtonModule,
+    IconModule,
     LinkModule,
   ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class UserVerificationFormInputComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  protected readonly Icons = { UserVerificationBiometricsIcon };
+
   @Input() verificationType: "server" | "client";
 
   // This represents what verification methods are available to the user.
@@ -142,6 +145,11 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   }
   @Output() invalidSecretChange = new EventEmitter<boolean>();
 
+  @Output() activeClientVerificationOptionChange =
+    new EventEmitter<ActiveClientVerificationOption>();
+
+  @Output() biometricsVerificationResultChange = new EventEmitter<boolean>();
+
   disableRequestOTP = false;
   sentCode = false;
 
@@ -168,6 +176,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     private i18nService: I18nService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private platformUtilsService: PlatformUtilsService,
+    private cryptoService: CryptoService,
   ) {}
 
   async ngOnInit() {
@@ -182,19 +191,31 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
 
   private async determineAvailableVerificationMethods(): Promise<void> {
     if (this.verificationType === "client") {
-      const [userHasMasterPassword, pinLockType, biometricsEnabled] = await Promise.all([
-        this.userVerificationService.hasMasterPasswordAndMasterKeyHash(),
-        this.vaultTimeoutSettingsService.isPinLockSet(),
-        this.platformUtilsService.supportsBiometric(),
-      ]);
+      const [userHasMasterPassword, pinLockType, biometricsLockSet, biometricsUserKeyStored] =
+        await Promise.all([
+          this.userVerificationService.hasMasterPasswordAndMasterKeyHash(),
+          this.vaultTimeoutSettingsService.isPinLockSet(),
+          this.vaultTimeoutSettingsService.isBiometricLockSet(),
+          this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric),
+        ]);
+
+      // note: we do not need to check this.platformUtilsService.supportsBiometric() because
+      // we can just use the logic below which works for both desktop & the browser extension.
+
+      // TODO: remove this after testing on web
+      // let biometrics =biometricsLockSet &&
+      // (biometricsUserKeyStored || !this.platformUtilsService.supportsSecureStorage())
+      // biometrics = true;
 
       this.userVerificationOptions.client = {
         masterPassword: userHasMasterPassword,
         pin: pinLockType !== "DISABLED",
-        biometrics: biometricsEnabled,
+        biometrics:
+          biometricsLockSet &&
+          (biometricsUserKeyStored || !this.platformUtilsService.supportsSecureStorage()),
       };
 
-      this.setActiveClientVerificationOption();
+      this.setDefaultActiveClientVerificationOption();
       this.setupClientVerificationOptionChangeHandler();
     } else {
       // server
@@ -208,7 +229,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     }
   }
 
-  private setActiveClientVerificationOption(): void {
+  private setDefaultActiveClientVerificationOption(): void {
     // Priorities should be Bio > Pin > Master Password for speed based on design
     if (this.userVerificationOptions.client.biometrics) {
       this.activeClientVerificationOption = ActiveClientVerificationOption.Biometrics;
@@ -229,17 +250,27 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       });
   }
 
-  // TODO: consider more direct methods of handling this
   private async handleActiveClientVerificationOptionChange(
     activeClientVerificationOption: ActiveClientVerificationOption,
   ): Promise<void> {
+    // Emit to parent component so it can implement behavior if needed.
+    this.activeClientVerificationOptionChange.emit(activeClientVerificationOption);
+
     // clear secret value when switching verification methods
     this.secret.setValue(null);
 
     // if changing to biometrics, we need to prompt for biometrics
     if (activeClientVerificationOption === "biometrics") {
-      await this.userVerificationService.verifyUser({ type: VerificationType.Biometrics });
+      await this.verifyUserViaBiometrics();
     }
+  }
+
+  async verifyUserViaBiometrics() {
+    const biometricsResult = await this.userVerificationService.verifyUser({
+      type: VerificationType.Biometrics,
+    });
+
+    this.biometricsVerificationResultChange.emit(biometricsResult);
   }
 
   requestOTP = async () => {

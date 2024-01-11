@@ -40,7 +40,19 @@
         activeClientVerificationOption == ActiveClientVerificationOption.Biometrics
       "
     >
-      <p>biometrics</p>
+      <div class="tw-flex tw-flex-col tw-items-center">
+        <bit-icon [icon]="Icons.UserVerificationBiometricsIcon" class="tw-mb-4"></bit-icon>
+        <p class="tw-font-bold tw-mb-1">Verify with biometrics</p>
+        <div class="tw-mb-4">
+          <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
+          Awaiting confirmation
+        </div>
+      </div>
+
+      <!-- <app-callout type="error" class="tw-mb-4">
+        Could not complete biometrics.
+        <button bitLink type="button" linkType="primary">Try Again</button>
+      </app-callout> -->
     </ng-container>
 
     <!-- None  -->
@@ -145,6 +157,6 @@
 <!-- Add warning if dev forgot to pass in verification type -->
 <ng-container *ngIf="!verificationType">
   <app-callout type="error">
-    <p>Verification type of "server" or "client" is required for user-verification-form-input</p>
+    Verification type of "server" or "client" is required for user-verification-form-input
   </app-callout>
 </ng-container>
