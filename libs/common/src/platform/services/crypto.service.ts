@@ -47,13 +47,13 @@ import {
 import { USER_EVER_HAD_USER_KEY } from "./key-state/user-key.state";
 
 export class CryptoService implements CryptoServiceAbstraction {
-  private activeUserEverHadUserKey: ActiveUserState<boolean>;
-  private activeUserEncryptedOrgKeysState: ActiveUserState<
+  private readonly activeUserEverHadUserKey: ActiveUserState<boolean>;
+  private readonly activeUserEncryptedOrgKeysState: ActiveUserState<
     Record<OrgId, EncryptedOrganizationKeyData>
   >;
-  private ActiveUserOrgKeysState: DerivedState<Record<OrgId, OrgKey>>;
+  private readonly ActiveUserOrgKeysState: DerivedState<Record<OrgId, OrgKey>>;
 
-  activeUserOrgKeys$: Observable<Record<OrgId, OrgKey>>;
+  readonly activeUserOrgKeys$: Observable<Record<OrgId, OrgKey>>;
 
   readonly everHadUserKey$;
 
