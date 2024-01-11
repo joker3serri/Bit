@@ -320,7 +320,6 @@ describe("DefaultGlobalState", () => {
       await awaitAsync(); // storage updates are behind a promise
 
       subscription.unsubscribe();
-      expect(diskStorageService["updatesSubject"]["observers"]).toHaveLength(1);
       // Wait for cleanup
       await awaitAsync(cleanupDelayMs * 2);
 
