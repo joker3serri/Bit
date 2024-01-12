@@ -14,7 +14,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
-import { Verification } from "@bitwarden/common/auth/types/verification";
+import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -169,7 +169,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     },
   ]);
 
-  private onChange: (value: Verification) => void;
+  private onChange: (value: VerificationWithSecret) => void;
   private destroy$ = new Subject<void>();
 
   constructor(

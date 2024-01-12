@@ -5,7 +5,7 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { Verification } from "@bitwarden/common/auth/types/verification";
+import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
@@ -47,7 +47,7 @@ export type UserVerificationDialogParams = {
 })
 export class UserVerificationDialogComponent {
   verificationForm = this.formBuilder.group({
-    secret: this.formBuilder.control<Verification | null>(null),
+    secret: this.formBuilder.control<VerificationWithSecret | null>(null),
   });
 
   get secret() {
