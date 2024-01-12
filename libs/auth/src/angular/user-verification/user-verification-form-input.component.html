@@ -43,13 +43,13 @@
       <div class="tw-flex tw-flex-col tw-items-center">
         <bit-icon [icon]="Icons.UserVerificationBiometricsIcon" class="tw-mb-4"></bit-icon>
         <p class="tw-font-bold tw-mb-1">Verify with biometrics</p>
-        <div class="tw-mb-2" *ngIf="!biometricsVerificationFailed">
+        <div *ngIf="!biometricsVerificationFailed">
           <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
           Awaiting confirmation
         </div>
       </div>
 
-      <app-callout type="error" class="tw-mb-2" *ngIf="biometricsVerificationFailed">
+      <app-callout type="error" *ngIf="biometricsVerificationFailed">
         Could not complete biometrics.
         <button bitLink type="button" linkType="primary" (click)="verifyUserViaBiometrics()">
           Try Again
@@ -71,7 +71,7 @@
 
     <!-- Alternate verification options if user has more than 1 -->
     <div
-      class="tw-flex tw-flex-col tw-items-center tw-justify-center"
+      class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-mt-2"
       *ngIf="hasMultipleClientVerificationOptions"
     >
       <p class="tw-mb-1">Need a different method?</p>
