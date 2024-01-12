@@ -13,7 +13,6 @@ import { PolicyResponse } from "../../../admin-console/models/response/policy.re
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { UserDecryptionOptionsServiceAbstraction } from "../../../auth/abstractions/user-decryption-options.service.abstraction";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
-import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,
@@ -21,7 +20,6 @@ import {
   SyncSendNotification,
 } from "../../../models/response/notification.response";
 import { ProfileResponse } from "../../../models/response/profile.response";
-import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { MessagingService } from "../../../platform/abstractions/messaging.service";
@@ -63,7 +61,6 @@ export class SyncService implements SyncServiceAbstraction {
     private folderApiService: FolderApiServiceAbstraction,
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
-    private configService: ConfigServiceAbstraction,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private logoutCallback: (expired: boolean) => Promise<void>,
   ) {}
@@ -324,11 +321,7 @@ export class SyncService implements SyncServiceAbstraction {
 
     await this.setForceSetPasswordReasonIfNeeded(response);
 
-    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-      false,
-    );
-    await this.syncProfileOrganizations(response, flexibleCollectionsEnabled);
+    await this.syncProfileOrganizations(response);
 
     const providers: { [id: string]: ProviderData } = {};
     response.providers.forEach((p) => {
@@ -397,10 +390,7 @@ export class SyncService implements SyncServiceAbstraction {
     }
   }
 
-  private async syncProfileOrganizations(
-    response: ProfileResponse,
-    flexibleCollectionsEnabled: boolean,
-  ) {
+  private async syncProfileOrganizations(response: ProfileResponse) {
     const organizations: { [id: string]: OrganizationData } = {};
     response.organizations.forEach((o) => {
       organizations[o.id] = new OrganizationData(o, {
@@ -420,7 +410,7 @@ export class SyncService implements SyncServiceAbstraction {
       }
     });
 
-    await this.organizationService.replace(organizations, flexibleCollectionsEnabled);
+    await this.organizationService.replace(organizations);
   }
 
   private async syncFolders(response: FolderResponse[]) {

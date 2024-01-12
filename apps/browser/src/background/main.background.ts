@@ -589,7 +589,6 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
-      this.configService,
       this.userDecryptionOptionsService,
       logoutCallback,
     );

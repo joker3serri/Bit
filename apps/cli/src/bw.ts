@@ -488,7 +488,6 @@ export class Main {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
-      this.configService,
       this.userDecryptionOptionsService,
       async (expired: boolean) => await this.logout(),
     );
