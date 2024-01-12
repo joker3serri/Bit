@@ -1966,6 +1966,14 @@ describe("CollectAutofillContentService", () => {
   });
 
   describe("getShadowRoot", () => {
+    beforeEach(() => {
+      // eslint-disable-next-line
+      // @ts-ignore
+      globalThis.chrome.dom = {
+        openOrClosedShadowRoot: jest.fn(),
+      };
+    });
+
     it("returns null if the passed node is not an HTMLElement instance", () => {
       const textNode = document.createTextNode("Hello, world!");
       const shadowRoot = collectAutofillContentService["getShadowRoot"](textNode);
@@ -1978,15 +1986,13 @@ describe("CollectAutofillContentService", () => {
       element.innerHTML = "<p>Hello, world!</p>";
       const shadowRoot = collectAutofillContentService["getShadowRoot"](element);
 
+      // eslint-disable-next-line
+      // @ts-ignore
+      expect(chrome.dom.openOrClosedShadowRoot).not.toBeCalled();
       expect(shadowRoot).toEqual(null);
     });
 
     it("returns a value provided by Chrome's openOrClosedShadowRoot API", () => {
-      // eslint-disable-next-line
-      // @ts-ignore
-      globalThis.chrome.dom = {
-        openOrClosedShadowRoot: jest.fn(),
-      };
       const element = document.createElement("div");
       collectAutofillContentService["getShadowRoot"](element);
 
