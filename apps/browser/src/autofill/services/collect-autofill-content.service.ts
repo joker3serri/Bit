@@ -875,20 +875,24 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
   /**
    * Attempts to get the ShadowRoot of the passed node. If support for the
    * extension based openOrClosedShadowRoot API is available, it will be used.
+   * Will return null if the node is not an HTMLElement or if the node has
+   * child nodes.
+   *
    * @param {Node} node
-   * @returns {ShadowRoot | null}
-   * @private
    */
   private getShadowRoot(node: Node): ShadowRoot | null {
-    if (!(node instanceof HTMLElement)) {
+    if (!(node instanceof HTMLElement) || node.childNodes.length !== 0) {
       return null;
+    }
+    if (node.shadowRoot) {
+      return node.shadowRoot;
     }
 
     if ((chrome as any).dom?.openOrClosedShadowRoot) {
       return (chrome as any).dom.openOrClosedShadowRoot(node);
     }
 
-    return (node as any).openOrClosedShadowRoot || node.shadowRoot;
+    return (node as any).openOrClosedShadowRoot;
   }
 
   /**

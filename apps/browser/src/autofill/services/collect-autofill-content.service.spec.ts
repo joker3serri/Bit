@@ -1973,6 +1973,14 @@ describe("CollectAutofillContentService", () => {
       expect(shadowRoot).toEqual(null);
     });
 
+    it("returns null if the passed node contains children elements", () => {
+      const element = document.createElement("div");
+      element.innerHTML = "<p>Hello, world!</p>";
+      const shadowRoot = collectAutofillContentService["getShadowRoot"](element);
+
+      expect(shadowRoot).toEqual(null);
+    });
+
     it("returns a value provided by Chrome's openOrClosedShadowRoot API", () => {
       // eslint-disable-next-line
       // @ts-ignore
