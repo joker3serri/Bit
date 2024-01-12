@@ -52,9 +52,12 @@ export type UserVerificationDialogParams = {
   clientSideOnlyVerification?: boolean;
 };
 
+// TODO: test more display scenarios + confirm and cancel
+// TODO: investigate what is sent to calling component when user uses x to close dialog
 export type UserVerificationDialogResult = {
+  userAction: "confirm" | "cancel";
   verificationSuccess: boolean;
-  noAvailableVerificationMethods: boolean;
+  noAvailableClientVerificationMethods: boolean;
 };
 
 @Component({
@@ -106,7 +109,11 @@ export class UserVerificationDialogComponent {
 
   handleBiometricsVerificationResultChange(biometricsVerificationResult: boolean) {
     if (biometricsVerificationResult) {
-      this.close({ verificationSuccess: true, noAvailableVerificationMethods: false });
+      this.close({
+        userAction: "confirm",
+        verificationSuccess: true,
+        noAvailableClientVerificationMethods: false,
+      });
 
       // TODO: evaluate how invalid secret should play into biometrics flows.
       // this.invalidSecret = false;
@@ -114,11 +121,14 @@ export class UserVerificationDialogComponent {
   }
 
   submit = async () => {
-    // TODO: come back to this.
-    // if (this.activeClientVerificationOption === ActiveClientVerificationOption.None) {
-    //   this.close({ verificationSuccess: false, noAvailableVerificationMethods: true });
-    //   return;
-    // }
+    if (this.activeClientVerificationOption === ActiveClientVerificationOption.None) {
+      this.close({
+        userAction: "confirm",
+        verificationSuccess: false,
+        noAvailableClientVerificationMethods: true,
+      });
+      return;
+    }
 
     this.verificationForm.markAllAsTouched();
 
@@ -136,8 +146,21 @@ export class UserVerificationDialogComponent {
       return;
     }
 
-    this.close({ verificationSuccess: true, noAvailableVerificationMethods: false });
+    this.close({
+      userAction: "confirm",
+      verificationSuccess: true,
+      noAvailableClientVerificationMethods: false,
+    });
   };
+
+  cancel() {
+    this.close({
+      userAction: "cancel",
+      verificationSuccess: false,
+      noAvailableClientVerificationMethods:
+        this.activeClientVerificationOption === ActiveClientVerificationOption.None,
+    });
+  }
 
   close(dialogResult: UserVerificationDialogResult) {
     this.dialogRef.close(dialogResult);

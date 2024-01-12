@@ -8,13 +8,34 @@
       }}</span
     >
     <ng-container bitDialogContent>
-      <p bitTypography="body1" *ngIf="dialogParams.dialogBodyText">
-        {{ dialogParams.dialogBodyText | i18n }}
-      </p>
+      <!-- Show optional content when verification is server side or client side and verification methods were found. -->
+      <ng-container
+        *ngIf="
+          !dialogParams.clientSideOnlyVerification ||
+          (dialogParams.clientSideOnlyVerification &&
+            activeClientVerificationOption !== ActiveClientVerificationOption.None)
+        "
+      >
+        <p bitTypography="body1" *ngIf="dialogParams.dialogBodyText">
+          {{ dialogParams.dialogBodyText | i18n }}
+        </p>
 
-      <app-callout *ngIf="dialogParams.calloutOptions" [type]="dialogParams.calloutOptions.type">
-        {{ dialogParams.calloutOptions.text | i18n }}
-      </app-callout>
+        <app-callout *ngIf="dialogParams.calloutOptions" [type]="dialogParams.calloutOptions.type">
+          {{ dialogParams.calloutOptions.text | i18n }}
+        </app-callout>
+      </ng-container>
+
+      <!-- Shown when client side verification methods picked and no verification methods found -->
+      <ng-container
+        *ngIf="
+          dialogParams.clientSideOnlyVerification &&
+          activeClientVerificationOption === ActiveClientVerificationOption.None
+        "
+      >
+        <p bitTypography="body1">
+          {{ "userVerificationDialogNoClientVerificationsMethodsFound" | i18n }}
+        </p>
+      </ng-container>
 
       <app-user-verification-form-input
         [(invalidSecret)]="invalidSecret"
@@ -25,34 +46,55 @@
       ></app-user-verification-form-input>
     </ng-container>
     <ng-container bitDialogFooter>
-      <!-- Confirm button container -->
+      <!-- Confirm button container - shown for server side validation but hidden if client side validation + biometrics  -->
       <ng-container
-        *ngIf="activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics"
+        *ngIf="
+          !dialogParams.clientSideOnlyVerification ||
+          (dialogParams.clientSideOnlyVerification &&
+            activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics)
+        "
       >
-        <!-- Default confirm button -->
-        <button
-          *ngIf="!dialogParams.confirmButtonOptions"
-          type="submit"
-          bitButton
-          bitFormButton
-          buttonType="primary"
+        <!--  Default / custom buttons shown for server verifications or any valid, non biometric client verifications (MP or PIN) -->
+        <ng-container
+          *ngIf="activeClientVerificationOption !== ActiveClientVerificationOption.None"
         >
-          {{ "defaultUserVerificationDialogConfirmBtnText" | i18n }}
-        </button>
+          <!-- Default confirm button -->
+          <button
+            *ngIf="!dialogParams.confirmButtonOptions"
+            type="submit"
+            bitButton
+            bitFormButton
+            buttonType="primary"
+          >
+            {{ "defaultUserVerificationDialogConfirmBtnText" | i18n }}
+          </button>
 
-        <!-- Custom confirm button -->
-        <button
-          *ngIf="dialogParams.confirmButtonOptions"
-          type="submit"
-          bitButton
-          bitFormButton
-          [buttonType]="dialogParams.confirmButtonOptions.type"
+          <!-- Custom confirm button -->
+          <button
+            *ngIf="dialogParams.confirmButtonOptions"
+            type="submit"
+            bitButton
+            bitFormButton
+            [buttonType]="dialogParams.confirmButtonOptions.type"
+          >
+            {{ dialogParams.confirmButtonOptions.text | i18n }}
+          </button>
+        </ng-container>
+
+        <ng-container
+          *ngIf="activeClientVerificationOption === ActiveClientVerificationOption.None"
         >
-          {{ dialogParams.confirmButtonOptions.text | i18n }}
-        </button>
+          <!-- For no client verifications found, show set a pin confirm button. 
+            Note: this doesn't make sense for web as web doesn't support PINs, but this is how we are handling it for now 
+          as the expectation is that only browser and desktop will use the new clientSideOnlyVerification flow. 
+          We might genericize this in the future to just tell the user they need to configure their   -->
+          <button type="submit" bitButton bitFormButton buttonType="primary">
+            {{ "userVerificationDialogSetPin" | i18n }}
+          </button>
+        </ng-container>
       </ng-container>
 
-      <button type="button" bitButton bitFormButton buttonType="secondary" bitDialogClose>
+      <button type="button" bitButton bitFormButton buttonType="secondary" (click)="cancel()">
         {{ "cancel" | i18n }}
       </button>
     </ng-container>
