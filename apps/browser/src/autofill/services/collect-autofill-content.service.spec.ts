@@ -1992,6 +1992,15 @@ describe("CollectAutofillContentService", () => {
       expect(shadowRoot).toEqual(null);
     });
 
+    it("returns an open shadow root if the passed node has a shadowDOM element", () => {
+      const element = document.createElement("div");
+      element.attachShadow({ mode: "open" });
+
+      const shadowRoot = collectAutofillContentService["getShadowRoot"](element);
+
+      expect(shadowRoot).toBeInstanceOf(ShadowRoot);
+    });
+
     it("returns a value provided by Chrome's openOrClosedShadowRoot API", () => {
       const element = document.createElement("div");
       collectAutofillContentService["getShadowRoot"](element);
