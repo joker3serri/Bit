@@ -52,6 +52,11 @@ export type UserVerificationDialogParams = {
   clientSideOnlyVerification?: boolean;
 };
 
+export type UserVerificationDialogResult = {
+  verificationSuccess: boolean;
+  noAvailableVerificationMethods: boolean;
+};
+
 @Component({
   templateUrl: "user-verification-dialog.component.html",
   standalone: true,
@@ -80,7 +85,7 @@ export class UserVerificationDialogComponent {
 
   constructor(
     @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogParams,
-    private dialogRef: DialogRef<boolean>,
+    private dialogRef: DialogRef<UserVerificationDialogResult>,
     private formBuilder: FormBuilder,
     private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
@@ -88,7 +93,7 @@ export class UserVerificationDialogComponent {
   ) {}
 
   static open(dialogService: DialogService, data: UserVerificationDialogParams) {
-    return dialogService.open<boolean>(UserVerificationDialogComponent, {
+    return dialogService.open<UserVerificationDialogResult>(UserVerificationDialogComponent, {
       data,
     });
   }
@@ -101,7 +106,7 @@ export class UserVerificationDialogComponent {
 
   handleBiometricsVerificationResultChange(biometricsVerificationResult: boolean) {
     if (biometricsVerificationResult) {
-      this.close(true);
+      this.close({ verificationSuccess: true, noAvailableVerificationMethods: false });
 
       // TODO: evaluate how invalid secret should play into biometrics flows.
       // this.invalidSecret = false;
@@ -109,6 +114,12 @@ export class UserVerificationDialogComponent {
   }
 
   submit = async () => {
+    // TODO: come back to this.
+    // if (this.activeClientVerificationOption === ActiveClientVerificationOption.None) {
+    //   this.close({ verificationSuccess: false, noAvailableVerificationMethods: true });
+    //   return;
+    // }
+
     this.verificationForm.markAllAsTouched();
 
     if (this.verificationForm.invalid) {
@@ -125,12 +136,10 @@ export class UserVerificationDialogComponent {
       return;
     }
 
-    // TOOD: change return type to more complex object and include verificationSuccess boolean
-    // and noAvailableVerificationMethods boolean so that the caller can decide what to do next
-    this.close(true);
+    this.close({ verificationSuccess: true, noAvailableVerificationMethods: false });
   };
 
-  close(success: boolean) {
-    this.dialogRef.close(success);
+  close(dialogResult: UserVerificationDialogResult) {
+    this.dialogRef.close(dialogResult);
   }
 }
