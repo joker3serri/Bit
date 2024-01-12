@@ -3,6 +3,7 @@ import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enum";
+import { UserKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
@@ -136,7 +137,14 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   }
 
   private async verifyUserByBiometrics(): Promise<boolean> {
-    const userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
+    let userKey: UserKey;
+    // Biometrics crashes and doesn't return a value if the user cancels the prompt
+    try {
+      userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
+    } catch {
+      // So, any failures should be treated as a failed verification
+      return false;
+    }
 
     return userKey != null;
   }
