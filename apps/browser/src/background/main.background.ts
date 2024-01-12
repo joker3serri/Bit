@@ -497,6 +497,7 @@ export default class MainBackground {
       this.i18nService,
       this.userVerificationApiService,
       this.pinCryptoService,
+      this.logService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);

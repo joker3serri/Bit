@@ -1,6 +1,7 @@
 import { PinCryptoServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin-crypto.service.abstraction";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
+import { LogService } from "../../../platform/abstractions/log.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enum";
 import { UserKey } from "../../../platform/models/domain/symmetric-crypto-key";
@@ -30,6 +31,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     private i18nService: I18nService,
     private userVerificationApiService: UserVerificationApiServiceAbstraction,
     private pinCryptoService: PinCryptoServiceAbstraction,
+    private logService: LogService,
   ) {}
 
   /**
@@ -141,7 +143,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     // Biometrics crashes and doesn't return a value if the user cancels the prompt
     try {
       userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
-    } catch {
+    } catch (e) {
+      this.logService.error(`Biometrics User Verification failed: ${e.message}`);
       // So, any failures should be treated as a failed verification
       return false;
     }

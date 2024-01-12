@@ -629,6 +629,7 @@ import { ModalService } from "./modal.service";
         I18nServiceAbstraction,
         UserVerificationApiServiceAbstraction,
         PinCryptoServiceAbstraction,
+        LoginServiceAbstraction,
       ],
     },
     {
