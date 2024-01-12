@@ -79,9 +79,33 @@ type UserVerificationOptions = {
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class UserVerificationFormInputComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  protected readonly Icons = { UserVerificationBiometricsIcon };
-
   @Input() verificationType: "server" | "client";
+  private _invalidSecret = false;
+  @Input()
+  get invalidSecret() {
+    return this._invalidSecret;
+  }
+  set invalidSecret(value: boolean) {
+    this._invalidSecret = value;
+    this.invalidSecretChange.emit(value);
+
+    // ISSUE: This is pretty hacky but unfortunately there is no way of knowing if the parent
+    // control has been marked as touched, see: https://github.com/angular/angular/issues/10887
+    // When that functionality has been added we should also look into forwarding reactive form
+    // controls errors so that we don't need a separate input/output `invalidSecret`.
+    if (value) {
+      this.secret.markAsTouched();
+    }
+    this.secret.updateValueAndValidity({ emitEvent: false });
+  }
+  @Output() invalidSecretChange = new EventEmitter<boolean>();
+
+  @Output() activeClientVerificationOptionChange =
+    new EventEmitter<ActiveClientVerificationOption>();
+
+  @Output() biometricsVerificationResultChange = new EventEmitter<boolean>();
+
+  readonly Icons = { UserVerificationBiometricsIcon };
 
   // This represents what verification methods are available to the user.
   userVerificationOptions: UserVerificationOptions = {
@@ -125,30 +149,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     return optionsCount >= 2;
   }
 
-  private _invalidSecret = false;
-  @Input()
-  get invalidSecret() {
-    return this._invalidSecret;
-  }
-  set invalidSecret(value: boolean) {
-    this._invalidSecret = value;
-    this.invalidSecretChange.emit(value);
-
-    // ISSUE: This is pretty hacky but unfortunately there is no way of knowing if the parent
-    // control has been marked as touched, see: https://github.com/angular/angular/issues/10887
-    // When that functionality has been added we should also look into forwarding reactive form
-    // controls errors so that we don't need a separate input/output `invalidSecret`.
-    if (value) {
-      this.secret.markAsTouched();
-    }
-    this.secret.updateValueAndValidity({ emitEvent: false });
-  }
-  @Output() invalidSecretChange = new EventEmitter<boolean>();
-
-  @Output() activeClientVerificationOptionChange =
-    new EventEmitter<ActiveClientVerificationOption>();
-
-  @Output() biometricsVerificationResultChange = new EventEmitter<boolean>();
+  biometricsVerificationFailed = false;
 
   disableRequestOTP = false;
   sentCode = false;
@@ -261,16 +262,22 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
 
     // if changing to biometrics, we need to prompt for biometrics
     if (activeClientVerificationOption === "biometrics") {
+      // reset biometrics failed
+      this.biometricsVerificationFailed = false;
       await this.verifyUserViaBiometrics();
     }
   }
 
   async verifyUserViaBiometrics() {
+    this.biometricsVerificationFailed = false;
+
     const biometricsResult = await this.userVerificationService.verifyUser({
       type: VerificationType.Biometrics,
     });
 
     this.biometricsVerificationResultChange.emit(biometricsResult);
+
+    this.biometricsVerificationFailed = !biometricsResult;
   }
 
   requestOTP = async () => {
