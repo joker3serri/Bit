@@ -65,7 +65,7 @@ export class VaultHeaderComponent {
   ) {}
 
   get title() {
-    const headerType = this.flexibleCollectionsEnabled
+    const headerType = this.organization?.flexibleCollections
       ? this.i18nService.t("collections").toLowerCase()
       : this.i18nService.t("vault").toLowerCase();
 
