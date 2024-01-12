@@ -183,11 +183,14 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   async ngOnInit() {
     await this.determineAvailableVerificationMethods();
 
-    this.processChanges(this.secret.value);
+    // Don't bother executing secret changes if biometrics verification is active.
+    if (this.activeClientVerificationOption === ActiveClientVerificationOption.Biometrics) {
+      this.processSecretChanges(this.secret.value);
+    }
 
     this.secret.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((secret: string) => this.processChanges(secret));
+      .subscribe((secret: string) => this.processSecretChanges(secret));
   }
 
   private async determineAvailableVerificationMethods(): Promise<void> {
@@ -315,19 +318,39 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     }
   }
 
-  processChanges(secret: string) {
+  processSecretChanges(secret: string) {
     this.invalidSecret = false;
+
+    // Short circuit secret change handling when biometrics is chosen as biometrics has no secret
+    if (this.activeClientVerificationOption === ActiveClientVerificationOption.Biometrics) {
+      return;
+    }
 
     if (this.onChange == null) {
       return;
     }
 
     this.onChange({
-      type: this.userVerificationOptions.client.masterPassword
-        ? VerificationType.MasterPassword
-        : VerificationType.OTP,
+      type: this.determineVerificationWithSecretType(),
       secret: Utils.isNullOrWhitespace(secret) ? null : secret,
     });
+  }
+
+  private determineVerificationWithSecretType():
+    | VerificationType.MasterPassword
+    | VerificationType.OTP
+    | VerificationType.PIN {
+    if (this.verificationType === "server") {
+      return this.userVerificationOptions.server.masterPassword
+        ? VerificationType.MasterPassword
+        : VerificationType.OTP;
+    } else {
+      // client
+      return this.userVerificationOptions.client.masterPassword &&
+        this.activeClientVerificationOption === ActiveClientVerificationOption.MasterPassword
+        ? VerificationType.MasterPassword
+        : VerificationType.PIN;
+    }
   }
 
   ngOnDestroy(): void {
