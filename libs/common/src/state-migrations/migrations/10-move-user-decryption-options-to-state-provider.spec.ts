@@ -10,12 +10,8 @@ function exampleJSON() {
     global: {
       otherStuff: "otherStuff1",
     },
-    authenticatedAccounts: [
-      "ddc1b996-3f4d-43ac-b273-aef301345c42",
-      "c6bf38fb-82b4-4d7a-a9ba-b06f012822b5",
-      "457539b9-7e61-4f68-be6a-b0cb00f3a87e",
-    ],
-    "ddc1b996-3f4d-43ac-b273-aef301345c42": {
+    authenticatedAccounts: ["FirstAccount", "SecondAccount", "ThirdAccount"],
+    FirstAccount: {
       decryptionOptions: {
         hasMasterPassword: true,
         trustedDeviceOption: {
@@ -32,7 +28,7 @@ function exampleJSON() {
       },
       otherStuff: "otherStuff3",
     },
-    "c6bf38fb-82b4-4d7a-a9ba-b06f012822b5": {
+    SecondAccount: {
       decryptionOptions: {
         hasMasterPassword: false,
         trustedDeviceOption: {
@@ -54,7 +50,7 @@ function exampleJSON() {
 
 function rollbackJSON() {
   return {
-    "user_ddc1b996-3f4d-43ac-b273-aef301345c42_decryptionOptions_userDecryptionOptions": {
+    user_FirstAccount_decryptionOptions_userDecryptionOptions: {
       hasMasterPassword: true,
       trustedDeviceOption: {
         hasAdminApproval: false,
@@ -65,7 +61,7 @@ function rollbackJSON() {
         keyConnectorUrl: "https://keyconnector.bitwarden.com",
       },
     },
-    "user_c6bf38fb-82b4-4d7a-a9ba-b06f012822b5_decryptionOptions_userDecryptionOptions": {
+    user_SecondAccount_decryptionOptions_userDecryptionOptions: {
       hasMasterPassword: false,
       trustedDeviceOption: {
         hasAdminApproval: true,
@@ -76,16 +72,12 @@ function rollbackJSON() {
         keyConnectorUrl: "https://selfhosted.bitwarden.com",
       },
     },
-    "user_457539b9-7e61-4f68-be6a-b0cb00f3a87e_decryptionOptions_userDecryptionOptions": {},
+    user_ThirdAccount_decryptionOptions_userDecryptionOptions: {},
     global: {
       otherStuff: "otherStuff1",
     },
-    authenticatedAccounts: [
-      "ddc1b996-3f4d-43ac-b273-aef301345c42",
-      "c6bf38fb-82b4-4d7a-a9ba-b06f012822b5",
-      "457539b9-7e61-4f68-be6a-b0cb00f3a87e",
-    ],
-    "ddc1b996-3f4d-43ac-b273-aef301345c42": {
+    authenticatedAccounts: ["FirstAccount", "SecondAccount", "ThirdAccount"],
+    FirstAccount: {
       decryptionOptions: {
         hasMasterPassword: true,
         trustedDeviceOption: {
@@ -102,7 +94,7 @@ function rollbackJSON() {
       },
       otherStuff: "otherStuff3",
     },
-    "c6bf38fb-82b4-4d7a-a9ba-b06f012822b5": {
+    SecondAccount: {
       decryptionOptions: {
         hasMasterPassword: false,
         trustedDeviceOption: {
@@ -134,20 +126,19 @@ describe("UserDecryptionOptionsMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      // TODO Are these numbers right?
       helper = mockMigrationHelper(exampleJSON(), 9);
       sut = new UserDecryptionOptionsMigrator(9, 10);
     });
 
     it("should remove decryptionOptions from all accounts", async () => {
       await sut.migrate(helper);
-      expect(helper.set).toHaveBeenCalledWith("ddc1b996-3f4d-43ac-b273-aef301345c42", {
+      expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
         profile: {
           otherStuff: "overStuff2",
         },
         otherStuff: "otherStuff3",
       });
-      expect(helper.set).toHaveBeenCalledWith("c6bf38fb-82b4-4d7a-a9ba-b06f012822b5", {
+      expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
         profile: {
           otherStuff: "otherStuff4",
         },
@@ -158,67 +149,53 @@ describe("UserDecryptionOptionsMigrator", () => {
     it("should set decryptionOptions provider value for each account", async () => {
       await sut.migrate(helper);
 
-      expect(helper.setToUser).toHaveBeenCalledWith(
-        "ddc1b996-3f4d-43ac-b273-aef301345c42",
-        keyDefinitionLike,
-        {
-          hasMasterPassword: true,
-          trustedDeviceOption: {
-            hasAdminApproval: false,
-            hasLoginApprovingDevice: false,
-            hasManageResetPasswordPermission: true,
-          },
-          keyConnectorOption: {
-            keyConnectorUrl: "https://keyconnector.bitwarden.com",
-          },
+      expect(helper.setToUser).toHaveBeenCalledWith("FirstAccount", keyDefinitionLike, {
+        hasMasterPassword: true,
+        trustedDeviceOption: {
+          hasAdminApproval: false,
+          hasLoginApprovingDevice: false,
+          hasManageResetPasswordPermission: true,
         },
-      );
-
-      expect(helper.setToUser).toHaveBeenCalledWith(
-        "c6bf38fb-82b4-4d7a-a9ba-b06f012822b5",
-        keyDefinitionLike,
-        {
-          hasMasterPassword: false,
-          trustedDeviceOption: {
-            hasAdminApproval: true,
-            hasLoginApprovingDevice: true,
-            hasManageResetPasswordPermission: true,
-          },
-          keyConnectorOption: {
-            keyConnectorUrl: "https://selfhosted.bitwarden.com",
-          },
+        keyConnectorOption: {
+          keyConnectorUrl: "https://keyconnector.bitwarden.com",
         },
-      );
+      });
 
-      expect(helper.setToUser).toHaveBeenCalledWith(
-        "457539b9-7e61-4f68-be6a-b0cb00f3a87e",
-        keyDefinitionLike,
-        {},
-      );
+      expect(helper.setToUser).toHaveBeenCalledWith("SecondAccount", keyDefinitionLike, {
+        hasMasterPassword: false,
+        trustedDeviceOption: {
+          hasAdminApproval: true,
+          hasLoginApprovingDevice: true,
+          hasManageResetPasswordPermission: true,
+        },
+        keyConnectorOption: {
+          keyConnectorUrl: "https://selfhosted.bitwarden.com",
+        },
+      });
+
+      expect(helper.setToUser).toHaveBeenCalledWith("ThirdAccount", keyDefinitionLike, undefined);
     });
   });
 
   describe("rollback", () => {
     beforeEach(() => {
-      // TODO Are these numbers right?
       helper = mockMigrationHelper(rollbackJSON(), 9);
       sut = new UserDecryptionOptionsMigrator(9, 10);
     });
 
-    it.each([
-      "ddc1b996-3f4d-43ac-b273-aef301345c42",
-      "c6bf38fb-82b4-4d7a-a9ba-b06f012822b5",
-      "457539b9-7e61-4f68-be6a-b0cb00f3a87e",
-    ])("should null out new values", async (userId) => {
-      await sut.rollback(helper);
+    it.each(["FirstAccount", "SecondAccount", "ThirdAccount"])(
+      "should null out new values",
+      async (userId) => {
+        await sut.rollback(helper);
 
-      expect(helper.setToUser).toHaveBeenCalledWith(userId, keyDefinitionLike, null);
-    });
+        expect(helper.setToUser).toHaveBeenCalledWith(userId, keyDefinitionLike, null);
+      },
+    );
 
     it("should add explicit value back to accounts", async () => {
       await sut.rollback(helper);
 
-      expect(helper.set).toHaveBeenCalledWith("ddc1b996-3f4d-43ac-b273-aef301345c42", {
+      expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
         decryptionOptions: {
           hasMasterPassword: true,
           trustedDeviceOption: {
@@ -235,7 +212,7 @@ describe("UserDecryptionOptionsMigrator", () => {
         },
         otherStuff: "otherStuff3",
       });
-      expect(helper.set).toHaveBeenCalledWith("c6bf38fb-82b4-4d7a-a9ba-b06f012822b5", {
+      expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
         decryptionOptions: {
           hasMasterPassword: false,
           trustedDeviceOption: {
@@ -257,7 +234,7 @@ describe("UserDecryptionOptionsMigrator", () => {
     it("should not try to restore values to missing accounts", async () => {
       await sut.rollback(helper);
 
-      expect(helper.set).not.toHaveBeenCalledWith("457539b9-7e61-4f68-be6a-b0cb00f3a87e", any());
+      expect(helper.set).not.toHaveBeenCalledWith("ThirdAccount", any());
     });
   });
 });

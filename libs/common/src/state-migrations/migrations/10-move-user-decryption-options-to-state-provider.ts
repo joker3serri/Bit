@@ -29,7 +29,7 @@ export class UserDecryptionOptionsMigrator extends Migrator<9, 10> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
       const value = account?.decryptionOptions;
-      await helper.setToUser(userId, USER_DECRYPTION_OPTIONS, value ?? {});
+      await helper.setToUser(userId, USER_DECRYPTION_OPTIONS, value);
       if (value != null) {
         delete account.decryptionOptions;
       }
@@ -46,7 +46,7 @@ export class UserDecryptionOptionsMigrator extends Migrator<9, 10> {
         USER_DECRYPTION_OPTIONS,
       );
       if (account) {
-        account.decryptionOptions = Object.assign(account.decryptionOptions ?? {}, value);
+        account.decryptionOptions = Object.assign(account.decryptionOptions, value);
         await helper.set(userId, account);
       }
       await helper.setToUser(userId, USER_DECRYPTION_OPTIONS, null);
