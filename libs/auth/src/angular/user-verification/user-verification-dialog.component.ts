@@ -15,6 +15,8 @@ import {
   DialogService,
 } from "@bitwarden/components";
 
+import { ButtonType } from "../../../../components/src/shared/button-like.abstraction";
+
 import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
 import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
 
@@ -29,19 +31,24 @@ export type UserVerificationCalloutOptions = {
   type: "warning" | "danger" | "error" | "tip";
 };
 
+export type UserVerificationConfirmButtonOptions = {
+  text: string;
+  type: ButtonType;
+};
+
 /**
  * Parameters for configuring the user verification dialog.
  * @param {string} [dialogTitle] - The title of the dialog. Optional. Defaults to "Verification required"
  * @param {string} [dialogBodyText] - The body text of the dialog. Optional.
  * @param {UserVerificationCalloutOptions} [calloutOptions] - The options for a callout to be displayed in the dialog body below the body text. Optional.
- * @param {string} [confirmButtonText] - The text of the confirm button. Optional. Defaults to "Submit"
+ * @param {UserVerificationConfirmButtonOptions} [confirmButtonOptions] - The options for the confirm button. Optional. The default text is "Submit" and the default type is "primary".
  * @param {boolean} [clientSideOnlyVerification] - Indicates whether the verification is only performed client-side. Optional.
  */
 export type UserVerificationDialogParams = {
   dialogTitle?: string;
   dialogBodyText?: string;
   calloutOptions?: UserVerificationCalloutOptions;
-  confirmButtonText?: string;
+  confirmButtonOptions?: UserVerificationConfirmButtonOptions;
   clientSideOnlyVerification?: boolean;
 };
 

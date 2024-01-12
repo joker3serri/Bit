@@ -25,21 +25,33 @@
       ></app-user-verification-form-input>
     </ng-container>
     <ng-container bitDialogFooter>
-      <!-- TODO: make button types configurable -->
-
-      <button
-        type="submit"
-        bitButton
-        bitFormButton
-        buttonType="primary"
+      <!-- Confirm button container -->
+      <ng-container
         *ngIf="activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics"
       >
-        {{
-          dialogParams.confirmButtonText
-            ? (dialogParams.confirmButtonText | i18n)
-            : ("defaultUserVerificationDialogConfirmBtnText" | i18n)
-        }}
-      </button>
+        <!-- Default confirm button -->
+        <button
+          *ngIf="!dialogParams.confirmButtonOptions"
+          type="submit"
+          bitButton
+          bitFormButton
+          buttonType="primary"
+        >
+          {{ "defaultUserVerificationDialogConfirmBtnText" | i18n }}
+        </button>
+
+        <!-- Custom confirm button -->
+        <button
+          *ngIf="dialogParams.confirmButtonOptions"
+          type="submit"
+          bitButton
+          bitFormButton
+          [buttonType]="dialogParams.confirmButtonOptions.type"
+        >
+          {{ dialogParams.confirmButtonOptions.text | i18n }}
+        </button>
+      </ng-container>
+
       <button type="button" bitButton bitFormButton buttonType="secondary" bitDialogClose>
         {{ "cancel" | i18n }}
       </button>
