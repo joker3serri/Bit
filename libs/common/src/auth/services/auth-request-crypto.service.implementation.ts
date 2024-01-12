@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { Utils } from "../../platform/misc/utils";
 import {
@@ -5,11 +7,17 @@ import {
   SymmetricCryptoKey,
   MasterKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
+import { AccountService } from "../abstractions/account.service";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
 
 export class AuthRequestCryptoServiceImplementation implements AuthRequestCryptoServiceAbstraction {
-  constructor(private cryptoService: CryptoService) {}
+  constructor(
+    private accountService: AccountService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    private cryptoService: CryptoService,
+  ) {}
 
   async setUserKeyAfterDecryptingSharedUserKey(
     authReqResponse: AuthRequestResponse,
@@ -36,8 +44,9 @@ export class AuthRequestCryptoServiceImplementation implements AuthRequestCrypto
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
 
     // Set masterKey + masterKeyHash in state after decryption (in case decryption fails)
-    await this.cryptoService.setMasterKey(masterKey);
-    await this.cryptoService.setMasterKeyHash(masterKeyHash);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+    await this.masterPasswordService.setMasterKey(masterKey, userId);
+    await this.masterPasswordService.setMasterKeyHash(masterKeyHash, userId);
 
     await this.cryptoService.setUserKey(userKey);
   }

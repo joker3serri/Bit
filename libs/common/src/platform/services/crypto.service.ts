@@ -7,7 +7,7 @@ import { ProfileOrganizationResponse } from "../../admin-console/models/response
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 import { AccountService } from "../../auth/abstractions/account.service";
-import { MasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
@@ -52,7 +52,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   readonly everHadUserKey$;
 
   constructor(
-    protected masterPasswordService: MasterPasswordServiceAbstraction,
+    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected cryptoFunctionService: CryptoFunctionService,
     protected encryptService: EncryptService,
     protected platformUtilService: PlatformUtilsService,
@@ -313,7 +313,10 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async compareAndUpdateKeyHash(masterPassword: string, masterKey: MasterKey): Promise<boolean> {
-    const storedPasswordHash = await this.getMasterKeyHash();
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const storedPasswordHash = await firstValueFrom(
+      this.masterPasswordService.masterKeyHash$(userId),
+    );
     if (masterPassword != null && storedPasswordHash != null) {
       const localKeyHash = await this.hashMasterKey(
         masterPassword,
@@ -331,7 +334,7 @@ export class CryptoService implements CryptoServiceAbstraction {
         HashPurpose.ServerAuthorization,
       );
       if (serverKeyHash != null && storedPasswordHash === serverKeyHash) {
-        await this.setMasterKeyHash(localKeyHash);
+        await this.masterPasswordService.setMasterKeyHash(localKeyHash, userId);
         return true;
       }
     }
@@ -647,6 +650,9 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearKeys(userId?: UserId): Promise<any> {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    await this.masterPasswordService.setMasterKeyHash(null, userId);
+
     await this.clearUserKey(true, userId);
     await this.clearMasterKeyHash(userId);
     await this.clearOrgKeys(false, userId);

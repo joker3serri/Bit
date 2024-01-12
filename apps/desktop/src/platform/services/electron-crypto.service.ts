@@ -1,5 +1,5 @@
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -21,7 +21,7 @@ import { ElectronStateService } from "./electron-state.service.abstraction";
 
 export class ElectronCryptoService extends CryptoService {
   constructor(
-    masterPasswordService: MasterPasswordServiceAbstraction,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     cryptoFunctionService: CryptoFunctionService,
     encryptService: EncryptService,
     platformUtilsService: PlatformUtilsService,

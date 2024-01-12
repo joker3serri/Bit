@@ -1,5 +1,6 @@
 import { mock } from "jest-mock-extended";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { Utils } from "../../platform/misc/utils";
 import {
@@ -7,21 +8,33 @@ import {
   SymmetricCryptoKey,
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
+import { UserId } from "../../types/guid";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
 
 import { AuthRequestCryptoServiceImplementation } from "./auth-request-crypto.service.implementation";
+import { FakeMasterPasswordService } from "./master-password/fake-master-password.service";
 
 describe("AuthRequestCryptoService", () => {
   let authReqCryptoService: AuthRequestCryptoServiceAbstraction;
+  let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
   const cryptoService = mock<CryptoService>();
   let mockPrivateKey: Uint8Array;
+  const mockUserId = Utils.newGuid() as UserId;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
 
-    authReqCryptoService = new AuthRequestCryptoServiceImplementation(cryptoService);
+    accountService = mockAccountServiceWith(mockUserId);
+    masterPasswordService = new FakeMasterPasswordService();
+
+    authReqCryptoService = new AuthRequestCryptoServiceImplementation(
+      accountService,
+      masterPasswordService,
+      cryptoService,
+    );
 
     mockPrivateKey = new Uint8Array(64);
   });
@@ -78,8 +91,8 @@ describe("AuthRequestCryptoService", () => {
           masterKeyHash: mockDecryptedMasterKeyHash,
         });
 
-      cryptoService.setMasterKey.mockResolvedValueOnce(undefined);
-      cryptoService.setMasterKeyHash.mockResolvedValueOnce(undefined);
+      masterPasswordService.masterKeySubject.next(undefined);
+      masterPasswordService.masterKeyHashSubject.next(undefined);
       cryptoService.decryptUserKeyWithMasterKey.mockResolvedValueOnce(mockDecryptedUserKey);
       cryptoService.setUserKey.mockResolvedValueOnce(undefined);
 
@@ -95,10 +108,18 @@ describe("AuthRequestCryptoService", () => {
         mockAuthReqResponse.masterPasswordHash,
         mockPrivateKey,
       );
-      expect(cryptoService.setMasterKey).toBeCalledWith(mockDecryptedMasterKey);
-      expect(cryptoService.setMasterKeyHash).toBeCalledWith(mockDecryptedMasterKeyHash);
-      expect(cryptoService.decryptUserKeyWithMasterKey).toBeCalledWith(mockDecryptedMasterKey);
-      expect(cryptoService.setUserKey).toBeCalledWith(mockDecryptedUserKey);
+      expect(masterPasswordService.mock.setMasterKey).toHaveBeenCalledWith(
+        mockDecryptedMasterKey,
+        mockUserId,
+      );
+      expect(masterPasswordService.mock.setMasterKeyHash).toHaveBeenCalledWith(
+        mockDecryptedMasterKeyHash,
+        mockUserId,
+      );
+      expect(cryptoService.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(
+        mockDecryptedMasterKey,
+      );
+      expect(cryptoService.setUserKey).toHaveBeenCalledWith(mockDecryptedUserKey);
     });
   });
 

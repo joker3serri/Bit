@@ -113,8 +113,11 @@ describe("AuthRequestLoginStrategy", () => {
 
     await authRequestLoginStrategy.logIn(credentials);
 
-    expect(cryptoService.setMasterKey).toHaveBeenCalledWith(masterKey);
-    expect(cryptoService.setMasterKeyHash).toHaveBeenCalledWith(decMasterKeyHash);
+    expect(masterPasswordService.mock.setMasterKey).toHaveBeenCalledWith(masterKey, mockUserId);
+    expect(masterPasswordService.mock.setMasterKeyHash).toHaveBeenCalledWith(
+      decMasterKeyHash,
+      mockUserId,
+    );
     expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(tokenResponse.key);
     expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
     expect(deviceTrustCryptoService.trustDeviceIfRequired).toHaveBeenCalled();
@@ -136,8 +139,8 @@ describe("AuthRequestLoginStrategy", () => {
     await authRequestLoginStrategy.logIn(credentials);
 
     // setMasterKey and setMasterKeyHash should not be called
-    expect(cryptoService.setMasterKey).not.toHaveBeenCalled();
-    expect(cryptoService.setMasterKeyHash).not.toHaveBeenCalled();
+    expect(masterPasswordService.mock.setMasterKey).not.toHaveBeenCalled();
+    expect(masterPasswordService.mock.setMasterKeyHash).not.toHaveBeenCalled();
 
     // setMasterKeyEncryptedUserKey, setUserKey, and setPrivateKey should still be called
     expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(tokenResponse.key);

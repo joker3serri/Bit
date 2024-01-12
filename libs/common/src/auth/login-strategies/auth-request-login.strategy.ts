@@ -96,8 +96,15 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
       this.authRequestCredentials.decryptedMasterKey &&
       this.authRequestCredentials.decryptedMasterKeyHash
     ) {
-      await this.cryptoService.setMasterKey(this.authRequestCredentials.decryptedMasterKey);
-      await this.cryptoService.setMasterKeyHash(this.authRequestCredentials.decryptedMasterKeyHash);
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      await this.masterPasswordService.setMasterKey(
+        this.authRequestCredentials.decryptedMasterKey,
+        userId,
+      );
+      await this.masterPasswordService.setMasterKeyHash(
+        this.authRequestCredentials.decryptedMasterKeyHash,
+        userId,
+      );
     }
   }
 
