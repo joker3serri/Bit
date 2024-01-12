@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { map, switchMap } from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -15,7 +16,6 @@ import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
 import { ExportComponent } from "../../../../tools/vault-export/export.component";
-import { map, switchMap } from "rxjs";
 
 @Component({
   selector: "app-org-export",
