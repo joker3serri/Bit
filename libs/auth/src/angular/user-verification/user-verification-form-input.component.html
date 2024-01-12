@@ -76,7 +76,10 @@
     >
       <p class="tw-mb-1">Need a different method?</p>
       <button
-        *ngIf="userVerificationOptions.client.masterPassword"
+        *ngIf="
+          userVerificationOptions.client.masterPassword &&
+          activeClientVerificationOption !== ActiveClientVerificationOption.MasterPassword
+        "
         type="button"
         class="tw-mb-1"
         bitLink
@@ -86,7 +89,10 @@
         Use master password
       </button>
       <button
-        *ngIf="userVerificationOptions.client.pin"
+        *ngIf="
+          userVerificationOptions.client.pin &&
+          activeClientVerificationOption !== ActiveClientVerificationOption.Pin
+        "
         type="button"
         class="tw-mb-1"
         bitLink
@@ -96,7 +102,10 @@
         Use PIN
       </button>
       <button
-        *ngIf="userVerificationOptions.client.biometrics"
+        *ngIf="
+          userVerificationOptions.client.biometrics &&
+          activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics
+        "
         type="button"
         bitLink
         linkType="primary"
