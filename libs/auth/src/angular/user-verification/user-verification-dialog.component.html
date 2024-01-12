@@ -12,7 +12,9 @@
         {{ dialogParams.dialogBodyText | i18n }}
       </p>
 
-      <!-- TODO: add optional call out with configurable - default to warning if not provided -->
+      <app-callout *ngIf="dialogParams.calloutOptions" [type]="dialogParams.calloutOptions.type">
+        {{ dialogParams.calloutOptions.text | i18n }}
+      </app-callout>
 
       <app-user-verification-form-input
         [(invalidSecret)]="invalidSecret"

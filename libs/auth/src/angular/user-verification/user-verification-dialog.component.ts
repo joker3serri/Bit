@@ -19,15 +19,28 @@ import { ActiveClientVerificationOption } from "./active-client-verification-opt
 import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
 
 /**
+ * Options for configuring the callout to be displayed in the dialog body below the
+ * optional body text.
+ * @param {string} text - The text of the callout.
+ * @param {string} type - The type of the callout.
+ */
+export type UserVerificationCalloutOptions = {
+  text: string;
+  type: "warning" | "danger" | "error" | "tip";
+};
+
+/**
  * Parameters for configuring the user verification dialog.
  * @param {string} [dialogTitle] - The title of the dialog. Optional. Defaults to "Verification required"
  * @param {string} [dialogBodyText] - The body text of the dialog. Optional.
+ * @param {UserVerificationCalloutOptions} [calloutOptions] - The options for a callout to be displayed in the dialog body below the body text. Optional.
  * @param {string} [confirmButtonText] - The text of the confirm button. Optional. Defaults to "Submit"
  * @param {boolean} [clientSideOnlyVerification] - Indicates whether the verification is only performed client-side. Optional.
  */
 export type UserVerificationDialogParams = {
   dialogTitle?: string;
   dialogBodyText?: string;
+  calloutOptions?: UserVerificationCalloutOptions;
   confirmButtonText?: string;
   clientSideOnlyVerification?: boolean;
 };
