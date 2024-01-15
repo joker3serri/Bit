@@ -14,6 +14,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
@@ -45,6 +46,7 @@ export class ExportComponent extends BaseExportComponent {
     dialogService: DialogService,
     organizationService: OrganizationService,
     protected configService: ConfigServiceAbstraction,
+    collectionService: CollectionService,
   ) {
     super(
       i18nService,
@@ -58,6 +60,8 @@ export class ExportComponent extends BaseExportComponent {
       fileDownloadService,
       dialogService,
       organizationService,
+      configService,
+      collectionService,
     );
   }
 

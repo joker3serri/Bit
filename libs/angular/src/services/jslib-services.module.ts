@@ -558,6 +558,7 @@ import { ModalService } from "./modal.service";
         CryptoServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         StateServiceAbstraction,
+        CollectionServiceAbstraction,
       ],
     },
     {
