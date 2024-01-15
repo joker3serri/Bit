@@ -1075,7 +1075,7 @@
     "message": "Eksportér"
   },
   "exportFrom": {
-    "message": "Export from"
+    "message": "Eksportér fra"
   },
   "exportVault": {
     "message": "Eksportér boks"
@@ -3548,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Der kan ikke inviteres flere end $COUNT$ brugere uden en abonnementsopgradering. Kontakt Kundesupport vedr. opgradering.",
+  "subscriptionUpgrade": {
+    "message": "Der kan ikke inviteres flere end $COUNT$ brugere uden en abonnementsopgradering.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -3827,15 +3827,6 @@
   },
   "couldNotChargeCardPayInvoice": {
     "message": "Dit betalingskort kunne ikke debiteres. Se og betal den ubetalte faktura vist nedenfor."
-  },
-  "inAppPurchase": {
-    "message": "In-app køb"
-  },
-  "cannotPerformInAppPurchase": {
-    "message": "Denne handling kan ikke udføres under brug af 'in-app' betalingsmetoden."
-  },
-  "manageSubscriptionFromStore": {
-    "message": "Dit abonnement skal håndteres fra den butik, hvori in-app købet blev foretaget."
   },
   "minLength": {
     "message": "Minimumslængde"
@@ -6668,7 +6659,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter-abonnementer kan have op til $SEATCOUNT$ medlemmer. Kontakt kundesupporten for at opgradere abonnementet og invitere flere medlemmer.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7395,6 +7386,9 @@
   "alreadyHaveAccount": {
     "message": "Har allerede en konto?"
   },
+  "skipToContent": {
+    "message": "Spring til indhold"
+  },
   "customBillingStart": {
     "message": "Tilpasset fakturering afspejles ikke. Besøg "
   },
@@ -7444,7 +7438,17 @@
   "collectionAccessRestricted": {
     "message": "Adgang til samling er begrænset"
   },
+  "grantCollectionAccess": {
+    "message": "Tildel grupper eller medlemmer adgang til denne samling."
+  },
+  "adminCollectionAccess": {
+    "message": "Administratorer kan tilgå og håndtere samlinger."
+  },
   "serviceAccountAccessUpdated": {
     "message": "Tjenestekontoadgang opdateret"
+  },
+  "commonImportFormats": {
+    "message": "Almindelige formater",
+    "description": "Label indicating the most common import formats"
   }
 }

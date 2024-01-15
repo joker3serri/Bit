@@ -2427,6 +2427,9 @@
   "submenu": {
     "message": "Podmenu"
   },
+  "skipToContent": {
+    "message": "Przejdź do treści"
+  },
   "typePasskey": {
     "message": "Passkey"
   },
@@ -2613,5 +2616,9 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Włóż YubiKey powiązany z Twoim kontem LastPass do portu USB komputera, a następnie naciśnij jego przycisk."
+  },
+  "commonImportFormats": {
+    "message": "Popularne formaty",
+    "description": "Label indicating the most common import formats"
   }
 }

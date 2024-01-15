@@ -2958,7 +2958,7 @@
     }
   },
   "autofilledItemId": {
-    "message": "$ID$ elementua auto-betea.",
+    "message": "$ID$ elementua automatikoki bete da.",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -3548,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Ezin dituzu $COUNT$ erabiltzaile baino gehiago gonbidatu zure plana aldatu gabe. Mesedez, jarri bezeroaren arretarekin haremanetan.",
+  "subscriptionUpgrade": {
+    "message": "You cannot invite more than $COUNT$ members without upgrading your plan.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -3827,15 +3827,6 @@
   },
   "couldNotChargeCardPayInvoice": {
     "message": "Ezin izan dugu zure txartelean kargatu. Mesedez, ikusi eta ordaindu ondoren agertzen den ordaindu gabeko faktura."
-  },
-  "inAppPurchase": {
-    "message": "Aplikaziotik ordaindu"
-  },
-  "cannotPerformInAppPurchase": {
-    "message": "Ezin da ekintza hau egin aplikaziotik erosketa ordaintzeko modu bat erabiltzen ari zaren bitartean."
-  },
-  "manageSubscriptionFromStore": {
-    "message": "Aplikaziotik erosketa egin zenuen gunetik kudeatu behar duzu harpidetza."
   },
   "minLength": {
     "message": "Gutxieneko luzera"
@@ -5093,7 +5084,7 @@
     "message": "Erakundeko politika batek edo gehiagok kutxa gotorra esportatzea galarazten dute."
   },
   "activateAutofill": {
-    "message": "Activate auto-fill"
+    "message": "Gaitu betetze automatikoa"
   },
   "activateAutofillPolicyDesc": {
     "message": "Activate the auto-fill on page load setting on the browser extension for all existing and new members."
@@ -5102,7 +5093,7 @@
     "message": "Compromised or untrusted websites can exploit auto-fill on page load."
   },
   "learnMoreAboutAutofill": {
-    "message": "Learn more about auto-fill"
+    "message": "Automatikoki betetzeari buruzko informazio gehiago"
   },
   "selectType": {
     "message": "Aukeratu SSO mota"
@@ -6668,7 +6659,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Contact Customer Support to upgrade your plan and invite more members.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7395,6 +7386,9 @@
   "alreadyHaveAccount": {
     "message": "Already have an account?"
   },
+  "skipToContent": {
+    "message": "Skip to content"
+  },
   "customBillingStart": {
     "message": "Custom billing is not reflected. Visit the "
   },
@@ -7444,7 +7438,17 @@
   "collectionAccessRestricted": {
     "message": "Collection access is restricted"
   },
+  "grantCollectionAccess": {
+    "message": "Grant groups or members access to this collection."
+  },
+  "adminCollectionAccess": {
+    "message": "Administrators can access and manage collections."
+  },
   "serviceAccountAccessUpdated": {
     "message": "Service account access updated"
+  },
+  "commonImportFormats": {
+    "message": "Common formats",
+    "description": "Label indicating the most common import formats"
   }
 }

@@ -216,8 +216,6 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.setImportOptions();
 
     await this.initializeOrganizations();
-    await this.handlePolicies();
-
     if (this.organizationId && this.isUserAdmin(this.organizationId)) {
       this.handleOrganizationImport();
     } else {
@@ -229,31 +227,8 @@ export class ImportComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.format = value;
       });
-  }
 
-  private async initializeOrganizations() {
-    this.organizations$ = concat(
-      this.organizationService.memberOrganizations$.pipe(
-        (await firstValueFrom(this.flexibleCollectionsEnabled$))
-          ? canAccessImport(this.i18nService)
-          : canAccessImportExport(this.i18nService),
-        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
-      ),
-    );
-  }
-
-  private async handlePolicies() {
-    combineLatest([
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
-      this.organizations$,
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([policyApplies, orgs]) => {
-        this._importBlockedByPolicy = policyApplies;
-        if (policyApplies && orgs.length == 0) {
-          this.formGroup.disable();
-        }
-      });
+    await this.handlePolicies();
   }
 
   private handleOrganizationImport() {
@@ -298,8 +273,38 @@ export class ImportComponent implements OnInit, OnDestroy {
           );
         }
       });
-
     this.formGroup.controls.vaultSelector.setValue("myVault");
+  }
+
+  private async initializeOrganizations() {
+    this.organizations$ = concat(
+      this.organizationService.memberOrganizations$.pipe(
+        (await firstValueFrom(this.flexibleCollectionsEnabled$))
+          ? canAccessImport(this.i18nService)
+          : canAccessImportExport(this.i18nService),
+        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+      ),
+    );
+  }
+
+  private async handlePolicies() {
+    combineLatest([
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+      this.organizations$,
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([policyApplies, orgs]) => {
+        this._importBlockedByPolicy = policyApplies;
+        if (policyApplies && orgs.length == 0) {
+          this.formGroup.disable();
+        }
+
+        // If there are orgs the user has access to import into set
+        // the default value to the first org in the collection.
+        if (policyApplies && orgs.length > 0) {
+          this.formGroup.controls.vaultSelector.setValue(orgs[0].id);
+        }
+      });
   }
 
   submit = async () => {
@@ -413,13 +418,8 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   protected setImportOptions() {
-    this.featuredImportOptions = [
-      {
-        id: null,
-        name: "-- " + this.i18nService.t("select") + " --",
-      },
-      ...this.importService.featuredImportOptions,
-    ];
+    this.featuredImportOptions = [...this.importService.featuredImportOptions];
+
     this.importOptions = [...this.importService.regularImportOptions].sort((a, b) => {
       if (a.name == null && b.name != null) {
         return -1;
@@ -516,7 +516,7 @@ export class ImportComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.importBlockedByPolicy && (await firstValueFrom(this.organizations$)).length == 0) {
+    if (this.importBlockedByPolicy && this.organizationId == null) {
       this.platformUtilsService.showToast(
         "error",
         null,

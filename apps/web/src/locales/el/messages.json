@@ -3548,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Δεν μπορείτε να προσκαλέσετε περισσότερους από $COUNT$ χρήστες χωρίς αναβάθμιση του προγράμματός σας. Επικοινωνήστε με την Υποστήριξη πελατών για αναβάθμιση.",
+  "subscriptionUpgrade": {
+    "message": "You cannot invite more than $COUNT$ members without upgrading your plan.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -3827,15 +3827,6 @@
   },
   "couldNotChargeCardPayInvoice": {
     "message": "Δεν ήταν δυνατή η χρέωση της κάρτας σας. Παρακαλούμε δείτε και πληρώστε το μη πληρωθέν παραστατικό που παρατίθεται παρακάτω."
-  },
-  "inAppPurchase": {
-    "message": "Αγορές εντός εφαρμογής"
-  },
-  "cannotPerformInAppPurchase": {
-    "message": "Δεν μπορείτε να εκτελέσετε αυτήν την ενέργεια κατά τη χρήση μεθόδου αγοράς και πληρωμής μέσω εφαρμογής."
-  },
-  "manageSubscriptionFromStore": {
-    "message": "Πρέπει να διαχειριστείτε τη συνδρομή σας από το κατάστημα όπου έγινε η αγορά σας μέσω εφαρμογής."
   },
   "minLength": {
     "message": "Ελάχιστο Μήκος"
@@ -6668,7 +6659,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Contact Customer Support to upgrade your plan and invite more members.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7395,6 +7386,9 @@
   "alreadyHaveAccount": {
     "message": "Already have an account?"
   },
+  "skipToContent": {
+    "message": "Skip to content"
+  },
   "customBillingStart": {
     "message": "Custom billing is not reflected. Visit the "
   },
@@ -7444,7 +7438,17 @@
   "collectionAccessRestricted": {
     "message": "Collection access is restricted"
   },
+  "grantCollectionAccess": {
+    "message": "Grant groups or members access to this collection."
+  },
+  "adminCollectionAccess": {
+    "message": "Administrators can access and manage collections."
+  },
   "serviceAccountAccessUpdated": {
     "message": "Service account access updated"
+  },
+  "commonImportFormats": {
+    "message": "Common formats",
+    "description": "Label indicating the most common import formats"
   }
 }
