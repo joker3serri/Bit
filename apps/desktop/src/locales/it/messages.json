@@ -403,6 +403,9 @@
   "length": {
     "message": "Lunghezza"
   },
+  "passwordMinLength": {
+    "message": "Lunghezza minima della password"
+  },
   "uppercase": {
     "message": "Maiuscole (A-Z)"
   },
@@ -2424,6 +2427,9 @@
   "submenu": {
     "message": "Sottomenu"
   },
+  "skipToContent": {
+    "message": "Vai al contenuto"
+  },
   "typePasskey": {
     "message": "Passkey"
   },
@@ -2610,5 +2616,9 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Inserisci la tua YubiKey associata al tuo account LastPass nella porta USB del computer, poi premi il suo bottone."
+  },
+  "commonImportFormats": {
+    "message": "Formati comuni",
+    "description": "Label indicating the most common import formats"
   }
 }

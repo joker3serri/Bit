@@ -10,16 +10,12 @@ import AutofillField from "../models/autofill-field";
 import AutofillOverlayButtonIframe from "../overlay/iframe-content/autofill-overlay-button-iframe";
 import AutofillOverlayListIframe from "../overlay/iframe-content/autofill-overlay-list-iframe";
 import { ElementWithOpId, FillableFormFieldElement, FormFieldElement } from "../types";
+import { generateRandomCustomElementName, sendExtensionMessage, setElementStyles } from "../utils";
 import {
   AutofillOverlayElement,
   RedirectFocusDirection,
   AutofillOverlayVisibility,
 } from "../utils/autofill-overlay.enum";
-import {
-  generateRandomCustomElementName,
-  sendExtensionMessage,
-  setElementStyles,
-} from "../utils/utils";
 
 import {
   AutofillOverlayContentService as AutofillOverlayContentServiceInterface,
@@ -32,9 +28,10 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   isCurrentlyFilling = false;
   isOverlayCiphersPopulated = false;
   pageDetailsUpdateRequired = false;
+  autofillOverlayVisibility: number;
   private readonly findTabs = tabbable;
   private readonly sendExtensionMessage = sendExtensionMessage;
-  private autofillOverlayVisibility: number;
+  private formFieldElements: Set<ElementWithOpId<FormFieldElement>> = new Set([]);
   private userFilledFields: Record<string, FillableFormFieldElement> = {};
   private authStatus: AuthenticationStatus;
   private focusableElements: FocusableElement[] = [];
@@ -47,6 +44,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   private userInteractionEventTimeout: NodeJS.Timeout;
   private overlayElementsMutationObserver: MutationObserver;
   private bodyElementMutationObserver: MutationObserver;
+  private documentElementMutationObserver: MutationObserver;
   private mutationObserverIterations = 0;
   private mutationObserverIterationsResetTimeout: NodeJS.Timeout;
   private autofillFieldKeywordsMap: WeakMap<AutofillField, string> = new WeakMap();
@@ -85,6 +83,8 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     if (this.isIgnoredField(autofillFieldData)) {
       return;
     }
+
+    this.formFieldElements.add(formFieldElement);
 
     if (!this.autofillOverlayVisibility) {
       await this.getAutofillOverlayVisibility();
@@ -747,7 +747,6 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     this.overlayButtonElement = globalThis.document.createElement(customElementName);
 
     this.updateCustomElementDefaultStyles(this.overlayButtonElement);
-    this.moveDocumentElementChildrenToBody(globalThis.document.documentElement.childNodes);
   }
 
   /**
@@ -900,13 +899,6 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     this.bodyElementMutationObserver = new MutationObserver(
       this.handleBodyElementMutationObserverUpdate,
     );
-
-    const documentElementMutationObserver = new MutationObserver(
-      this.handleDocumentElementMutationObserverUpdate,
-    );
-    documentElementMutationObserver.observe(globalThis.document.documentElement, {
-      childList: true,
-    });
   };
 
   /**
@@ -1035,51 +1027,6 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   };
 
   /**
-   * Handles the mutation observer update for the document element. This
-   * method will ensure that any elements added to the document element
-   * are appended to the body element.
-   *
-   * @param mutationRecords - The mutation records that triggered the update.
-   */
-  private handleDocumentElementMutationObserverUpdate = (mutationRecords: MutationRecord[]) => {
-    if (
-      (!this.overlayButtonElement && !this.overlayListElement) ||
-      this.isTriggeringExcessiveMutationObserverIterations()
-    ) {
-      return;
-    }
-
-    for (const record of mutationRecords) {
-      if (record.type !== "childList" || record.addedNodes.length === 0) {
-        continue;
-      }
-
-      this.moveDocumentElementChildrenToBody(record.addedNodes);
-    }
-  };
-
-  /**
-   * Moves the passed nodes to the body element. This method is used to ensure that
-   * any elements added to the document element are higher in the DOM than the overlay
-   * elements.
-   *
-   * @param nodes - The nodes to move to the body element.
-   */
-  private moveDocumentElementChildrenToBody(nodes: NodeList) {
-    const ignoredElements = new Set([globalThis.document.body, globalThis.document.head]);
-    for (const node of nodes) {
-      if (ignoredElements.has(node as HTMLElement)) {
-        continue;
-      }
-
-      // This is a workaround for an issue where the document element's children
-      // are not appended to the body element. This forces the children to be
-      // appended on the next tick of the event loop.
-      setTimeout(() => globalThis.document.body.appendChild(node), 0);
-    }
-  }
-
-  /**
    * Identifies if the mutation observer is triggering excessive iterations.
    * Will trigger a blur of the most recently focused field and remove the
    * autofill overlay if any set mutation observer is triggering
@@ -1116,6 +1063,28 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   private getRootNodeActiveElement(element: Element): Element {
     const documentRoot = element.getRootNode() as ShadowRoot | Document;
     return documentRoot?.activeElement;
+  }
+
+  /**
+   * Destroys the autofill overlay content service. This method will
+   * disconnect the mutation observers and remove all event listeners.
+   */
+  destroy() {
+    this.documentElementMutationObserver?.disconnect();
+    this.clearUserInteractionEventTimeout();
+    this.formFieldElements.forEach((formFieldElement) => {
+      this.removeCachedFormFieldEventListeners(formFieldElement);
+      formFieldElement.removeEventListener(EVENTS.BLUR, this.handleFormFieldBlurEvent);
+      formFieldElement.removeEventListener(EVENTS.KEYUP, this.handleFormFieldKeyupEvent);
+      this.formFieldElements.delete(formFieldElement);
+    });
+    globalThis.document.removeEventListener(
+      EVENTS.VISIBILITYCHANGE,
+      this.handleVisibilityChangeEvent,
+    );
+    globalThis.removeEventListener(EVENTS.FOCUSOUT, this.handleFormFieldBlurEvent);
+    this.removeAutofillOverlay();
+    this.removeOverlayRepositionEventListeners();
   }
 }
 

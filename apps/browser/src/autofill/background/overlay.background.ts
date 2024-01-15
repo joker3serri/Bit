@@ -3,6 +3,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -68,11 +69,13 @@ class OverlayBackground implements OverlayBackgroundInterface {
   private readonly overlayButtonPortMessageHandlers: OverlayButtonPortMessageHandlers = {
     overlayButtonClicked: ({ port }) => this.handleOverlayButtonClicked(port),
     closeAutofillOverlay: ({ port }) => this.closeOverlay(port),
+    forceCloseAutofillOverlay: ({ port }) => this.closeOverlay(port, true),
     overlayPageBlurred: () => this.checkOverlayListFocused(),
     redirectOverlayFocusOut: ({ message, port }) => this.redirectOverlayFocusOut(message, port),
   };
   private readonly overlayListPortMessageHandlers: OverlayListPortMessageHandlers = {
     checkAutofillOverlayButtonFocused: () => this.checkOverlayButtonFocused(),
+    forceCloseAutofillOverlay: ({ port }) => this.closeOverlay(port, true),
     overlayPageBlurred: () => this.checkOverlayButtonFocused(),
     unlockVault: ({ port }) => this.unlockVault(port),
     fillSelectedListItem: ({ message, port }) => this.fillSelectedOverlayListItem(message, port),
@@ -89,6 +92,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     private settingsService: SettingsService,
     private stateService: StateService,
     private i18nService: I18nService,
+    private platformUtilsService: PlatformUtilsService,
   ) {
     this.iconsServerUrl = this.environmentService.getIconsUrl();
   }
@@ -225,13 +229,17 @@ class OverlayBackground implements OverlayBackgroundInterface {
     if (await this.autofillService.isPasswordRepromptRequired(cipher, sender.tab)) {
       return;
     }
-    await this.autofillService.doAutoFill({
+    const totpCode = await this.autofillService.doAutoFill({
       tab: sender.tab,
       cipher: cipher,
       pageDetails: this.pageDetailsForTab[sender.tab.id],
       fillNewPassword: true,
       allowTotpAutofill: true,
     });
+
+    if (totpCode) {
+      this.platformUtilsService.copyToClipboard(totpCode, { window });
+    }
 
     this.overlayLoginCiphers = new Map([[overlayCipherId, cipher], ...this.overlayLoginCiphers]);
   }
@@ -268,9 +276,10 @@ class OverlayBackground implements OverlayBackgroundInterface {
    * Sends a message to the sender tab to close the autofill overlay.
    *
    * @param sender - The sender of the port message
+   * @param forceCloseOverlay - Identifies whether the overlay should be force closed
    */
-  private closeOverlay({ sender }: chrome.runtime.Port) {
-    BrowserApi.tabSendMessage(sender.tab, { command: "closeAutofillOverlay" });
+  private closeOverlay({ sender }: chrome.runtime.Port, forceCloseOverlay = false) {
+    BrowserApi.tabSendMessageData(sender.tab, "closeAutofillOverlay", { forceCloseOverlay });
   }
 
   /**
@@ -670,7 +679,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   private setupExtensionMessageListeners() {
     BrowserApi.messageListener("overlay.background", this.handleExtensionMessage);
-    chrome.runtime.onConnect.addListener(this.handlePortOnConnect);
+    BrowserApi.addListener(chrome.runtime.onConnect, this.handlePortOnConnect);
   }
 
   /**

@@ -674,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Šifrēšana nav atbalstīta"
   },
-  "encryptionNotEnabled": {
-    "message": "Šifrēšana nav iespējota"
+  "enablePasskeyEncryption": {
+    "message": "Uzstādīt šifrēšanu"
   },
   "usedForEncryption": {
     "message": "Izmantota šifrēšanai"
@@ -1074,6 +1074,9 @@
   "export": {
     "message": "Izgūšana"
   },
+  "exportFrom": {
+    "message": "Izgūt no"
+  },
   "exportVault": {
     "message": "Izgūt glabātavas saturu"
   },
@@ -1149,6 +1152,9 @@
   },
   "length": {
     "message": "Garums"
+  },
+  "passwordMinLength": {
+    "message": "Mazākais pieļaujamais paroles garums"
   },
   "uppercase": {
     "message": "Lielie burti (A-Z)",
@@ -3542,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Nevar uzaicināt vairāk kā $COUNT$ lietotāju(s) bez plāna paaugstināšanas. Lūgums sazināties ar klientu atbalstu, lai to izdarītu.",
+  "subscriptionUpgrade": {
+    "message": "Nevar uzaicināt vairāk kā $COUNT$ dalībnieku(s) bez plāna paaugstināšanas.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -3821,15 +3827,6 @@
   },
   "couldNotChargeCardPayInvoice": {
     "message": "Nebija iespējams veikt apmaksu ar norādīto karti. Lūgums apskatīt un apmaksāt zemāk norādīto rēķinu."
-  },
-  "inAppPurchase": {
-    "message": "Pirkšana lietotnē"
-  },
-  "cannotPerformInAppPurchase": {
-    "message": "Šī darbība nevar tikt veikta, izmantojot pirkšana lietotnē apmaksas veidu."
-  },
-  "manageSubscriptionFromStore": {
-    "message": "Abonements ir jāpārvalda veikalā, kurā tika veikts pirkums lietotnē."
   },
   "minLength": {
     "message": "Mazākais pieļaujamais garums"
@@ -6662,7 +6659,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter plānā var būt līdz $SEATCOUNT$ dalībnieku. Jāsazinās ar klientu atbalstu, lai uzlabotu savu plānu un uzaicinātu vairāk dalībnieku.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7389,6 +7386,9 @@
   "alreadyHaveAccount": {
     "message": "Jau ir konts?"
   },
+  "skipToContent": {
+    "message": "Pāriet uz saturu"
+  },
   "customBillingStart": {
     "message": "Pielāgotie norēķini nav atspoguļoti. Jāapmeklē "
   },
@@ -7438,7 +7438,17 @@
   "collectionAccessRestricted": {
     "message": "Piekļuve krājumam ir ierobežota"
   },
+  "grantCollectionAccess": {
+    "message": "Piešķirt kopām vai dalībniekiem piekļuvi šim krājumam."
+  },
+  "adminCollectionAccess": {
+    "message": "Pārvaldnieki var piekļūt krājumiem un pārvaldīt tos."
+  },
   "serviceAccountAccessUpdated": {
-    "message": "Service account access updated"
+    "message": "Pakalpojuma konta piekļuve ir atjaunināta"
+  },
+  "commonImportFormats": {
+    "message": "Common formats",
+    "description": "Label indicating the most common import formats"
   }
 }

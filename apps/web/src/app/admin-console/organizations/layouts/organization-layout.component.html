@@ -4,6 +4,10 @@
       <bit-icon [icon]="logo"></bit-icon>
     </a>
     <org-switcher [filter]="orgFilter"></org-switcher>
+
+    <bit-nav-item *ngIf="canShowVaultTab(organization)" route="vault">
+      {{ ((flexibleCollectionsEnabled$ | async) ? "collections" : "vault") | i18n }}
+    </bit-nav-item>
     <bit-nav-item
       icon="bwi-collection"
       [text]="'vault' | i18n"
@@ -81,13 +85,11 @@
         route="settings/sso"
         *ngIf="organization.canManageSso"
       ></bit-nav-item>
-      <ng-container *appIfFeature="FeatureFlag.TrustedDeviceEncryption">
-        <bit-nav-item
-          [text]="'deviceApprovals' | i18n"
-          route="settings/device-approvals"
-          *ngIf="organization.canManageDeviceApprovals"
-        ></bit-nav-item>
-      </ng-container>
+      <bit-nav-item
+        [text]="'deviceApprovals' | i18n"
+        route="settings/device-approvals"
+        *ngIf="organization.canManageDeviceApprovals"
+      ></bit-nav-item>
       <bit-nav-item
         [text]="'scim' | i18n"
         route="settings/scim"

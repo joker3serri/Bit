@@ -63,9 +63,19 @@ import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platf
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
-// eslint-disable-next-line import/no-restricted-paths -- We need the implementation to inject, but generally this should not be accessed
+import {
+  ActiveUserStateProvider,
+  DerivedStateProvider,
+  GlobalStateProvider,
+  SingleUserStateProvider,
+  StateProvider,
+} from "@bitwarden/common/platform/state";
+/* eslint-disable import/no-restricted-paths -- We need the implementation to inject, but generally these should not be accessed */
+import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-active-user-state.provider";
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
+import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
+import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
+/* eslint-enable import/no-restricted-paths */
 import { AvatarUpdateService } from "@bitwarden/common/services/account/avatar-update.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
@@ -151,12 +161,16 @@ import BrowserPlatformUtilsService from "../platform/services/browser-platform-u
 import { BrowserStateService } from "../platform/services/browser-state.service";
 import { KeyGenerationService } from "../platform/services/key-generation.service";
 import { LocalBackedSessionStorageService } from "../platform/services/local-backed-session-storage.service";
+import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
 import { BrowserSendService } from "../services/browser-send.service";
 import { BrowserSettingsService } from "../services/browser-settings.service";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
+import FilelessImporterBackground from "../tools/background/fileless-importer.background";
 import { BrowserFido2UserInterfaceService } from "../vault/fido2/browser-fido2-user-interface.service";
+import { Fido2Service as Fido2ServiceAbstraction } from "../vault/services/abstractions/fido2.service";
 import { BrowserFolderService } from "../vault/services/browser-folder.service";
+import Fido2Service from "../vault/services/fido2.service";
 import { VaultFilterService } from "../vault/services/vault-filter.service";
 
 import CommandsBackground from "./commands.background";
@@ -232,6 +246,11 @@ export default class MainBackground {
   authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
   accountService: AccountServiceAbstraction;
   globalStateProvider: GlobalStateProvider;
+  singleUserStateProvider: SingleUserStateProvider;
+  activeUserStateProvider: ActiveUserStateProvider;
+  derivedStateProvider: DerivedStateProvider;
+  stateProvider: StateProvider;
+  fido2Service: Fido2ServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -245,6 +264,7 @@ export default class MainBackground {
   private idleBackground: IdleBackground;
   private notificationBackground: NotificationBackground;
   private overlayBackground: OverlayBackground;
+  private filelessImporterBackground: FilelessImporterBackground;
   private runtimeBackground: RuntimeBackground;
   private tabsBackground: TabsBackground;
   private webRequestBackground: WebRequestBackground;
@@ -291,10 +311,36 @@ export default class MainBackground {
       this.memoryStorageService as BackgroundMemoryStorageService,
       this.storageService as BrowserLocalStorageService,
     );
+    this.encryptService = flagEnabled("multithreadDecryption")
+      ? new MultithreadEncryptServiceImplementation(
+          this.cryptoFunctionService,
+          this.logService,
+          true,
+        )
+      : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
+
+    this.singleUserStateProvider = new DefaultSingleUserStateProvider(
+      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.storageService as BrowserLocalStorageService,
+    );
     this.accountService = new AccountServiceImplementation(
       this.messagingService,
       this.logService,
       this.globalStateProvider,
+    );
+    this.activeUserStateProvider = new DefaultActiveUserStateProvider(
+      this.accountService,
+      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.storageService as BrowserLocalStorageService,
+    );
+    this.derivedStateProvider = new BackgroundDerivedStateProvider(
+      this.memoryStorageService as BackgroundMemoryStorageService,
+    );
+    this.stateProvider = new DefaultStateProvider(
+      this.activeUserStateProvider,
+      this.singleUserStateProvider,
+      this.globalStateProvider,
+      this.derivedStateProvider,
     );
     this.stateService = new BrowserStateService(
       this.storageService,
@@ -327,19 +373,14 @@ export default class MainBackground {
       window,
     );
     this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
-    this.encryptService = flagEnabled("multithreadDecryption")
-      ? new MultithreadEncryptServiceImplementation(
-          this.cryptoFunctionService,
-          this.logService,
-          true,
-        )
-      : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
     this.cryptoService = new BrowserCryptoService(
       this.cryptoFunctionService,
       this.encryptService,
       this.platformUtilsService,
       this.logService,
       this.stateService,
+      this.accountService,
+      this.stateProvider,
     );
     this.tokenService = new TokenService(this.stateService);
     this.appIdService = new AppIdService(this.storageService);
@@ -493,6 +534,7 @@ export default class MainBackground {
       this.cipherService,
       this.collectionService,
       this.policyService,
+      this.accountService,
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(
@@ -539,7 +581,6 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
-      this.configService,
       logoutCallback,
     );
     this.eventUploadService = new EventUploadService(
@@ -563,6 +604,7 @@ export default class MainBackground {
       this.logService,
       this.settingsService,
       this.userVerificationService,
+      this.configService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -597,6 +639,7 @@ export default class MainBackground {
       this.messagingService,
     );
 
+    this.fido2Service = new Fido2Service();
     this.fido2UserInterfaceService = new BrowserFido2UserInterfaceService(this.authService);
     this.fido2AuthenticatorService = new Fido2AuthenticatorService(
       this.cipherService,
@@ -645,6 +688,8 @@ export default class MainBackground {
       this.messagingService,
       this.logService,
       this.configService,
+      this.fido2Service,
+      this.settingsService,
     );
     this.nativeMessagingBackground = new NativeMessagingBackground(
       this.cryptoService,
@@ -682,6 +727,15 @@ export default class MainBackground {
       this.settingsService,
       this.stateService,
       this.i18nService,
+      this.platformUtilsService,
+    );
+    this.filelessImporterBackground = new FilelessImporterBackground(
+      this.configService,
+      this.authService,
+      this.policyService,
+      this.notificationBackground,
+      this.importService,
+      this.syncService,
     );
     this.tabsBackground = new TabsBackground(
       this,
@@ -724,6 +778,7 @@ export default class MainBackground {
       this.vaultTimeoutService,
       this.stateService,
       this.notificationsService,
+      this.accountService,
     );
     this.webRequestBackground = new WebRequestBackground(
       this.platformUtilsService,
@@ -764,6 +819,7 @@ export default class MainBackground {
     await (this.eventUploadService as EventUploadService).init(true);
     await this.runtimeBackground.init();
     await this.notificationBackground.init();
+    this.filelessImporterBackground.init();
     await this.commandsBackground.init();
 
     this.configService.init();
@@ -777,6 +833,8 @@ export default class MainBackground {
     }
     await this.idleBackground.init();
     await this.webRequestBackground.init();
+
+    await this.fido2Service.init();
 
     if (this.platformUtilsService.isFirefox() && !this.isPrivateMode) {
       // Set Private Mode windows to the default icon - they do not share state with the background page
@@ -845,6 +903,7 @@ export default class MainBackground {
         await this.stateService.setRememberedEmail(null);
         await this.refreshBadge();
         await this.refreshMenu();
+        await this.overlayBackground.updateOverlayCiphers();
         return;
       }
 
@@ -864,6 +923,7 @@ export default class MainBackground {
         this.messagingService.send("unlocked", { userId: userId });
         await this.refreshBadge();
         await this.refreshMenu();
+        await this.overlayBackground.updateOverlayCiphers();
         await this.syncService.fullSync(false);
       }
     } finally {
@@ -891,18 +951,18 @@ export default class MainBackground {
     //Needs to be checked before state is cleaned
     const needStorageReseed = await this.needsStorageReseed();
 
+    const currentUserId = await this.stateService.getUserId();
     const newActiveUser = await this.stateService.clean({ userId: userId });
+
+    if (userId == null || userId === currentUserId) {
+      this.searchService.clearIndex();
+    }
 
     if (newActiveUser != null) {
       // we have a new active user, do not continue tearing down application
       await this.switchAccount(newActiveUser as UserId);
       this.messagingService.send("switchAccountFinish");
-      this.messagingService.send("doneLoggingOut", { expired: expired, userId: userId });
-      return;
-    }
-
-    if (userId == null || userId === (await this.stateService.getUserId())) {
-      this.searchService.clearIndex();
+    } else {
       this.messagingService.send("doneLoggingOut", { expired: expired, userId: userId });
     }
 

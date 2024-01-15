@@ -8,8 +8,6 @@ import {
   tdeDecryptionRequiredGuard,
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
-import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -42,10 +40,10 @@ import { VerifyEmailTokenComponent } from "./auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "./auth/verify-recover-delete.component";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
-import { ReportsModule } from "./reports";
 import { DomainRulesComponent } from "./settings/domain-rules.component";
 import { PreferencesComponent } from "./settings/preferences.component";
 import { GeneratorComponent } from "./tools/generator.component";
+import { ReportsModule } from "./tools/reports";
 import { AccessComponent } from "./tools/send/access.component";
 import { SendComponent } from "./tools/send/send.component";
 import { VaultModule } from "./vault/individual-vault/vault.module";
@@ -82,10 +80,7 @@ const routes: Routes = [
       {
         path: "login-initiated",
         component: LoginDecryptionOptionsComponent,
-        canActivate: [
-          tdeDecryptionRequiredGuard(),
-          canAccessFeature(FeatureFlag.TrustedDeviceEncryption),
-        ],
+        canActivate: [tdeDecryptionRequiredGuard()],
       },
       {
         path: "register",

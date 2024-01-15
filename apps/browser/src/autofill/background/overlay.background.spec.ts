@@ -12,6 +12,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
+import BrowserPlatformUtilsService from "../../platform/services/browser-platform-utils.service";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
 import { SHOW_AUTOFILL_BUTTON } from "../constants";
 import {
@@ -47,6 +48,7 @@ describe("OverlayBackground", () => {
   const settingsService = mock<SettingsService>();
   const stateService = mock<BrowserStateService>();
   const i18nService = mock<I18nService>();
+  const platformUtilsService = mock<BrowserPlatformUtilsService>();
   const initOverlayElementPorts = (options = { initList: true, initButton: true }) => {
     const { initList, initButton } = options;
     if (initButton) {
@@ -71,6 +73,7 @@ describe("OverlayBackground", () => {
       settingsService,
       stateService,
       i18nService,
+      platformUtilsService,
     );
     overlayBackground.init();
   });
@@ -1056,13 +1059,29 @@ describe("OverlayBackground", () => {
 
       describe("closeAutofillOverlay", () => {
         it("sends a `closeOverlay` message to the sender tab", () => {
-          jest.spyOn(BrowserApi, "tabSendMessage");
+          jest.spyOn(BrowserApi, "tabSendMessageData");
 
           sendPortMessage(buttonPortSpy, { command: "closeAutofillOverlay" });
 
-          expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(buttonPortSpy.sender.tab, {
-            command: "closeAutofillOverlay",
-          });
+          expect(BrowserApi.tabSendMessageData).toHaveBeenCalledWith(
+            buttonPortSpy.sender.tab,
+            "closeAutofillOverlay",
+            { forceCloseOverlay: false },
+          );
+        });
+      });
+
+      describe("forceCloseAutofillOverlay", () => {
+        it("sends a `closeOverlay` message to the sender tab with a `forceCloseOverlay` flag of `true` set", () => {
+          jest.spyOn(BrowserApi, "tabSendMessageData");
+
+          sendPortMessage(buttonPortSpy, { command: "forceCloseAutofillOverlay" });
+
+          expect(BrowserApi.tabSendMessageData).toHaveBeenCalledWith(
+            buttonPortSpy.sender.tab,
+            "closeAutofillOverlay",
+            { forceCloseOverlay: true },
+          );
         });
       });
 
@@ -1110,6 +1129,20 @@ describe("OverlayBackground", () => {
           sendPortMessage(listPortSpy, { command: "checkAutofillOverlayButtonFocused" });
 
           expect(overlayBackground["checkOverlayButtonFocused"]).toHaveBeenCalled();
+        });
+      });
+
+      describe("forceCloseAutofillOverlay", () => {
+        it("sends a `closeOverlay` message to the sender tab with a `forceCloseOverlay` flag of `true` set", () => {
+          jest.spyOn(BrowserApi, "tabSendMessageData");
+
+          sendPortMessage(listPortSpy, { command: "forceCloseAutofillOverlay" });
+
+          expect(BrowserApi.tabSendMessageData).toHaveBeenCalledWith(
+            listPortSpy.sender.tab,
+            "closeAutofillOverlay",
+            { forceCloseOverlay: true },
+          );
         });
       });
 
@@ -1232,6 +1265,24 @@ describe("OverlayBackground", () => {
               ["overlay-cipher-3", cipher3],
             ]).entries(),
           );
+        });
+
+        it("copies the cipher's totp code to the clipboard after filling", async () => {
+          const cipher1 = mock<CipherView>({ id: "overlay-cipher-1" });
+          overlayBackground["overlayLoginCiphers"] = new Map([["overlay-cipher-1", cipher1]]);
+          isPasswordRepromptRequiredSpy.mockResolvedValue(false);
+          const copyToClipboardSpy = jest
+            .spyOn(overlayBackground["platformUtilsService"], "copyToClipboard")
+            .mockImplementation();
+          doAutoFillSpy.mockReturnValueOnce("totp-code");
+
+          sendPortMessage(listPortSpy, {
+            command: "fillSelectedListItem",
+            overlayCipherId: "overlay-cipher-2",
+          });
+          await flushPromises();
+
+          expect(copyToClipboardSpy).toHaveBeenCalledWith("totp-code", { window });
         });
       });
 

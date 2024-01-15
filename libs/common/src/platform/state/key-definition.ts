@@ -1,6 +1,7 @@
-import { Jsonify, Opaque } from "type-fest";
+import { Jsonify } from "type-fest";
 
 import { UserId } from "../../types/guid";
+import { StorageKey } from "../../types/state";
 import { Utils } from "../misc/utils";
 
 import { StateDefinition } from "./state-definition";
@@ -19,6 +20,11 @@ type KeyDefinitionOptions<T> = {
    * @returns The fully typed version of your state.
    */
   readonly deserializer: (jsonValue: Jsonify<T>) => T;
+  /**
+   * The number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
+   * Defaults to 1000ms.
+   */
+  readonly cleanupDelayMs?: number;
 };
 
 /**
@@ -42,8 +48,12 @@ export class KeyDefinition<T> {
     private readonly options: KeyDefinitionOptions<T>,
   ) {
     if (options.deserializer == null) {
+      throw new Error(`'deserializer' is a required property on key ${this.errorKeyName}`);
+    }
+
+    if (options.cleanupDelayMs <= 0) {
       throw new Error(
-        `'deserializer' is a required property on key ${stateDefinition.name} > ${key}`,
+        `'cleanupDelayMs' must be greater than 0. Value of ${options.cleanupDelayMs} passed to key ${this.errorKeyName} `,
       );
     }
   }
@@ -53,6 +63,13 @@ export class KeyDefinition<T> {
    */
   get deserializer() {
     return this.options.deserializer;
+  }
+
+  /**
+   * Gets the number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
+   */
+  get cleanupDelayMs() {
+    return this.options.cleanupDelayMs < 0 ? 0 : this.options.cleanupDelayMs ?? 1000;
   }
 
   /**
@@ -134,12 +151,14 @@ export class KeyDefinition<T> {
       throw new Error("You must provide a userId when building a user scoped cache key.");
     }
     return userId === null
-      ? `${scope}_${userId}_${this.stateDefinition.name}_${this.key}`
-      : `${scope}_${this.stateDefinition.name}_${this.key}`;
+      ? `${this.stateDefinition.storageLocation}_${scope}_${userId}_${this.stateDefinition.name}_${this.key}`
+      : `${this.stateDefinition.storageLocation}_${scope}_${this.stateDefinition.name}_${this.key}`;
+  }
+
+  private get errorKeyName() {
+    return `${this.stateDefinition.name} > ${this.key}`;
   }
 }
-
-export type StorageKey = Opaque<string, "StorageKey">;
 
 /**
  * Creates a {@link StorageKey} that points to the data at the given key definition for the specified user.

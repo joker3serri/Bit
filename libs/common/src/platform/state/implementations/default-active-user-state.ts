@@ -1,112 +1,120 @@
 import {
   Observable,
-  BehaviorSubject,
   map,
-  shareReplay,
   switchMap,
-  tap,
-  defer,
   firstValueFrom,
-  combineLatestWith,
   filter,
   timeout,
+  merge,
+  share,
+  ReplaySubject,
+  timer,
+  tap,
+  throwError,
+  distinctUntilChanged,
+  withLatestFrom,
 } from "rxjs";
 
 import { AccountService } from "../../../auth/abstractions/account.service";
-import { EncryptService } from "../../abstractions/encrypt.service";
+import { UserId } from "../../../types/guid";
 import {
   AbstractStorageService,
   ObservableStorageService,
 } from "../../abstractions/storage.service";
-import { DerivedUserState } from "../derived-user-state";
 import { KeyDefinition, userKeyBuilder } from "../key-definition";
 import { StateUpdateOptions, populateOptionsWithDefault } from "../state-update-options";
-import { Converter, ActiveUserState, activeMarker } from "../user-state";
+import { ActiveUserState, CombinedState, activeMarker } from "../user-state";
 
-import { DefaultDerivedUserState } from "./default-derived-state";
 import { getStoredValue } from "./util";
 
-const FAKE_DEFAULT = Symbol("fakeDefault");
+const FAKE = Symbol("fake");
 
 export class DefaultActiveUserState<T> implements ActiveUserState<T> {
   [activeMarker]: true;
-  private formattedKey$: Observable<string>;
+  private updatePromise: Promise<T> | null = null;
 
-  protected stateSubject: BehaviorSubject<T | typeof FAKE_DEFAULT> = new BehaviorSubject<
-    T | typeof FAKE_DEFAULT
-  >(FAKE_DEFAULT);
-  private stateSubject$ = this.stateSubject.asObservable();
+  private activeUserId$: Observable<UserId | null>;
 
+  combinedState$: Observable<CombinedState<T>>;
   state$: Observable<T>;
 
   constructor(
     protected keyDefinition: KeyDefinition<T>,
     private accountService: AccountService,
-    private encryptService: EncryptService,
     private chosenStorageLocation: AbstractStorageService & ObservableStorageService,
   ) {
-    this.formattedKey$ = this.accountService.activeAccount$.pipe(
-      map((account) =>
-        account != null && account.id != null
-          ? userKeyBuilder(account.id, this.keyDefinition)
-          : null,
-      ),
-      shareReplay({ bufferSize: 1, refCount: false }),
+    this.activeUserId$ = this.accountService.activeAccount$.pipe(
+      // We only care about the UserId but we do want to know about no user as well.
+      map((a) => a?.id),
+      // To avoid going to storage when we don't need to, only get updates when there is a true change.
+      distinctUntilChanged((a, b) => (a == null || b == null ? a == b : a === b)), // Treat null and undefined as equal
     );
 
-    const activeAccountData$ = this.formattedKey$.pipe(
-      switchMap(async (key) => {
-        if (key == null) {
-          return FAKE_DEFAULT;
+    const userChangeAndInitial$ = this.activeUserId$.pipe(
+      // If the user has changed, we no longer need to lock an update call
+      // since that call will be for a user that is no longer active.
+      tap(() => (this.updatePromise = null)),
+      switchMap(async (userId) => {
+        // We've switched or started off with no active user. So,
+        // emit a fake value so that we can fill our share buffer.
+        if (userId == null) {
+          return FAKE;
         }
-        return await getStoredValue(
-          key,
-          this.chosenStorageLocation,
-          this.keyDefinition.deserializer,
-        );
-      }),
-      // Share the execution
-      shareReplay({ refCount: false, bufferSize: 1 }),
-    );
 
-    const storageUpdates$ = this.chosenStorageLocation.updates$.pipe(
-      combineLatestWith(this.formattedKey$),
-      filter(([update, key]) => key !== null && update.key === key),
-      switchMap(async ([update, key]) => {
-        if (update.updateType === "remove") {
-          return null;
-        }
+        const fullKey = userKeyBuilder(userId, this.keyDefinition);
         const data = await getStoredValue(
-          key,
+          fullKey,
           this.chosenStorageLocation,
           this.keyDefinition.deserializer,
         );
-        return data;
+        return [userId, data] as CombinedState<T>;
       }),
     );
 
-    // Whomever subscribes to this data, should be notified of updated data
-    // if someone calls my update() method, or the active user changes.
-    this.state$ = defer(() => {
-      const accountChangeSubscription = activeAccountData$.subscribe((data) => {
-        this.stateSubject.next(data);
-      });
-      const storageUpdateSubscription = storageUpdates$.subscribe((data) => {
-        this.stateSubject.next(data);
-      });
+    const latestStorage$ = this.chosenStorageLocation.updates$.pipe(
+      // Use withLatestFrom so that we do NOT emit when activeUserId changes because that
+      // is taken care of above, but we do want to have the latest user id
+      // when we get a storage update so we can filter the full key
+      withLatestFrom(
+        this.activeUserId$.pipe(
+          // Null userId is already taken care of through the userChange observable above
+          filter((u) => u != null),
+          // Take the userId and build the fullKey that we can now create
+          map((userId) => [userId, userKeyBuilder(userId, this.keyDefinition)] as const),
+        ),
+      ),
+      // Filter to only storage updates that pertain to our key
+      filter(([storageUpdate, [_userId, fullKey]]) => storageUpdate.key === fullKey),
+      switchMap(async ([storageUpdate, [userId, fullKey]]) => {
+        // We can shortcut on updateType of "remove"
+        // and just emit null.
+        if (storageUpdate.updateType === "remove") {
+          return [userId, null] as CombinedState<T>;
+        }
 
-      return this.stateSubject$.pipe(
-        tap({
-          complete: () => {
-            accountChangeSubscription.unsubscribe();
-            storageUpdateSubscription.unsubscribe();
-          },
-        }),
-      );
-    })
-      // I fake the generic here because I am filtering out the other union type
-      // and this makes it so that typescript understands the true type
-      .pipe(filter<T>((value) => value != FAKE_DEFAULT));
+        return [
+          userId,
+          await getStoredValue(
+            fullKey,
+            this.chosenStorageLocation,
+            this.keyDefinition.deserializer,
+          ),
+        ] as CombinedState<T>;
+      }),
+    );
+
+    this.combinedState$ = merge(userChangeAndInitial$, latestStorage$).pipe(
+      share({
+        connector: () => new ReplaySubject<CombinedState<T> | typeof FAKE>(1),
+        resetOnRefCountZero: () => timer(this.keyDefinition.cleanupDelayMs),
+      }),
+      // Filter out FAKE AFTER the share so that we can fill the ReplaySubjects
+      // buffer with something and avoid emitting when there is no active user.
+      filter<CombinedState<T>>((d) => d !== (FAKE as unknown)),
+    );
+
+    // State should just be combined state without the user id
+    this.state$ = this.combinedState$.pipe(map(([_userId, state]) => state));
   }
 
   async update<TCombine>(
@@ -114,8 +122,23 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     options: StateUpdateOptions<T, TCombine> = {},
   ): Promise<T> {
     options = populateOptionsWithDefault(options);
-    const key = await this.createKey();
-    const currentState = await this.getGuaranteedState(key);
+    try {
+      if (this.updatePromise != null) {
+        await this.updatePromise;
+      }
+      this.updatePromise = this.internalUpdate(configureState, options);
+      const newState = await this.updatePromise;
+      return newState;
+    } finally {
+      this.updatePromise = null;
+    }
+  }
+
+  private async internalUpdate<TCombine>(
+    configureState: (state: T, dependency: TCombine) => T,
+    options: StateUpdateOptions<T, TCombine>,
+  ) {
+    const [key, currentState] = await this.getStateForUpdate();
     const combinedDependencies =
       options.combineLatestWith != null
         ? await firstValueFrom(options.combineLatestWith.pipe(timeout(options.msTimeout)))
@@ -130,36 +153,26 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     return newState;
   }
 
-  async getFromState(): Promise<T> {
-    const key = await this.createKey();
-    return await getStoredValue(key, this.chosenStorageLocation, this.keyDefinition.deserializer);
-  }
-
-  createDerived<TTo>(converter: Converter<T, TTo>): DerivedUserState<TTo> {
-    return new DefaultDerivedUserState<T, TTo>(converter, this.encryptService, this);
-  }
-
-  protected async createKey(): Promise<string> {
-    const formattedKey = await firstValueFrom(this.formattedKey$);
-    if (formattedKey == null) {
-      throw new Error("Cannot create a key while there is no active user.");
-    }
-    return formattedKey;
-  }
-
-  protected async getGuaranteedState(key: string) {
-    const currentValue = this.stateSubject.getValue();
-    return currentValue === FAKE_DEFAULT ? await this.seedInitial(key) : currentValue;
-  }
-
-  private async seedInitial(key: string): Promise<T> {
-    const value = await getStoredValue(
-      key,
-      this.chosenStorageLocation,
-      this.keyDefinition.deserializer,
+  /** For use in update methods, does not wait for update to complete before yielding state.
+   * The expectation is that that await is already done
+   */
+  protected async getStateForUpdate() {
+    const userId = await firstValueFrom(
+      this.activeUserId$.pipe(
+        timeout({
+          first: 1000,
+          with: () => throwError(() => new Error("Timeout while retrieving active user.")),
+        }),
+      ),
     );
-    this.stateSubject.next(value);
-    return value;
+    if (userId == null) {
+      throw new Error("No active user at this time.");
+    }
+    const fullKey = userKeyBuilder(userId, this.keyDefinition);
+    return [
+      fullKey,
+      await getStoredValue(fullKey, this.chosenStorageLocation, this.keyDefinition.deserializer),
+    ] as const;
   }
 
   protected saveToStorage(key: string, data: T): Promise<void> {
