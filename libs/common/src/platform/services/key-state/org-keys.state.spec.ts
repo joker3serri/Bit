@@ -16,10 +16,10 @@ function makeEncString(data?: string) {
 }
 ProviderEncryptedOrganizationKey;
 
-describe("encrypted user keys", () => {
+describe("encrypted org keys", () => {
   const sut = USER_ENCRYPTED_ORGANIZATION_KEYS;
 
-  it("should deserialize encrypted user keys", () => {
+  it("should deserialize encrypted org keys", () => {
     const encryptedOrgKeys = {
       "org-id-1": {
         type: "organization",
