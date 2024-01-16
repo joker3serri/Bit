@@ -180,23 +180,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     await this.stateService.setMasterKeyEncryptedUserKey(userKeyMasterKey, { userId: userId });
   }
 
-  async setMasterKey(key: MasterKey, userId?: UserId): Promise<void> {
-    await this.stateService.setMasterKey(key, { userId: userId });
-  }
-
-  async getMasterKey(userId?: UserId): Promise<MasterKey> {
-    let masterKey = await this.stateService.getMasterKey({ userId: userId });
-    if (!masterKey) {
-      masterKey = (await this.stateService.getCryptoMasterKey({ userId: userId })) as MasterKey;
-      // if master key was null/undefined and getCryptoMasterKey also returned null/undefined,
-      // don't set master key as it is unnecessary
-      if (masterKey) {
-        await this.setMasterKey(masterKey, userId);
-      }
-    }
-    return masterKey;
-  }
-
   // TODO: Move to MasterPasswordService
   async getOrDeriveMasterKey(password: string, userId?: UserId) {
     userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
@@ -1042,7 +1025,8 @@ export class CryptoService implements CryptoServiceAbstraction {
     if (await this.isLegacyUser(masterKey, userId)) {
       // Legacy users don't have a user key, so no need to migrate.
       // Instead, set the master key for additional isLegacyUser checks that will log the user out.
-      await this.setMasterKey(masterKey, userId);
+      userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      await this.masterPasswordService.setMasterKey(masterKey, userId);
       return;
     }
     const encryptedUserKey = await this.stateService.getEncryptedCryptoSymmetricKey({

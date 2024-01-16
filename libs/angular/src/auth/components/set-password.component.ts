@@ -1,6 +1,6 @@
 import { Directive } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { of } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 import { filter, first, switchMap, tap } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -11,6 +11,8 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { OrganizationAutoEnrollStatusResponse } from "@bitwarden/common/admin-console/models/response/organization-auto-enroll-status.response";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SetPasswordRequest } from "@bitwarden/common/auth/models/request/set-password.request";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
@@ -49,6 +51,8 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
   ForceSetPasswordReason = ForceSetPasswordReason;
 
   constructor(
+    private accountService: AccountService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     i18nService: I18nService,
     cryptoService: CryptoService,
     messagingService: MessagingService,
@@ -228,7 +232,8 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
 
     await this.stateService.setKdfType(this.kdf);
     await this.stateService.setKdfConfig(this.kdfConfig);
-    await this.cryptoService.setMasterKey(masterKey);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    await this.masterPasswordService.setMasterKey(masterKey, userId);
     await this.cryptoService.setUserKey(userKey[0]);
 
     // Set private key only for new JIT provisioned users in MP encryption orgs

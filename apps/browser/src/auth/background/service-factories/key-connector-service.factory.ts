@@ -33,7 +33,7 @@ import {
 
 import { accountServiceFactory, AccountServiceInitOptions } from "./account-service.factory";
 import {
-  masterPasswordServiceFactory,
+  internalMasterPasswordServiceFactory,
   MasterPasswordServiceInitOptions,
 } from "./master-password-service.factory";
 import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
@@ -66,7 +66,7 @@ export function keyConnectorServiceFactory(
     async () =>
       new KeyConnectorService(
         await accountServiceFactory(cache, opts),
-        await masterPasswordServiceFactory(cache, opts),
+        await internalMasterPasswordServiceFactory(cache, opts),
         await stateServiceFactory(cache, opts),
         await cryptoServiceFactory(cache, opts),
         await apiServiceFactory(cache, opts),

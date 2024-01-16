@@ -105,18 +105,6 @@ export abstract class CryptoService {
    */
   setMasterKeyEncryptedUserKey: (UserKeyMasterKey: string, userId?: string) => Promise<void>;
   /**
-   * Sets the user's master key
-   * @param key The user's master key to set
-   * @param userId The desired user
-   */
-  setMasterKey: (key: MasterKey, userId?: string) => Promise<void>;
-  /**
-   * @param userId The desired user
-   * @returns The user's master key
-   */
-  getMasterKey: (userId?: string) => Promise<MasterKey>;
-
-  /**
    * @param password The user's master password that will be used to derive a master key if one isn't found
    * @param userId The desired user
    */

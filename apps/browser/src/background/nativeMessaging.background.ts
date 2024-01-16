@@ -1,4 +1,8 @@
+import { firstValueFrom } from "rxjs";
+
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -72,6 +76,8 @@ export class NativeMessagingBackground {
   private validatingFingerprint: boolean;
 
   constructor(
+    private accountService: AccountService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
     private runtimeBackground: RuntimeBackground,
@@ -346,7 +352,8 @@ export class NativeMessagingBackground {
                 masterKey,
                 new EncString(encUserKey),
               );
-              await this.cryptoService.setMasterKey(masterKey);
+              const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+              await this.masterPasswordService.setMasterKey(masterKey, userId);
               await this.cryptoService.setUserKey(userKey);
             } else {
               throw new Error("No key received");

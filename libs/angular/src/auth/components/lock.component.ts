@@ -9,7 +9,9 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
@@ -55,6 +57,8 @@ export class LockComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
+    protected accountService: AccountService,
+    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected router: Router,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
@@ -294,7 +298,8 @@ export class LockComponent implements OnInit, OnDestroy {
     }
 
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
-    await this.cryptoService.setMasterKey(masterKey);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    await this.masterPasswordService.setMasterKey(masterKey, userId);
     await this.setUserKeyAndContinue(userKey, true);
   }
 
