@@ -7,6 +7,7 @@
         [activeOrganization]="organization"
       ></app-organization-switcher>
       <bit-tab-nav-bar class="-tw-mb-px">
+        <!-- change route to "collections" if we want to update path -->
         <bit-tab-link
           *ngIf="
             canShowVaultTab(organization) && (flexibleCollectionsEnabled$ | async);

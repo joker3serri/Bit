@@ -90,7 +90,7 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
         organizationId === filterNode?.node.id ||
         cipherTypeId === filterNode?.node.id ||
         folderId === filterNode?.node.id ||
-        this.activeFilter.collectionId === filterNode?.node.id
+        collectionId === filterNode?.node.id
       );
     }
   }
