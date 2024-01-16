@@ -11,6 +11,7 @@ export type PlanInformation = {
   type: PlanType;
   passwordManagerSeats?: number;
   subscribeToSecretsManager?: boolean;
+  isFromSecretsManagerTrial?: boolean;
   secretsManagerSeats?: number;
   secretsManagerServiceAccounts?: number;
   storage?: number;

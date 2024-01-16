@@ -130,6 +130,7 @@ export class OrganizationBillingService implements OrganizationBillingServiceAbs
 
     if (information.subscribeToSecretsManager) {
       request.useSecretsManager = true;
+      request.isFromSecretsManagerTrial = information.isFromSecretsManagerTrial;
       request.additionalSmSeats = information.secretsManagerSeats;
       request.additionalServiceAccounts = information.secretsManagerServiceAccounts;
     }
