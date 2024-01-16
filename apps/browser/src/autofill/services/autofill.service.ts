@@ -328,14 +328,15 @@ export default class AutofillService implements AutofillServiceInterface {
       }
     }
 
-    if (cipher == null || (cipher.reprompt === CipherRepromptType.Password && !fromCommand)) {
+    if (
+      cipher == null ||
+      (cipher.reprompt === CipherRepromptType.Password && !fromCommand) ||
+      this.isDebouncingPasswordRepromptPopout()
+    ) {
       return null;
     }
 
-    if (
-      (await this.isPasswordRepromptRequired(cipher, tab)) &&
-      !this.isDebouncingPasswordRepromptPopout()
-    ) {
+    if (await this.isPasswordRepromptRequired(cipher, tab)) {
       if (fromCommand) {
         this.cipherService.updateLastUsedIndexForUrl(tab.url);
       }
