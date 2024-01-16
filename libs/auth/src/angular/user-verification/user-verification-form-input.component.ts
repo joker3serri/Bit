@@ -218,8 +218,8 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       this.setupClientVerificationOptionChangeHandler();
     } else {
       // server
-      const userHasMasterPassword =
-        await this.userVerificationService.hasMasterPasswordAndMasterKeyHash();
+      // Don't check if have MP hash locally, because we are going to send the secret to the server to be verified.
+      const userHasMasterPassword = await this.userVerificationService.hasMasterPassword();
 
       this.userVerificationOptions.server = {
         masterPassword: userHasMasterPassword,
