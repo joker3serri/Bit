@@ -164,10 +164,3 @@
     <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
   </bit-form-field>
 </ng-template>
-
-<!-- warning for if dev forgot to pass in verification type -->
-<ng-container *ngIf="!verificationType">
-  <app-callout type="error">
-    Verification type of "server" or "client" is required for user-verification-form-input
-  </app-callout>
-</ng-container>
