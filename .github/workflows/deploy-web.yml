@@ -107,11 +107,14 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          ref: ${{ inputs.branch-or-tag }}
+          fetch-depth: 0
 
       - name: Get Branch or Tag SHA
         id: get-branch-or-tag-sha
         run: |
-          echo "sha=$(git ls-remote origin ${{ inputs.branch-or-tag }} | awk '{print $1}')" >> $GITHUB_OUTPUT
+          echo "sha=$(git rev-parse origin/${{ inputs.branch-or-tag }}" >> $GITHUB_OUTPUT
 
   notify-start:
     name: Notify Slack with start message
