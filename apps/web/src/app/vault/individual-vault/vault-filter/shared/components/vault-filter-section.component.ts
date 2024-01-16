@@ -3,6 +3,8 @@ import { Observable, Subject, takeUntil } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
 import { VaultFilterService } from "../../services/abstractions/vault-filter.service";
@@ -15,6 +17,7 @@ import { VaultFilter } from "../models/vault-filter.model";
 })
 export class VaultFilterSectionComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  protected flexibleCollectionsEnabled: boolean;
 
   @Input() activeFilter: VaultFilter;
   @Input() section: VaultFilterSection;
@@ -27,6 +30,7 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
   constructor(
     private vaultFilterService: VaultFilterService,
     private injector: Injector,
+    private configService: ConfigServiceAbstraction,
   ) {
     this.vaultFilterService.collapsedFilterNodes$
       .pipe(takeUntil(this.destroy$))
@@ -35,10 +39,13 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.section?.data$?.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.data = data;
     });
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+    );
   }
 
   ngOnDestroy() {
@@ -67,12 +74,25 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
   }
 
   isNodeSelected(filterNode: TreeNode<VaultFilterType>) {
-    return (
-      this.activeFilter.organizationId === filterNode?.node.id ||
-      this.activeFilter.cipherTypeId === filterNode?.node.id ||
-      this.activeFilter.folderId === filterNode?.node.id ||
-      this.activeFilter.collectionId === filterNode?.node.id
-    );
+    const { organizationId, cipherTypeId, folderId, collectionId, isCollectionSelected } =
+      this.activeFilter;
+
+    if (this.flexibleCollectionsEnabled) {
+      return (
+        organizationId === filterNode?.node.id ||
+        cipherTypeId === filterNode?.node.id ||
+        folderId === filterNode?.node.id ||
+        (filterNode?.node.id === "AllCollections" &&
+          (isCollectionSelected || collectionId === "AllCollections"))
+      );
+    } else {
+      return (
+        organizationId === filterNode?.node.id ||
+        cipherTypeId === filterNode?.node.id ||
+        folderId === filterNode?.node.id ||
+        this.activeFilter.collectionId === filterNode?.node.id
+      );
+    }
   }
 
   async onFilterSelect(filterNode: TreeNode<VaultFilterType>) {
