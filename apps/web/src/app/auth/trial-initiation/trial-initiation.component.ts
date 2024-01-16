@@ -20,7 +20,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import {
   OrganizationCreatedEvent,
   SubscriptionType,
-} from "../../billing/accounts/trial-initiation/secrets-manager-trial-billing.component";
+} from "./secrets-manager/secrets-manager-trial-billing-step.component";
 
 import { RouterService } from "./../../core/router.service";
 import { VerticalStepperComponent } from "./vertical-stepper/vertical-stepper.component";
@@ -245,12 +245,6 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
     this.verticalStepper.next();
   }
 
-  subscribedToSecretsManager(event: OrganizationCreatedEvent) {
-    this.orgId = event.organizationId;
-    this.billingSubLabel = event.planDescription;
-    this.verticalStepper.next();
-  }
-
   navigateToOrgVault() {
     this.router.navigate(["organizations", this.orgId, "vault"]);
   }
@@ -289,5 +283,5 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected readonly TrialSubscriptionType = SubscriptionType;
+  protected readonly SubscriptionType = SubscriptionType;
 }

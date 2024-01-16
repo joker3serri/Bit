@@ -24,6 +24,9 @@ export class SecretsManagerContentComponent implements OnInit, OnDestroy {
         case "enterprise":
           this.header = "Secrets Manager for Enterprise";
           break;
+        case "free":
+          this.header = "Bitwarden Secrets Manager";
+          break;
         case "teams":
         case "teamsStarter":
           this.header = "Secrets Manager for Teams";

@@ -201,6 +201,8 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
+import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
+import { OrganizationBillingService } from "@bitwarden/common/billing/services/organization-billing.service";
 
 @NgModule({
   declarations: [],
@@ -819,6 +821,16 @@ import { ModalService } from "./modal.service";
         SingleUserStateProvider,
         GlobalStateProvider,
         DerivedStateProvider,
+      ],
+    },
+    {
+      provide: OrganizationBillingServiceAbstraction,
+      useClass: OrganizationBillingService,
+      deps: [
+        CryptoServiceAbstraction,
+        EncryptService,
+        I18nServiceAbstraction,
+        OrganizationApiServiceAbstraction,
       ],
     },
   ],
