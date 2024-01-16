@@ -216,7 +216,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             });
 
             this.showDeleteButton =
-              this.collection.canDelete(organization, flexibleCollections) || collection.manage;
+              this.collection.canDelete(organization, flexibleCollections) || collection?.manage;
           } else {
             this.nestOptions = collections;
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);
