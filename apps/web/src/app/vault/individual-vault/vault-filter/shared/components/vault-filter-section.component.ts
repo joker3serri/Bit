@@ -77,22 +77,17 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
     const { organizationId, cipherTypeId, folderId, collectionId, isCollectionSelected } =
       this.activeFilter;
 
-    if (this.flexibleCollectionsEnabled) {
-      return (
-        organizationId === filterNode?.node.id ||
-        cipherTypeId === filterNode?.node.id ||
-        folderId === filterNode?.node.id ||
-        (filterNode?.node.id === "AllCollections" &&
-          (isCollectionSelected || collectionId === "AllCollections"))
-      );
-    } else {
-      return (
-        organizationId === filterNode?.node.id ||
-        cipherTypeId === filterNode?.node.id ||
-        folderId === filterNode?.node.id ||
-        collectionId === filterNode?.node.id
-      );
-    }
+    const collectionStatus = this.flexibleCollectionsEnabled
+      ? filterNode?.node.id === "AllCollections" &&
+        (isCollectionSelected || collectionId === "AllCollections")
+      : collectionId === filterNode?.node.id;
+
+    return (
+      organizationId === filterNode?.node.id ||
+      cipherTypeId === filterNode?.node.id ||
+      folderId === filterNode?.node.id ||
+      collectionStatus
+    );
   }
 
   async onFilterSelect(filterNode: TreeNode<VaultFilterType>) {
