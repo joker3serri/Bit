@@ -206,11 +206,6 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       // note: we do not need to check this.platformUtilsService.supportsBiometric() because
       // we can just use the logic below which works for both desktop & the browser extension.
 
-      // TODO: remove this after testing on web
-      // let biometrics =biometricsLockSet &&
-      // (biometricsUserKeyStored || !this.platformUtilsService.supportsSecureStorage())
-      // biometrics = true;
-
       this.userVerificationOptions.client = {
         masterPassword: userHasMasterPassword,
         pin: pinLockType !== "DISABLED",
