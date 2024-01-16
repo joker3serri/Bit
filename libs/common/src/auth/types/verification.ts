@@ -17,26 +17,3 @@ export function verificationHasSecret(
 }
 
 export type ServerSideVerification = OtpVerification | MasterPasswordVerification;
-export type ClientSideVerification =
-  | MasterPasswordVerification
-  | PinVerification
-  | BiometricsVerification;
-
-export function isServerSideVerification(
-  verification: Verification,
-): verification is ServerSideVerification {
-  return (
-    verification.type === VerificationType.OTP ||
-    verification.type === VerificationType.MasterPassword
-  );
-}
-
-export function isClientSideVerification(
-  verification: Verification,
-): verification is ClientSideVerification {
-  return (
-    verification.type === VerificationType.MasterPassword ||
-    verification.type === VerificationType.PIN ||
-    verification.type === VerificationType.Biometrics
-  );
-}
