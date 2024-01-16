@@ -46,23 +46,23 @@ const Template: Story = (args) => ({
         <span>
           {{ "downloadThe" | i18n }} <a bitLink routerLink="">{{ "smCLI" | i18n }}</a>
         </span>
-      </onboarding-task>
+      </app-onboarding-task>
       <app-onboarding-task
         [title]="'createProject' | i18n"
         icon="bwi-collection"
         [completed]="createProject"
-      ></onboarding-task>
+      ></app-onboarding-task>
       <app-onboarding-task
         [title]="'importSecrets' | i18n"
         icon="bwi-download"
         [completed]="importSecrets$ | async"
-      ></onboarding-task>
+      ></app-onboarding-task>
       <app-onboarding-task
         [title]="'createSecret' | i18n"
         icon="bwi-key"
         [completed]="createSecret"
-      ></onboarding-task>
-    </onboarding>
+      ></app-onboarding-task>
+    </app-onboarding>
   `,
 });
 
