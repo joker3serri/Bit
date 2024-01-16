@@ -57,19 +57,6 @@
       </app-callout>
     </ng-container>
 
-    <!-- TODO: consider whether dialog or form input should own displaying this -->
-    <!-- None  -->
-    <ng-container
-      *ngIf="
-        !userVerificationOptions.client.masterPassword &&
-        !userVerificationOptions.client.pin &&
-        !userVerificationOptions.client.biometrics &&
-        activeClientVerificationOption == ActiveClientVerificationOption.None
-      "
-    >
-      <p>{{ "verificationRequiredForActionSetPinToContinue" | i18n }}</p>
-    </ng-container>
-
     <!-- Alternate verification options if user has more than 1 -->
     <div
       class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-mt-2"
