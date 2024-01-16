@@ -33,7 +33,7 @@
         "
       >
         <p bitTypography="body1">
-          {{ "userVerificationDialogNoClientVerificationsMethodsFound" | i18n }}
+          {{ "verificationRequiredForActionSetPinToContinue" | i18n }}
         </p>
       </ng-container>
 
@@ -66,7 +66,7 @@
             bitFormButton
             buttonType="primary"
           >
-            {{ "defaultUserVerificationDialogConfirmBtnText" | i18n }}
+            {{ "submit" | i18n }}
           </button>
 
           <!-- Custom confirm button -->
@@ -89,7 +89,7 @@
           as the expectation is that only browser and desktop will use the new clientSideOnlyVerification flow. 
           We might genericize this in the future to just tell the user they need to configure their   -->
           <button type="submit" bitButton bitFormButton buttonType="primary">
-            {{ "userVerificationDialogSetPin" | i18n }}
+            {{ "setPin" | i18n }}
           </button>
         </ng-container>
       </ng-container>

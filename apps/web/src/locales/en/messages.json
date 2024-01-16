@@ -6601,6 +6601,33 @@
       }
     }
   },
+  "verificationRequiredForActionSetPinToContinue": {
+    "message": "Verification required for this action. Set a PIN to continue."
+  },
+  "setPin": {
+    "message": "Set PIN"
+  },
+  "verifyWithBiometrics": {
+    "message": "Verify with biometrics"
+  },
+  "awaitingConfirmation": {
+    "message": "Awaiting confirmation"
+  },
+  "couldNotCompleteBiometrics.": {
+    "message": "Could not complete biometrics."
+  },
+  "needADifferentMethod": {
+    "message": "Need a different method?"
+  },
+  "useMasterPassword": {
+    "message": "Use master password"
+  },
+  "usePin": {
+    "message": "Use PIN"
+  },
+  "useBiometrics": {
+    "message": "Use biometrics"
+  },
   "membersColumnHeader": {
     "message": "Member/Group"
   },
@@ -7086,10 +7113,6 @@
   "defaultUserVerificationDialogTitle" : {
     "message": "Verification required",
     "description": "Default title for the user verification dialog."
-  },
-  "defaultUserVerificationDialogConfirmBtnText" : {
-    "message": "Submit",
-    "description": "Default confirm button text for the user verification dialog."
   },
   "recoverAccount": {
     "message": "Recover account"

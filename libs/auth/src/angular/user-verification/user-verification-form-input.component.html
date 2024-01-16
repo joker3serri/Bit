@@ -42,21 +42,22 @@
     >
       <div class="tw-flex tw-flex-col tw-items-center">
         <bit-icon [icon]="Icons.UserVerificationBiometricsIcon" class="tw-mb-4"></bit-icon>
-        <p class="tw-font-bold tw-mb-1">Verify with biometrics</p>
+        <p class="tw-font-bold tw-mb-1">{{ "verifyWithBiometrics" | i18n }}</p>
         <div *ngIf="!biometricsVerificationFailed">
           <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
-          Awaiting confirmation
+          {{ "awaitingConfirmation" | i18n }}
         </div>
       </div>
 
       <app-callout type="error" *ngIf="biometricsVerificationFailed">
-        Could not complete biometrics.
+        {{ "couldNotCompleteBiometrics" | i18n }}
         <button bitLink type="button" linkType="primary" (click)="verifyUserViaBiometrics()">
-          Try Again
+          {{ "tryAgain" | i18n }}
         </button>
       </app-callout>
     </ng-container>
 
+    <!-- TODO: consider whether dialog or form input should own displaying this -->
     <!-- None  -->
     <ng-container
       *ngIf="
@@ -66,7 +67,7 @@
         activeClientVerificationOption == ActiveClientVerificationOption.None
       "
     >
-      <p>Verification required for this action. Set a pin to continue.</p>
+      <p>{{ "verificationRequiredForActionSetPinToContinue" | i18n }}</p>
     </ng-container>
 
     <!-- Alternate verification options if user has more than 1 -->
@@ -74,7 +75,7 @@
       class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-mt-2"
       *ngIf="hasMultipleClientVerificationOptions"
     >
-      <p class="tw-mb-1">Need a different method?</p>
+      <p class="tw-mb-1">{{ "needADifferentMethod" | i18n }}</p>
       <button
         *ngIf="
           userVerificationOptions.client.masterPassword &&
@@ -86,7 +87,7 @@
         linkType="primary"
         (click)="activeClientVerificationOption = ActiveClientVerificationOption.MasterPassword"
       >
-        Use master password
+        {{ "useMasterPassword" | i18n }}
       </button>
       <button
         *ngIf="
@@ -99,7 +100,7 @@
         linkType="primary"
         (click)="activeClientVerificationOption = ActiveClientVerificationOption.Pin"
       >
-        Use PIN
+        {{ "usePin" | i18n }}
       </button>
       <button
         *ngIf="
@@ -111,7 +112,7 @@
         linkType="primary"
         (click)="activeClientVerificationOption = ActiveClientVerificationOption.Biometrics"
       >
-        Use biometrics
+        {{ "useBiometrics" | i18n }}
       </button>
     </div>
   </div>
