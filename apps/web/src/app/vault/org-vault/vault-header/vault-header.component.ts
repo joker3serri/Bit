@@ -58,7 +58,7 @@ export class VaultHeaderComponent {
   protected CollectionDialogTabType = CollectionDialogTabType;
   protected organizations$ = this.organizationService.organizations$;
 
-  private flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsEnabled: boolean;
 
   constructor(
     private organizationService: OrganizationService,

@@ -6,7 +6,13 @@
         [queryParams]="{ organizationId: organization.id, collectionId: null }"
         queryParamsHandling="merge"
       >
-        {{ organization.name }} {{ "collections" | i18n | lowercase }}
+        {{ organization.name }}
+        <span *ngIf="!flexibleCollectionsEnabled">
+          {{ "vault" | i18n | lowercase }}
+        </span>
+        <span *ngIf="flexibleCollectionsEnabled">
+          {{ "collections" | i18n | lowercase }}
+        </span>
       </bit-breadcrumb>
       <ng-container>
         <bit-breadcrumb
