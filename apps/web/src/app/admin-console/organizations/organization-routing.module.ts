@@ -41,11 +41,6 @@ const routes: Routes = [
         path: "vault",
         loadChildren: () => VaultModule,
       },
-      // do we want to add this path for the flexible collections?
-      // {
-      //   path: "collections",
-      //   loadChildren: () => VaultModule,
-      // },
       {
         path: "settings",
         loadChildren: () =>
