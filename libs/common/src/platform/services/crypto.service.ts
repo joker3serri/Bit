@@ -436,9 +436,19 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearProviderKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    await this.stateService.setDecryptedProviderKeys(null, { userId: userId });
-    if (!memoryOnly) {
-      await this.stateService.setEncryptedProviderKeys(null, { userId: userId });
+    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const userIdIsActive = userId == null || userId === activeUserId;
+    if (memoryOnly && userIdIsActive) {
+      // provider keys are only cached for active users
+      await this.activeUserProviderKeysState.forceValue({});
+    } else {
+      if (userId == null && activeUserId == null) {
+        // nothing to do
+        return;
+      }
+      await this.stateProvider
+        .getUser(userId ?? activeUserId, USER_ENCRYPTED_PROVIDER_KEYS)
+        .update(() => null);
     }
   }
 
