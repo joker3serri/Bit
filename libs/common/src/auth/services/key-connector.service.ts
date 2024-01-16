@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationService } from "../../admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserType } from "../../admin-console/enums";
@@ -8,7 +10,9 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
 import { MasterKey, SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
+import { AccountService } from "../abstractions/account.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../abstractions/key-connector.service";
+import { MasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { KdfConfig } from "../models/domain/kdf-config";
 import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user-key.request";
@@ -17,6 +21,8 @@ import { IdentityTokenResponse } from "../models/response/identity-token.respons
 
 export class KeyConnectorService implements KeyConnectorServiceAbstraction {
   constructor(
+    private accountService: AccountService,
+    private masterPasswordService: MasterPasswordServiceAbstraction,
     private stateService: StateService,
     private cryptoService: CryptoService,
     private apiService: ApiService,
@@ -45,7 +51,8 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
 
   async migrateUser() {
     const organization = await this.getManagingOrganization();
-    const masterKey = await this.cryptoService.getMasterKey();
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     const keyConnectorRequest = new KeyConnectorUserKeyRequest(masterKey.encKeyB64);
 
     try {

@@ -1,6 +1,10 @@
+import { firstValueFrom } from "rxjs";
+
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { StateService } from "../../../platform/abstractions/state.service";
+import { AccountService } from "../../abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
@@ -16,6 +20,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   constructor(
     private stateService: StateService,
     private cryptoService: CryptoService,
+    private accountService: AccountService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private i18nService: I18nService,
     private userVerificationApiService: UserVerificationApiServiceAbstraction,
   ) {}
@@ -39,7 +45,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     if (verification.type === VerificationType.OTP) {
       request.otp = verification.secret;
     } else {
-      let masterKey = await this.cryptoService.getMasterKey();
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
       if (!masterKey && !alreadyHashed) {
         masterKey = await this.cryptoService.makeMasterKey(
           verification.secret,
@@ -72,7 +79,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
         throw new Error(this.i18nService.t("invalidVerificationCode"));
       }
     } else {
-      let masterKey = await this.cryptoService.getMasterKey();
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
       if (!masterKey) {
         masterKey = await this.cryptoService.makeMasterKey(
           verification.secret,
@@ -88,7 +96,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
       if (!passwordValid) {
         throw new Error(this.i18nService.t("invalidMasterPassword"));
       }
-      this.cryptoService.setMasterKey(masterKey);
+      this.masterPasswordService.setMasterKey(masterKey, userId);
     }
     return true;
   }

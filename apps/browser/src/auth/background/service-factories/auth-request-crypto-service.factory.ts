@@ -11,9 +11,17 @@ import {
   factory,
 } from "../../../platform/background/service-factories/factory-options";
 
+import { accountServiceFactory, AccountServiceInitOptions } from "./account-service.factory";
+import {
+  internalMasterPasswordServiceFactory,
+  MasterPasswordServiceInitOptions,
+} from "./master-password-service.factory";
+
 type AuthRequestCryptoServiceFactoryOptions = FactoryOptions;
 
 export type AuthRequestCryptoServiceInitOptions = AuthRequestCryptoServiceFactoryOptions &
+  AccountServiceInitOptions &
+  MasterPasswordServiceInitOptions &
   CryptoServiceInitOptions;
 
 export function authRequestCryptoServiceFactory(
@@ -24,6 +32,11 @@ export function authRequestCryptoServiceFactory(
     cache,
     "authRequestCryptoService",
     opts,
-    async () => new AuthRequestCryptoServiceImplementation(await cryptoServiceFactory(cache, opts)),
+    async () =>
+      new AuthRequestCryptoServiceImplementation(
+        await accountServiceFactory(cache, opts),
+        await internalMasterPasswordServiceFactory(cache, opts),
+        await cryptoServiceFactory(cache, opts),
+      ),
   );
 }

@@ -48,6 +48,10 @@ import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/d
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import {
+  InternalMasterPasswordServiceAbstraction,
+  MasterPasswordServiceAbstraction,
+} from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -66,6 +70,7 @@ import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/de
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
 import { PasswordResetEnrollmentServiceImplementation } from "@bitwarden/common/auth/services/password-reset-enrollment.service.implementation";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
@@ -608,9 +613,20 @@ import { ModalService } from "./modal.service";
       deps: [PolicyServiceAbstraction, ApiServiceAbstraction, StateServiceAbstraction],
     },
     {
+      provide: MasterPasswordServiceAbstraction,
+      useClass: MasterPasswordService,
+      deps: [StateProvider],
+    },
+    {
+      provide: InternalMasterPasswordServiceAbstraction,
+      useExisting: MasterPasswordServiceAbstraction,
+    },
+    {
       provide: KeyConnectorServiceAbstraction,
       useClass: KeyConnectorService,
       deps: [
+        AccountServiceAbstraction,
+        MasterPasswordServiceAbstraction,
         StateServiceAbstraction,
         CryptoServiceAbstraction,
         ApiServiceAbstraction,
@@ -627,6 +643,8 @@ import { ModalService } from "./modal.service";
       deps: [
         StateServiceAbstraction,
         CryptoServiceAbstraction,
+        AccountServiceAbstraction,
+        InternalMasterPasswordServiceAbstraction,
         I18nServiceAbstraction,
         UserVerificationApiServiceAbstraction,
       ],
