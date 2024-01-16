@@ -17,12 +17,8 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
-import {
-  OrganizationCreatedEvent,
-  SubscriptionType,
-} from "./secrets-manager/secrets-manager-trial-billing-step.component";
-
 import { RouterService } from "./../../core/router.service";
+import { SubscriptionType } from "./secrets-manager/secrets-manager-trial-billing-step.component";
 import { VerticalStepperComponent } from "./vertical-stepper/vertical-stepper.component";
 
 enum ValidOrgParams {
