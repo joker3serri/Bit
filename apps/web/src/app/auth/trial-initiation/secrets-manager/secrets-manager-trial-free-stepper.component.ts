@@ -60,6 +60,7 @@ export class SecretsManagerTrialFreeStepperComponent {
       plan: {
         type: PlanType.Free,
         subscribeToSecretsManager: true,
+        isFromSecretsManagerTrial: true,
       },
     });
 

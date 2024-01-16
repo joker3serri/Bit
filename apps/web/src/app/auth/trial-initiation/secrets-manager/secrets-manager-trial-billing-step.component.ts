@@ -125,6 +125,7 @@ export class SecretsManagerTrialBillingStepComponent implements OnInit {
         type: plan.type,
         passwordManagerSeats: 1,
         subscribeToSecretsManager: true,
+        isFromSecretsManagerTrial: true,
         secretsManagerSeats: 1,
       },
       payment: {
