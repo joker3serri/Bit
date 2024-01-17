@@ -915,6 +915,9 @@ describe("AutofillService", () => {
         jest.spyOn(autofillService, "doAutoFill");
         jest.spyOn(cipherService, "getNextCipherForUrl").mockResolvedValueOnce(cipher);
         jest
+          .spyOn(userVerificationService, "hasMasterPasswordAndMasterKeyHash")
+          .mockResolvedValueOnce(true);
+        jest
           .spyOn(autofillService as any, "openVaultItemPasswordRepromptPopout")
           .mockImplementation();
         jest
