@@ -21,6 +21,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { LinkModule } from "@bitwarden/components";
 
 import { OnboardingModule } from "../../../shared/components/onboarding/onboarding.module";
 
@@ -32,7 +33,7 @@ export type VaultOnboardingTasks = {
 
 @Component({
   standalone: true,
-  imports: [OnboardingModule, CommonModule, JslibModule],
+  imports: [OnboardingModule, CommonModule, JslibModule, LinkModule],
   selector: "app-vault-onboarding",
   templateUrl: "vault-onboarding.component.html",
 })
@@ -65,13 +66,13 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     private configService: ConfigServiceAbstraction,
   ) {}
 
-  ngOnInit() {
-    this.checkOnboardingFlag();
+  async ngOnInit() {
+    await this.checkOnboardingFlag();
     this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
       this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
     });
 
-    this.setOnboardingTasks();
+    await this.setOnboardingTasks();
     this.setInstallExtLink();
     this.individualVaultPolicyCheck();
     this.checkForBrowserExtension();
@@ -96,13 +97,11 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.showOnboarding && changes?.ciphers) {
-      if (this.showOnboarding) {
-        this.saveCompletedTasks({
-          createAccount: true,
-          importData: this.ciphers.length > 0,
-          installExtension: this.onboardingTasks$.getValue().installExtension,
-        });
-      }
+      this.saveCompletedTasks({
+        createAccount: true,
+        importData: this.ciphers.length > 0,
+        installExtension: this.onboardingTasks$.getValue().installExtension,
+      });
     }
   }
 
@@ -127,10 +126,6 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.isNewAccount) {
       this.hideOnboarding();
     }
-  }
-
-  addCipher() {
-    this.onAddCipher.emit();
   }
 
   protected hideOnboarding() {
@@ -160,7 +155,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.showOnboarding) {
-      this.checkCreationDate();
+      await this.checkCreationDate();
     }
   }
 

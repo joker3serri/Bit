@@ -63,23 +63,23 @@ describe("VaultOnboardingComponent", () => {
   });
 
   describe("ngOnInit", () => {
-    it("should call setInstallExtLink", () => {
-      component.ngOnInit();
+    it("should call setInstallExtLink", async () => {
+      await component.ngOnInit();
       expect(setInstallExtLinkSpy).toHaveBeenCalled();
     });
 
-    it("should call individualVaultPolicyCheck", () => {
-      component.ngOnInit();
+    it("should call individualVaultPolicyCheck", async () => {
+      await component.ngOnInit();
       expect(individualVaultPolicyCheckSpy).toHaveBeenCalled();
     });
   });
 
   describe("show and hide onboarding component", () => {
-    it("should set showOnboarding to true", () => {
+    it("should set showOnboarding to true", async () => {
       jest
         .spyOn((component as any).stateService, "getVaultOnboardingTasks")
         .mockReturnValue(undefined);
-      component.ngOnInit();
+      await component.ngOnInit();
       expect((component as any).showOnboarding).toBe(true);
     });
 
@@ -91,25 +91,25 @@ describe("VaultOnboardingComponent", () => {
   });
 
   describe("setInstallExtLink", () => {
-    it("should set extensionUrl to Chrome Web Store when isChrome is true", () => {
+    it("should set extensionUrl to Chrome Web Store when isChrome is true", async () => {
       jest.spyOn((component as any).platformUtilsService, "isChrome").mockReturnValue(true);
       const expected =
         "https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb";
-      component.ngOnInit();
+      await component.ngOnInit();
       expect(component.extensionUrl).toEqual(expected);
     });
 
-    it("should set extensionUrl to Firefox Store when isFirefox is true", () => {
+    it("should set extensionUrl to Firefox Store when isFirefox is true", async () => {
       jest.spyOn((component as any).platformUtilsService, "isFirefox").mockReturnValue(true);
       const expected = "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/";
-      component.ngOnInit();
+      await component.ngOnInit();
       expect(component.extensionUrl).toEqual(expected);
     });
 
-    it("should set extensionUrl when isSafari is true", () => {
+    it("should set extensionUrl when isSafari is true", async () => {
       jest.spyOn((component as any).platformUtilsService, "isSafari").mockReturnValue(true);
       const expected = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
-      component.ngOnInit();
+      await component.ngOnInit();
       expect(component.extensionUrl).toEqual(expected);
     });
   });

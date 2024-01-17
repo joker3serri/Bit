@@ -1,4 +1,10 @@
-<div *ngIf="isNewAccount && showOnboarding && showOnboardingAccess" class="tw-mb-6">
+<div
+  *ngIf="
+    isNewAccount && showOnboarding && showOnboardingAccess && onboardingTasks$
+      | async as onboardingTasks
+  "
+  class="tw-mb-6"
+>
   <app-onboarding
     *ngIf="onboardingTasks$ | async"
     [title]="'getStarted' | i18n"
@@ -6,18 +12,20 @@
   >
     <app-onboarding-task
       [title]="'createAnAccount' | i18n"
-      [completed]="(onboardingTasks$ | async).createAccount"
+      [completed]="onboardingTasks.createAccount"
     ></app-onboarding-task>
 
     <app-onboarding-task
       [title]="'importData' | i18n"
       icon="bwi-save"
       (click)="navigateToImport()"
-      [completed]="(onboardingTasks$ | async).importData"
+      [completed]="onboardingTasks.importData"
     >
       <p class="tw-pl-1">
         {{ "onboardingImportDataDetailsPartOne" | i18n }}
-        <a (click)="addCipher()" class="link"> new item </a>
+        <button type="button" bitLink (click)="emitToAddCipher()">
+          {{ "onboardingImportDataDetailsLink" | i18n }}
+        </button>
         {{ "onboardingImportDataDetailsPartTwo" | i18n }}
       </p>
     </app-onboarding-task>
