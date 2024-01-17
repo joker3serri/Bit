@@ -6,7 +6,7 @@
   class="tw-mb-6"
 >
   <app-onboarding
-    *ngIf="onboardingTasks$ | async"
+    *ngIf="onboardingTasks"
     [title]="'getStarted' | i18n"
     (dismiss)="hideOnboarding()"
   >
