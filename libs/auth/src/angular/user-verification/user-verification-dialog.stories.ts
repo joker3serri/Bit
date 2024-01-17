@@ -4,13 +4,20 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
+import { UserVerificationService as UserVerificationServiceAbsraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
+import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { AsyncActionsModule } from "../../../../components/src/async-actions/async-actions.module";
 import { ButtonModule } from "../../../../components/src/button/button.module";
 import { DialogModule } from "../../../../components/src/dialog/dialog.module";
 import { DialogService } from "../../../../components/src/dialog/dialog.service";
 import { I18nMockService } from "../../../../components/src/utils/i18n-mock.service";
+import { PinCryptoServiceAbstraction } from "../../common/abstractions";
 
 import {
   UserVerificationDialogComponent,
@@ -29,7 +36,7 @@ import { UserVerificationFormInputComponent } from "./user-verification-form-inp
           bitButton
           (click)="openUserVerificationDialog(dialogParams)"
         >
-          {{ dialogParams?.title || "default" }}
+          {{ dialogParams?.title || "Open Default" }}
         </button>
       </div>
     </div>
@@ -123,6 +130,19 @@ export default {
               decline: "Decline",
             });
           },
+        },
+        {
+          provide: UserVerificationServiceAbsraction,
+          useClass: UserVerificationService,
+          deps: [
+            // TODO: no provider for state service
+            StateServiceAbstraction,
+            CryptoServiceAbstraction,
+            I18nService,
+            UserVerificationApiServiceAbstraction,
+            PinCryptoServiceAbstraction,
+            LogService,
+          ],
         },
       ],
     }),
