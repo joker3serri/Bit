@@ -132,7 +132,7 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: "./src/connectors/duo-redirect.html",
     filename: "duo-redirect-connector.html",
-    chunks: ["connectors/duo"],
+    chunks: ["connectors/duo-redirect"],
   }),
   new CopyWebpackPlugin({
     patterns: [
