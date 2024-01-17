@@ -16,48 +16,12 @@ import {
   DialogService,
 } from "@bitwarden/components";
 
-import { ButtonType } from "../../../../components/src/shared/button-like.abstraction";
-
 import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
+import {
+  UserVerificationDialogParams,
+  UserVerificationDialogResult,
+} from "./user-verification-dialog.types";
 import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
-
-/**
- * Options for configuring the callout to be displayed in the dialog body below the
- * optional body text.
- * @param {string} text - The text of the callout.
- * @param {string} type - The type of the callout.
- */
-export type UserVerificationCalloutOptions = {
-  text: string;
-  type: "warning" | "danger" | "error" | "tip";
-};
-
-export type UserVerificationConfirmButtonOptions = {
-  text: string;
-  type: ButtonType;
-};
-
-/**
- * Parameters for configuring the user verification dialog.
- * @param {string} [title] - The title of the dialog. Optional. Defaults to "Verification required"
- * @param {string} [bodyText] - The body text of the dialog. Optional.
- * @param {UserVerificationCalloutOptions} [calloutOptions] - The options for a callout to be displayed in the dialog body below the body text. Optional.
- * @param {UserVerificationConfirmButtonOptions} [confirmButtonOptions] - The options for the confirm button. Optional. The default text is "Submit" and the default type is "primary".
- * @param {boolean} [clientSideOnlyVerification] - Indicates whether the verification is only performed client-side. Optional.
- */
-export type UserVerificationDialogParams = {
-  title?: string;
-  bodyText?: string;
-  calloutOptions?: UserVerificationCalloutOptions;
-  confirmButtonOptions?: UserVerificationConfirmButtonOptions;
-  clientSideOnlyVerification?: boolean;
-};
-
-export type UserVerificationDialogResult = {
-  userAction: "confirm" | "cancel";
-  verificationSuccess: boolean;
-  noAvailableClientVerificationMethods?: boolean;
-};
 
 @Component({
   templateUrl: "user-verification-dialog.component.html",
