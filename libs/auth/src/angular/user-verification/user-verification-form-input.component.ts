@@ -11,14 +11,11 @@ import {
 import { BehaviorSubject, Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
+import { UserVerificationOptions } from "@bitwarden/common/auth/types/user-verification-options";
 import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
@@ -31,18 +28,6 @@ import {
 import { UserVerificationBiometricsIcon } from "../icons";
 
 import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
-
-type UserVerificationOptions = {
-  server: {
-    otp: boolean;
-    masterPassword: boolean;
-  };
-  client: {
-    masterPassword: boolean;
-    pin: boolean;
-    biometrics: boolean;
-  };
-};
 
 /**
  * Used for general-purpose user verification throughout the app.
@@ -107,16 +92,16 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
 
   readonly Icons = { UserVerificationBiometricsIcon };
 
-  // This represents what verification methods are available to the user.
+  // default to false to avoid null checks in template
   userVerificationOptions: UserVerificationOptions = {
-    server: {
-      otp: false,
-      masterPassword: false,
-    },
     client: {
       masterPassword: false,
       pin: false,
       biometrics: false,
+    },
+    server: {
+      masterPassword: false,
+      otp: false,
     },
   };
 
@@ -175,13 +160,16 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   constructor(
     private userVerificationService: UserVerificationService,
     private i18nService: I18nService,
-    private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-    private platformUtilsService: PlatformUtilsService,
-    private cryptoService: CryptoService,
   ) {}
 
   async ngOnInit() {
-    await this.determineAvailableVerificationMethods();
+    this.userVerificationOptions =
+      await this.userVerificationService.getAvailableVerificationOptions(this.verificationType);
+
+    if (this.verificationType === "client") {
+      this.setDefaultActiveClientVerificationOption();
+      this.setupClientVerificationOptionChangeHandler();
+    }
 
     // Don't bother executing secret changes if biometrics verification is active.
     if (this.activeClientVerificationOption === ActiveClientVerificationOption.Biometrics) {
@@ -191,41 +179,6 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     this.secret.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((secret: string) => this.processSecretChanges(secret));
-  }
-
-  private async determineAvailableVerificationMethods(): Promise<void> {
-    if (this.verificationType === "client") {
-      const [userHasMasterPassword, pinLockType, biometricsLockSet, biometricsUserKeyStored] =
-        await Promise.all([
-          this.userVerificationService.hasMasterPasswordAndMasterKeyHash(),
-          this.vaultTimeoutSettingsService.isPinLockSet(),
-          this.vaultTimeoutSettingsService.isBiometricLockSet(),
-          this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric),
-        ]);
-
-      // note: we do not need to check this.platformUtilsService.supportsBiometric() because
-      // we can just use the logic below which works for both desktop & the browser extension.
-
-      this.userVerificationOptions.client = {
-        masterPassword: userHasMasterPassword,
-        pin: pinLockType !== "DISABLED",
-        biometrics:
-          biometricsLockSet &&
-          (biometricsUserKeyStored || !this.platformUtilsService.supportsSecureStorage()),
-      };
-
-      this.setDefaultActiveClientVerificationOption();
-      this.setupClientVerificationOptionChangeHandler();
-    } else {
-      // server
-      // Don't check if have MP hash locally, because we are going to send the secret to the server to be verified.
-      const userHasMasterPassword = await this.userVerificationService.hasMasterPassword();
-
-      this.userVerificationOptions.server = {
-        masterPassword: userHasMasterPassword,
-        otp: !userHasMasterPassword,
-      };
-    }
   }
 
   private setDefaultActiveClientVerificationOption(): void {

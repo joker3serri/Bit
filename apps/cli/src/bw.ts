@@ -449,6 +449,8 @@ export class Main {
       this.userVerificationApiService,
       this.pinCryptoService,
       this.logService,
+      this.vaultTimeoutSettingsService,
+      this.platformUtilsService,
     );
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(

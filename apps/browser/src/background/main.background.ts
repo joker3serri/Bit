@@ -498,6 +498,8 @@ export default class MainBackground {
       this.userVerificationApiService,
       this.pinCryptoService,
       this.logService,
+      this.vaultTimeoutSettingsService,
+      this.platformUtilsService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
