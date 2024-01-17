@@ -2,6 +2,7 @@ import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { Component, Inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -52,12 +53,10 @@ export type UserVerificationDialogParams = {
   clientSideOnlyVerification?: boolean;
 };
 
-// TODO: test more display scenarios + confirm and cancel
-// TODO: investigate what is sent to calling component when user uses x to close dialog
 export type UserVerificationDialogResult = {
   userAction: "confirm" | "cancel";
   verificationSuccess: boolean;
-  noAvailableClientVerificationMethods: boolean;
+  noAvailableClientVerificationMethods?: boolean;
 };
 
 @Component({
@@ -88,17 +87,35 @@ export class UserVerificationDialogComponent {
 
   constructor(
     @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogParams,
-    private dialogRef: DialogRef<UserVerificationDialogResult>,
+    private dialogRef: DialogRef<UserVerificationDialogResult | string>,
     private formBuilder: FormBuilder,
     private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
   ) {}
 
-  static open(dialogService: DialogService, data: UserVerificationDialogParams) {
-    return dialogService.open<UserVerificationDialogResult>(UserVerificationDialogComponent, {
-      data,
-    });
+  static async open(
+    dialogService: DialogService,
+    data: UserVerificationDialogParams,
+  ): Promise<UserVerificationDialogResult> {
+    const dialogRef = dialogService.open<UserVerificationDialogResult | string>(
+      UserVerificationDialogComponent,
+      {
+        data,
+      },
+    );
+
+    const dialogResult = await firstValueFrom(dialogRef.closed);
+
+    if (typeof dialogResult === "string") {
+      // User used x to close dialog
+      return {
+        userAction: "cancel",
+        verificationSuccess: false,
+      };
+    } else {
+      return dialogResult;
+    }
   }
 
   handleActiveClientVerificationOptionChange(
@@ -157,8 +174,6 @@ export class UserVerificationDialogComponent {
     this.close({
       userAction: "cancel",
       verificationSuccess: false,
-      noAvailableClientVerificationMethods:
-        this.activeClientVerificationOption === ActiveClientVerificationOption.None,
     });
   }
 
