@@ -539,6 +539,7 @@ export default class MainBackground {
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.userDecryptionOptionsService,
       this.cryptoService,
       this.tokenService,
       this.policyService,

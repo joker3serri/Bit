@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject, firstValueFrom } from "rxjs";
+import { BehaviorSubject, firstValueFrom, map } from "rxjs";
 
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { Policy } from "../../admin-console/models/domain/policy";
@@ -32,6 +32,9 @@ describe("VaultTimeoutSettingsService", () => {
 
     userDecryptionOptionsSubject = new BehaviorSubject(null);
     userDecryptionOptionsService.userDecryptionOptions$ = userDecryptionOptionsSubject;
+    userDecryptionOptionsService.hasMasterPassword$ = userDecryptionOptionsSubject.pipe(
+      map((options) => options?.hasMasterPassword ?? false),
+    );
     userDecryptionOptionsService.userDecryptionOptionsById$.mockReturnValue(
       userDecryptionOptionsSubject,
     );
