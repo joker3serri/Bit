@@ -3,7 +3,9 @@ import { firstValueFrom, timeout } from "rxjs";
 import { SearchService } from "../../abstractions/search.service";
 import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout.service";
+import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
+import { InternalMasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { ClientType } from "../../enums";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
@@ -11,6 +13,7 @@ import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { UserId } from "../../types/guid";
 import { CipherService } from "../../vault/abstractions/cipher.service";
 import { CollectionService } from "../../vault/abstractions/collection.service";
 import { FolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
@@ -19,6 +22,8 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   private inited = false;
 
   constructor(
+    private accountService: AccountService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private cipherService: CipherService,
     private folderService: FolderService,
     private collectionService: CollectionService,
@@ -66,6 +71,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   }
 
   async lock(userId?: string): Promise<void> {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$)).id;
     const authed = await this.stateService.getIsAuthenticated({ userId: userId });
     if (!authed) {
       return;
@@ -88,8 +94,9 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     await this.stateService.setUserKeyAutoUnlock(null, { userId: userId });
     await this.stateService.setCryptoMasterKeyAuto(null, { userId: userId });
 
+    await this.masterPasswordService.setMasterKey(null, userId as UserId);
+
     await this.cryptoService.clearUserKey(false, userId);
-    await this.cryptoService.clearMasterKey(userId);
     await this.cryptoService.clearOrgKeys(true, userId);
     await this.cryptoService.clearKeyPair(true, userId);
 

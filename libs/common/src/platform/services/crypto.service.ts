@@ -208,10 +208,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     return (await this.makeKey(password, email, kdf, KdfConfig)) as MasterKey;
   }
 
-  async clearMasterKey(userId?: UserId): Promise<void> {
-    await this.stateService.setMasterKey(null, { userId: userId });
-  }
-
   async encryptUserKeyWithMasterKey(
     masterKey: MasterKey,
     userKey?: UserKey,
@@ -264,6 +260,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     return new SymmetricCryptoKey(decUserKey) as UserKey;
   }
 
+  // TODO: move to MasterPasswordService
   async hashMasterKey(
     password: string,
     key: MasterKey,
@@ -283,18 +280,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     return Utils.fromBufferToB64(hash);
   }
 
-  async setMasterKeyHash(keyHash: string): Promise<void> {
-    await this.stateService.setKeyHash(keyHash);
-  }
-
-  async getMasterKeyHash(): Promise<string> {
-    return await this.stateService.getKeyHash();
-  }
-
-  async clearMasterKeyHash(userId?: UserId): Promise<void> {
-    return await this.stateService.setKeyHash(null, { userId: userId });
-  }
-
+  // TODO: move to MasterPasswordService
   async compareAndUpdateKeyHash(masterPassword: string, masterKey: MasterKey): Promise<boolean> {
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     const storedPasswordHash = await firstValueFrom(
@@ -637,7 +623,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     await this.masterPasswordService.setMasterKeyHash(null, userId);
 
     await this.clearUserKey(true, userId);
-    await this.clearMasterKeyHash(userId);
     await this.clearOrgKeys(false, userId);
     await this.clearProviderKeys(false, userId);
     await this.clearKeyPair(false, userId);

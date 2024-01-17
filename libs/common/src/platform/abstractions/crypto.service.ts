@@ -124,11 +124,6 @@ export abstract class CryptoService {
     KdfConfig: KdfConfig,
   ) => Promise<MasterKey>;
   /**
-   * Clears the user's master key
-   * @param userId The desired user
-   */
-  clearMasterKey: (userId?: string) => Promise<void>;
-  /**
    * Encrypts the existing (or provided) user key with the
    * provided master key
    * @param masterKey The user's master key
@@ -161,20 +156,6 @@ export abstract class CryptoService {
    * @returns The user's master password hash
    */
   hashMasterKey: (password: string, key: MasterKey, hashPurpose?: HashPurpose) => Promise<string>;
-  /**
-   * Sets the user's master password hash
-   * @param keyHash The user's master password hash to set
-   */
-  setMasterKeyHash: (keyHash: string) => Promise<void>;
-  /**
-   * @returns The user's master password hash
-   */
-  getMasterKeyHash: () => Promise<string>;
-  /**
-   * Clears the user's stored master password hash
-   * @param userId The desired user
-   */
-  clearMasterKeyHash: (userId?: string) => Promise<void>;
   /**
    * Compares the provided master password to the stored password hash and server password hash.
    * Updates the stored hash if outdated.

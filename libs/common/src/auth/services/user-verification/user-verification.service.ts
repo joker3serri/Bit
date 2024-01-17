@@ -3,6 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { StateService } from "../../../platform/abstractions/state.service";
+import { UserId } from "../../../types/guid";
 import { AccountService } from "../../abstractions/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
@@ -123,9 +124,10 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   }
 
   async hasMasterPasswordAndMasterKeyHash(userId?: string): Promise<boolean> {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
     return (
       (await this.hasMasterPassword(userId)) &&
-      (await this.cryptoService.getMasterKeyHash()) != null
+      (await firstValueFrom(this.masterPasswordService.masterKeyHash$(userId as UserId))) != null
     );
   }
 
