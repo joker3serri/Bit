@@ -27,9 +27,9 @@ import { UserVerificationFormInputComponent } from "./user-verification-form-inp
         <button
           *ngFor="let dialogParams of scenario.dialogParams"
           bitButton
-          (click)="openSimpleConfigurableDialog(dialogParams)"
+          (click)="openUserVerificationDialog(dialogParams)"
         >
-          {{ dialog.title }}
+          {{ dialogParams?.title || "default" }}
         </button>
       </div>
     </div>
