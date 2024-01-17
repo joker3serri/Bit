@@ -39,8 +39,8 @@ export type UserVerificationConfirmButtonOptions = {
 
 /**
  * Parameters for configuring the user verification dialog.
- * @param {string} [dialogTitle] - The title of the dialog. Optional. Defaults to "Verification required"
- * @param {string} [dialogBodyText] - The body text of the dialog. Optional.
+ * @param {string} [title] - The title of the dialog. Optional. Defaults to "Verification required"
+ * @param {string} [bodyText] - The body text of the dialog. Optional.
  * @param {UserVerificationCalloutOptions} [calloutOptions] - The options for a callout to be displayed in the dialog body below the body text. Optional.
  * @param {UserVerificationConfirmButtonOptions} [confirmButtonOptions] - The options for the confirm button. Optional. The default text is "Submit" and the default type is "primary".
  * @param {boolean} [clientSideOnlyVerification] - Indicates whether the verification is only performed client-side. Optional.
