@@ -7,7 +7,7 @@ export abstract class VaultExportServiceAbstraction {
     organizationId: string,
     format: ExportFormat,
     password: string,
-    notManagedExport?: boolean,
+    onlyManagedCollections?: boolean,
   ) => Promise<string>;
   getFileName: (prefix?: string, extension?: string) => string;
 }

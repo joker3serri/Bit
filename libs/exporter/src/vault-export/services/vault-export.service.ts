@@ -27,7 +27,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     organizationId: string,
     format: ExportFormat,
     password: string,
-    notManagedExport = true,
+    onlyManagedCollections = false,
   ): Promise<string> {
     if (!Utils.isNullOrWhitespace(password)) {
       if (format == "csv") {
@@ -37,14 +37,14 @@ export class VaultExportService implements VaultExportServiceAbstraction {
       return this.organizationVaultExportService.getPasswordProtectedExport(
         organizationId,
         password,
-        notManagedExport,
+        onlyManagedCollections,
       );
     }
 
     return this.organizationVaultExportService.getOrganizationExport(
       organizationId,
       format,
-      notManagedExport,
+      onlyManagedCollections,
     );
   }
 

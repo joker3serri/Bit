@@ -95,31 +95,7 @@ export class ExportComponent implements OnInit, OnDestroy {
       this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
       this.exportForm.controls.vaultSelector.disable();
     } else {
-      const collections$ = Utils.asyncToObservable(() => this.collectionService.getAll());
-      this.organizations$ = combineLatest({
-        collections: collections$,
-        memberOrganizations: this.organizationService.memberOrganizations$,
-      }).pipe(
-        map(({ collections, memberOrganizations }) => {
-          const managedCollectionsOrgIds = new Set(
-            collections.filter((c) => c.manage).map((c) => c.organizationId),
-          );
-          // Filter organizations that exist in managedCollectionsOrgIds
-          const filteredOrgs = memberOrganizations.filter(
-            (org) => managedCollectionsOrgIds.has(org.id) && org.flexibleCollections,
-          );
-          // Sort the filtered organizations based on the name
-          return filteredOrgs.sort(Utils.getSortFunction(this.i18nService, "name"));
-        }),
-      );
-
-      this.exportForm.controls.vaultSelector.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          this.organizationId = value != "myVault" ? value : undefined;
-        });
-
-      this.exportForm.controls.vaultSelector.setValue("myVault");
+      this.setIndividualVaultData();
     }
 
     merge(
@@ -211,7 +187,7 @@ export class ExportComponent implements OnInit, OnDestroy {
           this.organizationId,
           this.format,
           this.filePassword,
-          false,
+          true,
         );
   }
 
@@ -268,5 +244,34 @@ export class ExportComponent implements OnInit, OnDestroy {
       blobData: csv,
       blobOptions: { type: "text/plain" },
     });
+  }
+
+  private setIndividualVaultData() {
+    const collections$ = Utils.asyncToObservable(() => this.collectionService.getAll());
+    this.organizations$ = combineLatest({
+      collections: collections$,
+      memberOrganizations: this.organizationService.memberOrganizations$,
+    }).pipe(
+      map(({ collections, memberOrganizations }) => {
+        //Get the orgIds from the user managed collections
+        const managedCollectionsOrgIds = new Set(
+          collections.filter((c) => c.manage).map((c) => c.organizationId),
+        );
+        // Filter organizations that exist in managedCollectionsOrgIds
+        const filteredOrgs = memberOrganizations.filter(
+          (org) => managedCollectionsOrgIds.has(org.id) && org.flexibleCollections,
+        );
+        // Sort the filtered organizations based on the name
+        return filteredOrgs.sort(Utils.getSortFunction(this.i18nService, "name"));
+      }),
+    );
+
+    this.exportForm.controls.vaultSelector.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.organizationId = value != "myVault" ? value : undefined;
+      });
+
+    this.exportForm.controls.vaultSelector.setValue("myVault");
   }
 }

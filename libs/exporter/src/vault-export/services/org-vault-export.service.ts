@@ -45,7 +45,7 @@ export class OrganizationVaultExportService
   async getPasswordProtectedExport(
     organizationId: string,
     password: string,
-    onlyManagedCollections = false,
+    onlyManagedCollections: boolean,
   ): Promise<string> {
     const clearText = await this.getOrganizationExport(
       organizationId,
@@ -59,21 +59,21 @@ export class OrganizationVaultExportService
   async getOrganizationExport(
     organizationId: string,
     format: ExportFormat = "csv",
-    notManagedExport = true,
+    onlyManagedCollections = true,
   ): Promise<string> {
     if (Utils.isNullOrWhitespace(organizationId)) {
       throw new Error("OrganizationId must be set");
     }
 
     if (format === "encrypted_json") {
-      return notManagedExport
-        ? this.getOrganizationEncryptedExport(organizationId)
-        : this.getEncryptedManagedExport(organizationId);
+      return onlyManagedCollections
+        ? this.getEncryptedManagedExport(organizationId)
+        : this.getOrganizationEncryptedExport(organizationId);
     }
 
-    return notManagedExport
-      ? this.getOrganizationDecryptedExport(organizationId, format)
-      : this.getDecryptedManagedExport(organizationId, format);
+    return onlyManagedCollections
+      ? this.getDecryptedManagedExport(organizationId, format)
+      : this.getOrganizationDecryptedExport(organizationId, format);
   }
 
   private async getOrganizationDecryptedExport(

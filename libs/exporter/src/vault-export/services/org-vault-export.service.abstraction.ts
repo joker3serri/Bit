@@ -9,6 +9,6 @@ export abstract class OrganizationVaultExportServiceAbstraction {
   getOrganizationExport: (
     organizationId: string,
     format: ExportFormat,
-    notManagedExport?: boolean,
+    onlyManagedCollections: boolean,
   ) => Promise<string>;
 }
