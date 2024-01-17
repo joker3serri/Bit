@@ -3668,6 +3668,15 @@ describe("AutofillService", () => {
         expect(result).toStrictEqual([passwordField]);
       });
 
+      it("returns the an empty array if the field's htmlID contains the words `password` and `captcha`", () => {
+        passwordField.htmlID = "inputPasswordCaptcha";
+        pageDetails.fields = [passwordField];
+
+        const result = AutofillService.loadPasswordFields(pageDetails, false, false, false, false);
+
+        expect(result).toStrictEqual([]);
+      });
+
       it("returns the field in an array if the field's htmlName contains the word `password`", () => {
         passwordField.htmlName = "password";
         pageDetails.fields = [passwordField];
@@ -3677,6 +3686,15 @@ describe("AutofillService", () => {
         expect(result).toStrictEqual([passwordField]);
       });
 
+      it("returns the an empty array if the field's htmlName contains the words `password` and `captcha`", () => {
+        passwordField.htmlName = "inputPasswordCaptcha";
+        pageDetails.fields = [passwordField];
+
+        const result = AutofillService.loadPasswordFields(pageDetails, false, false, false, false);
+
+        expect(result).toStrictEqual([]);
+      });
+
       it("returns the field in an array if the field's placeholder contains the word `password`", () => {
         passwordField.placeholder = "password";
         pageDetails.fields = [passwordField];
@@ -3684,6 +3702,26 @@ describe("AutofillService", () => {
         const result = AutofillService.loadPasswordFields(pageDetails, false, false, false, false);
 
         expect(result).toStrictEqual([passwordField]);
+      });
+
+      it("returns the an empty array if the field's placeholder contains the words `password` and `captcha`", () => {
+        passwordField.placeholder = "inputPasswordCaptcha";
+        pageDetails.fields = [passwordField];
+
+        const result = AutofillService.loadPasswordFields(pageDetails, false, false, false, false);
+
+        expect(result).toStrictEqual([]);
+      });
+
+      it("returns the an empty array if any of the field's checked attributed contain the words `captcha` while any other attribute contains the word `password` and no excluded terms", () => {
+        passwordField.htmlID = "inputPasswordCaptcha";
+        passwordField.htmlName = "captcha";
+        passwordField.placeholder = "Enter password";
+        pageDetails.fields = [passwordField];
+
+        const result = AutofillService.loadPasswordFields(pageDetails, false, false, false, false);
+
+        expect(result).toStrictEqual([]);
       });
     });
 
