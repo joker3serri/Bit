@@ -35,12 +35,7 @@ import {
 } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
-import {
-  DeviceKey,
-  MasterKey,
-  SymmetricCryptoKey,
-  UserKey,
-} from "../models/domain/symmetric-crypto-key";
+import { DeviceKey, SymmetricCryptoKey, UserKey } from "../models/domain/symmetric-crypto-key";
 
 export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
@@ -93,14 +88,6 @@ export abstract class StateService<T extends Account = Account> {
    * Sets the user key
    */
   setUserKey: (value: UserKey, options?: StorageOptions) => Promise<void>;
-  /**
-   * Gets the user's master key
-   */
-  getMasterKey: (options?: StorageOptions) => Promise<MasterKey>;
-  /**
-   * Sets the user's master key
-   */
-  setMasterKey: (value: MasterKey, options?: StorageOptions) => Promise<void>;
   /**
    * Gets the user key encrypted by the master key
    */
@@ -407,8 +394,6 @@ export abstract class StateService<T extends Account = Account> {
   setKdfConfig: (kdfConfig: KdfConfig, options?: StorageOptions) => Promise<void>;
   getKdfType: (options?: StorageOptions) => Promise<KdfType>;
   setKdfType: (value: KdfType, options?: StorageOptions) => Promise<void>;
-  getKeyHash: (options?: StorageOptions) => Promise<string>;
-  setKeyHash: (value: string, options?: StorageOptions) => Promise<void>;
   getLastActive: (options?: StorageOptions) => Promise<number>;
   setLastActive: (value: number, options?: StorageOptions) => Promise<void>;
   getLastSync: (options?: StorageOptions) => Promise<string>;

@@ -53,12 +53,7 @@ import { EncString } from "../models/domain/enc-string";
 import { GlobalState } from "../models/domain/global-state";
 import { State } from "../models/domain/state";
 import { StorageOptions } from "../models/domain/storage-options";
-import {
-  DeviceKey,
-  MasterKey,
-  SymmetricCryptoKey,
-  UserKey,
-} from "../models/domain/symmetric-crypto-key";
+import { DeviceKey, SymmetricCryptoKey, UserKey } from "../models/domain/symmetric-crypto-key";
 
 const keys = {
   state: "state",
@@ -647,30 +642,6 @@ export class StateService<
         this.activeAccountUnlockedSubject.next(nextValue);
       }
     }
-  }
-
-  /**
-   * User's master key derived from MP, saved only if we decrypted with MP
-   */
-  async getMasterKey(options?: StorageOptions): Promise<MasterKey> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    return account?.keys?.masterKey;
-  }
-
-  /**
-   * User's master key derived from MP, saved only if we decrypted with MP
-   */
-  async setMasterKey(value: MasterKey, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.keys.masterKey = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
   }
 
   /**
@@ -2193,23 +2164,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
     account.profile.kdfType = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  async getKeyHash(options?: StorageOptions): Promise<string> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.profile?.keyHash;
-  }
-
-  async setKeyHash(value: string, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.profile.keyHash = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
