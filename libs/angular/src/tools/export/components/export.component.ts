@@ -1,22 +1,9 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
-import {
-  combineLatest,
-  concat,
-  firstValueFrom,
-  map,
-  merge,
-  Observable,
-  startWith,
-  Subject,
-  takeUntil,
-} from "rxjs";
+import { combineLatest, map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import {
-  OrganizationService,
-  canAccessImportExport,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -43,9 +30,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   filePasswordValue: string = null;
   formPromise: Promise<string>;
   private _disabledByPolicy = false;
-
-  // Used in the OrganizationVaultExport subclass
-  protected flexibleCollectionsEnabled$ = new Observable<boolean>();
 
   protected organizationId: string = null;
   organizations$: Observable<Organization[]>;
@@ -111,32 +95,24 @@ export class ExportComponent implements OnInit, OnDestroy {
       this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
       this.exportForm.controls.vaultSelector.disable();
     } else {
-      if (await firstValueFrom(this.flexibleCollectionsEnabled$)) {
-        const collections$ = Utils.asyncToObservable(() => this.collectionService.getAll());
-        this.organizations$ = combineLatest({
-          collections: collections$,
-          memberOrganizations: this.organizationService.memberOrganizations$,
-        }).pipe(
-          map(({ collections, memberOrganizations }) => {
-            const managedCollectionsOrgIds = new Set(
-              collections.filter((c) => c.manage).map((c) => c.organizationId),
-            );
-            // Filter organizations that exist in managedCollectionsOrgIds
-            const filteredOrgs = memberOrganizations.filter((org) =>
-              managedCollectionsOrgIds.has(org.id),
-            );
-            // Sort the filtered organizations based on the name
-            return filteredOrgs.sort(Utils.getSortFunction(this.i18nService, "name"));
-          }),
-        );
-      } else {
-        this.organizations$ = concat(
-          this.organizationService.memberOrganizations$.pipe(
-            canAccessImportExport(this.i18nService),
-            map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
-          ),
-        );
-      }
+      const collections$ = Utils.asyncToObservable(() => this.collectionService.getAll());
+      this.organizations$ = combineLatest({
+        collections: collections$,
+        memberOrganizations: this.organizationService.memberOrganizations$,
+      }).pipe(
+        map(({ collections, memberOrganizations }) => {
+          const managedCollectionsOrgIds = new Set(
+            collections.filter((c) => c.manage).map((c) => c.organizationId),
+          );
+          // Filter organizations that exist in managedCollectionsOrgIds
+          const filteredOrgs = memberOrganizations.filter(
+            (org) => managedCollectionsOrgIds.has(org.id) && org.flexibleCollections,
+          );
+          // Sort the filtered organizations based on the name
+          return filteredOrgs.sort(Utils.getSortFunction(this.i18nService, "name"));
+        }),
+      );
+
       this.exportForm.controls.vaultSelector.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
@@ -229,8 +205,7 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   protected async getExportData(): Promise<string> {
-    return Utils.isNullOrWhitespace(this.organizationId) ||
-      !(await firstValueFrom(this.flexibleCollectionsEnabled$))
+    return Utils.isNullOrWhitespace(this.organizationId)
       ? this.exportService.getExport(this.format, this.filePassword)
       : this.exportService.getOrganizationExport(
           this.organizationId,
