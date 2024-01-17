@@ -71,7 +71,9 @@ export class UserVerificationDialogComponent {
 
     const dialogResult = await firstValueFrom(dialogRef.closed);
 
-    if (typeof dialogResult === "string") {
+    // An empty string is returned when the user hits the x to close the dialog.
+    // Undefined is returned when the users hits the escape key to close the dialog.
+    if (typeof dialogResult === "string" || dialogResult === undefined) {
       // User used x to close dialog
       return {
         userAction: "cancel",
