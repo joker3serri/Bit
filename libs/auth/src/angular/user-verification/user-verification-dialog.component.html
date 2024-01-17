@@ -2,8 +2,8 @@
   <bit-dialog>
     <span bitDialogTitle>
       {{
-        dialogParams.dialogTitle
-          ? (dialogParams.dialogTitle | i18n)
+        dialogParams.title
+          ? (dialogParams.title | i18n)
           : ("defaultUserVerificationDialogTitle" | i18n)
       }}</span
     >
@@ -16,8 +16,8 @@
             activeClientVerificationOption !== ActiveClientVerificationOption.None)
         "
       >
-        <p bitTypography="body1" *ngIf="dialogParams.dialogBodyText">
-          {{ dialogParams.dialogBodyText | i18n }}
+        <p bitTypography="body1" *ngIf="dialogParams.bodyText">
+          {{ dialogParams.bodyText | i18n }}
         </p>
 
         <app-callout *ngIf="dialogParams.calloutOptions" [type]="dialogParams.calloutOptions.type">

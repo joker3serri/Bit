@@ -46,8 +46,8 @@ export type UserVerificationConfirmButtonOptions = {
  * @param {boolean} [clientSideOnlyVerification] - Indicates whether the verification is only performed client-side. Optional.
  */
 export type UserVerificationDialogParams = {
-  dialogTitle?: string;
-  dialogBodyText?: string;
+  title?: string;
+  bodyText?: string;
   calloutOptions?: UserVerificationCalloutOptions;
   confirmButtonOptions?: UserVerificationConfirmButtonOptions;
   clientSideOnlyVerification?: boolean;
