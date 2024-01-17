@@ -200,7 +200,7 @@ export class AutofillComponent implements OnInit {
     await this.dialogService.openSimpleDialog({
       title: { key: "overrideDefaultBrowserAutofillTitle" },
       content: { key: contentKey },
-      acceptButtonText: { key: "turnOn" },
+      acceptButtonText: { key: "makeDefault" },
       acceptAction: async () => await this.handleOverrideDialogAccept(),
       cancelButtonText: { key: "ignore" },
       type: "info",

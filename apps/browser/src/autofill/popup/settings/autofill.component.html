@@ -51,7 +51,7 @@
   <div class="box">
     <div class="box-content tw-mt-4" *ngIf="canOverrideBrowserAutofillSetting">
       <div class="box-content-row box-content-row-checkbox" appBoxRow>
-        <label for="overrideBrowserAutofill">{{
+        <label for="overrideBrowserAutofill" class="!tw-mr-0">{{
           "overrideDefaultBrowserAutoFillSettings" | i18n
         }}</label>
         <input
@@ -63,9 +63,7 @@
       </div>
     </div>
     <div class="box-footer">
-      <span *ngIf="accountSwitcherEnabled && !canOverrideBrowserAutofillSetting">{{
-        "showAutoFillMenuOnFormFieldsDescAlt" | i18n
-      }}</span>
+      <span *ngIf="accountSwitcherEnabled">{{ "showAutoFillMenuOnFormFieldsDescAlt" | i18n }}</span>
       {{ "turnOffBrowserBuiltInPasswordManagerSettings" | i18n }}
       <a
         [attr.href]="disablePasswordManagerLink"

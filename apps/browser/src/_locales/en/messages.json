@@ -2897,7 +2897,7 @@
     "description": "Label indicating the most common import formats"
   },
   "overrideDefaultBrowserAutofillTitle": {
-    "message": "Override browser auto-fill?",
+    "message": "Make Bitwarden your default password manager?",
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillDescription": {
@@ -2905,19 +2905,23 @@
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Leaving this setting off may cause conflicts between the Bitwarden auto-fill menu and your browser’s. Turning this on will restart the Bitwarden extension.",
+    "message": "This action will restart the Bitwarden extension. Leaving it off may cause conflicts between the Bitwarden auto-fill menu and your browser's.",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutoFillSettings": {
-    "message": "Override browser auto-fill settings",
+    "message": "Make Bitwarden your default password manager",
     "description": "Label for the setting that allows overriding the default browser autofill settings"
   },
   "privacyPermissionAdditionNotGrantedTitle": {
-    "message": "Unable to override browser auto-fill",
+    "message": "Unable to set Bitwarden as the default password manager",
     "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "privacyPermissionAdditionNotGrantedDescription": {
-    "message": "Bitwarden must have access to the extension's privacy permission to override browser auto-fill settings.",
+    "message": "Bitwarden must have access to the extension's privacy permission to be set as the default password manager.",
     "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
+  },
+  "makeDefault": {
+    "message": "Make default",
+    "description": "Button text for the setting that allows overriding the default browser autofill settings"
   }
 }
