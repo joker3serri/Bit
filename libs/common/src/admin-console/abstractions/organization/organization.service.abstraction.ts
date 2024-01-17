@@ -68,7 +68,11 @@ export function canAccessImportExport(i18nService: I18nService) {
 export function canAccessImport(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
     orgs
-      .filter((org) => org.canCreateNewCollections)
+      .filter(
+        (org) =>
+          (org.canCreateNewCollections && org.flexibleCollections) ||
+          (org.canAccessImportExport && !org.flexibleCollections),
+      )
       .sort(Utils.getSortFunction(i18nService, "name")),
   );
 }

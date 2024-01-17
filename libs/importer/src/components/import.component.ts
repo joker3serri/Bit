@@ -19,14 +19,12 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import {
   canAccessImport,
-  canAccessImportExport,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ClientType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -105,11 +103,6 @@ import { ImportLastPassComponent } from "./lastpass";
   ],
 })
 export class ImportComponent implements OnInit, OnDestroy {
-  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
-    false,
-  );
-
   featuredImportOptions: ImportOption[];
   importOptions: ImportOption[];
   format: ImportType = null;
@@ -249,25 +242,23 @@ export class ImportComponent implements OnInit, OnDestroy {
 
     this.formGroup.controls.targetSelector.disable();
 
-    combineLatest([
-      this.formGroup.controls.vaultSelector.valueChanges,
-      this.flexibleCollectionsEnabled$,
-    ])
+    combineLatest([this.formGroup.controls.vaultSelector.valueChanges, this.organizations$])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([value, flexibleCollectionsEnabled]) => {
+      .subscribe(([value, organizations]) => {
         this.organizationId = value !== "myVault" ? value : undefined;
 
         if (!this._importBlockedByPolicy) {
           this.formGroup.controls.targetSelector.enable();
         }
-
+        const flexCollectionEnabled =
+          organizations.find((x) => x.id == this.organizationId)?.flexibleCollections ?? false;
         if (value) {
           this.collections$ = Utils.asyncToObservable(() =>
             this.collectionService
               .getAllDecrypted()
               .then((decryptedCollections) =>
                 decryptedCollections.filter(
-                  (c2) => c2.organizationId === value && (!flexibleCollectionsEnabled || c2.manage),
+                  (c2) => c2.organizationId === value && (!flexCollectionEnabled || c2.manage),
                 ),
               ),
           );
@@ -279,9 +270,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   private async initializeOrganizations() {
     this.organizations$ = concat(
       this.organizationService.memberOrganizations$.pipe(
-        (await firstValueFrom(this.flexibleCollectionsEnabled$))
-          ? canAccessImport(this.i18nService)
-          : canAccessImportExport(this.i18nService),
+        canAccessImport(this.i18nService),
         map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
       ),
     );
