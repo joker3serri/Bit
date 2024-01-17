@@ -22,7 +22,6 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -44,10 +43,10 @@ export class ExportComponent implements OnInit, OnDestroy {
   filePasswordValue: string = null;
   formPromise: Promise<string>;
   private _disabledByPolicy = false;
-  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
-    false,
-  );
+
+  // Used in the OrganizationVaultExport subclass
+  protected flexibleCollectionsEnabled$ = new Observable<boolean>();
+
   protected organizationId: string = null;
   organizations$: Observable<Organization[]>;
 
