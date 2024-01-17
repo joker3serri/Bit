@@ -1,8 +1,14 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
+import { AsyncActionsModule } from "../../../../components/src/async-actions/async-actions.module";
+import { ButtonModule } from "../../../../components/src/button/button.module";
+import { DialogModule } from "../../../../components/src/dialog/dialog.module";
 import { DialogService } from "../../../../components/src/dialog/dialog.service";
 import { I18nMockService } from "../../../../components/src/utils/i18n-mock.service";
 
@@ -11,12 +17,7 @@ import {
   UserVerificationDialogParams,
   UserVerificationDialogResult,
 } from "./user-verification-dialog.component";
-
-// import { SimpleDialogOptions, DialogService } from "../..";
-// import { ButtonModule } from "../../../button";
-// import { CalloutModule } from "../../../callout";
-// import { I18nMockService } from "../../../utils/i18n-mock.service";
-// import { DialogModule } from "../../dialog.module";
+import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
 
 @Component({
   template: `
@@ -90,8 +91,15 @@ export default {
   component: UserVerificationDialogStoryComponent,
   decorators: [
     moduleMetadata({
-      // TODO: figure out what modules are needed. is it just 1 to 1 with the imports in the standalone comp?
-      imports: [ButtonModule, DialogModule, CalloutModule],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        JslibModule,
+        ButtonModule,
+        DialogModule,
+        AsyncActionsModule,
+        UserVerificationFormInputComponent,
+      ],
     }),
     applicationConfig({
       providers: [
