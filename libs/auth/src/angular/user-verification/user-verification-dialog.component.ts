@@ -120,20 +120,36 @@ export class UserVerificationDialogComponent {
     }
 
     try {
-      //Incorrect secret will throw an invalid password error.
-      await this.userVerificationService.verifyUser(this.secret.value);
-      this.invalidSecret = false;
+      // TODO: once we migrate all user verification scenarios to use this new implementation,
+      // we should consider refactoring the user verification service handling of the
+      // OTP and MP flows to not throw errors on verification failure.
+      const verificationResult = await this.userVerificationService.verifyUser(this.secret.value);
+
+      if (verificationResult) {
+        this.invalidSecret = false;
+        this.close({
+          userAction: "confirm",
+          verificationSuccess: true,
+          noAvailableClientVerificationMethods: false,
+        });
+      } else {
+        this.invalidSecret = true;
+
+        // Only pin should ever get here, but added this check to be safe.
+        if (this.activeClientVerificationOption === this.ActiveClientVerificationOption.Pin) {
+          this.platformUtilsService.showToast(
+            "error",
+            this.i18nService.t("error"),
+            this.i18nService.t("invalidPin"),
+          );
+        }
+      }
     } catch (e) {
+      // Catch handles OTP and MP verification scenarios as those throw errors on verification failure instead of returning false like PIN and biometrics.
       this.invalidSecret = true;
       this.platformUtilsService.showToast("error", this.i18nService.t("error"), e.message);
       return;
     }
-
-    this.close({
-      userAction: "confirm",
-      verificationSuccess: true,
-      noAvailableClientVerificationMethods: false,
-    });
   };
 
   cancel() {
