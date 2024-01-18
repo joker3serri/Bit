@@ -1,5 +1,6 @@
 import { LOCALE_ID, NgModule } from "@angular/core";
 
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 import { AvatarUpdateService as AccountUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -480,7 +481,6 @@ import { ModalService } from "./modal.service";
         TokenServiceAbstraction,
         PolicyServiceAbstraction,
         StateServiceAbstraction,
-        UserVerificationServiceAbstraction,
       ],
     },
     {
@@ -630,6 +630,8 @@ import { ModalService } from "./modal.service";
         CryptoServiceAbstraction,
         I18nServiceAbstraction,
         UserVerificationApiServiceAbstraction,
+        PinCryptoServiceAbstraction,
+        LogService,
       ],
     },
     {
@@ -771,6 +773,17 @@ import { ModalService } from "./modal.service";
       useClass: AuthRequestCryptoServiceImplementation,
       deps: [CryptoServiceAbstraction],
     },
+    {
+      provide: PinCryptoServiceAbstraction,
+      useClass: PinCryptoService,
+      deps: [
+        StateServiceAbstraction,
+        CryptoServiceAbstraction,
+        VaultTimeoutSettingsServiceAbstraction,
+        LogService,
+      ],
+    },
+
     {
       provide: WebAuthnLoginPrfCryptoServiceAbstraction,
       useClass: WebAuthnLoginPrfCryptoService,
