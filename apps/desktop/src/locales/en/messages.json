@@ -2603,6 +2603,15 @@
   "incorrectUsernameOrPassword": {
     "message": "Incorrect username or password"
   },
+  "incorrectPassword": {
+    "message": "Incorrect password"
+  },
+  "incorrectCode": {
+    "message": "Incorrect code"
+  },
+  "incorrectPin": {
+    "message": "Incorrect PIN"
+  },
   "multifactorAuthenticationFailed": {
     "message": "Multifactor authentication failed"
   },

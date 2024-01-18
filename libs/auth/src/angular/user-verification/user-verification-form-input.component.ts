@@ -145,14 +145,28 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       if (this.invalidSecret) {
         return {
           invalidSecret: {
-            message: this.userVerificationOptions.client.masterPassword
-              ? this.i18nService.t("incorrectPassword")
-              : this.i18nService.t("incorrectCode"),
+            message: this.getInvalidSecretErrorMessage(),
           },
         };
       }
     },
   ]);
+
+  private getInvalidSecretErrorMessage(): string {
+    // must determine client or server
+    if (this.verificationType === "server") {
+      return this.userVerificationOptions.server.masterPassword
+        ? this.i18nService.t("incorrectPassword")
+        : this.i18nService.t("incorrectCode");
+    } else {
+      // client
+      if (this.activeClientVerificationOption === ActiveClientVerificationOption.MasterPassword) {
+        return this.i18nService.t("incorrectPassword");
+      } else if (this.activeClientVerificationOption === ActiveClientVerificationOption.Pin) {
+        this.i18nService.t("incorrectPin");
+      }
+    }
+  }
 
   private onChange: (value: VerificationWithSecret) => void;
   private destroy$ = new Subject<void>();

@@ -2819,6 +2819,9 @@
   "incorrectCode": {
     "message": "Incorrect code"
   },
+  "incorrectPin": {
+    "message": "Incorrect PIN"
+  },
   "exportedVault": {
     "message": "Vault exported"
   },
