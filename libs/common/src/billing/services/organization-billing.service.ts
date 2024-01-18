@@ -6,7 +6,7 @@ import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { EncString } from "../../platform/models/domain/enc-string";
-import { OrgKey } from "../../platform/models/domain/symmetric-crypto-key";
+import { OrgKey } from "../../types/key";
 import {
   OrganizationBillingServiceAbstraction,
   OrganizationInformation,
