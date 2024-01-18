@@ -123,6 +123,7 @@ export class OrganizationBillingService implements OrganizationBillingServiceAbs
 
     if (request.planType === PlanType.Free) {
       request.useSecretsManager = information.subscribeToSecretsManager;
+      request.isFromSecretsManagerTrial = information.isFromSecretsManagerTrial;
       return;
     }
 
