@@ -4,7 +4,7 @@ export abstract class OrganizationVaultExportServiceAbstraction {
   getPasswordProtectedExport: (
     organizationId: string,
     password: string,
-    onlyManagedCollections?: boolean,
+    onlyManagedCollections: boolean,
   ) => Promise<string>;
   getOrganizationExport: (
     organizationId: string,

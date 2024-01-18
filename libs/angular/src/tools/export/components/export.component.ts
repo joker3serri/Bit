@@ -9,7 +9,6 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -73,7 +72,6 @@ export class ExportComponent implements OnInit, OnDestroy {
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
     protected organizationService: OrganizationService,
-    protected configService: ConfigServiceAbstraction,
     protected collectionService: CollectionService,
   ) {}
 

@@ -59,7 +59,7 @@ export class OrganizationVaultExportService
   async getOrganizationExport(
     organizationId: string,
     format: ExportFormat = "csv",
-    onlyManagedCollections = true,
+    onlyManagedCollections: boolean,
   ): Promise<string> {
     if (Utils.isNullOrWhitespace(organizationId)) {
       throw new Error("OrganizationId must be set");
