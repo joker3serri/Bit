@@ -13,7 +13,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
-import { DialogService, SimpleDialogOptions } from "../../../../components/src/dialog";
+import { DialogService } from "../../../../components/src/dialog";
 import { ClientInfo, Vault } from "../../importers/lastpass/access";
 import { FederatedUserContext } from "../../importers/lastpass/access/models";
 
@@ -97,13 +97,14 @@ export class LastPassDirectImportService {
     const request = await this.createOidcSigninRequest(email);
     this.platformUtilsService.launchUri(request.url);
 
-    const cancelDialogOpts: SimpleDialogOptions = {
+    const cancelDialogRef = this.dialogService.openSimpleDialogRef({
       title: this.i18nService.t("awaitingSSO"),
       content: this.i18nService.t("awaitingSSODesc"),
       type: "warning",
-      cancelButtonText: this.i18nService.t("cancel"),
-    };
-    const cancelDialogRef = this.dialogService.openSimpleDialogRef(cancelDialogOpts);
+      icon: "bwi-key",
+      acceptButtonText: { key: this.i18nService.t("cancel") },
+      cancelButtonText: null,
+    });
     const cancelled = firstValueFrom(cancelDialogRef.closed).then((_didCancel) => {
       throw Error("SSO auth cancelled");
     });
