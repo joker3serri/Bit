@@ -3,8 +3,6 @@ import { Observable, Subject, takeUntil } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
 import { VaultFilterService } from "../../services/abstractions/vault-filter.service";
@@ -30,7 +28,6 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
   constructor(
     private vaultFilterService: VaultFilterService,
     private injector: Injector,
-    private configService: ConfigServiceAbstraction,
   ) {
     this.vaultFilterService.collapsedFilterNodes$
       .pipe(takeUntil(this.destroy$))
@@ -43,9 +40,12 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
     this.section?.data$?.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.data = data;
     });
-    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-    );
+    this.vaultFilterService
+      .getOrganizationFilter()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((org) => {
+        this.flexibleCollectionsEnabled = org != null ? org.flexibleCollections : false;
+      });
   }
 
   ngOnDestroy() {
