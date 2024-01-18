@@ -1,10 +1,18 @@
 import { BehaviorSubject, concatMap } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { Utils } from "../../../platform/misc/utils";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import {
+  ActiveUserState,
+  FOLDER_DISK,
+  FOLDER_MEMORY,
+  KeyDefinition,
+  StateProvider,
+} from "../../../platform/state";
 import { CipherService } from "../../../vault/abstractions/cipher.service";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "../../../vault/abstractions/folder/folder.service.abstraction";
 import { CipherData } from "../../../vault/models/data/cipher.data";
@@ -12,18 +20,37 @@ import { FolderData } from "../../../vault/models/data/folder.data";
 import { Folder } from "../../../vault/models/domain/folder";
 import { FolderView } from "../../../vault/models/view/folder.view";
 
+export const FOLDER_ENCRYPTED_FOLDERS = KeyDefinition.record<FolderData>(
+  FOLDER_DISK,
+  "encryptedFolders",
+  {
+    deserializer: (obj: Jsonify<FolderData>) => FolderData.fromJSON(obj),
+  },
+);
+
+export const FOLDER_DECRYPTED_FOLDERS = KeyDefinition.array<FolderView>(
+  FOLDER_MEMORY,
+  "decryptedFolders",
+  {
+    deserializer: (obj: Jsonify<FolderView>) => FolderView.fromJSON(obj),
+  },
+);
+
 export class FolderService implements InternalFolderServiceAbstraction {
   protected _folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
   protected _folderViews: BehaviorSubject<FolderView[]> = new BehaviorSubject([]);
 
   folders$ = this._folders.asObservable();
   folderViews$ = this._folderViews.asObservable();
+  private encryptedFoldersState: ActiveUserState<Record<string, FolderData>>;
+  private decryptedFoldersState: ActiveUserState<FolderView[]>;
 
   constructor(
     private cryptoService: CryptoService,
     private i18nService: I18nService,
     private cipherService: CipherService,
     private stateService: StateService,
+    private stateProvider: StateProvider,
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
@@ -187,7 +214,6 @@ export class FolderService implements InternalFolderServiceAbstraction {
     const noneFolder = new FolderView();
     noneFolder.name = this.i18nService.t("noneFolder");
     decryptedFolders.push(noneFolder);
-
     return decryptedFolders;
   }
 }
