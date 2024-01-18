@@ -26,6 +26,7 @@ window.addEventListener("load", () => {
     content.innerHTML = "";
 
     const p = document.createElement("p");
+    p.className = "text-center";
     p.innerText = handOffMessage;
 
     content.appendChild(p);
