@@ -326,6 +326,9 @@
   "password": {
     "message": "Пароль"
   },
+  "totp": {
+    "message": "Секрет аутентификатора"
+  },
   "passphrase": {
     "message": "Парольная фраза"
   },
@@ -511,6 +514,18 @@
   },
   "autofillError": {
     "message": "Не удалось автоматически заполнить выбранный элемент на этой странице. Скопируйте и вставьте логин/пароль из своего хранилища."
+  },
+  "totpCaptureError": {
+    "message": "Не удается сосканировать QR-код с текущей веб-страницы"
+  },
+  "totpCaptureSuccess": {
+    "message": "Ключ аутентификатора добавлен"
+  },
+  "totpCapture": {
+    "message": "Сканировать QR-код аутентификатора с текущей веб-страницы"
+  },
+  "copyTOTP": {
+    "message": "Скопировать ключ аутентификатора (TOTP)"
   },
   "loggedOut": {
     "message": "Вы вышли из хранилища"
@@ -2835,6 +2850,9 @@
   "activeAccount": {
     "message": "Активный аккаунт"
   },
+  "availableAccounts": {
+    "message": "Доступные аккаунты"
+  },
   "accountLimitReached": {
     "message": "Достигнут лимит аккаунтов. Выйдите, чтобы добавить другой."
   },
@@ -2870,5 +2888,9 @@
         "example": "google.com"
       }
     }
+  },
+  "commonImportFormats": {
+    "message": "Основные форматы",
+    "description": "Label indicating the most common import formats"
   }
 }

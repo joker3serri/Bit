@@ -326,6 +326,9 @@
   "password": {
     "message": "Parole"
   },
+  "totp": {
+    "message": "Autentificētāja noslēpums"
+  },
   "passphrase": {
     "message": "Paroles vārdkopa"
   },
@@ -511,6 +514,18 @@
   },
   "autofillError": {
     "message": "Neizdevās automātiski aizpildīt izvēlēto vienumu šajā lapā. Tā vietā informācija ir jāievieto starpliktuvē un jāielīmē pašrocīgi."
+  },
+  "totpCaptureError": {
+    "message": "Neizdevās nolasīt kvadrātkodu pašreizējā tīmekļa lapā"
+  },
+  "totpCaptureSuccess": {
+    "message": "Autentificētāja atslēga ir pievienota"
+  },
+  "totpCapture": {
+    "message": "Nolasīt autentificētāja kvadrātkodu pašreizējā tīmekļa lapā"
+  },
+  "copyTOTP": {
+    "message": "Ievietot starpliktuvē autentificētāja atslēgu (TOTP)"
   },
   "loggedOut": {
     "message": "Atteicies"
@@ -2835,6 +2850,9 @@
   "activeAccount": {
     "message": "Pašlaik izmantotais konts"
   },
+  "availableAccounts": {
+    "message": "Pieejamie konti"
+  },
   "accountLimitReached": {
     "message": "Sasniegti konta ierobežojumi. Jāizrakstās no konta, lai pievienotu citu."
   },
@@ -2870,5 +2888,9 @@
         "example": "google.com"
       }
     }
+  },
+  "commonImportFormats": {
+    "message": "Common formats",
+    "description": "Label indicating the most common import formats"
   }
 }
