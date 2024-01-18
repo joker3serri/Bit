@@ -6,12 +6,10 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
@@ -32,8 +30,6 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
     organizationService: OrganizationService,
-    configService: ConfigServiceAbstraction,
-    collectionService: CollectionService,
   ) {
     super(
       i18nService,
@@ -47,8 +43,6 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
       fileDownloadService,
       dialogService,
       organizationService,
-      configService,
-      collectionService,
     );
   }
 }

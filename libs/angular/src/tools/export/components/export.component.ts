@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
-import { combineLatest, map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
+import { map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -15,7 +15,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
@@ -72,7 +71,6 @@ export class ExportComponent implements OnInit, OnDestroy {
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
     protected organizationService: OrganizationService,
-    protected collectionService: CollectionService,
   ) {}
 
   async ngOnInit() {
@@ -86,16 +84,6 @@ export class ExportComponent implements OnInit, OnDestroy {
         }
       });
 
-    if (this.organizationId) {
-      this.organizations$ = this.organizationService.memberOrganizations$.pipe(
-        map((orgs) => orgs.filter((org) => org.id == this.organizationId)),
-      );
-      this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
-      this.exportForm.controls.vaultSelector.disable();
-    } else {
-      this.setIndividualVaultData();
-    }
-
     merge(
       this.exportForm.get("format").valueChanges,
       this.exportForm.get("fileEncryptionType").valueChanges,
@@ -103,6 +91,31 @@ export class ExportComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .pipe(startWith(0))
       .subscribe(() => this.adjustValidators());
+
+    if (this.organizationId) {
+      this.organizations$ = this.organizationService.memberOrganizations$.pipe(
+        map((orgs) => orgs.filter((org) => org.id == this.organizationId)),
+      );
+      this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
+      this.exportForm.controls.vaultSelector.disable();
+      return;
+    }
+
+    this.organizations$ = this.organizationService.memberOrganizations$.pipe(
+      map((orgs) =>
+        orgs
+          .filter((org) => org.flexibleCollections)
+          .sort(Utils.getSortFunction(this.i18nService, "name")),
+      ),
+    );
+
+    this.exportForm.controls.vaultSelector.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.organizationId = value != "myVault" ? value : undefined;
+      });
+
+    this.exportForm.controls.vaultSelector.setValue("myVault");
   }
 
   ngOnDestroy(): void {
@@ -242,34 +255,5 @@ export class ExportComponent implements OnInit, OnDestroy {
       blobData: csv,
       blobOptions: { type: "text/plain" },
     });
-  }
-
-  private setIndividualVaultData() {
-    const collections$ = Utils.asyncToObservable(() => this.collectionService.getAll());
-    this.organizations$ = combineLatest({
-      collections: collections$,
-      memberOrganizations: this.organizationService.memberOrganizations$,
-    }).pipe(
-      map(({ collections, memberOrganizations }) => {
-        //Get the orgIds from the user managed collections
-        const managedCollectionsOrgIds = new Set(
-          collections.filter((c) => c.manage).map((c) => c.organizationId),
-        );
-        // Filter organizations that exist in managedCollectionsOrgIds
-        const filteredOrgs = memberOrganizations.filter(
-          (org) => managedCollectionsOrgIds.has(org.id) && org.flexibleCollections,
-        );
-        // Sort the filtered organizations based on the name
-        return filteredOrgs.sort(Utils.getSortFunction(this.i18nService, "name"));
-      }),
-    );
-
-    this.exportForm.controls.vaultSelector.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.organizationId = value != "myVault" ? value : undefined;
-      });
-
-    this.exportForm.controls.vaultSelector.setValue("myVault");
   }
 }
