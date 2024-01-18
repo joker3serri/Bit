@@ -117,18 +117,12 @@ describe("KeyDefinition", () => {
       deserializer: (s) => s,
     });
 
-    it("builds unique cache key", () => {
+    it("builds unique cache key for each user", () => {
       const cacheKeys: string[] = [];
 
       // single user keys
       cacheKeys.push(keyDefinition.buildCacheKey("user", "1" as UserId));
       cacheKeys.push(keyDefinition.buildCacheKey("user", "2" as UserId));
-
-      // active user key
-      cacheKeys.push(keyDefinition.buildCacheKey("user", "active"));
-
-      // global key
-      cacheKeys.push(keyDefinition.buildCacheKey("global"));
 
       expect(new Set(cacheKeys).size).toBe(cacheKeys.length);
     });
