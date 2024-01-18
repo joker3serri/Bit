@@ -15,7 +15,7 @@ import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { FingerprintDialogComponent } from "@bitwarden/auth";
+import { FingerprintDialogComponent } from "@bitwarden/auth/angular";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -399,7 +399,11 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "openLoginApproval":
             if (message.notificationId != null) {
-              await this.openLoginApproval(message.notificationId);
+              this.dialogService.closeAll();
+              const dialogRef = LoginApprovalComponent.open(this.dialogService, {
+                notificationId: message.notificationId,
+              });
+              await firstValueFrom(dialogRef.closed);
             }
             break;
           case "redrawMenu":
@@ -466,19 +470,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.generatorModalRef,
       (comp) => (comp.comingFromAddEdit = false),
     );
-
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.modal.onClosed.subscribe(() => {
-      this.modal = null;
-    });
-  }
-
-  async openLoginApproval(notificationId: string) {
-    this.modalService.closeAll();
-
-    this.modal = await this.modalService.open(LoginApprovalComponent, {
-      data: { notificationId: notificationId },
-    });
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.modal.onClosed.subscribe(() => {
