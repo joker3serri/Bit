@@ -102,7 +102,7 @@ export class LastPassDirectImportService {
       content: this.i18nService.t("awaitingSSODesc"),
       type: "warning",
       icon: "bwi-key",
-      acceptButtonText: { key: this.i18nService.t("cancel") },
+      acceptButtonText: this.i18nService.t("cancel"),
       cancelButtonText: null,
     });
     const cancelled = firstValueFrom(cancelDialogRef.closed).then((_didCancel) => {
