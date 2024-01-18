@@ -2901,7 +2901,7 @@
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillDescription": {
-    "message": "Leaving this setting off may cause conflicts between the Bitwarden auto-fill menu and your browser’s.",
+    "message": "Leaving this setting off may cause conflicts between the Bitwarden auto-fill menu and your browser's.",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillPrivacyRequiredDescription": {
