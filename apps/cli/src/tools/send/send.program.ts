@@ -140,28 +140,37 @@ export class SendProgram extends Program {
   }
 
   private templateCommand(): program.Command {
+    const getInstance = new GetCommand(
+      this.main.cipherService,
+      this.main.folderService,
+      this.main.collectionService,
+      this.main.totpService,
+      this.main.auditService,
+      this.main.cryptoService,
+      this.main.stateService,
+      this.main.searchService,
+      this.main.apiService,
+      this.main.organizationService,
+      this.main.eventCollectionService,
+    );
     return new program.Command("template")
-      .arguments("<object>")
-      .description("Get json templates for send objects", {
-        object: "Valid objects are: send.text, send.file",
-      })
-      .action(async (object) => {
-        const cmd = new GetCommand(
-          this.main.cipherService,
-          this.main.folderService,
-          this.main.collectionService,
-          this.main.totpService,
-          this.main.auditService,
-          this.main.cryptoService,
-          this.main.stateService,
-          this.main.searchService,
-          this.main.apiService,
-          this.main.organizationService,
-          this.main.eventCollectionService,
-        );
-        const response = await cmd.run("template", object, null);
-        this.processResponse(response);
-      });
+      .description("Get json templates for send objects")
+      .addCommand(
+        new program.Command("send.text")
+          .description("Get json template for send.text object")
+          .action(async () => {
+            const response = await getInstance.getTemplate("send.text");
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("send.file")
+          .description("Get json template for send.file object")
+          .action(async () => {
+            const response = await getInstance.getTemplate("send.file");
+            this.processResponse(response);
+          }),
+      );
   }
 
   private getCommand(): program.Command {

@@ -4,7 +4,7 @@ import { ConfirmCommand } from "./admin-console/commands/confirm.command";
 import { ShareCommand } from "./admin-console/commands/share.command";
 import { Main } from "./bw";
 import { EditCommand } from "./commands/edit.command";
-import { GetCommand } from "./commands/get.command";
+import { GetCommand, templateIds } from "./commands/get.command";
 import { ListCommand } from "./commands/list.command";
 import { RestoreCommand } from "./commands/restore.command";
 import { Response } from "./models/response";
@@ -126,35 +126,53 @@ export class VaultProgram extends Program {
   }
 
   private getCommand(): program.Command {
-    const getObjects = [
-      "item",
-      "username",
-      "password",
-      "uri",
-      "totp",
-      "notes",
-      "exposed",
-      "attachment",
-      "folder",
-      "collection",
-      "org-collection",
-      "organization",
-      "template",
-      "fingerprint",
-      "send",
-    ];
-    return new program.Command("get")
-      .arguments("<object> <id>")
-      .description("Get an object from the vault.", {
-        object: "Valid objects are: " + getObjects.join(", "),
-        id: "Search term or object's globally unique `id`.",
-      })
-      .option("--itemid <itemid>", "Attachment's item id.")
-      .option("--output <output>", "Output directory or filename for attachment.")
-      .option("--organizationid <organizationid>", "Organization id for an organization object.")
+    const getInstance = new GetCommand(
+      this.main.cipherService,
+      this.main.folderService,
+      this.main.collectionService,
+      this.main.totpService,
+      this.main.auditService,
+      this.main.cryptoService,
+      this.main.stateService,
+      this.main.searchService,
+      this.main.apiService,
+      this.main.organizationService,
+      this.main.eventCollectionService,
+    );
+
+    const template = new program.Command("template")
+      .description("Get an template from the vault.")
       .on("--help", () => {
-        writeLn("\n  If raw output is specified and no output filename or directory is given for");
-        writeLn("  an attachment query, the attachment content is written to stdout.");
+        writeLn("");
+        writeLn("  Examples:");
+        writeLn("");
+        templateIds.forEach((templateId) => {
+          writeLn(`    bw get template ${templateId}`);
+        });
+        writeLn("", true);
+      });
+    templateIds.forEach((templateId) => {
+      template.addCommand(
+        new program.Command(templateId)
+          .description(`Get a ${templateId} template.`)
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn(`    bw get template ${templateId}`);
+            writeLn("", true);
+          })
+          .action(async () => {
+            await this.exitIfLocked();
+            const response = await getInstance.getTemplate(templateId);
+            this.processResponse(response);
+          }),
+      );
+    });
+
+    return new program.Command("get")
+      .description("Get an object from the vault.")
+      .on("--help", () => {
         writeLn("");
         writeLn("  Examples:");
         writeLn("");
@@ -172,30 +190,289 @@ export class VaultProgram extends Program {
         );
         writeLn("    bw get folder email");
         writeLn("    bw get template folder");
+        writeLn(
+          "    bw get org-collection 99ee88d2-6046-4ea7-92c2-acac464b1412 --organizationid aee5bfc2-0e4c-4347-93d9-2ef6603ae124",
+        );
+        writeLn("    bw get collection 99ee88d2-6046-4ea7-92c2-acac464b1412");
+        writeLn("    bw get organization 99ee88d2-6046-4ea7-92c2-acac464b1412");
+        writeLn("    bw get fingerprint 99ee88d2-6046-4ea7-92c2-acac464b1412");
         writeLn("", true);
       })
-      .action(async (object, id, cmd) => {
-        if (!this.validateObject(object, getObjects)) {
-          return;
-        }
-
-        await this.exitIfLocked();
-        const command = new GetCommand(
-          this.main.cipherService,
-          this.main.folderService,
-          this.main.collectionService,
-          this.main.totpService,
-          this.main.auditService,
-          this.main.cryptoService,
-          this.main.stateService,
-          this.main.searchService,
-          this.main.apiService,
-          this.main.organizationService,
-          this.main.eventCollectionService,
-        );
-        const response = await command.run(object, id, cmd);
-        this.processResponse(response);
-      });
+      .addCommand(
+        new program.Command("item")
+          .description("Get an object from the vault.", {
+            id: "Search term or items's globally unique `id`.",
+          })
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get item 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .arguments("<id>")
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getCipher(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("username")
+          .description("Get an object from the vault.", {
+            id: "Search term or username's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get username 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getUsername(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("password")
+          .description("Get an object from the vault.", {
+            id: "Search url or password's globally unique `id`.",
+          })
+          .arguments("<search>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get password https://google.com");
+            writeLn("    bw get password 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getPassword(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("uri")
+          .description("Get an object from the vault.", {
+            id: "Search term or uri's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get uri 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getUri(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("totp")
+          .description("Get an object from the vault.", {
+            id: "Search term or totp's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get totp google.com");
+            writeLn("    bw get totp 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getTotp(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("notes")
+          .description("Get an object from the vault.", {
+            id: "Search term or notes's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get notes google.com");
+            writeLn("    bw get notes 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getNotes(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("exposed")
+          .description("Get an object from the vault.", {
+            id: "Search term or exposed's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get exposed yahoo.com");
+            writeLn("    bw get exposed 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getExposed(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("attachment")
+          .description("Get an attachment from the vault.", {
+            id: "Search term or attachment's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .option("--itemid <itemid>", "Attachment's item id.")
+          .option("--output <output>", "Output directory or filename for attachment.")
+          .on("--help", () => {
+            writeLn("");
+            writeLn(
+              "\n  If raw output is specified and no output filename or directory is given for",
+            );
+            writeLn("  an attachment query, the attachment content is written to stdout.");
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn(
+              "    bw get attachment b857igwl1dzrs2 --itemid 99ee88d2-6046-4ea7-92c2-acac464b1412 " +
+                "--output ./photo.jpg",
+            );
+            writeLn(
+              "    bw get attachment photo.jpg --itemid 99ee88d2-6046-4ea7-92c2-acac464b1412 --raw",
+            );
+            writeLn("", true);
+          })
+          .action(async (id, cmd) => {
+            await this.exitIfLocked();
+            const itemId = cmd?.itemid ?? cmd?.itemId;
+            const output = cmd?.output;
+            const response = await getInstance.getAttachment(id, { output, itemId });
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("org-collection")
+          .description("Get an org-collection from the vault.", {
+            id: "Search term or org-collection's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .option(
+            "--organizationid <organizationid>",
+            "Organization id for an organization object.",
+          )
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn(
+              "    bw get org-collection 99ee88d2-6046-4ea7-92c2-acac464b1412 --organizationid aee5bfc2-0e4c-4347-93d9-2ef6603ae124",
+            );
+            writeLn("", true);
+          })
+          .action(async (id, cmd) => {
+            await this.exitIfLocked();
+            const organizationId = cmd?.organizationid ?? cmd?.organizationId;
+            const response = await getInstance.getOrganizationCollection(id, { organizationId });
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("folder")
+          .description("Get an folder from the vault.", {
+            id: "Search term or folder's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get folder email");
+            writeLn("    bw get folder 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getFolder(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("collection")
+          .description("Get an collection from the vault.", {
+            id: "Search term or collection's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get collection 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getCollection(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(
+        new program.Command("organization")
+          .description("Get an organization from the vault.", {
+            id: "Search term or organization's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get organization 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getOrganization(id);
+            this.processResponse(response);
+          }),
+      )
+      .addCommand(template)
+      .addCommand(
+        new program.Command("fingerprint")
+          .description("Get an fingerprint from the vault.", {
+            id: "Search term or fingerprint's globally unique `id`.",
+          })
+          .arguments("<id>")
+          .on("--help", () => {
+            writeLn("");
+            writeLn("  Examples:");
+            writeLn("");
+            writeLn("    bw get fingerprint 99ee88d2-6046-4ea7-92c2-acac464b1412");
+            writeLn("", true);
+          })
+          .action(async (id) => {
+            await this.exitIfLocked();
+            const response = await getInstance.getFingerprint(id);
+            this.processResponse(response);
+          }),
+      );
   }
 
   private createCommand() {

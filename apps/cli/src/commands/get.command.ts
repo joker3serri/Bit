@@ -66,7 +66,9 @@ export class GetCommand extends DownloadCommand {
       id = id.toLowerCase();
     }
 
-    const normalizedOptions = new Options(cmdOptions);
+    const itemId = cmdOptions?.itemid ?? cmdOptions?.itemId;
+    const output = cmdOptions?.output;
+    const organizationId = cmdOptions?.organizationid ?? cmdOptions?.organizationId;
     switch (object.toLowerCase()) {
       case "item":
         return await this.getCipher(id);
@@ -83,13 +85,13 @@ export class GetCommand extends DownloadCommand {
       case "exposed":
         return await this.getExposed(id);
       case "attachment":
-        return await this.getAttachment(id, normalizedOptions);
+        return await this.getAttachment(id, { itemId, output });
       case "folder":
         return await this.getFolder(id);
       case "collection":
         return await this.getCollection(id);
       case "org-collection":
-        return await this.getOrganizationCollection(id, normalizedOptions);
+        return await this.getOrganizationCollection(id, { organizationId });
       case "organization":
         return await this.getOrganization(id);
       case "template":
@@ -124,7 +126,7 @@ export class GetCommand extends DownloadCommand {
     return decCipher;
   }
 
-  private async getCipher(id: string, filter?: (c: CipherView) => boolean) {
+  async getCipher(id: string, filter?: (c: CipherView) => boolean) {
     let decCipher = await this.getCipherView(id);
     if (decCipher == null) {
       return Response.notFound();
@@ -152,7 +154,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getUsername(id: string) {
+  async getUsername(id: string) {
     const cipherResponse = await this.getCipher(
       id,
       (c) => c.type === CipherType.Login && !Utils.isNullOrWhitespace(c.login.username),
@@ -174,7 +176,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getPassword(id: string) {
+  async getPassword(id: string) {
     const cipherResponse = await this.getCipher(
       id,
       (c) => c.type === CipherType.Login && !Utils.isNullOrWhitespace(c.login.password),
@@ -196,7 +198,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getUri(id: string) {
+  async getUri(id: string) {
     const cipherResponse = await this.getCipher(
       id,
       (c) =>
@@ -226,7 +228,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getTotp(id: string) {
+  async getTotp(id: string) {
     const cipherResponse = await this.getCipher(
       id,
       (c) => c.type === CipherType.Login && !Utils.isNullOrWhitespace(c.login.totp),
@@ -265,7 +267,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getNotes(id: string) {
+  async getNotes(id: string) {
     const cipherResponse = await this.getCipher(id, (c) => !Utils.isNullOrWhitespace(c.notes));
     if (!cipherResponse.success) {
       return cipherResponse;
@@ -280,7 +282,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getExposed(id: string) {
+  async getExposed(id: string) {
     const passwordResponse = await this.getPassword(id);
     if (!passwordResponse.success) {
       return passwordResponse;
@@ -293,7 +295,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getAttachment(id: string, options: Options) {
+  async getAttachment(id: string, options: { itemId: string; output?: string }) {
     if (options.itemId == null || options.itemId === "") {
       return Response.badRequest("--itemid <itemid> required.");
     }
@@ -363,7 +365,7 @@ export class GetCommand extends DownloadCommand {
     return await this.saveAttachmentToFile(url, key, attachments[0].fileName, options.output);
   }
 
-  private async getFolder(id: string) {
+  async getFolder(id: string) {
     let decFolder: FolderView = null;
     if (Utils.isGuid(id)) {
       const folder = await this.folderService.getFromState(id);
@@ -388,7 +390,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getCollection(id: string) {
+  async getCollection(id: string) {
     let decCollection: CollectionView = null;
     if (Utils.isGuid(id)) {
       const collection = await this.collectionService.get(id);
@@ -413,7 +415,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getOrganizationCollection(id: string, options: Options) {
+  async getOrganizationCollection(id: string, options: { organizationId: string }) {
     if (options.organizationId == null || options.organizationId === "") {
       return Response.badRequest("`organizationid` option is required.");
     }
@@ -448,7 +450,7 @@ export class GetCommand extends DownloadCommand {
     }
   }
 
-  private async getOrganization(id: string) {
+  async getOrganization(id: string) {
     let org: Organization = null;
     if (Utils.isGuid(id)) {
       org = await this.organizationService.getFromState(id);
@@ -470,7 +472,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getTemplate(id: string) {
+  async getTemplate(id: string) {
     let template: any = null;
     switch (id.toLowerCase()) {
       case "item":
@@ -520,7 +522,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getFingerprint(id: string) {
+  async getFingerprint(id: string) {
     let fingerprint: string[] = null;
     if (id === "me") {
       fingerprint = await this.cryptoService.getFingerprint(await this.stateService.getUserId());
@@ -542,14 +544,19 @@ export class GetCommand extends DownloadCommand {
   }
 }
 
-class Options {
-  itemId: string;
-  organizationId: string;
-  output: string;
-
-  constructor(passedOptions: Record<string, any>) {
-    this.organizationId = passedOptions?.organizationid || passedOptions?.organizationId;
-    this.itemId = passedOptions?.itemid || passedOptions?.itemId;
-    this.output = passedOptions?.output;
-  }
-}
+export const templateIds = [
+  "item",
+  "item.field",
+  "item.login",
+  "item.login.uri",
+  "item.card",
+  "item.identity",
+  "item.securenote",
+  "folder",
+  "collection",
+  "item-collections",
+  "org-collection",
+  "send.text",
+  "send.file",
+] as const;
+export type TemplateId = (typeof templateIds)[number];
