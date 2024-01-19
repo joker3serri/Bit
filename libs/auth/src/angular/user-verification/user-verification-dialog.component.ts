@@ -80,6 +80,7 @@ export class UserVerificationDialogComponent {
    *
    * // User confirmed the dialog so check verification success
    * if (!result.verificationSuccess) {
+   *   // verification failed
    *   return;
    * }
    *
@@ -111,7 +112,7 @@ export class UserVerificationDialogComponent {
    *
    * // User confirmed the dialog so check verification success
    * if (!result.verificationSuccess) {
-   *   // User confirmed but verification failed
+   *   // verification failed
    *   return;
    * }
    *
