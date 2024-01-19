@@ -141,7 +141,7 @@ export class VaultProgram extends Program {
     );
 
     const template = new program.Command("template")
-      .description("Get an template from the vault.")
+      .description("Get a template for create or update.")
       .on("--help", () => {
         writeLn("");
         writeLn("  Examples:");
@@ -200,7 +200,7 @@ export class VaultProgram extends Program {
       })
       .addCommand(
         new program.Command("item")
-          .description("Get an object from the vault.", {
+          .description("Get an item from the vault.", {
             id: "Search term or items's globally unique `id`.",
           })
           .on("--help", () => {
@@ -219,7 +219,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("username")
-          .description("Get an object from the vault.", {
+          .description("Get an items username from the vault.", {
             id: "Search term or username's globally unique `id`.",
           })
           .arguments("<id>")
@@ -238,7 +238,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("password")
-          .description("Get an object from the vault.", {
+          .description("Get an items password from the vault.", {
             id: "Search url or password's globally unique `id`.",
           })
           .arguments("<search>")
@@ -258,7 +258,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("uri")
-          .description("Get an object from the vault.", {
+          .description("Get an items uri from the vault.", {
             id: "Search term or uri's globally unique `id`.",
           })
           .arguments("<id>")
@@ -277,7 +277,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("totp")
-          .description("Get an object from the vault.", {
+          .description("Get an items totp from the vault.", {
             id: "Search term or totp's globally unique `id`.",
           })
           .arguments("<id>")
@@ -297,7 +297,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("notes")
-          .description("Get an object from the vault.", {
+          .description("Get an items notes from the vault.", {
             id: "Search term or notes's globally unique `id`.",
           })
           .arguments("<id>")
@@ -317,7 +317,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("exposed")
-          .description("Get an object from the vault.", {
+          .description("Get exposed for an item in the vault.", {
             id: "Search term or exposed's globally unique `id`.",
           })
           .arguments("<id>")
@@ -397,7 +397,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("folder")
-          .description("Get an folder from the vault.", {
+          .description("Get a folder from the vault.", {
             id: "Search term or folder's globally unique `id`.",
           })
           .arguments("<id>")
@@ -417,7 +417,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("collection")
-          .description("Get an collection from the vault.", {
+          .description("Get a collection from the vault.", {
             id: "Search term or collection's globally unique `id`.",
           })
           .arguments("<id>")
@@ -436,7 +436,7 @@ export class VaultProgram extends Program {
       )
       .addCommand(
         new program.Command("organization")
-          .description("Get an organization from the vault.", {
+          .description("Get a organization from the vault.", {
             id: "Search term or organization's globally unique `id`.",
           })
           .arguments("<id>")
@@ -456,7 +456,7 @@ export class VaultProgram extends Program {
       .addCommand(template)
       .addCommand(
         new program.Command("fingerprint")
-          .description("Get an fingerprint from the vault.", {
+          .description("Get a fingerprint from the vault.", {
             id: "Search term or fingerprint's globally unique `id`.",
           })
           .arguments("<id>")
