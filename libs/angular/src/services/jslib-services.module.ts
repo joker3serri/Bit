@@ -268,6 +268,8 @@ import { ModalService } from "./modal.service";
       provide: AuthServiceAbstraction,
       useClass: AuthService,
       deps: [
+        InternalMasterPasswordServiceAbstraction,
+        AccountServiceAbstraction,
         CryptoServiceAbstraction,
         ApiServiceAbstraction,
         TokenServiceAbstraction,
@@ -397,6 +399,7 @@ import { ModalService } from "./modal.service";
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,
       deps: [
+        InternalMasterPasswordServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         EncryptService,
         PlatformUtilsServiceAbstraction,
@@ -491,6 +494,8 @@ import { ModalService } from "./modal.service";
       provide: VaultTimeoutService,
       useClass: VaultTimeoutService,
       deps: [
+        AccountServiceAbstraction,
+        InternalMasterPasswordServiceAbstraction,
         CipherServiceAbstraction,
         FolderServiceAbstraction,
         CollectionServiceAbstraction,

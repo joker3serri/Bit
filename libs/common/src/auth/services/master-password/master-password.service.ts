@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import {
@@ -36,7 +36,9 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
   constructor(private stateProvider: StateProvider) {
     this.forceSetPasswordReasonState = this.stateProvider.getActive(FORCE_SET_PASSWORD_REASON);
 
-    this.forceSetPasswordReason$ = this.forceSetPasswordReasonState.state$;
+    this.forceSetPasswordReason$ = this.forceSetPasswordReasonState.state$.pipe(
+      map((reason) => reason ?? ForceSetPasswordReason.None),
+    );
   }
 
   masterKey$(userId: UserId): Observable<MasterKey> {
