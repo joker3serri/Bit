@@ -92,7 +92,11 @@ export class PasswordLoginStrategy extends LoginStrategy {
       !result.requiresCaptcha &&
       this.forcePasswordResetReason != ForceSetPasswordReason.None
     ) {
-      await this.masterPasswordService.setForceSetPasswordReason(this.forcePasswordResetReason);
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      await this.masterPasswordService.setForceSetPasswordReason(
+        this.forcePasswordResetReason,
+        userId,
+      );
       result.forcePasswordReset = this.forcePasswordResetReason;
     }
 
@@ -139,8 +143,10 @@ export class PasswordLoginStrategy extends LoginStrategy {
           this.forcePasswordResetReason = ForceSetPasswordReason.WeakMasterPassword;
         } else {
           // Authentication was successful, save the force update password options with the state service
+          const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
           await this.masterPasswordService.setForceSetPasswordReason(
             ForceSetPasswordReason.WeakMasterPassword,
+            userId,
           );
           authResult.forcePasswordReset = ForceSetPasswordReason.WeakMasterPassword;
         }

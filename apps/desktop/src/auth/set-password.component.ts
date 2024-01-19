@@ -18,6 +18,8 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 
 const BroadcasterSubscriptionId = "SetPasswordComponent";
 
@@ -27,6 +29,8 @@ const BroadcasterSubscriptionId = "SetPasswordComponent";
 })
 export class SetPasswordComponent extends BaseSetPasswordComponent implements OnDestroy {
   constructor(
+    accountService: AccountService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     apiService: ApiService,
     i18nService: I18nService,
     cryptoService: CryptoService,
@@ -46,6 +50,8 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
     dialogService: DialogService,
   ) {
     super(
+      accountService,
+      masterPasswordService,
       i18nService,
       cryptoService,
       messagingService,

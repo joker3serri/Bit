@@ -23,6 +23,8 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { DialogService } from "@bitwarden/components";
 
 import { ElectronStateService } from "../platform/services/electron-state.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 
 const BroadcasterSubscriptionId = "LockComponent";
 
@@ -37,6 +39,8 @@ export class LockComponent extends BaseLockComponent {
   private autoPromptBiometric = false;
 
   constructor(
+    accountService: AccountService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     router: Router,
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
@@ -60,6 +64,8 @@ export class LockComponent extends BaseLockComponent {
     pinCryptoService: PinCryptoServiceAbstraction,
   ) {
     super(
+      accountService,
+      masterPasswordService,
       router,
       i18nService,
       platformUtilsService,

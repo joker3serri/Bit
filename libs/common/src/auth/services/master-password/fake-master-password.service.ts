@@ -16,10 +16,6 @@ export class FakeMasterPasswordService implements InternalMasterPasswordServiceA
   // eslint-disable-next-line rxjs/no-exposed-subjects -- test class
   forceSetPasswordReasonSubject = new ReplaySubject<ForceSetPasswordReason>(1);
 
-  get forceSetPasswordReason$() {
-    return this.forceSetPasswordReasonSubject.asObservable();
-  }
-
   constructor(initialMasterKey?: MasterKey, initialMasterKeyHash?: string) {
     this.masterKeySubject.next(initialMasterKey);
     this.masterKeyHashSubject.next(initialMasterKeyHash);
@@ -41,7 +37,11 @@ export class FakeMasterPasswordService implements InternalMasterPasswordServiceA
     return this.mock.setMasterKeyHash(masterKeyHash, userId);
   }
 
-  setForceSetPasswordReason(reason: ForceSetPasswordReason): Promise<void> {
-    return this.mock.setForceSetPasswordReason(reason);
+  forceSetPasswordReason$(userId: UserId): Observable<ForceSetPasswordReason> {
+    return this.forceSetPasswordReasonSubject.asObservable();
+  }
+
+  setForceSetPasswordReason(reason: ForceSetPasswordReason, userId: UserId): Promise<void> {
+    return this.mock.setForceSetPasswordReason(reason, userId);
   }
 }

@@ -595,6 +595,7 @@ export default class MainBackground {
     this.providerService = new ProviderService(this.stateService);
     this.syncService = new SyncService(
       this.masterPasswordService,
+      this.accountService,
       this.apiService,
       this.settingsService,
       this.folderService,
@@ -941,7 +942,7 @@ export default class MainBackground {
 
       const status = await this.authService.getAuthStatus(userId);
       const forcePasswordReset =
-        (await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$)) !=
+        (await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$(userId))) !=
         ForceSetPasswordReason.None;
 
       await this.systemService.clearPendingClipboard();

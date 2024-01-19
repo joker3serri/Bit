@@ -188,6 +188,7 @@ describe("PasswordLoginStrategy", () => {
     expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
     expect(masterPasswordService.mock.setForceSetPasswordReason).toHaveBeenCalledWith(
       ForceSetPasswordReason.WeakMasterPassword,
+      userId,
     );
     expect(result.forcePasswordReset).toEqual(ForceSetPasswordReason.WeakMasterPassword);
   });
@@ -227,6 +228,7 @@ describe("PasswordLoginStrategy", () => {
     // Second login attempt should save the force password reset options and return in result
     expect(masterPasswordService.mock.setForceSetPasswordReason).toHaveBeenCalledWith(
       ForceSetPasswordReason.WeakMasterPassword,
+      userId,
     );
     expect(secondResult.forcePasswordReset).toEqual(ForceSetPasswordReason.WeakMasterPassword);
   });

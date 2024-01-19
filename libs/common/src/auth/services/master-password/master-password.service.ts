@@ -1,12 +1,7 @@
 import { map, Observable } from "rxjs";
 
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
-import {
-  ActiveUserState,
-  KeyDefinition,
-  MASTER_PASSWORD_MEMORY,
-  StateProvider,
-} from "../../../platform/state";
+import { KeyDefinition, MASTER_PASSWORD_MEMORY, StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { MasterKey } from "../../../types/key";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
@@ -29,17 +24,7 @@ const FORCE_SET_PASSWORD_REASON = new KeyDefinition<ForceSetPasswordReason>(
 );
 
 export class MasterPasswordService implements InternalMasterPasswordServiceAbstraction {
-  private forceSetPasswordReasonState: ActiveUserState<ForceSetPasswordReason>;
-
-  forceSetPasswordReason$;
-
-  constructor(private stateProvider: StateProvider) {
-    this.forceSetPasswordReasonState = this.stateProvider.getActive(FORCE_SET_PASSWORD_REASON);
-
-    this.forceSetPasswordReason$ = this.forceSetPasswordReasonState.state$.pipe(
-      map((reason) => reason ?? ForceSetPasswordReason.None),
-    );
-  }
+  constructor(private stateProvider: StateProvider) {}
 
   masterKey$(userId: UserId): Observable<MasterKey> {
     return this.stateProvider.getUser(userId, MASTER_KEY).state$;
@@ -47,6 +32,12 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
 
   masterKeyHash$(userId: UserId): Observable<string> {
     return this.stateProvider.getUser(userId, MASTER_KEY_HASH).state$;
+  }
+
+  forceSetPasswordReason$(userId: UserId): Observable<ForceSetPasswordReason> {
+    return this.stateProvider
+      .getUser(userId, FORCE_SET_PASSWORD_REASON)
+      .state$.pipe(map((reason) => reason ?? ForceSetPasswordReason.None));
   }
 
   async setMasterKey(masterKey: MasterKey, userId: UserId): Promise<void> {
@@ -57,7 +48,7 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     await this.stateProvider.getUser(userId, MASTER_KEY_HASH).update((_) => masterKeyHash);
   }
 
-  async setForceSetPasswordReason(reason: ForceSetPasswordReason): Promise<void> {
-    await this.forceSetPasswordReasonState.update((_) => reason);
+  async setForceSetPasswordReason(reason: ForceSetPasswordReason, userId: UserId): Promise<void> {
+    await this.stateProvider.getUser(userId, FORCE_SET_PASSWORD_REASON).update((_) => reason);
   }
 }

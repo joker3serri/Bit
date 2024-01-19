@@ -87,8 +87,10 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     await this.syncService.fullSync(true);
     this.syncLoading = false;
 
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     this.forceSetPasswordReason = await firstValueFrom(
-      this.masterPasswordService.forceSetPasswordReason$,
+      this.masterPasswordService.forceSetPasswordReason$(userId),
     );
 
     this.route.queryParams
@@ -223,7 +225,8 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     keyPair: [string, EncString] | null,
   ) {
     // Clear force set password reason to allow navigation back to vault.
-    await this.masterPasswordService.setForceSetPasswordReason(ForceSetPasswordReason.None);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    await this.masterPasswordService.setForceSetPasswordReason(ForceSetPasswordReason.None, userId);
 
     // User now has a password so update account decryption options in state
     const acctDecryptionOpts: AccountDecryptionOptions =
@@ -234,7 +237,6 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
 
     await this.stateService.setKdfType(this.kdf);
     await this.stateService.setKdfConfig(this.kdfConfig);
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     await this.masterPasswordService.setMasterKey(masterKey, userId);
     await this.cryptoService.setUserKey(userKey[0]);
 

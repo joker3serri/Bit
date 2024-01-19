@@ -20,6 +20,8 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { firstValueFrom } from "rxjs";
 
 @Directive()
 export class SsoComponent {
@@ -61,6 +63,7 @@ export class SsoComponent {
     protected logService: LogService,
     protected configService: ConfigServiceAbstraction,
     protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    protected accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -278,8 +281,10 @@ export class SsoComponent {
       // Set flag so that auth guard can redirect to set password screen after decryption (trusted or untrusted device)
       // Note: we cannot directly navigate in this scenario as we are in a pre-decryption state, and
       // if you try to set a new MP before decrypting, you will invalidate the user's data by making a new user key.
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setForceSetPasswordReason(
         ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
+        userId,
       );
     }
 

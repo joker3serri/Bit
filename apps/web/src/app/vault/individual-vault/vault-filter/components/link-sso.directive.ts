@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -42,6 +43,7 @@ export class LinkSsoDirective extends SsoComponent implements AfterContentInit {
     logService: LogService,
     configService: ConfigServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    accountService: AccountService,
   ) {
     super(
       authService,
@@ -57,6 +59,7 @@ export class LinkSsoDirective extends SsoComponent implements AfterContentInit {
       logService,
       configService,
       masterPasswordService,
+      accountService,
     );
 
     this.returnUri = "/settings/organizations";

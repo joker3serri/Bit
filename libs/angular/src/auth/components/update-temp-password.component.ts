@@ -25,6 +25,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { DialogService } from "@bitwarden/components";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 @Directive()
 export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
@@ -58,6 +59,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     private userVerificationService: UserVerificationService,
     protected router: Router,
     dialogService: DialogService,
+    private accountService: AccountService,
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
   ) {
     super(
@@ -75,7 +77,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   async ngOnInit() {
     await this.syncService.fullSync(true);
 
-    this.reason = await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    this.reason = await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$(userId));
 
     // If we somehow end up here without a reason, go back to the home page
     if (this.reason == ForceSetPasswordReason.None) {
@@ -164,7 +167,11 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
         this.i18nService.t("updatedMasterPassword"),
       );
 
-      await this.masterPasswordService.setForceSetPasswordReason(ForceSetPasswordReason.None);
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      await this.masterPasswordService.setForceSetPasswordReason(
+        ForceSetPasswordReason.None,
+        userId,
+      );
 
       if (this.onSuccessfulChangePassword != null) {
         this.onSuccessfulChangePassword();

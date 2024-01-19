@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -39,6 +40,7 @@ export class SsoComponent extends BaseSsoComponent {
     logService: LogService,
     configService: ConfigServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    accountService: AccountService,
     @Inject(WINDOW) private win: Window,
   ) {
     super(
@@ -55,6 +57,7 @@ export class SsoComponent extends BaseSsoComponent {
       logService,
       configService,
       masterPasswordService,
+      accountService,
     );
 
     const url = this.environmentService.getWebVaultUrl();

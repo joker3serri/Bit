@@ -28,6 +28,8 @@ import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/doma
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { firstValueFrom } from "rxjs";
 
 @Directive()
 export class TwoFactorComponent extends CaptchaProtectedComponent implements OnInit, OnDestroy {
@@ -74,6 +76,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected loginService: LoginService,
     protected configService: ConfigServiceAbstraction,
     protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    protected accountService: AccountService,
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.webAuthnSupported = this.platformUtilsService.supportsWebAuthn(win);
@@ -293,8 +296,10 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       // Set flag so that auth guard can redirect to set password screen after decryption (trusted or untrusted device)
       // Note: we cannot directly navigate to the set password screen in this scenario as we are in a pre-decryption state, and
       // if you try to set a new MP before decrypting, you will invalidate the user's data by making a new user key.
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setForceSetPasswordReason(
         ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
+        userId,
       );
     }
 

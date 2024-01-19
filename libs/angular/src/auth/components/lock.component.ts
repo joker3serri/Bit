@@ -293,8 +293,10 @@ export class LockComponent implements OnInit, OnDestroy {
         }
 
         if (this.requirePasswordChange()) {
+          const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
           await this.masterPasswordService.setForceSetPasswordReason(
             ForceSetPasswordReason.WeakMasterPassword,
+            userId,
           );
           this.router.navigate([this.forcePasswordResetRoute]);
           return;
