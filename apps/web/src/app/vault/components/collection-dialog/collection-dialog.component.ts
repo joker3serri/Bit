@@ -12,6 +12,7 @@ import {
   switchMap,
   takeUntil,
 } from "rxjs";
+import { first } from "rxjs/operators";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
@@ -71,12 +72,14 @@ export enum CollectionDialogAction {
 export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected flexibleCollectionsEnabled$ = this.organizationService
     .get$(this.params.organizationId)
-    .pipe(map((o) => o?.flexibleCollections));
+    .pipe(
+      first(),
+      map((o) => o?.flexibleCollections),
+    );
 
-  protected flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollectionsV1,
-    false,
-  );
+  protected flexibleCollectionsV1Enabled$ = this.configService
+    .getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1, false)
+    .pipe(first());
 
   private destroy$ = new Subject<void>();
   protected organizations$: Observable<Organization[]>;
@@ -124,6 +127,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe((id) => this.loadOrg(id, this.params.collectionIds));
       this.organizations$ = this.organizationService.organizations$.pipe(
+        first(),
         map((orgs) =>
           orgs
             .filter((o) => o.canCreateNewCollections && !o.isProviderUser)
@@ -212,9 +216,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           } else {
             this.nestOptions = collections;
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);
-            const currentOrgUserId = users.data.find(
-              (u) => u.userId === this.organization?.userId,
-            )?.id;
+            const currentOrgUserId = users.data.find((u) => u.userId === this.organization?.userId)
+              ?.id;
             const initialSelection: AccessItemValue[] =
               currentOrgUserId !== undefined && flexibleCollections
                 ? [
