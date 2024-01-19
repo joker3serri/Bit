@@ -9,8 +9,6 @@ import {
   CollectionAccessDetailsResponse,
   CollectionResponse,
 } from "@bitwarden/common/vault/models/response/collection.response";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { ImportCollectionServiceAbstraction } from "@bitwarden/importer/core";
 
 import { CollectionAccessSelectionView } from "../../admin-console/organizations/core";
 
@@ -18,7 +16,7 @@ import { BulkCollectionAccessRequest } from "./bulk-collection-access.request";
 import { CollectionAdminView } from "./views/collection-admin.view";
 
 @Injectable()
-export class CollectionAdminService implements ImportCollectionServiceAbstraction {
+export class CollectionAdminService {
   constructor(
     private apiService: ApiService,
     private cryptoService: CryptoService,
@@ -144,10 +142,6 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
         new SelectionReadOnlyRequest(user.id, user.readOnly, user.hidePasswords, user.manage),
     );
     return collection;
-  }
-
-  async getAllAdminCollections(organizationId: string): Promise<CollectionView[]> {
-    return await this.getAll(organizationId);
   }
 }
 

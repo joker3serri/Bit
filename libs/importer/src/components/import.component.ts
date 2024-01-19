@@ -25,7 +25,6 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ClientType } from "@bitwarden/common/enums";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -184,7 +183,6 @@ export class ImportComponent implements OnInit, OnDestroy {
     protected organizationService: OrganizationService,
     protected collectionService: CollectionService,
     protected formBuilder: FormBuilder,
-    private configService: ConfigServiceAbstraction,
     @Inject(ImportCollectionServiceAbstraction)
     @Optional()
     protected importCollectionService: ImportCollectionServiceAbstraction,
@@ -229,7 +227,9 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.formGroup.controls.vaultSelector.disable();
 
     this.collections$ = Utils.asyncToObservable(() =>
-      this.importCollectionService.getAllAdminCollections(this.organizationId),
+      this.importCollectionService
+        .getAllAdminCollections(this.organizationId)
+        .then((collections) => collections.sort(Utils.getSortFunction(this.i18nService, "name"))),
     );
 
     this._isFromAC = true;
@@ -257,9 +257,11 @@ export class ImportComponent implements OnInit, OnDestroy {
             this.collectionService
               .getAllDecrypted()
               .then((decryptedCollections) =>
-                decryptedCollections.filter(
-                  (c2) => c2.organizationId === value && (!flexCollectionEnabled || c2.manage),
-                ),
+                decryptedCollections
+                  .filter(
+                    (c2) => c2.organizationId === value && (!flexCollectionEnabled || c2.manage),
+                  )
+                  .sort(Utils.getSortFunction(this.i18nService, "name")),
               ),
           );
         }

@@ -4,8 +4,8 @@ import { ImportCollectionServiceAbstraction } from "@bitwarden/importer/core";
 import { ImportComponent } from "@bitwarden/importer/ui";
 
 import { SharedModule } from "../../shared";
-import { CollectionAdminService } from "../../vault/core/collection-admin.service";
 
+import { ImportCollectionAdminService } from "./import-collection-admin.service";
 import { ImportWebComponent } from "./import-web.component";
 
 @Component({
@@ -15,7 +15,7 @@ import { ImportWebComponent } from "./import-web.component";
   providers: [
     {
       provide: ImportCollectionServiceAbstraction,
-      useClass: CollectionAdminService,
+      useClass: ImportCollectionAdminService,
     },
   ],
 })
