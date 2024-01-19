@@ -163,7 +163,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       if (this.activeClientVerificationOption === ActiveClientVerificationOption.MasterPassword) {
         return this.i18nService.t("incorrectPassword");
       } else if (this.activeClientVerificationOption === ActiveClientVerificationOption.Pin) {
-        this.i18nService.t("incorrectPin");
+        return this.i18nService.t("incorrectPin");
       }
     }
   }
