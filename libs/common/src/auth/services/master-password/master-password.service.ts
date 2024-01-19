@@ -1,9 +1,6 @@
 import { Observable } from "rxjs";
 
-import {
-  MasterKey,
-  SymmetricCryptoKey,
-} from "../../../platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import {
   ActiveUserState,
   KeyDefinition,
@@ -11,6 +8,7 @@ import {
   StateProvider,
 } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
+import { MasterKey } from "../../../types/key";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { ForceSetPasswordReason } from "../../models/domain/force-set-password-reason";
 

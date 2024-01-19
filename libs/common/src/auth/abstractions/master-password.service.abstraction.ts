@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { MasterKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { UserId } from "../../types/guid";
+import { MasterKey } from "../../types/key";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
 
 export abstract class MasterPasswordServiceAbstraction {
