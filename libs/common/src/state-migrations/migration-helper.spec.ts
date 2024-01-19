@@ -178,6 +178,7 @@ export function mockMigrationHelper(
   return mockHelper;
 }
 
+// TODO: Use const generic for TUsers in TypeScript 5.0 so consumers don't have to `as const` themselves
 export type InitialDataHint<TUsers extends string[] = string[]> = {
   /**
    * A string array of the users id who are authenticated
@@ -206,6 +207,12 @@ type InjectedData = {
   originalPath: string[];
 };
 
+// This is a slight lie, technically the type is `Record<string | symbol, unknown>
+// but for the purposes of things in the migrations this is enough.
+function isStringRecord(object: unknown | undefined): object is Record<string, unknown> {
+  return object && typeof object === "object" && !Array.isArray(object);
+}
+
 function injectData(data: Record<string, unknown>, injectedData: InjectedData[], path: string[]) {
   if (!data) {
     return;
@@ -215,9 +222,8 @@ function injectData(data: Record<string, unknown>, injectedData: InjectedData[],
   const keys = Object.keys(data);
   for (const key of keys) {
     const currentProperty = data[key];
-    if (currentProperty && typeof currentProperty === "object" && !Array.isArray(currentProperty)) {
-      // I believe that this is a fully safe cast but I hate that I have to do it
-      injectData(currentProperty as Record<string, unknown>, injectedData, [...path, key]);
+    if (isStringRecord(currentProperty)) {
+      injectData(currentProperty, injectedData, [...path, key]);
     }
   }
 
@@ -253,9 +259,8 @@ function expectInjectedData(data: Record<string, unknown>, injectedData: Injecte
       continue;
     }
 
-    if (propertyValue && typeof propertyValue === "object" && !Array.isArray(propertyValue)) {
-      // I believe that this is a fully safe cast but I hate that I have to do it
-      data[key] = expectInjectedData(propertyValue as Record<string, unknown>, injectedData);
+    if (isStringRecord(propertyValue)) {
+      data[key] = expectInjectedData(propertyValue, injectedData);
     }
   }
 
