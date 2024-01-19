@@ -6,13 +6,15 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { FakeActiveUserStateProvider } from "../../../spec";
+import { FakeActiveUserStateProvider, mockAccountServiceWith } from "../../../spec";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
 import { Policy } from "../../admin-console/models/domain/policy";
+import { Utils } from "../../platform/misc/utils";
 import { ActiveUserState, ActiveUserStateProvider, KeyDefinition } from "../../platform/state";
+import { UserId } from "../../types/guid";
 
 import { GeneratorStrategy, PolicyEvaluator } from "./abstractions";
 import { PASSPHRASE_SETTINGS, PASSWORD_SETTINGS } from "./key-definitions";
@@ -57,6 +59,14 @@ function mockStateProvider(): [
   provider.get.mockReturnValue(state);
 
   return [provider, state];
+}
+
+function fakeStateProvider(key: KeyDefinition<any>, initalValue: any): FakeActiveUserStateProvider {
+  const userId = Utils.newGuid() as UserId;
+  const acctService = mockAccountServiceWith(userId);
+  const provider = new FakeActiveUserStateProvider(acctService);
+  provider.mockFor(key.key, initalValue);
+  return provider;
 }
 
 describe("Password generator service", () => {
@@ -104,8 +114,7 @@ describe("Password generator service", () => {
       // using the fake here because we're testing that the update and the
       // property are wired together. If we were to mock that, we'd be testing
       // the mock configuration instead of the wiring.
-      const provider = new FakeActiveUserStateProvider();
-      provider.getFake(strategy.disk).stateSubject.next({ length: 9 });
+      const provider = fakeStateProvider(strategy.disk, { length: 9 });
       const service = new DefaultGeneratorService(strategy, policy, provider);
 
       await service.saveOptions({ length: 10 });
