@@ -63,6 +63,7 @@ export type UserVerificationDialogParams = {
   /**
    * Indicates whether the verification is only performed client-side.
    * Optional.
+   * **Important:** Only for use on desktop and browser platforms as when there are no client verification methods, the user is instructed to set a pin (which is not supported on web)
    */
   clientSideOnlyVerification?: boolean;
 };
