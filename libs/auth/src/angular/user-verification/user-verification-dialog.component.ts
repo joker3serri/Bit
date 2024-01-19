@@ -58,6 +58,89 @@ export class UserVerificationDialogComponent {
     private i18nService: I18nService,
   ) {}
 
+  /**
+   * Opens the user verification dialog.
+   *
+   * @param {DialogService} dialogService - The service used to open the dialog.
+   * @param {UserVerificationDialogParams} data - Parameters for configuring the dialog.
+   * @returns {Promise<UserVerificationDialogResult>} A promise that resolves to the result of the user verification process.
+   *
+   * @example
+   * // Example 1: Default, simple scenario
+   * const result = await UserVerificationDialogComponent.open(
+   *   this.dialogService,
+   *   {}
+   * );
+   *
+   * // Handle the result of the dialog based on user action and verification success
+   * if (result.userAction === 'cancel') {
+   *   // User cancelled the dialog
+   *   return;
+   * }
+   *
+   * // User confirmed the dialog so check verification success
+   * if (!result.verificationSuccess) {
+   *   return;
+   * }
+   *
+   * ----------------------------------------------------------
+   *
+   * @example
+   * // Example 2: Custom scenario
+   * const result = await UserVerificationDialogComponent.open(
+   *   this.dialogService,
+   *   {
+   *     title: 'customTitle',
+   *     bodyText: 'customBodyText',
+   *     calloutOptions: {
+   *       text: 'customCalloutText',
+   *       type: 'warning',
+   *     },
+   *     confirmButtonOptions: {
+   *       text: 'customConfirmButtonText',
+   *       type: 'danger',
+   *     }
+   *   }
+   * );
+   *
+   * // Handle the result of the dialog based on user action and verification success
+   * if (result.userAction === 'cancel') {
+   *   // User cancelled the dialog
+   *   return;
+   * }
+   *
+   * // User confirmed the dialog so check verification success
+   * if (!result.verificationSuccess) {
+   *   // User confirmed but verification failed
+   *   return;
+   * }
+   *
+   * ----------------------------------------------------------
+   *
+   * @example
+   * // Example 3: Client side verification scenario only
+   * const result = await UserVerificationDialogComponent.open(
+   *   this.dialogService,
+   *   { clientSideOnlyVerification: true }
+   * );
+   *
+   * // Handle the result of the dialog based on user action and verification success
+   * if (result.userAction === 'cancel') {
+   *   // User cancelled the dialog
+   *   return;
+   * }
+   *
+   * // User confirmed the dialog so check verification success
+   * if (!result.verificationSuccess) {
+   *   if (result.noAvailableClientVerificationMethods) {
+   *     // No client-side verification methods are available
+   *     // Could send user to configure a verification method like PIN or biometrics
+   *   }
+   *   return;
+   * }
+   *
+   */
+
   static async open(
     dialogService: DialogService,
     data: UserVerificationDialogParams,
