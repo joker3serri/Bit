@@ -63,19 +63,21 @@
       *ngIf="hasMultipleClientVerificationOptions"
     >
       <p class="tw-mb-1">{{ "needADifferentMethod" | i18n }}</p>
+
       <button
         *ngIf="
-          userVerificationOptions.client.masterPassword &&
-          activeClientVerificationOption !== ActiveClientVerificationOption.MasterPassword
+          userVerificationOptions.client.biometrics &&
+          activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics
         "
         type="button"
         class="tw-mb-1"
         bitLink
         linkType="primary"
-        (click)="activeClientVerificationOption = ActiveClientVerificationOption.MasterPassword"
+        (click)="activeClientVerificationOption = ActiveClientVerificationOption.Biometrics"
       >
-        {{ "useMasterPassword" | i18n }}
+        {{ "useBiometrics" | i18n }}
       </button>
+
       <button
         *ngIf="
           userVerificationOptions.client.pin &&
@@ -89,17 +91,18 @@
       >
         {{ "usePin" | i18n }}
       </button>
+
       <button
         *ngIf="
-          userVerificationOptions.client.biometrics &&
-          activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics
+          userVerificationOptions.client.masterPassword &&
+          activeClientVerificationOption !== ActiveClientVerificationOption.MasterPassword
         "
         type="button"
         bitLink
         linkType="primary"
-        (click)="activeClientVerificationOption = ActiveClientVerificationOption.Biometrics"
+        (click)="activeClientVerificationOption = ActiveClientVerificationOption.MasterPassword"
       >
-        {{ "useBiometrics" | i18n }}
+        {{ "useMasterPassword" | i18n }}
       </button>
     </div>
   </div>
