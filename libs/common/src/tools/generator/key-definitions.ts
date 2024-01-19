@@ -47,12 +47,3 @@ export const ENCRYPTED_HISTORY = new KeyDefinition<GeneratedPasswordHistory>(
     deserializer: (value) => value,
   },
 );
-
-/** plaintext password generation history */
-export const PLAINTEXT_HISTORY = new KeyDefinition<GeneratedPasswordHistory>(
-  GENERATOR_MEMORY,
-  "passwordGeneratorHistory",
-  {
-    deserializer: (value) => value,
-  },
-);
