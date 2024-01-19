@@ -225,6 +225,10 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     // clear secret value when switching verification methods
     this.secret.setValue(null);
 
+    // Reset validation errors when swapping active client verification options
+    this.secret.markAsUntouched();
+    this.secret.updateValueAndValidity({ emitEvent: false });
+
     // if changing to biometrics, we need to prompt for biometrics
     if (activeClientVerificationOption === "biometrics") {
       // reset biometrics failed
