@@ -2,11 +2,8 @@ import { firstValueFrom } from "rxjs";
 
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { Utils } from "../../platform/misc/utils";
-import {
-  UserKey,
-  SymmetricCryptoKey,
-  MasterKey,
-} from "../../platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
+import { UserKey, MasterKey } from "../../types/key";
 import { AccountService } from "../abstractions/account.service";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";

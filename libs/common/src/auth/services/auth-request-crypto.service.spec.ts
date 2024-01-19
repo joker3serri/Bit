@@ -3,12 +3,9 @@ import { mock } from "jest-mock-extended";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { Utils } from "../../platform/misc/utils";
-import {
-  MasterKey,
-  SymmetricCryptoKey,
-  UserKey,
-} from "../../platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { UserId } from "../../types/guid";
+import { UserKey, MasterKey } from "../../types/key";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
 

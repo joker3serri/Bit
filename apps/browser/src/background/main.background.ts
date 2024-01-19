@@ -1,3 +1,6 @@
+import { firstValueFrom } from "rxjs";
+
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -179,7 +182,6 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
-import { firstValueFrom } from "rxjs";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -250,6 +252,7 @@ export default class MainBackground {
   authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
   accountService: AccountServiceAbstraction;
   globalStateProvider: GlobalStateProvider;
+  pinCryptoService: PinCryptoServiceAbstraction;
   singleUserStateProvider: SingleUserStateProvider;
   activeUserStateProvider: ActiveUserStateProvider;
   derivedStateProvider: DerivedStateProvider;
@@ -496,6 +499,13 @@ export default class MainBackground {
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
+    this.pinCryptoService = new PinCryptoService(
+      this.stateService,
+      this.cryptoService,
+      this.vaultTimeoutSettingsService,
+      this.logService,
+    );
+
     this.userVerificationService = new UserVerificationService(
       this.stateService,
       this.cryptoService,
@@ -503,6 +513,8 @@ export default class MainBackground {
       this.masterPasswordService,
       this.i18nService,
       this.userVerificationApiService,
+      this.pinCryptoService,
+      this.logService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
@@ -540,7 +552,6 @@ export default class MainBackground {
       this.tokenService,
       this.policyService,
       this.stateService,
-      this.userVerificationService,
     );
 
     this.vaultFilterService = new VaultFilterService(
@@ -600,7 +611,6 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
-      this.configService,
       logoutCallback,
     );
     this.eventUploadService = new EventUploadService(
