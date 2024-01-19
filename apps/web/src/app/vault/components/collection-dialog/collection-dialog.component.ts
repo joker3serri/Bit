@@ -70,13 +70,6 @@ export enum CollectionDialogAction {
   templateUrl: "collection-dialog.component.html",
 })
 export class CollectionDialogComponent implements OnInit, OnDestroy {
-  protected flexibleCollectionsEnabled$ = this.organizationService
-    .get$(this.params.organizationId)
-    .pipe(
-      first(),
-      map((o) => o?.flexibleCollections),
-    );
-
   protected flexibleCollectionsV1Enabled$ = this.configService
     .getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1, false)
     .pipe(first());
@@ -164,7 +157,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         : of(null),
       groups: groups$,
       users: this.organizationUserService.getAllUsers(orgId),
-      flexibleCollections: this.flexibleCollectionsEnabled$,
       flexibleCollectionsV1: this.flexibleCollectionsV1Enabled$,
     })
       .pipe(takeUntil(this.formGroup.controls.selectedOrg.valueChanges), takeUntil(this.destroy$))
@@ -175,7 +167,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           collectionDetails,
           groups,
           users,
-          flexibleCollections,
           flexibleCollectionsV1,
         }) => {
           this.organization = organization;
@@ -219,7 +210,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             const currentOrgUserId = users.data.find((u) => u.userId === this.organization?.userId)
               ?.id;
             const initialSelection: AccessItemValue[] =
-              currentOrgUserId !== undefined && flexibleCollections
+              currentOrgUserId !== undefined && organization.flexibleCollections
                 ? [
                     {
                       id: currentOrgUserId,
@@ -235,7 +226,11 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             });
           }
 
-          if (flexibleCollectionsV1 && !organization.allowAdminAccessToAllCollectionItems) {
+          if (
+            organization.flexibleCollections &&
+            flexibleCollectionsV1 &&
+            !organization.allowAdminAccessToAllCollectionItems
+          ) {
             this.formGroup.controls.access.addValidators(validateCanManagePermission);
           } else {
             this.formGroup.controls.access.removeValidators(validateCanManagePermission);
