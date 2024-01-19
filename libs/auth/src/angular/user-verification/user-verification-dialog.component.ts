@@ -97,9 +97,6 @@ export class UserVerificationDialogComponent {
         verificationSuccess: true,
         noAvailableClientVerificationMethods: false,
       });
-
-      // TODO: evaluate how invalid secret should play into biometrics flows.
-      // this.invalidSecret = false;
     }
   }
 
