@@ -18,6 +18,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 
 @Component({
   selector: "app-sso",
@@ -40,6 +41,7 @@ export class SsoComponent extends BaseSsoComponent {
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private validationService: ValidationService,
     configService: ConfigServiceAbstraction,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
   ) {
     super(
       authService,
@@ -54,6 +56,7 @@ export class SsoComponent extends BaseSsoComponent {
       passwordGenerationService,
       logService,
       configService,
+      masterPasswordService,
     );
     this.redirectUri = window.location.origin + "/sso-connector.html";
     this.clientId = "web";

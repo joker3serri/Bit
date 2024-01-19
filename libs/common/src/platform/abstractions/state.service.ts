@@ -7,7 +7,6 @@ import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
-import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
 import { EventData } from "../../models/data/event.data";
@@ -382,11 +381,6 @@ export abstract class StateService<T extends Account = Account> {
   setEventCollection: (value: EventData[], options?: StorageOptions) => Promise<void>;
   getEverBeenUnlocked: (options?: StorageOptions) => Promise<boolean>;
   setEverBeenUnlocked: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getForceSetPasswordReason: (options?: StorageOptions) => Promise<ForceSetPasswordReason>;
-  setForceSetPasswordReason: (
-    value: ForceSetPasswordReason,
-    options?: StorageOptions,
-  ) => Promise<void>;
   getInstalledVersion: (options?: StorageOptions) => Promise<string>;
   setInstalledVersion: (value: string, options?: StorageOptions) => Promise<void>;
   getIsAuthenticated: (options?: StorageOptions) => Promise<boolean>;

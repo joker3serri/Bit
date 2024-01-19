@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -21,6 +22,7 @@ import { MasterKey, UserKey } from "@bitwarden/common/platform/models/domain/sym
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
+import { firstValueFrom } from "rxjs";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
 
@@ -56,6 +58,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     private userVerificationService: UserVerificationService,
     protected router: Router,
     dialogService: DialogService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
   ) {
     super(
       i18nService,
@@ -72,7 +75,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   async ngOnInit() {
     await this.syncService.fullSync(true);
 
-    this.reason = await this.stateService.getForceSetPasswordReason();
+    this.reason = await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$);
 
     // If we somehow end up here without a reason, go back to the home page
     if (this.reason == ForceSetPasswordReason.None) {
@@ -161,7 +164,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
         this.i18nService.t("updatedMasterPassword"),
       );
 
-      await this.stateService.setForceSetPasswordReason(ForceSetPasswordReason.None);
+      await this.masterPasswordService.setForceSetPasswordReason(ForceSetPasswordReason.None);
 
       if (this.onSuccessfulChangePassword != null) {
         this.onSuccessfulChangePassword();

@@ -242,6 +242,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async doUnlockWithMasterPassword() {
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     const kdf = await this.stateService.getKdfType();
     const kdfConfig = await this.stateService.getKdfConfig();
 
@@ -251,7 +252,9 @@ export class LockComponent implements OnInit, OnDestroy {
       kdf,
       kdfConfig,
     );
-    const storedPasswordHash = await this.cryptoService.getMasterKeyHash();
+    const storedPasswordHash = await firstValueFrom(
+      this.masterPasswordService.masterKeyHash$(userId),
+    );
 
     let passwordValid = false;
 
@@ -280,7 +283,7 @@ export class LockComponent implements OnInit, OnDestroy {
           masterKey,
           HashPurpose.LocalAuthorization,
         );
-        await this.cryptoService.setMasterKeyHash(localKeyHash);
+        await this.masterPasswordService.setMasterKeyHash(localKeyHash, userId);
       } catch (e) {
         this.logService.error(e);
       } finally {
@@ -298,7 +301,6 @@ export class LockComponent implements OnInit, OnDestroy {
     }
 
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     await this.masterPasswordService.setMasterKey(masterKey, userId);
     await this.setUserKeyAndContinue(userKey, true);
   }
@@ -327,7 +329,7 @@ export class LockComponent implements OnInit, OnDestroy {
         }
 
         if (this.requirePasswordChange()) {
-          await this.stateService.setForceSetPasswordReason(
+          await this.masterPasswordService.setForceSetPasswordReason(
             ForceSetPasswordReason.WeakMasterPassword,
           );
           this.router.navigate([this.forcePasswordResetRoute]);

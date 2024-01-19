@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -15,6 +17,7 @@ export class AuthGuard implements CanActivate {
     private router: Router,
     private messagingService: MessagingService,
     private keyConnectorService: KeyConnectorService,
+    private masterPasswordService: MasterPasswordServiceAbstraction,
     private stateService: StateService,
   ) {}
 
@@ -40,7 +43,9 @@ export class AuthGuard implements CanActivate {
       return this.router.createUrlTree(["/remove-password"]);
     }
 
-    const forceSetPasswordReason = await this.stateService.getForceSetPasswordReason();
+    const forceSetPasswordReason = await firstValueFrom(
+      this.masterPasswordService.forceSetPasswordReason$,
+    );
 
     if (
       forceSetPasswordReason ===

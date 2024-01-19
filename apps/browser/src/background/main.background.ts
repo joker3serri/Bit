@@ -179,6 +179,7 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
+import { firstValueFrom } from "rxjs";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -553,6 +554,8 @@ export default class MainBackground {
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(
+      this.accountService,
+      this.masterPasswordService,
       this.cipherService,
       this.folderService,
       this.collectionService,
@@ -580,6 +583,7 @@ export default class MainBackground {
     );
     this.providerService = new ProviderService(this.stateService);
     this.syncService = new SyncService(
+      this.masterPasswordService,
       this.apiService,
       this.settingsService,
       this.folderService,
@@ -927,7 +931,7 @@ export default class MainBackground {
 
       const status = await this.authService.getAuthStatus(userId);
       const forcePasswordReset =
-        (await this.stateService.getForceSetPasswordReason({ userId: userId })) !=
+        (await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$)) !=
         ForceSetPasswordReason.None;
 
       await this.systemService.clearPendingClipboard();

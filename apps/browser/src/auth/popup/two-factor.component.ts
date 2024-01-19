@@ -7,6 +7,7 @@ import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -51,6 +52,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     loginService: LoginService,
     configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
@@ -68,6 +70,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       appIdService,
       loginService,
       configService,
+      masterPasswordService,
     );
     super.onSuccessfulLogin = async () => {
       syncService.fullSync(true);

@@ -450,6 +450,7 @@ import { ModalService } from "./modal.service";
       provide: SyncServiceAbstraction,
       useClass: SyncService,
       deps: [
+        InternalMasterPasswordServiceAbstraction,
         ApiServiceAbstraction,
         SettingsServiceAbstraction,
         FolderServiceAbstraction,

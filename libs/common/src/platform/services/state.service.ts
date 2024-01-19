@@ -11,7 +11,6 @@ import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
-import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
@@ -2079,30 +2078,6 @@ export class StateService<
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-  }
-
-  async getForceSetPasswordReason(options?: StorageOptions): Promise<ForceSetPasswordReason> {
-    return (
-      (
-        await this.getAccount(
-          this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions()),
-        )
-      )?.profile?.forceSetPasswordReason ?? ForceSetPasswordReason.None
-    );
-  }
-
-  async setForceSetPasswordReason(
-    value: ForceSetPasswordReason,
-    options?: StorageOptions,
-  ): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions()),
-    );
-    account.profile.forceSetPasswordReason = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions()),
     );
   }
 

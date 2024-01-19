@@ -7,6 +7,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -44,6 +45,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     appIdService: AppIdService,
     loginService: LoginService,
     configService: ConfigServiceAbstraction,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
@@ -61,6 +63,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       appIdService,
       loginService,
       configService,
+      masterPasswordService,
     );
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
   }
