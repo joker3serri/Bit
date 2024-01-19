@@ -179,7 +179,7 @@ export function mockMigrationHelper(
 }
 
 // TODO: Use const generic for TUsers in TypeScript 5.0 so consumers don't have to `as const` themselves
-export type InitialDataHint<TUsers extends string[] = string[]> = {
+export type InitialDataHint<TUsers extends readonly string[]> = {
   /**
    * A string array of the users id who are authenticated
    *
@@ -277,7 +277,7 @@ function expectInjectedData(data: Record<string, unknown>, injectedData: Injecte
 // TODO: Use const generic for TUsers in TypeScript 5.0 so consumers don't have to `as const` themselves
 export async function runMigrator<
   TMigrator extends Migrator<number, number>,
-  TUsers extends string[] = string[],
+  TUsers extends readonly string[] = string[],
 >(migrator: TMigrator, initalData?: InitialDataHint<TUsers>): Promise<Record<string, unknown>> {
   // Inject fake data at every level of the object
   const tracker: InjectedData[] = [];
