@@ -6616,7 +6616,7 @@
   "awaitingConfirmation": {
     "message": "Awaiting confirmation"
   },
-  "couldNotCompleteBiometrics.": {
+  "couldNotCompleteBiometrics": {
     "message": "Could not complete biometrics."
   },
   "needADifferentMethod": {
