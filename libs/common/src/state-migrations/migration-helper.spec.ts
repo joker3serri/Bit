@@ -1,11 +1,16 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
 // eslint-disable-next-line import/no-restricted-paths -- Needed to print log messages
+import { FakeStorageService } from "../../spec/fake-storage.service";
+// eslint-disable-next-line import/no-restricted-paths -- Needed to print log messages
 import { LogService } from "../platform/abstractions/log.service";
 // eslint-disable-next-line import/no-restricted-paths -- Needed to interface with storage locations
 import { AbstractStorageService } from "../platform/abstractions/storage.service";
+// eslint-disable-next-line import/no-restricted-paths -- Needed to generate unique strings for injection
+import { Utils } from "../platform/misc/utils";
 
 import { MigrationHelper } from "./migration-helper";
+import { Migrator } from "./migrator";
 
 const exampleJSON = {
   authenticatedAccounts: [
@@ -171,4 +176,116 @@ export function mockMigrationHelper(
   );
   mockHelper.getAccounts.mockImplementation(() => helper.getAccounts());
   return mockHelper;
+}
+
+export type InitialDataHint<TUsers extends string[] = string[]> = {
+  /**
+   * A string array of the users id who are authenticated
+   *
+   * NOTE: It's recommended to as const this string array so you get type help defining the users data
+   */
+  authenticatedAccounts?: TUsers;
+  /**
+   * Global data
+   */
+  global?: unknown;
+  /**
+   * Other top level data
+   */
+  [key: string]: unknown;
+} & {
+  /**
+   * A users data
+   */
+  [userData in TUsers[number]]?: unknown;
+};
+
+type InjectedData = {
+  propertyName: string;
+  propertyValue: string;
+  originalPath: string[];
+};
+
+function injectData(data: Record<string, unknown>, injectedData: InjectedData[], path: string[]) {
+  if (!data) {
+    return;
+  }
+
+  // Traverse keys for other objects
+  const keys = Object.keys(data);
+  for (const key of keys) {
+    const currentProperty = data[key];
+    if (currentProperty && typeof currentProperty === "object" && !Array.isArray(currentProperty)) {
+      // I believe that this is a fully safe cast but I hate that I have to do it
+      injectData(currentProperty as Record<string, unknown>, injectedData, [...path, key]);
+    }
+  }
+
+  const propertyName = `__injectedProperty__${Utils.newGuid()}`;
+  const propertyValue = `__injectedValue__${Utils.newGuid()}`;
+
+  injectedData.push({
+    propertyName: propertyName,
+    propertyValue: propertyValue,
+    // Track the path it was originally injected in just for a better error
+    originalPath: path,
+  });
+  data[propertyName] = propertyValue;
+}
+
+function expectInjectedData(data: Record<string, unknown>, injectedData: InjectedData[]) {
+  const keys = Object.keys(data);
+  for (const key of keys) {
+    const propertyValue = data[key];
+    // Injected data does not have to be found exactly where it was injected,
+    // just that it exists at all.
+    const injectedIndex = injectedData.findIndex(
+      (d) =>
+        d.propertyName === key &&
+        typeof propertyValue === "string" &&
+        propertyValue === d.propertyValue,
+    );
+
+    if (injectedIndex !== -1) {
+      // We found something we injected, remove it
+      injectedData.splice(injectedIndex, 1);
+      delete data[key];
+      continue;
+    }
+
+    if (propertyValue && typeof propertyValue === "object" && !Array.isArray(propertyValue)) {
+      // I believe that this is a fully safe cast but I hate that I have to do it
+      data[key] = expectInjectedData(propertyValue as Record<string, unknown>, injectedData);
+    }
+  }
+
+  return data;
+}
+
+/**
+ * Runs the {@link Migrator.migrate} method of your migrator. You may pass in your test data and get back the data after the migration.
+ * This also injects extra properties at every level of your state and makes sure that it can be found.
+ * @param migrator Your migrator to use to do the migration
+ * @param initalData The data to start with
+ * @returns State after your migration has ran.
+ */
+// TODO: Use const generic for TUsers in TypeScript 5.0 so consumers don't have to `as const` themselves
+export async function runMigrator<
+  TMigrator extends Migrator<number, number>,
+  TUsers extends string[] = string[],
+>(migrator: TMigrator, initalData?: InitialDataHint<TUsers>): Promise<Record<string, unknown>> {
+  // Inject fake data at every level of the object
+  const tracker: InjectedData[] = [];
+  injectData(initalData, tracker, []);
+
+  const fakeStorageService = new FakeStorageService(initalData);
+  const helper = new MigrationHelper(migrator.fromVersion, fakeStorageService, mock());
+
+  // Run their migrations
+  await migrator.migrate(helper);
+  let outputData = fakeStorageService.internalStore;
+  outputData = expectInjectedData(outputData, tracker);
+  expect(tracker).toHaveLength(0);
+
+  return outputData;
 }

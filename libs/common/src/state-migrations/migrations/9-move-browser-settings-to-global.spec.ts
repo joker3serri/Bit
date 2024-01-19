@@ -1,23 +1,6 @@
-import { mock } from "jest-mock-extended";
-
-import { FakeStorageService } from "../../../spec/fake-storage.service";
-import { MigrationHelper } from "../migration-helper";
-import { Migrator } from "../migrator";
+import { InitialDataHint, runMigrator } from "../migration-helper.spec";
 
 import { MoveBrowserSettingsToGlobal } from "./9-move-browser-settings-to-global";
-
-type TestState = { authenticatedAccounts: string[] } & { [key: string]: unknown };
-
-// This could become a helper available to anyone
-const runMigrator = async <TMigrator extends Migrator<number, number>>(
-  migrator: TMigrator,
-  initalData?: Record<string, unknown>,
-): Promise<Record<string, unknown>> => {
-  const fakeStorageService = new FakeStorageService(initalData);
-  const helper = new MigrationHelper(migrator.fromVersion, fakeStorageService, mock());
-  await migrator.migrate(helper);
-  return fakeStorageService.internalStore;
-};
 
 describe("MoveBrowserSettingsToGlobal", () => {
   const myMigrator = new MoveBrowserSettingsToGlobal(8, 9);
@@ -25,7 +8,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
   // This could be the state for a browser client who has never touched the settings or this could
   // be a different client who doesn't make it possible to toggle these settings
   it("doesn't set any value to global if there is no equivalent settings on the account", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1"],
       global: {
         theme: "system", // A real global setting that should persist after migration
@@ -55,7 +38,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
   // This could be a user who opened up the settings page and toggled the checkbox, since this setting infers undefined
   // as false this is essentially the default value.
   it("sets the setting from the users settings if they have toggled the setting but placed it back to it's inferred", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1"],
       global: {
         theme: "system", // A real global setting that should persist after migration
@@ -94,7 +77,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
 
   // The user has set a value and it's not the default, we should respect that choice globally
   it("should take the only users settings", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1"],
       global: {
         theme: "system", // A real global setting that should persist after migration
@@ -134,7 +117,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
   // but in the bizzare case, we should interpret any user having the feature turned on as the value for
   // all the accounts.
   it("should take the false value if there are conflicting choices", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1", "user2"],
       global: {
         theme: "system", // A real global setting that should persist after migration
@@ -191,7 +174,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
   // if one user has toggled the setting back to on and one user has never touched the setting,
   // persist the false value into the global state.
   it("should persist the false value if one user has that in their settings", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1", "user2"],
       global: {
         theme: "system", // A real global setting that should persist after migration
@@ -241,7 +224,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
   // if one user has toggled the setting off and one user has never touched the setting,
   // persist the false value into the global state.
   it("should persist the false value from a user with no settings since undefined is inferred as false", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1", "user2"],
       global: {
         theme: "system", // A real global setting that should persist after migration
@@ -292,7 +275,7 @@ describe("MoveBrowserSettingsToGlobal", () => {
   // id of the non-current account isn't saved to the authenticatedAccounts array so we don't have a great way to
   // get the state and include it in our calculations for what the global state should be.
   it("only cares about users defined in authenticatedAccounts", async () => {
-    const testInput: TestState = {
+    const testInput: InitialDataHint = {
       authenticatedAccounts: ["user1"],
       global: {
         theme: "system", // A real global setting that should persist after migration
