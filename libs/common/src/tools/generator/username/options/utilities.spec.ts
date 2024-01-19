@@ -1,3 +1,7 @@
+/**
+ * include structuredClone in test environment.
+ * @jest-environment ../../../../../shared/test.environment.ts
+ */
 import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
 import { EncString } from "../../../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../../platform/models/domain/symmetric-crypto-key";
