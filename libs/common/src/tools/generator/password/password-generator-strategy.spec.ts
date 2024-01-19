@@ -9,6 +9,7 @@ import { PolicyType } from "../../../admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
+import { PASSWORD_SETTINGS } from "../key-definitions";
 
 import {
   PasswordGenerationServiceAbstraction,
@@ -54,6 +55,24 @@ describe("Password generation strategy", () => {
         useSpecial: true,
         specialCount: 1,
       });
+    });
+  });
+
+  describe("disk", () => {
+    it("should use password settings key", () => {
+      const legacy = mock<PasswordGenerationServiceAbstraction>();
+      const strategy = new PasswordGeneratorStrategy(legacy);
+
+      expect(strategy.disk).toBe(PASSWORD_SETTINGS);
+    });
+  });
+
+  describe("policy", () => {
+    it("should use password generator policy", () => {
+      const legacy = mock<PasswordGenerationServiceAbstraction>();
+      const strategy = new PasswordGeneratorStrategy(legacy);
+
+      expect(strategy.policy).toBe(PolicyType.PasswordGenerator);
     });
   });
 
