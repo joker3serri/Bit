@@ -19,6 +19,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
+  ButtonModule,
   FormFieldModule,
   IconButtonModule,
   IconModule,
@@ -60,6 +61,7 @@ import { ActiveClientVerificationOption } from "./active-client-verification-opt
     IconButtonModule,
     IconModule,
     LinkModule,
+    ButtonModule,
   ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
