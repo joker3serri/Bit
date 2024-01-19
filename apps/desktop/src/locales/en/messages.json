@@ -1910,6 +1910,12 @@
   "useBiometrics": {
     "message": "Use biometrics"
   },
+  "enterVerificationCodeSentToEmail": {
+    "message": "Enter the verification code that was sent to your email."
+  },
+  "resendCode": {
+    "message": "Resend code"
+  },
   "hours": {
     "message": "Hours"
   },

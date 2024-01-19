@@ -139,6 +139,7 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   biometricsVerificationFailed = false;
 
   disableRequestOTP = false;
+  sentInitialCode = false;
   sentCode = false;
 
   secret = new FormControl("", [
@@ -185,6 +186,11 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     if (this.verificationType === "client") {
       this.setDefaultActiveClientVerificationOption();
       this.setupClientVerificationOptionChangeHandler();
+    } else {
+      if (this.userVerificationOptions.server.otp) {
+        // New design requires requesting on load to prevent user from having to click send code
+        this.requestOTP();
+      }
     }
 
     // Don't bother executing secret changes if biometrics verification is active.
@@ -252,11 +258,17 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
   }
 
   requestOTP = async () => {
-    if (!this.userVerificationOptions.client.masterPassword) {
+    if (!this.userVerificationOptions.server.masterPassword) {
       this.disableRequestOTP = true;
       try {
         await this.userVerificationService.requestOTP();
         this.sentCode = true;
+        this.sentInitialCode = true;
+
+        // after 3 seconds reset sentCode to false
+        setTimeout(() => {
+          this.sentCode = false;
+        }, 3000);
       } finally {
         this.disableRequestOTP = false;
       }
