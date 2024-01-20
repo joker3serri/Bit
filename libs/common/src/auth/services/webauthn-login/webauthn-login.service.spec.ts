@@ -1,6 +1,5 @@
 import { mock } from "jest-mock-extended";
 
-import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { Utils } from "../../../platform/misc/utils";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
@@ -22,7 +21,6 @@ describe("WebAuthnLoginService", () => {
 
   const webAuthnLoginApiService = mock<WebAuthnLoginApiServiceAbstraction>();
   const authService = mock<AuthService>();
-  const configService = mock<ConfigServiceAbstraction>();
   const webAuthnLoginPrfCryptoService = mock<WebAuthnLoginPrfCryptoServiceAbstraction>();
   const navigatorCredentials = mock<CredentialsContainer>();
   const logService = mock<LogService>();
@@ -71,11 +69,9 @@ describe("WebAuthnLoginService", () => {
   });
 
   function createWebAuthnLoginService(config: { featureEnabled: boolean }): WebAuthnLoginService {
-    configService.getFeatureFlag$.mockReturnValue(of(config.featureEnabled));
     return new WebAuthnLoginService(
       webAuthnLoginApiService,
       authService,
-      configService,
       webAuthnLoginPrfCryptoService,
       window,
       logService,
