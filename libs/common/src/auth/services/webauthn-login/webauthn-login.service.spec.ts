@@ -1,5 +1,4 @@
 import { mock } from "jest-mock-extended";
-import { firstValueFrom, of } from "rxjs";
 
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
@@ -86,26 +85,6 @@ describe("WebAuthnLoginService", () => {
   it("instantiates", () => {
     webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
     expect(webAuthnLoginService).not.toBeFalsy();
-  });
-
-  describe("enabled$", () => {
-    it("should emit true when feature flag for PasswordlessLogin is enabled", async () => {
-      // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
-
-      // Act & Assert
-      const result = await firstValueFrom(webAuthnLoginService.enabled$);
-      expect(result).toBe(true);
-    });
-
-    it("should emit false when feature flag for PasswordlessLogin is disabled", async () => {
-      // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: false });
-
-      // Act & Assert
-      const result = await firstValueFrom(webAuthnLoginService.enabled$);
-      expect(result).toBe(false);
-    });
   });
 
   describe("getCredentialAssertionOptions()", () => {

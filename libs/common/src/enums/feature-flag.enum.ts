@@ -1,5 +1,4 @@
 export enum FeatureFlag {
-  PasswordlessLogin = "passwordless-login",
   AutofillV2 = "autofill-v2",
   AutofillOverlay = "autofill-overlay",
   BrowserFilelessImport = "browser-fileless-import",

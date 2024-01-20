@@ -1,7 +1,5 @@
 import { Observable } from "rxjs";
 
-import { FeatureFlag } from "../../../enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PrfKey } from "../../../types/key";
 import { AuthService } from "../../abstractions/auth.service";
@@ -23,12 +21,10 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
   constructor(
     private webAuthnLoginApiService: WebAuthnLoginApiServiceAbstraction,
     private authService: AuthService,
-    private configService: ConfigServiceAbstraction,
     private webAuthnLoginPrfCryptoService: WebAuthnLoginPrfCryptoServiceAbstraction,
     private window: Window,
     private logService?: LogService,
   ) {
-    this.enabled$ = this.configService.getFeatureFlag$(FeatureFlag.PasswordlessLogin, false);
     this.navigatorCredentials = this.window.navigator.credentials;
   }
 

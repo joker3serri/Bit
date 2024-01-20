@@ -1,7 +1,6 @@
 import { Directive, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, Subject } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -54,7 +53,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
-  protected showWebauthnLogin$: Observable<boolean>;
 
   protected destroy$ = new Subject<void>();
 
@@ -89,8 +87,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   }
 
   async ngOnInit() {
-    this.showWebauthnLogin$ = this.webAuthnLoginService.enabled$;
-
     this.route?.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (!params) {
         return;
