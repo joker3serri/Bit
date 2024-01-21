@@ -7455,7 +7455,7 @@
     "description": "Label indicating the most common import formats"
   },
   "collectionEnhancementsDesc": {
-    "message": "Add new settings and permissions for additional flexibility. Replace the Manager role with the \"can manage\" permission, and introduce options to allow users to create collections as well as restrict adminsitrative access to collections.",
+    "message": "Add new settings and permissions for additional flexibility. Replace the Manager role with the \"can manage\" permission, and introduce options to allow users to create collections as well as restrict administrative access to collections.",
     "description": "This describes new features and improvements for user roles and collections"
   },
   "collectionEnhancementsLearnMore": {
