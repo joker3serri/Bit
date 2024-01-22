@@ -165,27 +165,29 @@ export class OrganizationVaultExportService
     format: "json" | "csv",
   ): Promise<string> {
     let decCiphers: CipherView[] = [];
+    let allDecCiphers: CipherView[] = [];
     let decCollections: CollectionView[] = [];
     const promises = [];
 
     promises.push(
-      this.collectionService.getAllDecrypted().then((collections) => {
+      this.collectionService.getAllDecrypted().then(async (collections) => {
         decCollections = collections.filter((c) => c.organizationId == organizationId && c.manage);
       }),
     );
 
     promises.push(
       this.cipherService.getAllDecrypted().then((ciphers) => {
-        decCiphers = ciphers.filter(
-          (f) =>
-            f.deletedDate == null &&
-            f.organizationId == organizationId &&
-            decCollections.find((dC) => f.collectionIds.some((cId) => dC.id === cId)),
-        );
+        allDecCiphers = ciphers;
       }),
     );
-
     await Promise.all(promises);
+
+    decCiphers = allDecCiphers.filter(
+      (f) =>
+        f.deletedDate == null &&
+        f.organizationId == organizationId &&
+        decCollections.some((dC) => f.collectionIds.some((cId) => dC.id === cId)),
+    );
 
     if (format === "csv") {
       return this.buildCsvExport(decCollections, decCiphers);
@@ -195,6 +197,7 @@ export class OrganizationVaultExportService
 
   private async getEncryptedManagedExport(organizationId: string): Promise<string> {
     let encCiphers: Cipher[] = [];
+    let allCiphers: Cipher[] = [];
     let encCollections: Collection[] = [];
     const promises = [];
 
@@ -206,16 +209,18 @@ export class OrganizationVaultExportService
 
     promises.push(
       this.cipherService.getAll().then((ciphers) => {
-        encCiphers = ciphers.filter(
-          (f) =>
-            f.deletedDate == null &&
-            f.organizationId == organizationId &&
-            encCollections.find((eC) => f.collectionIds.some((cId) => eC.id === cId)),
-        );
+        allCiphers = ciphers;
       }),
     );
 
     await Promise.all(promises);
+
+    encCiphers = allCiphers.filter(
+      (f) =>
+        f.deletedDate == null &&
+        f.organizationId == organizationId &&
+        encCollections.some((eC) => f.collectionIds.some((cId) => eC.id === cId)),
+    );
 
     return this.BuildEncryptedExport(organizationId, encCollections, encCiphers);
   }
