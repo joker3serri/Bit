@@ -213,17 +213,19 @@ function isStringRecord(object: unknown | undefined): object is Record<string, u
   return object && typeof object === "object" && !Array.isArray(object);
 }
 
-function injectData(data: Record<string, unknown>, injectedData: InjectedData[], path: string[]) {
+function injectData(data: Record<string, unknown>, path: string[]): InjectedData[] {
   if (!data) {
-    return;
+    return [];
   }
+
+  const injectedData: InjectedData[] = [];
 
   // Traverse keys for other objects
   const keys = Object.keys(data);
   for (const key of keys) {
     const currentProperty = data[key];
     if (isStringRecord(currentProperty)) {
-      injectData(currentProperty, injectedData, [...path, key]);
+      injectedData.push(...injectData(currentProperty, [...path, key]));
     }
   }
 
@@ -237,9 +239,13 @@ function injectData(data: Record<string, unknown>, injectedData: InjectedData[],
     originalPath: path,
   });
   data[propertyName] = propertyValue;
+  return injectedData;
 }
 
-function expectInjectedData(data: Record<string, unknown>, injectedData: InjectedData[]) {
+function expectInjectedData(
+  data: Record<string, unknown>,
+  injectedData: InjectedData[],
+): [data: Record<string, unknown>, leftoverInjectedData: InjectedData[]] {
   const keys = Object.keys(data);
   for (const key of keys) {
     const propertyValue = data[key];
@@ -260,11 +266,13 @@ function expectInjectedData(data: Record<string, unknown>, injectedData: Injecte
     }
 
     if (isStringRecord(propertyValue)) {
-      data[key] = expectInjectedData(propertyValue, injectedData);
+      const [updatedData, leftoverInjectedData] = expectInjectedData(propertyValue, injectedData);
+      data[key] = updatedData;
+      injectedData = leftoverInjectedData;
     }
   }
 
-  return data;
+  return [data, injectedData];
 }
 
 /**
@@ -280,17 +288,18 @@ export async function runMigrator<
   TUsers extends readonly string[] = string[],
 >(migrator: TMigrator, initalData?: InitialDataHint<TUsers>): Promise<Record<string, unknown>> {
   // Inject fake data at every level of the object
-  const tracker: InjectedData[] = [];
-  injectData(initalData, tracker, []);
+  const allInjectedData = injectData(initalData, []);
 
   const fakeStorageService = new FakeStorageService(initalData);
   const helper = new MigrationHelper(migrator.fromVersion, fakeStorageService, mock());
 
   // Run their migrations
   await migrator.migrate(helper);
-  let outputData = fakeStorageService.internalStore;
-  outputData = expectInjectedData(outputData, tracker);
-  expect(tracker).toHaveLength(0);
+  const [data, leftoverInjectedData] = expectInjectedData(
+    fakeStorageService.internalStore,
+    allInjectedData,
+  );
+  expect(leftoverInjectedData).toHaveLength(0);
 
-  return outputData;
+  return data;
 }
