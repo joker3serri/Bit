@@ -1056,7 +1056,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
         node,
         (walkerNode: Node) =>
           (walkerNode as HTMLElement).tagName?.toLowerCase() === "form" ||
-          this.isNodeFormFieldElement(node),
+          this.isNodeFormFieldElement(walkerNode),
       ) as HTMLElement[];
 
       if (autofillElementNodes.length) {
