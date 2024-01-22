@@ -390,7 +390,7 @@ describe("Username Generation Options", () => {
       ],
     ])(
       "should delete untrusted encrypted values (description %s, reason: %s) ",
-      async (description, expectedReason, encryptedToken) => {
+      async (_description, expectedReason, encryptedToken) => {
         const encryptService = mockEncryptService();
 
         // cast through unknown to avoid type errors; the mock doesn't need the real types
