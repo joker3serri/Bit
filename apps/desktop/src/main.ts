@@ -128,11 +128,7 @@ export class Main {
       this.memoryStorageService,
       this.logService,
       new StateFactory(GlobalState, Account),
-      new AccountServiceImplementation(
-        new NoopMessagingService(),
-        this.logService,
-        globalStateProvider,
-      ), // will not broadcast logouts. This is a hack until we can remove messaging dependency
+      accountService, // will not broadcast logouts. This is a hack until we can remove messaging dependency
       this.environmentService,
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
