@@ -631,6 +631,7 @@ import { ModalService } from "./modal.service";
         PinCryptoServiceAbstraction,
         LogService,
         VaultTimeoutSettingsServiceAbstraction,
+        PlatformUtilsServiceAbstraction,
       ],
     },
     {
