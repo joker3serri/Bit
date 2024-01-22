@@ -33,9 +33,9 @@ export type UserVerificationConfirmButtonOptions = {
 };
 
 /**
- * @typedef {Object} UserVerificationDialogParams - Configuration parameters for the user verification dialog.
+ * @typedef {Object} UserVerificationDialogOptions - Configuration parameters for the user verification dialog.
  */
-export type UserVerificationDialogParams = {
+export type UserVerificationDialogOptions = {
   /**
    * The title of the dialog.
    * This is optional and defaults to "Verification required" if not provided.

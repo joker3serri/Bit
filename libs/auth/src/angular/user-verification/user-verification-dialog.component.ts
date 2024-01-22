@@ -18,7 +18,7 @@ import {
 
 import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
 import {
-  UserVerificationDialogParams,
+  UserVerificationDialogOptions,
   UserVerificationDialogResult,
 } from "./user-verification-dialog.types";
 import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
@@ -50,7 +50,7 @@ export class UserVerificationDialogComponent {
   ActiveClientVerificationOption = ActiveClientVerificationOption;
 
   constructor(
-    @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogParams,
+    @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogOptions,
     private dialogRef: DialogRef<UserVerificationDialogResult | string>,
     private formBuilder: FormBuilder,
     private userVerificationService: UserVerificationService,
@@ -62,7 +62,7 @@ export class UserVerificationDialogComponent {
    * Opens the user verification dialog.
    *
    * @param {DialogService} dialogService - The service used to open the dialog.
-   * @param {UserVerificationDialogParams} data - Parameters for configuring the dialog.
+   * @param {UserVerificationDialogOptions} data - Parameters for configuring the dialog.
    * @returns {Promise<UserVerificationDialogResult>} A promise that resolves to the result of the user verification process.
    *
    * @example
@@ -144,7 +144,7 @@ export class UserVerificationDialogComponent {
 
   static async open(
     dialogService: DialogService,
-    data: UserVerificationDialogParams,
+    data: UserVerificationDialogOptions,
   ): Promise<UserVerificationDialogResult> {
     const dialogRef = dialogService.open<UserVerificationDialogResult | string>(
       UserVerificationDialogComponent,
