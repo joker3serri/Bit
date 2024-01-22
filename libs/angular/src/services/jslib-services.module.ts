@@ -48,6 +48,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
@@ -66,6 +67,7 @@ import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
+import { LoginStrategyService } from "@bitwarden/common/auth/services/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { PasswordResetEnrollmentServiceImplementation } from "@bitwarden/common/auth/services/password-reset-enrollment.service.implementation";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
@@ -262,6 +264,11 @@ import { ModalService } from "./modal.service";
     {
       provide: AuthServiceAbstraction,
       useClass: AuthService,
+      deps: [CryptoServiceAbstraction, ApiServiceAbstraction, StateServiceAbstraction],
+    },
+    {
+      provide: LoginStrategyServiceAbstraction,
+      useClass: LoginStrategyService,
       deps: [
         CryptoServiceAbstraction,
         ApiServiceAbstraction,

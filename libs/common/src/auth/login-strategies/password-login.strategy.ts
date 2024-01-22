@@ -10,7 +10,7 @@ import { StateService } from "../../platform/abstractions/state.service";
 import { HashPurpose } from "../../platform/enums";
 import { PasswordStrengthServiceAbstraction } from "../../tools/password-strength";
 import { MasterKey } from "../../types/key";
-import { AuthService } from "../abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthResult } from "../models/domain/auth-result";
@@ -56,7 +56,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
     twoFactorService: TwoFactorService,
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private policyService: PolicyService,
-    private authService: AuthService,
+    private loginStrategyService: LoginStrategyServiceAbstraction,
   ) {
     super(
       cryptoService,
@@ -94,7 +94,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
   override async logIn(credentials: PasswordLoginCredentials) {
     const { email, masterPassword, captchaToken, twoFactor } = credentials;
 
-    this.masterKey = await this.authService.makePreloginKey(masterPassword, email);
+    this.masterKey = await this.loginStrategyService.makePreloginKey(masterPassword, email);
 
     // Hash the password early (before authentication) so we don't persist it in memory in plaintext
     this.localMasterKeyHash = await this.cryptoService.hashMasterKey(

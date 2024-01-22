@@ -9,8 +9,8 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -50,7 +50,7 @@ export class LoginCommand {
   private options: program.OptionValues;
 
   constructor(
-    protected authService: AuthService,
+    protected loginStrategyService: LoginStrategyServiceAbstraction,
     protected apiService: ApiService,
     protected cryptoFunctionService: CryptoFunctionService,
     protected environmentService: EnvironmentService,
@@ -178,7 +178,7 @@ export class LoginCommand {
           return Response.error("Invalid API Key; Organization API Key currently not supported");
         }
         try {
-          response = await this.authService.logIn(
+          response = await this.loginStrategyService.logIn(
             new UserApiLoginCredentials(clientId, clientSecret),
           );
         } catch (e) {
@@ -195,7 +195,7 @@ export class LoginCommand {
           throw e;
         }
       } else if (ssoCode != null && ssoCodeVerifier != null) {
-        response = await this.authService.logIn(
+        response = await this.loginStrategyService.logIn(
           new SsoLoginCredentials(
             ssoCode,
             ssoCodeVerifier,
@@ -205,7 +205,7 @@ export class LoginCommand {
           ),
         );
       } else {
-        response = await this.authService.logIn(
+        response = await this.loginStrategyService.logIn(
           new PasswordLoginCredentials(email, password, null, twoFactor),
         );
       }
@@ -271,8 +271,8 @@ export class LoginCommand {
           selectedProvider.type === TwoFactorProviderType.Email
         ) {
           const emailReq = new TwoFactorEmailRequest();
-          emailReq.email = this.authService.email;
-          emailReq.masterPasswordHash = this.authService.masterPasswordHash;
+          emailReq.email = this.loginStrategyService.email;
+          emailReq.masterPasswordHash = this.loginStrategyService.masterPasswordHash;
           await this.apiService.postTwoFactorEmail(emailReq);
         }
 
@@ -292,7 +292,7 @@ export class LoginCommand {
           }
         }
 
-        response = await this.authService.logInTwoFactor(
+        response = await this.loginStrategyService.logInTwoFactor(
           new TokenTwoFactorRequest(selectedProvider.type, twoFactorToken),
           null,
         );
@@ -383,7 +383,7 @@ export class LoginCommand {
 
   private async handleUpdatePasswordSuccessResponse(): Promise<Response> {
     await this.logoutCallback();
-    this.authService.logOut(() => {
+    this.loginStrategyService.logOut(() => {
       /* Do nothing */
     });
 
@@ -399,7 +399,7 @@ export class LoginCommand {
     // If no interaction available, alert user to use web vault
     if (!this.canInteract) {
       await this.logoutCallback();
-      this.authService.logOut(() => {
+      this.loginStrategyService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(
@@ -426,7 +426,7 @@ export class LoginCommand {
       return await this.handleUpdatePasswordSuccessResponse();
     } catch (e) {
       await this.logoutCallback();
-      this.authService.logOut(() => {
+      this.loginStrategyService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(e);
@@ -437,7 +437,7 @@ export class LoginCommand {
     // If no interaction available, alert user to use web vault
     if (!this.canInteract) {
       await this.logoutCallback();
-      this.authService.logOut(() => {
+      this.loginStrategyService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(
@@ -463,7 +463,7 @@ export class LoginCommand {
       return await this.handleUpdatePasswordSuccessResponse();
     } catch (e) {
       await this.logoutCallback();
-      this.authService.logOut(() => {
+      this.loginStrategyService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(e);
@@ -604,9 +604,9 @@ export class LoginCommand {
       if (credentials != null) {
         credentials.captchaToken = captchaClientSecret;
         credentials.twoFactor = twoFactorRequest;
-        authResultResponse = await this.authService.logIn(credentials);
+        authResultResponse = await this.loginStrategyService.logIn(credentials);
       } else {
-        authResultResponse = await this.authService.logInTwoFactor(
+        authResultResponse = await this.loginStrategyService.logInTwoFactor(
           twoFactorRequest,
           captchaClientSecret,
         );

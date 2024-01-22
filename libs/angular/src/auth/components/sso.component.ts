@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SsoLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
@@ -47,7 +47,7 @@ export class SsoComponent {
   protected codeChallenge: string;
 
   constructor(
-    protected authService: AuthService,
+    protected loginStrategyService: LoginStrategyServiceAbstraction,
     protected router: Router,
     protected i18nService: I18nService,
     protected route: ActivatedRoute,
@@ -187,7 +187,7 @@ export class SsoComponent {
         this.redirectUri,
         orgSsoIdentifier,
       );
-      this.formPromise = this.authService.logIn(credentials);
+      this.formPromise = this.loginStrategyService.logIn(credentials);
       const authResult = await this.formPromise;
 
       const acctDecryptionOpts: AccountDecryptionOptions =

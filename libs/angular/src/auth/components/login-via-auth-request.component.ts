@@ -7,6 +7,7 @@ import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymo
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -84,6 +85,7 @@ export class LoginViaAuthRequestComponent
     private loginService: LoginService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    private loginStrategyService: LoginStrategyServiceAbstraction,
   ) {
     super(environmentService, i18nService, platformUtilsService);
 
@@ -95,7 +97,7 @@ export class LoginViaAuthRequestComponent
     }
 
     //gets signalR push notification
-    this.authService
+    this.loginStrategyService
       .getPushNotificationObs$()
       .pipe(takeUntil(this.destroy$))
       .subscribe((id) => {
@@ -428,7 +430,7 @@ export class LoginViaAuthRequestComponent
     const credentials = await this.buildAuthRequestLoginCredentials(requestId, authReqResponse);
 
     // Note: keys are set by AuthRequestLoginStrategy success handling
-    return await this.authService.logIn(credentials);
+    return await this.loginStrategyService.logIn(credentials);
   }
 
   // Routing logic

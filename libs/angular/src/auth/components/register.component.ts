@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { PasswordLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
@@ -82,7 +82,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   constructor(
     protected formValidationErrorService: FormValidationErrorsService,
     protected formBuilder: UntypedFormBuilder,
-    protected authService: AuthService,
+    protected loginStrategyService: LoginStrategyServiceAbstraction,
     protected router: Router,
     i18nService: I18nService,
     protected cryptoService: CryptoService,
@@ -329,7 +329,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       captchaBypassToken,
       null,
     );
-    const loginResponse = await this.authService.logIn(credentials);
+    const loginResponse = await this.loginStrategyService.logIn(credentials);
     if (this.handleCaptchaRequired(loginResponse)) {
       return { captchaRequired: true };
     }

@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, Subject } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -65,7 +65,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   constructor(
     protected devicesApiService: DevicesApiServiceAbstraction,
     protected appIdService: AppIdService,
-    protected authService: AuthService,
+    protected loginStrategyService: LoginStrategyServiceAbstraction,
     protected router: Router,
     platformUtilsService: PlatformUtilsService,
     i18nService: I18nService,
@@ -151,7 +151,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
         this.captchaToken,
         null,
       );
-      this.formPromise = this.authService.logIn(credentials);
+      this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
       this.setFormValues();
       await this.loginService.saveEmailSettings();

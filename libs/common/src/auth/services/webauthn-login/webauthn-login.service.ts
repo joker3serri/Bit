@@ -4,7 +4,7 @@ import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PrfKey } from "../../../types/key";
-import { AuthService } from "../../abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "../../abstractions/login-strategy.service";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
 import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "../../abstractions/webauthn/webauthn-login.service.abstraction";
@@ -22,7 +22,7 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
 
   constructor(
     private webAuthnLoginApiService: WebAuthnLoginApiServiceAbstraction,
-    private authService: AuthService,
+    private loginStrategyService: LoginStrategyServiceAbstraction,
     private configService: ConfigServiceAbstraction,
     private webAuthnLoginPrfCryptoService: WebAuthnLoginPrfCryptoServiceAbstraction,
     private window: Window,
@@ -86,7 +86,7 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
       assertion.deviceResponse,
       assertion.prfKey,
     );
-    const result = await this.authService.logIn(credential);
+    const result = await this.loginStrategyService.logIn(credential);
     return result;
   }
 }
