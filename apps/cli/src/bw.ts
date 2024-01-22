@@ -4,7 +4,7 @@ import * as path from "path";
 import * as program from "commander";
 import * as jsdom from "jsdom";
 
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
+import { PinCryptoService, PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -20,12 +20,14 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthRequestCryptoServiceImplementation } from "@bitwarden/common/auth/services/auth-request-crypto.service.implementation";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
+import { LoginStrategyService } from "@bitwarden/common/auth/services/login-strategy.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
@@ -183,6 +185,7 @@ export class Main {
   activeUserStateProvider: ActiveUserStateProvider;
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
+  loginStrategyService: LoginStrategyServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -380,7 +383,7 @@ export class Main {
 
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
 
-    this.authService = new AuthService(
+    this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
       this.tokenService,
@@ -399,6 +402,8 @@ export class Main {
       this.deviceTrustCryptoService,
       this.authRequestCryptoService,
     );
+
+    this.authService = new AuthService(this.cryptoService, this.apiService, this.stateService);
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
 
@@ -550,7 +555,7 @@ export class Main {
   }
 
   async logout() {
-    this.authService.logOut(() => {
+    this.loginStrategyService.logOut(() => {
       /* Do nothing */
     });
     const userId = await this.stateService.getUserId();
