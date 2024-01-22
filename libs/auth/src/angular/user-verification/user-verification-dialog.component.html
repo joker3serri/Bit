@@ -1,30 +1,35 @@
 <form [formGroup]="verificationForm" [bitSubmit]="submit">
   <bit-dialog>
     <span bitDialogTitle>
-      {{ dialogParams.title ? (dialogParams.title | i18n) : ("verificationRequired" | i18n) }}</span
+      {{
+        dialogOptions.title ? (dialogOptions.title | i18n) : ("verificationRequired" | i18n)
+      }}</span
     >
     <ng-container bitDialogContent>
       <!-- Show optional content when verification is server side or client side and verification methods were found. -->
       <ng-container
         *ngIf="
-          !dialogParams.clientSideOnlyVerification ||
-          (dialogParams.clientSideOnlyVerification &&
+          !dialogOptions.clientSideOnlyVerification ||
+          (dialogOptions.clientSideOnlyVerification &&
             activeClientVerificationOption !== ActiveClientVerificationOption.None)
         "
       >
-        <p bitTypography="body1" *ngIf="dialogParams.bodyText">
-          {{ dialogParams.bodyText | i18n }}
+        <p bitTypography="body1" *ngIf="dialogOptions.bodyText">
+          {{ dialogOptions.bodyText | i18n }}
         </p>
 
-        <app-callout *ngIf="dialogParams.calloutOptions" [type]="dialogParams.calloutOptions.type">
-          {{ dialogParams.calloutOptions.text | i18n }}
+        <app-callout
+          *ngIf="dialogOptions.calloutOptions"
+          [type]="dialogOptions.calloutOptions.type"
+        >
+          {{ dialogOptions.calloutOptions.text | i18n }}
         </app-callout>
       </ng-container>
 
       <!-- Shown when client side verification methods picked and no verification methods found -->
       <ng-container
         *ngIf="
-          dialogParams.clientSideOnlyVerification &&
+          dialogOptions.clientSideOnlyVerification &&
           activeClientVerificationOption === ActiveClientVerificationOption.None
         "
       >
@@ -36,7 +41,7 @@
       <app-user-verification-form-input
         [(invalidSecret)]="invalidSecret"
         formControlName="secret"
-        [verificationType]="dialogParams.clientSideOnlyVerification ? 'client' : 'server'"
+        [verificationType]="dialogOptions.clientSideOnlyVerification ? 'client' : 'server'"
         (activeClientVerificationOptionChange)="handleActiveClientVerificationOptionChange($event)"
         (biometricsVerificationResultChange)="handleBiometricsVerificationResultChange($event)"
       ></app-user-verification-form-input>
@@ -45,8 +50,8 @@
       <!-- Confirm button container - shown for server side validation but hidden if client side validation + biometrics  -->
       <ng-container
         *ngIf="
-          !dialogParams.clientSideOnlyVerification ||
-          (dialogParams.clientSideOnlyVerification &&
+          !dialogOptions.clientSideOnlyVerification ||
+          (dialogOptions.clientSideOnlyVerification &&
             activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics)
         "
       >
@@ -56,7 +61,7 @@
         >
           <!-- Default confirm button -->
           <button
-            *ngIf="!dialogParams.confirmButtonOptions"
+            *ngIf="!dialogOptions.confirmButtonOptions"
             type="submit"
             bitButton
             bitFormButton
@@ -67,13 +72,13 @@
 
           <!-- Custom confirm button -->
           <button
-            *ngIf="dialogParams.confirmButtonOptions"
+            *ngIf="dialogOptions.confirmButtonOptions"
             type="submit"
             bitButton
             bitFormButton
-            [buttonType]="dialogParams.confirmButtonOptions.type"
+            [buttonType]="dialogOptions.confirmButtonOptions.type"
           >
-            {{ dialogParams.confirmButtonOptions.text | i18n }}
+            {{ dialogOptions.confirmButtonOptions.text | i18n }}
           </button>
         </ng-container>
 

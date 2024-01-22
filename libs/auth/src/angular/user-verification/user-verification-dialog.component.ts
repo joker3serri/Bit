@@ -50,7 +50,7 @@ export class UserVerificationDialogComponent {
   ActiveClientVerificationOption = ActiveClientVerificationOption;
 
   constructor(
-    @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogOptions,
+    @Inject(DIALOG_DATA) public dialogOptions: UserVerificationDialogOptions,
     private dialogRef: DialogRef<UserVerificationDialogResult | string>,
     private formBuilder: FormBuilder,
     private userVerificationService: UserVerificationService,
