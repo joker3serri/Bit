@@ -24,7 +24,12 @@ export class BrowserCryptoService extends CryptoService {
     userId?: UserId,
   ): Promise<UserKey> {
     if (keySuffix === KeySuffixOptions.Biometric) {
-      await this.platformUtilService.authenticateBiometric();
+      const result = await this.platformUtilService.authenticateBiometric();
+
+      if (!result) {
+        return null;
+      }
+
       const userKey = await this.stateService.getUserKey({ userId: userId });
       if (userKey) {
         return new SymmetricCryptoKey(Utils.fromB64ToArray(userKey.keyB64)) as UserKey;
