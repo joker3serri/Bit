@@ -12,8 +12,8 @@ import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.d
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -45,7 +45,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
   constructor(
     devicesApiService: DevicesApiServiceAbstraction,
     appIdService: AppIdService,
-    authService: AuthService,
+    loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
     route: ActivatedRoute,
@@ -69,7 +69,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     super(
       devicesApiService,
       appIdService,
-      authService,
+      loginStrategyService,
       router,
       platformUtilsService,
       i18nService,
