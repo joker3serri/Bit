@@ -9,6 +9,7 @@ import { AccountService } from "../../auth/abstractions/account.service";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
 import { OrganizationId, UserId } from "../../types/guid";
+import { UserKey, MasterKey, OrgKey, ProviderKey, PinKey, CipherKey } from "../../types/key";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
@@ -29,15 +30,7 @@ import { sequentialize } from "../misc/sequentialize";
 import { EFFLongWordList } from "../misc/wordlist";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
-import {
-  CipherKey,
-  MasterKey,
-  OrgKey,
-  PinKey,
-  ProviderKey,
-  SymmetricCryptoKey,
-  UserKey,
-} from "../models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { ActiveUserState, DerivedState, StateProvider } from "../state";
 
 import {
@@ -85,7 +78,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
     if (key != null) {
       // Key should never be null anyway
-      this.stateProvider.getUser(userId, USER_EVER_HAD_USER_KEY).update(() => true);
+      await this.stateProvider.getUser(userId, USER_EVER_HAD_USER_KEY).update(() => true);
     }
     await this.stateService.setUserKey(key, { userId: userId });
     await this.storeAdditionalKeys(key, userId);
