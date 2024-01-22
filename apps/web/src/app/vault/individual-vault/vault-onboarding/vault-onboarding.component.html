@@ -6,20 +6,20 @@
   class="tw-mb-6"
 >
   <app-onboarding
-    *ngIf="onboardingTasks"
+    *ngIf="onboardingTasks.vaultTasks"
     [title]="'getStarted' | i18n"
     (dismiss)="hideOnboarding()"
   >
     <app-onboarding-task
       [title]="'createAnAccount' | i18n"
-      [completed]="onboardingTasks.createAccount"
+      [completed]="onboardingTasks.vaultTasks.createAccount"
     ></app-onboarding-task>
 
     <app-onboarding-task
       [title]="'importData' | i18n"
       icon="bwi-save"
       (click)="navigateToImport()"
-      [completed]="onboardingTasks.importData"
+      [completed]="onboardingTasks.vaultTasks.importData"
     >
       <p class="tw-pl-1">
         {{ "onboardingImportDataDetailsPartOne" | i18n }}

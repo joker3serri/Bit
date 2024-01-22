@@ -8,8 +8,9 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
+import { VaultOnboardingService } from "./services/vault-onboarding.service";
 import { VaultOnboardingComponent } from "./vault-onboarding.component";
 
 describe("VaultOnboardingComponent", () => {
@@ -17,22 +18,34 @@ describe("VaultOnboardingComponent", () => {
   let fixture: ComponentFixture<VaultOnboardingComponent>;
   let mockPlatformUtilsService: Partial<PlatformUtilsService>;
   let mockApiService: Partial<ApiService>;
-  let mockStateService: MockProxy<StateService>;
   let mockPolicyService: MockProxy<PolicyService>;
   let mockI18nService: MockProxy<I18nService>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
+  let mockVaultOnboardingService: MockProxy<VaultOnboardingService>;
+  let mockStateProvider: Partial<StateProvider>;
   let setInstallExtLinkSpy: any;
   let individualVaultPolicyCheckSpy: any;
 
   beforeEach(() => {
     mockPolicyService = mock<PolicyService>();
-    mockStateService = mock<StateService>();
     mockI18nService = mock<I18nService>();
     mockPlatformUtilsService = mock<PlatformUtilsService>();
     mockApiService = {
       getProfile: jest.fn(),
     };
     mockConfigService = mock<ConfigServiceAbstraction>();
+    mockVaultOnboardingService = mock<VaultOnboardingService>();
+    mockStateProvider = {
+      getActive: jest.fn().mockReturnValue(
+        of({
+          vaultTasks: {
+            createAccount: true,
+            importData: false,
+            installExtension: false,
+          },
+        }),
+      ),
+    };
 
     TestBed.configureTestingModule({
       declarations: [],
@@ -40,10 +53,11 @@ describe("VaultOnboardingComponent", () => {
       providers: [
         { provide: PlatformUtilsService, useValue: mockPlatformUtilsService },
         { provide: PolicyService, useValue: mockPolicyService },
-        { provide: StateService, useValue: mockStateService },
+        { provide: VaultOnboardingService, useValue: mockVaultOnboardingService },
         { provide: I18nService, useValue: mockI18nService },
         { provide: ApiService, useValue: mockApiService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
+        { provide: StateProvider, useValue: mockStateProvider },
       ],
     }).compileComponents();
   });
@@ -56,6 +70,13 @@ describe("VaultOnboardingComponent", () => {
       .spyOn(component, "individualVaultPolicyCheck")
       .mockReturnValue(undefined);
     jest.spyOn(component, "checkCreationDate").mockReturnValue(null);
+    (component as any).vaultOnboardingService.vaultOnboardingState$ = of({
+      vaultTasks: {
+        createAccount: true,
+        importData: false,
+        installExtension: false,
+      },
+    });
   });
 
   it("should create", () => {
@@ -76,9 +97,6 @@ describe("VaultOnboardingComponent", () => {
 
   describe("show and hide onboarding component", () => {
     it("should set showOnboarding to true", async () => {
-      jest
-        .spyOn((component as any).stateService, "getVaultOnboardingTasks")
-        .mockReturnValue(undefined);
       await component.ngOnInit();
       expect((component as any).showOnboarding).toBe(true);
     });
