@@ -1,6 +1,6 @@
 import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-import * as DuoWebSDK from "duo_web_sdk";
+// import * as DuoWebSDK from "duo_web_sdk";
 import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
@@ -144,19 +144,26 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
         break;
       case TwoFactorProviderType.Duo:
       case TwoFactorProviderType.OrganizationDuo:
+        new BroadcastChannel("duoResult").addEventListener("message", async (e) => {
+          // console.log(e);
+          this.token = e.data.code;
+          await this.submit();
+        });
         setTimeout(() => {
-          DuoWebSDK.init({
-            iframe: undefined,
-            host: providerData.Host,
-            sig_request: providerData.Signature,
-            submit_callback: async (f: HTMLFormElement) => {
-              const sig = f.querySelector('input[name="sig_response"]') as HTMLInputElement;
-              if (sig != null) {
-                this.token = sig.value;
-                await this.submit();
-              }
-            },
-          });
+          this.win.open(providerData.AuthUrl);
+
+          // DuoWebSDK.init({
+          //   iframe: undefined,
+          //   host: providerData.Host,
+          //   sig_request: providerData.Signature,
+          //   submit_callback: async (f: HTMLFormElement) => {
+          //     const sig = f.querySelector('input[name="sig_response"]') as HTMLInputElement;
+          //     if (sig != null) {
+          //       this.token = sig.value;
+          //       await this.submit();
+          //     }
+          //   },
+          //});
         }, 0);
         break;
       case TwoFactorProviderType.Email:
