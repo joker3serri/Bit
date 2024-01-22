@@ -1,8 +1,9 @@
 import { EncryptedOrganizationKeyData } from "../../../admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../../admin-console/models/domain/encrypted-organization-key";
 import { OrganizationId } from "../../../types/guid";
+import { OrgKey } from "../../../types/key";
 import { CryptoService } from "../../abstractions/crypto.service";
-import { OrgKey, SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { KeyDefinition, CRYPTO_DISK, DeriveDefinition } from "../../state";
 
 export const USER_ENCRYPTED_ORGANIZATION_KEYS = KeyDefinition.record<
