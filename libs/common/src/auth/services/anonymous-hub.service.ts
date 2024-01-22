@@ -13,7 +13,7 @@ import {
 import { EnvironmentService } from "../../platform/abstractions/environment.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "../abstractions/anonymous-hub.service";
-import { AuthService } from "../abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 
 export class AnonymousHubService implements AnonymousHubServiceAbstraction {
   private anonHubConnection: HubConnection;
@@ -21,7 +21,7 @@ export class AnonymousHubService implements AnonymousHubServiceAbstraction {
 
   constructor(
     private environmentService: EnvironmentService,
-    private authService: AuthService,
+    private loginStrategyService: LoginStrategyServiceAbstraction,
     private logService: LogService,
   ) {}
 
@@ -50,7 +50,7 @@ export class AnonymousHubService implements AnonymousHubServiceAbstraction {
   }
 
   private async ProcessNotification(notification: NotificationResponse) {
-    await this.authService.authResponsePushNotification(
+    await this.loginStrategyService.authResponsePushNotification(
       notification.payload as AuthRequestPushNotification,
     );
   }
