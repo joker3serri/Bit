@@ -2,7 +2,6 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -92,21 +91,11 @@ export default class AutofillService implements AutofillServiceInterface {
     frameId = 0,
     triggeringOnPageLoad = true,
   ): Promise<void> {
-    const autofillV2 = await this.configService.getFeatureFlag<boolean>(FeatureFlag.AutofillV2);
-    const autofillOverlay = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.AutofillOverlay,
-    );
-    let mainAutofillScript = "autofill.js";
-
     const isUsingAutofillOverlay =
-      autofillOverlay &&
       (await this.settingsService.getAutoFillOverlayVisibility()) !== AutofillOverlayVisibility.Off;
-
-    if (autofillV2) {
-      mainAutofillScript = isUsingAutofillOverlay
-        ? "bootstrap-autofill-overlay.js"
-        : "bootstrap-autofill.js";
-    }
+    const mainAutofillScript = isUsingAutofillOverlay
+      ? "bootstrap-autofill-overlay.js"
+      : "bootstrap-autofill.js";
 
     const injectedScripts = [mainAutofillScript];
 
