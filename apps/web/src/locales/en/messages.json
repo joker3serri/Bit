@@ -7119,7 +7119,7 @@
       }
     }
   },
-  "defaultUserVerificationDialogTitle" : {
+  "verificationRequired" : {
     "message": "Verification required",
     "description": "Default title for the user verification dialog."
   },

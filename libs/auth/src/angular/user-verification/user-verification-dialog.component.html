@@ -1,11 +1,7 @@
 <form [formGroup]="verificationForm" [bitSubmit]="submit">
   <bit-dialog>
     <span bitDialogTitle>
-      {{
-        dialogParams.title
-          ? (dialogParams.title | i18n)
-          : ("defaultUserVerificationDialogTitle" | i18n)
-      }}</span
+      {{ dialogParams.title ? (dialogParams.title | i18n) : ("verificationRequired" | i18n) }}</span
     >
     <ng-container bitDialogContent>
       <!-- Show optional content when verification is server side or client side and verification methods were found. -->
