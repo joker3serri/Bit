@@ -4761,7 +4761,7 @@
     "message": "Automatic enrolment"
   },
   "resetPasswordPolicyAutoEnrollCheckbox": {
-    "message": "Require new members to be enroled automatically"
+    "message": "Require new members to be enrolled automatically"
   },
   "resetPasswordAutoEnrollInviteWarning": {
     "message": "This organisation has an Enterprise policy that will automatically enrol you in password reset. Enrolment will allow organisation administrators to change your master password."
