@@ -49,9 +49,9 @@
     "@storybook/addon-actions": "7.6.4",
     "@storybook/addon-designs": "7.0.7",
     "@storybook/addon-essentials": "7.6.4",
+    "@storybook/addon-interactions": "7.6.4",
     "@storybook/addon-links": "7.6.4",
     "@storybook/angular": "7.6.4",
-    "@storybook/addon-interactions": "7.6.4",
     "@storybook/jest": "0.2.3",
     "@storybook/testing-library": "0.2.2",
     "@types/argon2-browser": "1.18.1",
@@ -140,7 +140,7 @@
     "ts-loader": "9.5.1",
     "tsconfig-paths-webpack-plugin": "4.1.0",
     "type-fest": "2.19.0",
-    "typescript": "4.9.5",
+    "typescript": "5.1.6",
     "url": "0.11.3",
     "util": "0.12.5",
     "wait-on": "7.2.0",
@@ -209,7 +209,7 @@
   "overrides": {
     "tailwindcss": "$tailwindcss",
     "@storybook/angular": {
-      "zone.js": "0.12.0"
+      "zone.js": "$zone.js"
     },
     "replacestream": "4.0.3"
   },
