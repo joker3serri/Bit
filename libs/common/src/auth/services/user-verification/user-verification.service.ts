@@ -6,7 +6,7 @@ import { LogService } from "../../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enum";
-import { UserKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import { UserKey } from "../../../types/key";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
