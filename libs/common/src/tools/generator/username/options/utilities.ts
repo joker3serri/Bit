@@ -62,9 +62,9 @@ export function getForwarderOptions(
 export function falsyDefault<T>(value: T, defaults: Partial<T>): T {
   // iterate keys in defaults because `value` may be missing keys
   for (const key in defaults) {
-    if (typeof defaults[key] === "object") {
+    if (defaults[key] instanceof Object) {
       // `any` type is required because typescript can't predict the type of `value[key]`.
-      const target: any = value[key] ?? (defaults[key] instanceof Array ? [] : {});
+      const target: any = value?.[key] || (defaults[key] instanceof Array ? [] : {});
       value[key] = falsyDefault(target, defaults[key]);
     } else if (!value[key]) {
       value[key] = defaults[key];

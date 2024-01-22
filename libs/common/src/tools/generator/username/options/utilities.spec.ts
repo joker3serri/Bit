@@ -189,6 +189,72 @@ describe("Username Generation Options", () => {
         },
       });
     });
+
+    it("should add missing defaults", () => {
+      const input = {};
+
+      const output = falsyDefault(input, {
+        a: "a",
+        b: [1],
+        c: {},
+        d: { e: 1 },
+      });
+
+      expect(output).toEqual({
+        a: "a",
+        b: [1],
+        c: {},
+        d: { e: 1 },
+      });
+    });
+
+    it("should ignore missing defaults", () => {
+      const input = {
+        a: "",
+        b: 0,
+        c: false,
+        d: [] as number[],
+        e: [0] as number[],
+        f: null as string,
+        g: undefined as string,
+      };
+
+      const output = falsyDefault(input, {});
+
+      expect(output).toEqual({
+        a: "",
+        b: 0,
+        c: false,
+        d: [] as number[],
+        e: [0] as number[],
+        f: null as string,
+        g: undefined as string,
+      });
+    });
+
+    it.each([[null], [undefined]])("should ignore %p defaults", (defaults) => {
+      const input = {
+        a: "",
+        b: 0,
+        c: false,
+        d: [] as number[],
+        e: [0] as number[],
+        f: null as string,
+        g: undefined as string,
+      };
+
+      const output = falsyDefault(input, defaults);
+
+      expect(output).toEqual({
+        a: "",
+        b: 0,
+        c: false,
+        d: [] as number[],
+        e: [0] as number[],
+        f: null as string,
+        g: undefined as string,
+      });
+    });
   });
 
   describe("encryptInPlace", () => {
@@ -296,6 +362,11 @@ describe("Username Generation Options", () => {
     it.each([
       ["invalid length", "invalid length", "invalid"],
       ["all padding", "missing json object", `${"0".repeat(512)}`],
+      [
+        "invalid padding",
+        "invalid padding",
+        `{"token":"a token","wasPlainText":true} ${"0".repeat(472)}`,
+      ],
       ["only closing brace", "invalid json", `}${"0".repeat(511)}`],
       ["token is NaN", "invalid json", `{"token":NaN}${"0".repeat(499)}`],
       ["only unknown key", "unknown keys", `{"unknown":"key"}${"0".repeat(495)}`],
