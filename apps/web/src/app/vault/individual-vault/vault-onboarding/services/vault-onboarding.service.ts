@@ -30,8 +30,8 @@ export class VaultOnboardingService implements VaultOnboardingServiceAbstraction
     this.vaultOnboardingState$ = this.vaultOnboardingState.state$;
   }
 
-  setVaultOnboardingTasks(newState: VaultOnboardingTasks) {
-    this.vaultOnboardingState.update(() => {
+  async setVaultOnboardingTasks(newState: VaultOnboardingTasks) {
+    await this.vaultOnboardingState.update(() => {
       return { vaultTasks: { ...newState } };
     });
   }

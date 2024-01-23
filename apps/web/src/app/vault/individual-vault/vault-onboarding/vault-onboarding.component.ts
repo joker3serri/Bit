@@ -66,7 +66,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe((tasks: { vaultTasks: VaultOnboardingTasks }) => {
         this.showOnboarding =
           tasks !== null ? Object.values(tasks.vaultTasks).includes(false) : true;
-        this.currentTasks = tasks.vaultTasks || null;
+        this.currentTasks = tasks !== null ? tasks.vaultTasks : null;
         this.setOnboardingTasks();
       });
 
