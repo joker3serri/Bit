@@ -24,6 +24,6 @@ export abstract class UserVerificationService {
   hasMasterPasswordAndMasterKeyHash: (userId?: string) => Promise<boolean>;
 
   getAvailableVerificationOptions: (
-    verificationType: "server" | "client",
+    verificationType: keyof UserVerificationOptions,
   ) => Promise<UserVerificationOptions>;
 }
