@@ -15,10 +15,9 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { BannerModule, IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
+import { PaymentMethodBannersComponent } from "../../../components/payment-method-banners/payment-method-banners.component";
 import { OrgSwitcherComponent } from "../../../layouts/org-switcher/org-switcher.component";
 import { AdminConsoleLogo } from "../../icons/admin-console-logo";
 
@@ -35,11 +34,11 @@ import { AdminConsoleLogo } from "../../icons/admin-console-logo";
     NavigationModule,
     OrgSwitcherComponent,
     BannerModule,
+    PaymentMethodBannersComponent,
   ],
 })
 export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   protected readonly logo = AdminConsoleLogo;
-  protected readonly FeatureFlag = FeatureFlag;
 
   protected orgFilter = (org: Organization) => org.isAdmin;
 
@@ -47,15 +46,9 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   private _destroy = new Subject<void>();
 
-  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
-    false,
-  );
-
   constructor(
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
-    private configService: ConfigServiceAbstraction,
   ) {}
 
   async ngOnInit() {

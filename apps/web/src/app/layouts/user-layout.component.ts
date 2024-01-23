@@ -10,6 +10,8 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
+import { PaymentMethodBannersComponent } from "../components/payment-method-banners/payment-method-banners.component";
+
 import { PasswordManagerLogo } from "./password-manager-logo";
 
 const BroadcasterSubscriptionId = "UserLayoutComponent";
@@ -18,7 +20,15 @@ const BroadcasterSubscriptionId = "UserLayoutComponent";
   selector: "app-user-layout",
   templateUrl: "user-layout.component.html",
   standalone: true,
-  imports: [CommonModule, RouterModule, JslibModule, LayoutComponent, IconModule, NavigationModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    JslibModule,
+    LayoutComponent,
+    IconModule,
+    NavigationModule,
+    PaymentMethodBannersComponent,
+  ],
 })
 export class UserLayoutComponent implements OnInit, OnDestroy {
   protected readonly logo = PasswordManagerLogo;

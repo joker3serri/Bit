@@ -54,7 +54,7 @@
   </button>
 </ng-container>
 <form
-  *ngIf="org && !loading && (flexibleCollectionsEnabled$ | async)"
+  *ngIf="org && !loading && org.flexibleCollections"
   [bitSubmit]="submitCollectionManagement"
   [formGroup]="collectionManagementFormGroup"
 >

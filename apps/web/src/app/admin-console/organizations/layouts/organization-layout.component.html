@@ -6,7 +6,7 @@
     <org-switcher [filter]="orgFilter"></org-switcher>
 
     <bit-nav-item *ngIf="canShowVaultTab(organization)" route="vault">
-      {{ ((flexibleCollectionsEnabled$ | async) ? "collections" : "vault") | i18n }}
+      {{ (organization.flexibleCollections ? "collections" : "vault") | i18n }}
     </bit-nav-item>
     <bit-nav-item
       icon="bwi-collection"
@@ -106,6 +106,9 @@
     >
       {{ "accessingUsingProvider" | i18n: organization.providerName }}
     </bit-banner>
+    <app-payment-method-banners
+      class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
+    ></app-payment-method-banners>
   </ng-container>
 
   <router-outlet></router-outlet>

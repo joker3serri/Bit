@@ -7,12 +7,21 @@ import { ProviderService } from "@bitwarden/common/admin-console/abstractions/pr
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 import { ProviderPortalLogo } from "@bitwarden/web-vault/app/admin-console/icons/provider-portal-logo";
+import { PaymentMethodBannersComponent } from "@bitwarden/web-vault/app/components/payment-method-banners/payment-method-banners.component";
 
 @Component({
   selector: "providers-layout",
   templateUrl: "providers-layout.component.html",
   standalone: true,
-  imports: [CommonModule, RouterModule, JslibModule, LayoutComponent, IconModule, NavigationModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    JslibModule,
+    LayoutComponent,
+    IconModule,
+    NavigationModule,
+    PaymentMethodBannersComponent,
+  ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class ProvidersLayoutComponent {
