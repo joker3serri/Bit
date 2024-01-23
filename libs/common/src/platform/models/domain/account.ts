@@ -267,6 +267,7 @@ export class AccountSettings {
   region?: string;
   smOnboardingTasks?: Record<string, Record<string, boolean>>;
   trustDeviceChoiceForDecryption?: boolean;
+  biometricPromptCancelled?: boolean;
   billingBannerStates?: Record<string, boolean> = {};
 
   /** @deprecated July 2023, left for migration purposes*/
