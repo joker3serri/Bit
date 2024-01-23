@@ -141,7 +141,6 @@ export class UserVerificationDialogComponent {
    * }
    *
    */
-
   static async open(
     dialogService: DialogService,
     data: UserVerificationDialogOptions,
