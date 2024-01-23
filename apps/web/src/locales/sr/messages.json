@@ -656,9 +656,6 @@
   "passkeySuccessfullyCreated": {
     "message": "Приступачни кључ је успешно креиран!"
   },
-  "customName": {
-    "message": "Прилагоди име"
-  },
   "customPasskeyNameInfo": {
     "message": "Именујте Ваш приступачни кључ за лакшу идентификацију."
   },
@@ -675,7 +672,7 @@
     "message": "Шифровање није подржано"
   },
   "enablePasskeyEncryption": {
-    "message": "Set up encryption"
+    "message": "Подесити шифровање"
   },
   "usedForEncryption": {
     "message": "Употребљено за шифровање"
@@ -1075,7 +1072,7 @@
     "message": "Извези"
   },
   "exportFrom": {
-    "message": "Export from"
+    "message": "Извоз од"
   },
   "exportVault": {
     "message": "Извоз сефа"
@@ -3548,12 +3545,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Не можете позвати више од $COUNT$ корисника без надоградње претплате. Молимо контактирајте корисничку подршку за надоградњу.",
+  "subscriptionUpgrade": {
+    "message": "Не можете позвати више од $COUNT$ чланова без надоградње претплате.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -3827,15 +3824,6 @@
   },
   "couldNotChargeCardPayInvoice": {
     "message": "Нисмо могли да наплатимо вашу картицу. Молимо погледајте и платите наведену неплаћену фактуру."
-  },
-  "inAppPurchase": {
-    "message": "Куповина Унутар Апликације"
-  },
-  "cannotPerformInAppPurchase": {
-    "message": "Не можете да извршите ову радњу док користите начин плаћања за куповину у апликацији."
-  },
-  "manageSubscriptionFromStore": {
-    "message": "Морате управљати претплатом из продавнице у којој је обављена куповина у апликацији."
   },
   "minLength": {
     "message": "Минимална Дужина"
@@ -5187,6 +5175,12 @@
   },
   "spValidateCertificates": {
     "message": "Проверити цертификате"
+  },
+  "spUniqueEntityId": {
+    "message": "Set a unique SP entity ID"
+  },
+  "spUniqueEntityIdDesc": {
+    "message": "Generate an identifier that is unique to your organization"
   },
   "idpEntityId": {
     "message": "Id ентитета"
@@ -6668,7 +6662,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter планови могу имати до $SEATCOUNT$ чланова. Контактирајте корисничку подршку да надоградите свој план и позовете још чланова.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7395,6 +7389,9 @@
   "alreadyHaveAccount": {
     "message": "Већ имате налог?"
   },
+  "skipToContent": {
+    "message": "Прескочи на садржај"
+  },
   "customBillingStart": {
     "message": "Прилагођени обрачун се не одражава. Посетите "
   },
@@ -7444,7 +7441,17 @@
   "collectionAccessRestricted": {
     "message": "Приступ колекцији је ограничен"
   },
+  "grantCollectionAccess": {
+    "message": "Одобрите групама или члановима приступ овој колекцији."
+  },
+  "adminCollectionAccess": {
+    "message": "Администратори могу да приступе и управљају колекцијама."
+  },
   "serviceAccountAccessUpdated": {
     "message": "Приступ услужног налога ажуриран"
+  },
+  "commonImportFormats": {
+    "message": "Уобичајени формати",
+    "description": "Label indicating the most common import formats"
   }
 }

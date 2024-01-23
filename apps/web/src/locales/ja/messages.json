@@ -656,9 +656,6 @@
   "passkeySuccessfullyCreated": {
     "message": "パスキーを作成しました！"
   },
-  "customName": {
-    "message": "カスタム名"
-  },
   "customPasskeyNameInfo": {
     "message": "パスキーに名前を付けて、識別しやすいようにしましょう。"
   },
@@ -3548,12 +3545,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "プランをアップグレードしないと $COUNT$ 名以上のユーザーを招待することはできません。アップグレードをご希望の場合は、カスタマーサポートまでご連絡ください。",
+  "subscriptionUpgrade": {
+    "message": "プランをアップグレードしないと、$COUNT$ 名以上のメンバーを招待することはできません。",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -3827,15 +3824,6 @@
   },
   "couldNotChargeCardPayInvoice": {
     "message": "あなたのカードで決済することができませんでした。以下の未払いの請求書をご確認いただき、お支払いください。"
-  },
-  "inAppPurchase": {
-    "message": "アプリ内購入"
-  },
-  "cannotPerformInAppPurchase": {
-    "message": "アプリ内購入を使用している間はこのアクションはできません。"
-  },
-  "manageSubscriptionFromStore": {
-    "message": "アプリ内購入したストアでサブスクリプションを管理してください。"
   },
   "minLength": {
     "message": "最小文字数"
@@ -5187,6 +5175,12 @@
   },
   "spValidateCertificates": {
     "message": "証明書を検証する"
+  },
+  "spUniqueEntityId": {
+    "message": "固有の SP エンティティ ID を設定する"
+  },
+  "spUniqueEntityIdDesc": {
+    "message": "組織固有の識別子を生成します"
   },
   "idpEntityId": {
     "message": "エンティティID"
@@ -6668,7 +6662,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter プランは $SEATCOUNT$ 人のメンバーまでです。さらにメンバーを招待するには、カスタマーサポートに連絡してプランをアップグレードしてください。",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7395,6 +7389,9 @@
   "alreadyHaveAccount": {
     "message": "既にアカウントをお持ちですか？"
   },
+  "skipToContent": {
+    "message": "コンテンツへ移動"
+  },
   "customBillingStart": {
     "message": "カスタム請求は反映されていません。"
   },
@@ -7444,7 +7441,17 @@
   "collectionAccessRestricted": {
     "message": "コレクションへのアクセスが制限されています"
   },
+  "grantCollectionAccess": {
+    "message": "グループまたはメンバーにこのコレクションへのアクセスを許可します。"
+  },
+  "adminCollectionAccess": {
+    "message": "管理者はコレクションにアクセスし、管理することができます。"
+  },
   "serviceAccountAccessUpdated": {
     "message": "サービスアカウントへのアクセスが更新されました"
+  },
+  "commonImportFormats": {
+    "message": "一般的な形式",
+    "description": "Label indicating the most common import formats"
   }
 }
