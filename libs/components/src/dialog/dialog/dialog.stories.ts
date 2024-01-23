@@ -123,8 +123,7 @@ export const ScrollingContent: Story = {
   render: (args: DialogComponent) => ({
     props: args,
     template: `
-      <bit-dialog [dialogSize]="dialogSize" [loading]="loading" [disablePadding]="disablePadding">
-        <span bitDialogTitle>Scrolling Example</span>
+      <bit-dialog title="Scrolling Example" [dialogSize]="dialogSize" [loading]="loading" [disablePadding]="disablePadding">
         <span bitDialogContent>
           Dialog body text goes here.<br>
           <ng-container *ngFor="let _ of [].constructor(100)">
@@ -148,8 +147,7 @@ export const TabContent: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
-        <span bitDialogTitle>Tab Content Example</span>
+      <bit-dialog title="Tab Content Example" [dialogSize]="dialogSize" [disablePadding]="disablePadding">
         <span bitDialogContent>
           <bit-tab-group>
               <bit-tab label="First Tab">First Tab Content</bit-tab>
