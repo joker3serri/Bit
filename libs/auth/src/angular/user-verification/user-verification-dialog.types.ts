@@ -5,7 +5,7 @@ import { ButtonType } from "../../../../components/src/shared/button-like.abstra
  */
 export type UserVerificationCalloutOptions = {
   /**
-   * The text of the callout.
+   * The translation key for the text of the callout.
    */
   text: string;
 
@@ -21,7 +21,7 @@ export type UserVerificationCalloutOptions = {
  */
 export type UserVerificationConfirmButtonOptions = {
   /**
-   * The text of the confirm button.
+   * The translation key for the text of the confirm button.
    */
   text: string;
 
@@ -37,13 +37,13 @@ export type UserVerificationConfirmButtonOptions = {
  */
 export type UserVerificationDialogOptions = {
   /**
-   * The title of the dialog.
+   * The translation key for the title of the dialog.
    * This is optional and defaults to "Verification required" if not provided.
    */
   title?: string;
 
   /**
-   * The body text of the dialog.
+   * The translation key for the body text of the dialog.
    * Optional.
    */
   bodyText?: string;
