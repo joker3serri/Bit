@@ -47,7 +47,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   >;
   private readonly activeUserOrgKeysState: DerivedState<Record<OrganizationId, OrgKey>>;
   private readonly activeUserEncryptedProviderKeysState: ActiveUserState<
-    Record<OrganizationId, EncryptedString>
+    Record<ProviderId, EncryptedString>
   >;
   private readonly activeUserProviderKeysState: DerivedState<Record<OrganizationId, ProviderKey>>;
 
