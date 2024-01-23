@@ -195,8 +195,8 @@ describe("AutofillOverlayContentService", () => {
         expect(autofillFieldElement.addEventListener).not.toHaveBeenCalled();
       });
 
-      it("ignores fields that are part of the ExcludedAutofillTypes", () => {
-        AutoFillConstants.ExcludedAutofillTypes.forEach((excludedType) => {
+      it("ignores fields that are part of the ExcludedOverlayTypes", () => {
+        AutoFillConstants.ExcludedOverlayTypes.forEach((excludedType) => {
           autofillFieldData.type = excludedType;
 
           autofillOverlayContentService.setupAutofillOverlayListenerOnField(
@@ -206,17 +206,6 @@ describe("AutofillOverlayContentService", () => {
 
           expect(autofillFieldElement.addEventListener).not.toHaveBeenCalled();
         });
-      });
-
-      it("ignores fields that have a input type of `textarea`", () => {
-        autofillFieldData.type = "textarea";
-
-        autofillOverlayContentService.setupAutofillOverlayListenerOnField(
-          autofillFieldElement,
-          autofillFieldData,
-        );
-
-        expect(autofillFieldElement.addEventListener).not.toHaveBeenCalled();
       });
 
       it("ignores fields that contain the keyword `search`", () => {
