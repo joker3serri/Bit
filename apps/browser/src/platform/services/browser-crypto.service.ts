@@ -16,7 +16,7 @@ export class BrowserCryptoService extends CryptoService {
   /**
    * Browser doesn't store biometric keys, so we retrieve them from the desktop and return
    * if we successfully saved it into memory as the User Key
-   * Note: only return the User Key if the user passes the biometrics prompt again - which supports user verification scenarios.
+   * @returns the `UserKey` if the user passes a biometrics prompt, otherwise return `null`.
    */
   protected override async getKeyFromStorage(
     keySuffix: KeySuffixOptions,
