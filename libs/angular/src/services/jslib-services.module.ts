@@ -839,7 +839,7 @@ import { ModalService } from "./modal.service";
     {
       provide: BillingBannerServiceAbstraction,
       useClass: BillingBannerService,
-      deps: [StateServiceAbstraction],
+      deps: [StateProvider],
     },
   ],
 })

@@ -1,51 +1,44 @@
-import { concatMap, BehaviorSubject, map } from "rxjs";
+import { map, Observable } from "rxjs";
 
-import { StateService } from "../../platform/abstractions/state.service";
+import {
+  ActiveUserState,
+  BILLING_BANNERS_DISK,
+  KeyDefinition,
+  StateProvider,
+} from "../../platform/state";
 import { BillingBannerServiceAbstraction } from "../abstractions/billing-banner.service.abstraction";
 
+const PAYMENT_METHOD_BANNERS_KEY = KeyDefinition.record<boolean>(
+  BILLING_BANNERS_DISK,
+  "paymentMethodBanners",
+  {
+    deserializer: (b) => b,
+  },
+);
+
 export class BillingBannerService implements BillingBannerServiceAbstraction {
-  protected _billingBannerStates = new BehaviorSubject<Record<string, boolean>>({});
+  private paymentMethodBannerStates: ActiveUserState<Record<string, boolean>>;
+  paymentMethodBannerStates$: Observable<{ organizationId: string; visible: boolean }[]>;
 
-  private paymentMethodBannerSuffix = "add-payment-method-banner";
-
-  constructor(private stateService: StateService) {
-    this.stateService.activeAccountUnlocked$
-      .pipe(
-        concatMap(async (unlocked) => {
-          if (!unlocked) {
-            return {};
-          }
-
-          return await this.stateService.getBillingBannerStates();
-        }),
-      )
-      .subscribe(this._billingBannerStates);
+  constructor(private stateProvider: StateProvider) {
+    this.paymentMethodBannerStates = this.stateProvider.getActive(PAYMENT_METHOD_BANNERS_KEY);
+    this.paymentMethodBannerStates$ = this.paymentMethodBannerStates.state$.pipe(
+      map((billingBannerStates) =>
+        !billingBannerStates
+          ? []
+          : Object.entries(billingBannerStates).map(([organizationId, visible]) => ({
+              organizationId,
+              visible,
+            })),
+      ),
+    );
   }
 
-  private getEntityId = (bannerId: string) => bannerId.split("_")[0];
-
-  paymentMethodBannersVisibility$ = this._billingBannerStates.asObservable().pipe(
-    map((billingBannerStates) =>
-      Object.entries(billingBannerStates)
-        .filter(this.isPaymentMethodBanner)
-        .map(([paymentMethodBannerId, visible]) => ({
-          organizationId: this.getEntityId(paymentMethodBannerId),
-          visible: visible,
-        })),
-    ),
-  );
-
-  async setPaymentMethodBannerVisibility(organizationId: string, visible: boolean): Promise<void> {
-    const billingBannerStates = await this.stateService.getBillingBannerStates();
-    const paymentMethodBannerId = this.getPaymentMethodBannerId(organizationId);
-    billingBannerStates[paymentMethodBannerId] = visible;
-    await this.stateService.setBillingBannerStates(billingBannerStates);
-    this._billingBannerStates.next(billingBannerStates);
+  async setPaymentMethodBannerState(organizationId: string, visibility: boolean): Promise<void> {
+    await this.paymentMethodBannerStates.update((states) => {
+      states ??= {};
+      states[organizationId] = visibility;
+      return states;
+    });
   }
-
-  private getPaymentMethodBannerId = (organizationId: string) =>
-    `${organizationId}_${this.paymentMethodBannerSuffix}`;
-
-  private isPaymentMethodBanner = ([bannerId, _]: [string, boolean]) =>
-    bannerId.split("_")[1] === this.paymentMethodBannerSuffix;
 }

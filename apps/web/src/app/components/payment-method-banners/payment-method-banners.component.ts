@@ -38,12 +38,12 @@ export class PaymentMethodBannersComponent {
 
   protected banners$: Observable<PaymentMethodBannerData[]> = combineLatest([
     this.organizations$,
-    this.billingBannerService.paymentMethodBannersVisibility$,
+    this.billingBannerService.paymentMethodBannerStates$,
   ]).pipe(
-    switchMap(async ([organizations, paymentMethodBannersVisibility]) => {
+    switchMap(async ([organizations, paymentMethodBannerStates]) => {
       return await Promise.all(
         organizations.map(async (organization) => {
-          const matchingBanner = paymentMethodBannersVisibility.find(
+          const matchingBanner = paymentMethodBannerStates.find(
             (banner) => banner.organizationId === organization.id,
           );
           if (matchingBanner !== null && matchingBanner !== undefined) {
@@ -56,7 +56,7 @@ export class PaymentMethodBannersComponent {
           const response = await this.organizationApiService.risksSubscriptionFailure(
             organization.id,
           );
-          await this.billingBannerService.setPaymentMethodBannerVisibility(
+          await this.billingBannerService.setPaymentMethodBannerState(
             organization.id,
             response.risksSubscriptionFailure,
           );
@@ -71,6 +71,6 @@ export class PaymentMethodBannersComponent {
   );
 
   protected async closeBanner(organizationId: string): Promise<void> {
-    await this.billingBannerService.setPaymentMethodBannerVisibility(organizationId, false);
+    await this.billingBannerService.setPaymentMethodBannerState(organizationId, false);
   }
 }
