@@ -4,17 +4,15 @@
   @fadeIn
 >
   <header
-    class="tw-flex tw-items-center tw-gap-4 tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-p-4"
+    class="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-p-4"
   >
-    <span class="tw-inline-flex tw-gap-2 tw-grow tw-items-baseline tw-truncate">
-      <h1 bitDialogTitleContainer bitTypography="h4" noMargin class="tw-mb-0 tw-truncate">
-        {{ title }}
-        <ng-content select="[bitDialogTitle]"></ng-content>
-      </h1>
-      <span *ngIf="subtitle" bitTypography="body2" class="tw-text-muted tw-truncate tw-flex-1">{{
-        subtitle
-      }}</span>
-    </span>
+    <h1 bitDialogTitleContainer bitTypography="h3" noMargin class="tw-mb-0 tw-truncate">
+      {{ title }}
+      <span *ngIf="subtitle" class="tw-text-muted tw-font-normal tw-text-sm">
+        {{ subtitle }}
+      </span>
+      <ng-content select="[bitDialogTitle]"></ng-content>
+    </h1>
     <button
       type="button"
       bitIconButton="bwi-close"
