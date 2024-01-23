@@ -1,4 +1,4 @@
-import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from "@storybook/angular";
+import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
@@ -14,16 +14,6 @@ export default {
   title: "Auth/Anon Layout",
   component: AnonLayoutComponent,
   decorators: [
-    componentWrapperDecorator(
-      /**
-       * Applying a CSS transform makes a `position: fixed` element act like it is `position: relative`
-       * https://github.com/storybookjs/storybook/issues/8011#issue-490251969
-       */
-      (story) =>
-        /* HTML */ `<div class="tw-scale-100 tw-border-2 tw-border-solid tw-border-[red]">
-          ${story}
-        </div>`,
-    ),
     moduleMetadata({
       imports: [ButtonModule],
       providers: [
