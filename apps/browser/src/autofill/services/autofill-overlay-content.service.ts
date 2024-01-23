@@ -32,10 +32,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   private readonly findTabs = tabbable;
   private readonly sendExtensionMessage = sendExtensionMessage;
   private formFieldElements: Set<ElementWithOpId<FormFieldElement>> = new Set([]);
-  private ignoredFieldTypes: Set<string> = new Set([
-    ...AutoFillConstants.ExcludedAutofillTypes,
-    "textarea",
-  ]);
+  private ignoredFieldTypes: Set<string> = new Set(AutoFillConstants.ExcludedOverlayTypes);
   private userFilledFields: Record<string, FillableFormFieldElement> = {};
   private authStatus: AuthenticationStatus;
   private focusableElements: FocusableElement[] = [];
