@@ -208,6 +208,17 @@ describe("AutofillOverlayContentService", () => {
         });
       });
 
+      it("ignores fields that have a input type of `textarea`", () => {
+        autofillFieldData.type = "textarea";
+
+        autofillOverlayContentService.setupAutofillOverlayListenerOnField(
+          autofillFieldElement,
+          autofillFieldData,
+        );
+
+        expect(autofillFieldElement.addEventListener).not.toHaveBeenCalled();
+      });
+
       it("ignores fields that contain the keyword `search`", () => {
         autofillFieldData.placeholder = "search";
 
