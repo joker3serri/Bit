@@ -186,7 +186,6 @@ export class AccountComponent {
   enableCollectionEnhancements = async () => {
     await this.organizationApiService.enableCollectionEnhancements(this.organizationId);
 
-    // TODO - design to advise on a success message
     this.platformUtilsService.showToast(
       "success",
       null,
