@@ -554,9 +554,4 @@ export abstract class StateService<T extends Account = Account> {
    */
   setDeepLinkRedirectUrl: (url: string, options?: StorageOptions) => Promise<void>;
   nextUpActiveUser: () => Promise<UserId>;
-  getBillingBannerStates: (options?: StorageOptions) => Promise<Record<string, boolean>>;
-  setBillingBannerStates: (
-    value: Record<string, boolean>,
-    options?: StorageOptions,
-  ) => Promise<void>;
 }
