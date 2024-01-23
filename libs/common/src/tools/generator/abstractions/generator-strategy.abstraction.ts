@@ -14,6 +14,9 @@ export abstract class GeneratorStrategy<Options, Policy> {
   /** Identifies the policy enforced by the generator. */
   policy: PolicyType;
 
+  /** Length of time in milliseconds to cache the evaluator */
+  cache_ms: number;
+
   /** Creates an evaluator from a generator policy.
    * @param policy The policy being evaluated.
    * @returns the policy evaluator.

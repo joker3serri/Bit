@@ -1,4 +1,4 @@
-import { firstValueFrom, map, BehaviorSubject } from "rxjs";
+import { firstValueFrom, map, share, timer, ReplaySubject, Observable } from "rxjs";
 
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
@@ -21,15 +21,18 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
     private policy: PolicyService,
     private state: ActiveUserStateProvider,
   ) {
-    // cache evaluator in a behavior subject to amortize creation cost
-    // and reduce GC pressure.
-    this.policy
-      .get$(this.strategy.policy)
-      .pipe(map((policy) => this.strategy.evaluator(policy)))
-      .subscribe(this._policy$);
+    this._policy$ = this.policy.get$(this.strategy.policy).pipe(
+      map((policy) => this.strategy.evaluator(policy)),
+      share({
+        // cache evaluator in a replay subject to amortize creation cost
+        // and reduce GC pressure.
+        connector: () => new ReplaySubject(1),
+        resetOnRefCountZero: () => timer(this.strategy.cache_ms),
+      }),
+    );
   }
 
-  private _policy$: BehaviorSubject<PolicyEvaluator<Policy, Options>> = new BehaviorSubject(null);
+  private _policy$: Observable<PolicyEvaluator<Policy, Options>>;
 
   /** {@link GeneratorService.options$} */
   get options$() {
@@ -43,7 +46,7 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
 
   /** {@link GeneratorService.policy$} */
   get policy$() {
-    return this._policy$.asObservable();
+    return this._policy$;
   }
 
   /** {@link GeneratorService.enforcePolicy} */
