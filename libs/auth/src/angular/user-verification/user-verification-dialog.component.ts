@@ -47,7 +47,7 @@ export class UserVerificationDialogComponent {
 
   invalidSecret = false;
   activeClientVerificationOption: ActiveClientVerificationOption;
-  ActiveClientVerificationOption = ActiveClientVerificationOption;
+  readonly ActiveClientVerificationOption = ActiveClientVerificationOption;
 
   constructor(
     @Inject(DIALOG_DATA) public dialogOptions: UserVerificationDialogOptions,
@@ -216,7 +216,7 @@ export class UserVerificationDialogComponent {
         this.invalidSecret = true;
 
         // Only pin should ever get here, but added this check to be safe.
-        if (this.activeClientVerificationOption === this.ActiveClientVerificationOption.Pin) {
+        if (this.activeClientVerificationOption === ActiveClientVerificationOption.Pin) {
           this.platformUtilsService.showToast(
             "error",
             this.i18nService.t("error"),
