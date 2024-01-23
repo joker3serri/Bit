@@ -25,7 +25,7 @@ export default {
     }),
   ],
   args: {
-    title: "The Page Title",
+    title: "The Page Title 2",
     subtitle: "The subtitle",
   },
 } as Meta;

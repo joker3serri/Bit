@@ -4,6 +4,7 @@ import { Component, Input } from "@angular/core";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { Icon, IconModule } from "../../../components/src/icon";
+import { TypographyModule } from "../../../components/src/typography";
 
 import { BitwardenLogo } from "./bitwarden-logo";
 import { IconLock } from "./icon-lock";
@@ -14,7 +15,7 @@ type IconType = "lock";
   standalone: true,
   selector: "auth-anon-layout",
   templateUrl: "./anon-layout.component.html",
-  imports: [IconModule, CommonModule],
+  imports: [IconModule, CommonModule, TypographyModule],
 })
 export class AnonLayoutComponent {
   @Input() title: string;

@@ -8,8 +8,8 @@
       </div>
       <bit-icon [icon]="logo" class="tw-mx-auto tw-block tw-max-w-xs"></bit-icon>
     </div>
-    <h1 *ngIf="title" class="tw-mt-8 tw-text-xl tw-font-semibold sm:tw-text-2xl">{{ title }}</h1>
-    <h2 *ngIf="subtitle" class="tw-mt-4">{{ subTitle }}</h2>
+    <h1 *ngIf="title" bitTypography="h1" class="tw-mt-8">{{ title }}</h1>
+    <p *ngIf="subtitle" bitTypography="body1">{{ subtitle }}</p>
   </div>
   <div class="tw-mb-auto tw-mx-auto tw-max-w-md tw-grid tw-gap-12">
     <div class="tw-rounded-xl sm:tw-border sm:tw-border-solid sm:tw-border-secondary-300 sm:tw-p-8">
