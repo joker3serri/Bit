@@ -1,4 +1,4 @@
-import { ButtonType } from "../../../../components/src/shared/button-like.abstraction";
+import { ButtonType } from "@bitwarden/components";
 
 /**
  * @typedef {Object} UserVerificationCalloutOptions - Configuration options for the callout displayed in the dialog body.
