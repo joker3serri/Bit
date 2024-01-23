@@ -187,7 +187,11 @@ export class AccountComponent {
     await this.organizationApiService.enableCollectionEnhancements(this.organizationId);
 
     // TODO - design to advise on a success message
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("updatedCollectionManagement"),
+    );
   };
 
   submitCollectionManagement = async () => {
@@ -207,7 +211,7 @@ export class AccountComponent {
     this.platformUtilsService.showToast(
       "success",
       null,
-      this.i18nService.t("collectionManagementUpdated"),
+      this.i18nService.t("updatedCollectionManagement"),
     );
   };
 
