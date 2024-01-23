@@ -4,7 +4,7 @@
  */
 import { Forwarders } from "../options/constants";
 
-import { AnonAddyForwarder } from "./anon-addy";
+import { AddyIoForwarder } from "./addy-io";
 import { mockApiService, mockI18nService } from "./mocks.jest";
 
 describe("Addy.io Forwarder", () => {
@@ -13,7 +13,7 @@ describe("Addy.io Forwarder", () => {
       const apiService = mockApiService(200, {});
       const i18nService = mockI18nService();
 
-      const forwarder = new AnonAddyForwarder(apiService, i18nService);
+      const forwarder = new AddyIoForwarder(apiService, i18nService);
 
       await expect(
         async () =>
@@ -34,7 +34,7 @@ describe("Addy.io Forwarder", () => {
         const apiService = mockApiService(200, {});
         const i18nService = mockI18nService();
 
-        const forwarder = new AnonAddyForwarder(apiService, i18nService);
+        const forwarder = new AddyIoForwarder(apiService, i18nService);
 
         await expect(
           async () =>
@@ -56,7 +56,7 @@ describe("Addy.io Forwarder", () => {
         const apiService = mockApiService(200, {});
         const i18nService = mockI18nService();
 
-        const forwarder = new AnonAddyForwarder(apiService, i18nService);
+        const forwarder = new AddyIoForwarder(apiService, i18nService);
 
         await expect(
           async () =>
@@ -83,7 +83,7 @@ describe("Addy.io Forwarder", () => {
         const apiService = mockApiService(200, {});
         const i18nService = mockI18nService();
 
-        const forwarder = new AnonAddyForwarder(apiService, i18nService);
+        const forwarder = new AddyIoForwarder(apiService, i18nService);
 
         await forwarder.generate(website, {
           token: "token",
@@ -107,7 +107,7 @@ describe("Addy.io Forwarder", () => {
         const apiService = mockApiService(status, { data: { email } });
         const i18nService = mockI18nService();
 
-        const forwarder = new AnonAddyForwarder(apiService, i18nService);
+        const forwarder = new AddyIoForwarder(apiService, i18nService);
 
         const result = await forwarder.generate(null, {
           token: "token",
@@ -124,7 +124,7 @@ describe("Addy.io Forwarder", () => {
       const apiService = mockApiService(401, {});
       const i18nService = mockI18nService();
 
-      const forwarder = new AnonAddyForwarder(apiService, i18nService);
+      const forwarder = new AddyIoForwarder(apiService, i18nService);
 
       await expect(
         async () =>
@@ -148,7 +148,7 @@ describe("Addy.io Forwarder", () => {
       const apiService = mockApiService(500, {});
       const i18nService = mockI18nService();
 
-      const forwarder = new AnonAddyForwarder(apiService, i18nService);
+      const forwarder = new AddyIoForwarder(apiService, i18nService);
 
       await expect(
         async () =>
@@ -181,7 +181,7 @@ describe("Addy.io Forwarder", () => {
         const apiService = mockApiService(statusCode, {}, statusText);
         const i18nService = mockI18nService();
 
-        const forwarder = new AnonAddyForwarder(apiService, i18nService);
+        const forwarder = new AddyIoForwarder(apiService, i18nService);
 
         await expect(
           async () =>

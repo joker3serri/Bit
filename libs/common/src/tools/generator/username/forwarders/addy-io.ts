@@ -3,8 +3,8 @@ import { I18nService } from "../../../../platform/abstractions/i18n.service";
 import { Forwarders } from "../options/constants";
 import { EmailDomainOptions, Forwarder, SelfHostedApiOptions } from "../options/forwarder-options";
 
-/** Generates a forwarding address for addy.io */
-export class AnonAddyForwarder implements Forwarder {
+/** Generates a forwarding address for addy.io (formerly anon addy) */
+export class AddyIoForwarder implements Forwarder {
   /** Instantiates the forwarder
    *  @param apiService used for ajax requests to the forwarding service
    *  @param i18nService used to look up error strings
