@@ -3,12 +3,18 @@ import { I18nService } from "../../../../platform/abstractions/i18n.service";
 import { Forwarders } from "../options/constants";
 import { EmailDomainOptions, Forwarder, SelfHostedApiOptions } from "../options/forwarder-options";
 
+/** Generates a forwarding address for addy.io */
 export class AnonAddyForwarder implements Forwarder {
+  /** Instantiates the forwarder
+   *  @param apiService used for ajax requests to the forwarding service
+   *  @param i18nService used to look up error strings
+   */
   constructor(
     private apiService: ApiService,
     private i18nService: I18nService,
   ) {}
 
+  /** {@link Forwarder.generate} */
   async generate(
     website: string | null,
     options: SelfHostedApiOptions & EmailDomainOptions,
