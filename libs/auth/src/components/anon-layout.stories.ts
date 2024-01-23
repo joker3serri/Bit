@@ -26,7 +26,7 @@ export default {
   ],
   args: {
     title: "The Page Title",
-    subTitle: "The subtitle",
+    subtitle: "The subtitle",
   },
 } as Meta;
 
@@ -41,7 +41,7 @@ export const WithPrimaryContent: Story = {
        * sample and could be replaced with any content and styling
        */
       `
-      <auth-anon-layout [title]="title" [subTitle]="subTitle">
+      <auth-anon-layout [title]="title" [subtitle]="subtitle">
         <div
           class="tw-bg-secondary-100"
         >
@@ -59,7 +59,7 @@ export const WithSecondaryContent: Story = {
     template:
       // Notice that slot="secondary" is requred to project any secondary content:
       `
-      <auth-anon-layout [title]="title" [subTitle]="subTitle">
+      <auth-anon-layout [title]="title" [subtitle]="subtitle">
         <div
           class="tw-bg-secondary-100"
         >
@@ -80,7 +80,7 @@ export const WithLongContent: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <auth-anon-layout title="Page Title lorem ipsum dolor consectetur sit amet expedita quod est" subTitle="Subtitle here Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, quod est?">
+      <auth-anon-layout title="Page Title lorem ipsum dolor consectetur sit amet expedita quod est" subtitle="Subtitle here Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, quod est?">
         <div
           class="tw-bg-secondary-100"
         >
@@ -102,7 +102,7 @@ export const WithIcon: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <auth-anon-layout [title]="title" [subTitle]="subTitle" icon="lock">
+      <auth-anon-layout [title]="title" [subtitle]="subtitle" icon="lock">
         <div
           class="tw-bg-secondary-100"
         >

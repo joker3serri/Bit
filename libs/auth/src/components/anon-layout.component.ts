@@ -18,7 +18,7 @@ type IconType = "lock";
 })
 export class AnonLayoutComponent {
   @Input() title: string;
-  @Input() subTitle: string;
+  @Input() subtitle: string;
   @Input() icon: IconType;
 
   logo = BitwardenLogo;
