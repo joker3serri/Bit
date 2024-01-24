@@ -257,7 +257,6 @@ export class AccountSettings {
   activateAutoFillOnPageLoadFromPolicy?: boolean;
   region?: string;
   smOnboardingTasks?: Record<string, Record<string, boolean>>;
-  vaultOnboardingTasks?: Record<string, Record<string, boolean>>;
   trustDeviceChoiceForDecryption?: boolean;
   biometricPromptCancelled?: boolean;
 
