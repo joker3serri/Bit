@@ -2,7 +2,6 @@ import { BehaviorSubject, concatMap } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
 import { AutofillOverlayVisibility } from "../../../../../apps/browser/src/autofill/utils/autofill-overlay.enum";
-import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
@@ -910,6 +909,24 @@ export class StateService<
     await this.saveSecureStorageKey(partialKeys.biometricKey, value, options);
   }
 
+  async getBiometricPromptCancelled(options?: StorageOptions): Promise<boolean> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    return account?.settings?.biometricPromptCancelled;
+  }
+
+  async setBiometricPromptCancelled(value: boolean, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    account.settings.biometricPromptCancelled = value;
+    await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+  }
+
   @withPrototypeForArrayMembers(CipherView, CipherView.fromJSON)
   async getDecryptedCiphers(options?: StorageOptions): Promise<CipherView[]> {
     return (
@@ -967,29 +984,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     account.keys.cryptoSymmetricKey.decrypted = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-  }
-
-  async getDecryptedOrganizationKeys(
-    options?: StorageOptions,
-  ): Promise<Map<string, SymmetricCryptoKey>> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    return Utils.recordToMap(account?.keys?.organizationKeys?.decrypted);
-  }
-
-  async setDecryptedOrganizationKeys(
-    value: Map<string, SymmetricCryptoKey>,
-    options?: StorageOptions,
-  ): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.keys.organizationKeys.decrypted = Utils.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
@@ -1835,28 +1829,6 @@ export class StateService<
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions()),
-    );
-  }
-
-  async getEncryptedOrganizationKeys(
-    options?: StorageOptions,
-  ): Promise<{ [orgId: string]: EncryptedOrganizationKeyData }> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.keys?.organizationKeys.encrypted;
-  }
-
-  async setEncryptedOrganizationKeys(
-    value: { [orgId: string]: EncryptedOrganizationKeyData },
-    options?: StorageOptions,
-  ): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.keys.organizationKeys.encrypted = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
   }
 
