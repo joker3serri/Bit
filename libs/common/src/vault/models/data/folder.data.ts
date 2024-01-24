@@ -1,5 +1,6 @@
-import { FolderResponse } from "../response/folder.response";
 import { Jsonify } from "type-fest";
+
+import { FolderResponse } from "../response/folder.response";
 
 export class FolderData {
   id: string;
