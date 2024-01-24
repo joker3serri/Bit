@@ -1,6 +1,5 @@
 import { firstValueFrom } from "rxjs";
 
-// import { StateService } from "../../platform/abstractions/state.service";
 import { GlobalState, KeyDefinition, LOGIN_DISK, StateProvider } from "../../platform/state";
 import { LoginService as LoginServiceAbstraction } from "../abstractions/login.service";
 
@@ -13,10 +12,7 @@ export class LoginService implements LoginServiceAbstraction {
   private rememberEmail: boolean;
   private rememberedEmailState: GlobalState<string>;
 
-  // private stateService: StateService,
   constructor(private stateProvider: StateProvider) {
-    console.log("STATE PROVIDER");
-    console.log(stateProvider);
     this.rememberedEmailState = this.stateProvider.getGlobal(REMEMBERED_EMAIL);
   }
 
@@ -51,7 +47,6 @@ export class LoginService implements LoginServiceAbstraction {
 
   async saveEmailSettings() {
     await this.setRememberedEmail(this.rememberEmail ? this.email : null);
-    // await this.stateService.setRememberedEmail(this.rememberEmail ? this.email : null);
     this.clearValues();
   }
 }

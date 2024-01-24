@@ -728,7 +728,7 @@ import { ModalService } from "./modal.service";
     {
       provide: LoginServiceAbstraction,
       useClass: LoginService,
-      deps: [StateServiceAbstraction, StateProvider],
+      deps: [StateProvider],
     },
     {
       provide: OrgDomainServiceAbstraction,

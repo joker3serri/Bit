@@ -67,7 +67,7 @@ import { GlobalState } from "@bitwarden/common/platform/models/domain/global-sta
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { DerivedStateProvider } from "@bitwarden/common/platform/state";
+import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -518,7 +518,7 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: LoginServiceAbstraction,
       useClass: LoginService,
-      deps: [StateServiceAbstraction],
+      deps: [StateProvider],
     },
     {
       provide: AbstractThemingService,

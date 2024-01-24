@@ -10,7 +10,6 @@ export class GlobalState {
   ssoCodeVerifier?: string;
   ssoOrganizationIdentifier?: string;
   ssoState?: string;
-  // rememberedEmail?: string;
   theme?: ThemeType = ThemeType.System;
   window?: WindowState = new WindowState();
   twoFactorToken?: string;

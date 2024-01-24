@@ -23,6 +23,7 @@ import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/p
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { HtmlStorageService } from "../core/html-storage.service";
@@ -96,7 +97,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     {
       provide: LoginServiceAbstraction,
       useClass: LoginService,
-      deps: [StateService],
+      deps: [StateProvider],
     },
     CollectionAdminService,
   ],

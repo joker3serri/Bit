@@ -197,7 +197,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     const rememberEmail = this.formGroup.value.rememberEmail;
 
     if (!rememberEmail) {
-      await this.stateService.setRememberedEmail(null);
+      await this.loginService.setRememberedEmail(null);
     }
     await super.submit(false);
   }

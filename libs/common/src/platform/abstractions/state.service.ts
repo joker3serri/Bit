@@ -462,8 +462,6 @@ export abstract class StateService<T extends Account = Account> {
   setPublicKey: (value: Uint8Array, options?: StorageOptions) => Promise<void>;
   getRefreshToken: (options?: StorageOptions) => Promise<string>;
   setRefreshToken: (value: string, options?: StorageOptions) => Promise<void>;
-  // getRememberedEmail: (options?: StorageOptions) => Promise<string>;
-  // setRememberedEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getSecurityStamp: (options?: StorageOptions) => Promise<string>;
   setSecurityStamp: (value: string, options?: StorageOptions) => Promise<void>;
   /**
