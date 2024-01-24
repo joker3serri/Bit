@@ -145,12 +145,11 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       case TwoFactorProviderType.Duo:
       case TwoFactorProviderType.OrganizationDuo:
         new BroadcastChannel("duoResult").addEventListener("message", async (e) => {
-          // console.log(e);
           this.token = e.data.code;
           await this.submit();
         });
         setTimeout(() => {
-          this.win.open(providerData.AuthUrl);
+          this.platformUtilsService.launchUri(providerData.AuthUrl);
 
           // DuoWebSDK.init({
           //   iframe: undefined,
