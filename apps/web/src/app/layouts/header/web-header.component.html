@@ -1,7 +1,7 @@
 <bit-banner
   class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
   (onClose)="hideBanner()"
-  *ngIf="showBanner | async"
+  *ngIf="showBanner$ | async"
 >
   {{ "newWebVault" | i18n }}
   <a href="https://bitwarden.com" bitLink linkType="contrast">{{ "releaseBlog" | i18n }}</a>

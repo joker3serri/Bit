@@ -7,8 +7,22 @@ import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
+import {
+  GlobalStateProvider,
+  KeyDefinition,
+  NEW_WEB_LAYOUT_BANNER_DISK,
+} from "@bitwarden/common/platform/state";
 
 import { StateService } from "../../core/state/state.service";
+
+const SHOW_BANNER_KEY = new KeyDefinition<boolean>(NEW_WEB_LAYOUT_BANNER_DISK, "showBanner", {
+  deserializer: (b) => {
+    if (b === null) {
+      return true;
+    }
+    return b;
+  },
+});
 
 @Component({
   selector: "app-header",
@@ -31,7 +45,8 @@ export class WebHeaderComponent {
   protected selfHosted: boolean;
   protected hostname = location.hostname;
 
-  protected showBanner: Promise<boolean>;
+  private showBannerState = this.globalStateProvider.get(SHOW_BANNER_KEY);
+  protected showBanner$ = this.showBannerState.state$;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +54,7 @@ export class WebHeaderComponent {
     private platformUtilsService: PlatformUtilsService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private messagingService: MessagingService,
+    private globalStateProvider: GlobalStateProvider,
   ) {
     this.routeData$ = this.route.data.pipe(
       map((params) => {
@@ -61,8 +77,6 @@ export class WebHeaderComponent {
     this.canLock$ = this.vaultTimeoutSettingsService
       .availableVaultTimeoutActions$()
       .pipe(map((actions) => actions.includes(VaultTimeoutAction.Lock)));
-
-    this.showBanner = this.stateService.getShowWebBanner();
   }
 
   protected lock() {
@@ -74,7 +88,6 @@ export class WebHeaderComponent {
   }
 
   protected async hideBanner() {
-    this.showBanner = Promise.resolve(false);
-    await this.stateService.setShowWebBanner(false);
+    await this.showBannerState.update(() => false);
   }
 }
