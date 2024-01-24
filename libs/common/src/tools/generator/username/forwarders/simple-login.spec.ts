@@ -120,28 +120,31 @@ describe("SimpleLogin Forwarder", () => {
       );
     });
 
-    it("throws an unknown error if the request fails and no status is provided", async () => {
-      const apiService = mockApiService(500, {});
-      const i18nService = mockI18nService();
+    it.each([{}, null])(
+      "throws an unknown error if the request fails and no status is provided",
+      async (body) => {
+        const apiService = mockApiService(500, body);
+        const i18nService = mockI18nService();
 
-      const forwarder = new SimpleLoginForwarder(apiService, i18nService);
+        const forwarder = new SimpleLoginForwarder(apiService, i18nService);
 
-      await expect(
-        async () =>
-          await forwarder.generate(null, {
-            token: "token",
-            baseUrl: "https://api.example.com",
-          }),
-      ).rejects.toEqual("forwarderUnknownError");
+        await expect(
+          async () =>
+            await forwarder.generate(null, {
+              token: "token",
+              baseUrl: "https://api.example.com",
+            }),
+        ).rejects.toEqual("forwarderUnknownError");
 
-      expect(apiService.nativeFetch).toHaveBeenCalledWith(expect.any(Request));
-      // counting instances is terribly flaky over changes, but jest doesn't have a better way to do this
-      expect(i18nService.t).toHaveBeenNthCalledWith(
-        2,
-        "forwarderUnknownError",
-        Forwarders.SimpleLogin.name,
-      );
-    });
+        expect(apiService.nativeFetch).toHaveBeenCalledWith(expect.any(Request));
+        // counting instances is terribly flaky over changes, but jest doesn't have a better way to do this
+        expect(i18nService.t).toHaveBeenNthCalledWith(
+          2,
+          "forwarderUnknownError",
+          Forwarders.SimpleLogin.name,
+        );
+      },
+    );
 
     it.each([
       [100, "Continue"],

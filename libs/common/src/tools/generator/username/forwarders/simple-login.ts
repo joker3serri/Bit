@@ -53,7 +53,7 @@ export class SimpleLoginForwarder implements Forwarder {
     const json = await response.json();
     if (response.status === 200 || response.status === 201) {
       return json.alias;
-    } else if (json?.error != null) {
+    } else if (json?.error) {
       const error = this.i18nService.t("forwarderError", Forwarders.SimpleLogin.name, json.error);
       throw error;
     } else {
