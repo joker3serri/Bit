@@ -222,6 +222,8 @@ export class UserVerificationDialogComponent {
             this.i18nService.t("error"),
             this.i18nService.t("invalidPin"),
           );
+        } else {
+          this.platformUtilsService.showToast("error", null, this.i18nService.t("unexpectedError"));
         }
       }
     } catch (e) {
