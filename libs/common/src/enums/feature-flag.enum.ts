@@ -5,6 +5,7 @@ export enum FeatureFlag {
   FlexibleCollectionsV1 = "flexible-collections-v-1", // v-1 is intentional
   BulkCollectionAccess = "bulk-collection-access",
   VaultOnboarding = "vault-onboarding",
+  GeneratorToolsModernization = "generator-tools-modernization",
   KeyRotationImprovements = "key-rotation-improvements",
   FlexibleCollectionsMigration = "flexible-collections-migration",
 }

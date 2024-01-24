@@ -19,6 +19,11 @@ import { StateDefinition } from "./state-definition";
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
 
+export const BILLING_BANNERS_DISK = new StateDefinition("billingBanners", "disk");
+
 export const CRYPTO_DISK = new StateDefinition("crypto", "disk");
 
 export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk");
+
+export const GENERATOR_DISK = new StateDefinition("generator", "disk");
+export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
