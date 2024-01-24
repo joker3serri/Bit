@@ -27,6 +27,8 @@ export class BiometricsService implements BiometricsServiceAbstraction {
       this.loadWindowsHelloService();
     } else if (platform === "darwin") {
       this.loadMacOSService();
+    } else {
+      this.loadNoopBiometricsService();
     }
   }
 
@@ -47,16 +49,17 @@ export class BiometricsService implements BiometricsServiceAbstraction {
     this.platformSpecificService = new BiometricDarwinMain(this.i18nService, this.stateService);
   }
 
+  private loadNoopBiometricsService() {
+    // eslint-disable-next-line
+    const NoopBiometricsService = require("./biometric.noop.main").default;
+    this.platformSpecificService = new NoopBiometricsService();
+  }
+
   async init() {
-    if (this.platformSpecificService) {
-      return await this.platformSpecificService.init();
-    }
+    return await this.platformSpecificService.init();
   }
 
   async osSupportsBiometric() {
-    if (!this.platformSpecificService) {
-      return false;
-    }
     return await this.platformSpecificService.osSupportsBiometric();
   }
 
