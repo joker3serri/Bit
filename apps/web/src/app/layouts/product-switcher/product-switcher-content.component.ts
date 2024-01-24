@@ -2,7 +2,10 @@ import { Component, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { combineLatest, concatMap } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import {
+  canAccessOrgAdmin,
+  OrganizationService,
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { MenuComponent } from "@bitwarden/components";
 
@@ -53,7 +56,11 @@ export class ProductSwitcherContentComponent {
           ? routeOrg
           : orgs.find((o) => o.canAccessSecretsManager && o.enabled == true);
 
-      const org = routeOrg ?? orgs[0];
+      // If the active route org doesn't have access to AC, find the first org that does.
+      const acOrg =
+        routeOrg != null && canAccessOrgAdmin(routeOrg) && routeOrg.enabled
+          ? routeOrg
+          : orgs.find((o) => canAccessOrgAdmin(o) && o.enabled);
 
       const providers = await this.providerService.getAll();
 
@@ -82,7 +89,7 @@ export class ProductSwitcherContentComponent {
         ac: {
           name: "Admin Console",
           icon: "bwi-business",
-          appRoute: ["/organizations", org?.id],
+          appRoute: ["/organizations", acOrg?.id],
           marketingRoute: "https://bitwarden.com/products/business/",
           isActive: this.router.url.includes("/organizations/"),
         },
@@ -102,7 +109,7 @@ export class ProductSwitcherContentComponent {
       const bento: ProductSwitcherItem[] = [products.pm];
       const other: ProductSwitcherItem[] = [];
 
-      if (orgs.length > 0) {
+      if (acOrg) {
         bento.push(products.ac);
       } else {
         other.push(products.orgs);
