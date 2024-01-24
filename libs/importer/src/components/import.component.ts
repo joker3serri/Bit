@@ -208,9 +208,9 @@ export class ImportComponent implements OnInit, OnDestroy {
 
     await this.initializeOrganizations();
     if (this.organizationId && this.isUserAdmin(this.organizationId)) {
-      this.handleOrganizationImport();
+      this.handleOrganizationImportInit();
     } else {
-      this.handleImport();
+      this.handleImportInit();
     }
 
     this.formGroup.controls.format.valueChanges
@@ -222,7 +222,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     await this.handlePolicies();
   }
 
-  private handleOrganizationImport() {
+  private handleOrganizationImportInit() {
     this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
     this.formGroup.controls.vaultSelector.disable();
 
@@ -235,7 +235,8 @@ export class ImportComponent implements OnInit, OnDestroy {
     this._isFromAC = true;
   }
 
-  private handleImport() {
+  private handleImportInit() {
+    // Filter out the no folder-item from folderViews$
     this.folders$ = this.folderService.folderViews$.pipe(
       map((folders) => folders.filter((f) => f.id != null)),
     );
