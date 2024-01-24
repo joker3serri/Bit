@@ -1,6 +1,6 @@
 import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-// import * as DuoWebSDK from "duo_web_sdk";
+import * as DuoWebSDK from "duo_web_sdk";
 import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
@@ -44,6 +44,9 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   formPromise: Promise<any>;
   emailPromise: Promise<any>;
   orgIdentifier: string = null;
+
+  duoFrameless = false;
+
   onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginNavigate: () => Promise<void>;
 
@@ -144,26 +147,39 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
         break;
       case TwoFactorProviderType.Duo:
       case TwoFactorProviderType.OrganizationDuo:
-        new BroadcastChannel("duoResult").addEventListener("message", async (e) => {
-          this.token = e.data.code;
-          await this.submit();
-        });
-        setTimeout(() => {
-          this.platformUtilsService.launchUri(providerData.AuthUrl);
+        // 2 Duo 2FA flows available
+        // 1. Duo Web SDK (iframe) - existing, to be deprecated
+        // 2. Duo Frameless (new tab) - new
 
-          // DuoWebSDK.init({
-          //   iframe: undefined,
-          //   host: providerData.Host,
-          //   sig_request: providerData.Signature,
-          //   submit_callback: async (f: HTMLFormElement) => {
-          //     const sig = f.querySelector('input[name="sig_response"]') as HTMLInputElement;
-          //     if (sig != null) {
-          //       this.token = sig.value;
-          //       await this.submit();
-          //     }
-          //   },
-          //});
-        }, 0);
+        // AuthUrl only exists for new Duo Frameless flow
+        if (providerData.AuthUrl) {
+          this.duoFrameless = true;
+          // Setup listener for duo-redirect.ts connector to send back the code
+          new BroadcastChannel("duoResult").addEventListener("message", async (e) => {
+            this.token = e.data.code;
+            await this.submit();
+          });
+
+          // Launch Duo Frameless flow in new tab
+          this.platformUtilsService.launchUri(providerData.AuthUrl);
+        } else {
+          // Duo Web SDK (iframe) flow
+          setTimeout(() => {
+            DuoWebSDK.init({
+              iframe: undefined,
+              host: providerData.Host,
+              sig_request: providerData.Signature,
+              submit_callback: async (f: HTMLFormElement) => {
+                const sig = f.querySelector('input[name="sig_response"]') as HTMLInputElement;
+                if (sig != null) {
+                  this.token = sig.value;
+                  await this.submit();
+                }
+              },
+            });
+          }, 0);
+        }
+
         break;
       case TwoFactorProviderType.Email:
         this.twoFactorEmail = providerData.Email;

@@ -83,18 +83,29 @@
               <iframe id="webauthn_iframe" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
           </ng-container>
+          <!-- Duo -->
           <ng-container
             *ngIf="
               selectedProviderType === providerType.Duo ||
               selectedProviderType === providerType.OrganizationDuo
             "
           >
-            <div id="duo-frame" class="mb-3">
-              <iframe
-                id="duo_iframe"
-                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-              ></iframe>
-            </div>
+            <ng-container *ngIf="duoFrameless">
+              <!-- TODO: figure out if this is the correct condition -->
+              <p *ngIf="selectedProviderType === providerType.OrganizationDuo">
+                DUO two-step login is required for your account
+              </p>
+              <p>Follow the steps from DUO to finish logging in.</p>
+            </ng-container>
+
+            <ng-container *ngIf="!duoFrameless">
+              <div id="duo-frame" class="mb-3">
+                <iframe
+                  id="duo_iframe"
+                  sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                ></iframe>
+              </div>
+            </ng-container>
           </ng-container>
           <i
             class="bwi bwi-spinner text-muted bwi-spin pull-right"
