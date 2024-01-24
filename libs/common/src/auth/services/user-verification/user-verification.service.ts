@@ -40,7 +40,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   ) {}
 
   async getAvailableVerificationOptions(
-    verificationType: "server" | "client",
+    verificationType: keyof UserVerificationOptions,
   ): Promise<UserVerificationOptions> {
     if (verificationType === "client") {
       const [userHasMasterPassword, pinLockType, biometricsLockSet, biometricsUserKeyStored] =
