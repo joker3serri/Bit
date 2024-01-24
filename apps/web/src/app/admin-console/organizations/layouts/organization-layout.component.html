@@ -5,15 +5,13 @@
     </a>
     <org-switcher [filter]="orgFilter"></org-switcher>
 
-    <bit-nav-item *ngIf="canShowVaultTab(organization)" route="vault">
-      {{ (organization.flexibleCollections ? "collections" : "vault") | i18n }}
-    </bit-nav-item>
     <bit-nav-item
       icon="bwi-collection"
-      [text]="'vault' | i18n"
+      [text]="organization.flexibleCollections ? 'collections' : ('vault' | i18n)"
       route="vault"
       *ngIf="canShowVaultTab(organization)"
-    ></bit-nav-item>
+    >
+    </bit-nav-item>
     <bit-nav-item
       icon="bwi-user"
       [text]="'members' | i18n"
