@@ -46,6 +46,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   orgIdentifier: string = null;
 
   duoFrameless = false;
+  duoFramelessUrl: string = null;
 
   onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginNavigate: () => Promise<void>;
@@ -160,8 +161,8 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
             await this.submit();
           });
 
-          // Launch Duo Frameless flow in new tab
-          this.platformUtilsService.launchUri(providerData.AuthUrl);
+          // flow must be launched by user so they can choose to remember the device or not.
+          this.duoFramelessUrl = providerData.AuthUrl;
         } else {
           // Duo Web SDK (iframe) flow
           setTimeout(() => {
@@ -458,5 +459,10 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
 
   get needsLock(): boolean {
     return this.authService.authingWithSso() || this.authService.authingWithUserApiKey();
+  }
+
+  launchDuoFrameless() {
+    // Launch Duo Frameless flow in new tab
+    this.platformUtilsService.launchUri(this.duoFramelessUrl);
   }
 }

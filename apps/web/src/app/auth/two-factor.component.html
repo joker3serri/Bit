@@ -156,6 +156,19 @@
                 aria-hidden="true"
               ></i>
             </button>
+            <button
+              (click)="launchDuoFrameless()"
+              type="button"
+              class="btn btn-primary btn-block"
+              [disabled]="form.loading"
+              *ngIf="
+                duoFrameless &&
+                (selectedProviderType === providerType.Duo ||
+                  selectedProviderType === providerType.OrganizationDuo)
+              "
+            >
+              <span> Launch DUO </span>
+            </button>
             <a routerLink="/login" class="btn btn-outline-secondary btn-block ml-2 mt-0">
               {{ "cancel" | i18n }}
             </a>
