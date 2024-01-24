@@ -384,7 +384,7 @@ import { ModalService } from "./modal.service";
     {
       provide: EnvironmentServiceAbstraction,
       useClass: EnvironmentService,
-      deps: [StateServiceAbstraction],
+      deps: [StateProvider, AccountServiceAbstraction],
     },
     {
       provide: TotpServiceAbstraction,
@@ -517,6 +517,7 @@ import { ModalService } from "./modal.service";
         LogService,
         STATE_FACTORY,
         AccountServiceAbstraction,
+        EnvironmentServiceAbstraction,
         STATE_SERVICE_USE_CACHE,
       ],
     },
