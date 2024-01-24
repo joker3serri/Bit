@@ -67,7 +67,7 @@ import { GlobalState } from "@bitwarden/common/platform/models/domain/global-sta
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { DerivedStateProvider } from "@bitwarden/common/platform/state";
+import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -83,12 +83,13 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { CipherFileUploadService } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import {
-  FolderService,
+  FolderService as FolderServiceAbstraction,
   InternalFolderService,
 } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
@@ -115,7 +116,6 @@ import { ForegroundMemoryStorageService } from "../../platform/storage/foregroun
 import { BrowserSendService } from "../../services/browser-send.service";
 import { BrowserSettingsService } from "../../services/browser-settings.service";
 import { FilePopoutUtilsService } from "../../tools/popup/services/file-popout-utils.service";
-import { BrowserFolderService } from "../../vault/services/browser-folder.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
 import { DebounceNavigationService } from "./debounce-navigation.service";
@@ -207,20 +207,33 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<FileUploadService>("fileUploadService"),
     },
     {
-      provide: FolderService,
+      provide: FolderServiceAbstraction,
       useFactory: (
         cryptoService: CryptoService,
         i18nService: I18nServiceAbstraction,
         cipherService: CipherService,
         stateService: StateServiceAbstraction,
+        stateProvider: StateProvider,
       ) => {
-        return new BrowserFolderService(cryptoService, i18nService, cipherService, stateService);
+        return new FolderService(
+          cryptoService,
+          i18nService,
+          cipherService,
+          stateService,
+          stateProvider,
+        );
       },
-      deps: [CryptoService, I18nServiceAbstraction, CipherService, StateServiceAbstraction],
+      deps: [
+        CryptoService,
+        I18nServiceAbstraction,
+        CipherService,
+        StateServiceAbstraction,
+        StateProvider,
+      ],
     },
     {
       provide: InternalFolderService,
-      useExisting: FolderService,
+      useExisting: FolderServiceAbstraction,
     },
     {
       provide: FolderApiServiceAbstraction,
@@ -431,7 +444,7 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: (
         stateService: StateServiceAbstraction,
         organizationService: OrganizationService,
-        folderService: FolderService,
+        folderService: FolderServiceAbstraction,
         policyService: PolicyService,
         accountService: AccountServiceAbstraction,
       ) => {
@@ -448,7 +461,7 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [
         StateServiceAbstraction,
         OrganizationService,
-        FolderService,
+        FolderServiceAbstraction,
         PolicyService,
         AccountServiceAbstraction,
       ],
