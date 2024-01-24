@@ -3,7 +3,7 @@ import { any, MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { MoveMasterKeyAndHashMigrator } from "./12-move-master-key-and-hash-to-state-providers";
+import { MoveForceSetPasswordReasonToStateProviderMigrator } from "./12-move-force-set-password-to-state-providers";
 
 function preMigrationState() {
   return {
@@ -13,11 +13,7 @@ function preMigrationState() {
     authenticatedAccounts: ["FirstAccount", "SecondAccount", "ThirdAccount"],
     // prettier-ignore
     "FirstAccount": {
-      keys: {
-        masterKey: "FirstAccount_masterKey",
-      },
       profile: {
-        keyHash: "FirstAccount_keyHash",
         forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
         otherStuff: "overStuff2",
       },
@@ -33,9 +29,6 @@ function preMigrationState() {
     },
     // prettier-ignore
     "ThirdAccount": {
-      keys: {
-        masterKey: "ThirdAccount_masterKey",
-      },
       profile: {
         otherStuff: "otherStuff6",
       },
@@ -45,12 +38,9 @@ function preMigrationState() {
 
 function postMigrationState() {
   return {
-    user_FirstAccount_masterPassword_masterKey: "FirstAccount_masterKey",
-    user_FirstAccount_masterPassword_masterKeyHash: "FirstAccount_keyHash",
     user_FirstAccount_masterPassword_forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
     user_SecondAccount_masterPassword_forceSetPasswordReason:
       "SecondAccount_forceSetPasswordReason",
-    user_ThirdAccount_masterPassword_masterKey: "ThirdAccount_masterKey",
     global: {
       otherStuff: "otherStuff1",
     },
@@ -69,27 +59,18 @@ function postMigrationState() {
       },
       otherStuff: "otherStuff5",
     },
-    // Third account removed for tests
+    // prettier-ignore
+    "ThirdAccount": {
+      profile: {
+        otherStuff: "otherStuff6",
+      },
+  },
   };
 }
 
-describe("MoveMasterKeyAndHashMigrator", () => {
+describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
-  let sut: MoveMasterKeyAndHashMigrator;
-
-  const MASTER_KEY_DEFINITION = {
-    key: "masterKey",
-    stateDefinition: {
-      name: "masterPassword",
-    },
-  };
-
-  const MASTER_KEY_HASH_DEFINITION = {
-    key: "masterKeyHash",
-    stateDefinition: {
-      name: "masterPassword",
-    },
-  };
+  let sut: MoveForceSetPasswordReasonToStateProviderMigrator;
 
   const FORCE_SET_PASSWORD_REASON_DEFINITION = {
     key: "forceSetPasswordReason",
@@ -101,13 +82,12 @@ describe("MoveMasterKeyAndHashMigrator", () => {
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(preMigrationState(), 11);
-      sut = new MoveMasterKeyAndHashMigrator(11, 12);
+      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(11, 12);
     });
 
     it("should remove properties from all accounts", async () => {
       await sut.migrate(helper);
       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
-        keys: {},
         profile: {
           otherStuff: "overStuff2",
         },
@@ -120,7 +100,6 @@ describe("MoveMasterKeyAndHashMigrator", () => {
         otherStuff: "otherStuff5",
       });
       expect(helper.set).toHaveBeenCalledWith("ThirdAccount", {
-        keys: {},
         profile: {
           otherStuff: "otherStuff6",
         },
@@ -129,18 +108,6 @@ describe("MoveMasterKeyAndHashMigrator", () => {
 
     it("should set properties for each account", async () => {
       await sut.migrate(helper);
-
-      expect(helper.setToUser).toHaveBeenCalledWith(
-        "FirstAccount",
-        MASTER_KEY_DEFINITION,
-        "FirstAccount_masterKey",
-      );
-
-      expect(helper.setToUser).toHaveBeenCalledWith(
-        "FirstAccount",
-        MASTER_KEY_HASH_DEFINITION,
-        "FirstAccount_keyHash",
-      );
 
       expect(helper.setToUser).toHaveBeenCalledWith(
         "FirstAccount",
@@ -153,26 +120,18 @@ describe("MoveMasterKeyAndHashMigrator", () => {
         FORCE_SET_PASSWORD_REASON_DEFINITION,
         "SecondAccount_forceSetPasswordReason",
       );
-
-      expect(helper.setToUser).toHaveBeenCalledWith(
-        "ThirdAccount",
-        MASTER_KEY_DEFINITION,
-        "ThirdAccount_masterKey",
-      );
     });
   });
 
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(postMigrationState(), 11);
-      sut = new MoveMasterKeyAndHashMigrator(11, 12);
+      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(11, 12);
     });
 
     it.each(["FirstAccount", "SecondAccount"])("should null out new values", async (userId) => {
       await sut.rollback(helper);
 
-      expect(helper.setToUser).toHaveBeenCalledWith(userId, MASTER_KEY_DEFINITION, null);
-      expect(helper.setToUser).toHaveBeenCalledWith(userId, MASTER_KEY_HASH_DEFINITION, null);
       expect(helper.setToUser).toHaveBeenCalledWith(
         userId,
         FORCE_SET_PASSWORD_REASON_DEFINITION,
@@ -184,11 +143,7 @@ describe("MoveMasterKeyAndHashMigrator", () => {
       await sut.rollback(helper);
 
       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
-        keys: {
-          masterKey: "FirstAccount_masterKey",
-        },
         profile: {
-          keyHash: "FirstAccount_keyHash",
           forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
           otherStuff: "overStuff2",
         },
