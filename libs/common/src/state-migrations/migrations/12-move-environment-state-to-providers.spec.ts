@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveEnvironmentStateToProviders } from "./11-move-environment-state-to-providers";
+import { MoveEnvironmentStateToProviders } from "./12-move-environment-state-to-providers";
 
 describe("MoveEnvironmentStateToProviders", () => {
-  const migrator = new MoveEnvironmentStateToProviders(10, 11);
+  const migrator = new MoveEnvironmentStateToProviders(11, 12);
 
   it("can migrate all data", async () => {
     const output = await runMigrator(migrator, {

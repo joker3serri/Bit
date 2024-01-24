@@ -14,7 +14,7 @@ const ENVIRONMENT_STATE: StateDefinitionLike = { name: "environment" };
 const REGION_KEY: KeyDefinitionLike = { key: "region", stateDefinition: ENVIRONMENT_STATE };
 const URLS_KEY: KeyDefinitionLike = { key: "urls", stateDefinition: ENVIRONMENT_STATE };
 
-export class MoveEnvironmentStateToProviders extends Migrator<10, 11> {
+export class MoveEnvironmentStateToProviders extends Migrator<11, 12> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyGlobal = await helper.get<ExpectedGlobalType>("global");
 
