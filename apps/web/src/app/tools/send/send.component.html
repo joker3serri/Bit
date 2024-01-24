@@ -1,6 +1,5 @@
 <app-header>
-  <h1 bitTypography="h1" slot="title" noMargin class="tw-m-0 tw-mr-2 tw-truncate tw-leading-10">
-    {{ "send" | i18n }}
+  <ng-container slot="title-suffix">
     <small #actionSpinner [appApiAction]="actionPromise">
       <ng-container *ngIf="$any(actionSpinner).loading">
         <i
@@ -11,7 +10,7 @@
         <span class="sr-only">{{ "loading" | i18n }}</span>
       </ng-container>
     </small>
-  </h1>
+  </ng-container>
 
   <button type="button" bitButton buttonType="primary" (click)="addSend()" [disabled]="disableSend">
     <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>

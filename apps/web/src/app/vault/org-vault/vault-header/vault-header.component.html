@@ -1,4 +1,4 @@
-<app-header>
+<app-header [title]="title" [icon]="icon">
   <bit-breadcrumbs *ngIf="showBreadcrumbs" slot="breadcrumbs">
     <bit-breadcrumb
       [route]="[]"
@@ -27,16 +27,14 @@
     </ng-container>
   </bit-breadcrumbs>
 
-  <h1 bitTypography="h1" slot="title">
-    <i *ngIf="filter.collectionId !== undefined" class="bwi bwi-collection" aria-hidden="true"></i>
-    <span>{{ title }}</span>
+  <ng-container slot="title-suffix">
     <ng-container *ngIf="collection !== undefined && (canEditCollection || canDeleteCollection)">
       <button
         bitIconButton="bwi-angle-down"
         [bitMenuTriggerFor]="editCollectionMenu"
         size="small"
         type="button"
-        aria-haspopup
+        aria-haspopup="true"
       ></button>
       <bit-menu #editCollectionMenu>
         <button
@@ -73,7 +71,7 @@
       ></i>
       <span class="tw-sr-only">{{ "loading" | i18n }}</span>
     </small>
-  </h1>
+  </ng-container>
 
   <div *ngIf="filter.type !== 'trash' && filter.collectionId !== Unassigned" class="tw-shrink-0">
     <div *ngIf="organization.canCreateNewCollections" appListDropdown>
