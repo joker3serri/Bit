@@ -2522,22 +2522,22 @@ export class StateService<
     await this.saveAccount(account, options);
   }
 
-  async getRememberedEmail(options?: StorageOptions): Promise<string> {
-    return (
-      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
-    )?.rememberedEmail;
-  }
+  // async getRememberedEmail(options?: StorageOptions): Promise<string> {
+  //   return (
+  //     await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
+  //   )?.rememberedEmail;
+  // }
 
-  async setRememberedEmail(value: string, options?: StorageOptions): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-    globals.rememberedEmail = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-  }
+  // async setRememberedEmail(value: string, options?: StorageOptions): Promise<void> {
+  //   const globals = await this.getGlobals(
+  //     this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
+  //   );
+  //   globals.rememberedEmail = value;
+  //   await this.saveGlobals(
+  //     globals,
+  //     this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
+  //   );
+  // }
 
   async getSecurityStamp(options?: StorageOptions): Promise<string> {
     return (
