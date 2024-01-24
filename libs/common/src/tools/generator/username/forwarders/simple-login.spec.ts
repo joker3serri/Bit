@@ -121,7 +121,7 @@ describe("SimpleLogin Forwarder", () => {
     });
 
     it.each([{}, null])(
-      "throws an unknown error if the request fails and no status is provided",
+      "throws an unknown error if the request fails and no status (=%p) is provided",
       async (body) => {
         const apiService = mockApiService(500, body);
         const i18nService = mockI18nService();
