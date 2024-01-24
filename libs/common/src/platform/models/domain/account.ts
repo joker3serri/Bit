@@ -1,6 +1,5 @@
 import { Jsonify } from "type-fest";
 
-import { EncryptedOrganizationKeyData } from "../../../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../../../admin-console/models/data/organization.data";
 import { PolicyData } from "../../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../../admin-console/models/data/provider.data";
@@ -126,13 +125,6 @@ export class AccountKeys {
   masterKey?: MasterKey;
   masterKeyEncryptedUserKey?: string;
   deviceKey?: ReturnType<SymmetricCryptoKey["toJSON"]>;
-  organizationKeys?: EncryptionPair<
-    { [orgId: string]: EncryptedOrganizationKeyData },
-    Record<string, SymmetricCryptoKey>
-  > = new EncryptionPair<
-    { [orgId: string]: EncryptedOrganizationKeyData },
-    Record<string, SymmetricCryptoKey>
-  >();
   providerKeys?: EncryptionPair<any, Record<string, SymmetricCryptoKey>> = new EncryptionPair<
     any,
     Record<string, SymmetricCryptoKey>
@@ -175,7 +167,6 @@ export class AccountKeys {
         obj?.cryptoSymmetricKey,
         SymmetricCryptoKey.fromJSON,
       ),
-      organizationKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.organizationKeys),
       providerKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.providerKeys),
       privateKey: EncryptionPair.fromJSON<string, Uint8Array>(obj?.privateKey, (decObj: string) =>
         Utils.fromByteStringToArray(decObj),
@@ -264,6 +255,7 @@ export class AccountSettings {
   activateAutoFillOnPageLoadFromPolicy?: boolean;
   smOnboardingTasks?: Record<string, Record<string, boolean>>;
   trustDeviceChoiceForDecryption?: boolean;
+  biometricPromptCancelled?: boolean;
 
   /** @deprecated July 2023, left for migration purposes*/
   pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();
