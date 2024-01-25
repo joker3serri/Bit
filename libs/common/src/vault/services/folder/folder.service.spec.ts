@@ -172,8 +172,6 @@ describe("Folder Service", () => {
     //   stateService.getUserId.mockResolvedValue("1");
     //   await folderService.clear("1" as UserId);
 
-    //   await awaitAsync(10);
-
     //   expect((await firstValueFrom(folderService.folders$)).length).toBe(0);
     // });
 
