@@ -326,6 +326,9 @@
   "password": {
     "message": "Password"
   },
+  "totp": {
+    "message": "Segreto di autenticazione"
+  },
   "passphrase": {
     "message": "Frase segreta"
   },
@@ -511,6 +514,18 @@
   },
   "autofillError": {
     "message": "Impossibile riempire automaticamente questo elemento nella pagina. Copia e incolla le credenziali."
+  },
+  "totpCaptureError": {
+    "message": "Impossibile scansionare il codice QR da questa pagina web"
+  },
+  "totpCaptureSuccess": {
+    "message": "Chiave di autenticazione aggiunta"
+  },
+  "totpCapture": {
+    "message": "Scansiona il codice QR dell'autenticatore da questa pagina web"
+  },
+  "copyTOTP": {
+    "message": "Copia la chiave di autenticazione (TOTP)"
   },
   "loggedOut": {
     "message": "Disconnesso"
@@ -1477,6 +1492,9 @@
   },
   "invalidPin": {
     "message": "Codice PIN non valido."
+  },
+  "tooManyInvalidPinEntryAttemptsLoggingOut": {
+    "message": "Troppi tentativi di inserimento del PIN falliti. Uscendo dall'account..."
   },
   "unlockWithBiometrics": {
     "message": "Sblocca con i dati biometrici"
@@ -2497,6 +2515,38 @@
     "message": "Comprimi/espandi",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Importare i tuoi dati su Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Proteggere i tuoi dati LastPass e importarli su Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Salva come file non crittografato",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importa su Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importazione in corso...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Dati importati!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Errore durante l'importazione. Controlla la console per i dettagli.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Errore di connessione durante l'importazione.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Dominio alias"
   },
@@ -2803,6 +2853,9 @@
   "activeAccount": {
     "message": "Account attivo"
   },
+  "availableAccounts": {
+    "message": "Account disponibili"
+  },
   "accountLimitReached": {
     "message": "Limite di account raggiunto. Esci da un account per aggiungerne un altro."
   },
@@ -2838,5 +2891,9 @@
         "example": "google.com"
       }
     }
+  },
+  "commonImportFormats": {
+    "message": "Formati comuni",
+    "description": "Label indicating the most common import formats"
   }
 }
