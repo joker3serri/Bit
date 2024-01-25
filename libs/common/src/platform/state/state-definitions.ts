@@ -24,7 +24,9 @@ export const BILLING_BANNERS_DISK = new StateDefinition("billingBanners", "disk"
 export const CRYPTO_DISK = new StateDefinition("crypto", "disk");
 export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 
-export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk");
+export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk", {
+  web: "disk-local",
+});
 
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
