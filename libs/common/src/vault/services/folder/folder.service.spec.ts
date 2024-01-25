@@ -165,8 +165,8 @@ describe("Folder Service", () => {
     });
 
     /**
-     * TODO: Fix this test when issue where the fakes for the active user state is not updated as
-     * expected
+     * TODO: Fix this test to address the problem where the fakes for the active user state is not
+     * updated as expected
      */
     // it("matching userId", async () => {
     //   stateService.getUserId.mockResolvedValue("1");
@@ -178,8 +178,8 @@ describe("Folder Service", () => {
     // });
 
     /**
-     * TODO: Fix this test when issue where the fakes for the active user state is not updated as
-     * expected
+     * TODO: Fix this test to address the problem where the fakes for the active user state is not
+     * updated as expected
      */
     // it("mismatching userId", async () => {
     //   await folderService.clear("12" as UserId);
