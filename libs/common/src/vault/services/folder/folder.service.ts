@@ -115,7 +115,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
     });
   }
 
-  async clear(userId?: UserId): Promise<any> {
+  async clear(userId?: UserId): Promise<void> {
     if (userId == null) {
       await this.encryptedFoldersState.update(() => ({}));
       await this.decryptedFoldersState.forceValue([]);
