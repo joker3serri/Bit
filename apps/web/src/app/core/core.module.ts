@@ -90,8 +90,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     { provide: OBSERVABLE_MEMORY_STORAGE, useExisting: MEMORY_STORAGE },
     {
       provide: OBSERVABLE_DISK_STORAGE,
-      useClass: WindowStorageService,
-      deps: [window.sessionStorage],
+      useFactory: () => new WindowStorageService(window.sessionStorage),
     },
     {
       provide: PlatformUtilsServiceAbstraction,
@@ -116,8 +115,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     CollectionAdminService,
     {
       provide: OBSERVABLE_DISK_LOCAL_STORAGE,
-      useClass: WindowStorageService,
-      deps: [window.localStorage],
+      useFactory: () => new WindowStorageService(window.localStorage),
     },
     {
       provide: SingleUserStateProvider,
