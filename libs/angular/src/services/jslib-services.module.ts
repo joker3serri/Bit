@@ -1,6 +1,6 @@
 import { LOCALE_ID, NgModule } from "@angular/core";
 
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
+import { PinCryptoService, PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
 import { AvatarUpdateService as AccountUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -112,10 +112,10 @@ import { ValidationService } from "@bitwarden/common/platform/services/validatio
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
   ActiveUserStateProvider,
+  DerivedStateProvider,
   GlobalStateProvider,
   SingleUserStateProvider,
   StateProvider,
-  DerivedStateProvider,
 } from "@bitwarden/common/platform/state";
 /* eslint-disable import/no-restricted-paths -- We need the implementations to inject, but generally these should not be accessed */
 import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-active-user-state.provider";
@@ -464,6 +464,7 @@ import { ModalService } from "./modal.service";
         FolderApiServiceAbstraction,
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
+        StateProvider,
         LOGOUT_CALLBACK,
       ],
     },

@@ -26,3 +26,6 @@ export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
+
+// TODO: Split web storage to memory once API is available
+export const SYNC_STATE = new StateDefinition("sync", "disk");
