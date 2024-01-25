@@ -57,6 +57,10 @@ export function canAccessAdmin(i18nService: I18nService) {
   );
 }
 
+/**
+ * @deprecated
+ * To be removed after Flexible Collections.
+ **/
 export function canAccessImportExport(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
     orgs
@@ -70,8 +74,7 @@ export function canAccessImport(i18nService: I18nService) {
     orgs
       .filter(
         (org) =>
-          (org.canCreateNewCollections && org.flexibleCollections) ||
-          (org.canAccessImportExport && !org.flexibleCollections),
+          org.canAccessImportExport || (org.canCreateNewCollections && org.flexibleCollections),
       )
       .sort(Utils.getSortFunction(i18nService, "name")),
   );
