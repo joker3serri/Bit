@@ -22,6 +22,7 @@ import { DialogService } from "@bitwarden/components";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { flagEnabled } from "../../platform/flags";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ElectronStateService } from "../../platform/services/electron-state.service.abstraction";
 @Component({
   selector: "app-settings",
@@ -118,6 +119,7 @@ export class SettingsComponent implements OnInit {
     private settingsService: SettingsService,
     private dialogService: DialogService,
     private userVerificationService: UserVerificationServiceAbstraction,
+    private desktopSettingsService: DesktopSettingsService,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
@@ -248,12 +250,12 @@ export class SettingsComponent implements OnInit {
       clearClipboard: await this.stateService.getClearClipboard(),
       minimizeOnCopyToClipboard: await this.stateService.getMinimizeOnCopyToClipboard(),
       enableFavicons: !(await this.stateService.getDisableFavicon()),
-      enableTray: await this.stateService.getEnableTray(),
-      enableMinToTray: await this.stateService.getEnableMinimizeToTray(),
-      enableCloseToTray: await this.stateService.getEnableCloseToTray(),
-      startToTray: await this.stateService.getEnableStartToTray(),
-      openAtLogin: await this.stateService.getOpenAtLogin(),
-      alwaysShowDock: await this.stateService.getAlwaysShowDock(),
+      enableTray: await firstValueFrom(this.desktopSettingsService.trayEnabled$),
+      enableMinToTray: await firstValueFrom(this.desktopSettingsService.minimizeToTray$),
+      enableCloseToTray: await firstValueFrom(this.desktopSettingsService.closeToTray$),
+      startToTray: await firstValueFrom(this.desktopSettingsService.startToTray$),
+      openAtLogin: await firstValueFrom(this.desktopSettingsService.openAtLogin$),
+      alwaysShowDock: await firstValueFrom(this.desktopSettingsService.alwaysShowDock$),
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
@@ -503,16 +505,16 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveMinToTray() {
-    await this.stateService.setEnableMinimizeToTray(this.form.value.enableMinToTray);
+    await this.desktopSettingsService.setMinimizeToTray(this.form.value.enableMinToTray);
   }
 
   async saveCloseToTray() {
     if (this.requireEnableTray) {
       this.form.controls.enableTray.setValue(true);
-      await this.stateService.setEnableTray(this.form.value.enableTray);
+      await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
     }
 
-    await this.stateService.setEnableCloseToTray(this.form.value.enableCloseToTray);
+    await this.desktopSettingsService.setCloseToTray(this.form.value.enableCloseToTray);
   }
 
   async saveTray() {
@@ -529,9 +531,9 @@ export class SettingsComponent implements OnInit {
 
       if (confirm) {
         this.form.controls.startToTray.setValue(false, { emitEvent: false });
-        await this.stateService.setEnableStartToTray(this.form.value.startToTray);
+        await this.desktopSettingsService.setStartToTray(this.form.value.startToTray);
         this.form.controls.enableCloseToTray.setValue(false, { emitEvent: false });
-        await this.stateService.setEnableCloseToTray(this.form.value.enableCloseToTray);
+        await this.desktopSettingsService.setCloseToTray(this.form.value.enableCloseToTray);
       } else {
         this.form.controls.enableTray.setValue(true);
       }
@@ -539,17 +541,17 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    await this.stateService.setEnableTray(this.form.value.enableTray);
+    await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
     this.messagingService.send(this.form.value.enableTray ? "showTray" : "removeTray");
   }
 
   async saveStartToTray() {
     if (this.requireEnableTray) {
       this.form.controls.enableTray.setValue(true);
-      await this.stateService.setEnableTray(this.form.value.enableTray);
+      await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
     }
 
-    await this.stateService.setEnableStartToTray(this.form.value.startToTray);
+    await this.desktopSettingsService.setStartToTray(this.form.value.startToTray);
   }
 
   async saveLocale() {
@@ -569,11 +571,11 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveAlwaysShowDock() {
-    await this.stateService.setAlwaysShowDock(this.form.value.alwaysShowDock);
+    await this.desktopSettingsService.setAlwaysShowDock(this.form.value.alwaysShowDock);
   }
 
   async saveOpenAtLogin() {
-    this.stateService.setOpenAtLogin(this.form.value.openAtLogin);
+    await this.desktopSettingsService.setOpenAtLogin(this.form.value.openAtLogin);
     this.messagingService.send(
       this.form.value.openAtLogin ? "addOpenAtLogin" : "removeOpenAtLogin",
     );

@@ -143,6 +143,60 @@ export class KeyDefinition<T> {
   }
 
   /**
+   * A helper method for create a key definition where the type of state is `boolean`.
+   * @param stateDefinition The state definition to be added to the KeyDefinition
+   * @param key The key to be added to the KeyDefinition
+   * @param options Optional - further customization of the KeyDefinition
+   * @returns
+   */
+  static boolean(
+    stateDefinition: StateDefinition,
+    key: string,
+    options?: Omit<KeyDefinitionOptions<boolean>, "deserializer">,
+  ) {
+    return new KeyDefinition<boolean>(stateDefinition, key, {
+      ...options,
+      deserializer: (booleanValue) => booleanValue,
+    });
+  }
+
+  /**
+   * A helper method for create a key definition where the type of state is `string`.
+   * @param stateDefinition The state definition to be added to the KeyDefinition
+   * @param key The key to be added to the KeyDefinition
+   * @param options Optional - further customization of the KeyDefinition
+   * @returns
+   */
+  static string(
+    stateDefinition: StateDefinition,
+    key: string,
+    options?: Omit<KeyDefinitionOptions<string>, "deserializer">,
+  ) {
+    return new KeyDefinition<string>(stateDefinition, key, {
+      ...options,
+      deserializer: (stringValue) => stringValue,
+    });
+  }
+
+  /**
+   * A helper method for create a key definition where the type of state is `number`.
+   * @param stateDefinition The state definition to be added to the KeyDefinition
+   * @param key The key to be added to the KeyDefinition
+   * @param options Optional - further customization of the KeyDefinition
+   * @returns
+   */
+  static number(
+    stateDefinition: StateDefinition,
+    key: string,
+    options?: Omit<KeyDefinitionOptions<number>, "deserializer">,
+  ) {
+    return new KeyDefinition<number>(stateDefinition, key, {
+      ...options,
+      deserializer: (numberValue) => numberValue,
+    });
+  }
+
+  /**
    * Create a string that should be unique across the entire application.
    * @returns A string that can be used to cache instances created via this key.
    */

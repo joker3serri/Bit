@@ -1,6 +1,7 @@
 import * as path from "path";
 
 import { app } from "electron";
+import { firstValueFrom } from "rxjs";
 
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
@@ -27,6 +28,7 @@ import { Account } from "./models/account";
 import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main/biometric/index";
 import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
+import { DesktopSettingsService } from "./platform/services/desktop-settings.service";
 import { ElectronLogService } from "./platform/services/electron-log.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
@@ -42,6 +44,7 @@ export class Main {
   stateService: ElectronStateService;
   environmentService: EnvironmentService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
+  desktopSettingsService: DesktopSettingsService;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -133,16 +136,19 @@ export class Main {
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
 
+    this.desktopSettingsService = new DesktopSettingsService(stateProvider);
+
     this.windowMain = new WindowMain(
       this.stateService,
       this.logService,
       this.storageService,
+      this.desktopSettingsService,
       (arg) => this.processDeepLink(arg),
       (win) => this.trayMain.setupWindowListeners(win),
     );
-    this.messagingMain = new MessagingMain(this, this.stateService);
+    this.messagingMain = new MessagingMain(this, this.stateService, this.desktopSettingsService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
-    this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.stateService);
+    this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
 
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
@@ -198,7 +204,7 @@ export class Main {
             click: () => this.messagingService.send("lockVault"),
           },
         ]);
-        if (await this.stateService.getEnableStartToTray()) {
+        if (await firstValueFrom(this.desktopSettingsService.startToTray$)) {
           this.trayMain.hideToTray();
         }
         this.powerMonitorMain.init();

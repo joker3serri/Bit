@@ -1,9 +1,11 @@
 import * as path from "path";
 
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, nativeImage, Tray } from "electron";
+import { firstValueFrom } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+
+import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 
 import { WindowMain } from "./window.main";
 
@@ -18,7 +20,7 @@ export class TrayMain {
   constructor(
     private windowMain: WindowMain,
     private i18nService: I18nService,
-    private stateService: StateService,
+    private desktopSettingsService: DesktopSettingsService,
   ) {
     if (process.platform === "win32") {
       this.icon = path.join(__dirname, "/images/icon.ico");
@@ -54,21 +56,21 @@ export class TrayMain {
     }
 
     this.contextMenu = Menu.buildFromTemplate(menuItemOptions);
-    if (await this.stateService.getEnableTray()) {
+    if (await firstValueFrom(this.desktopSettingsService.trayEnabled$)) {
       this.showTray();
     }
   }
 
   setupWindowListeners(win: BrowserWindow) {
     win.on("minimize", async (e: Event) => {
-      if (await this.stateService.getEnableMinimizeToTray()) {
+      if (await firstValueFrom(this.desktopSettingsService.minimizeToTray$)) {
         e.preventDefault();
         this.hideToTray();
       }
     });
 
     win.on("close", async (e: Event) => {
-      if (await this.stateService.getEnableCloseToTray()) {
+      if (await firstValueFrom(this.desktopSettingsService.closeToTray$)) {
         if (!this.windowMain.isQuitting) {
           e.preventDefault();
           this.hideToTray();
@@ -77,7 +79,7 @@ export class TrayMain {
     });
 
     win.on("show", async () => {
-      const enableTray = await this.stateService.getEnableTray();
+      const enableTray = await firstValueFrom(this.desktopSettingsService.trayEnabled$);
       if (!enableTray) {
         setTimeout(() => this.removeTray(false), 100);
       }
@@ -102,7 +104,7 @@ export class TrayMain {
     if (this.windowMain.win != null) {
       this.windowMain.win.hide();
     }
-    if (this.isDarwin() && !(await this.stateService.getAlwaysShowDock())) {
+    if (this.isDarwin() && !(await firstValueFrom(this.desktopSettingsService.alwaysShowDock$))) {
       this.hideDock();
     }
   }
@@ -166,7 +168,7 @@ export class TrayMain {
     }
     if (this.windowMain.win.isVisible()) {
       this.windowMain.win.hide();
-      if (this.isDarwin() && !(await this.stateService.getAlwaysShowDock())) {
+      if (this.isDarwin() && !(await firstValueFrom(this.desktopSettingsService.alwaysShowDock$))) {
         this.hideDock();
       }
     } else {

@@ -234,7 +234,6 @@ export class AccountSettings {
   dismissedAutoFillOnPageLoadCallout?: boolean;
   dontShowCardsCurrentTab?: boolean;
   dontShowIdentitiesCurrentTab?: boolean;
-  enableAlwaysOnTop?: boolean;
   enableAutoFillOnPageLoad?: boolean;
   enableBiometric?: boolean;
   enableFullWidth?: boolean;
