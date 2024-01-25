@@ -6,11 +6,7 @@
       <div *ngIf="icon" class="tw-mb-8">
         <bit-icon [icon]="iconType"></bit-icon>
       </div>
-      <bit-icon
-        [icon]="logo"
-        class="tw-mx-auto tw-block tw-max-w-xs"
-        appA11yTitle="Bitwarden"
-      ></bit-icon>
+      <bit-icon [icon]="logo" class="tw-mx-auto tw-block tw-max-w-xs"></bit-icon>
     </div>
     <h1 *ngIf="title" bitTypography="h1" class="tw-mt-8">{{ title }}</h1>
     <p *ngIf="subtitle" bitTypography="body1">{{ subtitle }}</p>
