@@ -1,7 +1,17 @@
+import { firstValueFrom, Observable } from "rxjs";
+
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
+import {
+  ActiveUserState,
+  KeyDefinition,
+  StateProvider,
+  COLLECTION_DATA,
+  DeriveDefinition,
+  DerivedState,
+} from "../../platform/state";
 import { CollectionService as CollectionServiceAbstraction } from "../../vault/abstractions/collection.service";
 import { CollectionData } from "../models/data/collection.data";
 import { Collection } from "../models/domain/collection";
@@ -9,14 +19,63 @@ import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
 import { ServiceUtils } from "../service-utils";
 
+const ENCRYPTED_COLLECTION_DATA_KEY = new KeyDefinition<
+  Record<string, { [id: string]: CollectionData }>
+>(COLLECTION_DATA, "data", {
+  deserializer: (jsonData: any) => jsonData,
+});
+
+const DECRYPTED_COLLECTION_DATA_KEY = DeriveDefinition.from<
+  Record<string, { [id: string]: CollectionData }>,
+  CollectionView[],
+  { collectionService: CollectionService }
+>(ENCRYPTED_COLLECTION_DATA_KEY, {
+  deserializer: (obj: any) => obj,
+  derive: async (collections: any, { collectionService }) => {
+    if (collections.encryptedCollections) {
+      const data: Collection[] = [];
+      for (const id in collections.encryptedCollections) {
+        // eslint-disable-next-line
+        if (collections.encryptedCollections.hasOwnProperty(id)) {
+          data.push(new Collection(collections.encryptedCollections[id]));
+        }
+      }
+      return await collectionService.decryptMany(data);
+    } else {
+      return [];
+    }
+  },
+});
+
 const NestingDelimiter = "/";
 
 export class CollectionService implements CollectionServiceAbstraction {
+  private encryptedCollectionDataState: ActiveUserState<
+    Record<string, { [id: string]: CollectionData }>
+  >;
+  private encryptedCollectionDataState$: Observable<
+    Record<string, { [id: string]: CollectionData }>
+  >;
+  private decryptedCollectionDataState: DerivedState<any>;
+  private decryptedCollectionDataState$: Observable<Record<any, any>>;
+
   constructor(
     private cryptoService: CryptoService,
     private i18nService: I18nService,
     private stateService: StateService,
-  ) {}
+    protected stateProvider: StateProvider,
+  ) {
+    this.encryptedCollectionDataState = stateProvider.getActive(ENCRYPTED_COLLECTION_DATA_KEY);
+    this.encryptedCollectionDataState$ = this.encryptedCollectionDataState.state$;
+
+    this.decryptedCollectionDataState = stateProvider.getDerived(
+      this.encryptedCollectionDataState.state$,
+      DECRYPTED_COLLECTION_DATA_KEY,
+      { collectionService: this },
+    );
+
+    this.decryptedCollectionDataState$ = this.decryptedCollectionDataState.state$;
+  }
 
   async clearCache(userId?: string): Promise<void> {
     await this.stateService.setDecryptedCollections(null, { userId: userId });
@@ -52,7 +111,8 @@ export class CollectionService implements CollectionServiceAbstraction {
   }
 
   async get(id: string): Promise<Collection> {
-    const collections = await this.stateService.getEncryptedCollections();
+    const collections = (await firstValueFrom(this.encryptedCollectionDataState$))
+      .encryptedCollections;
     // eslint-disable-next-line
     if (collections == null || !collections.hasOwnProperty(id)) {
       return null;
@@ -62,7 +122,9 @@ export class CollectionService implements CollectionServiceAbstraction {
   }
 
   async getAll(): Promise<Collection[]> {
-    const collections = await this.stateService.getEncryptedCollections();
+    const collections = (await firstValueFrom(this.encryptedCollectionDataState$))
+      .encryptedCollections;
+
     const response: Collection[] = [];
     for (const id in collections) {
       // eslint-disable-next-line
@@ -74,7 +136,8 @@ export class CollectionService implements CollectionServiceAbstraction {
   }
 
   async getAllDecrypted(): Promise<CollectionView[]> {
-    let decryptedCollections = await this.stateService.getDecryptedCollections();
+    let decryptedCollections = (await firstValueFrom(this.decryptedCollectionDataState$))
+      .decryptedCollections;
     if (decryptedCollections != null) {
       return decryptedCollections;
     }
@@ -87,7 +150,7 @@ export class CollectionService implements CollectionServiceAbstraction {
     const collections = await this.getAll();
     decryptedCollections = await this.decryptMany(collections);
 
-    await this.stateService.setDecryptedCollections(decryptedCollections);
+    await this.decryptedCollectionDataState.forceValue({ decryptedCollections });
     return decryptedCollections;
   }
 
@@ -116,7 +179,8 @@ export class CollectionService implements CollectionServiceAbstraction {
   }
 
   async upsert(collection: CollectionData | CollectionData[]): Promise<any> {
-    let collections = await this.stateService.getEncryptedCollections();
+    let collections = (await firstValueFrom(this.encryptedCollectionDataState$))
+      .encryptedCollections;
     if (collections == null) {
       collections = {};
     }
@@ -135,16 +199,21 @@ export class CollectionService implements CollectionServiceAbstraction {
 
   async replace(collections: { [id: string]: CollectionData }): Promise<any> {
     await this.clearCache();
-    await this.stateService.setEncryptedCollections(collections);
+    await this.encryptedCollectionDataState.update(() => {
+      return { encryptedCollections: { ...collections } };
+    });
   }
 
   async clear(userId?: string): Promise<any> {
     await this.clearCache(userId);
-    await this.stateService.setEncryptedCollections(null, { userId: userId });
+    await this.encryptedCollectionDataState.update(() => {
+      return { encryptedCollections: null };
+    });
   }
 
   async delete(id: string | string[]): Promise<any> {
-    const collections = await this.stateService.getEncryptedCollections();
+    const collections = (await firstValueFrom(this.encryptedCollectionDataState$))
+      .encryptedCollections;
     if (collections == null) {
       return;
     }

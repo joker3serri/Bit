@@ -25,3 +25,5 @@ export const CRYPTO_DISK = new StateDefinition("crypto", "disk");
 
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
+
+export const COLLECTION_DATA = new StateDefinition("collectionData", "disk");
