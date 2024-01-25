@@ -25,15 +25,15 @@ export type ClientLocations = {
   /**
    * Overriding storage location for browser clients.
    */
-  browser: StorageLocation;
+  //browser: StorageLocation;
   /**
    * Overriding storage location for desktop clients.
    */
-  desktop: StorageLocation;
+  //desktop: StorageLocation;
   /**
    * Overriding storage location for CLI clients.
    */
-  cli: StorageLocation;
+  //cli: StorageLocation;
 };
 
 /**
