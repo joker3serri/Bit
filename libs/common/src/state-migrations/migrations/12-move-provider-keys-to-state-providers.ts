@@ -16,7 +16,7 @@ const USER_ENCRYPTED_PROVIDER_KEYS: KeyDefinitionLike = {
   },
 };
 
-export class ProviderKeyMigrator extends Migrator<11, 12> {
+export class ProviderKeyMigrator extends Migrator<12, 13> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

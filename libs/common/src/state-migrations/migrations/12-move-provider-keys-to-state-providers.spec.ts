@@ -70,8 +70,8 @@ describe("ProviderKeysMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 11);
-      sut = new ProviderKeyMigrator(11, 12);
+      helper = mockMigrationHelper(exampleJSON(), 12);
+      sut = new ProviderKeyMigrator(12, 13);
     });
 
     it("should remove providerKeys from all accounts", async () => {
@@ -99,7 +99,7 @@ describe("ProviderKeysMigrator", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJSON(), 11);
-      sut = new ProviderKeyMigrator(11, 12);
+      sut = new ProviderKeyMigrator(12, 13);
     });
 
     it.each(["user-1", "user-2", "user-3"])("should null out new values %s", async (userId) => {
