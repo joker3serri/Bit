@@ -48,7 +48,7 @@ export class FirefoxRelayForwarder implements Forwarder {
       throw error;
     } else if (response.status === 200 || response.status === 201) {
       const json = await response.json();
-      return json?.full_address;
+      return json.full_address;
     } else {
       const error = this.i18nService.t("forwarderUnknownError", Forwarders.FirefoxRelay.name);
       throw error;
