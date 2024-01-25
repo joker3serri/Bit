@@ -72,6 +72,27 @@ describe("DuckDuckGo Forwarder", () => {
       );
     });
 
+    it("throws an unknown error if the request is successful but an address isn't present", async () => {
+      const apiService = mockApiService(200, {});
+      const i18nService = mockI18nService();
+
+      const forwarder = new DuckDuckGoForwarder(apiService, i18nService);
+
+      await expect(
+        async () =>
+          await forwarder.generate(null, {
+            token: "token",
+          }),
+      ).rejects.toEqual("forwarderUnknownError");
+
+      expect(apiService.nativeFetch).toHaveBeenCalledWith(expect.any(Request));
+      // counting instances is terribly flaky over changes, but jest doesn't have a better way to do this
+      expect(i18nService.t).toHaveBeenCalledWith(
+        "forwarderUnknownError",
+        Forwarders.DuckDuckGo.name,
+      );
+    });
+
     it.each([100, 202, 300, 418, 500, 600])(
       "throws an unknown error if the request returns any other status code (= %i)",
       async (statusCode) => {
