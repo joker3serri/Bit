@@ -29,6 +29,12 @@ export class SecretsManagerTrialPaidStepperComponent extends SecretsManagerTrial
     this.verticalStepper.previous();
   }
 
+  get createAccountLabel() {
+    const organizationType =
+      this.paidSubscriptionType == SubscriptionType.Enterprise ? "Enterprise" : "Teams";
+    return `Before creating your ${organizationType} organization, you first need to log in or create a personal account.`;
+  }
+
   get paidSubscriptionType() {
     switch (this.subscriptionType) {
       case "enterprise":

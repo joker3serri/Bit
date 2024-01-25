@@ -32,7 +32,8 @@ export class SecretsManagerTrialFreeStepperComponent {
   });
 
   subLabels = {
-    createAccount: "Enter your account information",
+    createAccount:
+      "Before creating your free organization, you first need to log in or create a personal account.",
     organizationInfo: "Enter your organization information",
   };
 
