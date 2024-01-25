@@ -86,8 +86,8 @@ describe("FolderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 11);
-      sut = new FolderMigrator(11, 12);
+      helper = mockMigrationHelper(exampleJSON(), 12);
+      sut = new FolderMigrator(12, 13);
     });
 
     it("should remove folders from all accounts", async () => {
@@ -120,8 +120,8 @@ describe("FolderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 11);
-      sut = new FolderMigrator(11, 12);
+      helper = mockMigrationHelper(rollbackJSON(), 12);
+      sut = new FolderMigrator(12, 13);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
