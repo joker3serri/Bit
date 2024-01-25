@@ -7,7 +7,6 @@ import { KeyDefinition } from "@bitwarden/common/platform/state";
 /* eslint-disable import/no-restricted-paths -- Needed to extend service & and in platform owned file */
 import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
 import { StateDefinition } from "@bitwarden/common/platform/state/state-definition";
-import { UserId } from "@bitwarden/common/types/guid";
 /* eslint-enable import/no-restricted-paths */
 
 export class WebSingleUserStateProvider extends DefaultSingleUserStateProvider {
@@ -19,12 +18,11 @@ export class WebSingleUserStateProvider extends DefaultSingleUserStateProvider {
     super(memoryStorageService, sessionStorageService);
   }
 
-  protected override buildCacheKey(userId: UserId, keyDefinition: KeyDefinition<unknown>): string {
-    const storageLocation =
+  protected override getLocationString(keyDefinition: KeyDefinition<unknown>): string {
+    return (
       keyDefinition.stateDefinition.storageLocationOverrides["web"] ??
-      keyDefinition.stateDefinition.defaultStorageLocation;
-
-    return `${storageLocation}_${keyDefinition.fullName}_${userId}`;
+      keyDefinition.stateDefinition.defaultStorageLocation
+    );
   }
 
   protected override getLocation(

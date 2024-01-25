@@ -36,8 +36,12 @@ export class DefaultGlobalStateProvider implements GlobalStateProvider {
     return newGlobalState;
   }
 
-  protected buildCacheKey(keyDefinition: KeyDefinition<unknown>) {
-    return `${keyDefinition.stateDefinition.defaultStorageLocation}_${keyDefinition.fullName}`;
+  private buildCacheKey(keyDefinition: KeyDefinition<unknown>) {
+    return `${this.getLocationString(keyDefinition)}_${keyDefinition.fullName}`;
+  }
+
+  protected getLocationString(keyDefinition: KeyDefinition<unknown>): string {
+    return keyDefinition.stateDefinition.defaultStorageLocation;
   }
 
   protected getLocation(stateDefinition: StateDefinition) {

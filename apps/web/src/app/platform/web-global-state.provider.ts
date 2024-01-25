@@ -18,12 +18,11 @@ export class WebGlobalStateProvider extends DefaultGlobalStateProvider {
     super(memoryStorage, sessionStorage);
   }
 
-  protected override buildCacheKey(keyDefinition: KeyDefinition<unknown>): string {
-    const storageLocation =
+  protected getLocationString(keyDefinition: KeyDefinition<unknown>): string {
+    return (
       keyDefinition.stateDefinition.storageLocationOverrides["web"] ??
-      keyDefinition.stateDefinition.defaultStorageLocation;
-
-    return `${storageLocation}_${keyDefinition.fullName}`;
+      keyDefinition.stateDefinition.defaultStorageLocation
+    );
   }
 
   protected override getLocation(

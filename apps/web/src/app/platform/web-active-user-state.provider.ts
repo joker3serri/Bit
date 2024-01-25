@@ -20,12 +20,11 @@ export class WebActiveUserStateProvider extends DefaultActiveUserStateProvider {
     super(accountService, memoryStorage, sessionStorage);
   }
 
-  protected override buildCacheKey(keyDefinition: KeyDefinition<unknown>): string {
-    const storageLocation =
+  protected override getLocationString(keyDefinition: KeyDefinition<unknown>): string {
+    return (
       keyDefinition.stateDefinition.storageLocationOverrides["web"] ??
-      keyDefinition.stateDefinition.defaultStorageLocation;
-
-    return `${storageLocation}_${keyDefinition.fullName}`;
+      keyDefinition.stateDefinition.defaultStorageLocation
+    );
   }
 
   protected override getLocation(

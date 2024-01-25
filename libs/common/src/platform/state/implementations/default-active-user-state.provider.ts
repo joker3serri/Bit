@@ -34,8 +34,8 @@ export class DefaultActiveUserStateProvider implements ActiveUserStateProvider {
     return newUserState;
   }
 
-  protected buildCacheKey(keyDefinition: KeyDefinition<unknown>) {
-    return `${keyDefinition.stateDefinition.defaultStorageLocation}_${keyDefinition.fullName}`;
+  private buildCacheKey(keyDefinition: KeyDefinition<unknown>) {
+    return `${this.getLocationString(keyDefinition)}_${keyDefinition.fullName}`;
   }
 
   protected buildActiveUserState<T>(keyDefinition: KeyDefinition<T>): ActiveUserState<T> {
@@ -44,6 +44,10 @@ export class DefaultActiveUserStateProvider implements ActiveUserStateProvider {
       this.accountService,
       this.getLocation(keyDefinition.stateDefinition),
     );
+  }
+
+  protected getLocationString(keyDefinition: KeyDefinition<unknown>): string {
+    return keyDefinition.stateDefinition.defaultStorageLocation;
   }
 
   protected getLocation(stateDefinition: StateDefinition) {

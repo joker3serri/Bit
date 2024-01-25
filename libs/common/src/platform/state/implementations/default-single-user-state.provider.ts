@@ -33,8 +33,8 @@ export class DefaultSingleUserStateProvider implements SingleUserStateProvider {
     return newUserState;
   }
 
-  protected buildCacheKey(userId: UserId, keyDefinition: KeyDefinition<unknown>) {
-    return `${keyDefinition.stateDefinition.defaultStorageLocation}_${keyDefinition.fullName}_${userId}`;
+  private buildCacheKey(userId: UserId, keyDefinition: KeyDefinition<unknown>) {
+    return `${this.getLocationString(keyDefinition)}_${keyDefinition.fullName}_${userId}`;
   }
 
   protected buildSingleUserState<T>(
@@ -46,6 +46,10 @@ export class DefaultSingleUserStateProvider implements SingleUserStateProvider {
       keyDefinition,
       this.getLocation(keyDefinition.stateDefinition),
     );
+  }
+
+  protected getLocationString(keyDefinition: KeyDefinition<unknown>): string {
+    return keyDefinition.stateDefinition.defaultStorageLocation;
   }
 
   protected getLocation(stateDefinition: StateDefinition) {
