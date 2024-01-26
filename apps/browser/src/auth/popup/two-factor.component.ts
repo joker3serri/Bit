@@ -24,7 +24,7 @@ import { DialogService } from "@bitwarden/components";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 
-import { closeTwoFactorAuthPopout } from "./utils/auth-popout-window";
+import { AuthPopoutType, closeTwoFactorAuthPopout } from "./utils/auth-popout-window";
 
 const BroadcasterSubscriptionId = "TwoFactorComponent";
 
@@ -33,6 +33,8 @@ const BroadcasterSubscriptionId = "TwoFactorComponent";
   templateUrl: "two-factor.component.html",
 })
 export class TwoFactorComponent extends BaseTwoFactorComponent {
+  inPopout = BrowserPopupUtils.inPopout(window);
+
   constructor(
     authService: AuthService,
     router: Router,
@@ -166,6 +168,18 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     } else {
       this.router.navigate(["2fa-options"]);
     }
+  }
+
+  async popoutExtension() {
+    // TODO: eventually add this to auth-popout-window.ts
+    // TODO: figure out how to transfer state to the popout
+    // TODO: figure out how to close popup
+
+    const twoFactorUrl = `popup/index.html#/2fa;`;
+
+    await BrowserPopupUtils.openPopout(twoFactorUrl, {
+      singleActionKey: AuthPopoutType.twoFactorAuth,
+    });
   }
 
   async isLinux() {
