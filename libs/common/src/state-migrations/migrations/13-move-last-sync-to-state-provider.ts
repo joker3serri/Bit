@@ -22,8 +22,8 @@ export class LastSyncMigrator extends Migrator<12, 13> {
       await helper.setToUser(userId, LAST_SYNC_KEY, value ?? null);
       if (value != null) {
         delete account.profile.lastSync;
+        await helper.set(userId, account);
       }
-      await helper.set(userId, account);
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);
