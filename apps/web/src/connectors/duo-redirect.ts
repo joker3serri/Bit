@@ -20,6 +20,35 @@ window.addEventListener("load", () => {
   }
 });
 
+/**
+ * The `duoHandOffMessage` is set in the client via a cookie. The reason this needs to be set
+ * in the client is so that we can make use of i18n translations.
+ *
+ * Format the duoHandOffMessage cookie as "HTML-like" with 3 elements:
+ * - <h1>{Custom text}</h1>
+ * - <p>{Custom text}</p>
+ * - <button>{Custom text}</button> -> used for closing the window manually
+ *
+ * An example would look like this (swap out text portions with interpolated i18n translated text):
+ * document.cookie = "duoHandOffMessage=<h1>You successfully logged in</h1><p>This window will
+ *   automatically close in 5 seconds</p><button>Close</button>;SameSite=strict"
+ *
+ * These "HTML elements" will be parsed to create the appropriate DOM elements with textContent.
+ * You should not add any classes/styling, as styling will be handled here in the DOM element creation.
+ *
+ * Countdown timer:
+ * - If the <p> tag text contains a number, that number will be parsed from the text
+ *   and used as the starting point for the countdown timer, which upon completion will
+ *   automatically close the tab. Make sure to only add one number, as only one will be parsed.
+ *
+ * - If the <p> tag does not contain a number there will be no countdown timer and the user
+ *   will have to close the tab manually.
+ *
+ * - This implementation is intentionally simple in order to prevent the client (a) from having to add
+ *   extra "HTML elements" and (b) from having to split up the <p> text into three spans/translations...
+ *        ['This window will automatically close in', '5', 'seconds']
+ *   ...which would cause bad translations in languages that swap the order of words
+ */
 const handleMessage = () => {
   const handOffMessage = ("; " + document.cookie)
     .split("; duoHandOffMessage=")
@@ -55,7 +84,7 @@ const handleMessage = () => {
 
   let num = Number(p.textContent.match(/\d+/)[0]); // parse digit from string
 
-  // Countdown timer
+  // Countdown timer (closes tab upon completion)
   if (num) {
     setInterval(() => {
       if (num > 1) {
