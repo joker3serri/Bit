@@ -62,6 +62,7 @@ export class ProductSwitcherContentComponent {
           ? routeOrg
           : orgs.find((o) => canAccessOrgAdmin(o) && o.enabled);
 
+      // TODO: This should be migrated to an Observable provided by the provider service and moved to the combineLatest above. See AC-2092.
       const providers = await this.providerService.getAll();
 
       /**
