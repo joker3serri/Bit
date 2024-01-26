@@ -1,6 +1,5 @@
 import { CollectionService as AbstractCollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
-import { stateProviderFactory } from "src/platform/background/service-factories/state-provider.factory";
 
 import {
   cryptoServiceFactory,
@@ -15,6 +14,7 @@ import {
   i18nServiceFactory,
   I18nServiceInitOptions,
 } from "../../../platform/background/service-factories/i18n-service.factory";
+import { stateProviderFactory } from "../../../platform/background/service-factories/state-provider.factory";
 import { StateServiceInitOptions } from "../../../platform/background/service-factories/state-service.factory";
 
 type CollectionServiceFactoryOptions = FactoryOptions;
