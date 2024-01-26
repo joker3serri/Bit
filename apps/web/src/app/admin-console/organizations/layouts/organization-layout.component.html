@@ -27,6 +27,7 @@
     <bit-nav-group
       icon="bwi-sliders"
       [text]="getReportTabLabel(organization) | i18n"
+      route="reporting"
       *ngIf="canShowReportsTab(organization)"
     >
       <bit-nav-item [text]="'eventLogs' | i18n" route="reporting/events"></bit-nav-item>
