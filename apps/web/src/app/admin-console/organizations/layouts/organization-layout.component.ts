@@ -72,8 +72,8 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
       map(
         (org) =>
           !this.platformUtilsService.isSelfHost() &&
-          org.canViewBillingHistory &&
-          org.canEditPaymentMethods,
+          org?.canViewBillingHistory &&
+          org?.canEditPaymentMethods,
       ),
     );
   }
