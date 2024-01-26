@@ -377,12 +377,7 @@ import { ModalService } from "./modal.service";
     {
       provide: CollectionServiceAbstraction,
       useClass: CollectionService,
-      deps: [
-        CryptoServiceAbstraction,
-        I18nServiceAbstraction,
-        StateServiceAbstraction,
-        StateProvider,
-      ],
+      deps: [CryptoServiceAbstraction, I18nServiceAbstraction, StateProvider],
     },
     {
       provide: EnvironmentServiceAbstraction,
