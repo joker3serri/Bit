@@ -11,8 +11,9 @@
       class="col-5"
       [ngClass]="{
         'col-9':
-          selectedProviderType === providerType.Duo ||
-          selectedProviderType === providerType.OrganizationDuo
+          !duoFrameless &&
+          (selectedProviderType === providerType.Duo ||
+            selectedProviderType === providerType.OrganizationDuo)
       }"
     >
       <p class="lead text-center mb-4">{{ title }}</p>
@@ -91,7 +92,6 @@
             "
           >
             <ng-container *ngIf="duoFrameless">
-              <!-- TODO: figure out if this is the correct condition -->
               <p *ngIf="selectedProviderType === providerType.OrganizationDuo">
                 DUO two-step login is required for your account
               </p>
@@ -135,7 +135,8 @@
               sandbox="allow-scripts allow-same-origin"
             ></iframe>
           </div>
-          <div class="d-flex mb-3">
+          <!-- Buttons -->
+          <div class="tw-flex tw-flex-col tw-mb-3">
             <button
               type="submit"
               class="btn btn-primary btn-block btn-submit"
@@ -169,7 +170,7 @@
             >
               <span> Launch DUO </span>
             </button>
-            <a routerLink="/login" class="btn btn-outline-secondary btn-block ml-2 mt-0">
+            <a routerLink="/login" class="btn btn-outline-secondary btn-block">
               {{ "cancel" | i18n }}
             </a>
           </div>
