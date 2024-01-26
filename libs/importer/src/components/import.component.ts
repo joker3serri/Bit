@@ -207,7 +207,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.setImportOptions();
 
     await this.initializeOrganizations();
-    if (this.organizationId && this.isUserAdmin(this.organizationId)) {
+    if (this.organizationId && this.canAccessImportExport(this.organizationId)) {
       this.handleOrganizationImportInit();
     } else {
       this.handleImportInit();
@@ -353,10 +353,6 @@ export class ImportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.organizationId) {
-      await this.organizationService.get(this.organizationId)?.isAdmin;
-    }
-
     try {
       const result = await this.importService.import(
         importer,
@@ -379,13 +375,6 @@ export class ImportComponent implements OnInit, OnDestroy {
       });
       this.logService.error(e);
     }
-  }
-
-  private isUserAdmin(organizationId?: string): boolean {
-    if (!organizationId) {
-      return false;
-    }
-    return this.organizationService.get(this.organizationId)?.isAdmin;
   }
 
   private canAccessImportExport(organizationId?: string): boolean {
