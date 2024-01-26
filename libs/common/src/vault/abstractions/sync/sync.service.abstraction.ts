@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 import {
   SyncCipherNotification,
   SyncFolderNotification,
@@ -7,6 +9,7 @@ import { UserId } from "../../../types/guid";
 
 export abstract class SyncService {
   syncInProgress: boolean;
+  lastSync$: Observable<Date | null>;
 
   getLastSync: () => Promise<Date>;
   setLastSync: (date: Date, userId?: UserId) => Promise<any>;

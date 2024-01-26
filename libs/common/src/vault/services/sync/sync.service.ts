@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { SettingsService } from "../../../abstractions/settings.service";
@@ -43,19 +43,23 @@ import { CollectionService } from "../../abstractions/collection.service";
 import { CollectionData } from "../../models/data/collection.data";
 import { CollectionDetailsResponse } from "../../models/response/collection.response";
 
-const LAST_SYNC_KEY = new KeyDefinition<Date | null>(SYNC_STATE, "lastSync", {
-  deserializer: (value) => {
-    if (value) {
-      return new Date(value);
-    }
-    return null;
-  },
+const LAST_SYNC_KEY = new KeyDefinition<string | null>(SYNC_STATE, "lastSync", {
+  deserializer: (value) => value,
 });
 
 export class SyncService implements SyncServiceAbstraction {
-  syncInProgress = false;
-
   private lastSyncState = this.stateProvider.getActive(LAST_SYNC_KEY);
+
+  syncInProgress = false;
+  lastSync$ = this.lastSyncState.state$.pipe(
+    map((value) => {
+      if (value == null) {
+        return null;
+      }
+      return new Date(value);
+    }),
+  );
+
   constructor(
     private apiService: ApiService,
     private settingsService: SettingsService,
@@ -77,15 +81,15 @@ export class SyncService implements SyncServiceAbstraction {
     private logoutCallback: (expired: boolean) => Promise<void>,
   ) {}
 
-  async getLastSync(): Promise<Date> {
-    return await firstValueFrom(this.lastSyncState.state$);
+  async getLastSync(): Promise<Date | null> {
+    return await firstValueFrom(this.lastSync$);
   }
 
   async setLastSync(date: Date, userId?: UserId): Promise<any> {
     if (userId !== undefined) {
-      await this.stateProvider.getUser(userId, LAST_SYNC_KEY).update(() => date);
+      await this.stateProvider.getUser(userId, LAST_SYNC_KEY).update(() => date.toJSON());
     } else {
-      await this.lastSyncState.update(() => date);
+      await this.lastSyncState.update(() => date.toJSON());
     }
   }
 
