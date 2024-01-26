@@ -1,8 +1,8 @@
 <app-header>
   <bit-search [placeholder]="'search' | i18n" [(ngModel)]="searchText"></bit-search>
-  <a bitButton routerLink="create" *ngIf="manageOrganizations">
+  <a bitButton routerLink="create" *ngIf="manageOrganizations" buttonType="primary">
     <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
-    {{ "newClientOrganization" | i18n }}
+    {{ "newClient" | i18n }}
   </a>
   <button
     type="button"
