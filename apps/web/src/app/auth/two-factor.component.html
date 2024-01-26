@@ -92,10 +92,10 @@
             "
           >
             <ng-container *ngIf="duoFrameless">
-              <p *ngIf="selectedProviderType === providerType.OrganizationDuo">
-                DUO two-step login is required for your account
+              <p *ngIf="selectedProviderType === providerType.OrganizationDuo" class="tw-mb-0">
+                {{ "duoRequiredByOrgForAccount" | i18n }}
               </p>
-              <p>Follow the steps from DUO to finish logging in.</p>
+              <p>{{ "launchDuoAndFollowStepsToFinishLoggingIn" | i18n }}</p>
             </ng-container>
 
             <ng-container *ngIf="!duoFrameless">
@@ -168,7 +168,7 @@
                   selectedProviderType === providerType.OrganizationDuo)
               "
             >
-              <span> Launch DUO </span>
+              <span> {{ "launchDuo" | i18n }} </span>
             </button>
             <a routerLink="/login" class="btn btn-outline-secondary btn-block">
               {{ "cancel" | i18n }}
