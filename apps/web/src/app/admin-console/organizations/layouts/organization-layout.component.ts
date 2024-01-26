@@ -15,6 +15,7 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { BannerModule, IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
 import { PaymentMethodBannersComponent } from "../../../components/payment-method-banners/payment-method-banners.component";
@@ -43,12 +44,14 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   protected orgFilter = (org: Organization) => org.isAdmin;
 
   organization$: Observable<Organization>;
+  showPaymentAndHistory$: Observable<boolean>;
 
   private _destroy = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
+    private platformUtilsService: PlatformUtilsService,
   ) {}
 
   async ngOnInit() {
@@ -64,6 +67,15 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
             .pipe(getOrganizationById(id));
         }),
       );
+
+    this.showPaymentAndHistory$ = this.organization$.pipe(
+      map(
+        (org) =>
+          !this.platformUtilsService.isSelfHost() &&
+          org.canViewBillingHistory &&
+          org.canEditPaymentMethods,
+      ),
+    );
   }
 
   ngOnDestroy() {
