@@ -30,8 +30,16 @@
       route="reporting"
       *ngIf="canShowReportsTab(organization)"
     >
-      <bit-nav-item [text]="'eventLogs' | i18n" route="reporting/events"></bit-nav-item>
-      <bit-nav-item [text]="'reports' | i18n" route="reporting/reports"></bit-nav-item>
+      <bit-nav-item
+        [text]="'eventLogs' | i18n"
+        route="reporting/events"
+        *ngIf="organization.canAccessEventLogs"
+      ></bit-nav-item>
+      <bit-nav-item
+        [text]="'reports' | i18n"
+        route="reporting/reports"
+        *ngIf="organization.canAccessReports"
+      ></bit-nav-item>
     </bit-nav-group>
     <bit-nav-group
       icon="bwi-billing"
