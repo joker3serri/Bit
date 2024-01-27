@@ -1,5 +1,3 @@
-import { Observable } from "rxjs";
-
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PrfKey } from "../../../types/key";
 import { AuthService } from "../../abstractions/auth.service";
@@ -14,8 +12,6 @@ import { WebAuthnLoginCredentialAssertionView } from "../../models/view/webauthn
 import { WebAuthnLoginAssertionResponseRequest } from "./request/webauthn-login-assertion-response.request";
 
 export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
-  readonly enabled$: Observable<boolean>;
-
   private navigatorCredentials: CredentialsContainer;
 
   constructor(
