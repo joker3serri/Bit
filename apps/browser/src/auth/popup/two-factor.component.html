@@ -117,7 +117,7 @@
         selectedProviderType === providerType.OrganizationDuo
       "
     >
-      <ng-container *ngIf="duoFrameless">
+      <div *ngIf="duoFrameless" class="tw-my-4">
         <p
           *ngIf="selectedProviderType === providerType.OrganizationDuo"
           class="tw-mb-0 tw-text-center"
@@ -134,7 +134,7 @@
 
           <ng-container *ngTemplateOutlet="duoRememberMe"></ng-container>
         </ng-container>
-      </ng-container>
+      </div>
 
       <ng-container *ngIf="!duoFrameless">
         <div id="duo-frame">
@@ -195,7 +195,7 @@
           buttonType="primary"
           [block]="true"
           appStopClick
-          (click)="popoutExtension()"
+          (click)="popoutCurrentPage()"
         >
           {{ "popoutExtension" | i18n }}
         </button>
