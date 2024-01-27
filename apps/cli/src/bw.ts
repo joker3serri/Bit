@@ -255,6 +255,8 @@ export class Main {
       this.derivedStateProvider,
     );
 
+    this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
+
     this.stateService = new StateService(
       this.storageService,
       this.secureStorageService,
@@ -262,6 +264,7 @@ export class Main {
       this.logService,
       new StateFactory(GlobalState, Account),
       this.accountService,
+      this.environmentService,
     );
 
     this.cryptoService = new CryptoService(
@@ -276,7 +279,6 @@ export class Main {
 
     this.appIdService = new AppIdService(this.storageService);
     this.tokenService = new TokenService(this.stateService);
-    this.environmentService = new EnvironmentService(this.stateService);
 
     const customUserAgent =
       "Bitwarden_CLI/" +
@@ -435,6 +437,13 @@ export class Main {
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
 
+    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.cryptoService,
+      this.tokenService,
+      this.policyService,
+      this.stateService,
+    );
+
     this.pinCryptoService = new PinCryptoService(
       this.stateService,
       this.cryptoService,
@@ -449,13 +458,8 @@ export class Main {
       this.userVerificationApiService,
       this.pinCryptoService,
       this.logService,
-    );
-
-    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
-      this.cryptoService,
-      this.tokenService,
-      this.policyService,
-      this.stateService,
+      this.vaultTimeoutSettingsService,
+      this.platformUtilsService,
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(
