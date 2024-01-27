@@ -68,7 +68,7 @@ describe("WebAuthnLoginService", () => {
     });
   });
 
-  function createWebAuthnLoginService(config: { featureEnabled: boolean }): WebAuthnLoginService {
+  function createWebAuthnLoginService(): WebAuthnLoginService {
     return new WebAuthnLoginService(
       webAuthnLoginApiService,
       authService,
@@ -79,14 +79,14 @@ describe("WebAuthnLoginService", () => {
   }
 
   it("instantiates", () => {
-    webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
+    webAuthnLoginService = createWebAuthnLoginService();
     expect(webAuthnLoginService).not.toBeFalsy();
   });
 
   describe("getCredentialAssertionOptions()", () => {
     it("webAuthnLoginService returns WebAuthnLoginCredentialAssertionOptionsView when getCredentialAssertionOptions is called with the feature enabled", async () => {
       // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
+      const webAuthnLoginService = createWebAuthnLoginService();
 
       const challenge = "6CG3jqMCVASJVXySMi9KWw";
       const token = "BWWebAuthnLoginAssertionOptions_CfDJ_2KBN892w";
@@ -129,7 +129,7 @@ describe("WebAuthnLoginService", () => {
   describe("assertCredential(...)", () => {
     it("should assert the credential and return WebAuthnLoginAssertionView on success", async () => {
       // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
+      const webAuthnLoginService = createWebAuthnLoginService();
       const credentialAssertionOptions = buildCredentialAssertionOptions();
 
       // Mock webAuthnUtils functions
@@ -197,7 +197,7 @@ describe("WebAuthnLoginService", () => {
 
     it("should return undefined on non-PublicKeyCredential browser response", async () => {
       // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
+      const webAuthnLoginService = createWebAuthnLoginService();
       const credentialAssertionOptions = buildCredentialAssertionOptions();
 
       // Mock the navigatorCredentials.get to return null
@@ -212,7 +212,7 @@ describe("WebAuthnLoginService", () => {
 
     it("should log an error and return undefined when navigatorCredentials.get throws an error", async () => {
       // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
+      const webAuthnLoginService = createWebAuthnLoginService();
       const credentialAssertionOptions = buildCredentialAssertionOptions();
 
       // Mock navigatorCredentials.get to throw an error
@@ -244,7 +244,7 @@ describe("WebAuthnLoginService", () => {
 
     it("should accept an assertion with a signed challenge and use it to try and login", async () => {
       // Arrange
-      const webAuthnLoginService = createWebAuthnLoginService({ featureEnabled: true });
+      const webAuthnLoginService = createWebAuthnLoginService();
       const assertion = buildWebAuthnLoginCredentialAssertionView();
       const mockAuthResult: AuthResult = new AuthResult();
 
