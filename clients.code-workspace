@@ -2,31 +2,31 @@
   "folders": [
     {
       "name": "root",
-      "path": "."
+      "path": ".",
     },
     {
       "name": "web vault",
-      "path": "apps/web"
+      "path": "apps/web",
     },
     {
       "name": "web vault (bit)",
-      "path": "bitwarden_license/bit-web"
+      "path": "bitwarden_license/bit-web",
     },
     {
       "name": "cli",
-      "path": "apps/cli"
+      "path": "apps/cli",
     },
     {
       "name": "desktop",
-      "path": "apps/desktop"
+      "path": "apps/desktop",
     },
     {
       "name": "browser",
-      "path": "apps/browser"
+      "path": "apps/browser",
     },
     {
       "name": "libs",
-      "path": "libs"
+      "path": "libs",
     }
   ],
   "settings": {
@@ -56,14 +56,14 @@
     "jest.jestCommandLine": "npx jest",
     "angular.enable-strict-mode-prompt": false,
     "typescript.preferences.importModuleSpecifier": "project-relative",
-    "javascript.preferences.importModuleSpecifier": "project-relative"
+    "javascript.preferences.importModuleSpecifier": "project-relative",
   },
   "extensions": {
     "recommendations": [
       "orta.vscode-jest",
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
-      "Angular.ng-template"
+      "Angular.ng-template",
     ]
   }
 }
