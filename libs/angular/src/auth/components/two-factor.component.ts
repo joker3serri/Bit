@@ -156,6 +156,21 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
         if (providerData.AuthUrl) {
           this.duoFrameless = true;
           // Setup listener for duo-redirect.ts connector to send back the code
+
+          // TODO: figure out how web is going to communicate with browser.
+          // BroadcastChannel allows communication ON THE SAME ORIGIN.
+          // https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
+
+          // Web app:
+          // console.log(window.location.origin)
+          // VM629:1 https://localhost:8080
+
+          // Extension:
+          // console.log(window.location.origin)
+          // VM39:1 chrome-extension://ffjngkoaegfhikcaianndlcgafgejahp
+
+          // Probably will have to use the messaging API to communicate with the extension.
+
           new BroadcastChannel("duoResult").addEventListener("message", async (e) => {
             this.token = e.data.code;
             await this.submit();
