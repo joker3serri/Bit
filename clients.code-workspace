@@ -27,22 +27,22 @@
     {
       "name": "libs",
       "path": "libs",
-    }
+    },
   ],
   "settings": {
     "eslint.options": {
       "overrideConfig": {
         "parserOptions": {
-          "project": ["${workspaceFolder}/tsconfig.eslint.json"]
-        }
-      }
+          "project": ["${workspaceFolder}/tsconfig.eslint.json"],
+        },
+      },
     },
     "debug.javascript.terminalOptions": {
       "sourceMapPathOverrides": {
         "webpack:///./~/*": "${workspaceFolder:root}/node_modules/*",
         "webpack://?:*/*": "${workspaceFolder}/*",
-        "webpack://@bitwarden/cli/*": "${workspaceFolder}/*"
-      }
+        "webpack://@bitwarden/cli/*": "${workspaceFolder}/*",
+      },
     },
     "jest.disabledWorkspaceFolders": [
       "browser",
@@ -51,7 +51,7 @@
       "libs",
       "web vault",
       "web vault (bit)",
-      "root"
+      "root",
     ],
     "jest.jestCommandLine": "npx jest",
     "angular.enable-strict-mode-prompt": false,
@@ -64,6 +64,6 @@
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
       "Angular.ng-template",
-    ]
-  }
+    ],
+  },
 }
