@@ -1,6 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { first } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { filter, first, takeUntil } from "rxjs/operators";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -22,6 +23,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
+import { ZonedMessageListenerService } from "../../platform/browser/zoned-message-listener.service";
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 
 import { closeTwoFactorAuthPopout } from "./utils/auth-popout-window";
@@ -33,6 +35,7 @@ const BroadcasterSubscriptionId = "TwoFactorComponent";
   templateUrl: "two-factor.component.html",
 })
 export class TwoFactorComponent extends BaseTwoFactorComponent {
+  private destroy$ = new Subject<void>();
   inPopout = BrowserPopupUtils.inPopout(window);
 
   constructor(
@@ -54,6 +57,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     @Inject(WINDOW) protected win: Window,
+    private browserMessagingApi: ZonedMessageListenerService,
   ) {
     super(
       authService,
@@ -150,6 +154,9 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   }
 
   async ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
 
     if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && (await this.isLinux())) {
@@ -176,5 +183,18 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
 
   async isLinux() {
     return (await BrowserApi.getPlatformInfo()).os === "linux";
+  }
+
+  protected override setupDuoResultListener() {
+    this.browserMessagingApi
+      .messageListener$()
+      .pipe(
+        filter((msg: any) => msg.command === "duoResult"),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((msg: { command: string; code: string }) => {
+        this.token = msg.code;
+        this.submit();
+      });
   }
 }
