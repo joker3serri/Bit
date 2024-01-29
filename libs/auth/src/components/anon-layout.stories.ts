@@ -25,8 +25,8 @@ export default {
     }),
   ],
   args: {
-    title: "The Page Title 2",
-    subtitle: "The subtitle",
+    title: "The Page Title",
+    subtitle: "The subtitle (optional)",
   },
 } as Meta;
 
@@ -42,12 +42,8 @@ export const WithPrimaryContent: Story = {
        */
       `
       <auth-anon-layout [title]="title" [subtitle]="subtitle">
-        <div
-          class="tw-bg-secondary-100"
-        >
-          <div class="tw-font-bold">Primary Projected Content</div>
-          <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
-        </div>
+        <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
+        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
       </auth-anon-layout>
     `,
   }),
@@ -60,10 +56,8 @@ export const WithSecondaryContent: Story = {
       // Notice that slot="secondary" is requred to project any secondary content:
       `
       <auth-anon-layout [title]="title" [subtitle]="subtitle">
-        <div
-          class="tw-bg-secondary-100"
-        >
-          <div class="tw-font-bold">Primary Projected Content</div>
+        <div>
+          <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
           <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
         </div>
 
@@ -81,10 +75,8 @@ export const WithLongContent: Story = {
     props: args,
     template: `
       <auth-anon-layout title="Page Title lorem ipsum dolor consectetur sit amet expedita quod est" subtitle="Subtitle here Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, quod est?">
-        <div
-          class="tw-bg-secondary-100"
-        >
-          <div class="tw-font-bold">Primary Projected Content</div>
+        <div>
+          <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
           <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
         </div>
 
@@ -103,10 +95,8 @@ export const WithIcon: Story = {
     props: args,
     template: `
       <auth-anon-layout [title]="title" [subtitle]="subtitle" icon="lock">
-        <div
-          class="tw-bg-secondary-100"
-        >
-          <div class="tw-font-bold">Primary Projected Content</div>
+        <div>
+          <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
           <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
         </div>
       </auth-anon-layout>
