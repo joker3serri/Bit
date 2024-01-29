@@ -3,17 +3,27 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import {
-  OrganizationService,
   canAccessVaultTab,
+  OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { ImportCollectionServiceAbstraction } from "@bitwarden/importer/core";
 import { ImportComponent } from "@bitwarden/importer/ui";
 
 import { LooseComponentsModule, SharedModule } from "../../../shared";
+import { ImportCollectionAdminService } from "../../../tools/import/import-collection-admin.service";
+import { CollectionAdminService } from "../../../vault/core/collection-admin.service";
 
 @Component({
   templateUrl: "org-import.component.html",
   standalone: true,
   imports: [SharedModule, ImportComponent, LooseComponentsModule],
+  providers: [
+    {
+      provide: ImportCollectionServiceAbstraction,
+      useClass: ImportCollectionAdminService,
+      deps: [CollectionAdminService],
+    },
+  ],
 })
 export class OrgImportComponent implements OnInit {
   protected routeOrgId: string = null;
