@@ -75,6 +75,8 @@ import { UserVerificationService } from "@bitwarden/common/auth/services/user-ve
 import { WebAuthnLoginApiService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-api.service";
 import { WebAuthnLoginPrfCryptoService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-prf-crypto.service";
 import { WebAuthnLoginService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login.service";
+import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
+import { BillingBannerService } from "@bitwarden/common/billing/services/billing-banner.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
@@ -174,7 +176,14 @@ import {
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
 import { PasswordRepromptService } from "@bitwarden/vault";
-import { VaultExportService, VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
+import {
+  VaultExportService,
+  VaultExportServiceAbstraction,
+  OrganizationVaultExportService,
+  OrganizationVaultExportServiceAbstraction,
+  IndividualVaultExportService,
+  IndividualVaultExportServiceAbstraction,
+} from "@bitwarden/vault-export-core";
 
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { UnauthGuard } from "../auth/guards/unauth.guard";
@@ -377,7 +386,7 @@ import { ModalService } from "./modal.service";
     {
       provide: EnvironmentServiceAbstraction,
       useClass: EnvironmentService,
-      deps: [StateServiceAbstraction],
+      deps: [StateProvider, AccountServiceAbstraction],
     },
     {
       provide: TotpServiceAbstraction,
@@ -510,6 +519,7 @@ import { ModalService } from "./modal.service";
         LogService,
         STATE_FACTORY,
         AccountServiceAbstraction,
+        EnvironmentServiceAbstraction,
         STATE_SERVICE_USE_CACHE,
       ],
     },
@@ -531,16 +541,32 @@ import { ModalService } from "./modal.service";
       ],
     },
     {
-      provide: VaultExportServiceAbstraction,
-      useClass: VaultExportService,
+      provide: IndividualVaultExportServiceAbstraction,
+      useClass: IndividualVaultExportService,
       deps: [
         FolderServiceAbstraction,
+        CipherServiceAbstraction,
+        CryptoServiceAbstraction,
+        CryptoFunctionServiceAbstraction,
+        StateServiceAbstraction,
+      ],
+    },
+    {
+      provide: OrganizationVaultExportServiceAbstraction,
+      useClass: OrganizationVaultExportService,
+      deps: [
         CipherServiceAbstraction,
         ApiServiceAbstraction,
         CryptoServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         StateServiceAbstraction,
+        CollectionServiceAbstraction,
       ],
+    },
+    {
+      provide: VaultExportServiceAbstraction,
+      useClass: VaultExportService,
+      deps: [IndividualVaultExportServiceAbstraction, OrganizationVaultExportServiceAbstraction],
     },
     {
       provide: SearchServiceAbstraction,
@@ -627,6 +653,8 @@ import { ModalService } from "./modal.service";
         UserVerificationApiServiceAbstraction,
         PinCryptoServiceAbstraction,
         LogService,
+        VaultTimeoutSettingsServiceAbstraction,
+        PlatformUtilsServiceAbstraction,
       ],
     },
     {
@@ -830,6 +858,11 @@ import { ModalService } from "./modal.service";
         GlobalStateProvider,
         DerivedStateProvider,
       ],
+    },
+    {
+      provide: BillingBannerServiceAbstraction,
+      useClass: BillingBannerService,
+      deps: [StateProvider],
     },
   ],
 })
