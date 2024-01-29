@@ -491,6 +491,7 @@ import { ModalService } from "./modal.service";
       provide: VaultTimeoutSettingsServiceAbstraction,
       useClass: VaultTimeoutSettingsService,
       deps: [
+        UserDecryptionOptionsServiceAbstraction,
         CryptoServiceAbstraction,
         TokenServiceAbstraction,
         PolicyServiceAbstraction,
