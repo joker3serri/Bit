@@ -20,7 +20,7 @@ import { ServiceUtils } from "../service-utils";
 
 const ENCRYPTED_COLLECTION_DATA_KEY = new KeyDefinition<
   Record<string, { [id: string]: CollectionData }>
->(COLLECTION_DATA, "data", {
+>(COLLECTION_DATA, "collections", {
   deserializer: (jsonData: any) => jsonData,
 });
 
