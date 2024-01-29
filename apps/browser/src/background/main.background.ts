@@ -1,3 +1,4 @@
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -246,6 +247,7 @@ export default class MainBackground {
   authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
   accountService: AccountServiceAbstraction;
   globalStateProvider: GlobalStateProvider;
+  pinCryptoService: PinCryptoServiceAbstraction;
   singleUserStateProvider: SingleUserStateProvider;
   activeUserStateProvider: ActiveUserStateProvider;
   derivedStateProvider: DerivedStateProvider;
@@ -342,6 +344,11 @@ export default class MainBackground {
       this.globalStateProvider,
       this.derivedStateProvider,
     );
+    this.environmentService = new BrowserEnvironmentService(
+      this.logService,
+      this.stateProvider,
+      this.accountService,
+    );
     this.stateService = new BrowserStateService(
       this.storageService,
       this.secureStorageService,
@@ -349,6 +356,7 @@ export default class MainBackground {
       this.logService,
       new StateFactory(GlobalState, Account),
       this.accountService,
+      this.environmentService,
     );
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
@@ -384,7 +392,6 @@ export default class MainBackground {
     );
     this.tokenService = new TokenService(this.stateService);
     this.appIdService = new AppIdService(this.storageService);
-    this.environmentService = new BrowserEnvironmentService(this.stateService, this.logService);
     this.apiService = new ApiService(
       this.tokenService,
       this.platformUtilsService,
@@ -482,13 +489,6 @@ export default class MainBackground {
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
-    this.userVerificationService = new UserVerificationService(
-      this.stateService,
-      this.cryptoService,
-      this.i18nService,
-      this.userVerificationApiService,
-    );
-
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
 
     this.configService = new BrowserConfigService(
@@ -524,7 +524,24 @@ export default class MainBackground {
       this.tokenService,
       this.policyService,
       this.stateService,
-      this.userVerificationService,
+    );
+
+    this.pinCryptoService = new PinCryptoService(
+      this.stateService,
+      this.cryptoService,
+      this.vaultTimeoutSettingsService,
+      this.logService,
+    );
+
+    this.userVerificationService = new UserVerificationService(
+      this.stateService,
+      this.cryptoService,
+      this.i18nService,
+      this.userVerificationApiService,
+      this.pinCryptoService,
+      this.logService,
+      this.vaultTimeoutSettingsService,
+      this.platformUtilsService,
     );
 
     this.vaultFilterService = new VaultFilterService(
@@ -604,7 +621,6 @@ export default class MainBackground {
       this.logService,
       this.settingsService,
       this.userVerificationService,
-      this.configService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 

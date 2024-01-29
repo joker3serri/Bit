@@ -4,6 +4,7 @@ import * as path from "path";
 import * as program from "commander";
 import * as jsdom from "jsdom";
 
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -160,6 +161,7 @@ export class Main {
   cipherFileUploadService: CipherFileUploadService;
   keyConnectorService: KeyConnectorService;
   userVerificationService: UserVerificationService;
+  pinCryptoService: PinCryptoServiceAbstraction;
   stateService: StateService;
   organizationService: OrganizationService;
   providerService: ProviderService;
@@ -253,6 +255,8 @@ export class Main {
       this.derivedStateProvider,
     );
 
+    this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
+
     this.stateService = new StateService(
       this.storageService,
       this.secureStorageService,
@@ -260,6 +264,7 @@ export class Main {
       this.logService,
       new StateFactory(GlobalState, Account),
       this.accountService,
+      this.environmentService,
     );
 
     this.cryptoService = new CryptoService(
@@ -274,7 +279,6 @@ export class Main {
 
     this.appIdService = new AppIdService(this.storageService);
     this.tokenService = new TokenService(this.stateService);
-    this.environmentService = new EnvironmentService(this.stateService);
 
     const customUserAgent =
       "Bitwarden_CLI/" +
@@ -433,19 +437,29 @@ export class Main {
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
 
-    this.userVerificationService = new UserVerificationService(
-      this.stateService,
-      this.cryptoService,
-      this.i18nService,
-      this.userVerificationApiService,
-    );
-
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
       this.cryptoService,
       this.tokenService,
       this.policyService,
       this.stateService,
-      this.userVerificationService,
+    );
+
+    this.pinCryptoService = new PinCryptoService(
+      this.stateService,
+      this.cryptoService,
+      this.vaultTimeoutSettingsService,
+      this.logService,
+    );
+
+    this.userVerificationService = new UserVerificationService(
+      this.stateService,
+      this.cryptoService,
+      this.i18nService,
+      this.userVerificationApiService,
+      this.pinCryptoService,
+      this.logService,
+      this.vaultTimeoutSettingsService,
+      this.platformUtilsService,
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(
