@@ -100,4 +100,20 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       },
     });
   };
+
+  private duoResultChannel: BroadcastChannel;
+
+  protected override setupDuoResultListener() {
+    this.duoResultChannel = new BroadcastChannel("duoResult");
+    this.duoResultChannel.addEventListener("message", this.handleDuoResultMessage);
+  }
+
+  private handleDuoResultMessage = async (msg: { data: { code: string } }) => {
+    this.token = msg.data.code;
+    await this.submit();
+
+    // clean up
+    this.duoResultChannel.removeEventListener("message", this.handleDuoResultMessage);
+    this.duoResultChannel.close();
+  };
 }
