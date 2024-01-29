@@ -44,6 +44,10 @@ class ContentMessageHandler implements ContentMessageHandlerInterface {
       const { remember } = data;
       chrome.runtime.sendMessage({ command, data: data.data, remember, referrer });
     }
+
+    if (command === "duoResult") {
+      chrome.runtime.sendMessage({ command, code: data.code, referrer });
+    }
   };
 
   /**
