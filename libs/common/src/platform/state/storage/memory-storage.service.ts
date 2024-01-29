@@ -21,8 +21,8 @@ export class MemoryStorageService
   }
 
   get<T>(key: string): Promise<T> {
-    if (this.store[key]) {
-      const json = this.store[key];
+    const json = this.store[key];
+    if (json) {
       const obj = JSON.parse(json as string);
       return Promise.resolve(obj as T);
     }
