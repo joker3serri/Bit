@@ -427,7 +427,7 @@ export class CryptoService implements CryptoServiceAbstraction {
       return null;
     }
 
-    return (await firstValueFrom(this.activeUserProviderKeys$))[providerId];
+    return (await firstValueFrom(this.activeUserProviderKeys$))[providerId] ?? null;
   }
 
   @sequentialize(() => "getProviderKeys")

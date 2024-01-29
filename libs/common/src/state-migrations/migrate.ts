@@ -8,7 +8,7 @@ import { MigrationHelper } from "./migration-helper";
 import { EverHadUserKeyMigrator } from "./migrations/10-move-ever-had-user-key-to-state-providers";
 import { OrganizationKeyMigrator } from "./migrations/11-move-org-keys-to-state-providers";
 import { MoveEnvironmentStateToProviders } from "./migrations/12-move-environment-state-to-providers";
-import { ProviderKeyMigrator } from "./migrations/12-move-provider-keys-to-state-providers";
+import { ProviderKeyMigrator } from "./migrations/13-move-provider-keys-to-state-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";

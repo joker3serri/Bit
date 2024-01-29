@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { ProviderKeyMigrator } from "./12-move-provider-keys-to-state-providers";
+import { ProviderKeyMigrator } from "./13-move-provider-keys-to-state-providers";
 
 function exampleJSON() {
   return {
