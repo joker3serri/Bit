@@ -403,7 +403,12 @@ export class Main {
       this.authRequestCryptoService,
     );
 
-    this.authService = new AuthService(this.cryptoService, this.apiService, this.stateService);
+    this.authService = new AuthService(
+      this.messagingService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
+    );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
 
@@ -555,7 +560,7 @@ export class Main {
   }
 
   async logout() {
-    this.loginStrategyService.logOut(() => {
+    this.authService.logOut(() => {
       /* Do nothing */
     });
     const userId = await this.stateService.getUserId();

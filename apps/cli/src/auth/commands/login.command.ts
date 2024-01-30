@@ -9,6 +9,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -51,6 +52,7 @@ export class LoginCommand {
 
   constructor(
     protected loginStrategyService: LoginStrategyServiceAbstraction,
+    protected authService: AuthService,
     protected apiService: ApiService,
     protected cryptoFunctionService: CryptoFunctionService,
     protected environmentService: EnvironmentService,
@@ -383,7 +385,7 @@ export class LoginCommand {
 
   private async handleUpdatePasswordSuccessResponse(): Promise<Response> {
     await this.logoutCallback();
-    this.loginStrategyService.logOut(() => {
+    this.authService.logOut(() => {
       /* Do nothing */
     });
 
@@ -399,7 +401,7 @@ export class LoginCommand {
     // If no interaction available, alert user to use web vault
     if (!this.canInteract) {
       await this.logoutCallback();
-      this.loginStrategyService.logOut(() => {
+      this.authService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(
@@ -426,7 +428,7 @@ export class LoginCommand {
       return await this.handleUpdatePasswordSuccessResponse();
     } catch (e) {
       await this.logoutCallback();
-      this.loginStrategyService.logOut(() => {
+      this.authService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(e);
@@ -437,7 +439,7 @@ export class LoginCommand {
     // If no interaction available, alert user to use web vault
     if (!this.canInteract) {
       await this.logoutCallback();
-      this.loginStrategyService.logOut(() => {
+      this.authService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(
@@ -463,7 +465,7 @@ export class LoginCommand {
       return await this.handleUpdatePasswordSuccessResponse();
     } catch (e) {
       await this.logoutCallback();
-      this.loginStrategyService.logOut(() => {
+      this.authService.logOut(() => {
         /* Do nothing */
       });
       return Response.error(e);
