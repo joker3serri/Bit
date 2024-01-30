@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { EnablePasskeysMigrator } from "./13-move-enable-passkeys-to-state-providers";
+import { EnablePasskeysMigrator } from "./14-move-enable-passkeys-to-state-providers";
 
 function exampleJSON() {
   return {
@@ -55,8 +55,8 @@ describe("EnablePasskeysMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 12);
-      sut = new EnablePasskeysMigrator(12, 13);
+      helper = mockMigrationHelper(exampleJSON(), 13);
+      sut = new EnablePasskeysMigrator(13, 14);
     });
 
     it("should remove enablePasskeys from global", async () => {
@@ -69,8 +69,8 @@ describe("EnablePasskeysMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 12);
-      sut = new EnablePasskeysMigrator(12, 13);
+      helper = mockMigrationHelper(rollbackJSON(), 13);
+      sut = new EnablePasskeysMigrator(13, 14);
     });
 
     it("should move enablePasskeys to global", async () => {

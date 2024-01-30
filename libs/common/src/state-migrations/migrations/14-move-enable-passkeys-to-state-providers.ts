@@ -12,7 +12,7 @@ const USER_ENABLE_PASSKEYS: KeyDefinitionLike = {
   },
 };
 
-export class EnablePasskeysMigrator extends Migrator<12, 13> {
+export class EnablePasskeysMigrator extends Migrator<13, 14> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const global = await helper.get<ExpectedGlobalType>("global");
 
