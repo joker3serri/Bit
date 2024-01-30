@@ -5,7 +5,7 @@ import { first } from "rxjs/operators";
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -34,7 +34,7 @@ const BroadcasterSubscriptionId = "TwoFactorComponent";
 })
 export class TwoFactorComponent extends BaseTwoFactorComponent {
   constructor(
-    authService: AuthService,
+    loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
     apiService: ApiService,
@@ -54,7 +54,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
-      authService,
+      loginStrategyService,
       router,
       i18nService,
       apiService,

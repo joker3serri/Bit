@@ -243,11 +243,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     }
   }
 
-  logOut(callback: () => void) {
-    callback();
-    this.messagingService.send("loggedOut");
-  }
-
   authingWithUserApiKey(): boolean {
     return this.logInStrategy instanceof UserApiLoginStrategy;
   }
