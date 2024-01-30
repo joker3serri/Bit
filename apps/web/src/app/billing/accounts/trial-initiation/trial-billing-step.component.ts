@@ -2,7 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angu
 import { FormBuilder, Validators } from "@angular/forms";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationBillingServiceAbstraction as OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service";
+import {
+  BillingInformation,
+  OrganizationBillingServiceAbstraction as OrganizationBillingService,
+  OrganizationInformation,
+  PaymentInformation,
+  PlanInformation,
+} from "@bitwarden/common/billing/abstractions/organization-billing.service";
 import { PaymentMethodType, PlanType } from "@bitwarden/common/billing/enums";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { ProductType } from "@bitwarden/common/enums";
@@ -10,11 +16,14 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { BillingSharedModule, PaymentComponent, TaxInfoComponent } from "../../../billing/shared";
+import { BillingSharedModule, PaymentComponent, TaxInfoComponent } from "../../shared";
+
+export type TrialOrganizationType = Exclude<ProductType, ProductType.Free>;
 
 export interface OrganizationInfo {
   name: string;
   email: string;
+  type: TrialOrganizationType;
 }
 
 export interface OrganizationCreatedEvent {
@@ -23,26 +32,26 @@ export interface OrganizationCreatedEvent {
 }
 
 enum SubscriptionCadence {
-  Monthly,
   Annual,
+  Monthly,
 }
 
-export enum SubscriptionType {
-  Teams,
-  Enterprise,
+export enum SubscriptionProduct {
+  PasswordManager,
+  SecretsManager,
 }
 
 @Component({
-  selector: "app-secrets-manager-trial-billing-step",
-  templateUrl: "secrets-manager-trial-billing-step.component.html",
+  selector: "app-trial-billing-step",
+  templateUrl: "trial-billing-step.component.html",
   imports: [BillingSharedModule],
   standalone: true,
 })
-export class SecretsManagerTrialBillingStepComponent implements OnInit {
+export class TrialBillingStepComponent implements OnInit {
   @ViewChild(PaymentComponent) paymentComponent: PaymentComponent;
   @ViewChild(TaxInfoComponent) taxInfoComponent: TaxInfoComponent;
   @Input() organizationInfo: OrganizationInfo;
-  @Input() subscriptionType: SubscriptionType;
+  @Input() subscriptionProduct: SubscriptionProduct = SubscriptionProduct.PasswordManager;
   @Output() steppedBack = new EventEmitter();
   @Output() organizationCreated = new EventEmitter<OrganizationCreatedEvent>();
 
@@ -57,8 +66,8 @@ export class SecretsManagerTrialBillingStepComponent implements OnInit {
   formPromise: Promise<string>;
 
   applicablePlans: PlanResponse[];
-  annualPlan: PlanResponse;
-  monthlyPlan: PlanResponse;
+  annualPlan?: PlanResponse;
+  monthlyPlan?: PlanResponse;
 
   constructor(
     private apiService: ApiService,
@@ -108,62 +117,99 @@ export class SecretsManagerTrialBillingStepComponent implements OnInit {
     }
   }
 
+  protected getPriceFor(cadence: SubscriptionCadence): number {
+    const plan = this.findPlanFor(cadence);
+    return this.subscriptionProduct === SubscriptionProduct.PasswordManager
+      ? plan.PasswordManager.basePrice === 0
+        ? plan.PasswordManager.seatPrice
+        : plan.PasswordManager.basePrice
+      : plan.SecretsManager.basePrice === 0
+        ? plan.SecretsManager.seatPrice
+        : plan.SecretsManager.basePrice;
+  }
+
   protected stepBack() {
     this.steppedBack.emit();
   }
 
   private async createOrganization(): Promise<string> {
-    const plan = this.findPlanFor(this.formGroup.value.cadence);
+    const planResponse = this.findPlanFor(this.formGroup.value.cadence);
     const paymentMethod = await this.paymentComponent.createPaymentToken();
 
+    const organization: OrganizationInformation = {
+      name: this.organizationInfo.name,
+      billingEmail: this.organizationInfo.email,
+      initiationPath: "Trial from marketing website",
+    };
+
+    const plan: PlanInformation = {
+      type: planResponse.type,
+      passwordManagerSeats: 1,
+    };
+
+    if (this.subscriptionProduct === SubscriptionProduct.SecretsManager) {
+      plan.subscribeToSecretsManager = true;
+      plan.isFromSecretsManagerTrial = true;
+      plan.secretsManagerSeats = 1;
+    }
+
+    const payment: PaymentInformation = {
+      paymentMethod,
+      billing: this.getBillingInformationFromTaxInfoComponent(),
+    };
+
     const response = await this.organizationBillingService.purchaseSubscription({
-      organization: {
-        name: this.organizationInfo.name,
-        billingEmail: this.organizationInfo.email,
-      },
-      plan: {
-        type: plan.type,
-        passwordManagerSeats: 1,
-        subscribeToSecretsManager: true,
-        isFromSecretsManagerTrial: true,
-        secretsManagerSeats: 1,
-      },
-      payment: {
-        paymentMethod,
-        billing: {
-          postalCode: this.taxInfoComponent.taxInfo.postalCode,
-          country: this.taxInfoComponent.taxInfo.country,
-          taxId: this.taxInfoComponent.taxInfo.taxId,
-          addressLine1: this.taxInfoComponent.taxInfo.line1,
-          addressLine2: this.taxInfoComponent.taxInfo.line2,
-          city: this.taxInfoComponent.taxInfo.city,
-          state: this.taxInfoComponent.taxInfo.state,
-        },
-      },
+      organization,
+      plan,
+      payment,
     });
 
     return response.id;
   }
 
-  private findPlanFor(cadence: SubscriptionCadence) {
-    switch (this.subscriptionType) {
-      case SubscriptionType.Teams:
-        return cadence === SubscriptionCadence.Annual
-          ? this.applicablePlans.find((plan) => plan.type === PlanType.TeamsAnnually)
-          : this.applicablePlans.find((plan) => plan.type === PlanType.TeamsMonthly);
-      case SubscriptionType.Enterprise:
+  private findPlanFor(cadence: SubscriptionCadence): PlanResponse {
+    switch (this.organizationInfo.type) {
+      case ProductType.Enterprise:
         return cadence === SubscriptionCadence.Annual
           ? this.applicablePlans.find((plan) => plan.type === PlanType.EnterpriseAnnually)
           : this.applicablePlans.find((plan) => plan.type === PlanType.EnterpriseMonthly);
+      case ProductType.Families:
+        return cadence === SubscriptionCadence.Annual
+          ? this.applicablePlans.find((plan) => plan.type === PlanType.FamiliesAnnually)
+          : null;
+      case ProductType.Teams:
+        return cadence === SubscriptionCadence.Annual
+          ? this.applicablePlans.find((plan) => plan.type === PlanType.TeamsAnnually)
+          : this.applicablePlans.find((plan) => plan.type === PlanType.TeamsMonthly);
+      case ProductType.TeamsStarter:
+        return cadence === SubscriptionCadence.Annual
+          ? null
+          : this.applicablePlans.find((plan) => plan.type === PlanType.TeamsStarter);
     }
+  }
+
+  private getBillingInformationFromTaxInfoComponent(): BillingInformation {
+    return {
+      postalCode: this.taxInfoComponent.taxInfo.postalCode,
+      country: this.taxInfoComponent.taxInfo.country,
+      taxId: this.taxInfoComponent.taxInfo.taxId,
+      addressLine1: this.taxInfoComponent.taxInfo.line1,
+      addressLine2: this.taxInfoComponent.taxInfo.line2,
+      city: this.taxInfoComponent.taxInfo.city,
+      state: this.taxInfoComponent.taxInfo.state,
+    };
   }
 
   private getPlanDescription(): string {
     const plan = this.findPlanFor(this.formGroup.value.cadence);
     const price =
-      plan.SecretsManager.basePrice === 0
-        ? plan.SecretsManager.seatPrice
-        : plan.SecretsManager.basePrice;
+      this.subscriptionProduct === SubscriptionProduct.PasswordManager
+        ? plan.PasswordManager.basePrice === 0
+          ? plan.PasswordManager.seatPrice
+          : plan.PasswordManager.basePrice
+        : plan.SecretsManager.basePrice === 0
+          ? plan.SecretsManager.seatPrice
+          : plan.SecretsManager.basePrice;
 
     switch (this.formGroup.value.cadence) {
       case SubscriptionCadence.Annual:
@@ -174,10 +220,12 @@ export class SecretsManagerTrialBillingStepComponent implements OnInit {
   }
 
   private isApplicable(plan: PlanResponse): boolean {
-    const hasSecretsManager = !!plan.SecretsManager;
-    const isTeamsOrEnterprise =
-      plan.product === ProductType.Teams || plan.product === ProductType.Enterprise;
+    const hasCorrectProductType =
+      plan.product === ProductType.Enterprise ||
+      plan.product === ProductType.Families ||
+      plan.product === ProductType.Teams ||
+      plan.product === ProductType.TeamsStarter;
     const notDisabledOrLegacy = !plan.disabled && !plan.legacyYear;
-    return hasSecretsManager && isTeamsOrEnterprise && notDisabledOrLegacy;
+    return hasCorrectProductType && notDisabledOrLegacy;
   }
 }
