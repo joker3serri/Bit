@@ -10,7 +10,7 @@ import {
   OnChanges,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, takeUntil, Observable } from "rxjs";
+import { Subject, takeUntil, Observable, firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -46,7 +46,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   protected currentTasks: VaultOnboardingTasks;
 
-  protected onboardingTasks$: Observable<Record<string, VaultOnboardingTasks>>;
+  protected onboardingTasks$: Observable<VaultOnboardingTasks>;
   protected showOnboarding = false;
 
   constructor(
@@ -61,15 +61,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   async ngOnInit() {
     await this.checkOnboardingFlag();
     this.onboardingTasks$ = this.vaultOnboardingService.vaultOnboardingState$;
-    this.onboardingTasks$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((tasks: { vaultTasks: VaultOnboardingTasks }) => {
-        this.showOnboarding =
-          tasks !== null ? Object.values(tasks.vaultTasks).includes(false) : true;
-        this.currentTasks = tasks !== null ? tasks.vaultTasks : null;
-        this.setOnboardingTasks();
-      });
-
+    await this.setOnboardingTasks();
     this.setInstallExtLink();
     this.individualVaultPolicyCheck();
     this.checkForBrowserExtension();
@@ -134,17 +126,18 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  setOnboardingTasks() {
-    if (this.currentTasks == null) {
+  async setOnboardingTasks() {
+    const currentTasks = await firstValueFrom(this.onboardingTasks$);
+    if (currentTasks == null) {
       const freshStart = {
         createAccount: true,
         importData: this.ciphers?.length > 0,
         installExtension: false,
       };
-      this.vaultOnboardingService.setVaultOnboardingTasks(freshStart);
+      await this.vaultOnboardingService.setVaultOnboardingTasks(freshStart);
       this.showOnboarding = true;
-    } else if (this.currentTasks) {
-      this.showOnboarding = Object.values(this.currentTasks).includes(false);
+    } else if (currentTasks) {
+      this.showOnboarding = Object.values(currentTasks).includes(false);
     }
 
     if (this.showOnboarding) {
@@ -153,7 +146,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
-    this.vaultOnboardingService.setVaultOnboardingTasks(vaultTasks);
+    await this.vaultOnboardingService.setVaultOnboardingTasks(vaultTasks);
   }
 
   individualVaultPolicyCheck() {
