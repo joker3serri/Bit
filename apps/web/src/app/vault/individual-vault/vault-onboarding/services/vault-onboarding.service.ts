@@ -16,14 +16,14 @@ export type VaultOnboardingTasks = {
   installExtension: boolean;
 };
 
-const VAULT_ONBOARDING_KEY = new KeyDefinition<any>(VAULT_ONBOARDING, "data", {
+const VAULT_ONBOARDING_KEY = new KeyDefinition<VaultOnboardingTasks>(VAULT_ONBOARDING, "tasks", {
   deserializer: (jsonData) => jsonData,
 });
 
 @Injectable()
 export class VaultOnboardingService implements VaultOnboardingServiceAbstraction {
-  private vaultOnboardingState: ActiveUserState<Record<string, VaultOnboardingTasks>>;
-  vaultOnboardingState$: Observable<Record<string, VaultOnboardingTasks>>;
+  private vaultOnboardingState: ActiveUserState<VaultOnboardingTasks>;
+  vaultOnboardingState$: Observable<VaultOnboardingTasks>;
 
   constructor(private stateProvider: StateProvider) {
     this.vaultOnboardingState = this.stateProvider.getActive(VAULT_ONBOARDING_KEY);
@@ -32,7 +32,7 @@ export class VaultOnboardingService implements VaultOnboardingServiceAbstraction
 
   async setVaultOnboardingTasks(newState: VaultOnboardingTasks) {
     await this.vaultOnboardingState.update(() => {
-      return { vaultTasks: { ...newState } };
+      return { ...newState };
     });
   }
 }
