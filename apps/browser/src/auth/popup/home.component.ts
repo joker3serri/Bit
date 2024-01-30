@@ -8,7 +8,6 @@ import { LoginService } from "@bitwarden/common/auth/abstractions/login.service"
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { AccountSwitcherService } from "./account-switching/services/account-switcher.service";
 
@@ -29,7 +28,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     protected platformUtilsService: PlatformUtilsService,
-    private stateService: StateService,
     private formBuilder: FormBuilder,
     private router: Router,
     private i18nService: I18nService,
