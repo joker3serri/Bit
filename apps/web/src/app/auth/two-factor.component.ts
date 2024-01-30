@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, Inject, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
@@ -25,7 +25,7 @@ import { TwoFactorOptionsComponent } from "./two-factor-options.component";
   templateUrl: "two-factor.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class TwoFactorComponent extends BaseTwoFactorComponent {
+export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDestroy {
   @ViewChild("twoFactorOptions", { read: ViewContainerRef, static: true })
   twoFactorOptionsModal: ViewContainerRef;
 
@@ -111,9 +111,13 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   private handleDuoResultMessage = async (msg: { data: { code: string } }) => {
     this.token = msg.data.code;
     await this.submit();
+  };
+
+  async ngOnDestroy() {
+    super.ngOnDestroy();
 
     // clean up
     this.duoResultChannel.removeEventListener("message", this.handleDuoResultMessage);
     this.duoResultChannel.close();
-  };
+  }
 }
