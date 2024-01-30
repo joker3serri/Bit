@@ -463,23 +463,10 @@ export default class MainBackground {
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
 
     this.authService = new AuthService(
+      backgroundMessagingService,
       this.cryptoService,
       this.apiService,
-      this.tokenService,
-      this.appIdService,
-      this.platformUtilsService,
-      backgroundMessagingService,
-      this.logService,
-      this.keyConnectorService,
-      this.environmentService,
       this.stateService,
-      this.twoFactorService,
-      this.i18nService,
-      this.encryptService,
-      this.passwordStrengthService,
-      this.policyService,
-      this.deviceTrustCryptoService,
-      this.authRequestCryptoService,
     );
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);

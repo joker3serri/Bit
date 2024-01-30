@@ -12,8 +12,8 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -62,7 +62,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private syncService: SyncService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private cipherService: CipherService,
-    private loginStrategyService: LoginStrategyServiceAbstraction,
+    private authService: AuthService,
     private router: Router,
     private toastrService: ToastrService,
     private i18nService: I18nService,
@@ -242,7 +242,7 @@ export class AppComponent implements OnDestroy, OnInit {
     ]);
 
     this.searchService.clearIndex();
-    this.loginStrategyService.logOut(async () => {
+    this.authService.logOut(async () => {
       if (expired) {
         this.platformUtilsService.showToast(
           "warning",

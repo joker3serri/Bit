@@ -264,7 +264,12 @@ import { ModalService } from "./modal.service";
     {
       provide: AuthServiceAbstraction,
       useClass: AuthService,
-      deps: [CryptoServiceAbstraction, ApiServiceAbstraction, StateServiceAbstraction],
+      deps: [
+        MessagingServiceAbstraction,
+        CryptoServiceAbstraction,
+        ApiServiceAbstraction,
+        StateServiceAbstraction,
+      ],
     },
     {
       provide: LoginStrategyServiceAbstraction,

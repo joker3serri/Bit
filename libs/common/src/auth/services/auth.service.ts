@@ -1,5 +1,6 @@
 import { ApiService } from "../../abstractions/api.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
+import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { KeySuffixOptions } from "../../platform/enums";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
@@ -7,6 +8,7 @@ import { AuthenticationStatus } from "../enums/authentication-status";
 
 export class AuthService implements AuthServiceAbstraction {
   constructor(
+    protected messagingService: MessagingService,
     protected cryptoService: CryptoService,
     protected apiService: ApiService,
     protected stateService: StateService,
@@ -44,5 +46,10 @@ export class AuthService implements AuthServiceAbstraction {
     }
 
     return AuthenticationStatus.Unlocked;
+  }
+
+  logOut(callback: () => void) {
+    callback();
+    this.messagingService.send("loggedOut");
   }
 }

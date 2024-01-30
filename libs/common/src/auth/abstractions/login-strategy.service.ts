@@ -32,7 +32,6 @@ export abstract class LoginStrategyServiceAbstraction {
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string,
   ) => Promise<AuthResult>;
-  logOut: (callback: () => void) => void;
   makePreloginKey: (masterPassword: string, email: string) => Promise<MasterKey>;
   authingWithUserApiKey: () => boolean;
   authingWithSso: () => boolean;
