@@ -26,3 +26,5 @@ export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
+
+export const PASSKEYS_DISK = new StateDefinition("passkeys", "disk");
