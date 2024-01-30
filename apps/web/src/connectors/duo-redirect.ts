@@ -8,13 +8,16 @@ window.addEventListener("load", () => {
   const client = getQsParam("client");
   const code = getQsParam("code");
 
-  if (client === "browser" || client === "web") {
+  if (client === "web") {
     const channel = new BroadcastChannel("duoResult");
 
     channel.postMessage({ code: code });
     channel.close();
 
-    handleMessage();
+    processAndDisplayHandoffMessage();
+  } else if (client === "browser") {
+    window.postMessage({ command: "duoResult", code: code }, "*");
+    processAndDisplayHandoffMessage();
   } else if (client === "mobile" || client === "desktop") {
     document.location.replace(mobileDesktopCallback + "?code=" + encodeURIComponent(code));
   }
@@ -46,8 +49,9 @@ window.addEventListener("load", () => {
  * If no `countdown` property is given, there will be no countdown timer and the user will simply
  * have to close the tab manually.
  */
-const handleMessage = () => {
+function processAndDisplayHandoffMessage() {
   const handOffMessageCookie = ("; " + document.cookie)
+
     .split("; duoHandOffMessage=")
     .pop()
     .split(";")
@@ -95,4 +99,4 @@ const handleMessage = () => {
       }
     }, 1000);
   }
-};
+}
