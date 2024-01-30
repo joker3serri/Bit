@@ -8,7 +8,7 @@ type ExpectedGlobalType = {
 const USER_ENABLE_PASSKEYS: KeyDefinitionLike = {
   key: "enablePasskeys",
   stateDefinition: {
-    name: "fido2",
+    name: "vaultSettings",
   },
 };
 
@@ -16,12 +16,14 @@ export class EnablePasskeysMigrator extends Migrator<13, 14> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const global = await helper.get<ExpectedGlobalType>("global");
 
-    if (global?.enablePasskeys != null) {
-      await helper.setToGlobal(USER_ENABLE_PASSKEYS, global.enablePasskeys);
-    }
+    if (global) {
+      if (global.enablePasskeys != null) {
+        await helper.setToGlobal(USER_ENABLE_PASSKEYS, global.enablePasskeys);
+      }
 
-    delete global?.enablePasskeys;
-    await helper.set("global", global);
+      delete global?.enablePasskeys;
+      await helper.set("global", global);
+    }
   }
 
   async rollback(helper: MigrationHelper): Promise<void> {

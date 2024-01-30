@@ -1,5 +1,9 @@
-import { FIDO2_DISK, KeyDefinition } from "../../../platform/state";
+import { VAULT_SETTINGS_DISK, KeyDefinition } from "../../../platform/state";
 
-export const USER_ENABLE_PASSKEYS = new KeyDefinition<boolean>(FIDO2_DISK, "enablePasskeys", {
-  deserializer: (obj) => obj,
-});
+export const USER_ENABLE_PASSKEYS = new KeyDefinition<boolean>(
+  VAULT_SETTINGS_DISK,
+  "enablePasskeys",
+  {
+    deserializer: (obj) => obj,
+  },
+);

@@ -8,18 +8,17 @@ import { USER_ENABLE_PASSKEYS } from "../key-state/enable-passkey.state";
  * {@link VaultSettingsServiceAbstraction}
  */
 export class VaultSettingsService implements VaultSettingsServiceAbstraction {
-  private enablePasskeysState: GlobalState<boolean>;
-
-  constructor(private stateProvider: StateProvider) {
-    this.enablePasskeysState = stateProvider.getGlobal(USER_ENABLE_PASSKEYS);
-  }
+  private enablePasskeysState: GlobalState<boolean> =
+    this.stateProvider.getGlobal(USER_ENABLE_PASSKEYS);
 
   /**
    * {@link VaultSettingsServiceAbstraction.enablePasskeys$}
    */
-  get enablePasskeys$(): Observable<boolean> {
-    return this.enablePasskeysState.state$.pipe(map((x) => x ?? false));
-  }
+  readonly enablePasskeys$: Observable<boolean> = this.enablePasskeysState.state$.pipe(
+    map((x) => x ?? false),
+  );
+
+  constructor(private stateProvider: StateProvider) {}
 
   /**
    * {@link VaultSettingsServiceAbstraction.setEnablePasskeys}

@@ -29,7 +29,7 @@ function exampleJSON() {
 
 function rollbackJSON() {
   return {
-    global_fido2_enablePasskeys: true,
+    global_vaultSettings_enablePasskeys: true,
     global: {
       otherStuff: "otherStuff1",
     },

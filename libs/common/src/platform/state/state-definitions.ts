@@ -27,4 +27,4 @@ export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 
-export const FIDO2_DISK = new StateDefinition("fido2", "disk");
+export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk");
