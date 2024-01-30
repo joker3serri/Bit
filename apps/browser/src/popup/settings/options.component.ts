@@ -105,7 +105,6 @@ export class OptionsComponent implements OnInit {
 
     this.enableBadgeCounter = !(await this.stateService.getDisableBadgeCounter());
 
-    // this.enablePasskeys = await this.stateService.getEnablePasskeys();
     this.enablePasskeys = await firstValueFrom(this.vaultSettingsService.enablePasskeys$);
 
     this.theme = await this.stateService.getTheme();
