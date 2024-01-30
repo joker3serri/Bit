@@ -85,8 +85,8 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   getMessages(event: any) {
     if (event.data.command === "hasBWInstalled" && this.showOnboarding) {
       this.saveCompletedTasks({
-        createAccount: this.onboardingTasks$.getValue().createAccount,
-        importData: this.onboardingTasks$.getValue().importData,
+        createAccount: this.currentTasks.createAccount,
+        importData: this.currentTasks.importData,
         installExtension: true,
       });
     }
@@ -97,7 +97,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
       this.saveCompletedTasks({
         createAccount: true,
         importData: this.ciphers.length > 0,
-        installExtension: this.onboardingTasks$.getValue().installExtension,
+        installExtension: this.currentTasks.installExtension,
       });
     }
   }

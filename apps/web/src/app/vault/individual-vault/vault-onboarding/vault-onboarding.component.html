@@ -34,7 +34,7 @@
       [title]="'installBrowserExtension' | i18n"
       icon="bwi-cli"
       (click)="navigateToExtension()"
-      [completed]="(onboardingTasks$ | async).installExtension"
+      [completed]="onboardingTasks.vaultTasks.installExtension"
     >
       <span class="tw-pl-1">
         {{ "installBrowserExtensionDetails" | i18n }}
