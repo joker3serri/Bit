@@ -124,14 +124,7 @@
     "extendInfo": {
       "LSMinimumSystemVersion": "10.15.0",
       "ElectronTeamID": "LTZ2PFU5D6"
-    },
-    "extraFiles": [
-      {
-        "from": "PlugIns/safari.appex",
-        "to": "PlugIns/safari.appex"
-      }
-    ],
-    "x64ArchFiles": "Contents/PlugIns/safari.appex/**/*"
+    }
   },
   "nsisWeb": {
     "oneClick": false,
