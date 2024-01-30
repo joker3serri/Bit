@@ -6,7 +6,7 @@ import { LogService } from "../../../platform/abstractions/log.service";
 import { Utils } from "../../../platform/misc/utils";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { PrfKey } from "../../../types/key";
-import { AuthService } from "../../abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "../../abstractions/login-strategy.service";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
 import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { AuthResult } from "../../models/domain/auth-result";
@@ -22,7 +22,7 @@ describe("WebAuthnLoginService", () => {
   let webAuthnLoginService: WebAuthnLoginService;
 
   const webAuthnLoginApiService = mock<WebAuthnLoginApiServiceAbstraction>();
-  const authService = mock<AuthService>();
+  const loginStrategyService = mock<LoginStrategyServiceAbstraction>();
   const configService = mock<ConfigServiceAbstraction>();
   const webAuthnLoginPrfCryptoService = mock<WebAuthnLoginPrfCryptoServiceAbstraction>();
   const navigatorCredentials = mock<CredentialsContainer>();
@@ -75,7 +75,7 @@ describe("WebAuthnLoginService", () => {
     configService.getFeatureFlag$.mockReturnValue(of(config.featureEnabled));
     return new WebAuthnLoginService(
       webAuthnLoginApiService,
-      authService,
+      loginStrategyService,
       configService,
       webAuthnLoginPrfCryptoService,
       window,
@@ -273,7 +273,7 @@ describe("WebAuthnLoginService", () => {
       const assertion = buildWebAuthnLoginCredentialAssertionView();
       const mockAuthResult: AuthResult = new AuthResult();
 
-      jest.spyOn(authService, "logIn").mockResolvedValue(mockAuthResult);
+      jest.spyOn(loginStrategyService, "logIn").mockResolvedValue(mockAuthResult);
 
       // Act
       const result = await webAuthnLoginService.logIn(assertion);
@@ -281,7 +281,7 @@ describe("WebAuthnLoginService", () => {
       // Assert
       expect(result).toEqual(mockAuthResult);
 
-      const callArguments = authService.logIn.mock.calls[0];
+      const callArguments = loginStrategyService.logIn.mock.calls[0];
       expect(callArguments[0]).toBeInstanceOf(WebAuthnLoginCredentials);
     });
   });

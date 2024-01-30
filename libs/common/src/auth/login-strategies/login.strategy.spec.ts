@@ -24,7 +24,7 @@ import {
 } from "../../tools/password-strength";
 import { CsprngArray } from "../../types/csprng";
 import { UserKey, MasterKey, DeviceKey } from "../../types/key";
-import { AuthService } from "../abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
@@ -93,6 +93,7 @@ export function identityTokenResponseFactory(
 
 // TODO: add tests for latest changes to base class for TDE
 describe("LoginStrategy", () => {
+  let loginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -102,7 +103,6 @@ describe("LoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
-  let authService: MockProxy<AuthService>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
 
@@ -110,6 +110,7 @@ describe("LoginStrategy", () => {
   let credentials: PasswordLoginCredentials;
 
   beforeEach(async () => {
+    loginStrategyService = mock<LoginStrategyServiceAbstraction>();
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
@@ -119,7 +120,6 @@ describe("LoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
-    authService = mock<AuthService>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
 
@@ -139,7 +139,7 @@ describe("LoginStrategy", () => {
       twoFactorService,
       passwordStrengthService,
       policyService,
-      authService,
+      loginStrategyService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
   });

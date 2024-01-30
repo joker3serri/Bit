@@ -17,7 +17,7 @@ import {
 } from "../../tools/password-strength";
 import { CsprngArray } from "../../types/csprng";
 import { MasterKey, UserKey } from "../../types/key";
-import { AuthService } from "../abstractions/auth.service";
+import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
@@ -46,6 +46,7 @@ const masterPasswordPolicy = new MasterPasswordPolicyResponse({
 });
 
 describe("PasswordLoginStrategy", () => {
+  let loginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -55,7 +56,6 @@ describe("PasswordLoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
-  let authService: MockProxy<AuthService>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
 
@@ -64,6 +64,7 @@ describe("PasswordLoginStrategy", () => {
   let tokenResponse: IdentityTokenResponse;
 
   beforeEach(async () => {
+    loginStrategyService = mock<LoginStrategyServiceAbstraction>();
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
@@ -73,14 +74,13 @@ describe("PasswordLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
-    authService = mock<AuthService>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.mockResolvedValue({});
 
-    authService.makePreloginKey.mockResolvedValue(masterKey);
+    loginStrategyService.makePreloginKey.mockResolvedValue(masterKey);
 
     cryptoService.hashMasterKey
       .calledWith(masterPassword, expect.anything(), undefined)
@@ -103,7 +103,7 @@ describe("PasswordLoginStrategy", () => {
       twoFactorService,
       passwordStrengthService,
       policyService,
-      authService,
+      loginStrategyService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
     tokenResponse = identityTokenResponseFactory(masterPasswordPolicy);
