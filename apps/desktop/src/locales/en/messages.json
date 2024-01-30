@@ -1419,9 +1419,6 @@
   "autoPromptTouchId": {
     "message": "Ask for Touch ID on app start"
   },
-  "unlockWithMasterPassword": {
-    "message": "Unlock with master password"
-  },
   "requirePasswordOnStart": {
     "message": "Require password or PIN on app start"
   },

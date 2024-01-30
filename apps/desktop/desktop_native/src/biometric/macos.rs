@@ -1,23 +1,39 @@
+#![allow(non_snake_case)]
+
+use swift_rs::{swift, Bool, SRString};
 use anyhow::{bail, Result};
-use localauthentication_rs::{LocalAuthentication, LAPolicy};
 
 use crate::biometrics::{KeyMaterial, OsDerivedKey};
+
+swift!(pub(crate) fn biometric_available() -> Bool);
+
+swift!(pub(crate) fn biometric_evaluateAccessControl(reason: &SRString, fallback_message: &SRString) -> Bool);
+
+pub struct BiometricBridge {}
+impl BiometricBridge {
+    pub fn available() -> bool {
+        let value = unsafe { biometric_available() };
+        return value.into();
+    }
+
+    pub fn evaluateAccessControl(_reason: &str, _fallback_message: &str) -> bool {
+        let reason: SRString = _reason.into();
+        let fallback_message: SRString = _fallback_message.into();
+        return unsafe { biometric_evaluateAccessControl( &reason, &fallback_message) }.into();
+    }
+}
 
 /// The MacOS implementation of the biometric trait.
 pub struct Biometric {}
 
 impl super::BiometricTrait for Biometric {
-    fn prompt(_hwnd: Vec<u8>, _message: String, fallback_message: Option<String>) -> Result<bool> {
-        let local_authentication: LocalAuthentication = LocalAuthentication::new(fallback_message.as_deref());
-        Ok(local_authentication.evaluate_policy(
-            LAPolicy::DeviceOwnerAuthenticationWithBiometricsOrWatch,
-            &_message,
-        ))
+    fn prompt(_hwnd: Vec<u8>, _message: String, _fallback_message: Option<String>) -> Result<bool> {
+        let fallback_message = _fallback_message.as_deref().unwrap_or("");
+        Ok(BiometricBridge::evaluateAccessControl(&_message, fallback_message))
     }
 
     fn available() -> Result<bool> {
-        let local_authentication = LocalAuthentication::new(None);
-        Ok(local_authentication.can_evaluate_policy(LAPolicy::DeviceOwnerAuthenticationWithBiometricsOrWatch))
+        Ok(BiometricBridge::available())
     }
 
 
