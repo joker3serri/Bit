@@ -24,7 +24,7 @@ export default class BiometricDarwinMain implements OsBiometricService {
 
   async authenticateBiometric(): Promise<boolean> {
     const hwnd = this.windowMain.win.getNativeWindowHandle();
-    return await biometrics.prompt(hwnd, this.i18nService.t("touchIdConsentMessage"), "");
+    return await biometrics.prompt(hwnd, this.i18nService.t("touchIdConsentMessage"));
   }
 
   async getBiometricKey(service: string, key: string): Promise<string | null> {

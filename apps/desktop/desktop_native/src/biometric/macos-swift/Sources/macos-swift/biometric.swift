@@ -20,14 +20,14 @@ func available() -> Bool {
 }
 
 @_cdecl("biometric_evaluateAccessControl")
-func evaluateAccessControl(reason: SRString, fallbackMessage: SRString) -> Bool {
+func evaluateAccessControl(reason: SRString) -> Bool {
     let reason = reason.toString()
     let semaphore = DispatchSemaphore(value: 0)
     var didEvaluate = false
     
     var error: NSError?
     let laContext = LAContext()
-    laContext.localizedFallbackTitle = fallbackMessage.toString()
+    laContext.localizedFallbackTitle = ""
 
     laContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
 

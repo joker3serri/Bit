@@ -10,7 +10,7 @@ pub use biometric::Biometric;
 use crate::biometrics::{KeyMaterial, OsDerivedKey};
 
 pub trait BiometricTrait {
-    fn prompt(hwnd: Vec<u8>, message: String, fallback_message: Option<String>) -> Result<bool>;
+    fn prompt(hwnd: Vec<u8>, message: String) -> Result<bool>;
     fn available() -> Result<bool>;
     fn derive_key_material(secret: Option<&str>) -> Result<OsDerivedKey>;
     fn set_biometric_secret(

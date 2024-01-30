@@ -6,7 +6,7 @@ use crate::biometrics::{KeyMaterial, OsDerivedKey};
 pub struct Biometric {}
 
 impl super::BiometricTrait for Biometric {
-    fn prompt(_hwnd: Vec<u8>, _message: String, _fallback_message: Option<String>) -> Result<bool> {
+    fn prompt(_hwnd: Vec<u8>, _message: String) -> Result<bool> {
         bail!("platform not supported");
     }
 
