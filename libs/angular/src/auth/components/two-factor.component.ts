@@ -47,6 +47,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
 
   duoFrameless = false;
   duoFramelessUrl: string = null;
+  duoResultListenerInitialized = false;
 
   onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginNavigate: () => Promise<void>;
@@ -157,8 +158,11 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
           this.duoFrameless = true;
           // Setup listener for duo-redirect.ts connector to send back the code
 
-          // setup client specific duo result listener
-          this.setupDuoResultListener();
+          if (!this.duoResultListenerInitialized) {
+            // setup client specific duo result listener
+            this.setupDuoResultListener();
+            this.duoResultListenerInitialized = true;
+          }
 
           // flow must be launched by user so they can choose to remember the device or not.
           this.duoFramelessUrl = providerData.AuthUrl;

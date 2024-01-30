@@ -104,8 +104,10 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
   private duoResultChannel: BroadcastChannel;
 
   protected override setupDuoResultListener() {
-    this.duoResultChannel = new BroadcastChannel("duoResult");
-    this.duoResultChannel.addEventListener("message", this.handleDuoResultMessage);
+    if (!this.duoResultChannel) {
+      this.duoResultChannel = new BroadcastChannel("duoResult");
+      this.duoResultChannel.addEventListener("message", this.handleDuoResultMessage);
+    }
   }
 
   private handleDuoResultMessage = async (msg: { data: { code: string } }) => {
@@ -116,8 +118,10 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
   async ngOnDestroy() {
     super.ngOnDestroy();
 
-    // clean up
-    this.duoResultChannel.removeEventListener("message", this.handleDuoResultMessage);
-    this.duoResultChannel.close();
+    if (this.duoResultChannel) {
+      // clean up duo listener if it was initialized.
+      this.duoResultChannel.removeEventListener("message", this.handleDuoResultMessage);
+      this.duoResultChannel.close();
+    }
   }
 }

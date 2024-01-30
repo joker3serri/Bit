@@ -1,6 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { filter, first, takeUntil } from "rxjs/operators";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
@@ -185,16 +185,20 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     return (await BrowserApi.getPlatformInfo()).os === "linux";
   }
 
+  duoResultSubscription: Subscription;
+
   protected override setupDuoResultListener() {
-    this.browserMessagingApi
-      .messageListener$()
-      .pipe(
-        filter((msg: any) => msg.command === "duoResult"),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((msg: { command: string; code: string }) => {
-        this.token = msg.code;
-        this.submit();
-      });
+    if (!this.duoResultSubscription) {
+      this.duoResultSubscription = this.browserMessagingApi
+        .messageListener$()
+        .pipe(
+          filter((msg: any) => msg.command === "duoResult"),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((msg: { command: string; code: string }) => {
+          this.token = msg.code;
+          this.submit();
+        });
+    }
   }
 }
