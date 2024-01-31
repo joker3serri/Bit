@@ -67,7 +67,7 @@ import { GlobalState } from "@bitwarden/common/platform/models/domain/global-sta
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
+import { DerivedStateProvider } from "@bitwarden/common/platform/state";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -89,7 +89,6 @@ import {
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
-import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
@@ -205,31 +204,6 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: FileUploadService,
       useFactory: getBgService<FileUploadService>("fileUploadService"),
-    },
-    {
-      provide: FolderServiceAbstraction,
-      useFactory: (
-        cryptoService: CryptoService,
-        i18nService: I18nServiceAbstraction,
-        cipherService: CipherService,
-        stateService: StateServiceAbstraction,
-        stateProvider: StateProvider,
-      ) => {
-        return new FolderService(
-          cryptoService,
-          i18nService,
-          cipherService,
-          stateService,
-          stateProvider,
-        );
-      },
-      deps: [
-        CryptoService,
-        I18nServiceAbstraction,
-        CipherService,
-        StateServiceAbstraction,
-        StateProvider,
-      ],
     },
     {
       provide: InternalFolderService,
