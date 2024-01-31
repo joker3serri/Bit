@@ -9,6 +9,7 @@ import { EverHadUserKeyMigrator } from "./migrations/10-move-ever-had-user-key-t
 import { OrganizationKeyMigrator } from "./migrations/11-move-org-keys-to-state-providers";
 import { MoveEnvironmentStateToProviders } from "./migrations/12-move-environment-state-to-providers";
 import { FolderMigrator } from "./migrations/13-move-folder-state-to-state-provider";
+import { ProviderKeyMigrator } from "./migrations/13-move-provider-keys-to-state-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -48,6 +49,7 @@ export async function migrate(
     .with(EverHadUserKeyMigrator, 9, 10)
     .with(OrganizationKeyMigrator, 10, 11)
     .with(MoveEnvironmentStateToProviders, 11, 12)
+    .with(ProviderKeyMigrator, 12, 12)
     .with(FolderMigrator, 12, CURRENT_VERSION)
 
     .migrate(migrationHelper);
