@@ -34,10 +34,8 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
-import {
-  OrgKey,
-  SymmetricCryptoKey,
-} from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { OrgKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { OrganizationCreateModule } from "../../admin-console/organizations/create/organization-create.module";
@@ -167,10 +165,26 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (this.currentPlan && this.currentPlan.product !== ProductType.Enterprise) {
+      const upgradedPlan = this.passwordManagerPlans.find((plan) =>
+        this.currentPlan.product === ProductType.Free
+          ? plan.type === PlanType.FamiliesAnnually
+          : plan.upgradeSortOrder == this.currentPlan.upgradeSortOrder + 1,
+      );
+
+      this.plan = upgradedPlan.type;
+      this.product = upgradedPlan.product;
+    }
+
     if (this.hasProvider) {
       this.formGroup.controls.businessOwned.setValue(true);
       this.changedOwnedBusiness();
       this.provider = await this.apiService.getProvider(this.providerId);
+      const providerDefaultPlan = this.passwordManagerPlans.find(
+        (plan) => plan.type === PlanType.TeamsAnnually,
+      );
+      this.plan = providerDefaultPlan.type;
+      this.product = providerDefaultPlan.product;
     }
 
     if (!this.createOrganization) {
@@ -186,6 +200,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       .subscribe((policyAppliesToActiveUser) => {
         this.singleOrgPolicyAppliesToActiveUser = policyAppliesToActiveUser;
       });
+
+    if (!this.selfHosted) {
+      this.changedProduct();
+    }
 
     this.loading = false;
   }
@@ -448,12 +466,17 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.currentPlan?.PasswordManager?.hasAdditionalSeatsOption) {
+    if (this.currentPlan && !this.currentPlan.PasswordManager.hasAdditionalSeatsOption) {
       this.formGroup.controls.additionalSeats.setValue(this.currentPlan.PasswordManager.baseSeats);
       return;
     }
 
-    this.formGroup.controls.additionalSeats.setValue(this.organization.seats);
+    if (this.organization) {
+      this.formGroup.controls.additionalSeats.setValue(this.organization.seats);
+      return;
+    }
+
+    this.formGroup.controls.additionalSeats.setValue(1);
   }
 
   handleSecretsManagerForm() {
@@ -461,7 +484,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.secretsManagerForm.enable();
     }
 
-    if (this.organization.useSecretsManager) {
+    if (this.organization?.useSecretsManager) {
       this.secretsManagerForm.controls.enabled.setValue(true);
     }
 
