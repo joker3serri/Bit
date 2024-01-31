@@ -82,7 +82,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: currentTasks.importData,
         installExtension: true,
       };
-      this.onboardingStatusCheck(updatedTasks);
+      this.saveCompletedTasks(updatedTasks);
     }
   }
 
@@ -94,7 +94,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: this.ciphers.length > 0,
         installExtension: currentTasks.installExtension,
       };
-      this.onboardingStatusCheck(updatedTasks);
+      this.saveCompletedTasks(updatedTasks);
     }
   }
 
@@ -121,9 +121,8 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  protected hideOnboarding() {
-    this.showOnboarding = false;
-    this.saveCompletedTasks({
+  protected async hideOnboarding() {
+    await this.saveCompletedTasks({
       createAccount: true,
       importData: true,
       installExtension: true,
@@ -138,8 +137,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: this.ciphers?.length > 0,
         installExtension: false,
       };
-      await this.vaultOnboardingService.setVaultOnboardingTasks(freshStart);
-      this.showOnboarding = true;
+      await this.saveCompletedTasks(freshStart);
     } else if (currentTasks) {
       this.showOnboarding = Object.values(currentTasks).includes(false);
     }
@@ -149,12 +147,8 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private onboardingStatusCheck(vaultTasks: VaultOnboardingTasks) {
-    this.showOnboarding = Object.values(vaultTasks).includes(false);
-    this.saveCompletedTasks(vaultTasks);
-  }
-
   private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
+    this.showOnboarding = Object.values(vaultTasks).includes(false);
     await this.vaultOnboardingService.setVaultOnboardingTasks(vaultTasks);
   }
 
