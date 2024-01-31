@@ -7,7 +7,7 @@ export abstract class VaultSettingsService {
    * An observable monitoring the state of the enable passkeys setting.
    * The observable updates when the setting changes.
    */
-  enablePasskeys$: Observable<boolean>;
+  readonly enablePasskeys$: Observable<boolean>;
 
   /**
    * Saves the enable passkeys setting to disk.
