@@ -66,9 +66,9 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     this.individualVaultPolicyCheck();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     if (this.showOnboarding && changes?.ciphers) {
-      this.saveCompletedTasks({
+      await this.saveCompletedTasks({
         createAccount: true,
         importData: this.ciphers.length > 0,
         installExtension: false,
@@ -99,9 +99,8 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  protected hideOnboarding() {
-    this.showOnboarding = false;
-    this.saveCompletedTasks({
+  protected async hideOnboarding() {
+    await this.saveCompletedTasks({
       createAccount: true,
       importData: true,
       installExtension: true,
@@ -116,8 +115,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: this.ciphers?.length > 0,
         installExtension: false,
       };
-      await this.vaultOnboardingService.setVaultOnboardingTasks(freshStart);
-      this.showOnboarding = true;
+      await this.saveCompletedTasks(freshStart);
     } else if (currentTasks) {
       this.showOnboarding = Object.values(currentTasks).includes(false);
     }
@@ -128,6 +126,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
+    this.showOnboarding = Object.values(vaultTasks).includes(false);
     await this.vaultOnboardingService.setVaultOnboardingTasks(vaultTasks);
   }
 
