@@ -33,6 +33,7 @@ import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/ab
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -178,6 +179,10 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: AuthServiceAbstraction,
       useFactory: getBgService<AuthService>("authService"),
       deps: [],
+    },
+    {
+      provide: LoginStrategyServiceAbstraction,
+      useFactory: getBgService<LoginStrategyServiceAbstraction>("loginStrategyService"),
     },
     {
       provide: SearchServiceAbstraction,
