@@ -77,22 +77,24 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   async getMessages(event: any) {
     if (event.data.command === "hasBWInstalled" && this.showOnboarding) {
       const currentTasks = await firstValueFrom(this.onboardingTasks$);
-      this.saveCompletedTasks({
+      const updatedTasks = {
         createAccount: currentTasks.createAccount,
         importData: currentTasks.importData,
         installExtension: true,
-      });
+      };
+      this.onboardingStatusCheck(updatedTasks);
     }
   }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (this.showOnboarding && changes?.ciphers) {
       const currentTasks = await firstValueFrom(this.onboardingTasks$);
-      this.saveCompletedTasks({
+      const updatedTasks = {
         createAccount: true,
         importData: this.ciphers.length > 0,
         installExtension: currentTasks.installExtension,
-      });
+      };
+      this.onboardingStatusCheck(updatedTasks);
     }
   }
 
@@ -145,6 +147,11 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     if (this.showOnboarding) {
       this.checkCreationDate();
     }
+  }
+
+  private onboardingStatusCheck(vaultTasks: VaultOnboardingTasks) {
+    this.showOnboarding = Object.values(vaultTasks).includes(false);
+    this.saveCompletedTasks(vaultTasks);
   }
 
   private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
