@@ -755,7 +755,7 @@ import { ModalService } from "./modal.service";
     {
       provide: AnonymousHubServiceAbstraction,
       useClass: AnonymousHubService,
-      deps: [EnvironmentServiceAbstraction, AuthServiceAbstraction, LogService],
+      deps: [EnvironmentServiceAbstraction, LoginStrategyServiceAbstraction, LogService],
     },
     {
       provide: ValidationServiceAbstraction,
