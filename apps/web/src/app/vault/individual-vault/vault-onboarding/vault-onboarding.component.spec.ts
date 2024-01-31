@@ -71,11 +71,9 @@ describe("VaultOnboardingComponent", () => {
       .mockReturnValue(undefined);
     jest.spyOn(component, "checkCreationDate").mockReturnValue(null);
     (component as any).vaultOnboardingService.vaultOnboardingState$ = of({
-      vaultTasks: {
-        createAccount: true,
-        importData: false,
-        installExtension: false,
-      },
+      createAccount: true,
+      importData: false,
+      installExtension: false,
     });
   });
 
