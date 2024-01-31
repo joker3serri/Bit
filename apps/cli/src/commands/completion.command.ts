@@ -75,17 +75,20 @@ export class CompletionCommand {
         `case $state in
     cmnds)
       commands=(
-        ${commands.map(({ name, description }) => `"${name}:${description}"`).join("\n        ")}
+        ${commands
+          .map((command) => `"${command.name().split(" ")[0]}:${command.description()}"`)
+          .join("\n        ")}
       )
       _describe "command" commands
-      ;;
-  esac
+      ;;\n  esac
 
   case "$words[1]" in
     ${commands
-      .map(({ name }) => [`${name})`, `_${name}_${name}`, ";;"].join("\n      "))
-      .join("\n    ")}
-  esac`,
+      .map((command) => {
+        const commandName = command.name().split(" ")[0];
+        return [`${commandName})`, `_${name}_${commandName}`, ";;"].join("\n      ");
+      })
+      .join("\n    ")}\n  esac`,
       );
     }
 
@@ -95,7 +98,7 @@ export class CompletionCommand {
 
     if (hasCommands) {
       commandBlocParts.push(
-        commands.map((c) => this.renderCommandBlock(`${name}_${c.name}`, c)).join("\n\n"),
+        commands.map((c) => this.renderCommandBlock(`${name}_${c.name()}`, c)).join("\n\n"),
       );
     }
 
