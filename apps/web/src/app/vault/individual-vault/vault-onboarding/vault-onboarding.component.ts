@@ -74,22 +74,24 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getMessages(event: any) {
+  async getMessages(event: any) {
     if (event.data.command === "hasBWInstalled" && this.showOnboarding) {
+      const currentTasks = await firstValueFrom(this.onboardingTasks$);
       this.saveCompletedTasks({
-        createAccount: this.currentTasks.createAccount,
-        importData: this.currentTasks.importData,
+        createAccount: currentTasks.createAccount,
+        importData: currentTasks.importData,
         installExtension: true,
       });
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     if (this.showOnboarding && changes?.ciphers) {
+      const currentTasks = await firstValueFrom(this.onboardingTasks$);
       this.saveCompletedTasks({
         createAccount: true,
         importData: this.ciphers.length > 0,
-        installExtension: this.currentTasks.installExtension,
+        installExtension: currentTasks.installExtension,
       });
     }
   }

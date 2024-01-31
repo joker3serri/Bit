@@ -38,11 +38,9 @@ describe("VaultOnboardingComponent", () => {
     mockStateProvider = {
       getActive: jest.fn().mockReturnValue(
         of({
-          vaultTasks: {
-            createAccount: true,
-            importData: false,
-            installExtension: false,
-          },
+          createAccount: true,
+          importData: false,
+          installExtension: false,
         }),
       ),
     };
@@ -70,6 +68,7 @@ describe("VaultOnboardingComponent", () => {
       .spyOn(component, "individualVaultPolicyCheck")
       .mockReturnValue(undefined);
     jest.spyOn(component, "checkCreationDate").mockReturnValue(null);
+    jest.spyOn(window, "postMessage").mockImplementation(jest.fn());
     (component as any).vaultOnboardingService.vaultOnboardingState$ = of({
       createAccount: true,
       importData: false,
@@ -152,6 +151,37 @@ describe("VaultOnboardingComponent", () => {
       const expected = ["tools/import"];
       component.navigateToImport();
       expect(navigateSpy).toHaveBeenCalledWith(expected);
+    });
+  });
+
+  describe("checkBrowserExtension", () => {
+    it("should call getMessages when showOnboarding is true", () => {
+      jest.spyOn(window, "addEventListener");
+
+      (component as any).showOnboarding = true;
+      component.checkForBrowserExtension();
+
+      expect(window.postMessage).toHaveBeenCalledWith({ command: "checkIfBWExtensionInstalled" });
+      expect(window.addEventListener).toHaveBeenCalledWith("message", expect.any(Function));
+    });
+
+    it("should set installExtension to true when hasBWInstalled command is passed", async () => {
+      const saveCompletedTasksSpy = jest.spyOn(component as any, "saveCompletedTasks");
+
+      (component as any).vaultOnboardingService.vaultOnboardingState$ = of({
+        createAccount: true,
+        importData: false,
+        installExtension: false,
+      });
+
+      const eventData = { data: { command: "hasBWInstalled" } };
+
+      (component as any).showOnboarding = true;
+
+      await component.ngOnInit();
+      await component.getMessages(eventData);
+
+      expect(saveCompletedTasksSpy).toHaveBeenCalled();
     });
   });
 });
