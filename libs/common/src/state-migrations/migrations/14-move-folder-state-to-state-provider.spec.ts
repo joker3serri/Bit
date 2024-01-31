@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { FolderMigrator } from "./13-move-folder-state-to-state-provider";
+import { FolderMigrator } from "./14-move-folder-state-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -86,8 +86,8 @@ describe("FolderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 12);
-      sut = new FolderMigrator(12, 13);
+      helper = mockMigrationHelper(exampleJSON(), 13);
+      sut = new FolderMigrator(13, 14);
     });
 
     it("should remove folders from all accounts", async () => {
@@ -120,8 +120,8 @@ describe("FolderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 12);
-      sut = new FolderMigrator(12, 13);
+      helper = mockMigrationHelper(rollbackJSON(), 13);
+      sut = new FolderMigrator(13, 14);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
