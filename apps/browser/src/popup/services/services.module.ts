@@ -67,7 +67,7 @@ import { GlobalState } from "@bitwarden/common/platform/models/domain/global-sta
 import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
+import { DerivedStateProvider } from "@bitwarden/common/platform/state";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -88,9 +88,7 @@ import {
 } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
@@ -563,13 +561,6 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: DerivedStateProvider,
       useClass: ForegroundDerivedStateProvider,
       deps: [OBSERVABLE_MEMORY_STORAGE],
-    },
-    {
-      provide: VaultSettingsServiceAbstraction,
-      useFactory: (stateProvider: StateProvider) => {
-        return new VaultSettingsService(stateProvider);
-      },
-      deps: [StateProvider],
     },
   ],
 })
