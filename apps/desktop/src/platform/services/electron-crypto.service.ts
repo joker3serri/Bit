@@ -1,8 +1,11 @@
+import { firstValueFrom } from "rxjs";
+
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -15,7 +18,18 @@ import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 
 import { ElectronStateService } from "./electron-state.service.abstraction";
 
-export class ElectronCryptoService extends CryptoService {
+export abstract class ElectronCryptoService extends CryptoService {
+  /**
+   * Creates and sets a new biometric client key half for the currently active user.
+   */
+  abstract setBiometricClientKeyHalf(): Promise<void>;
+  /**
+   * Removes the biometric client key half for the currently active user.
+   */
+  abstract removeBiometricClientKeyHalf(): Promise<void>;
+}
+
+export class DefaultElectronCryptoService extends ElectronCryptoService {
   constructor(
     cryptoFunctionService: CryptoFunctionService,
     encryptService: EncryptService,
@@ -24,6 +38,7 @@ export class ElectronCryptoService extends CryptoService {
     protected override stateService: ElectronStateService,
     accountService: AccountService,
     stateProvider: StateProvider,
+    private biometricStateService: BiometricStateService,
   ) {
     super(
       cryptoFunctionService,
@@ -54,6 +69,19 @@ export class ElectronCryptoService extends CryptoService {
     super.clearStoredUserKey(keySuffix, userId);
   }
 
+  async setBiometricClientKeyHalf(): Promise<void> {
+    const userKey = await this.getUserKeyWithLegacySupport();
+    const keyBytes = await this.cryptoFunctionService.randomBytes(32);
+    const biometricKey = Utils.fromBufferToUtf8(keyBytes) as CsprngString;
+    const encKey = await this.encryptService.encrypt(biometricKey, userKey);
+
+    await this.biometricStateService.setEncryptedClientKeyHalf(encKey);
+  }
+
+  async removeBiometricClientKeyHalf(): Promise<void> {
+    await this.biometricStateService.setEncryptedClientKeyHalf(null);
+  }
+
   protected override async storeAdditionalKeys(key: UserKey, userId?: UserId) {
     await super.storeAdditionalKeys(key, userId);
 
@@ -80,10 +108,8 @@ export class ElectronCryptoService extends CryptoService {
   }
 
   protected async storeBiometricKey(key: UserKey, userId?: UserId): Promise<void> {
-    let clientEncKeyHalf: CsprngString = null;
-    if (await this.stateService.getBiometricRequirePasswordOnStart({ userId })) {
-      clientEncKeyHalf = await this.getBiometricEncryptionClientKeyHalf(userId);
-    }
+    // May resolve to null, in which case no client key have is required
+    const clientEncKeyHalf = await this.getBiometricEncryptionClientKeyHalf(userId);
     await this.stateService.setUserKeyBiometric(
       { key: key.keyB64, clientEncKeyHalf },
       { userId: userId },
@@ -104,23 +130,16 @@ export class ElectronCryptoService extends CryptoService {
   }
 
   private async getBiometricEncryptionClientKeyHalf(userId?: UserId): Promise<CsprngString | null> {
-    try {
-      let biometricKey = await this.stateService
-        .getBiometricEncryptionClientKeyHalf({ userId })
-        .then((result) => result?.decrypt(null /* user encrypted */))
-        .then((result) => result as CsprngString);
-      const userKey = await this.getUserKeyWithLegacySupport();
-      if (biometricKey == null && userKey != null) {
-        const keyBytes = await this.cryptoFunctionService.randomBytes(32);
-        biometricKey = Utils.fromBufferToUtf8(keyBytes) as CsprngString;
-        const encKey = await this.encryptService.encrypt(biometricKey, userKey);
-        await this.stateService.setBiometricEncryptionClientKeyHalf(encKey);
-      }
-
-      return biometricKey;
-    } catch {
+    const encryptedKeyHalfPromise =
+      userId == null
+        ? firstValueFrom(this.biometricStateService.encryptedClientKeyHalf$)
+        : this.biometricStateService.getEncryptedClientKeyHalf(userId);
+    const encryptedKeyHalf = await encryptedKeyHalfPromise;
+    if (encryptedKeyHalf == null) {
       return null;
     }
+    const userKey = await this.getUserKeyWithLegacySupport();
+    return (await this.encryptService.decryptToUtf8(encryptedKeyHalf, userKey)) as CsprngString;
   }
 
   // --LEGACY METHODS--

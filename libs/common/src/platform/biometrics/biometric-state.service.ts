@@ -34,7 +34,7 @@ export class DefaultBiometricStateService implements BiometricStateService {
   constructor(private stateProvider: StateProvider) {
     this.encryptedClientKeyHalfState = this.stateProvider.getActive(ENCRYPTED_CLIENT_KEY_HALF);
     this.encryptedClientKeyHalf$ = this.encryptedClientKeyHalfState.state$.pipe(
-      map((s) => (s == null ? null : new EncString(s))),
+      map(encryptedClientKeyHalfToEncString),
     );
     this.requirePasswordOnStart$ = this.encryptedClientKeyHalf$.pipe(map((keyHalf) => !!keyHalf));
   }
@@ -47,15 +47,20 @@ export class DefaultBiometricStateService implements BiometricStateService {
     if (userId == null) {
       return false;
     }
-    const state = this.stateProvider.getUser(userId, ENCRYPTED_CLIENT_KEY_HALF);
-    return !!(await firstValueFrom(state.state$));
+    return !!(await this.getEncryptedClientKeyHalf(userId));
   }
 
   async getEncryptedClientKeyHalf(userId: UserId): Promise<EncString> {
     return await firstValueFrom(
       this.stateProvider
         .getUser(userId, ENCRYPTED_CLIENT_KEY_HALF)
-        .state$.pipe(map((s) => new EncString(s))),
+        .state$.pipe(map(encryptedClientKeyHalfToEncString)),
     );
   }
+}
+
+function encryptedClientKeyHalfToEncString(
+  encryptedKeyHalf: EncryptedString | undefined,
+): EncString {
+  return encryptedKeyHalf == null ? null : new EncString(encryptedKeyHalf);
 }
