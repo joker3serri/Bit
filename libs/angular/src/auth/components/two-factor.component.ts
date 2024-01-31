@@ -62,6 +62,13 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   protected forcePasswordResetRoute = "update-temp-password";
   protected successRoute = "vault";
 
+  get isDuoProvider(): boolean {
+    return (
+      this.selectedProviderType === TwoFactorProviderType.Duo ||
+      this.selectedProviderType === TwoFactorProviderType.OrganizationDuo
+    );
+  }
+
   constructor(
     protected authService: AuthService,
     protected router: Router,

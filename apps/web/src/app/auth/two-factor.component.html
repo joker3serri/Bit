@@ -10,10 +10,7 @@
     <div
       class="col-5"
       [ngClass]="{
-        'col-9':
-          !duoFrameless &&
-          (selectedProviderType === providerType.Duo ||
-            selectedProviderType === providerType.OrganizationDuo)
+        'col-9': !duoFrameless && isDuoProvider
       }"
     >
       <p class="lead text-center mb-4">{{ title }}</p>
@@ -85,12 +82,7 @@
             </div>
           </ng-container>
           <!-- Duo -->
-          <ng-container
-            *ngIf="
-              selectedProviderType === providerType.Duo ||
-              selectedProviderType === providerType.OrganizationDuo
-            "
-          >
+          <ng-container *ngIf="isDuoProvider">
             <ng-container *ngIf="duoFrameless">
               <p *ngIf="selectedProviderType === providerType.OrganizationDuo" class="tw-mb-0">
                 {{ "duoRequiredByOrgForAccount" | i18n }}
@@ -143,8 +135,7 @@
               [disabled]="form.loading"
               *ngIf="
                 selectedProviderType != null &&
-                selectedProviderType !== providerType.Duo &&
-                selectedProviderType !== providerType.OrganizationDuo &&
+                !isDuoProvider &&
                 selectedProviderType !== providerType.WebAuthn
               "
             >
@@ -162,11 +153,7 @@
               type="button"
               class="btn btn-primary btn-block"
               [disabled]="form.loading"
-              *ngIf="
-                duoFrameless &&
-                (selectedProviderType === providerType.Duo ||
-                  selectedProviderType === providerType.OrganizationDuo)
-              "
+              *ngIf="duoFrameless && isDuoProvider"
             >
               <span> {{ "launchDuo" | i18n }} </span>
             </button>

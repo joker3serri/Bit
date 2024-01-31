@@ -12,8 +12,7 @@
         [disabled]="form.loading"
         *ngIf="
           selectedProviderType != null &&
-          selectedProviderType !== providerType.Duo &&
-          selectedProviderType !== providerType.OrganizationDuo &&
+          !isDuoProvider &&
           (selectedProviderType !== providerType.WebAuthn || form.loading)
         "
       >
@@ -111,12 +110,7 @@
       </div>
     </ng-container>
     <!-- Duo -->
-    <ng-container
-      *ngIf="
-        selectedProviderType === providerType.Duo ||
-        selectedProviderType === providerType.OrganizationDuo
-      "
-    >
+    <ng-container *ngIf="isDuoProvider">
       <div *ngIf="duoFrameless" class="tw-my-4">
         <p
           *ngIf="selectedProviderType === providerType.OrganizationDuo"
@@ -167,13 +161,7 @@
     </div>
     <!-- Buttons -->
     <div class="content no-vpad" *ngIf="selectedProviderType != null">
-      <ng-container
-        *ngIf="
-          duoFrameless &&
-          (selectedProviderType === providerType.Duo ||
-            selectedProviderType === providerType.OrganizationDuo)
-        "
-      >
+      <ng-container *ngIf="duoFrameless && isDuoProvider">
         <button
           *ngIf="inPopout"
           bitButton
