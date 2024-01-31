@@ -168,6 +168,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
           this.duoFramelessUrl = providerData.AuthUrl;
         } else {
           // Duo Web SDK (iframe) flow
+          // TODO: remove when we remove the "duo-redirect" feature flag
           setTimeout(() => {
             DuoWebSDK.init({
               iframe: undefined,
