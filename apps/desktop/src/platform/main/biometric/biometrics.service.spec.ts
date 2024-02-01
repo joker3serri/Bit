@@ -43,9 +43,7 @@ describe("biometrics tests", function () {
 
     const mockService = mock<OsBiometricService>();
     (sut as any).platformSpecificService = mockService;
-    sut.init();
     sut.setEncryptionKeyHalf({ service: "test", key: "test", value: "test" });
-    expect(mockService.init).toBeCalled();
 
     await sut.canAuthBiometric({ service: "test", key: "test", userId });
     expect(mockService.osSupportsBiometric).toBeCalled();
@@ -105,7 +103,6 @@ describe("biometrics tests", function () {
 
       innerService = mock();
       (sut as any).platformSpecificService = innerService;
-      sut.init();
     });
 
     it("should return false if client key half is required and not provided", async () => {
@@ -118,7 +115,6 @@ describe("biometrics tests", function () {
 
     it("should call osSupportsBiometric if client key half is provided", async () => {
       sut.setEncryptionKeyHalf({ service: "test", key: "test", value: "test" });
-      expect(innerService.init).toBeCalled();
 
       await sut.canAuthBiometric({ service: "test", key: "test", userId });
       expect(innerService.osSupportsBiometric).toBeCalled();

@@ -23,6 +23,7 @@ import { DialogService } from "@bitwarden/components";
 
 import { ElectronCryptoService } from "../platform/services/electron-crypto.service";
 import { ElectronStateService } from "../platform/services/electron-state.service.abstraction";
+import { getPlatform } from "../utils";
 
 const BroadcasterSubscriptionId = "LockComponent";
 
@@ -177,6 +178,17 @@ export class LockComponent extends BaseLockComponent {
       }
       this.supportsBiometric = await this.canUseBiometric();
       await this.stateService.setDismissedBiometricRequirePasswordOnStart();
+    }
+  }
+
+  get biometricText() {
+    switch (getPlatform()) {
+      case "mac":
+        return "unlockWithTouchId";
+      case "windows":
+        return "unlockWithWindowsHello";
+      default:
+        throw new Error("Unsupported platform");
     }
   }
 }
