@@ -9,6 +9,7 @@ import { OrganizationSubscriptionUpdateRequest } from "../../../billing/models/r
 import { OrganizationTaxInfoUpdateRequest } from "../../../billing/models/request/organization-tax-info-update.request";
 import { PaymentRequest } from "../../../billing/models/request/payment.request";
 import { SecretsManagerSubscribeRequest } from "../../../billing/models/request/sm-subscribe.request";
+import { SubscriptionCancellationRequest } from "../../../billing/models/request/subscription-cancellation.request";
 import { BillingResponse } from "../../../billing/models/response/billing.response";
 import { OrganizationRisksSubscriptionFailureResponse } from "../../../billing/models/response/organization-risks-subscription-failure.response";
 import { OrganizationSubscriptionResponse } from "../../../billing/models/response/organization-subscription.response";
@@ -187,6 +188,10 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
 
   async cancel(id: string): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/cancel", null, true, false);
+  }
+
+  async cancelV2(id: string, request: SubscriptionCancellationRequest) {
+    return this.apiService.send("POST", "/organizations/" + id + "/cancel", request, true, false);
   }
 
   async reinstate(id: string): Promise<void> {

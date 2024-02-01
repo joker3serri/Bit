@@ -8,6 +8,7 @@ import { OrganizationSubscriptionUpdateRequest } from "../../../billing/models/r
 import { OrganizationTaxInfoUpdateRequest } from "../../../billing/models/request/organization-tax-info-update.request";
 import { PaymentRequest } from "../../../billing/models/request/payment.request";
 import { SecretsManagerSubscribeRequest } from "../../../billing/models/request/sm-subscribe.request";
+import { SubscriptionCancellationRequest } from "../../../billing/models/request/subscription-cancellation.request";
 import { BillingResponse } from "../../../billing/models/response/billing.response";
 import { OrganizationRisksSubscriptionFailureResponse } from "../../../billing/models/response/organization-risks-subscription-failure.response";
 import { OrganizationSubscriptionResponse } from "../../../billing/models/response/organization-subscription.response";
@@ -53,6 +54,7 @@ export class OrganizationApiServiceAbstraction {
   updateStorage: (id: string, request: StorageRequest) => Promise<PaymentResponse>;
   verifyBank: (id: string, request: VerifyBankRequest) => Promise<void>;
   cancel: (id: string) => Promise<void>;
+  cancelV2: (id: string, request: SubscriptionCancellationRequest) => Promise<void>;
   reinstate: (id: string) => Promise<void>;
   leave: (id: string) => Promise<void>;
   delete: (id: string, request: SecretVerificationRequest) => Promise<void>;

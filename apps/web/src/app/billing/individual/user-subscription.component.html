@@ -145,10 +145,34 @@
         type="button"
         buttonType="danger"
         class="btn-submit tw-ml-auto"
-        (click)="cancel()"
+        (click)="cancelWithWarning()"
         [appApiAction]="cancelPromise"
         [disabled]="$any(cancelBtn).loading"
-        *ngIf="subscription && !subscription.cancelled && !subscriptionMarkedForCancel"
+        *ngIf="
+          subscription &&
+          !subscription.cancelled &&
+          !subscriptionMarkedForCancel &&
+          !(presentUserWithOffboardingSurvey$ | async)
+        "
+      >
+        <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
+        <span>{{ "cancelSubscription" | i18n }}</span>
+      </button>
+      <button
+        bitButton
+        #cancelBtn
+        type="button"
+        buttonType="danger"
+        class="btn-submit tw-ml-auto"
+        (click)="cancelWithOffboardingSurvey()"
+        [appApiAction]="cancelPromise"
+        [disabled]="$any(cancelBtn).loading"
+        *ngIf="
+          subscription &&
+          !subscription.cancelled &&
+          !subscriptionMarkedForCancel &&
+          (presentUserWithOffboardingSurvey$ | async)
+        "
       >
         <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
         <span>{{ "cancelSubscription" | i18n }}</span>
