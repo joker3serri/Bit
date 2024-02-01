@@ -11,22 +11,8 @@ type ExpectedAccountType = {
 };
 
 // Biometric text, no auto prompt text, fingerprint validated, and prompt cancelled are refreshed on every app start, so we don't need to migrate them
-
-export const BIOMETRIC_UNLOCK_ENABLED: KeyDefinitionLike = {
-  key: "biometricUnlockEnabled",
-  stateDefinition: { name: "biometricSettings" },
-};
-export const DISMISSED_BIOMETRIC_REQUIRE_PASSWORD_ON_START_CALLOUT: KeyDefinitionLike = {
-  key: "dismissedBiometricRequirePasswordOnStartCallout",
-  stateDefinition: { name: "biometricSettings" },
-};
 export const CLIENT_KEY_HALF: KeyDefinitionLike = {
   key: "clientKeyHalf",
-  stateDefinition: { name: "biometricSettings" },
-};
-
-export const PROMPT_AUTOMATICALLY: KeyDefinitionLike = {
-  key: "promptAutomatically",
   stateDefinition: { name: "biometricSettings" },
 };
 
