@@ -24,6 +24,7 @@ export abstract class BiometricStateService {
   abstract setEncryptedClientKeyHalf(encryptedKeyHalf: EncString): Promise<void>;
   abstract getEncryptedClientKeyHalf(userId: UserId): Promise<EncString>;
   abstract getRequirePasswordOnStart(userId: UserId): Promise<boolean>;
+  abstract removeEncryptedClientKeyHalf(userId: UserId): Promise<void>;
 }
 
 export class DefaultBiometricStateService implements BiometricStateService {
@@ -43,6 +44,10 @@ export class DefaultBiometricStateService implements BiometricStateService {
     await this.encryptedClientKeyHalfState.update(() => encryptedKeyHalf?.encryptedString);
   }
 
+  async removeEncryptedClientKeyHalf(userId: UserId): Promise<void> {
+    await this.stateProvider.getUser(userId, ENCRYPTED_CLIENT_KEY_HALF).update(() => null);
+  }
+
   async getRequirePasswordOnStart(userId: UserId): Promise<boolean> {
     if (userId == null) {
       return false;
@@ -56,6 +61,10 @@ export class DefaultBiometricStateService implements BiometricStateService {
         .getUser(userId, ENCRYPTED_CLIENT_KEY_HALF)
         .state$.pipe(map(encryptedClientKeyHalfToEncString)),
     );
+  }
+
+  async logout(userId: UserId): Promise<void> {
+    await this.stateProvider.getUser(userId, ENCRYPTED_CLIENT_KEY_HALF).update(() => null);
   }
 }
 

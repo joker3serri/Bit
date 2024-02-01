@@ -62,8 +62,9 @@ export class DefaultElectronCryptoService extends ElectronCryptoService {
 
   override async clearStoredUserKey(keySuffix: KeySuffixOptions, userId?: UserId): Promise<void> {
     if (keySuffix === KeySuffixOptions.Biometric) {
-      this.stateService.setUserKeyBiometric(null, { userId: userId });
-      this.clearDeprecatedKeys(KeySuffixOptions.Biometric, userId);
+      await this.stateService.setUserKeyBiometric(null, { userId: userId });
+      await this.biometricStateService.removeEncryptedClientKeyHalf(userId);
+      await this.clearDeprecatedKeys(KeySuffixOptions.Biometric, userId);
       return;
     }
     super.clearStoredUserKey(keySuffix, userId);
@@ -125,7 +126,7 @@ export class DefaultElectronCryptoService extends ElectronCryptoService {
   }
 
   protected override async clearAllStoredUserKeys(userId?: UserId): Promise<void> {
-    await this.stateService.setUserKeyBiometric(null, { userId: userId });
+    await this.clearStoredUserKey(KeySuffixOptions.Biometric, userId);
     super.clearAllStoredUserKeys(userId);
   }
 
