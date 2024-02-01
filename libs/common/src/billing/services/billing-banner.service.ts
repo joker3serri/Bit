@@ -2,14 +2,14 @@ import { map, Observable } from "rxjs";
 
 import {
   ActiveUserState,
-  BILLING_BANNERS_DISK,
+  BILLING_BANNERS_MEMORY,
   KeyDefinition,
   StateProvider,
 } from "../../platform/state";
 import { BillingBannerServiceAbstraction } from "../abstractions/billing-banner.service.abstraction";
 
 const PAYMENT_METHOD_BANNERS_KEY = KeyDefinition.record<boolean>(
-  BILLING_BANNERS_DISK,
+  BILLING_BANNERS_MEMORY,
   "paymentMethodBanners",
   {
     deserializer: (b) => b,
