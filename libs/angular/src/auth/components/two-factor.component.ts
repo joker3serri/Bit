@@ -5,8 +5,8 @@ import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";

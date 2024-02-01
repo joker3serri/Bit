@@ -2,11 +2,10 @@ import { Directive } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
+import { LoginStrategyServiceAbstraction, SsoLoginCredentials } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { SsoLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
 import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";

@@ -6,6 +6,7 @@ import {
 } from "@microsoft/signalr";
 import { MessagePackHubProtocol } from "@microsoft/signalr-protocol-msgpack";
 
+import { LoginStrategyServiceAbstraction } from "../../../../auth/src/common/abstractions/login-strategy.service";
 import {
   AuthRequestPushNotification,
   NotificationResponse,
@@ -13,7 +14,6 @@ import {
 import { EnvironmentService } from "../../platform/abstractions/environment.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "../abstractions/anonymous-hub.service";
-import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 
 export class AnonymousHubService implements AnonymousHubServiceAbstraction {
   private anonHubConnection: HubConnection;

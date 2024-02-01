@@ -4,11 +4,11 @@ import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/auth/components/register.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";

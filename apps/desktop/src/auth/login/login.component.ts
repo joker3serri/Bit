@@ -7,8 +7,8 @@ import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";

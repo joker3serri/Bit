@@ -4,8 +4,8 @@ import { Component, OnInit, OnDestroy, Inject } from "@angular/core";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";

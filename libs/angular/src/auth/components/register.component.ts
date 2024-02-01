@@ -2,10 +2,9 @@ import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
+import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
-import { PasswordLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";

@@ -2,19 +2,21 @@ import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { IsActiveMatchOptions, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
+import {
+  AuthRequestLoginCredentials,
+  LoginStrategyServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { AuthRequestLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
 import { CreateAuthRequest } from "@bitwarden/common/auth/models/request/create-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { HttpStatusCode } from "@bitwarden/common/enums/http-status-code.enum";

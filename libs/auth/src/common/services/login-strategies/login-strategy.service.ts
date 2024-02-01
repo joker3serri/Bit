@@ -1,47 +1,48 @@
 import { Observable, Subject } from "rxjs";
 
-import { ApiService } from "../../abstractions/api.service";
-import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PreloginRequest } from "../../models/request/prelogin.request";
-import { ErrorResponse } from "../../models/response/error.response";
-import { AuthRequestPushNotification } from "../../models/response/notification.response";
-import { AppIdService } from "../../platform/abstractions/app-id.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
-import { EnvironmentService } from "../../platform/abstractions/environment.service";
-import { I18nService } from "../../platform/abstractions/i18n.service";
-import { LogService } from "../../platform/abstractions/log.service";
-import { MessagingService } from "../../platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
-import { StateService } from "../../platform/abstractions/state.service";
-import { KdfType } from "../../platform/enums";
-import { Utils } from "../../platform/misc/utils";
-import { PasswordStrengthServiceAbstraction } from "../../tools/password-strength";
-import { MasterKey } from "../../types/key";
-import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
-import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
-import { KeyConnectorService } from "../abstractions/key-connector.service";
-import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
-import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/two-factor.service";
-import { AuthenticationType } from "../enums/authentication-type";
-import { AuthRequestLoginStrategy } from "../login-strategies/auth-request-login.strategy";
-import { PasswordLoginStrategy } from "../login-strategies/password-login.strategy";
-import { SsoLoginStrategy } from "../login-strategies/sso-login.strategy";
-import { UserApiLoginStrategy } from "../login-strategies/user-api-login.strategy";
-import { WebAuthnLoginStrategy } from "../login-strategies/webauthn-login.strategy";
-import { AuthResult } from "../models/domain/auth-result";
-import { KdfConfig } from "../models/domain/kdf-config";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
+import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
+import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
+import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
+import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
+import { PasswordlessAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-auth.request";
+import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
+import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
+import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { KdfType } from "@bitwarden/common/platform/enums";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
+import { MasterKey } from "@bitwarden/common/types/key";
+
+import { LoginStrategyServiceAbstraction } from "../../abstractions";
+import { AuthRequestLoginStrategy } from "../../login-strategies/auth-request-login.strategy";
+import { PasswordLoginStrategy } from "../../login-strategies/password-login.strategy";
+import { SsoLoginStrategy } from "../../login-strategies/sso-login.strategy";
+import { UserApiLoginStrategy } from "../../login-strategies/user-api-login.strategy";
+import { WebAuthnLoginStrategy } from "../../login-strategies/webauthn-login.strategy";
 import {
-  AuthRequestLoginCredentials,
+  UserApiLoginCredentials,
   PasswordLoginCredentials,
   SsoLoginCredentials,
-  UserApiLoginCredentials,
+  AuthRequestLoginCredentials,
   WebAuthnLoginCredentials,
-} from "../models/domain/login-credentials";
-import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
-import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
-import { AuthRequestResponse } from "../models/response/auth-request.response";
+} from "../../models";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 

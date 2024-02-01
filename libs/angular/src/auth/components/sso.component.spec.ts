@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MockProxy, mock } from "jest-mock-extended";
 import { Observable, of } from "rxjs";
 
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";

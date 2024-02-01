@@ -5,22 +5,22 @@ import * as inquirer from "inquirer";
 import Separator from "inquirer/lib/objects/separator";
 import { firstValueFrom } from "rxjs";
 
+import {
+  LoginStrategyServiceAbstraction,
+  PasswordLoginCredentials,
+  SsoLoginCredentials,
+  UserApiLoginCredentials,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import {
-  PasswordLoginCredentials,
-  SsoLoginCredentials,
-  UserApiLoginCredentials,
-} from "@bitwarden/common/auth/models/domain/login-credentials";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";

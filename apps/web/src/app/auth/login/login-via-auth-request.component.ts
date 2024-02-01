@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { LoginViaAuthRequestComponent as BaseLoginWithDeviceComponent } from "@bitwarden/angular/auth/components/login-via-auth-request.component";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";

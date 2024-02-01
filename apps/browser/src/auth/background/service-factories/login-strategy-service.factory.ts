@@ -1,5 +1,4 @@
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
-import { LoginStrategyService } from "@bitwarden/common/auth/services/login-strategy.service";
+import { LoginStrategyService, LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 
 import {
   policyServiceFactory,

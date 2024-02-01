@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";

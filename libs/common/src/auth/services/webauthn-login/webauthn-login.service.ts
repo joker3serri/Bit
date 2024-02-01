@@ -1,15 +1,15 @@
 import { Observable } from "rxjs";
 
+import { LoginStrategyServiceAbstraction } from "../../../../../auth/src/common/abstractions/login-strategy.service";
+import { WebAuthnLoginCredentials } from "../../../../../auth/src/common/models/domain/login-credentials";
 import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PrfKey } from "../../../types/key";
-import { LoginStrategyServiceAbstraction } from "../../abstractions/login-strategy.service";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
 import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "../../abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "../../models/domain/auth-result";
-import { WebAuthnLoginCredentials } from "../../models/domain/login-credentials";
 import { WebAuthnLoginCredentialAssertionOptionsView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion-options.view";
 import { WebAuthnLoginCredentialAssertionView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion.view";
 

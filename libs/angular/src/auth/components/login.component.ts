@@ -4,13 +4,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, Subject } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 
+import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { PasswordLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";

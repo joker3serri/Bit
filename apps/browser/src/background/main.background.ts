@@ -1,4 +1,9 @@
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
+import {
+  PinCryptoServiceAbstraction,
+  PinCryptoService,
+  LoginStrategyServiceAbstraction,
+  LoginStrategyService,
+} from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -21,7 +26,6 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
@@ -35,7 +39,6 @@ import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
-import { LoginStrategyService } from "@bitwarden/common/auth/services/login-strategy.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";

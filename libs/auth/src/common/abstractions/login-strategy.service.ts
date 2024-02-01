@@ -1,8 +1,11 @@
 import { Observable } from "rxjs";
 
-import { AuthRequestPushNotification } from "../../models/response/notification.response";
-import { MasterKey } from "../../types/key";
-import { AuthResult } from "../models/domain/auth-result";
+import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
+import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
+import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
+import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
+import { MasterKey } from "@bitwarden/common/types/key";
+
 import {
   UserApiLoginCredentials,
   PasswordLoginCredentials,
@@ -10,8 +13,6 @@ import {
   AuthRequestLoginCredentials,
   WebAuthnLoginCredentials,
 } from "../models/domain/login-credentials";
-import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
-import { AuthRequestResponse } from "../models/response/auth-request.response";
 
 export abstract class LoginStrategyServiceAbstraction {
   masterPasswordHash: string;

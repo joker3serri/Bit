@@ -4,9 +4,9 @@ import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/auth/components/register.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";

@@ -1,5 +1,13 @@
 {
   "extends": "../shared/tsconfig.libs",
-  "include": ["src", "spec", "./custom-matchers.d.ts"],
+  "include": [
+    "src",
+    "spec",
+    "./custom-matchers.d.ts",
+    "../auth/src/common/abstractions/login-strategy.service.ts",
+    "../auth/src/common/services/login-strategies/login-strategy.service.ts",
+    "../auth/src/common/login-strategies",
+    "../auth/src/common/models/domain/login-credentials.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

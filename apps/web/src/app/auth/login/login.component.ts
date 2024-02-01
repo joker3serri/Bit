@@ -6,6 +6,7 @@ import { first } from "rxjs/operators";
 
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.data";
@@ -13,7 +14,6 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";

@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-strategy.service";
 import { TwoFactorRecoveryRequest } from "@bitwarden/common/auth/models/request/two-factor-recovery.request";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
