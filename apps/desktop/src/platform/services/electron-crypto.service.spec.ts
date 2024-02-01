@@ -56,10 +56,6 @@ describe("electronCryptoService", () => {
     jest.resetAllMocks();
   });
 
-  it("instantiates", () => {
-    expect(sut).not.toBeFalsy();
-  });
-
   describe("setBiometricClientKeyHalf", () => {
     const userKey = new SymmetricCryptoKey(makeStaticByteArray(64, 1)) as UserKey;
     const keyBytes = makeStaticByteArray(32, 2) as CsprngArray;
