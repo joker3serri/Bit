@@ -4,6 +4,7 @@ import { makeEncString, makeStaticByteArray } from "../../../../spec";
 import { ProviderId } from "../../../types/guid";
 import { ProviderKey, UserPrivateKey } from "../../../types/key";
 import { EncryptService } from "../../abstractions/encrypt.service";
+import { EncryptedString } from "../../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { CryptoService } from "../crypto.service";
 
