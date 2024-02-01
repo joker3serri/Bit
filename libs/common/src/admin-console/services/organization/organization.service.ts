@@ -1,6 +1,7 @@
 import { BehaviorSubject, concatMap, map, Observable } from "rxjs";
 
 import { StateService } from "../../../platform/abstractions/state.service";
+import { StateProvider } from "../../../platform/state";
 import {
   InternalOrganizationServiceAbstraction,
   isMember,
@@ -8,13 +9,31 @@ import {
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
-export class OrganizationService implements InternalOrganizationServiceAbstraction {
-  protected _organizations = new BehaviorSubject<Organization[]>([]);
+import { ORGANIZATIONS } from "./organization.service.state";
 
+export class OrganizationService implements InternalOrganizationServiceAbstraction {
+  // @deprecated - marked for removal during AC-2009
+  protected _organizations = new BehaviorSubject<Organization[]>([]);
+  // @deprecated - marked for removal during AC-2009
   organizations$ = this._organizations.asObservable();
+  // @deprecated - marked for removal during AC-2009
   memberOrganizations$ = this.organizations$.pipe(map((orgs) => orgs.filter(isMember)));
 
-  constructor(private stateService: StateService) {
+  activeUserOrganizations$: Observable<Organization[]>;
+  activeUserMemberOrganizations$: Observable<Organization[]>;
+
+  constructor(
+    private stateService: StateService,
+    private stateProvider: StateProvider,
+  ) {
+    this.activeUserOrganizations$ = this.stateProvider
+      .getActive(ORGANIZATIONS)
+      .state$.pipe(map((data) => Object.values(data).map((o) => new Organization(o))));
+
+    this.activeUserMemberOrganizations$ = this.activeUserOrganizations$.pipe(
+      map((orgs) => orgs.filter(isMember)),
+    );
+
     this.stateService.activeAccountUnlocked$
       .pipe(
         concatMap(async (unlocked) => {
