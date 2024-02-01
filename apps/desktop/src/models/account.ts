@@ -5,7 +5,6 @@ import {
 
 export class AccountSettings extends BaseAccountSettings {
   vaultTimeout = -1; // On Restart
-  requirePasswordOnStart?: boolean;
   dismissedBiometricRequirePasswordOnStartCallout?: boolean;
 }
 
