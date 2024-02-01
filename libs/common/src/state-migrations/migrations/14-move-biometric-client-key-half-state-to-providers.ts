@@ -22,9 +22,6 @@ export class MoveBiometricClientKeyHalfToStateProviders extends Migrator<13, 14>
 
     await Promise.all(
       legacyAccounts.map(async ({ userId, account }) => {
-        if (account == null) {
-          return;
-        }
         // Move account data
         if (account?.keys?.biometricEncryptionClientKeyHalf != null) {
           await helper.setToUser(
@@ -32,11 +29,11 @@ export class MoveBiometricClientKeyHalfToStateProviders extends Migrator<13, 14>
             CLIENT_KEY_HALF,
             account.keys.biometricEncryptionClientKeyHalf,
           );
-        }
 
-        // Delete old account data
-        delete account?.keys?.biometricEncryptionClientKeyHalf;
-        await helper.set(userId, account);
+          // Delete old account data
+          delete account?.keys?.biometricEncryptionClientKeyHalf;
+          await helper.set(userId, account);
+        }
       }),
     );
   }

@@ -15,23 +15,17 @@ function exampleJSON() {
     },
     authenticatedAccounts: ["user-1", "user-2", "user-3"],
     "user-1": {
-      settings: {
-        disableAutoBiometricsPrompt: false,
-        biometricUnlock: true,
-        dismissedBiometricRequirePasswordOnStartCallout: true,
-        otherStuff: "otherStuff2",
-      },
       keys: {
         biometricEncryptionClientKeyHalf: "user1-key-half",
-        otherStuff: "overStuff3",
+        otherStuff: "overStuff2",
       },
-      otherStuff: "otherStuff4",
+      otherStuff: "otherStuff3",
     },
     "user-2": {
       keys: {
-        otherStuff: "otherStuff5",
+        otherStuff: "otherStuff4",
       },
-      otherStuff: "otherStuff6",
+      otherStuff: "otherStuff5",
     },
   };
 }
@@ -44,22 +38,16 @@ function rollbackJSON() {
     },
     authenticatedAccounts: ["user-1", "user-2", "user-3"],
     "user-1": {
-      settings: {
-        disableAutoBiometricsPrompt: false,
-        biometricUnlock: true,
-        dismissedBiometricRequirePasswordOnStartCallout: true,
-        otherStuff: "otherStuff2",
-      },
       keys: {
-        otherStuff: "overStuff3",
+        otherStuff: "overStuff2",
       },
-      otherStuff: "otherStuff4",
+      otherStuff: "otherStuff3",
     },
     "user-2": {
       keys: {
-        otherStuff: "otherStuff5",
+        otherStuff: "otherStuff4",
       },
-      otherStuff: "otherStuff6",
+      otherStuff: "otherStuff5",
     },
   };
 }
@@ -76,24 +64,12 @@ describe("DesktopBiometricState migrator", () => {
 
     it("should remove biometricEncryptionClientKeyHalf from all accounts", async () => {
       await sut.migrate(helper);
-      expect(helper.set).toHaveBeenCalledTimes(2);
+      expect(helper.set).toHaveBeenCalledTimes(1);
       expect(helper.set).toHaveBeenCalledWith("user-1", {
-        settings: {
-          disableAutoBiometricsPrompt: false,
-          biometricUnlock: true,
-          dismissedBiometricRequirePasswordOnStartCallout: true,
-          otherStuff: "otherStuff2",
-        },
         keys: {
-          otherStuff: "overStuff3",
+          otherStuff: "overStuff2",
         },
-        otherStuff: "otherStuff4",
-      });
-      expect(helper.set).toHaveBeenCalledWith("user-2", {
-        keys: {
-          otherStuff: "otherStuff5",
-        },
-        otherStuff: "otherStuff6",
+        otherStuff: "otherStuff3",
       });
     });
 
@@ -127,17 +103,11 @@ describe("DesktopBiometricState migrator", () => {
 
       expect(helper.set).toHaveBeenCalledTimes(1);
       expect(helper.set).toHaveBeenCalledWith("user-1", {
-        settings: {
-          disableAutoBiometricsPrompt: false,
-          biometricUnlock: true,
-          dismissedBiometricRequirePasswordOnStartCallout: true,
-          otherStuff: "otherStuff2",
-        },
         keys: {
           biometricEncryptionClientKeyHalf: "user1-key-half",
-          otherStuff: "overStuff3",
+          otherStuff: "overStuff2",
         },
-        otherStuff: "otherStuff4",
+        otherStuff: "otherStuff3",
       });
     });
 
