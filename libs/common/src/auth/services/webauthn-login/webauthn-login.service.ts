@@ -1,7 +1,10 @@
 import { Observable } from "rxjs";
 
-import { LoginStrategyServiceAbstraction } from "../../../../../auth/src/common/abstractions/login-strategy.service";
-import { WebAuthnLoginCredentials } from "../../../../../auth/src/common/models/domain/login-credentials";
+import {
+  LoginStrategyServiceAbstraction,
+  WebAuthnLoginCredentials,
+} from "@bitwarden/auth/src/common";
+
 import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";

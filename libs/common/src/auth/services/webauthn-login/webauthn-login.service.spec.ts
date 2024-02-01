@@ -1,8 +1,11 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { LoginStrategyServiceAbstraction } from "../../../../../auth/src/common/abstractions/login-strategy.service";
-import { WebAuthnLoginCredentials } from "../../../../../auth/src/common/models/domain/login-credentials";
+import {
+  LoginStrategyServiceAbstraction,
+  WebAuthnLoginCredentials,
+} from "@bitwarden/auth/src/common";
+
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { Utils } from "../../../platform/misc/utils";
