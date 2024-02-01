@@ -63,7 +63,7 @@ function distFirefox() {
     delete manifest.storage;
     delete manifest.sandbox;
     manifest.optional_permissions = manifest.optional_permissions.filter(
-      (permission) => permission !== "privacy",
+      (permission) => permission !== "privacy"
     );
     return manifest;
   });
@@ -128,7 +128,7 @@ function distSafariApp(cb, subBuildPath) {
       "--sign",
       subBuildPath === "mas"
         ? "3rd Party Mac Developer Application: Bitwarden Inc"
-        : "E661AB6249AEB60B0F47ABBD7326B2877D2575B0",
+        : "E7C9978F6FBCE0553429185C405E61F5380BE8EB",
       "--entitlements",
       entitlementsPath,
     ];
@@ -174,7 +174,7 @@ function distSafariApp(cb, subBuildPath) {
       },
       () => {
         return cb;
-      },
+      }
     );
 }
 
@@ -185,7 +185,7 @@ function safariCopyAssets(source, dest) {
       .on("error", reject)
       .pipe(gulpif("safari/Info.plist", replace("0.0.1", manifest.version)))
       .pipe(
-        gulpif("safari/Info.plist", replace("0.0.2", process.env.BUILD_NUMBER || manifest.version)),
+        gulpif("safari/Info.plist", replace("0.0.2", process.env.BUILD_NUMBER || manifest.version))
       )
       .pipe(gulpif("desktop.xcodeproj/project.pbxproj", replace("../../../build", "../safari/app")))
       .pipe(gulp.dest(dest))
@@ -211,8 +211,8 @@ async function safariCopyBuild(source, dest) {
             delete manifest.optional_permissions;
             manifest.permissions.push("nativeMessaging");
             return manifest;
-          }),
-        ),
+          })
+        )
       )
       .pipe(gulp.dest(dest))
       .on("end", resolve);
