@@ -27,4 +27,4 @@ export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 
-export const FOLDER_DISK = new StateDefinition("folder", "disk");
+export const FOLDER_DISK = new StateDefinition("folder", "disk", { web: "memory" });
