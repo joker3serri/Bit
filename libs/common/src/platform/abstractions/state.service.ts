@@ -19,11 +19,9 @@ import { UserId } from "../../types/guid";
 import { UserKey, MasterKey, DeviceKey } from "../../types/key";
 import { UriMatchType } from "../../vault/enums";
 import { CipherData } from "../../vault/models/data/cipher.data";
-import { CollectionData } from "../../vault/models/data/collection.data";
 import { FolderData } from "../../vault/models/data/folder.data";
 import { LocalData } from "../../vault/models/data/local.data";
 import { CipherView } from "../../vault/models/view/cipher.view";
-import { CollectionView } from "../../vault/models/view/collection.view";
 import { AddEditCipherInfo } from "../../vault/types/add-edit-cipher-info";
 import { KdfType, ThemeType } from "../enums";
 import { ServerConfigData } from "../models/data/server-config.data";
@@ -189,8 +187,6 @@ export abstract class StateService<T extends Account = Account> {
   setBiometricPromptCancelled: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDecryptedCiphers: (options?: StorageOptions) => Promise<CipherView[]>;
   setDecryptedCiphers: (value: CipherView[], options?: StorageOptions) => Promise<void>;
-  getDecryptedCollections: (options?: StorageOptions) => Promise<CollectionView[]>;
-  setDecryptedCollections: (value: CollectionView[], options?: StorageOptions) => Promise<void>;
   getDecryptedPasswordGenerationHistory: (
     options?: StorageOptions,
   ) => Promise<GeneratedPasswordHistory[]>;
@@ -317,11 +313,6 @@ export abstract class StateService<T extends Account = Account> {
   getEncryptedCiphers: (options?: StorageOptions) => Promise<{ [id: string]: CipherData }>;
   setEncryptedCiphers: (
     value: { [id: string]: CipherData },
-    options?: StorageOptions,
-  ) => Promise<void>;
-  getEncryptedCollections: (options?: StorageOptions) => Promise<{ [id: string]: CollectionData }>;
-  setEncryptedCollections: (
-    value: { [id: string]: CollectionData },
     options?: StorageOptions,
   ) => Promise<void>;
   /**

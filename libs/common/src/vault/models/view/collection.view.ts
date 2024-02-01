@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { Organization } from "../../../admin-console/models/domain/organization";
 import { View } from "../../../models/view/view";
 import { Collection } from "../domain/collection";
@@ -16,7 +18,7 @@ export class CollectionView implements View, ITreeNodeObject {
   hidePasswords: boolean = null;
   manage: boolean = null;
 
-  constructor(c?: Collection | CollectionAccessDetailsResponse) {
+  constructor(c?: Partial<Collection | CollectionAccessDetailsResponse>) {
     if (!c) {
       return;
     }
@@ -55,5 +57,9 @@ export class CollectionView implements View, ITreeNodeObject {
     return org?.flexibleCollections
       ? org?.canDeleteAnyCollection || (!org?.limitCollectionCreationDeletion && this.manage)
       : org?.canDeleteAnyCollection || org?.canDeleteAssignedCollections;
+  }
+
+  static fromJSON(obj: Jsonify<CollectionView>) {
+    return Object.assign(new CollectionView({}), obj);
   }
 }

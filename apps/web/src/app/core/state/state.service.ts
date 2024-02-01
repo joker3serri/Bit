@@ -18,7 +18,6 @@ import { StorageOptions } from "@bitwarden/common/platform/models/domain/storage
 import { StateService as BaseStateService } from "@bitwarden/common/platform/services/state.service";
 import { SendData } from "@bitwarden/common/tools/send/models/data/send.data";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
 
 import { Account } from "./account";
@@ -65,21 +64,6 @@ export class StateService extends BaseStateService<GlobalState, Account> {
   ): Promise<void> {
     options = this.reconcileOptions(options, await this.defaultInMemoryOptions());
     return await super.setEncryptedCiphers(value, options);
-  }
-
-  async getEncryptedCollections(
-    options?: StorageOptions,
-  ): Promise<{ [id: string]: CollectionData }> {
-    options = this.reconcileOptions(options, await this.defaultInMemoryOptions());
-    return await super.getEncryptedCollections(options);
-  }
-
-  async setEncryptedCollections(
-    value: { [id: string]: CollectionData },
-    options?: StorageOptions,
-  ): Promise<void> {
-    options = this.reconcileOptions(options, await this.defaultInMemoryOptions());
-    return await super.setEncryptedCollections(value, options);
   }
 
   async getEncryptedFolders(options?: StorageOptions): Promise<{ [id: string]: FolderData }> {

@@ -47,7 +47,6 @@ function exampleJSON() {
     },
   };
 }
-// user_6f526e54-7a51-42bd-8c0a-b0c200daf0f2_collection_data
 
 function rollbackJSON() {
   return {
