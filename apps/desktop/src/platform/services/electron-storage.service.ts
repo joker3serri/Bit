@@ -85,10 +85,6 @@ export class ElectronStorageService implements AbstractStorageService {
     if (obj instanceof Set) {
       obj = Array.from(obj);
     }
-    if (obj == null) {
-      // Electron store does not support setting null or undefined
-      return this.remove(key);
-    }
     this.store.set(key, obj);
     this.updatesSubject.next({ key, updateType: "save" });
     return Promise.resolve();

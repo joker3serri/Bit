@@ -41,7 +41,7 @@ export class DefaultBiometricStateService implements BiometricStateService {
   }
 
   async setEncryptedClientKeyHalf(encryptedKeyHalf: EncString): Promise<void> {
-    await this.encryptedClientKeyHalfState.update(() => encryptedKeyHalf?.encryptedString);
+    await this.encryptedClientKeyHalfState.update(() => encryptedKeyHalf?.encryptedString ?? null);
   }
 
   async removeEncryptedClientKeyHalf(userId: UserId): Promise<void> {
