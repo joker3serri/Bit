@@ -162,6 +162,7 @@ export class WindowMain {
         backgroundThrottling: false,
         contextIsolation: false,
         session: this.session,
+        devTools: isDev(),
       },
     });
 
