@@ -14,7 +14,6 @@ export class GlobalState {
   window?: WindowState = new WindowState();
   twoFactorToken?: string;
   disableFavicon?: boolean;
-  biometricAwaitingAcceptance?: boolean;
   biometricFingerprintValidated?: boolean;
   vaultTimeout?: number;
   vaultTimeoutAction?: string;
