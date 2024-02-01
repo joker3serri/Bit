@@ -38,6 +38,7 @@ import { UserVerificationService } from "@bitwarden/common/auth/services/user-ve
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions, LogLevelType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { Account } from "@bitwarden/common/platform/models/domain/account";
@@ -202,6 +203,7 @@ export class Main {
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
   loginStrategyService: LoginStrategyServiceAbstraction;
+  biometricStateService: BiometricStateService;
 
   constructor() {
     let p = null;
@@ -620,6 +622,7 @@ export class Main {
       this.collectionService.clear(userId as UserId),
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
+      this.biometricStateService.logout(userId as UserId),
     ]);
     await this.stateService.clean();
     process.env.BW_SESSION = null;
