@@ -22,6 +22,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CollectionResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { BitValidators, DialogService } from "@bitwarden/components";
@@ -101,7 +102,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private dialogRef: DialogRef<CollectionDialogResult>,
     private organizationService: OrganizationService,
     private groupService: GroupService,
-    private collectionService: CollectionAdminService,
+    private collectionAdminService: CollectionAdminService,
+    private collectionService: CollectionService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private organizationUserService: OrganizationUserService,
@@ -151,12 +153,15 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     );
     combineLatest({
       organization: organization$,
-      collections: this.collectionService.getAll(orgId),
+      collections: this.collectionAdminService.getAll(orgId),
       collectionDetails: this.params.collectionId
-        ? from(this.collectionService.get(orgId, this.params.collectionId))
+        ? from(this.collectionAdminService.get(orgId, this.params.collectionId))
         : of(null),
       groups: groups$,
       users: this.organizationUserService.getAllUsers(orgId),
+      collection: this.params.collectionId
+        ? this.collectionService.get(this.params.collectionId)
+        : of(null),
       flexibleCollectionsV1: this.flexibleCollectionsV1Enabled$,
     })
       .pipe(takeUntil(this.formGroup.controls.selectedOrg.valueChanges), takeUntil(this.destroy$))
@@ -167,6 +172,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           collectionDetails,
           groups,
           users,
+          collection,
           flexibleCollectionsV1,
         }) => {
           this.organization = organization;
@@ -202,7 +208,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
               parent,
               access: accessSelections,
             });
-
+            this.collection.manage = collection?.manage ?? false; // Get manage flag from sync data collection
             this.showDeleteButton = this.collection.canDelete(organization);
           } else {
             this.nestOptions = collections;
@@ -295,7 +301,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       collectionView.name = this.formGroup.controls.name.value;
     }
 
-    const savedCollection = await this.collectionService.save(collectionView);
+    const savedCollection = await this.collectionAdminService.save(collectionView);
 
     this.platformUtilsService.showToast(
       "success",
@@ -320,7 +326,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    await this.collectionService.delete(this.params.organizationId, this.params.collectionId);
+    await this.collectionAdminService.delete(this.params.organizationId, this.params.collectionId);
 
     this.platformUtilsService.showToast(
       "success",

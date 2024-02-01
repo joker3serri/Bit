@@ -1,4 +1,3 @@
-import { DatePipe } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, firstValueFrom, Subject, takeUntil } from "rxjs";
@@ -15,7 +14,6 @@ import { ProductType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
 
 import { BillingSyncApiKeyComponent } from "./billing-sync-api-key.component";
@@ -41,9 +39,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   firstLoaded = false;
   loading: boolean;
 
-  private readonly _smBetaEndingDate = new Date(2023, 7, 15);
-  private readonly _smGracePeriodEndingDate = new Date(2023, 10, 14);
-
   protected readonly teamsStarter = ProductType.TeamsStarter;
 
   private destroy$ = new Subject<void>();
@@ -57,7 +52,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private organizationApiService: OrganizationApiServiceAbstraction,
     private route: ActivatedRoute,
     private dialogService: DialogService,
-    private datePipe: DatePipe,
   ) {}
 
   async ngOnInit() {
@@ -126,7 +120,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       this.userOrg.useSecretsManager &&
       this.subscription != null &&
       this.sub.plan?.SecretsManager?.hasAdditionalSeatsOption &&
-      !this.sub.secretsManagerBeta &&
       !this.subscription.cancelled &&
       !this.subscriptionMarkedForCancel;
 
@@ -140,7 +133,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   get subscriptionLineItems() {
     return this.lineItems.map((lineItem: BillingSubscriptionItemResponse) => ({
       name: lineItem.name,
-      amount: this.discountPrice(lineItem.amount),
+      amount: this.discountPrice(lineItem.amount, lineItem.productId),
       quantity: lineItem.quantity,
       interval: lineItem.interval,
       sponsoredSubscriptionItem: lineItem.sponsoredSubscriptionItem,
@@ -183,7 +176,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   }
 
   get storageGbPrice() {
-    return this.discountPrice(this.sub.plan.PasswordManager.additionalStoragePricePerGb);
+    return this.sub.plan.PasswordManager.additionalStoragePricePerGb;
   }
 
   get seatPrice() {
@@ -198,14 +191,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return {
       seatCount: this.sub.smSeats,
       maxAutoscaleSeats: this.sub.maxAutoscaleSmSeats,
-      seatPrice: this.discountPrice(this.sub.plan.SecretsManager.seatPrice),
+      seatPrice: this.sub.plan.SecretsManager.seatPrice,
       maxAutoscaleServiceAccounts: this.sub.maxAutoscaleSmServiceAccounts,
       additionalServiceAccounts:
         this.sub.smServiceAccounts - this.sub.plan.SecretsManager.baseServiceAccount,
       interval: this.sub.plan.isAnnual ? "year" : "month",
-      additionalServiceAccountPrice: this.discountPrice(
-        this.sub.plan.SecretsManager.additionalPricePerServiceAccount,
-      ),
+      additionalServiceAccountPrice: this.sub.plan.SecretsManager.additionalPricePerServiceAccount,
       baseServiceAccountCount: this.sub.plan.SecretsManager.baseServiceAccount,
     };
   }
@@ -274,14 +265,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   get subscriptionMarkedForCancel() {
     return (
       this.subscription != null && !this.subscription.cancelled && this.subscription.cancelAtEndDate
-    );
-  }
-
-  get smBetaEndedDesc() {
-    return this.i18nService.translate(
-      "smBetaEndedDesc",
-      this.datePipe.transform(this._smBetaEndingDate),
-      Utils.daysRemaining(this._smGracePeriodEndingDate).toString(),
     );
   }
 
@@ -404,9 +387,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     }
   };
 
-  discountPrice = (price: number) => {
+  discountPrice = (price: number, productId: string = null) => {
     const discount =
-      !!this.customerDiscount && this.customerDiscount.active
+      this.customerDiscount?.active &&
+      (!productId ||
+        !this.customerDiscount.appliesTo.length ||
+        this.customerDiscount.appliesTo.includes(productId))
         ? price * (this.customerDiscount.percentOff / 100)
         : 0;
 
