@@ -520,6 +520,7 @@ export default class MainBackground {
       this.policyService,
       this.deviceTrustCryptoService,
       this.authRequestCryptoService,
+      this.stateProvider,
     );
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);
