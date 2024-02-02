@@ -1,3 +1,6 @@
+import { Observable, map, firstValueFrom } from "rxjs";
+import { Jsonify } from "type-fest";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
@@ -19,10 +22,9 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { GlobalState } from "@bitwarden/common/platform/state";
-import { Observable, map, firstValueFrom } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
+
 import { LoginStrategyData, LoginStrategy } from "./login.strategy";
 
 export class SsoLoginStrategyData implements LoginStrategyData {
@@ -111,6 +113,10 @@ export class SsoLoginStrategy extends LoginStrategy {
       await this.buildDeviceRequest(),
     );
 
+    await this.cache.update((_) =>
+      Object.assign(new SsoLoginStrategyData(), { tokenRequest, orgId }),
+    );
+
     const [ssoAuthResult] = await this.startLogIn();
 
     const email = ssoAuthResult.email;
@@ -121,9 +127,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       await this.stateService.setForceSetPasswordReason(ssoAuthResult.forcePasswordReset);
     }
 
-    this.cache.update((data) =>
-      Object.assign(data, { tokenRequest, email, orgId, ssoEmail2FaSessionToken }),
-    );
+    await this.cache.update((data) => Object.assign(data, { email, ssoEmail2FaSessionToken }));
 
     return ssoAuthResult;
   }
