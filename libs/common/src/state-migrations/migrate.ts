@@ -36,9 +36,8 @@ export async function migrate(
     await storageService.save("stateVersion", CURRENT_VERSION);
     return;
   }
-  // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  MigrationBuilder.create()
+
+  await MigrationBuilder.create()
     .with(MinVersionMigrator)
     .with(FixPremiumMigrator, 2, 3)
     .with(RemoveEverBeenUnlockedMigrator, 3, 4)
