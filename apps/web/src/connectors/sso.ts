@@ -24,17 +24,17 @@ window.addEventListener("load", () => {
 });
 
 function initiateBrowserSsoIfDocumentReady(code: string, state: string, lastpass: boolean) {
-  const MAX_TRIES = 200;
+  const MAX_ATTEMPTS = 200;
   const TIMEOUT_MS = 50;
-  let tries = 0;
+  let attempts = 0;
 
   const pingInterval = setInterval(() => {
-    if (tries >= MAX_TRIES) {
+    if (attempts >= MAX_ATTEMPTS) {
       clearInterval(pingInterval);
       throw new Error("Failed to initiate browser SSO");
     }
 
-    tries++;
+    attempts++;
     window.postMessage({ command: "checkIfReadyForAuthResult" }, "*");
   }, TIMEOUT_MS);
 
