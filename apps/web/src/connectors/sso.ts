@@ -26,14 +26,15 @@ window.addEventListener("load", () => {
 function initiateBrowserSsoIfDocumentReady(code: string, state: string, lastpass: boolean) {
   if (document.readyState === "complete") {
     initiateBrowserSso(code, state, lastpass);
-  } else {
-    const interval = setInterval(() => {
-      if (document.readyState === "complete") {
-        clearInterval(interval);
-        initiateBrowserSso(code, state, lastpass);
-      }
-    }, 20);
+    return;
   }
+
+  const interval = setInterval(() => {
+    if (document.readyState === "complete") {
+      clearInterval(interval);
+      initiateBrowserSso(code, state, lastpass);
+    }
+  }, 50);
 }
 
 function initiateBrowserSso(code: string, state: string, lastpass: boolean) {
