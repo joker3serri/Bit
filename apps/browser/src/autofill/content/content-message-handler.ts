@@ -35,6 +35,12 @@ class ContentMessageHandler implements ContentMessageHandlerInterface {
     const { command } = data;
     const referrer = source.location.hostname;
 
+    if (command === "checkIfReadyForAuthResult") {
+      // eslint-disable-next-line no-console
+      console.log("getting checkIfReadyForAuthResult ");
+      window.postMessage({ command: "readyToReceiveAuthResult" }, "*");
+    }
+
     if (command === "authResult") {
       const { lastpass, code, state } = data;
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.

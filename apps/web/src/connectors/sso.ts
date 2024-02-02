@@ -24,20 +24,41 @@ window.addEventListener("load", () => {
 });
 
 function initiateBrowserSsoIfDocumentReady(code: string, state: string, lastpass: boolean) {
-  if (document.readyState === "complete") {
-    initiateBrowserSso(code, state, lastpass);
-    return;
-  }
+  const MAX_TRIES = 200;
+  const TIMEOUT_MS = 50;
+  let tries = 0;
 
-  const interval = setInterval(() => {
-    if (document.readyState === "complete") {
-      clearInterval(interval);
+  const pingInterval = setInterval(() => {
+    if (tries >= MAX_TRIES) {
+      clearInterval(pingInterval);
+      throw new Error("Failed to initiate browser SSO");
+    }
+
+    // eslint-disable-next-line no-console
+    console.log("trying to ping");
+    tries++;
+    window.postMessage({ command: "checkIfReadyForAuthResult" }, "*");
+  }, TIMEOUT_MS);
+
+  const handleWindowMessage = (event: MessageEvent) => {
+    // eslint-disable-next-line no-console
+    console.log(event);
+    if (event.source === window && event.data?.command === "readyToReceiveAuthResult") {
+      // eslint-disable-next-line no-console
+      console.log("successfully recieved");
+      clearInterval(pingInterval);
+      window.removeEventListener("message", handleWindowMessage);
+
       initiateBrowserSso(code, state, lastpass);
     }
-  }, 50);
+  };
+
+  window.addEventListener("message", handleWindowMessage);
 }
 
 function initiateBrowserSso(code: string, state: string, lastpass: boolean) {
+  // eslint-disable-next-line no-console
+  console.log("initiating browser sso");
   window.postMessage({ command: "authResult", code: code, state: state, lastpass: lastpass }, "*");
   const handOffMessage = ("; " + document.cookie)
     .split("; ssoHandOffMessage=")
