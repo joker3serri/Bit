@@ -16,11 +16,8 @@ export class EnablePasskeysMigrator extends Migrator<13, 14> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const global = await helper.get<ExpectedGlobalType>("global");
 
-    if (global) {
-      if (global.enablePasskeys != null) {
-        await helper.setToGlobal(USER_ENABLE_PASSKEYS, global.enablePasskeys);
-      }
-
+    if (global?.enablePasskeys != null) {
+      await helper.setToGlobal(USER_ENABLE_PASSKEYS, global.enablePasskeys);
       delete global?.enablePasskeys;
       await helper.set("global", global);
     }
