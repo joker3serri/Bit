@@ -30,6 +30,8 @@ import {
 } from "@bitwarden/common/platform/models/domain/account";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { FakeGlobalState } from "@bitwarden/common/spec/fake-state";
+import { FakeGlobalStateProvider } from "@bitwarden/common/spec/fake-state-provider";
 import {
   PasswordStrengthServiceAbstraction,
   PasswordStrengthService,
@@ -39,8 +41,9 @@ import { UserKey, MasterKey, DeviceKey } from "@bitwarden/common/types/key";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
 
-import { PasswordLoginStrategy } from "./password-login.strategy";
+import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
 
 const email = "hello@world.com";
 const masterPassword = "password";
@@ -94,6 +97,9 @@ export function identityTokenResponseFactory(
 
 // TODO: add tests for latest changes to base class for TDE
 describe("LoginStrategy", () => {
+  let stateProvider: FakeGlobalStateProvider;
+  let cache: FakeGlobalState<PasswordLoginStrategyData>;
+
   let loginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
@@ -111,6 +117,11 @@ describe("LoginStrategy", () => {
   let credentials: PasswordLoginCredentials;
 
   beforeEach(async () => {
+    stateProvider = new FakeGlobalStateProvider();
+    cache = stateProvider.getFake(
+      LOGIN_STRATEGY_CACHE_KEY,
+    ) as FakeGlobalState<PasswordLoginStrategyData>;
+
     loginStrategyService = mock<LoginStrategyServiceAbstraction>();
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
@@ -129,6 +140,7 @@ describe("LoginStrategy", () => {
 
     // The base class is abstract so we test it via PasswordLoginStrategy
     passwordLoginStrategy = new PasswordLoginStrategy(
+      cache,
       cryptoService,
       apiService,
       tokenService,
@@ -377,12 +389,11 @@ describe("LoginStrategy", () => {
 
     it("sends 2FA token provided by user to server (two-step)", async () => {
       // Simulate a partially completed login
-      passwordLoginStrategy.tokenRequest = new PasswordTokenRequest(
-        email,
-        masterPasswordHash,
-        null,
-        null,
-      );
+      await cache.update((data) => {
+        const tokenRequest = new PasswordTokenRequest(email, masterPasswordHash, null, null);
+
+        return Object.assign(new PasswordLoginStrategyData(), { tokenRequest });
+      });
 
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
 
