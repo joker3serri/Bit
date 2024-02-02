@@ -3,8 +3,8 @@ import { Component, Input } from "@angular/core";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { Icon, IconModule } from "../../../components/src/icon";
-import { TypographyModule } from "../../../components/src/typography";
+import { Icon, IconModule } from "../../../../components/src/icon";
+import { TypographyModule } from "../../../../components/src/typography";
 
 import { BitwardenLogo } from "./bitwarden-logo";
 import { IconLock } from "./icon-lock";

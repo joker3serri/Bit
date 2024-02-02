@@ -2,7 +2,7 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { ButtonModule } from "../../../components/src/button";
+import { ButtonModule } from "../../../../components/src/button";
 
 import { AnonLayoutComponent } from "./anon-layout.component";
 
