@@ -10,7 +10,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 
-import { VaultOnboardingService } from "./services/vault-onboarding.service";
+import { VaultOnboardingService as VaultOnboardingServiceAbstraction } from "./services/abstraction/vault-onboarding.service";
 import { VaultOnboardingComponent } from "./vault-onboarding.component";
 
 describe("VaultOnboardingComponent", () => {
@@ -21,7 +21,7 @@ describe("VaultOnboardingComponent", () => {
   let mockPolicyService: MockProxy<PolicyService>;
   let mockI18nService: MockProxy<I18nService>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
-  let mockVaultOnboardingService: MockProxy<VaultOnboardingService>;
+  let mockVaultOnboardingService: MockProxy<VaultOnboardingServiceAbstraction>;
   let mockStateProvider: Partial<StateProvider>;
   let setInstallExtLinkSpy: any;
   let individualVaultPolicyCheckSpy: any;
@@ -34,7 +34,7 @@ describe("VaultOnboardingComponent", () => {
       getProfile: jest.fn(),
     };
     mockConfigService = mock<ConfigServiceAbstraction>();
-    mockVaultOnboardingService = mock<VaultOnboardingService>();
+    mockVaultOnboardingService = mock<VaultOnboardingServiceAbstraction>();
     mockStateProvider = {
       getActive: jest.fn().mockReturnValue(
         of({
@@ -51,7 +51,7 @@ describe("VaultOnboardingComponent", () => {
       providers: [
         { provide: PlatformUtilsService, useValue: mockPlatformUtilsService },
         { provide: PolicyService, useValue: mockPolicyService },
-        { provide: VaultOnboardingService, useValue: mockVaultOnboardingService },
+        { provide: VaultOnboardingServiceAbstraction, useValue: mockVaultOnboardingService },
         { provide: I18nService, useValue: mockI18nService },
         { provide: ApiService, useValue: mockApiService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
