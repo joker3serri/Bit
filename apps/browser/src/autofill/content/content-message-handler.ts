@@ -36,8 +36,6 @@ class ContentMessageHandler implements ContentMessageHandlerInterface {
     const referrer = source.location.hostname;
 
     if (command === "checkIfReadyForAuthResult") {
-      // eslint-disable-next-line no-console
-      console.log("getting checkIfReadyForAuthResult ");
       window.postMessage({ command: "readyToReceiveAuthResult" }, "*");
     }
 

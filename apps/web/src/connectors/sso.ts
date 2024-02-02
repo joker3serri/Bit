@@ -34,18 +34,12 @@ function initiateBrowserSsoIfDocumentReady(code: string, state: string, lastpass
       throw new Error("Failed to initiate browser SSO");
     }
 
-    // eslint-disable-next-line no-console
-    console.log("trying to ping");
     tries++;
     window.postMessage({ command: "checkIfReadyForAuthResult" }, "*");
   }, TIMEOUT_MS);
 
   const handleWindowMessage = (event: MessageEvent) => {
-    // eslint-disable-next-line no-console
-    console.log(event);
     if (event.source === window && event.data?.command === "readyToReceiveAuthResult") {
-      // eslint-disable-next-line no-console
-      console.log("successfully recieved");
       clearInterval(pingInterval);
       window.removeEventListener("message", handleWindowMessage);
 
@@ -57,8 +51,6 @@ function initiateBrowserSsoIfDocumentReady(code: string, state: string, lastpass
 }
 
 function initiateBrowserSso(code: string, state: string, lastpass: boolean) {
-  // eslint-disable-next-line no-console
-  console.log("initiating browser sso");
   window.postMessage({ command: "authResult", code: code, state: state, lastpass: lastpass }, "*");
   const handOffMessage = ("; " + document.cookie)
     .split("; ssoHandOffMessage=")
