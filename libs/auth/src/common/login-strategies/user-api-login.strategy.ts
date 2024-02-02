@@ -1,3 +1,6 @@
+import { firstValueFrom } from "rxjs";
+import { Jsonify } from "type-fest";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -13,8 +16,6 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { GlobalState } from "@bitwarden/common/platform/state";
-import { firstValueFrom } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
 
@@ -67,7 +68,7 @@ export class UserApiLoginStrategy extends LoginStrategy {
       await this.buildTwoFactor(),
       await this.buildDeviceRequest(),
     );
-    this.cache.update((data) => Object.assign(data, { tokenRequest }));
+    await this.cache.update((_) => Object.assign(new UserApiLoginStrategyData(), { tokenRequest }));
 
     const [authResult] = await this.startLogIn();
     return authResult;

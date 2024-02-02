@@ -208,9 +208,7 @@ export abstract class LoginStrategy {
 
   // The keys comes from different sources depending on the login strategy
   protected abstract setMasterKey(response: IdentityTokenResponse): Promise<void>;
-
   protected abstract setUserKey(response: IdentityTokenResponse): Promise<void>;
-
   protected abstract setPrivateKey(response: IdentityTokenResponse): Promise<void>;
 
   // Old accounts used master key for encryption. We are forcing migrations but only need to
