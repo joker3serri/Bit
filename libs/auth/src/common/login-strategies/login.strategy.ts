@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -30,7 +32,6 @@ import {
   AccountDecryptionOptions,
 } from "@bitwarden/common/platform/models/domain/account";
 import { GlobalState } from "@bitwarden/common/platform/state";
-import { firstValueFrom } from "rxjs";
 
 import {
   UserApiLoginCredentials,
@@ -53,7 +54,7 @@ export abstract class LoginStrategyData {
 }
 
 export abstract class LoginStrategy {
-  protected cache: GlobalState<LoginStrategyData>;
+  protected abstract cache: GlobalState<LoginStrategyData>;
 
   constructor(
     protected cryptoService: CryptoService,
@@ -80,8 +81,10 @@ export abstract class LoginStrategy {
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string = null,
   ): Promise<AuthResult> {
-    const tokenRequest = (await firstValueFrom(this.cache.state$)).tokenRequest;
-    tokenRequest.setTwoFactor(twoFactor);
+    await this.cache.update((data) => {
+      data.tokenRequest.setTwoFactor(twoFactor);
+      return data;
+    });
     const [authResult] = await this.startLogIn();
     return authResult;
   }

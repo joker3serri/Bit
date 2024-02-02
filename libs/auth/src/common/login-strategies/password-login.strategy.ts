@@ -1,3 +1,6 @@
+import { firstValueFrom, map, Observable } from "rxjs";
+import { Jsonify } from "type-fest";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
@@ -22,8 +25,6 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { GlobalState } from "@bitwarden/common/platform/state";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
-import { firstValueFrom, map, Observable } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
@@ -143,11 +144,10 @@ export class PasswordLoginStrategy extends LoginStrategy {
       if (!meetsRequirements) {
         if (authResult.requiresCaptcha || authResult.requiresTwoFactor) {
           // Save the flag to this strategy for later use as the master password is about to pass out of scope
-          await this.cache.update((data) =>
-            Object.assign(data, {
-              forceSetPasswordReason: ForceSetPasswordReason.WeakMasterPassword,
-            }),
-          );
+          await this.cache.update((data) => {
+            data.forcePasswordResetReason = ForceSetPasswordReason.WeakMasterPassword;
+            return data;
+          });
         } else {
           // Authentication was successful, save the force update password options with the state service
           await this.stateService.setForceSetPasswordReason(
@@ -164,11 +164,10 @@ export class PasswordLoginStrategy extends LoginStrategy {
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string,
   ): Promise<AuthResult> {
-    await this.cache.update((data) =>
-      Object.assign(data, {
-        tokenRequest: { captchaResponse: captchaResponse ?? data.captchaBypassToken },
-      }),
-    );
+    await this.cache.update((data) => {
+      data.captchaBypassToken = captchaResponse ?? data.captchaBypassToken;
+      return data;
+    });
     const result = await super.logInTwoFactor(twoFactor);
 
     // 2FA was successful, save the force update password options with the state service if defined

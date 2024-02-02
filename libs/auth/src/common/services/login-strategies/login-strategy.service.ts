@@ -77,7 +77,7 @@ const CURRENT_LOGIN_STRATEGY_KEY = new KeyDefinition<AuthenticationType | null>(
   },
 );
 
-const LOGIN_STRATEGY_CACHE_KEY = new KeyDefinition<DataTypes | null>(
+export const LOGIN_STRATEGY_CACHE_KEY = new KeyDefinition<DataTypes | null>(
   LOGIN_STRATEGY_MEMORY,
   "loginStrategyCache",
   {

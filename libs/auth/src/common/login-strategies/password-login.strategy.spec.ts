@@ -18,6 +18,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { HashPurpose } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { FakeGlobalState } from "@bitwarden/common/spec/fake-state";
 import {
   PasswordStrengthServiceAbstraction,
   PasswordStrengthService,
@@ -25,11 +26,13 @@ import {
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
+import { FakeGlobalStateProvider } from "../../../../common/spec/fake-state-provider";
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
-import { PasswordLoginStrategy } from "./password-login.strategy";
+import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
 
 const email = "hello@world.com";
 const masterPassword = "password";
@@ -47,6 +50,9 @@ const masterPasswordPolicy = new MasterPasswordPolicyResponse({
 });
 
 describe("PasswordLoginStrategy", () => {
+  let stateProvider: FakeGlobalStateProvider;
+  let cache: FakeGlobalState<PasswordLoginStrategyData>;
+
   let loginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
@@ -65,6 +71,11 @@ describe("PasswordLoginStrategy", () => {
   let tokenResponse: IdentityTokenResponse;
 
   beforeEach(async () => {
+    stateProvider = new FakeGlobalStateProvider();
+    cache = stateProvider.getFake(
+      LOGIN_STRATEGY_CACHE_KEY,
+    ) as FakeGlobalState<PasswordLoginStrategyData>;
+
     loginStrategyService = mock<LoginStrategyServiceAbstraction>();
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
@@ -93,6 +104,7 @@ describe("PasswordLoginStrategy", () => {
     policyService.evaluateMasterPassword.mockReturnValue(true);
 
     passwordLoginStrategy = new PasswordLoginStrategy(
+      cache,
       cryptoService,
       apiService,
       tokenService,
