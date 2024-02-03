@@ -1,5 +1,3 @@
-import { setupExtensionDisconnectAction } from "../utils";
-
 import {
   ContentMessageWindowData,
   ContentMessageWindowEventHandlers,
@@ -98,4 +96,24 @@ async function handleExtensionMessage(message: any) {
   if (forwardCommands.has(message.command)) {
     await chrome.runtime.sendMessage(message);
   }
+}
+
+/**
+ * Duplicate implementation of the same named method within `apps/browser/src/autofill/utils/index.ts`.
+ * This is done due to some strange observed compilation behavior present when importing the method from
+ * the utils file.
+ *
+ * TODO: Investigate why webpack tree shaking is not removing other methods when importing from the utils file.
+ * Possible cause can be seen below:
+ * @see https://stackoverflow.com/questions/71679366/webpack5-does-not-seem-to-tree-shake-unused-exports
+ *
+ * @param callback - Callback function to run when the extension disconnects
+ */
+function setupExtensionDisconnectAction(callback: (port: chrome.runtime.Port) => void) {
+  const port = chrome.runtime.connect({ name: "autofill-injected-script-port" });
+  const onDisconnectCallback = (disconnectedPort: chrome.runtime.Port) => {
+    callback(disconnectedPort);
+    port.onDisconnect.removeListener(onDisconnectCallback);
+  };
+  port.onDisconnect.addListener(onDisconnectCallback);
 }
