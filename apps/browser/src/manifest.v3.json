@@ -24,7 +24,7 @@
     },
     {
       "all_frames": false,
-      "js": ["content/bootstrap-content-message-handler.js"],
+      "js": ["content/content-message-handler.js"],
       "matches": ["http://*/*", "https://*/*", "file:///*"],
       "run_at": "document_start"
     },
