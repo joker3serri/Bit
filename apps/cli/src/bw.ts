@@ -79,6 +79,7 @@ import {
 } from "@bitwarden/common/tools/password-strength";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
+import { UserId } from "@bitwarden/common/types/guid";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
@@ -350,7 +351,7 @@ export class Main {
 
     this.organizationUserService = new OrganizationUserServiceImplementation(this.apiService);
 
-    this.policyService = new PolicyService(this.stateService, this.organizationService);
+    this.policyService = new PolicyService(this.stateProvider, this.organizationService);
 
     this.policyApiService = new PolicyApiService(
       this.policyService,
@@ -590,7 +591,7 @@ export class Main {
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId),
-      this.policyService.clear(userId),
+      this.policyService.clear(userId as UserId),
       this.passwordGenerationService.clear(),
     ]);
     await this.stateService.clean();
