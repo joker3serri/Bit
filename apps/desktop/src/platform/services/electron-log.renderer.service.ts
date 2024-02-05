@@ -11,7 +11,8 @@ export class ElectronLogRendererService extends BaseLogService {
       return;
     }
 
-    ipc.platform.log(level, message);
+    /* eslint-disable no-console */
+    ipc.platform.log(level, message).catch((e) => console.log("Error logging", e));
 
     /* eslint-disable no-console */
     switch (level) {
