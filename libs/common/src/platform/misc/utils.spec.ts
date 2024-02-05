@@ -258,6 +258,7 @@ describe("Utils Service", () => {
     });
   }
 
+  const asciiHelloWorld = "hello world";
   const asciiHelloWorldArray = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
   const b64HelloWorldString = "aGVsbG8gd29ybGQ=";
 
@@ -621,6 +622,38 @@ describe("Utils Service", () => {
       expect(Utils.daysRemaining(new Date(2023, 10, 12, 10))).toBe(41);
       // leap year
       expect(Utils.daysRemaining(new Date(2024, 9, 2, 10))).toBe(366);
+    });
+  });
+
+  describe("fromBufferToUtf8(...)", () => {
+    const originalIsNode = Utils.isNode;
+
+    afterEach(() => {
+      Utils.isNode = originalIsNode;
+    });
+
+    runInBothEnvironments("should convert an ArrayBuffer to a utf8 string", () => {
+      const buffer = new Uint8Array(asciiHelloWorldArray).buffer;
+      const str = Utils.fromBufferToUtf8(buffer);
+      expect(str).toBe(asciiHelloWorld);
+    });
+
+    runInBothEnvironments("should handle an empty buffer", () => {
+      const buffer = new ArrayBuffer(0);
+      const str = Utils.fromBufferToUtf8(buffer);
+      expect(str).toBe("");
+    });
+
+    runInBothEnvironments("should convert a binary ArrayBuffer to a binary string", () => {
+      const buffer = new Uint8Array([
+        174, 21, 17, 79, 39, 130, 132, 173, 49, 180, 113, 118, 160, 15, 47, 99, 57, 208, 141, 187,
+        54, 194, 153, 12, 37, 130, 155, 213, 125, 196, 241, 101,
+      ]).buffer;
+      const str = Utils.fromBufferToUtf8(buffer);
+      // Match the expected output
+      expect(str).toBe("�O'���1�qv�/c9Ѝ�6%���}��e");
+      // Make sure it matches with the Node.js Buffer output
+      expect(str).toBe(Buffer.from(buffer).toString("utf8"));
     });
   });
 });
