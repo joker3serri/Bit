@@ -20,7 +20,7 @@ import { FakeGlobalStateProvider } from "@bitwarden/common/spec/fake-state-provi
 import { PrfKey, UserKey } from "@bitwarden/common/types/key";
 
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { WebAuthnLoginStrategy, WebAuthnLoginStrategyData } from "./webauthn-login.strategy";

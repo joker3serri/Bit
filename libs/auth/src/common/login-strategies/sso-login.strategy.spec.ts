@@ -26,7 +26,7 @@ import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { DeviceKey, UserKey, MasterKey } from "@bitwarden/common/types/key";
 
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { SsoLoginStrategy, SsoLoginStrategyData } from "./sso-login.strategy";

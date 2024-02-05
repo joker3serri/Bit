@@ -41,7 +41,7 @@ import { UserKey, MasterKey, DeviceKey } from "@bitwarden/common/types/key";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
 

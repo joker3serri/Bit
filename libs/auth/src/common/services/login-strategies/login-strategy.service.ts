@@ -27,12 +27,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import {
-  GlobalState,
-  KeyDefinition,
-  LOGIN_STRATEGY_MEMORY,
-  StateProvider,
-} from "@bitwarden/common/platform/state";
+import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
 
@@ -62,70 +57,22 @@ import {
   WebAuthnLoginCredentials,
 } from "../../models";
 
-type DataTypes =
-  | PasswordLoginStrategyData
-  | SsoLoginStrategyData
-  | UserApiLoginStrategyData
-  | AuthRequestLoginStrategyData
-  | WebAuthnLoginStrategyData;
-
-const CURRENT_LOGIN_STRATEGY_KEY = new KeyDefinition<AuthenticationType | null>(
-  LOGIN_STRATEGY_MEMORY,
-  "currentLoginStrategy",
-  {
-    deserializer: (data) => data,
-  },
-);
-
-export const LOGIN_STRATEGY_CACHE_KEY = new KeyDefinition<DataTypes | null>(
-  LOGIN_STRATEGY_MEMORY,
-  "loginStrategyCache",
-  {
-    deserializer: (data) => {
-      if (data == null) {
-        return null;
-      }
-      switch (data.type) {
-        case AuthenticationType.Password:
-          return PasswordLoginStrategyData.fromJSON(data);
-        case AuthenticationType.Sso:
-          return SsoLoginStrategyData.fromJSON(data);
-        case AuthenticationType.UserApi:
-          return UserApiLoginStrategyData.fromJSON(data);
-        case AuthenticationType.AuthRequest:
-          return AuthRequestLoginStrategyData.fromJSON(data);
-        case AuthenticationType.WebAuthn:
-          return WebAuthnLoginStrategyData.fromJSON(data);
-      }
-    },
-  },
-);
-
-const LOGIN_STRATEGY_CACHE_EXPIRATION = new KeyDefinition<Date | null>(
-  LOGIN_STRATEGY_MEMORY,
-  "loginStrategyCacheExpiration",
-  {
-    deserializer: (data) => (data ? null : new Date(data)),
-  },
-);
-
-const AUTH_REQUEST_PUSH_NOTIFICATION = new KeyDefinition<string>(
-  LOGIN_STRATEGY_MEMORY,
-  "authRequestPushNotification",
-  {
-    deserializer: (data) => data,
-  },
-);
+import {
+  AUTH_REQUEST_PUSH_NOTIFICATION,
+  CURRENT_LOGIN_STRATEGY_KEY,
+  DataTypes,
+  LOGIN_STRATEGY_CACHE_EXPIRATION,
+  LOGIN_STRATEGY_CACHE_KEY,
+} from "./login-strategy.state";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
 export class LoginStrategyService implements LoginStrategyServiceAbstraction {
+  private sessionTimeout: any;
   private currentAuthTypeState: GlobalState<AuthenticationType | null>;
   private loginStrategyCacheState: GlobalState<DataTypes | null>;
   private loginStrategyCacheExpirationState: GlobalState<Date | null>;
   private authRequestPushNotificationState: GlobalState<string>;
-
-  private sessionTimeout: any;
 
   private loginStrategy$: Observable<
     | UserApiLoginStrategy
@@ -137,7 +84,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   >;
 
   currentAuthType$: Observable<AuthenticationType | null>;
-
+  // TODO: move to auth request service
   authRequestPushNotification$: Observable<string>;
 
   constructor(

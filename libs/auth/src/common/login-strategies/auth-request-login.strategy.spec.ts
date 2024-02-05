@@ -19,7 +19,7 @@ import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import {
   AuthRequestLoginStrategy,

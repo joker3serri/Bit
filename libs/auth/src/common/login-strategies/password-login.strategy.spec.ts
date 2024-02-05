@@ -29,7 +29,7 @@ import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { FakeGlobalStateProvider } from "../../../../common/spec/fake-state-provider";
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services";
+import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
