@@ -1,6 +1,5 @@
 import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
 import { mock } from "jest-mock-extended";
-import { firstValueFrom } from "rxjs";
 
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -62,7 +61,7 @@ describe("electronCryptoService", () => {
     const encKeyHalf = makeEncString(Utils.fromBufferToUtf8(keyBytes));
 
     beforeEach(() => {
-      sut.getUserKeyWithLegacySupport = jest.fn().mockResolvedValue(userKey);
+      sut.getUserKey = jest.fn().mockResolvedValue(userKey);
       cryptoFunctionService.randomBytes.mockResolvedValue(keyBytes);
       encryptService.encrypt.mockResolvedValue(encKeyHalf);
     });
@@ -71,9 +70,6 @@ describe("electronCryptoService", () => {
       await sut.setBiometricClientKeyHalf();
 
       expect(biometricStateService.setEncryptedClientKeyHalf).toHaveBeenCalledWith(encKeyHalf);
-      expect(firstValueFrom(biometricStateService.encryptedClientKeyHalf$)).resolves.toEqual(
-        encKeyHalf,
-      );
     });
 
     it("should create the key from csprng bytes", async () => {
@@ -94,7 +90,6 @@ describe("electronCryptoService", () => {
       await sut.removeBiometricClientKeyHalf();
 
       expect(biometricStateService.setEncryptedClientKeyHalf).toHaveBeenCalledWith(null);
-      expect(firstValueFrom(biometricStateService.encryptedClientKeyHalf$)).resolves.toBeNull();
     });
   });
 

@@ -43,11 +43,13 @@ describe("biometrics tests", function () {
 
     const mockService = mock<OsBiometricService>();
     (sut as any).platformSpecificService = mockService;
-    sut.setEncryptionKeyHalf({ service: "test", key: "test", value: "test" });
+    await sut.setEncryptionKeyHalf({ service: "test", key: "test", value: "test" });
 
     await sut.canAuthBiometric({ service: "test", key: "test", userId });
     expect(mockService.osSupportsBiometric).toBeCalled();
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     sut.authenticateBiometric();
     expect(mockService.authenticateBiometric).toBeCalled();
   });
@@ -114,6 +116,8 @@ describe("biometrics tests", function () {
     });
 
     it("should call osSupportsBiometric if client key half is provided", async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       sut.setEncryptionKeyHalf({ service: "test", key: "test", value: "test" });
 
       await sut.canAuthBiometric({ service: "test", key: "test", userId });
