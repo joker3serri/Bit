@@ -12,11 +12,11 @@ import { Organization } from "../../models/domain/organization";
 import { ORGANIZATIONS } from "./organization.service.state";
 
 export class OrganizationService implements InternalOrganizationServiceAbstraction {
-  // @deprecated - marked for removal during AC-2009
+  // marked for removal during AC-2009
   protected _organizations = new BehaviorSubject<Organization[]>([]);
-  // @deprecated - marked for removal during AC-2009
+  // marked for removal during AC-2009
   organizations$ = this._organizations.asObservable();
-  // @deprecated - marked for removal during AC-2009
+  // marked for removal during AC-2009
   memberOrganizations$ = this.organizations$.pipe(map((orgs) => orgs.filter(isMember)));
 
   activeUserOrganizations$: Observable<Organization[]>;
