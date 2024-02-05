@@ -70,6 +70,7 @@ export class VaultTimeoutInputComponent
     this.policyService
       .get$(PolicyType.MaximumVaultTimeout)
       .pipe(
+        map((policies) => policies?.at(0)),
         filter((policy) => policy != null),
         takeUntil(this.destroy$),
       )

@@ -22,6 +22,7 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
     private state: ActiveUserStateProvider,
   ) {
     this._policy$ = this.policy.get$(this.strategy.policy).pipe(
+      map((policies) => policies?.at(0)),
       map((policy) => this.strategy.evaluator(policy)),
       share({
         // cache evaluator in a replay subject to amortize creation cost
