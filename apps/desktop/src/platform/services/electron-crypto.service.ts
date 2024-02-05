@@ -67,7 +67,9 @@ export class DefaultElectronCryptoService extends ElectronCryptoService {
       await this.clearDeprecatedKeys(KeySuffixOptions.Biometric, userId);
       return;
     }
-    super.clearStoredUserKey(keySuffix, userId);
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    await super.clearStoredUserKey(keySuffix, userId);
   }
 
   async setBiometricClientKeyHalf(): Promise<void> {
@@ -127,7 +129,7 @@ export class DefaultElectronCryptoService extends ElectronCryptoService {
 
   protected override async clearAllStoredUserKeys(userId?: UserId): Promise<void> {
     await this.clearStoredUserKey(KeySuffixOptions.Biometric, userId);
-    super.clearAllStoredUserKeys(userId);
+    await super.clearAllStoredUserKeys(userId);
   }
 
   private async getBiometricEncryptionClientKeyHalf(userId?: UserId): Promise<CsprngString | null> {
@@ -153,6 +155,8 @@ export class DefaultElectronCryptoService extends ElectronCryptoService {
       await this.stateService.setCryptoMasterKeyBiometric(null, { userId: userId });
     }
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     super.clearDeprecatedKeys(keySuffix, userId);
   }
 

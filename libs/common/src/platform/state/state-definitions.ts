@@ -29,3 +29,9 @@ export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 
 export const BIOMETRIC_SETTINGS_DISK = new StateDefinition("biometricSettings", "disk");
+
+// Admin Console
+export const ORGANIZATIONS_DISK = new StateDefinition("organizations", "disk");
+export const POLICIES_DISK = new StateDefinition("policies", "disk");
+export const POLICIES_MEMORY = new StateDefinition("policies", "memory");
+export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
