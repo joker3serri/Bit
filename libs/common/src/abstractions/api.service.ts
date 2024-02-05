@@ -195,6 +195,7 @@ export abstract class ApiService {
   putAuthRequest: (id: string, request: PasswordlessAuthRequest) => Promise<AuthRequestResponse>;
   getAuthRequests: () => Promise<ListResponse<AuthRequestResponse>>;
   getLastAuthRequest: () => Promise<AuthRequestResponse>;
+
   getUserBillingHistory: () => Promise<BillingHistoryResponse>;
   getUserBillingPayment: () => Promise<BillingPaymentResponse>;
 
