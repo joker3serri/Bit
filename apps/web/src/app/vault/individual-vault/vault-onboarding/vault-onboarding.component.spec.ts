@@ -47,6 +47,7 @@ describe("VaultOnboardingComponent", () => {
       ),
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TestBed.configureTestingModule({
       declarations: [],
       imports: [RouterTestingModule],
@@ -99,8 +100,8 @@ describe("VaultOnboardingComponent", () => {
       expect((component as any).showOnboarding).toBe(true);
     });
 
-    it("should set showOnboarding to false if dismiss is clicked", () => {
-      component.ngOnInit();
+    it("should set showOnboarding to false if dismiss is clicked", async () => {
+      await component.ngOnInit();
       (component as any).hideOnboarding();
       expect((component as any).showOnboarding).toBe(false);
     });

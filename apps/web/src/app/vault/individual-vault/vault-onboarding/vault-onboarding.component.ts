@@ -95,7 +95,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     this.isNewAccount = this.onboardingReleaseDate < profileCreationDate ? true : false;
 
     if (!this.isNewAccount) {
-      this.hideOnboarding();
+      await this.hideOnboarding();
     }
   }
 
@@ -121,7 +121,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.showOnboarding) {
-      this.checkCreationDate();
+      await this.checkCreationDate();
     }
   }
 
@@ -157,6 +157,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   navigateToImport() {
     if (!this.isIndividualPolicyVault) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["tools/import"]);
     }
   }
