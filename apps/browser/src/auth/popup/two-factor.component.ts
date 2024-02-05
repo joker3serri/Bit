@@ -76,10 +76,14 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       configService,
     );
     super.onSuccessfulLogin = async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       syncService.fullSync(true);
     };
 
     super.onSuccessfulLoginTde = async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       syncService.fullSync(true);
     };
 
@@ -98,6 +102,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       this.selectedProviderType = TwoFactorProviderType.WebAuthn;
       this.token = this.route.snapshot.paramMap.get("webAuthnResponse");
       super.onSuccessfulLogin = async () => {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.syncService.fullSync(true);
         this.messagingService.send("reloadPopup");
         window.close();
@@ -128,6 +134,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         type: "warning",
       });
       if (confirmed) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         BrowserPopupUtils.openCurrentPagePopout(window);
       }
     }
@@ -139,6 +147,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           // This is not awaited so we don't pause the application while the sync is happening.
           // This call is executed by the service that lives in the background script so it will continue
           // the sync even if this tab closes.
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.syncService.fullSync(true);
 
           // Force sidebars (FF && Opera) to reload while exempting current window
@@ -171,8 +181,12 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     if (sso) {
       // We must persist this so when the user returns to the 2FA comp, the
       // proper onSuccessfulLogin logic is executed.
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["2fa-options"], { queryParams: { sso: true } });
     } else {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["2fa-options"]);
     }
   }
@@ -197,6 +211,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         )
         .subscribe((msg: { command: string; code: string }) => {
           this.token = msg.code;
+          // This floating promise is intentional. We don't need to await the submit + awaiting in a subscription is not recommended.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.submit();
         });
     }
