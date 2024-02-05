@@ -282,6 +282,8 @@ export class Main {
           } else if (s.indexOf("bitwarden://sso-callback") === 0) {
             message = "ssoCallback";
           }
+        } else {
+          return;
         }
 
         this.messagingService.send(message, { code: code, state: receivedState });
