@@ -1,3 +1,6 @@
+import { firstValueFrom } from "rxjs";
+import { Jsonify } from "type-fest";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -14,8 +17,6 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { GlobalState } from "@bitwarden/common/platform/state";
 import { UserKey } from "@bitwarden/common/types/key";
-import { firstValueFrom } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 
@@ -67,7 +68,9 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
       credentials.deviceResponse,
       await this.buildDeviceRequest(),
     );
-    this.cache.update((data) => Object.assign(data, { tokenRequest, credentials }));
+    await this.cache.update((_) =>
+      Object.assign(new WebAuthnLoginStrategyData(), { tokenRequest, credentials }),
+    );
 
     const [authResult] = await this.startLogIn();
     return authResult;
