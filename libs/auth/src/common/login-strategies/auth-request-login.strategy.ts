@@ -1,3 +1,6 @@
+import { Observable, map, firstValueFrom } from "rxjs";
+import { Jsonify } from "type-fest";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -14,8 +17,6 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { GlobalState } from "@bitwarden/common/platform/state";
-import { Observable, map, firstValueFrom } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
 
@@ -83,8 +84,11 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
       await this.buildDeviceRequest(),
     );
     tokenRequest.setAuthRequestAccessCode(credentials.authRequestId);
-    await this.cache.update((data) =>
-      Object.assign(data, { tokenRequest, authRequestCredentials: credentials }),
+    await this.cache.update((_) =>
+      Object.assign(new AuthRequestLoginStrategyData(), {
+        tokenRequest,
+        authRequestCredentials: credentials,
+      }),
     );
 
     const [authResult] = await this.startLogIn();
