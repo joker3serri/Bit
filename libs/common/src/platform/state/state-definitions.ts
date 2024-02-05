@@ -30,6 +30,5 @@ export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 // Admin Console
 export const ORGANIZATIONS_DISK = new StateDefinition("organizations", "disk");
 export const POLICIES_DISK = new StateDefinition("policies", "disk");
-export const POLICIES_MEMORY = new StateDefinition("policies", "memory");
 export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 //
