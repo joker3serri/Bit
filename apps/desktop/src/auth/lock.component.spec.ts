@@ -6,6 +6,7 @@ import { of } from "rxjs";
 
 import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
+import { PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
@@ -58,6 +59,8 @@ describe("LockComponent", () => {
     activatedRouteMock = mock<ActivatedRoute>();
     activatedRouteMock.queryParams = mock<ActivatedRoute["queryParams"]>();
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TestBed.configureTestingModule({
       declarations: [LockComponent, I18nPipe],
       providers: [
@@ -132,6 +135,10 @@ describe("LockComponent", () => {
         {
           provide: UserVerificationService,
           useValue: mock<UserVerificationService>(),
+        },
+        {
+          provide: PinCryptoServiceAbstraction,
+          useValue: mock<PinCryptoServiceAbstraction>(),
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -302,6 +309,8 @@ describe("LockComponent", () => {
 
     it('should wait for "delay" milliseconds', fakeAsync(async () => {
       const delaySpy = jest.spyOn(global, "setTimeout");
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
 
       tick(4000);
@@ -314,18 +323,24 @@ describe("LockComponent", () => {
     }));
 
     it('should return; if "params" is defined and "params.promptBiometric" is false', fakeAsync(async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000, { promptBiometric: false });
       tick(5000);
       expect(component["biometricAsked"]).toBe(false);
     }));
 
     it('should not return; if "params" is defined and "params.promptBiometric" is true', fakeAsync(async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000, { promptBiometric: true });
       tick(5000);
       expect(component["biometricAsked"]).toBe(true);
     }));
 
     it('should not return; if "params" is undefined', fakeAsync(async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
       tick(5000);
       expect(component["biometricAsked"]).toBe(true);
@@ -333,6 +348,8 @@ describe("LockComponent", () => {
 
     it('should return; if "supportsBiometric" is false', fakeAsync(async () => {
       component["supportsBiometric"] = false;
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
       tick(5000);
       expect(component["biometricAsked"]).toBe(false);
@@ -340,6 +357,8 @@ describe("LockComponent", () => {
 
     it('should return; if "autoPromptBiometric" is false', fakeAsync(async () => {
       component["autoPromptBiometric"] = false;
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
       tick(5000);
       expect(component["biometricAsked"]).toBe(false);
@@ -349,6 +368,8 @@ describe("LockComponent", () => {
       isWindowVisibleMock.mockResolvedValue(true);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = false;
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
       tick(5000);
 
@@ -359,6 +380,8 @@ describe("LockComponent", () => {
       isWindowVisibleMock.mockResolvedValue(false);
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = false;
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
       tick(5000);
 
@@ -370,6 +393,8 @@ describe("LockComponent", () => {
       component["unlockBiometric"] = jest.fn();
       component["biometricAsked"] = true;
 
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       component["delayedAskForBiometric"](5000);
       tick(5000);
 

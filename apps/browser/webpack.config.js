@@ -164,7 +164,6 @@ const mainConfig = {
     "popup/main": "./src/popup/main.ts",
     "content/trigger-autofill-script-injection":
       "./src/autofill/content/trigger-autofill-script-injection.ts",
-    "content/autofill": "./src/autofill/content/autofill.js",
     "content/bootstrap-autofill": "./src/autofill/content/bootstrap-autofill.ts",
     "content/bootstrap-autofill-overlay": "./src/autofill/content/bootstrap-autofill-overlay.ts",
     "content/autofiller": "./src/autofill/content/autofiller.ts",
@@ -319,7 +318,7 @@ if (manifestVersion == 2) {
       plugins: [new TsconfigPathsPlugin()],
       fallback: {
         fs: false,
-        path: false,
+        path: require.resolve("path-browserify"),
       },
     },
     dependencies: ["main"],

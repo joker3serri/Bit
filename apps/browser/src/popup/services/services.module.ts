@@ -131,6 +131,8 @@ const mainBackground: MainBackground = needsBackgroundInit
 
 function createLocalBgService() {
   const localBgService = new MainBackground(isPrivateMode);
+  // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   localBgService.bootstrap();
   return localBgService;
 }
@@ -483,6 +485,7 @@ function getBgService<T>(service: keyof MainBackground) {
         memoryStorageService: AbstractMemoryStorageService,
         logService: LogServiceAbstraction,
         accountService: AccountServiceAbstraction,
+        environmentService: EnvironmentService,
       ) => {
         return new BrowserStateService(
           storageService,
@@ -491,6 +494,7 @@ function getBgService<T>(service: keyof MainBackground) {
           logService,
           new StateFactory(GlobalState, Account),
           accountService,
+          environmentService,
         );
       },
       deps: [
@@ -499,6 +503,7 @@ function getBgService<T>(service: keyof MainBackground) {
         MEMORY_STORAGE,
         LogServiceAbstraction,
         AccountServiceAbstraction,
+        EnvironmentService,
       ],
     },
     {

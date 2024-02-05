@@ -95,9 +95,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
   async ngOnInit() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
-      if (qParams.premium != null) {
-        this.routerService.setPreviousUrl("/settings/premium");
-      } else if (qParams.org != null) {
+      if (qParams.org != null) {
         const route = this.router.createUrlTree(["create-organization"], {
           queryParams: { plan: qParams.org },
         });
@@ -170,17 +168,23 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
         const policiesData: { [id: string]: PolicyData } = {};
         this.policies.data.map((p) => (policiesData[p.id] = new PolicyData(p)));
         await this.policyService.replace(policiesData);
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.router.navigate(["update-password"]);
         return;
       }
     }
 
     this.loginService.clearValues();
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate([this.successRoute]);
   }
 
   goToHint() {
     this.setFormValues();
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigateByUrl("/hint");
   }
 
@@ -188,10 +192,14 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     const email = this.formGroup.value.email;
 
     if (email) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["/register"], { queryParams: { email: email } });
       return;
     }
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/register"]);
   }
 
@@ -208,6 +216,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     if (!result.requiresEncryptionKeyMigration) {
       return false;
     }
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["migrate-legacy-encryption"]);
     return true;
   }
