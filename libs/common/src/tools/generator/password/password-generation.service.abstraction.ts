@@ -1,6 +1,6 @@
 import { PasswordGeneratorPolicyOptions } from "../../../admin-console/models/domain/password-generator-policy-options";
+import { GeneratedPasswordHistory } from "../history/generated-password-history";
 
-import { GeneratedPasswordHistory } from "./generated-password-history";
 import { PasswordGeneratorOptions } from "./password-generator-options";
 
 export abstract class PasswordGenerationServiceAbstraction {

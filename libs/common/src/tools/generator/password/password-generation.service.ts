@@ -6,7 +6,7 @@ import { StateService } from "../../../platform/abstractions/state.service";
 import { EFFLongWordList } from "../../../platform/misc/wordlist";
 import { EncString } from "../../../platform/models/domain/enc-string";
 
-import { GeneratedPasswordHistory } from "./generated-password-history";
+import { GeneratedPasswordHistory } from "../history/generated-password-history";
 import { PassphraseGeneratorOptionsEvaluator } from "./passphrase-generator-options-evaluator";
 import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
 import { PasswordGeneratorOptions } from "./password-generator-options";

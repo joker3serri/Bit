@@ -1,6 +1,6 @@
 import { GENERATOR_DISK, GENERATOR_MEMORY, KeyDefinition } from "../../platform/state";
 
-import { GeneratedPasswordHistory } from "./password/generated-password-history";
+import { GeneratedPasswordHistory } from "./history/generated-password-history";
 import { PasswordGenerationOptions } from "./password/password-generation-options";
 
 /** plaintext password generation options */
