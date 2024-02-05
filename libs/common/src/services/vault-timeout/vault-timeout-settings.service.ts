@@ -128,7 +128,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
             this.policyService.getForUser$(userId as UserId, PolicyType.MaximumVaultTimeout),
           );
 
-    if (vaultTimeoutPolicies != null) {
+    if (vaultTimeoutPolicies?.length) {
       const action = vaultTimeoutPolicies[0].data.action;
       // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
       if (action && vaultTimeoutAction !== action) {
