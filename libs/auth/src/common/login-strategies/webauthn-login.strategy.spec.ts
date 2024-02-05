@@ -297,7 +297,7 @@ function randomBytes(length: number): Uint8Array {
 // AuthenticatorAssertionResponse && PublicKeyCredential are only available in secure contexts
 // so we need to mock them and assign them to the global object to make them available
 // for the tests
-class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionResponse {
+export class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionResponse {
   clientDataJSON: ArrayBuffer = randomBytes(32).buffer;
   authenticatorData: ArrayBuffer = randomBytes(196).buffer;
   signature: ArrayBuffer = randomBytes(72).buffer;
@@ -309,7 +309,7 @@ class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionRespon
   userHandleB64Str = Utils.fromBufferToUrlB64(this.userHandle);
 }
 
-class MockPublicKeyCredential implements PublicKeyCredential {
+export class MockPublicKeyCredential implements PublicKeyCredential {
   authenticatorAttachment = "cross-platform";
   id = "mockCredentialId";
   type = "public-key";
