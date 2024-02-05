@@ -85,19 +85,6 @@ export class DefaultElectronCryptoService extends ElectronCryptoService {
     await this.biometricStateService.setEncryptedClientKeyHalf(null);
   }
 
-  async setBiometricClientKeyHalf(): Promise<void> {
-    const userKey = await this.getUserKeyWithLegacySupport();
-    const keyBytes = await this.cryptoFunctionService.randomBytes(32);
-    const biometricKey = Utils.fromBufferToUtf8(keyBytes) as CsprngString;
-    const encKey = await this.encryptService.encrypt(biometricKey, userKey);
-
-    await this.biometricStateService.setEncryptedClientKeyHalf(encKey);
-  }
-
-  async removeBiometricClientKeyHalf(): Promise<void> {
-    await this.biometricStateService.setEncryptedClientKeyHalf(null);
-  }
-
   protected override async storeAdditionalKeys(key: UserKey, userId?: UserId) {
     await super.storeAdditionalKeys(key, userId);
 
