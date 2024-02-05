@@ -41,7 +41,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   isIndividualPolicyVault: boolean;
   private destroy$ = new Subject<void>();
   isNewAccount: boolean;
-  private readonly onboardingReleaseDate = new Date("2023-12-22");
+  private readonly onboardingReleaseDate = new Date("2024-01-01");
   showOnboardingAccess: Observable<boolean>;
 
   protected currentTasks: VaultOnboardingTasks;
@@ -82,7 +82,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: currentTasks.importData,
         installExtension: true,
       };
-      this.saveCompletedTasks(updatedTasks);
+      await this.saveCompletedTasks(updatedTasks);
     }
   }
 
@@ -94,7 +94,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: this.ciphers.length > 0,
         installExtension: currentTasks.installExtension,
       };
-      this.saveCompletedTasks(updatedTasks);
+      await this.saveCompletedTasks(updatedTasks);
     }
   }
 
@@ -117,7 +117,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     this.isNewAccount = this.onboardingReleaseDate < profileCreationDate ? true : false;
 
     if (!this.isNewAccount) {
-      this.hideOnboarding();
+      await this.hideOnboarding();
     }
   }
 
@@ -143,7 +143,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.showOnboarding) {
-      this.checkCreationDate();
+      await this.checkCreationDate();
     }
   }
 
@@ -179,6 +179,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   navigateToImport() {
     if (!this.isIndividualPolicyVault) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["tools/import"]);
     }
   }
