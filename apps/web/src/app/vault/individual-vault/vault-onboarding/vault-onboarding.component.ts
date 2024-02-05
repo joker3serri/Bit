@@ -41,7 +41,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   isIndividualPolicyVault: boolean;
   private destroy$ = new Subject<void>();
   isNewAccount: boolean;
-  private readonly onboardingReleaseDate = new Date("2023-12-22");
+  private readonly onboardingReleaseDate = new Date("2024-01-01");
   showOnboardingAccess: Observable<boolean>;
 
   protected currentTasks: VaultOnboardingTasks;
