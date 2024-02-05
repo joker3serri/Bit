@@ -9,7 +9,7 @@ import {
  * is registered within a class. This is why these listeners are registered
  * at the top level of this file.
  */
-window.addEventListener("message", handleWindowMessageEvent);
+window.addEventListener("message", handleWindowMessageEvent, false);
 chrome.runtime.onMessage.addListener(handleExtensionMessage);
 setupExtensionDisconnectAction(() => {
   window.removeEventListener("message", handleWindowMessageEvent);
