@@ -5,8 +5,8 @@ import {
 
 /**
  * IMPORTANT: Safari seems to have a bug where it doesn't properly handle
- * window message events from content scripts when the listener for is
- * registered within a class. This is why these listeners are registered
+ * window message events from content scripts when the listener these events
+ * is registered within a class. This is why these listeners are registered
  * at the top level of this file.
  */
 window.addEventListener("message", handleWindowMessageEvent);
@@ -20,20 +20,11 @@ setupExtensionDisconnectAction(() => {
  * Handlers for window messages from the content script.
  */
 const windowMessageHandlers: ContentMessageWindowEventHandlers = {
-  checkIfReadyForAuthResult: () => handleCheckIfReadyForAuthResultMessage(),
   authResult: ({ data, referrer }: { data: any; referrer: string }) =>
     handleAuthResultMessage(data, referrer),
   webAuthnResult: ({ data, referrer }: { data: any; referrer: string }) =>
     handleWebAuthnResultMessage(data, referrer),
 };
-
-/**
- * Sends a message to the window verifying that the
- * content script is ready to receive an auth result.
- */
-function handleCheckIfReadyForAuthResultMessage() {
-  window.postMessage({ command: "readyToReceiveAuthResult" }, "*");
-}
 
 /**
  * Handles the auth result message from the window.

@@ -38,14 +38,6 @@ describe("ContentMessageHandler", () => {
       expect(sendMessageSpy).not.toHaveBeenCalled();
     });
 
-    it("responds to the checkIfReadyForAuthResult message", () => {
-      jest.spyOn(window, "postMessage");
-
-      postWindowMessage({ command: "checkIfReadyForAuthResult" });
-
-      expect(window.postMessage).toHaveBeenCalledWith({ command: "readyToReceiveAuthResult" }, "*");
-    });
-
     it("sends an authResult message", () => {
       postWindowMessage({ command: "authResult", lastpass: true, code: "code", state: "state" });
 

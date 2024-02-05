@@ -13,7 +13,6 @@ type ContentMessageWindowEventParams = {
 
 type ContentMessageWindowEventHandlers = {
   [key: string]: ({ data, referrer }: ContentMessageWindowEventParams) => void;
-  checkIfReadyForAuthResult: () => void;
   authResult: ({ data, referrer }: ContentMessageWindowEventParams) => void;
   webAuthnResult: ({ data, referrer }: ContentMessageWindowEventParams) => void;
 };
