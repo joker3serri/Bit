@@ -30,8 +30,7 @@ import {
 } from "@bitwarden/common/platform/models/domain/account";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { FakeGlobalState } from "@bitwarden/common/spec/fake-state";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec/fake-state-provider";
+import { FakeGlobalState, FakeGlobalStateProvider } from "@bitwarden/common/spec";
 import {
   PasswordStrengthServiceAbstraction,
   PasswordStrengthService,

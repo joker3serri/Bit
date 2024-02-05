@@ -18,7 +18,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { HashPurpose } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { FakeGlobalState } from "@bitwarden/common/spec/fake-state";
+import { FakeGlobalState, FakeGlobalStateProvider } from "@bitwarden/common/spec";
 import {
   PasswordStrengthServiceAbstraction,
   PasswordStrengthService,
@@ -26,7 +26,6 @@ import {
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
-import { FakeGlobalStateProvider } from "../../../../common/spec/fake-state-provider";
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
 import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";

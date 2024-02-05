@@ -11,8 +11,8 @@ module.exports = {
   preset: "jest-preset-angular",
   setupFilesAfterEnv: ["<rootDir>/test.setup.ts"],
   moduleNameMapper: pathsToModuleNameMapper(
-    // lets us use @bitwarden/common/spec/* in our tests
-    { "@bitwarden/common/spec/*": ["../common/spec/*"], ...(compilerOptions?.paths ?? {}) },
+    // lets us use @bitwarden/common/spec in tests
+    { "@bitwarden/common/spec": ["../common/spec"], ...(compilerOptions?.paths ?? {}) },
     {
       prefix: "<rootDir>/",
     },
