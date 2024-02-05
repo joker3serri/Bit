@@ -28,7 +28,7 @@ import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
+import { CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
@@ -71,9 +71,7 @@ describe("PasswordLoginStrategy", () => {
 
   beforeEach(async () => {
     stateProvider = new FakeGlobalStateProvider();
-    cache = stateProvider.getFake(
-      LOGIN_STRATEGY_CACHE_KEY,
-    ) as FakeGlobalState<PasswordLoginStrategyData>;
+    cache = stateProvider.getFake(CACHE_KEY) as FakeGlobalState<PasswordLoginStrategyData>;
 
     loginStrategyService = mock<LoginStrategyServiceAbstraction>();
     cryptoService = mock<CryptoService>();

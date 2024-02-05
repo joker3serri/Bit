@@ -18,10 +18,10 @@ import {
 } from "../../login-strategies/webauthn-login.strategy.spec";
 import { AuthRequestLoginCredentials, WebAuthnLoginCredentials } from "../../models";
 
-import { LOGIN_STRATEGY_CACHE_KEY } from "./login-strategy.state";
+import { CACHE_KEY } from "./login-strategy.state";
 
 describe("LOGIN_STRATEGY_CACHE_KEY", () => {
-  const sut = LOGIN_STRATEGY_CACHE_KEY;
+  const sut = CACHE_KEY;
 
   it("should correctly deserialize PasswordLoginStrategyData", () => {
     const data = new PasswordLoginStrategyData();

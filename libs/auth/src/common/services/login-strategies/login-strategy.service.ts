@@ -27,7 +27,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
+import { GlobalState, GlobalStateProvider } from "@bitwarden/common/platform/state";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
 
@@ -58,11 +58,11 @@ import {
 } from "../../models";
 
 import {
-  AUTH_REQUEST_PUSH_NOTIFICATION,
+  AUTH_REQUEST_PUSH_NOTIFICATION_KEY,
   CURRENT_LOGIN_STRATEGY_KEY,
   DataTypes,
-  LOGIN_STRATEGY_CACHE_EXPIRATION,
-  LOGIN_STRATEGY_CACHE_KEY,
+  CACHE_EXPIRATION_KEY,
+  CACHE_KEY,
 } from "./login-strategy.state";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
@@ -105,15 +105,13 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     protected authReqCryptoService: AuthRequestCryptoServiceAbstraction,
-    protected stateProvider: StateProvider,
+    protected stateProvider: GlobalStateProvider,
   ) {
-    this.currentAuthTypeState = this.stateProvider.getGlobal(CURRENT_LOGIN_STRATEGY_KEY);
-    this.loginStrategyCacheState = this.stateProvider.getGlobal(LOGIN_STRATEGY_CACHE_KEY);
-    this.loginStrategyCacheExpirationState = this.stateProvider.getGlobal(
-      LOGIN_STRATEGY_CACHE_EXPIRATION,
-    );
-    this.authRequestPushNotificationState = this.stateProvider.getGlobal(
-      AUTH_REQUEST_PUSH_NOTIFICATION,
+    this.currentAuthTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
+    this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
+    this.loginStrategyCacheExpirationState = this.stateProvider.get(CACHE_EXPIRATION_KEY);
+    this.authRequestPushNotificationState = this.stateProvider.get(
+      AUTH_REQUEST_PUSH_NOTIFICATION_KEY,
     );
 
     this.currentAuthType$ = this.currentAuthTypeState.state$;

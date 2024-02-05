@@ -29,7 +29,7 @@ export const CURRENT_LOGIN_STRATEGY_KEY = new KeyDefinition<AuthenticationType |
  * A cache for login strategies to use for data persistence through
  * the login process.
  */
-export const LOGIN_STRATEGY_CACHE_KEY = new KeyDefinition<DataTypes | null>(
+export const CACHE_KEY = new KeyDefinition<DataTypes | null>(
   LOGIN_STRATEGY_MEMORY,
   "loginStrategyCache",
   {
@@ -57,7 +57,7 @@ export const LOGIN_STRATEGY_CACHE_KEY = new KeyDefinition<DataTypes | null>(
  * The expiration date for the login strategy cache.
  * Used as a backup to the timer set on the service.
  */
-export const LOGIN_STRATEGY_CACHE_EXPIRATION = new KeyDefinition<Date | null>(
+export const CACHE_EXPIRATION_KEY = new KeyDefinition<Date | null>(
   LOGIN_STRATEGY_MEMORY,
   "loginStrategyCacheExpiration",
   {
@@ -71,7 +71,7 @@ export const LOGIN_STRATEGY_CACHE_EXPIRATION = new KeyDefinition<Date | null>(
  * foreground instance to send out the notification.
  * TODO: Move to Auth Request service.
  */
-export const AUTH_REQUEST_PUSH_NOTIFICATION = new KeyDefinition<string>(
+export const AUTH_REQUEST_PUSH_NOTIFICATION_KEY = new KeyDefinition<string>(
   LOGIN_STRATEGY_MEMORY,
   "authRequestPushNotification",
   {

@@ -19,7 +19,7 @@ import { FakeGlobalState, FakeGlobalStateProvider } from "@bitwarden/common/spec
 import { PrfKey, UserKey } from "@bitwarden/common/types/key";
 
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
-import { LOGIN_STRATEGY_CACHE_KEY } from "../services/login-strategies/login-strategy.state";
+import { CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { WebAuthnLoginStrategy, WebAuthnLoginStrategyData } from "./webauthn-login.strategy";
@@ -63,9 +63,7 @@ describe("WebAuthnLoginStrategy", () => {
     jest.clearAllMocks();
 
     stateProvider = new FakeGlobalStateProvider();
-    cache = stateProvider.getFake(
-      LOGIN_STRATEGY_CACHE_KEY,
-    ) as FakeGlobalState<WebAuthnLoginStrategyData>;
+    cache = stateProvider.getFake(CACHE_KEY) as FakeGlobalState<WebAuthnLoginStrategyData>;
 
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
