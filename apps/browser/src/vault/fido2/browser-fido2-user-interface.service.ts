@@ -46,6 +46,7 @@ export function fido2PopoutSessionData$() {
       sessionId: queryParams.sessionId as string,
       fallbackSupported: queryParams.fallbackSupported === "true",
       userVerification: queryParams.userVerification === "true",
+      senderUrl: queryParams.senderUrl as string,
     })),
   );
 }
@@ -148,6 +149,8 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
   }
 
   static sendMessage(msg: BrowserFido2Message) {
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     BrowserApi.sendMessage(BrowserFido2MessageName, msg);
   }
 
@@ -197,6 +200,8 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
     fromEvent(abortController.signal, "abort")
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.close();
         BrowserFido2UserInterfaceSession.sendMessage({
           type: "AbortRequest",
@@ -213,7 +218,11 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
       )
       .subscribe((msg) => {
         if (msg.type === "AbortResponse") {
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.close();
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.abort(msg.fallbackRequested);
         }
       });
@@ -363,7 +372,11 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.close();
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.abort(true);
       });
 

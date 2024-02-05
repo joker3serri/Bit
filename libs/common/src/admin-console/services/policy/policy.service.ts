@@ -1,7 +1,7 @@
 import { map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
-import { KeyDefinition, POLICY_DISK, StateProvider } from "../../../platform/state";
+import { KeyDefinition, POLICIES_DISK, StateProvider } from "../../../platform/state";
 import { PolicyId, UserId } from "../../../types/guid";
 import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
@@ -15,7 +15,7 @@ import { PolicyResponse } from "../../models/response/policy.response";
 const policyRecordToArray = (policiesMap: { [id: string]: PolicyData }) =>
   Object.values(policiesMap || {}).map((f) => new Policy(f));
 
-export const POLICY_POLICY = KeyDefinition.record<PolicyData, PolicyId>(POLICY_DISK, "policies", {
+export const POLICY_POLICY = KeyDefinition.record<PolicyData, PolicyId>(POLICIES_DISK, "policies", {
   deserializer: (policyData) => policyData,
 });
 
@@ -68,7 +68,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
       return;
     }
 
-    this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
+    await this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
   }
 
   mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {

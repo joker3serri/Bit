@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Component, NgZone, OnChanges, OnDestroy, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 
@@ -46,6 +47,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
     organizationService: OrganizationService,
     sendApiService: SendApiService,
     dialogService: DialogService,
+    datePipe: DatePipe,
   ) {
     super(
       cipherService,
@@ -63,6 +65,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
       organizationService,
       sendApiService,
       dialogService,
+      window,
+      datePipe,
     );
   }
 
@@ -96,6 +100,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
     ) {
       this.cipher = null;
     }
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     super.load();
   }
 
