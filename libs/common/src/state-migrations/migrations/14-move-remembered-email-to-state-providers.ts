@@ -21,6 +21,9 @@ export class RememberedEmailMigrator extends Migrator<13, 14> {
     if (legacyGlobal?.rememberedEmail != null) {
       await helper.setToGlobal(REMEMBERED_EMAIL, legacyGlobal.rememberedEmail);
     }
+
+    delete legacyGlobal.rememberedEmail;
+    await helper.set("global", legacyGlobal);
   }
 
   async rollback(helper: MigrationHelper): Promise<void> {
