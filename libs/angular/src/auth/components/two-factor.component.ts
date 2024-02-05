@@ -266,6 +266,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   }
 
   // Each client will have own implementation
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected setupDuoResultListener(): void {}
 
   private async handleLoginResponse(authResult: AuthResult) {
