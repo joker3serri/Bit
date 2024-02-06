@@ -8,8 +8,7 @@ import { Utils } from "../../../platform/misc/utils";
 import { UserId } from "../../../types/guid";
 import { OrganizationData } from "../../models/data/organization.data";
 
-import { OrganizationService } from "./organization.service";
-import { ORGANIZATIONS } from "./organization.service.state";
+import { OrganizationService, ORGANIZATIONS } from "./organization.service";
 
 describe("Organization Service", () => {
   let organizationService: OrganizationService;

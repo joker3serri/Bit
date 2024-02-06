@@ -1,7 +1,8 @@
 import { BehaviorSubject, concatMap, map, Observable } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { StateService } from "../../../platform/abstractions/state.service";
-import { StateProvider } from "../../../platform/state";
+import { KeyDefinition, ORGANIZATIONS_DISK, StateProvider } from "../../../platform/state";
 import {
   InternalOrganizationServiceAbstraction,
   isMember,
@@ -9,7 +10,13 @@ import {
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
-import { ORGANIZATIONS } from "./organization.service.state";
+export const ORGANIZATIONS = KeyDefinition.record<OrganizationData>(
+  ORGANIZATIONS_DISK,
+  "organizations",
+  {
+    deserializer: (obj: Jsonify<OrganizationData>) => OrganizationData.fromJSON(obj),
+  },
+);
 
 export class OrganizationService implements InternalOrganizationServiceAbstraction {
   // marked for removal during AC-2009

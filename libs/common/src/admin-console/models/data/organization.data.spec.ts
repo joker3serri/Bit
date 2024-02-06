@@ -1,8 +1,8 @@
-import { ProductType } from "../../../enums";
+import { ProductType } from "../../../enums/product-type.enum";
 import { OrganizationUserStatusType, OrganizationUserType } from "../../enums";
-import { OrganizationData } from "../../models/data/organization.data";
+import { ORGANIZATIONS } from "../../services/organization/organization.service";
 
-import { ORGANIZATIONS } from "./organization.service.state";
+import { OrganizationData } from "./organization.data";
 
 describe("ORGANIZATIONS state", () => {
   const sut = ORGANIZATIONS;
