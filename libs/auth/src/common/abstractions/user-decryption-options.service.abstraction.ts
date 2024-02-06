@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserDecryptionOptions } from "@bitwarden/common/src/auth/models/domain/user-decryption-options/user-decryption-options";
+import { UserDecryptionOptions } from "../models";
 
 export abstract class UserDecryptionOptionsServiceAbstraction {
   /**

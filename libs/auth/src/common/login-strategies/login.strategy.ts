@@ -4,7 +4,6 @@ import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { UserDecryptionOptions } from "@bitwarden/common/auth/models/domain/user-decryption-options/user-decryption-options";
 import { DeviceRequest } from "@bitwarden/common/auth/models/request/identity-token/device.request";
 import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/sso-token.request";
@@ -37,6 +36,7 @@ import {
   AuthRequestLoginCredentials,
   WebAuthnLoginCredentials,
 } from "../models/domain/login-credentials";
+import { UserDecryptionOptions } from "../models/domain/user-decryption-options";
 
 type IdentityResponse = IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse;
 

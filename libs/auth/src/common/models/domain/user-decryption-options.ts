@@ -1,9 +1,18 @@
 import { Jsonify } from "type-fest";
 
-import { IdentityTokenResponse } from "../../response/identity-token.response";
+import { IdentityTokenResponse } from "@bitwarden/common/src/auth/models/response/identity-token.response";
 
-import { KeyConnectorUserDecryptionOption } from "./key-connector-user-decryption-option";
-import { TrustedDeviceUserDecryptionOption } from "./trusted-device-user-decryption-option";
+export class KeyConnectorUserDecryptionOption {
+  constructor(public keyConnectorUrl: string) {}
+}
+
+export class TrustedDeviceUserDecryptionOption {
+  constructor(
+    public hasAdminApproval: boolean,
+    public hasLoginApprovingDevice: boolean,
+    public hasManageResetPasswordPermission: boolean,
+  ) {}
+}
 
 export class UserDecryptionOptions {
   hasMasterPassword: boolean;

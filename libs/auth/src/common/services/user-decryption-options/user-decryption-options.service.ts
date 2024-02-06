@@ -1,6 +1,5 @@
 import { map } from "rxjs";
 
-import { UserDecryptionOptions } from "@bitwarden/common/src/auth/models/domain/user-decryption-options/user-decryption-options";
 import {
   ActiveUserState,
   KeyDefinition,
@@ -10,6 +9,7 @@ import {
 import { UserId } from "@bitwarden/common/src/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
+import { UserDecryptionOptions } from "../../models";
 
 export const USER_DECRYPTION_OPTIONS = new KeyDefinition<UserDecryptionOptions>(
   USER_DECRYPTION_OPTIONS_DISK,

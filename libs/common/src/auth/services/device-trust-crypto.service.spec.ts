@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
+import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
 import { DeviceType } from "../../enums";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
@@ -18,7 +19,6 @@ import { CsprngArray } from "../../types/csprng";
 import { DeviceKey, UserKey } from "../../types/key";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
-import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
 import { UpdateDevicesTrustRequest } from "../models/request/update-devices-trust.request";
 import { ProtectedDeviceResponse } from "../models/response/protected-device.response";
 

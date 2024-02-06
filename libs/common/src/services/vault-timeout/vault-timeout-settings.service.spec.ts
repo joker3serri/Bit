@@ -3,10 +3,10 @@ import { BehaviorSubject, firstValueFrom, map } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
+import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { TokenService } from "../../auth/abstractions/token.service";
-import { UserDecryptionOptions } from "../../auth/models/domain/user-decryption-options/user-decryption-options";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { StateService } from "../../platform/abstractions/state.service";
