@@ -3,12 +3,11 @@ import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
+import { LoginStrategyServiceAbstraction, SsoLoginCredentials } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { SsoLoginCredentials } from "@bitwarden/common/auth/models/domain/login-credentials";
 import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
 import { UserDecryptionOptions } from "@bitwarden/common/auth/models/domain/user-decryption-options/user-decryption-options";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
@@ -49,7 +48,7 @@ export class SsoComponent {
   protected codeChallenge: string;
 
   constructor(
-    protected authService: AuthService,
+    protected loginStrategyService: LoginStrategyServiceAbstraction,
     protected router: Router,
     protected i18nService: I18nService,
     protected route: ActivatedRoute,
@@ -190,7 +189,7 @@ export class SsoComponent {
         this.redirectUri,
         orgSsoIdentifier,
       );
-      this.formPromise = this.authService.logIn(credentials);
+      this.formPromise = this.loginStrategyService.logIn(credentials);
       const authResult = await this.formPromise;
 
       const userDecryptionOpts = await firstValueFrom(
@@ -287,9 +286,13 @@ export class SsoComponent {
 
     if (this.onSuccessfulLoginTde != null) {
       // Don't await b/c causes hang on desktop & browser
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.onSuccessfulLoginTde();
     }
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.navigateViaCallbackOrRoute(
       this.onSuccessfulLoginTdeNavigate,
       // Navigate to TDE page (if user was on trusted device and TDE has decrypted
@@ -325,6 +328,8 @@ export class SsoComponent {
   private async handleSuccessfulLogin() {
     if (this.onSuccessfulLogin != null) {
       // Don't await b/c causes hang on desktop & browser
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.onSuccessfulLogin();
     }
 

@@ -1,12 +1,10 @@
 import { Observable } from "rxjs";
 
-import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
-import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
@@ -173,17 +171,22 @@ export abstract class StateService<T extends Account = Account> {
    * @deprecated For migration purposes only, use setUserKeyBiometric instead
    */
   setCryptoMasterKeyBiometric: (value: BiometricKey, options?: StorageOptions) => Promise<void>;
+  /**
+   * Gets a flag for if the biometrics process has been cancelled.
+   * Process reload occurs when biometrics is cancelled, so we store to disk to prevent
+   * it from reprompting and creating a loop.
+   */
+  getBiometricPromptCancelled: (options?: StorageOptions) => Promise<boolean>;
+  /**
+   * Sets a flag for if the biometrics process has been cancelled.
+   * Process reload occurs when biometrics is cancelled, so we store to disk to prevent
+   * it from reprompting and creating a loop.
+   */
+  setBiometricPromptCancelled: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDecryptedCiphers: (options?: StorageOptions) => Promise<CipherView[]>;
   setDecryptedCiphers: (value: CipherView[], options?: StorageOptions) => Promise<void>;
   getDecryptedCollections: (options?: StorageOptions) => Promise<CollectionView[]>;
   setDecryptedCollections: (value: CollectionView[], options?: StorageOptions) => Promise<void>;
-  getDecryptedOrganizationKeys: (
-    options?: StorageOptions,
-  ) => Promise<Map<string, SymmetricCryptoKey>>;
-  setDecryptedOrganizationKeys: (
-    value: Map<string, SymmetricCryptoKey>,
-    options?: StorageOptions,
-  ) => Promise<void>;
   getDecryptedPasswordGenerationHistory: (
     options?: StorageOptions,
   ) => Promise<GeneratedPasswordHistory[]>;
@@ -209,11 +212,6 @@ export abstract class StateService<T extends Account = Account> {
   setDecryptedPolicies: (value: Policy[], options?: StorageOptions) => Promise<void>;
   getDecryptedPrivateKey: (options?: StorageOptions) => Promise<Uint8Array>;
   setDecryptedPrivateKey: (value: Uint8Array, options?: StorageOptions) => Promise<void>;
-  getDecryptedProviderKeys: (options?: StorageOptions) => Promise<Map<string, SymmetricCryptoKey>>;
-  setDecryptedProviderKeys: (
-    value: Map<string, SymmetricCryptoKey>,
-    options?: StorageOptions,
-  ) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */
@@ -321,13 +319,6 @@ export abstract class StateService<T extends Account = Account> {
     value: { [id: string]: FolderData },
     options?: StorageOptions,
   ) => Promise<void>;
-  getEncryptedOrganizationKeys: (
-    options?: StorageOptions,
-  ) => Promise<{ [orgId: string]: EncryptedOrganizationKeyData }>;
-  setEncryptedOrganizationKeys: (
-    value: { [orgId: string]: EncryptedOrganizationKeyData },
-    options?: StorageOptions,
-  ) => Promise<void>;
   getEncryptedPasswordGenerationHistory: (
     options?: StorageOptions,
   ) => Promise<GeneratedPasswordHistory[]>;
@@ -356,8 +347,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getEncryptedPrivateKey: (options?: StorageOptions) => Promise<string>;
   setEncryptedPrivateKey: (value: string, options?: StorageOptions) => Promise<void>;
-  getEncryptedProviderKeys: (options?: StorageOptions) => Promise<any>;
-  setEncryptedProviderKeys: (value: any, options?: StorageOptions) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */
@@ -370,10 +359,6 @@ export abstract class StateService<T extends Account = Account> {
   setEntityId: (value: string, options?: StorageOptions) => Promise<void>;
   getEntityType: (options?: StorageOptions) => Promise<any>;
   setEntityType: (value: string, options?: StorageOptions) => Promise<void>;
-  getEnvironmentUrls: (options?: StorageOptions) => Promise<EnvironmentUrls>;
-  setEnvironmentUrls: (value: EnvironmentUrls, options?: StorageOptions) => Promise<void>;
-  getRegion: (options?: StorageOptions) => Promise<string>;
-  setRegion: (value: string, options?: StorageOptions) => Promise<void>;
   getEquivalentDomains: (options?: StorageOptions) => Promise<string[][]>;
   setEquivalentDomains: (value: string, options?: StorageOptions) => Promise<void>;
   getEventCollection: (options?: StorageOptions) => Promise<EventData[]>;

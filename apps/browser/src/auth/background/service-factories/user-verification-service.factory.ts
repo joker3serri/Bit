@@ -2,6 +2,10 @@ import { UserVerificationService as AbstractUserVerificationService } from "@bit
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 
 import {
+  VaultTimeoutSettingsServiceInitOptions,
+  vaultTimeoutSettingsServiceFactory,
+} from "../../../background/service-factories/vault-timeout-settings-service.factory";
+import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,
 } from "../../../platform/background/service-factories/crypto-service.factory";
@@ -18,6 +22,10 @@ import {
   LogServiceInitOptions,
   logServiceFactory,
 } from "../../../platform/background/service-factories/log-service.factory";
+import {
+  platformUtilsServiceFactory,
+  PlatformUtilsServiceInitOptions,
+} from "../../../platform/background/service-factories/platform-utils-service.factory";
 import {
   StateServiceInitOptions,
   stateServiceFactory,
@@ -42,7 +50,9 @@ export type UserVerificationServiceInitOptions = UserVerificationServiceFactoryO
   UserVerificationApiServiceInitOptions &
   UserDecryptionOptionsServiceInitOptions &
   PinCryptoServiceInitOptions &
-  LogServiceInitOptions;
+  LogServiceInitOptions &
+  VaultTimeoutSettingsServiceInitOptions &
+  PlatformUtilsServiceInitOptions;
 
 export function userVerificationServiceFactory(
   cache: { userVerificationService?: AbstractUserVerificationService } & CachedServices,
@@ -61,6 +71,8 @@ export function userVerificationServiceFactory(
         await userDecryptionOptionsServiceFactory(cache, opts),
         await pinCryptoServiceFactory(cache, opts),
         await logServiceFactory(cache, opts),
+        await vaultTimeoutSettingsServiceFactory(cache, opts),
+        await platformUtilsServiceFactory(cache, opts),
       ),
   );
 }
