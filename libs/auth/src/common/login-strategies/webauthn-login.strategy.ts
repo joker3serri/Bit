@@ -29,10 +29,10 @@ export class WebAuthnLoginStrategyData implements LoginStrategyData {
   credentials: WebAuthnLoginCredentials;
 
   static fromJSON(obj: Jsonify<WebAuthnLoginStrategyData>): WebAuthnLoginStrategyData {
-    const data = Object.assign(new WebAuthnLoginStrategyData(), obj);
-    Object.setPrototypeOf(data.tokenRequest, WebAuthnLoginTokenRequest.prototype);
-    Object.setPrototypeOf(data.credentials, WebAuthnLoginCredentials.prototype);
-    return data;
+    return Object.assign(new WebAuthnLoginStrategyData(), obj, {
+      tokenRequest: WebAuthnLoginTokenRequest.fromJSON(obj.tokenRequest),
+      credentials: WebAuthnLoginCredentials.fromJSON(obj.credentials),
+    });
   }
 }
 

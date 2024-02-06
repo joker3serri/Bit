@@ -48,9 +48,9 @@ export class SsoLoginStrategyData implements LoginStrategyData {
   ssoEmail2FaSessionToken?: string;
 
   static fromJSON(obj: Jsonify<SsoLoginStrategyData>): SsoLoginStrategyData {
-    const data = Object.assign(new SsoLoginStrategyData(), obj);
-    Object.setPrototypeOf(data.tokenRequest, SsoTokenRequest.prototype);
-    return data;
+    return Object.assign(new SsoLoginStrategyData(), obj, {
+      tokenRequest: SsoTokenRequest.fromJSON(obj.tokenRequest),
+    });
   }
 }
 

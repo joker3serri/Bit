@@ -51,9 +51,9 @@ export class PasswordLoginStrategyData implements LoginStrategyData {
 
   static fromJSON(obj: Jsonify<PasswordLoginStrategyData>): PasswordLoginStrategyData {
     const data = Object.assign(new PasswordLoginStrategyData(), obj, {
+      tokenRequest: PasswordTokenRequest.fromJSON(obj.tokenRequest),
       masterKey: SymmetricCryptoKey.fromJSON(obj.masterKey),
     });
-    Object.setPrototypeOf(data.tokenRequest, PasswordTokenRequest.prototype);
     return data;
   }
 }

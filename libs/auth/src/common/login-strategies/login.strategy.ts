@@ -232,7 +232,7 @@ export abstract class LoginStrategy {
     result.twoFactorProviders = response.twoFactorProviders2;
 
     this.twoFactorService.setProviders(response);
-    this.cache.update((data) =>
+    await this.cache.update((data) =>
       Object.assign(data, { captchaBypassToken: response.captchaToken ?? null }),
     );
     result.ssoEmail2FaSessionToken = response.ssoEmail2faSessionToken;

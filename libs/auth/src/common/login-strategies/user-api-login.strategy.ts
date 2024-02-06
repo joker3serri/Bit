@@ -27,9 +27,9 @@ export class UserApiLoginStrategyData implements LoginStrategyData {
   captchaBypassToken: string;
 
   static fromJSON(obj: Jsonify<UserApiLoginStrategyData>): UserApiLoginStrategyData {
-    const data = Object.assign(new UserApiLoginStrategyData(), obj);
-    Object.setPrototypeOf(data.tokenRequest, UserApiTokenRequest.prototype);
-    return data;
+    return Object.assign(new UserApiLoginStrategyData(), obj, {
+      tokenRequest: UserApiTokenRequest.fromJSON(obj.tokenRequest),
+    });
   }
 }
 

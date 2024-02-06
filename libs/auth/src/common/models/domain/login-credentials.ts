@@ -66,7 +66,7 @@ export class AuthRequestLoginCredentials {
               json.twoFactor.token,
               json.twoFactor.remember,
             )
-          : null,
+          : json.twoFactor,
       ),
       {
         decryptedUserKey: SymmetricCryptoKey.fromJSON(json.decryptedUserKey) as UserKey,
@@ -84,4 +84,15 @@ export class WebAuthnLoginCredentials {
     public deviceResponse: WebAuthnLoginAssertionResponseRequest,
     public prfKey?: SymmetricCryptoKey,
   ) {}
+
+  static fromJSON(json: Jsonify<WebAuthnLoginCredentials>) {
+    return new WebAuthnLoginCredentials(
+      json.token,
+      Object.assign(
+        Object.create(WebAuthnLoginAssertionResponseRequest.prototype),
+        json.deviceResponse,
+      ),
+      SymmetricCryptoKey.fromJSON(json.prfKey),
+    );
+  }
 }
