@@ -69,8 +69,8 @@ export class SecretState<Plaintext extends object, Disclosed, Secret> {
     });
     const plaintextState = provider.getDerived(encryptedState.state$, plaintextDefinition, null);
 
+    // wrap the encrypted and secret states in a `SecretState` facade
     const secretState = new SecretState(encryptor, encryptedState, plaintextState);
-
     return secretState;
   }
 
