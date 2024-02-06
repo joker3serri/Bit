@@ -52,7 +52,7 @@ describe("LastSyncMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 14);
+      helper = mockMigrationHelper(exampleJSON(), 15);
       sut = new LastSyncMigrator(15, 16);
     });
 
@@ -81,7 +81,7 @@ describe("LastSyncMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 15);
+      helper = mockMigrationHelper(rollbackJSON(), 16);
       sut = new LastSyncMigrator(15, 16);
     });
 
