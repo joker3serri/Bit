@@ -124,16 +124,17 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   protected override setupDuoResultListener() {
     if (!this.duoResultSubscription) {
       this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
-        this.ngZone.run(async () => {
-          switch (message.command) {
-            case "duoCallback":
-              this.token = message.code;
-              this.submit();
-              break;
-            default:
+        await this.ngZone.run(async () => {
+          if (message.command === "duoCallback") {
+            this.token = message.code;
+            await this.submit();
           }
         });
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
   }
 }
