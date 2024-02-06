@@ -7519,8 +7519,8 @@
   "smFreeTrialConfirmationEmail": {
     "message": "We've sent a confirmation email to your email at "
   },
-  "newWebVault": {
-    "message": "Welcome to the new and improved web vault. Learn more about what’s changed."
+  "newWebApp": {
+    "message": "Welcome to the new and improved web app. Learn more about what’s changed."
   },
   "releaseBlog": {
     "message": "Read release blog"
