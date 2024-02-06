@@ -1,5 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+
 import { PinCryptoServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin-crypto.service.abstraction";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
@@ -9,7 +11,6 @@ import { PlatformUtilsService } from "../../../platform/abstractions/platform-ut
 import { StateService } from "../../../platform/abstractions/state.service";
 import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enum";
 import { UserKey } from "../../../types/key";
-import { UserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
@@ -139,7 +140,6 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
       case VerificationType.MasterPassword:
         return this.verifyUserByMasterPassword(verification);
       case VerificationType.PIN:
-        return this.verifyUserByPIN(verification);
         break;
       case VerificationType.Biometrics:
         return this.verifyUserByBiometrics();

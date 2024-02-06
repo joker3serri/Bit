@@ -1,14 +1,15 @@
 import { map } from "rxjs";
 
+import { UserDecryptionOptions } from "@bitwarden/common/src/auth/models/domain/user-decryption-options/user-decryption-options";
 import {
   ActiveUserState,
   KeyDefinition,
   StateProvider,
   USER_DECRYPTION_OPTIONS_DISK,
-} from "../../platform/state";
-import { UserId } from "../../types/guid";
-import { InternalUserDecryptionOptionsServiceAbstraction as InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
-import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
+} from "@bitwarden/common/src/platform/state";
+import { UserId } from "@bitwarden/common/src/types/guid";
+
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
 
 export const USER_DECRYPTION_OPTIONS = new KeyDefinition<UserDecryptionOptions>(
   USER_DECRYPTION_OPTIONS_DISK,

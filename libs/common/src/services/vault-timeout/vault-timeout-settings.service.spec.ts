@@ -1,10 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, map } from "rxjs";
 
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { TokenService } from "../../auth/abstractions/token.service";
-import { UserDecryptionOptionsServiceAbstraction } from "../../auth/abstractions/user-decryption-options.service.abstraction";
 import { UserDecryptionOptions } from "../../auth/models/domain/user-decryption-options/user-decryption-options";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";

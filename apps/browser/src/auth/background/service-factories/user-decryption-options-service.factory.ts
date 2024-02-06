@@ -1,8 +1,8 @@
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
+  UserDecryptionOptionsService,
   UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
-import { UserDecryptionOptionsService } from "@bitwarden/common/auth/services/user-decryption-options.service";
+} from "@bitwarden/auth/common";
 
 import {
   CachedServices,
