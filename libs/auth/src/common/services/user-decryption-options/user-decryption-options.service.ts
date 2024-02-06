@@ -5,7 +5,7 @@ import {
   KeyDefinition,
   StateProvider,
   USER_DECRYPTION_OPTIONS_DISK,
-} from "@bitwarden/common/src/platform/state";
+} from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/src/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
