@@ -40,11 +40,12 @@
   </app-org-badge>
 </td>
 <td bitCell [ngClass]="RowHeightClass" *ngIf="showCollections"></td>
-<td bitCell [ngClass]="RowHeightClass" *ngIf="showGroups">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showGroups" #badgeContainer>
   <app-group-badge
     *ngIf="collectionGroups"
     [selectedGroups]="collectionGroups"
     [allGroups]="groups"
+    [containerWidth]="getBadgeContainerWidth()"
   ></app-group-badge>
 </td>
 <td bitCell [ngClass]="RowHeightClass" *ngIf="showPermissionsColumn">
