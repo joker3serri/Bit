@@ -43,30 +43,30 @@ describe("DefaultStateProvider", () => {
     });
   });
 
-  describe("getUserState", () => {
+  describe("getUserState$", () => {
     const keyDefinition = new KeyDefinition<string>(new StateDefinition("test", "disk"), "test", {
       deserializer: (s) => s,
     });
 
     it("should get the state for the active user if no userId is provided", () => {
-      const state = sut.getUserState(keyDefinition);
+      const state = sut.getUserState$(keyDefinition);
       expect(state).toBe(activeUserStateProvider.get(keyDefinition).state$);
     });
 
     it("should not return state for a single user if no userId is provided", () => {
-      const state = sut.getUserState(keyDefinition);
+      const state = sut.getUserState$(keyDefinition);
       expect(state).not.toBe(singleUserStateProvider.get(userId, keyDefinition).state$);
     });
 
     it("should get the state for the provided userId", () => {
       const userId = "user" as UserId;
-      const state = sut.getUserState(keyDefinition, userId);
+      const state = sut.getUserState$(keyDefinition, userId);
       expect(state).toBe(singleUserStateProvider.get(userId, keyDefinition).state$);
     });
 
     it("should not get the active user state if userId is provided", () => {
       const userId = "user" as UserId;
-      const state = sut.getUserState(keyDefinition, userId);
+      const state = sut.getUserState$(keyDefinition, userId);
       expect(state).not.toBe(activeUserStateProvider.get(keyDefinition).state$);
     });
   });

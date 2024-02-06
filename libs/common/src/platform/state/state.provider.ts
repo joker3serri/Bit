@@ -25,7 +25,7 @@ export abstract class StateProvider {
    * @param keyDefinition - The key definition for the state you want to get.
    * @param userId - The userId for which you want the state for. If not provided, the state for the currently active user will be returned.
    */
-  getUserState: <T>(keyDefinition: KeyDefinition<T>, userId?: UserId) => Observable<T>;
+  getUserState$: <T>(keyDefinition: KeyDefinition<T>, userId?: UserId) => Observable<T>;
   /**
    * Sets the state for a given key and userId.
    *
