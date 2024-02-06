@@ -181,7 +181,7 @@ export class LockComponent extends BaseLockComponent {
 
       await this.biometricStateService.setRequirePasswordOnStart(response);
       if (response) {
-        await this.stateService.setDisableAutoBiometricsPrompt(true);
+        await this.biometricStateService.setPromptAutomatically(false);
       }
       this.supportsBiometric = await this.canUseBiometric();
       await this.biometricStateService.setDismissedRequirePasswordOnStartCallout();

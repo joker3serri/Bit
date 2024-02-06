@@ -208,7 +208,6 @@ export class AccountSettings {
   clearClipboard?: number;
   collapsedGroupings?: string[];
   defaultUriMatch?: UriMatchType;
-  disableAutoBiometricsPrompt?: boolean;
   disableBadgeCounter?: boolean;
   disableGa?: boolean;
   dontShowCardsCurrentTab?: boolean;
@@ -232,7 +231,6 @@ export class AccountSettings {
   avatarColor?: string;
   smOnboardingTasks?: Record<string, Record<string, boolean>>;
   trustDeviceChoiceForDecryption?: boolean;
-  biometricPromptCancelled?: boolean;
 
   /** @deprecated July 2023, left for migration purposes*/
   pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();

@@ -155,11 +155,9 @@ export class DefaultBiometricStateService implements BiometricStateService {
 
   async logout(userId: UserId): Promise<void> {
     await this.stateProvider.getUser(userId, ENCRYPTED_CLIENT_KEY_HALF).update(() => null);
-    await this.stateProvider
-      .getUser(userId, DISMISSED_REQUIRE_PASSWORD_ON_START_CALLOUT)
-      .update(() => null);
     await this.stateProvider.getUser(userId, PROMPT_CANCELLED).update(() => null);
-    await this.stateProvider.getUser(userId, PROMPT_AUTOMATICALLY).update(() => null);
+    // Persist auto prompt setting through logout
+    // Persist dismissed require password on start callout through logout
   }
 
   async setDismissedRequirePasswordOnStartCallout(): Promise<void> {

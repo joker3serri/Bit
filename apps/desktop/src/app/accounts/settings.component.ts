@@ -453,7 +453,7 @@ export class SettingsComponent implements OnInit {
         // Recommended settings for Windows Hello
         this.form.controls.requirePasswordOnStart.setValue(true);
         this.form.controls.autoPromptBiometrics.setValue(false);
-        await this.stateService.setDisableAutoBiometricsPrompt(true);
+        await this.biometricStateService.setPromptAutomatically(false);
         await this.biometricStateService.setRequirePasswordOnStart(true);
         await this.biometricStateService.setDismissedRequirePasswordOnStartCallout();
       }
@@ -475,10 +475,9 @@ export class SettingsComponent implements OnInit {
       // require password on start must be disabled if auto prompt biometrics is enabled
       this.form.controls.requirePasswordOnStart.setValue(false);
       await this.updateRequirePasswordOnStart();
-
-      await this.stateService.setDisableAutoBiometricsPrompt(null);
+      await this.biometricStateService.setPromptAutomatically(true);
     } else {
-      await this.stateService.setDisableAutoBiometricsPrompt(true);
+      await this.biometricStateService.setPromptAutomatically(false);
     }
   }
 

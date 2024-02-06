@@ -420,8 +420,8 @@ export class SettingsComponent implements OnInit {
   }
 
   async updateAutoBiometricsPrompt() {
-    await this.stateService.setDisableAutoBiometricsPrompt(
-      !this.form.value.enableAutoBiometricsPrompt,
+    await this.biometricStateService.setPromptAutomatically(
+      this.form.value.enableAutoBiometricsPrompt,
     );
   }
 
