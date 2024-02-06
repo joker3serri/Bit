@@ -44,7 +44,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
   }
 
   async clearCache(): Promise<void> {
-    this.decryptedFoldersState.forceValue([]);
+    await this.decryptedFoldersState.forceValue([]);
   }
 
   // TODO: This should be moved to EncryptService or something
@@ -86,7 +86,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
   }
 
   async upsert(folderData: FolderData | FolderData[]): Promise<void> {
-    this.encryptedFoldersState.update((folders) => {
+    await this.encryptedFoldersState.update((folders) => {
       if (folders == null) {
         folders = {};
       }
@@ -154,6 +154,8 @@ export class FolderService implements InternalFolderServiceAbstraction {
         }
       }
       if (updates.length > 0) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.cipherService.upsert(updates);
       }
     }

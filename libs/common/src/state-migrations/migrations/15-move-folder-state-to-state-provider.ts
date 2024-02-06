@@ -22,7 +22,7 @@ const USER_ENCRYPTED_FOLDERS: KeyDefinitionLike = {
   },
 };
 
-export class FolderMigrator extends Migrator<13, 14> {
+export class FolderMigrator extends Migrator<14, 15> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
