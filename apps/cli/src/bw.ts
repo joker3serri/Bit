@@ -461,6 +461,7 @@ export class Main {
       this.i18nService,
       this.cipherService,
       this.stateService,
+      this.stateProvider,
     );
 
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
@@ -528,6 +529,7 @@ export class Main {
       this.organizationService,
       this.sendApiService,
       this.userDecryptionOptionsService,
+      this.stateProvider,
       async (expired: boolean) => await this.logout(),
     );
 

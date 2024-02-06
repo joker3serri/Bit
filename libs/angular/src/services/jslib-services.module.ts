@@ -126,10 +126,10 @@ import { ValidationService } from "@bitwarden/common/platform/services/validatio
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
   ActiveUserStateProvider,
+  DerivedStateProvider,
   GlobalStateProvider,
   SingleUserStateProvider,
   StateProvider,
-  DerivedStateProvider,
 } from "@bitwarden/common/platform/state";
 /* eslint-disable import/no-restricted-paths -- We need the implementations to inject, but generally these should not be accessed */
 import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-active-user-state.provider";
@@ -175,6 +175,7 @@ import {
 import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
+import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
@@ -183,6 +184,7 @@ import { FolderService } from "@bitwarden/common/vault/services/folder/folder.se
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
+import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
 import {
   VaultExportService,
   VaultExportServiceAbstraction,
@@ -367,6 +369,7 @@ import { ModalService } from "./modal.service";
         I18nServiceAbstraction,
         CipherServiceAbstraction,
         StateServiceAbstraction,
+        StateProvider,
       ],
     },
     {
@@ -503,6 +506,7 @@ import { ModalService } from "./modal.service";
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
         UserDecryptionOptionsServiceAbstraction,
+        StateProvider,
         LOGOUT_CALLBACK,
       ],
     },
@@ -915,6 +919,11 @@ import { ModalService } from "./modal.service";
     {
       provide: BiometricStateService,
       useClass: DefaultBiometricStateService,
+      deps: [StateProvider],
+    },
+    {
+      provide: VaultSettingsServiceAbstraction,
+      useClass: VaultSettingsService,
       deps: [StateProvider],
     },
   ],
