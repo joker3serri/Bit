@@ -2,26 +2,28 @@ import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { Migrator } from "../migrator";
 
 type ExpectedAccountType = {
-  profile?: {
-    lastSync?: string;
+  keys?: {
+    providerKeys?: {
+      encrypted?: Record<string, string>; // Record<ProviderId, EncryptedString> where EncryptedString is the ProviderKey encrypted by the UserKey.
+    };
   };
 };
 
-const LAST_SYNC_KEY: KeyDefinitionLike = {
-  key: "lastSync",
+const USER_ENCRYPTED_PROVIDER_KEYS: KeyDefinitionLike = {
+  key: "providerKeys",
   stateDefinition: {
-    name: "sync",
+    name: "crypto",
   },
 };
 
-export class LastSyncMigrator extends Migrator<12, 13> {
+export class ProviderKeyMigrator extends Migrator<12, 13> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
-      const value = account?.profile?.lastSync;
-      await helper.setToUser(userId, LAST_SYNC_KEY, value ?? null);
+      const value = account?.keys?.providerKeys?.encrypted;
       if (value != null) {
-        delete account.profile.lastSync;
+        await helper.setToUser(userId, USER_ENCRYPTED_PROVIDER_KEYS, value);
+        delete account.keys.providerKeys;
         await helper.set(userId, account);
       }
     }
@@ -30,16 +32,20 @@ export class LastSyncMigrator extends Migrator<12, 13> {
   }
   async rollback(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
-
     async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
-      const value = await helper.getFromUser(userId, LAST_SYNC_KEY);
-      if (account) {
-        account.profile = Object.assign(account.profile ?? {}, {
-          lastSync: value,
+      const value = await helper.getFromUser<Record<string, string>>(
+        userId,
+        USER_ENCRYPTED_PROVIDER_KEYS,
+      );
+      if (account && value) {
+        account.keys = Object.assign(account.keys ?? {}, {
+          providerKeys: {
+            encrypted: value,
+          },
         });
         await helper.set(userId, account);
       }
-      await helper.setToUser(userId, LAST_SYNC_KEY, null);
+      await helper.setToUser(userId, USER_ENCRYPTED_PROVIDER_KEYS, null);
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => rollbackAccount(userId, account))]);

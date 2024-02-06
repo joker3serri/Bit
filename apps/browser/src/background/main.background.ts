@@ -1,4 +1,9 @@
-import { PinCryptoService, PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  PinCryptoServiceAbstraction,
+  PinCryptoService,
+  LoginStrategyServiceAbstraction,
+  LoginStrategyService,
+} from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -51,6 +56,7 @@ import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwar
 import {
   AbstractMemoryStorageService,
   AbstractStorageService,
+  ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/platform/abstractions/system.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
@@ -62,6 +68,7 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
+import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
@@ -188,6 +195,7 @@ export default class MainBackground {
   storageService: AbstractStorageService;
   secureStorageService: AbstractStorageService;
   memoryStorageService: AbstractMemoryStorageService;
+  memoryStorageForStateProviders: AbstractMemoryStorageService & ObservableStorageService;
   i18nService: I18nServiceAbstraction;
   platformUtilsService: PlatformUtilsServiceAbstraction;
   logService: LogServiceAbstraction;
@@ -211,6 +219,7 @@ export default class MainBackground {
   containerService: ContainerService;
   auditService: AuditServiceAbstraction;
   authService: AuthServiceAbstraction;
+  loginStrategyService: LoginStrategyServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
   importService: ImportServiceAbstraction;
   exportService: VaultExportServiceAbstraction;
@@ -288,6 +297,8 @@ export default class MainBackground {
     // Services
     const lockedCallback = async (userId?: string) => {
       if (this.notificationsService != null) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.notificationsService.updateConnection(false);
       }
       await this.refreshBadge();
@@ -314,9 +325,16 @@ export default class MainBackground {
             new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
             new KeyGenerationService(this.cryptoFunctionService),
           )
+        : new MemoryStorageService();
+    this.memoryStorageForStateProviders =
+      BrowserApi.manifestVersion === 3
+        ? new LocalBackedSessionStorageService(
+            new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
+            new KeyGenerationService(this.cryptoFunctionService),
+          )
         : new BackgroundMemoryStorageService();
     this.globalStateProvider = new DefaultGlobalStateProvider(
-      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.memoryStorageForStateProviders,
       this.storageService as BrowserLocalStorageService,
     );
     this.encryptService = flagEnabled("multithreadDecryption")
@@ -328,7 +346,7 @@ export default class MainBackground {
       : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
-      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.memoryStorageForStateProviders,
       this.storageService as BrowserLocalStorageService,
     );
     this.accountService = new AccountServiceImplementation(
@@ -338,11 +356,11 @@ export default class MainBackground {
     );
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
-      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.memoryStorageForStateProviders,
       this.storageService as BrowserLocalStorageService,
     );
     this.derivedStateProvider = new BackgroundDerivedStateProvider(
-      this.memoryStorageService as BackgroundMemoryStorageService,
+      this.memoryStorageForStateProviders,
     );
     this.stateProvider = new DefaultStateProvider(
       this.activeUserStateProvider,
@@ -368,6 +386,8 @@ export default class MainBackground {
       this.messagingService,
       (clipboardValue, clearMs) => {
         if (this.systemService != null) {
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.systemService.clearClipboard(clipboardValue, clearMs);
         }
       },
@@ -453,6 +473,8 @@ export default class MainBackground {
       // AuthService should send the messages to the background not popup.
       send = (subscriber: string, arg: any = {}) => {
         const message = Object.assign({}, { command: subscriber }, arg);
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         that.runtimeBackground.processMessage(message, that as any);
       };
     })();
@@ -474,6 +496,13 @@ export default class MainBackground {
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
 
     this.authService = new AuthService(
+      backgroundMessagingService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
+    );
+
+    this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
       this.tokenService,
@@ -786,6 +815,8 @@ export default class MainBackground {
           const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
           const password = await this.passwordGenerationService.generatePassword(options);
           this.platformUtilsService.copyToClipboard(password, { window: window });
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.passwordGenerationService.addHistory(password);
         },
         async (tab, cipher) => {
@@ -794,6 +825,8 @@ export default class MainBackground {
             return;
           }
 
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           BrowserApi.tabSendMessage(tab, {
             command: "collectPageDetails",
             tab: tab,
@@ -880,6 +913,8 @@ export default class MainBackground {
         await new UpdateBadge(self).setBadgeIcon("", win.id);
       });
 
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       BrowserApi.onWindowCreated(async (win) => {
         if (win.incognito) {
           await new UpdateBadge(self).setBadgeIcon("", win.id);
@@ -896,6 +931,8 @@ export default class MainBackground {
         if (!this.isPrivateMode) {
           await this.refreshBadge();
         }
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.fullSync(true);
         setTimeout(() => this.notificationsService.init(), 2500);
         resolve();
@@ -1008,10 +1045,14 @@ export default class MainBackground {
     }
 
     if (BrowserApi.manifestVersion === 3) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       BrowserApi.sendMessage("updateBadge");
     }
     await this.refreshBadge();
     await this.mainContextMenuHandler.noAccess();
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
     await this.systemService.startProcessReload(this.authService);
@@ -1032,6 +1073,8 @@ export default class MainBackground {
       options.frameId = frameId;
     }
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     BrowserApi.tabSendMessage(
       tab,
       {

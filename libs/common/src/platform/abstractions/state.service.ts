@@ -36,6 +36,20 @@ import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
+/**
+ * Options for customizing the initiation behavior.
+ */
+export type InitOptions = {
+  /**
+   * Whether or not to run state migrations as part of the init process. Defaults to true.
+   *
+   * If false, the init method will instead wait for migrations to complete before doing its
+   * other init operations. Make sure migrations have either already completed, or will complete
+   * before calling {@link StateService.init} with `runMigrations: false`.
+   */
+  runMigrations?: boolean;
+};
+
 export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
   activeAccount$: Observable<string>;
@@ -44,7 +58,7 @@ export abstract class StateService<T extends Account = Account> {
   addAccount: (account: T) => Promise<void>;
   setActiveUser: (userId: string) => Promise<void>;
   clean: (options?: StorageOptions) => Promise<UserId>;
-  init: () => Promise<void>;
+  init: (initOptions?: InitOptions) => Promise<void>;
 
   getAccessToken: (options?: StorageOptions) => Promise<string>;
   setAccessToken: (value: string, options?: StorageOptions) => Promise<void>;
@@ -216,11 +230,6 @@ export abstract class StateService<T extends Account = Account> {
   setDecryptedPolicies: (value: Policy[], options?: StorageOptions) => Promise<void>;
   getDecryptedPrivateKey: (options?: StorageOptions) => Promise<Uint8Array>;
   setDecryptedPrivateKey: (value: Uint8Array, options?: StorageOptions) => Promise<void>;
-  getDecryptedProviderKeys: (options?: StorageOptions) => Promise<Map<string, SymmetricCryptoKey>>;
-  setDecryptedProviderKeys: (
-    value: Map<string, SymmetricCryptoKey>,
-    options?: StorageOptions,
-  ) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */
@@ -363,8 +372,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getEncryptedPrivateKey: (options?: StorageOptions) => Promise<string>;
   setEncryptedPrivateKey: (value: string, options?: StorageOptions) => Promise<void>;
-  getEncryptedProviderKeys: (options?: StorageOptions) => Promise<any>;
-  setEncryptedProviderKeys: (value: any, options?: StorageOptions) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */

@@ -1,10 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import * as program from "commander";
+import { program } from "commander";
 import * as jsdom from "jsdom";
 
-import { PinCryptoService, PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyService,
+  LoginStrategyServiceAbstraction,
+  PinCryptoService,
+  PinCryptoServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -60,6 +65,7 @@ import { DefaultDerivedStateProvider } from "@bitwarden/common/platform/state/im
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
 import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
+import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 /* eslint-enable import/no-restricted-paths */
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
@@ -125,6 +131,7 @@ export class Main {
   storageService: LowdbStorageService;
   secureStorageService: NodeEnvSecureStorageService;
   memoryStorageService: MemoryStorageService;
+  memoryStorageForStateProviders: MemoryStorageServiceForStateProviders;
   i18nService: I18nService;
   platformUtilsService: CliPlatformUtilsService;
   cryptoService: CryptoService;
@@ -189,6 +196,7 @@ export class Main {
   activeUserStateProvider: ActiveUserStateProvider;
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
+  loginStrategyService: LoginStrategyServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -227,14 +235,15 @@ export class Main {
     );
 
     this.memoryStorageService = new MemoryStorageService();
+    this.memoryStorageForStateProviders = new MemoryStorageServiceForStateProviders();
 
     this.globalStateProvider = new DefaultGlobalStateProvider(
-      this.memoryStorageService,
+      this.memoryStorageForStateProviders,
       this.storageService,
     );
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
-      this.memoryStorageService,
+      this.memoryStorageForStateProviders,
       this.storageService,
     );
 
@@ -248,11 +257,13 @@ export class Main {
 
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
-      this.memoryStorageService,
+      this.memoryStorageForStateProviders,
       this.storageService,
     );
 
-    this.derivedStateProvider = new DefaultDerivedStateProvider(this.memoryStorageService);
+    this.derivedStateProvider = new DefaultDerivedStateProvider(
+      this.memoryStorageForStateProviders,
+    );
 
     this.stateProvider = new DefaultStateProvider(
       this.activeUserStateProvider,
@@ -388,7 +399,7 @@ export class Main {
 
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
 
-    this.authService = new AuthService(
+    this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
       this.tokenService,
@@ -406,6 +417,13 @@ export class Main {
       this.policyService,
       this.deviceTrustCryptoService,
       this.authRequestCryptoService,
+    );
+
+    this.authService = new AuthService(
+      this.messagingService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);
@@ -612,4 +630,6 @@ export class Main {
 }
 
 const main = new Main();
+// FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 main.run();
