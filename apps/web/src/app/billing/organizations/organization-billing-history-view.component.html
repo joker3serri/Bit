@@ -13,14 +13,16 @@
   </button>
 </app-header>
 
-<ng-container *ngIf="!firstLoaded && loading">
-  <i
-    class="bwi bwi-spinner bwi-spin text-muted"
-    title="{{ 'loading' | i18n }}"
-    aria-hidden="true"
-  ></i>
-  <span class="sr-only">{{ "loading" | i18n }}</span>
-</ng-container>
-<ng-container *ngIf="billing">
-  <app-billing-history [billing]="billing"></app-billing-history>
-</ng-container>
+<bit-container>
+  <ng-container *ngIf="!firstLoaded && loading">
+    <i
+      class="bwi bwi-spinner bwi-spin text-muted"
+      title="{{ 'loading' | i18n }}"
+      aria-hidden="true"
+    ></i>
+    <span class="sr-only">{{ "loading" | i18n }}</span>
+  </ng-container>
+  <ng-container *ngIf="billing">
+    <app-billing-history [billing]="billing"></app-billing-history>
+  </ng-container>
+</bit-container>
