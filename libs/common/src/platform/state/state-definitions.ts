@@ -36,4 +36,8 @@ export const POLICIES_DISK = new StateDefinition("policies", "disk");
 export const POLICIES_MEMORY = new StateDefinition("policies", "memory");
 export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 
+export const FOLDER_DISK = new StateDefinition("folder", "disk", { web: "memory" });
+
+export const SYNC_STATE = new StateDefinition("sync", "disk", { web: "memory" });
+
 export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk");
