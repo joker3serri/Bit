@@ -3,7 +3,7 @@ import { any, MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { LastSyncMigrator } from "./15-move-last-sync-to-state-provider";
+import { LastSyncMigrator } from "./16-move-last-sync-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -53,7 +53,7 @@ describe("LastSyncMigrator", () => {
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(exampleJSON(), 14);
-      sut = new LastSyncMigrator(14, 15);
+      sut = new LastSyncMigrator(15, 16);
     });
 
     it("should remove lastSync from all accounts", async () => {
@@ -82,7 +82,7 @@ describe("LastSyncMigrator", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJSON(), 15);
-      sut = new LastSyncMigrator(14, 15);
+      sut = new LastSyncMigrator(15, 16);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
