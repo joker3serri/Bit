@@ -47,7 +47,7 @@ export type InitOptions = {
    * other init operations. Make sure migrations have either already completed, or will complete
    * before calling {@link StateService.init} with `runMigrations: false`.
    */
-  runMigrations: boolean;
+  runMigrations?: boolean;
 };
 
 export abstract class StateService<T extends Account = Account> {

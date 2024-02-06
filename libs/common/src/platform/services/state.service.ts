@@ -130,7 +130,7 @@ export class StateService<
       .subscribe();
   }
 
-  async init(initOptions?: InitOptions): Promise<void> {
+  async init(initOptions: InitOptions = {}): Promise<void> {
     // Deconstruct and apply defaults
     const { runMigrations = true } = initOptions;
     if (this.hasBeenInited) {
