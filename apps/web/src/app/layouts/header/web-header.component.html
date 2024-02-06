@@ -4,7 +4,13 @@
   *ngIf="showBanner$ | async"
 >
   {{ "newWebApp" | i18n }}
-  <a href="https://bitwarden.com" bitLink linkType="contrast">{{ "releaseBlog" | i18n }}</a>
+  <a
+    href="https://bitwarden.com/blog/bitwarden-design-updating-the-navigation-in-the-web-app"
+    bitLink
+    linkType="contrast"
+    target="_blank"
+    >{{ "releaseBlog" | i18n }}</a
+  >
 </bit-banner>
 <header
   *ngIf="routeData$ | async as routeData"
