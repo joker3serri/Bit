@@ -118,6 +118,15 @@ export class OrganizationData {
   }
 
   static fromJSON(obj: Jsonify<OrganizationData>) {
-    return Object.assign(new OrganizationData(), obj);
+    return Object.assign(new OrganizationData(), obj, {
+      familySponsorshipLastSyncDate:
+        obj.familySponsorshipLastSyncDate != null
+          ? new Date(obj.familySponsorshipLastSyncDate)
+          : obj.familySponsorshipLastSyncDate,
+      familySponsorshipValidUntil:
+        obj.familySponsorshipValidUntil != null
+          ? new Date(obj.familySponsorshipValidUntil)
+          : obj.familySponsorshipValidUntil,
+    });
   }
 }
