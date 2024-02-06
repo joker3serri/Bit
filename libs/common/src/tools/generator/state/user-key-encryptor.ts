@@ -23,29 +23,43 @@ const SecretPadding = Object.freeze({
   hasInvalidPadding: /[^0]/,
 });
 
-export class UserKeyEncryptor<State extends object, Exposed, Secret> {
+/** A classification strategy that protects a type's secrets by encrypting them
+ *  with a `UserKey`
+ */
+export class UserKeyEncryptor<State extends object, Disclosed, Secret> {
+  /** Instantiates the encryptor
+   *  @param encryptService protects properties of `Secret`.
+   *  @param keyService looks up the user key when protecting data.
+   *  @param classifier partitions secrets and disclosed information.
+   */
   constructor(
-    private userId: UserId,
-    private encryptService: EncryptService,
-    private keyService: CryptoService,
-    private classifier: SecretClassifier<State, Exposed, Secret>,
+    private readonly encryptService: EncryptService,
+    private readonly keyService: CryptoService,
+    private readonly classifier: SecretClassifier<State, Disclosed, Secret>,
   ) {}
 
-  async encrypt(value: State): Promise<[EncString, Exposed]> {
+  /** Protects secrets in `value` using the user's key.
+   *  @param value the object to protect. This object is mutated during encryption.
+   */
+  async encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]> {
     const classifiedValue = this.classifier.classify(value);
-    const encryptedValue = await this.encryptSecret(classifiedValue.secret);
-    return [encryptedValue, classifiedValue.exposed];
+    const encryptedValue = await this.encryptSecret(classifiedValue.secret, userId);
+    return [encryptedValue, classifiedValue.disclosed];
   }
 
-  async decrypt(secret: EncString, exposed: Exposed): Promise<Jsonify<State>> {
+  /** Combines protected secrets and disclosed data into a type that can be
+   *  rehydrated into a domain object.
+   *  @param secret the object to protect. This object is mutated during encryption.
+   */
+  async decrypt(secret: EncString, disclosed: Disclosed, userId: UserId): Promise<Jsonify<State>> {
     // reconstruct TFrom's data
-    const decrypted = await this.decryptSecret(secret);
-    const jsonValue = this.classifier.declassify(exposed, decrypted);
+    const decrypted = await this.decryptSecret(secret, userId);
+    const jsonValue = this.classifier.declassify(disclosed, decrypted);
 
     return jsonValue;
   }
 
-  private async encryptSecret(value: Secret) {
+  private async encryptSecret(value: Secret, userId: UserId) {
     // package the data for encryption
     const json = JSON.stringify(value);
 
@@ -56,7 +70,7 @@ export class UserKeyEncryptor<State extends object, Exposed, Secret> {
     );
 
     // encrypt the data and drop the key for GC
-    let key = await this.keyService.getUserKey(this.userId);
+    let key = await this.keyService.getUserKey(userId);
     const encrypted = await this.encryptService.encrypt(toEncrypt, key);
     key = null;
 
@@ -64,9 +78,9 @@ export class UserKeyEncryptor<State extends object, Exposed, Secret> {
   }
 
   // There may be a need to use SUBTLE here.
-  async decryptSecret(value: EncString): Promise<Secret> {
+  private async decryptSecret(value: EncString, userId: UserId): Promise<Secret> {
     // decrypt the data and drop the key for GC
-    let key = await this.keyService.getUserKey(this.userId);
+    let key = await this.keyService.getUserKey(userId);
     const decrypted = await this.encryptService.decryptToUtf8(value, key);
     key = null;
 

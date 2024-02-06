@@ -1,19 +1,22 @@
 import { Jsonify } from "type-fest";
 
-/** Classifies the properties of a secret. Exposed secrets
+/** Classifies the properties of a secret. Disclosed secrets
  *  MAY be stored in plaintext. Excluded secrets MUST NOT be
  *  saved. Everything else MUST be stored using encryption.
  */
-export class SecretClassifier<T extends object, Exposed, Secret> {
+export class SecretClassifier<T extends object, Disclosed, Secret> {
   /** Instantiates a secret classifier.
-   *  @param exposed lists exposed properties of `T`.
+   *  @param disclosed lists disclosed properties of `T`.
    *  @param excluded lists excluded of `T`.
    *  @remarks You should probably be using {@link SecretClassifier.forSecret}.
    */
   constructor(
-    private exposed: (keyof Exposed & keyof T)[],
-    private excluded: (keyof T)[],
-  ) {}
+    private readonly disclosed: (keyof Disclosed & keyof T)[],
+    private readonly excluded: (keyof T)[],
+  ) {
+    Object.freeze(disclosed);
+    Object.freeze(excluded);
+  }
 
   /** Creates a classifier where all properties are secret.
    *  @type {T} The type of secret being classified.
@@ -22,20 +25,23 @@ export class SecretClassifier<T extends object, Exposed, Secret> {
     return new SecretClassifier<T, Record<keyof T, never>, T>([], []);
   }
 
-  /** Classify a property as exposed.
-   *  @type {PropertyName} Available secrets to expose.
-   *  @param exposed The property name to expose.
+  /** Classify a property as disclosed.
+   *  @type {PropertyName} Available secrets to disclose.
+   *  @param disclose The property name to disclose.
    *  @returns a new classifier
    */
   // FIXME: when Typescript 5.0 is available, PropertyName can be `const`.
-  expose<PropertyName extends keyof Secret>(exposed: PropertyName) {
-    // move the property from the secret type to the exposed type
-    type NewExposed = Exposed & Record<PropertyName, Secret[PropertyName]>;
+  disclose<PropertyName extends keyof Secret>(disclose: PropertyName) {
+    // move the property from the secret type to the disclose type
+    type NewDisclosed = Disclosed & Record<PropertyName, Secret[PropertyName]>;
     type NewSecret = Exclude<Secret, PropertyName>;
 
     // update the fluent interface
-    const newExposed = [...this.exposed, exposed] as (keyof NewExposed & keyof T)[];
-    const classifier = new SecretClassifier<T, NewExposed, NewSecret>(newExposed, this.excluded);
+    const newDisclosed = [...this.disclosed, disclose] as (keyof NewDisclosed & keyof T)[];
+    const classifier = new SecretClassifier<T, NewDisclosed, NewSecret>(
+      newDisclosed,
+      this.excluded,
+    );
 
     return classifier;
   }
@@ -52,43 +58,46 @@ export class SecretClassifier<T extends object, Exposed, Secret> {
 
     // update the fluent interface
     const newExcluded = [...this.excluded, excludedPropertyName] as (keyof T)[];
-    const classifier = new SecretClassifier<T, Exposed, NewConfidential>(this.exposed, newExcluded);
+    const classifier = new SecretClassifier<T, Disclosed, NewConfidential>(
+      this.disclosed,
+      newExcluded,
+    );
 
     return classifier;
   }
 
-  /** Partitions `secret` into its exposed properties and secret properties.
+  /** Partitions `secret` into its disclosed properties and secret properties.
    *  THIS METHOD ALTERS `secret`.
    *  @type {T} the type subject to classification.
    *  @param secret The object to partition
    *  @returns an object that classifies secrets.
-   *    The `exposed` member is new and contains exposed properties.
+   *    The `disclosed` member is new and contains disclosed properties.
    *    The `secret` member aliases the secret parameter, with all
-   *    exposed and excluded properties deleted.
+   *    disclosed and excluded properties deleted.
    */
-  classify(secret: T): { exposed: Exposed; secret: Secret } {
+  classify(secret: T): { disclosed: Disclosed; secret: Secret } {
     for (const excludedProp of this.excluded) {
       delete secret[excludedProp];
     }
 
-    const exposed: Record<PropertyKey, unknown> = {};
-    for (const exposedProp of this.exposed) {
-      delete secret[exposedProp];
-      exposed[exposedProp] = secret[exposedProp];
+    const disclosed: Record<PropertyKey, unknown> = {};
+    for (const disclosedProp of this.disclosed) {
+      delete secret[disclosedProp];
+      disclosed[disclosedProp] = secret[disclosedProp];
     }
 
     return {
-      exposed: exposed as Exposed,
+      disclosed: disclosed as Disclosed,
       secret: secret as unknown as Secret,
     };
   }
 
-  declassify(exposed: Exposed, secret: Secret): Jsonify<T> {
-    // removed unexposed keys from `jsonValue to prevent any old edit
+  declassify(disclosed: Disclosed, secret: Secret): Jsonify<T> {
+    // removed unknown keys from `disclosed` to prevent any old edit
     // of plaintext data from being laundered though declassification.
-    const cleaned = {} as Partial<Exposed>;
-    for (const exposedProp of this.exposed) {
-      cleaned[exposedProp] = exposed[exposedProp];
+    const cleaned = {} as Partial<Disclosed>;
+    for (const disclosedProp of this.disclosed) {
+      cleaned[disclosedProp] = disclosed[disclosedProp];
     }
 
     // merge decrypted into cleaned so that secret data clobbers public data
