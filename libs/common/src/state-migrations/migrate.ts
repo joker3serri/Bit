@@ -9,6 +9,7 @@ import { EverHadUserKeyMigrator } from "./migrations/10-move-ever-had-user-key-t
 import { OrganizationKeyMigrator } from "./migrations/11-move-org-keys-to-state-providers";
 import { MoveEnvironmentStateToProviders } from "./migrations/12-move-environment-state-to-providers";
 import { ProviderKeyMigrator } from "./migrations/13-move-provider-keys-to-state-providers";
+import { MoveBiometricClientKeyHalfToStateProviders } from "./migrations/14-move-biometric-client-key-half-state-to-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -19,7 +20,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 2;
-export const CURRENT_VERSION = 13;
+export const CURRENT_VERSION = 14;
 export type MinVersion = typeof MIN_VERSION;
 
 export async function migrate(
@@ -36,7 +37,6 @@ export async function migrate(
     await storageService.save("stateVersion", CURRENT_VERSION);
     return;
   }
-
   await MigrationBuilder.create()
     .with(MinVersionMigrator)
     .with(FixPremiumMigrator, 2, 3)
@@ -49,7 +49,8 @@ export async function migrate(
     .with(EverHadUserKeyMigrator, 9, 10)
     .with(OrganizationKeyMigrator, 10, 11)
     .with(MoveEnvironmentStateToProviders, 11, 12)
-    .with(ProviderKeyMigrator, 12, CURRENT_VERSION)
+    .with(ProviderKeyMigrator, 12, 13)
+    .with(MoveBiometricClientKeyHalfToStateProviders, 13, CURRENT_VERSION)
 
     .migrate(migrationHelper);
 }
@@ -69,4 +70,47 @@ export async function currentVersion(
   }
   logService.info(`State version: ${state}`);
   return state;
+}
+
+/**
+ * Waits for migrations to have a chance to run and will resolve the promise once they are.
+ *
+ * @param storageService Disk storage where the `stateVersion` will or is already saved in.
+ * @param logService Log service
+ */
+export async function waitForMigrations(
+  storageService: AbstractStorageService,
+  logService: LogService,
+) {
+  const isReady = async () => {
+    const version = await currentVersion(storageService, logService);
+    // The saved version is what we consider the latest
+    // migrations should be complete
+    return version === CURRENT_VERSION;
+  };
+
+  const wait = async (time: number) => {
+    // Wait exponentially
+    const nextTime = time * 2;
+    if (nextTime > 8192) {
+      // Don't wait longer than ~8 seconds in a single wait,
+      // if the migrations still haven't happened. They aren't
+      // likely to.
+      return;
+    }
+    return new Promise<void>((resolve) => {
+      setTimeout(async () => {
+        if (!(await isReady())) {
+          logService.info(`Waiting for migrations to finish, waiting for ${nextTime}ms`);
+          await wait(nextTime);
+        }
+        resolve();
+      }, time);
+    });
+  };
+
+  if (!(await isReady())) {
+    // Wait for 2ms to start with
+    await wait(2);
+  }
 }
