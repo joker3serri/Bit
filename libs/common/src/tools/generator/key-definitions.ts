@@ -1,6 +1,7 @@
 import { GENERATOR_DISK, GENERATOR_MEMORY, KeyDefinition } from "../../platform/state";
 
 import { GeneratedPasswordHistory } from "./history/generated-password-history";
+import { PassphraseGenerationOptions } from "./passphrase/passphrase-generation-options";
 import { PasswordGenerationOptions } from "./password/password-generation-options";
 
 /** plaintext password generation options */
@@ -13,7 +14,7 @@ export const PASSWORD_SETTINGS = new KeyDefinition<PasswordGenerationOptions>(
 );
 
 /** plaintext passphrase generation options */
-export const PASSPHRASE_SETTINGS = new KeyDefinition<PasswordGenerationOptions>(
+export const PASSPHRASE_SETTINGS = new KeyDefinition<PassphraseGenerationOptions>(
   GENERATOR_DISK,
   "passphraseGeneratorSettings",
   {
