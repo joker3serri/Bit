@@ -16,11 +16,10 @@ import { UsernameGeneratorOptions } from "../../tools/generator/username";
 import { SendData } from "../../tools/send/models/data/send.data";
 import { SendView } from "../../tools/send/models/view/send.view";
 import { UserId } from "../../types/guid";
-import { UserKey, MasterKey, DeviceKey } from "../../types/key";
+import { DeviceKey, MasterKey, UserKey } from "../../types/key";
 import { UriMatchType } from "../../vault/enums";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { CollectionData } from "../../vault/models/data/collection.data";
-import { FolderData } from "../../vault/models/data/folder.data";
 import { LocalData } from "../../vault/models/data/local.data";
 import { CipherView } from "../../vault/models/view/cipher.view";
 import { CollectionView } from "../../vault/models/view/collection.view";
@@ -253,8 +252,6 @@ export abstract class StateService<T extends Account = Account> {
     value: boolean,
     options?: StorageOptions,
   ) => Promise<void>;
-  getEnablePasskeys: (options?: StorageOptions) => Promise<boolean>;
-  setEnablePasskeys: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDisableContextMenuItem: (options?: StorageOptions) => Promise<boolean>;
   setDisableContextMenuItem: (value: boolean, options?: StorageOptions) => Promise<void>;
   /**
@@ -331,17 +328,6 @@ export abstract class StateService<T extends Account = Account> {
     value: { [id: string]: CollectionData },
     options?: StorageOptions,
   ) => Promise<void>;
-  /**
-   * @deprecated Do not call this directly, use FolderService
-   */
-  getEncryptedFolders: (options?: StorageOptions) => Promise<{ [id: string]: FolderData }>;
-  /**
-   * @deprecated Do not call this directly, use FolderService
-   */
-  setEncryptedFolders: (
-    value: { [id: string]: FolderData },
-    options?: StorageOptions,
-  ) => Promise<void>;
   getEncryptedPasswordGenerationHistory: (
     options?: StorageOptions,
   ) => Promise<GeneratedPasswordHistory[]>;
@@ -404,8 +390,6 @@ export abstract class StateService<T extends Account = Account> {
   setKeyHash: (value: string, options?: StorageOptions) => Promise<void>;
   getLastActive: (options?: StorageOptions) => Promise<number>;
   setLastActive: (value: number, options?: StorageOptions) => Promise<void>;
-  getLastSync: (options?: StorageOptions) => Promise<string>;
-  setLastSync: (value: string, options?: StorageOptions) => Promise<void>;
   getLocalData: (options?: StorageOptions) => Promise<{ [cipherId: string]: LocalData }>;
   setLocalData: (
     value: { [cipherId: string]: LocalData },
