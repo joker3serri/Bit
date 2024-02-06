@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { WebAuthnLoginAssertionResponseRequest } from "@bitwarden/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
@@ -48,6 +50,30 @@ export class AuthRequestLoginCredentials {
     public decryptedMasterKeyHash: string,
     public twoFactor?: TokenTwoFactorRequest,
   ) {}
+
+  static fromJSON(json: Jsonify<AuthRequestLoginCredentials>) {
+    return Object.assign(
+      new AuthRequestLoginCredentials(
+        json.email,
+        json.accessCode,
+        json.authRequestId,
+        null,
+        null,
+        json.decryptedMasterKeyHash,
+        json.twoFactor
+          ? new TokenTwoFactorRequest(
+              json.twoFactor.provider,
+              json.twoFactor.token,
+              json.twoFactor.remember,
+            )
+          : null,
+      ),
+      {
+        decryptedUserKey: SymmetricCryptoKey.fromJSON(json.decryptedUserKey) as UserKey,
+        decryptedMasterKey: SymmetricCryptoKey.fromJSON(json.decryptedMasterKey) as MasterKey,
+      },
+    );
+  }
 }
 
 export class WebAuthnLoginCredentials {

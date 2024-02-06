@@ -1,4 +1,4 @@
-import { distinctUntilChanged, firstValueFrom, map, Observable, shareReplay } from "rxjs";
+import { distinctUntilChanged, filter, firstValueFrom, map, Observable, shareReplay } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -115,7 +115,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     );
 
     this.currentAuthType$ = this.currentAuthTypeState.state$;
-    this.authRequestPushNotification$ = this.authRequestPushNotificationState.state$;
+    this.authRequestPushNotification$ = this.authRequestPushNotificationState.state$.pipe(
+      filter((id) => id != null),
+    );
     this.loginStrategy$ = this.currentAuthTypeState.state$.pipe(
       distinctUntilChanged(),
       this.initializeLoginStrategy.bind(this),
@@ -176,7 +178,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
       | AuthRequestLoginCredentials
       | WebAuthnLoginCredentials,
   ): Promise<AuthResult> {
-    this.clearCache();
+    await this.clearCache();
 
     await this.currentAuthTypeState.update((_) => credentials.type);
 
@@ -218,13 +220,13 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
 
       // Only clear cache if 2FA token has been accepted, otherwise we need to be able to try again
       if (result != null && !result.requiresTwoFactor && !result.requiresCaptcha) {
-        this.clearCache();
+        await this.clearCache();
       }
       return result;
     } catch (e) {
       // API exceptions are okay, but if there are any unhandled client-side errors then clear cache to be safe
       if (!(e instanceof ErrorResponse)) {
-        this.clearCache();
+        await this.clearCache();
       }
       throw e;
     }
@@ -253,7 +255,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   }
 
   async sendAuthRequestPushNotification(notification: AuthRequestPushNotification): Promise<void> {
-    await this.authRequestPushNotificationState.update((_) => notification.id);
+    if (notification.id != null) {
+      await this.authRequestPushNotificationState.update((_) => notification.id);
+    }
   }
 
   async passwordlessLogin(

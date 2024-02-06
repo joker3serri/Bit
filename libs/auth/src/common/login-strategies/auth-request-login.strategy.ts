@@ -29,9 +29,10 @@ export class AuthRequestLoginStrategyData implements LoginStrategyData {
   authRequestCredentials: AuthRequestLoginCredentials;
 
   static fromJSON(obj: Jsonify<AuthRequestLoginStrategyData>): AuthRequestLoginStrategyData {
-    const data = Object.assign(new AuthRequestLoginStrategyData(), obj);
+    const data = Object.assign(new AuthRequestLoginStrategyData(), obj, {
+      authRequestCredentials: AuthRequestLoginCredentials.fromJSON(obj.authRequestCredentials),
+    });
     Object.setPrototypeOf(data.tokenRequest, PasswordTokenRequest.prototype);
-    Object.setPrototypeOf(data.authRequestCredentials, AuthRequestLoginCredentials.prototype);
     return data;
   }
 }
