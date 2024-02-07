@@ -1,4 +1,4 @@
-import { MockProxy } from "jest-mock-extended";
+import { MockProxy, any } from "jest-mock-extended";
 
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
@@ -9,31 +9,26 @@ import {
   SHOULD_TRUST_DEVICE,
 } from "./15-migrate-device-trust-crypto-svc-to-state-providers";
 
-// TODO: see if this pattern makes sense and works.
-
-const user1DeviceKey = {
-  keyB64: "user1_deviceKey",
-};
-
-const user1PreMigrationStateJson = {
-  keys: {
-    deviceKey: user1DeviceKey,
-    otherStuff: "overStuff2",
-  },
-  settings: {
-    trustDeviceChoiceForDecryption: true,
-    otherStuff: "overStuff3",
-  },
-  otherStuff: "otherStuff4",
-};
-
-function exampleJSON() {
+// Represents data in state service pre-migration
+function preMigrationJson() {
   return {
     global: {
       otherStuff: "otherStuff1",
     },
     authenticatedAccounts: ["user1", "user2", "user3"],
-    user1: user1PreMigrationStateJson,
+    user1: {
+      keys: {
+        deviceKey: {
+          keyB64: "user1_deviceKey",
+        },
+        otherStuff: "overStuff2",
+      },
+      settings: {
+        trustDeviceChoiceForDecryption: true,
+        otherStuff: "overStuff3",
+      },
+      otherStuff: "otherStuff4",
+    },
     user2: {
       keys: {
         // no device key
@@ -43,7 +38,7 @@ function exampleJSON() {
         // no trust device choice
         otherStuff: "overStuff6",
       },
-      otherStuff: "otherStuff6",
+      otherStuff: "otherStuff7",
     },
   };
 }
@@ -92,12 +87,12 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 14);
+      helper = mockMigrationHelper(preMigrationJson(), 14);
       sut = new DeviceTrustCryptoServiceStateProviderMigrator(14, 15);
     });
 
     // it should remove deviceKey and trustDeviceChoiceForDecryption from all accounts
-    it("should remove deviceKey and trustDeviceChoiceForDecryption from all accounts", async () => {
+    it("should remove deviceKey and trustDeviceChoiceForDecryption from all accounts that have it", async () => {
       await sut.migrate(helper);
       expect(helper.set).toHaveBeenCalledWith("user1", {
         keys: {
@@ -108,31 +103,25 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
         },
         otherStuff: "otherStuff4",
       });
-      expect(helper.set).toHaveBeenCalledWith("user2", {
-        keys: {
-          otherStuff: "otherStuff5",
-        },
-        settings: {
-          otherStuff: "overStuff6",
-        },
-        otherStuff: "otherStuff6",
-      });
-      // TODO: should we be calling set for user3 when account is undefined?
-      // expect helper.set to have been called 2 times and for it not to have been called for user3
-      //   expect(helper.set).toHaveBeenCalledTimes(2);
-      //   expect(helper.set).not.toHaveBeenCalledWith("user3", any());
+
+      expect(helper.set).toHaveBeenCalledTimes(1);
+      expect(helper.set).not.toHaveBeenCalledWith("user2", any());
+      expect(helper.set).not.toHaveBeenCalledWith("user3", any());
     });
 
     it("should migrate deviceKey and trustDeviceChoiceForDecryption to state providers for accounts that have the data", async () => {
       await sut.migrate(helper);
-      expect(helper.setToUser).toHaveBeenCalledWith("user1", DEVICE_KEY, user1DeviceKey);
+
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", DEVICE_KEY, {
+        keyB64: "user1_deviceKey",
+      });
       expect(helper.setToUser).toHaveBeenCalledWith("user1", SHOULD_TRUST_DEVICE, true);
 
-      expect(helper.setToUser).toHaveBeenCalledWith("user2", DEVICE_KEY, undefined);
-      expect(helper.setToUser).toHaveBeenCalledWith("user2", SHOULD_TRUST_DEVICE, undefined);
+      expect(helper.setToUser).not.toHaveBeenCalledWith("user2", DEVICE_KEY, any());
+      expect(helper.setToUser).not.toHaveBeenCalledWith("user2", SHOULD_TRUST_DEVICE, any());
 
-      expect(helper.setToUser).toHaveBeenCalledWith("user3", DEVICE_KEY, undefined);
-      expect(helper.setToUser).toHaveBeenCalledWith("user3", SHOULD_TRUST_DEVICE, undefined);
+      expect(helper.setToUser).not.toHaveBeenCalledWith("user3", DEVICE_KEY, any());
+      expect(helper.setToUser).not.toHaveBeenCalledWith("user3", SHOULD_TRUST_DEVICE, any());
     });
   });
 
@@ -155,43 +144,30 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
       expect(helper.setToUser).toHaveBeenCalledWith("user3", SHOULD_TRUST_DEVICE, null);
     });
 
-    // it should add back deviceKey and trustDeviceChoiceForDecryption to all accounts
     it("should add back deviceKey and trustDeviceChoiceForDecryption to all accounts", async () => {
       await sut.rollback(helper);
-      // TODO: figure out why rollback logic isn't working.
-      expect(helper.set).toHaveBeenCalledWith("user1", user1PreMigrationStateJson);
 
-      //   expect(helper.set).toHaveBeenCalledWith("user2", {
-      //     keys: {
-      //       otherStuff: "otherStuff5",
-      //     },
-      //     settings: {
-      //       otherStuff: "overStuff6",
-      //     },
-      //     otherStuff: "otherStuff6",
-      //   });
+      expect(helper.set).toHaveBeenCalledWith("user1", {
+        keys: {
+          deviceKey: {
+            keyB64: "user1_deviceKey",
+          },
+          otherStuff: "overStuff2",
+        },
+        settings: {
+          trustDeviceChoiceForDecryption: true,
+          otherStuff: "overStuff3",
+        },
+        otherStuff: "otherStuff4",
+      });
     });
 
-    // it("should add explicit value back to accounts", async () => {
-    //   await sut.rollback(helper);
+    it("should not add data back if data wasn't migrated or acct doesn't exist", async () => {
+      await sut.rollback(helper);
 
-    //   expect(helper.set).toHaveBeenCalledTimes(1);
-    //   expect(helper.set).toHaveBeenCalledWith("user-1", {
-    //     keys: {
-    //       biometricEncryptionClientKeyHalf: "user1-key-half",
-    //       otherStuff: "overStuff2",
-    //     },
-    //     otherStuff: "otherStuff3",
-    //   });
-    // });
-
-    // it.each(["user-2", "user-3"])(
-    //   "should not try to restore values to missing accounts",
-    //   async (userId) => {
-    //     await sut.rollback(helper);
-
-    //     expect(helper.set).not.toHaveBeenCalledWith(userId, any());
-    //   },
-    // );
+      // no data to add back for user2 (acct exists but no migrated data) and user3 (no acct)
+      expect(helper.set).not.toHaveBeenCalledWith("user2", any());
+      expect(helper.set).not.toHaveBeenCalledWith("user3", any());
+    });
   });
 });
