@@ -7,7 +7,7 @@ import { Subject, takeUntil } from "rxjs";
   templateUrl: "secrets-manager-trial.component.html",
 })
 export class SecretsManagerTrialComponent implements OnInit, OnDestroy {
-  organizationQueryParameter: string;
+  organizationTypeQueryParameter: string;
 
   private destroy$ = new Subject<void>();
 
@@ -15,7 +15,7 @@ export class SecretsManagerTrialComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((queryParameters) => {
-      this.organizationQueryParameter = queryParameters.org;
+      this.organizationTypeQueryParameter = queryParameters.org;
     });
   }
 
@@ -25,6 +25,6 @@ export class SecretsManagerTrialComponent implements OnInit, OnDestroy {
   }
 
   get freeOrganization() {
-    return this.organizationQueryParameter === "free";
+    return this.organizationTypeQueryParameter === "free";
   }
 }

@@ -16,7 +16,7 @@ import { SecretsManagerTrialFreeStepperComponent } from "../secrets-manager/secr
 })
 export class SecretsManagerTrialPaidStepperComponent extends SecretsManagerTrialFreeStepperComponent {
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
-  @Input() organizationQueryParameter: string;
+  @Input() organizationTypeQueryParameter: string;
 
   billingSubLabel = this.i18nService.t("billingTrialSubLabel");
   organizationId: string;
@@ -40,7 +40,7 @@ export class SecretsManagerTrialPaidStepperComponent extends SecretsManagerTrial
   }
 
   get productType(): TrialOrganizationType {
-    switch (this.organizationQueryParameter) {
+    switch (this.organizationTypeQueryParameter) {
       case "enterprise":
         return ProductType.Enterprise;
       case "families":
