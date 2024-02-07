@@ -47,6 +47,10 @@ export class OffboardingSurveyComponent {
 
   protected readonly reasons: Reason[] = [
     {
+      value: null,
+      text: "-- Select --",
+    },
+    {
       value: "missing_features",
       text: "Missing features",
     },
@@ -55,16 +59,16 @@ export class OffboardingSurveyComponent {
       text: "Moving to another tool",
     },
     {
+      value: "too_complex",
+      text: "Too difficult to use",
+    },
+    {
       value: "unused",
       text: "Not using enough",
     },
     {
       value: "too_expensive",
       text: "Too expensive",
-    },
-    {
-      value: "low_quality",
-      text: "Just testing out",
     },
     {
       value: "other",
@@ -87,6 +91,12 @@ export class OffboardingSurveyComponent {
   ) {}
 
   submit = async () => {
+    this.formGroup.markAllAsTouched();
+
+    if (this.formGroup.invalid) {
+      return;
+    }
+
     const request = {
       reason: this.formGroup.value.reason,
       feedback: this.formGroup.value.feedback,
