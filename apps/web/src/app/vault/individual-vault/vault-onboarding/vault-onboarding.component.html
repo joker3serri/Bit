@@ -13,12 +13,13 @@
     <app-onboarding-task
       [title]="'createAnAccount' | i18n"
       [completed]="onboardingTasks.createAccount"
+      [isDisabled]="true"
     ></app-onboarding-task>
 
     <app-onboarding-task
       [title]="'importData' | i18n"
       icon="bwi-save"
-      (click)="navigateToImport()"
+      [route]="['/tools/import']"
       [completed]="onboardingTasks.importData"
     >
       <p class="tw-pl-1">

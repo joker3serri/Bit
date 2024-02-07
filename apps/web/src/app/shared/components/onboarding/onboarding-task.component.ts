@@ -20,6 +20,9 @@ export class OnboardingTaskComponent {
   @Input()
   route: string | any[];
 
+  @Input()
+  isDisabled: boolean = false;
+
   handleClick(ev: MouseEvent) {
     /**
      * If the main `ng-content` is clicked, we don't want to trigger the task's click handler.
