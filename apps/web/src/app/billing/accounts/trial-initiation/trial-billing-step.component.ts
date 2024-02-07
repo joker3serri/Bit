@@ -167,25 +167,33 @@ export class TrialBillingStepComponent implements OnInit {
     return response.id;
   }
 
-  private findPlanFor(cadence: SubscriptionCadence): PlanResponse {
-    switch (this.organizationInfo.type) {
-      case ProductType.Enterprise:
-        return cadence === SubscriptionCadence.Annual
-          ? this.applicablePlans.find((plan) => plan.type === PlanType.EnterpriseAnnually)
-          : this.applicablePlans.find((plan) => plan.type === PlanType.EnterpriseMonthly);
-      case ProductType.Families:
-        return cadence === SubscriptionCadence.Annual
-          ? this.applicablePlans.find((plan) => plan.type === PlanType.FamiliesAnnually)
-          : null;
-      case ProductType.Teams:
-        return cadence === SubscriptionCadence.Annual
-          ? this.applicablePlans.find((plan) => plan.type === PlanType.TeamsAnnually)
-          : this.applicablePlans.find((plan) => plan.type === PlanType.TeamsMonthly);
-      case ProductType.TeamsStarter:
-        return cadence === SubscriptionCadence.Annual
-          ? null
-          : this.applicablePlans.find((plan) => plan.type === PlanType.TeamsStarter);
-    }
+  private productTypeToPlanTypeMap: {
+    [productType in TrialOrganizationType]: {
+      [cadence in SubscriptionCadence]?: PlanType;
+    };
+  } = {
+    [ProductType.Enterprise]: {
+      [SubscriptionCadence.Annual]: PlanType.EnterpriseAnnually,
+      [SubscriptionCadence.Monthly]: PlanType.EnterpriseMonthly,
+    },
+    [ProductType.Families]: {
+      [SubscriptionCadence.Annual]: PlanType.FamiliesAnnually,
+      // No monthly option for Families plan
+    },
+    [ProductType.Teams]: {
+      [SubscriptionCadence.Annual]: PlanType.TeamsAnnually,
+      [SubscriptionCadence.Monthly]: PlanType.TeamsMonthly,
+    },
+    [ProductType.TeamsStarter]: {
+      // No annual option for Teams Starter plan
+      [SubscriptionCadence.Monthly]: PlanType.TeamsStarter,
+    },
+  };
+
+  private findPlanFor(cadence: SubscriptionCadence): PlanResponse | null {
+    const productType = this.organizationInfo.type;
+    const planType = this.productTypeToPlanTypeMap[productType]?.[cadence];
+    return planType ? this.applicablePlans.find((plan) => plan.type === planType) : null;
   }
 
   private getBillingInformationFromTaxInfoComponent(): BillingInformation {
