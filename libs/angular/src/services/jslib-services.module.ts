@@ -157,6 +157,8 @@ import {
   PasswordStrengthService,
   PasswordStrengthServiceAbstraction,
 } from "@bitwarden/common/tools/password-strength";
+import { ReportsApiService } from "@bitwarden/common/tools/reports/reports-api.service";
+import { ReportsApiServiceAbstraction } from "@bitwarden/common/tools/reports/reports-api.service.abstraction";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
@@ -815,6 +817,11 @@ import { ModalService } from "./modal.service";
         I18nServiceAbstraction,
         PlatformUtilsServiceAbstraction,
       ],
+    },
+    {
+      provide: ReportsApiServiceAbstraction,
+      useClass: ReportsApiService,
+      deps: [ApiServiceAbstraction],
     },
     {
       provide: AuthRequestCryptoServiceAbstraction,

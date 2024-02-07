@@ -2,8 +2,11 @@ import { Component, OnInit } from "@angular/core";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ReportsApiServiceAbstraction } from "@bitwarden/common/tools/reports/reports-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -23,9 +26,11 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
   constructor(
     protected cipherService: CipherService,
     protected organizationService: OrganizationService,
+    protected configService: ConfigServiceAbstraction,
     modalService: ModalService,
     private logService: LogService,
     passwordRepromptService: PasswordRepromptService,
+    private reportsApiService: ReportsApiServiceAbstraction,
   ) {
     super(modalService, passwordRepromptService, organizationService);
   }
@@ -88,25 +93,37 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
     if (this.services.size > 0) {
       return;
     }
-    const response = await fetch(new Request("https://api.2fa.directory/v3/totp.json"));
-    if (response.status !== 200) {
-      throw new Error();
-    }
-    const responseJson = await response.json();
-    for (const service of responseJson) {
-      const serviceData = service[1];
-      if (serviceData.domain == null) {
-        continue;
+
+    if (
+      await this.configService.getFeatureFlag<boolean>(FeatureFlag.MigrateTwoFactorDirectory, false)
+    ) {
+      try {
+        const response = await this.reportsApiService.getInactiveTwoFactor();
+        this.services = response.services;
+      } catch (e) {
+        this.logService.error(e);
       }
-      if (serviceData.documentation == null) {
-        continue;
+    } else {
+      const response = await fetch(new Request("https://api.2fa.directory/v3/totp.json"));
+      if (response.status !== 200) {
+        throw new Error();
       }
-      if (serviceData["additional-domains"] != null) {
-        for (const additionalDomain of serviceData["additional-domains"]) {
-          this.services.set(additionalDomain, serviceData.documentation);
+      const responseJson = await response.json();
+      for (const service of responseJson) {
+        const serviceData = service[1];
+        if (serviceData.domain == null) {
+          continue;
         }
+        if (serviceData.documentation == null) {
+          continue;
+        }
+        if (serviceData["additional-domains"] != null) {
+          for (const additionalDomain of serviceData["additional-domains"]) {
+            this.services.set(additionalDomain, serviceData.documentation);
+          }
+        }
+        this.services.set(serviceData.domain, serviceData.documentation);
       }
-      this.services.set(serviceData.domain, serviceData.documentation);
     }
   }
 }
