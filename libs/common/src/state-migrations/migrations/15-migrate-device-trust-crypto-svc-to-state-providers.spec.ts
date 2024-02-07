@@ -10,11 +10,14 @@ import {
 } from "./15-migrate-device-trust-crypto-svc-to-state-providers";
 
 // TODO: see if this pattern makes sense and works.
+
+const user1DeviceKey = {
+  keyB64: "user1_deviceKey",
+};
+
 const user1PreMigrationStateJson = {
   keys: {
-    deviceKey: {
-      keyB64: "user1_deviceKey",
-    },
+    deviceKey: user1DeviceKey,
     otherStuff: "overStuff2",
   },
   settings: {
@@ -122,7 +125,7 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
 
     it("should migrate deviceKey and trustDeviceChoiceForDecryption to state providers for accounts that have the data", async () => {
       await sut.migrate(helper);
-      expect(helper.setToUser).toHaveBeenCalledWith("user1", DEVICE_KEY, "deviceKey1");
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", DEVICE_KEY, user1DeviceKey);
       expect(helper.setToUser).toHaveBeenCalledWith("user1", SHOULD_TRUST_DEVICE, true);
 
       expect(helper.setToUser).toHaveBeenCalledWith("user2", DEVICE_KEY, undefined);
@@ -191,100 +194,4 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
     //   },
     // );
   });
-
-  //   describe("rollback", () => {
-  //     beforeEach(() => {
-  //       helper = mockMigrationHelper(rollbackJSON(), 14);
-  //       sut = new MoveBiometricClientKeyHalfToStateProviders(13, 14);
-  //     });
-
-  //     it("should null out new values", async () => {
-  //       await sut.rollback(helper);
-
-  //       expect(helper.setToUser).toHaveBeenCalledWith("user-1", CLIENT_KEY_HALF, null);
-  //     });
-
-  //     it("should add explicit value back to accounts", async () => {
-  //       await sut.rollback(helper);
-
-  //       expect(helper.set).toHaveBeenCalledTimes(1);
-  //       expect(helper.set).toHaveBeenCalledWith("user-1", {
-  //         keys: {
-  //           biometricEncryptionClientKeyHalf: "user1-key-half",
-  //           otherStuff: "overStuff2",
-  //         },
-  //         otherStuff: "otherStuff3",
-  //       });
-  //     });
-
-  //     it.each(["user-2", "user-3"])(
-  //       "should not try to restore values to missing accounts",
-  //       async (userId) => {
-  //         await sut.rollback(helper);
-
-  //         expect(helper.set).not.toHaveBeenCalledWith(userId, any());
-  //       },
-  //     );
-  //   });
-
-  //   describe("rollback", () => {
-  //     beforeEach(() => {
-  //       helper = mockMigrationHelper(rollbackJSON(), 10);
-  //       sut = new UserDecryptionOptionsMigrator(10, 11);
-  //     });
-
-  //     it.each(["FirstAccount", "SecondAccount", "ThirdAccount"])(
-  //       "should null out new values",
-  //       async (userId) => {
-  //         await sut.rollback(helper);
-
-  //         expect(helper.setToUser).toHaveBeenCalledWith(userId, keyDefinitionLike, null);
-  //       },
-  //     );
-
-  //     it("should add explicit value back to accounts", async () => {
-  //       await sut.rollback(helper);
-
-  //       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
-  //         decryptionOptions: {
-  //           hasMasterPassword: true,
-  //           trustedDeviceOption: {
-  //             hasAdminApproval: false,
-  //             hasLoginApprovingDevice: false,
-  //             hasManageResetPasswordPermission: true,
-  //           },
-  //           keyConnectorOption: {
-  //             keyConnectorUrl: "https://keyconnector.bitwarden.com",
-  //           },
-  //         },
-  //         profile: {
-  //           otherStuff: "overStuff2",
-  //         },
-  //         otherStuff: "otherStuff3",
-  //       });
-  //       expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
-  //         decryptionOptions: {
-  //           hasMasterPassword: false,
-  //           trustedDeviceOption: {
-  //             hasAdminApproval: true,
-  //             hasLoginApprovingDevice: true,
-  //             hasManageResetPasswordPermission: true,
-  //           },
-  //           keyConnectorOption: {
-  //             keyConnectorUrl: "https://selfhosted.bitwarden.com",
-  //           },
-  //         },
-  //         profile: {
-  //           otherStuff: "otherStuff4",
-  //         },
-  //         otherStuff: "otherStuff5",
-  //       });
-  //     });
-
-  //     it("should not try to restore values to missing accounts", async () => {
-  //       await sut.rollback(helper);
-
-  //       expect(helper.set).not.toHaveBeenCalledWith("ThirdAccount", any());
-  //     });
-  //   });
 });
