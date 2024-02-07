@@ -2,10 +2,10 @@ import { AfterContentInit, Directive, HostListener, Input } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { SsoComponent } from "@bitwarden/angular/auth/components/sso.component";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -33,7 +33,7 @@ export class LinkSsoDirective extends SsoComponent implements AfterContentInit {
     platformUtilsService: PlatformUtilsService,
     i18nService: I18nService,
     apiService: ApiService,
-    authService: AuthService,
+    loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     route: ActivatedRoute,
     cryptoFunctionService: CryptoFunctionService,
@@ -46,7 +46,7 @@ export class LinkSsoDirective extends SsoComponent implements AfterContentInit {
     accountService: AccountService,
   ) {
     super(
-      authService,
+      loginStrategyService,
       router,
       i18nService,
       route,

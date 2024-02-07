@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -34,7 +34,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   showingModal = false;
 
   constructor(
-    authService: AuthService,
+    loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
     apiService: ApiService,
@@ -54,7 +54,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
-      authService,
+      loginStrategyService,
       router,
       i18nService,
       apiService,
@@ -72,10 +72,14 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       accountService,
     );
     super.onSuccessfulLogin = async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       syncService.fullSync(true);
     };
 
     super.onSuccessfulLoginTde = async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       syncService.fullSync(true);
     };
   }

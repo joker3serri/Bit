@@ -1,12 +1,10 @@
 import { Observable } from "rxjs";
 
-import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
-import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
 import { EventData } from "../../models/data/event.data";
@@ -21,7 +19,6 @@ import { UserKey, DeviceKey } from "../../types/key";
 import { UriMatchType } from "../../vault/enums";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { CollectionData } from "../../vault/models/data/collection.data";
-import { FolderData } from "../../vault/models/data/folder.data";
 import { LocalData } from "../../vault/models/data/local.data";
 import { CipherView } from "../../vault/models/view/cipher.view";
 import { CollectionView } from "../../vault/models/view/collection.view";
@@ -37,6 +34,20 @@ import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
+/**
+ * Options for customizing the initiation behavior.
+ */
+export type InitOptions = {
+  /**
+   * Whether or not to run state migrations as part of the init process. Defaults to true.
+   *
+   * If false, the init method will instead wait for migrations to complete before doing its
+   * other init operations. Make sure migrations have either already completed, or will complete
+   * before calling {@link StateService.init} with `runMigrations: false`.
+   */
+  runMigrations?: boolean;
+};
+
 export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
   activeAccount$: Observable<string>;
@@ -45,7 +56,7 @@ export abstract class StateService<T extends Account = Account> {
   addAccount: (account: T) => Promise<void>;
   setActiveUser: (userId: string) => Promise<void>;
   clean: (options?: StorageOptions) => Promise<UserId>;
-  init: () => Promise<void>;
+  init: (initOptions?: InitOptions) => Promise<void>;
 
   getAccessToken: (options?: StorageOptions) => Promise<string>;
   setAccessToken: (value: string, options?: StorageOptions) => Promise<void>;
@@ -168,17 +179,22 @@ export abstract class StateService<T extends Account = Account> {
    * @deprecated For migration purposes only, use setUserKeyBiometric instead
    */
   setCryptoMasterKeyBiometric: (value: BiometricKey, options?: StorageOptions) => Promise<void>;
+  /**
+   * Gets a flag for if the biometrics process has been cancelled.
+   * Process reload occurs when biometrics is cancelled, so we store to disk to prevent
+   * it from reprompting and creating a loop.
+   */
+  getBiometricPromptCancelled: (options?: StorageOptions) => Promise<boolean>;
+  /**
+   * Sets a flag for if the biometrics process has been cancelled.
+   * Process reload occurs when biometrics is cancelled, so we store to disk to prevent
+   * it from reprompting and creating a loop.
+   */
+  setBiometricPromptCancelled: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDecryptedCiphers: (options?: StorageOptions) => Promise<CipherView[]>;
   setDecryptedCiphers: (value: CipherView[], options?: StorageOptions) => Promise<void>;
   getDecryptedCollections: (options?: StorageOptions) => Promise<CollectionView[]>;
   setDecryptedCollections: (value: CollectionView[], options?: StorageOptions) => Promise<void>;
-  getDecryptedOrganizationKeys: (
-    options?: StorageOptions,
-  ) => Promise<Map<string, SymmetricCryptoKey>>;
-  setDecryptedOrganizationKeys: (
-    value: Map<string, SymmetricCryptoKey>,
-    options?: StorageOptions,
-  ) => Promise<void>;
   getDecryptedPasswordGenerationHistory: (
     options?: StorageOptions,
   ) => Promise<GeneratedPasswordHistory[]>;
@@ -204,11 +220,6 @@ export abstract class StateService<T extends Account = Account> {
   setDecryptedPolicies: (value: Policy[], options?: StorageOptions) => Promise<void>;
   getDecryptedPrivateKey: (options?: StorageOptions) => Promise<Uint8Array>;
   setDecryptedPrivateKey: (value: Uint8Array, options?: StorageOptions) => Promise<void>;
-  getDecryptedProviderKeys: (options?: StorageOptions) => Promise<Map<string, SymmetricCryptoKey>>;
-  setDecryptedProviderKeys: (
-    value: Map<string, SymmetricCryptoKey>,
-    options?: StorageOptions,
-  ) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */
@@ -232,8 +243,6 @@ export abstract class StateService<T extends Account = Account> {
     value: boolean,
     options?: StorageOptions,
   ) => Promise<void>;
-  getEnablePasskeys: (options?: StorageOptions) => Promise<boolean>;
-  setEnablePasskeys: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDisableContextMenuItem: (options?: StorageOptions) => Promise<boolean>;
   setDisableContextMenuItem: (value: boolean, options?: StorageOptions) => Promise<void>;
   /**
@@ -312,24 +321,6 @@ export abstract class StateService<T extends Account = Account> {
     value: { [id: string]: CollectionData },
     options?: StorageOptions,
   ) => Promise<void>;
-  /**
-   * @deprecated Do not call this directly, use FolderService
-   */
-  getEncryptedFolders: (options?: StorageOptions) => Promise<{ [id: string]: FolderData }>;
-  /**
-   * @deprecated Do not call this directly, use FolderService
-   */
-  setEncryptedFolders: (
-    value: { [id: string]: FolderData },
-    options?: StorageOptions,
-  ) => Promise<void>;
-  getEncryptedOrganizationKeys: (
-    options?: StorageOptions,
-  ) => Promise<{ [orgId: string]: EncryptedOrganizationKeyData }>;
-  setEncryptedOrganizationKeys: (
-    value: { [orgId: string]: EncryptedOrganizationKeyData },
-    options?: StorageOptions,
-  ) => Promise<void>;
   getEncryptedPasswordGenerationHistory: (
     options?: StorageOptions,
   ) => Promise<GeneratedPasswordHistory[]>;
@@ -358,8 +349,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getEncryptedPrivateKey: (options?: StorageOptions) => Promise<string>;
   setEncryptedPrivateKey: (value: string, options?: StorageOptions) => Promise<void>;
-  getEncryptedProviderKeys: (options?: StorageOptions) => Promise<any>;
-  setEncryptedProviderKeys: (value: any, options?: StorageOptions) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */
@@ -372,10 +361,6 @@ export abstract class StateService<T extends Account = Account> {
   setEntityId: (value: string, options?: StorageOptions) => Promise<void>;
   getEntityType: (options?: StorageOptions) => Promise<any>;
   setEntityType: (value: string, options?: StorageOptions) => Promise<void>;
-  getEnvironmentUrls: (options?: StorageOptions) => Promise<EnvironmentUrls>;
-  setEnvironmentUrls: (value: EnvironmentUrls, options?: StorageOptions) => Promise<void>;
-  getRegion: (options?: StorageOptions) => Promise<string>;
-  setRegion: (value: string, options?: StorageOptions) => Promise<void>;
   getEquivalentDomains: (options?: StorageOptions) => Promise<string[][]>;
   setEquivalentDomains: (value: string, options?: StorageOptions) => Promise<void>;
   getEventCollection: (options?: StorageOptions) => Promise<EventData[]>;
@@ -391,8 +376,6 @@ export abstract class StateService<T extends Account = Account> {
   setKdfType: (value: KdfType, options?: StorageOptions) => Promise<void>;
   getLastActive: (options?: StorageOptions) => Promise<number>;
   setLastActive: (value: number, options?: StorageOptions) => Promise<void>;
-  getLastSync: (options?: StorageOptions) => Promise<string>;
-  setLastSync: (value: string, options?: StorageOptions) => Promise<void>;
   getLocalData: (options?: StorageOptions) => Promise<{ [cipherId: string]: LocalData }>;
   setLocalData: (
     value: { [cipherId: string]: LocalData },
