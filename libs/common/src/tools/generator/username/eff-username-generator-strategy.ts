@@ -5,14 +5,14 @@ import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { EFF_LONG_WORD_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
-import { EffLongWordGenerationOptions } from "./eff-long-word-generator-options";
+import { EffUsernameGenerationOptions } from "./eff-username-generator-options";
 import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";
 
 const ONE_MINUTE = 60 * 1000;
 
 /** Strategy for creating usernames from the EFF wordlist */
-export class EffLongWordGeneratorStrategy
-  implements GeneratorStrategy<EffLongWordGenerationOptions, NoPolicy>
+export class EffUsernameGeneratorStrategy
+  implements GeneratorStrategy<EffUsernameGenerationOptions, NoPolicy>
 {
   /** Instantiates the generation strategy
    *  @param usernameService generates a username from EFF word list
@@ -43,11 +43,11 @@ export class EffLongWordGeneratorStrategy
       throw Error("Mismatched policy type. " + details);
     }
 
-    return new DefaultPolicyEvaluator<EffLongWordGenerationOptions>();
+    return new DefaultPolicyEvaluator<EffUsernameGenerationOptions>();
   }
 
   /** {@link GeneratorStrategy.generate} */
-  generate(options: EffLongWordGenerationOptions) {
+  generate(options: EffUsernameGenerationOptions) {
     return this.usernameService.generateWord(options);
   }
 }

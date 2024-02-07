@@ -1,6 +1,6 @@
-import { EffLongWordGenerationOptions } from "./eff-long-word-generator-options";
+import { EffUsernameGenerationOptions } from "./eff-username-generator-options";
 
-export type UsernameGeneratorOptions = EffLongWordGenerationOptions & {
+export type UsernameGeneratorOptions = EffUsernameGenerationOptions & {
   type?: "word" | "subaddress" | "catchall" | "forwarded";
   subaddressType?: "random" | "website-name";
   subaddressEmail?: string;

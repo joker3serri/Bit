@@ -7,12 +7,12 @@ import { Policy } from "../../../admin-console/models/domain/policy";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { EFF_LONG_WORD_SETTINGS } from "../key-definitions";
 
-import { EffLongWordGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
+import { EffUsernameGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
 describe("EFF long word list generation strategy", () => {
   describe("evaluator()", () => {
     it("should throw if the policy type is incorrect", () => {
-      const strategy = new EffLongWordGeneratorStrategy(null);
+      const strategy = new EffUsernameGeneratorStrategy(null);
       const policy = mock<Policy>({
         type: PolicyType.DisableSend,
       });
@@ -21,7 +21,7 @@ describe("EFF long word list generation strategy", () => {
     });
 
     it("should map to the policy evaluator", () => {
-      const strategy = new EffLongWordGeneratorStrategy(null);
+      const strategy = new EffUsernameGeneratorStrategy(null);
       const policy = mock<Policy>({
         type: PolicyType.PasswordGenerator,
         data: {
@@ -39,7 +39,7 @@ describe("EFF long word list generation strategy", () => {
   describe("disk", () => {
     it("should use password settings key", () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
-      const strategy = new EffLongWordGeneratorStrategy(legacy);
+      const strategy = new EffUsernameGeneratorStrategy(legacy);
 
       expect(strategy.disk).toBe(EFF_LONG_WORD_SETTINGS);
     });
@@ -48,7 +48,7 @@ describe("EFF long word list generation strategy", () => {
   describe("cache_ms", () => {
     it("should be a positive non-zero number", () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
-      const strategy = new EffLongWordGeneratorStrategy(legacy);
+      const strategy = new EffUsernameGeneratorStrategy(legacy);
 
       expect(strategy.cache_ms).toBeGreaterThan(0);
     });
@@ -57,7 +57,7 @@ describe("EFF long word list generation strategy", () => {
   describe("policy", () => {
     it("should use password generator policy", () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
-      const strategy = new EffLongWordGeneratorStrategy(legacy);
+      const strategy = new EffUsernameGeneratorStrategy(legacy);
 
       expect(strategy.policy).toBe(PolicyType.PasswordGenerator);
     });
@@ -66,7 +66,7 @@ describe("EFF long word list generation strategy", () => {
   describe("generate()", () => {
     it("should call the legacy service with the given options", async () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
-      const strategy = new EffLongWordGeneratorStrategy(legacy);
+      const strategy = new EffUsernameGeneratorStrategy(legacy);
       const options = {
         wordCapitalize: false,
         wordIncludeNumber: false,

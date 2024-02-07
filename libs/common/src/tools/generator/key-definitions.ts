@@ -3,7 +3,7 @@ import { GENERATOR_DISK, KeyDefinition } from "../../platform/state";
 import { PassphraseGenerationOptions } from "./passphrase/passphrase-generation-options";
 import { GeneratedPasswordHistory } from "./password/generated-password-history";
 import { PasswordGenerationOptions } from "./password/password-generation-options";
-import { EffLongWordGenerationOptions } from "./username/eff-long-word-generator-options";
+import { EffUsernameGenerationOptions } from "./username/eff-username-generator-options";
 
 /** plaintext password generation options */
 export const PASSWORD_SETTINGS = new KeyDefinition<PasswordGenerationOptions>(
@@ -24,7 +24,7 @@ export const PASSPHRASE_SETTINGS = new KeyDefinition<PassphraseGenerationOptions
 );
 
 /** plaintext username generation options */
-export const EFF_LONG_WORD_SETTINGS = new KeyDefinition<EffLongWordGenerationOptions>(
+export const EFF_LONG_WORD_SETTINGS = new KeyDefinition<EffUsernameGenerationOptions>(
   GENERATOR_DISK,
   "effLongWordGeneratorSettings",
   {
