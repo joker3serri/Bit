@@ -24,9 +24,9 @@ export const PASSPHRASE_SETTINGS = new KeyDefinition<PassphraseGenerationOptions
 );
 
 /** plaintext username generation options */
-export const EFF_LONG_WORD_SETTINGS = new KeyDefinition<EffUsernameGenerationOptions>(
+export const EFF_USERNAME_SETTINGS = new KeyDefinition<EffUsernameGenerationOptions>(
   GENERATOR_DISK,
-  "effLongWordGeneratorSettings",
+  "effUsernameGeneratorSettings",
   {
     deserializer: (value) => value,
   },

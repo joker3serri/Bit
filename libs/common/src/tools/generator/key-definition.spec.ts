@@ -1,6 +1,6 @@
 import {
   ENCRYPTED_HISTORY,
-  EFF_LONG_WORD_SETTINGS,
+  EFF_USERNAME_SETTINGS,
   PASSPHRASE_SETTINGS,
   PASSWORD_SETTINGS,
 } from "./key-definitions";
@@ -25,7 +25,7 @@ describe("Key definitions", () => {
   describe("BASIC_LATIN_SETTINGS", () => {
     it("should pass through deserialization", () => {
       const value = {};
-      const result = EFF_LONG_WORD_SETTINGS.deserializer(value);
+      const result = EFF_USERNAME_SETTINGS.deserializer(value);
       expect(result).toBe(value);
     });
   });

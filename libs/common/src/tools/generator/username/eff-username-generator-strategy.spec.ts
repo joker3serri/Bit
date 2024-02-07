@@ -5,7 +5,7 @@ import { PolicyType } from "../../../admin-console/enums";
 // implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
-import { EFF_LONG_WORD_SETTINGS } from "../key-definitions";
+import { EFF_USERNAME_SETTINGS } from "../key-definitions";
 
 import { EffUsernameGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
@@ -41,7 +41,7 @@ describe("EFF long word list generation strategy", () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
       const strategy = new EffUsernameGeneratorStrategy(legacy);
 
-      expect(strategy.disk).toBe(EFF_LONG_WORD_SETTINGS);
+      expect(strategy.disk).toBe(EFF_USERNAME_SETTINGS);
     });
   });
 

@@ -2,7 +2,7 @@ import { PolicyType } from "../../../admin-console/enums";
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { GeneratorStrategy } from "../abstractions";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
-import { EFF_LONG_WORD_SETTINGS } from "../key-definitions";
+import { EFF_USERNAME_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
 import { EffUsernameGenerationOptions } from "./eff-username-generator-options";
@@ -21,7 +21,7 @@ export class EffUsernameGeneratorStrategy
 
   /** {@link GeneratorStrategy.disk} */
   get disk() {
-    return EFF_LONG_WORD_SETTINGS;
+    return EFF_USERNAME_SETTINGS;
   }
 
   /** {@link GeneratorStrategy.policy} */
