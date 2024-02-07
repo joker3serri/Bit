@@ -5,24 +5,27 @@ import { Jsonify } from "type-fest";
  *  saved. Everything else MUST be stored using encryption.
  */
 export class SecretClassifier<T extends object, Disclosed, Secret> {
-  /** Instantiates a secret classifier.
-   *  @param disclosed lists disclosed properties of `T`.
-   *  @param excluded lists excluded of `T`.
-   *  @remarks You should probably be using {@link SecretClassifier.forSecret}.
-   */
-  constructor(
-    private readonly disclosed: (keyof Disclosed & keyof T)[],
-    private readonly excluded: (keyof T)[],
+  private constructor(
+    disclosed: readonly (keyof Disclosed & keyof T)[],
+    excluded: readonly (keyof T)[],
   ) {
-    Object.freeze(disclosed);
-    Object.freeze(excluded);
+    this.disclosed = disclosed;
+    this.excluded = excluded;
   }
+
+  /** lists the disclosed properties. */
+  readonly disclosed: readonly (keyof Disclosed & keyof T)[];
+
+  /** lists the excluded properties. */
+  readonly excluded: readonly (keyof T)[];
 
   /** Creates a classifier where all properties are secret.
    *  @type {T} The type of secret being classified.
    */
   static forSecret<T extends object>() {
-    return new SecretClassifier<T, Record<keyof T, never>, T>([], []);
+    const disclosed = Object.freeze([]);
+    const excluded = Object.freeze([]);
+    return new SecretClassifier<T, Record<keyof T, never>, T>(disclosed, excluded);
   }
 
   /** Classify a property as disclosed.
@@ -39,7 +42,7 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
     // update the fluent interface
     const newDisclosed = [...this.disclosed, disclose] as (keyof NewDisclosed & keyof T)[];
     const classifier = new SecretClassifier<T, NewDisclosed, NewSecret>(
-      newDisclosed,
+      Object.freeze(newDisclosed),
       this.excluded,
     );
 
@@ -60,7 +63,7 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
     const newExcluded = [...this.excluded, excludedPropertyName] as (keyof T)[];
     const classifier = new SecretClassifier<T, Disclosed, NewConfidential>(
       this.disclosed,
-      newExcluded,
+      Object.freeze(newExcluded),
     );
 
     return classifier;
@@ -68,7 +71,6 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
 
   /** Partitions `secret` into its disclosed properties and secret properties.
    *  THIS METHOD ALTERS `secret`.
-   *  @type {T} the type subject to classification.
    *  @param secret The object to partition
    *  @returns an object that classifies secrets.
    *    The `disclosed` member is new and contains disclosed properties.
@@ -82,8 +84,8 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
 
     const disclosed: Record<PropertyKey, unknown> = {};
     for (const disclosedProp of this.disclosed) {
-      delete secret[disclosedProp];
       disclosed[disclosedProp] = secret[disclosedProp];
+      delete secret[disclosedProp];
     }
 
     return {
@@ -92,6 +94,15 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
     };
   }
 
+  /** Merges the properties of `secret` and `disclosed`. When `secret` and
+   *  `disclosed` contain the same property, the `secret` property overrides
+   *  the `disclosed` property.
+   *  @param disclosed an object whose disclosed properties are merged into
+   *    the output. Unknown properties are ignored.
+   *  @param secret an objects whose properties are merged into the output.
+   *    Excluded properties are ignored. Unknown properties are retained.
+   *  @returns a new object containing the merged data.
+   */
   declassify(disclosed: Disclosed, secret: Secret): Jsonify<T> {
     // removed unknown keys from `disclosed` to prevent any old edit
     // of plaintext data from being laundered though declassification.
@@ -101,7 +112,13 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
     }
 
     // merge decrypted into cleaned so that secret data clobbers public data
-    const merged = Object.assign(cleaned, secret) as Jsonify<T>;
-    return merged;
+    const merged: any = Object.assign(cleaned, secret);
+
+    // delete excluded props
+    for (const excludedProp of this.excluded) {
+      delete merged[excludedProp];
+    }
+
+    return merged as Jsonify<T>;
   }
 }
