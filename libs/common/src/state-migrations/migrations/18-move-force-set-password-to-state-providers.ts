@@ -7,14 +7,14 @@ type ExpectedAccountType = {
   };
 };
 
-const FORCE_SET_PASSWORD_REASON_DEFINITION: KeyDefinitionLike = {
+export const FORCE_SET_PASSWORD_REASON_DEFINITION: KeyDefinitionLike = {
   key: "forceSetPasswordReason",
   stateDefinition: {
     name: "masterPassword",
   },
 };
 
-export class MoveForceSetPasswordReasonToStateProviderMigrator extends Migrator<11, 12> {
+export class MoveForceSetPasswordReasonToStateProviderMigrator extends Migrator<17, 18> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

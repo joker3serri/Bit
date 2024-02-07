@@ -3,7 +3,10 @@ import { any, MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { MoveForceSetPasswordReasonToStateProviderMigrator } from "./12-move-force-set-password-to-state-providers";
+import {
+  FORCE_SET_PASSWORD_REASON_DEFINITION,
+  MoveForceSetPasswordReasonToStateProviderMigrator,
+} from "./18-move-force-set-password-to-state-providers";
 
 function preMigrationState() {
   return {
@@ -72,17 +75,10 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
   let sut: MoveForceSetPasswordReasonToStateProviderMigrator;
 
-  const FORCE_SET_PASSWORD_REASON_DEFINITION = {
-    key: "forceSetPasswordReason",
-    stateDefinition: {
-      name: "masterPassword",
-    },
-  };
-
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(preMigrationState(), 11);
-      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(11, 12);
+      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(17, 18);
     });
 
     it("should remove properties from all accounts", async () => {
@@ -125,8 +121,8 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(postMigrationState(), 11);
-      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(11, 12);
+      helper = mockMigrationHelper(postMigrationState(), 17);
+      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(17, 18);
     });
 
     it.each(["FirstAccount", "SecondAccount"])("should null out new values", async (userId) => {
