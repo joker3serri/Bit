@@ -22,7 +22,7 @@ export abstract class StateProvider {
   /**
    * Gets a state observable for a given key and userId.
    *
-   * @remarks If userId is nullish the observable returned will point to the currently active user _and not update if the active user changes_.
+   * @remarks If userId is falsy the observable returned will point to the currently active user _and not update if the active user changes_.
    * This is different to how `getActive` works and more similar to `getUser` for whatever user happens to be active at the time of the call.
    *
    * @param keyDefinition - The key definition for the state you want to get.
