@@ -23,7 +23,7 @@ export const DEVICE_KEY: KeyDefinitionLike = {
 };
 
 export const SHOULD_TRUST_DEVICE: KeyDefinitionLike = {
-  key: "deviceKey",
+  key: "shouldTrustDevice",
   stateDefinition: {
     name: "deviceTrust",
   },
@@ -33,25 +33,31 @@ export class DeviceTrustCryptoServiceStateProviderMigrator extends Migrator<14, 
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
+      let updatedAccount = false;
+
       // Migrate deviceKey
       const existingDeviceKey = account?.keys?.deviceKey;
 
-      await helper.setToUser(userId, DEVICE_KEY, existingDeviceKey);
-
       if (existingDeviceKey != null) {
+        // Only migrate data that exists
+        await helper.setToUser(userId, DEVICE_KEY, existingDeviceKey);
         delete account.keys.deviceKey;
+        updatedAccount = true;
       }
 
       // Migrate shouldTrustDevice
       const existingShouldTrustDevice = account?.settings?.trustDeviceChoiceForDecryption;
-      await helper.setToUser(userId, SHOULD_TRUST_DEVICE, existingShouldTrustDevice);
 
       if (existingShouldTrustDevice != null) {
+        await helper.setToUser(userId, SHOULD_TRUST_DEVICE, existingShouldTrustDevice);
         delete account.settings.trustDeviceChoiceForDecryption;
+        updatedAccount = true;
       }
 
-      // Save the migrated account
-      await helper.set(userId, account);
+      if (updatedAccount) {
+        // Save the migrated account
+        await helper.set(userId, account);
+      }
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);
@@ -63,7 +69,7 @@ export class DeviceTrustCryptoServiceStateProviderMigrator extends Migrator<14, 
       // Rollback deviceKey
       const migratedDeviceKey: DeviceKeyJsonType = await helper.getFromUser(userId, DEVICE_KEY);
 
-      if (account?.keys) {
+      if (account?.keys && migratedDeviceKey != null) {
         account.keys.deviceKey = migratedDeviceKey;
         await helper.set(userId, account);
       }
@@ -76,7 +82,7 @@ export class DeviceTrustCryptoServiceStateProviderMigrator extends Migrator<14, 
         SHOULD_TRUST_DEVICE,
       );
 
-      if (account?.settings) {
+      if (account?.settings && migratedShouldTrustDevice != null) {
         account.settings.trustDeviceChoiceForDecryption = migratedShouldTrustDevice;
         await helper.set(userId, account);
       }
