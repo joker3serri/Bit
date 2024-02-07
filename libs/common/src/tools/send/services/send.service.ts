@@ -1,4 +1,4 @@
-import { BehaviorSubject, concatMap } from "rxjs";
+import { BehaviorSubject, Observable, concatMap, map } from "rxjs";
 
 import { CryptoFunctionService } from "../../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
@@ -114,6 +114,10 @@ export class SendService implements InternalSendServiceAbstraction {
   get(id: string): Send {
     const sends = this._sends.getValue();
     return sends.find((send) => send.id === id);
+  }
+
+  get$(id: string): Observable<Send | undefined> {
+    return this.sends$.pipe(map((sends) => sends.find((o) => o.id === id)));
   }
 
   async getFromState(id: string): Promise<Send> {

@@ -67,6 +67,20 @@ describe("SendService", () => {
     });
   });
 
+  describe("get$", () => {
+    it("exists", async () => {
+      const result = await firstValueFrom(sendService.get$("1"));
+
+      expect(result).toEqual(send("1", "Test Send"));
+    });
+
+    it("does not exist", async () => {
+      const result = await firstValueFrom(sendService.get$("2"));
+
+      expect(result).toBe(undefined);
+    });
+  });
+
   it("getAll", async () => {
     const sends = await sendService.getAll();
     const send1 = sends[0];
