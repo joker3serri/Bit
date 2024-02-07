@@ -1,10 +1,10 @@
 <div class="tw-inline-flex tw-gap-2" [style.width.px]="containerWidth - 20">
   <ng-container *ngFor="let item of filteredItems; let last = last">
-    <span bitBadge *ngIf="!last; else lastTruncate" [variant]="variant" [truncate]="false">
+    <span bitBadge *ngIf="!last; else lastBadge" [variant]="variant" [truncate]="false">
       {{ item }}
     </span>
-    <ng-template #lastTruncate>
-      <span bitBadge *ngIf="last" [variant]="variant" [truncate]="truncate">
+    <ng-template #lastBadge>
+      <span bitBadge [variant]="variant" [truncate]="truncate">
         {{ item }}
       </span>
     </ng-template>
