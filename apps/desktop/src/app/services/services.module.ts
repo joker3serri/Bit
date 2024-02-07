@@ -34,6 +34,7 @@ import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwar
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/platform/abstractions/system.service";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
@@ -187,6 +188,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         StateServiceAbstraction,
         AccountServiceAbstraction,
         StateProvider,
+        BiometricStateService,
       ],
     },
   ],

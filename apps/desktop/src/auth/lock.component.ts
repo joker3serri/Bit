@@ -19,6 +19,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { DialogService } from "@bitwarden/components";
 
@@ -58,6 +59,7 @@ export class LockComponent extends BaseLockComponent {
     deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     userVerificationService: UserVerificationService,
     pinCryptoService: PinCryptoServiceAbstraction,
+    private biometricStateService: BiometricStateService,
   ) {
     super(
       router,
@@ -175,7 +177,7 @@ export class LockComponent extends BaseLockComponent {
         type: "warning",
       });
 
-      await this.stateService.setBiometricRequirePasswordOnStart(response);
+      await this.biometricStateService.setRequirePasswordOnStart(response);
       if (response) {
         await this.stateService.setDisableAutoBiometricsPrompt(true);
       }
