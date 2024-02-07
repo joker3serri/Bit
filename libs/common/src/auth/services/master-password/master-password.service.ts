@@ -1,7 +1,12 @@
 import { map, Observable } from "rxjs";
 
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
-import { KeyDefinition, MASTER_PASSWORD_MEMORY, StateProvider } from "../../../platform/state";
+import {
+  KeyDefinition,
+  MASTER_PASSWORD_DISK,
+  MASTER_PASSWORD_MEMORY,
+  StateProvider,
+} from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { MasterKey } from "../../../types/key";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
@@ -16,7 +21,7 @@ const MASTER_KEY_HASH = new KeyDefinition<string>(MASTER_PASSWORD_MEMORY, "maste
 });
 
 const FORCE_SET_PASSWORD_REASON = new KeyDefinition<ForceSetPasswordReason>(
-  MASTER_PASSWORD_MEMORY,
+  MASTER_PASSWORD_DISK,
   "forceSetPasswordReason",
   {
     deserializer: (reason) => reason,
