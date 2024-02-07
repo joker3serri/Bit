@@ -1,4 +1,4 @@
-// import { firstValueFrom } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
@@ -9,7 +9,12 @@ import { PlatformUtilsService } from "../../platform/abstractions/platform-utils
 import { StateService } from "../../platform/abstractions/state.service";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
-import { ActiveUserState, StateProvider } from "../../platform/state";
+import {
+  ActiveUserState,
+  DEVICE_TRUST_DISK,
+  KeyDefinition,
+  StateProvider,
+} from "../../platform/state";
 import { CsprngArray } from "../../types/csprng";
 import { UserKey, DeviceKey } from "../../types/key";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
@@ -21,19 +26,19 @@ import {
   UpdateDevicesTrustRequest,
 } from "../models/request/update-devices-trust.request";
 
-// /**
-//  * Uses disk storage so that the device key can persist after log out and tab removal.
-//  */
-// const DEVICE_KEY = new KeyDefinition<DeviceKey>(DEVICE_TRUST_DISK, "deviceKey", {
-//   deserializer: (deviceKey) => SymmetricCryptoKey.fromJSON(deviceKey) as DeviceKey,
-// });
+/**
+ * Uses disk storage so that the device key can persist after log out and tab removal.
+ */
+const DEVICE_KEY = new KeyDefinition<DeviceKey>(DEVICE_TRUST_DISK, "deviceKey", {
+  deserializer: (deviceKey) => SymmetricCryptoKey.fromJSON(deviceKey) as DeviceKey,
+});
 
-// /**
-//  * Uses disk storage so that the shouldTrustDevice bool can persist across login.
-//  */
-// const SHOULD_TRUST_DEVICE = new KeyDefinition<boolean>(DEVICE_TRUST_DISK, "shouldTrustDevice", {
-//   deserializer: (shouldTrustDevice) => shouldTrustDevice,
-// });
+/**
+ * Uses disk storage so that the shouldTrustDevice bool can persist across login.
+ */
+const SHOULD_TRUST_DEVICE = new KeyDefinition<boolean>(DEVICE_TRUST_DISK, "shouldTrustDevice", {
+  deserializer: (shouldTrustDevice) => shouldTrustDevice,
+});
 
 export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstraction {
   private deviceKeyState: ActiveUserState<DeviceKey>;
@@ -50,8 +55,8 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private platformUtilsService: PlatformUtilsService,
     private stateProvider: StateProvider,
   ) {
-    // this.deviceKeyState = this.stateProvider.getActive(DEVICE_KEY);
-    // this.shouldTrustDeviceState = this.stateProvider.getActive(SHOULD_TRUST_DEVICE);
+    this.deviceKeyState = this.stateProvider.getActive(DEVICE_KEY);
+    this.shouldTrustDeviceState = this.stateProvider.getActive(SHOULD_TRUST_DEVICE);
   }
 
   /**
@@ -59,13 +64,11 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
    * Note: this value should only be used once and then reset
    */
   async getShouldTrustDevice(): Promise<boolean> {
-    return await this.stateService.getShouldTrustDevice();
-    // return firstValueFrom(this.shouldTrustDeviceState.state$);
+    return firstValueFrom(this.shouldTrustDeviceState.state$);
   }
 
   async setShouldTrustDevice(value: boolean): Promise<void> {
-    await this.stateService.setShouldTrustDevice(value);
-    // await this.shouldTrustDeviceState.update((_) => value);
+    await this.shouldTrustDeviceState.update((_) => value);
   }
 
   async trustDeviceIfRequired(): Promise<void> {
@@ -180,13 +183,11 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
   }
 
   async getDeviceKey(): Promise<DeviceKey> {
-    return await this.stateService.getDeviceKey();
-    // return firstValueFrom(this.deviceKeyState.state$);
+    return firstValueFrom(this.deviceKeyState.state$);
   }
 
   private async setDeviceKey(deviceKey: DeviceKey | null): Promise<void> {
-    await this.stateService.setDeviceKey(deviceKey);
-    // await this.deviceKeyState.update((_) => deviceKey);
+    await this.deviceKeyState.update((_) => deviceKey);
   }
 
   private async makeDeviceKey(): Promise<DeviceKey> {

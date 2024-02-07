@@ -489,6 +489,7 @@ export default class MainBackground {
       this.devicesApiService,
       this.i18nService,
       this.platformUtilsService,
+      this.stateProvider,
     );
 
     this.devicesService = new DevicesServiceImplementation(this.devicesApiService);
