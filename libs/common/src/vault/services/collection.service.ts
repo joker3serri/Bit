@@ -37,11 +37,8 @@ const DECRYPTED_COLLECTION_DATA_KEY = DeriveDefinition.from<
   derive: async (collections: Record<CollectionId, CollectionData>, { collectionService }) => {
     const data: Collection[] = [];
     for (const id in collections ?? {}) {
-      // eslint-disable-next-line
-      if (collections.hasOwnProperty(id)) {
-        const collectionId = id as CollectionId;
-        data.push(new Collection(collections[collectionId]));
-      }
+      const collectionId = id as CollectionId;
+      data.push(new Collection(collections[collectionId]));
     }
     return await collectionService.decryptMany(data);
   },

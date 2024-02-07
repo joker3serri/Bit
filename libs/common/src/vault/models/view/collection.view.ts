@@ -18,7 +18,7 @@ export class CollectionView implements View, ITreeNodeObject {
   hidePasswords: boolean = null;
   manage: boolean = null;
 
-  constructor(c?: Partial<Collection | CollectionAccessDetailsResponse>) {
+  constructor(c?: Collection | CollectionAccessDetailsResponse) {
     if (!c) {
       return;
     }
@@ -60,6 +60,6 @@ export class CollectionView implements View, ITreeNodeObject {
   }
 
   static fromJSON(obj: Jsonify<CollectionView>) {
-    return Object.assign(new CollectionView({}), obj);
+    return Object.assign(new CollectionView(new Collection()), obj);
   }
 }
