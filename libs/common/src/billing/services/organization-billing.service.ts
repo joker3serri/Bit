@@ -1,4 +1,7 @@
+import { concatMap, defer, filter, from, Observable, timer } from "rxjs";
+
 import { OrganizationApiServiceAbstraction as OrganizationApiService } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "../../admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationCreateRequest } from "../../admin-console/models/request/organization-create.request";
 import { OrganizationKeysRequest } from "../../admin-console/models/request/organization-keys.request";
 import { OrganizationResponse } from "../../admin-console/models/response/organization.response";
@@ -6,15 +9,18 @@ import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { EncString } from "../../platform/models/domain/enc-string";
+import { ActiveUserState, StateProvider } from "../../platform/state";
 import { OrgKey } from "../../types/key";
+import { OrganizationBillingServiceAbstraction } from "../abstractions/organization-billing.service.abstraction";
+import { PlanType } from "../enums";
+import { ORGANIZATION_BILLING_KEY } from "../models/billing-keys.state";
 import {
-  OrganizationBillingServiceAbstraction,
   OrganizationInformation,
   PaymentInformation,
   PlanInformation,
   SubscriptionInformation,
-} from "../abstractions/organization-billing.service";
-import { PlanType } from "../enums";
+} from "../models/domain/subscription-information";
+import { BillingResponse } from "../models/response/billing.response";
 
 interface OrganizationKeys {
   encryptedKey: EncString;
@@ -23,13 +29,38 @@ interface OrganizationKeys {
   encryptedCollectionName: EncString;
 }
 
+const TEN_SECONDS_IN_MILLISECONDS = 10000;
+
 export class OrganizationBillingService implements OrganizationBillingServiceAbstraction {
+  private organizationBillingState: ActiveUserState<Record<string, BillingResponse>>;
+  private refreshOrganizationBillingTimer$ = timer(0, TEN_SECONDS_IN_MILLISECONDS);
+  organizationBilling$: Observable<Record<string, BillingResponse>>;
+
   constructor(
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private i18nService: I18nService,
     private organizationApiService: OrganizationApiService,
-  ) {}
+    private organizationService: OrganizationService,
+    private stateProvider: StateProvider,
+  ) {
+    this.organizationBillingState = this.stateProvider.getActive(ORGANIZATION_BILLING_KEY);
+    this.organizationBilling$ = this.organizationBillingState.state$.pipe(
+      filter((organizationBilling) => organizationBilling !== null),
+    );
+
+    const latestOrganizationBilling$ = defer(() => from(this.getOrganizationBilling()));
+
+    this.refreshOrganizationBillingTimer$
+      .pipe(concatMap(() => latestOrganizationBilling$))
+      .subscribe((data) =>
+        Promise.all(
+          data.map(async ({ organizationId, billing }) => {
+            await this.setOrganizationBilling(organizationId, billing);
+          }),
+        ),
+      );
+  }
 
   async purchaseSubscription(subscription: SubscriptionInformation): Promise<OrganizationResponse> {
     const request = new OrganizationCreateRequest();
@@ -47,6 +78,14 @@ export class OrganizationBillingService implements OrganizationBillingServiceAbs
     return await this.organizationApiService.create(request);
   }
 
+  async setOrganizationBilling(organizationId: string, billingResponse: BillingResponse) {
+    await this.organizationBillingState.update((state) => {
+      state ??= {};
+      state[organizationId] = billingResponse;
+      return state;
+    });
+  }
+
   async startFree(subscription: SubscriptionInformation): Promise<OrganizationResponse> {
     const request = new OrganizationCreateRequest();
 
@@ -59,6 +98,24 @@ export class OrganizationBillingService implements OrganizationBillingServiceAbs
     this.setPlanInformation(request, subscription.plan);
 
     return await this.organizationApiService.create(request);
+  }
+
+  private async getOrganizationBilling(): Promise<
+    {
+      organizationId: string;
+      billing: BillingResponse;
+    }[]
+  > {
+    const organizations = await this.organizationService.getAll();
+    return await Promise.all(
+      organizations.map(async (organization) => {
+        const billing = await this.organizationApiService.getBilling(organization.id);
+        return {
+          organizationId: organization.id,
+          billing,
+        };
+      }),
+    );
   }
 
   private async makeOrganizationKeys(): Promise<OrganizationKeys> {

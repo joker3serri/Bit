@@ -6,7 +6,8 @@ import {
   OrganizationService,
   canAccessAdmin,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
+import { BillingBannerServiceAbstraction as BillingBannerService } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
+import { OrganizationBillingServiceAbstraction as OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { BannerModule } from "@bitwarden/components";
 
@@ -26,10 +27,11 @@ type PaymentMethodBannerData = {
 })
 export class PaymentMethodBannersComponent {
   constructor(
-    private billingBannerService: BillingBannerServiceAbstraction,
+    private billingBannerService: BillingBannerService,
     private i18nService: I18nService,
-    private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiService,
+    private organizationBillingService: OrganizationBillingService,
+    private organizationService: OrganizationService,
   ) {}
 
   private organizations$ = this.organizationService.memberOrganizations$.pipe(

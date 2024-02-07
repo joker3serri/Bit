@@ -1,5 +1,6 @@
 import { map, Observable } from "rxjs";
 
+import { ProductType } from "../../../enums";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { Utils } from "../../../platform/misc/utils";
 import { OrganizationData } from "../../models/data/organization.data";
@@ -54,6 +55,14 @@ export function getOrganizationById(id: string) {
 export function canAccessAdmin(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
     orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(i18nService, "name")),
+  );
+}
+
+export function isPaidFor(i18nService: I18nService) {
+  return map<Organization[], Organization[]>((organizations) =>
+    organizations
+      .filter((organization) => organization.planProductType !== ProductType.Free)
+      .sort(Utils.getSortFunction(i18nService, "name")),
   );
 }
 

@@ -1,5 +1,4 @@
-import { OrganizationResponse } from "../../admin-console/models/response/organization.response";
-import { PaymentMethodType, PlanType } from "../enums";
+import { PaymentMethodType, PlanType } from "../../enums";
 
 export type OrganizationInformation = {
   name: string;
@@ -37,9 +36,3 @@ export type SubscriptionInformation = {
   plan?: PlanInformation;
   payment?: PaymentInformation;
 };
-
-export abstract class OrganizationBillingServiceAbstraction {
-  purchaseSubscription: (subscription: SubscriptionInformation) => Promise<OrganizationResponse>;
-
-  startFree: (subscription: SubscriptionInformation) => Promise<OrganizationResponse>;
-}
