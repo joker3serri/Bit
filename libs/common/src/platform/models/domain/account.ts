@@ -19,7 +19,7 @@ import { UsernameGeneratorOptions } from "../../../tools/generator/username/user
 import { SendData } from "../../../tools/send/models/data/send.data";
 import { SendView } from "../../../tools/send/models/view/send.view";
 import { DeepJsonify } from "../../../types/deep-jsonify";
-import { UserKey, MasterKey } from "../../../types/key";
+import { MasterKey, UserKey } from "../../../types/key";
 import { UriMatchType } from "../../../vault/enums";
 import { CipherData } from "../../../vault/models/data/cipher.data";
 import { FolderData } from "../../../vault/models/data/folder.data";
@@ -119,10 +119,6 @@ export class AccountKeys {
   masterKey?: MasterKey;
   masterKeyEncryptedUserKey?: string;
   deviceKey?: ReturnType<SymmetricCryptoKey["toJSON"]>;
-  providerKeys?: EncryptionPair<any, Record<string, SymmetricCryptoKey>> = new EncryptionPair<
-    any,
-    Record<string, SymmetricCryptoKey>
-  >();
   privateKey?: EncryptionPair<string, Uint8Array> = new EncryptionPair<string, Uint8Array>();
   publicKey?: Uint8Array;
   apiKeyClientSecret?: string;
@@ -161,7 +157,6 @@ export class AccountKeys {
         obj?.cryptoSymmetricKey,
         SymmetricCryptoKey.fromJSON,
       ),
-      providerKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.providerKeys),
       privateKey: EncryptionPair.fromJSON<string, Uint8Array>(obj?.privateKey, (decObj: string) =>
         Utils.fromByteStringToArray(decObj),
       ),
@@ -196,7 +191,6 @@ export class AccountProfile {
   forceSetPasswordReason?: ForceSetPasswordReason;
   hasPremiumPersonally?: boolean;
   hasPremiumFromOrganization?: boolean;
-  lastSync?: string;
   userId?: string;
   usesKeyConnector?: boolean;
   keyHash?: string;

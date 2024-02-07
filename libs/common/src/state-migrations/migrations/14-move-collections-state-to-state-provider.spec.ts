@@ -102,8 +102,8 @@ describe("CollectionMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 12);
-      sut = new CollectionMigrator(12, 13);
+      helper = mockMigrationHelper(exampleJSON(), 17);
+      sut = new CollectionMigrator(17, 18);
     });
 
     it("should remove collections from all accounts", async () => {
