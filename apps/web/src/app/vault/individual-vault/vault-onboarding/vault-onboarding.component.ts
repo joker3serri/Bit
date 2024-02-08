@@ -42,7 +42,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
   isNewAccount: boolean;
   private readonly onboardingReleaseDate = new Date("2024-01-01");
-  showOnboardingAccess: Observable<boolean>;
+  showOnboardingAccess$: Observable<boolean>;
 
   protected currentTasks: VaultOnboardingTasks;
 
@@ -82,7 +82,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async checkOnboardingFlag() {
-    this.showOnboardingAccess = await this.configService.getFeatureFlag$<boolean>(
+    this.showOnboardingAccess$ = await this.configService.getFeatureFlag$<boolean>(
       FeatureFlag.VaultOnboarding,
       false,
     );
