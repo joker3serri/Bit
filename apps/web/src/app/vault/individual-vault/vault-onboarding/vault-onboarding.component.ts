@@ -59,7 +59,10 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    await this.checkOnboardingFlag();
+    this.showOnboardingAccess$ = await this.configService.getFeatureFlag$<boolean>(
+      FeatureFlag.VaultOnboarding,
+      false,
+    );
     this.onboardingTasks$ = this.vaultOnboardingService.vaultOnboardingState$;
     await this.setOnboardingTasks();
     this.setInstallExtLink();
@@ -79,13 +82,6 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  async checkOnboardingFlag() {
-    this.showOnboardingAccess$ = await this.configService.getFeatureFlag$<boolean>(
-      FeatureFlag.VaultOnboarding,
-      false,
-    );
   }
 
   async checkCreationDate() {
