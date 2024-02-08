@@ -1,4 +1,4 @@
-import { firstValueFrom, map, Observable } from "rxjs";
+import { BehaviorSubject, firstValueFrom, map, Observable } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -6,7 +6,6 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
@@ -22,17 +21,16 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { HashPurpose } from "@bitwarden/common/platform/enums";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { GlobalState } from "@bitwarden/common/platform/state";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
+import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 
 export class PasswordLoginStrategyData implements LoginStrategyData {
-  readonly type = AuthenticationType.Password;
   tokenRequest: PasswordTokenRequest;
   captchaBypassToken?: string;
   /**
@@ -68,8 +66,10 @@ export class PasswordLoginStrategy extends LoginStrategy {
    */
   masterKeyHash$: Observable<string | null>;
 
+  protected data: BehaviorSubject<PasswordLoginStrategyData>;
+
   constructor(
-    protected cache: GlobalState<PasswordLoginStrategyData>,
+    protected cache: LoginStrategyCache<PasswordLoginStrategyData>,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,

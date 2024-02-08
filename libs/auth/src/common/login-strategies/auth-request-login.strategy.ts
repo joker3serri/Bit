@@ -5,7 +5,6 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
@@ -16,14 +15,13 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { GlobalState } from "@bitwarden/common/platform/state";
 
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
+import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 
 export class AuthRequestLoginStrategyData implements LoginStrategyData {
-  readonly type = AuthenticationType.AuthRequest;
   tokenRequest: PasswordTokenRequest;
   captchaBypassToken: string;
   authRequestCredentials: AuthRequestLoginCredentials;
@@ -43,7 +41,7 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
   authRequestId$: Observable<string>;
 
   constructor(
-    protected cache: GlobalState<AuthRequestLoginStrategyData>,
+    protected cache: LoginStrategyCache<AuthRequestLoginStrategyData>,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,

@@ -32,23 +32,11 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { MasterKey } from "@bitwarden/common/types/key";
 
 import { LoginStrategyServiceAbstraction } from "../../abstractions";
-import {
-  AuthRequestLoginStrategy,
-  AuthRequestLoginStrategyData,
-} from "../../login-strategies/auth-request-login.strategy";
-import {
-  PasswordLoginStrategy,
-  PasswordLoginStrategyData,
-} from "../../login-strategies/password-login.strategy";
-import { SsoLoginStrategy, SsoLoginStrategyData } from "../../login-strategies/sso-login.strategy";
-import {
-  UserApiLoginStrategy,
-  UserApiLoginStrategyData,
-} from "../../login-strategies/user-api-login.strategy";
-import {
-  WebAuthnLoginStrategy,
-  WebAuthnLoginStrategyData,
-} from "../../login-strategies/webauthn-login.strategy";
+import { AuthRequestLoginStrategy } from "../../login-strategies/auth-request-login.strategy";
+import { PasswordLoginStrategy } from "../../login-strategies/password-login.strategy";
+import { SsoLoginStrategy } from "../../login-strategies/sso-login.strategy";
+import { UserApiLoginStrategy } from "../../login-strategies/user-api-login.strategy";
+import { WebAuthnLoginStrategy } from "../../login-strategies/webauthn-login.strategy";
 import {
   UserApiLoginCredentials,
   PasswordLoginCredentials,
@@ -60,17 +48,20 @@ import {
 import {
   AUTH_REQUEST_PUSH_NOTIFICATION_KEY,
   CURRENT_LOGIN_STRATEGY_KEY,
-  DataTypes,
+  CacheData,
   CACHE_EXPIRATION_KEY,
   CACHE_KEY,
+  LoginStrategyCache,
 } from "./login-strategy.state";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
 export class LoginStrategyService implements LoginStrategyServiceAbstraction {
+  // any since timer is different in node and browser
   private sessionTimeout: any;
+  // FIXME Rename to Authn
   private currentAuthTypeState: GlobalState<AuthenticationType | null>;
-  private loginStrategyCacheState: GlobalState<DataTypes | null>;
+  private loginStrategyCacheState: GlobalState<CacheData | null>;
   private loginStrategyCacheExpirationState: GlobalState<Date | null>;
   private authRequestPushNotificationState: GlobalState<string>;
 
@@ -189,6 +180,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     // This is a shallow copy, but use deep copy in future if objects are added to credentials
     // that were created in popup.
     // If the popup uses its own instance of this service, this can be removed.
+    // FIXME should be deep copy
     const ownedCredentials = { ...credentials };
 
     const result = await strategy.logIn(ownedCredentials as any);
@@ -254,12 +246,14 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     return await this.cryptoService.makeMasterKey(masterPassword, email, kdf, kdfConfig);
   }
 
+  // TODO move to auth request service
   async sendAuthRequestPushNotification(notification: AuthRequestPushNotification): Promise<void> {
     if (notification.id != null) {
       await this.authRequestPushNotificationState.update((_) => notification.id);
     }
   }
 
+  // TODO: move to auth request service
   async passwordlessLogin(
     id: string,
     key: string,
@@ -340,7 +334,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
         switch (strategy) {
           case AuthenticationType.Password:
             return new PasswordLoginStrategy(
-              this.loginStrategyCacheState as GlobalState<PasswordLoginStrategyData>,
+              new LoginStrategyCache(this.loginStrategyCacheState, "password"),
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -356,7 +350,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.Sso:
             return new SsoLoginStrategy(
-              this.loginStrategyCacheState as GlobalState<SsoLoginStrategyData>,
+              new LoginStrategyCache(this.loginStrategyCacheState, "sso"),
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -373,7 +367,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.UserApi:
             return new UserApiLoginStrategy(
-              this.loginStrategyCacheState as GlobalState<UserApiLoginStrategyData>,
+              new LoginStrategyCache(this.loginStrategyCacheState, "userApi"),
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -388,7 +382,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.AuthRequest:
             return new AuthRequestLoginStrategy(
-              this.loginStrategyCacheState as GlobalState<AuthRequestLoginStrategyData>,
+              new LoginStrategyCache(this.loginStrategyCacheState, "authRequest"),
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -402,7 +396,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.WebAuthn:
             return new WebAuthnLoginStrategy(
-              this.loginStrategyCacheState as GlobalState<WebAuthnLoginStrategyData>,
+              new LoginStrategyCache(this.loginStrategyCacheState, "webAuthn"),
               this.cryptoService,
               this.apiService,
               this.tokenService,

@@ -4,7 +4,6 @@ import { Jsonify } from "type-fest";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
@@ -15,15 +14,14 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { GlobalState } from "@bitwarden/common/platform/state";
 import { UserKey } from "@bitwarden/common/types/key";
 
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
+import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 
 export class WebAuthnLoginStrategyData implements LoginStrategyData {
-  readonly type = AuthenticationType.WebAuthn;
   tokenRequest: WebAuthnLoginTokenRequest;
   captchaBypassToken?: string;
   credentials: WebAuthnLoginCredentials;
@@ -38,7 +36,7 @@ export class WebAuthnLoginStrategyData implements LoginStrategyData {
 
 export class WebAuthnLoginStrategy extends LoginStrategy {
   constructor(
-    protected cache: GlobalState<WebAuthnLoginStrategyData>,
+    protected cache: LoginStrategyCache<WebAuthnLoginStrategyData>,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,

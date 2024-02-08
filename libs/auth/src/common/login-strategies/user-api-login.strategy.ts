@@ -5,7 +5,6 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -15,14 +14,13 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { GlobalState } from "@bitwarden/common/platform/state";
 
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
+import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 
 export class UserApiLoginStrategyData implements LoginStrategyData {
-  readonly type = AuthenticationType.UserApi;
   tokenRequest: UserApiTokenRequest;
   captchaBypassToken: string;
 
@@ -35,7 +33,7 @@ export class UserApiLoginStrategyData implements LoginStrategyData {
 
 export class UserApiLoginStrategy extends LoginStrategy {
   constructor(
-    protected cache: GlobalState<UserApiLoginStrategyData>,
+    protected cache: LoginStrategyCache<UserApiLoginStrategyData>,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,

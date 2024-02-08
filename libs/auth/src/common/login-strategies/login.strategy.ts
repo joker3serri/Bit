@@ -3,7 +3,6 @@ import { firstValueFrom } from "rxjs";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -31,7 +30,6 @@ import {
   AccountTokens,
   AccountDecryptionOptions,
 } from "@bitwarden/common/platform/models/domain/account";
-import { GlobalState } from "@bitwarden/common/platform/state";
 
 import {
   UserApiLoginCredentials,
@@ -40,11 +38,11 @@ import {
   AuthRequestLoginCredentials,
   WebAuthnLoginCredentials,
 } from "../models/domain/login-credentials";
+import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
 
 type IdentityResponse = IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse;
 
 export abstract class LoginStrategyData {
-  readonly type: AuthenticationType;
   tokenRequest:
     | UserApiTokenRequest
     | PasswordTokenRequest
@@ -54,7 +52,7 @@ export abstract class LoginStrategyData {
 }
 
 export abstract class LoginStrategy {
-  protected abstract cache: GlobalState<LoginStrategyData>;
+  protected abstract cache: LoginStrategyCache<LoginStrategyData>;
 
   constructor(
     protected cryptoService: CryptoService,

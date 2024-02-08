@@ -1,18 +1,18 @@
+import { Observable, map } from "rxjs";
+
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { KeyDefinition, LOGIN_STRATEGY_MEMORY } from "@bitwarden/common/platform/state";
+import {
+  GlobalState,
+  KeyDefinition,
+  LOGIN_STRATEGY_MEMORY,
+} from "@bitwarden/common/platform/state";
 
 import { AuthRequestLoginStrategyData } from "../../login-strategies/auth-request-login.strategy";
+import { LoginStrategyData } from "../../login-strategies/login.strategy";
 import { PasswordLoginStrategyData } from "../../login-strategies/password-login.strategy";
 import { SsoLoginStrategyData } from "../../login-strategies/sso-login.strategy";
 import { UserApiLoginStrategyData } from "../../login-strategies/user-api-login.strategy";
 import { WebAuthnLoginStrategyData } from "../../login-strategies/webauthn-login.strategy";
-
-export type DataTypes =
-  | PasswordLoginStrategyData
-  | SsoLoginStrategyData
-  | UserApiLoginStrategyData
-  | AuthRequestLoginStrategyData
-  | WebAuthnLoginStrategyData;
 
 /**
  * The current login strategy in use.
@@ -22,34 +22,6 @@ export const CURRENT_LOGIN_STRATEGY_KEY = new KeyDefinition<AuthenticationType |
   "currentLoginStrategy",
   {
     deserializer: (data) => data,
-  },
-);
-
-/**
- * A cache for login strategies to use for data persistence through
- * the login process.
- */
-export const CACHE_KEY = new KeyDefinition<DataTypes | null>(
-  LOGIN_STRATEGY_MEMORY,
-  "loginStrategyCache",
-  {
-    deserializer: (data) => {
-      if (data == null) {
-        return null;
-      }
-      switch (data.type) {
-        case AuthenticationType.Password:
-          return PasswordLoginStrategyData.fromJSON(data);
-        case AuthenticationType.Sso:
-          return SsoLoginStrategyData.fromJSON(data);
-        case AuthenticationType.UserApi:
-          return UserApiLoginStrategyData.fromJSON(data);
-        case AuthenticationType.AuthRequest:
-          return AuthRequestLoginStrategyData.fromJSON(data);
-        case AuthenticationType.WebAuthn:
-          return WebAuthnLoginStrategyData.fromJSON(data);
-      }
-    },
   },
 );
 
@@ -78,3 +50,54 @@ export const AUTH_REQUEST_PUSH_NOTIFICATION_KEY = new KeyDefinition<string>(
     deserializer: (data) => data,
   },
 );
+
+export type CacheData = {
+  password?: PasswordLoginStrategyData;
+  sso?: SsoLoginStrategyData;
+  userApi?: UserApiLoginStrategyData;
+  authRequest?: AuthRequestLoginStrategyData;
+  webAuthn?: WebAuthnLoginStrategyData;
+};
+
+/**
+ * A cache for login strategies to use for data persistence through
+ * the login process.
+ */
+export const CACHE_KEY = new KeyDefinition<CacheData | null>(
+  LOGIN_STRATEGY_MEMORY,
+  "loginStrategyCache",
+  {
+    deserializer: (data) => {
+      if (data == null) {
+        return null;
+      }
+      return {
+        password: data.password ? PasswordLoginStrategyData.fromJSON(data.password) : undefined,
+        sso: data.sso ? SsoLoginStrategyData.fromJSON(data.sso) : undefined,
+        userApi: data.userApi ? UserApiLoginStrategyData.fromJSON(data.userApi) : undefined,
+        authRequest: data.authRequest
+          ? AuthRequestLoginStrategyData.fromJSON(data.authRequest)
+          : undefined,
+        webAuthn: data.webAuthn ? WebAuthnLoginStrategyData.fromJSON(data.webAuthn) : undefined,
+      };
+    },
+  },
+);
+
+export class LoginStrategyCache<T extends LoginStrategyData> {
+  state$: Observable<T>;
+
+  constructor(
+    private cache: GlobalState<CacheData | null>,
+    private strategyKey: keyof CacheData,
+  ) {
+    this.state$ = cache.state$.pipe(map((data) => (data ? (data[this.strategyKey] as T) : null)));
+  }
+
+  update(configureState: (state: T) => T) {
+    return this.cache.update((data) => {
+      (data[this.strategyKey] as T) = configureState(data[this.strategyKey] as T);
+      return data;
+    });
+  }
+}
