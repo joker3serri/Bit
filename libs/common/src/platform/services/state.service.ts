@@ -2525,10 +2525,14 @@ export class StateService<
     const accountVaultTimeoutAction = (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.vaultTimeoutAction;
-    const globalVaultTimeoutAction = (
-      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
-    )?.vaultTimeoutAction;
-    return accountVaultTimeoutAction ?? globalVaultTimeoutAction;
+    return (
+      accountVaultTimeoutAction ??
+      (
+        await this.getGlobals(
+          this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
+        )
+      )?.vaultTimeoutAction
+    );
   }
 
   async setVaultTimeoutAction(value: string, options?: StorageOptions): Promise<void> {
