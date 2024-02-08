@@ -68,10 +68,7 @@ export class CollectionService implements CollectionServiceAbstraction {
       map((collections) => {
         const response: Collection[] = [];
         for (const id in collections ?? {}) {
-          // eslint-disable-next-line
-          if (collections.hasOwnProperty(id)) {
-            response.push(new Collection(collections[id as CollectionId]));
-          }
+          response.push(new Collection(collections[id as CollectionId]));
         }
         return response;
       }),
