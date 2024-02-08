@@ -31,6 +31,8 @@ interface HTMLElementWithFormOpId extends HTMLElement {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", loadNotificationBar);
 } else {
+  // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   loadNotificationBar();
 }
 
@@ -868,7 +870,7 @@ async function loadNotificationBar() {
       return;
     }
 
-    const barPageUrl: string = chrome.extension.getURL(barPage);
+    const barPageUrl: string = chrome.runtime.getURL(barPage);
 
     const iframe = document.createElement("iframe");
     iframe.style.cssText = "height: 42px; width: 100%; border: 0; min-height: initial;";
@@ -942,6 +944,8 @@ async function loadNotificationBar() {
 
   // Helper Functions
   function sendPlatformMessage(msg: any) {
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     chrome.runtime.sendMessage(msg);
   }
 
