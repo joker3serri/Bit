@@ -1,4 +1,4 @@
-<div class="tw-inline-flex tw-gap-2" [style.width.px]="containerWidth - 20">
+<div [ngClass]="{ 'tw-inline-flex': variant !== 'secondary', 'tw-gap-2': true }">
   <ng-container *ngFor="let item of filteredItems; let last = last">
     <span bitBadge *ngIf="!last; else lastBadge" [variant]="variant" [truncate]="false">
       {{ item }}

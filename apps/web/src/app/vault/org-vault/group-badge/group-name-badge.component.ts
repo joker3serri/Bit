@@ -12,7 +12,6 @@ import { GroupView } from "../../../admin-console/organizations/core";
 export class GroupNameBadgeComponent implements OnChanges {
   @Input() selectedGroups: SelectionReadOnlyRequest[];
   @Input() allGroups: GroupView[];
-  @Input() containerWidth: number | undefined;
 
   protected groupNames: string[] = [];
 

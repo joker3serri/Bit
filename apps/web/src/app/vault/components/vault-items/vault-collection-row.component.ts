@@ -1,13 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostBinding,
-  HostListener,
-  Input,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -29,7 +20,6 @@ import { RowHeightClass } from "./vault-items.component";
   templateUrl: "vault-collection-row.component.html",
 })
 export class VaultCollectionRowComponent {
-  @ViewChild("badgeContainer") badgeContainerRef: ElementRef;
   protected RowHeightClass = RowHeightClass;
 
   @Input() disabled: boolean;
@@ -101,9 +91,5 @@ export class VaultCollectionRowComponent {
 
   protected deleteCollection() {
     this.onEvent.next({ type: "delete", items: [{ collection: this.collection }] });
-  }
-
-  protected getBadgeContainerWidth() {
-    return this.badgeContainerRef?.nativeElement.offsetWidth;
   }
 }
