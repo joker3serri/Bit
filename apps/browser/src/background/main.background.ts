@@ -637,14 +637,16 @@ export default class MainBackground {
     );
     this.eventUploadService = new EventUploadService(
       this.apiService,
-      this.stateService,
+      this.stateProvider,
       this.logService,
+      this.accountService,
     );
     this.eventCollectionService = new EventCollectionService(
       this.cipherService,
-      this.stateService,
+      this.stateProvider,
       this.organizationService,
       this.eventUploadService,
+      this.accountService,
     );
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
 
@@ -1005,7 +1007,7 @@ export default class MainBackground {
   }
 
   async logout(expired: boolean, userId?: string) {
-    await this.eventUploadService.uploadEvents(userId);
+    await this.eventUploadService.uploadEvents();
 
     await Promise.all([
       this.syncService.setLastSync(new Date(0), userId),
