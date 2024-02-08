@@ -49,7 +49,7 @@ jobs:
           keyvault: bitwarden-ci
           secrets: "github-pat-bitwarden-devops-bot-repo-scope"
 
-      - name: "Bump version to ${{ needs.setup.outputs.version_number }}"
+      - name: "Bump version to ${{ steps.version.outputs.new_version }}"
         env:
           GH_TOKEN: ${{ steps.retrieve-bot-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
         run: |
