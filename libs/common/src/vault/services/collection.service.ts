@@ -190,6 +190,7 @@ export class CollectionService implements CollectionServiceAbstraction {
     await stateToUpdate.update(() => {
       return null;
     });
+    await this.decryptedCollectionDataState.forceValue(null);
   }
 
   async delete(id: CollectionId | CollectionId[]): Promise<any> {
