@@ -483,7 +483,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
 
   private async needsLock(): Promise<boolean> {
     const authType = await firstValueFrom(this.loginStrategyService.currentAuthType$);
-    return authType == AuthenticationType.Sso || authType == AuthenticationType.UserApi;
+    return authType == AuthenticationType.Sso || authType == AuthenticationType.UserApiKey;
   }
 
   launchDuoFrameless() {

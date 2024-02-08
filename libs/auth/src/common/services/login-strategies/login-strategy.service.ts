@@ -64,10 +64,8 @@ import {
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
 export class LoginStrategyService implements LoginStrategyServiceAbstraction {
-  // any since timer is different in node and browser
-  private sessionTimeout: any;
-  // FIXME Rename to Authn
-  private currentAuthTypeState: GlobalState<AuthenticationType | null>;
+  private sessionTimeout: unknown;
+  private currentAuthnTypeState: GlobalState<AuthenticationType | null>;
   private loginStrategyCacheState: GlobalState<CacheData | null>;
   private loginStrategyCacheExpirationState: GlobalState<Date | null>;
   private authRequestPushNotificationState: GlobalState<string>;
@@ -105,18 +103,18 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected authReqCryptoService: AuthRequestCryptoServiceAbstraction,
     protected stateProvider: GlobalStateProvider,
   ) {
-    this.currentAuthTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
+    this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
     this.loginStrategyCacheExpirationState = this.stateProvider.get(CACHE_EXPIRATION_KEY);
     this.authRequestPushNotificationState = this.stateProvider.get(
       AUTH_REQUEST_PUSH_NOTIFICATION_KEY,
     );
 
-    this.currentAuthType$ = this.currentAuthTypeState.state$;
+    this.currentAuthType$ = this.currentAuthnTypeState.state$;
     this.authRequestPushNotification$ = this.authRequestPushNotificationState.state$.pipe(
       filter((id) => id != null),
     );
-    this.loginStrategy$ = this.currentAuthTypeState.state$.pipe(
+    this.loginStrategy$ = this.currentAuthnTypeState.state$.pipe(
       distinctUntilChanged(),
       combineLatestWith(this.loginStrategyCacheState.state$),
       this.initializeLoginStrategy.bind(this),
@@ -179,7 +177,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   ): Promise<AuthResult> {
     await this.clearCache();
 
-    await this.currentAuthTypeState.update((_) => credentials.type);
+    await this.currentAuthnTypeState.update((_) => credentials.type);
 
     const strategy = await firstValueFrom(this.loginStrategy$);
 
@@ -188,7 +186,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     // This is a shallow copy, but use deep copy in future if objects are added to credentials
     // that were created in popup.
     // If the popup uses its own instance of this service, this can be removed.
-    // FIXME should be deep copy
     const ownedCredentials = { ...credentials };
 
     const result = await strategy.logIn(ownedCredentials as any);
@@ -303,7 +300,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   }
 
   private async clearCache(): Promise<void> {
-    await this.currentAuthTypeState.update((_) => null);
+    await this.currentAuthnTypeState.update((_) => null);
     await this.loginStrategyCacheState.update((_) => null);
     await this.clearSessionTimeout();
   }
@@ -376,9 +373,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
               this.authReqCryptoService,
               this.i18nService,
             );
-          case AuthenticationType.UserApi:
+          case AuthenticationType.UserApiKey:
             return new UserApiLoginStrategy(
-              data?.userApi,
+              data?.userApiKey,
               this.cryptoService,
               this.apiService,
               this.tokenService,

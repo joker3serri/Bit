@@ -30,7 +30,7 @@ export class SsoLoginCredentials {
 }
 
 export class UserApiLoginCredentials {
-  readonly type = AuthenticationType.UserApi;
+  readonly type = AuthenticationType.UserApiKey;
 
   constructor(
     public clientId: string,

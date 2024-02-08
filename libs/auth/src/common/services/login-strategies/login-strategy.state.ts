@@ -47,7 +47,7 @@ export const AUTH_REQUEST_PUSH_NOTIFICATION_KEY = new KeyDefinition<string>(
 export type CacheData = {
   password?: PasswordLoginStrategyData;
   sso?: SsoLoginStrategyData;
-  userApi?: UserApiLoginStrategyData;
+  userApiKey?: UserApiLoginStrategyData;
   authRequest?: AuthRequestLoginStrategyData;
   webAuthn?: WebAuthnLoginStrategyData;
 };
@@ -67,7 +67,9 @@ export const CACHE_KEY = new KeyDefinition<CacheData | null>(
       return {
         password: data.password ? PasswordLoginStrategyData.fromJSON(data.password) : undefined,
         sso: data.sso ? SsoLoginStrategyData.fromJSON(data.sso) : undefined,
-        userApi: data.userApi ? UserApiLoginStrategyData.fromJSON(data.userApi) : undefined,
+        userApiKey: data.userApiKey
+          ? UserApiLoginStrategyData.fromJSON(data.userApiKey)
+          : undefined,
         authRequest: data.authRequest
           ? AuthRequestLoginStrategyData.fromJSON(data.authRequest)
           : undefined,

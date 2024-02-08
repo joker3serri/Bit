@@ -111,7 +111,7 @@ export class UserApiLoginStrategy extends LoginStrategy {
 
   exportCache(): CacheData {
     return {
-      userApi: this.cache.value,
+      userApiKey: this.cache.value,
     };
   }
 }
