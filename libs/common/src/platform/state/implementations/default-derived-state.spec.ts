@@ -154,7 +154,7 @@ describe("DefaultDerivedState", () => {
       await awaitAsync();
 
       expect(memoryStorage.internalStore[deriveDefinition.buildCacheKey()]).toEqual(
-        new Date(newDate),
+        derivedValue(new Date(newDate)),
       );
 
       subscription.unsubscribe();
@@ -172,7 +172,7 @@ describe("DefaultDerivedState", () => {
       await awaitAsync();
 
       expect(memoryStorage.internalStore[deriveDefinition.buildCacheKey()]).toEqual(
-        new Date(newDate),
+        derivedValue(new Date(newDate)),
       );
 
       subscription.unsubscribe();
@@ -180,7 +180,7 @@ describe("DefaultDerivedState", () => {
       await awaitAsync(cleanupDelayMs * 2);
 
       expect(memoryStorage.internalStore[deriveDefinition.buildCacheKey()]).toEqual(
-        new Date(newDate),
+        derivedValue(new Date(newDate)),
       );
     });
 
