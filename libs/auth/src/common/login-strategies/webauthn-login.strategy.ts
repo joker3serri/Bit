@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -17,7 +17,7 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { UserKey } from "@bitwarden/common/types/key";
 
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
-import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
+import { CacheData } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 
@@ -35,8 +35,10 @@ export class WebAuthnLoginStrategyData implements LoginStrategyData {
 }
 
 export class WebAuthnLoginStrategy extends LoginStrategy {
+  protected cache: BehaviorSubject<WebAuthnLoginStrategyData>;
+
   constructor(
-    protected cache: LoginStrategyCache<WebAuthnLoginStrategyData>,
+    data: WebAuthnLoginStrategyData,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,
@@ -58,17 +60,19 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
       stateService,
       twoFactorService,
     );
+
+    this.cache = new BehaviorSubject(data);
   }
 
   async logIn(credentials: WebAuthnLoginCredentials) {
-    const tokenRequest = new WebAuthnLoginTokenRequest(
+    const data = new WebAuthnLoginStrategyData();
+    data.credentials = credentials;
+    data.tokenRequest = new WebAuthnLoginTokenRequest(
       credentials.token,
       credentials.deviceResponse,
       await this.buildDeviceRequest(),
     );
-    await this.cache.update((_) =>
-      Object.assign(new WebAuthnLoginStrategyData(), { tokenRequest, credentials }),
-    );
+    this.cache.next(data);
 
     const [authResult] = await this.startLogIn();
     return authResult;
@@ -95,7 +99,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     if (userDecryptionOptions?.webAuthnPrfOption) {
       const webAuthnPrfOption = idTokenResponse.userDecryptionOptions?.webAuthnPrfOption;
 
-      const credentials = (await firstValueFrom(this.cache.state$)).credentials;
+      const credentials = this.cache.value.credentials;
       // confirm we still have the prf key
       if (!credentials.prfKey) {
         return;
@@ -123,5 +127,11 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     await this.cryptoService.setPrivateKey(
       response.privateKey ?? (await this.createKeyPairForOldAccount()),
     );
+  }
+
+  exportCache(): CacheData {
+    return {
+      webAuthn: this.cache.value,
+    };
   }
 }

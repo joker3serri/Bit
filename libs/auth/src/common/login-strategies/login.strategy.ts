@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -38,7 +38,7 @@ import {
   AuthRequestLoginCredentials,
   WebAuthnLoginCredentials,
 } from "../models/domain/login-credentials";
-import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
+import { CacheData } from "../services/login-strategies/login-strategy.state";
 
 type IdentityResponse = IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse;
 
@@ -52,7 +52,7 @@ export abstract class LoginStrategyData {
 }
 
 export abstract class LoginStrategy {
-  protected abstract cache: LoginStrategyCache<LoginStrategyData>;
+  protected abstract cache: BehaviorSubject<LoginStrategyData>;
 
   constructor(
     protected cryptoService: CryptoService,
@@ -65,6 +65,8 @@ export abstract class LoginStrategy {
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
   ) {}
+
+  abstract exportCache(): CacheData;
 
   abstract logIn(
     credentials:
@@ -79,10 +81,9 @@ export abstract class LoginStrategy {
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string = null,
   ): Promise<AuthResult> {
-    await this.cache.update((data) => {
-      data.tokenRequest.setTwoFactor(twoFactor);
-      return data;
-    });
+    const data = this.cache.value;
+    data.tokenRequest.setTwoFactor(twoFactor);
+    this.cache.next(data);
     const [authResult] = await this.startLogIn();
     return authResult;
   }
@@ -90,7 +91,7 @@ export abstract class LoginStrategy {
   protected async startLogIn(): Promise<[AuthResult, IdentityResponse]> {
     this.twoFactorService.clearSelectedProvider();
 
-    const tokenRequest = (await firstValueFrom(this.cache.state$)).tokenRequest;
+    const tokenRequest = this.cache.value.tokenRequest;
     const response = await this.apiService.postIdentityToken(tokenRequest);
 
     if (response instanceof IdentityTwoFactorResponse) {
@@ -230,9 +231,7 @@ export abstract class LoginStrategy {
     result.twoFactorProviders = response.twoFactorProviders2;
 
     this.twoFactorService.setProviders(response);
-    await this.cache.update((data) =>
-      Object.assign(data, { captchaBypassToken: response.captchaToken ?? null }),
-    );
+    this.cache.next({ ...this.cache.value, captchaBypassToken: response.captchaToken ?? null });
     result.ssoEmail2FaSessionToken = response.ssoEmail2faSessionToken;
     result.email = response.email;
     return result;

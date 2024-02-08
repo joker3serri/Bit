@@ -1,4 +1,4 @@
-import { Observable, map, firstValueFrom } from "rxjs";
+import { Observable, map, BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -17,7 +17,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
-import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
+import { CacheData } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 
@@ -40,8 +40,10 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
   accessCode$: Observable<string>;
   authRequestId$: Observable<string>;
 
+  protected cache: BehaviorSubject<AuthRequestLoginStrategyData>;
+
   constructor(
-    protected cache: LoginStrategyCache<AuthRequestLoginStrategyData>,
+    data: AuthRequestLoginStrategyData,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,
@@ -65,30 +67,24 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
       twoFactorService,
     );
 
-    this.email$ = this.cache.state$.pipe(map((data) => data.tokenRequest.email));
-    this.accessCode$ = this.cache.state$.pipe(
-      map((data) => data.authRequestCredentials.accessCode),
-    );
-    this.authRequestId$ = this.cache.state$.pipe(
-      map((data) => data.authRequestCredentials.authRequestId),
-    );
+    this.cache = new BehaviorSubject(data);
+    this.email$ = this.cache.pipe(map((data) => data.tokenRequest.email));
+    this.accessCode$ = this.cache.pipe(map((data) => data.authRequestCredentials.accessCode));
+    this.authRequestId$ = this.cache.pipe(map((data) => data.authRequestCredentials.authRequestId));
   }
 
   override async logIn(credentials: AuthRequestLoginCredentials) {
-    const tokenRequest = new PasswordTokenRequest(
+    const data = new AuthRequestLoginStrategyData();
+    data.tokenRequest = new PasswordTokenRequest(
       credentials.email,
       credentials.accessCode,
       null,
       await this.buildTwoFactor(credentials.twoFactor),
       await this.buildDeviceRequest(),
     );
-    tokenRequest.setAuthRequestAccessCode(credentials.authRequestId);
-    await this.cache.update((_) =>
-      Object.assign(new AuthRequestLoginStrategyData(), {
-        tokenRequest,
-        authRequestCredentials: credentials,
-      }),
-    );
+    data.tokenRequest.setAuthRequestAccessCode(credentials.authRequestId);
+    data.authRequestCredentials = credentials;
+    this.cache.next(data);
 
     const [authResult] = await this.startLogIn();
     return authResult;
@@ -98,16 +94,15 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string,
   ): Promise<AuthResult> {
-    await this.cache.update((data) =>
-      Object.assign(data, {
-        tokenRequest: { captchaResponse: captchaResponse ?? data.captchaBypassToken },
-      }),
-    );
+    const data = this.cache.value;
+    data.tokenRequest.captchaResponse = captchaResponse ?? data.captchaBypassToken;
+    this.cache.next(data);
+
     return super.logInTwoFactor(twoFactor);
   }
 
   protected override async setMasterKey(response: IdentityTokenResponse) {
-    const authRequestCredentials = (await firstValueFrom(this.cache.state$)).authRequestCredentials;
+    const authRequestCredentials = this.cache.value.authRequestCredentials;
     if (
       authRequestCredentials.decryptedMasterKey &&
       authRequestCredentials.decryptedMasterKeyHash
@@ -118,7 +113,7 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
   }
 
   protected override async setUserKey(response: IdentityTokenResponse): Promise<void> {
-    const authRequestCredentials = (await firstValueFrom(this.cache.state$)).authRequestCredentials;
+    const authRequestCredentials = this.cache.value.authRequestCredentials;
     // User now may or may not have a master password
     // but set the master key encrypted user key if it exists regardless
     await this.cryptoService.setMasterKeyEncryptedUserKey(response.key);
@@ -144,5 +139,11 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
     await this.cryptoService.setPrivateKey(
       response.privateKey ?? (await this.createKeyPairForOldAccount()),
     );
+  }
+
+  exportCache(): CacheData {
+    return {
+      authRequest: this.cache.value,
+    };
   }
 }

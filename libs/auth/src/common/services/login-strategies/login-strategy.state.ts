@@ -1,14 +1,7 @@
-import { Observable, map } from "rxjs";
-
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import {
-  GlobalState,
-  KeyDefinition,
-  LOGIN_STRATEGY_MEMORY,
-} from "@bitwarden/common/platform/state";
+import { KeyDefinition, LOGIN_STRATEGY_MEMORY } from "@bitwarden/common/platform/state";
 
 import { AuthRequestLoginStrategyData } from "../../login-strategies/auth-request-login.strategy";
-import { LoginStrategyData } from "../../login-strategies/login.strategy";
 import { PasswordLoginStrategyData } from "../../login-strategies/password-login.strategy";
 import { SsoLoginStrategyData } from "../../login-strategies/sso-login.strategy";
 import { UserApiLoginStrategyData } from "../../login-strategies/user-api-login.strategy";
@@ -83,21 +76,3 @@ export const CACHE_KEY = new KeyDefinition<CacheData | null>(
     },
   },
 );
-
-export class LoginStrategyCache<T extends LoginStrategyData> {
-  state$: Observable<T>;
-
-  constructor(
-    private cache: GlobalState<CacheData | null>,
-    private strategyKey: keyof CacheData,
-  ) {
-    this.state$ = cache.state$.pipe(map((data) => (data ? (data[this.strategyKey] as T) : null)));
-  }
-
-  update(configureState: (state: T) => T) {
-    return this.cache.update((data) => {
-      (data[this.strategyKey] as T) = configureState(data[this.strategyKey] as T);
-      return data;
-    });
-  }
-}

@@ -1,4 +1,12 @@
-import { distinctUntilChanged, filter, firstValueFrom, map, Observable, shareReplay } from "rxjs";
+import {
+  combineLatestWith,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  shareReplay,
+} from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -51,7 +59,6 @@ import {
   CacheData,
   CACHE_EXPIRATION_KEY,
   CACHE_KEY,
-  LoginStrategyCache,
 } from "./login-strategy.state";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
@@ -111,6 +118,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     );
     this.loginStrategy$ = this.currentAuthTypeState.state$.pipe(
       distinctUntilChanged(),
+      combineLatestWith(this.loginStrategyCacheState.state$),
       this.initializeLoginStrategy.bind(this),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
@@ -188,6 +196,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     if (result != null && !result.requiresTwoFactor) {
       await this.clearCache();
     } else {
+      await this.loginStrategyCacheState.update((_) => strategy.exportCache());
       await this.startSessionTimeout();
     }
 
@@ -325,16 +334,18 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     return true;
   }
 
-  private initializeLoginStrategy(source: Observable<AuthenticationType | null>) {
+  private initializeLoginStrategy(
+    source: Observable<[AuthenticationType | null, CacheData | null]>,
+  ) {
     return source.pipe(
-      map((strategy) => {
+      map(([strategy, data]) => {
         if (strategy == null) {
           return null;
         }
         switch (strategy) {
           case AuthenticationType.Password:
             return new PasswordLoginStrategy(
-              new LoginStrategyCache(this.loginStrategyCacheState, "password"),
+              data?.password,
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -350,7 +361,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.Sso:
             return new SsoLoginStrategy(
-              new LoginStrategyCache(this.loginStrategyCacheState, "sso"),
+              data?.sso,
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -367,7 +378,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.UserApi:
             return new UserApiLoginStrategy(
-              new LoginStrategyCache(this.loginStrategyCacheState, "userApi"),
+              data?.userApi,
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -382,7 +393,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.AuthRequest:
             return new AuthRequestLoginStrategy(
-              new LoginStrategyCache(this.loginStrategyCacheState, "authRequest"),
+              data?.authRequest,
               this.cryptoService,
               this.apiService,
               this.tokenService,
@@ -396,7 +407,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
             );
           case AuthenticationType.WebAuthn:
             return new WebAuthnLoginStrategy(
-              new LoginStrategyCache(this.loginStrategyCacheState, "webAuthn"),
+              data?.webAuthn,
               this.cryptoService,
               this.apiService,
               this.tokenService,

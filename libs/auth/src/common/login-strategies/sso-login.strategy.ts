@@ -1,4 +1,4 @@
-import { Observable, map, firstValueFrom } from "rxjs";
+import { Observable, map, firstValueFrom, BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -22,7 +22,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
-import { LoginStrategyCache } from "../services/login-strategies/login-strategy.state";
+import { CacheData } from "../services/login-strategies/login-strategy.state";
 
 import { LoginStrategyData, LoginStrategy } from "./login.strategy";
 
@@ -66,8 +66,10 @@ export class SsoLoginStrategy extends LoginStrategy {
    */
   ssoEmail2FaSessionToken$: Observable<string | null>;
 
+  protected cache: BehaviorSubject<SsoLoginStrategyData>;
+
   constructor(
-    protected cache: LoginStrategyCache<SsoLoginStrategyData>,
+    data: SsoLoginStrategyData,
     cryptoService: CryptoService,
     apiService: ApiService,
     tokenService: TokenService,
@@ -94,16 +96,16 @@ export class SsoLoginStrategy extends LoginStrategy {
       twoFactorService,
     );
 
-    this.email$ = this.cache.state$.pipe(map((state) => state.email));
-    this.orgId$ = this.cache.state$.pipe(map((state) => state.orgId));
-    this.ssoEmail2FaSessionToken$ = this.cache.state$.pipe(
-      map((state) => state.ssoEmail2FaSessionToken),
-    );
+    this.cache = new BehaviorSubject(data);
+    this.email$ = this.cache.pipe(map((state) => state.email));
+    this.orgId$ = this.cache.pipe(map((state) => state.orgId));
+    this.ssoEmail2FaSessionToken$ = this.cache.pipe(map((state) => state.ssoEmail2FaSessionToken));
   }
 
   async logIn(credentials: SsoLoginCredentials) {
-    const orgId = credentials.orgId;
-    const tokenRequest = new SsoTokenRequest(
+    const data = new SsoLoginStrategyData();
+    data.orgId = credentials.orgId;
+    data.tokenRequest = new SsoTokenRequest(
       credentials.code,
       credentials.codeVerifier,
       credentials.redirectUrl,
@@ -111,9 +113,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       await this.buildDeviceRequest(),
     );
 
-    await this.cache.update((_) =>
-      Object.assign(new SsoLoginStrategyData(), { tokenRequest, orgId }),
-    );
+    this.cache.next(data);
 
     const [ssoAuthResult] = await this.startLogIn();
 
@@ -125,7 +125,11 @@ export class SsoLoginStrategy extends LoginStrategy {
       await this.stateService.setForceSetPasswordReason(ssoAuthResult.forcePasswordReset);
     }
 
-    await this.cache.update((data) => Object.assign(data, { email, ssoEmail2FaSessionToken }));
+    this.cache.next({
+      ...this.cache.value,
+      email,
+      ssoEmail2FaSessionToken,
+    });
 
     return ssoAuthResult;
   }
@@ -321,5 +325,11 @@ export class SsoLoginStrategy extends LoginStrategy {
         tokenResponse.privateKey ?? (await this.createKeyPairForOldAccount()),
       );
     }
+  }
+
+  exportCache(): CacheData {
+    return {
+      sso: this.cache.value,
+    };
   }
 }
