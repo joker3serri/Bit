@@ -23,7 +23,8 @@ export abstract class SendService {
    */
   get: (id: string) => Send;
   /**
-   * Provides a send for a determined ID
+   * Provides a send for a determined id
+   * updates after a change occurs to the send that matches the id
    * @param id The id of the desired send
    * @returns An observable that listens to the value of the desired send
    */

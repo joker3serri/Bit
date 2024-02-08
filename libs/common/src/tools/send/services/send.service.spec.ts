@@ -79,6 +79,43 @@ describe("SendService", () => {
 
       expect(result).toBe(undefined);
     });
+
+    it("updated observable", async () => {
+      const singleSendObservable = sendService.get$("1");
+      const result = await firstValueFrom(singleSendObservable);
+      expect(result).toEqual(send("1", "Test Send"));
+
+      await sendService.replace({
+        "1": sendData("1", "Test Send Updated"),
+      });
+
+      const result2 = await firstValueFrom(singleSendObservable);
+      expect(result2).toEqual(send("1", "Test Send Updated"));
+    });
+
+    it("subscribe counter", async () => {
+      let subCounter = 0;
+      sendService.get$("1").subscribe(() => {
+        subCounter++;
+      });
+
+      await sendService.replace({
+        "1": sendData("1", "Test Send Updated"),
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      await sendService.replace({
+        "1": sendData("1", "Test Send Updated"),
+        "2": sendData("2", "Test Send 4"),
+      });
+
+      await sendService.replace({
+        "1": sendData("1", "Test Send Updated Updated"),
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      expect(subCounter).toBe(3);
+    });
   });
 
   it("getAll", async () => {
