@@ -415,10 +415,10 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: OrganizationService,
-      useFactory: (stateService: StateServiceAbstraction) => {
-        return new BrowserOrganizationService(stateService);
+      useFactory: (stateService: StateServiceAbstraction, stateProvider: StateProvider) => {
+        return new BrowserOrganizationService(stateService, stateProvider);
       },
-      deps: [StateServiceAbstraction],
+      deps: [StateServiceAbstraction, StateProvider],
     },
     {
       provide: VaultFilterService,
