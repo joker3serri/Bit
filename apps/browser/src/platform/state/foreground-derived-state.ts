@@ -1,3 +1,4 @@
+import { NgZone } from "@angular/core";
 import {
   Observable,
   ReplaySubject,
@@ -23,6 +24,7 @@ import { DeriveDefinition, DerivedState } from "@bitwarden/common/platform/state
 import { DerivedStateDependencies } from "@bitwarden/common/types/state";
 
 import { fromChromeEvent } from "../browser/from-chrome-event";
+import { runInsideAngular } from "../browser/run-inside-angular.operator";
 
 export class ForegroundDerivedState<TTo> implements DerivedState<TTo> {
   private storageKey: string;
@@ -33,6 +35,7 @@ export class ForegroundDerivedState<TTo> implements DerivedState<TTo> {
   constructor(
     private deriveDefinition: DeriveDefinition<unknown, TTo, DerivedStateDependencies>,
     private memoryStorage: AbstractStorageService & ObservableStorageService,
+    private ngZone: NgZone,
   ) {
     this.storageKey = deriveDefinition.storageKey;
 
@@ -63,6 +66,7 @@ export class ForegroundDerivedState<TTo> implements DerivedState<TTo> {
         resetOnRefCountZero: () =>
           timer(this.deriveDefinition.cleanupDelayMs).pipe(tap(() => this.tearDownPort())),
       }),
+      runInsideAngular(this.ngZone),
     );
   }
 

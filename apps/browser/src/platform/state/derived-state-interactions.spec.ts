@@ -3,8 +3,10 @@
  * @jest-environment ../../libs/shared/test.environment.ts
  */
 
+import { NgZone } from "@angular/core";
 import { FakeStorageService } from "@bitwarden/common/../spec/fake-storage.service";
 import { awaitAsync, trackEmissions } from "@bitwarden/common/../spec/utils";
+import { mock } from "jest-mock-extended";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { DeriveDefinition } from "@bitwarden/common/platform/state";
@@ -22,12 +24,20 @@ const deriveDefinition = new DeriveDefinition(stateDefinition, "test", {
   deserializer: (dateString: string) => (dateString == null ? null : new Date(dateString)),
 });
 
+// Mock out the runInsideAngular operator so we don't have to deal with zone.js
+jest.mock("../browser/run-inside-angular.operator", () => {
+  return {
+    runInsideAngular: (ngZone: any) => (source: any) => source,
+  };
+});
+
 describe("foreground background derived state interactions", () => {
   let foreground: ForegroundDerivedState<Date>;
   let background: BackgroundDerivedState<string, Date, Record<string, unknown>>;
   let parentState$: Subject<string>;
   let memoryStorage: FakeStorageService;
   const initialParent = "2020-01-01";
+  const ngZone = mock<NgZone>();
 
   beforeEach(() => {
     mockPorts();
@@ -35,7 +45,7 @@ describe("foreground background derived state interactions", () => {
     memoryStorage = new FakeStorageService();
 
     background = new BackgroundDerivedState(parentState$, deriveDefinition, memoryStorage, {});
-    foreground = new ForegroundDerivedState(deriveDefinition, memoryStorage);
+    foreground = new ForegroundDerivedState(deriveDefinition, memoryStorage, ngZone);
   });
 
   afterEach(() => {
@@ -55,7 +65,7 @@ describe("foreground background derived state interactions", () => {
   });
 
   it("should initialize a late-connected foreground", async () => {
-    const newForeground = new ForegroundDerivedState(deriveDefinition, memoryStorage);
+    const newForeground = new ForegroundDerivedState(deriveDefinition, memoryStorage, ngZone);
     const backgroundEmissions = trackEmissions(background.state$);
     parentState$.next(initialParent);
     await awaitAsync();

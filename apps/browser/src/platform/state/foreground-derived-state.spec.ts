@@ -3,8 +3,10 @@
  * @jest-environment ../../libs/shared/test.environment.ts
  */
 
+import { NgZone } from "@angular/core";
 import { awaitAsync, trackEmissions } from "@bitwarden/common/../spec";
 import { FakeStorageService } from "@bitwarden/common/../spec/fake-storage.service";
+import { mock } from "jest-mock-extended";
 
 import { DeriveDefinition } from "@bitwarden/common/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- needed to define a derive definition
@@ -21,15 +23,23 @@ const deriveDefinition = new DeriveDefinition(stateDefinition, "test", {
   cleanupDelayMs: 1,
 });
 
+// Mock out the runInsideAngular operator so we don't have to deal with zone.js
+jest.mock("../browser/run-inside-angular.operator", () => {
+  return {
+    runInsideAngular: (ngZone: any) => (source: any) => source,
+  };
+});
+
 describe("ForegroundDerivedState", () => {
   let sut: ForegroundDerivedState<Date>;
   let memoryStorage: FakeStorageService;
+  const ngZone = mock<NgZone>();
 
   beforeEach(() => {
     memoryStorage = new FakeStorageService();
     memoryStorage.internalUpdateValuesRequireDeserialization(true);
     mockPorts();
-    sut = new ForegroundDerivedState(deriveDefinition, memoryStorage);
+    sut = new ForegroundDerivedState(deriveDefinition, memoryStorage, ngZone);
   });
 
   afterEach(() => {
