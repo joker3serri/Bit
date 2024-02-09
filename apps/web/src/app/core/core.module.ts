@@ -147,8 +147,8 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
       provide: MigrationRunner,
       useClass: WebMigrationRunner,
       deps: [
-        LogService,
         AbstractStorageService,
+        LogService,
         MigrationBuilderService,
         OBSERVABLE_DISK_LOCAL_STORAGE,
       ],
