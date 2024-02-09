@@ -22,7 +22,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
     private readonly encrypted: SingleUserState<{ secret: string; public: Disclosed }>,
     private readonly plaintext: DerivedState<Plaintext>,
   ) {
-    this.plaintext.state$ = plaintext.state$;
+    this.state$ = plaintext.state$;
   }
 
   // TODO: implement lock/unlock/etc support.
