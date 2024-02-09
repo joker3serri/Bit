@@ -10,12 +10,12 @@ import { UsernameGenerationServiceAbstraction } from "./username-generation.serv
 
 const ONE_MINUTE = 60 * 1000;
 
-/** Strategy for creating usernames from the EFF wordlist */
+/** Strategy for creating an email subaddress */
 export class SubaddressGeneratorStrategy
   implements GeneratorStrategy<SubaddressGenerationOptions, NoPolicy>
 {
   /** Instantiates the generation strategy
-   *  @param usernameService generates a username from EFF word list
+   *  @param usernameService generates an email subaddress from an email address
    */
   constructor(private usernameService: UsernameGenerationServiceAbstraction) {}
 
