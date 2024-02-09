@@ -1,6 +1,5 @@
+import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { Migrator } from "../migrator";
-
-import { KeyDefinitionLike, MigrationHelper } from "./../migration-helper";
 
 type CollectionDataType = {
   id: string;

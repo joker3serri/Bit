@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { CollectionMigrator } from "./14-move-collections-state-to-state-provider";
+import { CollectionMigrator } from "./18-move-collections-state-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -144,8 +144,8 @@ describe("CollectionMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 12);
-      sut = new CollectionMigrator(12, 13);
+      helper = mockMigrationHelper(rollbackJSON(), 17);
+      sut = new CollectionMigrator(17, 18);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {

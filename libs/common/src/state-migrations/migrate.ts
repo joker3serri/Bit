@@ -10,10 +10,10 @@ import { OrganizationKeyMigrator } from "./migrations/11-move-org-keys-to-state-
 import { MoveEnvironmentStateToProviders } from "./migrations/12-move-environment-state-to-providers";
 import { ProviderKeyMigrator } from "./migrations/13-move-provider-keys-to-state-providers";
 import { MoveBiometricClientKeyHalfToStateProviders } from "./migrations/14-move-biometric-client-key-half-state-to-providers";
-import { CollectionMigrator } from "./migrations/14-move-collections-state-to-state-provider";
 import { FolderMigrator } from "./migrations/15-move-folder-state-to-state-provider";
 import { LastSyncMigrator } from "./migrations/16-move-last-sync-to-state-provider";
 import { EnablePasskeysMigrator } from "./migrations/17-move-enable-passkeys-to-state-providers";
+import { CollectionMigrator } from "./migrations/18-move-collections-state-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
