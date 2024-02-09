@@ -284,32 +284,12 @@ export class AccountTokens {
   }
 }
 
-export class LoginState {
-  ssoOrganizationIdentifier?: string;
-
-  constructor(init?: Partial<LoginState>) {
-    if (init) {
-      Object.assign(this, init);
-    }
-  }
-
-  static fromJSON(obj: Jsonify<LoginState>): LoginState {
-    if (obj == null) {
-      return null;
-    }
-
-    const loginState = Object.assign(new LoginState(), obj);
-    return loginState;
-  }
-}
-
 export class Account {
   data?: AccountData = new AccountData();
   keys?: AccountKeys = new AccountKeys();
   profile?: AccountProfile = new AccountProfile();
   settings?: AccountSettings = new AccountSettings();
   tokens?: AccountTokens = new AccountTokens();
-  loginState?: LoginState = new LoginState();
   adminAuthRequest?: Jsonify<AdminAuthRequestStorable> = null;
 
   constructor(init: Partial<Account>) {
@@ -334,10 +314,6 @@ export class Account {
         ...new AccountTokens(),
         ...init?.tokens,
       },
-      loginState: {
-        ...new LoginState(),
-        ...init?.loginState,
-      },
       adminAuthRequest: init?.adminAuthRequest,
     });
   }
@@ -353,7 +329,6 @@ export class Account {
       profile: AccountProfile.fromJSON(json?.profile),
       settings: AccountSettings.fromJSON(json?.settings),
       tokens: AccountTokens.fromJSON(json?.tokens),
-      loginState: LoginState.fromJSON(json?.loginState),
       adminAuthRequest: AdminAuthRequestStorable.fromJSON(json?.adminAuthRequest),
     });
   }

@@ -10,6 +10,7 @@ import {
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrganizationDomainSsoDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/organization-domain-sso-details.response";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -29,6 +30,7 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class SsoComponent extends BaseSsoComponent {
   constructor(
+    ssoLoginService: SsoLoginServiceAbstraction,
     loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
@@ -46,6 +48,7 @@ export class SsoComponent extends BaseSsoComponent {
     configService: ConfigServiceAbstraction,
   ) {
     super(
+      ssoLoginService,
       loginStrategyService,
       router,
       i18nService,
@@ -99,7 +102,7 @@ export class SsoComponent extends BaseSsoComponent {
         }
 
         // Fallback to state svc if domain is unclaimed
-        const storedIdentifier = await this.stateService.getSsoOrgIdentifier();
+        const storedIdentifier = await this.ssoLoginService.getOrganizationSsoIdentifier();
         if (storedIdentifier != null) {
           this.identifier = storedIdentifier;
         }
@@ -123,7 +126,7 @@ export class SsoComponent extends BaseSsoComponent {
   }
 
   async submit() {
-    await this.stateService.setSsoOrganizationIdentifier(this.identifier);
+    await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
     if (this.clientId === "browser") {
       document.cookie = `ssoHandOffMessage=${this.i18nService.t("ssoHandOff")};SameSite=strict`;
     }

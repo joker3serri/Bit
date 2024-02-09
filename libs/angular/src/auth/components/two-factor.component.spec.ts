@@ -15,6 +15,7 @@ import {
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -60,6 +61,7 @@ describe("TwoFactorComponent", () => {
   let mockAppIdService: MockProxy<AppIdService>;
   let mockLoginService: MockProxy<LoginService>;
   let mockUserDecryptionOptionsService: MockProxy<UserDecryptionOptionsServiceAbstraction>;
+  let mockSsoLoginService: MockProxy<SsoLoginServiceAbstraction>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
 
   let mockUserDecryptionOpts: {
@@ -89,6 +91,7 @@ describe("TwoFactorComponent", () => {
     mockAppIdService = mock<AppIdService>();
     mockLoginService = mock<LoginService>();
     mockUserDecryptionOptionsService = mock<UserDecryptionOptionsServiceAbstraction>();
+    mockSsoLoginService = mock<SsoLoginServiceAbstraction>();
     mockConfigService = mock<ConfigServiceAbstraction>();
 
     mockUserDecryptionOpts = {
@@ -165,6 +168,7 @@ describe("TwoFactorComponent", () => {
           provide: UserDecryptionOptionsServiceAbstraction,
           useValue: mockUserDecryptionOptionsService,
         },
+        { provide: SsoLoginServiceAbstraction, useValue: mockSsoLoginService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
       ],
     });

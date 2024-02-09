@@ -25,6 +25,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -92,6 +93,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected platformUtilsService: PlatformUtilsService,
     protected userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     protected passwordResetEnrollmentService: PasswordResetEnrollmentServiceAbstraction,
+    protected ssoLoginService: SsoLoginServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -168,7 +170,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   async loadNewUserData() {
     const autoEnrollStatus$ = defer(() =>
-      this.stateService.getUserSsoOrganizationIdentifier(),
+      this.ssoLoginService.getActiveUserOrganizationSsoIdentifier(),
     ).pipe(
       switchMap((organizationIdentifier) => {
         if (organizationIdentifier == undefined) {
