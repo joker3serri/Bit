@@ -1,4 +1,4 @@
-import { concatMap, defaultIfEmpty, filter, firstValueFrom, from, zip } from "rxjs";
+import { Observable, concatMap, firstValueFrom, from, zip } from "rxjs";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
@@ -21,7 +21,9 @@ export class SecretState<Plaintext extends object, Disclosed> {
     private readonly encryptor: UserEncryptor<Plaintext, Disclosed>,
     private readonly encrypted: SingleUserState<{ secret: string; public: Disclosed }>,
     private readonly plaintext: DerivedState<Plaintext>,
-  ) {}
+  ) {
+    this.plaintext.state$ = plaintext.state$;
+  }
 
   // TODO: implement lock/unlock/etc support.
   /** Creates a secret state bound to an account encryptor. The account must be unlocked
@@ -78,9 +80,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
    *  updates after the secret has been recorded to state storage.
    *  @returns `undefined` when the account is locked.
    */
-  get state$() {
-    return this.plaintext.state$;
-  }
+  readonly state$: Observable<Plaintext>;
 
   /** Updates the secret stored by this state.
    *  @param configureState a callback that returns an updated decrypted
@@ -100,17 +100,16 @@ export class SecretState<Plaintext extends object, Disclosed> {
     const combined$ = options?.combineLatestWith ?? from([undefined]);
 
     const newState$ = zip(this.plaintext.state$, combined$).pipe(
-      filter(([currentState, combined]) => {
-        if (options.shouldUpdate) {
-          return options.shouldUpdate(currentState, combined);
-        } else {
-          return false;
-        }
-      }),
       concatMap(async ([currentState, combined]) => {
+        if (options.shouldUpdate && !options.shouldUpdate(currentState, combined)) {
+          return undefined;
+        }
+
         // "impersonate" state storage interface
         const newState = configureState(currentState, combined);
-        if (newState === undefined) {
+        if (newState === null) {
+          return null;
+        } else if (newState === undefined) {
           return undefined;
         }
 
@@ -123,16 +122,12 @@ export class SecretState<Plaintext extends object, Disclosed> {
 
         return newStoredState;
       }),
-      defaultIfEmpty(undefined),
     );
 
-    await this.encrypted.update(
-      (currentState, newState) => (newState === undefined ? currentState : newState),
-      {
-        combineLatestWith: newState$,
-        shouldUpdate: (_current, newState) => newState !== undefined,
-      },
-    );
+    await this.encrypted.update((_, newState) => newState, {
+      combineLatestWith: newState$,
+      shouldUpdate: (_, newState) => newState !== undefined,
+    });
 
     const latestValue = await firstValueFrom(this.plaintext.state$);
     return latestValue;
