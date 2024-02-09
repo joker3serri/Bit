@@ -11,6 +11,7 @@ import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-cr
 import { ContainerService } from "../../../platform/services/container.service";
 import { UserKey } from "../../../types/key";
 import { SendType } from "../enums/send-type";
+import { SendFileApi } from "../models/api/send-file.api";
 import { SendFileData } from "../models/data/send-file.data";
 import { SendTextData } from "../models/data/send-text.data";
 import { SendData } from "../models/data/send.data";
@@ -108,11 +109,13 @@ describe("SendService", () => {
       sendDataObject.disabled = false;
       sendDataObject.accessCount = 2;
       sendDataObject.accessId = "1";
-      sendDataObject.revisionDate = "2024-03-25";
+      sendDataObject.revisionDate = null;
       sendDataObject.expirationDate = "2024-03-25";
       sendDataObject.deletionDate = "2024-03-25";
       sendDataObject.notes = "Notes!!";
       sendDataObject.key = null;
+      sendDataObject.type = SendType.File;
+      sendDataObject.file = new SendFileData();
 
       await sendService.replace({
         "1": sendDataObject,
@@ -131,8 +134,7 @@ describe("SendService", () => {
         "2": sendData("2", "Test Send 3"),
       });
 
-      sendDataObject.type = SendType.File;
-      sendDataObject.file = new SendFileData();
+      sendDataObject.file = new SendFileData(new SendFileApi({ FileName: "123" }));
 
       await sendService.replace({
         "1": sendDataObject,
@@ -147,7 +149,32 @@ describe("SendService", () => {
         "2": sendData("2", "Test Send 3"),
       });
 
+      sendDataObject.type = SendType.Text;
+      sendDataObject.text = new SendTextData();
+      sendDataObject.text.text = "new text 2";
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      sendDataObject.text = null;
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 5"),
+      });
+
       sendDataObject.key = "key";
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      sendDataObject.revisionDate = "2024-05-09";
       await sendService.replace({
         "1": sendDataObject,
         "2": sendData("2", "Test Send 3"),
@@ -157,7 +184,7 @@ describe("SendService", () => {
         "2": sendData("2", "Test Send 3"),
       });
 
-      expect(subCounter).toBe(7);
+      expect(subCounter).toBe(9);
     });
   });
 

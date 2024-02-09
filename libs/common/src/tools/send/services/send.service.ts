@@ -146,8 +146,14 @@ export class SendService implements InternalSendServiceAbstraction {
 
               return oldSend[key].encryptedString === newSend[key].encryptedString;
             case "text":
-              if (oldSend[key] === null || oldSend[key].text === null) {
+              if (oldSend[key].text == null && newSend[key].text == null) {
                 return true;
+              }
+              if (
+                (oldSend[key].text != null && newSend[key].text == null) ||
+                (oldSend[key].text == null && newSend[key].text != null)
+              ) {
+                return false;
               }
               return oldSend[key].text.encryptedString === newSend[key].text.encryptedString;
             case "file":
