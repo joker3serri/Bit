@@ -12,6 +12,7 @@ import { ContainerService } from "../../../platform/services/container.service";
 import { UserKey } from "../../../types/key";
 import { SendType } from "../enums/send-type";
 import { SendFileApi } from "../models/api/send-file.api";
+import { SendTextApi } from "../models/api/send-text.api";
 import { SendFileData } from "../models/data/send-file.data";
 import { SendTextData } from "../models/data/send-text.data";
 import { SendData } from "../models/data/send.data";
@@ -97,94 +98,266 @@ describe("SendService", () => {
       expect(result2).toEqual(send("1", "Test Send Updated"));
     });
 
-    it("subscribe counter", async () => {
-      let subCounter = 0;
+    it("reports a change when name changes on a new send", async () => {
+      let changed = false;
       sendService.get$("1").subscribe(() => {
-        subCounter++;
+        changed = true;
+      });
+      const sendDataObject = sendData("1", "Test Send 2");
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
       });
 
-      const sendDataObject = new SendData({} as any);
-      sendDataObject.id = "1";
-      sendDataObject.name = "Test Send";
-      sendDataObject.disabled = false;
-      sendDataObject.accessCount = 2;
-      sendDataObject.accessId = "1";
-      sendDataObject.revisionDate = null;
-      sendDataObject.expirationDate = "2024-03-25";
-      sendDataObject.deletionDate = "2024-03-25";
-      sendDataObject.notes = "Notes!!";
-      sendDataObject.key = null;
-      sendDataObject.type = SendType.File;
-      sendDataObject.file = new SendFileData();
+      expect(changed).toEqual(true);
+    });
+
+    it("reports a change when notes changes on a new send", async () => {
+      const sendDataObject = createSendData() as SendData;
 
       await sendService.replace({
         "1": sendDataObject,
         "2": sendData("2", "Test Send 2"),
       });
 
-      await sendService.replace({
-        "1": sendDataObject,
-        "2": sendData("2", "Test Send 4"),
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
       });
 
-      sendDataObject.notes = "new notes";
-
-      await sendService.replace({
-        "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
-      });
-
-      sendDataObject.file = new SendFileData(new SendFileApi({ FileName: "123" }));
+      sendDataObject.notes = "New notes";
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
 
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
+        "2": sendData("2", "Test Send 2"),
       });
 
-      sendDataObject.type = SendType.Text;
-      sendDataObject.text = new SendTextData();
+      expect(changed).toEqual(true);
+    });
+
+    it("reports a change when Text changes on a new send", async () => {
+      const sendDataObject = createSendData() as SendData;
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
       sendDataObject.text.text = "new text";
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
+        "2": sendData("2", "Test Send 2"),
       });
 
-      sendDataObject.type = SendType.Text;
-      sendDataObject.text = new SendTextData();
-      sendDataObject.text.text = "new text 2";
+      expect(changed).toEqual(true);
+    });
+
+    it("reports a change when Text is set as null on a new send", async () => {
+      const sendDataObject = createSendData() as SendData;
+
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
+        "2": sendData("2", "Test Send 2"),
       });
+
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
 
       sendDataObject.text = null;
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
+        "2": sendData("2", "Test Send 2"),
       });
+
+      expect(changed).toEqual(true);
+    });
+
+    it("Doesn't reports a change when File changes on a new send", async () => {
+      const sendDataObject = createSendData({
+        type: SendType.File,
+        file: new SendFileData(new SendFileApi({ FileName: "name of file" })),
+      }) as SendData;
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      sendDataObject.file = new SendFileData(new SendFileApi({ FileName: "updated name of file" }));
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
 
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 5"),
+        "2": sendData("2", "Test Send 2"),
       });
 
-      sendDataObject.key = "key";
+      expect(changed).toEqual(false);
+    });
+
+    it("reports a change when key changes on a new send", async () => {
+      const sendDataObject = createSendData() as SendData;
+
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
+        "2": sendData("2", "Test Send 2"),
       });
 
-      sendDataObject.revisionDate = "2024-05-09";
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
+      sendDataObject.key = "newKey";
       await sendService.replace({
         "1": sendDataObject,
-        "2": sendData("2", "Test Send 3"),
+        "2": sendData("2", "Test Send 2"),
       });
+
+      expect(changed).toEqual(true);
+    });
+
+    it("reports a change when revisionDate changes on a new send", async () => {
+      const sendDataObject = createSendData() as SendData;
 
       await sendService.replace({
-        "2": sendData("2", "Test Send 3"),
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
       });
 
-      expect(subCounter).toBe(9);
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
+      sendDataObject.revisionDate = "2025-04-05";
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      expect(changed).toEqual(true);
+    });
+
+    it("reports a change when a property is set as null on a new send", async () => {
+      const sendDataObject = createSendData() as SendData;
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
+      sendDataObject.name = null;
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      expect(changed).toEqual(true);
+    });
+
+    it("does not reports a change when text's text is set as null on a new send and old send and reports a change then new send sets a text", async () => {
+      const sendDataObject = createSendData({
+        text: new SendTextData(new SendTextApi({ Text: null })),
+      }) as SendData;
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      expect(changed).toEqual(false);
+
+      sendDataObject.text.text = "Asdf";
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      expect(changed).toEqual(true);
+    });
+
+    it("do not reports a change when nothing changes on the observed send", async () => {
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+
+      const sendDataObject = sendData("1", "Test Send");
+
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("3", "Test Send 3"),
+      });
+
+      expect(changed).toEqual(false);
+    });
+
+    it("reports a change when the observed send is deleted", async () => {
+      let changed = false;
+      sendService.get$("1").subscribe(() => {
+        changed = true;
+      });
+      //it is immediately called when subscribed, we need to reset the value
+      changed = false;
+
+      await sendService.replace({
+        "2": sendData("2", "Test Send 2"),
+      });
+
+      expect(changed).toEqual(true);
     });
   });
 
@@ -303,6 +476,33 @@ describe("SendService", () => {
     data.notes = "Notes!!";
     data.key = null;
     return data;
+  }
+
+  const defaultSendData: Partial<SendData> = {
+    id: "1",
+    name: "Test Send",
+    accessId: "123",
+    type: SendType.Text,
+    notes: "notes!",
+    file: null,
+    text: new SendTextData(new SendTextApi({ Text: "send text" })),
+    key: "key",
+    maxAccessCount: 12,
+    accessCount: 2,
+    revisionDate: "2024-09-04",
+    expirationDate: "2024-09-04",
+    deletionDate: "2024-09-04",
+    password: "password",
+    disabled: false,
+    hideEmail: false,
+  };
+
+  function createSendData(value: Partial<SendData> = {}) {
+    const testSend: any = {};
+    for (const prop in defaultSendData) {
+      testSend[prop] = value[prop as keyof SendData] ?? defaultSendData[prop as keyof SendData];
+    }
+    return testSend;
   }
 
   function sendView(id: string, name: string) {
