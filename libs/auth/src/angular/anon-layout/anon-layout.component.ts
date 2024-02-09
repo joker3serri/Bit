@@ -22,10 +22,10 @@ export class AnonLayoutComponent {
   @Input() subtitle: string;
   @Input() icon: IconType;
 
-  logo = BitwardenLogo;
-  iconType: Icon | null;
-  version: string;
-  year = "2023";
+  protected logo = BitwardenLogo;
+  protected iconType: Icon | null;
+  protected version: string;
+  protected year = "2023";
 
   constructor(private platformUtilsService: PlatformUtilsService) {}
 
