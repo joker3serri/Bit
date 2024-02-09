@@ -16,8 +16,8 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
-import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
-import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { RememberEmailService as RememberEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { RememberEmailService } from "@bitwarden/common/auth/services/remember-email.service";
 import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -173,8 +173,8 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       ],
     },
     {
-      provide: LoginServiceAbstraction,
-      useClass: LoginService,
+      provide: RememberEmailServiceAbstraction,
+      useClass: RememberEmailService,
       deps: [StateProvider],
     },
     {

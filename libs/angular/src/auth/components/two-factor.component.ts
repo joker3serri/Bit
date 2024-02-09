@@ -7,7 +7,7 @@ import { first } from "rxjs/operators";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -83,7 +83,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected logService: LogService,
     protected twoFactorService: TwoFactorService,
     protected appIdService: AppIdService,
-    protected loginService: LoginService,
+    protected rememberEmailService: RememberEmailService,
     protected ssoLoginService: SsoLoginServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
   ) {
@@ -281,7 +281,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     // - TDE login decryption options component
     // - Browser SSO on extension open
     await this.ssoLoginService.setActiveUserOrganizationSsoIdentifier(this.orgIdentifier);
-    this.loginService.clearValues();
+    this.rememberEmailService.clearValues();
 
     // note: this flow affects both TDE & standard users
     if (this.isForcePasswordResetRequired(authResult)) {

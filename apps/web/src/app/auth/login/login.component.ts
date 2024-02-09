@@ -14,7 +14,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -64,7 +64,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     private routerService: RouterService,
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
-    loginService: LoginService,
+    rememberEmailService: RememberEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
@@ -84,7 +84,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       formBuilder,
       formValidationErrorService,
       route,
-      loginService,
+      rememberEmailService,
       ssoLoginService,
       webAuthnLoginService,
     );
@@ -178,7 +178,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       }
     }
 
-    this.loginService.clearValues();
+    this.rememberEmailService.clearValues();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate([this.successRoute]);
@@ -210,7 +210,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     const rememberEmail = this.formGroup.value.rememberEmail;
 
     if (!rememberEmail) {
-      await this.loginService.setRememberedEmail(null);
+      await this.rememberEmailService.setRememberedEmail(null);
     }
     await super.submit(false);
   }

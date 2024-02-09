@@ -1,5 +1,5 @@
-import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
-import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { RememberEmailService as RememberEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { RememberEmailService } from "@bitwarden/common/auth/services/remember-email.service";
 
 import {
   CachedServices,
@@ -11,18 +11,19 @@ import {
   StateProviderInitOptions,
 } from "../../../platform/background/service-factories/state-provider.factory";
 
-type LoginServiceFactoryOptions = FactoryOptions;
+type RememberEmailServiceFactoryOptions = FactoryOptions;
 
-export type LoginServiceInitOptions = LoginServiceFactoryOptions & StateProviderInitOptions;
+export type RememberEmailServiceInitOptions = RememberEmailServiceFactoryOptions &
+  StateProviderInitOptions;
 
-export function loginServiceFactory(
-  cache: { loginService?: LoginServiceAbstraction } & CachedServices,
-  opts: LoginServiceInitOptions,
-): Promise<LoginServiceAbstraction> {
+export function rememberEmailServiceFactory(
+  cache: { rememberEmailService?: RememberEmailServiceAbstraction } & CachedServices,
+  opts: RememberEmailServiceInitOptions,
+): Promise<RememberEmailServiceAbstraction> {
   return factory(
     cache,
-    "loginService",
+    "rememberEmailService",
     opts,
-    async () => new LoginService(await stateProviderFactory(cache, opts)),
+    async () => new RememberEmailService(await stateProviderFactory(cache, opts)),
   );
 }

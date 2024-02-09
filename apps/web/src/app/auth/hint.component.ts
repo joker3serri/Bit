@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 
 import { HintComponent as BaseHintComponent } from "@bitwarden/angular/auth/components/hint.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -19,8 +19,8 @@ export class HintComponent extends BaseHintComponent {
     apiService: ApiService,
     platformUtilsService: PlatformUtilsService,
     logService: LogService,
-    loginService: LoginService,
+    rememberEmailService: RememberEmailService,
   ) {
-    super(router, i18nService, apiService, platformUtilsService, logService, loginService);
+    super(router, i18nService, apiService, platformUtilsService, logService, rememberEmailService);
   }
 }

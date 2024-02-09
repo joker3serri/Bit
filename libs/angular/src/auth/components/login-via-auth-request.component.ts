@@ -11,7 +11,7 @@ import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymo
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
@@ -84,7 +84,7 @@ export class LoginViaAuthRequestComponent
     private anonymousHubService: AnonymousHubService,
     private validationService: ValidationService,
     private stateService: StateService,
-    private loginService: LoginService,
+    private rememberEmailService: RememberEmailService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authReqCryptoService: AuthRequestCryptoServiceAbstraction,
     private loginStrategyService: LoginStrategyServiceAbstraction,
@@ -95,7 +95,7 @@ export class LoginViaAuthRequestComponent
     // Why would the existence of the email depend on the navigation?
     const navigation = this.router.getCurrentNavigation();
     if (navigation) {
-      this.email = this.loginService.getEmail();
+      this.email = this.rememberEmailService.getEmail();
     }
 
     //gets signalR push notification
@@ -151,7 +151,7 @@ export class LoginViaAuthRequestComponent
     } else {
       // Standard auth request
       // TODO: evaluate if we can remove the setting of this.email in the constructor
-      this.email = this.loginService.getEmail();
+      this.email = this.rememberEmailService.getEmail();
 
       if (!this.email) {
         this.platformUtilsService.showToast("error", null, this.i18nService.t("userEmailMissing"));
@@ -473,10 +473,10 @@ export class LoginViaAuthRequestComponent
   }
 
   async setRememberEmailValues() {
-    const rememberEmail = this.loginService.getRememberEmail();
-    const rememberedEmail = this.loginService.getEmail();
-    await this.loginService.setRememberedEmail(rememberEmail ? rememberedEmail : null);
-    this.loginService.clearValues();
+    const rememberEmail = this.rememberEmailService.getRememberEmail();
+    const rememberedEmail = this.rememberEmailService.getEmail();
+    await this.rememberEmailService.setRememberedEmail(rememberEmail ? rememberedEmail : null);
+    this.rememberEmailService.clearValues();
   }
 
   private async handleSuccessfulLoginNavigation() {

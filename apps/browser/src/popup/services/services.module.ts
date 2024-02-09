@@ -34,12 +34,12 @@ import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/ab
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { RememberEmailService as RememberEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
-import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { RememberEmailService } from "@bitwarden/common/auth/services/remember-email.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -513,8 +513,8 @@ function getBgService<T>(service: keyof MainBackground) {
       useClass: BrowserFileDownloadService,
     },
     {
-      provide: LoginServiceAbstraction,
-      useClass: LoginService,
+      provide: RememberEmailServiceAbstraction,
+      useClass: RememberEmailService,
       deps: [StateProvider],
     },
     {

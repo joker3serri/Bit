@@ -1,4 +1,4 @@
-export abstract class LoginService {
+export abstract class RememberEmailService {
   getEmail: () => string;
   getRememberEmail: () => boolean;
   setEmail: (value: string) => void;
