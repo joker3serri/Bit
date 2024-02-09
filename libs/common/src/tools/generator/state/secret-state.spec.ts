@@ -1,5 +1,4 @@
 import { mock } from "jest-mock-extended";
-import { firstValueFrom } from "rxjs";
 
 import { FakeStateProvider, makeEncString, mockAccountServiceWith } from "../../../../spec";
 import { KeyDefinition, GENERATOR_DISK, GENERATOR_MEMORY } from "../../../platform/state";
@@ -61,8 +60,14 @@ describe("UserEncryptor", () => {
       const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
       const value = { foo: true, bar: false };
 
+      let result = null;
+      state.state$.subscribe((fb) => {
+        result = fb;
+      });
+
       await state.update(() => value);
-      const result = await firstValueFrom(state.state$);
+      // await instead of subscribe also fails
+      //const result = await firstValueFrom(state.state$);
 
       expect(result).toEqual(value);
     });
