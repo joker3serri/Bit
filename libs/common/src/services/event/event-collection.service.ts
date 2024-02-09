@@ -45,13 +45,16 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
       map((orgs) => orgs?.filter((o) => o.useEvents)?.map((x) => x.id) ?? []),
     );
 
-    // Only update if the user is authorized, the cipher is the user's organizations,
-    // and if an organizationId is provided it must be one of the user's orgs.
+    // Update if:
+    // - User is authorized
+    // - If the cipher is null there must be an organization id provided.
+    //   Or if the cipher is present it must be in the user's org list.
+    // - If the organization id is provided it must be in the user's org list.
     const shouldUpdate$ = zip(userAuth$, orgIds$, from(this.cipherService.get(cipherId))).pipe(
       map(
         ([userAuth, orgs, cipher]) =>
           userAuth &&
-          orgs.includes(cipher?.organizationId) &&
+          ((cipher == null && organizationId != null) || orgs.includes(cipher?.organizationId)) &&
           (organizationId == null || orgs.includes(organizationId)),
       ),
     );
