@@ -6,6 +6,7 @@ import { EncString } from "../../../platform/models/domain/enc-string";
 import { UserId } from "../../../types/guid";
 
 import { SecretClassifier } from "./secret-classifier";
+import { UserEncryptor } from "./user-encryptor.abstraction";
 import { UserKeyEncryptorOptions } from "./user-key-encryptor-options";
 
 const SecretPadding = Object.freeze({
@@ -23,7 +24,10 @@ const SecretPadding = Object.freeze({
 /** A classification strategy that protects a type's secrets by encrypting them
  *  with a `UserKey`
  */
-export class UserKeyEncryptor<State extends object, Disclosed, Secret> {
+export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends UserEncryptor<
+  State,
+  Disclosed
+> {
   /** Instantiates the encryptor
    *  @param encryptService protects properties of `Secret`.
    *  @param keyService looks up the user key when protecting data.
@@ -35,15 +39,11 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> {
     private readonly keyService: CryptoService,
     private readonly classifier: SecretClassifier<State, Disclosed, Secret>,
     private readonly options: UserKeyEncryptorOptions = SecretPadding,
-  ) {}
+  ) {
+    super();
+  }
 
-  /** Protects secrets in `value` using the user's key.
-   *  @param value the object to protect. This object is mutated during encryption.
-   *  @returns a promise that resolves to a tuple. The tuple's first property contains
-   *    the encrypted secret and whose second property contains an object w/ disclosed
-   *    properties.
-   *   @throws If `value` is `null` or `undefined`, the promise rejects with an error.
-   */
+  /** {@link UserEncryptor.encrypt} */
   async encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]> {
     if (value === undefined || value === null) {
       throw new Error("value cannot be null or undefined");
@@ -57,14 +57,7 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> {
     return [encryptedValue, classifiedValue.disclosed] as const;
   }
 
-  /** Combines protected secrets and disclosed data into a type that can be
-   *  rehydrated into a domain object.
-   *  @param secret the object to protect. This object is mutated during encryption.
-   *  @returns a promise that resolves to the jsonified state. This state *is not* a
-   *    class. It must be rehydrated first.
-   *  @throws If `secret` or `disclosed` is `null` or `undefined`, the promise
-   *    rejects with an error.
-   */
+  /** {@link UserEncryptor.decrypt} */
   async decrypt(secret: EncString, disclosed: Disclosed, userId: UserId): Promise<Jsonify<State>> {
     if (secret === undefined || secret === null) {
       throw new Error("secret cannot be null or undefined");

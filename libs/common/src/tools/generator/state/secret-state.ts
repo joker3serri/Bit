@@ -1,4 +1,4 @@
-import { concatMap, firstValueFrom, from, zip } from "rxjs";
+import { concatMap, defaultIfEmpty, filter, firstValueFrom, from, zip } from "rxjs";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
@@ -11,14 +11,14 @@ import {
 } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 
-import { UserKeyEncryptor } from "./user-key-encryptor";
+import { UserEncryptor } from "./user-encryptor.abstraction";
 
 /** Stores account-specific secrets protected by a UserKeyEncryptor. */
-export class SecretState<Plaintext extends object, Disclosed, Secret> {
+export class SecretState<Plaintext extends object, Disclosed> {
   // The constructor is private to avoid creating a circular dependency when
   // wiring the derived and secret states together.
   private constructor(
-    private readonly encryptor: UserKeyEncryptor<Plaintext, Disclosed, Secret>,
+    private readonly encryptor: UserEncryptor<Plaintext, Disclosed>,
     private readonly encrypted: SingleUserState<{ secret: string; public: Disclosed }>,
     private readonly plaintext: DerivedState<Plaintext>,
   ) {}
@@ -33,11 +33,11 @@ export class SecretState<Plaintext extends object, Disclosed, Secret> {
    *  @param provider constructs state objects.
    *  @throws when `key.stateDefinition` is backed by memory storage.
    */
-  static from<TFrom extends object, Disclosed, Secret>(
+  static from<TFrom extends object, Disclosed>(
     userId: UserId,
     key: KeyDefinition<TFrom>,
     provider: StateProvider,
-    encryptor: UserKeyEncryptor<TFrom, Disclosed, Secret>,
+    encryptor: UserEncryptor<TFrom, Disclosed>,
   ) {
     // Memory storage is already encrypted, so if the caller provides a memory store,
     // let them know they're doing it wrong.
@@ -98,12 +98,20 @@ export class SecretState<Plaintext extends object, Disclosed, Secret> {
     options: StateUpdateOptions<Plaintext, TCombine> = null,
   ): Promise<Plaintext> {
     const combined$ = options?.combineLatestWith ?? from([undefined]);
+
     const newState$ = zip(this.plaintext.state$, combined$).pipe(
+      filter(([currentState, combined]) => {
+        if (options.shouldUpdate) {
+          return options.shouldUpdate(currentState, combined);
+        } else {
+          return false;
+        }
+      }),
       concatMap(async ([currentState, combined]) => {
         // "impersonate" state storage interface
-        let newState = configureState(currentState, combined);
+        const newState = configureState(currentState, combined);
         if (newState === undefined) {
-          newState = currentState;
+          return undefined;
         }
 
         // map to storage format
@@ -115,11 +123,16 @@ export class SecretState<Plaintext extends object, Disclosed, Secret> {
 
         return newStoredState;
       }),
+      defaultIfEmpty(undefined),
     );
 
-    await this.encrypted.update((_, newState) => newState, {
-      combineLatestWith: newState$,
-    });
+    await this.encrypted.update(
+      (currentState, newState) => (newState === undefined ? currentState : newState),
+      {
+        combineLatestWith: newState$,
+        shouldUpdate: (_current, newState) => newState !== undefined,
+      },
+    );
 
     const latestValue = await firstValueFrom(this.plaintext.state$);
     return latestValue;
