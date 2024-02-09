@@ -48,31 +48,31 @@ export class OffboardingSurveyComponent {
   protected readonly reasons: Reason[] = [
     {
       value: null,
-      text: "-- Select --",
+      text: this.i18nService.t("selectPlaceholder"),
     },
     {
       value: "missing_features",
-      text: "Missing features",
+      text: this.i18nService.t("missingFeatures"),
     },
     {
       value: "switched_service",
-      text: "Moving to another tool",
+      text: this.i18nService.t("movingToAnotherTool"),
     },
     {
       value: "too_complex",
-      text: "Too difficult to use",
+      text: this.i18nService.t("tooDifficultToUse"),
     },
     {
       value: "unused",
-      text: "Not using enough",
+      text: this.i18nService.t("notUsingEnough"),
     },
     {
       value: "too_expensive",
-      text: "Too expensive",
+      text: this.i18nService.t("tooExpensive"),
     },
     {
       value: "other",
-      text: "Other",
+      text: this.i18nService.t("other"),
     },
   ];
 

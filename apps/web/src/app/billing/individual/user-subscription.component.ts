@@ -106,54 +106,17 @@ export class UserSubscriptionComponent implements OnInit {
     }
   }
 
-  cancelWithOffboardingSurvey = async () => {
-    const reference = openOffboardingSurvey(this.dialogService, {
-      data: {
-        type: "User",
-      },
-    });
+  cancel = async () => {
+    const presentUserWithOffboardingSurvey = await this.configService.getFeatureFlag<boolean>(
+      FeatureFlag.AC1607_PresentUserOffboardingSurvey,
+    );
 
-    this.cancelPromise = lastValueFrom(reference.closed);
-
-    const result = await this.cancelPromise;
-
-    if (result === OffboardingSurveyDialogResultType.Closed) {
-      return;
+    if (presentUserWithOffboardingSurvey) {
+      await this.cancelWithOffboardingSurvey();
+    } else {
+      await this.cancelWithWarning();
     }
-
-    await this.load();
   };
-
-  async cancelWithWarning() {
-    if (this.loading) {
-      return;
-    }
-
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "cancelSubscription" },
-      content: { key: "cancelConfirmation" },
-      type: "warning",
-    });
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      this.cancelPromise = this.apiService.postCancelPremium();
-      await this.cancelPromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("canceledSubscription"),
-      );
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.load();
-    } catch (e) {
-      this.logService.error(e);
-    }
-  }
 
   downloadLicense() {
     if (this.loading) {
@@ -194,6 +157,55 @@ export class UserSubscriptionComponent implements OnInit {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.load();
+    }
+  }
+
+  private cancelWithOffboardingSurvey = async () => {
+    const reference = openOffboardingSurvey(this.dialogService, {
+      data: {
+        type: "User",
+      },
+    });
+
+    this.cancelPromise = lastValueFrom(reference.closed);
+
+    const result = await this.cancelPromise;
+
+    if (result === OffboardingSurveyDialogResultType.Closed) {
+      return;
+    }
+
+    await this.load();
+  };
+
+  private async cancelWithWarning() {
+    if (this.loading) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "cancelSubscription" },
+      content: { key: "cancelConfirmation" },
+      type: "warning",
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      this.cancelPromise = this.apiService.postCancelPremium();
+      await this.cancelPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("canceledSubscription"),
+      );
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      this.load();
+    } catch (e) {
+      this.logService.error(e);
     }
   }
 
