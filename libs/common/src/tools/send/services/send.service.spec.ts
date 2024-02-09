@@ -10,6 +10,9 @@ import { EncString } from "../../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { ContainerService } from "../../../platform/services/container.service";
 import { UserKey } from "../../../types/key";
+import { SendType } from "../enums/send-type";
+import { SendFileData } from "../models/data/send-file.data";
+import { SendTextData } from "../models/data/send-text.data";
 import { SendData } from "../models/data/send.data";
 import { Send } from "../models/domain/send";
 import { SendView } from "../models/view/send.view";
@@ -99,22 +102,62 @@ describe("SendService", () => {
         subCounter++;
       });
 
+      const sendDataObject = new SendData({} as any);
+      sendDataObject.id = "1";
+      sendDataObject.name = "Test Send";
+      sendDataObject.disabled = false;
+      sendDataObject.accessCount = 2;
+      sendDataObject.accessId = "1";
+      sendDataObject.revisionDate = "2024-03-25";
+      sendDataObject.expirationDate = "2024-03-25";
+      sendDataObject.deletionDate = "2024-03-25";
+      sendDataObject.notes = "Notes!!";
+      sendDataObject.key = null;
+
       await sendService.replace({
-        "1": sendData("1", "Test Send Updated"),
+        "1": sendDataObject,
         "2": sendData("2", "Test Send 2"),
       });
 
       await sendService.replace({
-        "1": sendData("1", "Test Send Updated"),
+        "1": sendDataObject,
         "2": sendData("2", "Test Send 4"),
       });
 
+      sendDataObject.notes = "new notes";
+
       await sendService.replace({
-        "1": sendData("1", "Test Send Updated Updated"),
+        "1": sendDataObject,
         "2": sendData("2", "Test Send 3"),
       });
 
-      expect(subCounter).toBe(3);
+      sendDataObject.type = SendType.File;
+      sendDataObject.file = new SendFileData();
+
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      sendDataObject.type = SendType.Text;
+      sendDataObject.text = new SendTextData();
+      sendDataObject.text.text = "new text";
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      sendDataObject.key = "key";
+      await sendService.replace({
+        "1": sendDataObject,
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      await sendService.replace({
+        "2": sendData("2", "Test Send 3"),
+      });
+
+      expect(subCounter).toBe(7);
     });
   });
 

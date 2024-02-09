@@ -119,7 +119,6 @@ export class SendService implements InternalSendServiceAbstraction {
   get$(id: string): Observable<Send | undefined> {
     return this.sends$.pipe(
       distinctUntilChanged((oldSends, newSends) => {
-        const propertiesChanged: string[] = [];
         const oldSend = oldSends.find((oldSend) => oldSend.id === id);
         const newSend = newSends.find((newSend) => newSend.id === id);
         if (!oldSend || !newSend) {
@@ -129,6 +128,14 @@ export class SendService implements InternalSendServiceAbstraction {
 
         // Compare each property of the old and new Send objects
         const allPropertiesSame = Object.keys(newSend).every((key) => {
+          if (
+            (oldSend[key as keyof Send] != null && newSend[key as keyof Send] === null) ||
+            (oldSend[key as keyof Send] === null && newSend[key as keyof Send] != null)
+          ) {
+            // If a key from either old or new send is not found, and the key from the other send has a value, consider them different
+            return false;
+          }
+
           switch (key) {
             case "name":
             case "notes":
@@ -136,6 +143,7 @@ export class SendService implements InternalSendServiceAbstraction {
               if (oldSend[key] === null && newSend[key] === null) {
                 return true;
               }
+
               return oldSend[key].encryptedString === newSend[key].encryptedString;
             case "text":
               if (oldSend[key] === null || oldSend[key].text === null) {
@@ -154,7 +162,6 @@ export class SendService implements InternalSendServiceAbstraction {
               return oldSend[key].getTime() === newSend[key].getTime();
             default:
               // For other properties, compare directly
-              propertiesChanged.push(key);
               return oldSend[key as keyof Send] === newSend[key as keyof Send];
           }
         });
