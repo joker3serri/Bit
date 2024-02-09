@@ -5,8 +5,8 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 
 import { IconModule } from "../../../../components/src/icon";
 import { TypographyModule } from "../../../../components/src/typography";
-
-import { BitwardenLogo } from "./bitwarden-logo";
+import { BitwardenLogo } from "../../icons/bitwarden-logo";
+import { IconLock } from "../../icons/icon-lock";
 
 @Component({
   standalone: true,
@@ -19,7 +19,7 @@ export class AnonLayoutComponent {
   @Input() subtitle: string;
   @Input() lockIcon: boolean;
 
-  protected logo = BitwardenLogo;
+  protected readonly Icons = { BitwardenLogo, IconLock };
   protected version: string;
   protected year = "2023";
 
