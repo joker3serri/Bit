@@ -61,7 +61,7 @@ export async function stateServiceFactory(
         opts.stateServiceOptions.useAccountCache,
       ),
   );
-  // TODO: If we run migration through a chrome installed/updated event we can turn on running migrations
+  // TODO: If we run migration through a chrome installed/updated event we can turn off running migrations
   await service.init();
   return service;
 }
