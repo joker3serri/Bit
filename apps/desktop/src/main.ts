@@ -271,22 +271,20 @@ export class Main {
         const receivedState = url.searchParams.get("state");
         let message = "";
 
-        if (code == null) {
+        if (code === null) {
           return;
         }
 
         if (s.indexOf("bitwarden://duo-callback") === 0) {
           message = "duoCallback";
+        } else if (receivedState === null) {
+          return;
         }
 
-        if (receivedState != null) {
-          if (s.indexOf("bitwarden://import-callback-lp") === 0) {
-            message = "importCallbackLastPass";
-          } else if (s.indexOf("bitwarden://sso-callback") === 0) {
-            message = "ssoCallback";
-          } else {
-            return;
-          }
+        if (s.indexOf("bitwarden://import-callback-lp") === 0) {
+          message = "importCallbackLastPass";
+        } else if (s.indexOf("bitwarden://sso-callback") === 0) {
+          message = "ssoCallback";
         }
 
         this.messagingService.send(message, { code: code, state: receivedState });

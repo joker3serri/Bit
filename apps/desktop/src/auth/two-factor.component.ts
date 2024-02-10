@@ -1,6 +1,5 @@
 import { Component, Inject, NgZone, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -34,6 +33,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   twoFactorOptionsModal: ViewContainerRef;
 
   showingModal = false;
+  duoCallbackSubscriptionEnabled: boolean = false;
 
   constructor(
     loginStrategyService: LoginStrategyServiceAbstraction,
@@ -119,10 +119,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     }
   }
 
-  duoResultSubscription: Subscription;
-
   protected override setupDuoResultListener() {
-    if (!this.duoResultSubscription) {
+    if (!this.duoCallbackSubscriptionEnabled) {
       this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
         await this.ngZone.run(async () => {
           if (message.command === "duoCallback") {
@@ -131,10 +129,14 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           }
         });
       });
+      this.duoCallbackSubscriptionEnabled = true;
     }
   }
 
   ngOnDestroy(): void {
-    this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+    if (this.duoCallbackSubscriptionEnabled) {
+      this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+      this.duoCallbackSubscriptionEnabled = false;
+    }
   }
 }

@@ -1,15 +1,14 @@
-<div id="login-page" class="page-top-padding">
+<div class="page-top-padding">
   <form
     #form
     (ngSubmit)="submit()"
     [appApiAction]="formPromise"
     class="container"
-    ngNativeValidate
     autocomplete="off"
     id="two-factor-page"
     attr.aria-hidden="{{ showingModal }}"
   >
-    <div id="content" class="content" style="padding-top: 50px">
+    <div id="content" class="content tw-mt-5">
       <img class="logo-image" alt="Bitwarden" />
       <p class="lead text-center mb-4">{{ title }}</p>
       <!-- Providers -->
@@ -57,7 +56,11 @@
         <!-- Yubikey -->
         <ng-container *ngIf="selectedProviderType === providerType.Yubikey">
           <p>{{ "insertYubiKey" | i18n }}</p>
-          <img src="../../images/yubikey.jpg" alt="" />
+          <picture>
+            <source srcset="images/yubikey.avif" type="image/avif" />
+            <source srcset="images/yubikey.webp" type="image/webp" />
+            <img src="images/yubikey.jpg" class="rounded img-fluid mb-3" alt="" />
+          </picture>
           <div class="box last">
             <div class="box-content">
               <div class="box-content-row" appBoxRow>
@@ -78,8 +81,10 @@
 
         <!-- WebAuthn -->
         <ng-container *ngIf="selectedProviderType === providerType.WebAuthn">
-          <div id="web-authn-frame">
-            <iframe id="webauthn_iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+          <div class="tw-flex tw-justify-center">
+            <div id="web-authn-frame">
+              <iframe id="webauthn_iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
           </div>
         </ng-container>
 
@@ -143,28 +148,25 @@
 
       <!-- Submit Buttons -->
       <div class="buttons with-rows">
-        <div class="buttons-row">
-          <button
-            type="submit"
-            class="btn primary block"
-            [disabled]="form.loading"
-            *ngIf="selectedProviderType != null && !isDuoProvider"
-          >
-            <span [hidden]="form.loading"
-              ><i class="bwi bwi-sign-in" aria-hidden="true"></i> {{ "continue" | i18n }}</span
-            >
-            <i class="bwi bwi-spinner bwi-spin" [hidden]="!form.loading" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="buttons-row">
+        <div
+          class="buttons-row"
+          *ngIf="duoFrameless && selectedProviderType != null && isDuoProvider"
+        >
           <button
             (click)="launchDuoFrameless()"
             type="button"
             class="btn primary block"
             [disabled]="form.loading"
-            *ngIf="duoFrameless && selectedProviderType != null && isDuoProvider"
           >
             <b> {{ "launchDuo" | i18n }} </b>
+          </button>
+        </div>
+        <div class="buttons-row" *ngIf="selectedProviderType != null && !isDuoProvider">
+          <button type="submit" class="btn primary block" [disabled]="form.loading">
+            <span [hidden]="form.loading"
+              ><i class="bwi bwi-sign-in" aria-hidden="true"></i> {{ "continue" | i18n }}</span
+            >
+            <i class="bwi bwi-spinner bwi-spin" [hidden]="!form.loading" aria-hidden="true"></i>
           </button>
         </div>
         <div class="buttons-row">
