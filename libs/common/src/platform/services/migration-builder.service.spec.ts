@@ -27,6 +27,30 @@ describe("MigrationBuilderService", () => {
     account1: {},
   };
 
+  const nullCommonAccountProperties = {
+    stateVersion: startingStateVersion,
+    authenticatedAccounts: ["account1"],
+    account1: {
+      data: <object>null,
+      keys: <object>null,
+      profile: <object>null,
+      settings: <object>null,
+      tokens: <object>null,
+    },
+  };
+
+  const emptyCommonAccountProperties = {
+    stateVersion: startingStateVersion,
+    authenticatedAccounts: ["account1"],
+    account1: {
+      data: {},
+      keys: {},
+      profile: {},
+      settings: {},
+      tokens: {},
+    },
+  };
+
   const nullGlobal = {
     stateVersion: startingStateVersion,
     global: <object>null,
@@ -46,6 +70,8 @@ describe("MigrationBuilderService", () => {
     noAccounts,
     nullAndUndefinedAccounts,
     emptyAccountObject,
+    nullCommonAccountProperties,
+    emptyCommonAccountProperties,
     nullGlobal,
     undefinedGlobal,
     emptyGlobalObject,
