@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 
-import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
+import { AvatarService } from "@bitwarden/common/abstractions/avatar.service";
 
 import { SharedModule } from "../shared";
 
@@ -32,11 +32,11 @@ export class DynamicAvatarComponent implements OnDestroy {
   color$: Observable<string | null>;
   private destroy$ = new Subject<void>();
 
-  constructor(private accountUpdateService: AvatarUpdateService) {
+  constructor(private avatarService: AvatarService) {
     if (this.text) {
       this.text = this.text.toUpperCase();
     }
-    this.color$ = this.accountUpdateService.avatarUpdate$;
+    this.color$ = this.avatarService.avatarUpdate$;
   }
 
   async ngOnDestroy() {

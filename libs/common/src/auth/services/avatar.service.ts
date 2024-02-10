@@ -1,12 +1,12 @@
 import { BehaviorSubject, Observable } from "rxjs";
 
-import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "../../abstractions/account/avatar-update.service";
 import { ApiService } from "../../abstractions/api.service";
+import { AvatarService as AvatarServiceAbstraction } from "../../abstractions/avatar.service";
 import { UpdateAvatarRequest } from "../../models/request/update-avatar.request";
 import { ProfileResponse } from "../../models/response/profile.response";
 import { StateService } from "../../platform/abstractions/state.service";
 
-export class AvatarUpdateService implements AvatarUpdateServiceAbstraction {
+export class AvatarService implements AvatarServiceAbstraction {
   private _avatarUpdate$ = new BehaviorSubject<string | null>(null);
   avatarUpdate$: Observable<string | null> = this._avatarUpdate$.asObservable();
 

@@ -3,7 +3,7 @@ import { RouterModule } from "@angular/router";
 import { applicationConfig, Meta, moduleMetadata, Story } from "@storybook/angular";
 import { BehaviorSubject } from "rxjs";
 
-import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
+import { AvatarService } from "@bitwarden/common/abstractions/avatar.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -72,12 +72,12 @@ export default {
           } as Partial<SettingsService>,
         },
         {
-          provide: AvatarUpdateService,
+          provide: AvatarService,
           useValue: {
             async loadColorFromState() {
               return "#FF0000";
             },
-          } as Partial<AvatarUpdateService>,
+          } as Partial<AvatarService>,
         },
         {
           provide: TokenService,

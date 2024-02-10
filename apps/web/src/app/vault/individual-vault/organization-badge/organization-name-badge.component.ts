@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from "@angular/core";
 
-import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
+import { AvatarService } from "@bitwarden/common/abstractions/avatar.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -24,7 +24,7 @@ export class OrganizationNameBadgeComponent implements OnChanges {
 
   constructor(
     private i18nService: I18nService,
-    private avatarService: AvatarUpdateService,
+    private avatarService: AvatarService,
     private tokenService: TokenService,
   ) {}
 
