@@ -94,7 +94,7 @@ export const WithIcon: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <auth-anon-layout [title]="title" [subtitle]="subtitle" [lockIcon]="true">
+      <auth-anon-layout [title]="title" [subtitle]="subtitle" icon="lock">
         <div>
           <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
           <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>

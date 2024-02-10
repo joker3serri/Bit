@@ -3,13 +3,10 @@
 >
   <div class="tw-text-center">
     <div class="tw-px-8">
-      <div *ngIf="lockIcon" class="tw-mb-8">
-        <bit-icon [icon]="Icons.IconLock"></bit-icon>
+      <div *ngIf="icon" class="tw-mb-8">
+        <bit-icon [icon]="iconType"></bit-icon>
       </div>
-      <bit-icon
-        [icon]="Icons.BitwardenLogo"
-        class="tw-mx-auto tw-block tw-max-w-72 sm:tw-max-w-xs"
-      ></bit-icon>
+      <bit-icon [icon]="logo" class="tw-mx-auto tw-block tw-max-w-72 sm:tw-max-w-xs"></bit-icon>
     </div>
     <h1 *ngIf="title" bitTypography="h3" class="tw-mt-8 sm:tw-text-2xl">
       {{ title }}
