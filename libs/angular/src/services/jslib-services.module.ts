@@ -8,7 +8,6 @@ import {
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
-import { AvatarService as AccountUpdateServiceAbstraction } from "@bitwarden/common/abstractions/avatar.service";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
@@ -49,6 +48,7 @@ import {
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
@@ -401,9 +401,9 @@ import { ModalService } from "./modal.service";
       useExisting: AccountServiceAbstraction,
     },
     {
-      provide: AccountUpdateServiceAbstraction,
+      provide: AvatarServiceAbstraction,
       useClass: AvatarService,
-      deps: [ApiServiceAbstraction, StateServiceAbstraction],
+      deps: [ApiServiceAbstraction, StateProvider],
     },
     { provide: LogService, useFactory: () => new ConsoleLogService(false) },
     {
@@ -496,6 +496,7 @@ import { ModalService } from "./modal.service";
         FolderApiServiceAbstraction,
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
+        AvatarServiceAbstraction,
         StateProvider,
         LOGOUT_CALLBACK,
       ],

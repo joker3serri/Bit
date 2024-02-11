@@ -484,8 +484,8 @@ export abstract class StateService<T extends Account = Account> {
    */
   setServerConfig: (value: ServerConfigData, options?: StorageOptions) => Promise<void>;
 
-  getAvatarColor: (options?: StorageOptions) => Promise<string | null | undefined>;
-  setAvatarColor: (value: string, options?: StorageOptions) => Promise<void>;
+  // getAvatarColor: (options?: StorageOptions) => Promise<string | null | undefined>;
+  // setAvatarColor: (value: string, options?: StorageOptions) => Promise<void>;
   getActivateAutoFillOnPageLoadFromPolicy: (
     options?: StorageOptions,
   ) => Promise<boolean | undefined>;

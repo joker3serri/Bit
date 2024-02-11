@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
-import { AvatarService } from "@bitwarden/common/abstractions/avatar.service";
+import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -35,7 +36,7 @@ export class OrganizationNameBadgeComponent implements OnChanges {
 
     if (this.isMe) {
       this.name = this.i18nService.t("me");
-      this.color = await this.avatarService.loadColorFromState();
+      this.color = await firstValueFrom(this.avatarService.avatarColor$);
       if (this.color == null) {
         const userId = await this.tokenService.getUserId();
         if (userId != null) {
