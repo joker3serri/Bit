@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Više o passwordless"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Unesi glavnu lozinku za promjenu postavki prijave pristupnim ključem."
-  },
   "creatingPasskeyLoading": {
     "message": "Stvaranje pristupnog ključa..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "Hvala na prijavi za $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Thanks for signing up for Bitwarden Secrets Manager for $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch DUO and follow the steps to finish logging in."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "DUO two-step login is required for your account."
+  },
+  "launchDuo": {
+    "message": "Launch DUO"
+  },
   "turnOn": {
     "message": "Uključi"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "Upravitelj tajni"
   },
-  "secretsManagerBeta": {
-    "message": "Beta Upravitelj tajni"
-  },
   "secretsManagerAccessDescription": {
     "message": "Uključi korisniku pristup Upravitelju tajni."
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "Potreban je odabir."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Uključi organizaciji pristup Upravitelju tajni bez naknade tijekom trajanja beta perioda. Korisnicima se može odobriti pristup beti u Članovima."
-  },
-  "secretsManagerEnable": {
-    "message": "Uključi pristup beti Upravitelja tajni"
   },
   "saPeopleWarningTitle": {
     "message": "Pristupni tokeni su još uvijek dostupni"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Start your 7-Day free trial of Bitwarden Secrets Manager for $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Sljedeće"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "Prijava uspješna!"
   },
-  "smBetaEndedDesc": {
-    "message": "Beta Upravitelja tajni završio je $BETA_ENDING_DATE$. Imaš još $DAYS$ dana za dodati Upravitelj tajni svojoj pretplati i zadržati pristup tajnim podacima. Kontaktiraj korisnički podršku za dodavanje Upravitelja tajni svojoj pretplati.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Beta završava"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Learn more about collection management"
+  },
+  "organizationInformation": {
+    "message": "Organization information"
+  },
+  "confirmationDetails": {
+    "message": "Confirmation details"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Thank you for signing up for Bitwarden Secrets Manager!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "We've sent a confirmation email to your email at "
   }
 }

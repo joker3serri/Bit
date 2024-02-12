@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "瞭解更多關於無密碼登入的資訊"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "輸入您的主密碼以修改密碼金鑰登入設定。"
-  },
   "creatingPasskeyLoading": {
     "message": "正在建立密碼金輪..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "感謝您申請 Bitwarden for $PLAN$！",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Thanks for signing up for Bitwarden Secrets Manager for $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch DUO and follow the steps to finish logging in."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "DUO two-step login is required for your account."
+  },
+  "launchDuo": {
+    "message": "Launch DUO"
+  },
   "turnOn": {
     "message": "開啟"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "Secrets Manager"
   },
-  "secretsManagerBeta": {
-    "message": "Secrets Manager Beta 版"
-  },
   "secretsManagerAccessDescription": {
     "message": "激活對 Secrets Manager 的使用者存取權限。"
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "必須選擇。"
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "在 Beta 計劃期間，啟用組織對 Secrets Manager 的存取權限是免費的。成員中的使用者可以被授予對 Beta 版的存取權限。"
-  },
-  "secretsManagerEnable": {
-    "message": "啟用 Secrets Manager Beta 版"
   },
   "saPeopleWarningTitle": {
     "message": "存取權杖依然可用"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Start your 7-Day free trial of Bitwarden Secrets Manager for $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "下一步"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "已登入！"
   },
-  "smBetaEndedDesc": {
-    "message": "Secrets Manager Beta 版已於 $BETA_ENDING_DATE$ 結束。您還剩 $DAYS$ 天時間將 Secrets Manager 新增至您的付費訂閱，以保持對 Secrets Manager 資料的存取。聯絡客戶成功團隊將 Secrets Manager 新增至您的訂閱。",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Beta 版即將結束"
-  },
   "beta": {
     "message": "Beta 版"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Learn more about collection management"
+  },
+  "organizationInformation": {
+    "message": "Organization information"
+  },
+  "confirmationDetails": {
+    "message": "Confirmation details"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Thank you for signing up for Bitwarden Secrets Manager!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "We've sent a confirmation email to your email at "
   }
 }

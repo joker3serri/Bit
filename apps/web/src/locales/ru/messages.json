@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Подробнее о беспарольном режиме"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Для изменения параметров авторизации ключом доступа введите мастер-пароль."
-  },
   "creatingPasskeyLoading": {
     "message": "Создание ключа доступа..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "Спасибо, что подписались на Bitwarden для $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Спасибо, что подписались на менеджер секретов Bitwarden для $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Запустите DUO и следуйте шагам для завершения авторизации."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Для вашего аккаунта требуется двухэтапная аутентификация DUO."
+  },
+  "launchDuo": {
+    "message": "Запустить DUO"
+  },
   "turnOn": {
     "message": "Включить"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "Менеджер секретов"
   },
-  "secretsManagerBeta": {
-    "message": "Менеджер секретов Beta"
-  },
   "secretsManagerAccessDescription": {
     "message": "Активировать доступ пользователей к менеджеру секретов."
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "Требуется выбор."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Включите доступ организации к Менеджеру секретов бесплатно во время программы бета-тестирования. Пользователям может быть предоставлен доступ к бета-версии в разделе Участники."
-  },
-  "secretsManagerEnable": {
-    "message": "Менеджер секретов Бета"
   },
   "saPeopleWarningTitle": {
     "message": "Токены доступа по-прежнему доступны"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Начните 7-дневную бесплатную пробную версию менеджера секретов Bitwarden для $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Далее"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "Вход выполнен!"
   },
-  "smBetaEndedDesc": {
-    "message": "Бета-версия Менеджера секретов завершилась $BETA_ENDING_DATE$. У вас осталось $DAYS$ дней, чтобы добавить его к своей платной подписке и сохранить доступ к данным. Чтобы добавить Менеджер секретов к подписке, обратитесь в службу поддержки клиентов.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Окончание бета-версии"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Узнайте больше об управлении коллекциями"
+  },
+  "organizationInformation": {
+    "message": "Информация об организации"
+  },
+  "confirmationDetails": {
+    "message": "Детали подтверждения"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Спасибо, что подписались на менеджер секретов Bitwarden!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "Мы отправили письмо с подтверждением на "
   }
 }

@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Dowiedz się więcej o rozwiązaniach bezhasłowych"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Wprowadź hasło główne, aby zmodyfikować ustawienia logowania za pomocą passkey."
-  },
   "creatingPasskeyLoading": {
     "message": "Tworzenie passkey..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "Dziękujemy za zarejestrowanie się do Bitwarden na $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Thanks for signing up for Bitwarden Secrets Manager for $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Uruchom DUO i wykonaj kroki, aby zakończyć logowanie."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Dwustopniowe logowanie DUO jest wymagane dla Twojego konta."
+  },
+  "launchDuo": {
+    "message": "Uruchom DUO"
+  },
   "turnOn": {
     "message": "Włącz"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "Menedżer sekretów"
   },
-  "secretsManagerBeta": {
-    "message": "Menedżer sekretów beta"
-  },
   "secretsManagerAccessDescription": {
     "message": "Aktywuj dostęp użytkownikom do menedżera sekretów."
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "Wybór jest wymagany."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Włącz dostęp organizacji do menedżera sekretów bez żadnych opłat podczas programu beta. Użytkownicy mogą uzyskać dostęp do wersji beta w sekcji użytkownicy."
-  },
-  "secretsManagerEnable": {
-    "message": "Włącz menedżer sekretów beta"
   },
   "saPeopleWarningTitle": {
     "message": "Tokeny dostępu są nadal dostępne"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Start your 7-Day free trial of Bitwarden Secrets Manager for $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Dalej"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "Zalogowano!"
   },
-  "smBetaEndedDesc": {
-    "message": "Wersja beta menedżera sekretów zakończyła się dnia $BETA_ENDING_DATE$. Pozostało Ci $DAYS$ dni, aby dodać menedżera sekretów do swojej płatnej subskrypcji i zachować dostęp do danych menedżera sekretów. Skontaktuj się z obsługą klienta, aby dodać menedżera sekretów do swojej subskrypcji.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Zakończenie testowania bety"
-  },
   "beta": {
     "message": "Wersja beta"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Dowiedz się więcej o zarządzaniu kolekcją"
+  },
+  "organizationInformation": {
+    "message": "Informacje o organizacji"
+  },
+  "confirmationDetails": {
+    "message": "Szczegóły potwierdzenia"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Thank you for signing up for Bitwarden Secrets Manager!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "Wysłaliśmy e-mail weryfikacyjny na adres "
   }
 }

@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Learn more about passwordless"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Enter your master password to modify log in with passkey settings."
-  },
   "creatingPasskeyLoading": {
     "message": "Creating passkey..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "Дзякуй за падпіску на тарыфны план Bitwarden $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Thanks for signing up for Bitwarden Secrets Manager for $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch DUO and follow the steps to finish logging in."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "DUO two-step login is required for your account."
+  },
+  "launchDuo": {
+    "message": "Launch DUO"
+  },
   "turnOn": {
     "message": "Уключыць"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "Менеджар сакрэтаў"
   },
-  "secretsManagerBeta": {
-    "message": "Менеджар сакрэтаў (бэта-версія)"
-  },
   "secretsManagerAccessDescription": {
     "message": "Актываваць доступ карыстальнікаў да менеджара сакрэтаў."
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "Неабходна выбраць."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Падчас праграмы бэта-тэсціравання плата за ўключэнне доступу арганізацыі да менеджара сакрэтаў спаганяцца не будзе. Карыстальнікі могуць даваць доступ да бэта-версіі ў раздзеле з удзельнікамі."
-  },
-  "secretsManagerEnable": {
-    "message": "Уключыць кіраванне сакрэтамі (бэта-версія)"
   },
   "saPeopleWarningTitle": {
     "message": "Токены доступу яшчэ даступны"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Start your 7-Day free trial of Bitwarden Secrets Manager for $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Далей"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "Вы ўвайшлі!"
   },
-  "smBetaEndedDesc": {
-    "message": "Перыяд бэта-тэсціравання менеджара сакрэтаў завершыцца $BETA_ENDING_DATE$. Дадайце менеджар сакрэтаў у сваю платную падпіску і захавайце доступ да даных (засталося дзён: $DAYS$). Звяжыцеся з нашай службай падтрымкі, каб дадаць менеджар сакрэтаў у сваю платную падпіску.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Завяршэнне бэта-версіі"
-  },
   "beta": {
     "message": "Бэта"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Learn more about collection management"
+  },
+  "organizationInformation": {
+    "message": "Organization information"
+  },
+  "confirmationDetails": {
+    "message": "Confirmation details"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Thank you for signing up for Bitwarden Secrets Manager!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "We've sent a confirmation email to your email at "
   }
 }

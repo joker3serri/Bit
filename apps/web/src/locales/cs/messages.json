@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Další informace o přihlášení bez hesla"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Zadejte Vaše hlavní heslo pro úpravu dvoufázového přihlášení."
-  },
   "creatingPasskeyLoading": {
     "message": "Vytváření přístupového klíče..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "Děkujeme za registraci do Bitwardenu s plánem $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Děkujeme za registraci do Správce klíčů Bitwardenu s plánem $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Spusťte DUO a pro dokončení přihlášení postupujte podle kroků."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Pro Váš účet je vyžadováno dvoufázové přihlášení DUO."
+  },
+  "launchDuo": {
+    "message": "Spustit DUO"
+  },
   "turnOn": {
     "message": "Zapnout"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "Správce tajných klíčů"
   },
-  "secretsManagerBeta": {
-    "message": "Správce tajných klíčů v programu Beta"
-  },
   "secretsManagerAccessDescription": {
     "message": "Aktivuje přístup uživatele ke správci tajných klíčů."
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "Je vyžadován výběr."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Zapněte přístup organizace ke správci tajných klíčů zdarma během programu Beta. Uživatelé mohou získat přístup k betaverzi v sekci Členové."
-  },
-  "secretsManagerEnable": {
-    "message": "Povolit program Beta pro správce tajných klíčů"
   },
   "saPeopleWarningTitle": {
     "message": "Přístupové tokeny jsou stále k dispozici"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Začněte 7denní bezplatnou zkušební verzi Správce klíšu Bitwardenu pro $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Další"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "Přihlášeno!"
   },
-  "smBetaEndedDesc": {
-    "message": "Správce klíčů beta skončil $BETA_ENDING_DATE$. Zbývá $DAYS$ dní na to, abyste si přidali aplikaci správce klíčů k placenému předplatnému a zachovali si přístup k datům správce klíčů. Kontaktujte oddělení Customer Success a přidejte si aplikaci správce klíčů do svého předplatného.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Beta končí"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Více o správě kolekce"
+  },
+  "organizationInformation": {
+    "message": "Informace o organizaci"
+  },
+  "confirmationDetails": {
+    "message": "Detaily potvrzení"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Děkujeme za registraci do Správce klíčů Bitwardenu!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "Potvrzovací e-mail byl odeslán na "
   }
 }

@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "パスワードレスの詳細"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "パスキー設定でのログインを変更するには、マスターパスワードを入力してください。"
-  },
   "creatingPasskeyLoading": {
     "message": "パスキーを作成中..."
   },
@@ -2524,6 +2521,15 @@
   },
   "trialThankYou": {
     "message": "$PLAN$ に Bitwarden を登録していただきありがとうございます！",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "$PLAN$ の Bitwarden シークレットマネージャーに登録していただきありがとうございます！",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -5909,6 +5915,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "ログインを完了するには DUO を起動し手順に従ってください。"
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "アカウントには DUO 二段階認証が必要です。"
+  },
+  "launchDuo": {
+    "message": "DUO を起動"
+  },
   "turnOn": {
     "message": "オンにする"
   },
@@ -6850,9 +6865,6 @@
   "secretsManager": {
     "message": "シークレットマネージャー"
   },
-  "secretsManagerBeta": {
-    "message": "ベータ版シークレットマネージャー"
-  },
   "secretsManagerAccessDescription": {
     "message": "シークレットマネージャーへのユーザーのアクセスを有効にします。"
   },
@@ -6955,12 +6967,6 @@
   },
   "selectionIsRequired": {
     "message": "選択が必要です。"
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "ベータプログラム中はシークレットマネージャーへの組織アクセスを無償で有効にします。ユーザーはメンバーのベータ版へのアクセスを許可できます。"
-  },
-  "secretsManagerEnable": {
-    "message": "ベータ版のシークレットマネージャーを有効化"
   },
   "saPeopleWarningTitle": {
     "message": "アクセストークンはまだ利用可能です"
@@ -7234,6 +7240,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "$ORG$ での Bitwarden シークレットマネージャーの 7 日間無料トライアルを開始",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "次へ"
   },
@@ -7395,22 +7410,6 @@
   "loggedInExclamation": {
     "message": "ログインしました!"
   },
-  "smBetaEndedDesc": {
-    "message": "シークレットマネージャーベータは$BETA_ENDING_DATE$で終了しました。シークレットマネージャーを有料サブスクリプションに追加し、シークレットマネージャーのデータへのアクセスを維持するには、$DAYS$日間の猶予があります。シークレットマネージャーをサブスクリプションに追加するには、カスタマーサクセスまでお問い合わせください。",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "ベータ終了"
-  },
   "beta": {
     "message": "ベータ"
   },
@@ -7508,5 +7507,17 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "コレクション管理の詳細はこちら"
+  },
+  "organizationInformation": {
+    "message": "組織情報"
+  },
+  "confirmationDetails": {
+    "message": "詳細の確認"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Bitwarden シークレットマネージャーに登録していただきありがとうございます！"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "あなたのメールアドレスに確認メールを送信しました："
   }
 }
