@@ -3,9 +3,6 @@ import * as child_process from "child_process";
 import { ClientType, DeviceType } from "@bitwarden/common/enums";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-// eslint-disable-next-line
-const open = require("open");
-
 export class CliPlatformUtilsService implements PlatformUtilsService {
   clientType: ClientType;
 
@@ -82,7 +79,7 @@ export class CliPlatformUtilsService implements PlatformUtilsService {
     if (process.platform === "linux") {
       child_process.spawnSync("xdg-open", [uri]);
     } else {
-      open(uri);
+      import("open").then((open) => open.default(uri)).catch(() => {});
     }
   }
 
