@@ -9,6 +9,7 @@ import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -85,6 +86,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected twoFactorService: TwoFactorService,
     protected appIdService: AppIdService,
     protected loginService: LoginService,
+    protected ssoLoginService: SsoLoginServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
   ) {
     super(environmentService, i18nService, platformUtilsService);
@@ -280,7 +282,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     // Save off the OrgSsoIdentifier for use in the TDE flows
     // - TDE login decryption options component
     // - Browser SSO on extension open
-    await this.stateService.setUserSsoOrganizationIdentifier(this.orgIdentifier);
+    await this.ssoLoginService.setActiveUserOrganizationSsoIdentifier(this.orgIdentifier);
     this.loginService.clearValues();
 
     // note: this flow affects both TDE & standard users

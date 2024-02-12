@@ -352,7 +352,7 @@ export class Main {
 
     this.providerService = new ProviderService(this.stateService);
 
-    this.organizationService = new OrganizationService(this.stateService);
+    this.organizationService = new OrganizationService(this.stateService, this.stateProvider);
 
     this.organizationUserService = new OrganizationUserServiceImplementation(this.apiService);
 
@@ -455,6 +455,7 @@ export class Main {
       this.i18nService,
       this.cipherService,
       this.stateService,
+      this.stateProvider,
     );
 
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
@@ -519,6 +520,7 @@ export class Main {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
+      this.stateProvider,
       async (expired: boolean) => await this.logout(),
     );
 
