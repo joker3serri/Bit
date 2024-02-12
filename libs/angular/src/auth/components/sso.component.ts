@@ -197,10 +197,6 @@ export class SsoComponent {
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const authResult = await this.formPromise;
 
-      const userDecryptionOpts = await firstValueFrom(
-        this.userDecryptionOptionsService.userDecryptionOptions$,
-      );
-
       if (authResult.requiresTwoFactor) {
         return await this.handleTwoFactorRequired(orgSsoIdentifier);
       }
@@ -220,6 +216,11 @@ export class SsoComponent {
         // Weak password is not a valid scenario here b/c we cannot have evaluated a MP yet
         return await this.handleForcePasswordReset(orgSsoIdentifier);
       }
+
+      // must come after 2fa check since user decryption options aren't available if 2fa is required
+      const userDecryptionOpts = await firstValueFrom(
+        this.userDecryptionOptionsService.userDecryptionOptions$,
+      );
 
       const tdeEnabled = await this.isTrustedDeviceEncEnabled(
         userDecryptionOpts.trustedDeviceOption,
