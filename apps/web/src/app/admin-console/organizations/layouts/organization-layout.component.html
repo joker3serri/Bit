@@ -1,5 +1,7 @@
 <app-navbar></app-navbar>
-<app-payment-method-banners *ngIf="false"></app-payment-method-banners>
+<app-payment-method-warning-banners
+  *ngIf="showPaymentMethodWarningBanners$ | async"
+></app-payment-method-warning-banners>
 <div class="org-nav !tw-h-32" *ngIf="organization$ | async as organization">
   <div class="container d-flex">
     <div class="d-flex flex-column">

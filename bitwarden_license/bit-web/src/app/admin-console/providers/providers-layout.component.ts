@@ -3,6 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction as ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 @Component({
   selector: "providers-layout",
@@ -13,9 +15,15 @@ export class ProvidersLayoutComponent {
   provider: Provider;
   private providerId: string;
 
+  protected showPaymentMethodWarningBanners$ = this.configService.getFeatureFlag$(
+    FeatureFlag.ShowPaymentMethodWarningBanners,
+    false,
+  );
+
   constructor(
     private route: ActivatedRoute,
     private providerService: ProviderService,
+    private configService: ConfigService,
   ) {}
 
   ngOnInit() {

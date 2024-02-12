@@ -14,6 +14,7 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { PaymentMethodWarningServiceAbstraction as PaymentMethodWarningService } from "@bitwarden/common/billing/abstractions/payment-method-warning-service.abstraction";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -82,6 +83,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private keyConnectorService: KeyConnectorService,
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
+    private paymentMethodWarningService: PaymentMethodWarningService,
   ) {}
 
   ngOnInit() {
@@ -265,6 +267,7 @@ export class AppComponent implements OnDestroy, OnInit {
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
       this.keyConnectorService.clear(),
+      this.paymentMethodWarningService.clear(),
     ]);
 
     this.searchService.clearIndex();

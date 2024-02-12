@@ -1,4 +1,6 @@
 <app-navbar></app-navbar>
-<app-payment-method-banners *ngIf="false"></app-payment-method-banners>
+<app-payment-method-warning-banners
+  *ngIf="showPaymentMethodWarningBanners$ | async"
+></app-payment-method-warning-banners>
 <router-outlet></router-outlet>
 <app-footer></app-footer>

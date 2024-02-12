@@ -3,7 +3,6 @@ import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { OrganizationBillingServiceAbstraction as OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service";
-import { PlanType } from "@bitwarden/common/billing/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { VerticalStepperComponent } from "../../trial-initiation/vertical-stepper/vertical-stepper.component";
@@ -53,13 +52,12 @@ export class SecretsManagerTrialFreeStepperComponent {
   }
 
   async createOrganization(): Promise<void> {
-    const response = await this.organizationBillingService.startFree({
+    const response = await this.organizationBillingService.startFreeOrganization({
       organization: {
         name: this.formGroup.get("name").value,
         billingEmail: this.formGroup.get("email").value,
       },
       plan: {
-        type: PlanType.Free,
         subscribeToSecretsManager: true,
         isFromSecretsManagerTrial: true,
       },
