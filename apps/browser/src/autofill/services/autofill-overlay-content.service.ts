@@ -47,7 +47,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   private bodyElementMutationObserver: MutationObserver;
   private documentElementMutationObserver: MutationObserver;
   private mutationObserverIterations = 0;
-  private mutationObserverIterationsResetTimeout: NodeJS.Timeout;
+  private mutationObserverIterationsResetTimeout: number;
   private autofillFieldKeywordsMap: WeakMap<AutofillField, string> = new WeakMap();
   private eventHandlersMemo: { [key: string]: EventListener } = {};
   private readonly customElementDefaultStyles: Partial<CSSStyleDeclaration> = {
@@ -1065,7 +1065,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     this.mutationObserverIterationsResetTimeout = setTimeout(
       () => (this.mutationObserverIterations = 0),
       2000,
-    );
+    ) as unknown as number;
 
     if (this.mutationObserverIterations > 100) {
       clearTimeout(this.mutationObserverIterationsResetTimeout);

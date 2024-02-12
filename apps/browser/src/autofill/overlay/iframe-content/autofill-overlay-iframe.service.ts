@@ -15,7 +15,7 @@ class AutofillOverlayIframeService implements AutofillOverlayIframeServiceInterf
   private iframeMutationObserver: MutationObserver;
   private iframe: HTMLIFrameElement;
   private ariaAlertElement: HTMLDivElement;
-  private ariaAlertTimeout: NodeJS.Timeout;
+  private ariaAlertTimeout: number;
   private iframeStyles: Partial<CSSStyleDeclaration> = {
     all: "initial",
     position: "fixed",
