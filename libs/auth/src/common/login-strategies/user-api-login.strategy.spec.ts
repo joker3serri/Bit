@@ -13,19 +13,16 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { FakeGlobalStateProvider, FakeGlobalState } from "@bitwarden/common/spec";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
-import { CACHE_KEY } from "../services/login-strategies/login-strategy.state";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { UserApiLoginStrategy, UserApiLoginStrategyData } from "./user-api-login.strategy";
 
 describe("UserApiLoginStrategy", () => {
-  let stateProvider: FakeGlobalStateProvider;
-  let cache: FakeGlobalState<UserApiLoginStrategyData>;
+  let cache: UserApiLoginStrategyData;
 
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
@@ -48,9 +45,6 @@ describe("UserApiLoginStrategy", () => {
   const apiClientSecret = "API_CLIENT_SECRET";
 
   beforeEach(async () => {
-    stateProvider = new FakeGlobalStateProvider();
-    cache = stateProvider.getFake(CACHE_KEY) as FakeGlobalState<UserApiLoginStrategyData>;
-
     cryptoService = mock<CryptoService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
