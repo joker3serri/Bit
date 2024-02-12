@@ -19,7 +19,7 @@ import { StateDefinition } from "./state-definition";
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
 
-export const AVATAR_DISK = new StateDefinition("avatar", "disk");
+export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-local" });
 
 export const BILLING_BANNERS_DISK = new StateDefinition("billingBanners", "disk");
 
