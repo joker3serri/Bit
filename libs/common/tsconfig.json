@@ -1,5 +1,11 @@
 {
   "extends": "../shared/tsconfig.libs",
-  "include": ["src", "spec", "./custom-matchers.d.ts"],
+  "include": [
+    "src",
+    "spec",
+    "./custom-matchers.d.ts",
+    "../../apps/browser/src/vault/services/vault-browser",
+    "../../apps/browser/src/vault/services/vault-browser-state.service.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
