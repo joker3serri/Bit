@@ -72,25 +72,6 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     this.checkForBrowserExtension();
   }
 
-  checkForBrowserExtension() {
-    if (this.showOnboarding) {
-      window.postMessage({ command: "checkIfBWExtensionInstalled" });
-      window.addEventListener("message", (event) => this.getMessages(event));
-    }
-  }
-
-  async getMessages(event: any) {
-    if (event.data.command === "hasBWInstalled" && this.showOnboarding) {
-      const currentTasks = await firstValueFrom(this.onboardingTasks$);
-      const updatedTasks = {
-        createAccount: currentTasks.createAccount,
-        importData: currentTasks.importData,
-        installExtension: true,
-      };
-      await this.saveCompletedTasks(updatedTasks);
-    }
-  }
-
   async ngOnChanges(changes: SimpleChanges) {
     if (this.showOnboarding && changes?.ciphers) {
       const currentTasks = await firstValueFrom(this.onboardingTasks$);
@@ -106,6 +87,25 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  checkForBrowserExtension() {
+    if (this.showOnboarding) {
+      window.postMessage({ command: "checkIfBWExtensionInstalled" });
+      window.addEventListener("message", (event) => this.getMessages(event));
+    }
+  }
+
+  async getMessages(event: any) {
+    if (event.data.command === "hasBWInstalled" && this.showOnboarding) {
+      const currentTasks = await firstValueFrom(this.onboardingTasks$);
+      const updatedTasks = {
+        createAccount: currentTasks.createAccount,
+        importData: currentTasks.importData,
+        installExtension: true,
+      };
+      await this.vaultOnboardingService.setVaultOnboardingTasks(updatedTasks);
+    }
   }
 
   async checkCreationDate() {
