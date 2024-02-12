@@ -42,7 +42,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
   isNewAccount: boolean;
   private readonly onboardingReleaseDate = new Date("2024-01-01");
-  showOnboardingAccess: Observable<boolean>;
+  showOnboardingAccess$: Observable<boolean>;
 
   protected currentTasks: VaultOnboardingTasks;
 
@@ -59,7 +59,10 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    await this.checkOnboardingFlag();
+    this.showOnboardingAccess$ = await this.configService.getFeatureFlag$<boolean>(
+      FeatureFlag.VaultOnboarding,
+      false,
+    );
     this.onboardingTasks$ = this.vaultOnboardingService.vaultOnboardingState$;
     await this.setOnboardingTasks();
     this.setInstallExtLink();
@@ -101,13 +104,6 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  async checkOnboardingFlag() {
-    this.showOnboardingAccess = await this.configService.getFeatureFlag$<boolean>(
-      FeatureFlag.VaultOnboarding,
-      false,
-    );
   }
 
   async checkCreationDate() {
@@ -174,13 +170,14 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/";
     } else if (this.platformUtilsService.isSafari()) {
       this.extensionUrl = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
-    }
-  }
-
-  navigateToImport() {
-    if (!this.isIndividualPolicyVault) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["tools/import"]);
+    } else if (this.platformUtilsService.isOpera()) {
+      this.extensionUrl =
+        "https://addons.opera.com/extensions/details/bitwarden-free-password-manager/";
+    } else if (this.platformUtilsService.isEdge()) {
+      this.extensionUrl =
+        "https://microsoftedge.microsoft.com/addons/detail/jbkfoedolllekgbhcbcoahefnbanhhlh";
+    } else {
+      this.extensionUrl = "https://bitwarden.com/download/#downloads-web-browser";
     }
   }
 

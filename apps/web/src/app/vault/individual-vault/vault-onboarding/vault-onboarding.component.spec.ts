@@ -143,18 +143,6 @@ describe("VaultOnboardingComponent", () => {
     });
   });
 
-  describe("navigateToImport", () => {
-    it("should navigate to tools/import when individualPolicy is false", () => {
-      component.isIndividualPolicyVault = false;
-
-      const navigateSpy = jest.spyOn((component as any).router, "navigate").mockResolvedValue(true);
-
-      const expected = ["tools/import"];
-      component.navigateToImport();
-      expect(navigateSpy).toHaveBeenCalledWith(expected);
-    });
-  });
-
   describe("checkBrowserExtension", () => {
     it("should call getMessages when showOnboarding is true", () => {
       jest.spyOn(window, "addEventListener");
