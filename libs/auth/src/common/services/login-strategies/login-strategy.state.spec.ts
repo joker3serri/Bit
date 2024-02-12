@@ -41,26 +41,28 @@ describe("LOGIN_STRATEGY_CACHE_KEY", () => {
   });
 
   it("should correctly deserialize PasswordLoginStrategyData", () => {
-    const actual = new PasswordLoginStrategyData();
-    actual.tokenRequest = new PasswordTokenRequest(
+    const actual = {
+      password: new PasswordLoginStrategyData(),
+    };
+    actual.password.tokenRequest = new PasswordTokenRequest(
       "EMAIL",
       "LOCAL_PASSWORD_HASH",
       "CAPTCHA_TOKEN",
       twoFactorRequest,
       deviceRequest,
     );
-    actual.masterKey = new SymmetricCryptoKey(new Uint8Array(64)) as MasterKey;
-    actual.localMasterKeyHash = "LOCAL_MASTER_KEY_HASH";
+    actual.password.masterKey = new SymmetricCryptoKey(new Uint8Array(64)) as MasterKey;
+    actual.password.localMasterKeyHash = "LOCAL_MASTER_KEY_HASH";
 
     const result = sut.deserializer(JSON.parse(JSON.stringify(actual)));
 
-    expect(result).toBeInstanceOf(PasswordLoginStrategyData);
+    expect(result.password).toBeInstanceOf(PasswordLoginStrategyData);
     verifyPropertyPrototypes(result, actual);
   });
 
   it("should correctly deserialize SsoLoginStrategyData", () => {
-    const actual = new SsoLoginStrategyData();
-    actual.tokenRequest = new SsoTokenRequest(
+    const actual = { sso: new SsoLoginStrategyData() };
+    actual.sso.tokenRequest = new SsoTokenRequest(
       "CODE",
       "CODE_VERIFIER",
       "REDIRECT_URI",
@@ -70,24 +72,24 @@ describe("LOGIN_STRATEGY_CACHE_KEY", () => {
 
     const result = sut.deserializer(JSON.parse(JSON.stringify(actual)));
 
-    expect(result).toBeInstanceOf(SsoLoginStrategyData);
+    expect(result.sso).toBeInstanceOf(SsoLoginStrategyData);
     verifyPropertyPrototypes(result, actual);
   });
 
   it("should correctly deserialize UserApiLoginStrategyData", () => {
-    const actual = new UserApiLoginStrategyData();
-    actual.tokenRequest = new UserApiTokenRequest("CLIENT_ID", "CLIENT_SECRET", null);
+    const actual = { userApiKey: new UserApiLoginStrategyData() };
+    actual.userApiKey.tokenRequest = new UserApiTokenRequest("CLIENT_ID", "CLIENT_SECRET", null);
 
     const result = sut.deserializer(JSON.parse(JSON.stringify(actual)));
 
-    expect(result).toBeInstanceOf(UserApiLoginStrategyData);
+    expect(result.userApiKey).toBeInstanceOf(UserApiLoginStrategyData);
     verifyPropertyPrototypes(result, actual);
   });
 
   it("should correctly deserialize AuthRequestLoginStrategyData", () => {
-    const actual = new AuthRequestLoginStrategyData();
-    actual.tokenRequest = new PasswordTokenRequest("EMAIL", "ACCESS_CODE", null, null);
-    actual.authRequestCredentials = new AuthRequestLoginCredentials(
+    const actual = { authRequest: new AuthRequestLoginStrategyData() };
+    actual.authRequest.tokenRequest = new PasswordTokenRequest("EMAIL", "ACCESS_CODE", null, null);
+    actual.authRequest.authRequestCredentials = new AuthRequestLoginCredentials(
       "EMAIL",
       "ACCESS_CODE",
       "AUTH_REQUEST_ID",
@@ -98,26 +100,30 @@ describe("LOGIN_STRATEGY_CACHE_KEY", () => {
 
     const result = sut.deserializer(JSON.parse(JSON.stringify(actual)));
 
-    expect(result).toBeInstanceOf(AuthRequestLoginStrategyData);
+    expect(result.authRequest).toBeInstanceOf(AuthRequestLoginStrategyData);
     verifyPropertyPrototypes(result, actual);
   });
 
   it("should correctly deserialize WebAuthnLoginStrategyData", () => {
     global.AuthenticatorAssertionResponse = MockAuthenticatorAssertionResponse;
-    const actual = new WebAuthnLoginStrategyData();
+    const actual = { webAuthn: new WebAuthnLoginStrategyData() };
     const publicKeyCredential = new MockPublicKeyCredential();
     const deviceResponse = new WebAuthnLoginAssertionResponseRequest(publicKeyCredential);
     const prfKey = new SymmetricCryptoKey(new Uint8Array(64)) as PrfKey;
-    actual.credentials = new WebAuthnLoginCredentials("TOKEN", deviceResponse, prfKey);
-    actual.tokenRequest = new WebAuthnLoginTokenRequest("TOKEN", deviceResponse, deviceRequest);
-    actual.captchaBypassToken = "CAPTCHA_BYPASS_TOKEN";
-    actual.tokenRequest.setTwoFactor(
+    actual.webAuthn.credentials = new WebAuthnLoginCredentials("TOKEN", deviceResponse, prfKey);
+    actual.webAuthn.tokenRequest = new WebAuthnLoginTokenRequest(
+      "TOKEN",
+      deviceResponse,
+      deviceRequest,
+    );
+    actual.webAuthn.captchaBypassToken = "CAPTCHA_BYPASS_TOKEN";
+    actual.webAuthn.tokenRequest.setTwoFactor(
       new TokenTwoFactorRequest(TwoFactorProviderType.Email, "TOKEN", false),
     );
 
     const result = sut.deserializer(JSON.parse(JSON.stringify(actual)));
 
-    expect(result).toBeInstanceOf(WebAuthnLoginStrategyData);
+    expect(result.webAuthn).toBeInstanceOf(WebAuthnLoginStrategyData);
     verifyPropertyPrototypes(result, actual);
   });
 });
