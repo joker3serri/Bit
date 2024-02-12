@@ -193,6 +193,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     if (result != null && !result.requiresTwoFactor) {
       await this.clearCache();
     } else {
+      // Cache the strategy data so we can attempt again later with 2fa. Cache supports different contexts
       await this.loginStrategyCacheState.update((_) => strategy.exportCache());
       await this.startSessionTimeout();
     }

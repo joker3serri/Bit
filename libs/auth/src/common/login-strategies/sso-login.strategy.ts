@@ -1,4 +1,4 @@
-import { Observable, map, firstValueFrom, BehaviorSubject } from "rxjs";
+import { Observable, map, BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -145,7 +145,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       if (newSsoUser) {
         await this.keyConnectorService.convertNewSsoUserToKeyConnector(
           tokenResponse,
-          await firstValueFrom(this.orgId$),
+          this.cache.value.orgId,
         );
       } else {
         const keyConnectorUrl = this.getKeyConnectorUrl(tokenResponse);
