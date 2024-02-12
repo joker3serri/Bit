@@ -16,6 +16,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -35,6 +36,7 @@ import { VaultOnboardingTasks } from "./services/vault-onboarding.service";
 })
 export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   @Input() ciphers: CipherView[];
+  @Input() orgs: Organization[];
   @Output() onAddCipher = new EventEmitter<void>();
 
   extensionUrl: string;
@@ -97,7 +99,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
         importData: this.ciphers.length > 0,
         installExtension: currentTasks.installExtension,
       };
-      await this.saveCompletedTasks(updatedTasks);
+      await this.vaultOnboardingService.setVaultOnboardingTasks(updatedTasks);
     }
   }
 
