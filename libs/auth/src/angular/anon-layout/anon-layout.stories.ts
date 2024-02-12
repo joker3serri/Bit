@@ -3,6 +3,7 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { ButtonModule } from "../../../../components/src/button";
+import { IconLock } from "../../icons/icon-lock";
 
 import { AnonLayoutComponent } from "./anon-layout.component";
 
@@ -27,6 +28,7 @@ export default {
   args: {
     title: "The Page Title",
     subtitle: "The subtitle (optional)",
+    icon: IconLock,
   },
 } as Meta;
 
@@ -94,7 +96,7 @@ export const WithIcon: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <auth-anon-layout [title]="title" [subtitle]="subtitle" icon="lock">
+      <auth-anon-layout [title]="title" [subtitle]="subtitle" [icon]="icon">
         <div>
           <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
           <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>

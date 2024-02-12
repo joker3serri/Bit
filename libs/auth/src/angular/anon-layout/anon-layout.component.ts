@@ -6,9 +6,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogo } from "../../icons/bitwarden-logo";
-import { IconLock } from "../../icons/icon-lock";
-
-type IconType = "lock";
 
 @Component({
   standalone: true,
@@ -19,9 +16,8 @@ type IconType = "lock";
 export class AnonLayoutComponent {
   @Input() title: string;
   @Input() subtitle: string;
-  @Input() icon: IconType;
+  @Input() icon: Icon;
 
-  protected iconType: Icon | null;
   protected logo = BitwardenLogo;
   protected version: string;
   protected year = "2024";
@@ -29,14 +25,6 @@ export class AnonLayoutComponent {
   constructor(private platformUtilsService: PlatformUtilsService) {}
 
   async ngOnInit() {
-    switch (this.icon) {
-      case "lock":
-        this.iconType = IconLock;
-        break;
-      default:
-        this.iconType = null;
-    }
-
     this.year = new Date().getFullYear().toString();
     this.version = await this.platformUtilsService.getApplicationVersion();
   }
