@@ -60,16 +60,21 @@ export class SecretState<Plaintext extends object, Disclosed> {
     // construct plaintext store
     const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat, TFrom>(secretKey, {
       derive: async (from) => {
+        // fail fast if there's no value
         if (from === null || from === undefined) {
           return null;
         }
 
+        // otherwise forward the decrypted data to the caller's deserializer
         const secret = EncString.fromJSON(from.secret);
         const decrypted = await encryptor.decrypt(secret, from.public, encryptedState.userId);
         const value = key.deserializer(decrypted);
+
         return value;
       },
+      // wire in the caller's deserializer for memory serialization
       deserializer: key.deserializer,
+      // cache the decrypted data in memory
       cleanupDelayMs: key.cleanupDelayMs,
     });
     const plaintextState = provider.getDerived(encryptedState.state$, plaintextDefinition, null);
@@ -100,16 +105,18 @@ export class SecretState<Plaintext extends object, Disclosed> {
     configureState: (state: Plaintext, dependencies: TCombine) => Plaintext,
     options: StateUpdateOptions<Plaintext, TCombine> = null,
   ): Promise<Plaintext> {
+    // reactively grab the latest state from the caller. `zip` requires each
+    // observable has a value, so `combined$` provides a default if necessary.
     const combined$ = options?.combineLatestWith ?? from([undefined]);
-
     const newState$ = zip(this.plaintext.state$, combined$).pipe(
       concatMap(async ([currentState, combined]) => {
+        // `undefined` signals to `shouldUpdate` to cancel the update
         const shouldUpdate = options?.shouldUpdate?.(currentState, combined) ?? true;
         if (!shouldUpdate) {
           return undefined;
         }
 
-        // "impersonate" state storage interface
+        // invoke the caller's configuration with the most recent plaintext state
         const newState = configureState(currentState, combined);
         if (newState === null || newState === undefined) {
           return null;
@@ -126,11 +133,14 @@ export class SecretState<Plaintext extends object, Disclosed> {
       }),
     );
 
+    // update the backing store
     await this.encrypted.update((_, newState) => newState, {
       combineLatestWith: newState$,
       shouldUpdate: (_, newState) => newState !== undefined,
     });
 
+    // then send the latest value to the caller once it round-trips
+    // through the derived state
     const latestValue = await firstValueFrom(this.plaintext.state$);
     return latestValue;
   }
