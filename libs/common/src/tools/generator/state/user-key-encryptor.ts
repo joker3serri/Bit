@@ -45,12 +45,8 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
 
   /** {@link UserEncryptor.encrypt} */
   async encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]> {
-    if (value === undefined || value === null) {
-      throw new Error("value cannot be null or undefined");
-    }
-    if (userId === undefined || userId === null) {
-      throw new Error("userId cannot be null or undefined");
-    }
+    this.assertHasValue("value", value);
+    this.assertHasValue("userId", userId);
 
     const classifiedValue = this.classifier.classify(value);
     const encryptedValue = await this.encryptSecret(classifiedValue.secret, userId);
