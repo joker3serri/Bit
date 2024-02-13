@@ -61,7 +61,6 @@
   >
     <h1 bitTypography="h1" class="tw-mt-16 tw-pb-2.5">
       {{ "collectionManagement" | i18n }}
-      <span bitBadge variant="warning" class="!tw-align-middle">{{ "beta" | i18n }}</span>
     </h1>
     <p>
       {{ "collectionEnhancementsDesc" | i18n }}
@@ -69,7 +68,12 @@
         {{ "collectionEnhancementsLearnMore" | i18n }}
       </a>
     </p>
-    <button type="button" bitButton buttonType="primary" [bitAction]="enableCollectionEnhancements">
+    <button
+      type="button"
+      bitButton
+      buttonType="primary"
+      (click)="showConfirmCollectionEnhancementsDialog()"
+    >
       {{ "enable" | i18n }}
     </button>
   </form>

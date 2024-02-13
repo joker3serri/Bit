@@ -7,6 +7,7 @@ import { AddCreditComponent } from "./add-credit.component";
 import { AdjustPaymentComponent } from "./adjust-payment.component";
 import { AdjustStorageComponent } from "./adjust-storage.component";
 import { BillingHistoryComponent } from "./billing-history.component";
+import { OffboardingSurveyComponent } from "./offboarding-survey.component";
 import { PaymentMethodComponent } from "./payment-method.component";
 import { PaymentComponent } from "./payment.component";
 import { SecretsManagerSubscribeComponent } from "./sm-subscribe.component";
@@ -23,16 +24,17 @@ import { UpdateLicenseComponent } from "./update-license.component";
     PaymentMethodComponent,
     SecretsManagerSubscribeComponent,
     UpdateLicenseComponent,
+    OffboardingSurveyComponent,
   ],
   exports: [
     SharedModule,
     PaymentComponent,
     TaxInfoComponent,
-
     AdjustStorageComponent,
     BillingHistoryComponent,
     SecretsManagerSubscribeComponent,
     UpdateLicenseComponent,
+    OffboardingSurveyComponent,
   ],
 })
 export class BillingSharedModule {}
