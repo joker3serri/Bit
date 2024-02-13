@@ -1,13 +1,13 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
 import BrowserLocalStorageService from "./browser-local-storage.service";
 import BrowserMemoryStorageService from "./browser-memory-storage.service";
-import { KeyGenerationService } from "./key-generation.service";
 import { LocalBackedSessionStorageService } from "./local-backed-session-storage.service";
 
 describe("Browser Session Storage Service", () => {
@@ -206,7 +206,7 @@ describe("Browser Session Storage Service", () => {
     describe("new key creation", () => {
       beforeEach(() => {
         jest.spyOn(sessionStorage, "get").mockResolvedValue(null);
-        keyGenerationService.makeEphemeralKey.mockResolvedValue(key);
+        keyGenerationService.createKey.mockResolvedValue(key);
         jest.spyOn(sut, "setSessionEncKey").mockResolvedValue();
       });
 
@@ -214,7 +214,7 @@ describe("Browser Session Storage Service", () => {
         const result = await sut.getSessionEncKey();
 
         expect(result).toStrictEqual(key);
-        expect(keyGenerationService.makeEphemeralKey).toBeCalledTimes(1);
+        expect(keyGenerationService.createKey).toBeCalledTimes(1);
       });
 
       it("should store a symmetric crypto key if it makes one", async () => {

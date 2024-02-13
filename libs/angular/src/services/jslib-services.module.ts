@@ -433,6 +433,7 @@ import { ModalService } from "./modal.service";
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,
       deps: [
+        KeyGenerationServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         EncryptService,
         PlatformUtilsServiceAbstraction,

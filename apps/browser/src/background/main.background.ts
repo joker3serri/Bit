@@ -50,6 +50,7 @@ import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/pla
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -68,6 +69,7 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
+import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
@@ -174,7 +176,6 @@ import BrowserMessagingPrivateModeBackgroundService from "../platform/services/b
 import BrowserMessagingService from "../platform/services/browser-messaging.service";
 import BrowserPlatformUtilsService from "../platform/services/browser-platform-utils.service";
 import { BrowserStateService } from "../platform/services/browser-state.service";
-import { KeyGenerationService } from "../platform/services/key-generation.service";
 import { LocalBackedSessionStorageService } from "../platform/services/local-backed-session-storage.service";
 import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
@@ -201,6 +202,7 @@ export default class MainBackground {
   i18nService: I18nServiceAbstraction;
   platformUtilsService: PlatformUtilsServiceAbstraction;
   logService: LogServiceAbstraction;
+  keyGenerationService: KeyGenerationServiceAbstraction;
   cryptoService: CryptoServiceAbstraction;
   cryptoFunctionService: CryptoFunctionServiceAbstraction;
   tokenService: TokenServiceAbstraction;
@@ -320,20 +322,21 @@ export default class MainBackground {
       : new BrowserMessagingService();
     this.logService = new ConsoleLogService(false);
     this.cryptoFunctionService = new WebCryptoFunctionService(window);
+    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
     this.secureStorageService = new BrowserLocalStorageService();
     this.memoryStorageService =
       BrowserApi.manifestVersion === 3
         ? new LocalBackedSessionStorageService(
             new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
-            new KeyGenerationService(this.cryptoFunctionService),
+            this.keyGenerationService,
           )
         : new MemoryStorageService();
     this.memoryStorageForStateProviders =
       BrowserApi.manifestVersion === 3
         ? new LocalBackedSessionStorageService(
             new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
-            new KeyGenerationService(this.cryptoFunctionService),
+            this.keyGenerationService,
           )
         : new BackgroundMemoryStorageService();
     this.globalStateProvider = new DefaultGlobalStateProvider(
@@ -411,6 +414,7 @@ export default class MainBackground {
     );
     this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
     this.cryptoService = new BrowserCryptoService(
+      this.keyGenerationService,
       this.cryptoFunctionService,
       this.encryptService,
       this.platformUtilsService,
