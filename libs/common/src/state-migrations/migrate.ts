@@ -14,7 +14,7 @@ import { FolderMigrator } from "./migrations/15-move-folder-state-to-state-provi
 import { LastSyncMigrator } from "./migrations/16-move-last-sync-to-state-provider";
 import { EnablePasskeysMigrator } from "./migrations/17-move-enable-passkeys-to-state-providers";
 import { AutofillSettingsKeyMigrator } from "./migrations/18-move-autofill-settings-to-state-providers";
-import { MoveCollapsedGroupingsToStateProvider } from "./migrations/19-move-collapsed-groupings-to-state-provider";
+import { CollapsedGroupingsMigrator } from "./migrations/19-move-collapsed-groupings-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -60,7 +60,7 @@ export async function migrate(
     .with(LastSyncMigrator, 15, 16)
     .with(EnablePasskeysMigrator, 16, 17)
     .with(AutofillSettingsKeyMigrator, 17, 18)
-    .with(MoveCollapsedGroupingsToStateProvider, 18, CURRENT_VERSION)
+    .with(CollapsedGroupingsMigrator, 18, CURRENT_VERSION)
 
     .migrate(migrationHelper);
 }
