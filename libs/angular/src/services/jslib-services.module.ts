@@ -82,6 +82,10 @@ import { UserVerificationService } from "@bitwarden/common/auth/services/user-ve
 import { WebAuthnLoginApiService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-api.service";
 import { WebAuthnLoginPrfCryptoService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-prf-crypto.service";
 import { WebAuthnLoginService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login.service";
+import {
+  AutofillSettingsServiceAbstraction,
+  AutofillSettingsService,
+} from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
@@ -189,20 +193,20 @@ import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service"
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
 import {
-  VaultExportService,
-  VaultExportServiceAbstraction,
-  OrganizationVaultExportService,
-  OrganizationVaultExportServiceAbstraction,
-  IndividualVaultExportService,
-  IndividualVaultExportServiceAbstraction,
-} from "@bitwarden/exporter/vault-export";
-import {
   ImportApiService,
   ImportApiServiceAbstraction,
   ImportService,
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
 import { PasswordRepromptService } from "@bitwarden/vault";
+import {
+  VaultExportService,
+  VaultExportServiceAbstraction,
+  OrganizationVaultExportService,
+  OrganizationVaultExportServiceAbstraction,
+  IndividualVaultExportService,
+  IndividualVaultExportServiceAbstraction,
+} from "@bitwarden/vault-export-core";
 
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { UnauthGuard } from "../auth/guards/unauth.guard";
@@ -336,6 +340,7 @@ import { ModalService } from "./modal.service";
         i18nService: I18nServiceAbstraction,
         searchService: SearchServiceAbstraction,
         stateService: StateServiceAbstraction,
+        autofillSettingsService: AutofillSettingsServiceAbstraction,
         encryptService: EncryptService,
         fileUploadService: CipherFileUploadServiceAbstraction,
         configService: ConfigServiceAbstraction,
@@ -347,6 +352,7 @@ import { ModalService } from "./modal.service";
           i18nService,
           searchService,
           stateService,
+          autofillSettingsService,
           encryptService,
           fileUploadService,
           configService,
@@ -358,6 +364,7 @@ import { ModalService } from "./modal.service";
         I18nServiceAbstraction,
         SearchServiceAbstraction,
         StateServiceAbstraction,
+        AutofillSettingsServiceAbstraction,
         EncryptService,
         CipherFileUploadServiceAbstraction,
         ConfigServiceAbstraction,
@@ -860,7 +867,6 @@ import { ModalService } from "./modal.service";
       deps: [
         WebAuthnLoginApiServiceAbstraction,
         LoginStrategyServiceAbstraction,
-        ConfigServiceAbstraction,
         WebAuthnLoginPrfCryptoServiceAbstraction,
         WINDOW,
         LogService,
@@ -910,6 +916,11 @@ import { ModalService } from "./modal.service";
         I18nServiceAbstraction,
         OrganizationApiServiceAbstraction,
       ],
+    },
+    {
+      provide: AutofillSettingsServiceAbstraction,
+      useClass: AutofillSettingsService,
+      deps: [StateProvider, PolicyServiceAbstraction],
     },
     {
       provide: BiometricStateService,

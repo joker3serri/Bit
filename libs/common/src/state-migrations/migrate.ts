@@ -12,6 +12,7 @@ import { MoveBiometricClientKeyHalfToStateProviders } from "./migrations/14-move
 import { FolderMigrator } from "./migrations/15-move-folder-state-to-state-provider";
 import { LastSyncMigrator } from "./migrations/16-move-last-sync-to-state-provider";
 import { EnablePasskeysMigrator } from "./migrations/17-move-enable-passkeys-to-state-providers";
+import { AutofillSettingsKeyMigrator } from "./migrations/18-move-autofill-settings-to-state-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -22,7 +23,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 2;
-export const CURRENT_VERSION = 17;
+export const CURRENT_VERSION = 18;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -42,7 +43,8 @@ export function createMigrationBuilder() {
     .with(MoveBiometricClientKeyHalfToStateProviders, 13, 14)
     .with(FolderMigrator, 14, 15)
     .with(LastSyncMigrator, 15, 16)
-    .with(EnablePasskeysMigrator, 16, CURRENT_VERSION);
+    .with(EnablePasskeysMigrator, 16, 17)
+    .with(AutofillSettingsKeyMigrator, 17, CURRENT_VERSION);
 }
 
 export async function currentVersion(
