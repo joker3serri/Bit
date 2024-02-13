@@ -178,7 +178,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
       this.referenceData.initiationPath = this.accountCreateOnly
         ? "Registration form"
-        : "Trial from marketing website";
+        : "Password Manager trial from marketing website";
     });
 
     const invite = await this.stateService.getOrganizationInvitation();

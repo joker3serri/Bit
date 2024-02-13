@@ -51,7 +51,7 @@ export class SecretsManagerTrialFreeStepperComponent implements OnInit {
 
   ngOnInit(): void {
     this.referenceEventRequest = new ReferenceEventRequest();
-    this.referenceEventRequest.initiationPath = "Trial from marketing website";
+    this.referenceEventRequest.initiationPath = "Secrets Manager trial from marketing website";
   }
 
   accountCreated(email: string): void {

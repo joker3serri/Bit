@@ -139,7 +139,10 @@ export class TrialBillingStepComponent implements OnInit {
     const organization: OrganizationInformation = {
       name: this.organizationInfo.name,
       billingEmail: this.organizationInfo.email,
-      initiationPath: "Trial from marketing website",
+      initiationPath:
+        this.subscriptionProduct === SubscriptionProduct.PasswordManager
+          ? "Password Manager trial from marketing website"
+          : "Secrets Manager trial from marketing website",
     };
 
     const plan: PlanInformation = {

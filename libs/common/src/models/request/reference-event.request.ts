@@ -1,6 +1,7 @@
 export type InitiationPath =
   | "Registration form"
-  | "Trial from marketing website"
+  | "Password Manager trial from marketing website"
+  | "Secrets Manager trial from marketing website"
   | "New organization creation in-product"
   | "Upgrade in-product";
 
