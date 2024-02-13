@@ -34,14 +34,14 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     }
   }
 
-  async uploadEvents(): Promise<void> {
-    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
+  async uploadEvents(userId?: UserId): Promise<void> {
+    // If the userId is not provided get the active user id
+    if (!userId) {
+      userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    }
+
     const userAuth$ = this.accountService.activeAccount$.pipe(
-      map((acctData) => {
-        if (acctData != null && acctData.status == AuthenticationStatus.Unlocked) {
-          return true;
-        }
-      }),
+      map((acctData) => acctData != null && acctData.status == AuthenticationStatus.Unlocked),
     );
 
     const authed = await firstValueFrom(userAuth$);
@@ -49,7 +49,7 @@ export class EventUploadService implements EventUploadServiceAbstraction {
       return;
     }
 
-    const eventStore = this.stateProvider.getUser(activeUserId, EVENT_COLLECTION);
+    const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
     const eventCollection = await firstValueFrom(eventStore.state$);
 
     if (eventCollection == null || eventCollection.length === 0) {
@@ -67,13 +67,19 @@ export class EventUploadService implements EventUploadServiceAbstraction {
       await this.apiService.postEventsCollect(request);
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.clearEvents(activeUserId);
+      this.takeEvents(userId);
     } catch (e) {
       this.logService.error(e);
     }
   }
 
-  private async clearEvents(userId: UserId): Promise<any> {
-    await this.stateProvider.getUser(userId, EVENT_COLLECTION).update(() => []);
+  private async takeEvents(userId?: UserId): Promise<any> {
+    let taken = null;
+    await this.stateProvider.getUser(userId, EVENT_COLLECTION).update((current) => {
+      taken = current ?? [];
+      return [];
+    });
+
+    return taken;
   }
 }

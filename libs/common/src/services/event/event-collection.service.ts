@@ -28,7 +28,6 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     organizationId: string = null,
   ): Promise<any> {
     const userId = await firstValueFrom(this.stateProvider.activeUserId$);
-    const organizations = await firstValueFrom(this.organizationService.organizations$);
     const userAuth$ = this.accountService.activeAccount$.pipe(
       map((acctData) => {
         if (acctData != null && acctData.status == AuthenticationStatus.Unlocked) {
@@ -37,26 +36,40 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
       }),
     );
 
-    if (organizations == null || organizations.length == 0) {
-      return;
-    }
-
     const orgIds$ = this.organizationService.organizations$.pipe(
       map((orgs) => orgs?.filter((o) => o.useEvents)?.map((x) => x.id) ?? []),
     );
 
-    // Update if:
-    // - User is authorized
-    // - If the cipher is null there must be an organization id provided.
-    //   Or if the cipher is present it must be in the user's org list.
-    // - If the organization id is provided it must be in the user's org list.
+    // Determine if the collection should update
     const shouldUpdate$ = zip(userAuth$, orgIds$, from(this.cipherService.get(cipherId))).pipe(
-      map(
-        ([userAuth, orgs, cipher]) =>
-          userAuth &&
-          ((cipher == null && organizationId != null) || orgs.includes(cipher?.organizationId)) &&
-          (organizationId == null || orgs.includes(organizationId)),
-      ),
+      map(([userAuth, orgs, cipher]) => {
+        // The user must be authorized
+        if (!userAuth) {
+          return false;
+        }
+
+        // User must have organizations assigned to them
+        if (orgs == null || orgs.length == 0) {
+          return false;
+        }
+
+        // If the cipher is null there must be an organization id provided
+        if (cipher == null && organizationId == null) {
+          return false;
+        }
+
+        // If the cipher is present it must be in the user's org list
+        if (cipher != null && !orgs.includes(cipher?.organizationId)) {
+          return false;
+        }
+
+        // If the organization id is provided it must be in the user's org list
+        if (organizationId != null && !orgs.includes(organizationId)) {
+          return false;
+        }
+
+        return true;
+      }),
     );
 
     const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
@@ -69,7 +82,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
 
     await eventStore.update(
       (events) => {
-        events = events == null ? [] : events;
+        events = events ?? [];
         events.push(event);
         return events;
       },
