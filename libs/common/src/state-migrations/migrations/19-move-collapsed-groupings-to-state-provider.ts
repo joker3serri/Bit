@@ -14,7 +14,7 @@ const COLLAPSED_GROUPINGS: KeyDefinitionLike = {
   },
 };
 
-export class MoveCollapsedGroupingsToStateProvider extends Migrator<18, 19> {
+export class CollapsedGroupingsMigrator extends Migrator<18, 19> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
