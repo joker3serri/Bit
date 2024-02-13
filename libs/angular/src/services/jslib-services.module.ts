@@ -98,6 +98,7 @@ import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.
 import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -121,6 +122,7 @@ import { EncryptServiceImplementation } from "@bitwarden/common/platform/service
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
+import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { NoopNotificationsService } from "@bitwarden/common/platform/services/noop-notifications.service";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { ValidationService } from "@bitwarden/common/platform/services/validation.service";
@@ -422,6 +424,11 @@ import { ModalService } from "./modal.service";
       deps: [CryptoFunctionServiceAbstraction, LogService, StateServiceAbstraction],
     },
     { provide: TokenServiceAbstraction, useClass: TokenService, deps: [StateServiceAbstraction] },
+    {
+      provide: KeyGenerationServiceAbstraction,
+      useClass: KeyGenerationService,
+      deps: [CryptoFunctionServiceAbstraction],
+    },
     {
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,

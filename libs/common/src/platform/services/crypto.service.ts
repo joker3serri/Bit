@@ -13,6 +13,7 @@ import { OrgKey, UserKey, MasterKey, ProviderKey, PinKey, CipherKey } from "../.
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
+import { KeyGenerationService } from "../abstractions/key-generation.service";
 import { LogService } from "../abstractions/log.service";
 import { PlatformUtilsService } from "../abstractions/platform-utils.service";
 import { StateService } from "../abstractions/state.service";
@@ -57,6 +58,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   readonly everHadUserKey$;
 
   constructor(
+    protected keyGenerationService: KeyGenerationService,
     protected cryptoFunctionService: CryptoFunctionService,
     protected encryptService: EncryptService,
     protected platformUtilService: PlatformUtilsService,
@@ -168,8 +170,8 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("No Master Key found.");
     }
 
-    const newUserKey = await this.cryptoFunctionService.aesGenerateKey(512);
-    return this.buildProtectedSymmetricKey(masterKey, newUserKey);
+    const newUserKey = await this.keyGenerationService.createKey(512);
+    return this.buildProtectedSymmetricKey(masterKey, newUserKey.key);
   }
 
   async clearUserKey(clearStoredKeys = true, userId?: UserId): Promise<void> {
@@ -241,7 +243,12 @@ export class CryptoService implements CryptoServiceAbstraction {
     kdf: KdfType,
     KdfConfig: KdfConfig,
   ): Promise<MasterKey> {
-    return (await this.makeKey(password, email, kdf, KdfConfig)) as MasterKey;
+    return (await this.keyGenerationService.deriveKeyFromPassword(
+      password,
+      email,
+      kdf,
+      KdfConfig,
+    )) as MasterKey;
   }
 
   async clearMasterKey(userId?: UserId): Promise<void> {
@@ -399,8 +406,8 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("No key provided");
     }
 
-    const newSymKey = await this.cryptoFunctionService.aesGenerateKey(512);
-    return this.buildProtectedSymmetricKey(key, newSymKey);
+    const newSymKey = await this.keyGenerationService.createKey(512);
+    return this.buildProtectedSymmetricKey(key, newSymKey.key);
   }
 
   async clearOrgKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
@@ -481,10 +488,10 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async makeOrgKey<T extends OrgKey | ProviderKey>(): Promise<[EncString, T]> {
-    const shareKey = await this.cryptoFunctionService.aesGenerateKey(512);
+    const shareKey = await this.keyGenerationService.createKey(512);
     const publicKey = await this.getPublicKey();
-    const encShareKey = await this.rsaEncrypt(shareKey, publicKey);
-    return [encShareKey, new SymmetricCryptoKey(shareKey) as T];
+    const encShareKey = await this.rsaEncrypt(shareKey.key, publicKey);
+    return [encShareKey, shareKey as T];
   }
 
   async setPrivateKey(encPrivateKey: string): Promise<void> {
@@ -554,7 +561,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async makePinKey(pin: string, salt: string, kdf: KdfType, kdfConfig: KdfConfig): Promise<PinKey> {
-    const pinKey = await this.makeKey(pin, salt, kdf, kdfConfig);
+    const pinKey = await this.keyGenerationService.deriveKeyFromPassword(pin, salt, kdf, kdfConfig);
     return (await this.stretchKey(pinKey)) as PinKey;
   }
 
@@ -603,19 +610,15 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async makeSendKey(keyMaterial: Uint8Array): Promise<SymmetricCryptoKey> {
-    const sendKey = await this.cryptoFunctionService.hkdf(
+    return await this.keyGenerationService.deriveKeyFromMaterial(
       keyMaterial,
       "bitwarden-send",
       "send",
-      64,
-      "sha256",
     );
-    return new SymmetricCryptoKey(sendKey);
   }
 
   async makeCipherKey(): Promise<CipherKey> {
-    const randomBytes = await this.cryptoFunctionService.aesGenerateKey(512);
-    return new SymmetricCryptoKey(randomBytes) as CipherKey;
+    return (await this.keyGenerationService.createKey(512)) as CipherKey;
   }
 
   async clearKeys(userId?: UserId): Promise<any> {
@@ -761,8 +764,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     publicKey: string;
     privateKey: EncString;
   }> {
-    const rawKey = await this.cryptoFunctionService.aesGenerateKey(512);
-    const userKey = new SymmetricCryptoKey(rawKey) as UserKey;
+    const userKey = (await this.keyGenerationService.createKey(512)) as UserKey;
     const [publicKey, privateKey] = await this.makeKeyPair(userKey);
     await this.setUserKey(userKey);
     await this.stateService.setEncryptedPrivateKey(privateKey.encryptedString);
@@ -943,46 +945,6 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("Invalid key size.");
     }
     return [new SymmetricCryptoKey(newSymKey) as T, protectedSymKey];
-  }
-
-  private async makeKey(
-    password: string,
-    salt: string,
-    kdf: KdfType,
-    kdfConfig: KdfConfig,
-  ): Promise<SymmetricCryptoKey> {
-    let key: Uint8Array = null;
-    if (kdf == null || kdf === KdfType.PBKDF2_SHA256) {
-      if (kdfConfig.iterations == null) {
-        kdfConfig.iterations = PBKDF2_ITERATIONS.defaultValue;
-      }
-
-      key = await this.cryptoFunctionService.pbkdf2(password, salt, "sha256", kdfConfig.iterations);
-    } else if (kdf == KdfType.Argon2id) {
-      if (kdfConfig.iterations == null) {
-        kdfConfig.iterations = ARGON2_ITERATIONS.defaultValue;
-      }
-
-      if (kdfConfig.memory == null) {
-        kdfConfig.memory = ARGON2_MEMORY.defaultValue;
-      }
-
-      if (kdfConfig.parallelism == null) {
-        kdfConfig.parallelism = ARGON2_PARALLELISM.defaultValue;
-      }
-
-      const saltHash = await this.cryptoFunctionService.hash(salt, "sha256");
-      key = await this.cryptoFunctionService.argon2(
-        password,
-        saltHash,
-        kdfConfig.iterations,
-        kdfConfig.memory * 1024, // convert to KiB from MiB
-        kdfConfig.parallelism,
-      );
-    } else {
-      throw new Error("Unknown Kdf.");
-    }
-    return new SymmetricCryptoKey(key);
   }
 
   // --LEGACY METHODS--
