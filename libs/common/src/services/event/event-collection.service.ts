@@ -29,11 +29,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
   ): Promise<any> {
     const userId = await firstValueFrom(this.stateProvider.activeUserId$);
     const userAuth$ = this.accountService.activeAccount$.pipe(
-      map((acctData) => {
-        if (acctData != null && acctData.status == AuthenticationStatus.Unlocked) {
-          return true;
-        }
-      }),
+      map((acctData) => acctData != null && acctData.status == AuthenticationStatus.Unlocked),
     );
 
     const orgIds$ = this.organizationService.organizations$.pipe(
