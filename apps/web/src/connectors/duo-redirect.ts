@@ -42,21 +42,22 @@ window.addEventListener("load", () => {
  *
  * ```
  *
- * The `title`, `message`, and `buttonText` properties will be used to create the relevant
- * DOM elements.
+ * The `title`, `message`, and `buttonText` properties will be used to create the
+ * relevant DOM elements.
  *
  * Countdown timer:
- * The `isCountdown` signifies that you want to start a countdown timer that will automatically
- * close the tab when finished. The starting point for the timer will be based upon the first number
- * that can be parsed from the `message` property (so be sure to only add one number).
+ * The `isCountdown` signifies that you want to start a countdown timer that will
+ * automatically close the tab when finished. The starting point for the timer will
+ * be based upon the first number that can be parsed from the `message` property
+ * (so be sure to add exactly one number to the `message`).
  *
  * This implementation makes it so the client does not have to split up the `message` into
- * three spans/translations, such as:
+ * three translations, such as:
  *    ['This window will automatically close in', '5', 'seconds']
- * Doing so would cause bad translations in languages that swap the order of words.
+ * ...which would cause bad translations in languages that swap the order of words.
  *
- * If `isCountdown` is undefined/false, there will be no countdown timer and the user will simply
- * have to close the tab manually.
+ * If `isCountdown` is undefined/false, there will be no countdown timer and the user
+ * will simply have to close the tab manually.
  */
 function processAndDisplayHandoffMessage() {
   const handOffMessageCookie = ("; " + document.cookie)
