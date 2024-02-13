@@ -1,7 +1,7 @@
 import { GENERATOR_DISK, KeyDefinition } from "../../platform/state";
 
-import { GeneratedPasswordHistory } from "./history/generated-password-history";
 import { PassphraseGenerationOptions } from "./passphrase/passphrase-generation-options";
+import { GeneratedPasswordHistory } from "./password/generated-password-history";
 import { PasswordGenerationOptions } from "./password/password-generation-options";
 import { CatchallGenerationOptions } from "./username/catchall-generator-options";
 import { EffUsernameGenerationOptions } from "./username/eff-username-generator-options";
