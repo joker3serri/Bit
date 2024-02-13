@@ -96,6 +96,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected PermissionMode = PermissionMode;
   protected showDeleteButton = false;
 
+  private currentOrgUserId: string;
+
   constructor(
     @Inject(DIALOG_DATA) private params: CollectionDialogParams,
     private formBuilder: FormBuilder,
@@ -181,6 +183,10 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             users.data.map(mapUserToAccessItemView),
           );
 
+          this.currentOrgUserId = users.data.find(
+            (u) => u.userId === this.organization?.userId,
+          )?.id;
+
           // Force change detection to update the access selector's items
           this.changeDetectorRef.detectChanges();
 
@@ -213,14 +219,11 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           } else {
             this.nestOptions = collections;
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);
-            const currentOrgUserId = users.data.find(
-              (u) => u.userId === this.organization?.userId,
-            )?.id;
             const initialSelection: AccessItemValue[] =
-              currentOrgUserId !== undefined && organization.flexibleCollections
+              this.currentOrgUserId !== undefined && organization.flexibleCollections
                 ? [
                     {
-                      id: currentOrgUserId,
+                      id: this.currentOrgUserId,
                       type: AccessItemType.Member,
                       permission: CollectionPermission.Manage,
                     },
@@ -299,6 +302,16 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       collectionView.name = `${parent}/${this.formGroup.controls.name.value}`;
     } else {
       collectionView.name = this.formGroup.controls.name.value;
+    }
+
+    const assignedPermissions = collectionView.users.find((cas) => cas.id == this.currentOrgUserId);
+    if (assignedPermissions != null) {
+      collectionView.assigned = true;
+      collectionView.hidePasswords = assignedPermissions.hidePasswords;
+      collectionView.readOnly = assignedPermissions.readOnly;
+      collectionView.manage = assignedPermissions.manage;
+    } else {
+      collectionView.assigned = false;
     }
 
     const savedCollection = await this.collectionAdminService.save(collectionView);
