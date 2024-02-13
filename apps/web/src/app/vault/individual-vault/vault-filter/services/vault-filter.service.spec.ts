@@ -7,6 +7,7 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -23,6 +24,7 @@ describe("vault filter service", () => {
   let folderService: MockProxy<FolderService>;
   let cipherService: MockProxy<CipherService>;
   let policyService: MockProxy<PolicyService>;
+  let stateProvider: MockProxy<StateProvider>;
   let i18nService: MockProxy<I18nService>;
   let organizations: ReplaySubject<Organization[]>;
   let folderViews: ReplaySubject<FolderView[]>;
@@ -34,6 +36,7 @@ describe("vault filter service", () => {
     cipherService = mock<CipherService>();
     policyService = mock<PolicyService>();
     i18nService = mock<I18nService>();
+    stateProvider = mock<StateProvider>();
     i18nService.collator = new Intl.Collator("en-US");
 
     organizations = new ReplaySubject<Organization[]>(1);
@@ -49,6 +52,7 @@ describe("vault filter service", () => {
       cipherService,
       policyService,
       i18nService,
+      stateProvider,
     );
   });
 
