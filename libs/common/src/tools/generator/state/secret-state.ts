@@ -61,6 +61,10 @@ export class SecretState<Plaintext extends object, Disclosed> {
     // construct plaintext store
     const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat, TFrom>(secretKey, {
       derive: async (from) => {
+        if (from === null || from === undefined) {
+          return null;
+        }
+
         const secret = EncString.fromJSON(from.secret);
         const decrypted = await encryptor.decrypt(secret, from.public, encryptedState.userId);
         const value = key.deserializer(decrypted);
@@ -86,8 +90,8 @@ export class SecretState<Plaintext extends object, Disclosed> {
    *  @param configureState a callback that returns an updated decrypted
    *   secret state. The callback receives the state's present value as its
    *   first argument and the dependencies listed in `options.combinedLatestWith`
-   *   as its second argument. Return `null` to clear the state store. Returning
-   *   `undefined` has no effect.
+   *   as its second argument. Returning `null` or `undefined` clears the state store
+   *   by setting its value to `null`.
    *  @param options configures how the update is applied. {@link StateUpdateOptions}
    *  @returns a promise that resolves with the updated value read from the state.
    *   The round-trip encrypts, decrypts, and deserializes the data, producing a new
@@ -101,16 +105,15 @@ export class SecretState<Plaintext extends object, Disclosed> {
 
     const newState$ = zip(this.plaintext.state$, combined$).pipe(
       concatMap(async ([currentState, combined]) => {
-        if (options.shouldUpdate && !options.shouldUpdate(currentState, combined)) {
+        const shouldUpdate = options?.shouldUpdate?.(currentState, combined) ?? true;
+        if (!shouldUpdate) {
           return undefined;
         }
 
         // "impersonate" state storage interface
         const newState = configureState(currentState, combined);
-        if (newState === null) {
+        if (newState === null || newState === undefined) {
           return null;
-        } else if (newState === undefined) {
-          return undefined;
         }
 
         // map to storage format

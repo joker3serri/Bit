@@ -1,6 +1,8 @@
 import { mock } from "jest-mock-extended";
+import { firstValueFrom, from } from "rxjs";
 
 import { FakeStateProvider, makeEncString, mockAccountServiceWith } from "../../../../spec";
+import { EncString } from "../../../platform/models/domain/enc-string";
 import { KeyDefinition, GENERATOR_DISK, GENERATOR_MEMORY } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 
@@ -13,19 +15,37 @@ const FOOBAR_KEY = new KeyDefinition<FooBar>(GENERATOR_DISK, "fooBar", {
 });
 const SomeUser = "some user" as UserId;
 
-function mockEncryptor<Disclosed>(secret = "", disclosed: Disclosed = {} as any) {
-  const result = mock<UserEncryptor<FooBar, Disclosed>>({
-    encrypt() {
-      return Promise.resolve([makeEncString(secret), disclosed] as const);
+function mockEncryptor(fooBar: FooBar[] = []) {
+  // stores "encrypted values" so that they can be "decrypted" later
+  // while allowing the operations to be interleaved.
+  const encrypted = new Map<string, FooBar>(
+    fooBar.map((fb) => [toKey(fb).encryptedString, fb] as const),
+  );
+
+  const result = mock<UserEncryptor<FooBar, Record<string, never>>>({
+    encrypt(value: FooBar, user: UserId) {
+      const encString = toKey(value);
+      encrypted.set(encString.encryptedString, value);
+      return Promise.resolve([encString, {}] as const);
+    },
+    decrypt(secret: EncString, disclosed: Record<string, never>, userId: UserId) {
+      const decString = encrypted.get(secret.encryptedString);
+      return Promise.resolve(decString);
     },
   });
+
+  function toKey(value: FooBar) {
+    // `stringify` is only relevant for its uniqueness as a key
+    // to `encrypted`.
+    return makeEncString(JSON.stringify(value));
+  }
+
   return result;
 }
 
-async function fakeStateProvider(fb: FooBar = null) {
+async function fakeStateProvider() {
   const accountService = mockAccountServiceWith(SomeUser);
   const stateProvider = new FakeStateProvider(accountService);
-  await stateProvider.setUserState(FOOBAR_KEY, fb, SomeUser);
   return stateProvider;
 }
 
@@ -53,30 +73,108 @@ describe("UserEncryptor", () => {
   });
 
   describe("instance", () => {
-    // FIXME: this times out because the derive/plaintext is not calculating
     it("gets a set value", async () => {
       const provider = await fakeStateProvider();
       const encryptor = mockEncryptor();
       const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
       const value = { foo: true, bar: false };
 
-      let result = null;
-      state.state$.subscribe((fb) => {
-        result = fb;
-      });
-
       await state.update(() => value);
-      // await instead of subscribe also fails
-      //const result = await firstValueFrom(state.state$);
+      const result = await firstValueFrom(state.state$);
 
       expect(result).toEqual(value);
     });
 
-    // it("", async () => {
-    //   const provider = await fakeStateProvider();
-    //   const encryptor = mockEncryptor();
+    it("gets the last set value", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const initialValue = { foo: true, bar: false };
+      const replacementValue = { foo: false, bar: false };
 
-    //   const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
-    // });
+      await state.update(() => initialValue);
+      await state.update(() => replacementValue);
+      const result = await firstValueFrom(state.state$);
+
+      expect(result).toEqual(replacementValue);
+    });
+
+    it("interprets shouldUpdate option", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const initialValue = { foo: true, bar: false };
+      const replacementValue = { foo: false, bar: false };
+
+      await state.update(() => initialValue, { shouldUpdate: () => true });
+      await state.update(() => replacementValue, { shouldUpdate: () => false });
+      const result = await firstValueFrom(state.state$);
+
+      expect(result).toEqual(initialValue);
+    });
+
+    it("sets the state to `null` when `update` returns `null`", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const value = { foo: true, bar: false };
+
+      await state.update(() => value);
+      await state.update(() => null);
+      const result = await firstValueFrom(state.state$);
+
+      expect(result).toEqual(null);
+    });
+
+    it("sets the state to `null` when `update` returns `undefined`", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const value = { foo: true, bar: false };
+
+      await state.update(() => value);
+      await state.update(() => undefined);
+      const result = await firstValueFrom(state.state$);
+
+      expect(result).toEqual(null);
+    });
+
+    it("sends rxjs observables into the shouldUpdate method", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const combinedWith$ = from([1]);
+      let combinedShouldUpdate = 0;
+
+      await state.update((value) => value, {
+        shouldUpdate: (_, combined) => {
+          combinedShouldUpdate = combined;
+          return true;
+        },
+        combineLatestWith: combinedWith$,
+      });
+
+      expect(combinedShouldUpdate).toEqual(1);
+    });
+
+    it("sends rxjs observables into the update method", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const combinedWith$ = from([1]);
+      let combinedUpdate = 0;
+
+      await state.update(
+        (value, combined) => {
+          combinedUpdate = combined;
+          return value;
+        },
+        {
+          combineLatestWith: combinedWith$,
+        },
+      );
+
+      expect(combinedUpdate).toEqual(1);
+    });
   });
 });
