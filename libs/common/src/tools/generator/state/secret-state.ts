@@ -25,7 +25,6 @@ export class SecretState<Plaintext extends object, Disclosed> {
     this.state$ = plaintext.state$;
   }
 
-  // TODO: implement lock/unlock/etc support.
   /** Creates a secret state bound to an account encryptor. The account must be unlocked
    *  when this method is called.
    *  @param encryptor protects `Secret` data.
