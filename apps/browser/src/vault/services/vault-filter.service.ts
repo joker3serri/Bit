@@ -4,6 +4,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -22,6 +23,7 @@ export class VaultFilterService extends BaseVaultFilterService {
     cipherService: CipherService,
     collectionService: CollectionService,
     policyService: PolicyService,
+    stateProvider: StateProvider,
     private accountService: AccountService,
   ) {
     super(
@@ -31,6 +33,7 @@ export class VaultFilterService extends BaseVaultFilterService {
       cipherService,
       collectionService,
       policyService,
+      stateProvider,
     );
     this.vaultFilter.myVaultOnly = false;
     this.vaultFilter.selectedOrganizationId = null;

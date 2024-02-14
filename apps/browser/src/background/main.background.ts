@@ -603,6 +603,7 @@ export default class MainBackground {
       this.cipherService,
       this.collectionService,
       this.policyService,
+      this.stateProvider,
       this.accountService,
     );
 
