@@ -144,7 +144,7 @@ describe("CollectionMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 20);
+      helper = mockMigrationHelper(rollbackJSON(), 21);
       sut = new CollectionMigrator(20, 21);
     });
 
