@@ -83,6 +83,8 @@ describe("ContentMessageHandler", () => {
     });
 
     it("forwards the message to the extension background if it is present in the forwardCommands list", () => {
+      jest.spyOn(chrome.runtime, "sendMessage").mockResolvedValue(undefined);
+
       sendExtensionRuntimeMessage({ command: "bgUnlockPopoutOpened" });
 
       expect(sendMessageSpy).toHaveBeenCalledTimes(1);
