@@ -31,7 +31,7 @@ function mockEncryptor(fooBar: FooBar[] = []): UserEncryptor<FooBar, Record<stri
     encrypt(value: FooBar, user: UserId) {
       const encString = toKey(value);
       encrypted.set(encString.encryptedString, value);
-      return Promise.resolve([encString, {}] as const);
+      return Promise.resolve([encString, {}]);
     },
     decrypt(secret: EncString, disclosed: Record<string, never>, userId: UserId) {
       const decString = encrypted.get(secret.encryptedString);
