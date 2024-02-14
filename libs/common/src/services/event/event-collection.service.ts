@@ -21,6 +21,12 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     private accountService: AccountService,
   ) {}
 
+  /** Adds an event to the active user's event collection
+   *  @param eventType the event type to be added
+   *  @param cipherId if provided the id of the cipher involved in the event
+   *  @param uploadImmediately in some cases the recorded events should be uploaded right after being added
+   *  @param organizationId the organizationId involved in the event. If the cipherId is not provided an organizationId is required
+   */
   async collect(
     eventType: EventType,
     cipherId: string = null,

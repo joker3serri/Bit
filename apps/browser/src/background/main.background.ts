@@ -1030,6 +1030,7 @@ export default class MainBackground {
   }
 
   async logout(expired: boolean, userId?: string) {
+    // Provide the userId of the user to upload events for
     await this.eventUploadService.uploadEvents(userId as UserId);
 
     await Promise.all([

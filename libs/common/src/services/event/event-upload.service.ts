@@ -34,8 +34,10 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     }
   }
 
+  /** Upload the event collection from state.
+   *  @param userId upload events for provided user. If not active user will be used.
+   */
   async uploadEvents(userId?: UserId): Promise<void> {
-    // If the userId is not provided get the active user id
     if (!userId) {
       userId = await firstValueFrom(this.stateProvider.activeUserId$);
     }
@@ -49,6 +51,7 @@ export class EventUploadService implements EventUploadServiceAbstraction {
       return;
     }
 
+    // Get the user's event collection from the state provider
     const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
     const eventCollection = await firstValueFrom(eventStore.state$);
 
@@ -73,7 +76,10 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     }
   }
 
-  private async takeEvents(userId?: UserId): Promise<any> {
+  /** Reset the event collection for the user
+   *  @param userId the user to have their event collection reset
+   */
+  private async takeEvents(userId: UserId): Promise<any> {
     let taken = null;
     await this.stateProvider.getUser(userId, EVENT_COLLECTION).update((current) => {
       taken = current ?? [];
