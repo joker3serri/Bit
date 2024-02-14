@@ -42,12 +42,12 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
   private overlayListElement: HTMLElement;
   private mostRecentlyFocusedField: ElementWithOpId<FormFieldElement>;
   private focusedFieldData: FocusedFieldData;
-  private userInteractionEventTimeout: NodeJS.Timeout;
+  private userInteractionEventTimeout: number | NodeJS.Timeout;
   private overlayElementsMutationObserver: MutationObserver;
   private bodyElementMutationObserver: MutationObserver;
   private documentElementMutationObserver: MutationObserver;
   private mutationObserverIterations = 0;
-  private mutationObserverIterationsResetTimeout: number;
+  private mutationObserverIterationsResetTimeout: number | NodeJS.Timeout;
   private autofillFieldKeywordsMap: WeakMap<AutofillField, string> = new WeakMap();
   private eventHandlersMemo: { [key: string]: EventListener } = {};
   private readonly customElementDefaultStyles: Partial<CSSStyleDeclaration> = {
@@ -846,7 +846,10 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
 
     this.toggleOverlayHidden(true);
     this.clearUserInteractionEventTimeout();
-    this.userInteractionEventTimeout = setTimeout(this.triggerOverlayRepositionUpdates, 750);
+    this.userInteractionEventTimeout = setTimeout(
+      this.triggerOverlayRepositionUpdates,
+      750,
+    ) as unknown as number;
   };
 
   /**
@@ -1065,7 +1068,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
     this.mutationObserverIterationsResetTimeout = setTimeout(
       () => (this.mutationObserverIterations = 0),
       2000,
-    ) as unknown as number;
+    );
 
     if (this.mutationObserverIterations > 100) {
       clearTimeout(this.mutationObserverIterationsResetTimeout);
