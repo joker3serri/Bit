@@ -46,18 +46,12 @@ window.addEventListener("load", () => {
  * @param handOffMessage message to save as cookie
  */
 function redirectToDuoFrameless(redirectUrl: string, handOffMessage: string) {
-  let validateUrl;
-  try {
-    validateUrl = new URL(redirectUrl);
-  } catch (error) {
-    return;
+  const validateUrl = new URL(redirectUrl);
+
+  if (validateUrl.protocol !== "https:" || !validateUrl.hostname.endsWith("duosecurity.com")) {
+    throw new Error("Invalid redirect URL");
   }
-  let parts = validateUrl.hostname.split(".");
-  parts = parts.slice(parts.length - 2);
-  const hostname = parts.join(".");
-  if (validateUrl.protocol !== "https:" || hostname !== "duosecurity.com") {
-    return;
-  }
+
   document.cookie = `duoHandOffMessage=${handOffMessage}; SameSite=strict;`;
   window.location.href = decodeURIComponent(redirectUrl);
 }
