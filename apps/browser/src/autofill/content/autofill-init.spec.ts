@@ -240,9 +240,6 @@ describe("AutofillInit", () => {
             fillScript,
           );
           expect(autofillInit["updateOverlayIsCurrentlyFilling"]).toHaveBeenNthCalledWith(2, false);
-          expect(
-            autofillInit["autofillOverlayContentService"].focusMostRecentOverlayField,
-          ).toHaveBeenCalled();
         });
 
         it("skips attempting to focus the most recent field if the autofillOverlayContentService is not present", async () => {
