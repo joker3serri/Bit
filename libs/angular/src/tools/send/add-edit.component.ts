@@ -151,7 +151,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       });
 
     this.policyService
-      .get$(PolicyType.SendOptions)
+      .getAll$(PolicyType.SendOptions)
       .pipe(
         map((policies) => policies?.some((p) => p.data.disableHideEmail)),
         takeUntil(this.destroy$),

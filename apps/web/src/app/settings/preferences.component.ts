@@ -95,7 +95,6 @@ export class PreferencesComponent implements OnInit {
       this.vaultTimeoutSettingsService.availableVaultTimeoutActions$();
 
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
-      map((policies) => policies?.at(0)),
       filter((policy) => policy != null),
       map((policy) => {
         let timeout;

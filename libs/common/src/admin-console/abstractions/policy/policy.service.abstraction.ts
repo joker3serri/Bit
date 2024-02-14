@@ -30,7 +30,7 @@ export abstract class PolicyService {
    * If you just want the active user, use {@link get$} instead.
    * @param policyType the {@link PolicyType} to search for
    */
-  getAll$: (policyType: PolicyType, userId: UserId) => Observable<Policy[]>;
+  getAll$: (policyType: PolicyType, userId?: UserId) => Observable<Policy[]>;
 
   /**
    * @returns true if the PolicyType applies to the active user, otherwise false.
