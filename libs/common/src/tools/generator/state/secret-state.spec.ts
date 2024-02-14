@@ -20,7 +20,7 @@ const FOOBAR_KEY = new KeyDefinition<FooBar>(GENERATOR_DISK, "fooBar", {
 });
 const SomeUser = "some user" as UserId;
 
-function mockEncryptor(fooBar: FooBar[] = []) {
+function mockEncryptor(fooBar: FooBar[] = []): UserEncryptor<FooBar, Record<string, never>> {
   // stores "encrypted values" so that they can be "decrypted" later
   // while allowing the operations to be interleaved.
   const encrypted = new Map<string, FooBar>(
@@ -45,7 +45,9 @@ function mockEncryptor(fooBar: FooBar[] = []) {
     return makeEncString(JSON.stringify(value));
   }
 
-  return result;
+  // chromatic pops a false positive about missing `encrypt` and `decrypt`
+  // functions, so assert the type manually.
+  return result as unknown as UserEncryptor<FooBar, Record<string, never>>;
 }
 
 async function fakeStateProvider() {
