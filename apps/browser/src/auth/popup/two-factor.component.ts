@@ -212,8 +212,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           filter((msg: any) => msg.command === "duoResult"),
           takeUntil(this.destroy$),
         )
-        .subscribe((msg: { command: string; code: string }) => {
-          this.token = msg.code;
+        .subscribe((msg: { command: string; code: string; state: string }) => {
+          this.token = msg.code + "|" + msg.state;
           // This floating promise is intentional. We don't need to await the submit + awaiting in a subscription is not recommended.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.submit();

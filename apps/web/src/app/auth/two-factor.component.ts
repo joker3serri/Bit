@@ -117,8 +117,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     }
   }
 
-  private handleDuoResultMessage = async (msg: { data: { code: string } }) => {
-    this.token = msg.data.code;
+  private handleDuoResultMessage = async (msg: { data: { code: string; state: string } }) => {
+    this.token = msg.data.code + "|" + msg.data.state;
     await this.submit();
   };
 

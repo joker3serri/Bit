@@ -127,7 +127,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
         await this.ngZone.run(async () => {
           if (message.command === "duoCallback") {
-            this.token = message.code;
+            this.token = message.code + "|" + message.state;
             await this.submit();
           }
         });

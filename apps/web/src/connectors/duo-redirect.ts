@@ -7,16 +7,17 @@ const mobileDesktopCallback = "bitwarden://duo-callback";
 window.addEventListener("load", () => {
   const client = getQsParam("client");
   const code = getQsParam("code");
+  const state = getQsParam("state");
 
   if (client === "web") {
     const channel = new BroadcastChannel("duoResult");
 
-    channel.postMessage({ code: code });
+    channel.postMessage({ code: code, state: state });
     channel.close();
 
     processAndDisplayHandoffMessage();
   } else if (client === "browser") {
-    window.postMessage({ command: "duoResult", code: code }, "*");
+    window.postMessage({ command: "duoResult", code: code, state: state }, "*");
     processAndDisplayHandoffMessage();
   } else if (client === "mobile" || client === "desktop") {
     document.location.replace(mobileDesktopCallback + "?code=" + encodeURIComponent(code));
