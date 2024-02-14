@@ -8,6 +8,8 @@ import { StateFactory } from "@bitwarden/common/platform/factories/state-factory
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
+import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
+import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopMessagingService } from "@bitwarden/common/platform/services/noop-messaging.service";
 /* eslint-disable import/no-restricted-paths -- We need the implementation to inject, but generally this should not be accessed */
 import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-active-user-state.provider";
@@ -17,7 +19,6 @@ import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 /* eslint-enable import/no-restricted-paths */
-import { migrate } from "@bitwarden/common/state-migrations";
 
 import { MenuMain } from "./main/menu/menu.main";
 import { MessagingMain } from "./main/messaging.main";
@@ -30,14 +31,14 @@ import { Account } from "./models/account";
 import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main/biometric/index";
 import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
-import { ElectronLogService } from "./platform/services/electron-log.service";
+import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
 import { ElectronMainMessagingService } from "./services/electron-main-messaging.service";
 
 export class Main {
-  logService: ElectronLogService;
+  logService: ElectronLogMainService;
   i18nService: I18nMainService;
   storageService: ElectronStorageService;
   memoryStorageService: MemoryStorageService;
@@ -46,6 +47,7 @@ export class Main {
   stateService: ElectronStateService;
   environmentService: EnvironmentService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
+  migrationRunner: MigrationRunner;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -89,8 +91,7 @@ export class Main {
       });
     }
 
-    this.logService = new ElectronLogService(null, app.getPath("userData"));
-    this.logService.init();
+    this.logService = new ElectronLogMainService(null, app.getPath("userData"));
     this.i18nService = new I18nMainService("en", "./locales/");
 
     const storageDefaults: any = {};
@@ -124,6 +125,12 @@ export class Main {
 
     this.environmentService = new EnvironmentService(stateProvider, accountService);
 
+    this.migrationRunner = new MigrationRunner(
+      this.storageService,
+      this.logService,
+      new MigrationBuilderService(),
+    );
+
     // TODO: this state service will have access to on disk storage, but not in memory storage.
     // If we could get this to work using the stateService singleton that the rest of the app uses we could save
     // ourselves from some hacks, like having to manually update the app menu vs. the menu subscribing to events.
@@ -135,6 +142,7 @@ export class Main {
       new StateFactory(GlobalState, Account),
       accountService, // will not broadcast logouts. This is a hack until we can remove messaging dependency
       this.environmentService,
+      this.migrationRunner,
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
 
@@ -193,7 +201,7 @@ export class Main {
   bootstrap() {
     this.desktopCredentialStorageListener.init();
     // Run migrations first, then other things
-    migrate(this.storageService, this.logService).then(
+    this.migrationRunner.run().then(
       async () => {
         await this.windowMain.init();
         const locale = await this.stateService.getLocale();
