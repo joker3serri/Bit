@@ -60,7 +60,6 @@ import { UpdateTempPasswordComponent } from "../auth/update-temp-password.compon
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
-import { PaymentMethodWarningBannersComponent } from "../components/payment-method-warning-banners/payment-method-warning-banners.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
@@ -91,6 +90,7 @@ import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-va
 import { PurgeVaultComponent } from "../vault/settings/purge-vault.component";
 
 import { EnvironmentSelectorModule } from "./../components/environment-selector/environment-selector.module";
+import { PaymentMethodWarningsModule } from "./../components/payment-method-warnings/payment-method-warnings.module";
 import { AccountFingerprintComponent } from "./components/account-fingerprint/account-fingerprint.component";
 import { SharedModule } from "./shared.module";
 
@@ -110,7 +110,7 @@ import { SharedModule } from "./shared.module";
     PipesModule,
     PasswordCalloutComponent,
     DangerZoneComponent,
-    PaymentMethodWarningBannersComponent,
+    PaymentMethodWarningsModule,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,

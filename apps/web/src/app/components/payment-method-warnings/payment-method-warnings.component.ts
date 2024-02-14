@@ -2,9 +2,6 @@ import { Component } from "@angular/core";
 import { map, Observable } from "rxjs";
 
 import { PaymentMethodWarningServiceAbstraction as PaymentMethodWarningService } from "@bitwarden/common/billing/abstractions/payment-method-warning-service.abstraction";
-import { BannerModule } from "@bitwarden/components";
-
-import { SharedModule } from "../../shared/shared.module";
 
 type PaymentMethodBanner = {
   organizationId: string;
@@ -13,12 +10,10 @@ type PaymentMethodBanner = {
 };
 
 @Component({
-  standalone: true,
-  selector: "app-payment-method-warning-banners",
-  templateUrl: "payment-method-warning-banners.component.html",
-  imports: [BannerModule, SharedModule],
+  selector: "app-payment-method-warnings",
+  templateUrl: "payment-method-warnings.component.html",
 })
-export class PaymentMethodWarningBannersComponent {
+export class PaymentMethodWarningsComponent {
   constructor(private paymentMethodWarningService: PaymentMethodWarningService) {}
 
   protected banners$: Observable<PaymentMethodBanner[]> =
