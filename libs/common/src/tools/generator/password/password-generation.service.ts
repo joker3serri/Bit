@@ -149,9 +149,6 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
     if (o.numWords == null || o.numWords <= 2) {
       o.numWords = DefaultOptions.numWords;
     }
-    if (o.wordSeparator == null || o.wordSeparator.length === 0 || o.wordSeparator.length > 1) {
-      o.wordSeparator = " ";
-    }
     if (o.capitalize == null) {
       o.capitalize = false;
     }
@@ -200,9 +197,10 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       options.type = policy.defaultType;
     }
 
-    const evaluator = options.type
-      ? new PasswordGeneratorOptionsEvaluator(policy)
-      : new PassphraseGeneratorOptionsEvaluator(policy);
+    const evaluator =
+      options.type == "password"
+        ? new PasswordGeneratorOptionsEvaluator(policy)
+        : new PassphraseGeneratorOptionsEvaluator(policy);
 
     // Ensure the options to pass the current rules
     const withPolicy = evaluator.applyPolicy(options);
@@ -352,9 +350,10 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
     options: PasswordGeneratorOptions,
     enforcedPolicyOptions: PasswordGeneratorPolicyOptions,
   ) {
-    const evaluator = options.type
-      ? new PasswordGeneratorOptionsEvaluator(enforcedPolicyOptions)
-      : new PassphraseGeneratorOptionsEvaluator(enforcedPolicyOptions);
+    const evaluator =
+      options.type == "password"
+        ? new PasswordGeneratorOptionsEvaluator(enforcedPolicyOptions)
+        : new PassphraseGeneratorOptionsEvaluator(enforcedPolicyOptions);
 
     const evaluatedOptions = evaluator.applyPolicy(options);
     const santizedOptions = evaluator.sanitize(evaluatedOptions);

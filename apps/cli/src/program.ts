@@ -139,6 +139,7 @@ export class Program {
         if (!options.check) {
           await this.exitIfAuthed();
           const command = new LoginCommand(
+            this.main.loginStrategyService,
             this.main.authService,
             this.main.apiService,
             this.main.cryptoFunctionService,
@@ -321,6 +322,7 @@ export class Program {
         writeLn("    bw generate -ul");
         writeLn("    bw generate -p --separator _");
         writeLn("    bw generate -p --words 5 --separator space");
+        writeLn("    bw generate -p --words 5 --separator empty");
         writeLn("", true);
       })
       .action(async (options) => {

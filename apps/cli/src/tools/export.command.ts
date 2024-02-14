@@ -11,7 +11,7 @@ import {
   ExportFormat,
   EXPORT_FORMATS,
   VaultExportServiceAbstraction,
-} from "@bitwarden/exporter/vault-export";
+} from "@bitwarden/vault-export-core";
 
 import { Response } from "../models/response";
 import { CliUtils } from "../utils";
