@@ -635,6 +635,7 @@ export default class MainBackground {
       this.sendService,
     );
     this.providerService = new ProviderService(this.stateService);
+    this.avatarService = new AvatarService(this.apiService, this.stateProvider);
     this.syncService = new SyncService(
       this.apiService,
       this.settingsService,
@@ -884,8 +885,6 @@ export default class MainBackground {
       this.stateService,
       this.apiService,
     );
-
-    this.avatarService = new AvatarService(this.apiService, this.stateProvider);
 
     if (!this.popupOnlyContext) {
       this.mainContextMenuHandler = new MainContextMenuHandler(
