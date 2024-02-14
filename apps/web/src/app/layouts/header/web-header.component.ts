@@ -6,14 +6,13 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
 import {
   GlobalStateProvider,
   KeyDefinition,
   NEW_WEB_LAYOUT_BANNER_DISK,
 } from "@bitwarden/common/platform/state";
-
-import { StateService } from "../../core/state/state.service";
 
 const SHOW_BANNER_KEY = new KeyDefinition<boolean>(NEW_WEB_LAYOUT_BANNER_DISK, "showBanner", {
   deserializer: (b) => {

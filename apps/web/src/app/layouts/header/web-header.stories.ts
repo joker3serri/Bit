@@ -1,12 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, Injectable, importProvidersFrom } from "@angular/core";
+import { Component, importProvidersFrom, Injectable } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
-  Meta,
-  Story,
-  moduleMetadata,
   applicationConfig,
   componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  Story,
 } from "@storybook/angular";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
 
@@ -16,17 +16,18 @@ import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { GlobalState, GlobalStateProvider } from "@bitwarden/common/platform/state";
 import {
   AvatarModule,
   BreadcrumbsModule,
   ButtonModule,
   IconButtonModule,
   IconModule,
+  InputModule,
   MenuModule,
   NavigationModule,
   TabsModule,
   TypographyModule,
-  InputModule,
 } from "@bitwarden/components";
 
 import { PreloadedEnglishI18nModule } from "../../core/tests";
@@ -38,6 +39,21 @@ import { WebHeaderComponent } from "../header/web-header.component";
 class MockStateService {
   activeAccount$ = new BehaviorSubject("1").asObservable();
   accounts$ = new BehaviorSubject({ "1": { profile: { name: "Foo" } } }).asObservable();
+}
+
+@Injectable({
+  providedIn: "root",
+})
+class MockGlobalStateProvider implements Partial<GlobalStateProvider> {
+  private state = new BehaviorSubject(false);
+  get(key: any): GlobalState<any> {
+    return {
+      state$: this.state.asObservable(),
+      update: async (v: any) => {
+        this.state.next(v);
+      },
+    };
+  }
 }
 
 class MockMessagingService implements MessagingService {
@@ -107,6 +123,7 @@ export default {
       declarations: [WebHeaderComponent, MockProductSwitcher],
       providers: [
         { provide: StateService, useClass: MockStateService },
+        { provide: GlobalStateProvider, useClass: MockGlobalStateProvider },
         { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },
         { provide: VaultTimeoutSettingsService, useClass: MockVaultTimeoutService },
         {
