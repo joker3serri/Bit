@@ -1,14 +1,10 @@
-<ng-container *ngFor="let banner of banners$ | async">
-  <bit-banner
-    *ngIf="banner.visible"
-    bannerType="warning"
-    (onClose)="closeBanner(banner.organizationId)"
-  >
-    {{ "maintainYourSubscription" | i18n: banner.organizationName }}
+<ng-container *ngFor="let warning of warnings$ | async">
+  <bit-banner bannerType="warning" (onClose)="closeWarning(warning.organizationId)">
+    {{ "maintainYourSubscription" | i18n: warning.organizationName }}
     <a
       bitLink
       linkType="contrast"
-      [routerLink]="['/organizations', banner.organizationId, 'billing', 'payment-method']"
+      [routerLink]="['/organizations', warning.organizationId, 'billing', 'payment-method']"
       >{{ "addAPaymentMethod" | i18n }}</a
     >.
   </bit-banner>

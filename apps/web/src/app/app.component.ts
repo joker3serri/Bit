@@ -4,17 +4,18 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import * as jq from "jquery";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, switchMap, takeUntil, timer } from "rxjs";
 
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { PaymentMethodWarningServiceAbstraction as PaymentMethodWarningService } from "@bitwarden/common/billing/abstractions/payment-method-warning-service.abstraction";
+import { PaymentMethodWarningsServiceAbstraction as PaymentMethodWarningService } from "@bitwarden/common/billing/abstractions/payment-method-warnings-service.abstraction";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -44,6 +45,7 @@ import { RouterService } from "./core";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
+const PaymentMethodWarningsRefresh = 60000; // 1 Minute
 
 @Component({
   selector: "app-root",
@@ -54,6 +56,7 @@ export class AppComponent implements OnDestroy, OnInit {
   private idleTimer: number = null;
   private isIdle = false;
   private destroy$ = new Subject<void>();
+  private paymentMethodWarningsRefresh$ = timer(0, PaymentMethodWarningsRefresh);
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -84,6 +87,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     private paymentMethodWarningService: PaymentMethodWarningService,
+    private organizationService: OrganizationService,
   ) {}
 
   ngOnInit() {
@@ -242,6 +246,17 @@ export class AppComponent implements OnDestroy, OnInit {
       new DisableSendPolicy(),
       new SendOptionsPolicy(),
     ]);
+
+    this.paymentMethodWarningsRefresh$
+      .pipe(
+        switchMap(() => this.organizationService.memberOrganizations$),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((organizations) =>
+        organizations.forEach((organization) =>
+          this.paymentMethodWarningService.update(organization.id),
+        ),
+      );
 
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
