@@ -26,7 +26,7 @@ const USER_ENCRYPTED_COLLECTIONS: KeyDefinitionLike = {
   },
 };
 
-export class CollectionMigrator extends Migrator<19, 20> {
+export class CollectionMigrator extends Migrator<20, 21> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
 

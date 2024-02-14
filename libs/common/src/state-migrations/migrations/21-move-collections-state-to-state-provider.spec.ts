@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { CollectionMigrator } from "./20-move-collections-state-to-state-provider";
+import { CollectionMigrator } from "./21-move-collections-state-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -102,8 +102,8 @@ describe("CollectionMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 19);
-      sut = new CollectionMigrator(19, 20);
+      helper = mockMigrationHelper(exampleJSON(), 20);
+      sut = new CollectionMigrator(20, 21);
     });
 
     it("should remove collections from all accounts", async () => {
@@ -144,8 +144,8 @@ describe("CollectionMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 19);
-      sut = new CollectionMigrator(19, 20);
+      helper = mockMigrationHelper(rollbackJSON(), 20);
+      sut = new CollectionMigrator(20, 21);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
