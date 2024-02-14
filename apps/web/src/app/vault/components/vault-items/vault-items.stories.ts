@@ -74,9 +74,7 @@ export default {
         {
           provide: AvatarService,
           useValue: {
-            async loadColorFromState() {
-              return "#FF0000";
-            },
+            avatarColor$: new BehaviorSubject("#FF0000").asObservable(),
           } as Partial<AvatarService>,
         },
         {
