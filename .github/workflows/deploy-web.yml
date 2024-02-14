@@ -1,6 +1,6 @@
 ---
 name: Deploy Web Vault
-run-name: Deploy Web Vault to ${{ inputs.environment }}
+run-name: Deploy Web Vault to ${{ inputs.environment }} from ${{ inputs.branch-or-tag }}
 
 on:
   workflow_dispatch:
