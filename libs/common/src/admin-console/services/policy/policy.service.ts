@@ -1,4 +1,4 @@
-import { map, Observable, of } from "rxjs";
+import { combineLatest, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { KeyDefinition, POLICIES_DISK, StateProvider } from "../../../platform/state";
@@ -8,6 +8,7 @@ import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../..
 import { OrganizationUserStatusType, PolicyType } from "../../enums";
 import { PolicyData } from "../../models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
+import { Organization } from "../../models/domain/organization";
 import { Policy } from "../../models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../models/response/policy.response";
@@ -29,77 +30,39 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     private organizationService: OrganizationService,
   ) {}
 
-  // --- Core state management methods ---
-
   get$(policyType: PolicyType) {
-    return this.policies$.pipe(
-      map((policies) => policies.filter((p) => p.type == policyType)),
-      map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
+    const filteredPolicies$ = this.policies$.pipe(
+      map((policies) => policies.filter((p) => p.type === policyType)),
+    );
+
+    return combineLatest([filteredPolicies$, this.organizationService.organizations$]).pipe(
+      map(([policies, organizations]) => this.enforcedPolicyFilter(policies, organizations)?.at(0)),
     );
   }
 
-  getForUser$(userId: UserId, policyType: PolicyType) {
-    return this.stateProvider.getUser(userId, POLICY_POLICY).state$.pipe(
+  getAll$(policyType: PolicyType, userId?: UserId) {
+    const filteredPolicies$ = this.stateProvider.getUserState$(POLICY_POLICY, userId).pipe(
       map((policyData) => policyRecordToArray(policyData)),
-      map((policy) => policy.filter((p) => p.type === policyType)),
-      map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
+      map((policies) => policies.filter((p) => p.type === policyType)),
+    );
+
+    return combineLatest([filteredPolicies$, this.organizationService.organizations$]).pipe(
+      map(([policies, organizations]) => this.enforcedPolicyFilter(policies, organizations)),
     );
   }
-
-  policyAppliesToActiveUser$(policyType: PolicyType) {
-    return this.get$(policyType).pipe(map((policies) => policies.length > 0));
-  }
-
-  async upsert(policy: PolicyData): Promise<any> {
-    await this.policyState.update((policies) => {
-      policies ??= {};
-      policies[policy.id] = policy;
-      return policies;
-    });
-  }
-
-  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
-    await this.policyState.update(() => policies);
-  }
-
-  async clear(userId?: UserId): Promise<void> {
-    if (userId == null) {
-      await this.policyState.update(() => ({}));
-      return;
-    }
-
-    await this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
-  }
-
-  mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {
-    const policyData = new PolicyData(policyResponse);
-    return new Policy(policyData);
-  }
-
-  mapPoliciesFromToken(policiesResponse: ListResponse<PolicyResponse>): Policy[] {
-    if (policiesResponse?.data == null) {
-      return null;
-    }
-
-    return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
-  }
-
-  // --- Policy-specific interfaces - to be deprecated ---
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
-    const observable = policies
-      ? of(policies.filter((p) => p.type === PolicyType.MasterPassword))
-      : this.get$(PolicyType.MasterPassword);
-
+    const observable = policies ? of(policies) : this.policies$;
     return observable.pipe(
       map((obsPolicies) => {
         let enforcedOptions: MasterPasswordPolicyOptions = null;
+        const filteredPolicies = obsPolicies.filter((p) => p.type === PolicyType.MasterPassword);
 
-        if (obsPolicies == null || obsPolicies.length === 0) {
+        if (filteredPolicies == null || filteredPolicies.length === 0) {
           return enforcedOptions;
         }
 
-        obsPolicies.forEach((currentPolicy) => {
+        filteredPolicies.forEach((currentPolicy) => {
           if (!currentPolicy.enabled || currentPolicy.data == null) {
             return;
           }
@@ -146,6 +109,10 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
         return enforcedOptions;
       }),
     );
+  }
+
+  policyAppliesToActiveUser$(policyType: PolicyType) {
+    return this.get$(policyType).pipe(map((policy) => policy != null));
   }
 
   evaluateMasterPassword(
@@ -209,22 +176,58 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return [resetPasswordPolicyOptions, policy?.enabled ?? false];
   }
 
-  // --- Private helper methods ---
+  mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {
+    const policyData = new PolicyData(policyResponse);
+    return new Policy(policyData);
+  }
 
-  private enforcedPolicyFilter(policy: Policy) {
-    const org = this.organizationService.get(policy.organizationId);
-
-    // This shouldn't happen, i.e. the user should only have policies for orgs they are a member of
-    // But if it does, err on the side of enforcing the policy
-    if (org == null) {
-      return true;
+  mapPoliciesFromToken(policiesResponse: ListResponse<PolicyResponse>): Policy[] {
+    if (policiesResponse?.data == null) {
+      return null;
     }
 
-    return (
-      org.status >= OrganizationUserStatusType.Accepted &&
-      org.usePolicies &&
-      !this.isExemptFromPolicy(policy)
-    );
+    return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
+  }
+
+  async upsert(policy: PolicyData): Promise<any> {
+    await this.policyState.update((policies) => {
+      policies ??= {};
+      policies[policy.id] = policy;
+      return policies;
+    });
+  }
+
+  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
+    await this.policyState.update(() => policies);
+  }
+
+  async clear(userId?: UserId): Promise<void> {
+    if (userId == null) {
+      await this.policyState.update(() => ({}));
+      return;
+    }
+
+    await this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
+  }
+
+  private enforcedPolicyFilter(policies: Policy[], organizations: Organization[]) {
+    const orgDict = Object.fromEntries(organizations.map((o) => [o.id, o]));
+    return policies.filter((policy) => {
+      const organization = orgDict[policy.id];
+
+      // This shouldn't happen, i.e. the user should only have policies for orgs they are a member of
+      // But if it does, err on the side of enforcing the policy
+      if (organization == null) {
+        return true;
+      }
+
+      return (
+        policy.enabled &&
+        organization.status >= OrganizationUserStatusType.Accepted &&
+        organization.usePolicies &&
+        !this.isExemptFromPolicy(policy, organization)
+      );
+    });
   }
 
   /**
@@ -232,15 +235,13 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
    * Generally orgUsers who can manage policies are exempt from them, but some policies are stricter
    * @returns
    */
-  private isExemptFromPolicy(policy: Policy) {
-    const org = this.organizationService.get(policy.organizationId);
-
+  private isExemptFromPolicy(policy: Policy, organization: Organization) {
     switch (policy.type) {
       case PolicyType.MaximumVaultTimeout:
         // Max Vault Timeout applies to everyone except owners
-        return org.isOwner;
+        return organization.isOwner;
       default:
-        return org.canManagePolicies;
+        return organization.canManagePolicies;
     }
   }
 }

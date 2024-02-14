@@ -22,7 +22,7 @@ export abstract class PolicyService {
    * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    * @param policyType the {@link PolicyType} to search for
    */
-  get$: (policyType: PolicyType) => Observable<Policy[]>;
+  get$: (policyType: PolicyType) => Observable<Policy>;
 
   /**
    * @returns all policies of a given type that apply to the specified user.
@@ -30,7 +30,7 @@ export abstract class PolicyService {
    * If you just want the active user, use {@link get$} instead.
    * @param policyType the {@link PolicyType} to search for
    */
-  getForUser$: (userId: UserId, policyType: PolicyType) => Observable<Policy[]>;
+  getAll$: (policyType: PolicyType, userId: UserId) => Observable<Policy[]>;
 
   /**
    * @returns true if the PolicyType applies to the active user, otherwise false.
