@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, firstValueFrom, switchMap } from "rxjs";
+import { Observable, combineLatest, switchMap } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
@@ -24,8 +24,11 @@ export class CurrentAccountService {
     private accountService: AccountService,
     private avatarService: AvatarService,
   ) {
-    this.currentAccount$ = this.accountService.activeAccount$.pipe(
-      switchMap(async (account) => {
+    this.currentAccount$ = combineLatest([
+      this.accountService.activeAccount$,
+      this.avatarService.avatarColor$,
+    ]).pipe(
+      switchMap(async ([account, avatarColor]) => {
         if (account == null) {
           return null;
         }
@@ -34,7 +37,7 @@ export class CurrentAccountService {
           name: account.name || account.email,
           email: account.email,
           status: account.status,
-          avatarColor: await firstValueFrom(this.avatarService.avatarColor$),
+          avatarColor,
         };
 
         return currentAccount;

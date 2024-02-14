@@ -9,6 +9,8 @@ import { CurrentAccountService } from "./services/current-account.service";
   templateUrl: "current-account.component.html",
 })
 export class CurrentAccountComponent {
+  currentAccount$ = this.currentAccountService.currentAccount$;
+
   constructor(
     private currentAccountService: CurrentAccountService,
     private router: Router,
@@ -16,17 +18,11 @@ export class CurrentAccountComponent {
     private route: ActivatedRoute,
   ) {}
 
-  get currentAccount$() {
-    return this.currentAccountService.currentAccount$;
-  }
-
   async currentAccountClicked() {
     if (this.route.snapshot.data.state.includes("account-switcher")) {
       this.location.back();
     } else {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["/account-switcher"]);
+      await this.router.navigate(["/account-switcher"]);
     }
   }
 }
