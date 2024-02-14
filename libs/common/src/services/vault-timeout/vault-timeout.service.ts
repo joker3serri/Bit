@@ -96,7 +96,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     await this.cryptoService.clearKeyPair(true, userId);
 
     await this.cipherService.clearCache(userId);
-    await this.collectionService.clearCache(userId);
+    await this.collectionService.clearActiveUserCache();
 
     this.messagingService.send("locked", { userId: userId });
 

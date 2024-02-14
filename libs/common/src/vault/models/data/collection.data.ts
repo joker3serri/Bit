@@ -12,7 +12,7 @@ export class CollectionData {
   manage: boolean;
   hidePasswords: boolean;
 
-  constructor(response: Partial<CollectionDetailsResponse>) {
+  constructor(response: CollectionDetailsResponse) {
     this.id = response.id;
     this.organizationId = response.organizationId;
     this.name = response.name;
@@ -23,6 +23,6 @@ export class CollectionData {
   }
 
   static fromJSON(obj: Jsonify<CollectionData>) {
-    return Object.assign(new CollectionData({}), obj);
+    return Object.assign(new CollectionData(new CollectionDetailsResponse({})), obj);
   }
 }

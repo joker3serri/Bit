@@ -20,7 +20,7 @@ import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
 import { ServiceUtils } from "../service-utils";
 
-const ENCRYPTED_COLLECTION_DATA_KEY = KeyDefinition.record<CollectionData>(
+const ENCRYPTED_COLLECTION_DATA_KEY = KeyDefinition.record<CollectionData, CollectionId>(
   COLLECTION_DATA,
   "collections",
   {
@@ -83,7 +83,7 @@ export class CollectionService implements CollectionServiceAbstraction {
     this.decryptedCollections$ = this.decryptedCollectionDataState.state$;
   }
 
-  async clearCache(userId?: UserId): Promise<void> {
+  async clearActiveUserCache(): Promise<void> {
     await this.decryptedCollectionDataState.forceValue(null);
   }
 
@@ -187,7 +187,6 @@ export class CollectionService implements CollectionServiceAbstraction {
     await stateToUpdate.update(() => {
       return null;
     });
-    await this.decryptedCollectionDataState.forceValue(null);
   }
 
   async delete(id: CollectionId | CollectionId[]): Promise<any> {
