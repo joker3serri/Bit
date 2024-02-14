@@ -24,6 +24,7 @@ import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
+import { COLLAPSED_GROUPINGS } from "@bitwarden/common/vault/services/key-state/collapsed-groupings.state";
 
 import { CollectionAdminView } from "../../../core/views/collection-admin.view";
 import {
@@ -33,7 +34,6 @@ import {
   OrganizationFilter,
 } from "../shared/models/vault-filter.type";
 
-import { COLLAPSED_GROUPINGS } from "./../../../../../../../../libs/common/src/vault/services/key-state/collapsed-groupings.state";
 import { VaultFilterService as VaultFilterServiceAbstraction } from "./abstractions/vault-filter.service";
 
 const NestingDelimiter = "/";
