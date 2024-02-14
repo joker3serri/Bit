@@ -8,7 +8,6 @@ import {
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
@@ -33,7 +32,6 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
     this.collapsedGroupingsState.state$.pipe(map((c) => new Set(c)));
 
   constructor(
-    protected stateService: StateService,
     protected organizationService: OrganizationService,
     protected folderService: FolderService,
     protected cipherService: CipherService,

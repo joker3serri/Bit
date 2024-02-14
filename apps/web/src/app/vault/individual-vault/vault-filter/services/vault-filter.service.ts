@@ -16,7 +16,6 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -82,7 +81,6 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     this.collapsedGroupingsState.state$.pipe(map((c) => new Set(c)));
 
   constructor(
-    protected stateService: StateService,
     protected organizationService: OrganizationService,
     protected folderService: FolderService,
     protected cipherService: CipherService,

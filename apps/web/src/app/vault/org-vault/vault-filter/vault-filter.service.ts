@@ -9,7 +9,6 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
-import { StateService } from "../../../core";
 import { CollectionAdminView } from "../../../vault/core/views/collection-admin.view";
 import { CollectionAdminService } from "../../core/collection-admin.service";
 import { VaultFilterService as BaseVaultFilterService } from "../../individual-vault/vault-filter/services/vault-filter.service";
@@ -27,7 +26,6 @@ export class VaultFilterService extends BaseVaultFilterService implements OnDest
   );
 
   constructor(
-    stateService: StateService,
     organizationService: OrganizationService,
     folderService: FolderService,
     cipherService: CipherService,
@@ -37,7 +35,6 @@ export class VaultFilterService extends BaseVaultFilterService implements OnDest
     protected collectionAdminService: CollectionAdminService,
   ) {
     super(
-      stateService,
       organizationService,
       folderService,
       cipherService,

@@ -12,7 +12,6 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -27,7 +26,6 @@ import { VaultFilterService } from "./vault-filter.service";
 describe("vault filter service", () => {
   let vaultFilterService: VaultFilterService;
 
-  let stateService: MockProxy<StateService>;
   let organizationService: MockProxy<OrganizationService>;
   let folderService: MockProxy<FolderService>;
   let cipherService: MockProxy<CipherService>;
@@ -42,7 +40,6 @@ describe("vault filter service", () => {
   let collapsedGroupingsState: FakeActiveUserState<string[]>;
 
   beforeEach(() => {
-    stateService = mock<StateService>();
     organizationService = mock<OrganizationService>();
     folderService = mock<FolderService>();
     cipherService = mock<CipherService>();
@@ -59,7 +56,6 @@ describe("vault filter service", () => {
     folderService.folderViews$ = folderViews;
 
     vaultFilterService = new VaultFilterService(
-      stateService,
       organizationService,
       folderService,
       cipherService,
