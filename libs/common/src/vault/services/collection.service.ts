@@ -180,13 +180,12 @@ export class CollectionService implements CollectionServiceAbstraction {
   }
 
   async clear(userId?: UserId): Promise<any> {
-    const stateToUpdate =
-      userId == null
-        ? this.encryptedCollectionDataState
-        : this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY);
-    await stateToUpdate.update(() => {
-      return null;
-    });
+    if (userId == null) {
+      await this.encryptedCollectionDataState.update(() => null);
+      await this.decryptedCollectionDataState.forceValue(null);
+    } else {
+      await this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY).update(() => null);
+    }
   }
 
   async delete(id: CollectionId | CollectionId[]): Promise<any> {
