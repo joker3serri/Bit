@@ -122,6 +122,17 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     await this.submit();
   };
 
+  override launchDuoFrameless() {
+    const duoHandOffMessage = {
+      title: this.i18nService.t("youSuccessfullyLoggedIn"),
+      message: this.i18nService.t("thisWindowWillCloseIn5Seconds"),
+      buttonText: this.i18nService.t("close"),
+      isCountdown: true,
+    };
+    document.cookie = `duoHandOffMessage=${JSON.stringify(duoHandOffMessage)}; SameSite=strict;`;
+    this.platformUtilsService.launchUri(this.duoFramelessUrl);
+  }
+
   async ngOnDestroy() {
     super.ngOnDestroy();
 

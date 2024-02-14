@@ -5,6 +5,14 @@ require("./duo-redirect.scss");
 const mobileDesktopCallback = "bitwarden://duo-callback";
 
 window.addEventListener("load", () => {
+  const redirectUrl = getQsParam("duoFramelessUrl");
+  const handOffMessage = getQsParam("handOffMessage");
+
+  if (redirectUrl) {
+    redirectToDuoFrameless(redirectUrl, handOffMessage);
+    return;
+  }
+
   const client = getQsParam("client");
   const code = getQsParam("code");
   const state = getQsParam("state");
@@ -20,9 +28,39 @@ window.addEventListener("load", () => {
     window.postMessage({ command: "duoResult", code: code, state: state }, "*");
     processAndDisplayHandoffMessage();
   } else if (client === "mobile" || client === "desktop") {
-    document.location.replace(mobileDesktopCallback + "?code=" + encodeURIComponent(code));
+    processAndDisplayHandoffMessage();
+    document.location.replace(
+      mobileDesktopCallback +
+        "?code=" +
+        encodeURIComponent(code) +
+        "&state=" +
+        encodeURIComponent(state),
+    );
   }
 });
+
+/**
+ * In order to set a cookie with the hand off message, some clients need to use
+ * this connector as a middleman to set the cookie before continuing to the duo url
+ * @param redirectUrl the duo auth url
+ * @param handOffMessage message to save as cookie
+ */
+function redirectToDuoFrameless(redirectUrl: string, handOffMessage: string) {
+  let validateUrl;
+  try {
+    validateUrl = new URL(redirectUrl);
+  } catch (error) {
+    return;
+  }
+  let parts = validateUrl.hostname.split(".");
+  parts = parts.slice(parts.length - 2);
+  const hostname = parts.join(".");
+  if (validateUrl.protocol !== "https:" || hostname !== "duosecurity.com") {
+    return;
+  }
+  document.cookie = `duoHandOffMessage=${handOffMessage}; SameSite=strict;`;
+  window.location.href = decodeURIComponent(redirectUrl);
+}
 
 /**
  * The `duoHandOffMessage` must be set in the client via a cookie. This is so
@@ -59,6 +97,11 @@ window.addEventListener("load", () => {
  *
  * If `isCountdown` is undefined/false, there will be no countdown timer and the user
  * will simply have to close the tab manually.
+ *
+ * If `buttonText` is undefined, there will be no close button.
+ *
+ * Note: browsers won't let javascript close a tab that wasn't opened by javascript,
+ * so some clients may not be able to take advantage of the countdown timer/close button.
  */
 function processAndDisplayHandoffMessage() {
   const handOffMessageCookie = ("; " + document.cookie)
@@ -94,7 +137,9 @@ function processAndDisplayHandoffMessage() {
 
   content.appendChild(h1);
   content.appendChild(p);
-  content.appendChild(button);
+  if (handOffMessage.buttonText) {
+    content.appendChild(button);
+  }
 
   // Countdown timer (closes tab upon completion)
   if (handOffMessage.isCountdown) {

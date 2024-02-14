@@ -136,6 +136,25 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     }
   }
 
+  override launchDuoFrameless() {
+    const duoHandOffMessage = {
+      title: this.i18nService.t("youSuccessfullyLoggedIn"),
+      message: this.i18nService.t("youMayCloseThisWindow"),
+      isCountdown: false,
+    };
+
+    // we're using the connector here as a way to set a cookie with translations
+    // before continuing to the duo frameless url
+    const launchUrl =
+      this.environmentService.getWebVaultUrl() +
+      "/duo-redirect-connector.html" +
+      "?duoFramelessUrl=" +
+      encodeURIComponent(this.duoFramelessUrl) +
+      "&handOffMessage=" +
+      encodeURIComponent(JSON.stringify(duoHandOffMessage));
+    this.platformUtilsService.launchUri(launchUrl);
+  }
+
   ngOnDestroy(): void {
     if (this.duoCallbackSubscriptionEnabled) {
       this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);

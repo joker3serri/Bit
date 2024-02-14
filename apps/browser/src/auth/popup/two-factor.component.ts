@@ -203,7 +203,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   }
 
   duoResultSubscription: Subscription;
-
   protected override setupDuoResultListener() {
     if (!this.duoResultSubscription) {
       this.duoResultSubscription = this.browserMessagingApi
@@ -219,5 +218,24 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           this.submit();
         });
     }
+  }
+
+  override launchDuoFrameless() {
+    const duoHandOffMessage = {
+      title: this.i18nService.t("youSuccessfullyLoggedIn"),
+      message: this.i18nService.t("youMayCloseThisWindow"),
+      isCountdown: false,
+    };
+
+    // we're using the connector here as a way to set a cookie with translations
+    // before continuing to the duo frameless url
+    const launchUrl =
+      this.environmentService.getWebVaultUrl() +
+      "/duo-redirect-connector.html" +
+      "?duoFramelessUrl=" +
+      encodeURIComponent(this.duoFramelessUrl) +
+      "&handOffMessage=" +
+      encodeURIComponent(JSON.stringify(duoHandOffMessage));
+    this.platformUtilsService.launchUri(launchUrl);
   }
 }
