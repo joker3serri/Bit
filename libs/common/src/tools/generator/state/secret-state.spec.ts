@@ -1,7 +1,12 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, from } from "rxjs";
 
-import { FakeStateProvider, makeEncString, mockAccountServiceWith } from "../../../../spec";
+import {
+  FakeStateProvider,
+  makeEncString,
+  mockAccountServiceWith,
+  awaitAsync,
+} from "../../../../spec";
 import { EncString } from "../../../platform/models/domain/enc-string";
 import { KeyDefinition, GENERATOR_DISK, GENERATOR_MEMORY } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
@@ -80,6 +85,7 @@ describe("UserEncryptor", () => {
       const value = { foo: true, bar: false };
 
       await state.update(() => value);
+      await awaitAsync();
       const result = await firstValueFrom(state.state$);
 
       expect(result).toEqual(value);
@@ -94,6 +100,7 @@ describe("UserEncryptor", () => {
 
       await state.update(() => initialValue);
       await state.update(() => replacementValue);
+      await awaitAsync();
       const result = await firstValueFrom(state.state$);
 
       expect(result).toEqual(replacementValue);
@@ -121,6 +128,7 @@ describe("UserEncryptor", () => {
 
       await state.update(() => value);
       await state.update(() => null);
+      await awaitAsync();
       const result = await firstValueFrom(state.state$);
 
       expect(result).toEqual(null);
@@ -134,6 +142,7 @@ describe("UserEncryptor", () => {
 
       await state.update(() => value);
       await state.update(() => undefined);
+      await awaitAsync();
       const result = await firstValueFrom(state.state$);
 
       expect(result).toEqual(null);

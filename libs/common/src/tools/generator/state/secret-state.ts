@@ -1,4 +1,4 @@
-import { Observable, concatMap, firstValueFrom, from, zip } from "rxjs";
+import { Observable, concatMap, of, zip } from "rxjs";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
@@ -94,9 +94,8 @@ export class SecretState<Plaintext extends object, Disclosed> {
    *  @param configureState a callback that returns an updated decrypted
    *   secret state. The callback receives the state's present value as its
    *   first argument and the dependencies listed in `options.combinedLatestWith`
-   *   as its second argument. Returning `null` or `undefined` clears the state store
-   *   by setting its value to `null`.
-   *  @param options configures how the update is applied. {@link StateUpdateOptions}
+   *   as its second argument.
+   *  @param options configures how the update is applied. See {@link StateUpdateOptions}.
    *  @returns a promise that resolves with the updated value read from the state.
    *   The round-trip encrypts, decrypts, and deserializes the data, producing a new
    *   object.
@@ -107,41 +106,56 @@ export class SecretState<Plaintext extends object, Disclosed> {
   ): Promise<Plaintext> {
     // reactively grab the latest state from the caller. `zip` requires each
     // observable has a value, so `combined$` provides a default if necessary.
-    const combined$ = options?.combineLatestWith ?? from([undefined]);
+    const combined$ = options?.combineLatestWith ?? of(undefined);
     const newState$ = zip(this.plaintext.state$, combined$).pipe(
-      concatMap(async ([currentState, combined]) => {
-        // `undefined` signals to `shouldUpdate` to cancel the update
-        const shouldUpdate = options?.shouldUpdate?.(currentState, combined) ?? true;
-        if (!shouldUpdate) {
-          return undefined;
-        }
-
-        // invoke the caller's configuration with the most recent plaintext state
-        const newState = configureState(currentState, combined);
-        if (newState === null || newState === undefined) {
-          return null;
-        }
-
-        // map to storage format
-        const [secret, disclosed] = await this.encryptor.encrypt(newState, this.encrypted.userId);
-        const newStoredState = {
-          secret: secret.toJSON(),
-          public: disclosed,
-        };
-
-        return newStoredState;
-      }),
+      concatMap(([currentState, combined]) =>
+        this.prepareCryptoState(
+          currentState,
+          () => options?.shouldUpdate?.(currentState, combined) ?? true,
+          () => configureState(currentState, combined),
+        ),
+      ),
     );
 
     // update the backing store
-    await this.encrypted.update((_, newState) => newState, {
+    let latestValue: Plaintext = null;
+    await this.encrypted.update((_, [, newStoredState]) => newStoredState, {
       combineLatestWith: newState$,
-      shouldUpdate: (_, newState) => newState !== undefined,
+      shouldUpdate: (_, [shouldUpdate, , newState]) => {
+        // need to grab the latest value from the closure since the derived state
+        // could return its cached value, and this must be done in `shouldUpdate`
+        // because `configureState` may not run.
+        latestValue = newState;
+        return shouldUpdate;
+      },
     });
 
-    // then send the latest value to the caller once it round-trips
-    // through the derived state
-    const latestValue = await firstValueFrom(this.plaintext.state$);
     return latestValue;
+  }
+
+  private async prepareCryptoState(
+    currentState: Plaintext,
+    shouldUpdate: () => boolean,
+    configureState: () => Plaintext,
+  ): Promise<[boolean, { secret: string; public: Disclosed }, Plaintext]> {
+    // determine whether an update is necessary
+    if (!shouldUpdate()) {
+      return [false, undefined, currentState];
+    }
+
+    // calculate the update
+    const newState = configureState();
+    if (newState === null || newState === undefined) {
+      return [true, newState as any, newState];
+    }
+
+    // map to storage format
+    const [secret, disclosed] = await this.encryptor.encrypt(newState, this.encrypted.userId);
+    const newStoredState = {
+      secret: secret.toJSON(),
+      public: disclosed,
+    };
+
+    return [true, newStoredState, newState];
   }
 }
