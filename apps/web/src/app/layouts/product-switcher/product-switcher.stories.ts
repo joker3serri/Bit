@@ -144,26 +144,26 @@ const Template: Story = (args) => ({
   `,
 });
 
-export const NoOrgs = Template.bind({});
-NoOrgs.args = {
+export const OnlyPM = Template.bind({});
+OnlyPM.args = {
   mockOrgs: [],
   mockProviders: [],
 };
 
-export const OrgWithoutSecretsManager = Template.bind({});
-OrgWithoutSecretsManager.args = {
-  mockOrgs: [{ id: "a" }],
+export const WithSM = Template.bind({});
+WithSM.args = {
+  mockOrgs: [{ id: "org-a", canManageUsers: false, canAccessSecretsManager: true, enabled: true }],
   mockProviders: [],
 };
 
-export const OrgWithSecretsManager = Template.bind({});
-OrgWithSecretsManager.args = {
-  mockOrgs: [{ id: "b", canAccessSecretsManager: true, enabled: true }],
+export const WithSMAndAC = Template.bind({});
+WithSMAndAC.args = {
+  mockOrgs: [{ id: "org-a", canManageUsers: true, canAccessSecretsManager: true, enabled: true }],
   mockProviders: [],
 };
 
-export const OrgWithProviders = Template.bind({});
-OrgWithProviders.args = {
-  mockOrgs: [{ id: "c" }],
+export const WithAllOptions = Template.bind({});
+WithAllOptions.args = {
+  mockOrgs: [{ id: "org-a", canManageUsers: true, canAccessSecretsManager: true, enabled: true }],
   mockProviders: [{ id: "provider-a" }],
 };
