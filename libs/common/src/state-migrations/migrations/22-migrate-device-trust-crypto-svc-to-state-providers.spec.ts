@@ -127,8 +127,8 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 15);
-      sut = new DeviceTrustCryptoServiceStateProviderMigrator(14, 15);
+      helper = mockMigrationHelper(rollbackJSON(), 21);
+      sut = new DeviceTrustCryptoServiceStateProviderMigrator(21, 22);
     });
 
     it("should null out newly migrated entries in state provider framework", async () => {
