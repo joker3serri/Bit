@@ -823,6 +823,7 @@ import { ModalService } from "./modal.service";
       provide: DeviceTrustCryptoServiceAbstraction,
       useClass: DeviceTrustCryptoService,
       deps: [
+        KeyGenerationServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         CryptoServiceAbstraction,
         EncryptService,

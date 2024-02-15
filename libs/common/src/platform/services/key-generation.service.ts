@@ -1,4 +1,5 @@
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
+import { CsprngArray } from "../../types/csprng";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "../abstractions/key-generation.service";
 import {
@@ -19,7 +20,7 @@ export class KeyGenerationService implements KeyGenerationServiceAbstraction {
   }
 
   async deriveKeyFromMaterial(
-    keyMaterial: Uint8Array,
+    keyMaterial: CsprngArray,
     salt: string,
     purpose: string,
   ): Promise<SymmetricCryptoKey> {
