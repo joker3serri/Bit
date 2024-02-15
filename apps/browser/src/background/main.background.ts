@@ -620,7 +620,7 @@ export default class MainBackground {
     this.sendService = new BrowserSendService(
       this.cryptoService,
       this.i18nService,
-      this.cryptoFunctionService,
+      this.keyGenerationService,
       this.stateService,
     );
     this.sendApiService = new SendApiService(

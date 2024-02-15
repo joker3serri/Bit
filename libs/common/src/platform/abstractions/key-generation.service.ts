@@ -10,8 +10,8 @@ export abstract class KeyGenerationService {
     purpose: string,
   ) => Promise<SymmetricCryptoKey>;
   deriveKeyFromPassword: (
-    password: string,
-    salt: string,
+    password: string | Uint8Array,
+    salt: string | Uint8Array,
     kdf: KdfType,
     kdfConfig: KdfConfig,
   ) => Promise<SymmetricCryptoKey>;

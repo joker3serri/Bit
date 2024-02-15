@@ -331,7 +331,7 @@ export class Main {
     this.sendService = new SendService(
       this.cryptoService,
       this.i18nService,
-      this.cryptoFunctionService,
+      this.keyGenerationService,
       this.stateService,
     );
 

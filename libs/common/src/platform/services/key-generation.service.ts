@@ -28,8 +28,8 @@ export class KeyGenerationService implements KeyGenerationServiceAbstraction {
   }
 
   async deriveKeyFromPassword(
-    password: string,
-    salt: string,
+    password: string | Uint8Array,
+    salt: string | Uint8Array,
     kdf: KdfType,
     kdfConfig: KdfConfig,
   ): Promise<SymmetricCryptoKey> {
