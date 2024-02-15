@@ -241,6 +241,9 @@ jobs:
             --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
             --only-show-errors
 
+      - name: Debug index.html
+        run: cat apps/web/build/index.html
+
       - name: Update deployment status to Success
         if: success()
         uses: chrnorm/deployment-status@2afb7d27101260f4a764219439564d954d10b5b0 # v2.0.1
