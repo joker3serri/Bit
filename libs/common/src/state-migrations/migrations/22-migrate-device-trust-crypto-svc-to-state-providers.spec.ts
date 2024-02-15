@@ -87,8 +87,8 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationJson(), 14);
-      sut = new DeviceTrustCryptoServiceStateProviderMigrator(14, 15);
+      helper = mockMigrationHelper(preMigrationJson(), 21);
+      sut = new DeviceTrustCryptoServiceStateProviderMigrator(21, 22);
     });
 
     // it should remove deviceKey and trustDeviceChoiceForDecryption from all accounts
