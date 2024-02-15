@@ -37,7 +37,7 @@
               {{ "memberRole" | i18n }}
               <a
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 appA11yTitle="{{ 'learnMore' | i18n }}"
                 href="https://bitwarden.com/help/user-types-access-control/"
               >
@@ -123,11 +123,9 @@
                 <ng-container *ngIf="!canUseCustomPermissions; else enterprise">
                   <div class="text-base tw-block tw-font-normal tw-text-muted">
                     {{ "customDescNonEnterpriseStart" | i18n
-                    }}<a
-                      href="https://bitwarden.com/contact/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >{{ "customDescNonEnterpriseLink" | i18n }}</a
+                    }}<a href="https://bitwarden.com/contact/" target="_blank" rel="noreferrer">{{
+                      "customDescNonEnterpriseLink" | i18n
+                    }}</a
                     >{{ "customDescNonEnterpriseEnd" | i18n }}
                   </div>
                 </ng-container>
@@ -372,7 +370,7 @@
               {{ "secretsManager" | i18n }}
               <a
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 appA11yTitle="{{ 'learnMore' | i18n }}"
                 href="https://bitwarden.com/help/manage-your-organization/#access-to-secrets-manager"
               >
@@ -417,7 +415,7 @@
                 {{ "accessAllCollectionsDesc" | i18n }}
                 <a
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                   appA11yTitle="{{ 'learnMore' | i18n }}"
                   href="https://bitwarden.com/help/user-types-access-control/#access-control"
                 >
