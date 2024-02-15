@@ -2725,7 +2725,6 @@ export class StateService<
   protected resetAccount(account: TAccount) {
     const persistentAccountInformation = {
       settings: account.settings,
-      keys: { deviceKey: account.keys.deviceKey },
       adminAuthRequest: account.adminAuthRequest,
     };
     return Object.assign(this.createAccount(), persistentAccountInformation);
