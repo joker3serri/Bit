@@ -1,5 +1,8 @@
 import { matches, mock } from "jest-mock-extended";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
+import { FakeActiveUserState } from "../../../spec/fake-state";
+import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { DeviceType } from "../../enums";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
@@ -9,16 +12,23 @@ import { I18nService } from "../../platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { EncryptionType } from "../../platform/enums/encryption-type.enum";
+import { Utils } from "../../platform/misc/utils";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
+import { UserId } from "../../types/guid";
 import { DeviceKey, UserKey } from "../../types/key";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
 import { UpdateDevicesTrustRequest } from "../models/request/update-devices-trust.request";
 import { ProtectedDeviceResponse } from "../models/response/protected-device.response";
 
-import { DeviceTrustCryptoService } from "./device-trust-crypto.service.implementation";
+import {
+  SHOULD_TRUST_DEVICE,
+  DEVICE_KEY,
+  DeviceTrustCryptoService,
+} from "./device-trust-crypto.service.implementation";
+
 describe("deviceTrustCryptoService", () => {
   let deviceTrustCryptoService: DeviceTrustCryptoService;
 
@@ -31,8 +41,16 @@ describe("deviceTrustCryptoService", () => {
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<PlatformUtilsService>();
 
+  let stateProvider: FakeStateProvider;
+
+  const mockUserId = Utils.newGuid() as UserId;
+  let accountService: FakeAccountService;
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    accountService = mockAccountServiceWith(mockUserId);
+    stateProvider = new FakeStateProvider(accountService);
 
     deviceTrustCryptoService = new DeviceTrustCryptoService(
       cryptoFunctionService,
@@ -43,6 +61,7 @@ describe("deviceTrustCryptoService", () => {
       devicesApiService,
       i18nService,
       platformUtilsService,
+      stateProvider,
     );
   });
 
@@ -52,27 +71,27 @@ describe("deviceTrustCryptoService", () => {
 
   describe("User Trust Device Choice For Decryption", () => {
     describe("getShouldTrustDevice", () => {
-      it("gets the user trust device choice for decryption from the state service", async () => {
-        const stateSvcGetShouldTrustDeviceSpy = jest.spyOn(stateService, "getShouldTrustDevice");
+      it("gets the user trust device choice for decryption", async () => {
+        const state = stateProvider.activeUser.getFake(SHOULD_TRUST_DEVICE);
+        const newValue = true;
+        state.nextState(newValue);
 
-        const expectedValue = true;
-        stateSvcGetShouldTrustDeviceSpy.mockResolvedValue(expectedValue);
         const result = await deviceTrustCryptoService.getShouldTrustDevice();
 
-        expect(stateSvcGetShouldTrustDeviceSpy).toHaveBeenCalledTimes(1);
-        expect(result).toEqual(expectedValue);
+        expect(result).toEqual(newValue);
       });
     });
 
     describe("setShouldTrustDevice", () => {
-      it("sets the user trust device choice for decryption in the state service", async () => {
-        const stateSvcSetShouldTrustDeviceSpy = jest.spyOn(stateService, "setShouldTrustDevice");
+      it("sets the user trust device choice for decryption ", async () => {
+        const state = stateProvider.activeUser.getFake(SHOULD_TRUST_DEVICE);
+        state.nextState(false);
 
         const newValue = true;
         await deviceTrustCryptoService.setShouldTrustDevice(newValue);
 
-        expect(stateSvcSetShouldTrustDeviceSpy).toHaveBeenCalledTimes(1);
-        expect(stateSvcSetShouldTrustDeviceSpy).toHaveBeenCalledWith(newValue);
+        const result = await deviceTrustCryptoService.getShouldTrustDevice();
+        expect(result).toEqual(newValue);
       });
     });
   });
@@ -111,32 +130,29 @@ describe("deviceTrustCryptoService", () => {
 
     describe("getDeviceKey", () => {
       let existingDeviceKey: DeviceKey;
-      let stateSvcGetDeviceKeySpy: jest.SpyInstance;
+
+      let deviceKeyState: FakeActiveUserState<DeviceKey>;
 
       beforeEach(() => {
         existingDeviceKey = new SymmetricCryptoKey(
           new Uint8Array(deviceKeyBytesLength) as CsprngArray,
         ) as DeviceKey;
 
-        stateSvcGetDeviceKeySpy = jest.spyOn(stateService, "getDeviceKey");
+        deviceKeyState = stateProvider.activeUser.getFake(DEVICE_KEY);
       });
 
       it("returns null when there is not an existing device key", async () => {
-        stateSvcGetDeviceKeySpy.mockResolvedValue(null);
+        deviceKeyState.nextState(null);
 
         const deviceKey = await deviceTrustCryptoService.getDeviceKey();
-
-        expect(stateSvcGetDeviceKeySpy).toHaveBeenCalledTimes(1);
 
         expect(deviceKey).toBeNull();
       });
 
       it("returns the device key when there is an existing device key", async () => {
-        stateSvcGetDeviceKeySpy.mockResolvedValue(existingDeviceKey);
+        deviceKeyState.nextState(existingDeviceKey);
 
         const deviceKey = await deviceTrustCryptoService.getDeviceKey();
-
-        expect(stateSvcGetDeviceKeySpy).toHaveBeenCalledTimes(1);
 
         expect(deviceKey).not.toBeNull();
         expect(deviceKey).toBeInstanceOf(SymmetricCryptoKey);
@@ -146,18 +162,23 @@ describe("deviceTrustCryptoService", () => {
 
     describe("setDeviceKey", () => {
       it("sets the device key in the state service", async () => {
-        const stateSvcSetDeviceKeySpy = jest.spyOn(stateService, "setDeviceKey");
+        const deviceKeyState: FakeActiveUserState<DeviceKey> =
+          stateProvider.activeUser.getFake(DEVICE_KEY);
+        deviceKeyState.nextState(null);
 
-        const deviceKey = new SymmetricCryptoKey(
+        const newDeviceKey = new SymmetricCryptoKey(
           new Uint8Array(deviceKeyBytesLength) as CsprngArray,
         ) as DeviceKey;
 
         // TypeScript will allow calling private methods if the object is of type 'any'
         // This is a hacky workaround, but it allows for cleaner tests
-        await (deviceTrustCryptoService as any).setDeviceKey(deviceKey);
+        await (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey);
 
-        expect(stateSvcSetDeviceKeySpy).toHaveBeenCalledTimes(1);
-        expect(stateSvcSetDeviceKeySpy).toHaveBeenCalledWith(deviceKey);
+        const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+
+        expect(deviceKey).not.toBeNull();
+        expect(deviceKey).toBeInstanceOf(SymmetricCryptoKey);
+        expect(deviceKey).toEqual(newDeviceKey);
       });
     });
 
@@ -498,7 +519,9 @@ describe("deviceTrustCryptoService", () => {
       });
 
       it("does an early exit when the current device is not a trusted device", async () => {
-        stateService.getDeviceKey.mockResolvedValue(null);
+        const deviceKeyState: FakeActiveUserState<DeviceKey> =
+          stateProvider.activeUser.getFake(DEVICE_KEY);
+        deviceKeyState.nextState(null);
 
         await deviceTrustCryptoService.rotateDevicesTrust(fakeNewUserKey, "");
 
@@ -507,7 +530,9 @@ describe("deviceTrustCryptoService", () => {
 
       describe("is on a trusted device", () => {
         beforeEach(() => {
-          stateService.getDeviceKey.mockResolvedValue(
+          const deviceKeyState: FakeActiveUserState<DeviceKey> =
+            stateProvider.activeUser.getFake(DEVICE_KEY);
+          deviceKeyState.nextState(
             new SymmetricCryptoKey(new Uint8Array(deviceKeyBytesLength)) as DeviceKey,
           );
         });

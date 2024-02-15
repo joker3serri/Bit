@@ -29,16 +29,20 @@ import {
 /**
  * Uses disk storage so that the device key can persist after log out and tab removal.
  */
-const DEVICE_KEY = new KeyDefinition<DeviceKey>(DEVICE_TRUST_DISK, "deviceKey", {
+export const DEVICE_KEY = new KeyDefinition<DeviceKey>(DEVICE_TRUST_DISK, "deviceKey", {
   deserializer: (deviceKey) => SymmetricCryptoKey.fromJSON(deviceKey) as DeviceKey,
 });
 
 /**
  * Uses disk storage so that the shouldTrustDevice bool can persist across login.
  */
-const SHOULD_TRUST_DEVICE = new KeyDefinition<boolean>(DEVICE_TRUST_DISK, "shouldTrustDevice", {
-  deserializer: (shouldTrustDevice) => shouldTrustDevice,
-});
+export const SHOULD_TRUST_DEVICE = new KeyDefinition<boolean>(
+  DEVICE_TRUST_DISK,
+  "shouldTrustDevice",
+  {
+    deserializer: (shouldTrustDevice) => shouldTrustDevice,
+  },
+);
 
 export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstraction {
   private deviceKeyState: ActiveUserState<DeviceKey>;
