@@ -681,7 +681,7 @@ import { ModalService } from "./modal.service";
         TokenServiceAbstraction,
         LogService,
         OrganizationServiceAbstraction,
-        CryptoFunctionServiceAbstraction,
+        KeyGenerationServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },

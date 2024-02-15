@@ -463,7 +463,7 @@ export default class MainBackground {
       this.tokenService,
       this.logService,
       this.organizationService,
-      this.cryptoFunctionService,
+      this.keyGenerationService,
       logoutCallback,
     );
 
