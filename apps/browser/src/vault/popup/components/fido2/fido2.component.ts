@@ -245,7 +245,8 @@ export class Fido2Component implements OnInit, OnDestroy {
   protected async saveNewLogin() {
     const data = this.message$.value;
     if (data?.type === "ConfirmNewCredentialRequest") {
-      await this.createNewCipher();
+      const name = data.credentialName || data.rpId;
+      await this.createNewCipher(name);
 
       // We are bypassing user verification pending implementation of PIN and biometric support.
       this.send({
@@ -344,9 +345,9 @@ export class Fido2Component implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private buildCipher() {
+  private buildCipher(name: string) {
     this.cipher = new CipherView();
-    this.cipher.name = Utils.getHostname(this.url);
+    this.cipher.name = name; // get data here
     this.cipher.type = CipherType.Login;
     this.cipher.login = new LoginView();
     this.cipher.login.uris = [new LoginUriView()];
@@ -358,8 +359,8 @@ export class Fido2Component implements OnInit, OnDestroy {
     this.cipher.reprompt = CipherRepromptType.None;
   }
 
-  private async createNewCipher() {
-    this.buildCipher();
+  private async createNewCipher(name: string) {
+    this.buildCipher(name);
     const cipher = await this.cipherService.encrypt(this.cipher);
     try {
       await this.cipherService.createWithServer(cipher);
