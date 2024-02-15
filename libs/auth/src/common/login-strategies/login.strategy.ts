@@ -22,7 +22,6 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import {
-  AccountKeys,
   Account,
   AccountProfile,
   AccountTokens,
@@ -114,17 +113,7 @@ export abstract class LoginStrategy {
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
     const accountInformation = await this.tokenService.decodeToken(tokenResponse.accessToken);
 
-    // Must persist existing device key if it exists for trusted device decryption to work
-    // However, we must provide a user id so that the device key can be retrieved
-    // as the state service won't have an active account at this point in time
-    // even though the data exists in local storage.
     const userId = accountInformation.sub;
-
-    const deviceKey = await this.stateService.getDeviceKey({ userId });
-    const accountKeys = new AccountKeys();
-    if (deviceKey) {
-      accountKeys.deviceKey = deviceKey;
-    }
 
     // If you don't persist existing admin auth requests on login, they will get deleted.
     const adminAuthRequest = await this.stateService.getAdminAuthRequest({ userId });
@@ -151,7 +140,6 @@ export abstract class LoginStrategy {
             refreshToken: tokenResponse.refreshToken,
           },
         },
-        keys: accountKeys,
         decryptionOptions: AccountDecryptionOptions.fromResponse(tokenResponse),
         adminAuthRequest: adminAuthRequest?.toJSON(),
       }),

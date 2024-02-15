@@ -35,7 +35,7 @@ import {
   PasswordStrengthService,
 } from "@bitwarden/common/tools/password-strength";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
-import { UserKey, MasterKey, DeviceKey } from "@bitwarden/common/types/key";
+import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
@@ -191,29 +191,6 @@ describe("LoginStrategy", () => {
         }),
       );
       expect(messagingService.send).toHaveBeenCalledWith("loggedIn");
-    });
-
-    it("persists a device key for trusted device encryption when it exists on login", async () => {
-      // Arrange
-      const idTokenResponse = identityTokenResponseFactory();
-      apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
-
-      const deviceKey = new SymmetricCryptoKey(
-        new Uint8Array(userKeyBytesLength).buffer as CsprngArray,
-      ) as DeviceKey;
-
-      stateService.getDeviceKey.mockResolvedValue(deviceKey);
-
-      const accountKeys = new AccountKeys();
-      accountKeys.deviceKey = deviceKey;
-
-      // Act
-      await passwordLoginStrategy.logIn(credentials);
-
-      // Assert
-      expect(stateService.addAccount).toHaveBeenCalledWith(
-        expect.objectContaining({ keys: accountKeys }),
-      );
     });
 
     it("builds AuthResult", async () => {
