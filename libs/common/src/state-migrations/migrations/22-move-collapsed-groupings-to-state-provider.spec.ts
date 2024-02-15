@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { CollapsedGroupingsMigrator } from "./19-move-collapsed-groupings-to-state-provider";
+import { CollapsedGroupingsMigrator } from "./22-move-collapsed-groupings-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -61,8 +61,8 @@ describe("CollapsedGroupingsMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 18);
-      sut = new CollapsedGroupingsMigrator(18, 19);
+      helper = mockMigrationHelper(exampleJSON(), 21);
+      sut = new CollapsedGroupingsMigrator(21, 22);
     });
 
     it("should remove collapsedGroupings from all accounts", async () => {
@@ -87,8 +87,8 @@ describe("CollapsedGroupingsMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 19);
-      sut = new CollapsedGroupingsMigrator(18, 19);
+      helper = mockMigrationHelper(rollbackJSON(), 22);
+      sut = new CollapsedGroupingsMigrator(21, 22);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
