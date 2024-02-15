@@ -88,9 +88,6 @@ export class StateService<
   activeAccount$ = this.activeAccountSubject.asObservable();
 
   protected activeAccountUnlockedSubject = new BehaviorSubject<boolean>(false);
-  /**
-   * @deprecated use accountService.activeAccount$ instead
-   */
   activeAccountUnlocked$ = this.activeAccountUnlockedSubject.asObservable();
 
   private hasBeenInited = false;

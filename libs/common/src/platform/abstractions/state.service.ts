@@ -50,6 +50,9 @@ export type InitOptions = {
 export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
   activeAccount$: Observable<string>;
+  /**
+   * @deprecated use accountService.activeAccount$ instead
+   */
   activeAccountUnlocked$: Observable<boolean>;
 
   addAccount: (account: T) => Promise<void>;
