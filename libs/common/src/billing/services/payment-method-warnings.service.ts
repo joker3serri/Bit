@@ -1,4 +1,4 @@
-import { filter, firstValueFrom, map, Observable } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
 
 import { OrganizationApiServiceAbstraction as OrganizationApiService } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
 import { ActiveUserState, StateProvider } from "../../platform/state";
@@ -15,9 +15,7 @@ export class PaymentMethodWarningsService implements PaymentMethodWarningsServic
     private stateProvider: StateProvider,
   ) {
     this.paymentMethodWarningsState = this.stateProvider.getActive(PAYMENT_METHOD_WARNINGS_KEY);
-    this.paymentMethodWarnings$ = this.paymentMethodWarningsState.state$.pipe(
-      filter((state) => state !== null),
-    );
+    this.paymentMethodWarnings$ = this.paymentMethodWarningsState.state$;
   }
 
   async acknowledge(organizationId: string): Promise<void> {
@@ -31,7 +29,7 @@ export class PaymentMethodWarningsService implements PaymentMethodWarningsServic
     });
   }
 
-  async addedPaymentMethod(organizationId: string): Promise<void> {
+  async removeSubscriptionRisk(organizationId: string): Promise<void> {
     await this.paymentMethodWarningsState.update((state) => {
       const current = state[organizationId];
       state[organizationId] = {
@@ -52,7 +50,7 @@ export class PaymentMethodWarningsService implements PaymentMethodWarningsServic
         map((state) => (!state ? null : state[organizationId])),
       ),
     );
-    if (!warning || new Date(warning.savedAt) < this.getOneWeekAgo()) {
+    if (!warning || warning.savedAt < this.getOneWeekAgo()) {
       const { organizationName, risksSubscriptionFailure } =
         await this.organizationApiService.getBillingStatus(organizationId);
       await this.paymentMethodWarningsState.update((state) => {
@@ -61,7 +59,7 @@ export class PaymentMethodWarningsService implements PaymentMethodWarningsServic
           organizationName,
           risksSubscriptionFailure,
           acknowledged: false,
-          savedAt: new Date().getTime(),
+          savedAt: new Date(),
         };
         return state;
       });

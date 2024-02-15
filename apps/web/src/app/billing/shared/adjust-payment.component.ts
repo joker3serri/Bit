@@ -59,7 +59,7 @@ export class AdjustPaymentComponent {
       });
       await this.formPromise;
       if (this.organizationId) {
-        await this.paymentMethodWarningService.addedPaymentMethod(this.organizationId);
+        await this.paymentMethodWarningService.removeSubscriptionRisk(this.organizationId);
       }
       this.platformUtilsService.showToast(
         "success",

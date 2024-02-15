@@ -5,6 +5,9 @@ export const PAYMENT_METHOD_WARNINGS_KEY = KeyDefinition.record<PaymentMethodWar
   BILLING_DISK,
   "paymentMethodWarnings",
   {
-    deserializer: (warnings) => warnings,
+    deserializer: (warnings) => ({
+      ...warnings,
+      savedAt: new Date(warnings.savedAt),
+    }),
   },
 );

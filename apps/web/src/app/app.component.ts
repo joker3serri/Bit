@@ -250,13 +250,17 @@ export class AppComponent implements OnDestroy, OnInit {
     this.paymentMethodWarningsRefresh$
       .pipe(
         switchMap(() => this.organizationService.memberOrganizations$),
+        switchMap(
+          async (organizations) =>
+            await Promise.all(
+              organizations.map((organization) =>
+                this.paymentMethodWarningService.update(organization.id),
+              ),
+            ),
+        ),
         takeUntil(this.destroy$),
       )
-      .subscribe((organizations) =>
-        organizations.forEach((organization) =>
-          this.paymentMethodWarningService.update(organization.id),
-        ),
-      );
+      .subscribe();
 
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
