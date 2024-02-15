@@ -38,6 +38,7 @@ import { BiometricStateService } from "@bitwarden/common/platform/biometrics/bio
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
+import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
@@ -48,11 +49,8 @@ import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
-import {
-  DefaultElectronCryptoService,
-  ElectronCryptoService,
-} from "../../platform/services/electron-crypto.service";
-import { ElectronLogService } from "../../platform/services/electron-log.service";
+import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
+import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
 import { ElectronPlatformUtilsService } from "../../platform/services/electron-platform-utils.service";
 import { ElectronRendererMessagingService } from "../../platform/services/electron-renderer-messaging.service";
 import { ElectronRendererSecureStorageService } from "../../platform/services/electron-renderer-secure-storage.service";
@@ -94,7 +92,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       provide: RELOAD_CALLBACK,
       useValue: null,
     },
-    { provide: LogServiceAbstraction, useClass: ElectronLogService, deps: [] },
+    { provide: LogServiceAbstraction, useClass: ElectronLogRendererService, deps: [] },
     {
       provide: PlatformUtilsServiceAbstraction,
       useClass: ElectronPlatformUtilsService,
@@ -137,6 +135,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         STATE_FACTORY,
         AccountServiceAbstraction,
         EnvironmentService,
+        MigrationRunner,
         STATE_SERVICE_USE_CACHE,
       ],
     },
@@ -182,11 +181,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
     },
     {
       provide: CryptoServiceAbstraction,
-      useExisting: ElectronCryptoService,
-    },
-    {
-      provide: ElectronCryptoService,
-      useClass: DefaultElectronCryptoService,
+      useClass: ElectronCryptoService,
       deps: [
         CryptoFunctionServiceAbstraction,
         EncryptService,
