@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, importProvidersFrom, Injectable } from "@angular/core";
+import { Component, importProvidersFrom, Injectable, Input } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
   applicationConfig,
@@ -8,7 +8,7 @@ import {
   moduleMetadata,
   Story,
 } from "@storybook/angular";
-import { BehaviorSubject, combineLatest, map } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -16,7 +16,6 @@ import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { GlobalState, GlobalStateProvider } from "@bitwarden/common/platform/state";
 import {
   AvatarModule,
   BreadcrumbsModule,
@@ -30,8 +29,11 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
+import { DynamicAvatarComponent } from "../../components/dynamic-avatar.component";
 import { PreloadedEnglishI18nModule } from "../../core/tests";
 import { WebHeaderComponent } from "../header/web-header.component";
+
+import { WebLayoutMigrationBannerService } from "./web-layout-migration-banner.service";
 
 @Injectable({
   providedIn: "root",
@@ -39,21 +41,6 @@ import { WebHeaderComponent } from "../header/web-header.component";
 class MockStateService {
   activeAccount$ = new BehaviorSubject("1").asObservable();
   accounts$ = new BehaviorSubject({ "1": { profile: { name: "Foo" } } }).asObservable();
-}
-
-@Injectable({
-  providedIn: "root",
-})
-class MockGlobalStateProvider implements Partial<GlobalStateProvider> {
-  private state = new BehaviorSubject(false);
-  get(key: any): GlobalState<any> {
-    return {
-      state$: this.state.asObservable(),
-      update: async (v: any) => {
-        this.state.next(v);
-      },
-    };
-  }
 }
 
 class MockMessagingService implements MessagingService {
@@ -86,7 +73,7 @@ class MockProductSwitcher {}
   standalone: true,
   imports: [CommonModule, AvatarModule],
 })
-class MockDynamicAvatar {
+class MockDynamicAvatar implements Partial<DynamicAvatarComponent> {
   protected name$ = combineLatest([
     this.stateService.accounts$,
     this.stateService.activeAccount$,
@@ -95,6 +82,10 @@ class MockDynamicAvatar {
       ([accounts, activeAccount]) => accounts[activeAccount as keyof typeof accounts].profile.name,
     ),
   );
+
+  @Input()
+  text: string;
+
   constructor(private stateService: MockStateService) {}
 }
 
@@ -123,7 +114,12 @@ export default {
       declarations: [WebHeaderComponent, MockProductSwitcher],
       providers: [
         { provide: StateService, useClass: MockStateService },
-        { provide: GlobalStateProvider, useClass: MockGlobalStateProvider },
+        {
+          provide: WebLayoutMigrationBannerService,
+          useValue: {
+            showBanner$: of(false),
+          } as Partial<WebLayoutMigrationBannerService>,
+        },
         { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },
         { provide: VaultTimeoutSettingsService, useClass: MockVaultTimeoutService },
         {

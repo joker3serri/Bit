@@ -8,20 +8,8 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
-import {
-  GlobalStateProvider,
-  KeyDefinition,
-  NEW_WEB_LAYOUT_BANNER_DISK,
-} from "@bitwarden/common/platform/state";
 
-const SHOW_BANNER_KEY = new KeyDefinition<boolean>(NEW_WEB_LAYOUT_BANNER_DISK, "showBanner", {
-  deserializer: (b) => {
-    if (b === null) {
-      return true;
-    }
-    return b;
-  },
-});
+import { WebLayoutMigrationBannerService } from "./web-layout-migration-banner.service";
 
 @Component({
   selector: "app-header",
@@ -44,16 +32,13 @@ export class WebHeaderComponent {
   protected selfHosted: boolean;
   protected hostname = location.hostname;
 
-  private showBannerState = this.globalStateProvider.get(SHOW_BANNER_KEY);
-  protected showBanner$ = this.showBannerState.state$;
-
   constructor(
     private route: ActivatedRoute,
     private stateService: StateService,
     private platformUtilsService: PlatformUtilsService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private messagingService: MessagingService,
-    private globalStateProvider: GlobalStateProvider,
+    protected webLayoutMigrationBannerService: WebLayoutMigrationBannerService,
   ) {
     this.routeData$ = this.route.data.pipe(
       map((params) => {
@@ -84,9 +69,5 @@ export class WebHeaderComponent {
 
   protected logout() {
     this.messagingService.send("logout");
-  }
-
-  protected async hideBanner() {
-    await this.showBannerState.update(() => false);
   }
 }
