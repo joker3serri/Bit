@@ -24,7 +24,7 @@ import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { flagEnabled } from "../../platform/flags";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
 import { ElectronStateService } from "../../platform/services/electron-state.service.abstraction";
-import { getPlatform } from "../../utils";
+
 @Component({
   selector: "app-settings",
   templateUrl: "settings.component.html",
@@ -663,10 +663,10 @@ export class SettingsComponent implements OnInit {
   }
 
   get biometricText() {
-    switch (getPlatform()) {
-      case "mac":
+    switch (this.platformUtilsService.getDevice()) {
+      case DeviceType.MacOsDesktop:
         return "unlockWithTouchId";
-      case "windows":
+      case DeviceType.WindowsDesktop:
         return "unlockWithWindowsHello";
       default:
         throw new Error("Unsupported platform");
@@ -674,10 +674,10 @@ export class SettingsComponent implements OnInit {
   }
 
   get autoPromptBiometricsText() {
-    switch (getPlatform()) {
-      case "mac":
+    switch (this.platformUtilsService.getDevice()) {
+      case DeviceType.MacOsDesktop:
         return "autoPromptTouchId";
-      case "windows":
+      case DeviceType.WindowsDesktop:
         return "autoPromptWindowsHello";
       default:
         throw new Error("Unsupported platform");
