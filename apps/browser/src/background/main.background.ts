@@ -1,6 +1,11 @@
 import { firstValueFrom } from "rxjs";
 
-import { PinCryptoServiceAbstraction, PinCryptoService, LoginStrategyServiceAbstraction, LoginStrategyService } from "@bitwarden/auth/common";
+import {
+  PinCryptoServiceAbstraction,
+  PinCryptoService,
+  LoginStrategyServiceAbstraction,
+  LoginStrategyService,
+} from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";

@@ -4,7 +4,9 @@ import { UserId } from "../../types/guid";
 import { EncryptedString, EncString } from "../models/domain/enc-string";
 import { ActiveUserState, StateProvider } from "../state";
 
-import { ENCRYPTED_CLIENT_KEY_HALF, REQUIRE_PASSWORD_ON_START ,
+import {
+  ENCRYPTED_CLIENT_KEY_HALF,
+  REQUIRE_PASSWORD_ON_START,
   DISMISSED_REQUIRE_PASSWORD_ON_START_CALLOUT,
   PROMPT_AUTOMATICALLY,
   PROMPT_CANCELLED,
