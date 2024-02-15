@@ -20,15 +20,16 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction } from "../../abstractions/deprecated-vault-filter.service";
 import { DynamicTreeNode } from "../models/dynamic-tree-node.model";
 
+import { CollapsedGroupingId } from "./../../../../../common/src/types/guid";
 import { COLLAPSED_GROUPINGS } from "./../../../../../common/src/vault/services/key-state/collapsed-groupings.state";
 
 const NestingDelimiter = "/";
 
 @Injectable()
 export class VaultFilterService implements DeprecatedVaultFilterServiceAbstraction {
-  private collapsedGroupingsState: ActiveUserState<string[]> =
+  private collapsedGroupingsState: ActiveUserState<CollapsedGroupingId[]> =
     this.stateProvider.getActive(COLLAPSED_GROUPINGS);
-  private readonly collapsedGroupings$: Observable<Set<string>> =
+  private readonly collapsedGroupings$: Observable<Set<CollapsedGroupingId>> =
     this.collapsedGroupingsState.state$.pipe(map((c) => new Set(c)));
 
   constructor(
@@ -40,11 +41,11 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
     protected stateProvider: StateProvider,
   ) {}
 
-  async storeCollapsedFilterNodes(collapsedFilterNodes: Set<string>): Promise<void> {
+  async storeCollapsedFilterNodes(collapsedFilterNodes: Set<CollapsedGroupingId>): Promise<void> {
     await this.collapsedGroupingsState.update(() => Array.from(collapsedFilterNodes));
   }
 
-  async buildCollapsedFilterNodes(): Promise<Set<string>> {
+  async buildCollapsedFilterNodes(): Promise<Set<CollapsedGroupingId>> {
     return await firstValueFrom(this.collapsedGroupings$);
   }
 

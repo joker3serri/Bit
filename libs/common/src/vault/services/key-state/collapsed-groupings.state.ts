@@ -1,6 +1,8 @@
 import { KeyDefinition, VAULT_FILTER_DISK } from "../../../platform/state";
 
-export const COLLAPSED_GROUPINGS = KeyDefinition.array<string>(
+import { CollapsedGroupingId } from "./../../../types/guid";
+
+export const COLLAPSED_GROUPINGS = KeyDefinition.array<CollapsedGroupingId>(
   VAULT_FILTER_DISK,
   "collapsedGroupings",
   {

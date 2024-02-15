@@ -17,6 +17,7 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
+import { CollapsedGroupingId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -74,10 +75,10 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
 
   cipherTypeTree$: Observable<TreeNode<CipherTypeFilter>> = this.buildCipherTypeTree();
 
-  private collapsedGroupingsState: ActiveUserState<string[]> =
+  private collapsedGroupingsState: ActiveUserState<CollapsedGroupingId[]> =
     this.stateProvider.getActive(COLLAPSED_GROUPINGS);
 
-  readonly collapsedFilterNodes$: Observable<Set<string>> =
+  readonly collapsedFilterNodes$: Observable<Set<CollapsedGroupingId>> =
     this.collapsedGroupingsState.state$.pipe(map((c) => new Set(c)));
 
   constructor(
@@ -98,11 +99,11 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     return ServiceUtils.getTreeNodeObject(collections, id) as TreeNode<CollectionFilter>;
   }
 
-  async setCollapsedFilterNodes(collapsedFilterNodes: Set<string>): Promise<void> {
+  async setCollapsedFilterNodes(collapsedFilterNodes: Set<CollapsedGroupingId>): Promise<void> {
     await this.collapsedGroupingsState.update(() => Array.from(collapsedFilterNodes));
   }
 
-  protected async getCollapsedFilterNodes(): Promise<Set<string>> {
+  protected async getCollapsedFilterNodes(): Promise<Set<CollapsedGroupingId>> {
     return await firstValueFrom(this.collapsedFilterNodes$);
   }
 
@@ -120,10 +121,10 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
 
   async expandOrgFilter() {
     const collapsedFilterNodes = await firstValueFrom(this.collapsedFilterNodes$);
-    if (!collapsedFilterNodes.has("AllVaults")) {
+    if (!collapsedFilterNodes.has("AllVaults" as CollapsedGroupingId)) {
       return;
     }
-    collapsedFilterNodes.delete("AllVaults");
+    collapsedFilterNodes.delete("AllVaults" as CollapsedGroupingId);
     await this.setCollapsedFilterNodes(collapsedFilterNodes);
   }
 
