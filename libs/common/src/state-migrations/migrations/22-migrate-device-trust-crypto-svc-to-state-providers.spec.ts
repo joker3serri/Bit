@@ -7,7 +7,7 @@ import {
   DEVICE_KEY,
   DeviceTrustCryptoServiceStateProviderMigrator,
   SHOULD_TRUST_DEVICE,
-} from "./15-migrate-device-trust-crypto-svc-to-state-providers";
+} from "./22-migrate-device-trust-crypto-svc-to-state-providers";
 
 // Represents data in state service pre-migration
 function preMigrationJson() {
