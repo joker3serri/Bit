@@ -60,12 +60,15 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   // --- StateProvider methods - not yet wired up
   get_vNext$(policyType: PolicyType) {
-    const filteredPolicies$ = this.policies$.pipe(
+    const filteredPolicies$ = this.activeUserPolicies$.pipe(
       map((policies) => policies.filter((p) => p.type === policyType)),
     );
 
     return combineLatest([filteredPolicies$, this.organizationService.organizations$]).pipe(
-      map(([policies, organizations]) => this.enforcedPolicyFilter(policies, organizations)?.at(0)),
+      map(
+        ([policies, organizations]) =>
+          this.enforcedPolicyFilter(policies, organizations)?.at(0) ?? null,
+      ),
     );
   }
 
@@ -81,13 +84,13 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   }
 
   policyAppliesToActiveUser_vNext$(policyType: PolicyType) {
-    return this.get$(policyType).pipe(map((policy) => policy != null));
+    return this.get_vNext$(policyType).pipe(map((policy) => policy != null));
   }
 
   private enforcedPolicyFilter(policies: Policy[], organizations: Organization[]) {
     const orgDict = Object.fromEntries(organizations.map((o) => [o.id, o]));
     return policies.filter((policy) => {
-      const organization = orgDict[policy.id];
+      const organization = orgDict[policy.organizationId];
 
       // This shouldn't happen, i.e. the user should only have policies for orgs they are a member of
       // But if it does, err on the side of enforcing the policy
