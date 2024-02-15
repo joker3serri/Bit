@@ -12,7 +12,7 @@ const AVATAR_COLOR_KEY: KeyDefinitionLike = {
   stateDefinition: AVATAR_COLOR_STATE,
 };
 
-export class AvatarColorMigrator extends Migrator<20, 21> {
+export class AvatarColorMigrator extends Migrator<21, 22> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountState>();
 
