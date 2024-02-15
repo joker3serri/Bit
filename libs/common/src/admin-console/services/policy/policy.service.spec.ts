@@ -1,6 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
+import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { OrganizationService } from "../../../admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType, PolicyType } from "../../../admin-console/enums";
 import { PermissionsApi } from "../../../admin-console/models/api/permissions.api";
@@ -17,12 +18,15 @@ import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { ContainerService } from "../../../platform/services/container.service";
 import { StateService } from "../../../platform/services/state.service";
+import { StateProvider } from "../../../platform/state";
+import { UserId } from "../../../types/guid";
 
 describe("PolicyService", () => {
   let policyService: PolicyService;
 
   let cryptoService: MockProxy<CryptoService>;
   let stateService: MockProxy<StateService>;
+  let stateProvider: StateProvider;
   let organizationService: MockProxy<OrganizationService>;
   let encryptService: MockProxy<EncryptService>;
   let activeAccount: BehaviorSubject<string>;
@@ -30,6 +34,9 @@ describe("PolicyService", () => {
 
   beforeEach(() => {
     stateService = mock<StateService>();
+
+    const accountService = mockAccountServiceWith("userId" as UserId);
+    stateProvider = new FakeStateProvider(accountService);
     organizationService = mock<OrganizationService>();
     organizationService.getAll
       .calledWith("user")
@@ -64,7 +71,7 @@ describe("PolicyService", () => {
     stateService.getUserId.mockResolvedValue("user");
     (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
 
-    policyService = new PolicyService(stateService, organizationService);
+    policyService = new PolicyService(stateService, stateProvider, organizationService);
   });
 
   afterEach(() => {
