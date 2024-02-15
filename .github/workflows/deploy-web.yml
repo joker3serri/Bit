@@ -134,7 +134,7 @@ jobs:
           project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ inputs.branch-or-tag }}
-          slack-channel: team-eng-qa-devops
+          slack-channel: devops-alerts-test
           event: 'start'
           commit-sha: ${{ needs.get-branch-or-tag-sha.outputs.branch-or-tag-sha }}
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
