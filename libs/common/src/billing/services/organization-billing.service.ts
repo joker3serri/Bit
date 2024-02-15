@@ -5,12 +5,23 @@ import { OrganizationResponse } from "../../admin-console/models/response/organi
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
+import { EncString } from "../../platform/models/domain/enc-string";
 import { OrgKey } from "../../types/key";
-import { OrganizationBillingServiceAbstraction } from "../abstractions/organization-billing.service";
 import {
-  PurchaseOrganizationRequest,
-  StartFreeOrganizationRequest,
-} from "../models/domain/subscription-information";
+  OrganizationBillingServiceAbstraction,
+  OrganizationInformation,
+  PaymentInformation,
+  PlanInformation,
+  SubscriptionInformation,
+} from "../abstractions/organization-billing.service";
+import { PlanType } from "../enums";
+
+interface OrganizationKeys {
+  encryptedKey: EncString;
+  publicKey: string;
+  encryptedPrivateKey: EncString;
+  encryptedCollectionName: EncString;
+}
 
 export class OrganizationBillingService implements OrganizationBillingServiceAbstraction {
   constructor(
@@ -20,82 +31,113 @@ export class OrganizationBillingService implements OrganizationBillingServiceAbs
     private organizationApiService: OrganizationApiService,
   ) {}
 
-  async purchaseOrganization(
-    purchaseOrganizationRequest: PurchaseOrganizationRequest,
-  ): Promise<OrganizationResponse> {
-    const { organization, plan, payment } = purchaseOrganizationRequest;
+  async purchaseSubscription(subscription: SubscriptionInformation): Promise<OrganizationResponse> {
+    const request = new OrganizationCreateRequest();
 
-    const request = await this.createKeyedRequest();
+    const organizationKeys = await this.makeOrganizationKeys();
 
-    request.name = organization.name;
-    request.businessName = organization.businessName;
-    request.billingEmail = organization.billingEmail;
+    this.setOrganizationKeys(request, organizationKeys);
 
-    request.planType = plan.type;
-    request.additionalSeats = plan.passwordManagerSeats;
+    this.setOrganizationInformation(request, subscription.organization);
 
-    if (plan.subscribeToSecretsManager) {
-      request.useSecretsManager = true;
-      request.isFromSecretsManagerTrial = plan.isFromSecretsManagerTrial;
-      request.additionalSmSeats = plan.secretsManagerSeats;
-      request.additionalServiceAccounts = plan.secretsManagerServiceAccounts;
-    }
+    this.setPlanInformation(request, subscription.plan);
 
-    if (plan.storage) {
-      request.additionalStorageGb = plan.storage;
-    }
-
-    const [paymentToken, paymentMethodType] = payment.paymentMethod;
-    request.paymentToken = paymentToken;
-    request.paymentMethodType = paymentMethodType;
-
-    const billing = payment.billing;
-    request.billingAddressPostalCode = billing.postalCode;
-    request.billingAddressCountry = billing.country;
-
-    if (billing.taxId) {
-      request.taxIdNumber = billing.taxId;
-      request.billingAddressLine1 = billing.addressLine1;
-      request.billingAddressLine2 = billing.addressLine2;
-      request.billingAddressCity = billing.city;
-      request.billingAddressState = billing.state;
-    }
+    this.setPaymentInformation(request, subscription.payment);
 
     return await this.organizationApiService.create(request);
   }
 
-  async startFreeOrganization(
-    startFreeOrganizationRequest: StartFreeOrganizationRequest,
-  ): Promise<OrganizationResponse> {
-    const { organization, plan } = startFreeOrganizationRequest;
+  async startFree(subscription: SubscriptionInformation): Promise<OrganizationResponse> {
+    const request = new OrganizationCreateRequest();
 
-    const request = await this.createKeyedRequest();
+    const organizationKeys = await this.makeOrganizationKeys();
 
-    request.name = organization.name;
-    request.businessName = organization.businessName;
-    request.billingEmail = organization.billingEmail;
+    this.setOrganizationKeys(request, organizationKeys);
 
-    if (plan) {
-      request.useSecretsManager = plan.subscribeToSecretsManager;
-      request.isFromSecretsManagerTrial = plan.isFromSecretsManagerTrial;
-    }
+    this.setOrganizationInformation(request, subscription.organization);
+
+    this.setPlanInformation(request, subscription.plan);
 
     return await this.organizationApiService.create(request);
   }
 
-  private async createKeyedRequest(): Promise<OrganizationCreateRequest> {
+  private async makeOrganizationKeys(): Promise<OrganizationKeys> {
     const [encryptedKey, key] = await this.cryptoService.makeOrgKey<OrgKey>();
     const [publicKey, encryptedPrivateKey] = await this.cryptoService.makeKeyPair(key);
     const encryptedCollectionName = await this.encryptService.encrypt(
       this.i18nService.t("defaultCollection"),
       key,
     );
+    return {
+      encryptedKey,
+      publicKey,
+      encryptedPrivateKey,
+      encryptedCollectionName,
+    };
+  }
 
-    const request = new OrganizationCreateRequest();
-    request.key = encryptedKey.encryptedString;
-    request.keys = new OrganizationKeysRequest(publicKey, encryptedPrivateKey.encryptedString);
-    request.collectionName = encryptedCollectionName.encryptedString;
+  private setOrganizationInformation(
+    request: OrganizationCreateRequest,
+    information: OrganizationInformation,
+  ): void {
+    request.name = information.name;
+    request.businessName = information.businessName;
+    request.billingEmail = information.billingEmail;
+  }
 
-    return request;
+  private setOrganizationKeys(request: OrganizationCreateRequest, keys: OrganizationKeys): void {
+    request.key = keys.encryptedKey.encryptedString;
+    request.keys = new OrganizationKeysRequest(
+      keys.publicKey,
+      keys.encryptedPrivateKey.encryptedString,
+    );
+    request.collectionName = keys.encryptedCollectionName.encryptedString;
+  }
+
+  private setPaymentInformation(
+    request: OrganizationCreateRequest,
+    information: PaymentInformation,
+  ) {
+    const [paymentToken, paymentMethodType] = information.paymentMethod;
+    request.paymentToken = paymentToken;
+    request.paymentMethodType = paymentMethodType;
+
+    const billingInformation = information.billing;
+    request.billingAddressPostalCode = billingInformation.postalCode;
+    request.billingAddressCountry = billingInformation.country;
+
+    if (billingInformation.taxId) {
+      request.taxIdNumber = billingInformation.taxId;
+      request.billingAddressLine1 = billingInformation.addressLine1;
+      request.billingAddressLine2 = billingInformation.addressLine2;
+      request.billingAddressCity = billingInformation.city;
+      request.billingAddressState = billingInformation.state;
+    }
+  }
+
+  private setPlanInformation(
+    request: OrganizationCreateRequest,
+    information: PlanInformation,
+  ): void {
+    request.planType = information.type;
+
+    if (request.planType === PlanType.Free) {
+      request.useSecretsManager = information.subscribeToSecretsManager;
+      request.isFromSecretsManagerTrial = information.isFromSecretsManagerTrial;
+      return;
+    }
+
+    request.additionalSeats = information.passwordManagerSeats;
+
+    if (information.subscribeToSecretsManager) {
+      request.useSecretsManager = true;
+      request.isFromSecretsManagerTrial = information.isFromSecretsManagerTrial;
+      request.additionalSmSeats = information.secretsManagerSeats;
+      request.additionalServiceAccounts = information.secretsManagerServiceAccounts;
+    }
+
+    if (information.storage) {
+      request.additionalStorageGb = information.storage;
+    }
   }
 }

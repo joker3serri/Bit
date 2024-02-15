@@ -113,16 +113,16 @@ export class SecretsManagerTrialBillingStepComponent implements OnInit {
   }
 
   private async createOrganization(): Promise<string> {
-    const { type } = this.findPlanFor(this.formGroup.value.cadence);
+    const plan = this.findPlanFor(this.formGroup.value.cadence);
     const paymentMethod = await this.paymentComponent.createPaymentToken();
 
-    const response = await this.organizationBillingService.purchaseOrganization({
+    const response = await this.organizationBillingService.purchaseSubscription({
       organization: {
         name: this.organizationInfo.name,
         billingEmail: this.organizationInfo.email,
       },
       plan: {
-        type: type,
+        type: plan.type,
         passwordManagerSeats: 1,
         subscribeToSecretsManager: true,
         isFromSecretsManagerTrial: true,
