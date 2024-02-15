@@ -3,10 +3,9 @@ import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
@@ -28,7 +27,7 @@ export class AccessService {
   constructor(
     private cryptoService: CryptoService,
     private apiService: ApiService,
-    private cryptoFunctionService: CryptoFunctionService,
+    private keyGenerationService: KeyGenerationService,
     private encryptService: EncryptService,
   ) {}
 
@@ -53,15 +52,12 @@ export class AccessService {
     serviceAccountId: string,
     accessTokenView: AccessTokenView,
   ): Promise<string> {
-    const keyMaterial = await this.cryptoFunctionService.aesGenerateKey(128);
-    const key = await this.cryptoFunctionService.hkdf(
-      keyMaterial,
+    const keyMaterial = await this.keyGenerationService.createKey(128);
+    const encryptionKey = await this.keyGenerationService.deriveKeyFromMaterial(
+      keyMaterial.key,
       "bitwarden-accesstoken",
       "sm-access-token",
-      64,
-      "sha256",
     );
-    const encryptionKey = new SymmetricCryptoKey(key);
 
     const request = await this.createAccessTokenRequest(
       organizationId,
@@ -77,8 +73,8 @@ export class AccessService {
     );
     const result = new AccessTokenCreationResponse(r);
     this._accessToken.next(null);
-    const b64Key = Utils.fromBufferToB64(keyMaterial);
-    return `${this._accessTokenVersion}.${result.id}.${result.clientSecret}:${b64Key}`;
+    // const b64Key = Utils.fromBufferToB64(keyMaterial);
+    return `${this._accessTokenVersion}.${result.id}.${result.clientSecret}:${keyMaterial.keyB64}`;
   }
 
   async revokeAccessTokens(serviceAccountId: string, accessTokenIds: string[]): Promise<void> {
