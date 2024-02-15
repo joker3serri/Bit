@@ -226,7 +226,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   async clearUserKey(clearStoredKeys = true, userId?: UserId): Promise<void> {
     // Set userId to ensure we have one for the account status update
     [userId] = await this.stateProvider.setUserState(USER_KEY, null, userId);
-    await this.accountService.setAccountStatus(userId, AuthenticationStatus.Locked);
+    await this.accountService.setMaxAccountStatus(userId, AuthenticationStatus.Locked);
     if (clearStoredKeys) {
       await this.clearAllStoredUserKeys(userId);
     }

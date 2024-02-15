@@ -291,7 +291,7 @@ describe("cryptoService", () => {
     it("should update status to locked", async () => {
       await cryptoService.clearUserKey(false, mockUserId);
 
-      expect(accountService.mock.setAccountStatus).toHaveBeenCalledWith(
+      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
         mockUserId,
         AuthenticationStatus.Locked,
       );
