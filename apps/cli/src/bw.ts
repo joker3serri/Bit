@@ -570,15 +570,17 @@ export class Main {
 
     this.eventUploadService = new EventUploadService(
       this.apiService,
-      this.stateService,
+      this.stateProvider,
       this.logService,
+      this.accountService,
     );
 
     this.eventCollectionService = new EventCollectionService(
       this.cipherService,
-      this.stateService,
+      this.stateProvider,
       this.organizationService,
       this.eventUploadService,
+      this.accountService,
     );
   }
 
