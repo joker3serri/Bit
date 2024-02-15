@@ -45,9 +45,9 @@ function handleAuthResultMessage(data: ContentMessageWindowData, referrer: strin
  * @param data - Data from the window message
  * @param referrer - The referrer of the window
  */
-function handleDuoResultMessage(data: ContentMessageWindowData, referrer: string) {
-  const { command, code } = data;
-  sendExtensionRuntimeMessage({ command, code: code, referrer });
+async function handleDuoResultMessage(data: ContentMessageWindowData, referrer: string) {
+  const { command, code, state } = data;
+  sendExtensionRuntimeMessage({ command, code, state, referrer });
 }
 
 /**
