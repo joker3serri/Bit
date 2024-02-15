@@ -25,6 +25,10 @@ export const CRYPTO_DISK = new StateDefinition("crypto", "disk");
 
 export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 
+export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk", {
+  web: "disk-local",
+});
+
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 
@@ -36,5 +40,22 @@ export const POLICIES_DISK = new StateDefinition("policies", "disk");
 export const POLICIES_MEMORY = new StateDefinition("policies", "memory");
 export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 
+export const FOLDER_DISK = new StateDefinition("folder", "disk", { web: "memory" });
+
+export const SYNC_STATE = new StateDefinition("sync", "disk", { web: "memory" });
+
+export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk", {
+  web: "disk-local",
+});
+
+export const COLLECTION_DATA = new StateDefinition("collection", "disk", {
+  web: "memory",
+});
+export const AUTOFILL_SETTINGS_DISK = new StateDefinition("autofillSettings", "disk");
+export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSettingsLocal", "disk", {
+  web: "disk-local",
+});
+
 // Auth
+export const SSO_DISK = new StateDefinition("ssoLogin", "disk");
 export const DEVICE_TRUST_DISK = new StateDefinition("deviceTrust", "disk", { web: "disk-local" });
