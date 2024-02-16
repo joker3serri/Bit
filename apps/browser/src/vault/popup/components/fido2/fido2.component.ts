@@ -347,7 +347,7 @@ export class Fido2Component implements OnInit, OnDestroy {
 
   private buildCipher(name: string) {
     this.cipher = new CipherView();
-    this.cipher.name = name; // get data here
+    this.cipher.name = name;
     this.cipher.type = CipherType.Login;
     this.cipher.login = new LoginView();
     this.cipher.login.uris = [new LoginUriView()];
