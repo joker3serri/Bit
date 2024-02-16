@@ -445,6 +445,7 @@ export default class MainBackground {
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
+      this.stateService,
       (expired: boolean) => this.logout(expired),
     );
     this.settingsService = new BrowserSettingsService(this.stateService);

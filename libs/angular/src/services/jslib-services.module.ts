@@ -471,6 +471,7 @@ import { ModalService } from "./modal.service";
         PlatformUtilsServiceAbstraction,
         EnvironmentServiceAbstraction,
         AppIdServiceAbstraction,
+        StateServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
