@@ -57,3 +57,9 @@ export const AUTOFILL_SETTINGS_DISK = new StateDefinition("autofillSettings", "d
 export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSettingsLocal", "disk", {
   web: "disk-local",
 });
+
+export const TOKEN_DISK = new StateDefinition("token", "disk");
+export const TOKEN_DISK_LOCAL = new StateDefinition("token", "disk", {
+  web: "disk-local",
+});
+export const TOKEN_MEMORY = new StateDefinition("token", "memory");
