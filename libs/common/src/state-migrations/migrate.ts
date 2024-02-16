@@ -15,7 +15,7 @@ import { EnablePasskeysMigrator } from "./migrations/17-move-enable-passkeys-to-
 import { AutofillSettingsKeyMigrator } from "./migrations/18-move-autofill-settings-to-state-providers";
 import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-password-on-start";
 import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-providers";
-import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
+import { CollectionMigrator } from "./migrations/23-move-policy-state-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";

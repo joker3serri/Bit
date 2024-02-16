@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { CollectionMigrator } from "./21-move-collections-state-to-state-provider";
+import { CollectionMigrator } from "./23-move-policy-state-to-state-provider";
 
 function exampleJSON() {
   return {
