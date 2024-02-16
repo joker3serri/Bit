@@ -16,8 +16,8 @@ import { AutofillSettingsKeyMigrator } from "./migrations/18-move-autofill-setti
 import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-password-on-start";
 import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-providers";
 import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
-import { DeviceTrustCryptoServiceStateProviderMigrator } from "./migrations/22-migrate-device-trust-crypto-svc-to-state-providers";
 import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-groupings-to-state-provider";
+import { DeviceTrustCryptoServiceStateProviderMigrator } from "./migrations/23-migrate-device-trust-crypto-svc-to-state-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";

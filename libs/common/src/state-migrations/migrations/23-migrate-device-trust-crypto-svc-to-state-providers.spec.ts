@@ -7,7 +7,7 @@ import {
   DEVICE_KEY,
   DeviceTrustCryptoServiceStateProviderMigrator,
   SHOULD_TRUST_DEVICE,
-} from "./22-migrate-device-trust-crypto-svc-to-state-providers";
+} from "./23-migrate-device-trust-crypto-svc-to-state-providers";
 
 // Represents data in state service pre-migration
 function preMigrationJson() {
@@ -87,8 +87,8 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationJson(), 21);
-      sut = new DeviceTrustCryptoServiceStateProviderMigrator(21, 22);
+      helper = mockMigrationHelper(preMigrationJson(), 22);
+      sut = new DeviceTrustCryptoServiceStateProviderMigrator(22, 23);
     });
 
     // it should remove deviceKey and trustDeviceChoiceForDecryption from all accounts
@@ -127,8 +127,8 @@ describe("DeviceTrustCryptoServiceStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 21);
-      sut = new DeviceTrustCryptoServiceStateProviderMigrator(21, 22);
+      helper = mockMigrationHelper(rollbackJSON(), 22);
+      sut = new DeviceTrustCryptoServiceStateProviderMigrator(22, 23);
     });
 
     it("should null out newly migrated entries in state provider framework", async () => {
