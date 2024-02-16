@@ -2800,6 +2800,7 @@ export class StateService<
     return newActiveUser;
   }
 
+  // TODO: remove timeoutBasedStorageOptions and all methods that use it. Constrained to token svc.
   private async getTimeoutBasedStorageOptions(options?: StorageOptions): Promise<StorageOptions> {
     const timeoutAction = await this.getVaultTimeoutAction({ userId: options?.userId });
     const timeout = await this.getVaultTimeout({ userId: options?.userId });
