@@ -63,7 +63,7 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     }
   }
 
-  /** Grab the user's events and clear from state
+  /** Return user's events and then clear them from state
    *  @param userId the user to grab and clear events for
    */
   private async takeEvents(userId: UserId): Promise<EventData[]> {
