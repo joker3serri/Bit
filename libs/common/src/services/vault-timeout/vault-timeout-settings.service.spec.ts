@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { Policy } from "../../admin-console/models/domain/policy";
@@ -101,9 +101,8 @@ describe("VaultTimeoutSettingsService", () => {
           stateService.getAccountDecryptionOptions.mockResolvedValue(
             new AccountDecryptionOptions({ hasMasterPassword: true }),
           );
-          policyService.policyAppliesToUser.mockResolvedValue(policy === null ? false : true);
-          policyService.getAll.mockResolvedValue(
-            policy === null ? [] : ([{ data: { action: policy } }] as unknown as Policy[]),
+          policyService.getAll$.mockReturnValue(
+            of(policy === null ? [] : ([{ data: { action: policy } }] as unknown as Policy[])),
           );
           stateService.getVaultTimeoutAction.mockResolvedValue(userPreference);
 
@@ -131,9 +130,8 @@ describe("VaultTimeoutSettingsService", () => {
           stateService.getAccountDecryptionOptions.mockResolvedValue(
             new AccountDecryptionOptions({ hasMasterPassword: false }),
           );
-          policyService.policyAppliesToUser.mockResolvedValue(policy === null ? false : true);
-          policyService.getAll.mockResolvedValue(
-            policy === null ? [] : ([{ data: { action: policy } }] as unknown as Policy[]),
+          policyService.getAll$.mockReturnValue(
+            of(policy === null ? [] : ([{ data: { action: policy } }] as unknown as Policy[])),
           );
           stateService.getVaultTimeoutAction.mockResolvedValue(userPreference);
 

@@ -416,7 +416,7 @@ describe("PolicyService", () => {
       ]);
     });
 
-    describe("get_vNext$", () => {
+    describe("get$", () => {
       it("returns the specified PolicyType", async () => {
         policyState$.nextState(
           arrayToRecord([
@@ -426,7 +426,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.get_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.get$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toEqual({
@@ -446,7 +446,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.get_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.get$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toBeNull();
@@ -461,7 +461,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.get_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.get$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toBeNull();
@@ -475,13 +475,13 @@ describe("PolicyService", () => {
           ]),
         );
 
-        const result = await firstValueFrom(policyService.get_vNext$(PolicyType.ActivateAutofill));
+        const result = await firstValueFrom(policyService.get$(PolicyType.ActivateAutofill));
 
         expect(result).toBeNull();
       });
     });
 
-    describe("getAll_vNext$", () => {
+    describe("getAll$", () => {
       it("returns the specified PolicyTypes", async () => {
         policyState$.nextState(
           arrayToRecord([
@@ -493,7 +493,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.getAll_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.getAll$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toEqual([
@@ -529,7 +529,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.getAll_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.getAll$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toEqual([
@@ -559,7 +559,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.getAll_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.getAll$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toEqual([
@@ -589,7 +589,7 @@ describe("PolicyService", () => {
         );
 
         const result = await firstValueFrom(
-          policyService.getAll_vNext$(PolicyType.DisablePersonalVaultExport),
+          policyService.getAll$(PolicyType.DisablePersonalVaultExport),
         );
 
         expect(result).toEqual([

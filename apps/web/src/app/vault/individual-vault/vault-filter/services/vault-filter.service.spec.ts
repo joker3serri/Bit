@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { firstValueFrom, ReplaySubject, take } from "rxjs";
+import { firstValueFrom, of, ReplaySubject, take } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -82,6 +82,13 @@ describe("vault filter service", () => {
     });
 
     it("returns a nested tree", async () => {
+      policyService.policyAppliesToActiveUser$
+        .calledWith(PolicyType.SingleOrg)
+        .mockReturnValue(of(false));
+      policyService.policyAppliesToActiveUser$
+        .calledWith(PolicyType.PersonalOwnership)
+        .mockReturnValue(of(false));
+
       const tree = await firstValueFrom(vaultFilterService.organizationTree$);
 
       expect(tree.children.length).toBe(3);
@@ -90,9 +97,12 @@ describe("vault filter service", () => {
     });
 
     it("hides My Vault if personal ownership policy is enabled", async () => {
-      policyService.policyAppliesToUser
+      policyService.policyAppliesToActiveUser$
+        .calledWith(PolicyType.SingleOrg)
+        .mockReturnValue(of(false));
+      policyService.policyAppliesToActiveUser$
         .calledWith(PolicyType.PersonalOwnership)
-        .mockResolvedValue(true);
+        .mockReturnValue(of(true));
 
       const tree = await firstValueFrom(vaultFilterService.organizationTree$);
 
@@ -101,7 +111,12 @@ describe("vault filter service", () => {
     });
 
     it("returns 1 organization and My Vault if single organization policy is enabled", async () => {
-      policyService.policyAppliesToUser.calledWith(PolicyType.SingleOrg).mockResolvedValue(true);
+      policyService.policyAppliesToActiveUser$
+        .calledWith(PolicyType.SingleOrg)
+        .mockReturnValue(of(true));
+      policyService.policyAppliesToActiveUser$
+        .calledWith(PolicyType.PersonalOwnership)
+        .mockReturnValue(of(false));
 
       const tree = await firstValueFrom(vaultFilterService.organizationTree$);
 
@@ -111,10 +126,12 @@ describe("vault filter service", () => {
     });
 
     it("returns 1 organization if both single organization and personal ownership policies are enabled", async () => {
-      policyService.policyAppliesToUser.calledWith(PolicyType.SingleOrg).mockResolvedValue(true);
-      policyService.policyAppliesToUser
+      policyService.policyAppliesToActiveUser$
+        .calledWith(PolicyType.SingleOrg)
+        .mockReturnValue(of(true));
+      policyService.policyAppliesToActiveUser$
         .calledWith(PolicyType.PersonalOwnership)
-        .mockResolvedValue(true);
+        .mockReturnValue(of(true));
 
       const tree = await firstValueFrom(vaultFilterService.organizationTree$);
 
