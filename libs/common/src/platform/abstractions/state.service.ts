@@ -57,16 +57,11 @@ export abstract class StateService<T extends Account = Account> {
   clean: (options?: StorageOptions) => Promise<UserId>;
   init: (initOptions?: InitOptions) => Promise<void>;
 
-  getAccessToken: (options?: StorageOptions) => Promise<string>;
-  setAccessToken: (value: string, options?: StorageOptions) => Promise<void>;
   getAddEditCipherInfo: (options?: StorageOptions) => Promise<AddEditCipherInfo>;
   setAddEditCipherInfo: (value: AddEditCipherInfo, options?: StorageOptions) => Promise<void>;
   getAlwaysShowDock: (options?: StorageOptions) => Promise<boolean>;
   setAlwaysShowDock: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getApiKeyClientId: (options?: StorageOptions) => Promise<string>;
-  setApiKeyClientId: (value: string, options?: StorageOptions) => Promise<void>;
-  getApiKeyClientSecret: (options?: StorageOptions) => Promise<string>;
-  setApiKeyClientSecret: (value: string, options?: StorageOptions) => Promise<void>;
+
   getAutoConfirmFingerPrints: (options?: StorageOptions) => Promise<boolean>;
   setAutoConfirmFingerprints: (value: boolean, options?: StorageOptions) => Promise<void>;
   getBiometricFingerprintValidated: (options?: StorageOptions) => Promise<boolean>;
@@ -409,8 +404,6 @@ export abstract class StateService<T extends Account = Account> {
   setProtectedPin: (value: string, options?: StorageOptions) => Promise<void>;
   getProviders: (options?: StorageOptions) => Promise<{ [id: string]: ProviderData }>;
   setProviders: (value: { [id: string]: ProviderData }, options?: StorageOptions) => Promise<void>;
-  getRefreshToken: (options?: StorageOptions) => Promise<string>;
-  setRefreshToken: (value: string, options?: StorageOptions) => Promise<void>;
   getRememberedEmail: (options?: StorageOptions) => Promise<string>;
   setRememberedEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getSecurityStamp: (options?: StorageOptions) => Promise<string>;

@@ -6,6 +6,7 @@ import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { AccountService } from "../../auth/abstractions/account.service";
+import { TokenService } from "../../auth/abstractions/token.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
@@ -106,6 +107,7 @@ export class StateService<
     protected stateFactory: StateFactory<TGlobalState, TAccount>,
     protected accountService: AccountService,
     protected environmentService: EnvironmentService,
+    protected tokenService: TokenService,
     private migrationRunner: MigrationRunner,
     protected useAccountCache: boolean = true,
   ) {
@@ -207,7 +209,7 @@ export class StateService<
 
     // TODO: Temporary update to avoid routing all account status changes through account service for now.
     // The determination of state should be handled by the various services that control those values.
-    const token = await this.getAccessToken({ userId: userId });
+    const token = await this.tokenService.getAccessTokenByUserId(userId);
     const autoKey = await this.getUserKeyAutoUnlock({ userId: userId });
     const accountStatus =
       token == null
@@ -272,18 +274,6 @@ export class StateService<
     return currentUser as UserId;
   }
 
-  async getAccessToken(options?: StorageOptions): Promise<string> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    return (await this.getAccount(options))?.tokens?.accessToken;
-  }
-
-  async setAccessToken(value: string, options?: StorageOptions): Promise<void> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    const account = await this.getAccount(options);
-    account.tokens.accessToken = value;
-    await this.saveAccount(account, options);
-  }
-
   async getAddEditCipherInfo(options?: StorageOptions): Promise<AddEditCipherInfo> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
@@ -328,30 +318,6 @@ export class StateService<
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
-  }
-
-  async getApiKeyClientId(options?: StorageOptions): Promise<string> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    return (await this.getAccount(options))?.profile?.apiKeyClientId;
-  }
-
-  async setApiKeyClientId(value: string, options?: StorageOptions): Promise<void> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    const account = await this.getAccount(options);
-    account.profile.apiKeyClientId = value;
-    await this.saveAccount(account, options);
-  }
-
-  async getApiKeyClientSecret(options?: StorageOptions): Promise<string> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    return (await this.getAccount(options))?.keys?.apiKeyClientSecret;
-  }
-
-  async setApiKeyClientSecret(value: string, options?: StorageOptions): Promise<void> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    const account = await this.getAccount(options);
-    account.keys.apiKeyClientSecret = value;
-    await this.saveAccount(account, options);
   }
 
   async getAutoConfirmFingerPrints(options?: StorageOptions): Promise<boolean> {
@@ -1756,6 +1722,7 @@ export class StateService<
   }
 
   async getIsAuthenticated(options?: StorageOptions): Promise<boolean> {
+    // TODO: figure out how to handle this
     return (await this.getAccessToken(options)) != null && (await this.getUserId(options)) != null;
   }
 
@@ -2091,18 +2058,6 @@ export class StateService<
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
-  }
-
-  async getRefreshToken(options?: StorageOptions): Promise<string> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    return (await this.getAccount(options))?.tokens?.refreshToken;
-  }
-
-  async setRefreshToken(value: string, options?: StorageOptions): Promise<void> {
-    options = await this.getTimeoutBasedStorageOptions(options);
-    const account = await this.getAccount(options);
-    account.tokens.refreshToken = value;
-    await this.saveAccount(account, options);
   }
 
   async getRememberedEmail(options?: StorageOptions): Promise<string> {
