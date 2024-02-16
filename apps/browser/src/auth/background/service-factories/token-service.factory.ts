@@ -2,10 +2,18 @@ import { TokenService as AbstractTokenService } from "@bitwarden/common/auth/abs
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 
 import {
+  VaultTimeoutSettingsServiceInitOptions,
+  vaultTimeoutSettingsServiceFactory,
+} from "../../../background/service-factories/vault-timeout-settings-service.factory";
+import {
   FactoryOptions,
   CachedServices,
   factory,
 } from "../../../platform/background/service-factories/factory-options";
+import {
+  StateProviderInitOptions,
+  stateProviderFactory,
+} from "../../../platform/background/service-factories/state-provider.factory";
 import {
   stateServiceFactory,
   StateServiceInitOptions,
@@ -13,7 +21,11 @@ import {
 
 type TokenServiceFactoryOptions = FactoryOptions;
 
-export type TokenServiceInitOptions = TokenServiceFactoryOptions & StateServiceInitOptions;
+// TODO: figure out circular dep.
+export type TokenServiceInitOptions = TokenServiceFactoryOptions &
+  StateServiceInitOptions &
+  StateProviderInitOptions &
+  VaultTimeoutSettingsServiceInitOptions;
 
 export function tokenServiceFactory(
   cache: { tokenService?: AbstractTokenService } & CachedServices,
@@ -23,6 +35,11 @@ export function tokenServiceFactory(
     cache,
     "tokenService",
     opts,
-    async () => new TokenService(await stateServiceFactory(cache, opts)),
+    async () =>
+      new TokenService(
+        await stateServiceFactory(cache, opts),
+        await stateProviderFactory(cache, opts),
+        await vaultTimeoutSettingsServiceFactory(cache, opts),
+      ),
   );
 }

@@ -58,6 +58,7 @@ export class TokenService implements TokenServiceAbstraction {
   constructor(
     private stateService: StateService,
     private stateProvider: StateProvider,
+    // TODO: Idea: use VaultTimeoutSettingsService key definitions?
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
   ) {
     this.initializeState();
@@ -196,7 +197,7 @@ export class TokenService implements TokenServiceAbstraction {
   // ref https://github.com/auth0/angular-jwt/blob/master/src/angularJwt/services/jwt.js
 
   async decodeToken(token?: string): Promise<any> {
-    token = token ?? (await this.stateService.getAccessToken());
+    token = token ?? (await this.getToken());
 
     if (token == null) {
       throw new Error("Token not found.");
@@ -294,4 +295,16 @@ export class TokenService implements TokenServiceAbstraction {
       return "disk";
     }
   }
+
+  // private async determineStorageLocationWithParams(
+  //   timeout: number,
+  //   timeoutAction: VaultTimeoutAction,
+  //   userId?: UserId,
+  // ): Promise<"disk" | "memory"> {
+  //   if (timeoutAction === VaultTimeoutAction.LogOut && timeout != null) {
+  //     return "memory";
+  //   } else {
+  //     return "disk";
+  //   }
+  // }
 }

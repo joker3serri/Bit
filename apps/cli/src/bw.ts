@@ -307,7 +307,19 @@ export class Main {
     );
 
     this.appIdService = new AppIdService(this.storageService);
-    this.tokenService = new TokenService(this.stateService);
+
+    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.cryptoService,
+      this.tokenService,
+      this.policyService,
+      this.stateService,
+    );
+
+    this.tokenService = new TokenService(
+      this.stateService,
+      this.stateProvider,
+      this.vaultTimeoutSettingsService,
+    );
 
     const customUserAgent =
       "Bitwarden_CLI/" +
@@ -474,13 +486,6 @@ export class Main {
 
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
-
-    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
-      this.cryptoService,
-      this.tokenService,
-      this.policyService,
-      this.stateService,
-    );
 
     this.pinCryptoService = new PinCryptoService(
       this.stateService,

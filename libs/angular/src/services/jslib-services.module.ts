@@ -430,7 +430,11 @@ import { ModalService } from "./modal.service";
       useClass: TotpService,
       deps: [CryptoFunctionServiceAbstraction, LogService, StateServiceAbstraction],
     },
-    { provide: TokenServiceAbstraction, useClass: TokenService, deps: [StateServiceAbstraction] },
+    {
+      provide: TokenServiceAbstraction,
+      useClass: TokenService,
+      deps: [StateServiceAbstraction, StateProvider, VaultTimeoutSettingsServiceAbstraction],
+    },
     {
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,

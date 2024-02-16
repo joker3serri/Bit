@@ -34,6 +34,8 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     await this.stateService.setVaultTimeout(timeout);
 
     const currentAction = await this.stateService.getVaultTimeoutAction();
+
+    // TODO: idea: see if we can move this check to the component level
     if (
       (timeout != null || timeout === 0) &&
       action === VaultTimeoutAction.LogOut &&
