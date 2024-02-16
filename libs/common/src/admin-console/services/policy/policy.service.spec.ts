@@ -17,10 +17,7 @@ import { Organization } from "../../../admin-console/models/domain/organization"
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../../admin-console/models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
-import {
-  POLICY_POLICY,
-  PolicyService,
-} from "../../../admin-console/services/policy/policy.service";
+import { POLICIES, PolicyService } from "../../../admin-console/services/policy/policy.service";
 import { ListResponse } from "../../../models/response/list.response";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
@@ -397,7 +394,7 @@ describe("PolicyService", () => {
     let policyState$: FakeActiveUserState<Record<PolicyId, PolicyData>>;
 
     beforeEach(() => {
-      policyState$ = stateProvider.activeUser.getFake(POLICY_POLICY);
+      policyState$ = stateProvider.activeUser.getFake(POLICIES);
       organizationService.organizations$ = new BehaviorSubject([
         // User
         organization("org1", true, true, OrganizationUserStatusType.Confirmed, false),

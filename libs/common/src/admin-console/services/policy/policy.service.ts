@@ -19,7 +19,7 @@ import { PolicyResponse } from "../../models/response/policy.response";
 const policyRecordToArray = (policiesMap: { [id: string]: PolicyData }) =>
   Object.values(policiesMap || {}).map((f) => new Policy(f));
 
-export const POLICY_POLICY = KeyDefinition.record<PolicyData, PolicyId>(POLICIES_DISK, "policies", {
+export const POLICIES = KeyDefinition.record<PolicyData, PolicyId>(POLICIES_DISK, "policies", {
   deserializer: (policyData: Jsonify<PolicyData>) => PolicyData.fromJSON(policyData),
 });
 
@@ -28,8 +28,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   policies$ = this._policies.asObservable();
 
-  private policyState = this.stateProvider.getActive(POLICY_POLICY);
-  activeUserPolicies$ = this.policyState.state$.pipe(
+  private activeUserPolicyState = this.stateProvider.getActive(POLICIES);
+  activeUserPolicies$ = this.activeUserPolicyState.state$.pipe(
     map((policyData) => policyRecordToArray(policyData)),
   );
 
@@ -73,7 +73,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   }
 
   getAll_vNext$(policyType: PolicyType, userId?: UserId) {
-    const filteredPolicies$ = this.stateProvider.getUserState$(POLICY_POLICY, userId).pipe(
+    const filteredPolicies$ = this.stateProvider.getUserState$(POLICIES, userId).pipe(
       map((policyData) => policyRecordToArray(policyData)),
       map((policies) => policies.filter((p) => p.type === policyType)),
     );
