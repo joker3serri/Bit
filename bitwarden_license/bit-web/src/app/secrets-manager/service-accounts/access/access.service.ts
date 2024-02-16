@@ -6,6 +6,7 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
@@ -52,9 +53,8 @@ export class AccessService {
     serviceAccountId: string,
     accessTokenView: AccessTokenView,
   ): Promise<string> {
-    const keyMaterial = await this.keyGenerationService.createKey(128);
-    const encryptionKey = await this.keyGenerationService.deriveKeyFromMaterial(
-      keyMaterial.key,
+    const [keyMaterial, encryptionKey] = await this.keyGenerationService.createKeyFromMaterial(
+      128,
       "bitwarden-accesstoken",
       "sm-access-token",
     );
@@ -73,8 +73,8 @@ export class AccessService {
     );
     const result = new AccessTokenCreationResponse(r);
     this._accessToken.next(null);
-    // const b64Key = Utils.fromBufferToB64(keyMaterial);
-    return `${this._accessTokenVersion}.${result.id}.${result.clientSecret}:${keyMaterial.keyB64}`;
+    const keyB64 = Utils.fromBufferToB64(keyMaterial);
+    return `${this._accessTokenVersion}.${result.id}.${result.clientSecret}:${keyB64}`;
   }
 
   async revokeAccessTokens(serviceAccountId: string, accessTokenIds: string[]): Promise<void> {

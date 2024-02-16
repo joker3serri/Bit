@@ -14,17 +14,27 @@ import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 export class KeyGenerationService implements KeyGenerationServiceAbstraction {
   constructor(private cryptoFunctionService: CryptoFunctionService) {}
 
-  async createKey(bitLength: 128 | 192 | 256 | 512): Promise<SymmetricCryptoKey> {
+  async createKey(bitLength: 256 | 512): Promise<SymmetricCryptoKey> {
     const key = await this.cryptoFunctionService.aesGenerateKey(bitLength);
     return new SymmetricCryptoKey(key);
   }
 
+  async createKeyFromMaterial(
+    bitLength: 128 | 192 | 256 | 512,
+    salt: string,
+    purpose: string,
+  ): Promise<[CsprngArray, SymmetricCryptoKey]> {
+    const material = await this.cryptoFunctionService.aesGenerateKey(bitLength);
+    const key = await this.cryptoFunctionService.hkdf(material, salt, purpose, 64, "sha256");
+    return [material, new SymmetricCryptoKey(key)];
+  }
+
   async deriveKeyFromMaterial(
-    keyMaterial: CsprngArray,
+    material: CsprngArray,
     salt: string,
     purpose: string,
   ): Promise<SymmetricCryptoKey> {
-    const key = await this.cryptoFunctionService.hkdf(keyMaterial, salt, purpose, 64, "sha256");
+    const key = await this.cryptoFunctionService.hkdf(material, salt, purpose, 64, "sha256");
     return new SymmetricCryptoKey(key);
   }
 

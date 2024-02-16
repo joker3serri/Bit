@@ -73,9 +73,8 @@ export class SendService implements InternalSendServiceAbstraction {
     send.hideEmail = model.hideEmail;
     send.maxAccessCount = model.maxAccessCount;
     if (model.key == null) {
-      model.key = (await this.keyGenerationService.createKey(128)).key;
-      model.cryptoKey = await this.keyGenerationService.deriveKeyFromMaterial(
-        model.key,
+      [model.key, model.cryptoKey] = await this.keyGenerationService.createKeyFromMaterial(
+        128,
         "bitwarden-send",
         "send",
       );

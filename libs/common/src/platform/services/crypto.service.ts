@@ -8,6 +8,7 @@ import { ProfileProviderResponse } from "../../admin-console/models/response/pro
 import { AccountService } from "../../auth/abstractions/account.service";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
+import { CsprngArray } from "../../types/csprng";
 import { OrganizationId, ProviderId, UserId } from "../../types/guid";
 import {
   OrgKey,
@@ -632,7 +633,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     return new SymmetricCryptoKey(masterKey) as MasterKey;
   }
 
-  async makeSendKey(keyMaterial: Uint8Array): Promise<SymmetricCryptoKey> {
+  async makeSendKey(keyMaterial: CsprngArray): Promise<SymmetricCryptoKey> {
     return await this.keyGenerationService.deriveKeyFromMaterial(
       keyMaterial,
       "bitwarden-send",
