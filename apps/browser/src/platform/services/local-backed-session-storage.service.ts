@@ -138,10 +138,18 @@ export class LocalBackedSessionStorageService extends AbstractMemoryStorageServi
   async getSessionEncKey(): Promise<SymmetricCryptoKey> {
     let storedKey = await this.sessionStorage.get<SymmetricCryptoKey>(keys.encKey);
     if (storedKey == null || Object.keys(storedKey).length == 0) {
-      storedKey = await this.keyGenerationService.createKey(256);
+      storedKey = (
+        await this.keyGenerationService.createKeyFromMaterial(
+          128,
+          "bitwarden-ephemeral",
+          "ephemeral",
+        )
+      )[1];
       await this.setSessionEncKey(storedKey);
+      return storedKey;
+    } else {
+      return SymmetricCryptoKey.fromJSON(storedKey);
     }
-    return SymmetricCryptoKey.fromJSON(storedKey);
   }
 
   async setSessionEncKey(input: SymmetricCryptoKey): Promise<void> {
