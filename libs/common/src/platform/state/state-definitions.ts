@@ -63,3 +63,7 @@ export const TOKEN_DISK_LOCAL = new StateDefinition("token", "disk", {
   web: "disk-local",
 });
 export const TOKEN_MEMORY = new StateDefinition("token", "memory");
+
+export const VAULT_FILTER_DISK = new StateDefinition("vaultFilter", "disk", {
+  web: "disk-local",
+});
