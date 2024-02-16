@@ -40,7 +40,6 @@ export class EventUploadService implements EventUploadServiceAbstraction {
       userId = await firstValueFrom(this.stateProvider.activeUserId$);
     }
 
-    // Get the user's event collection from the state provider
     const eventCollection = await this.takeEvents(userId);
 
     if (eventCollection == null || eventCollection.length === 0) {
