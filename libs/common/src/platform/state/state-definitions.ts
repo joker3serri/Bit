@@ -59,3 +59,7 @@ export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSetting
 // Auth
 export const SSO_DISK = new StateDefinition("ssoLogin", "disk");
 export const DEVICE_TRUST_DISK = new StateDefinition("deviceTrust", "disk", { web: "disk-local" });
+
+export const VAULT_FILTER_DISK = new StateDefinition("vaultFilter", "disk", {
+  web: "disk-local",
+});
