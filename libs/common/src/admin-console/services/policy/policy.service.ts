@@ -1,7 +1,6 @@
 import { combineLatest, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
-import { StateService } from "../../../platform/abstractions/state.service";
 import { KeyDefinition, POLICIES_DISK, StateProvider } from "../../../platform/state";
 import { PolicyId, UserId } from "../../../types/guid";
 import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
@@ -31,7 +30,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   policies$ = this.activeUserPolicies$;
 
   constructor(
-    protected stateService: StateService,
     private stateProvider: StateProvider,
     private organizationService: OrganizationService,
   ) {}

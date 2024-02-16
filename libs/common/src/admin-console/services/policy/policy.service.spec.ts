@@ -75,7 +75,7 @@ describe("PolicyService", () => {
     stateService.getUserId.mockResolvedValue("user");
     (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
 
-    policyService = new PolicyService(stateService, stateProvider, organizationService);
+    policyService = new PolicyService(stateProvider, organizationService);
   });
 
   afterEach(() => {
