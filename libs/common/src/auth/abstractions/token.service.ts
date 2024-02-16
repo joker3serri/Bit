@@ -1,3 +1,4 @@
+import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 export abstract class TokenService {
@@ -5,19 +6,37 @@ export abstract class TokenService {
     accessToken: string,
     refreshToken: string,
     clientIdClientSecret: [string, string],
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
   ) => Promise<any>;
-  setToken: (token: string) => Promise<any>;
+  setToken: (
+    token: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ) => Promise<any>;
   getToken: () => Promise<string>;
-  setRefreshToken: (refreshToken: string) => Promise<any>;
+  setRefreshToken: (
+    refreshToken: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ) => Promise<any>;
   getRefreshToken: () => Promise<string>;
-  setClientId: (clientId: string) => Promise<any>;
+  setClientId: (
+    clientId: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ) => Promise<any>;
   getClientId: () => Promise<string>;
-  setClientSecret: (clientSecret: string) => Promise<any>;
+  setClientSecret: (
+    clientSecret: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ) => Promise<any>;
   getClientSecret: () => Promise<string>;
   setTwoFactorToken: (tokenResponse: IdentityTokenResponse) => Promise<any>;
   getTwoFactorToken: () => Promise<string>;
   clearTwoFactorToken: () => Promise<any>;
-  clearToken: () => Promise<void>;
+  clearToken: (vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number) => Promise<void>;
   decodeToken: (token?: string) => Promise<any>;
   getTokenExpirationDate: () => Promise<Date>;
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;

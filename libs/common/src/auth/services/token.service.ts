@@ -1,11 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
-import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
 import { ActiveUserState, StateProvider } from "../../platform/state";
-import { UserId } from "../../types/guid";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
@@ -55,12 +52,8 @@ export class TokenService implements TokenServiceAbstraction {
   private apiKeyClientSecretDiskState: ActiveUserState<string>;
   private apiKeyClientSecretMemoryState: ActiveUserState<string>;
 
-  constructor(
-    private stateService: StateService,
-    private stateProvider: StateProvider,
-    // TODO: Idea: use VaultTimeoutSettingsService key definitions?
-    private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-  ) {
+  // TODO: update service instantiations and deps array
+  constructor(private stateProvider: StateProvider) {
     this.initializeState();
   }
 
@@ -84,17 +77,23 @@ export class TokenService implements TokenServiceAbstraction {
     accessToken: string,
     refreshToken: string,
     clientIdClientSecret: [string, string],
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
   ): Promise<any> {
-    await this.setToken(accessToken);
-    await this.setRefreshToken(refreshToken);
+    await this.setToken(accessToken, vaultTimeoutAction, vaultTimeout);
+    await this.setRefreshToken(refreshToken, vaultTimeoutAction, vaultTimeout);
     if (clientIdClientSecret != null) {
-      await this.setClientId(clientIdClientSecret[0]);
-      await this.setClientSecret(clientIdClientSecret[1]);
+      await this.setClientId(clientIdClientSecret[0], vaultTimeoutAction, vaultTimeout);
+      await this.setClientSecret(clientIdClientSecret[1], vaultTimeoutAction, vaultTimeout);
     }
   }
 
-  async setToken(token: string): Promise<void> {
-    const storageLocation = await this.determineStorageLocation();
+  async setToken(
+    token: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ): Promise<void> {
+    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
       await this.accessTokenDiskState.update((_) => token);
@@ -104,17 +103,23 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getToken(): Promise<string> {
-    const storageLocation = await this.determineStorageLocation();
+    // Always read memory first b/c faster
+    const accessTokenMemory = await firstValueFrom(this.accessTokenMemoryState.state$);
 
-    if (storageLocation === "disk") {
-      return await firstValueFrom(this.accessTokenDiskState.state$);
-    } else if (storageLocation === "memory") {
-      return await firstValueFrom(this.accessTokenMemoryState.state$);
+    if (accessTokenMemory != null) {
+      return accessTokenMemory;
     }
+
+    // if memory is null, read from disk
+    return await firstValueFrom(this.accessTokenDiskState.state$);
   }
 
-  async setRefreshToken(refreshToken: string): Promise<void> {
-    const storageLocation = await this.determineStorageLocation();
+  async setRefreshToken(
+    refreshToken: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ): Promise<void> {
+    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
       await this.refreshTokenDiskState.update((_) => refreshToken);
@@ -124,17 +129,23 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getRefreshToken(): Promise<string> {
-    const storageLocation = await this.determineStorageLocation();
+    // Always read memory first b/c faster
+    const refreshTokenMemory = await firstValueFrom(this.refreshTokenMemoryState.state$);
 
-    if (storageLocation === "disk") {
-      return await firstValueFrom(this.refreshTokenDiskState.state$);
-    } else if (storageLocation === "memory") {
-      return await firstValueFrom(this.refreshTokenMemoryState.state$);
+    if (refreshTokenMemory != null) {
+      return refreshTokenMemory;
     }
+
+    // if memory is null, read from disk
+    return await firstValueFrom(this.refreshTokenDiskState.state$);
   }
 
-  async setClientId(clientId: string): Promise<void> {
-    const storageLocation = await this.determineStorageLocation();
+  async setClientId(
+    clientId: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ): Promise<void> {
+    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
       await this.apiKeyClientIdDiskState.update((_) => clientId);
@@ -144,17 +155,23 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getClientId(): Promise<string> {
-    const storageLocation = await this.determineStorageLocation();
+    // Always read memory first b/c faster
+    const apiKeyClientIdMemory = await firstValueFrom(this.apiKeyClientIdMemoryState.state$);
 
-    if (storageLocation === "disk") {
-      return await firstValueFrom(this.apiKeyClientIdDiskState.state$);
-    } else if (storageLocation === "memory") {
-      return await firstValueFrom(this.apiKeyClientIdMemoryState.state$);
+    if (apiKeyClientIdMemory != null) {
+      return apiKeyClientIdMemory;
     }
+
+    // if memory is null, read from disk
+    return await firstValueFrom(this.apiKeyClientIdDiskState.state$);
   }
 
-  async setClientSecret(clientSecret: string): Promise<void> {
-    const storageLocation = await this.determineStorageLocation();
+  async setClientSecret(
+    clientSecret: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ): Promise<void> {
+    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
       await this.apiKeyClientSecretDiskState.update((_) => clientSecret);
@@ -164,13 +181,17 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getClientSecret(): Promise<string> {
-    const storageLocation = await this.determineStorageLocation();
+    // Always read memory first b/c faster
+    const apiKeyClientSecretMemory = await firstValueFrom(
+      this.apiKeyClientSecretMemoryState.state$,
+    );
 
-    if (storageLocation === "disk") {
-      return await firstValueFrom(this.apiKeyClientSecretDiskState.state$);
-    } else if (storageLocation === "memory") {
-      return await firstValueFrom(this.apiKeyClientSecretMemoryState.state$);
+    if (apiKeyClientSecretMemory != null) {
+      return apiKeyClientSecretMemory;
     }
+
+    // if memory is null, read from disk
+    return await firstValueFrom(this.apiKeyClientSecretDiskState.state$);
   }
 
   async setTwoFactorToken(tokenResponse: IdentityTokenResponse): Promise<void> {
@@ -185,12 +206,11 @@ export class TokenService implements TokenServiceAbstraction {
     await this.twoFactorTokenDiskLocalState.update((_) => null);
   }
 
-  // TODO: consider renaming this method as it also clears the client id and secret which aren't
-  async clearToken(): Promise<void> {
-    await this.setToken(null);
-    await this.setRefreshToken(null);
-    await this.setClientId(null);
-    await this.setClientSecret(null);
+  async clearToken(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
+    await this.setToken(null, vaultTimeoutAction, vaultTimeout);
+    await this.setRefreshToken(null, vaultTimeoutAction, vaultTimeout);
+    await this.setClientId(null, vaultTimeoutAction, vaultTimeout);
+    await this.setClientSecret(null, vaultTimeoutAction, vaultTimeout);
   }
 
   // jwthelper methods
@@ -283,28 +303,14 @@ export class TokenService implements TokenServiceAbstraction {
     return Array.isArray(decoded.amr) && decoded.amr.includes("external");
   }
 
-  private async determineStorageLocation(userId?: UserId): Promise<"disk" | "memory"> {
-    const [timeoutAction, timeout] = await Promise.all([
-      firstValueFrom(this.vaultTimeoutSettingsService.vaultTimeoutAction$(userId)),
-      this.vaultTimeoutSettingsService.getVaultTimeout(userId),
-    ]);
-
-    if (timeoutAction === VaultTimeoutAction.LogOut && timeout != null) {
+  private async determineStorageLocation(
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number,
+  ): Promise<"disk" | "memory"> {
+    if (vaultTimeoutAction === VaultTimeoutAction.LogOut && vaultTimeout != null) {
       return "memory";
     } else {
       return "disk";
     }
   }
-
-  // private async determineStorageLocationWithParams(
-  //   timeout: number,
-  //   timeoutAction: VaultTimeoutAction,
-  //   userId?: UserId,
-  // ): Promise<"disk" | "memory"> {
-  //   if (timeoutAction === VaultTimeoutAction.LogOut && timeout != null) {
-  //     return "memory";
-  //   } else {
-  //     return "disk";
-  //   }
-  // }
 }
