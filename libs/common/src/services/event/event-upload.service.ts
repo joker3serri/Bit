@@ -1,9 +1,7 @@
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "../../abstractions/event/event-upload.service";
-import { AccountService } from "../../auth/abstractions/account.service";
-import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { EventRequest } from "../../models/request/event.request";
 import { LogService } from "../../platform/abstractions/log.service";
 import { StateProvider } from "../../platform/state";
@@ -17,7 +15,6 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     private apiService: ApiService,
     private stateProvider: StateProvider,
     private logService: LogService,
-    private accountService: AccountService,
   ) {}
 
   init(checkOnInterval: boolean) {
@@ -40,15 +37,6 @@ export class EventUploadService implements EventUploadServiceAbstraction {
   async uploadEvents(userId?: UserId): Promise<void> {
     if (!userId) {
       userId = await firstValueFrom(this.stateProvider.activeUserId$);
-    }
-
-    const userAuth$ = this.accountService.activeAccount$.pipe(
-      map((acctData) => acctData != null && acctData.status == AuthenticationStatus.Unlocked),
-    );
-
-    const authed = await firstValueFrom(userAuth$);
-    if (!authed) {
-      return;
     }
 
     // Get the user's event collection from the state provider
