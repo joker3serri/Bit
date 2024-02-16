@@ -2,6 +2,7 @@ import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "../../abstractions/event/event-upload.service";
+import { EventData } from "../../models/data/event.data";
 import { EventRequest } from "../../models/request/event.request";
 import { LogService } from "../../platform/abstractions/log.service";
 import { StateProvider } from "../../platform/state";
@@ -40,8 +41,7 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     }
 
     // Get the user's event collection from the state provider
-    const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
-    const eventCollection = await firstValueFrom(eventStore.state$);
+    const eventCollection = await this.takeEvents(userId);
 
     if (eventCollection == null || eventCollection.length === 0) {
       return;
@@ -56,18 +56,17 @@ export class EventUploadService implements EventUploadServiceAbstraction {
     });
     try {
       await this.apiService.postEventsCollect(request);
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.takeEvents(userId);
     } catch (e) {
       this.logService.error(e);
+      // Add the events back to state if there was an error and they were not uploaded.
+      await this.stateProvider.setUserState(EVENT_COLLECTION, eventCollection, userId);
     }
   }
 
-  /** Reset the event collection for the user
-   *  @param userId the user to have their event collection reset
+  /** Grab the user's events and clear from state
+   *  @param userId the user to grab and clear events for
    */
-  private async takeEvents(userId: UserId): Promise<any> {
+  private async takeEvents(userId: UserId): Promise<EventData[]> {
     let taken = null;
     await this.stateProvider.getUser(userId, EVENT_COLLECTION).update((current) => {
       taken = current ?? [];
