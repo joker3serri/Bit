@@ -35,22 +35,21 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
 
     const currentAction = await this.stateService.getVaultTimeoutAction();
 
-    // TODO: idea: see if we can move this check to the component level
     if (
       (timeout != null || timeout === 0) &&
       action === VaultTimeoutAction.LogOut &&
       action !== currentAction
     ) {
       // if we have a vault timeout and the action is log out, reset tokens
-      await this.tokenService.clearToken();
+      await this.tokenService.clearToken(currentAction as VaultTimeoutAction, timeout);
     }
 
     await this.stateService.setVaultTimeoutAction(action);
 
-    await this.tokenService.setToken(token);
-    await this.tokenService.setRefreshToken(refreshToken);
-    await this.tokenService.setClientId(clientId);
-    await this.tokenService.setClientSecret(clientSecret);
+    await this.tokenService.setToken(token, action, timeout);
+    await this.tokenService.setRefreshToken(refreshToken, action, timeout);
+    await this.tokenService.setClientId(clientId, action, timeout);
+    await this.tokenService.setClientSecret(clientSecret, action, timeout);
 
     await this.cryptoService.refreshAdditionalKeys();
   }
