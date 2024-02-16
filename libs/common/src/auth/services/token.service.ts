@@ -184,12 +184,12 @@ export class TokenService implements TokenServiceAbstraction {
     await this.twoFactorTokenDiskLocalState.update((_) => null);
   }
 
-  // TODO: figure out how to handle this.
-  async clearToken(userId?: string): Promise<any> {
-    await this.stateService.setAccessToken(null, { userId: userId });
-    await this.stateService.setRefreshToken(null, { userId: userId });
-    await this.stateService.setApiKeyClientId(null, { userId: userId });
-    await this.stateService.setApiKeyClientSecret(null, { userId: userId });
+  // TODO: consider renaming this method as it also clears the client id and secret which aren't
+  async clearToken(): Promise<void> {
+    await this.setToken(null);
+    await this.setRefreshToken(null);
+    await this.setClientId(null);
+    await this.setClientSecret(null);
   }
 
   // jwthelper methods
