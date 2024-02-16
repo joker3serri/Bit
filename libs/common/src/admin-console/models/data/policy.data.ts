@@ -1,4 +1,4 @@
-import { PolicyId } from '../../../types/guid';
+import { PolicyId } from "../../../types/guid";
 import { PolicyType } from "../../enums";
 import { PolicyResponse } from "../response/policy.response";
 
