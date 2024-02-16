@@ -315,11 +315,7 @@ export class Main {
       this.stateService,
     );
 
-    this.tokenService = new TokenService(
-      this.stateService,
-      this.stateProvider,
-      this.vaultTimeoutSettingsService,
-    );
+    this.tokenService = new TokenService(this.stateProvider);
 
     const customUserAgent =
       "Bitwarden_CLI/" +

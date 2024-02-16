@@ -52,7 +52,6 @@ export class TokenService implements TokenServiceAbstraction {
   private apiKeyClientSecretDiskState: ActiveUserState<string>;
   private apiKeyClientSecretMemoryState: ActiveUserState<string>;
 
-  // TODO: update service instantiations and deps array
   constructor(private stateProvider: StateProvider) {
     this.initializeState();
   }

@@ -434,11 +434,7 @@ export default class MainBackground {
       this.accountService,
       this.stateProvider,
     );
-    this.tokenService = new TokenService(
-      this.stateService,
-      this.stateProvider,
-      this.vaultTimeoutSettingsService,
-    );
+    this.tokenService = new TokenService(this.stateProvider);
     this.appIdService = new AppIdService(this.storageService);
     this.apiService = new ApiService(
       this.tokenService,
