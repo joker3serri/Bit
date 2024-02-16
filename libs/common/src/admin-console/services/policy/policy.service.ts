@@ -298,31 +298,20 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
   }
 
-  async upsert(policy: PolicyData): Promise<any> {
-    let policies = await this.stateService.getEncryptedPolicies();
-    if (policies == null) {
-      policies = {};
-    }
-
-    policies[policy.id] = policy;
-
-    await this.updateObservables(policies);
-    await this.stateService.setDecryptedPolicies(null);
-    await this.stateService.setEncryptedPolicies(policies);
+  async upsert(policy: PolicyData): Promise<void> {
+    await this.activeUserPolicyState.update((policies) => {
+      policies ??= {};
+      policies[policy.id] = policy;
+      return policies;
+    });
   }
 
   async replace(policies: { [id: string]: PolicyData }): Promise<void> {
-    await this.updateObservables(policies);
-    await this.stateService.setDecryptedPolicies(null);
-    await this.stateService.setEncryptedPolicies(policies);
+    await this.activeUserPolicyState.update(() => policies);
   }
 
-  async clear(userId?: string): Promise<void> {
-    if (userId == null || userId == (await this.stateService.getUserId())) {
-      this._policies.next([]);
-    }
-    await this.stateService.setDecryptedPolicies(null, { userId: userId });
-    await this.stateService.setEncryptedPolicies(null, { userId: userId });
+  async clear(userId?: UserId): Promise<void> {
+    await this.stateProvider.setUserState(POLICIES, {}, userId);
   }
 
   private async updateObservables(policiesMap: { [id: string]: PolicyData }) {
