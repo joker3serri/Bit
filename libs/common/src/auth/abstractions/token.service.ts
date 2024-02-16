@@ -15,6 +15,7 @@ export abstract class TokenService {
     vaultTimeout: number,
   ) => Promise<any>;
   getToken: () => Promise<string>;
+  getAccessTokenByUserId: (userId: string) => Promise<string>;
   setRefreshToken: (
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,

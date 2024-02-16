@@ -3,6 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { Utils } from "../../platform/misc/utils";
 import { ActiveUserState, StateProvider } from "../../platform/state";
+import { UserId } from "../../types/guid";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
@@ -111,6 +112,20 @@ export class TokenService implements TokenServiceAbstraction {
 
     // if memory is null, read from disk
     return await firstValueFrom(this.accessTokenDiskState.state$);
+  }
+
+  async getAccessTokenByUserId(userId: UserId): Promise<string> {
+    // Always read memory first b/c faster
+    const accessTokenMemory = await firstValueFrom(
+      this.stateProvider.getUser(userId, ACCESS_TOKEN_MEMORY).state$,
+    );
+
+    if (accessTokenMemory != null) {
+      return accessTokenMemory;
+    }
+
+    // if memory is null, read from disk
+    return await firstValueFrom(this.stateProvider.getUser(userId, ACCESS_TOKEN_DISK).state$);
   }
 
   async setRefreshToken(
