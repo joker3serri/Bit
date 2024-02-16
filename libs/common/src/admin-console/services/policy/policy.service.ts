@@ -23,8 +23,7 @@ export const POLICIES = KeyDefinition.record<PolicyData, PolicyId>(POLICIES_DISK
 
 export class PolicyService implements InternalPolicyServiceAbstraction {
   private activeUserPolicyState = this.stateProvider.getActive(POLICIES);
-
-  activeUserPolicies$ = this.activeUserPolicyState.state$.pipe(
+  private activeUserPolicies$ = this.activeUserPolicyState.state$.pipe(
     map((policyData) => policyRecordToArray(policyData)),
   );
 

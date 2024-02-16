@@ -11,13 +11,33 @@ import { PolicyResponse } from "../../models/response/policy.response";
 
 export abstract class PolicyService {
   /**
-   * @deprecated Use activeUserPolicies$ instead
+   * All policies for the active user from sync data.
+   * May include policies that are disabled or otherwise do not apply to the user. You probably don't want this!
+   * @deprecated Use {@link get$} or {@link getAll$} to get the PolicyType that you want. This will be removed in a later release.
    */
-
   policies$: Observable<Policy[]>;
-  activeUserPolicies$: Observable<Policy[]>;
+
+  /**
+   * @returns the first {@link Policy} found that applies to the active user.
+   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * @param policyType the {@link PolicyType} to search for
+   * @see {@link getAll$} if you need all policies of a given type
+   */
   get$: (policyType: PolicyType) => Observable<Policy>;
+
+  /**
+   * @returns all {@link Policy} objects of a given type that apply to the specified user (or the active user if not specified).
+   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * @param policyType the {@link PolicyType} to search for
+   */
   getAll$: (policyType: PolicyType, userId?: UserId) => Observable<Policy[]>;
+
+  /**
+   * @returns true if a policy of the specified type applies to the active user, otherwise false.
+   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * This does not take into account the policy's configuration - if that is important, use {@link getAll$} to get the
+   * {@link Policy} objects and then filter by Policy.data.
+   */
   policyAppliesToActiveUser$: (policyType: PolicyType) => Observable<boolean>;
 
   // Policy specific interfaces
