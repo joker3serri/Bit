@@ -1,5 +1,4 @@
 import { BehaviorSubject, combineLatest, concatMap, map, Observable, of } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { StateService } from "../../../platform/abstractions/state.service";
@@ -20,7 +19,7 @@ const policyRecordToArray = (policiesMap: { [id: string]: PolicyData }) =>
   Object.values(policiesMap || {}).map((f) => new Policy(f));
 
 export const POLICIES = KeyDefinition.record<PolicyData, PolicyId>(POLICIES_DISK, "policies", {
-  deserializer: (policyData: Jsonify<PolicyData>) => PolicyData.fromJSON(policyData),
+  deserializer: (policyData) => policyData,
 });
 
 export class PolicyService implements InternalPolicyServiceAbstraction {

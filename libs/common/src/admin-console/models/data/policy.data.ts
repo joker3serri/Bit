@@ -1,5 +1,3 @@
-import { Jsonify } from "type-fest";
-
 import { PolicyType } from "../../enums";
 import { PolicyResponse } from "../response/policy.response";
 
@@ -20,9 +18,5 @@ export class PolicyData {
     this.type = response.type;
     this.data = response.data;
     this.enabled = response.enabled;
-  }
-
-  static fromJSON(obj: Jsonify<PolicyData>) {
-    return Object.assign(new PolicyData(), obj);
   }
 }
