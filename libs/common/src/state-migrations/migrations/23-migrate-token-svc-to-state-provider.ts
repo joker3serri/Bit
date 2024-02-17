@@ -12,6 +12,8 @@ type ExpectedAccountType = {
   };
   profile?: {
     apiKeyClientId?: string;
+  };
+  keys?: {
     apiKeyClientSecret?: string;
   };
 };
