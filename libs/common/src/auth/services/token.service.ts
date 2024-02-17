@@ -102,7 +102,16 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async getToken(): Promise<string> {
+  async clearAccessTokenByUserId(userId: UserId): Promise<void> {
+    await this.stateProvider.getUser(userId, ACCESS_TOKEN_DISK).update((_) => null);
+    await this.stateProvider.getUser(userId, ACCESS_TOKEN_MEMORY).update((_) => null);
+  }
+
+  async getToken(userId?: UserId): Promise<string> {
+    if (userId) {
+      return await this.getAccessTokenByUserId(userId);
+    }
+
     // Always read memory first b/c faster
     const accessTokenMemory = await firstValueFrom(this.accessTokenMemoryState.state$);
 
