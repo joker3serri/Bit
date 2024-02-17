@@ -4,6 +4,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -84,7 +85,19 @@ export class UserApiLoginStrategy extends LoginStrategy {
 
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
     await super.saveAccountInformation(tokenResponse);
-    await this.stateService.setApiKeyClientId(this.tokenRequest.clientId);
-    await this.stateService.setApiKeyClientSecret(this.tokenRequest.clientSecret);
+
+    const vaultTimeout = await this.stateService.getVaultTimeout();
+    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
+
+    await this.tokenService.setClientId(
+      this.tokenRequest.clientId,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
+    await this.tokenService.setClientSecret(
+      this.tokenRequest.clientSecret,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
   }
 }
