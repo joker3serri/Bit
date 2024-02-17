@@ -1581,10 +1581,10 @@ export class ApiService implements ApiServiceAbstraction {
   // Helpers
 
   async getActiveBearerToken(): Promise<string> {
-    let accessToken = await this.tokenService.getToken();
+    let accessToken = await this.tokenService.getAccessToken();
     if (await this.tokenService.tokenNeedsRefresh()) {
       await this.doAuthRefresh();
-      accessToken = await this.tokenService.getToken();
+      accessToken = await this.tokenService.getAccessToken();
     }
     return accessToken;
   }
@@ -1752,7 +1752,7 @@ export class ApiService implements ApiServiceAbstraction {
       headers.set("User-Agent", this.customUserAgent);
     }
 
-    const decodedToken = await this.tokenService.decodeToken();
+    const decodedToken = await this.tokenService.decodeAccessToken();
     const response = await this.fetch(
       new Request(this.environmentService.getIdentityUrl() + "/connect/token", {
         body: this.qsStringify({
@@ -1808,7 +1808,7 @@ export class ApiService implements ApiServiceAbstraction {
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
     const vaultTimeout = await this.stateService.getVaultTimeout();
 
-    await this.tokenService.setToken(
+    await this.tokenService.setAccessToken(
       response.accessToken,
       vaultTimeoutAction as VaultTimeoutAction,
       vaultTimeout,

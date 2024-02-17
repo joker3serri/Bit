@@ -212,7 +212,7 @@ export class Vault {
   }
 
   private async getK1FromAccessToken(federatedUser: FederatedUserContext, b64: boolean) {
-    const decodedAccessToken = await this.tokenService.decodeToken(federatedUser.accessToken);
+    const decodedAccessToken = await this.tokenService.decodeAccessToken(federatedUser.accessToken);
     const k1 = decodedAccessToken?.LastPassK1 as string;
     if (k1 != null) {
       return b64 ? Utils.fromB64ToArray(k1) : Utils.fromByteStringToArray(k1);

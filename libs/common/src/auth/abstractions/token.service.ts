@@ -27,7 +27,7 @@ export abstract class TokenService {
    * @param vaultTimeout The timeout for the vault.
    * @returns A promise that resolves when the access token has been set.
    */
-  setToken: (
+  setAccessToken: (
     token: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
@@ -49,7 +49,7 @@ export abstract class TokenService {
    * @param userId - The optional user id to get the access token for; if not provided, the active user is used.
    * @returns A promise that resolves with the access token for the given user id.
    */
-  getToken: (userId?: UserId) => Promise<string>;
+  getAccessToken: (userId?: UserId) => Promise<string>;
   /**
    * Gets the access token for the given user id.
    * @param userId The user id to get the access token for.
@@ -111,7 +111,7 @@ export abstract class TokenService {
   getTwoFactorToken: () => Promise<string>;
   clearTwoFactorToken: () => Promise<void>;
   clearToken: (vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number) => Promise<void>;
-  decodeToken: (token?: string) => Promise<any>;
+  decodeAccessToken: (token?: string) => Promise<any>;
   getTokenExpirationDate: () => Promise<Date>;
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;
   tokenNeedsRefresh: (minutes?: number) => Promise<boolean>;

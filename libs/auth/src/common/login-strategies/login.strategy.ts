@@ -112,7 +112,7 @@ export abstract class LoginStrategy {
   }
 
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
-    const accountInformation = await this.tokenService.decodeToken(tokenResponse.accessToken);
+    const accountInformation = await this.tokenService.decodeAccessToken(tokenResponse.accessToken);
 
     // Must persist existing device key if it exists for trusted device decryption to work
     // However, we must provide a user id so that the device key can be retrieved

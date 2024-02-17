@@ -52,7 +52,7 @@ jest.mock("../../auth/services/token.service", () => ({
 describe("FixPremiumMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
   let sut: FixPremiumMigrator;
-  const decodeTokenSpy = TokenService.decodeToken as jest.Mock;
+  const decodeTokenSpy = TokenService.decodeAccessToken as jest.Mock;
 
   beforeEach(() => {
     helper = mockMigrationHelper(migrateExampleJSON());

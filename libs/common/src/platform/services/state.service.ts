@@ -1723,7 +1723,7 @@ export class StateService<
 
   async getIsAuthenticated(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.tokenService.getToken(options?.userId as UserId)) != null &&
+      (await this.tokenService.getAccessToken(options?.userId as UserId)) != null &&
       (await this.getUserId(options)) != null
     );
   }

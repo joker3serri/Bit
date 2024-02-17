@@ -16,7 +16,7 @@ export class FixPremiumMigrator extends Migrator<2, 3> {
       if (account?.profile?.hasPremiumPersonally === null && account.tokens?.accessToken != null) {
         let decodedToken: { premium: boolean };
         try {
-          decodedToken = await TokenService.decodeToken(account.tokens.accessToken);
+          decodedToken = await TokenService.decodeAccessToken(account.tokens.accessToken);
         } catch {
           return;
         }
