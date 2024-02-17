@@ -12,7 +12,6 @@ import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-re
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
-import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { EventData } from "../../models/data/event.data";
 import { WindowState } from "../../models/domain/window-state";
 import { GeneratorOptions } from "../../tools/generator/generator-options";
@@ -2729,17 +2728,6 @@ export class StateService<
     const newActiveUser = await this.nextUpActiveUser();
     await this.setActiveUser(newActiveUser);
     return newActiveUser;
-  }
-
-  // TODO: remove timeoutBasedStorageOptions and all methods that use it. Constrained to token svc.
-  private async getTimeoutBasedStorageOptions(options?: StorageOptions): Promise<StorageOptions> {
-    const timeoutAction = await this.getVaultTimeoutAction({ userId: options?.userId });
-    const timeout = await this.getVaultTimeout({ userId: options?.userId });
-    const defaultOptions =
-      timeoutAction === VaultTimeoutAction.LogOut && timeout != null
-        ? await this.defaultInMemoryOptions()
-        : await this.defaultOnDiskOptions();
-    return this.reconcileOptions(options, defaultOptions);
   }
 
   protected async saveSecureStorageKey<T extends JsonValue>(
