@@ -229,7 +229,7 @@ export class TokenService implements TokenServiceAbstraction {
     await this.twoFactorTokenDiskLocalState.update((_) => null);
   }
 
-  async clearToken(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
+  async clearTokens(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
     await this.setAccessToken(null, vaultTimeoutAction, vaultTimeout);
     await this.setRefreshToken(null, vaultTimeoutAction, vaultTimeout);
     await this.setClientId(null, vaultTimeoutAction, vaultTimeout);

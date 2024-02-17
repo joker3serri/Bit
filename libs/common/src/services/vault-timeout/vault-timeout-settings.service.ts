@@ -41,7 +41,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
       action !== currentAction
     ) {
       // if we have a vault timeout and the action is log out, reset tokens
-      await this.tokenService.clearToken(currentAction as VaultTimeoutAction, timeout);
+      await this.tokenService.clearTokens(currentAction as VaultTimeoutAction, timeout);
     }
 
     await this.stateService.setVaultTimeoutAction(action);

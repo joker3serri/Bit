@@ -110,7 +110,7 @@ export abstract class TokenService {
   setTwoFactorToken: (tokenResponse: IdentityTokenResponse) => Promise<void>;
   getTwoFactorToken: () => Promise<string>;
   clearTwoFactorToken: () => Promise<void>;
-  clearToken: (vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number) => Promise<void>;
+  clearTokens: (vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number) => Promise<void>;
   decodeAccessToken: (token?: string) => Promise<any>;
   getTokenExpirationDate: () => Promise<Date>;
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;
