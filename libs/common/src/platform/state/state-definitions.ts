@@ -58,11 +58,11 @@ export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSetting
   web: "disk-local",
 });
 
-export const TOKEN_DISK = new StateDefinition("token", "disk");
-export const TOKEN_DISK_LOCAL = new StateDefinition("token", "disk", {
+export const TOKEN_DISK = new StateDefinition("tokenDisk", "disk");
+export const TOKEN_DISK_LOCAL = new StateDefinition("tokenDiskLocal", "disk", {
   web: "disk-local",
 });
-export const TOKEN_MEMORY = new StateDefinition("token", "memory");
+export const TOKEN_MEMORY = new StateDefinition("tokenMemory", "memory");
 
 export const VAULT_FILTER_DISK = new StateDefinition("vaultFilter", "disk", {
   web: "disk-local",
