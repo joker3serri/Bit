@@ -384,6 +384,8 @@ export default class MainBackground {
       this.accountService,
     );
 
+    this.tokenService = new TokenService(this.stateProvider);
+
     const migrationRunner = new MigrationRunner(
       this.storageService,
       this.logService,
@@ -398,6 +400,7 @@ export default class MainBackground {
       new StateFactory(GlobalState, Account),
       this.accountService,
       this.environmentService,
+      this.tokenService,
       migrationRunner,
     );
     this.platformUtilsService = new BrowserPlatformUtilsService(
@@ -434,7 +437,6 @@ export default class MainBackground {
       this.accountService,
       this.stateProvider,
     );
-    this.tokenService = new TokenService(this.stateProvider);
     this.appIdService = new AppIdService(this.storageService);
     this.apiService = new ApiService(
       this.tokenService,

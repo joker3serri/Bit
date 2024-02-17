@@ -279,6 +279,8 @@ export class Main {
 
     this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
 
+    this.tokenService = new TokenService(this.stateProvider);
+
     const migrationRunner = new MigrationRunner(
       this.storageService,
       this.logService,
@@ -293,6 +295,7 @@ export class Main {
       new StateFactory(GlobalState, Account),
       this.accountService,
       this.environmentService,
+      this.tokenService,
       migrationRunner,
     );
 
@@ -314,8 +317,6 @@ export class Main {
       this.policyService,
       this.stateService,
     );
-
-    this.tokenService = new TokenService(this.stateProvider);
 
     const customUserAgent =
       "Bitwarden_CLI/" +

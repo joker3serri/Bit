@@ -568,6 +568,7 @@ import { ModalService } from "./modal.service";
         STATE_FACTORY,
         AccountServiceAbstraction,
         EnvironmentServiceAbstraction,
+        TokenServiceAbstraction,
         MigrationRunner,
         STATE_SERVICE_USE_CACHE,
       ],

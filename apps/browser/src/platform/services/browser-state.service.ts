@@ -1,6 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import {
@@ -47,6 +48,7 @@ export class BrowserStateService
     stateFactory: StateFactory<GlobalState, Account>,
     accountService: AccountService,
     environmentService: EnvironmentService,
+    tokenService: TokenService,
     migrationRunner: MigrationRunner,
     useAccountCache = true,
   ) {
@@ -58,6 +60,7 @@ export class BrowserStateService
       stateFactory,
       accountService,
       environmentService,
+      tokenService,
       migrationRunner,
       useAccountCache,
     );

@@ -2,7 +2,9 @@ import * as path from "path";
 
 import { app } from "electron";
 
+import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
+import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
@@ -48,6 +50,7 @@ export class Main {
   environmentService: EnvironmentService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   migrationRunner: MigrationRunner;
+  tokenService: TokenServiceAbstraction;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -125,11 +128,15 @@ export class Main {
 
     this.environmentService = new EnvironmentService(stateProvider, accountService);
 
+    this.tokenService = new TokenService(stateProvider);
+
     this.migrationRunner = new MigrationRunner(
       this.storageService,
       this.logService,
       new MigrationBuilderService(),
     );
+
+    // TODO: figure out why migrationRunner is a boolean at runtime?
 
     // TODO: this state service will have access to on disk storage, but not in memory storage.
     // If we could get this to work using the stateService singleton that the rest of the app uses we could save
@@ -142,6 +149,7 @@ export class Main {
       new StateFactory(GlobalState, Account),
       accountService, // will not broadcast logouts. This is a hack until we can remove messaging dependency
       this.environmentService,
+      this.tokenService,
       this.migrationRunner,
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
