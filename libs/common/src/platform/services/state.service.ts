@@ -209,7 +209,7 @@ export class StateService<
 
     // TODO: Temporary update to avoid routing all account status changes through account service for now.
     // The determination of state should be handled by the various services that control those values.
-    const token = await this.tokenService.getAccessTokenByUserId(userId);
+    const token = await this.tokenService.getAccessTokenByUserId(userId as UserId);
     const autoKey = await this.getUserKeyAutoUnlock({ userId: userId });
     const accountStatus =
       token == null
@@ -1722,8 +1722,10 @@ export class StateService<
   }
 
   async getIsAuthenticated(options?: StorageOptions): Promise<boolean> {
-    // TODO: figure out how to handle this
-    return (await this.getAccessToken(options)) != null && (await this.getUserId(options)) != null;
+    return (
+      (await this.tokenService.getToken(options?.userId as UserId)) != null &&
+      (await this.getUserId(options)) != null
+    );
   }
 
   async getKdfConfig(options?: StorageOptions): Promise<KdfConfig> {
@@ -2695,7 +2697,7 @@ export class StateService<
   }
 
   protected async deAuthenticateAccount(userId: string): Promise<void> {
-    await this.setAccessToken(null, { userId: userId });
+    await this.tokenService.clearAccessTokenByUserId(userId as UserId);
     await this.setLastActive(null, { userId: userId });
     await this.updateState(async (state) => {
       state.authenticatedAccounts = state.authenticatedAccounts.filter((id) => id !== userId);
