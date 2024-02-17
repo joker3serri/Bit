@@ -2488,15 +2488,6 @@ export class StateService<
       await this.storageService.remove(keys.tempAccountSettings);
     }
 
-    if (
-      account.settings.vaultTimeoutAction === VaultTimeoutAction.LogOut &&
-      account.settings.vaultTimeout != null
-    ) {
-      account.tokens.accessToken = null;
-      account.tokens.refreshToken = null;
-      account.profile.apiKeyClientId = null;
-      account.keys.apiKeyClientSecret = null;
-    }
     await this.saveAccount(
       account,
       this.reconcileOptions(
