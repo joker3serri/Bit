@@ -469,6 +469,7 @@ function getBgService<T>(service: keyof MainBackground) {
         logService: LogServiceAbstraction,
         accountService: AccountServiceAbstraction,
         environmentService: EnvironmentService,
+        tokenService: TokenService,
         migrationRunner: MigrationRunner,
       ) => {
         return new BrowserStateService(
@@ -479,6 +480,7 @@ function getBgService<T>(service: keyof MainBackground) {
           new StateFactory(GlobalState, Account),
           accountService,
           environmentService,
+          tokenService,
           migrationRunner,
         );
       },

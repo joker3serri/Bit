@@ -17,6 +17,7 @@ import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/adm
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -135,6 +136,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         STATE_FACTORY,
         AccountServiceAbstraction,
         EnvironmentService,
+        TokenService,
         MigrationRunner,
         STATE_SERVICE_USE_CACHE,
       ],

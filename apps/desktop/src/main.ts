@@ -136,8 +136,6 @@ export class Main {
       new MigrationBuilderService(),
     );
 
-    // TODO: figure out why migrationRunner is a boolean at runtime?
-
     // TODO: this state service will have access to on disk storage, but not in memory storage.
     // If we could get this to work using the stateService singleton that the rest of the app uses we could save
     // ourselves from some hacks, like having to manually update the app menu vs. the menu subscribing to events.
