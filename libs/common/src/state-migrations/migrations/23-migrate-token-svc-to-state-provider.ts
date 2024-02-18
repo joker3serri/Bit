@@ -69,9 +69,11 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       // migrate 2FA token from global to user state
       // Due to the existing implmentation, n users on the same device share the same global state value for 2FA token.
       // So, we will just migrate it to all users to keep it valid for whichever was the user that set it previously.
-      if (globalTwoFactorToken != null) {
+      // Note: don't bother migrating 2FA Token if user account is undefined
+      if (globalTwoFactorToken != null && account != undefined) {
         await helper.setToUser(userId, TWO_FACTOR_TOKEN_DISK_LOCAL, globalTwoFactorToken);
-        updatedAccount = true;
+        // Note: don't set updatedAccount to true here as we aren't udpating
+        // the legacy user state, just migrating a global state to a new user state
       }
 
       // Migrate access token
@@ -116,11 +118,17 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       }
     }
 
-    await Promise.all([
-      ...accounts.map(({ userId, account }) =>
-        migrateAccount(userId, account, globalData?.twoFactorToken),
-      ),
-    ]);
+    // await Promise.all([
+    //   ...accounts.map(({ userId, account }) =>
+    //     migrateAccount(userId, account, globalData?.twoFactorToken),
+    //   ),
+    // ]);
+
+    // TODO: remove this once testing is done
+    // use a loop for easier debugging instead of promise.all
+    for (const { userId, account } of accounts) {
+      await migrateAccount(userId, account, globalData?.twoFactorToken);
+    }
 
     // Delete global data
     delete globalData?.twoFactorToken;
