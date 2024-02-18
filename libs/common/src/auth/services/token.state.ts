@@ -1,5 +1,6 @@
 import { KeyDefinition, TOKEN_DISK, TOKEN_DISK_LOCAL, TOKEN_MEMORY } from "../../platform/state";
 
+// TODO: do my key definition names need to be unique among storage locations?
 export const ACCESS_TOKEN_DISK = new KeyDefinition<string>(TOKEN_DISK, "accessToken", {
   deserializer: (accessToken) => accessToken,
 });
