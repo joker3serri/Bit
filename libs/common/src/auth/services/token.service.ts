@@ -21,9 +21,6 @@ import {
   twoFactorTokenDiskLocalFactory,
 } from "./token.state";
 
-// TODO: figure out how to store access and refresh tokens in secure storage.
-// see: https://github.com/bitwarden/clients/pull/7979/files#diff-9e557d79f4302c16b21dc8ca50352ce7394b3fba00dd004775ba74721c84c322
-
 export class TokenService implements TokenServiceAbstraction {
   static decodeAccessToken(token: string): Promise<any> {
     if (token == null) {
