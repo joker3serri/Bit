@@ -236,7 +236,7 @@ jobs:
         working-directory: apps/web
         run: |
           azcopy --version
-          azcopy sync ./build "https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/" \
+          azcopy sync ./build https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/ \
             --delete-destination=true
 
       - name: Debug index.html
