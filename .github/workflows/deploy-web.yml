@@ -238,7 +238,7 @@ jobs:
           azcopy --version
           export AZCOPY_AUTO_LOGIN_TYPE=AZCLI
           azcopy sync ./build 'https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
-            --delete-destination=true
+            --delete-destination=true --check-length=false
 
       - name: Debug index.html
         run: cat apps/web/build/index.html
