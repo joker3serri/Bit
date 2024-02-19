@@ -238,7 +238,9 @@ jobs:
           azcopy --version
           printenv
           export AZCOPY_AUTO_LOGIN_TYPE=AZCLI
-          azcopy sync ./build 'https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
+          # Extract date using the format YYYY-MM-DD for se parameter
+          export DATE=$(date +%Y-%m-%d)
+          azcopy sync ./build 'https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/?se=${DATE}' \
             --delete-destination=true
 
       - name: Debug index.html
