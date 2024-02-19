@@ -26,7 +26,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   async setVaultTimeoutOptions(timeout: number, action: VaultTimeoutAction): Promise<void> {
     // We swap these tokens from being on disk for lock actions, and in memory for logout actions
     // Get them here to set them to their new location after changing the timeout action and clearing if needed
-    const token = await this.tokenService.getAccessToken();
+    const accessToken = await this.tokenService.getAccessToken();
     const refreshToken = await this.tokenService.getRefreshToken();
     const clientId = await this.tokenService.getClientId();
     const clientSecret = await this.tokenService.getClientSecret();
@@ -46,7 +46,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
 
     await this.stateService.setVaultTimeoutAction(action);
 
-    await this.tokenService.setAccessToken(token, action, timeout);
+    await this.tokenService.setAccessToken(accessToken, action, timeout);
     await this.tokenService.setRefreshToken(refreshToken, action, timeout);
     await this.tokenService.setClientId(clientId, action, timeout);
     await this.tokenService.setClientSecret(clientSecret, action, timeout);
