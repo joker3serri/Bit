@@ -19,6 +19,8 @@ type ExpectedGlobalType = {
   twoFactorToken?: string;
 };
 
+// TODO: update migration and tests for latest changes to 2FA token (now stored globally but still scoped to user email)
+
 export const TWO_FACTOR_TOKEN_DISK_LOCAL: KeyDefinitionLike = {
   key: "twoFactorToken",
   stateDefinition: {
