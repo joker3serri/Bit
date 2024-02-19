@@ -137,7 +137,40 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
   async rollback(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
+
+    // Since we migrated the global 2FA token to all users, we need to rollback the 2FA token for all users
+    // but we only need to set it to the global state once
+
+    // Go through accounts and find the first user that has a non-null 2FA token
+    let migratedTwoFactorToken: string | null = null;
+    for (const { userId } of accounts) {
+      migratedTwoFactorToken = await helper.getFromUser(userId, TWO_FACTOR_TOKEN_DISK_LOCAL);
+      if (migratedTwoFactorToken != null) {
+        break;
+      }
+    }
+
+    if (migratedTwoFactorToken != null) {
+      let legacyGlobal = await helper.get<ExpectedGlobalType>("global");
+      if (!legacyGlobal) {
+        legacyGlobal = {};
+      }
+      legacyGlobal.twoFactorToken = migratedTwoFactorToken;
+      await helper.set("global", legacyGlobal);
+    }
+
     async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
+      // Rollback 2FA token if it was migrated
+
+      const migratedTwoFactorToken = await helper.getFromUser<string>(
+        userId,
+        TWO_FACTOR_TOKEN_DISK_LOCAL,
+      );
+
+      if (migratedTwoFactorToken != null) {
+        await helper.setToUser(userId, TWO_FACTOR_TOKEN_DISK_LOCAL, null);
+      }
+
       // Rollback access token
       const migratedAccessToken = await helper.getFromUser<string>(userId, ACCESS_TOKEN_DISK);
 
