@@ -1,4 +1,5 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -14,6 +15,7 @@ import { IdentityCaptchaResponse } from "@bitwarden/common/auth/models/response/
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { ClientType } from "@bitwarden/common/enums";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -57,6 +59,7 @@ export abstract class LoginStrategy {
     protected logService: LogService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
+    protected loginService: LoginService,
   ) {}
 
   abstract logIn(
@@ -103,7 +106,9 @@ export abstract class LoginStrategy {
       return userProvidedTwoFactor;
     }
 
-    const storedTwoFactorToken = await this.tokenService.getTwoFactorToken();
+    const storedTwoFactorToken = await this.tokenService.getTwoFactorToken(
+      this.loginService.getEmail(),
+    );
     if (storedTwoFactorToken != null) {
       return new TokenTwoFactorRequest(TwoFactorProviderType.Remember, storedTwoFactorToken, false);
     }
@@ -129,6 +134,21 @@ export abstract class LoginStrategy {
     // If you don't persist existing admin auth requests on login, they will get deleted.
     const adminAuthRequest = await this.stateService.getAdminAuthRequest({ userId });
 
+    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
+    const vaultTimeout = await this.stateService.getVaultTimeout();
+
+    // set access token and refresh token in state provider
+    await this.tokenService.setAccessToken(
+      tokenResponse.accessToken,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
+    await this.tokenService.setRefreshToken(
+      tokenResponse.refreshToken,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
+
     await this.stateService.addAccount(
       new Account({
         profile: {
@@ -146,10 +166,6 @@ export abstract class LoginStrategy {
         },
         tokens: {
           ...new AccountTokens(),
-          ...{
-            accessToken: tokenResponse.accessToken,
-            refreshToken: tokenResponse.refreshToken,
-          },
         },
         keys: accountKeys,
         decryptionOptions: AccountDecryptionOptions.fromResponse(tokenResponse),
@@ -181,7 +197,10 @@ export abstract class LoginStrategy {
     await this.saveAccountInformation(response);
 
     if (response.twoFactorToken != null) {
-      await this.tokenService.setTwoFactorToken(response);
+      // note: we can read email from access token b/c it was saved in saveAccountInformation
+      const userEmail = await this.tokenService.getEmail();
+
+      await this.tokenService.setTwoFactorToken(userEmail, response.twoFactorToken);
     }
 
     await this.setMasterKey(response);

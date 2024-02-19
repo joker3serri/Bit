@@ -227,7 +227,7 @@ export class ApiService implements ApiServiceAbstraction {
         responseJson.TwoFactorProviders2 &&
         Object.keys(responseJson.TwoFactorProviders2).length
       ) {
-        await this.tokenService.clearTwoFactorToken();
+        await this.tokenService.clearTwoFactorToken(responseJson.email);
         return new IdentityTwoFactorResponse(responseJson);
       } else if (
         response.status === 400 &&
