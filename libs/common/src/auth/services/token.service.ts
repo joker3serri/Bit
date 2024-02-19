@@ -106,8 +106,8 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async clearAccessTokenByUserId(userId: UserId): Promise<void> {
-    await this.stateProvider.getUser(userId, ACCESS_TOKEN_DISK).update((_) => null);
-    await this.stateProvider.getUser(userId, ACCESS_TOKEN_MEMORY).update((_) => null);
+    await this.stateProvider.setUserState(ACCESS_TOKEN_DISK, null, userId);
+    await this.stateProvider.setUserState(ACCESS_TOKEN_MEMORY, null, userId);
   }
 
   async getAccessToken(userId?: UserId): Promise<string> {
