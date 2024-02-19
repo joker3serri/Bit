@@ -31,7 +31,7 @@ export class AccessibilityCookieComponent {
     this.platformUtilsService.launchUri("https://www.hcaptcha.com/accessibility");
   }
 
-  async getCookie() {
+  async close() {
     const [cookie] = await ipc.auth.getHcaptchaAccessibilityCookie();
     if (cookie) {
       this.onCookieSavedSuccess();
