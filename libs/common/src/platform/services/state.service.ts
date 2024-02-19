@@ -208,7 +208,7 @@ export class StateService<
 
     // TODO: Temporary update to avoid routing all account status changes through account service for now.
     // The determination of state should be handled by the various services that control those values.
-    const token = await this.tokenService.getAccessTokenByUserId(userId as UserId);
+    const token = await this.tokenService.getAccessToken(userId as UserId);
     const autoKey = await this.getUserKeyAutoUnlock({ userId: userId });
     const accountStatus =
       token == null

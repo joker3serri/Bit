@@ -49,12 +49,7 @@ export abstract class TokenService {
    * @returns A promise that resolves with the access token for the given user id.
    */
   getAccessToken: (userId?: UserId) => Promise<string>;
-  /**
-   * Gets the access token for the given user id.
-   * @param userId The user id to get the access token for.
-   * @returns A promise that resolves with the access token for the given user id.
-   */
-  getAccessTokenByUserId: (userId: UserId) => Promise<string>;
+
   /**
    * Sets the refresh token for the given user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
    * @param refreshToken The refresh token to set.

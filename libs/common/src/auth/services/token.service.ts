@@ -1,6 +1,9 @@
 import { firstValueFrom } from "rxjs";
 
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
+import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
+import { AbstractStorageService } from "../../platform/abstractions/storage.service";
+import { StorageLocation } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
 import { ActiveUserState, StateProvider } from "../../platform/state";
 import { UserId } from "../../types/guid";
@@ -41,8 +44,12 @@ export class TokenService implements TokenServiceAbstraction {
     return decodedToken;
   }
 
+  private readonly platformSupportsSecureStorage =
+    this.platformUtilsService.supportsSecureStorage();
+
   private accessTokenDiskState: ActiveUserState<string>;
   private accessTokenMemoryState: ActiveUserState<string>;
+  private readonly accessTokenSecureStorageKey: string = "_accessToken";
 
   private refreshTokenDiskState: ActiveUserState<string>;
   private refreshTokenMemoryState: ActiveUserState<string>;
@@ -53,7 +60,12 @@ export class TokenService implements TokenServiceAbstraction {
   private apiKeyClientSecretDiskState: ActiveUserState<string>;
   private apiKeyClientSecretMemoryState: ActiveUserState<string>;
 
-  constructor(private stateProvider: StateProvider) {
+  constructor(
+    private stateProvider: StateProvider,
+    // TODO: add these deps to dependencies arrays and class instantiation.
+    private platformUtilsService: PlatformUtilsService,
+    private secureStorageService: AbstractStorageService,
+  ) {
     this.initializeState();
   }
 
@@ -91,6 +103,24 @@ export class TokenService implements TokenServiceAbstraction {
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
   ): Promise<void> {
+    // get user id from access token:
+    const decodedAccessToken = await this.decodeAccessToken(token);
+    const userId = decodedAccessToken.sub;
+
+    if (this.platformSupportsSecureStorage) {
+      await this.secureStorageService.save<string>(
+        `${userId}${this.accessTokenSecureStorageKey}`,
+        token,
+        {
+          storageLocation: StorageLocation.Disk,
+          useSecureStorage: true,
+          userId: userId,
+        },
+      );
+      return;
+    }
+
+    // Platform doesn't support secure storage, so use state provider implementation
     const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
@@ -101,15 +131,43 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async clearAccessTokenByUserId(userId: UserId): Promise<void> {
+    if (this.platformSupportsSecureStorage) {
+      await this.secureStorageService.remove(`${userId}${this.accessTokenSecureStorageKey}`, {
+        storageLocation: StorageLocation.Disk,
+        useSecureStorage: true,
+        userId: userId,
+      });
+      return;
+    }
+
+    // Platform doesn't support secure storage, so use state provider implementation
     await this.stateProvider.setUserState(ACCESS_TOKEN_DISK, null, userId);
     await this.stateProvider.setUserState(ACCESS_TOKEN_MEMORY, null, userId);
   }
 
   async getAccessToken(userId?: UserId): Promise<string> {
+    if (this.platformSupportsSecureStorage) {
+      // if we don't have a user id, we have to have one in order to read from secure storage
+      if (!userId) {
+        userId = await firstValueFrom(this.stateProvider.activeUserId$);
+      }
+
+      const accessToken = await this.secureStorageService.get<string>(
+        `${userId}${this.accessTokenSecureStorageKey}`,
+        {
+          storageLocation: StorageLocation.Disk,
+          useSecureStorage: true,
+          userId: userId,
+        },
+      );
+      return accessToken;
+    }
+
     if (userId) {
       return await this.getAccessTokenByUserId(userId);
     }
 
+    // if no user id, read from active user
     // Always read memory first b/c faster
     const accessTokenMemory = await firstValueFrom(this.accessTokenMemoryState.state$);
 
@@ -121,7 +179,7 @@ export class TokenService implements TokenServiceAbstraction {
     return await firstValueFrom(this.accessTokenDiskState.state$);
   }
 
-  async getAccessTokenByUserId(userId: UserId): Promise<string> {
+  private async getAccessTokenByUserId(userId: UserId): Promise<string> {
     // Always read memory first b/c faster
     const accessTokenMemory = await firstValueFrom(
       this.stateProvider.getUser(userId, ACCESS_TOKEN_MEMORY).state$,
