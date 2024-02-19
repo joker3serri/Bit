@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom } from "rxjs";
+import { Observable, firstValueFrom } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { UpdateAvatarRequest } from "../../models/request/update-avatar.request";
@@ -11,8 +11,7 @@ const AVATAR_COLOR = new KeyDefinition<string>(AVATAR_DISK, "avatarColor", {
 });
 
 export class AvatarService implements AvatarServiceAbstraction {
-  private avatarColorBehaviorSubject = new BehaviorSubject<string | null>(null);
-  avatarColor$ = this.avatarColorBehaviorSubject.asObservable();
+  avatarColor$: Observable<string>;
 
   constructor(
     private apiService: ApiService,
@@ -25,7 +24,6 @@ export class AvatarService implements AvatarServiceAbstraction {
     const { avatarColor } = await this.apiService.putAvatar(new UpdateAvatarRequest(color));
 
     await this.stateProvider.setUserState(AVATAR_COLOR, avatarColor);
-    this.avatarColorBehaviorSubject.next(avatarColor);
   }
 
   async getUserAvatarColor(userId: UserId): Promise<string | null> {

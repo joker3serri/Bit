@@ -1,7 +1,7 @@
 import { importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { applicationConfig, Meta, moduleMetadata, Story } from "@storybook/angular";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
@@ -74,7 +74,7 @@ export default {
         {
           provide: AvatarService,
           useValue: {
-            avatarColor$: new BehaviorSubject("#FF0000").asObservable(),
+            avatarColor$: of("#FF0000"),
           } as Partial<AvatarService>,
         },
         {
