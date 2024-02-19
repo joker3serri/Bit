@@ -387,25 +387,6 @@ export default class MainBackground {
       this.accountService,
     );
 
-    this.tokenService = new TokenService(this.stateProvider);
-
-    const migrationRunner = new MigrationRunner(
-      this.storageService,
-      this.logService,
-      new MigrationBuilderService(),
-    );
-
-    this.stateService = new BrowserStateService(
-      this.storageService,
-      this.secureStorageService,
-      this.memoryStorageService,
-      this.logService,
-      new StateFactory(GlobalState, Account),
-      this.accountService,
-      this.environmentService,
-      this.tokenService,
-      migrationRunner,
-    );
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => {
@@ -430,6 +411,31 @@ export default class MainBackground {
       },
       window,
     );
+
+    this.tokenService = new TokenService(
+      this.stateProvider,
+      this.platformUtilsService,
+      this.secureStorageService,
+    );
+
+    const migrationRunner = new MigrationRunner(
+      this.storageService,
+      this.logService,
+      new MigrationBuilderService(),
+    );
+
+    this.stateService = new BrowserStateService(
+      this.storageService,
+      this.secureStorageService,
+      this.memoryStorageService,
+      this.logService,
+      new StateFactory(GlobalState, Account),
+      this.accountService,
+      this.environmentService,
+      this.tokenService,
+      migrationRunner,
+    );
+
     this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
     this.cryptoService = new BrowserCryptoService(
       this.cryptoFunctionService,

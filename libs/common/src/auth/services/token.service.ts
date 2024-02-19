@@ -62,7 +62,6 @@ export class TokenService implements TokenServiceAbstraction {
 
   constructor(
     private stateProvider: StateProvider,
-    // TODO: add these deps to dependencies arrays and class instantiation.
     private platformUtilsService: PlatformUtilsService,
     private secureStorageService: AbstractStorageService,
   ) {

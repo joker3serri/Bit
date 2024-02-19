@@ -7,13 +7,24 @@ import {
   factory,
 } from "../../../platform/background/service-factories/factory-options";
 import {
+  PlatformUtilsServiceInitOptions,
+  platformUtilsServiceFactory,
+} from "../../../platform/background/service-factories/platform-utils-service.factory";
+import {
   StateProviderInitOptions,
   stateProviderFactory,
 } from "../../../platform/background/service-factories/state-provider.factory";
+import {
+  SecureStorageServiceInitOptions,
+  secureStorageServiceFactory,
+} from "../../../platform/background/service-factories/storage-service.factory";
 
 type TokenServiceFactoryOptions = FactoryOptions;
 
-export type TokenServiceInitOptions = TokenServiceFactoryOptions & StateProviderInitOptions;
+export type TokenServiceInitOptions = TokenServiceFactoryOptions &
+  StateProviderInitOptions &
+  PlatformUtilsServiceInitOptions &
+  SecureStorageServiceInitOptions;
 
 export function tokenServiceFactory(
   cache: { tokenService?: AbstractTokenService } & CachedServices,
@@ -23,6 +34,11 @@ export function tokenServiceFactory(
     cache,
     "tokenService",
     opts,
-    async () => new TokenService(await stateProviderFactory(cache, opts)),
+    async () =>
+      new TokenService(
+        await stateProviderFactory(cache, opts),
+        await platformUtilsServiceFactory(cache, opts),
+        await secureStorageServiceFactory(cache, opts),
+      ),
   );
 }
