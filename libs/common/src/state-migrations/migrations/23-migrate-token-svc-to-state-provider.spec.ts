@@ -62,11 +62,11 @@ function rollbackJSON() {
     user_user1_tokenDisk_accessToken: "accessToken",
     user_user1_tokenDisk_refreshToken: "refreshToken",
     user_user1_tokenDisk_apiKeyClientId: "apiKeyClientId",
-    user_user1_tokenDisk_apiKeyClientSecret: "apiKeyClient",
+    user_user1_tokenDisk_apiKeyClientSecret: "apiKeyClientSecret",
 
     // User2 migrated
 
-    user_user2_tokenDiskLocal_twoFactorToken: null as any,
+    user_user2_tokenDiskLocal_twoFactorToken: "twoFactorToken",
     user_user2_tokenDisk_accessToken: null as any,
     user_user2_tokenDisk_refreshToken: null as any,
     user_user2_tokenDisk_apiKeyClientId: null as any,
@@ -181,7 +181,6 @@ describe("TokenServiceStateProviderMigrator", () => {
     });
   });
 
-  // TODO: get rollback testing in place
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJSON(), 23);
@@ -191,40 +190,65 @@ describe("TokenServiceStateProviderMigrator", () => {
     it("should null out newly migrated entries in state provider framework", async () => {
       await sut.rollback(helper);
 
-      // expect(helper.setToUser).toHaveBeenCalledWith("user1", DEVICE_KEY, null);
-      // expect(helper.setToUser).toHaveBeenCalledWith("user1", SHOULD_TRUST_DEVICE, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", TWO_FACTOR_TOKEN_DISK_LOCAL, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", ACCESS_TOKEN_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", REFRESH_TOKEN_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", API_KEY_CLIENT_ID_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user1", API_KEY_CLIENT_SECRET_DISK, null);
 
-      // expect(helper.setToUser).toHaveBeenCalledWith("user2", DEVICE_KEY, null);
-      // expect(helper.setToUser).toHaveBeenCalledWith("user2", SHOULD_TRUST_DEVICE, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user2", TWO_FACTOR_TOKEN_DISK_LOCAL, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user2", ACCESS_TOKEN_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user2", REFRESH_TOKEN_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user2", API_KEY_CLIENT_ID_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user2", API_KEY_CLIENT_SECRET_DISK, null);
 
-      // expect(helper.setToUser).toHaveBeenCalledWith("user3", DEVICE_KEY, null);
-      // expect(helper.setToUser).toHaveBeenCalledWith("user3", SHOULD_TRUST_DEVICE, null);
+      expect(helper.setToUser).not.toHaveBeenCalledWith(
+        "user3",
+        TWO_FACTOR_TOKEN_DISK_LOCAL,
+        any(),
+      );
+      expect(helper.setToUser).toHaveBeenCalledWith("user3", ACCESS_TOKEN_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user3", REFRESH_TOKEN_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user3", API_KEY_CLIENT_ID_DISK, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("user3", API_KEY_CLIENT_SECRET_DISK, null);
     });
 
-    it("should add back deviceKey and trustDeviceChoiceForDecryption to all accounts", async () => {
+    it("should add back data to all accounts that had migrated data (only user 1)", async () => {
       await sut.rollback(helper);
 
-      // expect(helper.set).toHaveBeenCalledWith("user1", {
-      //   keys: {
-      //     deviceKey: {
-      //       keyB64: "user1_deviceKey",
-      //     },
-      //     otherStuff: "overStuff2",
-      //   },
-      //   settings: {
-      //     trustDeviceChoiceForDecryption: true,
-      //     otherStuff: "overStuff3",
-      //   },
-      //   otherStuff: "otherStuff4",
-      // });
+      expect(helper.set).toHaveBeenCalledWith("user1", {
+        tokens: {
+          accessToken: "accessToken",
+          refreshToken: "refreshToken",
+          otherStuff: "overStuff2",
+        },
+        profile: {
+          apiKeyClientId: "apiKeyClientId",
+          otherStuff: "overStuff3",
+        },
+        keys: {
+          apiKeyClientSecret: "apiKeyClientSecret",
+          otherStuff: "overStuff4",
+        },
+        otherStuff: "otherStuff5",
+      });
+    });
+
+    it("should add back the global twoFactorToken", async () => {
+      await sut.rollback(helper);
+
+      expect(helper.set).toHaveBeenCalledWith("global", {
+        twoFactorToken: "twoFactorToken",
+        otherStuff: "otherStuff1",
+      });
     });
 
     it("should not add data back if data wasn't migrated or acct doesn't exist", async () => {
       await sut.rollback(helper);
 
       // no data to add back for user2 (acct exists but no migrated data) and user3 (no acct)
-      // expect(helper.set).not.toHaveBeenCalledWith("user2", any());
-      // expect(helper.set).not.toHaveBeenCalledWith("user3", any());
+      expect(helper.set).not.toHaveBeenCalledWith("user2", any());
+      expect(helper.set).not.toHaveBeenCalledWith("user3", any());
     });
   });
 });
