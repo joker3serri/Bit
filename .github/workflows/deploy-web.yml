@@ -238,9 +238,7 @@ jobs:
           az storage blob sync \
             --source "./build" \
             --container '$web' \
-            --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
-            --only-show-errors
-
+            --connection-string "${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
       - name: Debug index.html
         run: cat apps/web/build/index.html
 
