@@ -7,6 +7,8 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 
 import { FixPremiumMigrator } from "./3-fix-premium";
 
+// TODO: what do we do with migrations that migrate data that we are removing now?
+
 function migrateExampleJSON() {
   return {
     global: {
