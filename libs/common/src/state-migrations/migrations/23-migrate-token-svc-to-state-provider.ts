@@ -118,17 +118,11 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       }
     }
 
-    // await Promise.all([
-    //   ...accounts.map(({ userId, account }) =>
-    //     migrateAccount(userId, account, globalData?.twoFactorToken),
-    //   ),
-    // ]);
-
-    // TODO: remove this once testing is done
-    // use a loop for easier debugging instead of promise.all
-    for (const { userId, account } of accounts) {
-      await migrateAccount(userId, account, globalData?.twoFactorToken);
-    }
+    await Promise.all([
+      ...accounts.map(({ userId, account }) =>
+        migrateAccount(userId, account, globalData?.twoFactorToken),
+      ),
+    ]);
 
     // Delete global data
     delete globalData?.twoFactorToken;
@@ -160,8 +154,9 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
     }
 
     async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
-      // Rollback 2FA token if it was migrated
+      let updatedLegacyAccount = false;
 
+      // Rollback 2FA token if it was migrated
       const migratedTwoFactorToken = await helper.getFromUser<string>(
         userId,
         TWO_FACTOR_TOKEN_DISK_LOCAL,
@@ -169,6 +164,8 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
       if (migratedTwoFactorToken != null) {
         await helper.setToUser(userId, TWO_FACTOR_TOKEN_DISK_LOCAL, null);
+        // note: no need to use helper.set here as we are not updating the legacy user state,
+        // just removing the migrated state
       }
 
       // Rollback access token
@@ -176,7 +173,7 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
       if (account?.tokens && migratedAccessToken != null) {
         account.tokens.accessToken = migratedAccessToken;
-        await helper.set(userId, account);
+        updatedLegacyAccount = true;
       }
 
       await helper.setToUser(userId, ACCESS_TOKEN_DISK, null);
@@ -186,7 +183,7 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
       if (account?.tokens && migratedRefreshToken != null) {
         account.tokens.refreshToken = migratedRefreshToken;
-        await helper.set(userId, account);
+        updatedLegacyAccount = true;
       }
 
       await helper.setToUser(userId, REFRESH_TOKEN_DISK, null);
@@ -200,7 +197,7 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
       if (account?.profile && migratedApiKeyClientId != null) {
         account.profile.apiKeyClientId = migratedApiKeyClientId;
-        await helper.set(userId, account);
+        updatedLegacyAccount = true;
       }
 
       await helper.setToUser(userId, API_KEY_CLIENT_ID_DISK, null);
@@ -213,10 +210,14 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
       if (account?.keys && migratedApiKeyClientSecret != null) {
         account.keys.apiKeyClientSecret = migratedApiKeyClientSecret;
-        await helper.set(userId, account);
+        updatedLegacyAccount = true;
       }
 
       await helper.setToUser(userId, API_KEY_CLIENT_SECRET_DISK, null);
+
+      if (updatedLegacyAccount) {
+        await helper.set(userId, account);
+      }
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => rollbackAccount(userId, account))]);
