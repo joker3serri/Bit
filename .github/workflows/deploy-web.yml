@@ -233,6 +233,7 @@ jobs:
         run: unzip ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Sync to Azure Storage Account
+        continue-on-error: true
         working-directory: apps/web
         run: |
           azcopy --version
@@ -242,6 +243,7 @@ jobs:
           printenv
           azcopy sync ./build 'https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/?se=2024-02-19' \
             --delete-destination=true
+          cat /home/runner/.azcopy/*.log
 
       - name: Debug index.html
         run: cat apps/web/build/index.html
