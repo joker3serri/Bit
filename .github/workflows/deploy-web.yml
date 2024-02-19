@@ -236,6 +236,7 @@ jobs:
         working-directory: apps/web
         run: |
           azcopy --version
+          printenv
           export AZCOPY_AUTO_LOGIN_TYPE=AZCLI
           azcopy sync ./build 'https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
             --delete-destination=true
