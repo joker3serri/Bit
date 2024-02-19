@@ -5,7 +5,6 @@ import { Utils } from "../../platform/misc/utils";
 import { ActiveUserState, StateProvider } from "../../platform/state";
 import { UserId } from "../../types/guid";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
-import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 import {
   ACCESS_TOKEN_DISK,
@@ -16,7 +15,7 @@ import {
   API_KEY_CLIENT_SECRET_MEMORY,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
-  TWO_FACTOR_TOKEN_DISK_LOCAL,
+  twoFactorTokenDiskLocalFactory,
 } from "./token.state";
 
 // TODO: figure out how to store access and refresh tokens in secure storage.
@@ -48,8 +47,6 @@ export class TokenService implements TokenServiceAbstraction {
   private refreshTokenDiskState: ActiveUserState<string>;
   private refreshTokenMemoryState: ActiveUserState<string>;
 
-  private twoFactorTokenDiskLocalState: ActiveUserState<string>;
-
   private apiKeyClientIdDiskState: ActiveUserState<string>;
   private apiKeyClientIdMemoryState: ActiveUserState<string>;
 
@@ -66,8 +63,6 @@ export class TokenService implements TokenServiceAbstraction {
 
     this.refreshTokenDiskState = this.stateProvider.getActive(REFRESH_TOKEN_DISK);
     this.refreshTokenMemoryState = this.stateProvider.getActive(REFRESH_TOKEN_MEMORY);
-
-    this.twoFactorTokenDiskLocalState = this.stateProvider.getActive(TWO_FACTOR_TOKEN_DISK_LOCAL);
 
     this.apiKeyClientIdDiskState = this.stateProvider.getActive(API_KEY_CLIENT_ID_DISK);
     this.apiKeyClientIdMemoryState = this.stateProvider.getActive(API_KEY_CLIENT_ID_MEMORY);
@@ -220,16 +215,22 @@ export class TokenService implements TokenServiceAbstraction {
     return await firstValueFrom(this.apiKeyClientSecretDiskState.state$);
   }
 
-  async setTwoFactorToken(tokenResponse: IdentityTokenResponse): Promise<void> {
-    await this.twoFactorTokenDiskLocalState.update((_) => tokenResponse.twoFactorToken);
+  async setTwoFactorToken(email: string, twoFactorToken: string): Promise<void> {
+    const twoFactorTokenKeyDef = twoFactorTokenDiskLocalFactory(email);
+    const twoFactorTokenGlobalState = this.stateProvider.getGlobal(twoFactorTokenKeyDef);
+    await twoFactorTokenGlobalState.update((_) => twoFactorToken);
   }
 
-  async getTwoFactorToken(): Promise<string> {
-    return await firstValueFrom(this.twoFactorTokenDiskLocalState.state$);
+  async getTwoFactorToken(email: string): Promise<string> {
+    const twoFactorTokenKeyDef = twoFactorTokenDiskLocalFactory(email);
+    const twoFactorTokenGlobalState = this.stateProvider.getGlobal(twoFactorTokenKeyDef);
+    return firstValueFrom(twoFactorTokenGlobalState.state$);
   }
 
-  async clearTwoFactorToken(): Promise<void> {
-    await this.twoFactorTokenDiskLocalState.update((_) => null);
+  async clearTwoFactorToken(email: string): Promise<void> {
+    const twoFactorTokenKeyDef = twoFactorTokenDiskLocalFactory(email);
+    const twoFactorTokenGlobalState = this.stateProvider.getGlobal(twoFactorTokenKeyDef);
+    await twoFactorTokenGlobalState.update((_) => null);
   }
 
   async clearTokens(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {

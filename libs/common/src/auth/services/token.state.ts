@@ -16,13 +16,11 @@ export const REFRESH_TOKEN_MEMORY = new KeyDefinition<string>(TOKEN_MEMORY, "ref
   deserializer: (refreshToken) => refreshToken,
 });
 
-export const TWO_FACTOR_TOKEN_DISK_LOCAL = new KeyDefinition<string>(
-  TOKEN_DISK_LOCAL,
-  "twoFactorToken",
-  {
+export function twoFactorTokenDiskLocalFactory(email: string) {
+  return new KeyDefinition<string>(TOKEN_DISK_LOCAL, `twoFactorToken_${email}`, {
     deserializer: (twoFactorToken) => twoFactorToken,
-  },
-);
+  });
+}
 
 export const API_KEY_CLIENT_ID_DISK = new KeyDefinition<string>(TOKEN_DISK, "apiKeyClientId", {
   deserializer: (apiKeyClientId) => apiKeyClientId,

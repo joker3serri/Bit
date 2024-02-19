@@ -1,6 +1,5 @@
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { UserId } from "../../types/guid";
-import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 export abstract class TokenService {
   /**
@@ -107,9 +106,9 @@ export abstract class TokenService {
    * @returns A promise that resolves with the API Key Client Secret.
    */
   getClientSecret: () => Promise<string>;
-  setTwoFactorToken: (tokenResponse: IdentityTokenResponse) => Promise<void>;
-  getTwoFactorToken: () => Promise<string>;
-  clearTwoFactorToken: () => Promise<void>;
+  setTwoFactorToken: (email: string, twoFactorToken: string) => Promise<void>;
+  getTwoFactorToken: (email: string) => Promise<string>;
+  clearTwoFactorToken: (email: string) => Promise<void>;
   clearTokens: (vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number) => Promise<void>;
   decodeAccessToken: (token?: string) => Promise<any>;
   getTokenExpirationDate: () => Promise<Date>;
