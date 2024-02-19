@@ -5,6 +5,5 @@
     "**/locales/*[^n]/messages.json": true,
     "**/_locales/[^e]*/messages.json": true,
     "**/_locales/*[^n]/messages.json": true
-  },
-  "jest.runMode": "on-demand"
+  }
 }
