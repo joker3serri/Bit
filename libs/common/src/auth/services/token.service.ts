@@ -21,6 +21,8 @@ import {
   twoFactorTokenDiskLocalFactory,
 } from "./token.state";
 
+// TODO: write tests for this service
+
 export class TokenService implements TokenServiceAbstraction {
   static decodeAccessToken(token: string): Promise<any> {
     if (token == null) {
