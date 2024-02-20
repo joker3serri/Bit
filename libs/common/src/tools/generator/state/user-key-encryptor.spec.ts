@@ -14,7 +14,7 @@ function mockEncryptService(): EncryptService {
   return mock<EncryptService>({
     // The mocks accept any and cast because the data flow is what's being
     // tested. The tests expect the raw strings to just flow through the service.
-    // This holds only because the UserKeyEncryptor treats encryption an key data
+    // This holds only because the UserKeyEncryptor treats encryption and key data
     // as an opaque value. Since it never inspects them in their "encrypted" form
     // and typescript erases its types, this "just works". It'll "just break", however,
     // if the encryptor embeds the cryptosystem.
