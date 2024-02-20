@@ -58,4 +58,8 @@ export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSetting
   web: "disk-local",
 });
 
+export const VAULT_FILTER_DISK = new StateDefinition("vaultFilter", "disk", {
+  web: "disk-local",
+});
+
 export const EVENT_COLLECTION_MEMORY = new StateDefinition("eventCollection", "memory");
