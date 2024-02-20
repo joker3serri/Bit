@@ -22,6 +22,9 @@ import { SEND_KDF_ITERATIONS } from "../send-kdf";
 import { InternalSendService as InternalSendServiceAbstraction } from "./send.service.abstraction";
 
 export class SendService implements InternalSendServiceAbstraction {
+  readonly sendKeySalt = "bitwarden-send";
+  readonly sendKeyPurpose = "send";
+
   protected _sends: BehaviorSubject<Send[]> = new BehaviorSubject([]);
   protected _sendViews: BehaviorSubject<SendView[]> = new BehaviorSubject([]);
 
@@ -75,8 +78,8 @@ export class SendService implements InternalSendServiceAbstraction {
     if (model.key == null) {
       [model.key, model.cryptoKey] = await this.keyGenerationService.createMaterialAndKey(
         128,
-        "bitwarden-send",
-        "send",
+        this.sendKeySalt,
+        this.sendKeyPurpose,
       );
     }
     if (password != null) {
