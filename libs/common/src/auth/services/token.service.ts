@@ -106,6 +106,13 @@ export class TokenService implements TokenServiceAbstraction {
     const userId = decodedAccessToken.sub;
 
     if (this.platformSupportsSecureStorage) {
+      // If we don't have a user id, we can't save to secure storage
+      if (!userId) {
+        throw new Error(
+          "User id not found in access token. Cannot save access token to secure storage.",
+        );
+      }
+
       await this.secureStorageService.save<string>(
         `${userId}${this.accessTokenSecureStorageKey}`,
         token,
