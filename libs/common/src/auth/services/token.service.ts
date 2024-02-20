@@ -150,10 +150,37 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getAccessToken(userId?: UserId): Promise<string> {
+    // if user id, read from user
+    if (userId) {
+      const accessTokenForUser = await this.getAccessTokenByUserId(userId);
+
+      if (accessTokenForUser) {
+        return accessTokenForUser;
+      }
+    }
+
+    // if no user id, read from active user in memory (memory first b/c faster)
+    const accessTokenMemory = await firstValueFrom(this.accessTokenMemoryState.state$);
+    if (accessTokenMemory != null) {
+      return accessTokenMemory;
+    }
+
+    // if memory is null, read from active user on disk
+    const accessTokenDisk = await firstValueFrom(this.accessTokenDiskState.state$);
+    if (accessTokenDisk != null) {
+      return accessTokenDisk;
+    }
+
+    // Data not found in memory or disk, try secure storage as it could have been migrated if the platform supported it
     if (this.platformSupportsSecureStorage) {
       // if we don't have a user id, we have to have one in order to read from secure storage
       if (!userId) {
         userId = await firstValueFrom(this.stateProvider.activeUserId$);
+      }
+
+      // if we still don't have a user id, we can't read from secure storage
+      if (!userId) {
+        return null;
       }
 
       const accessToken = await this.secureStorageService.get<string>(
@@ -164,23 +191,13 @@ export class TokenService implements TokenServiceAbstraction {
           userId: userId,
         },
       );
-      return accessToken;
+
+      if (accessToken != null) {
+        return accessToken;
+      }
     }
 
-    if (userId) {
-      return await this.getAccessTokenByUserId(userId);
-    }
-
-    // if no user id, read from active user
-    // Always read memory first b/c faster
-    const accessTokenMemory = await firstValueFrom(this.accessTokenMemoryState.state$);
-
-    if (accessTokenMemory != null) {
-      return accessTokenMemory;
-    }
-
-    // if memory is null, read from disk
-    return await firstValueFrom(this.accessTokenDiskState.state$);
+    return null;
   }
 
   private async getAccessTokenByUserId(userId: UserId): Promise<string> {
