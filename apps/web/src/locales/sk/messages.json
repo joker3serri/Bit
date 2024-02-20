@@ -1347,6 +1347,18 @@
   "importData": {
     "message": "Import dát"
   },
+  "onboardingImportDataDetailsPartOne": {
+    "message": "Ak nemáte žiadne dáta na import, môžete namiesto toho vytvoriť ",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsLink": {
+    "message": "novú položku",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsPartTwo": {
+    "message": ". Možno budete musieť počkať kým správca potvrdí vaše členstvo v organizácii.",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
   "importError": {
     "message": "Chyba importu"
   },
@@ -4030,6 +4042,12 @@
   },
   "ssoHandOff": {
     "message": "Teraz môžete zavrieť túto kartu a pokračovať v rozšírení."
+  },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "thisWindowWillCloseIn5Seconds": {
+    "message": "This window will automatically close in 5 seconds"
   },
   "includeAllTeamsFeatures": {
     "message": "Všetky funkcie verzie pre Tímy, plus:"
@@ -6912,6 +6930,9 @@
     "message": "SDK",
     "description": "Software Development Kit"
   },
+  "createAnAccount": {
+    "message": "Vytvoriť účet"
+  },
   "createSecret": {
     "message": "Vytvoriť položku"
   },
@@ -7456,6 +7477,12 @@
     "message": "Podrobné pokyny nájdete na našej stránke pomoci na adrese",
     "description": "This is followed a by a hyperlink to the help website."
   },
+  "installBrowserExtension": {
+    "message": "Inštalovať rozšírenie prehliadača"
+  },
+  "installBrowserExtensionDetails": {
+    "message": "Použite rozšírenie na rýchle ukladanie prihlasovacích údajov a vypĺňanie formulárov bez nutnosti otvárania webovej aplikácie."
+  },
   "projectAccessUpdated": {
     "message": "Prístup k projektu aktualizovaný"
   },
@@ -7519,5 +7546,43 @@
   },
   "smFreeTrialConfirmationEmail": {
     "message": "Poslali sme potvrdzujúci e-mail na adresu "
+  },
+  "confirmCollectionEnhancementsDialogTitle": {
+    "message": "This action is irreversible"
+  },
+  "confirmCollectionEnhancementsDialogContent": {
+    "message": "Turning on this feature will deprecate the manager role and replace it with a Can manage permission. This will take a few moments. Do not make any organization changes until it is complete. Are you sure you want to proceed?"
+  },
+  "sorryToSeeYouGo": {
+    "message": "Sorry to see you go! Help improve Bitwarden by sharing why you're canceling.",
+    "description": "A message shown to users as part of an offboarding survey asking them to provide more information on their subscription cancelation."
+  },
+  "selectCancellationReason": {
+    "message": "Select a reason for canceling",
+    "description": "Used as a form field label for a select input on the offboarding survey."
+  },
+  "anyOtherFeedback": {
+    "message": "Is there any other feedback you'd like to share?",
+    "description": "Used as a form field label for a textarea input on the offboarding survey."
+  },
+  "missingFeatures": {
+    "message": "Missing features",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "movingToAnotherTool": {
+    "message": "Moving to another tool",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "tooDifficultToUse": {
+    "message": "Too difficult to use",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "notUsingEnough": {
+    "message": "Not using enough",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "tooExpensive": {
+    "message": "Too expensive",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
   }
 }
