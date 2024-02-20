@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -388,8 +388,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.showOptions = !this.showOptions;
   }
 
-  protected loadSend(): Send {
-    return this.sendService.get(this.sendId);
+  protected async loadSend(): Promise<Send> {
+    return firstValueFrom(this.sendService.get$(this.sendId));
   }
 
   protected async encryptSend(file: File): Promise<[Send, EncArrayBuffer]> {
