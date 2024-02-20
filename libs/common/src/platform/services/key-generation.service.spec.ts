@@ -31,7 +31,7 @@ describe("KeyGenerationService", () => {
     );
   });
 
-  describe("createKeyFromMaterial", () => {
+  describe("createMaterialAndKey", () => {
     test.each([128, 192, 256, 512])(
       "should create a 64 byte key from different material lengths",
       async (bitLength: 128 | 192 | 256 | 512) => {
@@ -44,7 +44,7 @@ describe("KeyGenerationService", () => {
           .calledWith(material, salt, purpose, 64, "sha256")
           .mockResolvedValue(new Uint8Array(64));
 
-        const [actualMaterial, key] = await sut.createKeyFromMaterial(bitLength, salt, purpose);
+        const [actualMaterial, key] = await sut.createMaterialAndKey(bitLength, salt, purpose);
 
         expect(actualMaterial).toEqual(material);
         expect(key.key.length).toEqual(64);

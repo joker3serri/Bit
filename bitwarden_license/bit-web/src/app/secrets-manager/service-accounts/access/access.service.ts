@@ -53,7 +53,7 @@ export class AccessService {
     serviceAccountId: string,
     accessTokenView: AccessTokenView,
   ): Promise<string> {
-    const [keyMaterial, encryptionKey] = await this.keyGenerationService.createKeyFromMaterial(
+    const [keyMaterial, encryptionKey] = await this.keyGenerationService.createMaterialAndKey(
       128,
       "bitwarden-accesstoken",
       "sm-access-token",

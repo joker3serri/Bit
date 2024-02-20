@@ -139,7 +139,7 @@ export class LocalBackedSessionStorageService extends AbstractMemoryStorageServi
     let storedKey = await this.sessionStorage.get<SymmetricCryptoKey>(keys.encKey);
     if (storedKey == null || Object.keys(storedKey).length == 0) {
       storedKey = (
-        await this.keyGenerationService.createKeyFromMaterial(
+        await this.keyGenerationService.createMaterialAndKey(
           128,
           "bitwarden-ephemeral",
           "ephemeral",

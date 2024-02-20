@@ -206,7 +206,7 @@ describe("Browser Session Storage Service", () => {
     describe("new key creation", () => {
       beforeEach(() => {
         jest.spyOn(sessionStorage, "get").mockResolvedValue(null);
-        keyGenerationService.createKeyFromMaterial.mockResolvedValue([null, key]);
+        keyGenerationService.createMaterialAndKey.mockResolvedValue([null, key]);
         jest.spyOn(sut, "setSessionEncKey").mockResolvedValue();
       });
 
@@ -214,7 +214,7 @@ describe("Browser Session Storage Service", () => {
         const result = await sut.getSessionEncKey();
 
         expect(result).toStrictEqual(key);
-        expect(keyGenerationService.createKeyFromMaterial).toBeCalledTimes(1);
+        expect(keyGenerationService.createMaterialAndKey).toBeCalledTimes(1);
       });
 
       it("should store a symmetric crypto key if it makes one", async () => {

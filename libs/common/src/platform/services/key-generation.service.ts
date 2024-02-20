@@ -19,7 +19,7 @@ export class KeyGenerationService implements KeyGenerationServiceAbstraction {
     return new SymmetricCryptoKey(key);
   }
 
-  async createKeyFromMaterial(
+  async createMaterialAndKey(
     bitLength: 128 | 192 | 256 | 512,
     salt: string,
     purpose: string,
