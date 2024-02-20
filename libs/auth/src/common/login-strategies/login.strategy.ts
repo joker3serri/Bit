@@ -137,13 +137,9 @@ export abstract class LoginStrategy {
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
     const vaultTimeout = await this.stateService.getVaultTimeout();
 
-    // set access token and refresh token in state provider
-    await this.tokenService.setAccessToken(
+    // set access token and refresh token
+    await this.tokenService.setTokens(
       tokenResponse.accessToken,
-      vaultTimeoutAction as VaultTimeoutAction,
-      vaultTimeout,
-    );
-    await this.tokenService.setRefreshToken(
       tokenResponse.refreshToken,
       vaultTimeoutAction as VaultTimeoutAction,
       vaultTimeout,

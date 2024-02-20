@@ -1777,7 +1777,6 @@ export class ApiService implements ApiServiceAbstraction {
       await this.tokenService.setTokens(
         tokenResponse.accessToken,
         tokenResponse.refreshToken,
-        null,
         vaultTimeoutAction as VaultTimeoutAction,
         vaultTimeout,
       );

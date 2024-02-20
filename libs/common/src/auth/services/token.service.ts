@@ -52,6 +52,7 @@ export class TokenService implements TokenServiceAbstraction {
 
   private refreshTokenDiskState: ActiveUserState<string>;
   private refreshTokenMemoryState: ActiveUserState<string>;
+  private readonly refreshTokenSecureStorageKey: string = "_refreshToken";
 
   private apiKeyClientIdDiskState: ActiveUserState<string>;
   private apiKeyClientIdMemoryState: ActiveUserState<string>;
@@ -84,12 +85,21 @@ export class TokenService implements TokenServiceAbstraction {
   async setTokens(
     accessToken: string,
     refreshToken: string,
-    clientIdClientSecret: [string, string],
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    clientIdClientSecret?: [string, string],
   ): Promise<any> {
-    await this.setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout);
-    await this.setRefreshToken(refreshToken, vaultTimeoutAction, vaultTimeout);
+    // get user id from saved or passed in access token so we can save the tokens to secure storage
+    let userId: UserId;
+    if (accessToken == null) {
+      userId = (await this.getUserId()) as UserId;
+    } else {
+      const decodedAccessToken = await this.decodeAccessToken(accessToken);
+      userId = decodedAccessToken.sub;
+    }
+
+    await this.setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
+    await this.setRefreshToken(refreshToken, vaultTimeoutAction, vaultTimeout, userId);
     if (clientIdClientSecret != null) {
       await this.setClientId(clientIdClientSecret[0], vaultTimeoutAction, vaultTimeout);
       await this.setClientSecret(clientIdClientSecret[1], vaultTimeoutAction, vaultTimeout);
@@ -100,12 +110,14 @@ export class TokenService implements TokenServiceAbstraction {
     token: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId?: UserId,
   ): Promise<void> {
-    // get user id from access token:
-    const decodedAccessToken = await this.decodeAccessToken(token);
-    const userId = decodedAccessToken.sub;
-
     if (this.platformSupportsSecureStorage) {
+      // if we don't have a user id, see if we can get one from the state provider active user
+      if (!userId) {
+        userId = await firstValueFrom(this.stateProvider.activeUserId$);
+      }
+
       // If we don't have a user id, we can't save to secure storage
       if (!userId) {
         throw new Error(
@@ -157,6 +169,7 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getAccessToken(userId?: UserId): Promise<string> {
+    // pre-secure storage migration:
     // if user id, read from user
     if (userId) {
       const accessTokenForUser = await this.getAccessTokenByUserId(userId);
@@ -221,11 +234,38 @@ export class TokenService implements TokenServiceAbstraction {
     return await firstValueFrom(this.stateProvider.getUser(userId, ACCESS_TOKEN_DISK).state$);
   }
 
-  async setRefreshToken(
+  // Private because we only ever set the refresh token when also setting the access token
+  // and we need the user id from the access token to save to secure storage
+  private async setRefreshToken(
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId: UserId,
   ): Promise<void> {
+    if (this.platformSupportsSecureStorage) {
+      // If we don't have a user id, we can't save to secure storage
+      if (!userId) {
+        throw new Error("User id null. Cannot save refresh token to secure storage.");
+      }
+
+      await this.secureStorageService.save<string>(
+        `${userId}${this.refreshTokenSecureStorageKey}`,
+        refreshToken,
+        {
+          storageLocation: StorageLocation.Disk,
+          useSecureStorage: true,
+          userId: userId,
+        },
+      );
+
+      // 2024-02-20: Remove refresh token from memory and disk so that we migrate to secure storage over time.
+      // Remove after 3 releases.
+      await this.refreshTokenDiskState.update((_) => null);
+      await this.refreshTokenMemoryState.update((_) => null);
+
+      return;
+    }
+
     const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
@@ -236,6 +276,7 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getRefreshToken(): Promise<string> {
+    // pre-secure storage migration:
     // Always read memory first b/c faster
     const refreshTokenMemory = await firstValueFrom(this.refreshTokenMemoryState.state$);
 
@@ -244,7 +285,37 @@ export class TokenService implements TokenServiceAbstraction {
     }
 
     // if memory is null, read from disk
-    return await firstValueFrom(this.refreshTokenDiskState.state$);
+    const refreshTokenDisk = await firstValueFrom(this.refreshTokenDiskState.state$);
+    if (refreshTokenDisk != null) {
+      return refreshTokenDisk;
+    }
+
+    // Data not found in memory or disk, try secure storage as it could have been
+    // migrated if the platform supported it
+    if (this.platformSupportsSecureStorage) {
+      // get user id from active user as we need it to read from secure storage
+      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+      // if we still don't have a user id, we can't read from secure storage
+      if (!userId) {
+        return null;
+      }
+
+      const refreshTokenSecureStorage = await this.secureStorageService.get<string>(
+        `${userId}${this.refreshTokenSecureStorageKey}`,
+        {
+          storageLocation: StorageLocation.Disk,
+          useSecureStorage: true,
+          userId: userId,
+        },
+      );
+
+      if (refreshTokenSecureStorage != null) {
+        return refreshTokenSecureStorage;
+      }
+    }
+
+    return null;
   }
 
   async setClientId(
@@ -320,10 +391,7 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async clearTokens(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
-    await this.setAccessToken(null, vaultTimeoutAction, vaultTimeout);
-    await this.setRefreshToken(null, vaultTimeoutAction, vaultTimeout);
-    await this.setClientId(null, vaultTimeoutAction, vaultTimeout);
-    await this.setClientSecret(null, vaultTimeoutAction, vaultTimeout);
+    await this.setTokens(null, null, vaultTimeoutAction, vaultTimeout, [null, null]);
   }
 
   // jwthelper methods

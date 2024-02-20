@@ -5,6 +5,9 @@ export abstract class TokenService {
   /**
    * Sets the access token, refresh token, API Key Client ID, and API Key Client Secret for the active user id
    * in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
+   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage.
+   * Note 2: this method also enforces always setting the access token and the refresh token together as
+   * we retrieve the user id required to set the refresh token in secure storage from the access token.
    * @param accessToken The access token to set.
    * @param refreshToken The refresh token to set.
    * @param clientIdClientSecret The API Key Client ID and Client Secret to set.
@@ -15,12 +18,14 @@ export abstract class TokenService {
   setTokens: (
     accessToken: string,
     refreshToken: string,
-    clientIdClientSecret: [string, string],
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    clientIdClientSecret?: [string, string],
   ) => Promise<void>;
+
   /**
    * Sets the access token for the given user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
+   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage.
    * @param token The access token to set.
    * @param vaultTimeoutAction The action to take when the vault times out.
    * @param vaultTimeout The timeout for the vault.
@@ -43,6 +48,7 @@ export abstract class TokenService {
    * This avoids a circular dependency between the StateService, TokenService, and VaultTimeoutSettingsService.
    */
   clearAccessTokenByUserId: (userId: UserId) => Promise<void>;
+
   /**
    * Gets the access token for the given, optional user id.
    * @param userId - The optional user id to get the access token for; if not provided, the active user is used.
@@ -51,22 +57,11 @@ export abstract class TokenService {
   getAccessToken: (userId?: UserId) => Promise<string>;
 
   /**
-   * Sets the refresh token for the given user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
-   * @param refreshToken The refresh token to set.
-   * @param vaultTimeoutAction The action to take when the vault times out.
-   * @param vaultTimeout The timeout for the vault.
-   * @returns A promise that resolves when the refresh token has been set.
-   */
-  setRefreshToken: (
-    refreshToken: string,
-    vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
-  ) => Promise<void>;
-  /**
    * Gets the refresh token for the active user.
    * @returns A promise that resolves with the refresh token.
    */
   getRefreshToken: () => Promise<string>;
+
   /**
    * Sets the API Key Client ID for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
    * @param clientId The API Key Client ID to set.
@@ -79,6 +74,7 @@ export abstract class TokenService {
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
   ) => Promise<void>;
+
   /**
    * Gets the API Key Client ID for the active user.
    * @returns A promise that resolves with the API Key Client ID.
@@ -101,6 +97,7 @@ export abstract class TokenService {
    * @returns A promise that resolves with the API Key Client Secret.
    */
   getClientSecret: () => Promise<string>;
+
   setTwoFactorToken: (email: string, twoFactorToken: string) => Promise<void>;
   getTwoFactorToken: (email: string) => Promise<string>;
   clearTwoFactorToken: (email: string) => Promise<void>;
