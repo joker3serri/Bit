@@ -266,6 +266,7 @@ jobs:
             --delete-destination=true
 
       - name: Debug azcopy logs
+        if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
         run: cat /home/runner/.azcopy/*.log
 
       - name: Debug index.html
