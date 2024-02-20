@@ -18,15 +18,15 @@ describe("KeyGenerationService", () => {
 
   describe("createKey", () => {
     test.each([256, 512])(
-      "it should create a key of the specified length",
+      "it should delegate key creation to crypto function service",
       async (bitLength: 256 | 512) => {
         cryptoFunctionService.aesGenerateKey
           .calledWith(bitLength)
           .mockResolvedValue(new Uint8Array(bitLength / 8) as CsprngArray);
 
-        const key = await sut.createKey(bitLength);
+        await sut.createKey(bitLength);
 
-        expect(key.key.length).toEqual(bitLength / 8);
+        expect(cryptoFunctionService.aesGenerateKey).toHaveBeenCalledWith(bitLength);
       },
     );
   });
