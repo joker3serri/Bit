@@ -19,6 +19,13 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
+      sync-utility:
+        description: "Sync utility to use for deployment"
+        type: choice
+        options:
+          - az-sync
+          - azcopy
+        default: azcopy
 
   workflow_call:
     inputs:
@@ -30,6 +37,10 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
+      sync-utility:
+        description: "Sync utility to use for deployment"
+        type: string
+        default: azcopy
 
 permissions:
   deployments: write
@@ -90,7 +101,7 @@ jobs:
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
               ;;
           esac
-          echo "sync-utility=az-sync" >> $GITHUB_OUTPUT
+          echo "sync-utility=${{ inputs.sync-utility }}" >> $GITHUB_OUTPUT
 
   approval:
     name: Approval for Deployment to ${{ needs.setup.outputs.environment-name }}
