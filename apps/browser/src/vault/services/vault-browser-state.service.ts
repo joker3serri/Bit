@@ -5,8 +5,7 @@ import {
   ActiveUserState,
   KeyDefinition,
   StateProvider,
-  VAULT_BROWSER_COMPONENT_MEMORY,
-  VAULT_BROWSER_GROUPINGS_COMPONENT_MEMORY,
+  VAULT_BROWSER_MEMORY,
 } from "@bitwarden/common/platform/state";
 
 import { BrowserComponentState } from "../../models/browserComponentState";
@@ -14,18 +13,17 @@ import { BrowserGroupingsComponentState } from "../../models/browserGroupingsCom
 
 import { VaultBrowserStateServiceAbstraction } from "./abstractions/vault-browser-state.service.abstraction";
 
-export const VAULT_BROWSER_GROUPINGS_COMPONENT =
-  KeyDefinition.record<BrowserGroupingsComponentState>(
-    VAULT_BROWSER_GROUPINGS_COMPONENT_MEMORY,
-    "vault_browser_groupings_component",
-    {
-      deserializer: (obj: Jsonify<BrowserGroupingsComponentState>) =>
-        BrowserGroupingsComponentState.fromJSON(obj),
-    },
-  );
+export const VAULT_BROWSER_GROUPINGS_COMPONENT = new KeyDefinition<BrowserGroupingsComponentState>(
+  VAULT_BROWSER_MEMORY,
+  "vault_browser_groupings_component",
+  {
+    deserializer: (obj: Jsonify<BrowserGroupingsComponentState>) =>
+      BrowserGroupingsComponentState.fromJSON(obj),
+  },
+);
 
-export const VAULT_BROWSER_COMPONENT = KeyDefinition.record<BrowserComponentState>(
-  VAULT_BROWSER_COMPONENT_MEMORY,
+export const VAULT_BROWSER_COMPONENT = new KeyDefinition<BrowserComponentState>(
+  VAULT_BROWSER_MEMORY,
   "vault_browser_component",
   {
     deserializer: (obj: Jsonify<BrowserComponentState>) => BrowserComponentState.fromJSON(obj),
@@ -36,12 +34,8 @@ export class VaultBrowserStateService implements VaultBrowserStateServiceAbstrac
   vaultBrowserGroupingsComponent$: Observable<BrowserGroupingsComponentState>;
   vaultBrowserComponent$: Observable<BrowserComponentState>;
 
-  private activeUserVaultBrowserGroupingsComponentState: ActiveUserState<
-    Record<string, BrowserGroupingsComponentState>
-  >;
-  private activeUserVaultBrowserComponentState: ActiveUserState<
-    Record<string, BrowserComponentState>
-  >;
+  private activeUserVaultBrowserGroupingsComponentState: ActiveUserState<BrowserGroupingsComponentState>;
+  private activeUserVaultBrowserComponentState: ActiveUserState<BrowserComponentState>;
 
   constructor(protected stateProvider: StateProvider) {
     this.activeUserVaultBrowserGroupingsComponentState = this.stateProvider.getActive(
@@ -52,27 +46,20 @@ export class VaultBrowserStateService implements VaultBrowserStateServiceAbstrac
   }
 
   async getBrowserGroupingComponentState(): Promise<BrowserGroupingsComponentState> {
-    return (await firstValueFrom(this.activeUserVaultBrowserGroupingsComponentState.state$))
-      ?.groupings;
+    const ret = await firstValueFrom(this.activeUserVaultBrowserGroupingsComponentState.state$);
+    return ret;
   }
 
   async setBrowserGroupingComponentState(value: BrowserGroupingsComponentState): Promise<void> {
-    await this.activeUserVaultBrowserGroupingsComponentState.update((groupings) => {
-      groupings ??= {};
-      groupings[0] = value;
-      return groupings;
-    });
+    await this.activeUserVaultBrowserGroupingsComponentState.update(() => value);
   }
 
   async getBrowserVaultItemsComponentState(): Promise<BrowserComponentState> {
-    return (await firstValueFrom(this.activeUserVaultBrowserComponentState.state$))?.ciphers;
+    const ret = await firstValueFrom(this.activeUserVaultBrowserComponentState.state$);
+    return ret;
   }
 
   async setBrowserVaultItemsComponentState(value: BrowserComponentState): Promise<void> {
-    await this.activeUserVaultBrowserComponentState.update((ciphers) => {
-      ciphers ??= {};
-      ciphers[0] = value;
-      return ciphers;
-    });
+    await this.activeUserVaultBrowserComponentState.update(() => value);
   }
 }

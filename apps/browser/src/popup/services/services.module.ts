@@ -116,6 +116,8 @@ import { ForegroundMemoryStorageService } from "../../platform/storage/foregroun
 import { BrowserSendService } from "../../services/browser-send.service";
 import { BrowserSettingsService } from "../../services/browser-settings.service";
 import { FilePopoutUtilsService } from "../../tools/popup/services/file-popout-utils.service";
+import { VaultBrowserStateServiceAbstraction } from "../../vault/services/abstractions/vault-browser-state.service.abstraction";
+import { VaultBrowserStateService } from "../../vault/services/vault-browser-state.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
 import { DebounceNavigationService } from "./debounce-navigation.service";
@@ -468,6 +470,13 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: OBSERVABLE_DISK_STORAGE,
       useExisting: AbstractStorageService,
+    },
+    {
+      provide: VaultBrowserStateServiceAbstraction,
+      useFactory: (stateProvider: StateProvider) => {
+        return new VaultBrowserStateService(stateProvider);
+      },
+      deps: [StateProvider],
     },
     {
       provide: StateServiceAbstraction,

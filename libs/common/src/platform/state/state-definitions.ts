@@ -32,14 +32,7 @@ export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 
 export const BIOMETRIC_SETTINGS_DISK = new StateDefinition("biometricSettings", "disk");
 
-export const VAULT_BROWSER_GROUPINGS_COMPONENT_MEMORY = new StateDefinition(
-  "vaultBrowserGroupingsComponent",
-  "memory",
-);
-export const VAULT_BROWSER_COMPONENT_MEMORY = new StateDefinition(
-  "vaultBrowserComponent",
-  "memory",
-);
+export const VAULT_BROWSER_MEMORY = new StateDefinition("vaultBrowser", "memory");
 
 // Admin Console
 export const ORGANIZATIONS_DISK = new StateDefinition("organizations", "disk");

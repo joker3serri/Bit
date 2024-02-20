@@ -15,7 +15,6 @@ import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 
 import { Account } from "../../models/account";
 import { BrowserComponentState } from "../../models/browserComponentState";
-import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 import { BrowserSendComponentState } from "../../models/browserSendComponentState";
 
 import { BrowserStateService } from "./browser-state.service";
@@ -72,27 +71,6 @@ describe("Browser State Service", () => {
         environmentService,
         useAccountCache,
       );
-    });
-
-    describe("getBrowserGroupingComponentState", () => {
-      it("should return a BrowserGroupingsComponentState", async () => {
-        state.accounts[userId].groupings = new BrowserGroupingsComponentState();
-
-        const actual = await sut.getBrowserGroupingComponentState();
-        expect(actual).toBeInstanceOf(BrowserGroupingsComponentState);
-      });
-    });
-
-    describe("getBrowserVaultItemsComponentState", () => {
-      it("should return a BrowserComponentState", async () => {
-        const componentState = new BrowserComponentState();
-        componentState.scrollY = 0;
-        componentState.searchText = "test";
-        state.accounts[userId].ciphers = componentState;
-
-        const actual = await sut.getBrowserVaultItemsComponentState();
-        expect(actual).toStrictEqual(componentState);
-      });
     });
 
     describe("getBrowserSendComponentState", () => {
