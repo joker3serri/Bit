@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Dein neues Konto wurde erstellt! Du kannst dich jetzt anmelden."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "Wir haben dir eine E-Mail mit dem Master-Passwort-Hinweis geschickt."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Starte DUO und folge den Schritten, um die Anmeldung zu abzuschließen."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Für dein Konto ist die DUO Zwei-Faktor-Authentifizierung erforderlich."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Öffne die Erweiterung in einem neuen Fenster, um die Anmeldung abzuschließen"
+  },
+  "popoutExtension": {
+    "message": "Popout-Erweiterung"
+  },
+  "launchDuo": {
+    "message": "DUO starten"
   },
   "importFormatError": {
     "message": "Die Daten sind nicht richtig formatiert. Kontrolliere bitte deine Import-Datei und versuche es erneut."

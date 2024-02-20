@@ -1,4 +1,9 @@
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
+import {
+  PinCryptoServiceAbstraction,
+  PinCryptoService,
+  LoginStrategyServiceAbstraction,
+  LoginStrategyService,
+} from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -38,6 +43,10 @@ import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
+import {
+  AutofillSettingsServiceAbstraction,
+  AutofillSettingsService,
+} from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -64,6 +73,8 @@ import { EncryptServiceImplementation } from "@bitwarden/common/platform/service
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
+import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
+import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
@@ -114,6 +125,7 @@ import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitw
 import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
+import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
@@ -121,9 +133,17 @@ import { Fido2AuthenticatorService } from "@bitwarden/common/vault/services/fido
 import { Fido2ClientService } from "@bitwarden/common/vault/services/fido2/fido2-client.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
+import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
+import {
+  ImportApiService,
+  ImportApiServiceAbstraction,
+  ImportService,
+  ImportServiceAbstraction,
+} from "@bitwarden/importer/core";
 import {
   IndividualVaultExportService,
   IndividualVaultExportServiceAbstraction,
@@ -131,13 +151,7 @@ import {
   OrganizationVaultExportServiceAbstraction,
   VaultExportService,
   VaultExportServiceAbstraction,
-} from "@bitwarden/exporter/vault-export";
-import {
-  ImportApiServiceAbstraction,
-  ImportApiService,
-  ImportServiceAbstraction,
-  ImportService,
-} from "@bitwarden/importer/core";
+} from "@bitwarden/vault-export-core";
 
 import { BrowserOrganizationService } from "../admin-console/services/browser-organization.service";
 import { BrowserPolicyService } from "../admin-console/services/browser-policy.service";
@@ -176,7 +190,6 @@ import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
 import { BrowserFido2UserInterfaceService } from "../vault/fido2/browser-fido2-user-interface.service";
 import { Fido2Service as Fido2ServiceAbstraction } from "../vault/services/abstractions/fido2.service";
-import { BrowserFolderService } from "../vault/services/browser-folder.service";
 import Fido2Service from "../vault/services/fido2.service";
 import { VaultFilterService } from "../vault/services/vault-filter.service";
 
@@ -214,12 +227,14 @@ export default class MainBackground {
   containerService: ContainerService;
   auditService: AuditServiceAbstraction;
   authService: AuthServiceAbstraction;
+  loginStrategyService: LoginStrategyServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
   importService: ImportServiceAbstraction;
   exportService: VaultExportServiceAbstraction;
   searchService: SearchServiceAbstraction;
   notificationsService: NotificationsServiceAbstraction;
   stateService: StateServiceAbstraction;
+  autofillSettingsService: AutofillSettingsServiceAbstraction;
   systemService: SystemServiceAbstraction;
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
@@ -262,6 +277,7 @@ export default class MainBackground {
   fido2Service: Fido2ServiceAbstraction;
   individualVaultExportService: IndividualVaultExportServiceAbstraction;
   organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
+  vaultSettingsService: VaultSettingsServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -291,6 +307,8 @@ export default class MainBackground {
     // Services
     const lockedCallback = async (userId?: string) => {
       if (this.notificationsService != null) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.notificationsService.updateConnection(false);
       }
       await this.refreshBadge();
@@ -365,6 +383,13 @@ export default class MainBackground {
       this.stateProvider,
       this.accountService,
     );
+
+    const migrationRunner = new MigrationRunner(
+      this.storageService,
+      this.logService,
+      new MigrationBuilderService(),
+    );
+
     this.stateService = new BrowserStateService(
       this.storageService,
       this.secureStorageService,
@@ -373,11 +398,14 @@ export default class MainBackground {
       new StateFactory(GlobalState, Account),
       this.accountService,
       this.environmentService,
+      migrationRunner,
     );
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => {
         if (this.systemService != null) {
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.systemService.clearClipboard(clipboardValue, clearMs);
         }
       },
@@ -426,11 +454,18 @@ export default class MainBackground {
     this.collectionService = new CollectionService(
       this.cryptoService,
       this.i18nService,
-      this.stateService,
+      this.stateProvider,
     );
     this.syncNotifierService = new SyncNotifierService();
-    this.organizationService = new BrowserOrganizationService(this.stateService);
+    this.organizationService = new BrowserOrganizationService(
+      this.stateService,
+      this.stateProvider,
+    );
     this.policyService = new BrowserPolicyService(this.stateService, this.organizationService);
+    this.autofillSettingsService = new AutofillSettingsService(
+      this.stateProvider,
+      this.policyService,
+    );
     this.policyApiService = new PolicyApiService(
       this.policyService,
       this.apiService,
@@ -463,6 +498,8 @@ export default class MainBackground {
       // AuthService should send the messages to the background not popup.
       send = (subscriber: string, arg: any = {}) => {
         const message = Object.assign({}, { command: subscriber }, arg);
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         that.runtimeBackground.processMessage(message, that as any);
       };
     })();
@@ -484,6 +521,13 @@ export default class MainBackground {
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
 
     this.authService = new AuthService(
+      backgroundMessagingService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
+    );
+
+    this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
       this.tokenService,
@@ -523,15 +567,17 @@ export default class MainBackground {
       this.i18nService,
       this.searchService,
       this.stateService,
+      this.autofillSettingsService,
       this.encryptService,
       this.cipherFileUploadService,
       this.configService,
     );
-    this.folderService = new BrowserFolderService(
+    this.folderService = new FolderService(
       this.cryptoService,
       this.i18nService,
       this.cipherService,
       this.stateService,
+      this.stateProvider,
     );
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
@@ -561,14 +607,16 @@ export default class MainBackground {
     );
 
     this.vaultFilterService = new VaultFilterService(
-      this.stateService,
       this.organizationService,
       this.folderService,
       this.cipherService,
       this.collectionService,
       this.policyService,
+      this.stateProvider,
       this.accountService,
     );
+
+    this.vaultSettingsService = new VaultSettingsService(this.stateProvider);
 
     this.vaultTimeoutService = new VaultTimeoutService(
       this.cipherService,
@@ -614,6 +662,7 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
+      this.stateProvider,
       logoutCallback,
     );
     this.eventUploadService = new EventUploadService(
@@ -632,6 +681,7 @@ export default class MainBackground {
     this.autofillService = new AutofillService(
       this.cipherService,
       this.stateService,
+      this.autofillSettingsService,
       this.totpService,
       this.eventCollectionService,
       this.logService,
@@ -698,6 +748,7 @@ export default class MainBackground {
       this.configService,
       this.authService,
       this.stateService,
+      this.vaultSettingsService,
       this.logService,
     );
 
@@ -729,13 +780,13 @@ export default class MainBackground {
       this.i18nService,
       this.notificationsService,
       this.stateService,
+      this.autofillSettingsService,
       this.systemService,
       this.environmentService,
       this.messagingService,
       this.logService,
       this.configService,
       this.fido2Service,
-      this.settingsService,
     );
     this.nativeMessagingBackground = new NativeMessagingBackground(
       this.cryptoService,
@@ -772,6 +823,7 @@ export default class MainBackground {
       this.environmentService,
       this.settingsService,
       this.stateService,
+      this.autofillSettingsService,
       this.i18nService,
       this.platformUtilsService,
     );
@@ -795,6 +847,8 @@ export default class MainBackground {
           const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
           const password = await this.passwordGenerationService.generatePassword(options);
           this.platformUtilsService.copyToClipboard(password, { window: window });
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.passwordGenerationService.addHistory(password);
         },
         async (tab, cipher) => {
@@ -803,6 +857,8 @@ export default class MainBackground {
             return;
           }
 
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           BrowserApi.tabSendMessage(tab, {
             command: "collectPageDetails",
             tab: tab,
@@ -889,6 +945,8 @@ export default class MainBackground {
         await new UpdateBadge(self).setBadgeIcon("", win.id);
       });
 
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       BrowserApi.onWindowCreated(async (win) => {
         if (win.incognito) {
           await new UpdateBadge(self).setBadgeIcon("", win.id);
@@ -905,6 +963,8 @@ export default class MainBackground {
         if (!this.isPrivateMode) {
           await this.refreshBadge();
         }
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.fullSync(true);
         setTimeout(() => this.notificationsService.init(), 2500);
         resolve();
@@ -981,7 +1041,7 @@ export default class MainBackground {
     await this.eventUploadService.uploadEvents(userId);
 
     await Promise.all([
-      this.syncService.setLastSync(new Date(0), userId),
+      this.syncService.setLastSync(new Date(0), userId as UserId),
       this.cryptoService.clearKeys(userId),
       this.settingsService.clear(userId),
       this.cipherService.clear(userId),
@@ -992,6 +1052,7 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService.clear(userId),
       this.keyConnectorService.clear(),
       this.vaultFilterService.clear(),
+      // We intentionally do not clear the autofillSettingsService
     ]);
 
     //Needs to be checked before state is cleaned
@@ -1017,10 +1078,14 @@ export default class MainBackground {
     }
 
     if (BrowserApi.manifestVersion === 3) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       BrowserApi.sendMessage("updateBadge");
     }
     await this.refreshBadge();
     await this.mainContextMenuHandler.noAccess();
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
     await this.systemService.startProcessReload(this.authService);
@@ -1041,6 +1106,8 @@ export default class MainBackground {
       options.frameId = frameId;
     }
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     BrowserApi.tabSendMessage(
       tab,
       {

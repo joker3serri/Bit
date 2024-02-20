@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Uusi käyttäjätilisi on luotu! Voit nyt kirjautua sisään."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "Lähetimme pääsalasanasi vihjeen sähköpostitse."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Avaa DUO ja viimeistele kirjautuminen seuraamalla ohjeita."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Tilisi vaatii kaksivaiheisen DUO-kirjautumisen."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Viimeistele kirjautuminen avaamalla laajennus erilliseen ikkunaan."
+  },
+  "popoutExtension": {
+    "message": "Irrota laajennus"
+  },
+  "launchDuo": {
+    "message": "Avaa DUO"
   },
   "importFormatError": {
     "message": "Tietoja ei ole muotoiltu oikein. Tarkista tuotava tiedosto ja yritä uudelleen."

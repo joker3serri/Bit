@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Il tuo nuovo account è stato creato! Ora puoi eseguire l'accesso."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "Hai effettuato l'accesso"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Puoi chiudere questa finestra"
+  },
   "masterPassSent": {
     "message": "Ti abbiamo inviato una email con il tuo suggerimento per la password principale."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Avvia DUO e segui i passaggi per finire di accedere."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Per il tuo account è richiesta la verifica in due passaggi DUO."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Apri l'estensione in una nuova finestra per completare l'accesso"
+  },
+  "popoutExtension": {
+    "message": "Estrai estensione"
+  },
+  "launchDuo": {
+    "message": "Avvia DUO"
   },
   "importFormatError": {
     "message": "I dati non sono formattati correttamente. Controlla il file di importazione e riprova."

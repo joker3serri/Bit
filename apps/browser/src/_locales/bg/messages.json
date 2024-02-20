@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Абонаментът ви бе създаден. Вече можете да се впишете."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "Изпратихме ви писмо с подсказка за главната ви парола."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Стартирайте DUO и следвайте инструкциите, за да завършите вписването."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Вашата регистрация изисква двустепенно удостоверяване чрез DUO."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Отворете разширението в нов прозорец, за да завършите вписването"
+  },
+  "popoutExtension": {
+    "message": "Отваряне на разширението в нов прозорец"
+  },
+  "launchDuo": {
+    "message": "Стартиране на DUO"
   },
   "importFormatError": {
     "message": "Данните са в неправилен формат. Проверете файла за внасяне и пробвайте отново."

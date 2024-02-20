@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Ulteriori informazioni sull'autenticazione senza password"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Inserisci la tua password principale per modificare le impostazioni di accesso con le passkey."
-  },
   "creatingPasskeyLoading": {
     "message": "Creando la passkey..."
   },
@@ -1349,6 +1346,18 @@
   },
   "importData": {
     "message": "Importa dati"
+  },
+  "onboardingImportDataDetailsPartOne": {
+    "message": "Se non hai dati da importare, puoi invece creare un ",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsLink": {
+    "message": "nuovo elemento",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsPartTwo": {
+    "message": ". Potresti dover attendere finché l'amministratore non conferma l'appartenenza all'organizzazione.",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
   },
   "importError": {
     "message": "Errore di importazione"
@@ -2524,6 +2533,15 @@
   },
   "trialThankYou": {
     "message": "Grazie per esserti iscritto a Bitwarden con il piano $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Grazie per esserti iscritto al Secrets Manager di Bitwarden con il piano $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -4024,6 +4042,12 @@
   },
   "ssoHandOff": {
     "message": "Ora puoi chiudere questa scheda e continuare nell'estensione."
+  },
+  "youSuccessfullyLoggedIn": {
+    "message": "Hai effettuato l'accesso"
+  },
+  "thisWindowWillCloseIn5Seconds": {
+    "message": "Questa finestra si chiuderà automaticamente tra 5 secondi"
   },
   "includeAllTeamsFeatures": {
     "message": "Tutte le funzionalità Teams e in più:"
@@ -5909,6 +5933,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Avvia DUO e segui i passaggi per finire di accedere."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Per il tuo account è richiesta la verifica in due passaggi DUO."
+  },
+  "launchDuo": {
+    "message": "Avvia DUO"
+  },
   "turnOn": {
     "message": "Attiva"
   },
@@ -6850,9 +6883,6 @@
   "secretsManager": {
     "message": "Secrets Manager"
   },
-  "secretsManagerBeta": {
-    "message": "Secrets Manager Beta"
-  },
   "secretsManagerAccessDescription": {
     "message": "Attiva l'accesso dell'utente al Secrets Manager."
   },
@@ -6899,6 +6929,9 @@
   "sdk": {
     "message": "SDK",
     "description": "Software Development Kit"
+  },
+  "createAnAccount": {
+    "message": "Crea un account"
   },
   "createSecret": {
     "message": "Crea un segreto"
@@ -6955,12 +6988,6 @@
   },
   "selectionIsRequired": {
     "message": "Selezione obbligatoria."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Abilita l'accesso degli utenti al Secrets Manager gratis durante il programma beta. Puoi concedere agli utenti l'accesso alla beta da Membri."
-  },
-  "secretsManagerEnable": {
-    "message": "Abilita la beta del Secrets Manager"
   },
   "saPeopleWarningTitle": {
     "message": "Token di accesso ancora disponibili"
@@ -7234,6 +7261,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Inizia la tua prova gratis di 7 giorni del Secrets Manager di Bitwarden per $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Avanti"
   },
@@ -7395,22 +7431,6 @@
   "loggedInExclamation": {
     "message": "Accesso effettuato!"
   },
-  "smBetaEndedDesc": {
-    "message": "La beta del Secrets Manager è terminata in $BETA_ENDING_DATE$. Ti rimangono $DAYS$ giorni per aggiungere il Secrets Manager al tuo abbonamento a pagamento e mantenere l'accesso ai dati del Secrets Manager. Contatta l'assistenza per aggiungere il Secrets Manager al tuo abbonamento.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Termine della beta"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -7456,6 +7476,12 @@
   "seeDetailedInstructions": {
     "message": "Consulta le istruzioni dettagliate sul nostro sito di assistenza su",
     "description": "This is followed a by a hyperlink to the help website."
+  },
+  "installBrowserExtension": {
+    "message": "Installa estensione per browser"
+  },
+  "installBrowserExtensionDetails": {
+    "message": "Usa l'estensione per salvare rapidamente gli accessi e riempire automaticamente i moduli senza aprire il sito web."
   },
   "projectAccessUpdated": {
     "message": "Accesso al progetto aggiornato"
@@ -7508,5 +7534,55 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Ulteriori informazioni sulla gestione delle raccolte"
+  },
+  "organizationInformation": {
+    "message": "Informazioni sull'organizzazione"
+  },
+  "confirmationDetails": {
+    "message": "Dettagli di conferma"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Grazie per esserti iscritto al Secrets Manager di Bitwarden!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "Abbiamo inviato un'email di conferma al tuo indirizzo email: "
+  },
+  "confirmCollectionEnhancementsDialogTitle": {
+    "message": "Questa azione è irreversibile"
+  },
+  "confirmCollectionEnhancementsDialogContent": {
+    "message": "Attivando questa funzionalità, il ruolo di manager sarà sostituito dall'autorizzazione Può gestire. L'operazione richiederà alcuni istanti. Non apportare modifiche all'organizzazione fino a quando non è finita. Sei sicuro di voler procedere?"
+  },
+  "sorryToSeeYouGo": {
+    "message": "Siamo spiacenti di vederti andare! Aiutaci a migliorare Bitwarden condividendo il motivo per cui stai annullando.",
+    "description": "A message shown to users as part of an offboarding survey asking them to provide more information on their subscription cancelation."
+  },
+  "selectCancellationReason": {
+    "message": "Seleziona un motivo per l'annullamento",
+    "description": "Used as a form field label for a select input on the offboarding survey."
+  },
+  "anyOtherFeedback": {
+    "message": "C'è qualche altro feedback che vorresti condividere?",
+    "description": "Used as a form field label for a textarea input on the offboarding survey."
+  },
+  "missingFeatures": {
+    "message": "Funzionalità mancanti",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "movingToAnotherTool": {
+    "message": "Passo a un altro strumento",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "tooDifficultToUse": {
+    "message": "Troppo difficile da usare",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "notUsingEnough": {
+    "message": "Non lo uso abbastanza",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "tooExpensive": {
+    "message": "Troppo costoso",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
   }
 }

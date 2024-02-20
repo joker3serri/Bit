@@ -638,9 +638,6 @@
   "learnMoreAboutPasswordless": {
     "message": "Meer lezen over wachtwoordloos"
   },
-  "passkeyEnterMasterPassword": {
-    "message": "Voer je hoofdwachtwoord in om je instellingen voor het inloggen met passkey te veranderen."
-  },
   "creatingPasskeyLoading": {
     "message": "Passkey aanmaken..."
   },
@@ -1349,6 +1346,18 @@
   },
   "importData": {
     "message": "Gegevens importeren"
+  },
+  "onboardingImportDataDetailsPartOne": {
+    "message": "Als je geen gegevens om te importeren hebt, kun je een ",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsLink": {
+    "message": "nieuw item",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsPartTwo": {
+    "message": " maken. Je moet misschien wachten tot je beheerder je organisatielidmaatschap bevestigt.",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
   },
   "importError": {
     "message": "Fout bij importeren"
@@ -2524,6 +2533,15 @@
   },
   "trialThankYou": {
     "message": "Bedankt voor het aanmelden voor Bitwarden voor $PLAN$!",
+    "placeholders": {
+      "plan": {
+        "content": "$1",
+        "example": "Teams"
+      }
+    }
+  },
+  "trialSecretsManagerThankYou": {
+    "message": "Bedankt voor het aanmelden voor Bitwarden Secrets Manager voor $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -4024,6 +4042,12 @@
   },
   "ssoHandOff": {
     "message": "Je kunt dit tabblad nu sluiten en doorgaan in de extensie."
+  },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "thisWindowWillCloseIn5Seconds": {
+    "message": "This window will automatically close in 5 seconds"
   },
   "includeAllTeamsFeatures": {
     "message": "Alle functionaliteit van Teams plus:"
@@ -5909,6 +5933,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Start DUO en volg de stappen om in te loggen."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "DUO tweestapsaanmelding is vereist voor jouw account."
+  },
+  "launchDuo": {
+    "message": "DUO starten"
+  },
   "turnOn": {
     "message": "Inschakelen"
   },
@@ -6850,9 +6883,6 @@
   "secretsManager": {
     "message": "Secrets Manager"
   },
-  "secretsManagerBeta": {
-    "message": "Secrets Manager Bèta"
-  },
   "secretsManagerAccessDescription": {
     "message": "Gebruikerstoegang tot Secrets Manager inschakelen."
   },
@@ -6899,6 +6929,9 @@
   "sdk": {
     "message": "SDK",
     "description": "Software Development Kit"
+  },
+  "createAnAccount": {
+    "message": "Account aanmaken"
   },
   "createSecret": {
     "message": "Geheim aanmaken"
@@ -6955,12 +6988,6 @@
   },
   "selectionIsRequired": {
     "message": "Selectie vereist."
-  },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Organisatietoegang tot de Secrets Manager inschakelen is gratis tijdens het bètaprogramma. Gebruikers kunnen toegang tot de Bèta krijgen in Leden."
-  },
-  "secretsManagerEnable": {
-    "message": "Secrets Manager Bèta inschakelen"
   },
   "saPeopleWarningTitle": {
     "message": "Toegangstokens nog beschikbaar"
@@ -7234,6 +7261,15 @@
       }
     }
   },
+  "startYour7DayFreeTrialOfBitwardenSecretsManagerFor": {
+    "message": "Begin je gratis 7-daagse proefperiode van Bitwarden Secrets Manager voor $ORG$",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
   "next": {
     "message": "Volgende"
   },
@@ -7395,22 +7431,6 @@
   "loggedInExclamation": {
     "message": "Ingelogd!"
   },
-  "smBetaEndedDesc": {
-    "message": "De Secrets Manager Beta eindigde $BETA_ENDING_DATE$. Je hebt nog $DAYS$ dagen over voor het toevoegen van Secrets Manager aan je betaalde abonnement en toegang te houden tot de gegevens in Secrets Manager. Neem contact op met Customer Success voor het toevoegen van Secrets Manager aan je abonnement.",
-    "placeholders": {
-      "beta_ending_date": {
-        "content": "$1",
-        "example": "August 1, 2023"
-      },
-      "days": {
-        "content": "$2",
-        "example": "11"
-      }
-    }
-  },
-  "betaEnding": {
-    "message": "Beta beëindigd"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -7456,6 +7476,12 @@
   "seeDetailedInstructions": {
     "message": "See detailed instructions on our help site at",
     "description": "This is followed a by a hyperlink to the help website."
+  },
+  "installBrowserExtension": {
+    "message": "Browserextensie installeren"
+  },
+  "installBrowserExtensionDetails": {
+    "message": "Gebruik de extensie om snel logins en auto-invulformulieren op te slaan zonder de webapp te openen."
   },
   "projectAccessUpdated": {
     "message": "Projecttoegang bijgewerkt"
@@ -7508,5 +7534,55 @@
   },
   "collectionEnhancementsLearnMore": {
     "message": "Meer informatie over collectiemanagement"
+  },
+  "organizationInformation": {
+    "message": "Organisatieinformatie"
+  },
+  "confirmationDetails": {
+    "message": "Bevestigingsdetails"
+  },
+  "smFreeTrialThankYou": {
+    "message": "Bedankt voor het aanmelden voor Bitwarden Secrets Manager!"
+  },
+  "smFreeTrialConfirmationEmail": {
+    "message": "We hebben een bevestiging gestuurd naar je e-mailadres "
+  },
+  "confirmCollectionEnhancementsDialogTitle": {
+    "message": "Deze actie is onomkeerbaar"
+  },
+  "confirmCollectionEnhancementsDialogContent": {
+    "message": "Als je deze functie inschakelt, vervang je de rol \"Beheerder\" door het recht \"Kan beheren\". Dit duurt eventjes. Maak geen wijzigingen aan de organisatie totdat het is afgerond. Weet je zeker dat je wilt doorgaan?"
+  },
+  "sorryToSeeYouGo": {
+    "message": "Jammer dat je weggaat! Help Bitwarden te verbeteren door te vertellen waarom je opzegt.",
+    "description": "A message shown to users as part of an offboarding survey asking them to provide more information on their subscription cancelation."
+  },
+  "selectCancellationReason": {
+    "message": "Kies een reden voor opzegging",
+    "description": "Used as a form field label for a select input on the offboarding survey."
+  },
+  "anyOtherFeedback": {
+    "message": "Wil je meer feedback geven?",
+    "description": "Used as a form field label for a textarea input on the offboarding survey."
+  },
+  "missingFeatures": {
+    "message": "Ontbrekende functies",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "movingToAnotherTool": {
+    "message": "Overstappen naar een andere tool",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "tooDifficultToUse": {
+    "message": "Te moeilijk te gebruiken",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "notUsingEnough": {
+    "message": "Ik gebruik het niet genoeg",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "tooExpensive": {
+    "message": "Te duur",
+    "description": "An option for the offboarding survey shown when a user cancels their subscription."
   }
 }
