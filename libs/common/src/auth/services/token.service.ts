@@ -115,6 +115,12 @@ export class TokenService implements TokenServiceAbstraction {
           userId: userId,
         },
       );
+
+      // 2024-02-20: Remove access token from memory and disk so that we migrate to secure storage over time.
+      // Remove after 3 releases.
+      await this.accessTokenDiskState.update((_) => null);
+      await this.accessTokenMemoryState.update((_) => null);
+
       return;
     }
 
