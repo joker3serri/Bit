@@ -111,6 +111,10 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
           })
           .sort(sortSubscriptionItems);
       }
+
+      if (this.sub.customerDiscount.percentOff == 100) {
+        this.lineItems.reverse();
+      }
     }
 
     const apiKeyResponse = await this.organizationApiService.getApiKeyInformation(
