@@ -45,6 +45,7 @@ jobs:
       environment-artifact: ${{ steps.config.outputs.environment-artifact }}
       azure-login-creds: ${{ steps.config.outputs.azure-login-creds }}
       retrieve-secrets-keyvault: ${{ steps.config.outputs.retrieve-secrets-keyvault }}
+      sync-utility: ${{ steps.config.outputs.sync-utility }}
     steps:
       - name: Configure
         id: config
@@ -89,6 +90,7 @@ jobs:
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
               ;;
           esac
+          echo "sync-utility=azcopy" >> $GITHUB_OUTPUT
 
   approval:
     name: Approval for Deployment to ${{ needs.setup.outputs.environment-name }}
@@ -212,8 +214,17 @@ jobs:
         with:
           creds: ${{ secrets[needs.setup.outputs.azure-login-creds] }}
 
-      - name: Retrieve Storage Account name
-        id: retrieve-secrets
+      - name: Retrieve Storage Account connection string for az sync
+        when: ${{ needs.setup.outputs.sync-utility == 'az-sync' }}
+        id: retrieve-secrets-az-sync
+        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        with:
+          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
+          secrets: "sa-bitwarden-web-vault-dev-key-temp"
+
+      - name: Retrieve Storage Account name for azcopy
+        when: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
+        id: retrieve-secrets-azcopy
         uses: bitwarden/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
@@ -232,7 +243,17 @@ jobs:
         working-directory: apps/web
         run: unzip ${{ env._ENVIRONMENT_ARTIFACT }}
 
-      - name: Sync to Azure Storage Account
+      - name: Sync to Azure Storage Account using az storage blob sync
+        when: ${{ needs.setup.outputs.sync-utility == 'az-sync' }}
+        working-directory: apps/web
+        run: |
+          az storage blob sync \
+            --source "./build" \
+            --container '$web' \
+            --connection-string "${{ steps.retrieve-secrets-az-sync.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
+
+      - name: Sync to Azure Storage Account using azcopy
+        when: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
         continue-on-error: true
         working-directory: apps/web
         run: |
@@ -241,7 +262,7 @@ jobs:
           # Extract date using the format YYYY-MM-DD for se parameter
           export DATE=$(date +%Y-%m-%d)
           printenv
-          azcopy sync ./build 'https://${{ steps.retrieve-secrets.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/?se=2024-02-19' \
+          azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/?se=2024-02-19' \
             --delete-destination=true
 
       - name: Debug azcopy logs
