@@ -5,7 +5,7 @@ import { AutofillOverlayVisibility } from "../../../../../apps/browser/src/autof
 import { StateDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { clearClipboardDelayMigrator } from "./23-move-clear-clipboard-to-autofill-settings-state-provider";
+import { ClearClipboardDelayMigrator } from "./23-move-clear-clipboard-to-autofill-settings-state-provider";
 
 function exampleJSON() {
   return {
@@ -70,12 +70,12 @@ const autofillSettingsLocalStateDefinition: {
 
 describe("ProviderKeysMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
-  let sut: clearClipboardDelayMigrator;
+  let sut: ClearClipboardDelayMigrator;
 
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(exampleJSON(), 22);
-      sut = new clearClipboardDelayMigrator(22, 23);
+      sut = new ClearClipboardDelayMigrator(22, 23);
     });
 
     it("should remove clearClipboard setting from all accounts", async () => {
@@ -115,7 +115,7 @@ describe("ProviderKeysMigrator", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJSON(), 21);
-      sut = new clearClipboardDelayMigrator(22, 23);
+      sut = new ClearClipboardDelayMigrator(22, 23);
     });
 
     it("should null out new values for each account", async () => {

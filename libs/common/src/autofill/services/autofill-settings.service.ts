@@ -105,7 +105,7 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
   private inlineMenuVisibilityState: GlobalState<InlineMenuVisibilitySetting>;
   readonly inlineMenuVisibility$: Observable<InlineMenuVisibilitySetting>;
 
-  private clearClipboardDelayState: GlobalState<ClearClipboardDelaySetting>;
+  private clearClipboardDelayState: ActiveUserState<ClearClipboardDelaySetting>;
   readonly clearClipboardDelay$: Observable<ClearClipboardDelaySetting>;
 
   constructor(
@@ -142,7 +142,7 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
       map((x) => x ?? AutofillOverlayVisibility.Off),
     );
 
-    this.clearClipboardDelayState = this.stateProvider.getGlobal(CLEAR_CLIPBOARD_DELAY);
+    this.clearClipboardDelayState = this.stateProvider.getActive(CLEAR_CLIPBOARD_DELAY);
     this.clearClipboardDelay$ = this.clearClipboardDelayState.state$.pipe(
       map((x) => x ?? ClearClipboardDelay.Never),
     );

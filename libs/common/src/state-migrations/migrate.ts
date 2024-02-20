@@ -17,7 +17,7 @@ import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-
 import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-providers";
 import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
 import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-groupings-to-state-provider";
-import { clearClipboardDelayMigrator } from "./migrations/23-move-clear-clipboard-to-autofill-settings-state-provider";
+import { ClearClipboardDelayMigrator } from "./migrations/23-move-clear-clipboard-to-autofill-settings-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -54,7 +54,7 @@ export function createMigrationBuilder() {
     .with(PrivateKeyMigrator, 19, 20)
     .with(CollectionMigrator, 20, 21)
     .with(CollapsedGroupingsMigrator, 21, 22)
-    .with(clearClipboardDelayMigrator, 22, CURRENT_VERSION);
+    .with(ClearClipboardDelayMigrator, 22, CURRENT_VERSION);
 }
 
 export async function currentVersion(
