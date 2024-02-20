@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
-/** Classifies the properties of a secret. Disclosed secrets
- *  MAY be stored in plaintext. Excluded secrets MUST NOT be
+/** Classifies the properties of a class. Disclosed properties
+ *  MAY be stored in plaintext. Excluded properties MUST NOT be
  *  saved. Everything else MUST be stored using encryption.
  */
 export class SecretClassifier<T extends object, Disclosed, Secret> {
