@@ -17,7 +17,6 @@ describe("Vault Browser State Service", () => {
   let stateProvider: FakeStateProvider;
 
   let browserState: FakeActiveUserState<BrowserComponentState>;
-  //let browserGroupingsState: FakeActiveUserState<BrowserGroupingsComponentState>;
 
   let accountService: FakeAccountService;
   let stateService: VaultBrowserStateService;
@@ -27,7 +26,6 @@ describe("Vault Browser State Service", () => {
     accountService = mockAccountServiceWith(mockUserId);
     stateProvider = new FakeStateProvider(accountService);
 
-    //browserGroupingsState = stateProvider.activeUser.getFake(VAULT_BROWSER_GROUPINGS_COMPONENT);
     browserState = stateProvider.activeUser.getFake(VAULT_BROWSER_COMPONENT);
 
     stateService = new VaultBrowserStateService(stateProvider);

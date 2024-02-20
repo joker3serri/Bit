@@ -263,10 +263,7 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    //TODO is this where I need to clear the memory?
     await Promise.all([
-      // this.stateService.setBrowserGroupingComponentState(null),
-      // this.stateService.setBrowserVaultItemsComponentState(null),
       this.vaultBrowserStateService.setBrowserGroupingComponentState(null),
       this.vaultBrowserStateService.setBrowserVaultItemsComponentState(null),
       this.stateService.setBrowserSendComponentState(null),
