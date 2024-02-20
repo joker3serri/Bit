@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Votre nouveau compte a été créé ! Vous pouvez maintenant vous authentifier."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Vous pouvez fermer cette fenêtre"
+  },
   "masterPassSent": {
     "message": "Nous vous avons envoyé un courriel avec votre indice de mot de passe principal."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Lancez DUO et suivez les étapes pour terminer la connexion."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "L'authentification à double facteur DUO est requise pour votre compte."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Ouvrez l'extension dans une nouvelle fenêtre pour terminer la connexion"
+  },
+  "popoutExtension": {
+    "message": "Popout extension"
+  },
+  "launchDuo": {
+    "message": "Lancer DUO"
   },
   "importFormatError": {
     "message": "Les données ne sont pas formatées correctement. Veuillez vérifier votre fichier d'origine et réessayer."

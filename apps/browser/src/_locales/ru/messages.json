@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Ваш аккаунт создан! Теперь вы можете войти в систему."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "Мы отправили вам письмо с подсказкой к мастер-паролю."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Запустите DUO и следуйте шагам для завершения авторизации."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Для вашего аккаунта требуется двухэтапная аутентификация DUO."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Откройте расширение в новом окне, чтобы завершить авторизацию"
+  },
+  "popoutExtension": {
+    "message": "Открепить расширение"
+  },
+  "launchDuo": {
+    "message": "Запустить DUO"
   },
   "importFormatError": {
     "message": "Формат данных некорректен. Проверьте импортируемый файл и повторите попытку."

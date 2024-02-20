@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Din nye konto er oprettet! Du kan nu logge ind."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "Vi har sendt dig en e-mail med dit hovedadgangskodetip."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Start DUO og følg trinene for at fuldføre indlogningen."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "DUO totrins indlogning kræves for kontoen."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Åbn udvidelsen i et nyt vindue for at fuldføre indlogning"
+  },
+  "popoutExtension": {
+    "message": "Popout extension"
+  },
+  "launchDuo": {
+    "message": "Start DUO"
   },
   "importFormatError": {
     "message": "Data er ikke korrekt formateret. Tjek importfilen og forsøg igen."

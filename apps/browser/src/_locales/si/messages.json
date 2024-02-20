@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "ඔබගේ නව ගිණුම නිර්මාණය කර ඇත! ඔබට දැන් ලොග් විය හැකිය."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "ඔබගේ ප්රධාන මුරපදය ඉඟියක් සමඟ අපි ඔබට විද්යුත් තැපෑලක් යවා ඇත්තෙමු."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch Duo and follow the steps to finish logging in."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Duo two-step login is required for your account."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Open the extension in a new window to complete login"
+  },
+  "popoutExtension": {
+    "message": "Popout extension"
+  },
+  "launchDuo": {
+    "message": "Launch Duo"
   },
   "importFormatError": {
     "message": "Data is not formatted correctly. Please check your import file and try again."

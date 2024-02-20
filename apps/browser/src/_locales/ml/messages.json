@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "തങ്ങളുടെ അക്കൗണ്ട് സൃഷ്ടിക്കപ്പെട്ടു! ഇനി താങ്കൾക്ക് ലോഗിൻ ചെയ്യാം."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "നിങ്ങളുടെ പ്രാഥമിക പാസ്‌വേഡ് സൂചനയുള്ള ഒരു ഇമെയിൽ ഞങ്ങൾ നിങ്ങൾക്ക് അയച്ചു."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch Duo and follow the steps to finish logging in."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Duo two-step login is required for your account."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Open the extension in a new window to complete login"
+  },
+  "popoutExtension": {
+    "message": "Popout extension"
+  },
+  "launchDuo": {
+    "message": "Launch Duo"
   },
   "importFormatError": {
     "message": "Data is not formatted correctly. Please check your import file and try again."

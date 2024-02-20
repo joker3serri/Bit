@@ -493,6 +493,12 @@
   "newAccountCreated": {
     "message": "Váš účet byl vytvořen! Můžete se přihlásit."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "Byli jste úspěšně přihlášeni"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Nyní můžete toto okno zavřít"
+  },
   "masterPassSent": {
     "message": "Poslali jsme Vám e-mail s nápovědou k hlavnímu heslu."
   },
@@ -2694,6 +2700,21 @@
         "example": "My Org Name"
       }
     }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Spusťte DUO a pro dokončení přihlášení postupujte podle kroků."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Pro Váš účet je vyžadováno dvoufázové přihlášení DUO."
+  },
+  "openExtensionInNewWindowToCompleteLogin": {
+    "message": "Pro dokončení přihlášení otevřete rozšíření v novém okně"
+  },
+  "popoutExtension": {
+    "message": "Zobrazit okno s doplňkem"
+  },
+  "launchDuo": {
+    "message": "Spustit DUO"
   },
   "importFormatError": {
     "message": "Data nemají správný formát. Zkontrolujte importovaný soubor a zkuste to znovu."
