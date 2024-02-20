@@ -208,10 +208,26 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.type = !this.canAccessPremium || !this.emailVerified ? SendType.Text : SendType.File;
     if (this.send == null) {
       if (this.editMode) {
-        const send = this.loadSend();
-        this.send = await send.decrypt();
-        this.type = this.send.type;
-        this.updateFormValues();
+        this.sendService
+          .get$(this.sendId)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((send: Send | undefined) => {
+            if (send) {
+              send
+                .decrypt()
+                .then((decryptedSend: SendView) => {
+                  this.send = decryptedSend;
+                  this.type = this.send.type;
+                  this.updateFormValues();
+                  this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
+                })
+                .catch((error) => {
+                  this.logService.error("Failed to decrypt send:" + error);
+                });
+            } else {
+              this.logService.error("Failed to load send.");
+            }
+          });
       } else {
         this.send = new SendView();
         this.send.type = this.type;
@@ -225,10 +241,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
           selectedDeletionDatePreset: DatePreset.SevenDays,
           selectedExpirationDatePreset: DatePreset.Never,
         });
+        this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
       }
     }
-
-    this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
   }
 
   async submit(): Promise<boolean> {
