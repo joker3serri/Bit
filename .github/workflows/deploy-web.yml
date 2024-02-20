@@ -90,7 +90,7 @@ jobs:
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
               ;;
           esac
-          echo "sync-utility=azcopy" >> $GITHUB_OUTPUT
+          echo "sync-utility=az-sync" >> $GITHUB_OUTPUT
 
   approval:
     name: Approval for Deployment to ${{ needs.setup.outputs.environment-name }}
