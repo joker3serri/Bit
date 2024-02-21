@@ -5,7 +5,7 @@ import { PlatformUtilsService } from "../../platform/abstractions/platform-utils
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
-import { ActiveUserState, StateProvider } from "../../platform/state";
+import { ActiveUserState, GlobalState, StateProvider } from "../../platform/state";
 import { UserId } from "../../types/guid";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 
@@ -16,9 +16,9 @@ import {
   API_KEY_CLIENT_ID_MEMORY,
   API_KEY_CLIENT_SECRET_DISK,
   API_KEY_CLIENT_SECRET_MEMORY,
+  EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
-  twoFactorTokenDiskLocalFactory,
 } from "./token.state";
 
 // TODO: write tests for this service
@@ -60,6 +60,8 @@ export class TokenService implements TokenServiceAbstraction {
   private apiKeyClientSecretDiskState: ActiveUserState<string>;
   private apiKeyClientSecretMemoryState: ActiveUserState<string>;
 
+  private emailTwoFactorTokenRecordGlobalState: GlobalState<Record<string, string>>;
+
   constructor(
     private stateProvider: StateProvider,
     private platformUtilsService: PlatformUtilsService,
@@ -80,6 +82,10 @@ export class TokenService implements TokenServiceAbstraction {
 
     this.apiKeyClientSecretDiskState = this.stateProvider.getActive(API_KEY_CLIENT_SECRET_DISK);
     this.apiKeyClientSecretMemoryState = this.stateProvider.getActive(API_KEY_CLIENT_SECRET_MEMORY);
+
+    this.emailTwoFactorTokenRecordGlobalState = this.stateProvider.getGlobal(
+      EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+    );
   }
 
   async setTokens(
@@ -135,8 +141,10 @@ export class TokenService implements TokenServiceAbstraction {
         },
       );
 
+      // TODO: make Jira ticket for this
       // 2024-02-20: Remove access token from memory and disk so that we migrate to secure storage over time.
       // Remove after 3 releases.
+      // Turn this into a migrate function + add disk state for a boolean to track if we've migrated
       await this.accessTokenDiskState.update((_) => null);
       await this.accessTokenMemoryState.update((_) => null);
 
@@ -373,21 +381,25 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async setTwoFactorToken(email: string, twoFactorToken: string): Promise<void> {
-    const twoFactorTokenKeyDef = twoFactorTokenDiskLocalFactory(email);
-    const twoFactorTokenGlobalState = this.stateProvider.getGlobal(twoFactorTokenKeyDef);
-    await twoFactorTokenGlobalState.update((_) => twoFactorToken);
+    await this.emailTwoFactorTokenRecordGlobalState.update((emailTwoFactorTokenRecord) => {
+      emailTwoFactorTokenRecord[email] = twoFactorToken;
+      return emailTwoFactorTokenRecord;
+    });
   }
 
   async getTwoFactorToken(email: string): Promise<string> {
-    const twoFactorTokenKeyDef = twoFactorTokenDiskLocalFactory(email);
-    const twoFactorTokenGlobalState = this.stateProvider.getGlobal(twoFactorTokenKeyDef);
-    return firstValueFrom(twoFactorTokenGlobalState.state$);
+    const emailTwoFactorTokenRecord: Record<string, string> = await firstValueFrom(
+      this.emailTwoFactorTokenRecordGlobalState.state$,
+    );
+
+    return emailTwoFactorTokenRecord[email];
   }
 
   async clearTwoFactorToken(email: string): Promise<void> {
-    const twoFactorTokenKeyDef = twoFactorTokenDiskLocalFactory(email);
-    const twoFactorTokenGlobalState = this.stateProvider.getGlobal(twoFactorTokenKeyDef);
-    await twoFactorTokenGlobalState.update((_) => null);
+    await this.emailTwoFactorTokenRecordGlobalState.update((emailTwoFactorTokenRecord) => {
+      emailTwoFactorTokenRecord[email] = null;
+      return emailTwoFactorTokenRecord;
+    });
   }
 
   async clearTokens(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
