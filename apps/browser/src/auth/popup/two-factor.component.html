@@ -112,11 +112,8 @@
     <!-- Duo -->
     <ng-container *ngIf="isDuoProvider">
       <div *ngIf="duoFrameless" class="tw-my-4">
-        <p
-          *ngIf="selectedProviderType === providerType.OrganizationDuo"
-          class="tw-mb-0 tw-text-center"
-        >
-          {{ "duoRequiredByOrgForAccount" | i18n }}
+        <p class="tw-mb-0 tw-text-center">
+          {{ "duoRequiredForAccount" | i18n }}
         </p>
 
         <p class="tw-text-center" *ngIf="!inPopout">
