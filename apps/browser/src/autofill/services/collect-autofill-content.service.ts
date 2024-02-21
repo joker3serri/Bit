@@ -7,6 +7,7 @@ import {
   FormFieldElement,
   FormElementWithAttribute,
 } from "../types";
+import { nodeIsHtmlElement } from "../utils";
 
 import { AutofillOverlayContentService } from "./abstractions/autofill-overlay-content.service";
 import {
@@ -747,10 +748,9 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
     // Prioritize capturing text content from elements rather than nodes.
     currentElement = currentElement.parentElement || currentElement.parentNode;
 
-    let siblingElement =
-      currentElement instanceof HTMLElement
-        ? currentElement.previousElementSibling
-        : currentElement.previousSibling;
+    let siblingElement = nodeIsHtmlElement(currentElement)
+      ? currentElement.previousElementSibling
+      : currentElement.previousSibling;
     while (siblingElement?.lastChild && !this.isNewSectionElement(siblingElement)) {
       siblingElement = siblingElement.lastChild;
     }
@@ -873,7 +873,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
    * @private
    */
   private isNodeFormFieldElement(node: Node): boolean {
-    if (!(node instanceof HTMLElement)) {
+    if (!nodeIsHtmlElement(node)) {
       return false;
     }
 
@@ -904,7 +904,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
    * @param {Node} node
    */
   private getShadowRoot(node: Node): ShadowRoot | null {
-    if (!(node instanceof HTMLElement) || node.childNodes.length !== 0) {
+    if (!nodeIsHtmlElement(node) || node.childNodes.length !== 0) {
       return null;
     }
     if (node.shadowRoot) {
@@ -1052,7 +1052,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
     const mutatedElements: Node[] = [];
     for (let index = 0; index < nodes.length; index++) {
       const node = nodes[index];
-      if (!(node instanceof HTMLElement)) {
+      if (!nodeIsHtmlElement(node)) {
         continue;
       }
 
@@ -1151,7 +1151,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
    */
   private handleAutofillElementAttributeMutation(mutation: MutationRecord) {
     const targetElement = mutation.target;
-    if (!(targetElement instanceof HTMLElement)) {
+    if (!nodeIsHtmlElement(targetElement)) {
       return;
     }
 

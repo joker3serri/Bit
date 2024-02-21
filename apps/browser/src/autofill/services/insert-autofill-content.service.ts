@@ -1,6 +1,13 @@
 import { EVENTS, TYPE_CHECK } from "../constants";
 import AutofillScript, { AutofillInsertActions, FillScript } from "../models/autofill-script";
 import { FormFieldElement } from "../types";
+import {
+  elementIsFillableFormField,
+  elementIsInputField,
+  elementIsSelectField,
+  elementIsTextAreaField,
+  nodeIsInputElement,
+} from "../utils";
 
 import { InsertAutofillContentService as InsertAutofillContentServiceInterface } from "./abstractions/insert-autofill-content.service";
 import CollectAutofillContentService from "./collect-autofill-content.service";
@@ -96,7 +103,7 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
     return Boolean(
       this.collectAutofillContentService.queryAllTreeWalkerNodes(
         document.documentElement,
-        (node: Node) => node instanceof HTMLInputElement && node.type === "password",
+        (node: Node) => nodeIsInputElement(node) && node.type === "password",
         false,
       )?.length,
     );
@@ -194,9 +201,8 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
    * @private
    */
   private insertValueIntoField(element: FormFieldElement | null, value: string) {
-    const elementCanBeReadonly =
-      element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement;
-    const elementCanBeFilled = elementCanBeReadonly || element instanceof HTMLSelectElement;
+    const elementCanBeReadonly = elementIsInputField(element) || elementIsTextAreaField(element);
+    const elementCanBeFilled = elementCanBeReadonly || elementIsSelectField(element);
 
     if (
       !element ||
@@ -207,13 +213,13 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
       return;
     }
 
-    if (element instanceof HTMLSpanElement) {
+    if (!elementIsFillableFormField(element)) {
       this.handleInsertValueAndTriggerSimulatedEvents(element, () => (element.innerText = value));
       return;
     }
 
     const isFillableCheckboxOrRadioElement =
-      element instanceof HTMLInputElement &&
+      elementIsInputField(element) &&
       new Set(["checkbox", "radio"]).has(element.type) &&
       new Set(["true", "y", "1", "yes", "✓"]).has(String(value).toLowerCase());
     if (isFillableCheckboxOrRadioElement) {
@@ -285,7 +291,7 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
    */
   private triggerFillAnimationOnElement(element: FormFieldElement): void {
     const skipAnimatingElement =
-      !(element instanceof HTMLSpanElement) &&
+      elementIsFillableFormField(element) &&
       !new Set(["email", "text", "password", "number", "tel", "url"]).has(element?.type);
 
     if (this.domElementVisibilityService.isElementHiddenByCss(element) || skipAnimatingElement) {
@@ -370,6 +376,10 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
     for (let index = 0; index < simulatedInputEvents.length; index++) {
       element.dispatchEvent(new Event(simulatedInputEvents[index], { bubbles: true }));
     }
+  }
+
+  private nodeIsHtmlElement(node: Node): node is HTMLElement {
+    return node.nodeType === Node.ELEMENT_NODE;
   }
 }
 

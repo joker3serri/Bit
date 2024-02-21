@@ -1,4 +1,5 @@
 import { AutofillPort } from "../enums/autofill-port.enums";
+import { FillableFormFieldElement } from "../types";
 
 /**
  * Generates a random string of characters that formatted as a custom element name.
@@ -151,6 +152,30 @@ function setupAutofillInitDisconnectAction(windowContext: Window) {
   setupExtensionDisconnectAction(onDisconnectCallback);
 }
 
+function elementIsFillableFormField(element: Element): element is FillableFormFieldElement {
+  return element.tagName.toLowerCase() !== "span";
+}
+
+function elementIsInputField(element: Element): element is HTMLInputElement {
+  return element.tagName.toLowerCase() === "input";
+}
+
+function elementIsSelectField(element: Element): element is HTMLSelectElement {
+  return element.tagName.toLowerCase() === "select";
+}
+
+function elementIsTextAreaField(element: Element): element is HTMLTextAreaElement {
+  return element.tagName.toLowerCase() === "textarea";
+}
+
+function nodeIsHtmlElement(node: Node): node is HTMLElement {
+  return node.nodeType === Node.ELEMENT_NODE;
+}
+
+function nodeIsInputElement(node: Node): node is HTMLInputElement {
+  return nodeIsHtmlElement(node) && elementIsInputField(node);
+}
+
 export {
   generateRandomCustomElementName,
   buildSvgDomElement,
@@ -159,4 +184,10 @@ export {
   getFromLocalStorage,
   setupExtensionDisconnectAction,
   setupAutofillInitDisconnectAction,
+  elementIsFillableFormField,
+  elementIsInputField,
+  elementIsSelectField,
+  elementIsTextAreaField,
+  nodeIsHtmlElement,
+  nodeIsInputElement,
 };
