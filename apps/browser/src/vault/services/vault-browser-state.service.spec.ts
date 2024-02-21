@@ -11,11 +11,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { BrowserComponentState } from "../../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 
-import {
-  VAULT_BROWSER_COMPONENT,
-  VAULT_BROWSER_GROUPINGS_COMPONENT,
-  VaultBrowserStateService,
-} from "./vault-browser-state.service";
+import { VAULT_BROWSER_COMPONENT, VaultBrowserStateService } from "./vault-browser-state.service";
 
 describe("Vault Browser State Service", () => {
   let stateProvider: FakeStateProvider;
@@ -42,18 +38,6 @@ describe("Vault Browser State Service", () => {
       const actual = await stateService.getBrowserGroupingComponentState();
 
       expect(actual).toBeInstanceOf(BrowserGroupingsComponentState);
-    });
-
-    it("should deserialize BrowserGroupingsComponentState", () => {
-      const sut = VAULT_BROWSER_GROUPINGS_COMPONENT;
-
-      const expectedState = {
-        deletedCount: 0,
-      };
-
-      const result = sut.deserializer(JSON.parse(JSON.stringify(expectedState)));
-
-      expect(result).toStrictEqual(expectedState);
     });
   });
 

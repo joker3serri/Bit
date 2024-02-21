@@ -1,6 +1,5 @@
 import { Jsonify } from "type-fest";
 
-import { DeepJsonify } from "../../types/deep-jsonify";
 import { UserId } from "../../types/guid";
 import { StorageKey } from "../../types/state";
 import { Utils } from "../misc/utils";
@@ -20,7 +19,7 @@ type KeyDefinitionOptions<T> = {
    * @param jsonValue The JSON object representation of your state.
    * @returns The fully typed version of your state.
    */
-  readonly deserializer: (jsonValue: Jsonify<T> | DeepJsonify<T>) => T;
+  readonly deserializer: (jsonValue: Jsonify<T>) => T;
   /**
    * The number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
    * Defaults to 1000ms.

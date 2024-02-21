@@ -7,7 +7,6 @@ import {
   StateProvider,
   VAULT_BROWSER_MEMORY,
 } from "@bitwarden/common/platform/state";
-import { DeepJsonify } from "@bitwarden/common/types/deep-jsonify";
 
 import { BrowserComponentState } from "../../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
@@ -18,7 +17,7 @@ export const VAULT_BROWSER_GROUPINGS_COMPONENT = new KeyDefinition<BrowserGroupi
   VAULT_BROWSER_MEMORY,
   "vault_browser_groupings_component",
   {
-    deserializer: (obj: DeepJsonify<BrowserGroupingsComponentState>) =>
+    deserializer: (obj: Jsonify<BrowserGroupingsComponentState>) =>
       BrowserGroupingsComponentState.fromJSON(obj),
   },
 );
