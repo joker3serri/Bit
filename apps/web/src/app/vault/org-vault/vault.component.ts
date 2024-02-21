@@ -141,7 +141,11 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.BulkCollectionAccess,
     false,
   );
-  protected flexibleCollectionsV1Enabled: boolean;
+  private _flexibleCollectionsV1FlagEnabled: boolean;
+
+  protected get flexibleCollectionsV1Enabled(): boolean {
+    return this._flexibleCollectionsV1FlagEnabled && this.organization?.flexibleCollections;
+  }
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -184,7 +188,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         : "trashCleanupWarning",
     );
 
-    this.flexibleCollectionsV1Enabled = await this.configService.getFeatureFlag(
+    this._flexibleCollectionsV1FlagEnabled = await this.configService.getFeatureFlag(
       FeatureFlag.FlexibleCollectionsV1,
       false,
     );
