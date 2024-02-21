@@ -61,3 +61,5 @@ export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSetting
 export const VAULT_FILTER_DISK = new StateDefinition("vaultFilter", "disk", {
   web: "disk-local",
 });
+
+export const CLEAR_EVENT_DISK = new StateDefinition("clearEvent", "disk");
