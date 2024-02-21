@@ -1,4 +1,4 @@
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject, Observable, map } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
@@ -87,8 +87,7 @@ export class StateService<
   protected activeAccountSubject = new BehaviorSubject<string | null>(null);
   activeAccount$ = this.activeAccountSubject.asObservable();
 
-  protected activeAccountUnlockedSubject = new BehaviorSubject<boolean>(false);
-  activeAccountUnlocked$ = this.activeAccountUnlockedSubject.asObservable();
+  activeAccountUnlocked$: Observable<boolean>;
 
   private hasBeenInited = false;
   protected isRecoveredSession = false;
@@ -561,32 +560,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     return account?.keys?.cryptoMasterKey;
-  }
-
-  /**
-   * @deprecated Do not save the Master Key. Use the User Symmetric Key instead
-   */
-  async setCryptoMasterKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.keys.cryptoMasterKey = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-
-    const nextStatus = value != null ? AuthenticationStatus.Unlocked : AuthenticationStatus.Locked;
-    await this.accountService.setAccountStatus(options.userId as UserId, nextStatus);
-
-    if (options.userId == this.activeAccountSubject.getValue()) {
-      const nextValue = value != null;
-
-      // Avoid emitting if we are already unlocked
-      if (this.activeAccountUnlockedSubject.getValue() != nextValue) {
-        this.activeAccountUnlockedSubject.next(nextValue);
-      }
-    }
   }
 
   /**
