@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Subject, firstValueFrom, takeUntil } from "rxjs";
+import { BehaviorSubject, Subject, concatMap, firstValueFrom, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -164,7 +164,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.formGroup.controls.type.valueChanges.subscribe((val) => {
+    this.formGroup.controls.type.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((val) => {
       this.type = val;
       this.typeChanged();
     });
@@ -207,41 +207,45 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
     this.type = !this.canAccessPremium || !this.emailVerified ? SendType.Text : SendType.File;
     if (this.send == null) {
+      const send = new BehaviorSubject<SendView>(this.send);
+      send.subscribe({
+        next: (decryptedSend: SendView | undefined) => {
+          if (!(decryptedSend instanceof SendView)) {
+            return;
+          }
+
+          this.send = decryptedSend;
+          decryptedSend.type = decryptedSend.type ?? this.type;
+          this.type = this.send.type;
+          this.updateFormValues();
+          this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
+        },
+        error: (error: unknown) => {
+          this.logService.error("Failed to decrypt send:" + error);
+        },
+      });
+
       if (this.editMode) {
         this.sendService
           .get$(this.sendId)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((send: Send | undefined) => {
-            if (send) {
-              send
-                .decrypt()
-                .then((decryptedSend: SendView) => {
-                  this.send = decryptedSend;
-                  this.type = this.send.type;
-                  this.updateFormValues();
-                  this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
-                })
-                .catch((error) => {
-                  this.logService.error("Failed to decrypt send:" + error);
-                });
-            } else {
-              this.logService.error("Failed to load send.");
-            }
-          });
+          .pipe(
+            concatMap((s) => (s ? s.decrypt() : Promise.reject("Failed to load send."))),
+            takeUntil(this.destroy$),
+          )
+          .subscribe(send);
       } else {
-        this.send = new SendView();
-        this.send.type = this.type;
-        this.send.file = new SendFileView();
-        this.send.text = new SendTextView();
-        this.send.deletionDate = new Date();
-        this.send.deletionDate.setDate(this.send.deletionDate.getDate() + 7);
-        this.formGroup.controls.type.patchValue(this.send.type);
+        const sendView = new SendView();
+        sendView.type = this.type;
+        sendView.file = new SendFileView();
+        sendView.text = new SendTextView();
+        sendView.deletionDate = new Date();
+        sendView.deletionDate.setDate(sendView.deletionDate.getDate() + 7);
 
         this.formGroup.patchValue({
           selectedDeletionDatePreset: DatePreset.SevenDays,
           selectedExpirationDatePreset: DatePreset.Never,
         });
-        this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
+        send.next(sendView);
       }
     }
   }
