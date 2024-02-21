@@ -1,5 +1,5 @@
 import { AutofillPort } from "../enums/autofill-port.enums";
-import { FillableFormFieldElement } from "../types";
+import { FillableFormFieldElement, FormFieldElement } from "../types";
 
 /**
  * Generates a random string of characters that formatted as a custom element name.
@@ -152,7 +152,9 @@ function setupAutofillInitDisconnectAction(windowContext: Window) {
   setupExtensionDisconnectAction(onDisconnectCallback);
 }
 
-function elementIsFillableFormField(element: Element): element is FillableFormFieldElement {
+function elementIsFillableFormField(
+  element: FormFieldElement,
+): element is FillableFormFieldElement {
   return element.tagName.toLowerCase() !== "span";
 }
 
