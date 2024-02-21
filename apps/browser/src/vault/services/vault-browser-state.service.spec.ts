@@ -11,7 +11,11 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { BrowserComponentState } from "../../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 
-import { VAULT_BROWSER_COMPONENT, VaultBrowserStateService } from "./vault-browser-state.service";
+import {
+  VAULT_BROWSER_COMPONENT,
+  VAULT_BROWSER_GROUPINGS_COMPONENT,
+  VaultBrowserStateService,
+} from "./vault-browser-state.service";
 
 describe("Vault Browser State Service", () => {
   let stateProvider: FakeStateProvider;
@@ -36,11 +40,37 @@ describe("Vault Browser State Service", () => {
       await stateService.setBrowserGroupingComponentState(new BrowserGroupingsComponentState());
 
       const actual = await stateService.getBrowserGroupingComponentState();
+
       expect(actual).toBeInstanceOf(BrowserGroupingsComponentState);
+    });
+
+    it("should deserialize BrowserGroupingsComponentState", () => {
+      const sut = VAULT_BROWSER_GROUPINGS_COMPONENT;
+
+      const expectedState = {
+        deletedCount: 0,
+      };
+
+      const result = sut.deserializer(JSON.parse(JSON.stringify(expectedState)));
+
+      expect(result).toStrictEqual(expectedState);
     });
   });
 
   describe("getBrowserVaultItemsComponentState", () => {
+    it("should deserialize BrowserComponentState", () => {
+      const sut = VAULT_BROWSER_COMPONENT;
+
+      const expectedState = {
+        scrollY: 0,
+        searchText: "test",
+      };
+
+      const result = sut.deserializer(JSON.parse(JSON.stringify(expectedState)));
+
+      expect(result).toEqual(expectedState);
+    });
+
     it("should return a BrowserComponentState", async () => {
       const componentState = new BrowserComponentState();
       componentState.scrollY = 0;
