@@ -388,8 +388,8 @@ export class BrowserApi {
    * @param globalContext - The global context to use for the reload.
    */
   static reloadExtension(globalContext: (Window & typeof globalThis) | null) {
-    // Since the globalContext can be a ServiceWorkerGlobalScope, we need
-    // to check if the location object exists before calling reload on it.
+    // The passed globalContext might be a ServiceWorkerGlobalScope, as a result
+    // we need to check if the location object exists before calling reload on it.
     if (typeof globalContext?.location?.reload === "function") {
       return (globalContext as any).location.reload(true);
     }
