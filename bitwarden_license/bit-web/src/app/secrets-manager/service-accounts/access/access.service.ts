@@ -55,8 +55,8 @@ export class AccessService {
   ): Promise<string> {
     const key = await this.keyGenerationService.createKeyWithPurpose(
       128,
-      "bitwarden-accesstoken",
       "sm-access-token",
+      "bitwarden-accesstoken",
     );
 
     const request = await this.createAccessTokenRequest(

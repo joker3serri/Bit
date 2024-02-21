@@ -46,8 +46,8 @@ describe("KeyGenerationService", () => {
 
         const { salt, material, derivedKey } = await sut.createKeyWithPurpose(
           bitLength,
-          inputSalt,
           purpose,
+          inputSalt,
         );
 
         expect(salt).toEqual(inputSalt);

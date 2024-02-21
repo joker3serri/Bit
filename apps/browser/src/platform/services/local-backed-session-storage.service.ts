@@ -140,8 +140,8 @@ export class LocalBackedSessionStorageService extends AbstractMemoryStorageServi
     if (storedKey == null || Object.keys(storedKey).length == 0) {
       const generatedKey = await this.keyGenerationService.createKeyWithPurpose(
         128,
-        "bitwarden-ephemeral",
         "ephemeral",
+        "bitwarden-ephemeral",
       );
       storedKey = generatedKey.derivedKey;
       await this.setSessionEncKey(storedKey);

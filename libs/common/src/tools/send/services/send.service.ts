@@ -78,8 +78,8 @@ export class SendService implements InternalSendServiceAbstraction {
     if (model.key == null) {
       const key = await this.keyGenerationService.createKeyWithPurpose(
         128,
-        this.sendKeySalt,
         this.sendKeyPurpose,
+        this.sendKeySalt,
       );
       model.key = key.material;
       model.cryptoKey = key.derivedKey;
