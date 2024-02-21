@@ -240,11 +240,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
         sendView.text = new SendTextView();
         sendView.deletionDate = new Date();
         sendView.deletionDate.setDate(sendView.deletionDate.getDate() + 7);
-
-        this.formGroup.patchValue({
-          selectedDeletionDatePreset: DatePreset.SevenDays,
-          selectedExpirationDatePreset: DatePreset.Never,
-        });
         send.next(sendView);
       }
     }
