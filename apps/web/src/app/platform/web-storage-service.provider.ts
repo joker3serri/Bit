@@ -34,7 +34,7 @@ export class WebStorageServiceProvider extends StorageServiceProvider {
       case "disk-local":
         return ["disk-local", this.diskLocalStorageService];
       default:
-        throw new Error(`Unexpected default location: ${defaultLocation}`);
+        throw new Error(`Unexpected location: ${location}`);
     }
   }
 }
