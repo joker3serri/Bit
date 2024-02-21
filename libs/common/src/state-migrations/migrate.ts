@@ -17,7 +17,6 @@ import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-
 import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-providers";
 import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
 import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-groupings-to-state-provider";
-import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
@@ -26,14 +25,13 @@ import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";
 import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-settings-to-global";
 import { MinVersionMigrator } from "./migrations/min-version";
 
-export const MIN_VERSION = 2;
+export const MIN_VERSION = 3;
 export const CURRENT_VERSION = 22;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
   return MigrationBuilder.create()
     .with(MinVersionMigrator)
-    .with(FixPremiumMigrator, 2, 3)
     .with(RemoveEverBeenUnlockedMigrator, 3, 4)
     .with(AddKeyTypeToOrgKeysMigrator, 4, 5)
     .with(RemoveLegacyEtmKeyMigrator, 5, 6)
