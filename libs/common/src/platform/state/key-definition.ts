@@ -6,6 +6,8 @@ import { Utils } from "../misc/utils";
 
 import { StateDefinition } from "./state-definition";
 
+export type ClearEvent = "lock" | "logout";
+
 /**
  * A set of options for customizing the behavior of a {@link KeyDefinition}
  */
@@ -25,6 +27,11 @@ type KeyDefinitionOptions<T> = {
    * Defaults to 1000ms.
    */
   readonly cleanupDelayMs?: number;
+
+  /**
+   * An array of events that your state should be cleared on.
+   */
+  readonly clearOn?: ClearEvent[];
 };
 
 /**
@@ -33,6 +40,11 @@ type KeyDefinitionOptions<T> = {
  * sub-divides that domain into specific keys.
  */
 export class KeyDefinition<T> {
+  /**
+   * A unique array of events that the state stored at this key should be cleared on.
+   */
+  readonly clearOn: ClearEvent[];
+
   /**
    * Creates a new instance of a KeyDefinition
    * @param stateDefinition The state definition for which this key belongs to.
@@ -56,6 +68,9 @@ export class KeyDefinition<T> {
         `'cleanupDelayMs' must be greater than 0. Value of ${options.cleanupDelayMs} passed to key ${this.errorKeyName} `,
       );
     }
+
+    // Turn this into a non-nullable, unique set
+    this.clearOn = Array.from(new Set(options.clearOn ?? []));
   }
 
   /**
