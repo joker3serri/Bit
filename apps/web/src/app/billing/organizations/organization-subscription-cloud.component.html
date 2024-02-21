@@ -22,11 +22,7 @@
 ></app-org-subscription-hidden>
 
 <ng-container *ngIf="sub && firstLoaded">
-  <bit-callout
-    type="warning"
-    title="{{ 'canceled' | i18n }}"
-    *ngIf="subscription && subscription.cancelled"
-  >
+  <bit-callout type="warning" title="{{ 'canceled' | i18n }}" *ngIf="subscriptionIsCanceled">
     {{ "subscriptionCanceled" | i18n }}</bit-callout
   >
   <bit-callout
@@ -39,6 +35,9 @@
       {{ "reinstateSubscription" | i18n }}
     </button>
   </bit-callout>
+  <bit-callout type="warning" title="{{ 'pastDue' | i18n }}" *ngIf="subscriptionIsPastDue">
+    {{ subscriptionPastDueWarning }}
+  </bit-callout>
 
   <dl class="tw-grid tw-grid-flow-col tw-grid-rows-2">
     <dt>{{ "billingPlan" | i18n }}</dt>
@@ -47,7 +46,7 @@
       <dt>{{ "status" | i18n }}</dt>
       <dd>
         <span class="tw-capitalize">{{
-          isSponsoredSubscription ? "sponsored" : subscription.status || "-"
+          isSponsoredSubscription ? "sponsored" : cleanedSubscriptionStatus || "-"
         }}</span>
         <span bitBadge variant="warning" *ngIf="subscriptionMarkedForCancel">{{
           "pendingCancellation" | i18n

@@ -36,6 +36,8 @@ export class BillingSubscriptionResponse extends BaseResponse {
   status: string;
   cancelled: boolean;
   items: BillingSubscriptionItemResponse[] = [];
+  collectionMethod: string;
+  suspensionDate?: string;
 
   constructor(response: any) {
     super(response);
@@ -51,6 +53,8 @@ export class BillingSubscriptionResponse extends BaseResponse {
     if (items != null) {
       this.items = items.map((i: any) => new BillingSubscriptionItemResponse(i));
     }
+    this.collectionMethod = this.getResponseProperty("CollectionMethod");
+    this.suspensionDate = this.getResponseProperty("SuspensionDate");
   }
 }
 

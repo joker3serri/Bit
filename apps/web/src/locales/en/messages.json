@@ -7584,5 +7584,17 @@
   "tooExpensive": {
     "message": "Too expensive",
     "description": "An option for the offboarding survey shown when a user cancels their subscription."
+  },
+  "pastDue": {
+    "message": "Past due"
+  },
+  "toMaintainYourSubscription": {
+    "message": "To maintain your subscription, please resolve the past due invoices before $EXPIRATION$.",
+    "placeholders": {
+      "expiration": {
+        "content": "$1",
+        "example": "12/31/2020"
+      }
+    }
   }
 }

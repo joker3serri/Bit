@@ -1,3 +1,4 @@
+import { formatDate } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, firstValueFrom, lastValueFrom, Observable, Subject, takeUntil } from "rxjs";
@@ -44,6 +45,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   firstLoaded = false;
   loading: boolean;
   presentUserWithOffboardingSurvey$: Observable<boolean>;
+  locale: string;
 
   protected readonly teamsStarter = ProductType.TeamsStarter;
 
@@ -82,6 +84,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.presentUserWithOffboardingSurvey$ = this.configService.getFeatureFlag$<boolean>(
       FeatureFlag.AC1607_PresentUserOffboardingSurvey,
     );
+
+    this.locale = await firstValueFrom(this.i18nService.locale$);
   }
 
   ngOnDestroy() {
@@ -265,6 +269,27 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         this.sub.maxAutoscaleSeats.toString(),
       );
     }
+  }
+
+  get cleanedSubscriptionStatus() {
+    return this.subscription.status.replace(/_/g, " ");
+  }
+
+  get subscriptionIsCanceled() {
+    return (
+      this.subscription && ["canceled", "incomplete_expired"].includes(this.subscription.status)
+    );
+  }
+
+  get subscriptionIsPastDue() {
+    return this.subscription && ["past_due", "unpaid"].includes(this.subscription.status);
+  }
+
+  get subscriptionPastDueWarning() {
+    return this.i18nService.t(
+      "toMaintainYourSubscription",
+      formatDate(this.subscription.suspensionDate, "longDate", this.locale),
+    );
   }
 
   get subscriptionMarkedForCancel() {
