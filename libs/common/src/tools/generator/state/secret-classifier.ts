@@ -1,8 +1,14 @@
 import { Jsonify } from "type-fest";
 
-/** Classifies the properties of a class. Disclosed properties
- *  MAY be stored in plaintext. Excluded properties MUST NOT be
- *  saved. Everything else MUST be stored using encryption.
+/** Classifies an object's JSON-serializable data by property into
+ *  3 categories:
+ *  * Disclosed data MAY be stored in plaintext.
+ *  * Excluded data MUST NOT be saved.
+ *  * The remaining data is secret and MUST be stored using encryption.
+ *
+ *  This type should not be used to classify functions.
+ *  Data that cannot be serialized by JSON.stringify() should
+ *  be excluded.
  */
 export class SecretClassifier<T extends object, Disclosed, Secret> {
   private constructor(
@@ -22,7 +28,7 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
   /** Creates a classifier where all properties are secret.
    *  @type {T} The type of secret being classified.
    */
-  static forSecret<T extends object>() {
+  static allSecret<T extends object>() {
     const disclosed = Object.freeze([]);
     const excluded = Object.freeze([]);
     return new SecretClassifier<T, Record<keyof T, never>, T>(disclosed, excluded);
@@ -33,8 +39,7 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
    *  @param disclose The property name to disclose.
    *  @returns a new classifier
    */
-  // FIXME: when Typescript 5.0 is available, PropertyName can be `const`.
-  disclose<PropertyName extends keyof Secret>(disclose: PropertyName) {
+  disclose<const PropertyName extends keyof Secret>(disclose: PropertyName) {
     // move the property from the secret type to the disclose type
     type NewDisclosed = Disclosed & Record<PropertyName, Secret[PropertyName]>;
     type NewSecret = Exclude<Secret, PropertyName>;
@@ -54,8 +59,7 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
    *  @param exclude The property name to exclude.
    *  @returns a new classifier
    */
-  // FIXME: when Typescript 5.0 is available, PropertyName can be `const`.
-  exclude<PropertyName extends keyof Secret>(excludedPropertyName: PropertyName) {
+  exclude<const PropertyName extends keyof Secret>(excludedPropertyName: PropertyName) {
     // remove the property from the secret type
     type NewConfidential = Exclude<Secret, PropertyName>;
 
@@ -70,7 +74,6 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
   }
 
   /** Partitions `secret` into its disclosed properties and secret properties.
-   *  THIS METHOD ALTERS `secret`.
    *  @param secret The object to partition
    *  @returns an object that classifies secrets.
    *    The `disclosed` member is new and contains disclosed properties.
@@ -78,19 +81,21 @@ export class SecretClassifier<T extends object, Disclosed, Secret> {
    *    disclosed and excluded properties deleted.
    */
   classify(secret: T): { disclosed: Disclosed; secret: Secret } {
+    const copy = { ...secret };
+
     for (const excludedProp of this.excluded) {
-      delete secret[excludedProp];
+      delete copy[excludedProp];
     }
 
     const disclosed: Record<PropertyKey, unknown> = {};
     for (const disclosedProp of this.disclosed) {
-      disclosed[disclosedProp] = secret[disclosedProp];
-      delete secret[disclosedProp];
+      disclosed[disclosedProp] = copy[disclosedProp];
+      delete copy[disclosedProp];
     }
 
     return {
       disclosed: disclosed as Disclosed,
-      secret: secret as unknown as Secret,
+      secret: copy as unknown as Secret,
     };
   }
 

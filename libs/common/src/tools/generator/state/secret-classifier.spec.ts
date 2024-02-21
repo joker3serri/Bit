@@ -3,7 +3,7 @@ import { SecretClassifier } from "./secret-classifier";
 describe("SecretClassifier", () => {
   describe("forSecret", () => {
     it("classifies a property as secret by default", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
       expect(classifier.disclosed).toEqual([]);
       expect(classifier.excluded).toEqual([]);
@@ -12,7 +12,7 @@ describe("SecretClassifier", () => {
 
   describe("disclose", () => {
     it("adds a property to the disclosed list", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
       const withDisclosedFoo = classifier.disclose("foo");
 
@@ -21,7 +21,7 @@ describe("SecretClassifier", () => {
     });
 
     it("chains calls with excluded", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>();
 
       const withDisclosedFoo = classifier.disclose("foo").exclude("bar");
 
@@ -30,7 +30,7 @@ describe("SecretClassifier", () => {
     });
 
     it("returns a new classifier", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
       const withDisclosedFoo = classifier.disclose("foo");
 
@@ -40,7 +40,7 @@ describe("SecretClassifier", () => {
 
   describe("exclude", () => {
     it("adds a property to the excluded list", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
       const withExcludedFoo = classifier.exclude("foo");
 
@@ -49,7 +49,7 @@ describe("SecretClassifier", () => {
     });
 
     it("chains calls with disclose", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>();
 
       const withExcludedFoo = classifier.exclude("foo").disclose("bar");
 
@@ -58,7 +58,7 @@ describe("SecretClassifier", () => {
     });
 
     it("returns a new classifier", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
       const withExcludedFoo = classifier.exclude("foo");
 
@@ -68,7 +68,7 @@ describe("SecretClassifier", () => {
 
   describe("classify", () => {
     it("partitions disclosed properties into the disclosed member", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().disclose(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().disclose(
         "foo",
       );
 
@@ -78,7 +78,7 @@ describe("SecretClassifier", () => {
     });
 
     it("deletes disclosed properties from the secret member", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().disclose(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().disclose(
         "foo",
       );
 
@@ -88,7 +88,7 @@ describe("SecretClassifier", () => {
     });
 
     it("deletes excluded properties from the secret member", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().exclude(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().exclude(
         "foo",
       );
 
@@ -98,7 +98,7 @@ describe("SecretClassifier", () => {
     });
 
     it("excludes excluded properties from the disclosed member", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().exclude(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().exclude(
         "foo",
       );
 
@@ -108,45 +108,42 @@ describe("SecretClassifier", () => {
     });
 
     it("returns its input as the secret member", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const input = { foo: true };
 
       const classified = classifier.classify(input);
 
-      expect(classified.secret).toBe(input);
+      expect(classified.secret).toEqual(input);
     });
   });
 
   describe("declassify", () => {
     it("merges disclosed and secret members", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().disclose(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().disclose(
         "foo",
       );
 
-      // FIXME: when typescript 5.0 is available and `PropertyName` is `const` for
-      // `disclose` and `exclude`, then the `any` type assertions can be removed.
+      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
       const declassified = classifier.declassify({ foo: true } as any, { bar: false } as any);
 
       expect(declassified).toEqual({ foo: true, bar: false });
     });
 
     it("omits unknown disclosed members", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>().disclose("foo");
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>().disclose("foo");
 
-      // FIXME: when typescript 5.0 is available and `PropertyName` is `const` for
-      // `disclose` and `exclude`, then the `any` type assertions can be removed.
+      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
       const declassified = classifier.declassify({ foo: true, bar: false } as any, {} as any);
 
       expect(declassified).toEqual({ foo: true });
     });
 
     it("clobbers disclosed members with secret members", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().disclose(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().disclose(
         "foo",
       );
 
-      // FIXME: when typescript 5.0 is available and `PropertyName` is `const` for
-      // `disclose` and `exclude`, then the `any` type assertions can be removed.
+      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
       const declassified = classifier.declassify(
         { foo: true } as any,
         { foo: false, bar: false } as any,
@@ -156,22 +153,20 @@ describe("SecretClassifier", () => {
     });
 
     it("omits excluded secret members", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().exclude(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().exclude(
         "foo",
       );
 
-      // FIXME: when typescript 5.0 is available and `PropertyName` is `const` for
-      // `disclose` and `exclude`, then the `any` type assertions can be removed.
+      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
       const declassified = classifier.declassify({} as any, { foo: false, bar: false } as any);
 
       expect(declassified).toEqual({ bar: false });
     });
 
     it("returns a new object", () => {
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
-      // FIXME: when typescript 5.0 is available and `PropertyName` is `const` for
-      // `disclose` and `exclude`, then the `any` type assertions can be removed.
+      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
       const disclosed = {} as any;
       const secret = { foo: false };
       const declassified = classifier.declassify(disclosed, secret);

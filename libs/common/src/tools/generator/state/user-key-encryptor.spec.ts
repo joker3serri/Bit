@@ -37,7 +37,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw if value was not supplied", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
@@ -53,7 +53,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw if userId was not supplied", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
 
       expect.assertions(2);
@@ -69,7 +69,7 @@ describe("UserKeyEncryptor", () => {
       const encryptService = mockEncryptService();
       const key = {};
       const keyService = mockKeyService(key);
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
@@ -84,7 +84,7 @@ describe("UserKeyEncryptor", () => {
     it("should pad to a multiple of the frame size", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, {
         frameSize: 8,
       });
@@ -97,7 +97,7 @@ describe("UserKeyEncryptor", () => {
     it("should output disclosed properties", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>().disclose("foo");
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>().disclose("foo");
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, {
         frameSize: 8,
       });
@@ -112,7 +112,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw if secret was not supplied", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
@@ -128,7 +128,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw if disclosed was not supplied", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
@@ -144,7 +144,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw if userId was not supplied", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
 
       expect.assertions(2);
@@ -160,7 +160,7 @@ describe("UserKeyEncryptor", () => {
       const encryptService = mockEncryptService();
       const key = {};
       const keyService = mockKeyService(key);
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
       const encrypted = `512{"foo":true}${"0".repeat(497)}` as unknown as EncString;
@@ -175,7 +175,7 @@ describe("UserKeyEncryptor", () => {
     it("should combine decrypted secrets and disclosed data", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean; bar: boolean }>().disclose(
+      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().disclose(
         "bar",
       );
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
@@ -190,7 +190,7 @@ describe("UserKeyEncryptor", () => {
     it("should preserve decrypted secrets", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
       const encrypted = `512{"foo":true,"bar":true}${"0".repeat(486)}` as unknown as EncString;
@@ -203,7 +203,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw an error when the frame size is missing", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
       const encrypted = `{"foo":true}${"0".repeat(16)}` as unknown as EncString;
@@ -217,7 +217,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw an error when the length is not a multiple of the frame size", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
       const encrypted = `16{"foo":true}0` as unknown as EncString;
@@ -231,7 +231,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw an error when the json object is not closed", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
       const encrypted = `16{"foo":true000` as unknown as EncString;
@@ -245,7 +245,7 @@ describe("UserKeyEncryptor", () => {
     it("should throw an error when the padding contains a non-0 character", async () => {
       const encryptService = mockEncryptService();
       const keyService = mockKeyService();
-      const classifier = SecretClassifier.forSecret<{ foo: boolean }>();
+      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
       const encrypted = `16{"foo":true}01` as unknown as EncString;
