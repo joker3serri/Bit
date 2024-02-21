@@ -270,6 +270,7 @@ jobs:
         run: |
           azcopy --version
           export AZCOPY_AUTO_LOGIN_TYPE=SPN
+          azcopy login status
           # Extract date using the format YYYY-MM-DD for se parameter
           export DATE=$(date +%Y-%m-%d)
           azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/?se=2024-02-19' \
