@@ -76,11 +76,13 @@ export class SendService implements InternalSendServiceAbstraction {
     send.hideEmail = model.hideEmail;
     send.maxAccessCount = model.maxAccessCount;
     if (model.key == null) {
-      [model.key, model.cryptoKey] = await this.keyGenerationService.createMaterialAndKey(
+      const key = await this.keyGenerationService.createKeyWithPurpose(
         128,
         this.sendKeySalt,
         this.sendKeyPurpose,
       );
+      model.key = key.material;
+      model.cryptoKey = key.derivedKey;
     }
     if (password != null) {
       const passwordKey = await this.keyGenerationService.deriveKeyFromPassword(

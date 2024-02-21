@@ -9,6 +9,7 @@ import {
   KdfType,
   PBKDF2_ITERATIONS,
 } from "../enums";
+import { Utils } from "../misc/utils";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
 export class KeyGenerationService implements KeyGenerationServiceAbstraction {
@@ -19,14 +20,18 @@ export class KeyGenerationService implements KeyGenerationServiceAbstraction {
     return new SymmetricCryptoKey(key);
   }
 
-  async createMaterialAndKey(
+  async createKeyWithPurpose(
     bitLength: 128 | 192 | 256 | 512,
-    salt: string,
     purpose: string,
-  ): Promise<[CsprngArray, SymmetricCryptoKey]> {
+    salt?: string,
+  ): Promise<{ salt: string; material: CsprngArray; derivedKey: SymmetricCryptoKey }> {
+    if (salt == null) {
+      const bytes = await this.cryptoFunctionService.randomBytes(32);
+      salt = Utils.fromBufferToUtf8(bytes);
+    }
     const material = await this.cryptoFunctionService.aesGenerateKey(bitLength);
     const key = await this.cryptoFunctionService.hkdf(material, salt, purpose, 64, "sha256");
-    return [material, new SymmetricCryptoKey(key)];
+    return { salt, material, derivedKey: new SymmetricCryptoKey(key) };
   }
 
   async deriveKeyFromMaterial(

@@ -53,7 +53,7 @@ export class AccessService {
     serviceAccountId: string,
     accessTokenView: AccessTokenView,
   ): Promise<string> {
-    const [keyMaterial, encryptionKey] = await this.keyGenerationService.createMaterialAndKey(
+    const key = await this.keyGenerationService.createKeyWithPurpose(
       128,
       "bitwarden-accesstoken",
       "sm-access-token",
@@ -61,7 +61,7 @@ export class AccessService {
 
     const request = await this.createAccessTokenRequest(
       organizationId,
-      encryptionKey,
+      key.derivedKey,
       accessTokenView,
     );
     const r = await this.apiService.send(
@@ -73,7 +73,7 @@ export class AccessService {
     );
     const result = new AccessTokenCreationResponse(r);
     this._accessToken.next(null);
-    const keyB64 = Utils.fromBufferToB64(keyMaterial);
+    const keyB64 = Utils.fromBufferToB64(key.material);
     return `${this._accessTokenVersion}.${result.id}.${result.clientSecret}:${keyB64}`;
   }
 

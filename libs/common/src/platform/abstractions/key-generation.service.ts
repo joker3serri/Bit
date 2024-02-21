@@ -15,19 +15,19 @@ export abstract class KeyGenerationService {
   /**
    * Generates key material from CSPRNG and derives a 64 byte key from it
    * @param bitLength Length of key material.
-   * @param salt Salt for the key derivation function.
    * @param purpose Purpose for the key derivation function.
    * Different purposes results in different keys, even with the same material.
-   * @returns key material and derived key.
+   * @param salt Optional. If not provided will be generated from CSPRNG.
+   * @returns An object containing the salt, key material, and derived key.
    */
-  createMaterialAndKey: (
+  createKeyWithPurpose: (
     bitLength: 128 | 192 | 256 | 512,
-    salt: string,
     purpose: string,
-  ) => Promise<[CsprngArray, SymmetricCryptoKey]>;
+    salt?: string,
+  ) => Promise<{ salt: string; material: CsprngArray; derivedKey: SymmetricCryptoKey }>;
   /**
    * Derives a 64 byte key from key material.
-   * @remark The key material should be generated from {@link createKey}, or {@link createMaterialAndKey}.
+   * @remark The key material should be generated from {@link createKey}, or {@link createKeyWithPurpose}.
    * @param material key material.
    * @param salt Salt for the key derivation function.
    * @param purpose Purpose for the key derivation function.

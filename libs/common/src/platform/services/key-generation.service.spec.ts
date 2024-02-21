@@ -44,7 +44,7 @@ describe("KeyGenerationService", () => {
           .calledWith(material, salt, purpose, 64, "sha256")
           .mockResolvedValue(new Uint8Array(64));
 
-        const [actualMaterial, key] = await sut.createMaterialAndKey(bitLength, salt, purpose);
+        const [actualMaterial, key] = await sut.createKeyWithPurpose(bitLength, salt, purpose);
 
         expect(actualMaterial).toEqual(material);
         expect(key.key.length).toEqual(64);
