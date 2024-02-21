@@ -35,19 +35,24 @@ describe("KeyGenerationService", () => {
     test.each([128, 192, 256, 512])(
       "should create a 64 byte key from different material lengths",
       async (bitLength: 128 | 192 | 256 | 512) => {
-        const material = new Uint8Array(bitLength / 8) as CsprngArray;
-        const salt = "salt";
+        const inputMaterial = new Uint8Array(bitLength / 8) as CsprngArray;
+        const inputSalt = "salt";
         const purpose = "purpose";
 
-        cryptoFunctionService.aesGenerateKey.calledWith(bitLength).mockResolvedValue(material);
+        cryptoFunctionService.aesGenerateKey.calledWith(bitLength).mockResolvedValue(inputMaterial);
         cryptoFunctionService.hkdf
-          .calledWith(material, salt, purpose, 64, "sha256")
+          .calledWith(inputMaterial, inputSalt, purpose, 64, "sha256")
           .mockResolvedValue(new Uint8Array(64));
 
-        const [actualMaterial, key] = await sut.createKeyWithPurpose(bitLength, salt, purpose);
+        const { salt, material, derivedKey } = await sut.createKeyWithPurpose(
+          bitLength,
+          inputSalt,
+          purpose,
+        );
 
-        expect(actualMaterial).toEqual(material);
-        expect(key.key.length).toEqual(64);
+        expect(salt).toEqual(inputSalt);
+        expect(material).toEqual(inputMaterial);
+        expect(derivedKey.key.length).toEqual(64);
       },
     );
   });
