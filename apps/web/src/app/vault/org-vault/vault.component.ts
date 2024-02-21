@@ -400,14 +400,16 @@ export class VaultComponent implements OnInit, OnDestroy {
       filter$,
       selectedCollection$,
       organization$,
+      collections$,
     ]).pipe(
-      map(([filter, collection, organization]) => {
+      map(([filter, collection, organization, filteredCollections]) => {
         return (
           (filter.collectionId === Unassigned && !organization.canUseAdminCollections) ||
           (!organization.allowAdminAccessToAllCollectionItems &&
             !organization.canEditAllCiphers(this.flexibleCollectionsV1Enabled) &&
             collection != undefined &&
-            !collection.node.assigned)
+            !collection.node.assigned &&
+            filteredCollections.length == 0)
         );
       }),
       shareReplay({ refCount: true, bufferSize: 1 }),
