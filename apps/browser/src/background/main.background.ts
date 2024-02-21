@@ -611,12 +611,12 @@ export default class MainBackground {
     );
 
     this.vaultFilterService = new VaultFilterService(
-      this.stateService,
       this.organizationService,
       this.folderService,
       this.cipherService,
       this.collectionService,
       this.policyService,
+      this.stateProvider,
       this.accountService,
     );
 
