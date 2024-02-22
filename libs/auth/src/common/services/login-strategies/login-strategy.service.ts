@@ -10,8 +10,6 @@ import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { PasswordlessAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-auth.request";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
@@ -25,7 +23,6 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
 
@@ -287,45 +284,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
 
   getPushNotificationObs$(): Observable<any> {
     return this.pushNotificationSubject.asObservable();
-  }
-
-  async passwordlessLogin(
-    id: string,
-    key: string,
-    requestApproved: boolean,
-  ): Promise<AuthRequestResponse> {
-    const pubKey = Utils.fromB64ToArray(key);
-
-    const masterKey = await this.cryptoService.getMasterKey();
-    let keyToEncrypt;
-    let encryptedMasterKeyHash = null;
-
-    if (masterKey) {
-      keyToEncrypt = masterKey.encKey;
-
-      // Only encrypt the master password hash if masterKey exists as
-      // we won't have a masterKeyHash without a masterKey
-      const masterKeyHash = await this.stateService.getKeyHash();
-      if (masterKeyHash != null) {
-        encryptedMasterKeyHash = await this.cryptoService.rsaEncrypt(
-          Utils.fromUtf8ToArray(masterKeyHash),
-          pubKey,
-        );
-      }
-    } else {
-      const userKey = await this.cryptoService.getUserKey();
-      keyToEncrypt = userKey.key;
-    }
-
-    const encryptedKey = await this.cryptoService.rsaEncrypt(keyToEncrypt, pubKey);
-
-    const request = new PasswordlessAuthRequest(
-      encryptedKey.encryptedString,
-      encryptedMasterKeyHash?.encryptedString,
-      await this.appIdService.getAppId(),
-      requestApproved,
-    );
-    return await this.apiService.putAuthRequest(id, request);
   }
 
   private saveState(
