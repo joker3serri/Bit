@@ -275,7 +275,7 @@ jobs:
         run: |
           azcopy --version
           printenv
-          azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/ \
+          azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
             --delete-destination=true
 
       - name: Debug sync logs
