@@ -20,14 +20,12 @@ type ExpectedGlobalType = {
   twoFactorToken?: string;
 };
 
-export function twoFactorTokenDiskLocalFactory(email: string): KeyDefinitionLike {
-  return {
-    key: `twoFactorToken_${email}`,
-    stateDefinition: {
-      name: "tokenDisk",
-    },
-  };
-}
+export const EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL: KeyDefinitionLike = {
+  key: "emailTwoFactorTokenRecord",
+  stateDefinition: {
+    name: "tokenDiskLocal",
+  },
+};
 
 export const ACCESS_TOKEN_DISK: KeyDefinitionLike = {
   key: "accessToken", // matches KeyDefinition.key
@@ -61,6 +59,9 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
     // Move global data
     const globalData = await helper.get<ExpectedGlobalType>("global");
 
+    // Create new global record for 2FA token
+    await helper.setToGlobal(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL, {});
+
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(
       userId: string,
@@ -73,9 +74,19 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       // Due to the existing implmentation, n users on the same device share the same global state value for 2FA token.
       // So, we will just migrate it to all users to keep it valid for whichever was the user that set it previously.
       // Note: don't bother migrating 2FA Token if user account or email is undefined
-      const email = account.profile?.email;
+      const email = account?.profile?.email;
       if (globalTwoFactorToken != undefined && account != undefined && email != undefined) {
-        await helper.setToUser(userId, twoFactorTokenDiskLocalFactory(email), globalTwoFactorToken);
+        // read global 2FA token record:
+        const emailTwoFactorTokenRecord: Record<string, string> = await helper.getFromGlobal(
+          EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+        );
+
+        emailTwoFactorTokenRecord[email] = globalTwoFactorToken;
+
+        await helper.setToGlobal(
+          EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+          emailTwoFactorTokenRecord,
+        );
         // Note: don't set updatedAccount to true here as we aren't updating
         // the legacy user state, just migrating a global state to a new user state
       }
@@ -122,11 +133,16 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       }
     }
 
-    await Promise.all([
-      ...accounts.map(({ userId, account }) =>
-        migrateAccount(userId, account, globalData?.twoFactorToken),
-      ),
-    ]);
+    // await Promise.all([
+    //   ...accounts.map(({ userId, account }) =>
+    //     migrateAccount(userId, account, globalData?.twoFactorToken),
+    //   ),
+    // ]);
+
+    // replace promise.all with loop
+    for (const { userId, account } of accounts) {
+      await migrateAccount(userId, account, globalData?.twoFactorToken);
+    }
 
     // Delete global data
     delete globalData?.twoFactorToken;
@@ -141,15 +157,17 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
 
     // Go through accounts and find the first user that has a non-null email and 2FA token
     let migratedTwoFactorToken: string | null = null;
-    for (const { userId, account } of accounts) {
+    for (const { account } of accounts) {
       const email = account?.profile?.email;
       if (email == null) {
         continue;
       }
-      migratedTwoFactorToken = await helper.getFromUser(
-        userId,
-        twoFactorTokenDiskLocalFactory(email),
+      const emailTwoFactorTokenRecord: Record<string, string> = await helper.getFromGlobal(
+        EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
       );
+
+      migratedTwoFactorToken = emailTwoFactorTokenRecord[email];
+
       if (migratedTwoFactorToken != null) {
         break;
       }
@@ -164,27 +182,11 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       await helper.set("global", legacyGlobal);
     }
 
+    // delete global 2FA token record
+    await helper.setToGlobal(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL, null);
+
     async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
       let updatedLegacyAccount = false;
-
-      const email = account?.profile?.email;
-
-      // We can only rollback the 2FA token if we have an email
-      if (email != null) {
-        const twoFactorTokenKeyDefLike = twoFactorTokenDiskLocalFactory(email);
-
-        // Rollback 2FA token if it was migrated
-        const migratedTwoFactorToken = await helper.getFromUser<string>(
-          userId,
-          twoFactorTokenKeyDefLike,
-        );
-
-        if (migratedTwoFactorToken != null) {
-          await helper.setToUser(userId, twoFactorTokenKeyDefLike, null);
-          // note: no need to use helper.set here as we are not updating the legacy user state,
-          // just removing the migrated state
-        }
-      }
 
       // Rollback access token
       const migratedAccessToken = await helper.getFromUser<string>(userId, ACCESS_TOKEN_DISK);
