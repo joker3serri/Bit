@@ -30,13 +30,13 @@ export type AuthRequestServiceInitOptions = AuthRequestServiceFactoryOptions &
   ApiServiceInitOptions &
   StateServiceInitOptions;
 
-export function authRequestCryptoServiceFactory(
-  cache: { authRequestCryptoService?: AuthRequestServiceAbstraction } & CachedServices,
+export function authRequestServiceFactory(
+  cache: { authRequestService?: AuthRequestServiceAbstraction } & CachedServices,
   opts: AuthRequestServiceInitOptions,
 ): Promise<AuthRequestServiceAbstraction> {
   return factory(
     cache,
-    "authRequestCryptoService",
+    "authRequestService",
     opts,
     async () =>
       new AuthRequestService(
