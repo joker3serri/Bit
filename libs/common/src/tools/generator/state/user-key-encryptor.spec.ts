@@ -12,12 +12,11 @@ import { UserKeyEncryptor } from "./user-key-encryptor";
 
 function mockEncryptService(): EncryptService {
   return mock<EncryptService>({
-    // The mocks accept any and cast because the data flow is what's being
-    // tested. The tests expect the raw strings to just flow through the service.
-    // This holds only because the UserKeyEncryptor treats encryption and key data
-    // as an opaque value. Since it never inspects them in their "encrypted" form
-    // and typescript erases its types, this "just works". It'll "just break", however,
-    // if the encryptor embeds the cryptosystem.
+    // The UserKeyEncryptor is, in large part, a facade coordinating a handful of worker
+    // objects, so its tests focus on how data flows between components. The mock relies
+    // on this property--that the facade treats its data like a opaque objects--to trace
+    // the data through several function calls. Should the encryptor interact with the
+    // objects themselves, it will break.
     encrypt: jest.fn((p: any, _key: SymmetricCryptoKey) => Promise.resolve(p as EncString)),
     decryptToUtf8: jest.fn((c: any, _key: SymmetricCryptoKey) => Promise.resolve(c as string)),
   });
@@ -41,7 +40,6 @@ describe("UserKeyEncryptor", () => {
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
-      expect.assertions(2);
       await expect(encryptor.encrypt(null, userId)).rejects.toThrow(
         "value cannot be null or undefined",
       );
@@ -56,7 +54,6 @@ describe("UserKeyEncryptor", () => {
       const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
 
-      expect.assertions(2);
       await expect(encryptor.encrypt({} as any, null)).rejects.toThrow(
         "userId cannot be null or undefined",
       );
@@ -116,7 +113,6 @@ describe("UserKeyEncryptor", () => {
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
-      expect.assertions(2);
       await expect(encryptor.decrypt(null, {} as any, userId)).rejects.toThrow(
         "secret cannot be null or undefined",
       );
@@ -132,7 +128,6 @@ describe("UserKeyEncryptor", () => {
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
       const userId = "foo" as UserId;
 
-      expect.assertions(2);
       await expect(encryptor.decrypt({} as any, null, userId)).rejects.toThrow(
         "disclosed cannot be null or undefined",
       );
@@ -147,7 +142,6 @@ describe("UserKeyEncryptor", () => {
       const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
 
-      expect.assertions(2);
       await expect(encryptor.decrypt({} as any, {} as any, null)).rejects.toThrow(
         "userId cannot be null or undefined",
       );
@@ -208,7 +202,6 @@ describe("UserKeyEncryptor", () => {
       const userId = "foo" as UserId;
       const encrypted = `{"foo":true}${"0".repeat(16)}` as unknown as EncString;
 
-      expect.assertions(1);
       await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
         "missing frame size",
       );
@@ -222,7 +215,6 @@ describe("UserKeyEncryptor", () => {
       const userId = "foo" as UserId;
       const encrypted = `16{"foo":true}0` as unknown as EncString;
 
-      expect.assertions(1);
       await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
         "invalid length",
       );
@@ -236,7 +228,6 @@ describe("UserKeyEncryptor", () => {
       const userId = "foo" as UserId;
       const encrypted = `16{"foo":true000` as unknown as EncString;
 
-      expect.assertions(1);
       await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
         "missing json object",
       );
@@ -250,7 +241,6 @@ describe("UserKeyEncryptor", () => {
       const userId = "foo" as UserId;
       const encrypted = `16{"foo":true}01` as unknown as EncString;
 
-      expect.assertions(1);
       await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
         "invalid padding",
       );
