@@ -14,9 +14,17 @@ import { UserId } from "../../../types/guid";
 import { SecretState } from "./secret-state";
 import { UserEncryptor } from "./user-encryptor.abstraction";
 
-type FooBar = { foo: boolean; bar: boolean };
+type FooBar = { foo: boolean; bar: boolean; date?: Date };
 const FOOBAR_KEY = new KeyDefinition<FooBar>(GENERATOR_DISK, "fooBar", {
-  deserializer: (fb) => fb,
+  deserializer: (fb) => {
+    const result: FooBar = { foo: fb.foo, bar: fb.bar };
+
+    if (fb.date) {
+      result.date = new Date(fb.date);
+    }
+
+    return result;
+  },
 });
 const SomeUser = "some user" as UserId;
 
@@ -85,6 +93,19 @@ describe("UserEncryptor", () => {
       const encryptor = mockEncryptor();
       const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
       const value = { foo: true, bar: false };
+
+      await state.update(() => value);
+      await awaitAsync();
+      const result = await firstValueFrom(state.state$);
+
+      expect(result).toEqual(value);
+    });
+
+    it("round-trips json-serializable values", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_KEY, provider, encryptor);
+      const value = { foo: true, bar: true, date: new Date(1) };
 
       await state.update(() => value);
       await awaitAsync();

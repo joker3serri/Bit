@@ -64,6 +64,8 @@ export class SecretState<Plaintext extends object, Disclosed> {
       cleanupDelayMs: key.cleanupDelayMs,
       // `ClassifiedFormat` uses a type assertion because there isn't a straightforward
       // way to constrain `Disclosed` to stringify-able types.
+      // FIXME: When the fakes run deserializers and serialization can be guaranteed through
+      // state providers, decode `jsonValue.secret` instead of it running in `derive`.
       deserializer: (jsonValue) => jsonValue as ClassifiedFormat,
     });
     const encryptedState = provider.getUser(userId, secretKey);
@@ -165,9 +167,18 @@ export class SecretState<Plaintext extends object, Disclosed> {
 
     // map to storage format
     const [secret, disclosed] = await this.encryptor.encrypt(newState, this.encrypted.userId);
+
+    // the deserializer in the plaintextState's `derive` configuration always runs, but
+    // `encryptedState` is not guaranteed to serialize the data, so it's necessary to
+    // round-trip it proactively. This will cause some duplicate work in those situations
+    // where the backing store does deserialize the data.
+    //
+    // FIXME: Once there's a backing store configuration setting guaranteeing serialization,
+    // remove this code and configure the backing store as appropriate.
+    const serializedDisclosed = JSON.parse(JSON.stringify(disclosed));
     const newStoredState = {
       secret: secret.toJSON(),
-      public: disclosed,
+      public: serializedDisclosed,
     };
 
     return [true, newStoredState, newState];
