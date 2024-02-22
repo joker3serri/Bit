@@ -228,10 +228,20 @@ function elementIsLabelElement(element: Element): element is HTMLLabelElement {
   return elementIsInstanceOf<HTMLLabelElement>(element, "label");
 }
 
+/**
+ * Identifies whether an element is a description details `dd` element.
+ *
+ * @param element - The element to check.
+ */
 function elementIsDescriptionDetailsElement(element: Element): element is HTMLElement {
   return elementIsInstanceOf<HTMLElement>(element, "dd");
 }
 
+/**
+ * Identifies whether an element is a description term `dt` element.
+ *
+ * @param element - The element to check.
+ */
 function elementIsDescriptionTermElement(element: Element): element is HTMLElement {
   return elementIsInstanceOf<HTMLElement>(element, "dt");
 }
