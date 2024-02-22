@@ -66,17 +66,17 @@ export class UserKeyDefinition<T> {
   }
 
   /**
-   * Creates a {@link KeyDefinition} for state that is an array.
-   * @param stateDefinition The state definition to be added to the KeyDefinition
+   * Creates a {@link UserKeyDefinition} for state that is an array.
+   * @param stateDefinition The state definition to be added to the UserKeyDefinition
    * @param key The key to be added to the KeyDefinition
-   * @param options The options to customize the final {@link KeyDefinition}.
-   * @returns A {@link KeyDefinition} initialized for arrays, the options run
+   * @param options The options to customize the final {@link UserKeyDefinition}.
+   * @returns A {@link UserKeyDefinition} initialized for arrays, the options run
    * the deserializer on the provided options for each element of an array
    * **unless that array is null, in which case it will return an empty list.**
    *
    * @example
    * ```typescript
-   * const MY_KEY = KeyDefinition.array<MyArrayElement>(MY_STATE, "key", {
+   * const MY_KEY = UserKeyDefinition.array<MyArrayElement>(MY_STATE, "key", {
    *   deserializer: (myJsonElement) => convertToElement(myJsonElement),
    * });
    * ```
@@ -85,25 +85,25 @@ export class UserKeyDefinition<T> {
     stateDefinition: StateDefinition,
     key: string,
     // We have them provide options for the element of the array, depending on future options we add, this could get a little weird.
-    options: KeyDefinitionOptions<T>, // The array helper forces  an initialValue of an empty array
+    options: UserKeyDefinitionOptions<T>,
   ) {
-    return new KeyDefinition<T[]>(stateDefinition, key, {
+    return new UserKeyDefinition<T[]>(stateDefinition, key, {
       ...options,
       deserializer: array((e) => options.deserializer(e)),
     });
   }
 
   /**
-   * Creates a {@link KeyDefinition} for state that is a record.
-   * @param stateDefinition The state definition to be added to the KeyDefinition
+   * Creates a {@link UserKeyDefinition} for state that is a record.
+   * @param stateDefinition The state definition to be added to the UserKeyDefinition
    * @param key The key to be added to the KeyDefinition
-   * @param options The options to customize the final {@link KeyDefinition}.
-   * @returns A {@link KeyDefinition} that contains a serializer that will run the provided deserializer for each
+   * @param options The options to customize the final {@link UserKeyDefinition}.
+   * @returns A {@link UserKeyDefinition} that contains a serializer that will run the provided deserializer for each
    * value in a record and returns every key as a string **unless that record is null, in which case it will return an record.**
    *
    * @example
    * ```typescript
-   * const MY_KEY = KeyDefinition.record<MyRecordValue>(MY_STATE, "key", {
+   * const MY_KEY = UserKeyDefinition.record<MyRecordValue>(MY_STATE, "key", {
    *   deserializer: (myJsonValue) => convertToValue(myJsonValue),
    * });
    * ```
@@ -112,9 +112,9 @@ export class UserKeyDefinition<T> {
     stateDefinition: StateDefinition,
     key: string,
     // We have them provide options for the value of the record, depending on future options we add, this could get a little weird.
-    options: KeyDefinitionOptions<T>, // The array helper forces an initialValue of an empty record
+    options: UserKeyDefinitionOptions<T>, // The array helper forces an initialValue of an empty record
   ) {
-    return new KeyDefinition<Record<TKey, T>>(stateDefinition, key, {
+    return new UserKeyDefinition<Record<TKey, T>>(stateDefinition, key, {
       ...options,
       deserializer: record((v) => options.deserializer(v)),
     });

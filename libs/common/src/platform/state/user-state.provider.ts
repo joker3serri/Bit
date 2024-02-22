@@ -25,11 +25,6 @@ export abstract class SingleUserStateProvider {
    * @param userKeyDefinition - The {@link UserKeyDefinition} for which you want the user state for.
    */
   abstract get<T>(userId: UserId, userKeyDefinition: UserKeyDefinition<T>): SingleUserState<T>;
-
-  abstract get<T>(
-    userId: UserId,
-    keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
-  ): SingleUserState<T>;
 }
 
 /** A provider for getting an implementation of state scoped to a given key, but always pointing
@@ -58,6 +53,4 @@ export abstract class ActiveUserStateProvider {
    * @param keyDefinition - The {@link KeyDefinition} for which you want the user state for.
    */
   abstract get<T>(keyDefinition: KeyDefinition<T>): ActiveUserState<T>;
-
-  abstract get<T>(keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>): ActiveUserState<T>;
 }
