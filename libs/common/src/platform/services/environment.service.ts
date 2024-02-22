@@ -13,7 +13,6 @@ import { UserId } from "../../types/guid";
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
   Region,
-  RegionDomain,
   SelectableRegion,
   Urls,
 } from "../abstractions/environment.service";
@@ -336,18 +335,15 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
   async getHost(userId?: UserId) {
     const region = await this.getRegion(userId);
+    const regionConfig = this.getAvailableRegion(region);
 
-    switch (region) {
-      case Region.US:
-        return RegionDomain.US;
-      case Region.EU:
-        return RegionDomain.EU;
-      default: {
-        // Environment is self-hosted
-        const envUrls = await this.getEnvironmentUrls(userId);
-        return Utils.getHost(envUrls.webVault || envUrls.base);
-      }
+    if (regionConfig != null) {
+      return regionConfig.domain;
     }
+
+    // No environment found, assume self-hosted
+    const envUrls = await this.getEnvironmentUrls(userId);
+    return Utils.getHost(envUrls.webVault || envUrls.base);
   }
 
   private async getRegion(userId: UserId | null) {

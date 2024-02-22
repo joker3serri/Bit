@@ -14,16 +14,13 @@ export type Urls = {
   scim?: string;
 };
 
+/**
+ * A subset of available regions, additional regions can be loaded through configuration.
+ */
 export enum Region {
   US = "US",
   EU = "EU",
   SelfHosted = "Self-hosted",
-}
-
-export enum RegionDomain {
-  US = "bitwarden.com",
-  EU = "bitwarden.eu",
-  USQA = "bitwarden.pw",
 }
 
 export type SelectableRegion = {
