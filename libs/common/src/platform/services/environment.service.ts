@@ -216,7 +216,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
     const region = await this.getRegion(activeUserId);
     const savedUrls = await this.getEnvironmentUrls(activeUserId);
-    const envUrls = new EnvironmentUrls();
 
     switch (region) {
       case Region.EU:
@@ -228,13 +227,13 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       case Region.SelfHosted:
       case null:
       default:
-        this.baseUrl = envUrls.base = savedUrls.base;
+        this.baseUrl = savedUrls.base;
         this.webVaultUrl = savedUrls.webVault;
-        this.apiUrl = envUrls.api = savedUrls.api;
-        this.identityUrl = envUrls.identity = savedUrls.identity;
+        this.apiUrl = savedUrls.api;
+        this.identityUrl = savedUrls.identity;
         this.iconsUrl = savedUrls.icons;
         this.notificationsUrl = savedUrls.notifications;
-        this.eventsUrl = envUrls.events = savedUrls.events;
+        this.eventsUrl = savedUrls.events;
         this.keyConnectorUrl = savedUrls.keyConnector;
         await this.setRegion(Region.SelfHosted);
         // scimUrl is not saved to storage
