@@ -7581,6 +7581,9 @@
     "message": "Too expensive",
     "description": "An option for the offboarding survey shown when a user cancels their subscription."
   },
+  "freeForOneYear": {
+    "message": "Free for 1 year"
+  },
   "newWebApp": {
     "message": "Welcome to the new and improved web app. Learn more about what’s changed."
   },
