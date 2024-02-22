@@ -71,14 +71,14 @@ describe("UserKeyEncryptor", () => {
       const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
       const value = { foo: true };
 
-      const [resultSecret, resultDisclosed] = await encryptor.encrypt(value, anyUserId);
+      const result = await encryptor.encrypt(value, anyUserId);
 
       expect(classifierClassify).toHaveBeenCalledWith(value);
       expect(keyService.getUserKey).toHaveBeenCalledWith(anyUserId);
       expect(dataPacker.pack).toHaveBeenCalledWith(secret);
       expect(encryptService.encrypt).toHaveBeenCalledWith(secret, userKey);
-      expect(resultSecret).toBe(secret);
-      expect(resultDisclosed).toBe(disclosed);
+      expect(result.secret).toBe(secret);
+      expect(result.disclosed).toBe(disclosed);
     });
   });
 

@@ -29,13 +29,23 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret>
   ) {}
 
   /** {@link UserEncryptor.encrypt} */
-  async encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]> {
+  async encrypt(
+    value: State,
+    userId: UserId,
+  ): Promise<{ secret: EncString; disclosed: Disclosed }> {
     this.assertHasValue("value", value);
     this.assertHasValue("userId", userId);
 
-    const classifiedValue = this.classifier.classify(value);
-    const encryptedValue = await this.encryptSecret(classifiedValue.secret, userId);
-    return [encryptedValue, classifiedValue.disclosed];
+    const classified = this.classifier.classify(value);
+    let packed = this.dataPacker.pack(classified.secret);
+
+    // encrypt the data and drop the key
+    let key = await this.keyService.getUserKey(userId);
+    const secret = await this.encryptService.encrypt(packed, key);
+    packed = null;
+    key = null;
+
+    return { ...classified, secret };
   }
 
   /** {@link UserEncryptor.decrypt} */
@@ -48,9 +58,16 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret>
     this.assertHasValue("disclosed", disclosed);
     this.assertHasValue("userId", userId);
 
+    // decrypt the data and drop the key
+    let key = await this.keyService.getUserKey(userId);
+    let decrypted = await this.encryptService.decryptToUtf8(secret, key);
+    key = null;
+
     // reconstruct TFrom's data
-    const decrypted = await this.decryptSecret(secret, userId);
-    const jsonValue = this.classifier.declassify(disclosed, decrypted);
+    const unpacked = this.dataPacker.unpack<Secret>(decrypted);
+    decrypted = null;
+
+    const jsonValue = this.classifier.declassify(disclosed, unpacked);
 
     return jsonValue;
   }
@@ -59,30 +76,5 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret>
     if (value === undefined || value === null) {
       throw new Error(`${name} cannot be null or undefined`);
     }
-  }
-
-  private async encryptSecret(value: Secret, userId: UserId) {
-    // package the data for encryption
-    let toEncrypt = this.dataPacker.pack(value);
-
-    // encrypt the data and drop the key
-    let key = await this.keyService.getUserKey(userId);
-    const encrypted = await this.encryptService.encrypt(toEncrypt, key);
-    toEncrypt = null;
-    key = null;
-
-    return encrypted;
-  }
-
-  private async decryptSecret(value: EncString, userId: UserId) {
-    // decrypt the data and drop the key
-    let key = await this.keyService.getUserKey(userId);
-    let decrypted = await this.encryptService.decryptToUtf8(value, key);
-    key = null;
-
-    const unpacked = this.dataPacker.unpack<Secret>(decrypted);
-    decrypted = null;
-
-    return unpacked;
   }
 }

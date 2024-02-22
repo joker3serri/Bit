@@ -29,7 +29,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
   // wiring the derived and secret states together.
   private constructor(
     private readonly encryptor: UserEncryptor<Plaintext, Disclosed>,
-    private readonly encrypted: SingleUserState<{ secret: string; public: Jsonify<Disclosed> }>,
+    private readonly encrypted: SingleUserState<{ secret: string; disclosed: Jsonify<Disclosed> }>,
     private readonly plaintext: DerivedState<Plaintext>,
   ) {
     this.state$ = plaintext.state$;
@@ -45,7 +45,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
    *  @remarks Secrets are written to a secret store as a named tuple. Data classification is
    *    determined by the encryptor's classifier. Secret-classification data is jsonified,
    *    encrypted, and stored in a `secret` property. Disclosed-classification data is stored
-   *    in a `public` property. Omitted-classification data is not stored.
+   *    in a `disclosed` property. Omitted-classification data is not stored.
    */
   static from<TFrom extends object, Disclosed extends JsonValue>(
     userId: UserId,
@@ -55,12 +55,11 @@ export class SecretState<Plaintext extends object, Disclosed> {
   ) {
     // `Jsonify<Disclosed>` and `string` are `JsonValue`, so the whole type is, but the compiler
     // cannot infer that, so assert it through intersection instead.
-    type ClassifiedFormat = { secret: string; public: Jsonify<Disclosed> } & JsonValue;
+    type ClassifiedFormat = { secret: string; disclosed: Jsonify<Disclosed> } & JsonValue;
 
     // construct encrypted backing store while avoiding collisions between the derived key and the
     // backing storage key.
-    const encryptedStateName = `${key.key}_$ecret$`;
-    const secretKey = new KeyDefinition<ClassifiedFormat>(key.stateDefinition, encryptedStateName, {
+    const secretKey = new KeyDefinition<ClassifiedFormat>(key.stateDefinition, key.key, {
       cleanupDelayMs: key.cleanupDelayMs,
       // `ClassifiedFormat` uses a type assertion because there isn't a straightforward
       // way to constrain `Disclosed` to stringify-able types.
@@ -80,7 +79,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
 
         // otherwise forward the decrypted data to the caller's derive implementation
         const secret = EncString.fromJSON(from.secret);
-        const decrypted = await encryptor.decrypt(secret, from.public, encryptedState.userId);
+        const decrypted = await encryptor.decrypt(secret, from.disclosed, encryptedState.userId);
         const result = key.deserializer(decrypted) as TFrom;
 
         return result;
@@ -153,7 +152,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
     currentState: Plaintext,
     shouldUpdate: () => boolean,
     configureState: () => Plaintext,
-  ): Promise<[boolean, { secret: string; public: Jsonify<Disclosed> }, Plaintext]> {
+  ): Promise<[boolean, { secret: string; disclosed: Jsonify<Disclosed> }, Plaintext]> {
     // determine whether an update is necessary
     if (!shouldUpdate()) {
       return [false, undefined, currentState];
@@ -165,8 +164,9 @@ export class SecretState<Plaintext extends object, Disclosed> {
       return [true, newState as any, newState];
     }
 
-    // map to storage format
-    const [secret, disclosed] = await this.encryptor.encrypt(newState, this.encrypted.userId);
+    // the encrypt format *is* the storage format, so if the shape of that data changes,
+    // this needs to map it explicitly for compatibility purposes.
+    const newStoredState = await this.encryptor.encrypt(newState, this.encrypted.userId);
 
     // the deserializer in the plaintextState's `derive` configuration always runs, but
     // `encryptedState` is not guaranteed to serialize the data, so it's necessary to
@@ -175,12 +175,8 @@ export class SecretState<Plaintext extends object, Disclosed> {
     //
     // FIXME: Once there's a backing store configuration setting guaranteeing serialization,
     // remove this code and configure the backing store as appropriate.
-    const serializedDisclosed = JSON.parse(JSON.stringify(disclosed));
-    const newStoredState = {
-      secret: secret.toJSON(),
-      public: serializedDisclosed,
-    };
+    const serializedState = JSON.parse(JSON.stringify(newStoredState));
 
-    return [true, newStoredState, newState];
+    return [true, serializedState, newState];
   }
 }
