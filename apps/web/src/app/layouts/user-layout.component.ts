@@ -8,6 +8,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
 import { PaymentMethodBannersComponent } from "../components/payment-method-banners/payment-method-banners.component";
@@ -42,6 +43,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private stateService: StateService,
     private apiService: ApiService,
+    private syncService: SyncService,
   ) {}
 
   async ngOnInit() {
@@ -60,6 +62,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
       });
     });
 
+    await this.syncService.fullSync(false);
     await this.load();
   }
 
@@ -69,7 +72,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
 
   async load() {
     const premium = await this.stateService.getHasPremiumPersonally();
-    const selfHosted = await this.platformUtilsService.isSelfHost();
+    const selfHosted = this.platformUtilsService.isSelfHost();
 
     this.hasFamilySponsorshipAvailable = await this.organizationService.canManageSponsorships();
     const hasPremiumFromOrg = await this.stateService.getHasPremiumFromOrganization();
