@@ -14,6 +14,7 @@ import {
   EnvironmentService as EnvironmentServiceAbstraction,
   Region,
   RegionDomain,
+  SelectableRegion,
   Urls,
 } from "../abstractions/environment.service";
 import { Utils } from "../misc/utils";
@@ -27,30 +28,46 @@ const URLS_KEY = new KeyDefinition<EnvironmentUrls>(ENVIRONMENT_DISK, "urls", {
   deserializer: EnvironmentUrls.fromJSON,
 });
 
-const REGION_CONFIG: Record<Region.US | Region.EU, Urls> = {
-  [Region.US]: {
-    base: null,
-    api: "https://api.bitwarden.com",
-    identity: "https://identity.bitwarden.com",
-    icons: "https://icons.bitwarden.net",
-    webVault: "https://vault.bitwarden.com",
-    notifications: "https://notifications.bitwarden.com",
-    events: "https://events.bitwarden.com",
-    scim: "https://scim.bitwarden.com",
+export const PRODUCTION_REGIONS: SelectableRegion[] = [
+  {
+    key: Region.US,
+    domain: "bitwarden.com",
+    urls: {
+      base: null,
+      api: "https://api.bitwarden.com",
+      identity: "https://identity.bitwarden.com",
+      icons: "https://icons.bitwarden.net",
+      webVault: "https://vault.bitwarden.com",
+      notifications: "https://notifications.bitwarden.com",
+      events: "https://events.bitwarden.com",
+      scim: "https://scim.bitwarden.com",
+    },
   },
-  [Region.EU]: {
-    base: null,
-    api: "https://api.bitwarden.eu",
-    identity: "https://identity.bitwarden.eu",
-    icons: "https://icons.bitwarden.eu",
-    webVault: "https://vault.bitwarden.eu",
-    notifications: "https://notifications.bitwarden.eu",
-    events: "https://events.bitwarden.eu",
-    scim: "https://scim.bitwarden.eu",
+  {
+    key: Region.EU,
+    domain: "bitwarden.eu",
+    urls: {
+      base: null,
+      api: "https://api.bitwarden.eu",
+      identity: "https://identity.bitwarden.eu",
+      icons: "https://icons.bitwarden.eu",
+      webVault: "https://vault.bitwarden.eu",
+      notifications: "https://notifications.bitwarden.eu",
+      events: "https://events.bitwarden.eu",
+      scim: "https://scim.bitwarden.eu",
+    },
   },
-};
+];
 
+/**
+ * The default region when starting the app.
+ */
 const DEFAULT_REGION = Region.US;
+
+/**
+ * The default region configuration.
+ */
+const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_REGION);
 
 export class EnvironmentService implements EnvironmentServiceAbstraction {
   private readonly urlsSubject = new ReplaySubject<void>(1);
@@ -99,6 +116,16 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.urlsGlobalState = this.stateProvider.getGlobal(URLS_KEY);
   }
 
+  availableRegions(): SelectableRegion[] {
+    const additionalRegions =
+      (process.env.ADDITIONAL_REGIONS as unknown as SelectableRegion[]) ?? [];
+    return PRODUCTION_REGIONS.concat(additionalRegions);
+  }
+
+  private getAvailableRegion(region: Region): SelectableRegion | undefined {
+    return this.availableRegions().find((r) => r.key === region);
+  }
+
   hasBaseUrl() {
     return this.baseUrl != null;
   }
@@ -131,18 +158,14 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       return this.cloudWebVaultUrl;
     }
 
-    return REGION_CONFIG[DEFAULT_REGION].webVault;
+    return DEFAULT_REGION_CONFIG.urls.webVault;
   }
 
   setCloudWebVaultUrl(region: Region) {
-    switch (region) {
-      case Region.EU:
-        this.cloudWebVaultUrl = REGION_CONFIG[Region.EU].webVault;
-        break;
-      case Region.US:
-      default:
-        this.cloudWebVaultUrl = REGION_CONFIG[Region.US].webVault;
-        break;
+    const r = this.getAvailableRegion(region);
+
+    if (r != null) {
+      this.cloudWebVaultUrl = r.urls.webVault;
     }
   }
 
@@ -354,11 +377,8 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     } else {
       // If we are setting the region to EU or US, clear the self-hosted URLs
       await this.urlsGlobalState.update(() => new EnvironmentUrls());
-      if (region === Region.EU) {
-        this.setUrlsInternal(REGION_CONFIG[Region.EU]);
-      } else if (region === Region.US) {
-        this.setUrlsInternal(REGION_CONFIG[Region.US]);
-      }
+
+      this.setUrlsInternal(this.getAvailableRegion(region).urls);
     }
   }
 

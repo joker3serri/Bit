@@ -8,7 +8,6 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
   Region,
-  AVAILABLE_REGIONS,
   SelectableRegion,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 
@@ -52,7 +51,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   ];
   protected componentDestroyed$: Subject<void> = new Subject();
 
-  protected AvailableRegions = AVAILABLE_REGIONS;
+  protected AvailableRegions = this.environmentService.availableRegions();
   protected selectedRegion?: SelectableRegion;
 
   constructor(

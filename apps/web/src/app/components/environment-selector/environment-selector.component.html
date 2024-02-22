@@ -4,7 +4,7 @@
       *ngFor="let region of AvailableRegions"
       bitMenuItem
       [attr.href]="
-        region == currentRegion ? 'javascript:void(0)' : region.urls.vault + routeAndParams
+        region == currentRegion ? 'javascript:void(0)' : region.urls.webVault + routeAndParams
       "
       class="pr-4"
     >
@@ -19,7 +19,7 @@
   <div>
     {{ "server" | i18n }}:
     <a [routerLink]="[]" [bitMenuTriggerFor]="environmentOptions">
-      <b>{{ currentRegion.domain }}</b
+      <b>{{ currentRegion?.domain }}</b
       ><i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
     </a>
   </div>

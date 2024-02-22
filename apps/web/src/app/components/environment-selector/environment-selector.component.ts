@@ -1,21 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { AVAILABLE_REGIONS } from "@bitwarden/common/platform/abstractions/environment.service";
+import {
+  EnvironmentService,
+  SelectableRegion,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-
-const REGIONS = [...AVAILABLE_REGIONS];
-
-if (process.env.NODE_ENV === "development") {
-  REGIONS.push({
-    key: "LOCALHOST",
-    domain: "localhost",
-    urls: {
-      vault: "https://localhost:8080",
-    },
-  });
-}
 
 @Component({
   selector: "environment-selector",
@@ -24,11 +15,12 @@ if (process.env.NODE_ENV === "development") {
 export class EnvironmentSelectorComponent implements OnInit {
   constructor(
     private platformUtilsService: PlatformUtilsService,
+    private environmentService: EnvironmentService,
     private router: Router,
   ) {}
 
-  protected AvailableRegions = REGIONS;
-  protected currentRegion = REGIONS[0];
+  protected AvailableRegions = this.environmentService.availableRegions();
+  protected currentRegion?: SelectableRegion;
 
   protected showRegionSelector = false;
   protected routeAndParams: string;
@@ -38,7 +30,8 @@ export class EnvironmentSelectorComponent implements OnInit {
     this.routeAndParams = `/#${this.router.url}`;
 
     const domain = Utils.getDomain(window.location.href);
-    this.currentRegion =
-      this.AvailableRegions.find((r) => r.domain === domain) ?? this.AvailableRegions[0];
+    this.currentRegion = this.AvailableRegions.find(
+      (r) => Utils.getDomain(r.urls.webVault) === domain,
+    );
   }
 }
