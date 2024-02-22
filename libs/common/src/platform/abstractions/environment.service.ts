@@ -28,8 +28,6 @@ export enum RegionDomain {
 
 export abstract class EnvironmentService {
   urls: Observable<void>;
-  usUrls: Urls;
-  euUrls: Urls;
   selectedRegion?: Region;
   initialized = true;
 
@@ -39,14 +37,14 @@ export abstract class EnvironmentService {
   /**
    * Retrieves the URL of the cloud web vault app.
    *
-   * @returns {string} The URL of the cloud web vault app.
+   * @returns The URL of the cloud web vault app.
    * @remarks Use this method only in views exclusive to self-host instances.
    */
   getCloudWebVaultUrl: () => string;
   /**
    * Sets the URL of the cloud web vault app based on the region parameter.
    *
-   * @param {Region} region - The region of the cloud web vault app.
+   * @param region - The region of the cloud web vault app.
    */
   setCloudWebVaultUrl: (region: Region) => void;
 

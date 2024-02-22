@@ -27,6 +27,29 @@ const URLS_KEY = new KeyDefinition<EnvironmentUrls>(ENVIRONMENT_DISK, "urls", {
   deserializer: EnvironmentUrls.fromJSON,
 });
 
+const REGION_CONFIG: Record<Region.US | Region.EU, Urls> = {
+  [Region.US]: {
+    base: null,
+    api: "https://api.bitwarden.com",
+    identity: "https://identity.bitwarden.com",
+    icons: "https://icons.bitwarden.net",
+    webVault: "https://vault.bitwarden.com",
+    notifications: "https://notifications.bitwarden.com",
+    events: "https://events.bitwarden.com",
+    scim: "https://scim.bitwarden.com",
+  },
+  [Region.EU]: {
+    base: null,
+    api: "https://api.bitwarden.eu",
+    identity: "https://identity.bitwarden.eu",
+    icons: "https://icons.bitwarden.eu",
+    webVault: "https://vault.bitwarden.eu",
+    notifications: "https://notifications.bitwarden.eu",
+    events: "https://events.bitwarden.eu",
+    scim: "https://scim.bitwarden.eu",
+  },
+};
+
 export class EnvironmentService implements EnvironmentServiceAbstraction {
   private readonly urlsSubject = new ReplaySubject<void>(1);
   urls: Observable<void> = this.urlsSubject.asObservable();
@@ -48,28 +71,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   private urlsGlobalState: GlobalState<EnvironmentUrls | null>;
 
   private activeAccountId$: Observable<UserId | null>;
-
-  readonly usUrls: Urls = {
-    base: null,
-    api: "https://api.bitwarden.com",
-    identity: "https://identity.bitwarden.com",
-    icons: "https://icons.bitwarden.net",
-    webVault: "https://vault.bitwarden.com",
-    notifications: "https://notifications.bitwarden.com",
-    events: "https://events.bitwarden.com",
-    scim: "https://scim.bitwarden.com",
-  };
-
-  readonly euUrls: Urls = {
-    base: null,
-    api: "https://api.bitwarden.eu",
-    identity: "https://identity.bitwarden.eu",
-    icons: "https://icons.bitwarden.eu",
-    webVault: "https://vault.bitwarden.eu",
-    notifications: "https://notifications.bitwarden.eu",
-    events: "https://events.bitwarden.eu",
-    scim: "https://scim.bitwarden.eu",
-  };
 
   constructor(
     private stateProvider: StateProvider,
@@ -128,17 +129,17 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       return this.cloudWebVaultUrl;
     }
 
-    return this.usUrls.webVault;
+    return REGION_CONFIG[Region.US].webVault;
   }
 
   setCloudWebVaultUrl(region: Region) {
     switch (region) {
       case Region.EU:
-        this.cloudWebVaultUrl = this.euUrls.webVault;
+        this.cloudWebVaultUrl = REGION_CONFIG[Region.EU].webVault;
         break;
       case Region.US:
       default:
-        this.cloudWebVaultUrl = this.usUrls.webVault;
+        this.cloudWebVaultUrl = REGION_CONFIG[Region.US].webVault;
         break;
     }
   }
@@ -355,9 +356,9 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       // If we are setting the region to EU or US, clear the self-hosted URLs
       await this.urlsGlobalState.update(() => new EnvironmentUrls());
       if (region === Region.EU) {
-        this.setUrlsInternal(this.euUrls);
+        this.setUrlsInternal(REGION_CONFIG[Region.EU]);
       } else if (region === Region.US) {
-        this.setUrlsInternal(this.usUrls);
+        this.setUrlsInternal(REGION_CONFIG[Region.US]);
       }
     }
   }
