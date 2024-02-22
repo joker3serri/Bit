@@ -1,5 +1,6 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, from } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import {
   FakeStateProvider,
@@ -31,18 +32,18 @@ const SomeUser = "some user" as UserId;
 function mockEncryptor(fooBar: FooBar[] = []): UserEncryptor<FooBar, Record<string, never>> {
   // stores "encrypted values" so that they can be "decrypted" later
   // while allowing the operations to be interleaved.
-  const encrypted = new Map<string, FooBar>(
-    fooBar.map((fb) => [toKey(fb).encryptedString, fb] as const),
+  const encrypted = new Map<string, Jsonify<FooBar>>(
+    fooBar.map((fb) => [toKey(fb).encryptedString, toValue(fb)] as const),
   );
 
   const result = mock<UserEncryptor<FooBar, Record<string, never>>>({
     encrypt(value: FooBar, user: UserId) {
       const encString = toKey(value);
-      encrypted.set(encString.encryptedString, value);
+      encrypted.set(encString.encryptedString, toValue(value));
       return Promise.resolve([encString, {}]);
     },
     decrypt(secret: EncString, disclosed: Record<string, never>, userId: UserId) {
-      const decString = encrypted.get(secret.encryptedString);
+      const decString = encrypted.get(toValue(secret.encryptedString));
       return Promise.resolve(decString);
     },
   });
@@ -51,6 +52,11 @@ function mockEncryptor(fooBar: FooBar[] = []): UserEncryptor<FooBar, Record<stri
     // `stringify` is only relevant for its uniqueness as a key
     // to `encrypted`.
     return makeEncString(JSON.stringify(value));
+  }
+
+  function toValue(value: any) {
+    // replace toJSON types with their round-trip equivalents
+    return JSON.parse(JSON.stringify(value));
   }
 
   // chromatic pops a false positive about missing `encrypt` and `decrypt`
