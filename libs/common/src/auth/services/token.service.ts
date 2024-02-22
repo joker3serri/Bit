@@ -136,9 +136,7 @@ export class TokenService implements TokenServiceAbstraction {
 
       // If we don't have a user id, we can't save to secure storage
       if (!userId) {
-        throw new Error(
-          "User id not found in access token. Cannot save access token to secure storage.",
-        );
+        throw new Error("User id not found. Cannot save access token to secure storage.");
       }
 
       await this.secureStorageService.save<string>(
@@ -442,6 +440,8 @@ export class TokenService implements TokenServiceAbstraction {
   async clearTokens(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
     await this.setTokens(null, null, vaultTimeoutAction, vaultTimeout, [null, null]);
   }
+
+  // TODO: create a custom type for access token
 
   // jwthelper methods
   // ref https://github.com/auth0/angular-jwt/blob/master/src/angularJwt/services/jwt.js
