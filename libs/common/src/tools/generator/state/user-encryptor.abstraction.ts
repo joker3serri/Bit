@@ -17,7 +17,10 @@ export abstract class UserEncryptor<State extends object, Disclosed> {
    *    properties.
    *   @throws If `value` is `null` or `undefined`, the promise rejects with an error.
    */
-  abstract encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]>;
+  abstract encrypt(
+    value: State,
+    userId: UserId,
+  ): Promise<{ secret: EncString; disclosed: Disclosed }>;
 
   /** Combines protected secrets and disclosed data into a type that can be
    *  rehydrated into a domain object.
