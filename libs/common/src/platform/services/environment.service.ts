@@ -50,6 +50,8 @@ const REGION_CONFIG: Record<Region.US | Region.EU, Urls> = {
   },
 };
 
+const DEFAULT_REGION = Region.US;
+
 export class EnvironmentService implements EnvironmentServiceAbstraction {
   private readonly urlsSubject = new ReplaySubject<void>(1);
   urls: Observable<void> = this.urlsSubject.asObservable();
@@ -129,7 +131,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       return this.cloudWebVaultUrl;
     }
 
-    return REGION_CONFIG[Region.US].webVault;
+    return REGION_CONFIG[DEFAULT_REGION].webVault;
   }
 
   setCloudWebVaultUrl(region: Region) {
@@ -350,7 +352,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     if (region === Region.SelfHosted) {
       // If user saves a self-hosted region with empty fields, default to US
       if (this.isEmpty()) {
-        await this.setRegion(Region.US);
+        await this.setRegion(DEFAULT_REGION);
       }
     } else {
       // If we are setting the region to EU or US, clear the self-hosted URLs
