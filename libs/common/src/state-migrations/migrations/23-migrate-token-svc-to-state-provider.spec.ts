@@ -120,8 +120,8 @@ describe("TokenServiceStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationJson(), 23);
-      sut = new TokenServiceStateProviderMigrator(23, 24);
+      helper = mockMigrationHelper(preMigrationJson(), 22);
+      sut = new TokenServiceStateProviderMigrator(22, 23);
     });
 
     it("should remove state service data from all accounts that have it", async () => {
@@ -188,8 +188,8 @@ describe("TokenServiceStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 23);
-      sut = new TokenServiceStateProviderMigrator(23, 24);
+      helper = mockMigrationHelper(rollbackJSON(), 22);
+      sut = new TokenServiceStateProviderMigrator(22, 23);
     });
 
     it("should null out newly migrated entries in state provider framework", async () => {

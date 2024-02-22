@@ -17,6 +17,7 @@ import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-
 import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-providers";
 import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
 import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-groupings-to-state-provider";
+import { TokenServiceStateProviderMigrator } from "./migrations/23-migrate-token-svc-to-state-provider";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
@@ -26,7 +27,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 3;
-export const CURRENT_VERSION = 22;
+export const CURRENT_VERSION = 23;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -50,7 +51,8 @@ export function createMigrationBuilder() {
     .with(RequirePasswordOnStartMigrator, 18, 19)
     .with(PrivateKeyMigrator, 19, 20)
     .with(CollectionMigrator, 20, 21)
-    .with(CollapsedGroupingsMigrator, 21, CURRENT_VERSION);
+    .with(CollapsedGroupingsMigrator, 21, 22)
+    .with(TokenServiceStateProviderMigrator, 22, CURRENT_VERSION);
 }
 
 export async function currentVersion(
