@@ -1,4 +1,4 @@
-import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
+import { KeyDefinitionLike, MigrationHelper, StateDefinitionLike } from "../migration-helper";
 import { Migrator } from "../migrator";
 
 // Types to represent data as it is stored in JSON
@@ -27,31 +27,28 @@ export const EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL: KeyDefinitionLike = {
   },
 };
 
+const TOKEN_STATE_DEF_LIKE: StateDefinitionLike = {
+  name: "token",
+};
+
 export const ACCESS_TOKEN_DISK: KeyDefinitionLike = {
   key: "accessToken", // matches KeyDefinition.key
-  stateDefinition: {
-    name: "tokenDisk", // matches StateDefinition.name
-  },
+  stateDefinition: TOKEN_STATE_DEF_LIKE,
 };
+
 export const REFRESH_TOKEN_DISK: KeyDefinitionLike = {
   key: "refreshToken",
-  stateDefinition: {
-    name: "tokenDisk",
-  },
+  stateDefinition: TOKEN_STATE_DEF_LIKE,
 };
 
 export const API_KEY_CLIENT_ID_DISK: KeyDefinitionLike = {
   key: "apiKeyClientId",
-  stateDefinition: {
-    name: "tokenDisk",
-  },
+  stateDefinition: TOKEN_STATE_DEF_LIKE,
 };
 
 export const API_KEY_CLIENT_SECRET_DISK: KeyDefinitionLike = {
   key: "apiKeyClientSecret",
-  stateDefinition: {
-    name: "tokenDisk",
-  },
+  stateDefinition: TOKEN_STATE_DEF_LIKE,
 };
 
 export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
