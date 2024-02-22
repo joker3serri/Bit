@@ -5,23 +5,25 @@ import { Jsonify } from "type-fest";
  * @param elementDeserializer
  * @returns
  */
-export const array = <T>(elementDeserializer: (element: Jsonify<T>) => T) => {
-  return (array: Jsonify<T | null>[]) => {
+export function array<T>(
+  elementDeserializer: (element: Jsonify<T>) => T,
+): (array: Jsonify<T[]>) => T[] {
+  return (array) => {
     if (array == null) {
       return null;
     }
 
     return array.map((element) => elementDeserializer(element));
   };
-};
+}
 
 /**
  *
  * @param valueDeserializer
  */
-export const record = <T, TKey extends string = string>(
+export function record<T, TKey extends string = string>(
   valueDeserializer: (value: Jsonify<T>) => T,
-) => {
+): (record: Jsonify<Record<TKey, T>>) => Record<TKey, T> {
   return (jsonValue: Jsonify<Record<TKey, T> | null>) => {
     if (jsonValue == null) {
       return null;
@@ -33,4 +35,4 @@ export const record = <T, TKey extends string = string>(
     }
     return output;
   };
-};
+}

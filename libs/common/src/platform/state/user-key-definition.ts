@@ -87,7 +87,7 @@ export class UserKeyDefinition<T> {
   ) {
     return new KeyDefinition<T[]>(stateDefinition, key, {
       ...options,
-      deserializer: array(options.deserializer),
+      deserializer: array((e) => options.deserializer(e)),
     });
   }
 
@@ -114,7 +114,7 @@ export class UserKeyDefinition<T> {
   ) {
     return new KeyDefinition<Record<TKey, T>>(stateDefinition, key, {
       ...options,
-      deserializer: record(options.deserializer),
+      deserializer: record((v) => options.deserializer(v)),
     });
   }
 
