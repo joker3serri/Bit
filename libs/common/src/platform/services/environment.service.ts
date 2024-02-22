@@ -255,9 +255,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     urls.events = this.formatUrl(urls.events);
     urls.keyConnector = this.formatUrl(urls.keyConnector);
 
-    // scimUrl cannot be cleared
-    urls.scim = this.formatUrl(urls.scim) ?? this.scimUrl;
-
     // Don't save scim url
     await this.urlsGlobalState.update(() => ({
       base: urls.base,
@@ -278,7 +275,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.notificationsUrl = urls.notifications;
     this.eventsUrl = urls.events;
     this.keyConnectorUrl = urls.keyConnector;
-    this.scimUrl = urls.scim;
+    this.scimUrl = null; // Scrim is only set from the region
 
     await this.setRegion(Region.SelfHosted);
 
@@ -381,9 +378,8 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.notificationsUrl = this.formatUrl(urls.notifications);
     this.eventsUrl = this.formatUrl(urls.events);
     this.keyConnectorUrl = this.formatUrl(urls.keyConnector);
+    this.scimUrl = this.formatUrl(urls.scim);
 
-    // scimUrl cannot be cleared
-    this.scimUrl = this.formatUrl(urls.scim) ?? this.scimUrl;
     this.urlsSubject.next();
   }
 

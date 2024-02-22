@@ -332,7 +332,7 @@ describe("EnvironmentService", () => {
         events: null,
         keyConnector: null,
       });
-      expect(sut.getScimUrl()).toBe("https://scim.example.com/v2");
+      expect(sut.getScimUrl()).toBe("https://vault.example.com/scim/v2");
     });
   });
 
