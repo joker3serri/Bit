@@ -270,7 +270,6 @@ jobs:
         run: |
           azcopy --version
           export AZCOPY_AUTO_LOGIN_TYPE=SPN
-          export AZCOPY_SPA_APPLICATION_ID=5ff59556-2b91-4f33-87df-3f9bbc1f6a84
           export AZCOPY_SPA_CLIENT_SECRET=${{ secrets[needs.setup.outputs.azure-login-creds] }}
           export AZCOPY_TENANT_ID=10c0387a-9792-4d9f-b1b1-ebc6785914ce
           printenv
