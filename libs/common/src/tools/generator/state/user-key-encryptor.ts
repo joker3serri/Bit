@@ -5,21 +5,9 @@ import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { EncString } from "../../../platform/models/domain/enc-string";
 import { UserId } from "../../../types/guid";
 
+import { DataPacker } from "./data-packer.abstraction";
 import { SecretClassifier } from "./secret-classifier";
 import { UserEncryptor } from "./user-encryptor.abstraction";
-import { UserKeyEncryptorOptions } from "./user-key-encryptor-options";
-
-const SecretPadding = Object.freeze({
-  frameSize: 512,
-
-  /** The character to use for padding. */
-  character: "0",
-
-  /** A regular expression for detecting invalid padding. When the character
-   *  changes, this should be updated to include the new padding pattern.
-   */
-  hasInvalidPadding: /[^0]/,
-});
 
 /** A classification strategy that protects a type's secrets by encrypting them
  *  with a `UserKey`
@@ -32,13 +20,13 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
    *  @param encryptService protects properties of `Secret`.
    *  @param keyService looks up the user key when protecting data.
    *  @param classifier partitions secrets and disclosed information.
-   *  @param options configures encryption and decryption operations
+   *  @param dataPacker packs and unpacks data classified as secrets.
    */
   constructor(
     private readonly encryptService: EncryptService,
     private readonly keyService: CryptoService,
     private readonly classifier: SecretClassifier<State, Disclosed, Secret>,
-    private readonly options: UserKeyEncryptorOptions = SecretPadding,
+    private readonly dataPacker: DataPacker,
   ) {
     super();
   }
@@ -78,15 +66,7 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
 
   private async encryptSecret(value: Secret, userId: UserId) {
     // package the data for encryption
-    let json = JSON.stringify(value);
-
-    // conceal the length of the encrypted data
-    const frameSize = JSON.stringify(this.options.frameSize);
-    const payloadLength = json.length + frameSize.length;
-    const paddingLength = this.options.frameSize - (payloadLength % this.options.frameSize);
-    const padding = SecretPadding.character.repeat(paddingLength);
-    let toEncrypt = `${frameSize}${json}${padding}`;
-    json = null;
+    let toEncrypt = this.dataPacker.pack(value);
 
     // encrypt the data and drop the key
     let key = await this.keyService.getUserKey(userId);
@@ -100,42 +80,11 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
   private async decryptSecret(value: EncString, userId: UserId): Promise<Jsonify<Secret>> {
     // decrypt the data and drop the key
     let key = await this.keyService.getUserKey(userId);
-    const decrypted = await this.encryptService.decryptToUtf8(value, key);
+    let decrypted = await this.encryptService.decryptToUtf8(value, key);
     key = null;
 
-    const unpacked = this.unpackSecret(decrypted);
-    const parsed = JSON.parse(unpacked);
-
-    return parsed;
-  }
-
-  private unpackSecret(secret: string) {
-    // frame size is stored before the JSON payload in base 10
-    const frameBreakpoint = secret.indexOf("{");
-    if (frameBreakpoint < 1) {
-      throw new Error("missing frame size");
-    }
-    const frameSize = parseInt(secret.slice(0, frameBreakpoint), 10);
-
-    // The decrypted string should be a multiple of the frame length
-    if (secret.length % frameSize > 0) {
-      throw new Error("invalid length");
-    }
-
-    // JSON terminates with a closing brace, followed by the padding character
-    const jsonBreakpoint = secret.lastIndexOf("}") + 1;
-    if (jsonBreakpoint < 1) {
-      throw new Error("missing json object");
-    }
-
-    // If the padding contains invalid padding characters then the padding could be used
-    // as a side channel for arbitrary data.
-    if (secret.slice(jsonBreakpoint).match(SecretPadding.hasInvalidPadding)) {
-      throw new Error("invalid padding");
-    }
-
-    // remove frame size and padding
-    const unpacked = secret.substring(frameBreakpoint, jsonBreakpoint);
+    const unpacked = this.dataPacker.unpack(decrypted);
+    decrypted = null;
 
     return unpacked;
   }

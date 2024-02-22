@@ -4,55 +4,54 @@ import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { EncString } from "../../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import { CsprngArray } from "../../../types/csprng";
 import { UserId } from "../../../types/guid";
 import { UserKey } from "../../../types/key";
 
+import { DataPacker } from "./data-packer.abstraction";
 import { SecretClassifier } from "./secret-classifier";
 import { UserKeyEncryptor } from "./user-key-encryptor";
 
-function mockEncryptService(): EncryptService {
-  return mock<EncryptService>({
+describe("UserKeyEncryptor", () => {
+  const encryptService = mock<EncryptService>();
+  const keyService = mock<CryptoService>();
+  const dataPacker = mock<DataPacker>();
+  const userKey = new SymmetricCryptoKey(new Uint8Array(64) as CsprngArray) as UserKey;
+  const anyUserId = "foo" as UserId;
+
+  beforeEach(() => {
     // The UserKeyEncryptor is, in large part, a facade coordinating a handful of worker
-    // objects, so its tests focus on how data flows between components. The mock relies
+    // objects, so its tests focus on how data flows between components. The defaults rely
     // on this property--that the facade treats its data like a opaque objects--to trace
     // the data through several function calls. Should the encryptor interact with the
     // objects themselves, it will break.
-    encrypt: jest.fn((p: any, _key: SymmetricCryptoKey) => Promise.resolve(p as EncString)),
-    decryptToUtf8: jest.fn((c: any, _key: SymmetricCryptoKey) => Promise.resolve(c as string)),
+    encryptService.encrypt.mockImplementation((p) => Promise.resolve(p as unknown as EncString));
+    encryptService.decryptToUtf8.mockImplementation((c) => Promise.resolve(c as unknown as string));
+    keyService.getUserKey.mockImplementation(() => Promise.resolve(userKey));
+    dataPacker.pack.mockImplementation((v) => v as string);
+    dataPacker.unpack.mockImplementation(<T>(v: string) => v as T);
   });
-}
 
-function mockKeyService(value: any = {}): CryptoService {
-  return mock<CryptoService>({
-    // Flow an object through the key service for data flow testing.
-    // Since the key is never used by the mock encryption service, only
-    // its "toBe" identity is important.
-    getUserKey: jest.fn((_: UserId) => Promise.resolve(value as UserKey)),
+  afterEach(() => {
+    jest.resetAllMocks();
   });
-}
 
-describe("UserKeyEncryptor", () => {
   describe("encrypt", () => {
     it("should throw if value was not supplied", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
+      const classifier = SecretClassifier.allSecret<object>();
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
 
-      await expect(encryptor.encrypt(null, userId)).rejects.toThrow(
+      await expect(encryptor.encrypt(null, anyUserId)).rejects.toThrow(
         "value cannot be null or undefined",
       );
-      await expect(encryptor.encrypt(undefined, userId)).rejects.toThrow(
+      await expect(encryptor.encrypt(undefined, anyUserId)).rejects.toThrow(
         "value cannot be null or undefined",
       );
     });
 
     it("should throw if userId was not supplied", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
+      const classifier = SecretClassifier.allSecret<object>();
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
 
       await expect(encryptor.encrypt({} as any, null)).rejects.toThrow(
         "userId cannot be null or undefined",
@@ -62,85 +61,55 @@ describe("UserKeyEncryptor", () => {
       );
     });
 
-    it("should encrypt a stringified value using the user's key", async () => {
-      const encryptService = mockEncryptService();
-      const key = {};
-      const keyService = mockKeyService(key);
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
+    it("should classify data into a disclosed value and an encrypted packed value using the user's key", async () => {
+      const classifier = SecretClassifier.allSecret<object>();
+      const classifierClassify = jest.spyOn(classifier, "classify");
+      const disclosed = {} as any;
+      const secret = {} as any;
+      classifierClassify.mockReturnValue({ disclosed, secret });
 
-      const [encrypted] = await encryptor.encrypt({ foo: true }, userId);
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
+      const value = { foo: true };
 
-      expect(keyService.getUserKey).toHaveBeenCalledWith(userId);
-      const jsonified = `512{"foo":true}${"0".repeat(497)}`;
-      expect(encryptService.encrypt).toHaveBeenCalledWith(jsonified, key);
-      expect(encrypted).toEqual(jsonified);
-    });
+      const [resultSecret, resultDisclosed] = await encryptor.encrypt(value, anyUserId);
 
-    it("should pad to a multiple of the frame size", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, {
-        frameSize: 8,
-      });
-      const userId = "foo" as UserId;
-
-      const [encrypted] = await encryptor.encrypt({ foo: true }, userId);
-      expect((encrypted as unknown as string).length).toEqual(16);
-    });
-
-    it("should output disclosed properties", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>().disclose("foo");
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, {
-        frameSize: 8,
-      });
-      const userId = "foo" as UserId;
-
-      const [, disclosed] = await encryptor.encrypt({ foo: true }, userId);
-      expect(disclosed).toEqual({ foo: true });
+      expect(classifierClassify).toHaveBeenCalledWith(value);
+      expect(keyService.getUserKey).toHaveBeenCalledWith(anyUserId);
+      expect(dataPacker.pack).toHaveBeenCalledWith(secret);
+      expect(encryptService.encrypt).toHaveBeenCalledWith(secret, userKey);
+      expect(resultSecret).toBe(secret);
+      expect(resultDisclosed).toBe(disclosed);
     });
   });
 
   describe("decrypt", () => {
     it("should throw if secret was not supplied", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
+      const classifier = SecretClassifier.allSecret<object>();
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
 
-      await expect(encryptor.decrypt(null, {} as any, userId)).rejects.toThrow(
+      await expect(encryptor.decrypt(null, {} as any, anyUserId)).rejects.toThrow(
         "secret cannot be null or undefined",
       );
-      await expect(encryptor.decrypt(undefined, {} as any, userId)).rejects.toThrow(
+      await expect(encryptor.decrypt(undefined, {} as any, anyUserId)).rejects.toThrow(
         "secret cannot be null or undefined",
       );
     });
 
     it("should throw if disclosed was not supplied", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
+      const classifier = SecretClassifier.allSecret<object>();
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
 
-      await expect(encryptor.decrypt({} as any, null, userId)).rejects.toThrow(
+      await expect(encryptor.decrypt({} as any, null, anyUserId)).rejects.toThrow(
         "disclosed cannot be null or undefined",
       );
-      await expect(encryptor.decrypt({} as any, undefined, userId)).rejects.toThrow(
+      await expect(encryptor.decrypt({} as any, undefined, anyUserId)).rejects.toThrow(
         "disclosed cannot be null or undefined",
       );
     });
 
     it("should throw if userId was not supplied", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
+      const classifier = SecretClassifier.allSecret<object>();
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
 
       await expect(encryptor.decrypt({} as any, {} as any, null)).rejects.toThrow(
         "userId cannot be null or undefined",
@@ -150,100 +119,22 @@ describe("UserKeyEncryptor", () => {
       );
     });
 
-    it("should decrypt a Jsonified value using the user's key", async () => {
-      const encryptService = mockEncryptService();
-      const key = {};
-      const keyService = mockKeyService(key);
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `512{"foo":true}${"0".repeat(497)}` as unknown as EncString;
+    it("should declassify a decrypted packed value using the user's key", async () => {
+      const classifier = SecretClassifier.allSecret<object>();
+      const classifierDeclassify = jest.spyOn(classifier, "declassify");
+      const declassified = {} as any;
+      classifierDeclassify.mockReturnValue(declassified);
+      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier, dataPacker);
+      const secret = "encrypted" as any;
+      const disclosed = {} as any;
 
-      const decrypted = await encryptor.decrypt(encrypted, {} as any, userId);
+      const result = await encryptor.decrypt(secret, disclosed, anyUserId);
 
-      expect(keyService.getUserKey).toHaveBeenCalledWith(userId);
-      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encrypted, key);
-      expect(decrypted).toEqual({ foo: true });
-    });
-
-    it("should combine decrypted secrets and disclosed data", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean; bar: boolean }>().disclose(
-        "bar",
-      );
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `512{"foo":true}${"0".repeat(497)}` as unknown as EncString;
-
-      const decrypted = await encryptor.decrypt(encrypted, { bar: true } as any, userId);
-
-      expect(decrypted).toEqual({ foo: true, bar: true });
-    });
-
-    it("should preserve decrypted secrets", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `512{"foo":true,"bar":true}${"0".repeat(486)}` as unknown as EncString;
-
-      const decrypted = await encryptor.decrypt(encrypted, {} as any, userId);
-
-      expect(decrypted).toEqual({ foo: true, bar: true });
-    });
-
-    it("should throw an error when the frame size is missing", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `{"foo":true}${"0".repeat(16)}` as unknown as EncString;
-
-      await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
-        "missing frame size",
-      );
-    });
-
-    it("should throw an error when the length is not a multiple of the frame size", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `16{"foo":true}0` as unknown as EncString;
-
-      await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
-        "invalid length",
-      );
-    });
-
-    it("should throw an error when the json object is not closed", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `16{"foo":true000` as unknown as EncString;
-
-      await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
-        "missing json object",
-      );
-    });
-
-    it("should throw an error when the padding contains a non-0 character", async () => {
-      const encryptService = mockEncryptService();
-      const keyService = mockKeyService();
-      const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
-      const encryptor = new UserKeyEncryptor(encryptService, keyService, classifier);
-      const userId = "foo" as UserId;
-      const encrypted = `16{"foo":true}01` as unknown as EncString;
-
-      await expect(encryptor.decrypt(encrypted, {} as any, userId)).rejects.toThrow(
-        "invalid padding",
-      );
+      expect(keyService.getUserKey).toHaveBeenCalledWith(anyUserId);
+      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(secret, userKey);
+      expect(dataPacker.unpack).toHaveBeenCalledWith(secret);
+      expect(classifierDeclassify).toHaveBeenCalledWith(disclosed, secret);
+      expect(result).toBe(declassified);
     });
   });
 });
