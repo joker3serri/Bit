@@ -6,9 +6,9 @@ import {
   Observable,
   ReplaySubject,
 } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { AccountService } from "../../auth/abstractions/account.service";
-import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { UserId } from "../../types/guid";
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
@@ -19,12 +19,32 @@ import {
 import { Utils } from "../misc/utils";
 import { ENVIRONMENT_DISK, GlobalState, KeyDefinition, StateProvider } from "../state";
 
-const REGION_KEY = new KeyDefinition<Region>(ENVIRONMENT_DISK, "region", {
-  deserializer: (s) => s,
-});
+export class EnvironmentUrls {
+  base: string = null;
+  api: string = null;
+  identity: string = null;
+  icons: string = null;
+  notifications: string = null;
+  events: string = null;
+  webVault: string = null;
+  keyConnector: string = null;
 
-const URLS_KEY = new KeyDefinition<EnvironmentUrls>(ENVIRONMENT_DISK, "urls", {
-  deserializer: EnvironmentUrls.fromJSON,
+  static fromJSON(obj: Jsonify<EnvironmentUrls>): EnvironmentUrls {
+    return Object.assign(new EnvironmentUrls(), obj);
+  }
+}
+
+class EnvironmentState {
+  region: Region;
+  urls: EnvironmentUrls;
+
+  static fromJSON(obj: Jsonify<EnvironmentState>): EnvironmentState {
+    return Object.assign(new EnvironmentState(), obj);
+  }
+}
+
+const ENVIRONMENT_KEY = new KeyDefinition<EnvironmentState>(ENVIRONMENT_DISK, "environment", {
+  deserializer: EnvironmentState.fromJSON,
 });
 
 /**
@@ -90,8 +110,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   private scimUrl: string = null;
   private cloudWebVaultUrl: string;
 
-  private regionGlobalState: GlobalState<Region | null>;
-  private urlsGlobalState: GlobalState<EnvironmentUrls | null>;
+  private globalState: GlobalState<EnvironmentState | null>;
 
   private activeAccountId$: Observable<UserId | null>;
 
@@ -116,8 +135,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       )
       .subscribe();
 
-    this.regionGlobalState = this.stateProvider.getGlobal(REGION_KEY);
-    this.urlsGlobalState = this.stateProvider.getGlobal(URLS_KEY);
+    this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
   }
 
   availableRegions(): RegionConfig[] {
@@ -130,6 +148,61 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
    */
   private getRegionConfig(region: Region): RegionConfig | undefined {
     return this.availableRegions().find((r) => r.key === region);
+  }
+
+  async setEnvironment(region: Region, urls?: Urls): Promise<Urls> {
+    // Unknown regions are treated as self-hosted
+    if (this.getRegionConfig(region) == null) {
+      region = Region.SelfHosted;
+    }
+
+    // If self-hosted ensure urls are valid else fallback to default region
+    if (region == Region.SelfHosted && isEmpty(urls)) {
+      region = DEFAULT_REGION;
+    }
+
+    this.selectedRegion = region;
+
+    if (region != Region.SelfHosted) {
+      await this.globalState.update(() => ({
+        region: region,
+        urls: null,
+      }));
+
+      const regionConfig = this.getRegionConfig(region);
+      await this.setUrlsInternal(regionConfig.urls);
+
+      return null;
+    } else {
+      // Clean the urls
+      urls.base = this.formatUrl(urls.base);
+      urls.webVault = this.formatUrl(urls.webVault);
+      urls.api = this.formatUrl(urls.api);
+      urls.identity = this.formatUrl(urls.identity);
+      urls.icons = this.formatUrl(urls.icons);
+      urls.notifications = this.formatUrl(urls.notifications);
+      urls.events = this.formatUrl(urls.events);
+      urls.keyConnector = this.formatUrl(urls.keyConnector);
+      urls.scim = null;
+
+      await this.globalState.update(() => ({
+        region: region,
+        urls: {
+          base: urls.base,
+          api: urls.api,
+          identity: urls.identity,
+          webVault: urls.webVault,
+          icons: urls.icons,
+          notifications: urls.notifications,
+          events: urls.events,
+          keyConnector: urls.keyConnector,
+        },
+      }));
+
+      await this.setUrlsInternal(urls);
+
+      return urls;
+    }
   }
 
   hasBaseUrl() {
@@ -245,68 +318,9 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
   async setUrlsFromStorage(): Promise<void> {
     const activeUserId = await firstValueFrom(this.activeAccountId$);
+    const state = await this.getEnvironmentState(activeUserId);
 
-    const region = await this.getRegion(activeUserId);
-    const savedUrls = await this.getEnvironmentUrls(activeUserId);
-
-    // A region is valid if we have a configuration
-    if (this.getRegionConfig(region) != null) {
-      await this.setRegion(region);
-      return;
-    }
-
-    // If region is not valid, treat it as self-hosted
-    this.baseUrl = savedUrls.base;
-    this.webVaultUrl = savedUrls.webVault;
-    this.apiUrl = savedUrls.api;
-    this.identityUrl = savedUrls.identity;
-    this.iconsUrl = savedUrls.icons;
-    this.notificationsUrl = savedUrls.notifications;
-    this.eventsUrl = savedUrls.events;
-    this.keyConnectorUrl = savedUrls.keyConnector;
-    this.scimUrl = null; // Scim is only set for valid regions
-    await this.setRegion(Region.SelfHosted);
-
-    this.urlsSubject.next();
-  }
-
-  async setUrls(urls: Urls): Promise<Urls> {
-    urls.base = this.formatUrl(urls.base);
-    urls.webVault = this.formatUrl(urls.webVault);
-    urls.api = this.formatUrl(urls.api);
-    urls.identity = this.formatUrl(urls.identity);
-    urls.icons = this.formatUrl(urls.icons);
-    urls.notifications = this.formatUrl(urls.notifications);
-    urls.events = this.formatUrl(urls.events);
-    urls.keyConnector = this.formatUrl(urls.keyConnector);
-
-    // Don't save scim url
-    await this.urlsGlobalState.update(() => ({
-      base: urls.base,
-      api: urls.api,
-      identity: urls.identity,
-      webVault: urls.webVault,
-      icons: urls.icons,
-      notifications: urls.notifications,
-      events: urls.events,
-      keyConnector: urls.keyConnector,
-    }));
-
-    this.baseUrl = urls.base;
-    this.webVaultUrl = urls.webVault;
-    this.apiUrl = urls.api;
-    this.identityUrl = urls.identity;
-    this.iconsUrl = urls.icons;
-    this.notificationsUrl = urls.notifications;
-    this.eventsUrl = urls.events;
-    this.keyConnectorUrl = urls.keyConnector;
-    this.scimUrl = null; // Scrim is only set from the region
-
-    await this.setRegion(Region.SelfHosted);
-
-    this.urlsSubject.next();
-
-    return urls;
+    await this.setEnvironment(state?.region ?? DEFAULT_REGION, state?.urls);
   }
 
   getUrls() {
@@ -337,59 +351,30 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   async getHost(userId?: UserId) {
-    const region = await this.getRegion(userId);
-    const regionConfig = this.getRegionConfig(region);
+    const state = await this.getEnvironmentState(userId);
+    const regionConfig = this.getRegionConfig(state.region);
 
     if (regionConfig != null) {
       return regionConfig.domain;
     }
 
     // No environment found, assume self-hosted
-    const envUrls = await this.getEnvironmentUrls(userId);
-    return Utils.getHost(envUrls.webVault || envUrls.base);
+    return Utils.getHost(state.urls.webVault || state.urls.base);
   }
 
-  private async getRegion(userId: UserId | null) {
+  private async getEnvironmentState(userId: UserId | null) {
     // Previous rules dictated that we only get from user scoped state if there is an active user.
     const activeUserId = await firstValueFrom(this.activeAccountId$);
     return activeUserId == null
-      ? await firstValueFrom(this.regionGlobalState.state$)
-      : await firstValueFrom(this.stateProvider.getUser(userId ?? activeUserId, REGION_KEY).state$);
-  }
-
-  private async getEnvironmentUrls(userId: UserId | null) {
-    return userId == null
-      ? (await firstValueFrom(this.urlsGlobalState.state$)) ?? new EnvironmentUrls()
-      : (await firstValueFrom(this.stateProvider.getUser(userId, URLS_KEY).state$)) ??
-          new EnvironmentUrls();
-  }
-
-  async setRegion(region: Region) {
-    this.selectedRegion = region;
-    await this.regionGlobalState.update(() => region);
-
-    const regionConfig = this.getRegionConfig(region);
-
-    // If we can't find the region presume self-hosted
-    if (regionConfig == null) {
-      // If user saves a self-hosted region with empty fields, default to US
-      if (this.isEmpty()) {
-        await this.setRegion(DEFAULT_REGION);
-      }
-      return;
-    }
-
-    // If we are setting the region to EU or US, clear the self-hosted URLs
-    await this.urlsGlobalState.update(() => new EnvironmentUrls());
-
-    this.setUrlsInternal(this.getRegionConfig(region).urls);
+      ? await firstValueFrom(this.globalState.state$)
+      : await firstValueFrom(
+          this.stateProvider.getUser(userId ?? activeUserId, ENVIRONMENT_KEY).state$,
+        );
   }
 
   async seedUserEnvironment(userId: UserId) {
-    const globalRegion = await firstValueFrom(this.regionGlobalState.state$);
-    const globalUrls = await firstValueFrom(this.urlsGlobalState.state$);
-    await this.stateProvider.getUser(userId, REGION_KEY).update(() => globalRegion);
-    await this.stateProvider.getUser(userId, URLS_KEY).update(() => globalUrls);
+    const global = await firstValueFrom(this.globalState.state$);
+    await this.stateProvider.getUser(userId, ENVIRONMENT_KEY).update(() => global);
   }
 
   protected setUrlsInternal(urls: Urls) {
@@ -427,4 +412,20 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       "https://vault.bitwarden.eu/api",
     ].includes(this.getApiUrl());
   }
+}
+
+function isEmpty(u?: Urls): boolean {
+  if (u == null) {
+    return true;
+  }
+
+  return (
+    u.base == null &&
+    u.webVault == null &&
+    u.api == null &&
+    u.identity == null &&
+    u.icons == null &&
+    u.notifications == null &&
+    u.events == null
+  );
 }

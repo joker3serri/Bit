@@ -8,7 +8,7 @@ import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstraction
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
   Region,
-  SelectableRegion,
+  RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 
 @Component({
@@ -52,7 +52,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   protected componentDestroyed$: Subject<void> = new Subject();
 
   protected AvailableRegions = this.environmentService.availableRegions();
-  protected selectedRegion?: SelectableRegion;
+  protected selectedRegion?: RegionConfig;
 
   constructor(
     protected environmentService: EnvironmentServiceAbstraction,
@@ -91,7 +91,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.environmentService.setRegion(option);
+    await this.environmentService.setEnvironment(option);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.updateEnvironmentInfo();

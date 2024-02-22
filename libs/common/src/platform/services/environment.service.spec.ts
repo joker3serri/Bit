@@ -2,7 +2,6 @@ import { awaitAsync } from "../../../spec";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeStorageService } from "../../../spec/fake-storage.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
-import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { UserId } from "../../types/guid";
 import { Region } from "../abstractions/environment.service";
 import { StateProvider } from "../state";
@@ -14,7 +13,7 @@ import { DefaultSingleUserStateProvider } from "../state/implementations/default
 import { DefaultStateProvider } from "../state/implementations/default-state.provider";
 /* eslint-disable import/no-restricted-paths */
 
-import { EnvironmentService } from "./environment.service";
+import { EnvironmentService, EnvironmentUrls } from "./environment.service";
 
 // There are a few main states EnvironmentService could be in when first used
 // 1. Not initialized, no active user. Hopefully not to likely but possible
@@ -63,16 +62,18 @@ describe("EnvironmentService", () => {
 
   const setGlobalData = (region: Region, environmentUrls: EnvironmentUrls) => {
     const data = diskStorageService.internalStore;
-    data["global_environment_region"] = region;
-    data["global_environment_urls"] = environmentUrls;
+    data["global_environment_environment"] = {
+      region,
+      urls: environmentUrls,
+    };
     diskStorageService.internalUpdateStore(data);
   };
 
   const getGlobalData = () => {
     const storage = diskStorageService.internalStore;
-    return {
-      region: storage?.["global_environment_region"],
-      urls: storage?.["global_environment_urls"],
+    return storage?.["global_environment_environment"] as {
+      region: Region;
+      urls: EnvironmentUrls;
     };
   };
 
@@ -82,8 +83,10 @@ describe("EnvironmentService", () => {
     userId: UserId = testUser,
   ) => {
     const data = diskStorageService.internalStore;
-    data[`user_${userId}_environment_region`] = region;
-    data[`user_${userId}_environment_urls`] = environmentUrls;
+    data[`user_${userId}_environment_environment`] = {
+      region,
+      urls: environmentUrls,
+    };
 
     diskStorageService.internalUpdateStore(data);
   };
@@ -287,7 +290,7 @@ describe("EnvironmentService", () => {
     it("set just a base url", async () => {
       await initialize({ switchUser: true });
 
-      await sut.setUrls({
+      await sut.setEnvironment(Region.SelfHosted, {
         base: "base.example.com",
       });
 
@@ -310,7 +313,7 @@ describe("EnvironmentService", () => {
 
       expect(sut.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
 
-      await sut.setUrls({
+      await sut.setEnvironment(Region.SelfHosted, {
         base: "base.example.com",
         api: "api.example.com",
         identity: "identity.example.com",
@@ -343,7 +346,7 @@ describe("EnvironmentService", () => {
 
       await initialize({ switchUser: true });
 
-      await sut.setRegion(Region.US);
+      await sut.setEnvironment(Region.US);
 
       const globalData = getGlobalData();
       expect(globalData.region).toBe(Region.US);
@@ -477,7 +480,7 @@ describe("EnvironmentService", () => {
 
       await sut.setUrlsFromStorage();
 
-      expect(sut.getWebVaultUrl()).toBe("base.example.com");
+      expect(sut.getWebVaultUrl()).toBe("https://base.example.com");
     });
   });
 

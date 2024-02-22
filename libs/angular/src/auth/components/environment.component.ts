@@ -41,7 +41,7 @@ export class EnvironmentComponent {
   }
 
   async submit() {
-    const resUrls = await this.environmentService.setUrls({
+    const resUrls = await this.environmentService.setEnvironment(Region.SelfHosted, {
       base: this.baseUrl,
       api: this.apiUrl,
       identity: this.identityUrl,

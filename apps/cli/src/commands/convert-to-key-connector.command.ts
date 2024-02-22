@@ -2,7 +2,10 @@ import * as inquirer from "inquirer";
 
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import {
+  EnvironmentService,
+  Region,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { Response } from "../models/response";
@@ -69,7 +72,7 @@ export class ConvertToKeyConnectorCommand {
       // Update environment URL - required for api key login
       const urls = this.environmentService.getUrls();
       urls.keyConnector = organization.keyConnectorUrl;
-      await this.environmentService.setUrls(urls);
+      await this.environmentService.setEnvironment(Region.SelfHosted, urls);
 
       return Response.success();
     } else if (answer.convert === "leave") {

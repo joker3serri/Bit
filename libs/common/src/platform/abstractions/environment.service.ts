@@ -45,6 +45,25 @@ export abstract class EnvironmentService {
    */
   availableRegions: () => RegionConfig[];
 
+  /**
+   * Set the global environment.
+   */
+  setEnvironment: (region: Region, urls?: Urls) => Promise<Urls>;
+
+  /**
+   * Load state from disk
+   */
+  setUrlsFromStorage: () => Promise<void>;
+
+  /**
+   * Seed the environment for a given user based on the globally set defaults.
+   */
+  seedUserEnvironment: (userId: UserId) => Promise<void>;
+
+  // ----
+  // The remaining functions should be removed
+  // ----
+
   hasBaseUrl: () => boolean;
   getNotificationsUrl: () => string;
   getWebVaultUrl: () => string;
@@ -62,11 +81,6 @@ export abstract class EnvironmentService {
    */
   setCloudWebVaultUrl: (region: Region) => void;
 
-  /**
-   * Seed the environment for a given user based on the globally set defaults.
-   */
-  seedUserEnvironment: (userId: UserId) => Promise<void>;
-
   getSendUrl: () => string;
   getIconsUrl: () => string;
   getApiUrl: () => string;
@@ -74,10 +88,7 @@ export abstract class EnvironmentService {
   getEventsUrl: () => string;
   getKeyConnectorUrl: () => string;
   getScimUrl: () => string;
-  setUrlsFromStorage: () => Promise<void>;
-  setUrls: (urls: Urls) => Promise<Urls>;
   getHost: (userId?: string) => Promise<string>;
-  setRegion: (region: Region) => Promise<void>;
   getUrls: () => Urls;
   isCloud: () => boolean;
   isEmpty: () => boolean;

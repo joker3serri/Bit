@@ -1,4 +1,5 @@
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { Region } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
@@ -62,7 +63,7 @@ export class BrowserEnvironmentService extends EnvironmentService {
 
   async setUrlsToManagedEnvironment() {
     const env = await this.getManagedEnvironment();
-    await this.setUrls({
+    await this.setEnvironment(Region.SelfHosted, {
       base: env.base,
       webVault: env.webVault,
       api: env.api,

@@ -1,6 +1,9 @@
 import { OptionValues } from "commander";
 
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import {
+  EnvironmentService,
+  Region,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 
 import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/message.response";
@@ -38,7 +41,7 @@ export class ConfigCommand {
     }
 
     url = url === "null" || url === "bitwarden.com" || url === "https://bitwarden.com" ? null : url;
-    await this.environmentService.setUrls({
+    await this.environmentService.setEnvironment(Region.SelfHosted, {
       base: url,
       webVault: options.webVault || null,
       api: options.api || null,
