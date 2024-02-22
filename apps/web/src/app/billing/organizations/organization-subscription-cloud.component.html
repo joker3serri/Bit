@@ -78,7 +78,7 @@
               <td bitCell class="tw-text-right">
                 <ng-container
                   *ngIf="
-                    sub.customerDiscount.percentOff == 100 && i.productName == 'passwordManager';
+                    sub?.customerDiscount?.appliesTo?.includes(i.productId);
                     else calculateElse
                   "
                 >
