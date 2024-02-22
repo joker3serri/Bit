@@ -221,7 +221,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
           this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
         },
         error: (error: unknown) => {
-          this.logService.error("Failed to decrypt send:" + error);
+          const errorMessage = (error as Error).message ?? "An unknown error occurred";
+          this.logService.error("Failed to decrypt send: " + errorMessage);
         },
       });
 
@@ -229,7 +230,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.sendService
           .get$(this.sendId)
           .pipe(
-            concatMap((s) => (s ? s.decrypt() : Promise.reject("Failed to load send."))),
+            concatMap((s) => (s ? s.decrypt() : Promise.reject(new Error("Failed to load send.")))),
             takeUntil(this.destroy$),
           )
           .subscribe(send);
@@ -387,7 +388,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.showOptions = !this.showOptions;
   }
 
-  protected async loadSend(): Promise<Send> {
+  protected loadSend(): Promise<Send> {
     return firstValueFrom(this.sendService.get$(this.sendId));
   }
 
