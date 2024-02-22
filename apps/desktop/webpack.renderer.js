@@ -42,6 +42,11 @@ const common = {
         },
         type: "asset/resource",
       },
+      {
+        test: /\.wasm$/,
+        loader: "base64-loader",
+        type: "javascript/auto",
+      },
     ],
   },
   plugins: [],
@@ -137,6 +142,11 @@ const renderer = {
       {
         test: /[\/\\]@angular[\/\\].+\.js$/,
         parser: { system: true },
+      },
+      {
+        test: /\.wasm$/,
+        loader: "base64-loader",
+        type: "javascript/auto",
       },
     ],
   },
