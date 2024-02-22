@@ -20,7 +20,7 @@ export const PROMPT_AUTOMATICALLY: KeyDefinitionLike = {
   stateDefinition: { name: "biometricSettings" },
 };
 
-export class MoveBiometricPromptsToStateProviders extends Migrator<21, 22> {
+export class MoveBiometricPromptsToStateProviders extends Migrator<22, 23> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountType>();
 

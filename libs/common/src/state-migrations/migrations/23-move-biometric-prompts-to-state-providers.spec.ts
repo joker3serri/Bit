@@ -7,7 +7,7 @@ import {
   MoveBiometricPromptsToStateProviders,
   DISMISSED_BIOMETRIC_REQUIRE_PASSWORD_ON_START_CALLOUT,
   PROMPT_AUTOMATICALLY,
-} from "./22-move-biometric-prompts-to-state-providers";
+} from "./23-move-biometric-prompts-to-state-providers";
 
 function exampleJSON() {
   return {
@@ -55,8 +55,8 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 21);
-      sut = new MoveBiometricPromptsToStateProviders(21, 22);
+      helper = mockMigrationHelper(exampleJSON(), 22);
+      sut = new MoveBiometricPromptsToStateProviders(22, 23);
     });
 
     it("should remove biometricUnlock, dismissedBiometricRequirePasswordOnStartCallout, and biometricEncryptionClientKeyHalf from all accounts", async () => {
@@ -92,8 +92,8 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 22);
-      sut = new MoveBiometricPromptsToStateProviders(21, 22);
+      helper = mockMigrationHelper(rollbackJSON(), 23);
+      sut = new MoveBiometricPromptsToStateProviders(22, 23);
     });
 
     it.each([DISMISSED_BIOMETRIC_REQUIRE_PASSWORD_ON_START_CALLOUT, PROMPT_AUTOMATICALLY])(
