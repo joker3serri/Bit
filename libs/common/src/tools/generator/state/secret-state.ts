@@ -110,6 +110,9 @@ export class SecretState<Plaintext extends object, Disclosed> {
    *  @returns a promise that resolves with the updated value read from the state.
    *   The round-trip encrypts, decrypts, and deserializes the data, producing a new
    *   object.
+   *  @remarks `configureState` must return a JSON-serializable object.
+   *   If there are properties of your class which are not JSON-serializable,
+   *   they can be lost when the secret state updates its backing store.
    */
   async update<TCombine>(
     configureState: (state: Plaintext, dependencies: TCombine) => Plaintext,
