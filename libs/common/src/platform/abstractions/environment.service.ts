@@ -14,11 +14,6 @@ export type Urls = {
   scim?: string;
 };
 
-export type PayPalConfig = {
-  businessId?: string;
-  buttonAction?: string;
-};
-
 export enum Region {
   US = "US",
   EU = "EU",
