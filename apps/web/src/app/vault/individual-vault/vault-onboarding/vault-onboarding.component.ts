@@ -9,8 +9,7 @@ import {
   SimpleChanges,
   OnChanges,
 } from "@angular/core";
-import { Router } from "@angular/router";
-import { Subject, takeUntil, Observable, firstValueFrom } from "rxjs";
+import { Subject, takeUntil, Observable, firstValueFrom, fromEvent } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -54,7 +53,6 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
-    protected router: Router,
     private apiService: ApiService,
     private configService: ConfigServiceAbstraction,
     private vaultOnboardingService: VaultOnboardingServiceAbstraction,
@@ -92,7 +90,11 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   checkForBrowserExtension() {
     if (this.showOnboarding) {
       window.postMessage({ command: "checkIfBWExtensionInstalled" });
-      window.addEventListener("message", (event) => this.getMessages(event));
+      fromEvent<MessageEvent>(window, "message")
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((event) => {
+          void this.getMessages(event);
+        });
     }
   }
 

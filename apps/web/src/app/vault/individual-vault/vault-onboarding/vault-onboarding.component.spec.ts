@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
-import { of } from "rxjs";
+import { Subject, of } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -59,9 +59,6 @@ describe("VaultOnboardingComponent", () => {
         { provide: StateProvider, useValue: mockStateProvider },
       ],
     }).compileComponents();
-  });
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(VaultOnboardingComponent);
     component = fixture.componentInstance;
     setInstallExtLinkSpy = jest.spyOn(component, "setInstallExtLink");
@@ -145,13 +142,18 @@ describe("VaultOnboardingComponent", () => {
 
   describe("checkBrowserExtension", () => {
     it("should call getMessages when showOnboarding is true", () => {
-      jest.spyOn(window, "addEventListener");
+      const messageEventSubject = new Subject<MessageEvent>();
+      const messageEvent = new MessageEvent("message", { data: "hasBWInstalled" });
+      const getMessagesSpy = jest.spyOn(component, "getMessages");
 
       (component as any).showOnboarding = true;
       component.checkForBrowserExtension();
+      messageEventSubject.next(messageEvent);
 
-      expect(window.postMessage).toHaveBeenCalledWith({ command: "checkIfBWExtensionInstalled" });
-      expect(window.addEventListener).toHaveBeenCalledWith("message", expect.any(Function));
+      void fixture.whenStable().then(() => {
+        expect(window.postMessage).toHaveBeenCalledWith({ command: "checkIfBWExtensionInstalled" });
+        expect(getMessagesSpy).toHaveBeenCalled();
+      });
     });
 
     it("should set installExtension to true when hasBWInstalled command is passed", async () => {

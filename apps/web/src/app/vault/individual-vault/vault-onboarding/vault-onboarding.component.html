@@ -27,7 +27,7 @@
         <button type="button" bitLink (click)="emitToAddCipher()">
           {{ "onboardingImportDataDetailsLink" | i18n }}
         </button>
-        <span *ngIf="orgs.length === 0">
+        <span *ngIf="orgs.length === 0 || orgs == null">
           {{ "onboardingImportDataDetailsPartTwoNoOrgs" | i18n }}
         </span>
         <span *ngIf="orgs.length > 0">
