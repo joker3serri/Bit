@@ -1,5 +1,5 @@
 <app-header>
-  <bit-tab-nav-bar slot="tabs">
+  <bit-tab-nav-bar slot="tabs" *ngIf="!selfHosted">
     <bit-tab-link [route]="subscriptionRoute">{{ "subscription" | i18n }}</bit-tab-link>
     <bit-tab-link route="payment-method">{{ "paymentMethod" | i18n }}</bit-tab-link>
     <bit-tab-link route="billing-history">{{ "billingHistory" | i18n }}</bit-tab-link>
