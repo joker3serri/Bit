@@ -23,7 +23,7 @@ export enum Region {
   SelfHosted = "Self-hosted",
 }
 
-export type SelectableRegion = {
+export type RegionConfig = {
   // Beware this isn't completely true, it's actually a string for custom environments,
   // which are currently only supported in web where it doesn't matter.
   key: Region;
@@ -43,7 +43,7 @@ export abstract class EnvironmentService {
    * Expect all builds to include production environments, QA builds to also include QA
    * environments and dev builds to include localhost.
    */
-  availableRegions: () => SelectableRegion[];
+  availableRegions: () => RegionConfig[];
 
   hasBaseUrl: () => boolean;
   getNotificationsUrl: () => string;

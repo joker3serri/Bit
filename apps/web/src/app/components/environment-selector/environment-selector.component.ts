@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 
 import {
   EnvironmentService,
-  SelectableRegion,
+  RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -20,7 +20,7 @@ export class EnvironmentSelectorComponent implements OnInit {
   ) {}
 
   protected AvailableRegions = this.environmentService.availableRegions();
-  protected currentRegion?: SelectableRegion;
+  protected currentRegion?: RegionConfig;
 
   protected showRegionSelector = false;
   protected routeAndParams: string;

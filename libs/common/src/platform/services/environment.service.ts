@@ -13,7 +13,7 @@ import { UserId } from "../../types/guid";
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
   Region,
-  SelectableRegion,
+  RegionConfig,
   Urls,
 } from "../abstractions/environment.service";
 import { Utils } from "../misc/utils";
@@ -27,7 +27,12 @@ const URLS_KEY = new KeyDefinition<EnvironmentUrls>(ENVIRONMENT_DISK, "urls", {
   deserializer: EnvironmentUrls.fromJSON,
 });
 
-export const PRODUCTION_REGIONS: SelectableRegion[] = [
+/**
+ * The production regions available for selection.
+ *
+ * In the future we desire to load these urls from the config endpoint.
+ */
+export const PRODUCTION_REGIONS: RegionConfig[] = [
   {
     key: Region.US,
     domain: "bitwarden.com",
@@ -115,13 +120,15 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.urlsGlobalState = this.stateProvider.getGlobal(URLS_KEY);
   }
 
-  availableRegions(): SelectableRegion[] {
-    const additionalRegions =
-      (process.env.ADDITIONAL_REGIONS as unknown as SelectableRegion[]) ?? [];
+  availableRegions(): RegionConfig[] {
+    const additionalRegions = (process.env.ADDITIONAL_REGIONS as unknown as RegionConfig[]) ?? [];
     return PRODUCTION_REGIONS.concat(additionalRegions);
   }
 
-  private getAvailableRegion(region: Region): SelectableRegion | undefined {
+  /**
+   * Get the region configuration for the given region.
+   */
+  private getRegionConfig(region: Region): RegionConfig | undefined {
     return this.availableRegions().find((r) => r.key === region);
   }
 
@@ -161,7 +168,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   setCloudWebVaultUrl(region: Region) {
-    const r = this.getAvailableRegion(region);
+    const r = this.getRegionConfig(region);
 
     if (r != null) {
       this.cloudWebVaultUrl = r.urls.webVault;
@@ -335,7 +342,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
   async getHost(userId?: UserId) {
     const region = await this.getRegion(userId);
-    const regionConfig = this.getAvailableRegion(region);
+    const regionConfig = this.getRegionConfig(region);
 
     if (regionConfig != null) {
       return regionConfig.domain;
@@ -374,7 +381,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       // If we are setting the region to EU or US, clear the self-hosted URLs
       await this.urlsGlobalState.update(() => new EnvironmentUrls());
 
-      this.setUrlsInternal(this.getAvailableRegion(region).urls);
+      this.setUrlsInternal(this.getRegionConfig(region).urls);
     }
   }
 
