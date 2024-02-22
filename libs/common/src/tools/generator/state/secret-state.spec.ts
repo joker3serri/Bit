@@ -9,7 +9,7 @@ import {
   awaitAsync,
 } from "../../../../spec";
 import { EncString } from "../../../platform/models/domain/enc-string";
-import { KeyDefinition, GENERATOR_DISK, GENERATOR_MEMORY } from "../../../platform/state";
+import { KeyDefinition, GENERATOR_DISK } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 
 import { SecretState } from "./secret-state";
@@ -72,17 +72,6 @@ async function fakeStateProvider() {
 
 describe("UserEncryptor", () => {
   describe("from", () => {
-    it("from throws when given a memory store", () => {
-      const key = new KeyDefinition<FooBar>(GENERATOR_MEMORY, "soGonnaFail", {
-        deserializer: () => null,
-      });
-
-      expect.assertions(1);
-      expect(() => SecretState.from(SomeUser, key, null, null)).toThrow(
-        "SecretState must back soGonnaFail with permanent (not memory) storage.",
-      );
-    });
-
     it("returns a state store", async () => {
       const provider = await fakeStateProvider();
       const encryptor = mockEncryptor();

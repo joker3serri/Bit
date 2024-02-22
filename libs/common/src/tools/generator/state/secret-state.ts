@@ -1,5 +1,5 @@
 import { Observable, concatMap, of, zip } from "rxjs";
-import { Jsonify } from "type-fest";
+import { JsonValue, Jsonify } from "type-fest";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
@@ -38,29 +38,29 @@ export class SecretState<Plaintext extends object, Disclosed> {
   /** Creates a secret state bound to an account encryptor. The account must be unlocked
    *  when this method is called.
    *  @param userId: the user to which the secret state is bound.
-   *  @param key identifies the storage location for encrypted secrets. Secrets are written to
-   *    the secret store as a named tuple. Secret data is jsonified, encrypted, and stored in
-   *    a `secret` property. Disclosed data is stored in a `public` property.
+   *  @param key Converts between a declassified secret and its formal type.
    *  @param provider constructs state objects.
    *  @param encryptor protects `Secret` data.
    *  @throws when `key.stateDefinition` is backed by memory storage.
+   *  @remarks Secrets are written to a secret store as a named tuple. Data classification is
+   *    determined by the encryptor's classifier. Secret-classification data is jsonified,
+   *    encrypted, and stored in a `secret` property. Disclosed-classification data is stored
+   *    in a `public` property. Omitted-classification data is not stored.
    */
-  static from<TFrom extends object, Disclosed>(
+  static from<TFrom extends object, Disclosed extends JsonValue>(
     userId: UserId,
     key: KeyDefinition<TFrom>,
     provider: StateProvider,
     encryptor: UserEncryptor<TFrom, Disclosed>,
   ) {
-    // The secret state requires that data has round-tripped through a serialized storage
-    // format. Memory storage does not make that guarantee, so it cannot back the secret state.
-    if (key.stateDefinition.defaultStorageLocation === "memory") {
-      throw new Error(`SecretState must back ${key.key} with permanent (not memory) storage.`);
-    }
+    // `Jsonify<Disclosed>` and `string` are `JsonValue`, so the whole type is, but the compiler
+    // cannot infer that, so assert it through intersection instead.
+    type ClassifiedFormat = { secret: string; public: Jsonify<Disclosed> } & JsonValue;
 
-    type ClassifiedFormat = { secret: string; public: Jsonify<Disclosed> };
-
-    // construct encrypted backing store
-    const secretKey = new KeyDefinition<ClassifiedFormat>(key.stateDefinition, key.key, {
+    // construct encrypted backing store while avoiding collisions between the derived key and the
+    // backing storage key.
+    const encryptedStateName = `${key.key}_$ecret$`;
+    const secretKey = new KeyDefinition<ClassifiedFormat>(key.stateDefinition, encryptedStateName, {
       cleanupDelayMs: key.cleanupDelayMs,
       // `ClassifiedFormat` uses a type assertion because there isn't a straightforward
       // way to constrain `Disclosed` to stringify-able types.
@@ -78,12 +78,12 @@ export class SecretState<Plaintext extends object, Disclosed> {
           return null;
         }
 
-        // otherwise forward the decrypted data to the caller's deserializer
+        // otherwise forward the decrypted data to the caller's derive implementation
         const secret = EncString.fromJSON(from.secret);
         const decrypted = await encryptor.decrypt(secret, from.public, encryptedState.userId);
-        const value = key.deserializer(decrypted);
+        const result = key.deserializer(decrypted) as TFrom;
 
-        return value;
+        return result;
       },
       // wire in the caller's deserializer for memory serialization
       deserializer: key.deserializer,

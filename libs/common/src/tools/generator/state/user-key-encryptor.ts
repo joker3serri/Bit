@@ -12,10 +12,9 @@ import { UserEncryptor } from "./user-encryptor.abstraction";
 /** A classification strategy that protects a type's secrets by encrypting them
  *  with a `UserKey`
  */
-export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends UserEncryptor<
-  State,
-  Disclosed
-> {
+export class UserKeyEncryptor<State extends object, Disclosed, Secret>
+  implements UserEncryptor<State, Disclosed>
+{
   /** Instantiates the encryptor
    *  @param encryptService protects properties of `Secret`.
    *  @param keyService looks up the user key when protecting data.
@@ -27,12 +26,10 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
     private readonly keyService: CryptoService,
     private readonly classifier: SecretClassifier<State, Disclosed, Secret>,
     private readonly dataPacker: DataPacker,
-  ) {
-    super();
-  }
+  ) {}
 
   /** {@link UserEncryptor.encrypt} */
-  async encrypt(value: State, userId: UserId): Promise<[EncString, Jsonify<Disclosed>]> {
+  async encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]> {
     this.assertHasValue("value", value);
     this.assertHasValue("userId", userId);
 
@@ -77,13 +74,13 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
     return encrypted;
   }
 
-  private async decryptSecret(value: EncString, userId: UserId): Promise<Jsonify<Secret>> {
+  private async decryptSecret(value: EncString, userId: UserId) {
     // decrypt the data and drop the key
     let key = await this.keyService.getUserKey(userId);
     let decrypted = await this.encryptService.decryptToUtf8(value, key);
     key = null;
 
-    const unpacked = this.dataPacker.unpack(decrypted);
+    const unpacked = this.dataPacker.unpack<Secret>(decrypted);
     decrypted = null;
 
     return unpacked;

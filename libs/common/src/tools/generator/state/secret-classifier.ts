@@ -10,25 +10,25 @@ import { Jsonify } from "type-fest";
  *  Data that cannot be serialized by JSON.stringify() should
  *  be excluded.
  */
-export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
+export class SecretClassifier<Plaintext extends object, Disclosed, Secret> {
   private constructor(
-    disclosed: readonly (keyof Jsonify<Disclosed> & keyof T)[],
-    excluded: readonly (keyof T)[],
+    disclosed: readonly (keyof Jsonify<Disclosed> & keyof Jsonify<Plaintext>)[],
+    excluded: readonly (keyof Plaintext)[],
   ) {
     this.disclosed = disclosed;
     this.excluded = excluded;
   }
 
   /** lists the disclosed properties. */
-  readonly disclosed: readonly (keyof Jsonify<Disclosed> & keyof T)[];
+  readonly disclosed: readonly (keyof Jsonify<Disclosed> & keyof Jsonify<Plaintext>)[];
 
   /** lists the excluded properties. */
-  readonly excluded: readonly (keyof T)[];
+  readonly excluded: readonly (keyof Plaintext)[];
 
   /** Creates a classifier where all properties are secret.
    *  @type {T} The type of secret being classified.
    */
-  static allSecret<T extends Jsonify<object>>() {
+  static allSecret<T extends object>() {
     const disclosed = Object.freeze([]);
     const excluded = Object.freeze([]);
     return new SecretClassifier<T, Record<keyof T, never>, T>(disclosed, excluded);
@@ -39,17 +39,18 @@ export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
    *  @param disclose The property name to disclose.
    *  @returns a new classifier
    */
-  disclose<const PropertyName extends keyof Secret>(disclose: PropertyName) {
+  disclose<const PropertyName extends keyof Jsonify<Secret>>(disclose: PropertyName) {
     // move the property from the secret type to the disclose type
-    type NewDisclosed = Disclosed & Record<PropertyName, Secret[PropertyName]>;
-    type NewSecret = Exclude<Secret, PropertyName>;
+    type NewDisclosed = Disclosed | Record<PropertyName, Jsonify<Secret>[PropertyName]>;
+    type NewSecret = Omit<Secret, PropertyName>;
 
     // update the fluent interface
-    const newDisclosed = [...this.disclosed, disclose] as (keyof NewDisclosed & keyof T)[];
-    const classifier = new SecretClassifier<T, NewDisclosed, NewSecret>(
+    const newDisclosed = [...this.disclosed, disclose] as (keyof Jsonify<NewDisclosed> &
+      keyof Jsonify<Plaintext>)[];
+    const classifier = new SecretClassifier<Plaintext, NewDisclosed, NewSecret>(
       // since `NewDisclosed` is opaque to the type checker, it's necessary
       // to assert the type of the array here.
-      Object.freeze(newDisclosed) as (keyof Jsonify<NewDisclosed> & keyof T)[],
+      Object.freeze(newDisclosed),
       this.excluded,
     );
 
@@ -63,11 +64,11 @@ export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
    */
   exclude<const PropertyName extends keyof Secret>(excludedPropertyName: PropertyName) {
     // remove the property from the secret type
-    type NewConfidential = Exclude<Secret, PropertyName>;
+    type NewConfidential = Omit<Secret, PropertyName>;
 
     // update the fluent interface
-    const newExcluded = [...this.excluded, excludedPropertyName] as (keyof T)[];
-    const classifier = new SecretClassifier<T, Disclosed, NewConfidential>(
+    const newExcluded = [...this.excluded, excludedPropertyName] as (keyof Plaintext)[];
+    const classifier = new SecretClassifier<Plaintext, Disclosed, NewConfidential>(
       this.disclosed,
       Object.freeze(newExcluded),
     );
@@ -82,7 +83,7 @@ export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
    *    The `secret` member aliases the secret parameter, with all
    *    disclosed and excluded properties deleted.
    */
-  classify(secret: T): { disclosed: Jsonify<Disclosed>; secret: Secret } {
+  classify(secret: Plaintext): { disclosed: Disclosed; secret: Secret } {
     const copy = { ...secret };
 
     for (const excludedProp of this.excluded) {
@@ -91,12 +92,15 @@ export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
 
     const disclosed: Record<PropertyKey, unknown> = {};
     for (const disclosedProp of this.disclosed) {
-      disclosed[disclosedProp] = copy[disclosedProp];
-      delete copy[disclosedProp];
+      // disclosedProp is known to be a subset of the keys of `Plaintext`, so these
+      // type assertions are accurate.
+      // FIXME: prove it to the compiler
+      disclosed[disclosedProp] = copy[disclosedProp as unknown as keyof Plaintext];
+      delete copy[disclosedProp as unknown as keyof Plaintext];
     }
 
     return {
-      disclosed: disclosed as Jsonify<Disclosed>,
+      disclosed: disclosed as Disclosed,
       secret: copy as unknown as Secret,
     };
   }
@@ -110,7 +114,9 @@ export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
    *    Excluded properties are ignored. Unknown properties are retained.
    *  @returns a new object containing the merged data.
    */
-  declassify(disclosed: Jsonify<Disclosed>, secret: Jsonify<Secret>): Jsonify<T> {
+  // Declassified data is always jsonified--the purpose of classifying it is to Jsonify it,
+  // which causes type conversions.
+  declassify(disclosed: Jsonify<Disclosed>, secret: Jsonify<Secret>): Jsonify<Plaintext> {
     // removed unknown keys from `disclosed` to prevent any old edit
     // of plaintext data from being laundered though declassification.
     const cleaned = {} as Partial<Jsonify<Disclosed>>;
@@ -126,6 +132,6 @@ export class SecretClassifier<T extends Jsonify<object>, Disclosed, Secret> {
       delete merged[excludedProp];
     }
 
-    return merged as Jsonify<T>;
+    return merged as Jsonify<Plaintext>;
   }
 }

@@ -123,8 +123,7 @@ describe("SecretClassifier", () => {
         "foo",
       );
 
-      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
-      const declassified = classifier.declassify({ foo: true } as any, { bar: false } as any);
+      const declassified = classifier.declassify({ foo: true }, { bar: false });
 
       expect(declassified).toEqual({ foo: true, bar: false });
     });
@@ -132,8 +131,10 @@ describe("SecretClassifier", () => {
     it("omits unknown disclosed members", () => {
       const classifier = SecretClassifier.allSecret<{ foo: boolean }>().disclose("foo");
 
-      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
-      const declassified = classifier.declassify({ foo: true, bar: false } as any, {} as any);
+      // `any` is required here because Typescript knows `bar` is not a disclosed member,
+      // but the feautre assumes the disclosed data bypassed the typechecker (e.g. someone
+      // is trying to clobber secret data.)
+      const declassified = classifier.declassify({ foo: true, bar: false } as any, {});
 
       expect(declassified).toEqual({ foo: true });
     });
@@ -143,11 +144,9 @@ describe("SecretClassifier", () => {
         "foo",
       );
 
-      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
-      const declassified = classifier.declassify(
-        { foo: true } as any,
-        { foo: false, bar: false } as any,
-      );
+      // `any` is required here because `declassify` knows `bar` is supposed to be public,
+      // but the feature assumes the secret data bypassed the typechecker (e.g. migrated data)
+      const declassified = classifier.declassify({ foo: true }, { foo: false, bar: false } as any);
 
       expect(declassified).toEqual({ foo: false, bar: false });
     });
@@ -157,8 +156,9 @@ describe("SecretClassifier", () => {
         "foo",
       );
 
-      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
-      const declassified = classifier.declassify({} as any, { foo: false, bar: false } as any);
+      // `any` is required here because `declassify` knows `bar` isn't allowed, but the
+      // feature assumes the data bypassed the typechecker (e.g. omitted legacy data).
+      const declassified = classifier.declassify({}, { foo: false, bar: false } as any);
 
       expect(declassified).toEqual({ bar: false });
     });
@@ -166,8 +166,7 @@ describe("SecretClassifier", () => {
     it("returns a new object", () => {
       const classifier = SecretClassifier.allSecret<{ foo: boolean }>();
 
-      // `any` is required here because declassify cannot infer the type of `NewDisclosed`
-      const disclosed = {} as any;
+      const disclosed = {};
       const secret = { foo: false };
       const declassified = classifier.declassify(disclosed, secret);
 
