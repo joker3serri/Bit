@@ -3,8 +3,10 @@ import { StorageKey } from "../../types/state";
 import { Utils } from "../misc/utils";
 
 import { array, record } from "./deserialization-helpers";
-import { ClearEvent, KeyDefinition, KeyDefinitionOptions } from "./key-definition";
+import { KeyDefinition, KeyDefinitionOptions } from "./key-definition";
 import { StateDefinition } from "./state-definition";
+
+type ClearEvent = "lock" | "logout";
 
 type UserKeyDefinitionOptions<T> = KeyDefinitionOptions<T> & {
   clearOn: ClearEvent[];
