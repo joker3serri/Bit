@@ -12,6 +12,7 @@ import { TokenService as TokenServiceAbstraction } from "../abstractions/token.s
 import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
+  ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   API_KEY_CLIENT_ID_DISK,
   API_KEY_CLIENT_ID_MEMORY,
   API_KEY_CLIENT_SECRET_DISK,
@@ -19,6 +20,7 @@ import {
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
+  REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
 
 // TODO: write tests for this service
@@ -49,10 +51,12 @@ export class TokenService implements TokenServiceAbstraction {
   private accessTokenDiskState: ActiveUserState<string>;
   private accessTokenMemoryState: ActiveUserState<string>;
   private readonly accessTokenSecureStorageKey: string = "_accessToken";
+  private accessTokenMigratedToSecureStorageState: ActiveUserState<boolean>;
 
   private refreshTokenDiskState: ActiveUserState<string>;
   private refreshTokenMemoryState: ActiveUserState<string>;
   private readonly refreshTokenSecureStorageKey: string = "_refreshToken";
+  private refreshTokenMigratedToSecureStorageState: ActiveUserState<boolean>;
 
   private apiKeyClientIdDiskState: ActiveUserState<string>;
   private apiKeyClientIdMemoryState: ActiveUserState<string>;
@@ -73,9 +77,15 @@ export class TokenService implements TokenServiceAbstraction {
   private initializeState(): void {
     this.accessTokenDiskState = this.stateProvider.getActive(ACCESS_TOKEN_DISK);
     this.accessTokenMemoryState = this.stateProvider.getActive(ACCESS_TOKEN_MEMORY);
+    this.accessTokenMigratedToSecureStorageState = this.stateProvider.getActive(
+      ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+    );
 
     this.refreshTokenDiskState = this.stateProvider.getActive(REFRESH_TOKEN_DISK);
     this.refreshTokenMemoryState = this.stateProvider.getActive(REFRESH_TOKEN_MEMORY);
+    this.refreshTokenMigratedToSecureStorageState = this.stateProvider.getActive(
+      REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+    );
 
     this.apiKeyClientIdDiskState = this.stateProvider.getActive(API_KEY_CLIENT_ID_DISK);
     this.apiKeyClientIdMemoryState = this.stateProvider.getActive(API_KEY_CLIENT_ID_MEMORY);
@@ -141,12 +151,14 @@ export class TokenService implements TokenServiceAbstraction {
         },
       );
 
-      // TODO: make Jira ticket for this
+      // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
       // 2024-02-20: Remove access token from memory and disk so that we migrate to secure storage over time.
-      // Remove after 3 releases.
-      // Turn this into a migrate function + add disk state for a boolean to track if we've migrated
+      // Remove these 2 calls to remove the access token from memory and disk after 3 releases.
       await this.accessTokenDiskState.update((_) => null);
       await this.accessTokenMemoryState.update((_) => null);
+
+      // Set flag to indicate that the access token has been migrated to secure storage (don't remove this)
+      await this.setAccessTokenMigratedToSecureStorage();
 
       return;
     }
@@ -177,6 +189,11 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getAccessToken(userId?: UserId): Promise<string> {
+    const accessTokenMigratedToSecureStorage = await this.getAccessTokenMigratedToSecureStorage();
+    if (this.platformSupportsSecureStorage && accessTokenMigratedToSecureStorage) {
+      return await this.getAccessTokenFromSecureStorage(userId);
+    }
+
     // pre-secure storage migration:
     // if user id, read from user
     if (userId) {
@@ -199,35 +216,33 @@ export class TokenService implements TokenServiceAbstraction {
       return accessTokenDisk;
     }
 
-    // Data not found in memory or disk, try secure storage as it could have been migrated if the platform supported it
-    if (this.platformSupportsSecureStorage) {
-      // if we don't have a user id, we have to have one in order to read from secure storage
-      if (!userId) {
-        userId = await firstValueFrom(this.stateProvider.activeUserId$);
-      }
-
-      // if we still don't have a user id, we can't read from secure storage
-      if (!userId) {
-        return null;
-      }
-
-      const accessToken = await this.secureStorageService.get<string>(
-        `${userId}${this.accessTokenSecureStorageKey}`,
-        {
-          storageLocation: StorageLocation.Disk,
-          useSecureStorage: true,
-          userId: userId,
-        },
-      );
-
-      if (accessToken != null) {
-        return accessToken;
-      }
-    }
-
     return null;
   }
 
+  private async getAccessTokenFromSecureStorage(userId?: UserId): Promise<string | null> {
+    if (!this.platformSupportsSecureStorage) {
+      return null;
+    }
+
+    // Ensure a user ID is provided; if not, attempt to retrieve the active user ID.
+    if (!userId) {
+      userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    }
+
+    if (!userId) {
+      return null;
+    }
+
+    // If we have a user ID, read from secure storage.
+    return await this.secureStorageService.get<string>(
+      `${userId}${this.accessTokenSecureStorageKey}`,
+      {
+        storageLocation: StorageLocation.Disk,
+        useSecureStorage: true,
+        userId: userId,
+      },
+    );
+  }
   private async getAccessTokenByUserId(userId: UserId): Promise<string> {
     // Always read memory first b/c faster
     const accessTokenMemory = await firstValueFrom(
@@ -240,6 +255,14 @@ export class TokenService implements TokenServiceAbstraction {
 
     // if memory is null, read from disk
     return await firstValueFrom(this.stateProvider.getUser(userId, ACCESS_TOKEN_DISK).state$);
+  }
+
+  private async getAccessTokenMigratedToSecureStorage(): Promise<boolean> {
+    return await firstValueFrom(this.accessTokenMigratedToSecureStorageState.state$);
+  }
+
+  private async setAccessTokenMigratedToSecureStorage(): Promise<void> {
+    await this.accessTokenMigratedToSecureStorageState.update((_) => true);
   }
 
   // Private because we only ever set the refresh token when also setting the access token
@@ -266,10 +289,14 @@ export class TokenService implements TokenServiceAbstraction {
         },
       );
 
+      // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
       // 2024-02-20: Remove refresh token from memory and disk so that we migrate to secure storage over time.
-      // Remove after 3 releases.
+      // Remove these 2 calls to remove the refresh token from memory and disk after 3 releases.
       await this.refreshTokenDiskState.update((_) => null);
       await this.refreshTokenMemoryState.update((_) => null);
+
+      // Set flag to indicate that the refresh token has been migrated to secure storage (don't remove this)
+      await this.setRefreshTokenMigratedToSecureStorage();
 
       return;
     }
@@ -284,6 +311,11 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getRefreshToken(): Promise<string> {
+    const refreshTokenMigratedToSecureStorage = await this.getRefreshTokenMigratedToSecureStorage();
+    if (this.platformSupportsSecureStorage && refreshTokenMigratedToSecureStorage) {
+      return await this.getRefreshTokenFromSecureStorage();
+    }
+
     // pre-secure storage migration:
     // Always read memory first b/c faster
     const refreshTokenMemory = await firstValueFrom(this.refreshTokenMemoryState.state$);
@@ -298,32 +330,37 @@ export class TokenService implements TokenServiceAbstraction {
       return refreshTokenDisk;
     }
 
-    // Data not found in memory or disk, try secure storage as it could have been
-    // migrated if the platform supported it
-    if (this.platformSupportsSecureStorage) {
-      // get user id from active user as we need it to read from secure storage
-      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    return null;
+  }
 
-      // if we still don't have a user id, we can't read from secure storage
-      if (!userId) {
-        return null;
-      }
-
-      const refreshTokenSecureStorage = await this.secureStorageService.get<string>(
-        `${userId}${this.refreshTokenSecureStorageKey}`,
-        {
-          storageLocation: StorageLocation.Disk,
-          useSecureStorage: true,
-          userId: userId,
-        },
-      );
-
-      if (refreshTokenSecureStorage != null) {
-        return refreshTokenSecureStorage;
-      }
+  private async getRefreshTokenFromSecureStorage(): Promise<string | null> {
+    if (!this.platformSupportsSecureStorage) {
+      return null;
     }
 
-    return null;
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+    // if we still don't have a user id, we can't read from secure storage
+    if (!userId) {
+      return null;
+    }
+
+    return await this.secureStorageService.get<string>(
+      `${userId}${this.refreshTokenSecureStorageKey}`,
+      {
+        storageLocation: StorageLocation.Disk,
+        useSecureStorage: true,
+        userId: userId,
+      },
+    );
+  }
+
+  private async getRefreshTokenMigratedToSecureStorage(): Promise<boolean> {
+    return await firstValueFrom(this.refreshTokenMigratedToSecureStorageState.state$);
+  }
+
+  private async setRefreshTokenMigratedToSecureStorage(): Promise<void> {
+    await this.refreshTokenMigratedToSecureStorageState.update((_) => true);
   }
 
   async setClientId(
