@@ -89,12 +89,13 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   checkForBrowserExtension() {
     if (this.showOnboarding) {
-      window.postMessage({ command: "checkIfBWExtensionInstalled" });
       fromEvent<MessageEvent>(window, "message")
         .pipe(takeUntil(this.destroy$))
         .subscribe((event) => {
           void this.getMessages(event);
         });
+
+      window.postMessage({ command: "checkIfBWExtensionInstalled" });
     }
   }
 
