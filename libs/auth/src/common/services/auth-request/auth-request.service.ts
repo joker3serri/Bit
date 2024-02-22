@@ -5,6 +5,8 @@ import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.ser
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
 import { AuthRequestServiceAbstraction } from "../../abstractions/auth-request.service.abstraction";
 
@@ -55,5 +57,73 @@ export class AuthRequestService implements AuthRequestServiceAbstraction {
       approve,
     );
     return await this.apiService.putAuthRequest(authRequest.id, response);
+  }
+
+  async setUserKeyAfterDecryptingSharedUserKey(
+    authReqResponse: AuthRequestResponse,
+    authReqPrivateKey: Uint8Array,
+  ) {
+    const userKey = await this.decryptPubKeyEncryptedUserKey(
+      authReqResponse.key,
+      authReqPrivateKey,
+    );
+    await this.cryptoService.setUserKey(userKey);
+  }
+
+  async setKeysAfterDecryptingSharedMasterKeyAndHash(
+    authReqResponse: AuthRequestResponse,
+    authReqPrivateKey: Uint8Array,
+  ) {
+    const { masterKey, masterKeyHash } = await this.decryptPubKeyEncryptedMasterKeyAndHash(
+      authReqResponse.key,
+      authReqResponse.masterPasswordHash,
+      authReqPrivateKey,
+    );
+
+    // Decrypt and set user key in state
+    const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
+
+    // Set masterKey + masterKeyHash in state after decryption (in case decryption fails)
+    await this.cryptoService.setMasterKey(masterKey);
+    await this.cryptoService.setMasterKeyHash(masterKeyHash);
+
+    await this.cryptoService.setUserKey(userKey);
+  }
+
+  // Decryption helpers
+  async decryptPubKeyEncryptedUserKey(
+    pubKeyEncryptedUserKey: string,
+    privateKey: Uint8Array,
+  ): Promise<UserKey> {
+    const decryptedUserKeyBytes = await this.cryptoService.rsaDecrypt(
+      pubKeyEncryptedUserKey,
+      privateKey,
+    );
+
+    return new SymmetricCryptoKey(decryptedUserKeyBytes) as UserKey;
+  }
+
+  async decryptPubKeyEncryptedMasterKeyAndHash(
+    pubKeyEncryptedMasterKey: string,
+    pubKeyEncryptedMasterKeyHash: string,
+    privateKey: Uint8Array,
+  ): Promise<{ masterKey: MasterKey; masterKeyHash: string }> {
+    const decryptedMasterKeyArrayBuffer = await this.cryptoService.rsaDecrypt(
+      pubKeyEncryptedMasterKey,
+      privateKey,
+    );
+
+    const decryptedMasterKeyHashArrayBuffer = await this.cryptoService.rsaDecrypt(
+      pubKeyEncryptedMasterKeyHash,
+      privateKey,
+    );
+
+    const masterKey = new SymmetricCryptoKey(decryptedMasterKeyArrayBuffer) as MasterKey;
+    const masterKeyHash = Utils.fromBufferToUtf8(decryptedMasterKeyHashArrayBuffer);
+
+    return {
+      masterKey,
+      masterKeyHash,
+    };
   }
 }
