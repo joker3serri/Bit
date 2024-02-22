@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, concatMap, merge, takeUntil } from "rxjs";
 
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import {
@@ -57,14 +57,15 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.configService.serverConfig$.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.updateEnvironmentInfo();
-    });
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.updateEnvironmentInfo();
+    // Update the environment info when the server config or environment URLs change.
+    merge(this.configService.serverConfig$, this.environmentService.urls)
+      .pipe(
+        concatMap(() => this.updateEnvironmentInfo()),
+        takeUntil(this.componentDestroyed$),
+      )
+      .subscribe();
+
+    await this.updateEnvironmentInfo();
   }
 
   ngOnDestroy(): void {
@@ -72,15 +73,11 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     this.componentDestroyed$.complete();
   }
 
-  async toggle(option: Region) {
+  protected async toggle(option: Region) {
     this.isOpen = !this.isOpen;
     if (option === null) {
       return;
     }
-
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.updateEnvironmentInfo();
 
     if (option === Region.SelfHosted) {
       this.onOpenSelfHostedSettings.emit();
@@ -88,16 +85,13 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     }
 
     await this.environmentService.setRegion(option);
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.updateEnvironmentInfo();
   }
 
-  async updateEnvironmentInfo() {
+  protected async updateEnvironmentInfo() {
     this.selectedEnvironment = this.environmentService.selectedRegion;
   }
 
-  close() {
+  protected close() {
     this.isOpen = false;
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
