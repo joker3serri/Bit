@@ -227,7 +227,6 @@ export class AccountSettings {
   serverConfig?: ServerConfigData;
   approveLoginRequests?: boolean;
   avatarColor?: string;
-  smOnboardingTasks?: Record<string, Record<string, boolean>>;
   trustDeviceChoiceForDecryption?: boolean;
   biometricPromptCancelled?: boolean;
 
