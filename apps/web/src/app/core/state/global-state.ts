@@ -4,5 +4,4 @@ import { GlobalState as BaseGlobalState } from "@bitwarden/common/platform/model
 export class GlobalState extends BaseGlobalState {
   theme?: ThemeType = ThemeType.Light;
   rememberEmail = true;
-  showWebBanner = true;
 }
