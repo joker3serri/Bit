@@ -56,14 +56,15 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
     // Move global data
     const globalData = await helper.get<ExpectedGlobalType>("global");
 
-    // Create new global record for 2FA token
-    await helper.setToGlobal(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL, {});
+    // Create new global record for 2FA token that we can accumulate data in
+    const emailTwoFactorTokenRecord = {};
 
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(
       userId: string,
       account: ExpectedAccountType | undefined,
       globalTwoFactorToken: string | undefined,
+      emailTwoFactorTokenRecord: Record<string, string>,
     ): Promise<void> {
       let updatedAccount = false;
 
@@ -73,17 +74,7 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       // Note: don't bother migrating 2FA Token if user account or email is undefined
       const email = account?.profile?.email;
       if (globalTwoFactorToken != undefined && account != undefined && email != undefined) {
-        // read global 2FA token record:
-        const emailTwoFactorTokenRecord: Record<string, string> = await helper.getFromGlobal(
-          EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
-        );
-
         emailTwoFactorTokenRecord[email] = globalTwoFactorToken;
-
-        await helper.setToGlobal(
-          EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
-          emailTwoFactorTokenRecord,
-        );
         // Note: don't set updatedAccount to true here as we aren't updating
         // the legacy user state, just migrating a global state to a new user state
       }
@@ -130,16 +121,14 @@ export class TokenServiceStateProviderMigrator extends Migrator<23, 24> {
       }
     }
 
-    // await Promise.all([
-    //   ...accounts.map(({ userId, account }) =>
-    //     migrateAccount(userId, account, globalData?.twoFactorToken),
-    //   ),
-    // ]);
+    await Promise.all([
+      ...accounts.map(({ userId, account }) =>
+        migrateAccount(userId, account, globalData?.twoFactorToken, emailTwoFactorTokenRecord),
+      ),
+    ]);
 
-    // replace promise.all with loop
-    for (const { userId, account } of accounts) {
-      await migrateAccount(userId, account, globalData?.twoFactorToken);
-    }
+    // Save the global 2FA token record
+    await helper.setToGlobal(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL, emailTwoFactorTokenRecord);
 
     // Delete global data
     delete globalData?.twoFactorToken;

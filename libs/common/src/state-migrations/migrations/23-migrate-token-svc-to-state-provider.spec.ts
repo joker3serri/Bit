@@ -3,8 +3,6 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-// TODO: update migration tests for latest changes to 2FA token (now stored globally but still scoped to user email)
-
 import {
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   ACCESS_TOKEN_DISK,
@@ -64,20 +62,20 @@ function rollbackJSON() {
     // use pattern user_{userId}_{stateDefinitionName}_{keyDefinitionKey} for user data
 
     // User1 migrated data
-    user_user1_tokenDisk_accessToken: "accessToken",
-    user_user1_tokenDisk_refreshToken: "refreshToken",
-    user_user1_tokenDisk_apiKeyClientId: "apiKeyClientId",
-    user_user1_tokenDisk_apiKeyClientSecret: "apiKeyClientSecret",
+    user_user1_token_accessToken: "accessToken",
+    user_user1_token_refreshToken: "refreshToken",
+    user_user1_token_apiKeyClientId: "apiKeyClientId",
+    user_user1_token_apiKeyClientSecret: "apiKeyClientSecret",
 
     // User2 migrated data
-    user_user2_tokenDisk_accessToken: null as any,
-    user_user2_tokenDisk_refreshToken: null as any,
-    user_user2_tokenDisk_apiKeyClientId: null as any,
-    user_user2_tokenDisk_apiKeyClientSecret: null as any,
+    user_user2_token_accessToken: null as any,
+    user_user2_token_refreshToken: null as any,
+    user_user2_token_apiKeyClientId: null as any,
+    user_user2_token_apiKeyClientSecret: null as any,
 
     // Global state provider data
     // use pattern global_{stateDefinitionName}_{keyDefinitionKey} for global data
-    global_tokenDiskLocal_twoFactorToken: {
+    global_tokenDiskLocal_emailTwoFactorTokenRecord: {
       user1Email: "twoFactorToken",
       user2Email: "twoFactorToken",
     },
@@ -92,6 +90,7 @@ function rollbackJSON() {
         otherStuff: "overStuff2",
       },
       profile: {
+        email: "user1Email",
         otherStuff: "overStuff3",
       },
       keys: {
@@ -104,6 +103,7 @@ function rollbackJSON() {
         otherStuff: "overStuff2",
       },
       profile: {
+        email: "user2Email",
         otherStuff: "overStuff3",
       },
       keys: {
@@ -126,6 +126,7 @@ describe("TokenServiceStateProviderMigrator", () => {
 
     it("should remove state service data from all accounts that have it", async () => {
       await sut.migrate(helper);
+
       expect(helper.set).toHaveBeenCalledWith("user1", {
         tokens: {
           otherStuff: "overStuff2",
@@ -145,26 +146,18 @@ describe("TokenServiceStateProviderMigrator", () => {
       expect(helper.set).not.toHaveBeenCalledWith("user3", any());
     });
 
-    it.only("should migrate data to state providers for defined accounts that have the data", async () => {
+    it("should migrate data to state providers for defined accounts that have the data", async () => {
       await sut.migrate(helper);
 
-      // TODO: figure out why these expects are failing and we have 3 calls to setToGlobal
-      // of the same value even tho debugging shows that the calls are different
-      // console.log(helper.setToGlobal.mock.calls);
-
-      expect(helper.setToGlobal).toHaveBeenNthCalledWith(
-        1,
-        EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
-        {},
-      );
-
-      expect(helper.setToGlobal).toHaveBeenNthCalledWith(
-        2,
+      // Two factor Token Migration
+      expect(helper.setToGlobal).toHaveBeenLastCalledWith(
         EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
         {
           user1Email: "twoFactorToken",
+          user2Email: "twoFactorToken",
         },
       );
+      expect(helper.setToGlobal).toHaveBeenCalledTimes(1);
 
       expect(helper.setToUser).toHaveBeenCalledWith("user1", ACCESS_TOKEN_DISK, "accessToken");
       expect(helper.setToUser).toHaveBeenCalledWith("user1", REFRESH_TOKEN_DISK, "refreshToken");
@@ -179,23 +172,12 @@ describe("TokenServiceStateProviderMigrator", () => {
         "apiKeyClientSecret",
       );
 
-      // expect that we migrated 2FA token to user 2 as well
-      expect(helper.setToGlobal).toHaveBeenNthCalledWith(
-        3,
-        EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
-        {
-          user1Email: "twoFactorToken",
-          user2Email: "twoFactorToken",
-        },
-      );
-
       expect(helper.setToUser).not.toHaveBeenCalledWith("user2", ACCESS_TOKEN_DISK, any());
       expect(helper.setToUser).not.toHaveBeenCalledWith("user2", REFRESH_TOKEN_DISK, any());
       expect(helper.setToUser).not.toHaveBeenCalledWith("user2", API_KEY_CLIENT_ID_DISK, any());
       expect(helper.setToUser).not.toHaveBeenCalledWith("user2", API_KEY_CLIENT_SECRET_DISK, any());
 
       // Expect that we didn't migrate anything to user 3
-      expect(helper.setToGlobal).toHaveBeenCalledTimes(3);
 
       expect(helper.setToUser).not.toHaveBeenCalledWith("user3", ACCESS_TOKEN_DISK, any());
       expect(helper.setToUser).not.toHaveBeenCalledWith("user3", REFRESH_TOKEN_DISK, any());
@@ -213,23 +195,21 @@ describe("TokenServiceStateProviderMigrator", () => {
     it("should null out newly migrated entries in state provider framework", async () => {
       await sut.rollback(helper);
 
-      expect(helper.setToUser).toHaveBeenCalledWith("user1", TWO_FACTOR_TOKEN_DISK_LOCAL, null);
+      expect(helper.setToGlobal).toHaveBeenCalledWith(
+        EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+        null,
+      );
+
       expect(helper.setToUser).toHaveBeenCalledWith("user1", ACCESS_TOKEN_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user1", REFRESH_TOKEN_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user1", API_KEY_CLIENT_ID_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user1", API_KEY_CLIENT_SECRET_DISK, null);
 
-      expect(helper.setToUser).toHaveBeenCalledWith("user2", TWO_FACTOR_TOKEN_DISK_LOCAL, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user2", ACCESS_TOKEN_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user2", REFRESH_TOKEN_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user2", API_KEY_CLIENT_ID_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user2", API_KEY_CLIENT_SECRET_DISK, null);
 
-      expect(helper.setToUser).not.toHaveBeenCalledWith(
-        "user3",
-        TWO_FACTOR_TOKEN_DISK_LOCAL,
-        any(),
-      );
       expect(helper.setToUser).toHaveBeenCalledWith("user3", ACCESS_TOKEN_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user3", REFRESH_TOKEN_DISK, null);
       expect(helper.setToUser).toHaveBeenCalledWith("user3", API_KEY_CLIENT_ID_DISK, null);
@@ -247,6 +227,7 @@ describe("TokenServiceStateProviderMigrator", () => {
         },
         profile: {
           apiKeyClientId: "apiKeyClientId",
+          email: "user1Email",
           otherStuff: "overStuff3",
         },
         keys: {
