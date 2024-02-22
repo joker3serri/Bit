@@ -2711,7 +2711,7 @@
   "duoRequiredForAccount": {
     "message": "Duo two-step login is required for your account."
   },
-  "openExtensionInNewTabToCompleteLogin": {
+  "popoutTheExtensionToCompleteLogin": {
     "message": "Popout the extension to complete login."
   },
   "popoutExtension": {
