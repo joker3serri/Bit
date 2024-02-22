@@ -1,4 +1,5 @@
 import { Observable, concatMap, of, zip } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
@@ -13,13 +14,22 @@ import { UserId } from "../../../types/guid";
 
 import { UserEncryptor } from "./user-encryptor.abstraction";
 
-/** Stores account-specific secrets protected by a UserKeyEncryptor. */
+/** Stores account-specific secrets protected by a UserKeyEncryptor.
+ *
+ *  @remarks This state store changes the structure of `Plaintext` during
+ *  storage, and requires user keys to operate. It is incompatible with sync,
+ *  which expects the disk storage format to be identical to the sync format.
+ *
+ *  DO NOT USE THIS for synchronized data. Consider, instead, storing
+ *  synchronized data in a separate storage location, and bridging the sync
+ *  data to a SecretStore when the key becomes available.
+ */
 export class SecretState<Plaintext extends object, Disclosed> {
   // The constructor is private to avoid creating a circular dependency when
   // wiring the derived and secret states together.
   private constructor(
     private readonly encryptor: UserEncryptor<Plaintext, Disclosed>,
-    private readonly encrypted: SingleUserState<{ secret: string; public: Disclosed }>,
+    private readonly encrypted: SingleUserState<{ secret: string; public: Jsonify<Disclosed> }>,
     private readonly plaintext: DerivedState<Plaintext>,
   ) {
     this.state$ = plaintext.state$;
@@ -27,11 +37,12 @@ export class SecretState<Plaintext extends object, Disclosed> {
 
   /** Creates a secret state bound to an account encryptor. The account must be unlocked
    *  when this method is called.
-   *  @param encryptor protects `Secret` data.
+   *  @param userId: the user to which the secret state is bound.
    *  @param key identifies the storage location for encrypted secrets. Secrets are written to
    *    the secret store as a named tuple. Secret data is jsonified, encrypted, and stored in
    *    a `secret` property. Disclosed data is stored in a `public` property.
    *  @param provider constructs state objects.
+   *  @param encryptor protects `Secret` data.
    *  @throws when `key.stateDefinition` is backed by memory storage.
    */
   static from<TFrom extends object, Disclosed>(
@@ -40,13 +51,13 @@ export class SecretState<Plaintext extends object, Disclosed> {
     provider: StateProvider,
     encryptor: UserEncryptor<TFrom, Disclosed>,
   ) {
-    // Memory storage is already encrypted, so if the caller provides a memory store,
-    // let them know they're doing it wrong.
+    // The secret state requires that data has round-tripped through a serialized storage
+    // format. Memory storage does not make that guarantee, so it cannot back the secret state.
     if (key.stateDefinition.defaultStorageLocation === "memory") {
       throw new Error(`SecretState must back ${key.key} with permanent (not memory) storage.`);
     }
 
-    type ClassifiedFormat = { secret: string; public: Disclosed };
+    type ClassifiedFormat = { secret: string; public: Jsonify<Disclosed> };
 
     // construct encrypted backing store
     const secretKey = new KeyDefinition<ClassifiedFormat>(key.stateDefinition, key.key, {
@@ -137,7 +148,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
     currentState: Plaintext,
     shouldUpdate: () => boolean,
     configureState: () => Plaintext,
-  ): Promise<[boolean, { secret: string; public: Disclosed }, Plaintext]> {
+  ): Promise<[boolean, { secret: string; public: Jsonify<Disclosed> }, Plaintext]> {
     // determine whether an update is necessary
     if (!shouldUpdate()) {
       return [false, undefined, currentState];

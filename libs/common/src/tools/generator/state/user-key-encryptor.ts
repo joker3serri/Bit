@@ -44,7 +44,7 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
   }
 
   /** {@link UserEncryptor.encrypt} */
-  async encrypt(value: State, userId: UserId): Promise<[EncString, Disclosed]> {
+  async encrypt(value: State, userId: UserId): Promise<[EncString, Jsonify<Disclosed>]> {
     this.assertHasValue("value", value);
     this.assertHasValue("userId", userId);
 
@@ -54,7 +54,11 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
   }
 
   /** {@link UserEncryptor.decrypt} */
-  async decrypt(secret: EncString, disclosed: Disclosed, userId: UserId): Promise<Jsonify<State>> {
+  async decrypt(
+    secret: EncString,
+    disclosed: Jsonify<Disclosed>,
+    userId: UserId,
+  ): Promise<Jsonify<State>> {
     this.assertHasValue("secret", secret);
     this.assertHasValue("disclosed", disclosed);
     this.assertHasValue("userId", userId);
@@ -93,7 +97,7 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends U
     return encrypted;
   }
 
-  private async decryptSecret(value: EncString, userId: UserId): Promise<Secret> {
+  private async decryptSecret(value: EncString, userId: UserId): Promise<Jsonify<Secret>> {
     // decrypt the data and drop the key
     let key = await this.keyService.getUserKey(userId);
     const decrypted = await this.encryptService.decryptToUtf8(value, key);
