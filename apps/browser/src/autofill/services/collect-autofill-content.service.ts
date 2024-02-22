@@ -907,12 +907,17 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
     if (!nodeIsHtmlElement(node) || node.childNodes.length !== 0) {
       return null;
     }
+
     if (node.shadowRoot) {
       return node.shadowRoot;
     }
 
     if ((chrome as any).dom?.openOrClosedShadowRoot) {
-      return (chrome as any).dom.openOrClosedShadowRoot(node);
+      try {
+        return (chrome as any).dom.openOrClosedShadowRoot(node);
+      } catch (error) {
+        return null;
+      }
     }
 
     return (node as any).openOrClosedShadowRoot;
