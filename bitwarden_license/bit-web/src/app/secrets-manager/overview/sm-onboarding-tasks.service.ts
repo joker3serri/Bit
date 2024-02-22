@@ -1,0 +1,32 @@
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+
+import {
+  ActiveUserState,
+  KeyDefinition,
+  SM_ONBOARDING_DISK,
+  StateProvider,
+} from "../../../../../../libs/common/src/platform/state";
+
+export type SMOnboardingTasks = Record<string, Record<string, boolean>>;
+
+const SM_ONBOARDING_TASKS_KEY = new KeyDefinition<SMOnboardingTasks>(SM_ONBOARDING_DISK, "tasks", {
+  deserializer: (b) => b,
+});
+
+@Injectable()
+export class SMOnboardingTasksService {
+  private smOnboardingTasks: ActiveUserState<SMOnboardingTasks>;
+  smOnboardingTasks$: Observable<SMOnboardingTasks>;
+
+  constructor(private stateProvider: StateProvider) {
+    this.smOnboardingTasks = this.stateProvider.getActive(SM_ONBOARDING_TASKS_KEY);
+    this.smOnboardingTasks$ = this.smOnboardingTasks.state$;
+  }
+
+  async setSmOnboardingTasks(newState: SMOnboardingTasks): Promise<void> {
+    await this.smOnboardingTasks.update(() => {
+      return { ...newState };
+    });
+  }
+}
