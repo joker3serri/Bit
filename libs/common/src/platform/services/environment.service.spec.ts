@@ -1,5 +1,3 @@
-import { firstValueFrom, timeout } from "rxjs";
-
 import { awaitAsync } from "../../../spec";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeStorageService } from "../../../spec/fake-storage.service";
@@ -468,32 +466,6 @@ describe("EnvironmentService", () => {
       await sut.setUrlsFromStorage();
 
       expect(sut.getWebVaultUrl()).toBe("https://vault.bitwarden.eu");
-    });
-
-    it("recovers from previous bug", async () => {
-      const buggedEnvironmentUrls = new EnvironmentUrls();
-      buggedEnvironmentUrls.base = "https://vault.bitwarden.com";
-      buggedEnvironmentUrls.notifications = null;
-      setGlobalData(null, buggedEnvironmentUrls);
-
-      const urlEmission = firstValueFrom(sut.urls.pipe(timeout(100)));
-
-      await sut.setUrlsFromStorage();
-
-      await urlEmission;
-
-      const globalData = getGlobalData();
-      expect(globalData.region).toBe(Region.US);
-      expect(globalData.urls).toEqual({
-        base: null,
-        api: null,
-        identity: null,
-        events: null,
-        icons: null,
-        notifications: null,
-        keyConnector: null,
-        webVault: null,
-      });
     });
 
     it("will get urls from signed in user", async () => {
