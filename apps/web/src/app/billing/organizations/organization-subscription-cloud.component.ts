@@ -1,4 +1,3 @@
-import { formatDate } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, firstValueFrom, lastValueFrom, Observable, Subject, takeUntil } from "rxjs";
@@ -269,27 +268,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         this.sub.maxAutoscaleSeats.toString(),
       );
     }
-  }
-
-  get cleanedSubscriptionStatus() {
-    return this.subscription.status.replace(/_/g, " ");
-  }
-
-  get subscriptionIsCanceled() {
-    return (
-      this.subscription && ["canceled", "incomplete_expired"].includes(this.subscription.status)
-    );
-  }
-
-  get subscriptionIsPastDue() {
-    return this.subscription && ["past_due", "unpaid"].includes(this.subscription.status);
-  }
-
-  get subscriptionPastDueWarning() {
-    return this.i18nService.t(
-      "toMaintainYourSubscription",
-      formatDate(this.subscription.suspensionDate, "longDate", this.locale),
-    );
   }
 
   get subscriptionMarkedForCancel() {

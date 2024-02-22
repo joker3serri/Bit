@@ -2270,7 +2270,7 @@
     "message": "Paid",
     "description": "Past tense status of an invoice. ex. Paid or unpaid."
   },
-  "unpaid": {
+  "c": {
     "message": "Unpaid",
     "description": "Past tense status of an invoice. ex. Paid or unpaid."
   },
@@ -7590,11 +7590,32 @@
   },
   "toMaintainYourSubscription": {
     "message": "To maintain your subscription, please resolve the past due invoices before $EXPIRATION$.",
+    "description": "A warning letting the user know they need to pay their past due invoices by a certain date to maintain their subscription.",
     "placeholders": {
       "expiration": {
         "content": "$1",
         "example": "12/31/2020"
       }
     }
+  },
+  "toReactivateYourSubscription": {
+    "message": "To reactivate your subscription, please resolve the past due invoices.",
+    "description": "A warning letter the user know they need to pay their past due invoices in order to reactivate their suspended subscription."
+  },
+  "sponsored": {
+    "message": "Sponsored",
+    "description": "A label indicating a subscription is sponsored."
+  },
+  "suspensionDate": {
+    "message": "Suspension date",
+    "description": "A label for the date a subscription will be or was suspended."
+  },
+  "cancellationDate": {
+    "message": "Cancellation date",
+    "description": "A label for the date a subscription was canceled."
+  },
+  "trialingUntil": {
+    "message": "Trialing until",
+    "description": "A label for the date a subscription is trialing until."
   }
 }
