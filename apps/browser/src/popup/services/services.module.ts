@@ -10,7 +10,10 @@ import {
   OBSERVABLE_MEMORY_STORAGE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  AuthRequestServiceAbstraction,
+  LoginStrategyServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -268,6 +271,11 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: AuthRequestCryptoServiceAbstraction,
       useFactory: getBgService<AuthRequestCryptoServiceAbstraction>("authRequestCryptoService"),
+      deps: [],
+    },
+    {
+      provide: AuthRequestServiceAbstraction,
+      useFactory: getBgService<AuthRequestServiceAbstraction>("authRequestService"),
       deps: [],
     },
     {

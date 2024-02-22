@@ -5,6 +5,7 @@ import { program } from "commander";
 import * as jsdom from "jsdom";
 
 import {
+  AuthRequestService,
   LoginStrategyService,
   LoginStrategyServiceAbstraction,
   PinCryptoService,
@@ -193,6 +194,7 @@ export class Main {
   devicesApiService: DevicesApiServiceAbstraction;
   deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
   authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
+  authRequestService: AuthRequestService;
   configApiService: ConfigApiServiceAbstraction;
   configService: CliConfigService;
   accountService: AccountService;
@@ -410,6 +412,12 @@ export class Main {
     );
 
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
+    this.authRequestService = new AuthRequestService(
+      this.appIdService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
+    );
 
     this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,

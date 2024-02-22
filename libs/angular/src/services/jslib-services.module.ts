@@ -1,6 +1,8 @@
 import { LOCALE_ID, NgModule } from "@angular/core";
 
 import {
+  AuthRequestServiceAbstraction,
+  AuthRequestService,
   PinCryptoServiceAbstraction,
   PinCryptoService,
   LoginStrategyServiceAbstraction,
@@ -833,6 +835,16 @@ import { ModalService } from "./modal.service";
         DevicesApiServiceAbstraction,
         I18nServiceAbstraction,
         PlatformUtilsServiceAbstraction,
+      ],
+    },
+    {
+      provide: AuthRequestServiceAbstraction,
+      useClass: AuthRequestService,
+      deps: [
+        AppIdServiceAbstraction,
+        CryptoServiceAbstraction,
+        ApiServiceAbstraction,
+        StateServiceAbstraction,
       ],
     },
     {

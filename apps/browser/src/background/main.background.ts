@@ -3,6 +3,8 @@ import {
   PinCryptoService,
   LoginStrategyServiceAbstraction,
   LoginStrategyService,
+  AuthRequestServiceAbstraction,
+  AuthRequestService,
 } from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
@@ -266,6 +268,7 @@ export default class MainBackground {
   devicesApiService: DevicesApiServiceAbstraction;
   devicesService: DevicesServiceAbstraction;
   deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
+  authRequestService: AuthRequestServiceAbstraction;
   authRequestCryptoService: AuthRequestCryptoServiceAbstraction;
   accountService: AccountServiceAbstraction;
   globalStateProvider: GlobalStateProvider;
@@ -519,6 +522,12 @@ export default class MainBackground {
     this.devicesService = new DevicesServiceImplementation(this.devicesApiService);
 
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);
+    this.authRequestService = new AuthRequestService(
+      this.appIdService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
+    );
 
     this.authService = new AuthService(
       backgroundMessagingService,
