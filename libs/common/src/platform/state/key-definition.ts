@@ -1,12 +1,9 @@
 import { Jsonify } from "type-fest";
 
-import { UserId } from "../../types/guid";
 import { StorageKey } from "../../types/state";
-import { Utils } from "../misc/utils";
 
-import { StateDefinition } from "./state-definition";
 import { array, record } from "./deserialization-helpers";
-import { UserKeyDefinition } from "./user-key-definition";
+import { StateDefinition } from "./state-definition";
 
 export type ClearEvent = "lock" | "logout";
 
