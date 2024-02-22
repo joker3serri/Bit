@@ -278,13 +278,8 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.editableCollections$ = allCollectionsWithoutUnassigned$.pipe(
       map((collections) => {
-        if (
-          this.organization.canEditAnyCollection &&
-          this.organization.allowAdminAccessToAllCollectionItems
-        ) {
-          return collections;
-        }
-        if (this.organization.isProviderUser) {
+        // Users that can edit all ciphers can implicitly edit all collections
+        if (this.organization.canEditAllCiphers(this.flexibleCollectionsV1Enabled)) {
           return collections;
         }
         return collections.filter((c) => c.assigned && !c.readOnly);
