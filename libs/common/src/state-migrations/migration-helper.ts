@@ -45,7 +45,7 @@ export class MigrationHelper {
    *
    * This is a brute force method to just remove a value in the storage service. If you can use {@link removeFromGlobal} or {@link removeFromUser}, you should.
    * @param key location
-   * @returns
+   * @returns void
    */
   remove(key: string): Promise<void> {
     this.logService.info(`Removing ${key}`);
