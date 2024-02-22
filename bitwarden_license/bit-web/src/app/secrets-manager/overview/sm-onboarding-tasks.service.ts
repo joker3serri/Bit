@@ -14,7 +14,9 @@ const SM_ONBOARDING_TASKS_KEY = new KeyDefinition<SMOnboardingTasks>(SM_ONBOARDI
   deserializer: (b) => b,
 });
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class SMOnboardingTasksService {
   private smOnboardingTasks: ActiveUserState<SMOnboardingTasks>;
   smOnboardingTasks$: Observable<SMOnboardingTasks>;
