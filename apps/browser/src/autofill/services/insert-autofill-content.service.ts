@@ -3,9 +3,9 @@ import AutofillScript, { AutofillInsertActions, FillScript } from "../models/aut
 import { FormFieldElement } from "../types";
 import {
   elementIsFillableFormField,
-  elementIsInputField,
-  elementIsSelectField,
-  elementIsTextAreaField,
+  elementIsInputElement,
+  elementIsSelectElement,
+  elementIsTextAreaElement,
   nodeIsInputElement,
 } from "../utils";
 
@@ -201,8 +201,9 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
    * @private
    */
   private insertValueIntoField(element: FormFieldElement | null, value: string) {
-    const elementCanBeReadonly = elementIsInputField(element) || elementIsTextAreaField(element);
-    const elementCanBeFilled = elementCanBeReadonly || elementIsSelectField(element);
+    const elementCanBeReadonly =
+      elementIsInputElement(element) || elementIsTextAreaElement(element);
+    const elementCanBeFilled = elementCanBeReadonly || elementIsSelectElement(element);
 
     if (
       !element ||
@@ -219,7 +220,7 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
     }
 
     const isFillableCheckboxOrRadioElement =
-      elementIsInputField(element) &&
+      elementIsInputElement(element) &&
       new Set(["checkbox", "radio"]).has(element.type) &&
       new Set(["true", "y", "1", "yes", "✓"]).has(String(value).toLowerCase());
     if (isFillableCheckboxOrRadioElement) {
@@ -378,7 +379,7 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
     }
   }
 
-  private nodeIsHtmlElement(node: Node): node is HTMLElement {
+  private nodeIsElement(node: Node): node is HTMLElement {
     return node.nodeType === Node.ELEMENT_NODE;
   }
 }

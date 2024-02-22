@@ -152,30 +152,115 @@ function setupAutofillInitDisconnectAction(windowContext: Window) {
   setupExtensionDisconnectAction(onDisconnectCallback);
 }
 
+/**
+ * Identifies whether an element is a fillable form field.
+ * This is determined by whether the element is a form field and not a span.
+ *
+ * @param formFieldElement - The form field element to check.
+ */
 function elementIsFillableFormField(
-  element: FormFieldElement,
-): element is FillableFormFieldElement {
-  return element?.tagName.toLowerCase() !== "span";
+  formFieldElement: FormFieldElement,
+): formFieldElement is FillableFormFieldElement {
+  return formFieldElement?.tagName.toLowerCase() !== "span";
 }
 
-function elementIsInputField(element: Element): element is HTMLInputElement {
-  return element?.tagName.toLowerCase() === "input";
+/**
+ * Identifies whether an element is an instance of a specific tag name.
+ *
+ * @param element - The element to check.
+ * @param tagName -  The tag name to check against.
+ */
+function elementIsInstanceOf<T extends Element>(element: Element, tagName: string): element is T {
+  return element?.tagName.toLowerCase() === tagName;
 }
 
-function elementIsSelectField(element: Element): element is HTMLSelectElement {
-  return element?.tagName.toLowerCase() === "select";
+/**
+ * Identifies whether an element is a span element.
+ *
+ * @param element - The element to check.
+ */
+function elementIsSpanElement(element: Element): element is HTMLSpanElement {
+  return elementIsInstanceOf<HTMLSpanElement>(element, "span");
 }
 
-function elementIsTextAreaField(element: Element): element is HTMLTextAreaElement {
-  return element?.tagName.toLowerCase() === "textarea";
+/**
+ * Identifies whether an element is an input field.
+ *
+ * @param element - The element to check.
+ */
+function elementIsInputElement(element: Element): element is HTMLInputElement {
+  return elementIsInstanceOf<HTMLInputElement>(element, "input");
 }
 
-function nodeIsHtmlElement(node: Node): node is HTMLElement {
+/**
+ * Identifies whether an element is a select field.
+ *
+ * @param element - The element to check.
+ */
+function elementIsSelectElement(element: Element): element is HTMLSelectElement {
+  return elementIsInstanceOf<HTMLSelectElement>(element, "select");
+}
+
+/**
+ * Identifies whether an element is a textarea field.
+ *
+ * @param element - The element to check.
+ */
+function elementIsTextAreaElement(element: Element): element is HTMLTextAreaElement {
+  return elementIsInstanceOf<HTMLTextAreaElement>(element, "textarea");
+}
+
+/**
+ * Identifies whether an element is a form element.
+ *
+ * @param element - The element to check.
+ */
+function elementIsFormElement(element: Element): element is HTMLFormElement {
+  return elementIsInstanceOf<HTMLFormElement>(element, "form");
+}
+
+/**
+ * Identifies whether an element is a label element.
+ *
+ * @param element - The element to check.
+ */
+function elementIsLabelElement(element: Element): element is HTMLLabelElement {
+  return elementIsInstanceOf<HTMLLabelElement>(element, "label");
+}
+
+function elementIsDescriptionDetailsElement(element: Element): element is HTMLElement {
+  return elementIsInstanceOf<HTMLElement>(element, "dd");
+}
+
+function elementIsDescriptionTermElement(element: Element): element is HTMLElement {
+  return elementIsInstanceOf<HTMLElement>(element, "dt");
+}
+
+/**
+ * Identifies whether a node is an HTML element.
+ *
+ * @param node - The node to check.
+ */
+function nodeIsElement(node: Node): node is Element {
   return node?.nodeType === Node.ELEMENT_NODE;
 }
 
+/**
+ * Identifies whether a node is an input element.
+ *
+ * @param node - The node to check.
+ */
 function nodeIsInputElement(node: Node): node is HTMLInputElement {
-  return nodeIsHtmlElement(node) && elementIsInputField(node);
+  return nodeIsElement(node) && elementIsInputElement(node);
+}
+
+/**
+ * Identifies whether a node is a form element.
+ *
+ * @param node - The node to check.
+ */
+function nodeIsFormElement(node: Node): node is HTMLFormElement {
+  return nodeIsElement(node) && elementIsFormElement(node);
 }
 
 export {
@@ -187,9 +272,16 @@ export {
   setupExtensionDisconnectAction,
   setupAutofillInitDisconnectAction,
   elementIsFillableFormField,
-  elementIsInputField,
-  elementIsSelectField,
-  elementIsTextAreaField,
-  nodeIsHtmlElement,
+  elementIsInstanceOf,
+  elementIsSpanElement,
+  elementIsInputElement,
+  elementIsSelectElement,
+  elementIsTextAreaElement,
+  elementIsFormElement,
+  elementIsLabelElement,
+  elementIsDescriptionDetailsElement,
+  elementIsDescriptionTermElement,
+  nodeIsElement,
   nodeIsInputElement,
+  nodeIsFormElement,
 };
