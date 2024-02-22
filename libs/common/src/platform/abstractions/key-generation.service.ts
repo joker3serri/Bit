@@ -13,7 +13,9 @@ export abstract class KeyGenerationService {
    */
   createKey: (bitLength: 256 | 512) => Promise<SymmetricCryptoKey>;
   /**
-   * Generates key material from CSPRNG and derives a 64 byte key from it
+   * Generates key material from CSPRNG and derives a 64 byte key from it.
+   * Uses HKDF, see {@link https://datatracker.ietf.org/doc/html/rfc5869 RFC 5869}
+   * for details.
    * @param bitLength Length of key material.
    * @param purpose Purpose for the key derivation function.
    * Different purposes results in different keys, even with the same material.
@@ -28,6 +30,7 @@ export abstract class KeyGenerationService {
   /**
    * Derives a 64 byte key from key material.
    * @remark The key material should be generated from {@link createKey}, or {@link createKeyWithPurpose}.
+   * Uses HKDF, see {@link https://datatracker.ietf.org/doc/html/rfc5869 RFC 5869} for details.
    * @param material key material.
    * @param salt Salt for the key derivation function.
    * @param purpose Purpose for the key derivation function.
