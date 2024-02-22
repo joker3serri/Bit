@@ -249,29 +249,25 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     const region = await this.getRegion(activeUserId);
     const savedUrls = await this.getEnvironmentUrls(activeUserId);
 
-    switch (region) {
-      case Region.EU:
-        await this.setRegion(Region.EU);
-        return;
-      case Region.US:
-        await this.setRegion(Region.US);
-        return;
-      case Region.SelfHosted:
-      case null:
-      default:
-        this.baseUrl = savedUrls.base;
-        this.webVaultUrl = savedUrls.webVault;
-        this.apiUrl = savedUrls.api;
-        this.identityUrl = savedUrls.identity;
-        this.iconsUrl = savedUrls.icons;
-        this.notificationsUrl = savedUrls.notifications;
-        this.eventsUrl = savedUrls.events;
-        this.keyConnectorUrl = savedUrls.keyConnector;
-        await this.setRegion(Region.SelfHosted);
-        // scimUrl is not saved to storage
-        this.urlsSubject.next();
-        break;
+    // A region is valid if we have a configuration
+    if (this.getRegionConfig(region) != null) {
+      await this.setRegion(region);
+      return;
     }
+
+    // If region is not valid, treat it as self-hosted
+    this.baseUrl = savedUrls.base;
+    this.webVaultUrl = savedUrls.webVault;
+    this.apiUrl = savedUrls.api;
+    this.identityUrl = savedUrls.identity;
+    this.iconsUrl = savedUrls.icons;
+    this.notificationsUrl = savedUrls.notifications;
+    this.eventsUrl = savedUrls.events;
+    this.keyConnectorUrl = savedUrls.keyConnector;
+    this.scimUrl = null; // Scim is only set for valid regions
+    await this.setRegion(Region.SelfHosted);
+
+    this.urlsSubject.next();
   }
 
   async setUrls(urls: Urls): Promise<Urls> {
@@ -372,17 +368,21 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.selectedRegion = region;
     await this.regionGlobalState.update(() => region);
 
-    if (region === Region.SelfHosted) {
+    const regionConfig = this.getRegionConfig(region);
+
+    // If we can't find the region presume self-hosted
+    if (regionConfig == null) {
       // If user saves a self-hosted region with empty fields, default to US
       if (this.isEmpty()) {
         await this.setRegion(DEFAULT_REGION);
       }
-    } else {
-      // If we are setting the region to EU or US, clear the self-hosted URLs
-      await this.urlsGlobalState.update(() => new EnvironmentUrls());
-
-      this.setUrlsInternal(this.getRegionConfig(region).urls);
+      return;
     }
+
+    // If we are setting the region to EU or US, clear the self-hosted URLs
+    await this.urlsGlobalState.update(() => new EnvironmentUrls());
+
+    this.setUrlsInternal(this.getRegionConfig(region).urls);
   }
 
   async seedUserEnvironment(userId: UserId) {
