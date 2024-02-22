@@ -2,6 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -14,6 +15,7 @@ import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/id
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
 import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -104,6 +106,7 @@ describe("LoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let loginService: MockProxy<LoginService>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
 
@@ -121,11 +124,13 @@ describe("LoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    loginService = mock<LoginService>();
+
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.calledWith(accessToken).mockResolvedValue(decodedToken);
+    tokenService.decodeAccessToken.calledWith(accessToken).mockResolvedValue(decodedToken);
 
     // The base class is abstract so we test it via PasswordLoginStrategy
     passwordLoginStrategy = new PasswordLoginStrategy(
@@ -138,6 +143,7 @@ describe("LoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      loginService,
       passwordStrengthService,
       policyService,
       loginStrategyService,
@@ -164,7 +170,20 @@ describe("LoginStrategy", () => {
       const idTokenResponse = identityTokenResponseFactory();
       apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
 
+      const mockVaultTimeoutAction = VaultTimeoutAction.Lock;
+      const mockVaultTimeout = 1000;
+
+      stateService.getVaultTimeoutAction.mockResolvedValue(mockVaultTimeoutAction);
+      stateService.getVaultTimeout.mockResolvedValue(mockVaultTimeout);
+
       await passwordLoginStrategy.logIn(credentials);
+
+      expect(tokenService.setTokens).toHaveBeenCalledWith(
+        accessToken,
+        refreshToken,
+        mockVaultTimeoutAction,
+        mockVaultTimeout,
+      );
 
       expect(stateService.addAccount).toHaveBeenCalledWith(
         new Account({
@@ -181,10 +200,6 @@ describe("LoginStrategy", () => {
           },
           tokens: {
             ...new AccountTokens(),
-            ...{
-              accessToken: accessToken,
-              refreshToken: refreshToken,
-            },
           },
           keys: new AccountKeys(),
           decryptionOptions: AccountDecryptionOptions.fromResponse(idTokenResponse),

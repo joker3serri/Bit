@@ -4,6 +4,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
@@ -38,6 +39,7 @@ describe("SsoLoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let loginService: MockProxy<LoginService>;
   let keyConnectorService: MockProxy<KeyConnectorService>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
   let authRequestCryptoService: MockProxy<AuthRequestCryptoServiceAbstraction>;
@@ -64,6 +66,7 @@ describe("SsoLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    loginService = mock<LoginService>();
     keyConnectorService = mock<KeyConnectorService>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
     authRequestCryptoService = mock<AuthRequestCryptoServiceAbstraction>();
@@ -71,7 +74,7 @@ describe("SsoLoginStrategy", () => {
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.mockResolvedValue({});
+    tokenService.decodeAccessToken.mockResolvedValue({});
 
     ssoLoginStrategy = new SsoLoginStrategy(
       cryptoService,
@@ -83,6 +86,7 @@ describe("SsoLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      loginService,
       keyConnectorService,
       deviceTrustCryptoService,
       authRequestCryptoService,

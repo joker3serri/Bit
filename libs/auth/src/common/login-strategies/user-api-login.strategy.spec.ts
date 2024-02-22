@@ -2,6 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
@@ -32,6 +33,7 @@ describe("UserApiLoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let loginService: MockProxy<LoginService>;
   let keyConnectorService: MockProxy<KeyConnectorService>;
   let environmentService: MockProxy<EnvironmentService>;
 
@@ -53,12 +55,13 @@ describe("UserApiLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    loginService = mock<LoginService>();
     keyConnectorService = mock<KeyConnectorService>();
     environmentService = mock<EnvironmentService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.getTwoFactorToken.mockResolvedValue(null);
-    tokenService.decodeToken.mockResolvedValue({});
+    tokenService.decodeAccessToken.mockResolvedValue({});
 
     apiLogInStrategy = new UserApiLoginStrategy(
       cryptoService,
@@ -70,6 +73,7 @@ describe("UserApiLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      loginService,
       environmentService,
       keyConnectorService,
     );
