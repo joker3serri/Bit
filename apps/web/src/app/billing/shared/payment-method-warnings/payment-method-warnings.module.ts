@@ -2,8 +2,9 @@ import { NgModule } from "@angular/core";
 
 import { BannerModule } from "@bitwarden/components";
 
-import { SharedModule } from "../../../app/shared";
-import { PaymentMethodWarningsComponent } from "../payment-method-warnings/payment-method-warnings.component";
+import { SharedModule } from "../../../shared";
+
+import { PaymentMethodWarningsComponent } from "./payment-method-warnings.component";
 
 @NgModule({
   imports: [BannerModule, SharedModule],

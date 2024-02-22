@@ -9,7 +9,6 @@ import { OrganizationTaxInfoUpdateRequest } from "../../../billing/models/reques
 import { PaymentRequest } from "../../../billing/models/request/payment.request";
 import { SecretsManagerSubscribeRequest } from "../../../billing/models/request/sm-subscribe.request";
 import { BillingResponse } from "../../../billing/models/response/billing.response";
-import { OrganizationBillingStatusResponse } from "../../../billing/models/response/organization-billing-status.response";
 import { OrganizationSubscriptionResponse } from "../../../billing/models/response/organization-subscription.response";
 import { PaymentResponse } from "../../../billing/models/response/payment.response";
 import { TaxInfoResponse } from "../../../billing/models/response/tax-info.response";
@@ -79,6 +78,5 @@ export class OrganizationApiServiceAbstraction {
     id: string,
     request: OrganizationCollectionManagementUpdateRequest,
   ) => Promise<OrganizationResponse>;
-  getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
   enableCollectionEnhancements: (id: string) => Promise<void>;
 }

@@ -1,7 +1,7 @@
 import { firstValueFrom, map, Observable } from "rxjs";
 
-import { OrganizationApiServiceAbstraction as OrganizationApiService } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
 import { ActiveUserState, StateProvider } from "../../platform/state";
+import { BillingApiServiceAbstraction as BillingApiService } from "../abstractions/billilng-api.service.abstraction";
 import { PaymentMethodWarningsServiceAbstraction } from "../abstractions/payment-method-warnings-service.abstraction";
 import { PAYMENT_METHOD_WARNINGS_KEY } from "../models/billing-keys.state";
 import { PaymentMethodWarning } from "../models/domain/payment-method-warning";
@@ -11,7 +11,7 @@ export class PaymentMethodWarningsService implements PaymentMethodWarningsServic
   paymentMethodWarnings$: Observable<Record<string, PaymentMethodWarning>>;
 
   constructor(
-    private organizationApiService: OrganizationApiService,
+    private billingApiService: BillingApiService,
     private stateProvider: StateProvider,
   ) {
     this.paymentMethodWarningsState = this.stateProvider.getActive(PAYMENT_METHOD_WARNINGS_KEY);
@@ -52,7 +52,7 @@ export class PaymentMethodWarningsService implements PaymentMethodWarningsServic
     );
     if (!warning || warning.savedAt < this.getOneWeekAgo()) {
       const { organizationName, risksSubscriptionFailure } =
-        await this.organizationApiService.getBillingStatus(organizationId);
+        await this.billingApiService.getBillingStatus(organizationId);
       await this.paymentMethodWarningsState.update((state) => {
         state ??= {};
         state[organizationId] = {

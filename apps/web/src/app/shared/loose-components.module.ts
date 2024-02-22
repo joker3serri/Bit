@@ -59,6 +59,7 @@ import { UpdatePasswordComponent } from "../auth/update-password.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
+import { PaymentMethodWarningsModule } from "../billing/shared/payment-method-warnings/payment-method-warnings.module";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { FooterComponent } from "../layouts/footer.component";
@@ -90,7 +91,6 @@ import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-va
 import { PurgeVaultComponent } from "../vault/settings/purge-vault.component";
 
 import { EnvironmentSelectorModule } from "./../components/environment-selector/environment-selector.module";
-import { PaymentMethodWarningsModule } from "./../components/payment-method-warnings/payment-method-warnings.module";
 import { AccountFingerprintComponent } from "./components/account-fingerprint/account-fingerprint.component";
 import { SharedModule } from "./shared.module";
 
