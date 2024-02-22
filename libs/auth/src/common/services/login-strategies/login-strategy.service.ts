@@ -2,7 +2,6 @@ import { Observable, Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -30,7 +29,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
 
-import { LoginStrategyServiceAbstraction } from "../../abstractions";
+import { AuthRequestServiceAbstraction, LoginStrategyServiceAbstraction } from "../../abstractions";
 import { AuthRequestLoginStrategy } from "../../login-strategies/auth-request-login.strategy";
 import { PasswordLoginStrategy } from "../../login-strategies/password-login.strategy";
 import { SsoLoginStrategy } from "../../login-strategies/sso-login.strategy";
@@ -110,7 +109,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
-    protected authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    protected authRequestService: AuthRequestServiceAbstraction,
   ) {}
 
   async logIn(
@@ -160,7 +159,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.twoFactorService,
           this.keyConnectorService,
           this.deviceTrustCryptoService,
-          this.authReqCryptoService,
+          this.authRequestService,
           this.i18nService,
         );
         break;
