@@ -370,7 +370,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     await this.stateProvider.getUser(userId, URLS_KEY).update(() => globalUrls);
   }
 
-  private setUrlsInternal(urls: Urls) {
+  protected setUrlsInternal(urls: Urls) {
     this.baseUrl = this.formatUrl(urls.base);
     this.webVaultUrl = this.formatUrl(urls.webVault);
     this.apiUrl = this.formatUrl(urls.api);

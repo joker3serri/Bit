@@ -11,12 +11,14 @@ import {
   OBSERVABLE_MEMORY_STORAGE,
   OBSERVABLE_DISK_STORAGE,
   OBSERVABLE_DISK_LOCAL_STORAGE,
+  WINDOW,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -32,6 +34,7 @@ import {
   ActiveUserStateProvider,
   GlobalStateProvider,
   SingleUserStateProvider,
+  StateProvider,
 } from "@bitwarden/common/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
@@ -40,6 +43,7 @@ import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
 import { WebActiveUserStateProvider } from "../platform/web-active-user-state.provider";
+import { WebEnvironmentService } from "../platform/web-environment.service";
 import { WebGlobalStateProvider } from "../platform/web-global-state.provider";
 import { WebMigrationRunner } from "../platform/web-migration-runner";
 import { WebSingleUserStateProvider } from "../platform/web-single-user-state.provider";
@@ -152,6 +156,11 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
         MigrationBuilderService,
         OBSERVABLE_DISK_LOCAL_STORAGE,
       ],
+    },
+    {
+      provide: EnvironmentServiceAbstraction,
+      useClass: WebEnvironmentService,
+      deps: [WINDOW, StateProvider, AccountService],
     },
   ],
 })
