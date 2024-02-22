@@ -1,55 +1,25 @@
-import { Jsonify } from "type-fest";
-
 import { UserId } from "../../types/guid";
 import { StorageKey } from "../../types/state";
 import { Utils } from "../misc/utils";
 
-import { StateDefinition } from "./state-definition";
 import { array, record } from "./deserialization-helpers";
-import { UserKeyDefinition } from "./user-key-definition";
+import { ClearEvent, KeyDefinition, KeyDefinitionOptions } from "./key-definition";
+import { StateDefinition } from "./state-definition";
 
-export type ClearEvent = "lock" | "logout";
-
-/**
- * A set of options for customizing the behavior of a {@link KeyDefinition}
- */
-export type KeyDefinitionOptions<T> = {
-  /**
-   * A function to use to safely convert your type from json to your expected type.
-   *
-   * **Important:** Your data may be serialized/deserialized at any time and this
-   *  callback needs to be able to faithfully re-initialize from the JSON object representation of your type.
-   *
-   * @param jsonValue The JSON object representation of your state.
-   * @returns The fully typed version of your state.
-   */
-  readonly deserializer: (jsonValue: Jsonify<T>) => T;
-  /**
-   * The number of milliseconds to wait before cleaning up the state after the last subscriber has unsubscribed.
-   * Defaults to 1000ms.
-   */
-  readonly cleanupDelayMs?: number;
+type UserKeyDefinitionOptions<T> = KeyDefinitionOptions<T> & {
+  clearOn: ClearEvent[];
 };
 
-/**
- * KeyDefinitions describe the precise location to store data for a given piece of state.
- * The StateDefinition is used to describe the domain of the state, and the KeyDefinition
- * sub-divides that domain into specific keys.
- */
-export class KeyDefinition<T> {
+export class UserKeyDefinition<T> {
   /**
-   * Creates a new instance of a KeyDefinition
-   * @param stateDefinition The state definition for which this key belongs to.
-   * @param key The name of the key, this should be unique per domain.
-   * @param options A set of options to customize the behavior of {@link KeyDefinition}. All options are required.
-   * @param options.deserializer A function to use to safely convert your type from json to your expected type.
-   *   Your data may be serialized/deserialized at any time and this needs callback needs to be able to faithfully re-initialize
-   *   from the JSON object representation of your type.
+   * A unique array of events that the state stored at this key should be cleared on.
    */
+  readonly clearOn: ClearEvent[];
+
   constructor(
     readonly stateDefinition: StateDefinition,
     readonly key: string,
-    private readonly options: KeyDefinitionOptions<T>,
+    private readonly options: UserKeyDefinitionOptions<T>,
   ) {
     if (options.deserializer == null) {
       throw new Error(`'deserializer' is a required property on key ${this.errorKeyName}`);
@@ -60,6 +30,23 @@ export class KeyDefinition<T> {
         `'cleanupDelayMs' must be greater than 0. Value of ${options.cleanupDelayMs} passed to key ${this.errorKeyName} `,
       );
     }
+
+    // Filter out repeat values
+    this.clearOn = Array.from(new Set(options.clearOn));
+  }
+
+  /**
+   *
+   * @param keyDefinition
+   * @returns
+   *
+   * @deprecated You should not use this to convert, just create a {@link UserKeyDefinition}
+   */
+  static fromBaseKeyDefinition<T>(keyDefinition: KeyDefinition<T>) {
+    return new UserKeyDefinition(keyDefinition.stateDefinition, keyDefinition.key, {
+      ...keyDefinition["options"],
+      clearOn: [], // Default to not clearing
+    });
   }
 
   /**
@@ -135,16 +122,14 @@ export class KeyDefinition<T> {
     return `${this.stateDefinition.name}_${this.key}`;
   }
 
+  buildKey(userId: UserId) {
+    if (!Utils.isGuid(userId)) {
+      throw new Error("You cannot build a user key without a valid UserId");
+    }
+    return `user_${userId}_${this.stateDefinition.name}_${this.key}` as StorageKey;
+  }
+
   private get errorKeyName() {
     return `${this.stateDefinition.name} > ${this.key}`;
   }
-}
-
-/**
- * Creates a {@link StorageKey}
- * @param keyDefinition The key definition of which data the key should point to.
- * @returns A key that is ready to be used in a storage service to get data.
- */
-export function globalKeyBuilder(keyDefinition: KeyDefinition<unknown>): StorageKey {
-  return `global_${keyDefinition.stateDefinition.name}_${keyDefinition.key}` as StorageKey;
 }

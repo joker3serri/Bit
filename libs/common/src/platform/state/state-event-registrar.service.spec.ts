@@ -4,9 +4,9 @@ import { FakeGlobalStateProvider } from "../../../spec";
 import { AbstractStorageService, ObservableStorageService } from "../abstractions/storage.service";
 import { StorageServiceProvider } from "../services/storage-service.provider";
 
-import { KeyDefinition } from "./key-definition";
 import { StateDefinition } from "./state-definition";
 import { STATE_LOCK_EVENT, StateEventRegistrarService } from "./state-event-registrar.service";
+import { UserKeyDefinition } from "./user-key-definition";
 
 describe("StateEventRegistrarService", () => {
   const globalStateProvider = new FakeGlobalStateProvider();
@@ -16,7 +16,7 @@ describe("StateEventRegistrarService", () => {
   const sut = new StateEventRegistrarService(globalStateProvider, storageServiceProvider);
 
   describe("registerEvents", () => {
-    const fakeKeyDefinition = new KeyDefinition<boolean>(
+    const fakeKeyDefinition = new UserKeyDefinition<boolean>(
       new StateDefinition("fakeState", "disk"),
       "fakeKey",
       {

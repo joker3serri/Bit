@@ -5,13 +5,14 @@ import { StorageServiceProvider } from "../services/storage-service.provider";
 
 import { GlobalState } from "./global-state";
 import { GlobalStateProvider } from "./global-state.provider";
-import { ClearEvent, KeyDefinition, userKeyBuilder } from "./key-definition";
+import { ClearEvent } from "./key-definition";
 import { StateDefinition, StorageLocation } from "./state-definition";
 import {
   STATE_LOCK_EVENT,
   STATE_LOGOUT_EVENT,
   StateEventInfo,
 } from "./state-event-registrar.service";
+import { UserKeyDefinition } from "./user-key-definition";
 
 export class StateEventRunnerService {
   private readonly stateEventMap: { [Prop in ClearEvent]: GlobalState<StateEventInfo[]> };
@@ -36,10 +37,15 @@ export class StateEventRunnerService {
         {}, // The storage location is already the computed storage location for this client
       );
 
-      const ticketStorageKey = userKeyBuilder(userId, {
-        key: ticket.key,
-        stateDefinition: { name: ticket.state } as unknown as StateDefinition,
-      } as unknown as KeyDefinition<unknown>);
+      const userKey = new UserKeyDefinition<unknown>(
+        new StateDefinition(ticket.state, ticket.location as unknown as StorageLocation),
+        ticket.key,
+        {
+          deserializer: (v) => v,
+          clearOn: [],
+        },
+      );
+      const ticketStorageKey = userKey.buildKey(userId);
 
       // Evaluate current value so we can avoid writing to state if we don't need to
       const currentValue = await service.get(ticketStorageKey);

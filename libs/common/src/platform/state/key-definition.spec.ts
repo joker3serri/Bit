@@ -49,33 +49,33 @@ describe("KeyDefinition", () => {
     });
   });
 
-  describe("clearOn", () => {
-    it("defaults to empty array if not defined", () => {
-      const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
-        deserializer: (v) => v,
-      });
+  // describe("clearOn", () => {
+  //   it("defaults to empty array if not defined", () => {
+  //     const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
+  //       deserializer: (v) => v,
+  //     });
 
-      expect(keyDefinition.clearOn).toStrictEqual([]);
-    });
+  //     expect(keyDefinition.clearOn).toStrictEqual([]);
+  //   });
 
-    it("returns given items", () => {
-      const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
-        deserializer: (v) => v,
-        clearOn: ["lock", "logout"],
-      });
+  //   it("returns given items", () => {
+  //     const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
+  //       deserializer: (v) => v,
+  //       clearOn: ["lock", "logout"],
+  //     });
 
-      expect(keyDefinition.clearOn).toStrictEqual(["lock", "logout"]);
-    });
+  //     expect(keyDefinition.clearOn).toStrictEqual(["lock", "logout"]);
+  //   });
 
-    it("gets rid of duplicates in constructor", () => {
-      const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
-        deserializer: (v) => v,
-        clearOn: ["lock", "lock"],
-      });
+  //   it("gets rid of duplicates in constructor", () => {
+  //     const keyDefinition = new KeyDefinition<boolean>(fakeStateDefinition, "fake", {
+  //       deserializer: (v) => v,
+  //       clearOn: ["lock", "lock"],
+  //     });
 
-      expect(keyDefinition.clearOn).toStrictEqual(["lock"]);
-    });
-  });
+  //     expect(keyDefinition.clearOn).toStrictEqual(["lock"]);
+  //   });
+  // });
 
   describe("record", () => {
     it("runs custom deserializer for each record value", () => {

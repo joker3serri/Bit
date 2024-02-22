@@ -4,6 +4,7 @@ import { GlobalState } from "./global-state";
 import { GlobalStateProvider } from "./global-state.provider";
 import { ClearEvent, KeyDefinition } from "./key-definition";
 import { CLEAR_EVENT_DISK } from "./state-definitions";
+import { UserKeyDefinition } from "./user-key-definition";
 
 export type StateEventInfo = {
   state: string;
@@ -32,7 +33,7 @@ export class StateEventRegistrarService {
     };
   }
 
-  async registerEvents(keyDefinition: KeyDefinition<unknown>) {
+  async registerEvents(keyDefinition: UserKeyDefinition<unknown>) {
     for (const clearEvent of keyDefinition.clearOn) {
       const eventState = this.stateEventStateMap[clearEvent];
       // Determine the storage location for this
