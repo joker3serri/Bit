@@ -1,11 +1,25 @@
 import { any, MockProxy } from "jest-mock-extended";
 
-import { ClearClipboardDelay } from "../../../../../apps/browser/src/autofill/constants";
-import { AutofillOverlayVisibility } from "../../../../../apps/browser/src/autofill/utils/autofill-overlay.enum";
 import { StateDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
 import { ClearClipboardDelayMigrator } from "./24-move-clear-clipboard-to-autofill-settings-state-provider";
+
+export const ClearClipboardDelay = {
+  Never: null as null,
+  TenSeconds: 10,
+  TwentySeconds: 20,
+  ThirtySeconds: 30,
+  OneMinute: 60,
+  TwoMinutes: 120,
+  FiveMinutes: 300,
+} as const;
+
+const AutofillOverlayVisibility = {
+  Off: 0,
+  OnButtonClick: 1,
+  OnFieldFocus: 2,
+} as const;
 
 function exampleJSON() {
   return {
