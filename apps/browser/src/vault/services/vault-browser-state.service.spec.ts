@@ -2,7 +2,6 @@ import {
   FakeAccountService,
   mockAccountServiceWith,
 } from "@bitwarden/common/../spec/fake-account-service";
-import { FakeActiveUserState } from "@bitwarden/common/../spec/fake-state";
 import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
 import { Jsonify } from "type-fest";
 
@@ -22,8 +21,6 @@ import {
 describe("Vault Browser State Service", () => {
   let stateProvider: FakeStateProvider;
 
-  let browserState: FakeActiveUserState<BrowserComponentState>;
-
   let accountService: FakeAccountService;
   let stateService: VaultBrowserStateService;
   const mockUserId = Utils.newGuid() as UserId;
@@ -31,8 +28,6 @@ describe("Vault Browser State Service", () => {
   beforeEach(() => {
     accountService = mockAccountServiceWith(mockUserId);
     stateProvider = new FakeStateProvider(accountService);
-
-    browserState = stateProvider.activeUser.getFake(VAULT_BROWSER_COMPONENT);
 
     stateService = new VaultBrowserStateService(stateProvider);
   });
@@ -83,7 +78,7 @@ describe("Vault Browser State Service", () => {
       componentState.scrollY = 0;
       componentState.searchText = "test";
 
-      browserState.nextState(componentState);
+      await stateService.setBrowserVaultItemsComponentState(componentState);
 
       const actual = await stateService.getBrowserVaultItemsComponentState();
       expect(actual).toStrictEqual(componentState);
