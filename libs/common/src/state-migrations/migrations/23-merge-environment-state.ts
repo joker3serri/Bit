@@ -66,9 +66,18 @@ export class MergeEnvironmentState extends Migrator<22, 23> {
 
       await helper.setToUser(userId, ENVIRONMENT_REGION, state?.region);
       await helper.setToUser(userId, ENVIRONMENT_URLS, state?.urls);
-      await helper.setToUser(userId, ENVIRONMENT_ENVIRONMENT, undefined);
+      await helper.removeFromUser(userId, ENVIRONMENT_ENVIRONMENT);
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => rollbackAccount(userId, account))]);
+
+    const state = (await helper.getFromGlobal(ENVIRONMENT_ENVIRONMENT)) as {
+      region: string;
+      urls: string;
+    } | null;
+
+    await helper.setToGlobal(ENVIRONMENT_REGION, state?.region);
+    await helper.setToGlobal(ENVIRONMENT_URLS, state?.urls);
+    await helper.removeFromGlobal(ENVIRONMENT_ENVIRONMENT);
   }
 }
