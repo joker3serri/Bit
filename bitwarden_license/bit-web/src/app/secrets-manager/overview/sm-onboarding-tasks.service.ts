@@ -6,7 +6,7 @@ import {
   KeyDefinition,
   SM_ONBOARDING_DISK,
   StateProvider,
-} from "../../../../../../libs/common/src/platform/state";
+} from "@bitwarden/common/platform/state";
 
 export type SMOnboardingTasks = Record<string, Record<string, boolean>>;
 
