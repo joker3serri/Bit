@@ -1,12 +1,22 @@
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 
 import { ThemeType } from "@bitwarden/common/platform/enums";
 
-import { Theme } from "./theme";
-
 export abstract class AbstractThemingService {
-  theme$: Observable<Theme>;
-  monitorThemeChanges: () => Promise<void>;
-  updateSystemTheme: (systemTheme: ThemeType) => void;
+  /**
+   *
+   */
+  configuredTheme$: Observable<ThemeType>;
+  /**
+   *
+   */
+  theme$: Observable<ThemeType>;
+  /**
+   *
+   */
+  monitorThemeChanges: () => Subscription;
+  /**
+   *
+   */
   updateConfiguredTheme: (theme: ThemeType) => Promise<void>;
 }

@@ -35,7 +35,6 @@ export class PreferencesComponent implements OnInit {
   themeOptions: any[];
 
   private startingLocale: string;
-  private startingTheme: ThemeType;
   private destroy$ = new Subject<void>();
 
   form = this.formBuilder.group({
@@ -141,11 +140,10 @@ export class PreferencesComponent implements OnInit {
         this.vaultTimeoutSettingsService.vaultTimeoutAction$(),
       ),
       enableFavicons: !(await this.settingsService.getDisableFavicon()),
-      theme: await this.stateService.getTheme(),
+      theme: await firstValueFrom(this.themingService.configuredTheme$),
       locale: (await this.stateService.getLocale()) ?? null,
     };
     this.startingLocale = initialFormValues.locale;
-    this.startingTheme = initialFormValues.theme;
     this.form.setValue(initialFormValues, { emitEvent: false });
   }
 
@@ -165,10 +163,7 @@ export class PreferencesComponent implements OnInit {
       values.vaultTimeoutAction,
     );
     await this.settingsService.setDisableFavicon(!values.enableFavicons);
-    if (values.theme !== this.startingTheme) {
-      await this.themingService.updateConfiguredTheme(values.theme);
-      this.startingTheme = values.theme;
-    }
+    await this.themingService.updateConfiguredTheme(values.theme);
     await this.stateService.setLocale(values.locale);
     if (values.locale !== this.startingLocale) {
       window.location.reload();

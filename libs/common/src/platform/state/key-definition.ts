@@ -1,7 +1,7 @@
-import { Jsonify } from "type-fest";
+import { type Jsonify } from "type-fest";
 
-import { UserId } from "../../types/guid";
-import { StorageKey } from "../../types/state";
+import { type UserId } from "../../types/guid";
+import { type StorageKey } from "../../types/state";
 import { Utils } from "../misc/utils";
 
 import { StateDefinition } from "./state-definition";

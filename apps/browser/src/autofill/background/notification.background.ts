@@ -1,5 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
+import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -69,6 +70,7 @@ export default class NotificationBackground {
     private stateService: BrowserStateService,
     private environmentService: EnvironmentService,
     private logService: LogService,
+    private themingService: AbstractThemingService,
   ) {}
 
   async init() {
@@ -159,7 +161,7 @@ export default class NotificationBackground {
   }
 
   private async getCurrentTheme() {
-    const theme = await this.stateService.getTheme();
+    const theme = await firstValueFrom(this.themingService.configuredTheme$);
 
     if (theme !== ThemeType.System) {
       return theme;

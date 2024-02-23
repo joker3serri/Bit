@@ -32,6 +32,8 @@ export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk", {
   web: "disk-local",
 });
 
+export const THEMING_DISK = new StateDefinition("theming", "disk", { web: "disk-local" });
+
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 

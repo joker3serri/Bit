@@ -110,7 +110,7 @@ export class OptionsComponent implements OnInit {
 
     this.enablePasskeys = await firstValueFrom(this.vaultSettingsService.enablePasskeys$);
 
-    this.theme = await this.stateService.getTheme();
+    this.theme = await firstValueFrom(this.themingService.configuredTheme$);
 
     const defaultUriMatch = await this.stateService.getDefaultUriMatch();
     this.defaultUriMatch = defaultUriMatch == null ? UriMatchType.Domain : defaultUriMatch;

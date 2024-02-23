@@ -1,5 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
+import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -99,6 +100,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
+    private themingService: AbstractThemingService,
   ) {
     this.iconsServerUrl = this.environmentService.getIconsUrl();
   }
@@ -733,7 +735,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
       command: `initAutofillOverlay${isOverlayListPort ? "List" : "Button"}`,
       authStatus: await this.getAuthStatus(),
       styleSheetUrl: chrome.runtime.getURL(`overlay/${isOverlayListPort ? "list" : "button"}.css`),
-      theme: await this.stateService.getTheme(),
+      theme: await firstValueFrom(this.themingService.configuredTheme$),
       translations: this.getTranslations(),
       ciphers: isOverlayListPort ? this.getOverlayCipherData() : null,
     });

@@ -1,57 +1,66 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
-import { BehaviorSubject, filter, fromEvent, Observable } from "rxjs";
+import { defer, fromEvent, map, merge, of, Subscription, switchMap } from "rxjs";
 
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
+import { KeyDefinition, StateProvider, THEMING_DISK } from "@bitwarden/common/platform/state";
 
 import { WINDOW } from "../../../services/injection-tokens";
 
-import { Theme } from "./theme";
-import { ThemeBuilder } from "./theme-builder";
 import { AbstractThemingService } from "./theming.service.abstraction";
+
+const THEME_SELECTION = new KeyDefinition<ThemeType>(THEMING_DISK, "selection", {
+  deserializer: (s) => s,
+});
 
 @Injectable()
 export class ThemingService implements AbstractThemingService {
-  private _theme = new BehaviorSubject<ThemeBuilder | null>(null);
-  theme$: Observable<Theme> = this._theme.pipe(filter((x) => x !== null));
+  private readonly selectedThemeState = this.stateProvider.getGlobal(THEME_SELECTION);
+
+  readonly configuredTheme$ = this.selectedThemeState.state$.pipe(
+    map((theme) => theme ?? ThemeType.Light),
+  );
+
+  protected readonly systemTheme$ = merge(
+    defer(() => this.getSystemTheme()),
+    fromEvent<MediaQueryListEvent>(
+      // TODO: This uses this.window as opposed to the previous one which used the global window object
+      this.window.matchMedia("(prefers-color-scheme: dark)"),
+      "change",
+    ).pipe(map((event) => (event.matches ? ThemeType.Dark : ThemeType.Light))),
+  );
+
+  readonly theme$ = this.configuredTheme$.pipe(
+    switchMap((configuredTheme) => {
+      if (configuredTheme === ThemeType.System) {
+        return this.systemTheme$;
+      }
+
+      return of(configuredTheme);
+    }),
+  );
 
   constructor(
-    private stateService: StateService,
+    private stateProvider: StateProvider,
     @Inject(WINDOW) private window: Window,
     @Inject(DOCUMENT) private document: Document,
-  ) {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.monitorThemeChanges();
-  }
+  ) {}
 
-  async monitorThemeChanges(): Promise<void> {
-    this._theme.next(
-      new ThemeBuilder(await this.stateService.getTheme(), await this.getSystemTheme()),
-    );
-    this.monitorConfiguredThemeChanges();
-    this.monitorSystemThemeChanges();
-  }
-
-  updateSystemTheme(systemTheme: ThemeType): void {
-    this._theme.next(this._theme.getValue().updateSystemTheme(systemTheme));
-  }
-
-  async updateConfiguredTheme(theme: ThemeType): Promise<void> {
-    await this.stateService.setTheme(theme);
-    this._theme.next(this._theme.getValue().updateConfiguredTheme(theme));
-  }
-
-  protected monitorConfiguredThemeChanges(): void {
-    this.theme$.subscribe((theme: Theme) => {
+  monitorThemeChanges(): Subscription {
+    return this.theme$.subscribe((theme) => {
       this.document.documentElement.classList.remove(
         "theme_" + ThemeType.Light,
         "theme_" + ThemeType.Dark,
         "theme_" + ThemeType.Nord,
         "theme_" + ThemeType.SolarizedDark,
       );
-      this.document.documentElement.classList.add("theme_" + theme.effectiveTheme);
+      this.document.documentElement.classList.add("theme_" + theme);
+    });
+  }
+
+  async updateConfiguredTheme(theme: ThemeType): Promise<void> {
+    await this.selectedThemeState.update(() => theme, {
+      shouldUpdate: (currentTheme) => currentTheme !== theme,
     });
   }
 
@@ -62,13 +71,5 @@ export class ThemingService implements AbstractThemingService {
       ? ThemeType.Dark
       : ThemeType.Light;
   }
-
-  protected monitorSystemThemeChanges(): void {
-    fromEvent<MediaQueryListEvent>(
-      window.matchMedia("(prefers-color-scheme: dark)"),
-      "change",
-    ).subscribe((event) => {
-      this.updateSystemTheme(event.matches ? ThemeType.Dark : ThemeType.Light);
-    });
-  }
 }
+export { THEME_SELECTION };

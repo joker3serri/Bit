@@ -56,7 +56,7 @@ export class InitService {
       this.twoFactorService.init();
       const htmlEl = this.win.document.documentElement;
       htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
-      await this.themingService.monitorThemeChanges();
+      this.themingService.monitorThemeChanges();
       const containerService = new ContainerService(this.cryptoService, this.encryptService);
       containerService.attachToGlobal(this.win);
 

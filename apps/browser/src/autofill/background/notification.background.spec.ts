@@ -1,6 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
+import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
@@ -47,6 +48,7 @@ describe("NotificationBackground", () => {
   const stateService = mock<BrowserStateService>();
   const environmentService = mock<EnvironmentService>();
   const logService = mock<LogService>();
+  const themingService = mock<AbstractThemingService>();
 
   beforeEach(() => {
     notificationBackground = new NotificationBackground(
@@ -58,6 +60,7 @@ describe("NotificationBackground", () => {
       stateService,
       environmentService,
       logService,
+      themingService,
     );
   });
 

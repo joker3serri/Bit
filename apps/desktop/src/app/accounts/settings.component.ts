@@ -261,7 +261,7 @@ export class SettingsComponent implements OnInit {
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
       enableDuckDuckGoBrowserIntegration:
         await this.stateService.getEnableDuckDuckGoBrowserIntegration(),
-      theme: await this.stateService.getTheme(),
+      theme: await firstValueFrom(this.themingService.configuredTheme$),
       locale: (await this.stateService.getLocale()) ?? null,
     };
     this.form.setValue(initialValues, { emitEvent: false });

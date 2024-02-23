@@ -1,5 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
+import { ThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
+import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import {
   PinCryptoServiceAbstraction,
   PinCryptoService,
@@ -287,6 +289,7 @@ export default class MainBackground {
   organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
   vaultSettingsService: VaultSettingsServiceAbstraction;
   biometricStateService: BiometricStateService;
+  themingService: AbstractThemingService;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -435,6 +438,10 @@ export default class MainBackground {
       },
       window,
     );
+
+    // We don't need window/document for this theming service as it's only used for getting the configured theme
+    this.themingService = new ThemingService(this.stateProvider, self, self.document);
+
     this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
     this.cryptoService = new BrowserCryptoService(
       this.keyGenerationService,
@@ -829,6 +836,7 @@ export default class MainBackground {
       this.stateService,
       this.environmentService,
       this.logService,
+      this.themingService,
     );
     this.overlayBackground = new OverlayBackground(
       this.cipherService,
@@ -840,6 +848,7 @@ export default class MainBackground {
       this.autofillSettingsService,
       this.i18nService,
       this.platformUtilsService,
+      this.themingService,
     );
     this.filelessImporterBackground = new FilelessImporterBackground(
       this.configService,

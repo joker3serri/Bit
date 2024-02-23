@@ -1,5 +1,7 @@
 import { mock, mockReset } from "jest-mock-extended";
+import { BehaviorSubject } from "rxjs";
 
+import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
@@ -51,6 +53,7 @@ describe("OverlayBackground", () => {
   const autofillSettingsService = mock<AutofillSettingsService>();
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<BrowserPlatformUtilsService>();
+  const themingService = mock<AbstractThemingService>();
   const initOverlayElementPorts = async (options = { initList: true, initButton: true }) => {
     const { initList, initButton } = options;
     if (initButton) {
@@ -77,11 +80,14 @@ describe("OverlayBackground", () => {
       autofillSettingsService,
       i18nService,
       platformUtilsService,
+      themingService,
     );
 
     jest
       .spyOn(overlayBackground as any, "getOverlayVisibility")
       .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
+
+    themingService.configuredTheme$ = new BehaviorSubject<ThemeType>(null);
 
     void overlayBackground.init();
   });
@@ -1028,7 +1034,7 @@ describe("OverlayBackground", () => {
     });
 
     it("gets the system theme", async () => {
-      jest.spyOn(overlayBackground["stateService"], "getTheme").mockResolvedValue(ThemeType.System);
+      themingService.configuredTheme$ = new BehaviorSubject<ThemeType>(ThemeType.System);
 
       await initOverlayElementPorts({ initList: true, initButton: false });
       await flushPromises();
