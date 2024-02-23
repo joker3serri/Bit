@@ -5,7 +5,12 @@ import { PlatformUtilsService } from "../../platform/abstractions/platform-utils
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
-import { ActiveUserState, GlobalState, StateProvider } from "../../platform/state";
+import {
+  GlobalState,
+  GlobalStateProvider,
+  KeyDefinition,
+  SingleUserStateProvider,
+} from "../../platform/state";
 import { UserId } from "../../types/guid";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 
@@ -13,14 +18,14 @@ import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
   ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-  API_KEY_CLIENT_ID_DISK,
-  API_KEY_CLIENT_ID_MEMORY,
-  API_KEY_CLIENT_SECRET_DISK,
-  API_KEY_CLIENT_SECRET_MEMORY,
+  // API_KEY_CLIENT_ID_DISK,
+  // API_KEY_CLIENT_ID_MEMORY,
+  // API_KEY_CLIENT_SECRET_DISK,
+  // API_KEY_CLIENT_SECRET_MEMORY,
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
-  REFRESH_TOKEN_DISK,
-  REFRESH_TOKEN_MEMORY,
-  REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+  // REFRESH_TOKEN_DISK,
+  // REFRESH_TOKEN_MEMORY,
+  // REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
 
 // TODO: write tests for this service
@@ -48,26 +53,17 @@ export class TokenService implements TokenServiceAbstraction {
   private readonly platformSupportsSecureStorage =
     this.platformUtilsService.supportsSecureStorage();
 
-  private accessTokenDiskState: ActiveUserState<string>;
-  private accessTokenMemoryState: ActiveUserState<string>;
   private readonly accessTokenSecureStorageKey: string = "_accessToken";
-  private accessTokenMigratedToSecureStorageState: ActiveUserState<boolean>;
 
-  private refreshTokenDiskState: ActiveUserState<string>;
-  private refreshTokenMemoryState: ActiveUserState<string>;
   private readonly refreshTokenSecureStorageKey: string = "_refreshToken";
-  private refreshTokenMigratedToSecureStorageState: ActiveUserState<boolean>;
-
-  private apiKeyClientIdDiskState: ActiveUserState<string>;
-  private apiKeyClientIdMemoryState: ActiveUserState<string>;
-
-  private apiKeyClientSecretDiskState: ActiveUserState<string>;
-  private apiKeyClientSecretMemoryState: ActiveUserState<string>;
 
   private emailTwoFactorTokenRecordGlobalState: GlobalState<Record<string, string>>;
 
   constructor(
-    private stateProvider: StateProvider,
+    // Note: we cannot use ActiveStateProvider because if we ever want to inject
+    // this service into the AccountService, we will make a circular dependency
+    private singleUserStateProvider: SingleUserStateProvider,
+    private globalStateProvider: GlobalStateProvider,
     private platformUtilsService: PlatformUtilsService,
     private secureStorageService: AbstractStorageService,
   ) {
@@ -75,25 +71,7 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   private initializeState(): void {
-    this.accessTokenDiskState = this.stateProvider.getActive(ACCESS_TOKEN_DISK);
-    this.accessTokenMemoryState = this.stateProvider.getActive(ACCESS_TOKEN_MEMORY);
-    this.accessTokenMigratedToSecureStorageState = this.stateProvider.getActive(
-      ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-    );
-
-    this.refreshTokenDiskState = this.stateProvider.getActive(REFRESH_TOKEN_DISK);
-    this.refreshTokenMemoryState = this.stateProvider.getActive(REFRESH_TOKEN_MEMORY);
-    this.refreshTokenMigratedToSecureStorageState = this.stateProvider.getActive(
-      REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-    );
-
-    this.apiKeyClientIdDiskState = this.stateProvider.getActive(API_KEY_CLIENT_ID_DISK);
-    this.apiKeyClientIdMemoryState = this.stateProvider.getActive(API_KEY_CLIENT_ID_MEMORY);
-
-    this.apiKeyClientSecretDiskState = this.stateProvider.getActive(API_KEY_CLIENT_SECRET_DISK);
-    this.apiKeyClientSecretMemoryState = this.stateProvider.getActive(API_KEY_CLIENT_SECRET_MEMORY);
-
-    this.emailTwoFactorTokenRecordGlobalState = this.stateProvider.getGlobal(
+    this.emailTwoFactorTokenRecordGlobalState = this.globalStateProvider.get(
       EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
     );
   }
@@ -122,56 +100,62 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
+  // TODO: update set logic to properly consider if user id exists and then use setToUser if it exists
+  // TODO: only use secure storage if storing on disk
+  // TODO: update rest of file to use singleUserStateProvider
+
   async setAccessToken(
     token: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
-    userId?: UserId,
+    userId: UserId,
   ): Promise<void> {
-    if (this.platformSupportsSecureStorage) {
-      // if we don't have a user id, see if we can get one from the state provider active user
-      if (!userId) {
-        userId = await firstValueFrom(this.stateProvider.activeUserId$);
-      }
-
-      // If we don't have a user id, we can't save to secure storage
-      if (!userId) {
-        throw new Error("User id not found. Cannot save access token to secure storage.");
-      }
-
-      await this.secureStorageService.save<string>(
-        `${userId}${this.accessTokenSecureStorageKey}`,
-        token,
-        {
-          storageLocation: StorageLocation.Disk,
-          useSecureStorage: true,
-          userId: userId,
-        },
-      );
-
-      // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
-      // 2024-02-20: Remove access token from memory and disk so that we migrate to secure storage over time.
-      // Remove these 2 calls to remove the access token from memory and disk after 3 releases.
-      await this.accessTokenDiskState.update((_) => null);
-      await this.accessTokenMemoryState.update((_) => null);
-
-      // Set flag to indicate that the access token has been migrated to secure storage (don't remove this)
-      await this.setAccessTokenMigratedToSecureStorage();
-
-      return;
+    // If we don't have a user id, we can't save the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot save access token.");
     }
 
     // Platform doesn't support secure storage, so use state provider implementation
     const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
     if (storageLocation === "disk") {
-      await this.accessTokenDiskState.update((_) => token);
+      if (this.platformSupportsSecureStorage) {
+        await this.secureStorageService.save<string>(
+          `${userId}${this.accessTokenSecureStorageKey}`,
+          token,
+          {
+            storageLocation: StorageLocation.Disk,
+            useSecureStorage: true,
+            userId: userId,
+          },
+        );
+
+        // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
+        // 2024-02-20: Remove access token from memory and disk so that we migrate to secure storage over time.
+        // Remove these 2 calls to remove the access token from memory and disk after 3 releases.
+
+        await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_DISK).update((_) => null);
+        await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_MEMORY).update((_) => null);
+
+        // Set flag to indicate that the access token has been migrated to secure storage (don't remove this)
+        await this.setAccessTokenMigratedToSecureStorage(userId);
+
+        return;
+      }
+
+      // Platform doesn't support secure storage, so use state provider implementation
+      await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_DISK).update((_) => token);
     } else if (storageLocation === "memory") {
-      await this.accessTokenMemoryState.update((_) => token);
+      await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_MEMORY).update((_) => token);
     }
   }
 
   async clearAccessTokenByUserId(userId: UserId): Promise<void> {
+    // If we don't have a user id, we can't clear the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot clear access token.");
+    }
+
     if (this.platformSupportsSecureStorage) {
       await this.secureStorageService.remove(`${userId}${this.accessTokenSecureStorageKey}`, {
         storageLocation: StorageLocation.Disk,
@@ -182,55 +166,36 @@ export class TokenService implements TokenServiceAbstraction {
     }
 
     // Platform doesn't support secure storage, so use state provider implementation
-    await this.stateProvider.setUserState(ACCESS_TOKEN_DISK, null, userId);
-    await this.stateProvider.setUserState(ACCESS_TOKEN_MEMORY, null, userId);
+    await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_DISK).update((_) => null);
+    await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_MEMORY).update((_) => null);
   }
 
-  async getAccessToken(userId?: UserId): Promise<string> {
-    const accessTokenMigratedToSecureStorage = await this.getAccessTokenMigratedToSecureStorage();
+  async getAccessToken(userId: UserId): Promise<string | undefined> {
+    if (!userId) {
+      throw new Error("User id not found. Cannot get access token.");
+    }
+
+    const accessTokenMigratedToSecureStorage =
+      await this.getAccessTokenMigratedToSecureStorage(userId);
     if (this.platformSupportsSecureStorage && accessTokenMigratedToSecureStorage) {
       return await this.getAccessTokenFromSecureStorage(userId);
     }
 
-    // pre-secure storage migration:
-    // if user id, read from user
-    if (userId) {
-      const accessTokenForUser = await this.getAccessTokenByUserId(userId);
+    // Try to get the access token from memory
+    const accessTokenMemory = await this.getAccessTokenByUserIdAndLocation(
+      userId,
+      ACCESS_TOKEN_MEMORY,
+    );
 
-      if (accessTokenForUser) {
-        return accessTokenForUser;
-      }
-    }
-
-    // if no user id, read from active user in memory (memory first b/c faster)
-    const accessTokenMemory = await firstValueFrom(this.accessTokenMemoryState.state$);
     if (accessTokenMemory != null) {
       return accessTokenMemory;
     }
 
-    // if memory is null, read from active user on disk
-    const accessTokenDisk = await firstValueFrom(this.accessTokenDiskState.state$);
-    if (accessTokenDisk != null) {
-      return accessTokenDisk;
-    }
-
-    return null;
+    // If memory is null, read from disk
+    return await this.getAccessTokenByUserIdAndLocation(userId, ACCESS_TOKEN_DISK);
   }
 
-  private async getAccessTokenFromSecureStorage(userId?: UserId): Promise<string | null> {
-    if (!this.platformSupportsSecureStorage) {
-      return null;
-    }
-
-    // Ensure a user ID is provided; if not, attempt to retrieve the active user ID.
-    if (!userId) {
-      userId = await firstValueFrom(this.stateProvider.activeUserId$);
-    }
-
-    if (!userId) {
-      return null;
-    }
-
+  private async getAccessTokenFromSecureStorage(userId: UserId): Promise<string | null> {
     // If we have a user ID, read from secure storage.
     return await this.secureStorageService.get<string>(
       `${userId}${this.accessTokenSecureStorageKey}`,
@@ -241,26 +206,24 @@ export class TokenService implements TokenServiceAbstraction {
       },
     );
   }
-  private async getAccessTokenByUserId(userId: UserId): Promise<string> {
-    // Always read memory first b/c faster
-    const accessTokenMemory = await firstValueFrom(
-      this.stateProvider.getUser(userId, ACCESS_TOKEN_MEMORY).state$,
+  private async getAccessTokenByUserIdAndLocation(
+    userId: UserId,
+    storageLocation: KeyDefinition<string>,
+  ): Promise<string | undefined> {
+    // read from single user state provider
+    return await firstValueFrom(this.singleUserStateProvider.get(userId, storageLocation).state$);
+  }
+
+  private async getAccessTokenMigratedToSecureStorage(userId: UserId): Promise<boolean> {
+    return await firstValueFrom(
+      this.singleUserStateProvider.get(userId, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE).state$,
     );
-
-    if (accessTokenMemory != null) {
-      return accessTokenMemory;
-    }
-
-    // if memory is null, read from disk
-    return await firstValueFrom(this.stateProvider.getUser(userId, ACCESS_TOKEN_DISK).state$);
   }
 
-  private async getAccessTokenMigratedToSecureStorage(): Promise<boolean> {
-    return await firstValueFrom(this.accessTokenMigratedToSecureStorageState.state$);
-  }
-
-  private async setAccessTokenMigratedToSecureStorage(): Promise<void> {
-    await this.accessTokenMigratedToSecureStorageState.update((_) => true);
+  private async setAccessTokenMigratedToSecureStorage(userId: UserId): Promise<void> {
+    await this.singleUserStateProvider
+      .get(userId, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+      .update((_) => true);
   }
 
   // Private because we only ever set the refresh token when also setting the access token
@@ -336,7 +299,7 @@ export class TokenService implements TokenServiceAbstraction {
       return null;
     }
 
-    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    const userId = await firstValueFrom(this.singleUserStateProvider.activeUserId$);
 
     // if we still don't have a user id, we can't read from secure storage
     if (!userId) {
@@ -441,7 +404,12 @@ export class TokenService implements TokenServiceAbstraction {
     await this.setTokens(null, null, vaultTimeoutAction, vaultTimeout, [null, null]);
   }
 
-  // TODO: create a custom type for access token
+  // TODO: in the future, we should evaluate creating a custom type for the decoded token
+  // we also could consider removing these methods that expose account information and
+  // instead require users to go to the account service for this info (e.g. accountService.getEmail())
+
+  // TODO: short term, we will need to have each consumer of these methods below
+  // retrieve the access token and then call the method with the token as an argument
 
   // jwthelper methods
   // ref https://github.com/auth0/angular-jwt/blob/master/src/angularJwt/services/jwt.js

@@ -29,12 +29,14 @@ export abstract class TokenService {
    * @param token The access token to set.
    * @param vaultTimeoutAction The action to take when the vault times out.
    * @param vaultTimeout The timeout for the vault.
+   * @param userId The user id to set the access token for.
    * @returns A promise that resolves when the access token has been set.
    */
   setAccessToken: (
     token: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId: UserId,
   ) => Promise<void>;
 
   // TODO: revisit this approach once the state service is fully deprecated.
@@ -54,7 +56,7 @@ export abstract class TokenService {
    * @param userId - The optional user id to get the access token for; if not provided, the active user is used.
    * @returns A promise that resolves with the access token for the given user id.
    */
-  getAccessToken: (userId?: UserId) => Promise<string>;
+  getAccessToken: (userId: UserId) => Promise<string>;
 
   /**
    * Gets the refresh token for the active user.
