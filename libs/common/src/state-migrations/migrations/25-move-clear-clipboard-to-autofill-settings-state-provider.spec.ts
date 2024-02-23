@@ -3,7 +3,7 @@ import { any, MockProxy } from "jest-mock-extended";
 import { StateDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { ClearClipboardDelayMigrator } from "./24-move-clear-clipboard-to-autofill-settings-state-provider";
+import { ClearClipboardDelayMigrator } from "./25-move-clear-clipboard-to-autofill-settings-state-provider";
 
 export const ClearClipboardDelay = {
   Never: null as null,
@@ -88,8 +88,8 @@ describe("ProviderKeysMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 23);
-      sut = new ClearClipboardDelayMigrator(23, 24);
+      helper = mockMigrationHelper(exampleJSON(), 24);
+      sut = new ClearClipboardDelayMigrator(24, 25);
     });
 
     it("should remove clearClipboard setting from all accounts", async () => {
@@ -128,8 +128,8 @@ describe("ProviderKeysMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 22);
-      sut = new ClearClipboardDelayMigrator(23, 24);
+      helper = mockMigrationHelper(rollbackJSON(), 23);
+      sut = new ClearClipboardDelayMigrator(24, 25);
     });
 
     it("should null out new values for each account", async () => {

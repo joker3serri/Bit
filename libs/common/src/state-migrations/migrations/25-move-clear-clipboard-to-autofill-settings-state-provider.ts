@@ -16,7 +16,7 @@ const autofillSettingsLocalStateDefinition: {
   },
 };
 
-export class ClearClipboardDelayMigrator extends Migrator<23, 24> {
+export class ClearClipboardDelayMigrator extends Migrator<24, 25> {
   async migrate(helper: MigrationHelper): Promise<void> {
     // account state (e.g. account settings -> state provider framework keys)
     const accounts = await helper.getAccounts<ExpectedAccountState>();
