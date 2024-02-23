@@ -275,11 +275,11 @@ jobs:
             --delete-destination=true
 
       - name: Debug sync logs
-        if: ${{ inputs.debug }} == true
+        if: ${{ inputs.debug }}
         run: cat /home/runner/.azcopy/*.log
 
       - name: Debug index.html
-        if: ${{ inputs.debug }} == true
+        if: ${{ inputs.debug }}
         run: cat apps/web/build/index.html
 
       - name: Update deployment status to Success
