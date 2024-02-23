@@ -12,7 +12,19 @@ type UserKeyDefinitionOptions<T> = KeyDefinitionOptions<T> & {
   clearOn: ClearEvent[];
 };
 
+const USER_KEY_DEFINITION_MARKER: unique symbol = Symbol("UserKeyDefinition");
+
+export function isUserKeyDefinition<T>(
+  keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
+): keyDefinition is UserKeyDefinition<T> {
+  return (
+    USER_KEY_DEFINITION_MARKER in keyDefinition &&
+    keyDefinition[USER_KEY_DEFINITION_MARKER] === true
+  );
+}
+
 export class UserKeyDefinition<T> {
+  readonly [USER_KEY_DEFINITION_MARKER] = true;
   /**
    * A unique array of events that the state stored at this key should be cleared on.
    */
@@ -38,20 +50,6 @@ export class UserKeyDefinition<T> {
   }
 
   /**
-   *
-   * @param keyDefinition
-   * @returns
-   *
-   * @deprecated You should not use this to convert, just create a {@link UserKeyDefinition}
-   */
-  static fromBaseKeyDefinition<T>(keyDefinition: KeyDefinition<T>) {
-    return new UserKeyDefinition(keyDefinition.stateDefinition, keyDefinition.key, {
-      ...keyDefinition["options"],
-      clearOn: [], // Default to not clearing
-    });
-  }
-
-  /**
    * Gets the deserializer configured for this {@link KeyDefinition}
    */
   get deserializer() {
@@ -63,6 +61,20 @@ export class UserKeyDefinition<T> {
    */
   get cleanupDelayMs() {
     return this.options.cleanupDelayMs < 0 ? 0 : this.options.cleanupDelayMs ?? 1000;
+  }
+
+  /**
+   *
+   * @param keyDefinition
+   * @returns
+   *
+   * @deprecated You should not use this to convert, just create a {@link UserKeyDefinition}
+   */
+  static fromBaseKeyDefinition<T>(keyDefinition: KeyDefinition<T>) {
+    return new UserKeyDefinition<T>(keyDefinition.stateDefinition, keyDefinition.key, {
+      ...keyDefinition["options"],
+      clearOn: [], // Default to not clearing
+    });
   }
 
   /**

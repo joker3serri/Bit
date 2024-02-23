@@ -9,7 +9,7 @@ import {
 } from "../../abstractions/storage.service";
 import { KeyDefinition } from "../key-definition";
 import { StateDefinition } from "../state-definition";
-import { UserKeyDefinition } from "../user-key-definition";
+import { UserKeyDefinition, isUserKeyDefinition } from "../user-key-definition";
 import { ActiveUserState } from "../user-state";
 import { ActiveUserStateProvider } from "../user-state.provider";
 
@@ -29,7 +29,7 @@ export class DefaultActiveUserStateProvider implements ActiveUserStateProvider {
   }
 
   get<T>(keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>): ActiveUserState<T> {
-    if (keyDefinition instanceof KeyDefinition) {
+    if (!isUserKeyDefinition(keyDefinition)) {
       keyDefinition = UserKeyDefinition.fromBaseKeyDefinition(keyDefinition);
     }
     const cacheKey = this.buildCacheKey(keyDefinition);
