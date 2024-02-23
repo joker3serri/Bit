@@ -38,7 +38,7 @@ export class NotificationsService implements NotificationsServiceAbstraction {
     private authService: AuthService,
     private messagingService: MessagingService,
   ) {
-    this.environmentService.urls.subscribe(() => {
+    this.environmentService.environment$.subscribe(() => {
       if (!this.inited) {
         return;
       }

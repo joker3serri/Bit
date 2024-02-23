@@ -91,8 +91,8 @@ const DEFAULT_REGION = Region.US;
 const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_REGION);
 
 export class EnvironmentService implements EnvironmentServiceAbstraction {
-  private readonly urlsSubject = new ReplaySubject<void>(1);
-  urls: Observable<void> = this.urlsSubject.asObservable();
+  private readonly environmentSubject = new ReplaySubject<Environment>(1);
+  environment$ = this.environmentSubject.asObservable();
   initialized = false;
 
   private cloudWebVaultUrl: string;
@@ -130,6 +130,10 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
   }
 
+  get selectedRegion() {
+    return this.environment.getRegion();
+  }
+
   availableRegions(): RegionConfig[] {
     const additionalRegions = (process.env.ADDITIONAL_REGIONS as unknown as RegionConfig[]) ?? [];
     return PRODUCTION_REGIONS.concat(additionalRegions);
@@ -161,6 +165,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
       const regionConfig = this.getRegionConfig(region);
       this.environment = new UrlEnvironment(region, regionConfig.urls);
+      this.environmentSubject.next(this.environment);
 
       return null;
     } else {
@@ -190,6 +195,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       }));
 
       this.environment = new UrlEnvironment(region, urls);
+      this.environmentSubject.next(this.environment);
 
       return urls;
     }
@@ -365,52 +371,24 @@ class UrlEnvironment implements Environment {
     return this.urls.base != null;
   }
 
+  getWebVaultUrl() {
+    return this.getUrl("webVault", "");
+  }
+
   getApiUrl() {
-    if (this.urls.api != null) {
-      return this.urls.api;
-    }
-
-    if (this.urls.base) {
-      return this.urls.base + "/api";
-    }
-
-    return "https://api.bitwarden.com";
+    return this.getUrl("api", "/api");
   }
 
   getEventsUrl() {
-    if (this.urls.events != null) {
-      return this.urls.events;
-    }
-
-    if (this.urls.base) {
-      return this.urls.base + "/events";
-    }
-
-    return "https://events.bitwarden.com";
+    return this.getUrl("events", "/events");
   }
 
   getIconsUrl() {
-    if (this.urls.icons != null) {
-      return this.urls.icons;
-    }
-
-    if (this.urls.base) {
-      return this.urls.base + "/icons";
-    }
-
-    return "https://icons.bitwarden.net";
+    return this.getUrl("icons", "/icons");
   }
 
   getIdentityUrl() {
-    if (this.urls.identity != null) {
-      return this.urls.identity;
-    }
-
-    if (this.urls.base) {
-      return this.urls.base + "/identity";
-    }
-
-    return "https://identity.bitwarden.com";
+    return this.getUrl("identity", "/identity");
   }
 
   getKeyConnectorUrl() {
@@ -418,15 +396,7 @@ class UrlEnvironment implements Environment {
   }
 
   getNotificationsUrl() {
-    if (this.urls.notifications != null) {
-      return this.urls.notifications;
-    }
-
-    if (this.urls.base != null) {
-      return this.urls.base + "/notifications";
-    }
-
-    return "https://notifications.bitwarden.com";
+    return this.getUrl("notifications", "/notifications");
   }
 
   getScimUrl() {
@@ -445,14 +415,22 @@ class UrlEnvironment implements Environment {
       : this.getWebVaultUrl() + "/#/send/";
   }
 
-  getWebVaultUrl() {
-    if (this.urls.webVault != null) {
-      return this.urls.webVault;
+  /**
+   * Helper for getting an URL.
+   *
+   * @param key Key of the URL to get from URLs
+   * @param baseSuffix Suffix to append to the base URL if the url is not set
+   * @returns
+   */
+  private getUrl(key: keyof Urls, baseSuffix: string) {
+    if (this.urls[key] != null) {
+      return this.urls[key];
     }
 
     if (this.urls.base) {
-      return this.urls.base;
+      return this.urls.base + baseSuffix;
     }
-    return "https://vault.bitwarden.com";
+
+    return DEFAULT_REGION_CONFIG.urls[key];
   }
 }

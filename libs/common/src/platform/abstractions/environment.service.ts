@@ -64,7 +64,7 @@ export interface Environment {
  * The environment service. Provides access to set the current environment urls and region.
  */
 export abstract class EnvironmentService {
-  urls: Observable<void>;
+  environment$: Observable<Environment>;
   selectedRegion?: Region;
   initialized = true;
 
