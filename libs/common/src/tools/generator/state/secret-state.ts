@@ -47,7 +47,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
    *    encrypted, and stored in a `secret` property. Disclosed-classification data is stored
    *    in a `disclosed` property. Omitted-classification data is not stored.
    */
-  static from<TFrom extends object, Disclosed extends JsonValue>(
+  static from<TFrom extends object, Disclosed>(
     userId: UserId,
     key: KeyDefinition<TFrom>,
     provider: StateProvider,
