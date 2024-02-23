@@ -12,6 +12,7 @@ import { AccountService } from "../../auth/abstractions/account.service";
 import { UserId } from "../../types/guid";
 import {
   EnvironmentService as EnvironmentServiceAbstraction,
+  Environment,
   Region,
   RegionConfig,
   Urls,
@@ -28,10 +29,6 @@ export class EnvironmentUrls {
   events: string = null;
   webVault: string = null;
   keyConnector: string = null;
-
-  static fromJSON(obj: Jsonify<EnvironmentUrls>): EnvironmentUrls {
-    return Object.assign(new EnvironmentUrls(), obj);
-  }
 }
 
 class EnvironmentState {
@@ -96,21 +93,16 @@ const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_R
 export class EnvironmentService implements EnvironmentServiceAbstraction {
   private readonly urlsSubject = new ReplaySubject<void>(1);
   urls: Observable<void> = this.urlsSubject.asObservable();
-  selectedRegion?: Region;
   initialized = false;
 
-  protected baseUrl: string;
-  protected webVaultUrl: string;
-  protected apiUrl: string;
-  protected identityUrl: string;
-  protected iconsUrl: string;
-  protected notificationsUrl: string;
-  protected eventsUrl: string;
-  private keyConnectorUrl: string;
-  private scimUrl: string = null;
   private cloudWebVaultUrl: string;
 
   private globalState: GlobalState<EnvironmentState | null>;
+
+  protected environment: UrlEnvironment = new UrlEnvironment(
+    DEFAULT_REGION,
+    DEFAULT_REGION_CONFIG.urls,
+  );
 
   private activeAccountId$: Observable<UserId | null>;
 
@@ -161,8 +153,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       region = DEFAULT_REGION;
     }
 
-    this.selectedRegion = region;
-
     if (region != Region.SelfHosted) {
       await this.globalState.update(() => ({
         region: region,
@@ -170,19 +160,19 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       }));
 
       const regionConfig = this.getRegionConfig(region);
-      await this.setUrlsInternal(regionConfig.urls);
+      this.environment = new UrlEnvironment(region, regionConfig.urls);
 
       return null;
     } else {
       // Clean the urls
-      urls.base = this.formatUrl(urls.base);
-      urls.webVault = this.formatUrl(urls.webVault);
-      urls.api = this.formatUrl(urls.api);
-      urls.identity = this.formatUrl(urls.identity);
-      urls.icons = this.formatUrl(urls.icons);
-      urls.notifications = this.formatUrl(urls.notifications);
-      urls.events = this.formatUrl(urls.events);
-      urls.keyConnector = this.formatUrl(urls.keyConnector);
+      urls.base = formatUrl(urls.base);
+      urls.webVault = formatUrl(urls.webVault);
+      urls.api = formatUrl(urls.api);
+      urls.identity = formatUrl(urls.identity);
+      urls.icons = formatUrl(urls.icons);
+      urls.notifications = formatUrl(urls.notifications);
+      urls.events = formatUrl(urls.events);
+      urls.keyConnector = formatUrl(urls.keyConnector);
       urls.scim = null;
 
       await this.globalState.update(() => ({
@@ -199,37 +189,22 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
         },
       }));
 
-      await this.setUrlsInternal(urls);
+      this.environment = new UrlEnvironment(region, urls);
 
       return urls;
     }
   }
 
   hasBaseUrl() {
-    return this.baseUrl != null;
+    return this.environment.hasBaseUrl();
   }
 
   getNotificationsUrl() {
-    if (this.notificationsUrl != null) {
-      return this.notificationsUrl;
-    }
-
-    if (this.baseUrl != null) {
-      return this.baseUrl + "/notifications";
-    }
-
-    return "https://notifications.bitwarden.com";
+    return this.environment.getNotificationsUrl();
   }
 
   getWebVaultUrl() {
-    if (this.webVaultUrl != null) {
-      return this.webVaultUrl;
-    }
-
-    if (this.baseUrl) {
-      return this.baseUrl;
-    }
-    return "https://vault.bitwarden.com";
+    return this.environment.getWebVaultUrl();
   }
 
   getCloudWebVaultUrl() {
@@ -249,71 +224,31 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   getSendUrl() {
-    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
-      ? "https://send.bitwarden.com/#"
-      : this.getWebVaultUrl() + "/#/send/";
+    return this.environment.getSendUrl();
   }
 
   getIconsUrl() {
-    if (this.iconsUrl != null) {
-      return this.iconsUrl;
-    }
-
-    if (this.baseUrl) {
-      return this.baseUrl + "/icons";
-    }
-
-    return "https://icons.bitwarden.net";
+    return this.environment.getIconsUrl();
   }
 
   getApiUrl() {
-    if (this.apiUrl != null) {
-      return this.apiUrl;
-    }
-
-    if (this.baseUrl) {
-      return this.baseUrl + "/api";
-    }
-
-    return "https://api.bitwarden.com";
+    return this.environment.getApiUrl();
   }
 
   getIdentityUrl() {
-    if (this.identityUrl != null) {
-      return this.identityUrl;
-    }
-
-    if (this.baseUrl) {
-      return this.baseUrl + "/identity";
-    }
-
-    return "https://identity.bitwarden.com";
+    return this.environment.getIdentityUrl();
   }
 
   getEventsUrl() {
-    if (this.eventsUrl != null) {
-      return this.eventsUrl;
-    }
-
-    if (this.baseUrl) {
-      return this.baseUrl + "/events";
-    }
-
-    return "https://events.bitwarden.com";
+    return this.environment.getEventsUrl();
   }
 
   getKeyConnectorUrl() {
-    return this.keyConnectorUrl;
+    return this.environment.getKeyConnectorUrl();
   }
 
   getScimUrl() {
-    if (this.scimUrl != null) {
-      return this.scimUrl + "/v2";
-    }
-
-    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
-      ? "https://scim.bitwarden.com/v2"
-      : this.getWebVaultUrl() + "/scim/v2";
+    return this.environment.getScimUrl();
   }
 
   async setUrlsFromStorage(): Promise<void> {
@@ -324,30 +259,12 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   getUrls() {
-    return {
-      base: this.baseUrl,
-      webVault: this.webVaultUrl,
-      cloudWebVault: this.cloudWebVaultUrl,
-      api: this.apiUrl,
-      identity: this.identityUrl,
-      icons: this.iconsUrl,
-      notifications: this.notificationsUrl,
-      events: this.eventsUrl,
-      keyConnector: this.keyConnectorUrl,
-      scim: this.scimUrl,
-    };
+    const urls = this.environment.getUrls();
+    return { ...urls, cloudWebVault: this.cloudWebVaultUrl };
   }
 
   isEmpty(): boolean {
-    return (
-      this.baseUrl == null &&
-      this.webVaultUrl == null &&
-      this.apiUrl == null &&
-      this.identityUrl == null &&
-      this.iconsUrl == null &&
-      this.notificationsUrl == null &&
-      this.eventsUrl == null
-    );
+    return isEmpty(this.environment.getUrls());
   }
 
   async getHost(userId?: UserId) {
@@ -377,33 +294,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     await this.stateProvider.getUser(userId, ENVIRONMENT_KEY).update(() => global);
   }
 
-  protected setUrlsInternal(urls: Urls) {
-    this.baseUrl = this.formatUrl(urls.base);
-    this.webVaultUrl = this.formatUrl(urls.webVault);
-    this.apiUrl = this.formatUrl(urls.api);
-    this.identityUrl = this.formatUrl(urls.identity);
-    this.iconsUrl = this.formatUrl(urls.icons);
-    this.notificationsUrl = this.formatUrl(urls.notifications);
-    this.eventsUrl = this.formatUrl(urls.events);
-    this.keyConnectorUrl = this.formatUrl(urls.keyConnector);
-    this.scimUrl = this.formatUrl(urls.scim);
-
-    this.urlsSubject.next();
-  }
-
-  private formatUrl(url: string): string {
-    if (url == null || url === "") {
-      return null;
-    }
-
-    url = url.replace(/\/+$/g, "");
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      url = "https://" + url;
-    }
-
-    return url.trim();
-  }
-
   isCloud(): boolean {
     return [
       "https://api.bitwarden.com",
@@ -412,6 +302,19 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       "https://vault.bitwarden.eu/api",
     ].includes(this.getApiUrl());
   }
+}
+
+function formatUrl(url: string): string {
+  if (url == null || url === "") {
+    return null;
+  }
+
+  url = url.replace(/\/+$/g, "");
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = "https://" + url;
+  }
+
+  return url.trim();
 }
 
 function isEmpty(u?: Urls): boolean {
@@ -428,4 +331,128 @@ function isEmpty(u?: Urls): boolean {
     u.notifications == null &&
     u.events == null
   );
+}
+class UrlEnvironment implements Environment {
+  constructor(
+    private region: Region,
+    private urls: Urls,
+  ) {
+    // Scim is always null for self-hosted
+    if (region == Region.SelfHosted) {
+      this.urls.scim = null;
+    }
+  }
+
+  getRegion() {
+    return this.region;
+  }
+
+  getUrls() {
+    return {
+      base: this.urls.base,
+      webVault: this.urls.webVault,
+      api: this.urls.api,
+      identity: this.urls.identity,
+      icons: this.urls.icons,
+      notifications: this.urls.notifications,
+      events: this.urls.events,
+      keyConnector: this.urls.keyConnector,
+      scim: this.urls.scim,
+    };
+  }
+
+  hasBaseUrl() {
+    return this.urls.base != null;
+  }
+
+  getApiUrl() {
+    if (this.urls.api != null) {
+      return this.urls.api;
+    }
+
+    if (this.urls.base) {
+      return this.urls.base + "/api";
+    }
+
+    return "https://api.bitwarden.com";
+  }
+
+  getEventsUrl() {
+    if (this.urls.events != null) {
+      return this.urls.events;
+    }
+
+    if (this.urls.base) {
+      return this.urls.base + "/events";
+    }
+
+    return "https://events.bitwarden.com";
+  }
+
+  getIconsUrl() {
+    if (this.urls.icons != null) {
+      return this.urls.icons;
+    }
+
+    if (this.urls.base) {
+      return this.urls.base + "/icons";
+    }
+
+    return "https://icons.bitwarden.net";
+  }
+
+  getIdentityUrl() {
+    if (this.urls.identity != null) {
+      return this.urls.identity;
+    }
+
+    if (this.urls.base) {
+      return this.urls.base + "/identity";
+    }
+
+    return "https://identity.bitwarden.com";
+  }
+
+  getKeyConnectorUrl() {
+    return this.urls.keyConnector;
+  }
+
+  getNotificationsUrl() {
+    if (this.urls.notifications != null) {
+      return this.urls.notifications;
+    }
+
+    if (this.urls.base != null) {
+      return this.urls.base + "/notifications";
+    }
+
+    return "https://notifications.bitwarden.com";
+  }
+
+  getScimUrl() {
+    if (this.urls.scim != null) {
+      return this.urls.scim + "/v2";
+    }
+
+    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
+      ? "https://scim.bitwarden.com/v2"
+      : this.getWebVaultUrl() + "/scim/v2";
+  }
+
+  getSendUrl() {
+    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
+      ? "https://send.bitwarden.com/#"
+      : this.getWebVaultUrl() + "/#/send/";
+  }
+
+  getWebVaultUrl() {
+    if (this.urls.webVault != null) {
+      return this.urls.webVault;
+    }
+
+    if (this.urls.base) {
+      return this.urls.base;
+    }
+    return "https://vault.bitwarden.com";
+  }
 }

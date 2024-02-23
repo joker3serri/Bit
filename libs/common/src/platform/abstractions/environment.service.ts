@@ -31,6 +31,38 @@ export type RegionConfig = {
   urls: Urls;
 };
 
+/**
+ * The Environment interface represents a server environment.
+ *
+ * It provides methods to retrieve the URLs of the different services.
+ */
+export interface Environment {
+  /**
+   * Retrieve the current region.
+   */
+  getRegion: () => Region;
+  /**
+   * Retrieve the urls, should only be used when configuring the environment.
+   */
+  getUrls: () => Urls;
+
+  getApiUrl: () => string;
+  getEventsUrl: () => string;
+  getIconsUrl: () => string;
+  getIdentityUrl: () => string;
+  getKeyConnectorUrl: () => string;
+  getNotificationsUrl: () => string;
+  getScimUrl: () => string;
+  getSendUrl: () => string;
+  getWebVaultUrl: () => string;
+
+  // Not sure why we provide this, evaluate if we can remove it.
+  hasBaseUrl: () => boolean;
+}
+
+/**
+ * The environment service. Provides access to set the current environment urls and region.
+ */
 export abstract class EnvironmentService {
   urls: Observable<void>;
   selectedRegion?: Region;

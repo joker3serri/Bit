@@ -147,7 +147,7 @@ describe("EnvironmentService", () => {
         expect(sut.getEventsUrl()).toBe(expectedUrls.events);
         expect(sut.getScimUrl()).toBe(expectedUrls.scim);
         expect(sut.getSendUrl()).toBe(expectedUrls.send);
-        expect(sut.getKeyConnectorUrl()).toBe(null);
+        expect(sut.getKeyConnectorUrl()).toBe(undefined);
         expect(sut.isCloud()).toBe(true);
         expect(sut.getUrls()).toEqual({
           base: null,
@@ -159,7 +159,7 @@ describe("EnvironmentService", () => {
           notifications: expectedUrls.notifications,
           events: expectedUrls.events,
           scim: expectedUrls.scim.replace("/v2", ""),
-          keyConnector: null,
+          keyConnector: undefined,
         });
       },
     );
@@ -214,7 +214,7 @@ describe("EnvironmentService", () => {
       expect(sut.getEventsUrl()).toBe(expectedUrls.events);
       expect(sut.getScimUrl()).toBe(expectedUrls.scim);
       expect(sut.getSendUrl()).toBe(expectedUrls.send);
-      expect(sut.getKeyConnectorUrl()).toBe(null);
+      expect(sut.getKeyConnectorUrl()).toBe(undefined);
       expect(sut.isCloud()).toBe(true);
       expect(sut.getUrls()).toEqual({
         base: null,
@@ -226,7 +226,7 @@ describe("EnvironmentService", () => {
         notifications: expectedUrls.notifications,
         events: expectedUrls.events,
         scim: expectedUrls.scim.replace("/v2", ""),
-        keyConnector: null,
+        keyConnector: undefined,
       });
     });
 
