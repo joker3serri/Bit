@@ -217,43 +217,19 @@ jobs:
 
       - name: Retrieve Storage Account connection string for az sync
         if: ${{ needs.setup.outputs.sync-utility == 'az-sync' }}
-        id: retrieve-az-sync
+        id: retrieve-secrets-az-sync
         uses: bitwarden/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
           secrets: "sa-bitwarden-web-vault-dev-key-temp"
 
-      - name: Retrieve Storage Account name for azcopy
+      - name: Retrieve Storage Account name and SPN credentials for azcopy
         if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
-        id: retrieve-azcopy
+        id: retrieve-secrets-azcopy
         uses: bitwarden/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
-          secrets: "sa-bitwarden-web-vault-name"
-
-      - name: Retrieve Storage Account SPN Client Secret for azcopy
-        if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
-        id: retrieve-azcopy-sp-secret
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
-          secrets: "sp-bitwarden-web-vault-password"
-
-      - name: Retrieve Storage Account SPN Application ID for azcopy
-        if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
-        id: retrieve-azcopy-sp-appid
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
-          secrets: "sp-bitwarden-web-vault-appid"
-
-      - name: Retrieve Storage Account SPN Tenant ID for azcopy
-        if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
-        id: retrieve-azcopy-sp-tenantid
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
-          secrets: "sp-bitwarden-web-vault-tenant"
+          secrets: "sa-bitwarden-web-vault-name,sp-bitwarden-web-vault-password,sp-bitwarden-web-vault-appid,sp-bitwarden-web-vault-tenant"
 
       - name: 'Download cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
         uses: bitwarden/gh-actions/download-artifacts@main
@@ -275,7 +251,7 @@ jobs:
           az storage blob sync \
             --source "./build" \
             --container '$web' \
-            --connection-string "${{ steps.retrieve-az-sync.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
+            --connection-string "${{ steps.retrieve-secrets-az-sync.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
 
       - name: Sync to Azure Storage Account using azcopy
         if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
@@ -283,11 +259,11 @@ jobs:
         working-directory: apps/web
         env:
           AZCOPY_AUTO_LOGIN_TYPE: SPN
-          AZCOPY_SPA_APPLICATION_ID: ${{ steps.retrieve-azcopy-sp-appid.outputs.sp-bitwarden-web-vault-appid }}
-          AZCOPY_SPA_CLIENT_SECRET: ${{ steps.retrieve-azcopy-sp-secret.outputs.sp-bitwarden-web-vault-password }}
-          AZCOPY_TENANT_ID: ${{ steps.retrieve-azcopy-sp-tenantid.outputs.sp-bitwarden-web-vault-tenant }}
+          AZCOPY_SPA_APPLICATION_ID: ${{ steps.retrieve-secrets-azcopy.outputs.sp-bitwarden-web-vault-appid }}
+          AZCOPY_SPA_CLIENT_SECRET: ${{ steps.retrieve-secrets-azcopy.outputs.sp-bitwarden-web-vault-password }}
+          AZCOPY_TENANT_ID: ${{ steps.retrieve-secrets-azcopy.outputs.sp-bitwarden-web-vault-tenant }}
         run: |
-          azcopy sync ./build 'https://${{ steps.retrieve-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
+          azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
             --delete-destination=true
 
       - name: Debug sync logs
