@@ -287,8 +287,6 @@ jobs:
           AZCOPY_SPA_CLIENT_SECRET: ${{ steps.retrieve-azcopy-sp-secret.outputs.sp-bitwarden-web-vault-password }}
           AZCOPY_TENANT_ID: ${{ steps.retrieve-azcopy-sp-tenantid.outputs.sp-bitwarden-web-vault-tenant }}
         run: |
-          azcopy --version
-          printenv
           azcopy sync ./build 'https://${{ steps.retrieve-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
             --delete-destination=true
 
