@@ -262,6 +262,7 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: CryptoService,
       useFactory: (
+        keyGenerationService: KeyGenerationService,
         cryptoFunctionService: CryptoFunctionService,
         encryptService: EncryptService,
         platformUtilsService: PlatformUtilsService,
@@ -271,6 +272,7 @@ function getBgService<T>(service: keyof MainBackground) {
         stateProvider: StateProvider,
       ) => {
         const cryptoService = new BrowserCryptoService(
+          keyGenerationService,
           cryptoFunctionService,
           encryptService,
           platformUtilsService,
@@ -283,6 +285,7 @@ function getBgService<T>(service: keyof MainBackground) {
         return cryptoService;
       },
       deps: [
+        KeyGenerationService,
         CryptoFunctionService,
         EncryptService,
         PlatformUtilsService,
