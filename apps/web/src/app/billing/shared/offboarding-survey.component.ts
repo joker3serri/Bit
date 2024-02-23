@@ -2,7 +2,8 @@ import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
-import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { OrganizationBillingApiClient } from "@bitwarden/common/billing/services/organization-billing-api.client";
+import { UserBillingApiClient } from "@bitwarden/common/billing/services/user-billing-api.client";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
@@ -85,9 +86,10 @@ export class OffboardingSurveyComponent {
     @Inject(DIALOG_DATA) private dialogParams: OffboardingSurveyDialogParams,
     private dialogRef: DialogRef<OffboardingSurveyDialogResultType>,
     private formBuilder: FormBuilder,
-    private billingApiService: BillingApiService,
     private i18nService: I18nService,
+    private organizationBillingApiClient: OrganizationBillingApiClient,
     private platformUtilsService: PlatformUtilsService,
+    private userBillingApiClient: UserBillingApiClient,
   ) {}
 
   submit = async () => {
@@ -103,8 +105,8 @@ export class OffboardingSurveyComponent {
     };
 
     this.dialogParams.type === "Organization"
-      ? await this.billingApiService.cancelOrganizationSubscription(this.dialogParams.id, request)
-      : await this.billingApiService.cancelPremiumUserSubscription(request);
+      ? await this.organizationBillingApiClient.cancelSubscription(this.dialogParams.id, request)
+      : await this.userBillingApiClient.cancelSubscription(request);
 
     this.platformUtilsService.showToast(
       "success",

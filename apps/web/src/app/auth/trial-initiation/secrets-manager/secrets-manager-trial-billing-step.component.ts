@@ -116,7 +116,7 @@ export class SecretsManagerTrialBillingStepComponent implements OnInit {
     const plan = this.findPlanFor(this.formGroup.value.cadence);
     const paymentMethod = await this.paymentComponent.createPaymentToken();
 
-    const response = await this.organizationBillingService.purchaseSubscription({
+    const response = await this.organizationBillingService.purchase({
       organization: {
         name: this.organizationInfo.name,
         billingEmail: this.organizationInfo.email,

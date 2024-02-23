@@ -86,11 +86,10 @@ import {
   AutofillSettingsServiceAbstraction,
   AutofillSettingsService,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
-import { BillingApiService } from "@bitwarden/common/billing/services/billing-api.service";
 import { BillingBannerService } from "@bitwarden/common/billing/services/billing-banner.service";
+import { OrganizationBillingApiClient } from "@bitwarden/common/billing/services/organization-billing-api.client";
 import { OrganizationBillingService } from "@bitwarden/common/billing/services/organization-billing.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -233,6 +232,7 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
+import { UserBillingApiClient } from "@bitwarden/common/billing/services/user-billing-api.client";
 
 @NgModule({
   declarations: [],
@@ -951,8 +951,11 @@ import { ModalService } from "./modal.service";
       useClass: MigrationBuilderService,
     },
     {
-      provide: BillingApiServiceAbstraction,
-      useClass: BillingApiService,
+      provide: OrganizationBillingApiClient,
+      deps: [ApiServiceAbstraction],
+    },
+    {
+      provide: UserBillingApiClient,
       deps: [ApiServiceAbstraction],
     },
   ],
