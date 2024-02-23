@@ -20,7 +20,7 @@ import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { BrowserGroupingsComponentState } from "../../../../models/browserGroupingsComponentState";
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../platform/popup/browser-popup-utils";
-import { VaultBrowserStateServiceAbstraction } from "../../../services/abstractions/vault-browser-state.service.abstraction";
+import { VaultBrowserStateService } from "../../../services/vault-browser-state.service";
 import { VaultFilterService } from "../../../services/vault-filter.service";
 
 const ComponentId = "VaultComponent";
@@ -85,7 +85,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private location: Location,
     private vaultFilterService: VaultFilterService,
-    private vaultBrowserStateService: VaultBrowserStateServiceAbstraction,
+    private vaultBrowserStateService: VaultBrowserStateService,
   ) {
     this.noFolderListSize = 100;
   }
@@ -120,7 +120,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
     const restoredScopeState = await this.restoreState();
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (params) => {
-      this.state = await this.vaultBrowserStateService.getBrowserGroupingComponentState();
+      this.state = await this.vaultBrowserStateService.getBrowserGroupingsComponentState();
       if (this.state?.searchText) {
         this.searchText = this.state.searchText;
       } else if (params.searchText) {
@@ -413,11 +413,11 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
       collections: this.collections,
       deletedCount: this.deletedCount,
     });
-    await this.vaultBrowserStateService.setBrowserGroupingComponentState(this.state);
+    await this.vaultBrowserStateService.setBrowserGroupingsComponentState(this.state);
   }
 
   private async restoreState(): Promise<boolean> {
-    this.state = await this.vaultBrowserStateService.getBrowserGroupingComponentState();
+    this.state = await this.vaultBrowserStateService.getBrowserGroupingsComponentState();
     if (this.state == null) {
       return false;
     }

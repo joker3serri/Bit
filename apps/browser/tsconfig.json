@@ -31,9 +31,5 @@
     "strictTemplates": true,
     "preserveWhitespaces": true
   },
-  "include": [
-    "src",
-    "../../libs/common/src/platform/services/**/*.worker.ts",
-    "src/vault/services/vault-browser-state.service.ts"
-  ]
+  "include": ["src", "../../libs/common/src/platform/services/**/*.worker.ts"]
 }

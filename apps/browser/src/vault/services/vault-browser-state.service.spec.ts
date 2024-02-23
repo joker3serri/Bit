@@ -32,11 +32,11 @@ describe("Vault Browser State Service", () => {
     stateService = new VaultBrowserStateService(stateProvider);
   });
 
-  describe("getBrowserGroupingComponentState", () => {
+  describe("getBrowserGroupingsComponentState", () => {
     it("should return a BrowserGroupingsComponentState", async () => {
-      await stateService.setBrowserGroupingComponentState(new BrowserGroupingsComponentState());
+      await stateService.setBrowserGroupingsComponentState(new BrowserGroupingsComponentState());
 
-      const actual = await stateService.getBrowserGroupingComponentState();
+      const actual = await stateService.getBrowserGroupingsComponentState();
 
       expect(actual).toBeInstanceOf(BrowserGroupingsComponentState);
     });

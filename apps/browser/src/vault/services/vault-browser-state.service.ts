@@ -11,8 +11,6 @@ import {
 import { BrowserComponentState } from "../../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 
-import { VaultBrowserStateServiceAbstraction } from "./abstractions/vault-browser-state.service.abstraction";
-
 export const VAULT_BROWSER_GROUPINGS_COMPONENT = new KeyDefinition<BrowserGroupingsComponentState>(
   VAULT_BROWSER_MEMORY,
   "vault_browser_groupings_component",
@@ -30,9 +28,9 @@ export const VAULT_BROWSER_COMPONENT = new KeyDefinition<BrowserComponentState>(
   },
 );
 
-export class VaultBrowserStateService implements VaultBrowserStateServiceAbstraction {
-  vaultBrowserGroupingsComponent$: Observable<BrowserGroupingsComponentState>;
-  vaultBrowserComponent$: Observable<BrowserComponentState>;
+export class VaultBrowserStateService {
+  vaultBrowserGroupingsComponentState$: Observable<BrowserGroupingsComponentState>;
+  vaultBrowserComponentState$: Observable<BrowserComponentState>;
 
   private activeUserVaultBrowserGroupingsComponentState: ActiveUserState<BrowserGroupingsComponentState>;
   private activeUserVaultBrowserComponentState: ActiveUserState<BrowserComponentState>;
@@ -43,18 +41,22 @@ export class VaultBrowserStateService implements VaultBrowserStateServiceAbstrac
     );
     this.activeUserVaultBrowserComponentState =
       this.stateProvider.getActive(VAULT_BROWSER_COMPONENT);
+
+    this.vaultBrowserGroupingsComponentState$ =
+      this.activeUserVaultBrowserGroupingsComponentState.state$;
+    this.vaultBrowserComponentState$ = this.activeUserVaultBrowserComponentState.state$;
   }
 
-  async getBrowserGroupingComponentState(): Promise<BrowserGroupingsComponentState> {
-    return await firstValueFrom(this.activeUserVaultBrowserGroupingsComponentState.state$);
+  async getBrowserGroupingsComponentState(): Promise<BrowserGroupingsComponentState> {
+    return await firstValueFrom(this.vaultBrowserGroupingsComponentState$);
   }
 
-  async setBrowserGroupingComponentState(value: BrowserGroupingsComponentState): Promise<void> {
+  async setBrowserGroupingsComponentState(value: BrowserGroupingsComponentState): Promise<void> {
     await this.activeUserVaultBrowserGroupingsComponentState.update(() => value);
   }
 
   async getBrowserVaultItemsComponentState(): Promise<BrowserComponentState> {
-    return await firstValueFrom(this.activeUserVaultBrowserComponentState.state$);
+    return await firstValueFrom(this.vaultBrowserComponentState$);
   }
 
   async setBrowserVaultItemsComponentState(value: BrowserComponentState): Promise<void> {

@@ -21,7 +21,7 @@ import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 import { BrowserApi } from "../platform/browser/browser-api";
 import { ZonedMessageListenerService } from "../platform/browser/zoned-message-listener.service";
 import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
-import { VaultBrowserStateServiceAbstraction } from "../vault/services/abstractions/vault-browser-state.service.abstraction";
+import { VaultBrowserStateService } from "../vault/services/vault-browser-state.service";
 
 import { routerTransition } from "./app-routing.animations";
 import { DesktopSyncVerificationDialogComponent } from "./components/desktop-sync-verification-dialog.component";
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private router: Router,
     private stateService: BrowserStateService,
-    private vaultBrowserStateService: VaultBrowserStateServiceAbstraction,
+    private vaultBrowserStateService: VaultBrowserStateService,
     private messagingService: MessagingService,
     private changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
@@ -264,7 +264,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     await Promise.all([
-      this.vaultBrowserStateService.setBrowserGroupingComponentState(null),
+      this.vaultBrowserStateService.setBrowserGroupingsComponentState(null),
       this.vaultBrowserStateService.setBrowserVaultItemsComponentState(null),
       this.stateService.setBrowserSendComponentState(null),
       this.stateService.setBrowserSendTypeComponentState(null),
