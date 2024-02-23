@@ -31,25 +31,6 @@
         route="settings/sponsored-families"
         *ngIf="hasFamilySponsorshipAvailable"
       ></bit-nav-item>
-
-      <!--
-      <a
-        routerLink="subscription"
-        class="list-group-item"
-        routerLinkActive="active"
-        *ngIf="!hideSubscription"
-      >
-        {{ "subscription" | i18n }}
-      </a>
-      <a
-        routerLink="sponsored-families"
-        class="list-group-item"
-        routerLinkActive="active"
-        *ngIf="hasFamilySponsorshipAvailable"
-      >
-        {{ "sponsoredFamilies" | i18n }}
-      </a>
-    -->
     </bit-nav-group>
   </nav>
   <app-payment-method-banners
