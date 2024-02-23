@@ -18,7 +18,7 @@ import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-pr
 import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
 import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-groupings-to-state-provider";
 import { MoveBiometricPromptsToStateProviders } from "./migrations/23-move-biometric-prompts-to-state-providers";
-import { SmOnboardingTasksMigrator } from "./migrations/23-move-sm-onboarding-key-to-state-providers";
+import { SmOnboardingTasksMigrator } from "./migrations/24-move-sm-onboarding-key-to-state-providers";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";

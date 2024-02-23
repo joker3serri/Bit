@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { SmOnboardingTasksMigrator } from "./23-move-sm-onboarding-key-to-state-providers";
+import { SmOnboardingTasksMigrator } from "./24-move-sm-onboarding-key-to-state-providers";
 
 function exampleJSON() {
   return {
@@ -96,8 +96,8 @@ describe("SmOnboardingTasksMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 22);
-      sut = new SmOnboardingTasksMigrator(22, 23);
+      helper = mockMigrationHelper(exampleJSON(), 23);
+      sut = new SmOnboardingTasksMigrator(23, 24);
     });
 
     it("should remove smOnboardingTasks from all accounts", async () => {
@@ -141,8 +141,8 @@ describe("SmOnboardingTasksMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 22);
-      sut = new SmOnboardingTasksMigrator(22, 23);
+      helper = mockMigrationHelper(rollbackJSON(), 23);
+      sut = new SmOnboardingTasksMigrator(23, 24);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
