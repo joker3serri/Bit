@@ -54,7 +54,7 @@ const validStatus = (input: string): input is SubscriptionStatus => {
 };
 
 /** A representation of a Stripe {@link https://docs.stripe.com/api/subscriptions|Subscription} object. */
-export type Subscription = {
+export class Subscription {
   /** The ID of the {@link https://docs.stripe.com/api/subscriptions|Subscription} object within Stripe. */
   stripeId: string;
   /** The {@link https://docs.stripe.com/api/subscriptions/object#subscription_object-status|status} of the Stripe subscription. */
@@ -84,44 +84,44 @@ export type Subscription = {
     /** Whether the subscription is pending cancellation. */
     pending: boolean;
   };
-};
 
-export const fromJSON = (json: SubscriptionResponse | Jsonify<Subscription>): Subscription => {
-  const subscription: Subscription = {
-    stripeId: json.stripeId,
-    status: validStatus(json.status) ? json.status : "unknown",
-    items: json.items.map((item) => ({
-      ...item,
-    })),
-    currentPeriod: {
-      start: new Date(json.currentPeriod.start),
-      end: new Date(json.currentPeriod.end),
-    },
-  };
-
-  const dateOrNull = (input?: string) => (input ? new Date(input) : null);
-
-  if (json.discount) {
-    subscription.discount = {
-      ...json.discount,
-      start: dateOrNull(json.discount.start),
-      end: dateOrNull(json.discount.end),
+  static from(json: SubscriptionResponse | Jsonify<Subscription>): Subscription {
+    const subscription: Subscription = {
+      stripeId: json.stripeId,
+      status: validStatus(json.status) ? json.status : "unknown",
+      items: json.items.map((item) => ({
+        ...item,
+      })),
+      currentPeriod: {
+        start: new Date(json.currentPeriod.start),
+        end: new Date(json.currentPeriod.end),
+      },
     };
-  }
 
-  if (json.warnings) {
-    subscription.warnings = {
-      suspensionDate: dateOrNull(json.warnings.suspensionDate),
-    };
-  }
+    const dateOrNull = (input?: string) => (input ? new Date(input) : null);
 
-  if (json.cancellation) {
-    subscription.cancellation = {
-      canceledAt: new Date(json.cancellation.canceledAt),
-      cancelAt: dateOrNull(json.cancellation.cancelAt),
-      pending: json.cancellation.pending,
-    };
-  }
+    if (json.discount) {
+      subscription.discount = {
+        ...json.discount,
+        start: dateOrNull(json.discount.start),
+        end: dateOrNull(json.discount.end),
+      };
+    }
 
-  return subscription;
-};
+    if (json.warnings) {
+      subscription.warnings = {
+        suspensionDate: dateOrNull(json.warnings.suspensionDate),
+      };
+    }
+
+    if (json.cancellation) {
+      subscription.cancellation = {
+        canceledAt: new Date(json.cancellation.canceledAt),
+        cancelAt: dateOrNull(json.cancellation.cancelAt),
+        pending: json.cancellation.pending,
+      };
+    }
+
+    return subscription;
+  }
+}

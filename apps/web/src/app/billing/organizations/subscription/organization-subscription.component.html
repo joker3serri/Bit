@@ -1,0 +1,21 @@
+<div class="tw-mb-2">
+  <h1 bitTypography="h1">
+    {{ "subscription" | i18n }}
+    <small *ngIf="hasData && loading">
+      <i
+        class="bwi bwi-spinner bwi-spin text-muted"
+        title="{{ 'loading' | i18n }}"
+        aria-hidden="true"
+      ></i>
+      <span class="tw-sr-only">{{ "loading" | i18n }}</span>
+    </small>
+  </h1>
+</div>
+<ng-container *ngIf="!hasData && loading">
+  <i class="bwi bwi-spinner bwi-spin text-muted" title="{{ 'loading' | i18n }}"></i>
+  <span class="sr-only">{{ "loading" | i18n }}</span>
+</ng-container>
+<app-org-subscription-hidden
+  *ngIf="hasData && !organization.canViewSubscription"
+  [providerName]="organization.providerName"
+></app-org-subscription-hidden>

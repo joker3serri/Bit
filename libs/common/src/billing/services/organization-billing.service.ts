@@ -1,3 +1,5 @@
+import { map, Observable } from "rxjs";
+
 import { OrganizationApiServiceAbstraction as OrganizationApiService } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationCreateRequest } from "../../admin-console/models/request/organization-create.request";
 import { OrganizationKeysRequest } from "../../admin-console/models/request/organization-keys.request";
@@ -5,21 +7,49 @@ import { OrganizationResponse } from "../../admin-console/models/response/organi
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
+import { ActiveUserState, StateProvider } from "../../platform/state";
 import { OrgKey } from "../../types/key";
 import { OrganizationBillingServiceAbstraction } from "../abstractions/organization-billing.service";
 import { PlanType } from "../enums";
+import { ORGANIZATION_SUBSCRIPTION_KEY } from "../models/billing-keys.state";
 import {
   FreeOrganizationSignup,
   PaidOrganizationSignup,
 } from "../models/domain/organization-signup";
+import { Subscription } from "../models/domain/subscription";
+import { OrganizationBillingApiClient } from "../services/organization-billing-api.client";
 
 export class OrganizationBillingService implements OrganizationBillingServiceAbstraction {
+  private subscriptionState: ActiveUserState<Record<string, Subscription>>;
+  subscriptions$: Observable<Record<string, Subscription>>;
+
   constructor(
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private i18nService: I18nService,
     private organizationApiService: OrganizationApiService,
-  ) {}
+    private organizationBillingApiClient: OrganizationBillingApiClient,
+    private stateProvider: StateProvider,
+  ) {
+    this.subscriptionState = this.stateProvider.getActive(ORGANIZATION_SUBSCRIPTION_KEY);
+  }
+
+  getSubscription$(organizationId: string): Observable<Subscription> {
+    return this.subscriptions$.pipe(
+      map((subscriptions) => (subscriptions ? subscriptions[organizationId] : null)),
+    );
+  }
+
+  async pullSubscription(organizationId: string): Promise<Subscription> {
+    const response = await this.organizationBillingApiClient.getSubscription(organizationId);
+    const subscription = Subscription.from(response);
+    await this.subscriptionState.update((state) => {
+      state ??= {};
+      state[organizationId] = subscription;
+      return state;
+    });
+    return subscription;
+  }
 
   async purchase(signup: PaidOrganizationSignup): Promise<OrganizationResponse> {
     const request = await this.buildKeyedRequest();

@@ -39,5 +39,6 @@ import { SubscriptionHiddenComponent } from "./subscription-hidden.component";
     SecretsManagerSubscribeStandaloneComponent,
     SubscriptionHiddenComponent,
   ],
+  exports: [SubscriptionHiddenComponent],
 })
 export class OrganizationBillingModule {}
