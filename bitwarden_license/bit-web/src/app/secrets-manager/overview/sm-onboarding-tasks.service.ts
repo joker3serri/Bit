@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 
 import {
   ActiveUserState,
@@ -23,7 +23,7 @@ export class SMOnboardingTasksService {
 
   constructor(private stateProvider: StateProvider) {
     this.smOnboardingTasks = this.stateProvider.getActive(SM_ONBOARDING_TASKS_KEY);
-    this.smOnboardingTasks$ = this.smOnboardingTasks.state$;
+    this.smOnboardingTasks$ = this.smOnboardingTasks.state$.pipe(map((tasks) => tasks ?? {}));
   }
 
   async setSmOnboardingTasks(newState: SMOnboardingTasks): Promise<void> {

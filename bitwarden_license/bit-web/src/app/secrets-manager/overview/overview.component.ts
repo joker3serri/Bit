@@ -189,7 +189,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     organizationId: string,
     orgTasks: OrganizationTasks,
   ): Promise<OrganizationTasks> {
-    const prevTasks = ((await firstValueFrom(this.onboardingTasks$)) || {}) as Tasks;
+    const prevTasks = (await firstValueFrom(this.onboardingTasks$)) as Tasks;
     const newlyCompletedOrgTasks = Object.fromEntries(
       Object.entries(orgTasks).filter(([_k, v]) => v === true),
     );
