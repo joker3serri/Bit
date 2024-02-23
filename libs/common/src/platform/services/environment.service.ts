@@ -164,8 +164,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       }));
 
       const regionConfig = this.getRegionConfig(region);
-      this.environment = new UrlEnvironment(region, regionConfig.urls);
-      this.environmentSubject.next(this.environment);
+      this.createAndSetEnvironment(region, regionConfig.urls);
 
       return null;
     } else {
@@ -194,11 +193,21 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
         },
       }));
 
-      this.environment = new UrlEnvironment(region, urls);
-      this.environmentSubject.next(this.environment);
+      this.createAndSetEnvironment(region, urls);
 
       return urls;
     }
+  }
+
+  /**
+   * Helper for creating and setting the environment.
+   *
+   * @param region
+   * @param urls
+   */
+  protected createAndSetEnvironment(region: Region, urls: Urls) {
+    this.environment = new UrlEnvironment(region, urls);
+    this.environmentSubject.next(this.environment);
   }
 
   hasBaseUrl() {
