@@ -12,7 +12,7 @@ export const SM_ONBOARDING_TASKS: KeyDefinitionLike = {
   stateDefinition: { name: "smOnboarding" },
 };
 
-export class SmOnboardingTasksMigrator extends Migrator<22, 23> {
+export class SmOnboardingTasksMigrator extends Migrator<23, 24> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountType>();
 
