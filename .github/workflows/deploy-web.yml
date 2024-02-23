@@ -249,6 +249,22 @@ jobs:
           keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
           secrets: "sp-bitwarden-web-vault-password"
 
+      - name: Retrieve Storage Account SPN Application ID for azcopy
+        if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
+        id: retrieve-secrets-azcopy-sp-appid
+        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        with:
+          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
+          secrets: "sp-bitwarden-web-vault-appid"
+
+      - name: Retrieve Storage Account SPN Tenant ID for azcopy
+        if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
+        id: retrieve-secrets-azcopy-sp-tenantid
+        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        with:
+          keyvault: ${{ needs.setup.outputs.retrieve-secrets-keyvault }}
+          secrets: "sp-bitwarden-web-vault-tenant"
+
       - name: 'Download cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
         uses: bitwarden/gh-actions/download-artifacts@main
         with:
@@ -277,9 +293,9 @@ jobs:
         working-directory: apps/web
         env:
           AZCOPY_AUTO_LOGIN_TYPE: SPN
-          AZCOPY_SPA_APPLICATION_ID: 5ff59556-2b91-4f33-87df-3f9bbc1f6a84
+          AZCOPY_SPA_APPLICATION_ID: ${{ steps.retrieve-secrets-azcopy-sp-appid.outputs.sp-bitwarden-web-vault-appid }}
           AZCOPY_SPA_CLIENT_SECRET: ${{ steps.retrieve-secrets-azcopy-sp-secret.outputs.sp-bitwarden-web-vault-password }}
-          AZCOPY_TENANT_ID: 10c0387a-9792-4d9f-b1b1-ebc6785914ce
+          AZCOPY_TENANT_ID: ${{ steps.retrieve-secrets-azcopy-sp-tenantid.outputs.sp-bitwarden-web-vault-tenant }}
         run: |
           azcopy --version
           printenv
