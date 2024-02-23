@@ -19,6 +19,10 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
+      debug:
+        description: "Debug mode"
+        type: boolean
+        default: false
 
   workflow_call:
     inputs:
@@ -30,6 +34,10 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
+      debug:
+        description: "Debug mode"
+        type: boolean
+        default: false
 
 permissions:
   deployments: write
@@ -267,9 +275,11 @@ jobs:
             --delete-destination=true
 
       - name: Debug sync logs
+        if: ${{ inputs.debug }} == true
         run: cat /home/runner/.azcopy/*.log
 
       - name: Debug index.html
+        if: ${{ inputs.debug }} == true
         run: cat apps/web/build/index.html
 
       - name: Update deployment status to Success
