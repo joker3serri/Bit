@@ -14,6 +14,11 @@ import { UserId } from "../../../types/guid";
 
 import { UserEncryptor } from "./user-encryptor.abstraction";
 
+type ClassifiedFormat<Disclosed> = {
+  secret: string;
+  disclosed: Jsonify<Disclosed>;
+};
+
 /** Stores account-specific secrets protected by a UserKeyEncryptor.
  *
  *  @remarks This state store changes the structure of `Plaintext` during
@@ -27,7 +32,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
   // wiring the derived and secret states together.
   private constructor(
     private readonly encryptor: UserEncryptor<Plaintext, Disclosed>,
-    private readonly encrypted: SingleUserState<{ secret: string; disclosed: Jsonify<Disclosed> }>,
+    private readonly encrypted: SingleUserState<ClassifiedFormat<Disclosed>>,
     private readonly plaintext: DerivedState<Plaintext>,
   ) {
     this.state$ = plaintext.state$;
@@ -51,40 +56,41 @@ export class SecretState<Plaintext extends object, Disclosed> {
     provider: StateProvider,
     encryptor: UserEncryptor<TFrom, Disclosed>,
   ) {
-    type ClassifiedFormat = { secret: string; disclosed: Jsonify<Disclosed> };
-
     // construct encrypted backing store while avoiding collisions between the derived key and the
     // backing storage key.
-    const secretKey = new KeyDefinition<ClassifiedFormat>(key.stateDefinition, key.key, {
+    const secretKey = new KeyDefinition<ClassifiedFormat<Disclosed>>(key.stateDefinition, key.key, {
       cleanupDelayMs: key.cleanupDelayMs,
       // `ClassifiedFormat` uses a type assertion because there isn't a straightforward
       // way to constrain `Disclosed` to stringify-able types.
       // FIXME: When the fakes run deserializers and serialization can be guaranteed through
       // state providers, decode `jsonValue.secret` instead of it running in `derive`.
-      deserializer: (jsonValue) => jsonValue as ClassifiedFormat,
+      deserializer: (jsonValue) => jsonValue as ClassifiedFormat<Disclosed>,
     });
     const encryptedState = provider.getUser(userId, secretKey);
 
     // construct plaintext store
-    const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat, TFrom>(secretKey, {
-      derive: async (from) => {
-        // fail fast if there's no value
-        if (from === null || from === undefined) {
-          return null;
-        }
+    const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat<Disclosed>, TFrom>(
+      secretKey,
+      {
+        derive: async (from) => {
+          // fail fast if there's no value
+          if (from === null || from === undefined) {
+            return null;
+          }
 
-        // otherwise forward the decrypted data to the caller's derive implementation
-        const secret = EncString.fromJSON(from.secret);
-        const decrypted = await encryptor.decrypt(secret, from.disclosed, encryptedState.userId);
-        const result = key.deserializer(decrypted) as TFrom;
+          // otherwise forward the decrypted data to the caller's derive implementation
+          const secret = EncString.fromJSON(from.secret);
+          const decrypted = await encryptor.decrypt(secret, from.disclosed, encryptedState.userId);
+          const result = key.deserializer(decrypted) as TFrom;
 
-        return result;
+          return result;
+        },
+        // wire in the caller's deserializer for memory serialization
+        deserializer: key.deserializer,
+        // cache the decrypted data in memory
+        cleanupDelayMs: key.cleanupDelayMs,
       },
-      // wire in the caller's deserializer for memory serialization
-      deserializer: key.deserializer,
-      // cache the decrypted data in memory
-      cleanupDelayMs: key.cleanupDelayMs,
-    });
+    );
     const plaintextState = provider.getDerived(encryptedState.state$, plaintextDefinition, null);
 
     // wrap the encrypted and plaintext states in a `SecretState` facade
@@ -148,7 +154,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
     currentState: Plaintext,
     shouldUpdate: () => boolean,
     configureState: () => Plaintext,
-  ): Promise<[boolean, { secret: string; disclosed: Jsonify<Disclosed> }, Plaintext]> {
+  ): Promise<[boolean, ClassifiedFormat<Disclosed>, Plaintext]> {
     // determine whether an update is necessary
     if (!shouldUpdate()) {
       return [false, undefined, currentState];
