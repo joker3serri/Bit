@@ -32,7 +32,7 @@ class TestState {
 }
 
 const testStateDefinition = new StateDefinition("fake", "disk");
-const cleanupDelayMs = 10;
+const cleanupDelayMs = 15;
 const testKeyDefinition = new UserKeyDefinition<TestState>(testStateDefinition, "fake", {
   deserializer: TestState.fromJSON,
   cleanupDelayMs,
