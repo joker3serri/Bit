@@ -79,8 +79,7 @@ export class KeyDefinition<T> {
    * @param key The key to be added to the KeyDefinition
    * @param options The options to customize the final {@link KeyDefinition}.
    * @returns A {@link KeyDefinition} initialized for arrays, the options run
-   * the deserializer on the provided options for each element of an array
-   * **unless that array is null, in which case it will return an empty list.**
+   * the deserializer on the provided options for each element of an array.
    *
    * @example
    * ```typescript
@@ -107,7 +106,7 @@ export class KeyDefinition<T> {
    * @param key The key to be added to the KeyDefinition
    * @param options The options to customize the final {@link KeyDefinition}.
    * @returns A {@link KeyDefinition} that contains a serializer that will run the provided deserializer for each
-   * value in a record and returns every key as a string **unless that record is null, in which case it will return an record.**
+   * value in a record and returns every key as a string.
    *
    * @example
    * ```typescript
@@ -132,7 +131,7 @@ export class KeyDefinition<T> {
     return `${this.stateDefinition.name}_${this.key}`;
   }
 
-  private get errorKeyName() {
+  protected get errorKeyName() {
     return `${this.stateDefinition.name} > ${this.key}`;
   }
 }

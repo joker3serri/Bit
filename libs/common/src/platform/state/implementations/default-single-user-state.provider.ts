@@ -6,7 +6,7 @@ import {
 } from "../../abstractions/storage.service";
 import { KeyDefinition } from "../key-definition";
 import { StateDefinition } from "../state-definition";
-import { UserKeyDefinition } from "../user-key-definition";
+import { UserKeyDefinition, isUserKeyDefinition } from "../user-key-definition";
 import { SingleUserState } from "../user-state";
 import { SingleUserStateProvider } from "../user-state.provider";
 
@@ -24,7 +24,7 @@ export class DefaultSingleUserStateProvider implements SingleUserStateProvider {
     userId: UserId,
     keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
   ): SingleUserState<T> {
-    if (keyDefinition instanceof KeyDefinition) {
+    if (!isUserKeyDefinition(keyDefinition)) {
       keyDefinition = UserKeyDefinition.fromBaseKeyDefinition(keyDefinition);
     }
     const cacheKey = this.buildCacheKey(userId, keyDefinition);
