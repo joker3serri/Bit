@@ -2,9 +2,9 @@ import { StorageServiceProvider } from "../services/storage-service.provider";
 
 import { GlobalState } from "./global-state";
 import { GlobalStateProvider } from "./global-state.provider";
-import { ClearEvent, KeyDefinition } from "./key-definition";
+import { KeyDefinition } from "./key-definition";
 import { CLEAR_EVENT_DISK } from "./state-definitions";
-import { UserKeyDefinition } from "./user-key-definition";
+import { ClearEvent, UserKeyDefinition } from "./user-key-definition";
 
 export type StateEventInfo = {
   state: string;
