@@ -159,6 +159,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("User id not found. Cannot clear access token.");
     }
 
+    // TODO: re-eval this once we get shared key definitions for vault timeout and vault timeout action data.
     // we can't determine storage location w/out vaultTimeoutAction and vaultTimeout
     // but we can simply clear all locations to avoid the need to require those parameters
 
@@ -182,7 +183,7 @@ export class TokenService implements TokenServiceAbstraction {
     const accessTokenMigratedToSecureStorage =
       await this.getAccessTokenMigratedToSecureStorage(userId);
     if (this.platformSupportsSecureStorage && accessTokenMigratedToSecureStorage) {
-      return await this.getAccessTokenFromSecureStorage(userId);
+      return await this.getDataFromSecureStorage(userId, this.accessTokenSecureStorageKey);
     }
 
     // Try to get the access token from memory
@@ -197,14 +198,6 @@ export class TokenService implements TokenServiceAbstraction {
 
     // If memory is null, read from disk
     return await this.getStateValueByUserIdAndKeyDef(userId, ACCESS_TOKEN_DISK);
-  }
-
-  private async getAccessTokenFromSecureStorage(userId: UserId): Promise<string | null> {
-    // If we have a user ID, read from secure storage.
-    return await this.secureStorageService.get<string>(
-      `${userId}${this.accessTokenSecureStorageKey}`,
-      this.getSecureStorageOptions(userId),
-    );
   }
 
   private async getAccessTokenMigratedToSecureStorage(userId: UserId): Promise<boolean> {
@@ -507,6 +500,17 @@ export class TokenService implements TokenServiceAbstraction {
 
       return TokenStorageLocation.Disk;
     }
+  }
+
+  private async getDataFromSecureStorage(
+    userId: UserId,
+    storageKey: string,
+  ): Promise<string | null> {
+    // If we have a user ID, read from secure storage.
+    return await this.secureStorageService.get<string>(
+      `${userId}${storageKey}`,
+      this.getSecureStorageOptions(userId),
+    );
   }
 
   private getSecureStorageOptions(userId: UserId): StorageOptions {
