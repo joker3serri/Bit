@@ -5,8 +5,6 @@ import { StorageKey } from "../../types/state";
 import { array, record } from "./deserialization-helpers";
 import { StateDefinition } from "./state-definition";
 
-export type ClearEvent = "lock" | "logout";
-
 /**
  * A set of options for customizing the behavior of a {@link KeyDefinition}
  */
