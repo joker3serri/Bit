@@ -196,75 +196,83 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         );
 
         if (this.params.organizationUserId) {
-          if (!userDetails) {
-            throw new Error("Could not find user to edit.");
-          }
-          this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
-          this.showNoMasterPasswordWarning =
-            userDetails.status > OrganizationUserStatusType.Invited &&
-            userDetails.hasMasterPassword === false;
-          const assignedCollectionsPermissions = {
-            editAssignedCollections: userDetails.permissions.editAssignedCollections,
-            deleteAssignedCollections: userDetails.permissions.deleteAssignedCollections,
-            manageAssignedCollections:
-              userDetails.permissions.editAssignedCollections &&
-              userDetails.permissions.deleteAssignedCollections,
-          };
-          const allCollectionsPermissions = {
-            createNewCollections: userDetails.permissions.createNewCollections,
-            editAnyCollection: userDetails.permissions.editAnyCollection,
-            deleteAnyCollection: userDetails.permissions.deleteAnyCollection,
-            manageAllCollections:
-              userDetails.permissions.createNewCollections &&
-              userDetails.permissions.editAnyCollection &&
-              userDetails.permissions.deleteAnyCollection,
-          };
-          if (userDetails.type === OrganizationUserType.Custom) {
-            this.permissionsGroup.patchValue({
-              accessEventLogs: userDetails.permissions.accessEventLogs,
-              accessImportExport: userDetails.permissions.accessImportExport,
-              accessReports: userDetails.permissions.accessReports,
-              manageGroups: userDetails.permissions.manageGroups,
-              manageSso: userDetails.permissions.manageSso,
-              managePolicies: userDetails.permissions.managePolicies,
-              manageUsers: userDetails.permissions.manageUsers,
-              manageResetPassword: userDetails.permissions.manageResetPassword,
-              manageAssignedCollectionsGroup: assignedCollectionsPermissions,
-              manageAllCollectionsGroup: allCollectionsPermissions,
-            });
-          }
-
-          const collectionsFromGroups = groups
-            .filter((group) => userDetails.groups.includes(group.id))
-            .flatMap((group) =>
-              group.collections.map((accessSelection) => {
-                const collection = collections.find((c) => c.id === accessSelection.id);
-                return { group, collection, accessSelection };
-              }),
-            );
-
-          this.collectionAccessItems = this.collectionAccessItems.concat(
-            collectionsFromGroups.map(({ collection, accessSelection, group }) =>
-              mapCollectionToAccessItemView(collection, accessSelection, group),
-            ),
-          );
-
-          const accessSelections = mapToAccessSelections(userDetails);
-          const groupAccessSelections = mapToGroupAccessSelections(userDetails.groups);
-
-          this.formGroup.removeControl("emails");
-          this.formGroup.patchValue({
-            type: userDetails.type,
-            externalId: userDetails.externalId,
-            accessAllCollections: userDetails.accessAll,
-            access: accessSelections,
-            accessSecretsManager: userDetails.accessSecretsManager,
-            groups: groupAccessSelections,
-          });
+          this.loadOrganizationUser(userDetails, groups, collections);
         }
 
         this.loading = false;
       });
+  }
+
+  private loadOrganizationUser(
+    userDetails: OrganizationUserAdminView,
+    groups: GroupView[],
+    collections: CollectionView[],
+  ) {
+    if (!userDetails) {
+      throw new Error("Could not find user to edit.");
+    }
+    this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
+    this.showNoMasterPasswordWarning =
+      userDetails.status > OrganizationUserStatusType.Invited &&
+      userDetails.hasMasterPassword === false;
+    const assignedCollectionsPermissions = {
+      editAssignedCollections: userDetails.permissions.editAssignedCollections,
+      deleteAssignedCollections: userDetails.permissions.deleteAssignedCollections,
+      manageAssignedCollections:
+        userDetails.permissions.editAssignedCollections &&
+        userDetails.permissions.deleteAssignedCollections,
+    };
+    const allCollectionsPermissions = {
+      createNewCollections: userDetails.permissions.createNewCollections,
+      editAnyCollection: userDetails.permissions.editAnyCollection,
+      deleteAnyCollection: userDetails.permissions.deleteAnyCollection,
+      manageAllCollections:
+        userDetails.permissions.createNewCollections &&
+        userDetails.permissions.editAnyCollection &&
+        userDetails.permissions.deleteAnyCollection,
+    };
+    if (userDetails.type === OrganizationUserType.Custom) {
+      this.permissionsGroup.patchValue({
+        accessEventLogs: userDetails.permissions.accessEventLogs,
+        accessImportExport: userDetails.permissions.accessImportExport,
+        accessReports: userDetails.permissions.accessReports,
+        manageGroups: userDetails.permissions.manageGroups,
+        manageSso: userDetails.permissions.manageSso,
+        managePolicies: userDetails.permissions.managePolicies,
+        manageUsers: userDetails.permissions.manageUsers,
+        manageResetPassword: userDetails.permissions.manageResetPassword,
+        manageAssignedCollectionsGroup: assignedCollectionsPermissions,
+        manageAllCollectionsGroup: allCollectionsPermissions,
+      });
+    }
+
+    const collectionsFromGroups = groups
+      .filter((group) => userDetails.groups.includes(group.id))
+      .flatMap((group) =>
+        group.collections.map((accessSelection) => {
+          const collection = collections.find((c) => c.id === accessSelection.id);
+          return { group, collection, accessSelection };
+        }),
+      );
+
+    this.collectionAccessItems = this.collectionAccessItems.concat(
+      collectionsFromGroups.map(({ collection, accessSelection, group }) =>
+        mapCollectionToAccessItemView(collection, accessSelection, group),
+      ),
+    );
+
+    const accessSelections = mapToAccessSelections(userDetails);
+    const groupAccessSelections = mapToGroupAccessSelections(userDetails.groups);
+
+    this.formGroup.removeControl("emails");
+    this.formGroup.patchValue({
+      type: userDetails.type,
+      externalId: userDetails.externalId,
+      accessAllCollections: userDetails.accessAll,
+      access: accessSelections,
+      accessSecretsManager: userDetails.accessSecretsManager,
+      groups: groupAccessSelections,
+    });
   }
 
   check(c: CollectionView, select?: boolean) {
