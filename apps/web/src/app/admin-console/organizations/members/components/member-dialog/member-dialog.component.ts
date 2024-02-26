@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
@@ -74,7 +74,7 @@ export enum MemberDialogResult {
 @Component({
   templateUrl: "member-dialog.component.html",
 })
-export class MemberDialogComponent implements OnInit, OnDestroy {
+export class MemberDialogComponent implements OnDestroy {
   loading = true;
   editMode = false;
   isRevoked = false;
@@ -136,7 +136,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private dialogRef: DialogRef<MemberDialogResult>,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
     // TODO: We should really look into consolidating naming conventions for these services
     private collectionAdminService: CollectionAdminService,
@@ -145,16 +144,15 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private organizationUserService: OrganizationUserService,
     private dialogService: DialogService,
     private configService: ConfigServiceAbstraction,
-  ) {}
+    organizationService: OrganizationService,
+  ) {
+    this.organization$ = organizationService
+      .get$(this.params.organizationId)
+      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
 
-  async ngOnInit() {
     this.editMode = this.params.organizationUserId != null;
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
-
-    this.organization$ = this.organizationService
-      .get$(this.params.organizationId)
-      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
 
     const groups$ = this.organization$.pipe(
       switchMap((organization) =>
