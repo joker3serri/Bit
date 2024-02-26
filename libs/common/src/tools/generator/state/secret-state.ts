@@ -1,5 +1,5 @@
 import { Observable, concatMap, of, zip } from "rxjs";
-import { JsonValue, Jsonify } from "type-fest";
+import { Jsonify } from "type-fest";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
@@ -51,9 +51,7 @@ export class SecretState<Plaintext extends object, Disclosed> {
     provider: StateProvider,
     encryptor: UserEncryptor<TFrom, Disclosed>,
   ) {
-    // `Jsonify<Disclosed>` and `string` are `JsonValue`, so the whole type is, but the compiler
-    // cannot infer that, so assert it through intersection instead.
-    type ClassifiedFormat = { secret: string; disclosed: Jsonify<Disclosed> } & JsonValue;
+    type ClassifiedFormat = { secret: string; disclosed: Jsonify<Disclosed> };
 
     // construct encrypted backing store while avoiding collisions between the derived key and the
     // backing storage key.
