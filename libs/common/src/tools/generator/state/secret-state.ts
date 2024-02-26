@@ -20,9 +20,7 @@ import { UserEncryptor } from "./user-encryptor.abstraction";
  *  storage, and requires user keys to operate. It is incompatible with sync,
  *  which expects the disk storage format to be identical to the sync format.
  *
- *  DO NOT USE THIS for synchronized data. Consider, instead, storing
- *  synchronized data in a separate storage location, and bridging the sync
- *  data to a SecretStore when the key becomes available.
+ *  DO NOT USE THIS for synchronized data.
  */
 export class SecretState<Plaintext extends object, Disclosed> {
   // The constructor is private to avoid creating a circular dependency when
