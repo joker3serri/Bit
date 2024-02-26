@@ -1,11 +1,4 @@
-import {
-  concatMap,
-  distinctUntilChanged,
-  firstValueFrom,
-  map,
-  Observable,
-  ReplaySubject,
-} from "rxjs";
+import { concatMap, distinctUntilChanged, firstValueFrom, map, Observable } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { AccountService } from "../../auth/abstractions/account.service";
@@ -91,41 +84,49 @@ const DEFAULT_REGION = Region.US;
 const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_REGION);
 
 export class EnvironmentService implements EnvironmentServiceAbstraction {
-  private readonly environmentSubject = new ReplaySubject<Environment>(1);
-  environment$ = this.environmentSubject.asObservable();
   initialized = false;
 
   private cloudWebVaultUrl: string;
 
   private globalState: GlobalState<EnvironmentState | null>;
 
+  // Temporary local variable, remove once all external functions are async and can depend on the environment$ observable.
   protected environment: UrlEnvironment = new UrlEnvironment(
     DEFAULT_REGION,
     DEFAULT_REGION_CONFIG.urls,
   );
 
-  private activeAccountId$: Observable<UserId | null>;
+  // We intentionally don't want the helper on account service, we want the null back if there is no active user
+  private activeAccountId$: Observable<UserId | null> = this.accountService.activeAccount$.pipe(
+    map((a) => a?.id),
+  );
+
+  environment$: Observable<Environment> = this.activeAccountId$.pipe(
+    // Use == here to not trigger on undefined -> null transition
+    distinctUntilChanged((oldUserId: UserId, newUserId: UserId) => oldUserId == newUserId),
+    concatMap((userId) =>
+      userId
+        ? this.stateProvider.getUser(userId, ENVIRONMENT_KEY).state$
+        : this.stateProvider.getGlobal(ENVIRONMENT_KEY).state$,
+    ),
+    concatMap(async (state) => {
+      if (!this.initialized) {
+        return;
+      }
+
+      return await this.buildEnvironment(state.region, state.urls);
+    }),
+  );
 
   constructor(
     private stateProvider: StateProvider,
     private accountService: AccountService,
+    private initializeEnvironment: boolean = true,
   ) {
-    // We intentionally don't want the helper on account service, we want the null back if there is no active user
-    this.activeAccountId$ = this.accountService.activeAccount$.pipe(map((a) => a?.id));
-
-    // TODO: Get rid of early subscription during EnvironmentService refactor
-    this.activeAccountId$
-      .pipe(
-        // Use == here to not trigger on undefined -> null transition
-        distinctUntilChanged((oldUserId: string, newUserId: string) => oldUserId == newUserId),
-        concatMap(async () => {
-          if (!this.initialized) {
-            return;
-          }
-          await this.setUrlsFromStorage();
-        }),
-      )
-      .subscribe();
+    if (this.initializeEnvironment) {
+      // TODO: Get rid of early subscription during EnvironmentService refactor
+      this.environment$.subscribe();
+    }
 
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
   }
@@ -163,9 +164,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
         urls: null,
       }));
 
-      const regionConfig = this.getRegionConfig(region);
-      this.createAndSetEnvironment(region, regionConfig.urls);
-
       return null;
     } else {
       // Clean the urls
@@ -193,21 +191,36 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
         },
       }));
 
-      this.createAndSetEnvironment(region, urls);
-
       return urls;
     }
   }
 
   /**
-   * Helper for creating and setting the environment.
+   * Helper for building the environment from state. Performs some general sanitization to avoid invalid regions and urls.
    *
    * @param region
    * @param urls
    */
-  protected createAndSetEnvironment(region: Region, urls: Urls) {
-    this.environment = new UrlEnvironment(region, urls);
-    this.environmentSubject.next(this.environment);
+  protected buildEnvironment(region: Region, urls: Urls) {
+    // Unknown regions are treated as self-hosted
+    if (this.getRegionConfig(region) == null) {
+      region = Region.SelfHosted;
+    }
+
+    // If self-hosted ensure urls are valid else fallback to default region
+    if (region == Region.SelfHosted && isEmpty(urls)) {
+      region = DEFAULT_REGION;
+    }
+
+    // Load urls from region config
+    if (region != Region.SelfHosted) {
+      const regionConfig = this.getRegionConfig(region);
+      if (regionConfig != null) {
+        urls = regionConfig.urls;
+      }
+    }
+
+    return (this.environment = new UrlEnvironment(region, urls));
   }
 
   hasBaseUrl() {
@@ -342,7 +355,7 @@ function isEmpty(u?: Urls): boolean {
     u.events == null
   );
 }
-class UrlEnvironment implements Environment {
+export class UrlEnvironment implements Environment {
   constructor(
     private region: Region,
     private urls: Urls,
