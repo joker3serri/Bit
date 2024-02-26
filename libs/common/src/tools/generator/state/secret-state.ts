@@ -14,8 +14,18 @@ import { UserId } from "../../../types/guid";
 
 import { UserEncryptor } from "./user-encryptor.abstraction";
 
+/** Describes the structure of data stored by the SecretState's
+ *  encrypted state. Notably, this interface ensures that `Disclosed`
+ *  round trips through JSON serialization.
+ */
 type ClassifiedFormat<Disclosed> = {
+  /** Serialized {@link EncString} of the secret state's
+   *  secret-level classified data.
+   */
   secret: string;
+  /** serialized representation of the secret state's
+   * disclosed-level classified data.
+   */
   disclosed: Jsonify<Disclosed>;
 };
 
@@ -60,8 +70,6 @@ export class SecretState<Plaintext extends object, Disclosed> {
     // backing storage key.
     const secretKey = new KeyDefinition<ClassifiedFormat<Disclosed>>(key.stateDefinition, key.key, {
       cleanupDelayMs: key.cleanupDelayMs,
-      // `ClassifiedFormat` uses a type assertion because there isn't a straightforward
-      // way to constrain `Disclosed` to stringify-able types.
       // FIXME: When the fakes run deserializers and serialization can be guaranteed through
       // state providers, decode `jsonValue.secret` instead of it running in `derive`.
       deserializer: (jsonValue) => jsonValue as ClassifiedFormat<Disclosed>,
