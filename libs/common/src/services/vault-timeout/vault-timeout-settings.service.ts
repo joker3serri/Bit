@@ -7,6 +7,7 @@ import { TokenService } from "../../auth/abstractions/token.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { UserId } from "../../types/guid";
 
 /**
  * - DISABLED: No Pin set
@@ -24,10 +25,13 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   ) {}
 
   async setVaultTimeoutOptions(timeout: number, action: VaultTimeoutAction): Promise<void> {
+    // TODO: get this from stateProvider.activeUserId$ once this service is migrated to StateProvider.
+    const userId = (await this.stateService.getUserId()) as UserId;
+
     // We swap these tokens from being on disk for lock actions, and in memory for logout actions
     // Get them here to set them to their new location after changing the timeout action and clearing if needed
-    const accessToken = await this.tokenService.getAccessToken();
-    const refreshToken = await this.tokenService.getRefreshToken();
+    const accessToken = await this.tokenService.getAccessToken(userId);
+    const refreshToken = await this.tokenService.getRefreshToken(userId);
     const clientId = await this.tokenService.getClientId();
     const clientSecret = await this.tokenService.getClientSecret();
 
