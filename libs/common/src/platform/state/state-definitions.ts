@@ -53,6 +53,9 @@ export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk", 
 export const COLLECTION_DATA = new StateDefinition("collection", "disk", {
   web: "memory",
 });
+
+export const BADGE_COUNTER_SETTINGS_DISK = new StateDefinition("badgeCounterSettings", "disk");
+
 export const AUTOFILL_SETTINGS_DISK = new StateDefinition("autofillSettings", "disk");
 export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSettingsLocal", "disk", {
   web: "disk-local",
