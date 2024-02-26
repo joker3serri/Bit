@@ -3,6 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -16,6 +17,7 @@ import { UserKey } from "@bitwarden/common/types/key";
 
 export class BrowserCryptoService extends CryptoService {
   constructor(
+    keyGenerationService: KeyGenerationService,
     cryptoFunctionService: CryptoFunctionService,
     encryptService: EncryptService,
     platformUtilService: PlatformUtilsService,
@@ -26,6 +28,7 @@ export class BrowserCryptoService extends CryptoService {
     private biometricStateService: BiometricStateService,
   ) {
     super(
+      keyGenerationService,
       cryptoFunctionService,
       encryptService,
       platformUtilService,
