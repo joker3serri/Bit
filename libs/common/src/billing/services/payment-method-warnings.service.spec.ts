@@ -3,9 +3,9 @@ import { firstValueFrom } from "rxjs";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../spec";
 import { FakeActiveUserState } from "../../../spec/fake-state";
-import { OrganizationApiServiceAbstraction as OrganizationApiService } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
+import { BillingApiServiceAbstraction as BillingApiService } from "../abstractions/billilng-api.service.abstraction";
 import { PAYMENT_METHOD_WARNINGS_KEY } from "../models/billing-keys.state";
 import { PaymentMethodWarning } from "../models/domain/payment-method-warning";
 import { OrganizationBillingStatusResponse } from "../models/response/organization-billing-status.response";
@@ -14,7 +14,7 @@ import { PaymentMethodWarningsService } from "./payment-method-warnings.service"
 
 describe("Payment Method Warnings Service", () => {
   let paymentMethodWarningsService: PaymentMethodWarningsService;
-  let organizationApiService: MockProxy<OrganizationApiService>;
+  let billingApiService: MockProxy<BillingApiService>;
 
   const mockUserId = Utils.newGuid() as UserId;
   let accountService: FakeAccountService;
@@ -39,9 +39,9 @@ describe("Payment Method Warnings Service", () => {
     stateProvider = new FakeStateProvider(accountService);
     activeUserState = stateProvider.activeUser.getFake(PAYMENT_METHOD_WARNINGS_KEY);
 
-    organizationApiService = mock<OrganizationApiService>();
+    billingApiService = mock<BillingApiService>();
     paymentMethodWarningsService = new PaymentMethodWarningsService(
-      organizationApiService,
+      billingApiService,
       stateProvider,
     );
   });
@@ -113,13 +113,13 @@ describe("Payment Method Warnings Service", () => {
       };
       activeUserState.nextState(state);
       await paymentMethodWarningsService.update(organizationId);
-      expect(organizationApiService.getBillingStatus).not.toHaveBeenCalled();
+      expect(billingApiService.getBillingStatus).not.toHaveBeenCalled();
     });
 
     it("Retrieves the billing status from the API and uses it to update the state if the state is null", async () => {
       const organizationId = "1";
       activeUserState.nextState(null);
-      organizationApiService.getBillingStatus.mockResolvedValue(
+      billingApiService.getBillingStatus.mockResolvedValue(
         getBillingStatusResponse(organizationId),
       );
       await paymentMethodWarningsService.update(organizationId);
@@ -131,7 +131,7 @@ describe("Payment Method Warnings Service", () => {
           savedAt: any(),
         },
       });
-      expect(organizationApiService.getBillingStatus).toHaveBeenCalledTimes(1);
+      expect(billingApiService.getBillingStatus).toHaveBeenCalledTimes(1);
     });
 
     it("Retrieves the billing status from the API and uses it to update the state if the stored warning is null", async () => {
@@ -139,7 +139,7 @@ describe("Payment Method Warnings Service", () => {
       activeUserState.nextState({
         [organizationId]: null,
       });
-      organizationApiService.getBillingStatus.mockResolvedValue(
+      billingApiService.getBillingStatus.mockResolvedValue(
         getBillingStatusResponse(organizationId),
       );
       await paymentMethodWarningsService.update(organizationId);
@@ -151,7 +151,7 @@ describe("Payment Method Warnings Service", () => {
           savedAt: any(),
         },
       });
-      expect(organizationApiService.getBillingStatus).toHaveBeenCalledTimes(1);
+      expect(billingApiService.getBillingStatus).toHaveBeenCalledTimes(1);
     });
 
     it("Retrieves the billing status from the API and uses it to update the state if the stored warning is older than a week", async () => {
@@ -164,7 +164,7 @@ describe("Payment Method Warnings Service", () => {
           savedAt: getPastDate(10),
         },
       });
-      organizationApiService.getBillingStatus.mockResolvedValue(
+      billingApiService.getBillingStatus.mockResolvedValue(
         new OrganizationBillingStatusResponse({
           OrganizationId: organizationId,
           OrganizationName: "Teams Organization",
@@ -180,7 +180,7 @@ describe("Payment Method Warnings Service", () => {
           savedAt: any(),
         },
       });
-      expect(organizationApiService.getBillingStatus).toHaveBeenCalledTimes(1);
+      expect(billingApiService.getBillingStatus).toHaveBeenCalledTimes(1);
     });
   });
 });
