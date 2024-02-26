@@ -130,11 +130,7 @@ export class TokenService implements TokenServiceAbstraction {
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage:
-        await this.secureStorageService.save<string>(
-          `${userId}${this.accessTokenSecureStorageKey}`,
-          accessToken,
-          this.getSecureStorageOptions(userId),
-        );
+        await this.saveStringToSecureStorage(userId, this.accessTokenSecureStorageKey, accessToken);
 
         // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
         // 2024-02-20: Remove access token from memory and disk so that we migrate to secure storage over time.
@@ -190,7 +186,7 @@ export class TokenService implements TokenServiceAbstraction {
     const accessTokenMigratedToSecureStorage =
       await this.getAccessTokenMigratedToSecureStorage(userId);
     if (this.platformSupportsSecureStorage && accessTokenMigratedToSecureStorage) {
-      return await this.getDataFromSecureStorage(userId, this.accessTokenSecureStorageKey);
+      return await this.getStringFromSecureStorage(userId, this.accessTokenSecureStorageKey);
     }
 
     // Try to get the access token from memory
@@ -236,10 +232,10 @@ export class TokenService implements TokenServiceAbstraction {
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage:
-        await this.secureStorageService.save<string>(
-          `${userId}${this.refreshTokenSecureStorageKey}`,
+        await this.saveStringToSecureStorage(
+          userId,
+          this.refreshTokenSecureStorageKey,
           refreshToken,
-          this.getSecureStorageOptions(userId),
         );
 
         // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
@@ -275,7 +271,7 @@ export class TokenService implements TokenServiceAbstraction {
     const refreshTokenMigratedToSecureStorage =
       await this.getRefreshTokenMigratedToSecureStorage(userId);
     if (this.platformSupportsSecureStorage && refreshTokenMigratedToSecureStorage) {
-      return await this.getDataFromSecureStorage(userId, this.refreshTokenSecureStorageKey);
+      return await this.getStringFromSecureStorage(userId, this.refreshTokenSecureStorageKey);
     }
 
     // pre-secure storage migration:
@@ -511,7 +507,19 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  private async getDataFromSecureStorage(
+  private async saveStringToSecureStorage(
+    userId: UserId,
+    storageKey: string,
+    value: string,
+  ): Promise<void> {
+    await this.secureStorageService.save<string>(
+      `${userId}${storageKey}`,
+      value,
+      this.getSecureStorageOptions(userId),
+    );
+  }
+
+  private async getStringFromSecureStorage(
     userId: UserId,
     storageKey: string,
   ): Promise<string | null> {
