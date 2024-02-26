@@ -24,6 +24,9 @@ import {
   // API_KEY_CLIENT_SECRET_DISK,
   // API_KEY_CLIENT_SECRET_MEMORY,
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+  REFRESH_TOKEN_DISK,
+  REFRESH_TOKEN_MEMORY,
+  REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   // REFRESH_TOKEN_DISK,
   // REFRESH_TOKEN_MEMORY,
   // REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
@@ -113,7 +116,7 @@ export class TokenService implements TokenServiceAbstraction {
   // TODO: consider whether we need to accept vaultTimeout as a number or null everywhere
 
   async setAccessToken(
-    token: string,
+    accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
     userId: UserId,
@@ -129,7 +132,7 @@ export class TokenService implements TokenServiceAbstraction {
       case TokenStorageLocation.SecureStorage:
         await this.secureStorageService.save<string>(
           `${userId}${this.accessTokenSecureStorageKey}`,
-          token,
+          accessToken,
           this.getSecureStorageOptions(userId),
         );
 
@@ -145,10 +148,14 @@ export class TokenService implements TokenServiceAbstraction {
 
         return;
       case TokenStorageLocation.Disk:
-        await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_DISK).update((_) => token);
+        await this.singleUserStateProvider
+          .get(userId, ACCESS_TOKEN_DISK)
+          .update((_) => accessToken);
         return;
       case TokenStorageLocation.Memory:
-        await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_MEMORY).update((_) => token);
+        await this.singleUserStateProvider
+          .get(userId, ACCESS_TOKEN_MEMORY)
+          .update((_) => accessToken);
         return;
     }
   }
@@ -220,15 +227,15 @@ export class TokenService implements TokenServiceAbstraction {
     vaultTimeout: number,
     userId: UserId,
   ): Promise<void> {
+    // If we don't have a user id, we can't save the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot save access token.");
+    }
+
     const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
 
-    if (storageLocation === "disk") {
-      if (this.platformSupportsSecureStorage) {
-        // If we don't have a user id, we can't save to secure storage
-        if (!userId) {
-          throw new Error("User id null. Cannot save refresh token to secure storage.");
-        }
-
+    switch (storageLocation) {
+      case TokenStorageLocation.SecureStorage:
         await this.secureStorageService.save<string>(
           `${userId}${this.refreshTokenSecureStorageKey}`,
           refreshToken,
@@ -238,37 +245,53 @@ export class TokenService implements TokenServiceAbstraction {
         // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
         // 2024-02-20: Remove refresh token from memory and disk so that we migrate to secure storage over time.
         // Remove these 2 calls to remove the refresh token from memory and disk after 3 releases.
-        await this.refreshTokenDiskState.update((_) => null);
-        await this.refreshTokenMemoryState.update((_) => null);
+        await this.singleUserStateProvider.get(userId, REFRESH_TOKEN_DISK).update((_) => null);
+        await this.singleUserStateProvider.get(userId, REFRESH_TOKEN_MEMORY).update((_) => null);
 
         // Set flag to indicate that the refresh token has been migrated to secure storage (don't remove this)
-        await this.setRefreshTokenMigratedToSecureStorage();
+        await this.setRefreshTokenMigratedToSecureStorage(userId);
 
         return;
-      }
 
-      await this.refreshTokenDiskState.update((_) => refreshToken);
-    } else if (storageLocation === "memory") {
-      await this.refreshTokenMemoryState.update((_) => refreshToken);
+      case TokenStorageLocation.Disk:
+        await this.singleUserStateProvider
+          .get(userId, REFRESH_TOKEN_DISK)
+          .update((_) => refreshToken);
+        return;
+
+      case TokenStorageLocation.Memory:
+        await this.singleUserStateProvider
+          .get(userId, REFRESH_TOKEN_MEMORY)
+          .update((_) => refreshToken);
+        return;
     }
   }
 
-  async getRefreshToken(): Promise<string> {
-    const refreshTokenMigratedToSecureStorage = await this.getRefreshTokenMigratedToSecureStorage();
+  async getRefreshToken(userId: UserId): Promise<string> {
+    if (!userId) {
+      throw new Error("User id not found. Cannot get access token.");
+    }
+
+    const refreshTokenMigratedToSecureStorage =
+      await this.getRefreshTokenMigratedToSecureStorage(userId);
     if (this.platformSupportsSecureStorage && refreshTokenMigratedToSecureStorage) {
-      return await this.getRefreshTokenFromSecureStorage();
+      return await this.getDataFromSecureStorage(userId, this.refreshTokenSecureStorageKey);
     }
 
     // pre-secure storage migration:
     // Always read memory first b/c faster
-    const refreshTokenMemory = await firstValueFrom(this.refreshTokenMemoryState.state$);
+    const refreshTokenMemory = await this.getStateValueByUserIdAndKeyDef(
+      userId,
+      REFRESH_TOKEN_MEMORY,
+    );
 
     if (refreshTokenMemory != null) {
       return refreshTokenMemory;
     }
 
     // if memory is null, read from disk
-    const refreshTokenDisk = await firstValueFrom(this.refreshTokenDiskState.state$);
+    const refreshTokenDisk = await this.getStateValueByUserIdAndKeyDef(userId, REFRESH_TOKEN_DISK);
+
     if (refreshTokenDisk != null) {
       return refreshTokenDisk;
     }
@@ -276,30 +299,16 @@ export class TokenService implements TokenServiceAbstraction {
     return null;
   }
 
-  private async getRefreshTokenFromSecureStorage(): Promise<string | null> {
-    if (!this.platformSupportsSecureStorage) {
-      return null;
-    }
-
-    const userId: UserId = await firstValueFrom(this.singleUserStateProvider.activeUserId$);
-
-    // if we still don't have a user id, we can't read from secure storage
-    if (!userId) {
-      return null;
-    }
-
-    return await this.secureStorageService.get<string>(
-      `${userId}${this.refreshTokenSecureStorageKey}`,
-      this.getSecureStorageOptions(userId),
+  private async getRefreshTokenMigratedToSecureStorage(userId: UserId): Promise<boolean> {
+    return await firstValueFrom(
+      this.singleUserStateProvider.get(userId, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE).state$,
     );
   }
 
-  private async getRefreshTokenMigratedToSecureStorage(): Promise<boolean> {
-    return await firstValueFrom(this.refreshTokenMigratedToSecureStorageState.state$);
-  }
-
-  private async setRefreshTokenMigratedToSecureStorage(): Promise<void> {
-    await this.refreshTokenMigratedToSecureStorageState.update((_) => true);
+  private async setRefreshTokenMigratedToSecureStorage(userId: UserId): Promise<void> {
+    await this.singleUserStateProvider
+      .get(userId, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+      .update((_) => true);
   }
 
   async setClientId(

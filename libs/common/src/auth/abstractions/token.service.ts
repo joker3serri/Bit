@@ -62,7 +62,7 @@ export abstract class TokenService {
    * Gets the refresh token for the active user.
    * @returns A promise that resolves with the refresh token.
    */
-  getRefreshToken: () => Promise<string>;
+  getRefreshToken: (userId: UserId) => Promise<string>;
 
   /**
    * Sets the API Key Client ID for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
