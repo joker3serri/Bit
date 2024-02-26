@@ -5,6 +5,7 @@ import { PlatformUtilsService } from "../../platform/abstractions/platform-utils
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
+import { StorageOptions } from "../../platform/models/domain/storage-options";
 import {
   GlobalState,
   GlobalStateProvider,
@@ -123,11 +124,7 @@ export class TokenService implements TokenServiceAbstraction {
         await this.secureStorageService.save<string>(
           `${userId}${this.accessTokenSecureStorageKey}`,
           token,
-          {
-            storageLocation: StorageLocation.Disk,
-            useSecureStorage: true,
-            userId: userId,
-          },
+          this.getSecureStorageOptions(userId),
         );
 
         // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
@@ -157,11 +154,10 @@ export class TokenService implements TokenServiceAbstraction {
     }
 
     if (this.platformSupportsSecureStorage) {
-      await this.secureStorageService.remove(`${userId}${this.accessTokenSecureStorageKey}`, {
-        storageLocation: StorageLocation.Disk,
-        useSecureStorage: true,
-        userId: userId,
-      });
+      await this.secureStorageService.remove(
+        `${userId}${this.accessTokenSecureStorageKey}`,
+        this.getSecureStorageOptions(userId),
+      );
       return;
     }
 
@@ -199,11 +195,7 @@ export class TokenService implements TokenServiceAbstraction {
     // If we have a user ID, read from secure storage.
     return await this.secureStorageService.get<string>(
       `${userId}${this.accessTokenSecureStorageKey}`,
-      {
-        storageLocation: StorageLocation.Disk,
-        useSecureStorage: true,
-        userId: userId,
-      },
+      this.getSecureStorageOptions(userId),
     );
   }
   private async getAccessTokenByUserIdAndLocation(
@@ -243,11 +235,7 @@ export class TokenService implements TokenServiceAbstraction {
       await this.secureStorageService.save<string>(
         `${userId}${this.refreshTokenSecureStorageKey}`,
         refreshToken,
-        {
-          storageLocation: StorageLocation.Disk,
-          useSecureStorage: true,
-          userId: userId,
-        },
+        this.getSecureStorageOptions(userId),
       );
 
       // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
@@ -299,7 +287,7 @@ export class TokenService implements TokenServiceAbstraction {
       return null;
     }
 
-    const userId = await firstValueFrom(this.singleUserStateProvider.activeUserId$);
+    const userId: UserId = await firstValueFrom(this.singleUserStateProvider.activeUserId$);
 
     // if we still don't have a user id, we can't read from secure storage
     if (!userId) {
@@ -308,11 +296,7 @@ export class TokenService implements TokenServiceAbstraction {
 
     return await this.secureStorageService.get<string>(
       `${userId}${this.refreshTokenSecureStorageKey}`,
-      {
-        storageLocation: StorageLocation.Disk,
-        useSecureStorage: true,
-        userId: userId,
-      },
+      this.getSecureStorageOptions(userId),
     );
   }
 
@@ -510,5 +494,13 @@ export class TokenService implements TokenServiceAbstraction {
     } else {
       return "disk";
     }
+  }
+
+  private getSecureStorageOptions(userId: UserId): StorageOptions {
+    return {
+      storageLocation: StorageLocation.Disk,
+      useSecureStorage: true,
+      userId: userId,
+    };
   }
 }
