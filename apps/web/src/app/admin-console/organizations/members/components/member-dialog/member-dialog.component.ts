@@ -173,19 +173,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         this.canUseCustomPermissions = organization.useCustomPermissions;
         this.canUseSecretsManager = organization.useSecretsManager && flagEnabled("secretsManager");
 
-        const emailsControlValidators = [
-          Validators.required,
-          commaSeparatedEmails,
-          orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
-            this.organization,
-            this.params.allOrganizationUserEmails,
-            this.i18nService.t("subscriptionUpgrade", organization.seats),
-          ),
-        ];
-
-        const emailsControl = this.formGroup.get("emails");
-        emailsControl.setValidators(emailsControlValidators);
-        emailsControl.updateValueAndValidity();
+        this.setFormValidators(organization);
 
         this.collectionAccessItems = [].concat(
           collections.map((c) => mapCollectionToAccessItemView(c)),
@@ -201,6 +189,22 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
 
         this.loading = false;
       });
+  }
+
+  private setFormValidators(organization: Organization) {
+    const emailsControlValidators = [
+      Validators.required,
+      commaSeparatedEmails,
+      orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
+        this.organization,
+        this.params.allOrganizationUserEmails,
+        this.i18nService.t("subscriptionUpgrade", organization.seats),
+      ),
+    ];
+
+    const emailsControl = this.formGroup.get("emails");
+    emailsControl.setValidators(emailsControlValidators);
+    emailsControl.updateValueAndValidity();
   }
 
   private loadOrganizationUser(
