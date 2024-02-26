@@ -1,4 +1,4 @@
-import { concatMap, distinctUntilChanged, firstValueFrom, map, Observable } from "rxjs";
+import { concatMap, distinctUntilChanged, firstValueFrom, map, Observable, switchMap } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { AccountService } from "../../auth/abstractions/account.service";
@@ -33,9 +33,13 @@ class EnvironmentState {
   }
 }
 
-const ENVIRONMENT_KEY = new KeyDefinition<EnvironmentState>(ENVIRONMENT_DISK, "environment", {
-  deserializer: EnvironmentState.fromJSON,
-});
+export const ENVIRONMENT_KEY = new KeyDefinition<EnvironmentState>(
+  ENVIRONMENT_DISK,
+  "environment",
+  {
+    deserializer: EnvironmentState.fromJSON,
+  },
+);
 
 /**
  * The production regions available for selection.
@@ -91,7 +95,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   private globalState: GlobalState<EnvironmentState | null>;
 
   // Temporary local variable, remove once all external functions are async and can depend on the environment$ observable.
-  protected environment: UrlEnvironment = new UrlEnvironment(
+  protected environment: Environment = new UrlEnvironment(
     DEFAULT_REGION,
     DEFAULT_REGION_CONFIG.urls,
   );
@@ -104,17 +108,18 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   environment$: Observable<Environment> = this.activeAccountId$.pipe(
     // Use == here to not trigger on undefined -> null transition
     distinctUntilChanged((oldUserId: UserId, newUserId: UserId) => oldUserId == newUserId),
-    concatMap((userId) =>
-      userId
+    switchMap((userId) => {
+      const t = userId
         ? this.stateProvider.getUser(userId, ENVIRONMENT_KEY).state$
-        : this.stateProvider.getGlobal(ENVIRONMENT_KEY).state$,
-    ),
+        : this.stateProvider.getGlobal(ENVIRONMENT_KEY).state$;
+      return t;
+    }),
     concatMap(async (state) => {
-      if (!this.initialized) {
+      if (state == null) {
         return;
       }
 
-      return await this.buildEnvironment(state.region, state.urls);
+      return this.buildEnvironment(state.region, state.urls);
     }),
   );
 
@@ -125,7 +130,11 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   ) {
     if (this.initializeEnvironment) {
       // TODO: Get rid of early subscription during EnvironmentService refactor
-      this.environment$.subscribe();
+      this.environment$.subscribe((env) => {
+        if (env != null) {
+          this.environment = env;
+        }
+      });
     }
 
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
@@ -220,7 +229,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
       }
     }
 
-    return (this.environment = new UrlEnvironment(region, urls));
+    return new UrlEnvironment(region, urls);
   }
 
   hasBaseUrl() {

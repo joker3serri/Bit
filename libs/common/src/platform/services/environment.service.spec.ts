@@ -1,19 +1,12 @@
-import { awaitAsync } from "../../../spec";
-import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
-import { FakeStorageService } from "../../../spec/fake-storage.service";
+import { firstValueFrom } from "rxjs";
+
+import { FakeStateProvider, awaitAsync } from "../../../spec";
+import { FakeAccountService } from "../../../spec/fake-account-service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { UserId } from "../../types/guid";
 import { Region } from "../abstractions/environment.service";
-import { StateProvider } from "../state";
-/* eslint-disable import/no-restricted-paths -- Rare testing need */
-import { DefaultActiveUserStateProvider } from "../state/implementations/default-active-user-state.provider";
-import { DefaultDerivedStateProvider } from "../state/implementations/default-derived-state.provider";
-import { DefaultGlobalStateProvider } from "../state/implementations/default-global-state.provider";
-import { DefaultSingleUserStateProvider } from "../state/implementations/default-single-user-state.provider";
-import { DefaultStateProvider } from "../state/implementations/default-state.provider";
-/* eslint-disable import/no-restricted-paths */
 
-import { EnvironmentService, EnvironmentUrls } from "./environment.service";
+import { ENVIRONMENT_KEY, EnvironmentService, EnvironmentUrls } from "./environment.service";
 
 // There are a few main states EnvironmentService could be in when first used
 // 1. Not initialized, no active user. Hopefully not to likely but possible
@@ -21,10 +14,8 @@ import { EnvironmentService, EnvironmentUrls } from "./environment.service";
 // 3. Initialized, no active user.
 // 4. Initialized, with active user.
 describe("EnvironmentService", () => {
-  let diskStorageService: FakeStorageService;
-  let memoryStorageService: FakeStorageService;
   let accountService: FakeAccountService;
-  let stateProvider: StateProvider;
+  let stateProvider: FakeStateProvider;
 
   let sut: EnvironmentService;
 
@@ -32,20 +23,19 @@ describe("EnvironmentService", () => {
   const alternateTestUser = "00000000-0000-1000-a000-000000000002" as UserId;
 
   beforeEach(async () => {
-    diskStorageService = new FakeStorageService();
-    memoryStorageService = new FakeStorageService();
-
-    accountService = mockAccountServiceWith(undefined);
-    stateProvider = new DefaultStateProvider(
-      new DefaultActiveUserStateProvider(
-        accountService,
-        memoryStorageService as any,
-        diskStorageService,
-      ),
-      new DefaultSingleUserStateProvider(memoryStorageService as any, diskStorageService),
-      new DefaultGlobalStateProvider(memoryStorageService as any, diskStorageService),
-      new DefaultDerivedStateProvider(memoryStorageService),
-    );
+    accountService = new FakeAccountService({
+      [testUser]: {
+        name: "name",
+        email: "email",
+        status: AuthenticationStatus.Locked,
+      },
+      [alternateTestUser]: {
+        name: "name",
+        email: "email",
+        status: AuthenticationStatus.Locked,
+      },
+    });
+    stateProvider = new FakeStateProvider(accountService);
 
     sut = new EnvironmentService(stateProvider, accountService);
   });
@@ -61,20 +51,10 @@ describe("EnvironmentService", () => {
   };
 
   const setGlobalData = (region: Region, environmentUrls: EnvironmentUrls) => {
-    const data = diskStorageService.internalStore;
-    data["global_environment_environment"] = {
-      region,
+    stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
+      region: region,
       urls: environmentUrls,
-    };
-    diskStorageService.internalUpdateStore(data);
-  };
-
-  const getGlobalData = () => {
-    const storage = diskStorageService.internalStore;
-    return storage?.["global_environment_environment"] as {
-      region: Region;
-      urls: EnvironmentUrls;
-    };
+    });
   };
 
   const setUserData = (
@@ -82,20 +62,14 @@ describe("EnvironmentService", () => {
     environmentUrls: EnvironmentUrls,
     userId: UserId = testUser,
   ) => {
-    const data = diskStorageService.internalStore;
-    data[`user_${userId}_environment_environment`] = {
-      region,
+    stateProvider.singleUser.getFake(userId, ENVIRONMENT_KEY).nextState({
+      region: region,
       urls: environmentUrls,
-    };
-
-    diskStorageService.internalUpdateStore(data);
+    });
   };
   // END: CAN CHANGE
 
   const initialize = async (options: { switchUser: boolean }) => {
-    await sut.setUrlsFromStorage();
-    sut.initialized = true;
-
     if (options.switchUser) {
       await switchUser(testUser);
     }
@@ -135,8 +109,7 @@ describe("EnvironmentService", () => {
       "sets correct urls for each region %s",
       async ({ region, expectedUrls }) => {
         setUserData(region, new EnvironmentUrls());
-
-        await initialize({ switchUser: true });
+        await switchUser(testUser);
 
         expect(sut.hasBaseUrl()).toBe(false);
         expect(sut.getWebVaultUrl()).toBe(expectedUrls.webVault);
@@ -201,9 +174,10 @@ describe("EnvironmentService", () => {
 
   describe("without user", () => {
     it.each(REGION_SETUP)("gets default urls %s", async ({ region, expectedUrls }) => {
-      setGlobalData(region, new EnvironmentUrls());
-
-      await initialize({ switchUser: false });
+      await stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
+        region: region,
+        urls: new EnvironmentUrls(),
+      });
 
       expect(sut.hasBaseUrl()).toBe(false);
       expect(sut.getWebVaultUrl()).toBe(expectedUrls.webVault);
@@ -229,43 +203,6 @@ describe("EnvironmentService", () => {
         keyConnector: undefined,
       });
     });
-
-    it("gets global data", async () => {
-      const globalEnvironmentUrls = new EnvironmentUrls();
-      globalEnvironmentUrls.base = "https://global-url.example.com";
-      globalEnvironmentUrls.keyConnector = "https://global-key-connector.example.com";
-      setGlobalData(Region.SelfHosted, globalEnvironmentUrls);
-
-      const userEnvironmentUrls = new EnvironmentUrls();
-      userEnvironmentUrls.base = "https://user-url.example.com";
-      userEnvironmentUrls.keyConnector = "https://user-key-connector.example.com";
-      setUserData(Region.SelfHosted, userEnvironmentUrls);
-
-      await initialize({ switchUser: false });
-
-      expect(sut.getWebVaultUrl()).toBe("https://global-url.example.com");
-      expect(sut.getIdentityUrl()).toBe("https://global-url.example.com/identity");
-      expect(sut.getApiUrl()).toBe("https://global-url.example.com/api");
-      expect(sut.getIconsUrl()).toBe("https://global-url.example.com/icons");
-      expect(sut.getNotificationsUrl()).toBe("https://global-url.example.com/notifications");
-      expect(sut.getEventsUrl()).toBe("https://global-url.example.com/events");
-      expect(sut.getScimUrl()).toBe("https://global-url.example.com/scim/v2");
-      expect(sut.getSendUrl()).toBe("https://global-url.example.com/#/send/");
-      expect(sut.getKeyConnectorUrl()).toBe("https://global-key-connector.example.com");
-      expect(sut.isCloud()).toBe(false);
-      expect(sut.getUrls()).toEqual({
-        api: null,
-        base: "https://global-url.example.com",
-        cloudWebVault: undefined,
-        webVault: null,
-        events: null,
-        icons: null,
-        identity: null,
-        keyConnector: "https://global-key-connector.example.com",
-        notifications: null,
-        scim: null,
-      });
-    });
   });
 
   it("returns US defaults when not initialized", async () => {
@@ -286,31 +223,30 @@ describe("EnvironmentService", () => {
     expect(sut.isCloud()).toBe(true);
   });
 
-  describe("setUrls", () => {
-    it("set just a base url", async () => {
-      await initialize({ switchUser: true });
-
+  describe("setEnvironment", () => {
+    it("self-hosted with base-url", async () => {
       await sut.setEnvironment(Region.SelfHosted, {
         base: "base.example.com",
       });
+      await awaitAsync();
 
-      const globalData = getGlobalData();
-      expect(globalData.region).toBe(Region.SelfHosted);
-      expect(globalData.urls).toEqual({
+      const data = await firstValueFrom(sut.environment$);
+
+      expect(data.getRegion()).toBe(Region.SelfHosted);
+      expect(data.getUrls()).toEqual({
         base: "https://base.example.com",
         api: null,
         identity: null,
         webVault: null,
         icons: null,
         notifications: null,
+        scim: null,
         events: null,
         keyConnector: null,
       });
     });
 
-    it("sets all urls", async () => {
-      await initialize({ switchUser: true });
-
+    it("self-hosted and sets all urls", async () => {
       expect(sut.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
 
       await sut.setEnvironment(Region.SelfHosted, {
@@ -323,33 +259,29 @@ describe("EnvironmentService", () => {
         scim: "scim.example.com",
       });
 
-      const globalData = getGlobalData();
-      expect(globalData.region).toBe(Region.SelfHosted);
-      expect(globalData.urls).toEqual({
+      const data = await firstValueFrom(sut.environment$);
+
+      expect(data.getRegion()).toBe(Region.SelfHosted);
+      expect(data.getUrls()).toEqual({
         base: "https://base.example.com",
         api: "https://api.example.com",
         identity: "https://identity.example.com",
         webVault: "https://vault.example.com",
         icons: "https://icons.example.com",
         notifications: "https://notifications.example.com",
+        scim: null,
         events: null,
         keyConnector: null,
       });
       expect(sut.getScimUrl()).toBe("https://vault.example.com/scim/v2");
     });
-  });
 
-  describe("setRegion", () => {
-    it("sets the region on the global object even if there is a user.", async () => {
-      setGlobalData(Region.EU, new EnvironmentUrls());
-      setUserData(Region.EU, new EnvironmentUrls());
-
-      await initialize({ switchUser: true });
-
+    it("sets the region", async () => {
       await sut.setEnvironment(Region.US);
 
-      const globalData = getGlobalData();
-      expect(globalData.region).toBe(Region.US);
+      const data = await firstValueFrom(sut.environment$);
+
+      expect(data.getRegion()).toBe(Region.US);
     });
   });
 
@@ -358,10 +290,15 @@ describe("EnvironmentService", () => {
       { region: Region.US, expectedHost: "bitwarden.com" },
       { region: Region.EU, expectedHost: "bitwarden.eu" },
     ])("gets it from user data if there is an active user", async ({ region, expectedHost }) => {
-      setGlobalData(Region.US, new EnvironmentUrls());
-      setUserData(region, new EnvironmentUrls());
-
-      await initialize({ switchUser: true });
+      stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
+        region: Region.US,
+        urls: new EnvironmentUrls(),
+      });
+      await switchUser(testUser);
+      stateProvider.singleUser.getFake(testUser, ENVIRONMENT_KEY).nextState({
+        region: region,
+        urls: new EnvironmentUrls(),
+      });
 
       const host = await sut.getHost();
       expect(host).toBe(expectedHost);
@@ -371,10 +308,14 @@ describe("EnvironmentService", () => {
       { region: Region.US, expectedHost: "bitwarden.com" },
       { region: Region.EU, expectedHost: "bitwarden.eu" },
     ])("gets it from global data if there is no active user", async ({ region, expectedHost }) => {
-      setGlobalData(region, new EnvironmentUrls());
-      setUserData(Region.US, new EnvironmentUrls());
-
-      await initialize({ switchUser: false });
+      stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
+        region: region,
+        urls: new EnvironmentUrls(),
+      });
+      stateProvider.singleUser.getFake(testUser, ENVIRONMENT_KEY).nextState({
+        region: Region.US,
+        urls: new EnvironmentUrls(),
+      });
 
       const host = await sut.getHost();
       expect(host).toBe(expectedHost);
@@ -459,8 +400,8 @@ describe("EnvironmentService", () => {
 
       expect(sut.getWebVaultUrl()).toBe("https://vault.bitwarden.com");
 
-      const globalData = getGlobalData();
-      expect(globalData.region).toBe(Region.US);
+      const data = await firstValueFrom(sut.environment$);
+      expect(data.getRegion()).toBe(Region.US);
     });
 
     it("will set the urls to whatever is in global", async () => {
@@ -476,11 +417,9 @@ describe("EnvironmentService", () => {
 
       const userUrls = new EnvironmentUrls();
       userUrls.base = "base.example.com";
-      setUserData(Region.SelfHosted, userUrls);
+      await setUserData(Region.SelfHosted, userUrls);
 
-      await sut.setUrlsFromStorage();
-
-      expect(sut.getWebVaultUrl()).toBe("https://base.example.com");
+      expect(sut.getWebVaultUrl()).toBe("base.example.com");
     });
   });
 
