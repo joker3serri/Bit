@@ -335,8 +335,8 @@ export default class MainBackground {
       ? new BrowserMessagingPrivateModeBackgroundService()
       : new BrowserMessagingService();
     this.logService = new ConsoleLogService(false);
-    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
+    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
     this.secureStorageService = new BrowserLocalStorageService();
     this.memoryStorageService =
@@ -779,6 +779,7 @@ export default class MainBackground {
       this.platformUtilsService,
       systemUtilsServiceReloadCallback,
       this.stateService,
+      this.autofillSettingsService,
       this.vaultTimeoutSettingsService,
     );
 
