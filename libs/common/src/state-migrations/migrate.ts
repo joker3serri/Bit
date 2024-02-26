@@ -17,7 +17,10 @@ import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-
 import { PrivateKeyMigrator } from "./migrations/20-move-private-key-to-state-providers";
 import { CollectionMigrator } from "./migrations/21-move-collections-state-to-state-provider";
 import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-groupings-to-state-provider";
-import { MergeEnvironmentState } from "./migrations/23-merge-environment-state";
+import { MoveBiometricPromptsToStateProviders } from "./migrations/23-move-biometric-prompts-to-state-providers";
+import { SmOnboardingTasksMigrator } from "./migrations/24-move-sm-onboarding-key-to-state-providers";
+import { ClearClipboardDelayMigrator } from "./migrations/25-move-clear-clipboard-to-autofill-settings-state-provider";
+import { MergeEnvironmentState } from "./migrations/26-merge-environment-state";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -28,7 +31,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 2;
-export const CURRENT_VERSION = 23;
+export const CURRENT_VERSION = 26;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -54,7 +57,10 @@ export function createMigrationBuilder() {
     .with(PrivateKeyMigrator, 19, 20)
     .with(CollectionMigrator, 20, 21)
     .with(CollapsedGroupingsMigrator, 21, 22)
-    .with(MergeEnvironmentState, 22, CURRENT_VERSION);
+    .with(MoveBiometricPromptsToStateProviders, 22, 23)
+    .with(SmOnboardingTasksMigrator, 23, 24)
+    .with(ClearClipboardDelayMigrator, 24, 25)
+    .with(MergeEnvironmentState, 25, CURRENT_VERSION);
 }
 
 export async function currentVersion(
