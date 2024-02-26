@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import {
   PinCryptoServiceAbstraction,
   PinCryptoService,
@@ -64,6 +66,10 @@ import {
   ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/platform/abstractions/system.service";
+import {
+  BiometricStateService,
+  DefaultBiometricStateService,
+} from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
@@ -280,6 +286,7 @@ export default class MainBackground {
   individualVaultExportService: IndividualVaultExportServiceAbstraction;
   organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
   vaultSettingsService: VaultSettingsServiceAbstraction;
+  biometricStateService: BiometricStateService;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -321,15 +328,15 @@ export default class MainBackground {
       }
     };
 
-    const logoutCallback = async (expired: boolean, userId?: string) =>
+    const logoutCallback = async (expired: boolean, userId?: UserId) =>
       await this.logout(expired, userId);
 
     this.messagingService = this.popupOnlyContext
       ? new BrowserMessagingPrivateModeBackgroundService()
       : new BrowserMessagingService();
     this.logService = new ConsoleLogService(false);
-    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
+    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
     this.secureStorageService = new BrowserLocalStorageService();
     this.memoryStorageService =
@@ -386,6 +393,7 @@ export default class MainBackground {
       this.stateProvider,
       this.accountService,
     );
+    this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
 
     const migrationRunner = new MigrationRunner(
       this.storageService,
@@ -771,6 +779,7 @@ export default class MainBackground {
       this.platformUtilsService,
       systemUtilsServiceReloadCallback,
       this.stateService,
+      this.autofillSettingsService,
       this.vaultTimeoutSettingsService,
     );
 
@@ -1043,7 +1052,9 @@ export default class MainBackground {
     }
   }
 
-  async logout(expired: boolean, userId?: string) {
+  async logout(expired: boolean, userId?: UserId) {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     await this.eventUploadService.uploadEvents(userId);
 
     await Promise.all([
@@ -1058,6 +1069,7 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService.clear(userId),
       this.keyConnectorService.clear(),
       this.vaultFilterService.clear(),
+      this.biometricStateService.logout(userId),
       // We intentionally do not clear the autofillSettingsService
     ]);
 
