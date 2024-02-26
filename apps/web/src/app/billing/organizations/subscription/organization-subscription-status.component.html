@@ -1,0 +1,48 @@
+<ng-container>
+  <bit-callout type="danger" title="{{ 'canceled' | i18n }}" *ngIf="subscriptionIsCanceled">
+    {{ "subscriptionCanceled" | i18n }}
+  </bit-callout>
+
+  <bit-callout
+    type="warning"
+    title="{{ 'pendingCancellation' | i18n }}"
+    *ngIf="subscriptionIsPendingCancellation"
+  >
+    <p>{{ "subscriptionPendingCanceled" | i18n }}</p>
+    <button bitButton buttonType="secondary" [bitAction]="requestReinstatement" type="button">
+      {{ "reinstateSubscription" | i18n }}
+    </button>
+  </bit-callout>
+
+  <bit-callout type="warning" title="{{ 'pastDue' | i18n }}" *ngIf="subscriptionIsPastDue">
+    {{
+      "toMaintainYourSubscription" | i18n: (subscription.warnings.suspensionDate | date: "longDate")
+    }}
+  </bit-callout>
+
+  <bit-callout type="danger" title="{{ 'unpaid' | i18n }}" *ngIf="subscriptionIsUnpaid">
+    {{ "toReactivateYourSubscription" | i18n }}
+  </bit-callout>
+
+  <dl class="tw-grid tw-grid-flow-col tw-grid-rows-2">
+    <dt>{{ "billingPlan" | i18n }}</dt>
+    <dd>{{ plan }}</dd>
+    <ng-container>
+      <dt>{{ "status" | i18n }}</dt>
+      <dd>
+        <span class="tw-capitalize">
+          {{ labelForStatus }}
+        </span>
+        <span bitBadge variant="warning" *ngIf="subscriptionIsPendingCancellation">
+          {{ "pendingCancellation" | i18n }}
+        </span>
+      </dd>
+      <dt [ngClass]="{ 'tw-text-danger': expirationIndicator.danger }">
+        {{ expirationIndicator.label }}
+      </dt>
+      <dd [ngClass]="{ 'tw-text-danger': expirationIndicator.danger }">
+        {{ expirationIndicator.date | date: "mediumDate" }}
+      </dd>
+    </ng-container>
+  </dl>
+</ng-container>

@@ -10,10 +10,12 @@ import { OrganizationBillingService } from "@bitwarden/common/billing/services/o
 import { SharedModule } from "../../../shared";
 import { OrganizationBillingModule } from "../organization-billing.module";
 
+import { OrganizationSubscriptionStatusComponent } from "./organization-subscription-status.component";
+
 @Component({
   standalone: true,
   templateUrl: "organization-subscription.component.html",
-  imports: [SharedModule, OrganizationBillingModule],
+  imports: [SharedModule, OrganizationBillingModule, OrganizationSubscriptionStatusComponent],
 })
 export class OrganizationSubscriptionComponent implements OnInit, OnDestroy {
   protected loading: boolean;
