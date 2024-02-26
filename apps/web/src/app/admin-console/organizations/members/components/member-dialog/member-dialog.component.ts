@@ -27,7 +27,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
-import { flagEnabled } from "../../../../../../utils/flags";
 import { CollectionAdminService } from "../../../../../vault/core/collection-admin.service";
 import {
   CollectionAccessSelectionView,
@@ -83,9 +82,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   access: "all" | "selected" = "selected";
   collections: CollectionView[] = [];
   organizationUserType = OrganizationUserType;
-  canUseCustomPermissions: boolean;
   PermissionMode = PermissionMode;
-  canUseSecretsManager: boolean;
   showNoMasterPasswordWarning = false;
 
   protected organization$: Observable<Organization>;
@@ -177,9 +174,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ organization, collections, userDetails, groups }) => {
-        this.canUseCustomPermissions = organization.useCustomPermissions;
-        this.canUseSecretsManager = organization.useSecretsManager && flagEnabled("secretsManager");
-
         this.setFormValidators(organization);
 
         this.collectionAccessItems = [].concat(
@@ -354,7 +348,9 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.canUseCustomPermissions && this.customUserTypeSelected) {
+    const organization = await firstValueFrom(this.organization$);
+
+    if (!organization.useCustomPermissions && this.customUserTypeSelected) {
       this.platformUtilsService.showToast(
         "error",
         null,
@@ -377,8 +373,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       .map(convertToSelectionView);
     userView.groups = this.formGroup.value.groups.map((m) => m.id);
     userView.accessSecretsManager = this.formGroup.value.accessSecretsManager;
-
-    const organization = await firstValueFrom(this.organization$);
 
     if (this.editMode) {
       await this.userService.save(userView);

@@ -122,11 +122,11 @@
                 formControlName="type"
                 name="type"
                 class="tw-relative tw-bottom-[-1px] tw-mr-2"
-                [attr.disabled]="!canUseCustomPermissions || null"
+                [attr.disabled]="!organization.useCustomPermissions || null"
               />
               <label class="tw-m-0" for="userTypeCustom">
                 {{ "custom" | i18n }}
-                <ng-container *ngIf="!canUseCustomPermissions; else enterprise">
+                <ng-container *ngIf="!organization.useCustomPermissions; else enterprise">
                   <div class="text-base tw-block tw-font-normal tw-text-muted">
                     {{ "customDescNonEnterpriseStart" | i18n
                     }}<a href="https://bitwarden.com/contact/" target="_blank" rel="noreferrer">{{
@@ -371,7 +371,7 @@
               </div>
             </ng-template>
           </ng-container>
-          <ng-container *ngIf="canUseSecretsManager">
+          <ng-container *ngIf="organization.useSecretsManager">
             <h3 class="mt-4">
               {{ "secretsManager" | i18n }}
               <a
