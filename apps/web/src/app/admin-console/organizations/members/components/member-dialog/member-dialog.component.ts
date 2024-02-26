@@ -1,7 +1,16 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
+import {
+  combineLatest,
+  firstValueFrom,
+  Observable,
+  of,
+  shareReplay,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
@@ -79,7 +88,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   canUseSecretsManager: boolean;
   showNoMasterPasswordWarning = false;
 
-  protected organization: Organization;
+  protected organization$: Observable<Organization>;
   protected collectionAccessItems: AccessItemView[] = [];
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
@@ -146,10 +155,11 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
 
-    const organization$ = this.organizationService
+    this.organization$ = this.organizationService
       .get$(this.params.organizationId)
       .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
-    const groups$ = organization$.pipe(
+
+    const groups$ = this.organization$.pipe(
       switchMap((organization) =>
         organization.useGroups
           ? this.groupService.getAll(this.params.organizationId)
@@ -158,7 +168,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     );
 
     combineLatest({
-      organization: organization$,
+      organization: this.organization$,
       collections: this.collectionAdminService.getAll(this.params.organizationId),
       userDetails: this.params.organizationUserId
         ? this.userService.get(this.params.organizationId, this.params.organizationUserId)
@@ -167,7 +177,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ organization, collections, userDetails, groups }) => {
-        this.organization = organization;
         this.canUseCustomPermissions = organization.useCustomPermissions;
         this.canUseSecretsManager = organization.useSecretsManager && flagEnabled("secretsManager");
 
@@ -194,7 +203,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       Validators.required,
       commaSeparatedEmails,
       orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
-        this.organization,
+        organization,
         this.params.allOrganizationUserEmails,
         this.i18nService.t("subscriptionUpgrade", organization.seats),
       ),
@@ -369,12 +378,13 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     userView.groups = this.formGroup.value.groups.map((m) => m.id);
     userView.accessSecretsManager = this.formGroup.value.accessSecretsManager;
 
+    const organization = await firstValueFrom(this.organization$);
+
     if (this.editMode) {
       await this.userService.save(userView);
     } else {
       userView.id = this.params.organizationUserId;
-      const maxEmailsCount =
-        this.organization.planProductType === ProductType.TeamsStarter ? 10 : 20;
+      const maxEmailsCount = organization.planProductType === ProductType.TeamsStarter ? 10 : 20;
       const emails = [...new Set(this.formGroup.value.emails.trim().split(/\s*,\s*/))];
       if (emails.length > maxEmailsCount) {
         this.formGroup.controls.emails.setErrors({
@@ -383,8 +393,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         return;
       }
       if (
-        this.organization.hasReseller &&
-        this.params.numConfirmedMembers + emails.length > this.organization.seats
+        organization.hasReseller &&
+        this.params.numConfirmedMembers + emails.length > organization.seats
       ) {
         this.formGroup.controls.emails.setErrors({
           tooManyEmails: { message: this.i18nService.t("seatLimitReachedContactYourProvider") },
@@ -523,10 +533,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       },
       type: "warning",
     });
-  }
-
-  protected get flexibleCollectionsEnabled() {
-    return this.organization?.flexibleCollections;
   }
 
   protected readonly ProductType = ProductType;
