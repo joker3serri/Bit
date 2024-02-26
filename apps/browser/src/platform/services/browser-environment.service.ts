@@ -31,15 +31,16 @@ export class BrowserEnvironmentService extends EnvironmentService {
     }
 
     const env = await this.getManagedEnvironment();
+    const urls = this.getUrls();
 
     return (
-      env.base != this.baseUrl ||
-      env.webVault != this.webVaultUrl ||
-      env.api != this.webVaultUrl ||
-      env.identity != this.identityUrl ||
-      env.icons != this.iconsUrl ||
-      env.notifications != this.notificationsUrl ||
-      env.events != this.eventsUrl
+      env.base != urls.base ||
+      env.webVault != urls.webVault ||
+      env.api != urls.api ||
+      env.identity != urls.identity ||
+      env.icons != urls.icons ||
+      env.notifications != urls.notifications ||
+      env.events != urls.events
     );
   }
 

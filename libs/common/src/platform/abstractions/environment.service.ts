@@ -46,6 +46,13 @@ export interface Environment {
    */
   getUrls: () => Urls;
 
+  /**
+   * Identify if the region is a cloud environment.
+   *
+   * @returns true if the environment is a cloud environment, false otherwise.
+   */
+  isCloud: () => boolean;
+
   getApiUrl: () => string;
   getEventsUrl: () => string;
   getIconsUrl: () => string;
@@ -96,9 +103,9 @@ export abstract class EnvironmentService {
   // The remaining functions should be removed
   // ----
 
+  /** @deprecated External services shouldn't need to be aware of if base url is set */
   hasBaseUrl: () => boolean;
-  getNotificationsUrl: () => string;
-  getWebVaultUrl: () => string;
+
   /**
    * Retrieves the URL of the cloud web vault app.
    *
@@ -113,15 +120,28 @@ export abstract class EnvironmentService {
    */
   setCloudWebVaultUrl: (region: Region) => void;
 
-  getSendUrl: () => string;
-  getIconsUrl: () => string;
-  getApiUrl: () => string;
-  getIdentityUrl: () => string;
-  getEventsUrl: () => string;
-  getKeyConnectorUrl: () => string;
-  getScimUrl: () => string;
   getHost: (userId?: string) => Promise<string>;
+
+  /** @deprecated Use {@link environment$} instead */
+  getNotificationsUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getWebVaultUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getSendUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getIconsUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getApiUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getIdentityUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getEventsUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getKeyConnectorUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
+  getScimUrl: () => string;
+  /** @deprecated Use {@link environment$} instead */
   getUrls: () => Urls;
+  /** @deprecated Use {@link environment$} instead */
   isCloud: () => boolean;
-  isEmpty: () => boolean;
 }

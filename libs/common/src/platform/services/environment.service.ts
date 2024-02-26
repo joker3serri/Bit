@@ -310,12 +310,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   }
 
   isCloud(): boolean {
-    return [
-      "https://api.bitwarden.com",
-      "https://vault.bitwarden.com/api",
-      "https://api.bitwarden.eu",
-      "https://vault.bitwarden.eu/api",
-    ].includes(this.getApiUrl());
+    return this.environment.isCloud();
   }
 }
 
@@ -422,6 +417,15 @@ class UrlEnvironment implements Environment {
     return this.getWebVaultUrl() === "https://vault.bitwarden.com"
       ? "https://send.bitwarden.com/#"
       : this.getWebVaultUrl() + "/#/send/";
+  }
+
+  isCloud(): boolean {
+    return [
+      "https://api.bitwarden.com",
+      "https://vault.bitwarden.com/api",
+      "https://api.bitwarden.eu",
+      "https://vault.bitwarden.eu/api",
+    ].includes(this.getApiUrl());
   }
 
   /**
