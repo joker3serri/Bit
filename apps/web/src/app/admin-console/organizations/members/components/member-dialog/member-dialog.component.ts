@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
   firstValueFrom,
+  map,
   Observable,
   of,
   shareReplay,
@@ -20,7 +21,9 @@ import {
 } from "@bitwarden/common/admin-console/enums";
 import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ProductType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -99,6 +102,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     groups: [[] as AccessItemValue[]],
   });
 
+  protected readonlyCollectionsAndGroups$: Observable<boolean>;
+
   protected permissionsGroup = this.formBuilder.group({
     manageAssignedCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
       manageAssignedCollections: false,
@@ -145,6 +150,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private organizationUserService: OrganizationUserService,
     private dialogService: DialogService,
     private configService: ConfigServiceAbstraction,
+    private accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -164,12 +170,43 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       ),
     );
 
+    const userDetails$ = this.params.organizationUserId
+      ? this.userService.get(this.params.organizationId, this.params.organizationUserId)
+      : of(null);
+
+    // This modal is read-only if the user is editing themselves and their collection access is restricted
+    this.readonlyCollectionsAndGroups$ = combineLatest([
+      this.organization$,
+      userDetails$,
+      this.accountService.activeAccount$,
+      this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1),
+    ]).pipe(
+      map(
+        ([organization, userDetails, activeAccount, flexibleCollectionsV1Enabled]) =>
+          userDetails.userId == activeAccount.id &&
+          flexibleCollectionsV1Enabled &&
+          organization.flexibleCollections &&
+          !organization.allowAdminAccessToAllCollectionItems,
+      ),
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    );
+
+    this.readonlyCollectionsAndGroups$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((readonlyCollectionsAndGroups) => {
+        if (readonlyCollectionsAndGroups) {
+          this.formGroup.controls.access.disable();
+          this.formGroup.controls.groups.disable();
+        } else {
+          this.formGroup.controls.access.enable();
+          this.formGroup.controls.groups.enable();
+        }
+      });
+
     combineLatest({
       organization: this.organization$,
       collections: this.collectionAdminService.getAll(this.params.organizationId),
-      userDetails: this.params.organizationUserId
-        ? this.userService.get(this.params.organizationId, this.params.organizationUserId)
-        : of(null),
+      userDetails: userDetails$,
       groups: groups$,
     })
       .pipe(takeUntil(this.destroy$))
