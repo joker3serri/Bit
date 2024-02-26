@@ -146,17 +146,15 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
 
-    const organization$ = of(this.organizationService.get(this.params.organizationId)).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 }),
-    );
+    const organization$ = this.organizationService
+      .get$(this.params.organizationId)
+      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
     const groups$ = organization$.pipe(
-      switchMap((organization) => {
-        if (!organization.useGroups) {
-          return of([] as GroupView[]);
-        }
-
-        return this.groupService.getAll(this.params.organizationId);
-      }),
+      switchMap((organization) =>
+        organization.useGroups
+          ? this.groupService.getAll(this.params.organizationId)
+          : of([] as GroupView[]),
+      ),
     );
 
     combineLatest({
