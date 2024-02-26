@@ -12,9 +12,10 @@ import { UserEncryptor } from "./user-encryptor.abstraction";
 /** A classification strategy that protects a type's secrets by encrypting them
  *  with a `UserKey`
  */
-export class UserKeyEncryptor<State extends object, Disclosed, Secret>
-  implements UserEncryptor<State, Disclosed>
-{
+export class UserKeyEncryptor<State extends object, Disclosed, Secret> extends UserEncryptor<
+  State,
+  Disclosed
+> {
   /** Instantiates the encryptor
    *  @param encryptService protects properties of `Secret`.
    *  @param keyService looks up the user key when protecting data.
@@ -26,7 +27,9 @@ export class UserKeyEncryptor<State extends object, Disclosed, Secret>
     private readonly keyService: CryptoService,
     private readonly classifier: SecretClassifier<State, Disclosed, Secret>,
     private readonly dataPacker: DataPacker,
-  ) {}
+  ) {
+    super();
+  }
 
   /** {@link UserEncryptor.encrypt} */
   async encrypt(

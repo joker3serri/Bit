@@ -24,11 +24,13 @@ const DATA_PACKING = Object.freeze({
  *  const packer = new SecretPacker(24);
  *  const packed = packer.pack({ foo: true });
  */
-export class PaddedDataPacker implements DataPackerAbstraction {
+export class PaddedDataPacker extends DataPackerAbstraction {
   /** Instantiates the padded data packer
    *  @param frameSize The size of the dataframe used to pad encrypted values.
    */
-  constructor(private readonly frameSize: number) {}
+  constructor(private readonly frameSize: number) {
+    super();
+  }
 
   /**
    * Packs value into a string format that conceals the length by obscuring it
