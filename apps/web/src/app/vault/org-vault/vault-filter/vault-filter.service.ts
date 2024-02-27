@@ -6,6 +6,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
@@ -32,6 +33,7 @@ export class VaultFilterService extends BaseVaultFilterService implements OnDest
     policyService: PolicyService,
     i18nService: I18nService,
     stateProvider: StateProvider,
+    collectionService: CollectionService,
     protected collectionAdminService: CollectionAdminService,
   ) {
     super(
@@ -41,11 +43,8 @@ export class VaultFilterService extends BaseVaultFilterService implements OnDest
       policyService,
       i18nService,
       stateProvider,
+      collectionService,
     );
-  }
-
-  async reloadCollections(collections: CollectionAdminView[]) {
-    this._collections.next(collections);
   }
 
   ngOnDestroy() {
