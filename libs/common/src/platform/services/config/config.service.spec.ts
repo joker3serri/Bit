@@ -5,7 +5,7 @@ import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { ConfigApiServiceAbstraction } from "../../abstractions/config/config-api.service.abstraction";
 import { ServerConfig } from "../../abstractions/config/server-config";
-import { EnvironmentService } from "../../abstractions/environment.service";
+import { Environment, EnvironmentService } from "../../abstractions/environment.service";
 import { LogService } from "../../abstractions/log.service";
 import { StateService } from "../../abstractions/state.service";
 import { ServerConfigData } from "../../models/data/server-config.data";
@@ -23,6 +23,7 @@ describe("ConfigService", () => {
   let authService: MockProxy<AuthService>;
   let environmentService: MockProxy<EnvironmentService>;
   let logService: MockProxy<LogService>;
+  let replaySubject: ReplaySubject<Environment>;
 
   let serverResponseCount: number; // increments to track distinct responses received from server
 
@@ -46,8 +47,9 @@ describe("ConfigService", () => {
     authService = mock();
     environmentService = mock();
     logService = mock();
+    replaySubject = new ReplaySubject<Environment>(1);
 
-    environmentService.environment$ = new ReplaySubject<void>(1);
+    environmentService.environment$ = replaySubject.asObservable();
 
     serverResponseCount = 1;
     configApiService.get.mockImplementation(() =>
@@ -139,7 +141,7 @@ describe("ConfigService", () => {
         }
       });
 
-      (environmentService.environment$ as ReplaySubject<void>).next();
+      replaySubject.next(null);
     });
 
     it("when triggerServerConfigFetch() is called", (done) => {
