@@ -263,7 +263,6 @@ jobs:
 
       - name: Sync to Azure Storage Account using azcopy
         if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
-        continue-on-error: true
         working-directory: apps/web
         env:
           AZCOPY_AUTO_LOGIN_TYPE: SPN
