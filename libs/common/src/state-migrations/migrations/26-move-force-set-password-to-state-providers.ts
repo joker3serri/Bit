@@ -19,11 +19,15 @@ export class MoveForceSetPasswordReasonToStateProviderMigrator extends Migrator<
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
       const forceSetPasswordReason = account?.profile?.forceSetPasswordReason;
-      await helper.setToUser(userId, FORCE_SET_PASSWORD_REASON_DEFINITION, forceSetPasswordReason);
       if (forceSetPasswordReason != null) {
+        await helper.setToUser(
+          userId,
+          FORCE_SET_PASSWORD_REASON_DEFINITION,
+          forceSetPasswordReason,
+        );
+        await helper.set(userId, account);
         delete account.profile.forceSetPasswordReason;
       }
-      await helper.set(userId, account);
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);
