@@ -32,21 +32,6 @@ describe("PolicyService", () => {
     const accountService = mockAccountServiceWith("userId" as UserId);
     stateProvider = new FakeStateProvider(accountService);
     organizationService = mock<OrganizationService>();
-    organizationService.getAll
-      .calledWith("user")
-      .mockResolvedValue([
-        new Organization(
-          organizationData(
-            "test-organization",
-            true,
-            true,
-            OrganizationUserStatusType.Accepted,
-            false,
-          ),
-        ),
-      ]);
-    organizationService.getAll.calledWith(undefined).mockResolvedValue([]);
-    organizationService.getAll.calledWith(null).mockResolvedValue([]);
 
     activeUserState = stateProvider.activeUser.getFake(POLICIES);
     organizationService.organizations$ = of([
@@ -120,7 +105,7 @@ describe("PolicyService", () => {
   });
 
   describe("clear", () => {
-    it("null userId", async () => {
+    beforeEach(() => {
       activeUserState.nextState(
         arrayToRecord([
           policyData("1", "test-organization", PolicyType.MaximumVaultTimeout, true, {
@@ -128,7 +113,9 @@ describe("PolicyService", () => {
           }),
         ]),
       );
+    });
 
+    it("null userId", async () => {
       await policyService.clear();
 
       expect(await firstValueFrom(policyService.policies$)).toEqual([]);
@@ -136,13 +123,6 @@ describe("PolicyService", () => {
     });
 
     it("matching userId", async () => {
-      activeUserState.nextState(
-        arrayToRecord([
-          policyData("1", "test-organization", PolicyType.MaximumVaultTimeout, true, {
-            minutes: 14,
-          }),
-        ]),
-      );
       await policyService.clear("userId" as UserId);
 
       expect(await firstValueFrom(policyService.policies$)).toEqual([]);
@@ -150,14 +130,6 @@ describe("PolicyService", () => {
     });
 
     it("inactive user", async () => {
-      activeUserState.nextState(
-        arrayToRecord([
-          policyData("1", "test-organization", PolicyType.MaximumVaultTimeout, true, {
-            minutes: 14,
-          }),
-        ]),
-      );
-
       const inactiveUserId = "someOtherUserId" as UserId;
       const inactiveUserState = stateProvider.singleUser.getFake(inactiveUserId, POLICIES);
       inactiveUserState.nextState(
