@@ -29,5 +29,4 @@ export class GlobalState {
   disableAddLoginNotification?: boolean;
   disableChangedPasswordNotification?: boolean;
   disableContextMenuItem?: boolean;
-  deepLinkRedirectUrl?: string;
 }
