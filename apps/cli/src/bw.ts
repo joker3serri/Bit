@@ -283,7 +283,8 @@ export class Main {
     this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
 
     this.tokenService = new TokenService(
-      this.stateProvider,
+      this.singleUserStateProvider,
+      this.globalStateProvider,
       this.platformUtilsService,
       this.secureStorageService,
     );

@@ -117,13 +117,18 @@ export class Main {
       globalStateProvider,
     );
 
+    const singleUserStateProvider = new DefaultSingleUserStateProvider(
+      this.memoryStorageForStateProviders,
+      this.storageService,
+    );
+
     const stateProvider = new DefaultStateProvider(
       new DefaultActiveUserStateProvider(
         accountService,
         this.memoryStorageForStateProviders,
         this.storageService,
       ),
-      new DefaultSingleUserStateProvider(this.memoryStorageForStateProviders, this.storageService),
+      singleUserStateProvider,
       globalStateProvider,
       new DefaultDerivedStateProvider(this.memoryStorageForStateProviders),
     );
@@ -140,7 +145,8 @@ export class Main {
     );
 
     this.tokenService = new TokenService(
-      stateProvider,
+      singleUserStateProvider,
+      globalStateProvider,
       this.platformUtilsService,
       this.storageService,
     );

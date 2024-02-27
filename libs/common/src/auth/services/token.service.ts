@@ -69,7 +69,6 @@ export class TokenService implements TokenServiceAbstraction {
 
   private activeUserIdGlobalState: GlobalState<UserId>;
 
-  // TODO: ensure all token service creations are updated to reflect the new constructor signature
   constructor(
     // Note: we cannot use ActiveStateProvider because if we ever want to inject
     // this service into the AccountService, we will make a circular dependency
