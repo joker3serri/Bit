@@ -32,6 +32,7 @@ import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -149,6 +150,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     private biometricStateService: BiometricStateService,
+    private environmentService: EnvironmentService,
   ) {}
 
   ngOnInit() {
@@ -400,6 +402,10 @@ export class AppComponent implements OnInit, OnDestroy {
             if (message.userId != null) {
               await this.stateService.setActiveUser(message.userId);
             }
+
+            // Await to ensure correct state
+            await firstValueFrom(this.environmentService.environment$);
+
             const locked =
               (await this.authService.getAuthStatus(message.userId)) ===
               AuthenticationStatus.Locked;

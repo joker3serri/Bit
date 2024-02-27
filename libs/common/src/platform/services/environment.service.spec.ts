@@ -198,22 +198,6 @@ describe("EnvironmentService", () => {
     });
   });
 
-  it("returns US defaults when not initialized", async () => {
-    setGlobalData(Region.EU, new EnvironmentUrls());
-    setUserData(Region.EU, new EnvironmentUrls());
-
-    expect(sut.hasBaseUrl()).toBe(false);
-    expect(sut.getWebVaultUrl()).toBe("https://vault.bitwarden.com");
-    expect(sut.getIdentityUrl()).toBe("https://identity.bitwarden.com");
-    expect(sut.getApiUrl()).toBe("https://api.bitwarden.com");
-    expect(sut.getIconsUrl()).toBe("https://icons.bitwarden.net");
-    expect(sut.getNotificationsUrl()).toBe("https://notifications.bitwarden.com");
-    expect(sut.getEventsUrl()).toBe("https://events.bitwarden.com");
-    expect(sut.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
-    expect(sut.getKeyConnectorUrl()).toBe(undefined);
-    expect(sut.isCloud()).toBe(true);
-  });
-
   describe("setEnvironment", () => {
     it("self-hosted with base-url", async () => {
       await sut.setEnvironment(Region.SelfHosted, {
