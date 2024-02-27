@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { PolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../../admin-console/enums";
@@ -212,10 +212,15 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
   }
 
   async getPasswordGeneratorPolicyOptions(): Promise<PasswordGeneratorPolicyOptions> {
-    const policies =
-      this.policyService != null
-        ? await firstValueFrom(this.policyService.getAll$(PolicyType.PasswordGenerator))
-        : null;
+    let policies = null;
+    if (this.policyService != null) {
+      policies = await firstValueFrom(
+        this.policyService.policies$.pipe(
+          map((policies) => policies.filter((p) => p.type === PolicyType.PasswordGenerator)),
+        ),
+      );
+    }
+
     let enforcedOptions: PasswordGeneratorPolicyOptions = null;
 
     if (policies == null || policies.length === 0) {
