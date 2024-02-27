@@ -517,6 +517,70 @@ describe("PolicyService", () => {
     });
   });
 
+  describe("policyAppliesToActiveUser$", () => {
+    it("returns true when the policyType applies to the user", async () => {
+      activeUserState.nextState(
+        arrayToRecord([
+          policyData("policy1", "org4", PolicyType.DisablePersonalVaultExport, true),
+          policyData("policy2", "org1", PolicyType.ActivateAutofill, true),
+          policyData("policy3", "org5", PolicyType.DisablePersonalVaultExport, true),
+          policyData("policy4", "org1", PolicyType.DisablePersonalVaultExport, true),
+        ]),
+      );
+
+      const result = await firstValueFrom(
+        policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport),
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it("returns false when policyType is disabled", async () => {
+      activeUserState.nextState(
+        arrayToRecord([
+          policyData("policy2", "org1", PolicyType.ActivateAutofill, true),
+          policyData("policy3", "org5", PolicyType.DisablePersonalVaultExport, false), // disabled
+        ]),
+      );
+
+      const result = await firstValueFrom(
+        policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport),
+      );
+
+      expect(result).toBe(false);
+    });
+
+    it("returns false when the policyType does not apply to the user because the user's role is exempt", async () => {
+      activeUserState.nextState(
+        arrayToRecord([
+          policyData("policy2", "org1", PolicyType.ActivateAutofill, true),
+          policyData("policy4", "org2", PolicyType.DisablePersonalVaultExport, true), // owner
+        ]),
+      );
+
+      const result = await firstValueFrom(
+        policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport),
+      );
+
+      expect(result).toBe(false);
+    });
+
+    it("returns false for organizations that do not use policies", async () => {
+      activeUserState.nextState(
+        arrayToRecord([
+          policyData("policy2", "org1", PolicyType.ActivateAutofill, true),
+          policyData("policy3", "org3", PolicyType.DisablePersonalVaultExport, true), // does not use policies
+        ]),
+      );
+
+      const result = await firstValueFrom(
+        policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport),
+      );
+
+      expect(result).toBe(false);
+    });
+  });
+
   function policyData(
     id: string,
     organizationId: string,
