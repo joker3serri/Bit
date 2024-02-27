@@ -381,11 +381,7 @@ export class Main {
       this.organizationService,
     );
 
-    this.policyApiService = new PolicyApiService(
-      this.policyService,
-      this.apiService,
-      this.stateService,
-    );
+    this.policyApiService = new PolicyApiService(this.policyService, this.apiService);
 
     this.keyConnectorService = new KeyConnectorService(
       this.stateService,
