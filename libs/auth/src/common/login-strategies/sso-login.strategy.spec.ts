@@ -131,7 +131,7 @@ describe("SsoLoginStrategy", () => {
 
     await ssoLoginStrategy.logIn(credentials);
 
-    expect(masterPasswordService.setMasterKey).not.toHaveBeenCalled();
+    expect(masterPasswordService.mock.setMasterKey).not.toHaveBeenCalled();
     expect(cryptoService.setUserKey).not.toHaveBeenCalled();
     expect(cryptoService.setPrivateKey).not.toHaveBeenCalled();
   });
