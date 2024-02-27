@@ -27,14 +27,12 @@ export class WebStorageServiceProvider extends StorageServiceProvider {
   ): [location: PossibleLocation, service: AbstractStorageService & ObservableStorageService] {
     const location = overrides["web"] ?? defaultLocation;
     switch (location) {
-      case "disk":
-        return ["disk", this.diskStorageService];
-      case "memory":
-        return ["memory", this.memoryStorageService];
       case "disk-local":
         return ["disk-local", this.diskLocalStorageService];
       default:
-        throw new Error(`Unexpected location: ${location}`);
+        // Pass in computed location to super because they could have
+        // overriden default "disk" with web "memory".
+        return super.get(location, overrides);
     }
   }
 }
