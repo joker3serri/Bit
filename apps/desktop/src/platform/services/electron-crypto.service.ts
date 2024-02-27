@@ -2,8 +2,10 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -15,22 +17,22 @@ import { CsprngString } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 
-import { ElectronStateService } from "./electron-state.service.abstraction";
-
 export class ElectronCryptoService extends CryptoService {
   constructor(
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    keyGenerationService: KeyGenerationService,
     cryptoFunctionService: CryptoFunctionService,
     encryptService: EncryptService,
     platformUtilsService: PlatformUtilsService,
     logService: LogService,
-    protected override stateService: ElectronStateService,
+    stateService: StateService,
     accountService: AccountService,
     stateProvider: StateProvider,
     private biometricStateService: BiometricStateService,
   ) {
     super(
       masterPasswordService,
+      keyGenerationService,
       cryptoFunctionService,
       encryptService,
       platformUtilsService,

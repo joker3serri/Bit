@@ -1,13 +1,17 @@
 import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import * as DuoWebSDK from "duo_web_sdk";
+import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -27,9 +31,6 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { firstValueFrom } from "rxjs";
 
 @Directive()
 export class TwoFactorComponent extends CaptchaProtectedComponent implements OnInit, OnDestroy {
@@ -86,6 +87,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected twoFactorService: TwoFactorService,
     protected appIdService: AppIdService,
     protected loginService: LoginService,
+    protected ssoLoginService: SsoLoginServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
     protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected accountService: AccountService,
@@ -283,7 +285,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     // Save off the OrgSsoIdentifier for use in the TDE flows
     // - TDE login decryption options component
     // - Browser SSO on extension open
-    await this.stateService.setUserSsoOrganizationIdentifier(this.orgIdentifier);
+    await this.ssoLoginService.setActiveUserOrganizationSsoIdentifier(this.orgIdentifier);
     this.loginService.clearValues();
 
     // note: this flow affects both TDE & standard users
@@ -497,8 +499,6 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     );
   }
 
-  launchDuoFrameless() {
-    // Launch Duo Frameless flow in new tab
-    this.platformUtilsService.launchUri(this.duoFramelessUrl);
-  }
+  // implemented in clients
+  launchDuoFrameless() {}
 }

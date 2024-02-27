@@ -10,6 +10,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -57,6 +58,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     appIdService: AppIdService,
     loginService: LoginService,
     configService: ConfigServiceAbstraction,
+    ssoLoginService: SsoLoginServiceAbstraction,
     private dialogService: DialogService,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     accountService: AccountService,
@@ -77,6 +79,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       twoFactorService,
       appIdService,
       loginService,
+      ssoLoginService,
       configService,
       masterPasswordService,
       accountService,
@@ -206,7 +209,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   }
 
   duoResultSubscription: Subscription;
-
   protected override setupDuoResultListener() {
     if (!this.duoResultSubscription) {
       this.duoResultSubscription = this.browserMessagingApi
@@ -215,12 +217,31 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           filter((msg: any) => msg.command === "duoResult"),
           takeUntil(this.destroy$),
         )
-        .subscribe((msg: { command: string; code: string }) => {
-          this.token = msg.code;
+        .subscribe((msg: { command: string; code: string; state: string }) => {
+          this.token = msg.code + "|" + msg.state;
           // This floating promise is intentional. We don't need to await the submit + awaiting in a subscription is not recommended.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.submit();
         });
     }
+  }
+
+  override launchDuoFrameless() {
+    const duoHandOffMessage = {
+      title: this.i18nService.t("youSuccessfullyLoggedIn"),
+      message: this.i18nService.t("youMayCloseThisWindow"),
+      isCountdown: false,
+    };
+
+    // we're using the connector here as a way to set a cookie with translations
+    // before continuing to the duo frameless url
+    const launchUrl =
+      this.environmentService.getWebVaultUrl() +
+      "/duo-redirect-connector.html" +
+      "?duoFramelessUrl=" +
+      encodeURIComponent(this.duoFramelessUrl) +
+      "&handOffMessage=" +
+      encodeURIComponent(JSON.stringify(duoHandOffMessage));
+    this.platformUtilsService.launchUri(launchUrl);
   }
 }

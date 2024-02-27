@@ -1,9 +1,8 @@
-import { Observable, Subject, firstValueFrom } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
@@ -13,8 +12,6 @@ import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { PasswordlessAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-auth.request";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
@@ -28,11 +25,10 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
 
-import { LoginStrategyServiceAbstraction } from "../../abstractions";
+import { AuthRequestServiceAbstraction, LoginStrategyServiceAbstraction } from "../../abstractions";
 import { AuthRequestLoginStrategy } from "../../login-strategies/auth-request-login.strategy";
 import { PasswordLoginStrategy } from "../../login-strategies/password-login.strategy";
 import { SsoLoginStrategy } from "../../login-strategies/sso-login.strategy";
@@ -96,8 +92,8 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   private pushNotificationSubject = new Subject<string>();
 
   constructor(
-    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected accountService: AccountService,
+    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected cryptoService: CryptoService,
     protected apiService: ApiService,
     protected tokenService: TokenService,
@@ -114,7 +110,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
-    protected authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    protected authRequestService: AuthRequestServiceAbstraction,
   ) {}
 
   async logIn(
@@ -168,7 +164,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.twoFactorService,
           this.keyConnectorService,
           this.deviceTrustCryptoService,
-          this.authReqCryptoService,
+          this.authRequestService,
           this.i18nService,
         );
         break;
@@ -302,46 +298,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
 
   getPushNotificationObs$(): Observable<any> {
     return this.pushNotificationSubject.asObservable();
-  }
-
-  async passwordlessLogin(
-    id: string,
-    key: string,
-    requestApproved: boolean,
-  ): Promise<AuthRequestResponse> {
-    const pubKey = Utils.fromB64ToArray(key);
-
-    const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
-    const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
-    let keyToEncrypt;
-    let encryptedMasterKeyHash = null;
-
-    if (masterKey) {
-      keyToEncrypt = masterKey.encKey;
-
-      // Only encrypt the master password hash if masterKey exists as
-      // we won't have a masterKeyHash without a masterKey
-      const masterKeyHash = await firstValueFrom(this.masterPasswordService.masterKeyHash$(userId));
-      if (masterKeyHash != null) {
-        encryptedMasterKeyHash = await this.cryptoService.rsaEncrypt(
-          Utils.fromUtf8ToArray(masterKeyHash),
-          pubKey,
-        );
-      }
-    } else {
-      const userKey = await this.cryptoService.getUserKey();
-      keyToEncrypt = userKey.key;
-    }
-
-    const encryptedKey = await this.cryptoService.rsaEncrypt(keyToEncrypt, pubKey);
-
-    const request = new PasswordlessAuthRequest(
-      encryptedKey.encryptedString,
-      encryptedMasterKeyHash?.encryptedString,
-      await this.appIdService.getAppId(),
-      requestApproved,
-    );
-    return await this.apiService.putAuthRequest(id, request);
   }
 
   private saveState(

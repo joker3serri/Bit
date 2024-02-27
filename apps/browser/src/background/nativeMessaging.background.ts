@@ -93,7 +93,9 @@ export class NativeMessagingBackground {
     if (chrome?.permissions?.onAdded) {
       // Reload extension to activate nativeMessaging
       chrome.permissions.onAdded.addListener((permissions) => {
-        BrowserApi.reloadExtension(null);
+        if (permissions.permissions?.includes("nativeMessaging")) {
+          BrowserApi.reloadExtension(null);
+        }
       });
     }
   }
@@ -302,8 +304,6 @@ export class NativeMessagingBackground {
 
     switch (message.command) {
       case "biometricUnlock": {
-        await this.stateService.setBiometricAwaitingAcceptance(null);
-
         if (message.response === "not enabled") {
           this.messagingService.send("showDialog", {
             title: { key: "biometricsNotEnabledTitle" },

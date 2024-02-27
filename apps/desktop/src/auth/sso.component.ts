@@ -6,6 +6,7 @@ import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -22,6 +23,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 })
 export class SsoComponent extends BaseSsoComponent {
   constructor(
+    ssoLoginService: SsoLoginServiceAbstraction,
     loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
@@ -39,6 +41,7 @@ export class SsoComponent extends BaseSsoComponent {
     accountService: AccountService,
   ) {
     super(
+      ssoLoginService,
       loginStrategyService,
       router,
       i18nService,
