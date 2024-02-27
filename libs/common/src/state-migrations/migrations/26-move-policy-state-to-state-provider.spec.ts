@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { CollectionMigrator } from "./23-move-policy-state-to-state-provider";
+import { PolicyMigrator } from "./26-move-policy-state-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -90,7 +90,7 @@ function rollbackJSON() {
 
 describe("PoliciesMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
-  let sut: CollectionMigrator;
+  let sut: PolicyMigrator;
   const keyDefinitionLike = {
     key: "policies",
     stateDefinition: {
@@ -101,7 +101,7 @@ describe("PoliciesMigrator", () => {
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(exampleJSON(), 22);
-      sut = new CollectionMigrator(22, 23);
+      sut = new PolicyMigrator(25, 26);
     });
 
     it("should remove policies from all old accounts", async () => {
@@ -142,7 +142,7 @@ describe("PoliciesMigrator", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJSON(), 23);
-      sut = new CollectionMigrator(22, 23);
+      sut = new PolicyMigrator(25, 26);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
