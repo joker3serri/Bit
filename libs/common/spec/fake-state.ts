@@ -65,8 +65,6 @@ export class FakeGlobalState<T> implements GlobalState<T> {
     this.nextMock(newState);
     return newState;
   }
-
-  updateMock = this.update as jest.MockedFunction<typeof this.update>;
   /** Tracks update values resolved by `FakeState.update` */
   nextMock = jest.fn<void, [T]>();
 
@@ -128,8 +126,6 @@ export class FakeSingleUserState<T> implements SingleUserState<T> {
     return newState;
   }
 
-  updateMock = this.update as jest.MockedFunction<typeof this.update>;
-
   /** Tracks update values resolved by `FakeState.update` */
   nextMock = jest.fn<void, [T]>();
   private _keyDefinition: UserKeyDefinition<T> | null = null;
@@ -190,8 +186,6 @@ export class FakeActiveUserState<T> implements ActiveUserState<T> {
     this.nextMock([this.userId, newState]);
     return [this.userId, newState];
   }
-
-  updateMock = this.update as jest.MockedFunction<typeof this.update>;
 
   /** Tracks update values resolved by `FakeState.update` */
   nextMock = jest.fn<void, [[UserId, T]]>();
