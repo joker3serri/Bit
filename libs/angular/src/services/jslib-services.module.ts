@@ -655,7 +655,7 @@ import { ModalService } from "./modal.service";
     {
       provide: EventUploadServiceAbstraction,
       useClass: EventUploadService,
-      deps: [ApiServiceAbstraction, StateProvider, LogService],
+      deps: [ApiServiceAbstraction, StateProvider, LogService, AccountServiceAbstraction],
     },
     {
       provide: EventCollectionServiceAbstraction,

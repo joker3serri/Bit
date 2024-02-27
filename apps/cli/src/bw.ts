@@ -591,6 +591,7 @@ export class Main {
       this.apiService,
       this.stateProvider,
       this.logService,
+      this.accountService,
     );
 
     this.eventCollectionService = new EventCollectionService(
@@ -622,6 +623,7 @@ export class Main {
     });
     const userId = await this.stateService.getUserId();
     await Promise.all([
+      this.eventUploadService.uploadEvents(userId as UserId),
       this.syncService.setLastSync(new Date(0)),
       this.cryptoService.clearKeys(),
       this.settingsService.clear(userId),
