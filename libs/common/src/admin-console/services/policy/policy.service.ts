@@ -1,4 +1,4 @@
-import { combineLatest, map, Observable, of } from "rxjs";
+import { combineLatest, firstValueFrom, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { KeyDefinition, POLICIES_DISK, StateProvider } from "../../../platform/state";
@@ -61,6 +61,11 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   policyAppliesToActiveUser$(policyType: PolicyType) {
     return this.get$(policyType).pipe(map((policy) => policy != null));
+  }
+
+  // Deprecated
+  async policyAppliesToUser(policyType: PolicyType) {
+    return await firstValueFrom(this.policyAppliesToActiveUser$(policyType));
   }
 
   private enforcedPolicyFilter(policies: Policy[], organizations: Organization[]) {

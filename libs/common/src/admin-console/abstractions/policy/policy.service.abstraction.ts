@@ -40,6 +40,11 @@ export abstract class PolicyService {
    */
   policyAppliesToActiveUser$: (policyType: PolicyType) => Observable<boolean>;
 
+  /**
+   * @deprecated Use policyAppliesToActiveUser$ instead
+   */
+  policyAppliesToUser: (policyType: PolicyType) => Promise<boolean>;
+
   // Policy specific interfaces
 
   /**

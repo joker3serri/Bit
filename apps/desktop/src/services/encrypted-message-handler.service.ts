@@ -140,11 +140,10 @@ export class EncryptedMessageHandlerService {
 
     const credentialCreatePayload = payload as CredentialCreatePayload;
 
-    const personalOwnershipPolicyApplies = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
-    );
-
-    if (credentialCreatePayload.name == null || personalOwnershipPolicyApplies) {
+    if (
+      credentialCreatePayload.name == null ||
+      (await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership))
+    ) {
       return { status: "failure" };
     }
 

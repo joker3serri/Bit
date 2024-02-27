@@ -160,11 +160,9 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
   }
 
   protected async addOrganizationFilter(): Promise<VaultFilterSection> {
-    const singleOrgPolicy = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.SingleOrg),
-    );
-    const personalVaultPolicy = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+    const singleOrgPolicy = await this.policyService.policyAppliesToUser(PolicyType.SingleOrg);
+    const personalVaultPolicy = await this.policyService.policyAppliesToUser(
+      PolicyType.PersonalOwnership,
     );
 
     const addAction = !singleOrgPolicy

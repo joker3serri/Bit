@@ -131,22 +131,13 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     orgs?: Organization[],
   ): Promise<TreeNode<OrganizationFilter>> {
     const headNode = this.getOrganizationFilterHead();
-
-    const personalOwnershipPolicyApplies = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
-    );
-    if (!personalOwnershipPolicyApplies) {
+    if (!(await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership))) {
       const myVaultNode = this.getOrganizationFilterMyVault();
       headNode.children.push(myVaultNode);
     }
-
-    const singleOrgPolicyApplies = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.SingleOrg),
-    );
-    if (singleOrgPolicyApplies) {
+    if (await this.policyService.policyAppliesToUser(PolicyType.SingleOrg)) {
       orgs = orgs.slice(0, 1);
     }
-
     if (orgs) {
       const orgNodes: TreeNode<OrganizationFilter>[] = [];
       orgs.forEach((org) => {
