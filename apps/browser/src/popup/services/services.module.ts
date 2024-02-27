@@ -165,8 +165,8 @@ function getBgService<T>(service: keyof MainBackground) {
     PopupCloseWarningService,
     {
       provide: LOCALE_ID,
-      useFactory: () => getBgService<I18nServiceAbstraction>("i18nService")().translationLocale,
-      deps: [],
+      useFactory: (i18nService: I18nService) => i18nService.translationLocale,
+      deps: [I18nServiceAbstraction],
     },
     {
       provide: APP_INITIALIZER,
