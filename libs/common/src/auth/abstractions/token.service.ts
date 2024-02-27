@@ -1,13 +1,14 @@
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { UserId } from "../../types/guid";
 
+// TODO: update all docs based on latest changes.
 export abstract class TokenService {
   /**
-   * Sets the access token, refresh token, API Key Client ID, and API Key Client Secret for the active user id
-   * in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
-   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage.
+   * Sets the access token, refresh token, API Key Client ID, and API Key Client Secret in memory or disk
+   * based on the given vaultTimeoutAction and vaultTimeout and either the derived access token user id or the active user id.
+   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
    * Note 2: this method also enforces always setting the access token and the refresh token together as
-   * we retrieve the user id required to set the refresh token in secure storage from the access token.
+   * we can retrieve the user id required to set the refresh token from the access token for efficiency.
    * @param accessToken The access token to set.
    * @param refreshToken The refresh token to set.
    * @param clientIdClientSecret The API Key Client ID and Client Secret to set.
@@ -24,24 +25,25 @@ export abstract class TokenService {
   ) => Promise<void>;
 
   /**
-   * Sets the access token for the given user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
-   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage.
-   * @param token The access token to set.
+   * Sets the access token in memory or disk based on the given vaultTimeoutAction and vaultTimeout
+   * and either the given user id or the active user id.
+   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
+   * @param accessToken The access token to set.
    * @param vaultTimeoutAction The action to take when the vault times out.
    * @param vaultTimeout The timeout for the vault.
    * @param userId The user id to set the access token for.
    * @returns A promise that resolves when the access token has been set.
    */
   setAccessToken: (
-    token: string,
+    accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
-    userId: UserId,
+    userId?: UserId,
   ) => Promise<void>;
 
   // TODO: revisit this approach once the state service is fully deprecated.
   /**
-   * Clears the access token for the given user id out of both memory and disk.
+   * Clears the access token for the given user id out of memory, disk, and secure storage if supported.
    * @param userId The user id to clear the access token for.
    * @returns A promise that resolves when the access token has been cleared.
    *
@@ -49,20 +51,21 @@ export abstract class TokenService {
    * pass in the vaultTimeoutAction and vaultTimeout.
    * This avoids a circular dependency between the StateService, TokenService, and VaultTimeoutSettingsService.
    */
-  clearAccessTokenByUserId: (userId: UserId) => Promise<void>;
+  clearAccessTokenByUserId: (userId?: UserId) => Promise<void>;
 
   /**
-   * Gets the access token for the given, optional user id.
+   * Gets the access token
    * @param userId - The optional user id to get the access token for; if not provided, the active user is used.
    * @returns A promise that resolves with the access token for the given user id.
    */
-  getAccessToken: (userId: UserId) => Promise<string>;
+  getAccessToken: (userId?: UserId) => Promise<string>;
 
   /**
-   * Gets the refresh token for the active user.
+   * Gets the refresh token.
+   * @param userId - The optional user id to get the refresh token for; if not provided, the active user is used.
    * @returns A promise that resolves with the refresh token.
    */
-  getRefreshToken: (userId: UserId) => Promise<string>;
+  getRefreshToken: (userId?: UserId) => Promise<string>;
 
   /**
    * Sets the API Key Client ID for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
@@ -75,13 +78,14 @@ export abstract class TokenService {
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId?: UserId,
   ) => Promise<void>;
 
   /**
    * Gets the API Key Client ID for the active user.
    * @returns A promise that resolves with the API Key Client ID.
    */
-  getClientId: () => Promise<string>;
+  getClientId: (userId?: UserId) => Promise<string>;
   /**
    * Sets the API Key Client Secret for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
    * @param clientSecret The API Key Client Secret to set.
@@ -93,12 +97,13 @@ export abstract class TokenService {
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId?: UserId,
   ) => Promise<void>;
   /**
    * Gets the API Key Client Secret for the active user.
    * @returns A promise that resolves with the API Key Client Secret.
    */
-  getClientSecret: () => Promise<string>;
+  getClientSecret: (userId?: UserId) => Promise<string>;
 
   setTwoFactorToken: (email: string, twoFactorToken: string) => Promise<void>;
   getTwoFactorToken: (email: string) => Promise<string>;
@@ -108,9 +113,25 @@ export abstract class TokenService {
   getTokenExpirationDate: () => Promise<Date>;
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;
   tokenNeedsRefresh: (minutes?: number) => Promise<boolean>;
-  getUserId: () => Promise<string>;
+  /**
+   * Gets the user id for the active user from the access token.
+   * @returns A promise that resolves with the user id for the active user.
+   * @deprecated Use AccountService.activeAccount$ instead.
+   */
+  getUserId: () => Promise<UserId>;
+
+  /**
+   * Gets the email for the active user from the access token.
+   * @returns A promise that resolves with the email for the active user.
+   * @deprecated Use AccountService.activeAccount$ instead.
+   */
   getEmail: () => Promise<string>;
   getEmailVerified: () => Promise<boolean>;
+  /**
+   * Gets the name for the active user from the access token.
+   * @returns A promise that resolves with the name for the active user.
+   * @deprecated Use AccountService.activeAccount$ instead.
+   */
   getName: () => Promise<string>;
   getIssuer: () => Promise<string>;
   getIsExternal: () => Promise<boolean>;

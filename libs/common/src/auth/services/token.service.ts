@@ -15,21 +15,19 @@ import {
 import { UserId } from "../../types/guid";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 
+import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
 import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
   ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-  // API_KEY_CLIENT_ID_DISK,
-  // API_KEY_CLIENT_ID_MEMORY,
-  // API_KEY_CLIENT_SECRET_DISK,
-  // API_KEY_CLIENT_SECRET_MEMORY,
+  API_KEY_CLIENT_ID_DISK,
+  API_KEY_CLIENT_ID_MEMORY,
+  API_KEY_CLIENT_SECRET_DISK,
+  API_KEY_CLIENT_SECRET_MEMORY,
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
   REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-  // REFRESH_TOKEN_DISK,
-  // REFRESH_TOKEN_MEMORY,
-  // REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
 
 // TODO: write tests for this service
@@ -69,6 +67,9 @@ export class TokenService implements TokenServiceAbstraction {
 
   private emailTwoFactorTokenRecordGlobalState: GlobalState<Record<string, string>>;
 
+  private activeUserIdGlobalState: GlobalState<UserId>;
+
+  // TODO: ensure all token service creations are updated to reflect the new constructor signature
   constructor(
     // Note: we cannot use ActiveStateProvider because if we ever want to inject
     // this service into the AccountService, we will make a circular dependency
@@ -84,6 +85,8 @@ export class TokenService implements TokenServiceAbstraction {
     this.emailTwoFactorTokenRecordGlobalState = this.globalStateProvider.get(
       EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
     );
+
+    this.activeUserIdGlobalState = this.globalStateProvider.get(ACCOUNT_ACTIVE_ACCOUNT_ID);
   }
 
   async setTokens(
@@ -93,40 +96,41 @@ export class TokenService implements TokenServiceAbstraction {
     vaultTimeout: number,
     clientIdClientSecret?: [string, string],
   ): Promise<any> {
-    // get user id from saved or passed in access token so we can save the tokens to secure storage
-    let userId: UserId;
-    if (accessToken == null) {
-      userId = (await this.getUserId()) as UserId;
-    } else {
-      const decodedAccessToken = await this.decodeAccessToken(accessToken);
-      userId = decodedAccessToken.sub;
+    // get user id from active user state or from the access token
+    const userId: UserId = await this.determineUserIdByAccessTokenOrActiveUser(accessToken);
+
+    if (!userId) {
+      throw new Error("User id not found. Cannot set tokens.");
     }
 
     await this.setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
     await this.setRefreshToken(refreshToken, vaultTimeoutAction, vaultTimeout, userId);
     if (clientIdClientSecret != null) {
-      await this.setClientId(clientIdClientSecret[0], vaultTimeoutAction, vaultTimeout);
-      await this.setClientSecret(clientIdClientSecret[1], vaultTimeoutAction, vaultTimeout);
+      await this.setClientId(clientIdClientSecret[0], vaultTimeoutAction, vaultTimeout, userId);
+      await this.setClientSecret(clientIdClientSecret[1], vaultTimeoutAction, vaultTimeout, userId);
     }
   }
 
-  // TODO: update set logic to properly consider if user id exists and then use setToUser if it exists
-  // TODO: only use secure storage if storing on disk
-  // TODO: update rest of file to use singleUserStateProvider
   // TODO: consider whether we need to accept vaultTimeout as a number or null everywhere
 
   async setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
-    userId: UserId,
+    userId?: UserId,
   ): Promise<void> {
+    userId ??= await this.determineUserIdByAccessTokenOrActiveUser(accessToken);
+
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save access token.");
     }
 
-    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
+    const storageLocation = await this.determineStorageLocation(
+      vaultTimeoutAction,
+      vaultTimeout,
+      true,
+    );
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage:
@@ -156,7 +160,18 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async clearAccessTokenByUserId(userId: UserId): Promise<void> {
+  private async determineUserIdByAccessTokenOrActiveUser(accessToken?: string): Promise<UserId> {
+    // Either get the user id from the access token or from the active user state
+    if (accessToken) {
+      return await this.getUserIdFromAccessToken(accessToken);
+    } else {
+      return await firstValueFrom(this.activeUserIdGlobalState.state$);
+    }
+  }
+
+  async clearAccessTokenByUserId(userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
     // If we don't have a user id, we can't clear the value
     if (!userId) {
       throw new Error("User id not found. Cannot clear access token.");
@@ -178,7 +193,9 @@ export class TokenService implements TokenServiceAbstraction {
     await this.singleUserStateProvider.get(userId, ACCESS_TOKEN_MEMORY).update((_) => null);
   }
 
-  async getAccessToken(userId: UserId): Promise<string | undefined> {
+  async getAccessToken(userId?: UserId): Promise<string | undefined> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
     if (!userId) {
       throw new Error("User id not found. Cannot get access token.");
     }
@@ -221,14 +238,20 @@ export class TokenService implements TokenServiceAbstraction {
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
-    userId: UserId,
+    userId?: UserId,
   ): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
     // If we don't have a user id, we can't save the value
     if (!userId) {
-      throw new Error("User id not found. Cannot save access token.");
+      throw new Error("User id not found. Cannot save refresh token.");
     }
 
-    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
+    const storageLocation = await this.determineStorageLocation(
+      vaultTimeoutAction,
+      vaultTimeout,
+      true,
+    );
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage:
@@ -263,9 +286,11 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async getRefreshToken(userId: UserId): Promise<string> {
+  async getRefreshToken(userId?: UserId): Promise<string> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
     if (!userId) {
-      throw new Error("User id not found. Cannot get access token.");
+      throw new Error("User id not found. Cannot get refresh token.");
     }
 
     const refreshTokenMigratedToSecureStorage =
@@ -311,46 +336,93 @@ export class TokenService implements TokenServiceAbstraction {
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId?: UserId,
   ): Promise<void> {
-    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
-    if (storageLocation === "disk") {
-      await this.apiKeyClientIdDiskState.update((_) => clientId);
-    } else if (storageLocation === "memory") {
-      await this.apiKeyClientIdMemoryState.update((_) => clientId);
+    // If we don't have a user id, we can't save the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot save client id.");
+    }
+
+    const storageLocation = await this.determineStorageLocation(
+      vaultTimeoutAction,
+      vaultTimeout,
+      false,
+    );
+
+    if (storageLocation === TokenStorageLocation.Disk) {
+      await this.singleUserStateProvider
+        .get(userId, API_KEY_CLIENT_ID_DISK)
+        .update((_) => clientId);
+    } else if (storageLocation === TokenStorageLocation.Memory) {
+      await this.singleUserStateProvider
+        .get(userId, API_KEY_CLIENT_ID_MEMORY)
+        .update((_) => clientId);
     }
   }
 
-  async getClientId(): Promise<string> {
+  async getClientId(userId?: UserId): Promise<string> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    if (!userId) {
+      throw new Error("User id not found. Cannot get client id.");
+    }
+
     // Always read memory first b/c faster
-    const apiKeyClientIdMemory = await firstValueFrom(this.apiKeyClientIdMemoryState.state$);
+    const apiKeyClientIdMemory = await this.getStateValueByUserIdAndKeyDef(
+      userId,
+      API_KEY_CLIENT_ID_MEMORY,
+    );
 
     if (apiKeyClientIdMemory != null) {
       return apiKeyClientIdMemory;
     }
 
     // if memory is null, read from disk
-    return await firstValueFrom(this.apiKeyClientIdDiskState.state$);
+    return await this.getStateValueByUserIdAndKeyDef(userId, API_KEY_CLIENT_ID_DISK);
   }
 
   async setClientSecret(
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    userId?: UserId,
   ): Promise<void> {
-    const storageLocation = await this.determineStorageLocation(vaultTimeoutAction, vaultTimeout);
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
-    if (storageLocation === "disk") {
-      await this.apiKeyClientSecretDiskState.update((_) => clientSecret);
-    } else if (storageLocation === "memory") {
-      await this.apiKeyClientSecretMemoryState.update((_) => clientSecret);
+    if (!userId) {
+      throw new Error("User id not found. Cannot save client secret.");
+    }
+
+    const storageLocation = await this.determineStorageLocation(
+      vaultTimeoutAction,
+      vaultTimeout,
+      false,
+    );
+
+    if (storageLocation === TokenStorageLocation.Disk) {
+      await this.singleUserStateProvider
+        .get(userId, API_KEY_CLIENT_SECRET_DISK)
+        .update((_) => clientSecret);
+    } else if (storageLocation === TokenStorageLocation.Memory) {
+      await this.singleUserStateProvider
+        .get(userId, API_KEY_CLIENT_SECRET_MEMORY)
+        .update((_) => clientSecret);
     }
   }
 
-  async getClientSecret(): Promise<string> {
+  async getClientSecret(userId?: UserId): Promise<string> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    if (!userId) {
+      throw new Error("User id not found. Cannot save client secret.");
+    }
+
     // Always read memory first b/c faster
-    const apiKeyClientSecretMemory = await firstValueFrom(
-      this.apiKeyClientSecretMemoryState.state$,
+    const apiKeyClientSecretMemory = await this.getStateValueByUserIdAndKeyDef(
+      userId,
+      API_KEY_CLIENT_SECRET_MEMORY,
     );
 
     if (apiKeyClientSecretMemory != null) {
@@ -358,7 +430,7 @@ export class TokenService implements TokenServiceAbstraction {
     }
 
     // if memory is null, read from disk
-    return await firstValueFrom(this.apiKeyClientSecretDiskState.state$);
+    return await this.getStateValueByUserIdAndKeyDef(userId, API_KEY_CLIENT_SECRET_DISK);
   }
 
   async setTwoFactorToken(email: string, twoFactorToken: string): Promise<void> {
@@ -390,9 +462,6 @@ export class TokenService implements TokenServiceAbstraction {
   // TODO: in the future, we should evaluate creating a custom type for the decoded token
   // we also could consider removing these methods that expose account information and
   // instead require users to go to the account service for this info (e.g. accountService.getEmail())
-
-  // TODO: short term, we will need to have each consumer of these methods below
-  // retrieve the access token and then call the method with the token as an argument
 
   // jwthelper methods
   // ref https://github.com/auth0/angular-jwt/blob/master/src/angularJwt/services/jwt.js
@@ -433,13 +502,22 @@ export class TokenService implements TokenServiceAbstraction {
     return sRemaining < 60 * minutes;
   }
 
-  async getUserId(): Promise<string> {
+  async getUserId(): Promise<UserId> {
     const decoded = await this.decodeAccessToken();
     if (typeof decoded.sub === "undefined") {
       throw new Error("No user id found");
     }
 
-    return decoded.sub as string;
+    return decoded.sub as UserId;
+  }
+
+  private async getUserIdFromAccessToken(accessToken: string): Promise<UserId> {
+    const decoded = await this.decodeAccessToken(accessToken);
+    if (typeof decoded.sub === "undefined") {
+      throw new Error("No user id found");
+    }
+
+    return decoded.sub as UserId;
   }
 
   async getEmail(): Promise<string> {
@@ -495,11 +573,12 @@ export class TokenService implements TokenServiceAbstraction {
   private async determineStorageLocation(
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number,
+    useSecureStorage: boolean,
   ): Promise<TokenStorageLocation> {
     if (vaultTimeoutAction === VaultTimeoutAction.LogOut && vaultTimeout != null) {
       return TokenStorageLocation.Memory;
     } else {
-      if (this.platformSupportsSecureStorage) {
+      if (useSecureStorage && this.platformSupportsSecureStorage) {
         return TokenStorageLocation.SecureStorage;
       }
 
