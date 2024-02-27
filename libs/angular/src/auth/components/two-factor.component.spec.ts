@@ -7,7 +7,9 @@ import { MockProxy, mock } from "jest-mock-extended";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -15,6 +17,7 @@ import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/for
 import { KeyConnectorUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/key-connector-user-decryption-option";
 import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
+import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -23,6 +26,8 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
+import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { TwoFactorComponent } from "./two-factor.component";
 
@@ -42,6 +47,7 @@ describe("TwoFactorComponent", () => {
   let _component: TwoFactorComponentProtected;
 
   let fixture: ComponentFixture<TestTwoFactorComponent>;
+  const userId = "userId" as UserId;
 
   // Mock Services
   let mockLoginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
@@ -58,6 +64,8 @@ describe("TwoFactorComponent", () => {
   let mockLoginService: MockProxy<LoginService>;
   let mockSsoLoginService: MockProxy<SsoLoginServiceAbstraction>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
+  let mockMasterPasswordService: FakeMasterPasswordService;
+  let mockAccountService: FakeAccountService;
 
   let mockAcctDecryptionOpts: {
     noMasterPassword: AccountDecryptionOptions;
@@ -85,6 +93,8 @@ describe("TwoFactorComponent", () => {
     mockLoginService = mock<LoginService>();
     mockSsoLoginService = mock<SsoLoginServiceAbstraction>();
     mockConfigService = mock<ConfigServiceAbstraction>();
+    mockAccountService = mockAccountServiceWith(userId);
+    mockMasterPasswordService = new FakeMasterPasswordService();
 
     mockAcctDecryptionOpts = {
       noMasterPassword: new AccountDecryptionOptions({
@@ -155,6 +165,8 @@ describe("TwoFactorComponent", () => {
         { provide: LoginService, useValue: mockLoginService },
         { provide: SsoLoginServiceAbstraction, useValue: mockSsoLoginService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
+        { provide: InternalMasterPasswordServiceAbstraction, useValue: mockMasterPasswordService },
+        { provide: AccountService, useValue: mockAccountService },
       ],
     });
 
@@ -398,9 +410,9 @@ describe("TwoFactorComponent", () => {
             await component.doSubmit();
 
             // Assert
-
-            expect(mockStateService.setForceSetPasswordReason).toHaveBeenCalledWith(
+            expect(mockMasterPasswordService.mock.setForceSetPasswordReason).toHaveBeenCalledWith(
               ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
+              userId,
             );
 
             expect(mockRouter.navigate).toHaveBeenCalledTimes(1);

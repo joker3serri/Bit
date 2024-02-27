@@ -23,8 +23,9 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
-import { FakeAccountService } from "@bitwarden/common/spec";
+import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { SsoComponent } from "./sso.component";
 // test component that extends the SsoComponent
@@ -49,6 +50,7 @@ describe("SsoComponent", () => {
   let component: TestSsoComponent;
   let _component: SsoComponentProtected;
   let fixture: ComponentFixture<TestSsoComponent>;
+  const userId = "userId" as UserId;
 
   // Mock Services
   let mockLoginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
@@ -116,7 +118,7 @@ describe("SsoComponent", () => {
     mockPasswordGenerationService = mock<PasswordGenerationServiceAbstraction>();
     mockLogService = mock<LogService>();
     mockConfigService = mock<ConfigServiceAbstraction>();
-    mockAccountService = new FakeAccountService({});
+    mockAccountService = mockAccountServiceWith(userId);
     mockMasterPasswordService = new FakeMasterPasswordService();
 
     // Mock loginStrategyService.logIn params
@@ -363,8 +365,9 @@ describe("SsoComponent", () => {
           await _component.logIn(code, codeVerifier, orgIdFromState);
           expect(mockLoginStrategyService.logIn).toHaveBeenCalledTimes(1);
 
-          expect(mockMasterPasswordService.setForceSetPasswordReason).toHaveBeenCalledWith(
+          expect(mockMasterPasswordService.mock.setForceSetPasswordReason).toHaveBeenCalledWith(
             ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
+            userId,
           );
 
           expect(mockOnSuccessfulLoginTdeNavigate).not.toHaveBeenCalled();
