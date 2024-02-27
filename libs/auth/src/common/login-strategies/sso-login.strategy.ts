@@ -1,5 +1,4 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
@@ -19,6 +18,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
+import { AuthRequestServiceAbstraction } from "../abstractions";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
 
 import { LoginStrategy } from "./login.strategy";
@@ -46,7 +46,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     loginService: LoginService,
     private keyConnectorService: KeyConnectorService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
-    private authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    private authRequestService: AuthRequestServiceAbstraction,
     private i18nService: I18nService,
   ) {
     super(
@@ -202,14 +202,14 @@ export class SsoLoginStrategy extends LoginStrategy {
       // if masterPasswordHash has a value, we will always receive authReqResponse.key
       // as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
       if (adminAuthReqResponse.masterPasswordHash) {
-        await this.authReqCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash(
+        await this.authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey,
         );
       } else {
         // if masterPasswordHash is null, we will always receive authReqResponse.key
         // as authRequestPublicKey(userKey)
-        await this.authReqCryptoService.setUserKeyAfterDecryptingSharedUserKey(
+        await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey,
         );
