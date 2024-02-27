@@ -6,12 +6,15 @@ import { Observable, of } from "rxjs";
 
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { KeyConnectorUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/key-connector-user-decryption-option";
 import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
+import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -20,6 +23,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
+import { FakeAccountService } from "@bitwarden/common/spec";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { SsoComponent } from "./sso.component";
@@ -63,6 +67,8 @@ describe("SsoComponent", () => {
   let mockPasswordGenerationService: MockProxy<PasswordGenerationServiceAbstraction>;
   let mockLogService: MockProxy<LogService>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
+  let mockMasterPasswordService: FakeMasterPasswordService;
+  let mockAccountService: FakeAccountService;
 
   // Mock authService.logIn params
   let code: string;
@@ -110,6 +116,8 @@ describe("SsoComponent", () => {
     mockPasswordGenerationService = mock<PasswordGenerationServiceAbstraction>();
     mockLogService = mock<LogService>();
     mockConfigService = mock<ConfigServiceAbstraction>();
+    mockAccountService = new FakeAccountService({});
+    mockMasterPasswordService = new FakeMasterPasswordService();
 
     // Mock loginStrategyService.logIn params
     code = "code";
@@ -185,6 +193,8 @@ describe("SsoComponent", () => {
 
         { provide: LogService, useValue: mockLogService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
+        { provide: InternalMasterPasswordServiceAbstraction, useValue: mockMasterPasswordService },
+        { provide: AccountService, useValue: mockAccountService },
       ],
     });
 
@@ -353,7 +363,7 @@ describe("SsoComponent", () => {
           await _component.logIn(code, codeVerifier, orgIdFromState);
           expect(mockLoginStrategyService.logIn).toHaveBeenCalledTimes(1);
 
-          expect(mockStateService.setForceSetPasswordReason).toHaveBeenCalledWith(
+          expect(mockMasterPasswordService.setForceSetPasswordReason).toHaveBeenCalledWith(
             ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
           );
 
