@@ -80,7 +80,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     {
       provide: I18nServiceAbstraction,
       useClass: I18nService,
-      deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY],
+      deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY, GlobalStateProvider],
     },
     { provide: AbstractStorageService, useClass: HtmlStorageService },
     {

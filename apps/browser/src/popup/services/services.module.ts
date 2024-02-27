@@ -75,7 +75,11 @@ import { ConsoleLogService } from "@bitwarden/common/platform/services/console-l
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
-import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
+import {
+  DerivedStateProvider,
+  GlobalStateProvider,
+  StateProvider,
+} from "@bitwarden/common/platform/state";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -114,11 +118,11 @@ import { BrowserConfigService } from "../../platform/services/browser-config.ser
 import { BrowserCryptoService } from "../../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
 import { BrowserFileDownloadService } from "../../platform/services/browser-file-download.service";
-import { BrowserI18nService } from "../../platform/services/browser-i18n.service";
 import BrowserLocalStorageService from "../../platform/services/browser-local-storage.service";
 import BrowserMessagingPrivateModePopupService from "../../platform/services/browser-messaging-private-mode-popup.service";
 import BrowserMessagingService from "../../platform/services/browser-messaging.service";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
+import I18nService from "../../platform/services/i18n.service";
 import { ForegroundDerivedStateProvider } from "../../platform/state/foreground-derived-state.provider";
 import { ForegroundMemoryStorageService } from "../../platform/storage/foreground-memory-storage.service";
 import { BrowserSendService } from "../../services/browser-send.service";
@@ -254,10 +258,10 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
     {
       provide: I18nServiceAbstraction,
-      useFactory: (stateService: BrowserStateService) => {
-        return new BrowserI18nService(BrowserApi.getUILanguage(), stateService);
+      useFactory: (globalStateProvider: GlobalStateProvider) => {
+        return new I18nService(BrowserApi.getUILanguage(), globalStateProvider);
       },
-      deps: [StateService],
+      deps: [GlobalStateProvider],
     },
     {
       provide: CryptoService,

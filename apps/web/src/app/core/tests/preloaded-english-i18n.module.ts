@@ -2,14 +2,20 @@ import { APP_INITIALIZER, NgModule } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { I18nService as BaseI18nService } from "@bitwarden/common/platform/services/i18n.service";
+import { GlobalStateProvider } from "@bitwarden/common/platform/state";
 
 import eng from "../../../locales/en/messages.json";
 
 class PreloadedEnglishI18nService extends BaseI18nService {
-  constructor() {
-    super("en", "", () => {
-      return Promise.resolve(eng);
-    });
+  constructor(globalStateProvider: GlobalStateProvider) {
+    super(
+      "en",
+      "",
+      () => {
+        return Promise.resolve(eng);
+      },
+      globalStateProvider,
+    );
   }
 }
 
@@ -26,6 +32,7 @@ function i18nInitializer(i18nService: I18nService): () => Promise<void> {
     {
       provide: I18nService,
       useClass: PreloadedEnglishI18nService,
+      deps: [GlobalStateProvider],
     },
     {
       provide: APP_INITIALIZER,
