@@ -30,19 +30,39 @@ export class StateEventRunnerService {
     let tickets = await firstValueFrom(this.stateEventMap[event].state$);
     tickets ??= [];
 
+    const failures: string[] = [];
+
     for (const ticket of tickets) {
-      const [, service] = this.storageServiceProvider.get(
-        ticket.location,
-        {}, // The storage location is already the computed storage location for this client
-      );
+      try {
+        const [, service] = this.storageServiceProvider.get(
+          ticket.location,
+          {}, // The storage location is already the computed storage location for this client
+        );
 
-      const ticketStorageKey = this.storageKeyFor(userId, ticket);
+        const ticketStorageKey = this.storageKeyFor(userId, ticket);
 
-      // Evaluate current value so we can avoid writing to state if we don't need to
-      const currentValue = await service.get(ticketStorageKey);
-      if (currentValue != null) {
-        await service.remove(ticketStorageKey);
+        // Evaluate current value so we can avoid writing to state if we don't need to
+        const currentValue = await service.get(ticketStorageKey);
+        if (currentValue != null) {
+          await service.remove(ticketStorageKey);
+        }
+      } catch (err: unknown) {
+        let errorMessage = "Unknown Error";
+        if (typeof err === "object" && "message" in err && typeof err.message === "string") {
+          errorMessage = err.message;
+        }
+
+        failures.push(
+          `${errorMessage} in ${ticket.state} > ${ticket.key} located ${ticket.location}`,
+        );
       }
+    }
+
+    if (failures.length > 0) {
+      // Throw aggregated error
+      throw new Error(
+        `One or more errors occurred while handling event '${event}' for user ${userId}.\n${failures.join("\n")}`,
+      );
     }
   }
 
