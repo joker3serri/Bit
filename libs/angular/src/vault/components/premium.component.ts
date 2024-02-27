@@ -1,6 +1,8 @@
-import { Directive, OnInit } from "@angular/core";
+import { Directive, OnDestroy, OnInit } from "@angular/core";
+import { Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -9,11 +11,12 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DialogService } from "@bitwarden/components";
 
 @Directive()
-export class PremiumComponent implements OnInit {
+export class PremiumComponent implements OnInit, OnDestroy {
   isPremium = false;
   price = 10;
   refreshPromise: Promise<any>;
   cloudWebVaultUrl: string;
+  private directiveIsDestroyed$ = new Subject<boolean>();
 
   constructor(
     protected i18nService: I18nService,
@@ -22,13 +25,21 @@ export class PremiumComponent implements OnInit {
     private logService: LogService,
     protected stateService: StateService,
     protected dialogService: DialogService,
-    private environmentService: EnvironmentService,
+    environmentService: EnvironmentService,
+    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
   ) {
-    this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
+    this.cloudWebVaultUrl = environmentService.getCloudWebVaultUrl();
   }
 
-  async ngOnInit() {
-    this.isPremium = await this.stateService.getCanAccessPremium();
+  ngOnInit() {
+    this.billingAccountProfileStateService.canAccessPremium$
+      .pipe(takeUntil(this.directiveIsDestroyed$))
+      .subscribe((canAccessPremium: boolean) => (this.isPremium = canAccessPremium));
+  }
+
+  ngOnDestroy() {
+    this.directiveIsDestroyed$.next(true);
+    this.directiveIsDestroyed$.complete();
   }
 
   async refresh() {
@@ -36,7 +47,6 @@ export class PremiumComponent implements OnInit {
       this.refreshPromise = this.apiService.refreshIdentityToken();
       await this.refreshPromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("refreshComplete"));
-      this.isPremium = await this.stateService.getCanAccessPremium();
     } catch (e) {
       this.logService.error(e);
     }
