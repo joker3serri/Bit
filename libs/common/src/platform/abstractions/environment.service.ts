@@ -63,6 +63,14 @@ export interface Environment {
   getSendUrl: () => string;
   getWebVaultUrl: () => string;
 
+  /**
+   * Get a friendly hostname for the environment.
+   *
+   * - For self-hosted this is the web vault url without protocol prefix.
+   * - For cloud environments it's the domain key.
+   */
+  getHostname: () => string;
+
   // Not sure why we provide this, evaluate if we can remove it.
   hasBaseUrl: () => boolean;
 }
@@ -119,7 +127,10 @@ export abstract class EnvironmentService {
    */
   setCloudWebVaultUrl: (region: Region) => void;
 
-  getHost: (userId?: string) => Promise<string>;
+  /**
+   * Get the environment from state. Useful if you need to get the environment for another user.
+   */
+  getEnvironment: (userId?: string) => Promise<Environment | undefined>;
 
   /** @deprecated Use {@link environment$} instead */
   getNotificationsUrl: () => string;

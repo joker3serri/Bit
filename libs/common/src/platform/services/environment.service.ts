@@ -93,10 +93,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   private globalState: GlobalState<EnvironmentState | null>;
 
   // Temporary local variable, remove once all external functions are async and can depend on the environment$ observable.
-  protected environment: Environment = new UrlEnvironment(
-    DEFAULT_REGION,
-    DEFAULT_REGION_CONFIG.urls,
-  );
+  protected environment: Environment = new CloudEnvironment(DEFAULT_REGION_CONFIG);
 
   // We intentionally don't want the helper on account service, we want the null back if there is no active user
   private activeAccountId$: Observable<UserId | null> = this.accountService.activeAccount$.pipe(
@@ -127,7 +124,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     private initializeEnvironment: boolean = true,
   ) {
     if (this.initializeEnvironment) {
-      // TODO: Get rid of early subscription during EnvironmentService refactor
+      // TODO: Get rid of early subscription when all non-async functions are removed
       this.environment$.subscribe((env) => {
         if (env != null) {
           this.environment = env;
@@ -204,9 +201,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
   /**
    * Helper for building the environment from state. Performs some general sanitization to avoid invalid regions and urls.
-   *
-   * @param region
-   * @param urls
    */
   protected buildEnvironment(region: Region, urls: Urls) {
     // Unknown regions are treated as self-hosted
@@ -223,11 +217,11 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     if (region != Region.SelfHosted) {
       const regionConfig = this.getRegionConfig(region);
       if (regionConfig != null) {
-        urls = regionConfig.urls;
+        return new CloudEnvironment(regionConfig);
       }
     }
 
-    return new UrlEnvironment(region, urls);
+    return new SelfHostedEnvironment(urls);
   }
 
   hasBaseUrl() {
@@ -302,16 +296,13 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     return isEmpty(this.environment.getUrls());
   }
 
-  async getHost(userId?: UserId) {
-    const state = await this.getEnvironmentState(userId);
-    const regionConfig = this.getRegionConfig(state.region);
-
-    if (regionConfig != null) {
-      return regionConfig.domain;
+  async getEnvironment(userId?: UserId) {
+    if (userId == null) {
+      return await firstValueFrom(this.environment$);
     }
 
-    // No environment found, assume self-hosted
-    return Utils.getHost(state.urls.webVault || state.urls.base);
+    const state = await this.getEnvironmentState(userId);
+    return this.buildEnvironment(state.region, state.urls);
   }
 
   private async getEnvironmentState(userId: UserId | null) {
@@ -362,16 +353,19 @@ function isEmpty(u?: Urls): boolean {
     u.events == null
   );
 }
-export class UrlEnvironment implements Environment {
+
+abstract class UrlEnvironment implements Environment {
   constructor(
-    private region: Region,
-    private urls: Urls,
+    protected region: Region,
+    protected urls: Urls,
   ) {
     // Scim is always null for self-hosted
     if (region == Region.SelfHosted) {
       this.urls.scim = null;
     }
   }
+
+  abstract getHostname(): string;
 
   getRegion() {
     return this.region;
@@ -465,5 +459,31 @@ export class UrlEnvironment implements Environment {
     }
 
     return DEFAULT_REGION_CONFIG.urls[key];
+  }
+}
+
+/**
+ * Denote a cloud environment.
+ */
+export class CloudEnvironment extends UrlEnvironment {
+  constructor(private config: RegionConfig) {
+    super(config.key, config.urls);
+  }
+
+  /**
+   * Cloud always returns nice urls, i.e. bitwarden.com instead of vault.bitwarden.com.
+   */
+  getHostname() {
+    return this.config.domain;
+  }
+}
+
+export class SelfHostedEnvironment extends UrlEnvironment {
+  constructor(urls: Urls) {
+    super(Region.SelfHosted, urls);
+  }
+
+  getHostname() {
+    return Utils.getHost(this.getWebVaultUrl());
   }
 }

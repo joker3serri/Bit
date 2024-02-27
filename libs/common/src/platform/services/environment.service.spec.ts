@@ -276,7 +276,7 @@ describe("EnvironmentService", () => {
     });
   });
 
-  describe("getHost", () => {
+  describe("getEnvironment", () => {
     it.each([
       { region: Region.US, expectedHost: "bitwarden.com" },
       { region: Region.EU, expectedHost: "bitwarden.eu" },
@@ -286,8 +286,8 @@ describe("EnvironmentService", () => {
 
       await switchUser(testUser);
 
-      const host = await sut.getHost();
-      expect(host).toBe(expectedHost);
+      const env = await sut.getEnvironment();
+      expect(env.getHostname()).toBe(expectedHost);
     });
 
     it.each([
@@ -297,8 +297,8 @@ describe("EnvironmentService", () => {
       setGlobalData(region, new EnvironmentUrls());
       setUserData(Region.US, new EnvironmentUrls());
 
-      const host = await sut.getHost();
-      expect(host).toBe(expectedHost);
+      const env = await sut.getEnvironment();
+      expect(env.getHostname()).toBe(expectedHost);
     });
 
     it.each([
@@ -310,8 +310,8 @@ describe("EnvironmentService", () => {
         setGlobalData(region, new EnvironmentUrls());
         setUserData(Region.US, new EnvironmentUrls());
 
-        const host = await sut.getHost(testUser);
-        expect(host).toBe(expectedHost);
+        const env = await sut.getEnvironment(testUser);
+        expect(env.getHostname()).toBe(expectedHost);
       },
     );
 
@@ -327,8 +327,8 @@ describe("EnvironmentService", () => {
 
         await switchUser(testUser);
 
-        const host = await sut.getHost(alternateTestUser);
-        expect(host).toBe(expectedHost);
+        const env = await sut.getEnvironment(alternateTestUser);
+        expect(env.getHostname()).toBe(expectedHost);
       },
     );
 
@@ -338,8 +338,8 @@ describe("EnvironmentService", () => {
       setGlobalData(Region.SelfHosted, globalSelfHostUrls);
       setUserData(Region.EU, new EnvironmentUrls());
 
-      const host = await sut.getHost();
-      expect(host).toBe("base.example.com");
+      const env = await sut.getEnvironment();
+      expect(env.getHostname()).toBe("base.example.com");
     });
 
     it("gets it from webVault url saved in self host config", async () => {
@@ -349,8 +349,8 @@ describe("EnvironmentService", () => {
       setGlobalData(Region.SelfHosted, globalSelfHostUrls);
       setUserData(Region.EU, new EnvironmentUrls());
 
-      const host = await sut.getHost();
-      expect(host).toBe("vault.example.com");
+      const env = await sut.getEnvironment();
+      expect(env.getHostname()).toBe("vault.example.com");
     });
 
     it("gets it from saved self host config from passed in user when there is an active user", async () => {
@@ -363,8 +363,8 @@ describe("EnvironmentService", () => {
 
       await switchUser(testUser);
 
-      const host = await sut.getHost(alternateTestUser);
-      expect(host).toBe("base.example.com");
+      const env = await sut.getEnvironment(alternateTestUser);
+      expect(env.getHostname()).toBe("base.example.com");
     });
   });
 

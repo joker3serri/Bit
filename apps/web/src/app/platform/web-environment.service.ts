@@ -4,12 +4,14 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import {
   Environment,
   Region,
+  RegionConfig,
   Urls,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
+  CloudEnvironment,
   EnvironmentService,
-  UrlEnvironment,
+  SelfHostedEnvironment,
 } from "@bitwarden/common/platform/services/environment.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 
@@ -33,7 +35,11 @@ export class WebEnvironmentService extends EnvironmentService {
     const domain = Utils.getDomain(this.win.location.href);
     const region = this.availableRegions().find((r) => Utils.getDomain(r.urls.webVault) === domain);
 
-    this.environment = new UrlEnvironment(region.key, urls);
+    if (region) {
+      this.environment = new WebCloudEnvironment(region, urls);
+    } else {
+      this.environment = new SelfHostedEnvironment(urls);
+    }
 
     // Override the environment observable with a replay subject
     const subject = new ReplaySubject<Environment>(1);
@@ -49,5 +55,13 @@ export class WebEnvironmentService extends EnvironmentService {
   // Web cannot set urls from storage
   async setUrlsFromStorage(): Promise<void> {
     return;
+  }
+}
+
+class WebCloudEnvironment extends CloudEnvironment {
+  constructor(config: RegionConfig, urls: Urls) {
+    super(config);
+    // We override the urls to avoid CORS issues
+    this.urls = urls;
   }
 }
