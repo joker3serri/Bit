@@ -67,13 +67,6 @@ describe("EnvironmentService", () => {
       urls: environmentUrls,
     });
   };
-  // END: CAN CHANGE
-
-  const initialize = async (options: { switchUser: boolean }) => {
-    if (options.switchUser) {
-      await switchUser(testUser);
-    }
-  };
 
   const REGION_SETUP = [
     {
@@ -146,7 +139,7 @@ describe("EnvironmentService", () => {
       userEnvironmentUrls.base = "https://user-url.example.com";
       setUserData(Region.SelfHosted, userEnvironmentUrls);
 
-      await initialize({ switchUser: true });
+      await switchUser(testUser);
 
       expect(sut.getWebVaultUrl()).toBe("https://user-url.example.com");
       expect(sut.getIdentityUrl()).toBe("https://user-url.example.com/identity");
@@ -208,8 +201,6 @@ describe("EnvironmentService", () => {
   it("returns US defaults when not initialized", async () => {
     setGlobalData(Region.EU, new EnvironmentUrls());
     setUserData(Region.EU, new EnvironmentUrls());
-
-    expect(sut.initialized).toBe(false);
 
     expect(sut.hasBaseUrl()).toBe(false);
     expect(sut.getWebVaultUrl()).toBe("https://vault.bitwarden.com");
@@ -290,15 +281,10 @@ describe("EnvironmentService", () => {
       { region: Region.US, expectedHost: "bitwarden.com" },
       { region: Region.EU, expectedHost: "bitwarden.eu" },
     ])("gets it from user data if there is an active user", async ({ region, expectedHost }) => {
-      stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
-        region: Region.US,
-        urls: new EnvironmentUrls(),
-      });
+      setGlobalData(Region.US, new EnvironmentUrls());
+      setUserData(region, new EnvironmentUrls());
+
       await switchUser(testUser);
-      stateProvider.singleUser.getFake(testUser, ENVIRONMENT_KEY).nextState({
-        region: region,
-        urls: new EnvironmentUrls(),
-      });
 
       const host = await sut.getHost();
       expect(host).toBe(expectedHost);
@@ -308,14 +294,8 @@ describe("EnvironmentService", () => {
       { region: Region.US, expectedHost: "bitwarden.com" },
       { region: Region.EU, expectedHost: "bitwarden.eu" },
     ])("gets it from global data if there is no active user", async ({ region, expectedHost }) => {
-      stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
-        region: region,
-        urls: new EnvironmentUrls(),
-      });
-      stateProvider.singleUser.getFake(testUser, ENVIRONMENT_KEY).nextState({
-        region: Region.US,
-        urls: new EnvironmentUrls(),
-      });
+      setGlobalData(region, new EnvironmentUrls());
+      setUserData(Region.US, new EnvironmentUrls());
 
       const host = await sut.getHost();
       expect(host).toBe(expectedHost);
@@ -329,8 +309,6 @@ describe("EnvironmentService", () => {
       async ({ region, expectedHost }) => {
         setGlobalData(region, new EnvironmentUrls());
         setUserData(Region.US, new EnvironmentUrls());
-
-        await initialize({ switchUser: false });
 
         const host = await sut.getHost(testUser);
         expect(host).toBe(expectedHost);
@@ -347,7 +325,7 @@ describe("EnvironmentService", () => {
         setUserData(Region.US, new EnvironmentUrls());
         setUserData(region, new EnvironmentUrls(), alternateTestUser);
 
-        await initialize({ switchUser: true });
+        await switchUser(testUser);
 
         const host = await sut.getHost(alternateTestUser);
         expect(host).toBe(expectedHost);
@@ -360,8 +338,6 @@ describe("EnvironmentService", () => {
       setGlobalData(Region.SelfHosted, globalSelfHostUrls);
       setUserData(Region.EU, new EnvironmentUrls());
 
-      await initialize({ switchUser: false });
-
       const host = await sut.getHost();
       expect(host).toBe("base.example.com");
     });
@@ -372,8 +348,6 @@ describe("EnvironmentService", () => {
       globalSelfHostUrls.base = "https://base.example.com";
       setGlobalData(Region.SelfHosted, globalSelfHostUrls);
       setUserData(Region.EU, new EnvironmentUrls());
-
-      await initialize({ switchUser: false });
 
       const host = await sut.getHost();
       expect(host).toBe("vault.example.com");
@@ -387,7 +361,7 @@ describe("EnvironmentService", () => {
       selfHostUserUrls.base = "https://base.example.com";
       setUserData(Region.SelfHosted, selfHostUserUrls, alternateTestUser);
 
-      await initialize({ switchUser: true });
+      await switchUser(testUser);
 
       const host = await sut.getHost(alternateTestUser);
       expect(host).toBe("base.example.com");

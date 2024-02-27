@@ -88,8 +88,6 @@ const DEFAULT_REGION = Region.US;
 const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_REGION);
 
 export class EnvironmentService implements EnvironmentServiceAbstraction {
-  initialized = false;
-
   private cloudWebVaultUrl: string;
 
   private globalState: GlobalState<EnvironmentState | null>;

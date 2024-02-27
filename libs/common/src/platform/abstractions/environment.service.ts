@@ -73,7 +73,6 @@ export interface Environment {
 export abstract class EnvironmentService {
   environment$: Observable<Environment>;
   selectedRegion?: Region;
-  initialized = true;
 
   /**
    * Retrieve all the available regions for environment selectors.
