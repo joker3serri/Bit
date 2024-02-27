@@ -33,6 +33,12 @@ export abstract class PolicyService {
   getAll$: (policyType: PolicyType, userId?: UserId) => Observable<Policy[]>;
 
   /**
+   * Returns all policies of a given type even if they are disabled or do not apply to the user!
+   * @deprecated use getAll$ instead which filters out policies that do not apply.
+   */
+  getAll: (policyType: PolicyType) => Promise<Policy[]>;
+
+  /**
    * @returns true if a policy of the specified type applies to the active user, otherwise false.
    * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    * This does not take into account the policy's configuration - if that is important, use {@link getAll$} to get the

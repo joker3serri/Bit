@@ -59,6 +59,13 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
+  // Deprecated
+  async getAll(policyType: PolicyType) {
+    return await firstValueFrom(
+      this.policies$.pipe(map((policies) => policies.filter((p) => p.type === policyType))),
+    );
+  }
+
   policyAppliesToActiveUser$(policyType: PolicyType) {
     return this.get$(policyType).pipe(map((policy) => policy != null));
   }
