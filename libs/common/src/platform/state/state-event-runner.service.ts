@@ -36,15 +36,7 @@ export class StateEventRunnerService {
         {}, // The storage location is already the computed storage location for this client
       );
 
-      const userKey = new UserKeyDefinition<unknown>(
-        new StateDefinition(ticket.state, ticket.location as unknown as StorageLocation),
-        ticket.key,
-        {
-          deserializer: (v) => v,
-          clearOn: [],
-        },
-      );
-      const ticketStorageKey = userKey.buildKey(userId);
+      const ticketStorageKey = this.storageKeyFor(userId, ticket);
 
       // Evaluate current value so we can avoid writing to state if we don't need to
       const currentValue = await service.get(ticketStorageKey);
@@ -52,5 +44,17 @@ export class StateEventRunnerService {
         await service.remove(ticketStorageKey);
       }
     }
+  }
+
+  private storageKeyFor(userId: UserId, ticket: StateEventInfo) {
+    const userKey = new UserKeyDefinition<unknown>(
+      new StateDefinition(ticket.state, ticket.location as unknown as StorageLocation),
+      ticket.key,
+      {
+        deserializer: (v) => v,
+        clearOn: [],
+      },
+    );
+    return userKey.buildKey(userId);
   }
 }
