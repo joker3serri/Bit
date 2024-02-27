@@ -11,6 +11,7 @@ import { NotificationsService } from "@bitwarden/common/abstractions/notificatio
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
+import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -85,6 +86,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     private biometricStateService: BiometricStateService,
+    private organizationService: InternalOrganizationServiceAbstraction,
   ) {}
 
   ngOnInit() {
@@ -260,6 +262,7 @@ export class AppComponent implements OnDestroy, OnInit {
       this.passwordGenerationService.clear(),
       this.keyConnectorService.clear(),
       this.biometricStateService.logout(userId as UserId),
+      this.organizationService.replace(null, userId as UserId),
     ]);
 
     this.searchService.clearIndex();

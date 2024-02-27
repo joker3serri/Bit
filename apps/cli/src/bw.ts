@@ -369,7 +369,7 @@ export class Main {
 
     this.providerService = new ProviderService(this.stateService);
 
-    this.organizationService = new OrganizationService(this.stateService, this.stateProvider);
+    this.organizationService = new OrganizationService(this.stateProvider);
 
     this.organizationUserService = new OrganizationUserServiceImplementation(this.apiService);
 
@@ -635,6 +635,7 @@ export class Main {
       this.collectionService.clear(userId as UserId),
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
+      this.organizationService.replace(null, userId as UserId),
     ]);
     await this.stateService.clean();
     process.env.BW_SESSION = null;
