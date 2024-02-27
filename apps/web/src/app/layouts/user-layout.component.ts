@@ -13,7 +13,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
-import { PaymentMethodWarningsModule } from "../billing/shared/payment-method-warnings/payment-method-warnings.module";
+import { PaymentMethodWarningsModule } from "../billing/shared";
 
 import { PasswordManagerLogo } from "./password-manager-logo";
 

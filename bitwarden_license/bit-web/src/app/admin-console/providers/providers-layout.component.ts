@@ -9,7 +9,7 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction as ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 import { ProviderPortalLogo } from "@bitwarden/web-vault/app/admin-console/icons/provider-portal-logo";
-import { PaymentMethodWarningsModule } from "@bitwarden/web-vault/app/billing/shared/payment-method-warnings/payment-method-warnings.module";
+import { PaymentMethodWarningsModule } from "@bitwarden/web-vault/app/billing/shared";
 
 @Component({
   selector: "providers-layout",

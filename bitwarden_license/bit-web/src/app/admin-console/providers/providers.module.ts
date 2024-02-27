@@ -5,7 +5,7 @@ import { FormsModule } from "@angular/forms";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SearchModule } from "@bitwarden/components";
 import { OrganizationPlansComponent } from "@bitwarden/web-vault/app/billing";
-import { PaymentMethodWarningsModule } from "@bitwarden/web-vault/app/billing/shared/payment-method-warnings/payment-method-warnings.module";
+import { PaymentMethodWarningsModule } from "@bitwarden/web-vault/app/billing/shared";
 import { OssModule } from "@bitwarden/web-vault/app/oss.module";
 
 import { AddOrganizationComponent } from "./clients/add-organization.component";

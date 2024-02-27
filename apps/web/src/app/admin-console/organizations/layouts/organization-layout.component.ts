@@ -20,7 +20,7 @@ import { ConfigServiceAbstraction as ConfigService } from "@bitwarden/common/pla
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { BannerModule, IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
-import { PaymentMethodWarningsModule } from "../../../billing/shared/payment-method-warnings/payment-method-warnings.module";
+import { PaymentMethodWarningsModule } from "../../../billing/shared";
 import { OrgSwitcherComponent } from "../../../layouts/org-switcher/org-switcher.component";
 import { AdminConsoleLogo } from "../../icons/admin-console-logo";
 
