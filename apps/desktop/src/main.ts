@@ -32,6 +32,7 @@ import { Account } from "./models/account";
 import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main/biometric/index";
 import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
+import { MainCryptoFunctionService } from "./platform/main/main-crypto-function.service";
 import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
@@ -47,6 +48,7 @@ export class Main {
   messagingService: ElectronMainMessagingService;
   stateService: StateService;
   environmentService: EnvironmentService;
+  mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   migrationRunner: MigrationRunner;
 
@@ -198,6 +200,9 @@ export class Main {
 
     this.clipboardMain = new ClipboardMain();
     this.clipboardMain.init();
+
+    this.mainCryptoFunctionService = new MainCryptoFunctionService();
+    this.mainCryptoFunctionService.init();
   }
 
   bootstrap() {
@@ -273,28 +278,7 @@ export class Main {
     argv
       .filter((s) => s.indexOf("bitwarden://") === 0)
       .forEach((s) => {
-        const url = new URL(s);
-        const code = url.searchParams.get("code");
-        const receivedState = url.searchParams.get("state");
-        let message = "";
-
-        if (code === null) {
-          return;
-        }
-
-        if (s.indexOf("bitwarden://duo-callback") === 0) {
-          message = "duoCallback";
-        } else if (receivedState === null) {
-          return;
-        }
-
-        if (s.indexOf("bitwarden://import-callback-lp") === 0) {
-          message = "importCallbackLastPass";
-        } else if (s.indexOf("bitwarden://sso-callback") === 0) {
-          message = "ssoCallback";
-        }
-
-        this.messagingService.send(message, { code: code, state: receivedState });
+        this.messagingService.send("deepLink", { urlString: s });
       });
   }
 }
