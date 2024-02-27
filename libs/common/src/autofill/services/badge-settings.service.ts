@@ -14,7 +14,6 @@ const ENABLE_BADGE_COUNTER = new KeyDefinition(BADGE_SETTINGS_DISK, "enableBadge
 export abstract class BadgeSettingsServiceAbstraction {
   enableBadgeCounter$: Observable<boolean>;
   setEnableBadgeCounter: (newValue: boolean) => Promise<void>;
-  clear: () => Promise<void>;
 }
 
 export class BadgeSettingsService implements BadgeSettingsServiceAbstraction {
@@ -28,9 +27,5 @@ export class BadgeSettingsService implements BadgeSettingsServiceAbstraction {
 
   async setEnableBadgeCounter(newValue: boolean): Promise<void> {
     await this.enableBadgeCounterState.update(() => newValue);
-  }
-
-  async clear() {
-    await this.setEnableBadgeCounter(null);
   }
 }

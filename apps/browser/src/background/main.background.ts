@@ -1085,8 +1085,10 @@ export default class MainBackground {
       this.keyConnectorService.clear(),
       this.vaultFilterService.clear(),
       this.biometricStateService.logout(userId),
-      this.badgeSettingsService.clear(),
-      // We intentionally do not clear the autofillSettingsService
+      /* We intentionally do not clear:
+       *  - autofillSettingsService
+       *  - badgeSettingsService
+       */
     ]);
 
     //Needs to be checked before state is cleaned

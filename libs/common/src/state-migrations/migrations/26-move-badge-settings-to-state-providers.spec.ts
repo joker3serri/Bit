@@ -71,7 +71,7 @@ const badgeSettingsStateDefinition: {
   },
 };
 
-describe("ProviderKeysMigrator", () => {
+describe("BadgeSettingsMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
   let sut: BadgeSettingsMigrator;
 

@@ -1,4 +1,4 @@
-import { StateDefinitionLike, MigrationHelper } from "../migration-helper";
+import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { Migrator } from "../migrator";
 
 type ExpectedAccountState = {
@@ -7,12 +7,11 @@ type ExpectedAccountState = {
   };
 };
 
-const badgeSettingsStateDefinition: {
-  stateDefinition: StateDefinitionLike;
-} = {
+const enableBadgeCounterKeyDefinition: KeyDefinitionLike = {
   stateDefinition: {
     name: "badgeSettings",
   },
+  key: "enableBadgeCounter",
 };
 
 export class BadgeSettingsMigrator extends Migrator<25, 26> {
@@ -29,7 +28,7 @@ export class BadgeSettingsMigrator extends Migrator<25, 26> {
       if (accountSettings?.disableBadgeCounter != undefined) {
         await helper.setToUser(
           userId,
-          { ...badgeSettingsStateDefinition, key: "enableBadgeCounter" },
+          enableBadgeCounterKeyDefinition,
           !accountSettings.disableBadgeCounter,
         );
         delete account.settings.disableBadgeCounter;
@@ -50,20 +49,16 @@ export class BadgeSettingsMigrator extends Migrator<25, 26> {
     async function rollbackAccount(userId: string, account: ExpectedAccountState): Promise<void> {
       let settings = account?.settings || {};
 
-      const enableBadgeCounter: boolean = await helper.getFromUser(userId, {
-        ...badgeSettingsStateDefinition,
-        key: "enableBadgeCounter",
-      });
+      const enableBadgeCounter: boolean = await helper.getFromUser(
+        userId,
+        enableBadgeCounterKeyDefinition,
+      );
 
       // update new settings and remove the account state provider framework keys for the rolled back values
       if (enableBadgeCounter != undefined) {
         settings = { ...settings, disableBadgeCounter: !enableBadgeCounter };
 
-        await helper.setToUser(
-          userId,
-          { ...badgeSettingsStateDefinition, key: "enableBadgeCounter" },
-          null,
-        );
+        await helper.setToUser(userId, enableBadgeCounterKeyDefinition, null);
 
         // commit updated settings to state
         await helper.set(userId, {
