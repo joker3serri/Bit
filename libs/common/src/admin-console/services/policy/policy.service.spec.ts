@@ -115,21 +115,14 @@ describe("PolicyService", () => {
       );
     });
 
-    it("null userId", async () => {
+    it("clears state for the active user", async () => {
       await policyService.clear();
 
       expect(await firstValueFrom(policyService.policies$)).toEqual([]);
       expect(await firstValueFrom(activeUserState.state$)).toEqual({});
     });
 
-    it("matching userId", async () => {
-      await policyService.clear("userId" as UserId);
-
-      expect(await firstValueFrom(policyService.policies$)).toEqual([]);
-      expect(await firstValueFrom(activeUserState.state$)).toEqual({});
-    });
-
-    it("inactive user", async () => {
+    it("clears state for an inactive user", async () => {
       const inactiveUserId = "someOtherUserId" as UserId;
       const inactiveUserState = stateProvider.singleUser.getFake(inactiveUserId, POLICIES);
       inactiveUserState.nextState(
