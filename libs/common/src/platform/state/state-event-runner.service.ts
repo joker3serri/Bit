@@ -32,7 +32,7 @@ export class StateEventRunnerService {
 
     for (const ticket of tickets) {
       const [, service] = this.storageServiceProvider.get(
-        ticket.location as unknown as StorageLocation,
+        ticket.location,
         {}, // The storage location is already the computed storage location for this client
       );
 

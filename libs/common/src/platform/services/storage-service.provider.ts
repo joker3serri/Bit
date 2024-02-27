@@ -23,7 +23,7 @@ export class StorageServiceProvider {
    * @returns The computed storage location and corresponding storage service to use to get/store state.
    */
   get(
-    defaultLocation: StorageLocation,
+    defaultLocation: PossibleLocation,
     overrides: Partial<ClientLocations>,
   ): [location: PossibleLocation, service: AbstractStorageService & ObservableStorageService] {
     switch (defaultLocation) {
