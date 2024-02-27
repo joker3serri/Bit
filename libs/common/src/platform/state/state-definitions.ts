@@ -40,6 +40,7 @@ export const ORGANIZATIONS_DISK = new StateDefinition("organizations", "disk");
 export const POLICIES_DISK = new StateDefinition("policies", "disk");
 export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 
+// Billing
 export const BILLING_DISK = new StateDefinition("billing", "disk");
 
 export const FOLDER_DISK = new StateDefinition("folder", "disk", { web: "memory" });
