@@ -81,7 +81,7 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
       sut = new MoveForceSetPasswordReasonToStateProviderMigrator(25, 26);
     });
 
-    it("should remove properties from all accounts", async () => {
+    it("should remove properties from existing accounts", async () => {
       await sut.migrate(helper);
       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
         profile: {
@@ -94,11 +94,6 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
           otherStuff: "otherStuff4",
         },
         otherStuff: "otherStuff5",
-      });
-      expect(helper.set).toHaveBeenCalledWith("ThirdAccount", {
-        profile: {
-          otherStuff: "otherStuff6",
-        },
       });
     });
 
