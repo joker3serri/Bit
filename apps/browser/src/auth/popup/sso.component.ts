@@ -6,6 +6,7 @@ import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -43,6 +44,7 @@ export class SsoComponent extends BaseSsoComponent {
     configService: ConfigServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     accountService: AccountService,
+    private authService: AuthService,
     @Inject(WINDOW) private win: Window,
   ) {
     super(

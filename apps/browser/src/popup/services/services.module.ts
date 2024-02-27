@@ -37,6 +37,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -264,6 +265,7 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: CryptoService,
       useFactory: (
+        masterPasswordService: InternalMasterPasswordServiceAbstraction,
         keyGenerationService: KeyGenerationService,
         cryptoFunctionService: CryptoFunctionService,
         encryptService: EncryptService,
@@ -274,6 +276,7 @@ function getBgService<T>(service: keyof MainBackground) {
         stateProvider: StateProvider,
       ) => {
         const cryptoService = new BrowserCryptoService(
+          masterPasswordService,
           keyGenerationService,
           cryptoFunctionService,
           encryptService,
@@ -287,6 +290,7 @@ function getBgService<T>(service: keyof MainBackground) {
         return cryptoService;
       },
       deps: [
+        InternalMasterPasswordServiceAbstraction,
         KeyGenerationService,
         CryptoFunctionService,
         EncryptService,
