@@ -137,6 +137,15 @@ export abstract class LoginStrategy {
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
     const vaultTimeout = await this.stateService.getVaultTimeout();
 
+    // set access token and refresh token before account initialization so authN status can be accurate
+    // User id will be derived from the access token.
+    await this.tokenService.setTokens(
+      tokenResponse.accessToken,
+      tokenResponse.refreshToken,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
+
     await this.stateService.addAccount(
       new Account({
         profile: {
@@ -159,14 +168,6 @@ export abstract class LoginStrategy {
         decryptionOptions: AccountDecryptionOptions.fromResponse(tokenResponse),
         adminAuthRequest: adminAuthRequest?.toJSON(),
       }),
-    );
-
-    // set access token and refresh token after account initialization so we have an active account
-    await this.tokenService.setTokens(
-      tokenResponse.accessToken,
-      tokenResponse.refreshToken,
-      vaultTimeoutAction as VaultTimeoutAction,
-      vaultTimeout,
     );
   }
 
