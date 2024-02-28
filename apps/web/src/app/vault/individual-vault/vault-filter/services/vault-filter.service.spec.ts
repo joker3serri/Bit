@@ -203,8 +203,6 @@ describe("vault filter service", () => {
           createCollectionView("1", "collection 1", "org test id"),
           createCollectionView("2", "collection 2", "non matching org id"),
         ];
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         collectionViews.next(storedCollections);
 
         await expect(firstValueFrom(vaultFilterService.filteredCollections$)).resolves.toEqual([
