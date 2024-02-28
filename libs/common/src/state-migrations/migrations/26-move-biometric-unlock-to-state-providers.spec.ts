@@ -56,7 +56,7 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
       sut = new MoveBiometricUnlockToStateProviders(25, 26);
     });
 
-    it("should remove biometricUnlock, dismissedBiometricRequirePasswordOnStartCallout, and biometricEncryptionClientKeyHalf from all accounts", async () => {
+    it("removes biometricUnlock, dismissedBiometricRequirePasswordOnStartCallout, and biometricEncryptionClientKeyHalf from all accounts", async () => {
       await sut.migrate(helper);
       expect(helper.set).toHaveBeenCalledTimes(2);
       expect(helper.set).toHaveBeenCalledWith("user-1", {
@@ -70,7 +70,7 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
       });
     });
 
-    it("should set dismissedBiometricRequirePasswordOnStartCallout value for account that have it", async () => {
+    it("sets dismissedBiometricRequirePasswordOnStartCallout value for account that have it", async () => {
       await sut.migrate(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith("user-1", BIOMETRIC_UNLOCK_ENABLED, true);
@@ -89,13 +89,13 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
       sut = new MoveBiometricUnlockToStateProviders(25, 26);
     });
 
-    it("should null out new values", async () => {
+    it("nulls out new values", async () => {
       await sut.rollback(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith("user-1", BIOMETRIC_UNLOCK_ENABLED, null);
     });
 
-    it("should add explicit value back to accounts", async () => {
+    it("adds explicit value back to accounts", async () => {
       await sut.rollback(helper);
 
       expect(helper.set).toHaveBeenCalledTimes(1);
@@ -109,7 +109,7 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
     });
 
     it.each(["user-2", "user-3"])(
-      "should not try to restore values to missing accounts",
+      "does not restore values when accounts are not present",
       async (userId) => {
         await sut.rollback(helper);
 
