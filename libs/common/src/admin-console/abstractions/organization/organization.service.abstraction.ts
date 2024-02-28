@@ -48,9 +48,6 @@ export function canAccessOrgAdmin(org: Organization): boolean {
   );
 }
 
-/**
- * @deprecated Use mapToSingleOrganization()
- */
 export function getOrganizationById(id: string) {
   return map<Organization[], Organization | undefined>((orgs) => orgs.find((o) => o.id === id));
 }
@@ -86,8 +83,7 @@ export function canAccessImport(i18nService: I18nService) {
 
 /**
  * Returns `true` if a user is a member of an organization (rather than only being a ProviderUser)
- * @deprecated Use organizationService.organizations$() with a
- * mapToExcludeSpecialOrganizations() pipe instead
+ * @deprecated Use organizationService.organizations$ with a filter instead
  */
 export function isMember(org: Organization): boolean {
   return org.isMember;
@@ -153,42 +149,16 @@ export abstract class OrganizationService {
    */
   organizations$: Observable<Organization[]>;
 
-  /**
-   * @deprecated Use organizations$() with `mapToExcludeSpecialOrganizations` instead.
-   * Organizations that the user is a member of (excludes organizations that they only have access to via a provider)
-   */
+  // @todo Clean these up. Continuing to expand them is not recommended.
+  // @see https://bitwarden.atlassian.net/browse/AC-2252
   memberOrganizations$: Observable<Organization[]>;
-
-  /**
-   * @deprecated Use organizations$ with a pipe to `mapToSingleOrganizaiton()` instead.
-   * @param id id of the organization
-   */
   getFromState: (id: string) => Promise<Organization>;
-
-  /**
-   * @deprecated Use organizations$ with a pipe to `mapToExcludeOrganizationsWithoutFamilySponsorshipSupport()` instead.
-   */
   canManageSponsorships: () => Promise<boolean>;
-
-  /**
-   * @deprecated Use organizations$ with a pipe to `mapToBooleanHasAnyOrganizations()` instead.
-   */
   hasOrganizations: () => boolean;
-
-  /**
-   * @deprecated Use organizations$ with a pipe to `mapToSingleOrganization()` instead.
-   */
   get$: (id: string) => Observable<Organization | undefined>;
-
-  /**
-   * @deprecated Use organizations$ with a pipe to `mapToSingleOrganization()` instead.
-   */
   get: (id: string) => Organization;
-
-  /**
-   * @deprecated Use organizations$ instead.
-   */
   getAll: (userId?: string) => Promise<Organization[]>;
+  //
 }
 
 /**
