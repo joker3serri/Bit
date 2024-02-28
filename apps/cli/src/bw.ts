@@ -287,7 +287,7 @@ export class Main {
     this.tokenService = new TokenService(
       this.singleUserStateProvider,
       this.globalStateProvider,
-      this.platformUtilsService,
+      this.platformUtilsService.supportsSecureStorage(),
       this.secureStorageService,
     );
 

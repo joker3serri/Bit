@@ -11,6 +11,7 @@ import {
   OBSERVABLE_MEMORY_STORAGE,
   OBSERVABLE_DISK_STORAGE,
   WINDOW,
+  SUPPORTS_SECURE_STORAGE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -55,7 +56,10 @@ import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
-import { ElectronPlatformUtilsService } from "../../platform/services/electron-platform-utils.service";
+import {
+  ELECTRON_SUPPORTS_SECURE_STORAGE,
+  ElectronPlatformUtilsService,
+} from "../../platform/services/electron-platform-utils.service";
 import { ElectronRendererMessagingService } from "../../platform/services/electron-renderer-messaging.service";
 import { ElectronRendererSecureStorageService } from "../../platform/services/electron-renderer-secure-storage.service";
 import { ElectronRendererStorageService } from "../../platform/services/electron-renderer-storage.service";
@@ -101,6 +105,13 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       provide: PlatformUtilsServiceAbstraction,
       useClass: ElectronPlatformUtilsService,
       deps: [I18nServiceAbstraction, MessagingServiceAbstraction],
+    },
+    {
+      // We manually override the value of SUPPORTS_SECURE_STORAGE here to avoid
+      // the TokenService having to inject the PlatformUtilsService which introduces a
+      // circular dependency on Desktop only.
+      provide: SUPPORTS_SECURE_STORAGE,
+      useValue: ELECTRON_SUPPORTS_SECURE_STORAGE,
     },
     {
       provide: I18nServiceAbstraction,

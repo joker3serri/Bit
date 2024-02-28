@@ -43,7 +43,7 @@ export function tokenServiceFactory(
       new TokenService(
         await singleUserStateProviderFactory(cache, opts),
         await globalStateProviderFactory(cache, opts),
-        await platformUtilsServiceFactory(cache, opts),
+        (await platformUtilsServiceFactory(cache, opts)).supportsSecureStorage(),
         await secureStorageServiceFactory(cache, opts),
       ),
   );

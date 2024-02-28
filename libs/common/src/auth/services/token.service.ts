@@ -1,7 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
-import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
@@ -58,9 +57,6 @@ export class TokenService implements TokenServiceAbstraction {
     return decodedToken;
   }
 
-  private readonly platformSupportsSecureStorage =
-    this.platformUtilsService.supportsSecureStorage();
-
   private readonly accessTokenSecureStorageKey: string = "_accessToken";
 
   private readonly refreshTokenSecureStorageKey: string = "_refreshToken";
@@ -74,7 +70,7 @@ export class TokenService implements TokenServiceAbstraction {
     // this service into the AccountService, we will make a circular dependency
     private singleUserStateProvider: SingleUserStateProvider,
     private globalStateProvider: GlobalStateProvider,
-    private platformUtilsService: PlatformUtilsService,
+    private readonly platformSupportsSecureStorage: boolean,
     private secureStorageService: AbstractStorageService,
   ) {
     this.initializeState();

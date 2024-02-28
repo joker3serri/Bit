@@ -233,6 +233,7 @@ import {
   SECURE_STORAGE,
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
+  SUPPORTS_SECURE_STORAGE,
   SYSTEM_LANGUAGE,
   WINDOW,
 } from "./injection-tokens";
@@ -247,6 +248,12 @@ import { ModalService } from "./modal.service";
     PasswordRepromptService,
 
     { provide: WINDOW, useValue: window },
+    {
+      provide: SUPPORTS_SECURE_STORAGE,
+      useFactory: (platformUtilsService: PlatformUtilsServiceAbstraction) =>
+        platformUtilsService.supportsSecureStorage,
+      deps: [PlatformUtilsServiceAbstraction],
+    },
     {
       provide: LOCALE_ID,
       useFactory: (i18nService: I18nServiceAbstraction) => i18nService.translationLocale,
@@ -443,7 +450,7 @@ import { ModalService } from "./modal.service";
       deps: [
         SingleUserStateProvider,
         GlobalStateProvider,
-        PlatformUtilsServiceAbstraction,
+        SUPPORTS_SECURE_STORAGE,
         AbstractStorageService,
       ],
     },

@@ -36,7 +36,10 @@ import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
 import { MainCryptoFunctionService } from "./platform/main/main-crypto-function.service";
 import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
-import { ElectronPlatformUtilsService } from "./platform/services/electron-platform-utils.service";
+import {
+  ELECTRON_SUPPORTS_SECURE_STORAGE,
+  ElectronPlatformUtilsService,
+} from "./platform/services/electron-platform-utils.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
@@ -138,19 +141,10 @@ export class Main {
 
     this.environmentService = new EnvironmentService(stateProvider, accountService);
 
-    this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
-      this.messagingMain.onMessage(message);
-    });
-
-    this.platformUtilsService = new ElectronPlatformUtilsService(
-      this.i18nService,
-      this.messagingService,
-    );
-
     this.tokenService = new TokenService(
       singleUserStateProvider,
       globalStateProvider,
-      this.platformUtilsService,
+      ELECTRON_SUPPORTS_SECURE_STORAGE,
       this.storageService,
     );
 
@@ -189,6 +183,15 @@ export class Main {
     this.messagingMain = new MessagingMain(this, this.stateService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.stateService);
+
+    this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
+      this.messagingMain.onMessage(message);
+    });
+
+    this.platformUtilsService = new ElectronPlatformUtilsService(
+      this.i18nService,
+      this.messagingService,
+    );
 
     this.powerMonitorMain = new PowerMonitorMain(this.messagingService);
     this.menuMain = new MenuMain(

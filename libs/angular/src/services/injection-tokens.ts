@@ -30,3 +30,4 @@ export const LOCKED_CALLBACK = new InjectionToken<(userId?: string) => Promise<v
 export const LOCALES_DIRECTORY = new InjectionToken<string>("LOCALES_DIRECTORY");
 export const SYSTEM_LANGUAGE = new InjectionToken<string>("SYSTEM_LANGUAGE");
 export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
+export const SUPPORTS_SECURE_STORAGE = new InjectionToken<boolean>("SUPPORTS_SECURE_STORAGE");
