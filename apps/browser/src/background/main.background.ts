@@ -30,6 +30,7 @@ import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/d
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
@@ -43,6 +44,7 @@ import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/de
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { SsoLoginService } from "@bitwarden/common/auth/services/sso-login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
@@ -295,6 +297,7 @@ export default class MainBackground {
   vaultSettingsService: VaultSettingsServiceAbstraction;
   loginService: LoginServiceAbstraction;
   biometricStateService: BiometricStateService;
+  ssoLoginService: SsoLoginServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -590,6 +593,8 @@ export default class MainBackground {
       this.loginService,
       this.authRequestService,
     );
+
+    this.ssoLoginService = new SsoLoginService(this.stateProvider);
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
