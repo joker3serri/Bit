@@ -1,6 +1,8 @@
 import { LOCALE_ID, NgModule } from "@angular/core";
 
 import {
+  AuthRequestServiceAbstraction,
+  AuthRequestService,
   PinCryptoServiceAbstraction,
   PinCryptoService,
   LoginStrategyServiceAbstraction,
@@ -47,7 +49,6 @@ import {
   InternalAccountService,
 } from "@bitwarden/common/auth/abstractions/account.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
-import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
@@ -66,7 +67,6 @@ import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstract
 import { AccountApiServiceImplementation } from "@bitwarden/common/auth/services/account-api.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/services/anonymous-hub.service";
-import { AuthRequestCryptoServiceImplementation } from "@bitwarden/common/auth/services/auth-request-crypto.service.implementation";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
@@ -86,6 +86,10 @@ import {
   AutofillSettingsServiceAbstraction,
   AutofillSettingsService,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  BadgeSettingsServiceAbstraction,
+  BadgeSettingsService,
+} from "@bitwarden/common/autofill/services/badge-settings.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
@@ -102,6 +106,7 @@ import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.
 import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -125,6 +130,7 @@ import { EncryptServiceImplementation } from "@bitwarden/common/platform/service
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
+import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopNotificationsService } from "@bitwarden/common/platform/services/noop-notifications.service";
@@ -318,7 +324,7 @@ import { ModalService } from "./modal.service";
         PasswordStrengthServiceAbstraction,
         PolicyServiceAbstraction,
         DeviceTrustCryptoServiceAbstraction,
-        AuthRequestCryptoServiceAbstraction,
+        AuthRequestServiceAbstraction,
       ],
     },
     {
@@ -432,9 +438,15 @@ import { ModalService } from "./modal.service";
     },
     { provide: TokenServiceAbstraction, useClass: TokenService, deps: [StateServiceAbstraction] },
     {
+      provide: KeyGenerationServiceAbstraction,
+      useClass: KeyGenerationService,
+      deps: [CryptoFunctionServiceAbstraction],
+    },
+    {
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,
       deps: [
+        KeyGenerationServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         EncryptService,
         PlatformUtilsServiceAbstraction,
@@ -476,7 +488,7 @@ import { ModalService } from "./modal.service";
       deps: [
         CryptoServiceAbstraction,
         I18nServiceAbstraction,
-        CryptoFunctionServiceAbstraction,
+        KeyGenerationServiceAbstraction,
         StateServiceAbstraction,
       ],
     },
@@ -662,7 +674,7 @@ import { ModalService } from "./modal.service";
     {
       provide: PolicyServiceAbstraction,
       useClass: PolicyService,
-      deps: [StateServiceAbstraction, OrganizationServiceAbstraction],
+      deps: [StateServiceAbstraction, StateProvider, OrganizationServiceAbstraction],
     },
     {
       provide: InternalPolicyService,
@@ -683,7 +695,7 @@ import { ModalService } from "./modal.service";
         TokenServiceAbstraction,
         LogService,
         OrganizationServiceAbstraction,
-        CryptoFunctionServiceAbstraction,
+        KeyGenerationServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -825,6 +837,7 @@ import { ModalService } from "./modal.service";
       provide: DeviceTrustCryptoServiceAbstraction,
       useClass: DeviceTrustCryptoService,
       deps: [
+        KeyGenerationServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         CryptoServiceAbstraction,
         EncryptService,
@@ -836,9 +849,14 @@ import { ModalService } from "./modal.service";
       ],
     },
     {
-      provide: AuthRequestCryptoServiceAbstraction,
-      useClass: AuthRequestCryptoServiceImplementation,
-      deps: [CryptoServiceAbstraction],
+      provide: AuthRequestServiceAbstraction,
+      useClass: AuthRequestService,
+      deps: [
+        AppIdServiceAbstraction,
+        CryptoServiceAbstraction,
+        ApiServiceAbstraction,
+        StateServiceAbstraction,
+      ],
     },
     {
       provide: PinCryptoServiceAbstraction,
@@ -921,6 +939,11 @@ import { ModalService } from "./modal.service";
       provide: AutofillSettingsServiceAbstraction,
       useClass: AutofillSettingsService,
       deps: [StateProvider, PolicyServiceAbstraction],
+    },
+    {
+      provide: BadgeSettingsServiceAbstraction,
+      useClass: BadgeSettingsService,
+      deps: [StateProvider],
     },
     {
       provide: BiometricStateService,
