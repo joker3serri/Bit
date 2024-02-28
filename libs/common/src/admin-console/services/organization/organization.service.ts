@@ -73,10 +73,7 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
   }
 
   async getAll(userId?: string): Promise<Organization[]> {
-    const organizationsMap = await firstValueFrom(
-      this.getOrganizationsFromState$(userId as UserId),
-    );
-    return Object.values(organizationsMap || {}).map((o) => new Organization(o));
+    return await firstValueFrom(this.getOrganizationsFromState$(userId as UserId));
   }
 
   async canManageSponsorships(): Promise<boolean> {
