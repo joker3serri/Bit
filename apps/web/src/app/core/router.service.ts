@@ -86,7 +86,7 @@ export class RouterService {
    * @param url URL being saved to the Global State
    */
   async persistLoginRedirectUrl(url: string): Promise<void> {
-    await this.deepLinkRedirectUrlState.update((_) => url);
+    await this.deepLinkRedirectUrlState.update(() => url);
   }
 
   /**
