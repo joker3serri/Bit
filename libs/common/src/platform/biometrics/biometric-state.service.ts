@@ -108,7 +108,7 @@ export class DefaultBiometricStateService implements BiometricStateService {
 
   constructor(private stateProvider: StateProvider) {
     this.biometricUnlockEnabledState = this.stateProvider.getActive(BIOMETRIC_UNLOCK_ENABLED);
-    this.biometricUnlockEnabled$ = this.biometricUnlockEnabledState.state$.pipe(map(booleanState));
+    this.biometricUnlockEnabled$ = this.biometricUnlockEnabledState.state$.pipe(map(Boolean));
 
     this.requirePasswordOnStartState = this.stateProvider.getActive(REQUIRE_PASSWORD_ON_START);
     this.requirePasswordOnStart$ = this.requirePasswordOnStartState.state$.pipe(
@@ -124,12 +124,12 @@ export class DefaultBiometricStateService implements BiometricStateService {
       DISMISSED_REQUIRE_PASSWORD_ON_START_CALLOUT,
     );
     this.dismissedRequirePasswordOnStartCallout$ =
-      this.dismissedRequirePasswordOnStartCalloutState.state$.pipe(map(booleanState));
+      this.dismissedRequirePasswordOnStartCalloutState.state$.pipe(map(Boolean));
 
     this.promptCancelledState = this.stateProvider.getActive(PROMPT_CANCELLED);
-    this.promptCancelled$ = this.promptCancelledState.state$.pipe(map(booleanState));
+    this.promptCancelled$ = this.promptCancelledState.state$.pipe(map(Boolean));
     this.promptAutomaticallyState = this.stateProvider.getActive(PROMPT_AUTOMATICALLY);
-    this.promptAutomatically$ = this.promptAutomaticallyState.state$.pipe(map(booleanState));
+    this.promptAutomatically$ = this.promptAutomaticallyState.state$.pipe(map(Boolean));
   }
 
   async setBiometricUnlockEnabled(enabled: boolean): Promise<void> {
@@ -138,7 +138,7 @@ export class DefaultBiometricStateService implements BiometricStateService {
 
   async getBiometricUnlockEnabled(userId: UserId): Promise<boolean> {
     return await firstValueFrom(
-      this.stateProvider.getUser(userId, BIOMETRIC_UNLOCK_ENABLED).state$.pipe(map(booleanState)),
+      this.stateProvider.getUser(userId, BIOMETRIC_UNLOCK_ENABLED).state$.pipe(map(Boolean)),
     );
   }
 
@@ -213,8 +213,4 @@ function encryptedClientKeyHalfToEncString(
   encryptedKeyHalf: EncryptedString | undefined,
 ): EncString {
   return encryptedKeyHalf == null ? null : new EncString(encryptedKeyHalf);
-}
-
-function booleanState(state: boolean | undefined): boolean {
-  return !!state;
 }
