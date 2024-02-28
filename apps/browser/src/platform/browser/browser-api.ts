@@ -306,7 +306,7 @@ export class BrowserApi {
   ) {
     event.addListener(callback);
 
-    if (BrowserApi.isSafariApi && !BrowserApi.isBackgroundPage(window)) {
+    if (BrowserApi.isSafariApi && !BrowserApi.isBackgroundPage(self)) {
       BrowserApi.trackedChromeEventListeners.push([event, callback]);
       BrowserApi.setupUnloadListeners();
     }
@@ -323,7 +323,7 @@ export class BrowserApi {
   ) {
     event.removeListener(callback);
 
-    if (BrowserApi.isSafariApi && !BrowserApi.isBackgroundPage(window)) {
+    if (BrowserApi.isSafariApi && !BrowserApi.isBackgroundPage(self)) {
       const index = BrowserApi.trackedChromeEventListeners.findIndex(([_event, eventListener]) => {
         return eventListener == callback;
       });
@@ -404,8 +404,12 @@ export class BrowserApi {
    * @param exemptCurrentHref - Whether to exempt the current window location from the reload.
    */
   static reloadOpenWindows(exemptCurrentHref = false) {
-    const currentHref = window?.location.href;
     const views = BrowserApi.getExtensionViews();
+    if (!views.length) {
+      return;
+    }
+
+    const currentHref = window.location.href;
     views
       .filter((w) => w.location.href != null && !w.location.href.includes("background.html"))
       .filter((w) => !exemptCurrentHref || w.location.href !== currentHref)

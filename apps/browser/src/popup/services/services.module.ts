@@ -10,7 +10,10 @@ import {
   OBSERVABLE_MEMORY_STORAGE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  AuthRequestServiceAbstraction,
+  LoginStrategyServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -29,12 +32,12 @@ import {
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -194,6 +197,11 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<LoginStrategyServiceAbstraction>("loginStrategyService"),
     },
     {
+      provide: SsoLoginServiceAbstraction,
+      useFactory: getBgService<SsoLoginServiceAbstraction>("ssoLoginService"),
+      deps: [],
+    },
+    {
       provide: SearchServiceAbstraction,
       useFactory: (logService: ConsoleLogService, i18nService: I18nServiceAbstraction) => {
         return new PopupSearchService(
@@ -296,8 +304,8 @@ function getBgService<T>(service: keyof MainBackground) {
       ],
     },
     {
-      provide: AuthRequestCryptoServiceAbstraction,
-      useFactory: getBgService<AuthRequestCryptoServiceAbstraction>("authRequestCryptoService"),
+      provide: AuthRequestServiceAbstraction,
+      useFactory: getBgService<AuthRequestServiceAbstraction>("authRequestService"),
       deps: [],
     },
     {
@@ -324,11 +332,12 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: PolicyService,
       useFactory: (
         stateService: StateServiceAbstraction,
+        stateProvider: StateProvider,
         organizationService: OrganizationService,
       ) => {
-        return new BrowserPolicyService(stateService, organizationService);
+        return new BrowserPolicyService(stateService, stateProvider, organizationService);
       },
-      deps: [StateServiceAbstraction, OrganizationService],
+      deps: [StateServiceAbstraction, StateProvider, OrganizationService],
     },
     {
       provide: PolicyApiServiceAbstraction,
@@ -372,7 +381,7 @@ function getBgService<T>(service: keyof MainBackground) {
           stateServiceAbstraction,
         );
       },
-      deps: [CryptoService, I18nServiceAbstraction, CryptoFunctionService, StateServiceAbstraction],
+      deps: [CryptoService, I18nServiceAbstraction, KeyGenerationService, StateServiceAbstraction],
     },
     {
       provide: InternalSendServiceAbstraction,
