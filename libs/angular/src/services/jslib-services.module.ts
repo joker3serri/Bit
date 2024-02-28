@@ -251,7 +251,7 @@ import { ModalService } from "./modal.service";
     {
       provide: SUPPORTS_SECURE_STORAGE,
       useFactory: (platformUtilsService: PlatformUtilsServiceAbstraction) =>
-        platformUtilsService.supportsSecureStorage,
+        platformUtilsService.supportsSecureStorage(),
       deps: [PlatformUtilsServiceAbstraction],
     },
     {
