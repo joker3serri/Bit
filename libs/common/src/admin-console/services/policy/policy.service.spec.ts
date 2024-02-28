@@ -120,6 +120,10 @@ describe("PolicyService", () => {
 
       expect(await firstValueFrom(policyService.policies$)).toEqual([]);
       expect(await firstValueFrom(activeUserState.state$)).toEqual({});
+      expect(stateProvider.activeUser.getFake(POLICIES).nextMock).toHaveBeenCalledWith([
+        "userId",
+        {},
+      ]);
     });
 
     it("clears state for an inactive user", async () => {
@@ -145,6 +149,7 @@ describe("PolicyService", () => {
       expect(await firstValueFrom(activeUserState.state$)).toEqual({
         "1": expectedActiveUserPolicy,
       });
+      expect(stateProvider.activeUser.getFake(POLICIES).nextMock).not.toHaveBeenCalled();
 
       // Non-active user is cleared
       expect(
@@ -153,6 +158,9 @@ describe("PolicyService", () => {
         ),
       ).toEqual([]);
       expect(await firstValueFrom(inactiveUserState.state$)).toEqual({});
+      expect(
+        stateProvider.singleUser.getFake("someOtherUserId" as UserId, POLICIES).nextMock,
+      ).toHaveBeenCalledWith({});
     });
   });
 
