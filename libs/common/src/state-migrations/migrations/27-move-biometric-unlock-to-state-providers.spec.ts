@@ -6,7 +6,7 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 import {
   BIOMETRIC_UNLOCK_ENABLED,
   MoveBiometricUnlockToStateProviders,
-} from "./26-move-biometric-unlock-to-state-providers";
+} from "./27-move-biometric-unlock-to-state-providers";
 
 function exampleJSON() {
   return {
@@ -52,8 +52,8 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 25);
-      sut = new MoveBiometricUnlockToStateProviders(25, 26);
+      helper = mockMigrationHelper(exampleJSON(), 26);
+      sut = new MoveBiometricUnlockToStateProviders(26, 27);
     });
 
     it("removes biometricUnlock, dismissedBiometricRequirePasswordOnStartCallout, and biometricEncryptionClientKeyHalf from all accounts", async () => {
@@ -85,8 +85,8 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 26);
-      sut = new MoveBiometricUnlockToStateProviders(25, 26);
+      helper = mockMigrationHelper(rollbackJSON(), 27);
+      sut = new MoveBiometricUnlockToStateProviders(26, 27);
     });
 
     it("nulls out new values", async () => {

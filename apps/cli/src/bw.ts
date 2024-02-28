@@ -38,7 +38,6 @@ import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/s
 import { ClientType } from "@bitwarden/common/enums";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
-import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions, LogLevelType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { Account } from "@bitwarden/common/platform/models/domain/account";
@@ -205,7 +204,6 @@ export class Main {
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
   loginStrategyService: LoginStrategyServiceAbstraction;
-  biometricStateService: BiometricStateService;
 
   constructor() {
     let p = null;
@@ -375,7 +373,11 @@ export class Main {
 
     this.organizationUserService = new OrganizationUserServiceImplementation(this.apiService);
 
-    this.policyService = new PolicyService(this.stateService, this.organizationService);
+    this.policyService = new PolicyService(
+      this.stateService,
+      this.stateProvider,
+      this.organizationService,
+    );
 
     this.policyApiService = new PolicyApiService(
       this.policyService,
@@ -634,7 +636,6 @@ export class Main {
       this.collectionService.clear(userId as UserId),
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
-      this.biometricStateService.logout(userId as UserId),
     ]);
     await this.stateService.clean();
     process.env.BW_SESSION = null;
