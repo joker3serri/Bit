@@ -188,7 +188,7 @@ describe("TokenServiceStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 26);
+      helper = mockMigrationHelper(rollbackJSON(), 27);
       sut = new TokenServiceStateProviderMigrator(26, 27);
     });
 
