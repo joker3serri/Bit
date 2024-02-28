@@ -1,5 +1,9 @@
 <ng-container *ngFor="let warning of warnings$ | async">
-  <bit-banner bannerType="warning" (onClose)="closeWarning(warning.organizationId)">
+  <bit-banner
+    class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
+    bannerType="warning"
+    (onClose)="closeWarning(warning.organizationId)"
+  >
     {{ "maintainYourSubscription" | i18n: warning.organizationName }}
     <a
       bitLink

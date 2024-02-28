@@ -969,7 +969,7 @@ import { ModalService } from "./modal.service";
     {
       provide: PaymentMethodWarningsServiceAbstraction,
       useClass: PaymentMethodWarningsService,
-      deps: [OrganizationApiServiceAbstraction, StateProvider],
+      deps: [BillingApiServiceAbstraction, StateProvider],
     },
   ],
 })
