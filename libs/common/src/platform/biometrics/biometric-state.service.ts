@@ -15,7 +15,7 @@ import {
 
 export abstract class BiometricStateService {
   /**
-   * Whether the currently active user has elected to store a biometric key to unlock their vault.
+   * `true` if the currently active user has elected to store a biometric key to unlock their vault.
    */
   biometricUnlockEnabled$: Observable<boolean>; // used to be biometricUnlock
   /**
