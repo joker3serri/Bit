@@ -1,4 +1,4 @@
-import { map, Observable, firstValueFrom, first } from "rxjs";
+import { map, Observable, firstValueFrom } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { KeyDefinition, ORGANIZATIONS_DISK, StateProvider } from "../../../platform/state";
@@ -85,12 +85,8 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
     );
   }
 
-  hasOrganizations(): boolean {
-    let value = false;
-    this.organizations$.pipe(mapToBooleanHasAnyOrganizations(), first()).subscribe((x) => {
-      value = x;
-    });
-    return value;
+  async hasOrganizations(): Promise<boolean> {
+    return await firstValueFrom(this.organizations$.pipe(mapToBooleanHasAnyOrganizations()));
   }
 
   async upsert(organization: OrganizationData, userId?: UserId): Promise<void> {
@@ -101,12 +97,8 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
     });
   }
 
-  get(id: string): Organization {
-    let value: Organization = undefined;
-    this.organizations$.pipe(mapToSingleOrganization(id), first()).subscribe((x) => {
-      value = x;
-    });
-    return value;
+  async get(id: string): Promise<Organization> {
+    return await firstValueFrom(this.organizations$.pipe(mapToSingleOrganization(id)));
   }
 
   /**

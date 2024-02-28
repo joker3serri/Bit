@@ -146,7 +146,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
 
-    const organization$ = of(this.organizationService.get(this.params.organizationId)).pipe(
+    const organization$ = of(await this.organizationService.get(this.params.organizationId)).pipe(
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
     const groups$ = organization$.pipe(

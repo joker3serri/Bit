@@ -113,9 +113,9 @@ export abstract class OrganizationService {
   memberOrganizations$: Observable<Organization[]>;
   getFromState: (id: string) => Promise<Organization>;
   canManageSponsorships: () => Promise<boolean>;
-  hasOrganizations: () => boolean;
+  hasOrganizations: () => Promise<boolean>;
   get$: (id: string) => Observable<Organization | undefined>;
-  get: (id: string) => Organization;
+  get: (id: string) => Promise<Organization>;
   getAll: (userId?: string) => Promise<Organization[]>;
   //
 }

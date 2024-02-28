@@ -169,12 +169,12 @@ describe("OrganizationService", () => {
     it("exists", async () => {
       const mockData = buildMockOrganizations(1);
       fakeActiveUserState.nextState(arrayToRecord(mockData));
-      const result = organizationService.get(mockData[0].id);
+      const result = await organizationService.get(mockData[0].id);
       expect(result).toEqual(new Organization(mockData[0]));
     });
 
     it("does not exist", async () => {
-      const result = organizationService.get("this-org-does-not-exist");
+      const result = await organizationService.get("this-org-does-not-exist");
       expect(result).toBe(undefined);
     });
   });
