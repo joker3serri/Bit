@@ -34,11 +34,11 @@ function mapToExcludeOrganizationsWithoutFamilySponsorshipSupport() {
 /**
  * Filter out organizations from an observable that the organization user
  * __is not__ a direct member of. This will exclude organizations only
- * accessible as a provider, for example.
+ * accessible as a provider.
  * @returns a function that can be used in `Observable<Organization[]>` pipes,
  * like `organizationService.organizations$`
  */
-function mapToExcludeSpecialOrganizations() {
+function mapToExcludeProviderOrganizations() {
   return map<Organization[], Organization[]>((orgs) => orgs.filter((o) => o.isMember));
 }
 
@@ -64,7 +64,7 @@ function mapToSingleOrganization(organizationId: string) {
 
 export class OrganizationService implements InternalOrganizationServiceAbstraction {
   organizations$ = this.getOrganizationsFromState$();
-  memberOrganizations$ = this.organizations$.pipe(mapToExcludeSpecialOrganizations());
+  memberOrganizations$ = this.organizations$.pipe(mapToExcludeProviderOrganizations());
 
   constructor(private stateProvider: StateProvider) {}
 
