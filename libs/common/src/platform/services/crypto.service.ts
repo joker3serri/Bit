@@ -1,5 +1,5 @@
 import * as bigInt from "big-integer";
-import { Observable, firstValueFrom, map, zip } from "rxjs";
+import { Observable, firstValueFrom, map } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { ProfileOrganizationResponse } from "../../admin-console/models/response/profile-organization.response";
@@ -126,10 +126,7 @@ export class CryptoService implements CryptoServiceAbstraction {
       USER_ORGANIZATION_KEYS,
       { cryptoService: this },
     );
-    this.activeUserOrgKeys$ = zip(
-      this.accountService.activeAccount$,
-      this.activeUserOrgKeysState.state$,
-    ).pipe(map(([, data]) => data)); // null handled by `derive` function
+    this.activeUserOrgKeys$ = this.activeUserOrgKeysState.state$; // null handled by `derive` function
 
     // Provider keys
     this.activeUserEncryptedProviderKeysState = stateProvider.getActive(
