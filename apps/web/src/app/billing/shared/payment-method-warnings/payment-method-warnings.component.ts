@@ -18,14 +18,12 @@ export class PaymentMethodWarningsComponent {
   protected warnings$: Observable<Warning[]> =
     this.paymentMethodWarningService.paymentMethodWarnings$.pipe(
       map((warnings) =>
-        warnings
-          ? Object.entries(warnings)
-              .filter(([_, warning]) => warning.risksSubscriptionFailure && !warning.acknowledged)
-              .map(([organizationId, { organizationName }]) => ({
-                organizationId,
-                organizationName,
-              }))
-          : [],
+        Object.entries(warnings ?? [])
+          .filter(([_, warning]) => warning.risksSubscriptionFailure && !warning.acknowledged)
+          .map(([organizationId, { organizationName }]) => ({
+            organizationId,
+            organizationName,
+          })),
       ),
     );
 
