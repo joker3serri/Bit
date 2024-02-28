@@ -86,9 +86,7 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
   }
 
   async replace(organizations: { [id: string]: OrganizationData }, userId?: UserId): Promise<void> {
-    await this.stateFor(userId).update(() => {
-      return organizations;
-    });
+    await this.stateFor(userId).update(() => organizations);
   }
 
   // Ideally this method would be renamed to organizations$() and the
