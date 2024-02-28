@@ -11,6 +11,7 @@ import { MessagingService } from "../../platform/abstractions/messaging.service"
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { Account } from "../../platform/models/domain/account";
+import { StateEventRunnerService } from "../../platform/state";
 import { CipherService } from "../../vault/abstractions/cipher.service";
 import { CollectionService } from "../../vault/abstractions/collection.service";
 import { FolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
@@ -28,6 +29,7 @@ describe("VaultTimeoutService", () => {
   let stateService: MockProxy<StateService>;
   let authService: MockProxy<AuthService>;
   let vaultTimeoutSettingsService: MockProxy<VaultTimeoutSettingsService>;
+  let stateEventRunnerService: MockProxy<StateEventRunnerService>;
   let lockedCallback: jest.Mock<Promise<void>, [userId: string]>;
   let loggedOutCallback: jest.Mock<Promise<void>, [expired: boolean, userId?: string]>;
 
@@ -48,6 +50,7 @@ describe("VaultTimeoutService", () => {
     stateService = mock();
     authService = mock();
     vaultTimeoutSettingsService = mock();
+    stateEventRunnerService = mock();
 
     lockedCallback = jest.fn();
     loggedOutCallback = jest.fn();
@@ -73,6 +76,7 @@ describe("VaultTimeoutService", () => {
       stateService,
       authService,
       vaultTimeoutSettingsService,
+      stateEventRunnerService,
       lockedCallback,
       loggedOutCallback,
     );

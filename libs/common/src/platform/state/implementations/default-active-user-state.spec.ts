@@ -12,6 +12,7 @@ import { AccountInfo, AccountService } from "../../../auth/abstractions/account.
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { UserId } from "../../../types/guid";
 import { StateDefinition } from "../state-definition";
+import { StateEventRegistrarService } from "../state-event-registrar.service";
 import { UserKeyDefinition } from "../user-key-definition";
 
 import { DefaultActiveUserState } from "./default-active-user-state";
@@ -42,6 +43,7 @@ const testKeyDefinition = new UserKeyDefinition<TestState>(testStateDefinition, 
 describe("DefaultActiveUserState", () => {
   const accountService = mock<AccountService>();
   let diskStorageService: FakeStorageService;
+  const stateEventRegistrarService = mock<StateEventRegistrarService>();
   let activeAccountSubject: BehaviorSubject<{ id: UserId } & AccountInfo>;
   let userState: DefaultActiveUserState<TestState>;
 
@@ -50,7 +52,12 @@ describe("DefaultActiveUserState", () => {
     accountService.activeAccount$ = activeAccountSubject;
 
     diskStorageService = new FakeStorageService();
-    userState = new DefaultActiveUserState(testKeyDefinition, accountService, diskStorageService);
+    userState = new DefaultActiveUserState(
+      testKeyDefinition,
+      accountService,
+      diskStorageService,
+      stateEventRegistrarService,
+    );
   });
 
   const makeUserId = (id: string) => {

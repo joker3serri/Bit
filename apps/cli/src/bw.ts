@@ -56,11 +56,13 @@ import { MigrationBuilderService } from "@bitwarden/common/platform/services/mig
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopMessagingService } from "@bitwarden/common/platform/services/noop-messaging.service";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
+import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import {
   ActiveUserStateProvider,
   DerivedStateProvider,
   GlobalStateProvider,
   SingleUserStateProvider,
+  StateEventRunnerService,
   StateProvider,
 } from "@bitwarden/common/platform/state";
 /* eslint-disable import/no-restricted-paths -- We need the implementation to inject, but generally these should not be accessed */
@@ -69,6 +71,7 @@ import { DefaultDerivedStateProvider } from "@bitwarden/common/platform/state/im
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
 import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
+import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 /* eslint-enable import/no-restricted-paths */
 import { AuditService } from "@bitwarden/common/services/audit.service";
@@ -204,6 +207,7 @@ export class Main {
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
   loginStrategyService: LoginStrategyServiceAbstraction;
+  stateEventRunnerService: StateEventRunnerService;
 
   constructor() {
     let p = null;
@@ -244,14 +248,26 @@ export class Main {
     this.memoryStorageService = new MemoryStorageService();
     this.memoryStorageForStateProviders = new MemoryStorageServiceForStateProviders();
 
-    this.globalStateProvider = new DefaultGlobalStateProvider(
-      this.memoryStorageForStateProviders,
+    const storageServiceProvider = new StorageServiceProvider(
       this.storageService,
+      this.memoryStorageForStateProviders,
+    );
+
+    this.globalStateProvider = new DefaultGlobalStateProvider(storageServiceProvider);
+
+    const stateEventRegistrarService = new StateEventRegistrarService(
+      this.globalStateProvider,
+      storageServiceProvider,
+    );
+
+    this.stateEventRunnerService = new StateEventRunnerService(
+      this.globalStateProvider,
+      storageServiceProvider,
     );
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
-      this.memoryStorageForStateProviders,
-      this.storageService,
+      storageServiceProvider,
+      stateEventRegistrarService,
     );
 
     this.messagingService = new NoopMessagingService();
@@ -264,8 +280,8 @@ export class Main {
 
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
-      this.memoryStorageForStateProviders,
-      this.storageService,
+      storageServiceProvider,
+      stateEventRegistrarService,
     );
 
     this.derivedStateProvider = new DefaultDerivedStateProvider(
@@ -526,6 +542,7 @@ export class Main {
       this.stateService,
       this.authService,
       this.vaultTimeoutSettingsService,
+      this.stateEventRunnerService,
       lockedCallback,
       null,
     );
@@ -636,6 +653,9 @@ export class Main {
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
     ]);
+
+    await this.stateEventRunnerService.handleEvent("logout", userId as UserId);
+
     await this.stateService.clean();
     process.env.BW_SESSION = null;
   }

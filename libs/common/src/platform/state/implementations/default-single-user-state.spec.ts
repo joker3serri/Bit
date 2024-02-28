@@ -3,6 +3,7 @@
  * @jest-environment ../shared/test.environment.ts
  */
 
+import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
@@ -11,6 +12,7 @@ import { FakeStorageService } from "../../../../spec/fake-storage.service";
 import { UserId } from "../../../types/guid";
 import { Utils } from "../../misc/utils";
 import { StateDefinition } from "../state-definition";
+import { StateEventRegistrarService } from "../state-event-registrar.service";
 import { UserKeyDefinition } from "../user-key-definition";
 
 import { DefaultSingleUserState } from "./default-single-user-state";
@@ -42,11 +44,17 @@ const userKey = testKeyDefinition.buildKey(userId);
 describe("DefaultSingleUserState", () => {
   let diskStorageService: FakeStorageService;
   let userState: DefaultSingleUserState<TestState>;
+  const stateEventRegistrarService = mock<StateEventRegistrarService>();
   const newData = { date: new Date() };
 
   beforeEach(() => {
     diskStorageService = new FakeStorageService();
-    userState = new DefaultSingleUserState(userId, testKeyDefinition, diskStorageService);
+    userState = new DefaultSingleUserState(
+      userId,
+      testKeyDefinition,
+      diskStorageService,
+      stateEventRegistrarService,
+    );
   });
 
   afterEach(() => {
