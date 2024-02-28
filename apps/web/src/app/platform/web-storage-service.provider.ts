@@ -7,7 +7,6 @@ import {
   StorageServiceProvider,
 } from "@bitwarden/common/platform/services/storage-service.provider";
 import {
-  StorageLocation,
   ClientLocations,
   // eslint-disable-next-line import/no-restricted-paths
 } from "@bitwarden/common/platform/state/state-definition";
@@ -22,19 +21,17 @@ export class WebStorageServiceProvider extends StorageServiceProvider {
   }
 
   override get(
-    defaultLocation: StorageLocation,
+    defaultLocation: PossibleLocation,
     overrides: Partial<ClientLocations>,
   ): [location: PossibleLocation, service: AbstractStorageService & ObservableStorageService] {
     const location = overrides["web"] ?? defaultLocation;
     switch (location) {
-      case "disk":
-        return ["disk", this.diskStorageService];
-      case "memory":
-        return ["memory", this.memoryStorageService];
       case "disk-local":
         return ["disk-local", this.diskLocalStorageService];
       default:
-        throw new Error(`Unexpected location: ${location}`);
+        // Pass in computed location to super because they could have
+        // overriden default "disk" with web "memory".
+        return super.get(location, overrides);
     }
   }
 }

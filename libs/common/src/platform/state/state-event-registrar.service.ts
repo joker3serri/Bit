@@ -1,4 +1,4 @@
-import { StorageServiceProvider } from "../services/storage-service.provider";
+import { PossibleLocation, StorageServiceProvider } from "../services/storage-service.provider";
 
 import { GlobalState } from "./global-state";
 import { GlobalStateProvider } from "./global-state.provider";
@@ -9,7 +9,7 @@ import { ClearEvent, UserKeyDefinition } from "./user-key-definition";
 export type StateEventInfo = {
   state: string;
   key: string;
-  location: string;
+  location: PossibleLocation;
 };
 
 export const STATE_LOCK_EVENT = KeyDefinition.array<StateEventInfo>(CLEAR_EVENT_DISK, "lock", {

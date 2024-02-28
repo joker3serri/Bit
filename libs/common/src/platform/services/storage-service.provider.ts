@@ -21,9 +21,10 @@ export class StorageServiceProvider {
    * @param defaultLocation The default location to use if no client specific override is preferred.
    * @param overrides Client specific overrides
    * @returns The computed storage location and corresponding storage service to use to get/store state.
+   * @throws If there is no configured storage service for the given inputs.
    */
   get(
-    defaultLocation: StorageLocation,
+    defaultLocation: PossibleLocation,
     overrides: Partial<ClientLocations>,
   ): [location: PossibleLocation, service: AbstractStorageService & ObservableStorageService] {
     switch (defaultLocation) {
@@ -32,7 +33,7 @@ export class StorageServiceProvider {
       case "memory":
         return [defaultLocation, this.memoryStorageService];
       default:
-        throw new Error(`Unexpected default location: ${defaultLocation}`);
+        throw new Error(`Unexpected location: ${defaultLocation}`);
     }
   }
 }
