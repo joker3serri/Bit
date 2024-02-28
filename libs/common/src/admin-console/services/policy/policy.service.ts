@@ -34,7 +34,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     private organizationService: OrganizationService,
   ) {}
 
-  // --- StateProvider methods - not yet wired up
   get$(policyType: PolicyType) {
     const filteredPolicies$ = this.activeUserPolicies$.pipe(
       map((policies) => policies.filter((p) => p.type === policyType)),
@@ -94,7 +93,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
       );
     });
   }
-  // --- End StateProvider methods
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
     const observable = policies ? of(policies) : this.policies$;

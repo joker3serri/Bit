@@ -33,7 +33,7 @@ export abstract class PolicyService {
   getAll$: (policyType: PolicyType, userId?: UserId) => Observable<Policy[]>;
 
   /**
-   * Returns all policies of a given type even if they are disabled or do not apply to the user!
+   * Returns all policies of a given type even if they are disabled or do not apply to the user. You probably don't want this!
    * @deprecated use getAll$ instead which filters out policies that do not apply.
    */
   getAll: (policyType: PolicyType) => Promise<Policy[]>;
