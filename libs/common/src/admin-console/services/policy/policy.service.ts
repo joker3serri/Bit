@@ -241,7 +241,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   }
 
   async clear(userId?: UserId): Promise<void> {
-    await this.stateProvider.setUserState(POLICIES, {}, userId);
+    await this.stateProvider.setUserState(POLICIES, null, userId);
   }
 
   /**

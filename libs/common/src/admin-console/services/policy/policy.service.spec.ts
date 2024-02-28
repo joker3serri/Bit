@@ -119,10 +119,10 @@ describe("PolicyService", () => {
       await policyService.clear();
 
       expect(await firstValueFrom(policyService.policies$)).toEqual([]);
-      expect(await firstValueFrom(activeUserState.state$)).toEqual({});
+      expect(await firstValueFrom(activeUserState.state$)).toEqual(null);
       expect(stateProvider.activeUser.getFake(POLICIES).nextMock).toHaveBeenCalledWith([
         "userId",
-        {},
+        null,
       ]);
     });
 
@@ -157,10 +157,10 @@ describe("PolicyService", () => {
           policyService.getAll$(PolicyType.PersonalOwnership, "someOtherUserId" as UserId),
         ),
       ).toEqual([]);
-      expect(await firstValueFrom(inactiveUserState.state$)).toEqual({});
+      expect(await firstValueFrom(inactiveUserState.state$)).toEqual(null);
       expect(
         stateProvider.singleUser.getFake("someOtherUserId" as UserId, POLICIES).nextMock,
-      ).toHaveBeenCalledWith({});
+      ).toHaveBeenCalledWith(null);
     });
   });
 
