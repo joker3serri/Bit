@@ -3,13 +3,7 @@ import { Jsonify } from "type-fest";
 
 import { KeyDefinition, ORGANIZATIONS_DISK, StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
-import {
-  InternalOrganizationServiceAbstraction,
-  mapToBooleanHasAnyOrganizations,
-  mapToExcludeOrganizationsWithoutFamilySponsorshipSupport,
-  mapToExcludeSpecialOrganizations,
-  mapToSingleOrganization,
-} from "../../abstractions/organization/organization.service.abstraction";
+import { InternalOrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
@@ -26,6 +20,47 @@ export const ORGANIZATIONS = KeyDefinition.record<OrganizationData>(
     deserializer: (obj: Jsonify<OrganizationData>) => OrganizationData.fromJSON(obj),
   },
 );
+
+/**
+ * Filter out organizations from an observable that __do not__ offer a
+ * families-for-enterprise sponsorship to members.
+ * @returns a function that can be used in `Observable<Organization[]>` pipes,
+ * like `organizationService.organizations$`
+ */
+function mapToExcludeOrganizationsWithoutFamilySponsorshipSupport() {
+  return map<Organization[], Organization[]>((orgs) => orgs.filter((o) => o.canManageSponsorships));
+}
+
+/**
+ * Filter out organizations from an observable that the organization user
+ * __is not__ a direct member of. This will exclude organizations only
+ * accessible as a provider, for example.
+ * @returns a function that can be used in `Observable<Organization[]>` pipes,
+ * like `organizationService.organizations$`
+ */
+function mapToExcludeSpecialOrganizations() {
+  return map<Organization[], Organization[]>((orgs) => orgs.filter((o) => o.isMember));
+}
+
+/**
+ * Map an observable stream of organizations down to a boolean indicating
+ * if any organizations exist (`orgs.length > 0`).
+ * @returns a function that can be used in `Observable<Organization[]>` pipes,
+ * like `organizationService.organizations$`
+ */
+function mapToBooleanHasAnyOrganizations() {
+  return map<Organization[], boolean>((orgs) => orgs.length > 0);
+}
+
+/**
+ * Map an observable stream of organizations down to a single organization.
+ * @param `organizationId` The ID of the organization you'd like to subscribe to
+ * @returns a function that can be used in `Observable<Organization[]>` pipes,
+ * like `organizationService.organizations$`
+ */
+function mapToSingleOrganization(organizationId: string) {
+  return map<Organization[], Organization>((orgs) => orgs?.find((o) => o.id === organizationId));
+}
 
 export class OrganizationService implements InternalOrganizationServiceAbstraction {
   organizations$ = this.getOrganizationsFromState$();

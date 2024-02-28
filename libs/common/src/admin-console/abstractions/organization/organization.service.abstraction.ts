@@ -90,47 +90,6 @@ export function isMember(org: Organization): boolean {
 }
 
 /**
- * Filter out organizations from an observable that __do not__ offer a
- * families-for-enterprise sponsorship to members.
- * @returns a function that can be used in `Observable<Organization[]>` pipes,
- * like `organizationService.organizations$`
- */
-export function mapToExcludeOrganizationsWithoutFamilySponsorshipSupport() {
-  return map<Organization[], Organization[]>((orgs) => orgs.filter((o) => o.canManageSponsorships));
-}
-
-/**
- * Filter out organizations from an observable that the organization user
- * __is not__ a direct member of. This will exclude organizations only
- * accessible as a provider, for example.
- * @returns a function that can be used in `Observable<Organization[]>` pipes,
- * like `organizationService.organizations$`
- */
-export function mapToExcludeSpecialOrganizations() {
-  return map<Organization[], Organization[]>((orgs) => orgs.filter((o) => o.isMember));
-}
-
-/**
- * Map an observable stream of organizations down to a boolean indicating
- * if any organizations exist (`orgs.length > 0`).
- * @returns a function that can be used in `Observable<Organization[]>` pipes,
- * like `organizationService.organizations$`
- */
-export function mapToBooleanHasAnyOrganizations() {
-  return map<Organization[], boolean>((orgs) => orgs.length > 0);
-}
-
-/**
- * Map an observable stream of organizations down to a single organization.
- * @param `organizationId` The ID of the organization you'd like to subscribe to
- * @returns a function that can be used in `Observable<Organization[]>` pipes,
- * like `organizationService.organizations$`
- */
-export function mapToSingleOrganization(organizationId: string) {
-  return map<Organization[], Organization>((orgs) => orgs?.find((o) => o.id === organizationId));
-}
-
-/**
  * Publishes an observable stream of organizations. This service is meant to
  * be used widely across Bitwarden as the primary way of fetching organizations.
  * Risky operations like updates are isolated to the
