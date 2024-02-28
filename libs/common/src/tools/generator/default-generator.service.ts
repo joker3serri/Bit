@@ -21,7 +21,7 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
     private policy: PolicyService,
     private state: ActiveUserStateProvider,
   ) {
-    this._policy$ = this.policy.get$(this.strategy.policy).pipe(
+    this._evaluator$ = this.policy.get$(this.strategy.policy).pipe(
       map((policy) => this.strategy.evaluator(policy)),
       share({
         // cache evaluator in a replay subject to amortize creation cost
@@ -32,7 +32,7 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
     );
   }
 
-  private _policy$: Observable<PolicyEvaluator<Policy, Options>>;
+  private _evaluator$: Observable<PolicyEvaluator<Policy, Options>>;
 
   /** {@link GeneratorService.options$} */
   get options$() {
@@ -44,14 +44,14 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
     await this.state.get(this.strategy.disk).update(() => options);
   }
 
-  /** {@link GeneratorService.policy$} */
-  get policy$() {
-    return this._policy$;
+  /** {@link GeneratorService.evaluator$} */
+  get evaluator$() {
+    return this._evaluator$;
   }
 
   /** {@link GeneratorService.enforcePolicy} */
   async enforcePolicy(options: Options): Promise<Options> {
-    const policy = await firstValueFrom(this._policy$);
+    const policy = await firstValueFrom(this._evaluator$);
     const evaluated = policy.applyPolicy(options);
     const sanitized = policy.sanitize(evaluated);
     return sanitized;

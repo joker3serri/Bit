@@ -124,7 +124,7 @@ describe("Password generator service", () => {
     });
   });
 
-  describe("policy$", () => {
+  describe("evaluator$", () => {
     it("should map the policy using the generation strategy", async () => {
       const policyService = mockPolicyService();
       const evaluator = mock<PolicyEvaluator<any, any>>();
@@ -132,7 +132,7 @@ describe("Password generator service", () => {
 
       const service = new DefaultGeneratorService(strategy, policyService, null);
 
-      const policy = await firstValueFrom(service.policy$);
+      const policy = await firstValueFrom(service.evaluator$);
 
       expect(policy).toBe(evaluator);
     });

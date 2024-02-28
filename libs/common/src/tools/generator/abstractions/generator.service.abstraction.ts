@@ -15,7 +15,7 @@ export abstract class GeneratorService<Options, Policy> {
   /** An observable monitoring the options used to enforce policy.
    *  The observable updates when the policy changes.
    */
-  policy$: Observable<PolicyEvaluator<Policy, Options>>;
+  evaluator$: Observable<PolicyEvaluator<Policy, Options>>;
 
   /** Enforces the policy on the given options
    * @param options the options to enforce the policy on
