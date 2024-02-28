@@ -1,4 +1,4 @@
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable, firstValueFrom, map } from "rxjs";
 
 import { I18nService as I18nServiceAbstraction } from "../abstractions/i18n.service";
 import { GlobalState, GlobalStateProvider, KeyDefinition, TRANSLATION_DISK } from "../state";
@@ -22,7 +22,7 @@ export class I18nService extends TranslationService implements I18nServiceAbstra
   ) {
     super(systemLanguage, localesDirectory, getLocalesJson);
     this.translationLocaleState = globalStateProvider.get(LOCALE_KEY);
-    this.locale$ = this.translationLocaleState.state$;
+    this.locale$ = this.translationLocaleState.state$.pipe(map((locale) => locale ?? null));
   }
 
   async setLocale(locale: string): Promise<void> {

@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, LOCALE_ID, NgModule, NgZone } from "@angular/core";
+import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
 import { ThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
@@ -163,11 +163,6 @@ function getBgService<T>(service: keyof MainBackground) {
     DebounceNavigationService,
     DialogService,
     PopupCloseWarningService,
-    {
-      provide: LOCALE_ID,
-      useFactory: (i18nService: I18nService) => i18nService.translationLocale,
-      deps: [I18nServiceAbstraction],
-    },
     {
       provide: APP_INITIALIZER,
       useFactory: (initService: InitService) => initService.init(),

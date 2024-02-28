@@ -25,7 +25,7 @@ function rollbackJSON() {
   };
 }
 
-describe("ProviderKeysMigrator", () => {
+describe("PreferredLanguageMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
   let sut: PreferredLanguageMigrator;
 
