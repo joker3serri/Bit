@@ -150,13 +150,13 @@ describe("PoliciesMigrator", () => {
       expect(helper.setToUser).toHaveBeenCalledWith(userId, keyDefinitionLike, null);
     });
 
-    it("should add collection values back to accounts", async () => {
+    it("should add policy values back to accounts", async () => {
       await sut.rollback(helper);
 
       expect(helper.set).toHaveBeenCalled();
       expect(helper.set).toHaveBeenCalledWith("user-1", {
         data: {
-          collections: {
+          policies: {
             encrypted: {
               "policy-1": {
                 id: "policy-1",
