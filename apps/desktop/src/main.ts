@@ -186,7 +186,6 @@ export class Main {
     this.biometricsService = new BiometricsService(
       this.i18nService,
       this.windowMain,
-      this.stateService,
       this.logService,
       this.messagingService,
       process.platform,
