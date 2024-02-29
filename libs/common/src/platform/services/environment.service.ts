@@ -225,10 +225,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     return this.environment.hasBaseUrl();
   }
 
-  getNotificationsUrl() {
-    return this.environment.getNotificationsUrl();
-  }
-
   getWebVaultUrl() {
     return this.environment.getWebVaultUrl();
   }
@@ -249,10 +245,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     }
   }
 
-  getSendUrl() {
-    return this.environment.getSendUrl();
-  }
-
   getIconsUrl() {
     return this.environment.getIconsUrl();
   }
@@ -271,10 +263,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
   getKeyConnectorUrl() {
     return this.environment.getKeyConnectorUrl();
-  }
-
-  getScimUrl() {
-    return this.environment.getScimUrl();
   }
 
   async setUrlsFromStorage(): Promise<void> {

@@ -133,11 +133,7 @@ export abstract class EnvironmentService {
   getEnvironment: (userId?: string) => Promise<Environment | undefined>;
 
   /** @deprecated Use {@link environment$} instead */
-  getNotificationsUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
   getWebVaultUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getSendUrl: () => string;
   /** @deprecated Use {@link environment$} instead */
   getIconsUrl: () => string;
   /** @deprecated Use {@link environment$} instead */
@@ -148,8 +144,6 @@ export abstract class EnvironmentService {
   getEventsUrl: () => string;
   /** @deprecated Use {@link environment$} instead */
   getKeyConnectorUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getScimUrl: () => string;
   /** @deprecated Use {@link environment$} instead */
   getUrls: () => Urls;
   /** @deprecated Use {@link environment$} instead */

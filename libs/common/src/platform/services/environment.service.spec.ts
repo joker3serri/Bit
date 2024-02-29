@@ -104,15 +104,17 @@ describe("EnvironmentService", () => {
         setUserData(region, new EnvironmentUrls());
         await switchUser(testUser);
 
+        const env = await firstValueFrom(sut.environment$);
+        expect(env.getNotificationsUrl()).toBe(expectedUrls.notifications);
+        expect(env.getScimUrl()).toBe(expectedUrls.scim);
+        expect(env.getSendUrl()).toBe(expectedUrls.send);
+
         expect(sut.hasBaseUrl()).toBe(false);
         expect(sut.getWebVaultUrl()).toBe(expectedUrls.webVault);
         expect(sut.getIdentityUrl()).toBe(expectedUrls.identity);
         expect(sut.getApiUrl()).toBe(expectedUrls.api);
         expect(sut.getIconsUrl()).toBe(expectedUrls.icons);
-        expect(sut.getNotificationsUrl()).toBe(expectedUrls.notifications);
         expect(sut.getEventsUrl()).toBe(expectedUrls.events);
-        expect(sut.getScimUrl()).toBe(expectedUrls.scim);
-        expect(sut.getSendUrl()).toBe(expectedUrls.send);
         expect(sut.getKeyConnectorUrl()).toBe(undefined);
         expect(sut.isCloud()).toBe(true);
         expect(sut.getUrls()).toEqual({
@@ -141,14 +143,16 @@ describe("EnvironmentService", () => {
 
       await switchUser(testUser);
 
+      const env = await firstValueFrom(sut.environment$);
+      expect(env.getNotificationsUrl()).toBe("https://user-url.example.com/notifications");
+      expect(env.getScimUrl()).toBe("https://user-url.example.com/scim/v2");
+      expect(env.getSendUrl()).toBe("https://user-url.example.com/#/send/");
+
       expect(sut.getWebVaultUrl()).toBe("https://user-url.example.com");
       expect(sut.getIdentityUrl()).toBe("https://user-url.example.com/identity");
       expect(sut.getApiUrl()).toBe("https://user-url.example.com/api");
       expect(sut.getIconsUrl()).toBe("https://user-url.example.com/icons");
-      expect(sut.getNotificationsUrl()).toBe("https://user-url.example.com/notifications");
       expect(sut.getEventsUrl()).toBe("https://user-url.example.com/events");
-      expect(sut.getScimUrl()).toBe("https://user-url.example.com/scim/v2");
-      expect(sut.getSendUrl()).toBe("https://user-url.example.com/#/send/");
       expect(sut.isCloud()).toBe(false);
       expect(sut.getUrls()).toEqual({
         base: "https://user-url.example.com",
@@ -172,15 +176,17 @@ describe("EnvironmentService", () => {
         urls: new EnvironmentUrls(),
       });
 
+      const env = await firstValueFrom(sut.environment$);
+      expect(env.getNotificationsUrl()).toBe(expectedUrls.notifications);
+      expect(env.getScimUrl()).toBe(expectedUrls.scim);
+      expect(env.getSendUrl()).toBe(expectedUrls.send);
+
       expect(sut.hasBaseUrl()).toBe(false);
       expect(sut.getWebVaultUrl()).toBe(expectedUrls.webVault);
       expect(sut.getIdentityUrl()).toBe(expectedUrls.identity);
       expect(sut.getApiUrl()).toBe(expectedUrls.api);
       expect(sut.getIconsUrl()).toBe(expectedUrls.icons);
-      expect(sut.getNotificationsUrl()).toBe(expectedUrls.notifications);
       expect(sut.getEventsUrl()).toBe(expectedUrls.events);
-      expect(sut.getScimUrl()).toBe(expectedUrls.scim);
-      expect(sut.getSendUrl()).toBe(expectedUrls.send);
       expect(sut.getKeyConnectorUrl()).toBe(undefined);
       expect(sut.isCloud()).toBe(true);
       expect(sut.getUrls()).toEqual({
@@ -222,7 +228,11 @@ describe("EnvironmentService", () => {
     });
 
     it("self-hosted and sets all urls", async () => {
-      expect(sut.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
+      // Why do I have to set this here for this test to work?
+      setGlobalData(Region.US, new EnvironmentUrls());
+
+      let env = await firstValueFrom(sut.environment$);
+      expect(env.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
 
       await sut.setEnvironment(Region.SelfHosted, {
         base: "base.example.com",
@@ -234,10 +244,10 @@ describe("EnvironmentService", () => {
         scim: "scim.example.com",
       });
 
-      const data = await firstValueFrom(sut.environment$);
+      env = await firstValueFrom(sut.environment$);
 
-      expect(data.getRegion()).toBe(Region.SelfHosted);
-      expect(data.getUrls()).toEqual({
+      expect(env.getRegion()).toBe(Region.SelfHosted);
+      expect(env.getUrls()).toEqual({
         base: "https://base.example.com",
         api: "https://api.example.com",
         identity: "https://identity.example.com",
@@ -248,7 +258,7 @@ describe("EnvironmentService", () => {
         events: null,
         keyConnector: null,
       });
-      expect(sut.getScimUrl()).toBe("https://vault.example.com/scim/v2");
+      expect(env.getScimUrl()).toBe("https://vault.example.com/scim/v2");
     });
 
     it("sets the region", async () => {

@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -121,7 +121,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
       { name: i18nService.t("sendTypeFile"), value: SendType.File, premium: true },
       { name: i18nService.t("sendTypeText"), value: SendType.Text, premium: false },
     ];
-    this.sendLinkBaseUrl = this.environmentService.getSendUrl();
+
+    firstValueFrom(this.environmentService.environment$)
+      .then((env) => {
+        this.sendLinkBaseUrl = env.getSendUrl();
+      })
+      .catch((e) => logService.error("Unable to get environment" + e));
   }
 
   get link(): string {
