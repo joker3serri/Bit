@@ -1,15 +1,7 @@
 import { map, Observable } from "rxjs";
 
-import {
-  ClearClipboardDelaySetting,
-  ClearClipboardDelay,
-} from "../../../../../apps/browser/src/autofill/constants";
-import {
-  AutofillOverlayVisibility,
-  InlineMenuVisibilitySetting,
-} from "../../../../../apps/browser/src/autofill/utils/autofill-overlay.enum";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "../../admin-console/enums/index";
+import { PolicyType } from "../../admin-console/enums";
 import {
   AUTOFILL_SETTINGS_DISK,
   AUTOFILL_SETTINGS_DISK_LOCAL,
@@ -18,6 +10,8 @@ import {
   KeyDefinition,
   StateProvider,
 } from "../../platform/state";
+import { ClearClipboardDelay, AutofillOverlayVisibility } from "../constants";
+import { ClearClipboardDelaySetting, InlineMenuVisibilitySetting } from "../types";
 
 const AUTOFILL_ON_PAGE_LOAD = new KeyDefinition(AUTOFILL_SETTINGS_DISK, "autofillOnPageLoad", {
   deserializer: (value: boolean) => value ?? false,
@@ -31,10 +25,6 @@ const AUTOFILL_ON_PAGE_LOAD_DEFAULT = new KeyDefinition(
   },
 );
 
-const AUTO_COPY_TOTP = new KeyDefinition(AUTOFILL_SETTINGS_DISK, "autoCopyTotp", {
-  deserializer: (value: boolean) => value ?? false,
-});
-
 const AUTOFILL_ON_PAGE_LOAD_CALLOUT_DISMISSED = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK,
   "autofillOnPageLoadCalloutIsDismissed",
@@ -42,6 +32,10 @@ const AUTOFILL_ON_PAGE_LOAD_CALLOUT_DISMISSED = new KeyDefinition(
     deserializer: (value: boolean) => value ?? false,
   },
 );
+
+const AUTO_COPY_TOTP = new KeyDefinition(AUTOFILL_SETTINGS_DISK, "autoCopyTotp", {
+  deserializer: (value: boolean) => value ?? false,
+});
 
 const INLINE_MENU_VISIBILITY = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK_LOCAL,
@@ -64,13 +58,13 @@ export abstract class AutofillSettingsServiceAbstraction {
   setAutofillOnPageLoad: (newValue: boolean) => Promise<void>;
   autofillOnPageLoadDefault$: Observable<boolean>;
   setAutofillOnPageLoadDefault: (newValue: boolean) => Promise<void>;
-  autoCopyTotp$: Observable<boolean>;
-  setAutoCopyTotp: (newValue: boolean) => Promise<void>;
   autofillOnPageLoadCalloutIsDismissed$: Observable<boolean>;
   setAutofillOnPageLoadCalloutIsDismissed: (newValue: boolean) => Promise<void>;
   activateAutofillOnPageLoadFromPolicy$: Observable<boolean>;
   autofillOnPageLoadPolicyToastHasDisplayed: boolean;
   setAutofillOnPageLoadPolicyToastHasDisplayed: (newValue: boolean) => void;
+  autoCopyTotp$: Observable<boolean>;
+  setAutoCopyTotp: (newValue: boolean) => Promise<void>;
   inlineMenuVisibility$: Observable<InlineMenuVisibilitySetting>;
   setInlineMenuVisibility: (newValue: InlineMenuVisibilitySetting) => Promise<void>;
   clearClipboardDelay$: Observable<ClearClipboardDelaySetting>;
@@ -84,15 +78,15 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
   private autofillOnPageLoadDefaultState: ActiveUserState<boolean>;
   readonly autofillOnPageLoadDefault$: Observable<boolean>;
 
-  private autoCopyTotpState: ActiveUserState<boolean>;
-  readonly autoCopyTotp$: Observable<boolean>;
-
   private autofillOnPageLoadCalloutIsDismissedState: ActiveUserState<boolean>;
   readonly autofillOnPageLoadCalloutIsDismissed$: Observable<boolean>;
 
   readonly activateAutofillOnPageLoadFromPolicy$: Observable<boolean>;
 
   autofillOnPageLoadPolicyToastHasDisplayed: boolean = false;
+
+  private autoCopyTotpState: ActiveUserState<boolean>;
+  readonly autoCopyTotp$: Observable<boolean>;
 
   private inlineMenuVisibilityState: GlobalState<InlineMenuVisibilitySetting>;
   readonly inlineMenuVisibility$: Observable<InlineMenuVisibilitySetting>;
@@ -114,9 +108,6 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
       map((x) => x ?? true),
     );
 
-    this.autoCopyTotpState = this.stateProvider.getActive(AUTO_COPY_TOTP);
-    this.autoCopyTotp$ = this.autoCopyTotpState.state$.pipe(map((x) => x ?? false));
-
     this.autofillOnPageLoadCalloutIsDismissedState = this.stateProvider.getActive(
       AUTOFILL_ON_PAGE_LOAD_CALLOUT_DISMISSED,
     );
@@ -126,6 +117,9 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     this.activateAutofillOnPageLoadFromPolicy$ = this.policyService.policyAppliesToActiveUser$(
       PolicyType.ActivateAutofill,
     );
+
+    this.autoCopyTotpState = this.stateProvider.getActive(AUTO_COPY_TOTP);
+    this.autoCopyTotp$ = this.autoCopyTotpState.state$.pipe(map((x) => x ?? false));
 
     this.inlineMenuVisibilityState = this.stateProvider.getGlobal(INLINE_MENU_VISIBILITY);
     this.inlineMenuVisibility$ = this.inlineMenuVisibilityState.state$.pipe(
@@ -146,16 +140,16 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     await this.autofillOnPageLoadDefaultState.update(() => newValue);
   }
 
-  async setAutoCopyTotp(newValue: boolean): Promise<void> {
-    await this.autoCopyTotpState.update(() => newValue);
-  }
-
   async setAutofillOnPageLoadCalloutIsDismissed(newValue: boolean): Promise<void> {
     await this.autofillOnPageLoadCalloutIsDismissedState.update(() => newValue);
   }
 
   setAutofillOnPageLoadPolicyToastHasDisplayed(newValue: boolean): void {
     this.autofillOnPageLoadPolicyToastHasDisplayed = newValue;
+  }
+
+  async setAutoCopyTotp(newValue: boolean): Promise<void> {
+    await this.autoCopyTotpState.update(() => newValue);
   }
 
   async setInlineMenuVisibility(newValue: InlineMenuVisibilitySetting): Promise<void> {
