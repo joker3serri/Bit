@@ -56,7 +56,7 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
       sut = new MoveBiometricUnlockToStateProviders(26, 27);
     });
 
-    it("removes biometricUnlock, dismissedBiometricRequirePasswordOnStartCallout, and biometricEncryptionClientKeyHalf from all accounts", async () => {
+    it("removes biometricUnlock from all accounts", async () => {
       await sut.migrate(helper);
       expect(helper.set).toHaveBeenCalledTimes(2);
       expect(helper.set).toHaveBeenCalledWith("user-1", {
@@ -70,7 +70,7 @@ describe("MoveBiometricPromptsToStateProviders migrator", () => {
       });
     });
 
-    it("sets dismissedBiometricRequirePasswordOnStartCallout value for account that have it", async () => {
+    it("sets biometricUnlock value for account that have it", async () => {
       await sut.migrate(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith("user-1", BIOMETRIC_UNLOCK_ENABLED, true);
