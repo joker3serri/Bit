@@ -10,7 +10,6 @@ import { MoveEnvironmentStateToProviders } from "./migrations/12-move-environmen
 import { ProviderKeyMigrator } from "./migrations/13-move-provider-keys-to-state-providers";
 import { MoveBiometricClientKeyHalfToStateProviders } from "./migrations/14-move-biometric-client-key-half-state-to-providers";
 import { FolderMigrator } from "./migrations/15-move-folder-state-to-state-provider";
-import { LastSyncMigrator } from "./migrations/16-move-last-sync-to-state-provider";
 import { EnablePasskeysMigrator } from "./migrations/17-move-enable-passkeys-to-state-providers";
 import { AutofillSettingsKeyMigrator } from "./migrations/18-move-autofill-settings-to-state-providers";
 import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-password-on-start";
@@ -29,6 +28,7 @@ import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-
 import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";
 import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-settings-to-global";
 import { MinVersionMigrator } from "./migrations/min-version";
+import { buildNoopMigrator } from "./migrations/noop-migrator";
 
 export const MIN_VERSION = 2;
 export const CURRENT_VERSION = 26;
@@ -50,7 +50,7 @@ export function createMigrationBuilder() {
     .with(ProviderKeyMigrator, 12, 13)
     .with(MoveBiometricClientKeyHalfToStateProviders, 13, 14)
     .with(FolderMigrator, 14, 15)
-    .with(LastSyncMigrator, 15, 16)
+    .with(buildNoopMigrator(15, 16))
     .with(EnablePasskeysMigrator, 16, 17)
     .with(AutofillSettingsKeyMigrator, 17, 18)
     .with(RequirePasswordOnStartMigrator, 18, 19)
