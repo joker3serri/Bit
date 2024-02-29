@@ -105,19 +105,19 @@ describe("EnvironmentService", () => {
         await switchUser(testUser);
 
         const env = await firstValueFrom(sut.environment$);
+
+        expect(env.hasBaseUrl()).toBe(false);
+        expect(env.getWebVaultUrl()).toBe(expectedUrls.webVault);
+        expect(env.getIdentityUrl()).toBe(expectedUrls.identity);
+        expect(env.getApiUrl()).toBe(expectedUrls.api);
+        expect(env.getIconsUrl()).toBe(expectedUrls.icons);
         expect(env.getNotificationsUrl()).toBe(expectedUrls.notifications);
+        expect(env.getEventsUrl()).toBe(expectedUrls.events);
         expect(env.getScimUrl()).toBe(expectedUrls.scim);
         expect(env.getSendUrl()).toBe(expectedUrls.send);
-
-        expect(sut.hasBaseUrl()).toBe(false);
-        expect(sut.getWebVaultUrl()).toBe(expectedUrls.webVault);
-        expect(sut.getIdentityUrl()).toBe(expectedUrls.identity);
-        expect(sut.getApiUrl()).toBe(expectedUrls.api);
-        expect(sut.getIconsUrl()).toBe(expectedUrls.icons);
-        expect(sut.getEventsUrl()).toBe(expectedUrls.events);
-        expect(sut.getKeyConnectorUrl()).toBe(undefined);
-        expect(sut.isCloud()).toBe(true);
-        expect(sut.getUrls()).toEqual({
+        expect(env.getKeyConnectorUrl()).toBe(undefined);
+        expect(env.isCloud()).toBe(true);
+        expect(env.getUrls()).toEqual({
           base: null,
           cloudWebVault: undefined,
           webVault: expectedUrls.webVault,
@@ -144,17 +144,17 @@ describe("EnvironmentService", () => {
       await switchUser(testUser);
 
       const env = await firstValueFrom(sut.environment$);
+
+      expect(env.getWebVaultUrl()).toBe("https://user-url.example.com");
+      expect(env.getIdentityUrl()).toBe("https://user-url.example.com/identity");
+      expect(env.getApiUrl()).toBe("https://user-url.example.com/api");
+      expect(env.getIconsUrl()).toBe("https://user-url.example.com/icons");
       expect(env.getNotificationsUrl()).toBe("https://user-url.example.com/notifications");
+      expect(env.getEventsUrl()).toBe("https://user-url.example.com/events");
       expect(env.getScimUrl()).toBe("https://user-url.example.com/scim/v2");
       expect(env.getSendUrl()).toBe("https://user-url.example.com/#/send/");
-
-      expect(sut.getWebVaultUrl()).toBe("https://user-url.example.com");
-      expect(sut.getIdentityUrl()).toBe("https://user-url.example.com/identity");
-      expect(sut.getApiUrl()).toBe("https://user-url.example.com/api");
-      expect(sut.getIconsUrl()).toBe("https://user-url.example.com/icons");
-      expect(sut.getEventsUrl()).toBe("https://user-url.example.com/events");
-      expect(sut.isCloud()).toBe(false);
-      expect(sut.getUrls()).toEqual({
+      expect(env.isCloud()).toBe(false);
+      expect(env.getUrls()).toEqual({
         base: "https://user-url.example.com",
         api: null,
         cloudWebVault: undefined,
@@ -177,19 +177,19 @@ describe("EnvironmentService", () => {
       });
 
       const env = await firstValueFrom(sut.environment$);
+
+      expect(env.hasBaseUrl()).toBe(false);
+      expect(env.getWebVaultUrl()).toBe(expectedUrls.webVault);
+      expect(env.getIdentityUrl()).toBe(expectedUrls.identity);
+      expect(env.getApiUrl()).toBe(expectedUrls.api);
+      expect(env.getIconsUrl()).toBe(expectedUrls.icons);
       expect(env.getNotificationsUrl()).toBe(expectedUrls.notifications);
+      expect(env.getEventsUrl()).toBe(expectedUrls.events);
       expect(env.getScimUrl()).toBe(expectedUrls.scim);
       expect(env.getSendUrl()).toBe(expectedUrls.send);
-
-      expect(sut.hasBaseUrl()).toBe(false);
-      expect(sut.getWebVaultUrl()).toBe(expectedUrls.webVault);
-      expect(sut.getIdentityUrl()).toBe(expectedUrls.identity);
-      expect(sut.getApiUrl()).toBe(expectedUrls.api);
-      expect(sut.getIconsUrl()).toBe(expectedUrls.icons);
-      expect(sut.getEventsUrl()).toBe(expectedUrls.events);
-      expect(sut.getKeyConnectorUrl()).toBe(undefined);
-      expect(sut.isCloud()).toBe(true);
-      expect(sut.getUrls()).toEqual({
+      expect(env.getKeyConnectorUrl()).toBe(undefined);
+      expect(env.isCloud()).toBe(true);
+      expect(env.getUrls()).toEqual({
         base: null,
         cloudWebVault: undefined,
         webVault: expectedUrls.webVault,
@@ -211,10 +211,10 @@ describe("EnvironmentService", () => {
       });
       await awaitAsync();
 
-      const data = await firstValueFrom(sut.environment$);
+      const env = await firstValueFrom(sut.environment$);
 
-      expect(data.getRegion()).toBe(Region.SelfHosted);
-      expect(data.getUrls()).toEqual({
+      expect(env.getRegion()).toBe(Region.SelfHosted);
+      expect(env.getUrls()).toEqual({
         base: "https://base.example.com",
         api: null,
         identity: null,
@@ -366,7 +366,9 @@ describe("EnvironmentService", () => {
     it("will set the global data to Region US if no existing data", async () => {
       await sut.setUrlsFromStorage();
 
-      expect(sut.getWebVaultUrl()).toBe("https://vault.bitwarden.com");
+      const env = await firstValueFrom(sut.environment$);
+
+      expect(env.getWebVaultUrl()).toBe("https://vault.bitwarden.com");
 
       const data = await firstValueFrom(sut.environment$);
       expect(data.getRegion()).toBe(Region.US);
@@ -377,7 +379,9 @@ describe("EnvironmentService", () => {
 
       await sut.setUrlsFromStorage();
 
-      expect(sut.getWebVaultUrl()).toBe("https://vault.bitwarden.eu");
+      const env = await firstValueFrom(sut.environment$);
+
+      expect(env.getWebVaultUrl()).toBe("https://vault.bitwarden.eu");
     });
 
     it("will get urls from signed in user", async () => {
@@ -387,7 +391,9 @@ describe("EnvironmentService", () => {
       userUrls.base = "base.example.com";
       await setUserData(Region.SelfHosted, userUrls);
 
-      expect(sut.getWebVaultUrl()).toBe("base.example.com");
+      const env = await firstValueFrom(sut.environment$);
+
+      expect(env.getWebVaultUrl()).toBe("base.example.com");
     });
   });
 

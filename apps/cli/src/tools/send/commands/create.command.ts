@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
+import { firstValueFrom } from "rxjs";
+
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -125,7 +127,8 @@ export class SendCreateCommand {
       await this.sendApiService.save([encSend, fileData]);
       const newSend = await this.sendService.getFromState(encSend.id);
       const decSend = await newSend.decrypt();
-      const res = new SendResponse(decSend, this.environmentService.getWebVaultUrl());
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const res = new SendResponse(decSend, env.getWebVaultUrl());
       return Response.success(res);
     } catch (e) {
       return Response.error(e);

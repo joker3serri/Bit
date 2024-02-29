@@ -1,5 +1,6 @@
 import { Directive } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { LoginStrategyServiceAbstraction, SsoLoginCredentials } from "@bitwarden/auth/common";
@@ -151,8 +152,10 @@ export class SsoComponent {
     // Save state (regardless of new or existing)
     await this.ssoLoginService.setSsoState(state);
 
+    const env = await firstValueFrom(this.environmentService.environment$);
+
     let authorizeUrl =
-      this.environmentService.getIdentityUrl() +
+      env.getIdentityUrl() +
       "/connect/authorize?" +
       "client_id=" +
       this.clientId +

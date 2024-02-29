@@ -9,7 +9,7 @@
     aria-controls="cdk-overlay-container"
   >
     <span class="text-primary">
-      <ng-container *ngIf="selectedRegion; else fallback">
+      <ng-container *ngIf="selectedRegion$ | async as selectedRegion; else fallback">
         {{ selectedRegion.domain }}
       </ng-container>
       <ng-template #fallback>

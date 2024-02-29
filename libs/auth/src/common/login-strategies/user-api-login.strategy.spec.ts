@@ -1,4 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
+import { BehaviorSubject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -6,7 +7,10 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import {
+  Environment,
+  EnvironmentService,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -120,8 +124,11 @@ describe("UserApiLoginStrategy", () => {
     const tokenResponse = identityTokenResponseFactory();
     tokenResponse.apiUseKeyConnector = true;
 
+    const env = mock<Environment>();
+    env.getKeyConnectorUrl.mockReturnValue(keyConnectorUrl);
+    environmentService.environment$ = new BehaviorSubject(env);
+
     apiService.postIdentityToken.mockResolvedValue(tokenResponse);
-    environmentService.getKeyConnectorUrl.mockReturnValue(keyConnectorUrl);
 
     await apiLogInStrategy.logIn(credentials);
 
@@ -135,8 +142,11 @@ describe("UserApiLoginStrategy", () => {
     const tokenResponse = identityTokenResponseFactory();
     tokenResponse.apiUseKeyConnector = true;
 
+    const env = mock<Environment>();
+    env.getKeyConnectorUrl.mockReturnValue(keyConnectorUrl);
+    environmentService.environment$ = new BehaviorSubject(env);
+
     apiService.postIdentityToken.mockResolvedValue(tokenResponse);
-    environmentService.getKeyConnectorUrl.mockReturnValue(keyConnectorUrl);
     cryptoService.getMasterKey.mockResolvedValue(masterKey);
     cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 

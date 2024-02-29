@@ -1,4 +1,5 @@
 import * as inquirer from "inquirer";
+import { firstValueFrom } from "rxjs";
 
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -70,7 +71,8 @@ export class ConvertToKeyConnectorCommand {
       await this.keyConnectorService.setUsesKeyConnector(true);
 
       // Update environment URL - required for api key login
-      const urls = this.environmentService.getUrls();
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const urls = env.getUrls();
       urls.keyConnector = organization.keyConnectorUrl;
       await this.environmentService.setEnvironment(Region.SelfHosted, urls);
 

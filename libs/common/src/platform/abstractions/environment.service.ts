@@ -80,7 +80,6 @@ export interface Environment {
  */
 export abstract class EnvironmentService {
   environment$: Observable<Environment>;
-  selectedRegion?: Region;
 
   /**
    * Retrieve all the available regions for environment selectors.
@@ -131,21 +130,4 @@ export abstract class EnvironmentService {
    * Get the environment from state. Useful if you need to get the environment for another user.
    */
   getEnvironment: (userId?: string) => Promise<Environment | undefined>;
-
-  /** @deprecated Use {@link environment$} instead */
-  getWebVaultUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getIconsUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getApiUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getIdentityUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getEventsUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getKeyConnectorUrl: () => string;
-  /** @deprecated Use {@link environment$} instead */
-  getUrls: () => Urls;
-  /** @deprecated Use {@link environment$} instead */
-  isCloud: () => boolean;
 }

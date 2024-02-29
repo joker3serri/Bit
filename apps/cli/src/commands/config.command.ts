@@ -1,4 +1,5 @@
 import { OptionValues } from "commander";
+import { firstValueFrom } from "rxjs";
 
 import {
   EnvironmentService,
@@ -32,10 +33,9 @@ export class ConfigCommand {
       !options.notifications &&
       !options.events
     ) {
+      const env = await firstValueFrom(this.environmentService.environment$);
       const stringRes = new StringResponse(
-        this.environmentService.hasBaseUrl()
-          ? this.environmentService.getUrls().base
-          : "https://bitwarden.com",
+        this.environmentService.hasBaseUrl() ? env.getUrls().base : "https://bitwarden.com",
       );
       return Response.success(stringRes);
     }

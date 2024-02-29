@@ -39,11 +39,14 @@ export class IconComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const iconsUrl = this.environmentService.getIconsUrl();
-
     this.data$ = combineLatest([
+      this.environmentService.environment$.pipe(map((e) => e.getIconsUrl())),
       this.settingsService.disableFavicon$.pipe(distinctUntilChanged()),
       this.cipher$.pipe(filter((c) => c !== undefined)),
-    ]).pipe(map(([disableFavicon, cipher]) => buildCipherIcon(iconsUrl, cipher, disableFavicon)));
+    ]).pipe(
+      map(([iconsUrl, disableFavicon, cipher]) =>
+        buildCipherIcon(iconsUrl, cipher, disableFavicon),
+      ),
+    );
   }
 }

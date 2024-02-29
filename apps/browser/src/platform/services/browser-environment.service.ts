@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { Region } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -30,17 +32,18 @@ export class BrowserEnvironmentService extends EnvironmentService {
       return false;
     }
 
-    const env = await this.getManagedEnvironment();
-    const urls = this.getUrls();
+    const managedEnv = await this.getManagedEnvironment();
+    const env = await firstValueFrom(this.environment$);
+    const urls = env.getUrls();
 
     return (
-      env.base != urls.base ||
-      env.webVault != urls.webVault ||
-      env.api != urls.api ||
-      env.identity != urls.identity ||
-      env.icons != urls.icons ||
-      env.notifications != urls.notifications ||
-      env.events != urls.events
+      managedEnv.base != urls.base ||
+      managedEnv.webVault != urls.webVault ||
+      managedEnv.api != urls.api ||
+      managedEnv.identity != urls.identity ||
+      managedEnv.icons != urls.icons ||
+      managedEnv.notifications != urls.notifications ||
+      managedEnv.events != urls.events
     );
   }
 

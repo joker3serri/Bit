@@ -1,6 +1,7 @@
 import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import * as DuoWebSDK from "duo_web_sdk";
+import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
@@ -110,7 +111,8 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     }
 
     if (this.win != null && this.webAuthnSupported) {
-      const webVaultUrl = this.environmentService.getWebVaultUrl();
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const webVaultUrl = env.getWebVaultUrl();
       this.webAuthn = new WebAuthnIFrame(
         this.win,
         webVaultUrl,
@@ -493,5 +495,5 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   }
 
   // implemented in clients
-  launchDuoFrameless() {}
+  async launchDuoFrameless() {}
 }

@@ -132,10 +132,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
   }
 
-  get selectedRegion() {
-    return this.environment.getRegion();
-  }
-
   availableRegions(): RegionConfig[] {
     const additionalRegions = (process.env.ADDITIONAL_REGIONS as unknown as RegionConfig[]) ?? [];
     return PRODUCTION_REGIONS.concat(additionalRegions);
@@ -225,10 +221,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     return this.environment.hasBaseUrl();
   }
 
-  getWebVaultUrl() {
-    return this.environment.getWebVaultUrl();
-  }
-
   getCloudWebVaultUrl() {
     if (this.cloudWebVaultUrl != null) {
       return this.cloudWebVaultUrl;
@@ -245,36 +237,11 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     }
   }
 
-  getIconsUrl() {
-    return this.environment.getIconsUrl();
-  }
-
-  getApiUrl() {
-    return this.environment.getApiUrl();
-  }
-
-  getIdentityUrl() {
-    return this.environment.getIdentityUrl();
-  }
-
-  getEventsUrl() {
-    return this.environment.getEventsUrl();
-  }
-
-  getKeyConnectorUrl() {
-    return this.environment.getKeyConnectorUrl();
-  }
-
   async setUrlsFromStorage(): Promise<void> {
     const activeUserId = await firstValueFrom(this.activeAccountId$);
     const state = await this.getEnvironmentState(activeUserId);
 
     await this.setEnvironment(state?.region ?? DEFAULT_REGION, state?.urls);
-  }
-
-  getUrls() {
-    const urls = this.environment.getUrls();
-    return { ...urls, cloudWebVault: this.cloudWebVaultUrl };
   }
 
   isEmpty(): boolean {
@@ -303,10 +270,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   async seedUserEnvironment(userId: UserId) {
     const global = await firstValueFrom(this.globalState.state$);
     await this.stateProvider.getUser(userId, ENVIRONMENT_KEY).update(() => global);
-  }
-
-  isCloud(): boolean {
-    return this.environment.isCloud();
   }
 }
 

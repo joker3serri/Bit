@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { OrganizationConnectionType } from "../admin-console/enums";
 import { OrganizationSponsorshipCreateRequest } from "../admin-console/models/request/organization/organization-sponsorship-create.request";
@@ -201,8 +203,10 @@ export class ApiService implements ApiServiceAbstraction {
         ? request.toIdentityToken()
         : request.toIdentityToken(this.platformUtilsService.getClientType());
 
+    const env = await firstValueFrom(this.environmentService.environment$);
+
     const response = await this.fetch(
-      new Request(this.environmentService.getIdentityUrl() + "/connect/token", {
+      new Request(env.getIdentityUrl() + "/connect/token", {
         body: this.qsStringify(identityToken),
         credentials: this.getCredentials(),
         cache: "no-store",
@@ -321,13 +325,14 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   async postPrelogin(request: PreloginRequest): Promise<PreloginResponse> {
+    const env = await firstValueFrom(this.environmentService.environment$);
     const r = await this.send(
       "POST",
       "/accounts/prelogin",
       request,
       false,
       true,
-      this.environmentService.getIdentityUrl(),
+      env.getIdentityUrl(),
     );
     return new PreloginResponse(r);
   }
@@ -366,13 +371,14 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   async postRegister(request: RegisterRequest): Promise<RegisterResponse> {
+    const env = await firstValueFrom(this.environmentService.environment$);
     const r = await this.send(
       "POST",
       "/accounts/register",
       request,
       false,
       true,
-      this.environmentService.getIdentityUrl(),
+      env.getIdentityUrl(),
     );
     return new RegisterResponse(r);
   }
@@ -1455,8 +1461,9 @@ export class ApiService implements ApiServiceAbstraction {
     if (this.customUserAgent != null) {
       headers.set("User-Agent", this.customUserAgent);
     }
+    const env = await firstValueFrom(this.environmentService.environment$);
     const response = await this.fetch(
-      new Request(this.environmentService.getEventsUrl() + "/collect", {
+      new Request(env.getEventsUrl() + "/collect", {
         cache: "no-store",
         credentials: this.getCredentials(),
         method: "POST",
@@ -1615,9 +1622,10 @@ export class ApiService implements ApiServiceAbstraction {
       headers.set("User-Agent", this.customUserAgent);
     }
 
+    const env = await firstValueFrom(this.environmentService.environment$);
     const path = `/sso/prevalidate?domainHint=${encodeURIComponent(identifier)}`;
     const response = await this.fetch(
-      new Request(this.environmentService.getIdentityUrl() + path, {
+      new Request(env.getIdentityUrl() + path, {
         cache: "no-store",
         credentials: this.getCredentials(),
         headers: headers,
@@ -1749,9 +1757,10 @@ export class ApiService implements ApiServiceAbstraction {
       headers.set("User-Agent", this.customUserAgent);
     }
 
+    const env = await firstValueFrom(this.environmentService.environment$);
     const decodedToken = await this.tokenService.decodeToken();
     const response = await this.fetch(
-      new Request(this.environmentService.getIdentityUrl() + "/connect/token", {
+      new Request(env.getIdentityUrl() + "/connect/token", {
         body: this.qsStringify({
           grant_type: "refresh_token",
           client_id: decodedToken.client_id,
@@ -1808,7 +1817,8 @@ export class ApiService implements ApiServiceAbstraction {
     apiUrl?: string,
     alterHeaders?: (headers: Headers) => void,
   ): Promise<any> {
-    apiUrl = Utils.isNullOrWhitespace(apiUrl) ? this.environmentService.getApiUrl() : apiUrl;
+    const env = await firstValueFrom(this.environmentService.environment$);
+    apiUrl = Utils.isNullOrWhitespace(apiUrl) ? env.getApiUrl() : apiUrl;
 
     // Prevent directory traversal from malicious paths
     const pathParts = path.split("?");

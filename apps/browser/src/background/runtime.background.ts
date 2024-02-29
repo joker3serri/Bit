@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
@@ -218,7 +220,8 @@ export default class RuntimeBackground {
         }
         break;
       case "authResult": {
-        const vaultUrl = this.environmentService.getWebVaultUrl();
+        const env = await firstValueFrom(this.environmentService.environment$);
+        const vaultUrl = env.getWebVaultUrl();
 
         if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
           return;
@@ -239,7 +242,8 @@ export default class RuntimeBackground {
         break;
       }
       case "webAuthnResult": {
-        const vaultUrl = this.environmentService.getWebVaultUrl();
+        const env = await firstValueFrom(this.environmentService.environment$);
+        const vaultUrl = env.getWebVaultUrl();
 
         if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
           return;
