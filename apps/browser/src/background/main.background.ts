@@ -29,6 +29,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
@@ -41,6 +42,7 @@ import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
+import { SsoLoginService } from "@bitwarden/common/auth/services/sso-login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
@@ -49,6 +51,10 @@ import {
   AutofillSettingsServiceAbstraction,
   AutofillSettingsService,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  BadgeSettingsServiceAbstraction,
+  BadgeSettingsService,
+} from "@bitwarden/common/autofill/services/badge-settings.service";
 import {
   UserNotificationSettingsService,
   UserNotificationSettingsServiceAbstraction,
@@ -248,6 +254,7 @@ export default class MainBackground {
   stateService: StateServiceAbstraction;
   userNotificationSettingsService: UserNotificationSettingsServiceAbstraction;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
+  badgeSettingsService: BadgeSettingsServiceAbstraction;
   systemService: SystemServiceAbstraction;
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
@@ -292,6 +299,7 @@ export default class MainBackground {
   organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
   vaultSettingsService: VaultSettingsServiceAbstraction;
   biometricStateService: BiometricStateService;
+  ssoLoginService: SsoLoginServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -479,11 +487,16 @@ export default class MainBackground {
       this.stateService,
       this.stateProvider,
     );
-    this.policyService = new BrowserPolicyService(this.stateService, this.organizationService);
+    this.policyService = new BrowserPolicyService(
+      this.stateService,
+      this.stateProvider,
+      this.organizationService,
+    );
     this.autofillSettingsService = new AutofillSettingsService(
       this.stateProvider,
       this.policyService,
     );
+    this.badgeSettingsService = new BadgeSettingsService(this.stateProvider);
     this.policyApiService = new PolicyApiService(
       this.policyService,
       this.apiService,
@@ -570,6 +583,8 @@ export default class MainBackground {
       this.deviceTrustCryptoService,
       this.authRequestService,
     );
+
+    this.ssoLoginService = new SsoLoginService(this.stateProvider);
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
@@ -1086,6 +1101,7 @@ export default class MainBackground {
       /*
       We intentionally do not clear:
         - autofillSettingsService
+        - badgeSettingsService
         - userNotificationSettingsService
       */
     ]);

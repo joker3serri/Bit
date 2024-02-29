@@ -87,6 +87,10 @@ import {
   AutofillSettingsService,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import {
+  BadgeSettingsServiceAbstraction,
+  BadgeSettingsService,
+} from "@bitwarden/common/autofill/services/badge-settings.service";
+import {
   UserNotificationSettingsServiceAbstraction,
   UserNotificationSettingsService,
 } from "@bitwarden/common/autofill/services/user-notification-settings.service";
@@ -674,7 +678,7 @@ import { ModalService } from "./modal.service";
     {
       provide: PolicyServiceAbstraction,
       useClass: PolicyService,
-      deps: [StateServiceAbstraction, OrganizationServiceAbstraction],
+      deps: [StateServiceAbstraction, StateProvider, OrganizationServiceAbstraction],
     },
     {
       provide: InternalPolicyService,
@@ -943,6 +947,11 @@ import { ModalService } from "./modal.service";
     {
       provide: UserNotificationSettingsServiceAbstraction,
       useClass: UserNotificationSettingsService,
+      deps: [StateProvider],
+    },
+    {
+      provide: BadgeSettingsServiceAbstraction,
+      useClass: BadgeSettingsService,
       deps: [StateProvider],
     },
     {

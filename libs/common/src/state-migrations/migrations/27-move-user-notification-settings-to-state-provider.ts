@@ -6,7 +6,7 @@ type ExpectedGlobalState = {
   disableChangedPasswordNotification?: boolean;
 };
 
-export class UserNotificationSettingsKeyMigrator extends Migrator<25, 26> {
+export class UserNotificationSettingsKeyMigrator extends Migrator<26, 27> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const globalState = await helper.get<ExpectedGlobalState>("global");
 

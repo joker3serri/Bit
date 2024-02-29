@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { BadgeSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/badge-settings.service";
 import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -21,7 +22,7 @@ import { enableAccountSwitching } from "../../platform/flags";
 })
 export class OptionsComponent implements OnInit {
   enableFavicon = false;
-  enableBadgeCounter = false;
+  enableBadgeCounter = true;
   enableAutoFillOnPageLoad = false;
   autoFillOnPageLoadDefault = false;
   autoFillOnPageLoadOptions: any[];
@@ -49,6 +50,7 @@ export class OptionsComponent implements OnInit {
     private stateService: StateService,
     private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
+    private badgeSettingsService: BadgeSettingsServiceAbstraction,
     i18nService: I18nService,
     private themingService: AbstractThemingService,
     private settingsService: SettingsService,
@@ -112,7 +114,7 @@ export class OptionsComponent implements OnInit {
 
     this.enableFavicon = !this.settingsService.getDisableFavicon();
 
-    this.enableBadgeCounter = !(await this.stateService.getDisableBadgeCounter());
+    this.enableBadgeCounter = await firstValueFrom(this.badgeSettingsService.enableBadgeCounter$);
 
     this.enablePasskeys = await firstValueFrom(this.vaultSettingsService.enablePasskeys$);
 
@@ -162,7 +164,7 @@ export class OptionsComponent implements OnInit {
   }
 
   async updateBadgeCounter() {
-    await this.stateService.setDisableBadgeCounter(!this.enableBadgeCounter);
+    await this.badgeSettingsService.setEnableBadgeCounter(this.enableBadgeCounter);
     this.messagingService.send("bgUpdateContextMenu");
   }
 

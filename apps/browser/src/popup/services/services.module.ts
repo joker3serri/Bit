@@ -37,6 +37,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -200,6 +201,11 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<LoginStrategyServiceAbstraction>("loginStrategyService"),
     },
     {
+      provide: SsoLoginServiceAbstraction,
+      useFactory: getBgService<SsoLoginServiceAbstraction>("ssoLoginService"),
+      deps: [],
+    },
+    {
       provide: SearchServiceAbstraction,
       useFactory: (logService: ConsoleLogService, i18nService: I18nServiceAbstraction) => {
         return new PopupSearchService(
@@ -330,11 +336,12 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: PolicyService,
       useFactory: (
         stateService: StateServiceAbstraction,
+        stateProvider: StateProvider,
         organizationService: OrganizationService,
       ) => {
-        return new BrowserPolicyService(stateService, organizationService);
+        return new BrowserPolicyService(stateService, stateProvider, organizationService);
       },
-      deps: [StateServiceAbstraction, OrganizationService],
+      deps: [StateServiceAbstraction, StateProvider, OrganizationService],
     },
     {
       provide: PolicyApiServiceAbstraction,
@@ -378,7 +385,7 @@ function getBgService<T>(service: keyof MainBackground) {
           stateServiceAbstraction,
         );
       },
-      deps: [CryptoService, I18nServiceAbstraction, CryptoFunctionService, StateServiceAbstraction],
+      deps: [CryptoService, I18nServiceAbstraction, KeyGenerationService, StateServiceAbstraction],
     },
     {
       provide: InternalSendServiceAbstraction,
