@@ -123,13 +123,16 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.searchVault());
 
-    const autofillOnPageLoadOrgPolicy = await this.getActivateAutofillOnPageLoadFromPolicy();
-    const autofillOnPageLoadPolicyToastHasDisplayed =
-      await this.autofillSettingsService.autofillOnPageLoadPolicyToastHasDisplayed;
+    const autofillOnPageLoadOrgPolicy = await firstValueFrom(
+      this.autofillSettingsService.activateAutofillOnPageLoadFromPolicy$,
+    );
+    const autofillOnPageLoadPolicyToastHasDisplayed = await firstValueFrom(
+      this.autofillSettingsService.autofillOnPageLoadPolicyToastHasDisplayed$,
+    );
 
     // If the org "autofill on page load" policy is set, set the user setting to match it
     // @TODO override user setting instead of overwriting
-    if (autofillOnPageLoadOrgPolicy) {
+    if (autofillOnPageLoadOrgPolicy === true) {
       await this.autofillSettingsService.setAutofillOnPageLoad(true);
 
       if (!autofillOnPageLoadPolicyToastHasDisplayed) {
@@ -139,13 +142,13 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
           this.i18nService.t("autofillPageLoadPolicyActivated"),
         );
 
-        this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(true);
+        await this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(true);
       }
     }
 
-    // If the org policy is ever false, reset the toast notification
+    // If the org policy is ever disabled after being enabled, reset the toast notification
     if (!autofillOnPageLoadOrgPolicy && autofillOnPageLoadPolicyToastHasDisplayed) {
-      this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(false);
+      await this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(false);
     }
   }
 
@@ -315,10 +318,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["autofill"]);
-  }
-
-  private async getActivateAutofillOnPageLoadFromPolicy(): Promise<boolean> {
-    return await firstValueFrom(this.autofillSettingsService.activateAutofillOnPageLoadFromPolicy$);
   }
 
   async dismissCallout() {

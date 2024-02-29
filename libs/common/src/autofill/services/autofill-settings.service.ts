@@ -33,6 +33,14 @@ const AUTOFILL_ON_PAGE_LOAD_CALLOUT_DISMISSED = new KeyDefinition(
   },
 );
 
+const AUTOFILL_ON_PAGE_LOAD_POLICY_TOAST_HAS_DISPLAYED = new KeyDefinition(
+  AUTOFILL_SETTINGS_DISK,
+  "autofillOnPageLoadPolicyToastHasDisplayed",
+  {
+    deserializer: (value: boolean) => value ?? false,
+  },
+);
+
 const AUTO_COPY_TOTP = new KeyDefinition(AUTOFILL_SETTINGS_DISK, "autoCopyTotp", {
   deserializer: (value: boolean) => value ?? false,
 });
@@ -61,8 +69,8 @@ export abstract class AutofillSettingsServiceAbstraction {
   autofillOnPageLoadCalloutIsDismissed$: Observable<boolean>;
   setAutofillOnPageLoadCalloutIsDismissed: (newValue: boolean) => Promise<void>;
   activateAutofillOnPageLoadFromPolicy$: Observable<boolean>;
-  autofillOnPageLoadPolicyToastHasDisplayed: boolean;
-  setAutofillOnPageLoadPolicyToastHasDisplayed: (newValue: boolean) => void;
+  setAutofillOnPageLoadPolicyToastHasDisplayed: (newValue: boolean) => Promise<void>;
+  autofillOnPageLoadPolicyToastHasDisplayed$: Observable<boolean>;
   autoCopyTotp$: Observable<boolean>;
   setAutoCopyTotp: (newValue: boolean) => Promise<void>;
   inlineMenuVisibility$: Observable<InlineMenuVisibilitySetting>;
@@ -83,7 +91,8 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
 
   readonly activateAutofillOnPageLoadFromPolicy$: Observable<boolean>;
 
-  autofillOnPageLoadPolicyToastHasDisplayed: boolean = false;
+  private autofillOnPageLoadPolicyToastHasDisplayedState: ActiveUserState<boolean>;
+  readonly autofillOnPageLoadPolicyToastHasDisplayed$: Observable<boolean>;
 
   private autoCopyTotpState: ActiveUserState<boolean>;
   readonly autoCopyTotp$: Observable<boolean>;
@@ -118,6 +127,13 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
       PolicyType.ActivateAutofill,
     );
 
+    this.autofillOnPageLoadPolicyToastHasDisplayedState = this.stateProvider.getActive(
+      AUTOFILL_ON_PAGE_LOAD_POLICY_TOAST_HAS_DISPLAYED,
+    );
+    this.autofillOnPageLoadPolicyToastHasDisplayed$ = this.autofillOnPageLoadState.state$.pipe(
+      map((x) => x ?? false),
+    );
+
     this.autoCopyTotpState = this.stateProvider.getActive(AUTO_COPY_TOTP);
     this.autoCopyTotp$ = this.autoCopyTotpState.state$.pipe(map((x) => x ?? false));
 
@@ -144,8 +160,8 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     await this.autofillOnPageLoadCalloutIsDismissedState.update(() => newValue);
   }
 
-  setAutofillOnPageLoadPolicyToastHasDisplayed(newValue: boolean): void {
-    this.autofillOnPageLoadPolicyToastHasDisplayed = newValue;
+  async setAutofillOnPageLoadPolicyToastHasDisplayed(newValue: boolean): Promise<void> {
+    await this.autofillOnPageLoadPolicyToastHasDisplayedState.update(() => newValue);
   }
 
   async setAutoCopyTotp(newValue: boolean): Promise<void> {
