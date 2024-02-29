@@ -228,9 +228,6 @@ describe("EnvironmentService", () => {
     });
 
     it("self-hosted and sets all urls", async () => {
-      // Why do I have to set this here for this test to work?
-      setGlobalData(Region.US, new EnvironmentUrls());
-
       let env = await firstValueFrom(sut.environment$);
       expect(env.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
 

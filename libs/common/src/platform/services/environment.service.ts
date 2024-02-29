@@ -1,4 +1,4 @@
-import { distinctUntilChanged, filter, firstValueFrom, map, Observable, switchMap } from "rxjs";
+import { distinctUntilChanged, firstValueFrom, map, Observable, switchMap } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { AccountService } from "../../auth/abstractions/account.service";
@@ -109,9 +109,8 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
         : this.stateProvider.getGlobal(ENVIRONMENT_KEY).state$;
       return t;
     }),
-    filter((state) => state != null),
     map((state) => {
-      return this.buildEnvironment(state.region, state.urls);
+      return this.buildEnvironment(state?.region, state?.urls);
     }),
   );
 
