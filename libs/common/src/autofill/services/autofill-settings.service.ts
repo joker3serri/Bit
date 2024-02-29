@@ -1,4 +1,4 @@
-import { filter, switchMap, tap, firstValueFrom, map, Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import {
   ClearClipboardDelaySetting,
@@ -10,7 +10,6 @@ import {
 } from "../../../../../apps/browser/src/autofill/utils/autofill-overlay.enum";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../admin-console/enums/index";
-import { Policy } from "../../admin-console/models/domain/policy";
 import {
   AUTOFILL_SETTINGS_DISK,
   AUTOFILL_SETTINGS_DISK_LOCAL,
@@ -44,14 +43,6 @@ const AUTOFILL_ON_PAGE_LOAD_CALLOUT_DISMISSED = new KeyDefinition(
   },
 );
 
-const ACTIVATE_AUTOFILL_ON_PAGE_LOAD_FROM_POLICY = new KeyDefinition(
-  AUTOFILL_SETTINGS_DISK_LOCAL,
-  "activateAutofillOnPageLoadFromPolicy",
-  {
-    deserializer: (value: boolean) => value ?? false,
-  },
-);
-
 const INLINE_MENU_VISIBILITY = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK_LOCAL,
   "inlineMenuVisibility",
@@ -78,12 +69,12 @@ export abstract class AutofillSettingsServiceAbstraction {
   autofillOnPageLoadCalloutIsDismissed$: Observable<boolean>;
   setAutofillOnPageLoadCalloutIsDismissed: (newValue: boolean) => Promise<void>;
   activateAutofillOnPageLoadFromPolicy$: Observable<boolean>;
-  setActivateAutofillOnPageLoadFromPolicy: (newValue: boolean) => Promise<void>;
+  autofillOnPageLoadPolicyToastHasDisplayed: boolean;
+  setAutofillOnPageLoadPolicyToastHasDisplayed: (newValue: boolean) => void;
   inlineMenuVisibility$: Observable<InlineMenuVisibilitySetting>;
   setInlineMenuVisibility: (newValue: InlineMenuVisibilitySetting) => Promise<void>;
   clearClipboardDelay$: Observable<ClearClipboardDelaySetting>;
   setClearClipboardDelay: (newValue: ClearClipboardDelaySetting) => Promise<void>;
-  handleActivateAutofillPolicy: (policies: Observable<Policy[]>) => Observable<boolean[]>;
 }
 
 export class AutofillSettingsService implements AutofillSettingsServiceAbstraction {
@@ -99,8 +90,9 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
   private autofillOnPageLoadCalloutIsDismissedState: ActiveUserState<boolean>;
   readonly autofillOnPageLoadCalloutIsDismissed$: Observable<boolean>;
 
-  private activateAutofillOnPageLoadFromPolicyState: ActiveUserState<boolean>;
   readonly activateAutofillOnPageLoadFromPolicy$: Observable<boolean>;
+
+  autofillOnPageLoadPolicyToastHasDisplayed: boolean = false;
 
   private inlineMenuVisibilityState: GlobalState<InlineMenuVisibilitySetting>;
   readonly inlineMenuVisibility$: Observable<InlineMenuVisibilitySetting>;
@@ -110,7 +102,7 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
 
   constructor(
     private stateProvider: StateProvider,
-    policyService: PolicyService,
+    private policyService: PolicyService,
   ) {
     this.autofillOnPageLoadState = this.stateProvider.getActive(AUTOFILL_ON_PAGE_LOAD);
     this.autofillOnPageLoad$ = this.autofillOnPageLoadState.state$.pipe(map((x) => x ?? false));
@@ -131,11 +123,9 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     this.autofillOnPageLoadCalloutIsDismissed$ =
       this.autofillOnPageLoadCalloutIsDismissedState.state$.pipe(map((x) => x ?? false));
 
-    this.activateAutofillOnPageLoadFromPolicyState = this.stateProvider.getActive(
-      ACTIVATE_AUTOFILL_ON_PAGE_LOAD_FROM_POLICY,
+    this.activateAutofillOnPageLoadFromPolicy$ = this.policyService.policyAppliesToActiveUser$(
+      PolicyType.ActivateAutofill,
     );
-    this.activateAutofillOnPageLoadFromPolicy$ =
-      this.activateAutofillOnPageLoadFromPolicyState.state$.pipe(map((x) => x ?? false));
 
     this.inlineMenuVisibilityState = this.stateProvider.getGlobal(INLINE_MENU_VISIBILITY);
     this.inlineMenuVisibility$ = this.inlineMenuVisibilityState.state$.pipe(
@@ -146,8 +136,6 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     this.clearClipboardDelay$ = this.clearClipboardDelayState.state$.pipe(
       map((x) => x ?? ClearClipboardDelay.Never),
     );
-
-    policyService.policies$.pipe(this.handleActivateAutofillPolicy.bind(this)).subscribe();
   }
 
   async setAutofillOnPageLoad(newValue: boolean): Promise<void> {
@@ -166,8 +154,8 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     await this.autofillOnPageLoadCalloutIsDismissedState.update(() => newValue);
   }
 
-  async setActivateAutofillOnPageLoadFromPolicy(newValue: boolean): Promise<void> {
-    await this.activateAutofillOnPageLoadFromPolicyState.update(() => newValue);
+  setAutofillOnPageLoadPolicyToastHasDisplayed(newValue: boolean): void {
+    this.autofillOnPageLoadPolicyToastHasDisplayed = newValue;
   }
 
   async setInlineMenuVisibility(newValue: InlineMenuVisibilitySetting): Promise<void> {
@@ -176,25 +164,5 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
 
   async setClearClipboardDelay(newValue: ClearClipboardDelaySetting): Promise<void> {
     await this.clearClipboardDelayState.update(() => newValue);
-  }
-
-  /**
-   * If the ActivateAutofill policy is enabled, save a flag indicating if we need to
-   * enable Autofill on page load.
-   */
-  handleActivateAutofillPolicy(policies$: Observable<Policy[]>): Observable<boolean[]> {
-    return policies$.pipe(
-      map((policies) => policies.find((p) => p.type == PolicyType.ActivateAutofill && p.enabled)),
-      filter((p) => p != null),
-      switchMap(async (_) => [
-        await firstValueFrom(this.activateAutofillOnPageLoadFromPolicy$),
-        await firstValueFrom(this.autofillOnPageLoad$),
-      ]),
-      tap(([activated, autofillEnabled]) => {
-        if (activated === undefined) {
-          void this.setActivateAutofillOnPageLoadFromPolicy(!autofillEnabled);
-        }
-      }),
-    );
   }
 }

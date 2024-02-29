@@ -123,15 +123,29 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.searchVault());
 
-    // activate autofill on page load if policy is set
-    if (await this.getActivateAutofillOnPageLoadFromPolicy()) {
+    const autofillOnPageLoadOrgPolicy = await this.getActivateAutofillOnPageLoadFromPolicy();
+    const autofillOnPageLoadPolicyToastHasDisplayed =
+      await this.autofillSettingsService.autofillOnPageLoadPolicyToastHasDisplayed;
+
+    // If the org "autofill on page load" policy is set, set the user setting to match it
+    // @TODO override user setting instead of overwriting
+    if (autofillOnPageLoadOrgPolicy) {
       await this.autofillSettingsService.setAutofillOnPageLoad(true);
-      await this.autofillSettingsService.setActivateAutofillOnPageLoadFromPolicy(false);
-      this.platformUtilsService.showToast(
-        "info",
-        null,
-        this.i18nService.t("autofillPageLoadPolicyActivated"),
-      );
+
+      if (!autofillOnPageLoadPolicyToastHasDisplayed) {
+        this.platformUtilsService.showToast(
+          "info",
+          null,
+          this.i18nService.t("autofillPageLoadPolicyActivated"),
+        );
+
+        this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(true);
+      }
+    }
+
+    // If the org policy is ever false, reset the toast notification
+    if (!autofillOnPageLoadOrgPolicy && autofillOnPageLoadPolicyToastHasDisplayed) {
+      this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(false);
     }
   }
 
