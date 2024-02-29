@@ -14,7 +14,7 @@ const LAST_SYNC_KEY: KeyDefinitionLike = {
   },
 };
 
-export class RevertLastSyncMigrator extends Migrator<26, 27> {
+export class RevertLastSyncMigrator extends Migrator<25, 26> {
   async rollback(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
