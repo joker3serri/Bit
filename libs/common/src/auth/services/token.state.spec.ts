@@ -27,7 +27,7 @@ describe.each([
   [API_KEY_CLIENT_SECRET_DISK, "apiKeyClientSecretDisk"],
   [API_KEY_CLIENT_SECRET_MEMORY, "apiKeyClientSecretMemory"],
 ])(
-  "deserializes state key definitions as expected type",
+  "deserializes state key definitions",
   (
     keyDefinition:
       | KeyDefinition<string>
