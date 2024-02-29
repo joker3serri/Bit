@@ -35,6 +35,7 @@ export abstract class GeneratorService<Options, Policy> {
   generate: (options: Options) => Promise<string>;
 
   /** Saves the given options to disk.
+   * @param userId: Identifies the user making the request
    * @param options the options to save
    * @returns a promise that resolves when the options are saved
    */

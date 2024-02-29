@@ -10,10 +10,10 @@ import { PolicyEvaluator } from "./policy-evaluator.abstraction";
 /** Tailors the generator service to generate a specific kind of credentials */
 export abstract class GeneratorStrategy<Options, Policy> {
   /** Retrieve application state that persists across locks.
-   *  @param id: identifies the user state to retrieve
+   *  @param userId: identifies the user state to retrieve
    *  @returns the strategy's durable user state
    */
-  durableState: (id: UserId) => SingleUserState<Options>;
+  durableState: (userId: UserId) => SingleUserState<Options>;
 
   /** Identifies the policy enforced by the generator. */
   policy: PolicyType;
