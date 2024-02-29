@@ -10,6 +10,7 @@ import { MoveEnvironmentStateToProviders } from "./migrations/12-move-environmen
 import { ProviderKeyMigrator } from "./migrations/13-move-provider-keys-to-state-providers";
 import { MoveBiometricClientKeyHalfToStateProviders } from "./migrations/14-move-biometric-client-key-half-state-to-providers";
 import { FolderMigrator } from "./migrations/15-move-folder-state-to-state-provider";
+import { LastSyncMigrator } from "./migrations/16-move-last-sync-to-state-provider";
 import { EnablePasskeysMigrator } from "./migrations/17-move-enable-passkeys-to-state-providers";
 import { AutofillSettingsKeyMigrator } from "./migrations/18-move-autofill-settings-to-state-providers";
 import { RequirePasswordOnStartMigrator } from "./migrations/19-migrate-require-password-on-start";
@@ -20,6 +21,7 @@ import { MoveBiometricPromptsToStateProviders } from "./migrations/23-move-biome
 import { SmOnboardingTasksMigrator } from "./migrations/24-move-sm-onboarding-key-to-state-providers";
 import { ClearClipboardDelayMigrator } from "./migrations/25-move-clear-clipboard-to-autofill-settings-state-provider";
 import { BadgeSettingsMigrator } from "./migrations/26-move-badge-settings-to-state-providers";
+import { RevertLastSyncMigrator } from "./migrations/27-revert-move-last-sync-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -28,10 +30,9 @@ import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-
 import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";
 import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-settings-to-global";
 import { MinVersionMigrator } from "./migrations/min-version";
-import { buildNoopMigrator } from "./migrations/noop-migrator";
 
 export const MIN_VERSION = 2;
-export const CURRENT_VERSION = 26;
+export const CURRENT_VERSION = 27;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -50,7 +51,7 @@ export function createMigrationBuilder() {
     .with(ProviderKeyMigrator, 12, 13)
     .with(MoveBiometricClientKeyHalfToStateProviders, 13, 14)
     .with(FolderMigrator, 14, 15)
-    .with(buildNoopMigrator(15, 16))
+    .with(LastSyncMigrator, 15, 16)
     .with(EnablePasskeysMigrator, 16, 17)
     .with(AutofillSettingsKeyMigrator, 17, 18)
     .with(RequirePasswordOnStartMigrator, 18, 19)
@@ -60,7 +61,8 @@ export function createMigrationBuilder() {
     .with(MoveBiometricPromptsToStateProviders, 22, 23)
     .with(SmOnboardingTasksMigrator, 23, 24)
     .with(ClearClipboardDelayMigrator, 24, 25)
-    .with(BadgeSettingsMigrator, 25, CURRENT_VERSION);
+    .with(BadgeSettingsMigrator, 25, 26)
+    .with(RevertLastSyncMigrator, 26, CURRENT_VERSION);
 }
 
 export async function currentVersion(
