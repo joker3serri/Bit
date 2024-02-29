@@ -1,4 +1,5 @@
 export { AnonAddyForwarder } from "./anon-addy-forwarder";
+export { CloudflareForwarder } from "./cloudflare-forwarder";
 export { DuckDuckGoForwarder } from "./duck-duck-go-forwarder";
 export { FastmailForwarder } from "./fastmail-forwarder";
 export { FirefoxRelayForwarder } from "./firefox-relay-forwarder";

@@ -11,6 +11,12 @@ export type UsernameGeneratorOptions = EffUsernameGenerationOptions & {
   forwardedAnonAddyApiToken?: string;
   forwardedAnonAddyDomain?: string;
   forwardedAnonAddyBaseUrl?: string;
+  cloudflareType?: "random" | "website-name";
+  forwardedCloudflareApiToken?: string;
+  forwardedCloudflareAccountId?: string;
+  forwardedCloudflareZoneId?: string;
+  forwardedCloudflareAliasDomain?: string;
+  forwardedCloudflareRecipient?: string;
   forwardedDuckDuckGoToken?: string;
   forwardedFirefoxApiToken?: string;
   forwardedFastmailApiToken?: string;

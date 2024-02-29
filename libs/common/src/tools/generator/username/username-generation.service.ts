@@ -5,6 +5,7 @@ import { EFFLongWordList } from "../../../platform/misc/wordlist";
 
 import {
   AnonAddyForwarder,
+  CloudflareForwarder,
   DuckDuckGoForwarder,
   FastmailForwarder,
   FirefoxRelayForwarder,
@@ -135,6 +136,18 @@ export class UsernameGenerationService implements UsernameGenerationServiceAbstr
       forwarderOptions.apiKey = o.forwardedAnonAddyApiToken;
       forwarderOptions.anonaddy.domain = o.forwardedAnonAddyDomain;
       forwarderOptions.anonaddy.baseUrl = o.forwardedAnonAddyBaseUrl;
+    } else if (o.forwardedService == "cloudflare") {
+      forwarder = new CloudflareForwarder();
+      forwarderOptions.apiKey = o.forwardedCloudflareApiToken;
+      forwarderOptions.cloudflare.accountId = o.forwardedCloudflareAccountId;
+      forwarderOptions.cloudflare.zoneId = o.forwardedCloudflareZoneId;
+      forwarderOptions.cloudflare.alias = o.forwardedCloudflareAliasDomain;
+      forwarderOptions.cloudflare.recipient = o.forwardedCloudflareRecipient;
+      if (o.catchallType === "website-name") {
+        forwarderOptions.cloudflare.startString = o.website + "." + (await this.randomString(3));
+      } else {
+        forwarderOptions.cloudflare.startString = await this.randomString(8);
+      }
     } else if (o.forwardedService === "firefoxrelay") {
       forwarder = new FirefoxRelayForwarder();
       forwarderOptions.apiKey = o.forwardedFirefoxApiToken;

@@ -2181,6 +2181,24 @@
   "apiKey": {
     "message": "API Key"
   },
+  "cloudflareApiToken": {
+    "message": "Cloudflare API Token"
+  },
+  "cloudflareZoneId": {
+    "message": "Cloudflare Zone ID"
+  },
+  "cloudflareAccountId": {
+    "message": "Cloudflare Account ID"
+  },
+  "cloudflareAliasDomain": {
+    "message": "Cloudflare Domain"
+  },
+  "cloudflareRecipient": {
+    "message": "Recipient's Email Address"
+  },
+  "cloudflareWebsiteName": {
+    "message": "Website Name"
+  },
   "ssoKeyConnectorError": {
     "message": "Key connector error: make sure key connector is available and working correctly."
   },

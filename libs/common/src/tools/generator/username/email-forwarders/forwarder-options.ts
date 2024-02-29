@@ -3,6 +3,7 @@ export class ForwarderOptions {
   website: string;
   fastmail = new FastmailForwarderOptions();
   anonaddy = new AnonAddyForwarderOptions();
+  cloudflare = new CloudflareForwarder();
   forwardemail = new ForwardEmailForwarderOptions();
   simplelogin = new SimpleLoginForwarderOptions();
 }
@@ -22,4 +23,12 @@ export class ForwardEmailForwarderOptions {
 
 export class SimpleLoginForwarderOptions {
   baseUrl: string;
+}
+
+export class CloudflareForwarder {
+  zoneId: string;
+  accountId: string;
+  alias: string;
+  startString: string;
+  recipient: string;
 }

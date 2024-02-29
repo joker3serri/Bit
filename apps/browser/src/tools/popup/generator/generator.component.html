@@ -420,6 +420,80 @@
             />
           </div>
         </ng-container>
+        <ng-container *ngIf="usernameOptions.forwardedService === 'cloudflare'">
+          <div
+            class="box-content-row"
+            role="radiogroup"
+            aria-labelledby="catchallTypeHeading"
+            *ngIf="catchallOptions.length > 1"
+          >
+            <label id="catchallTypeHeading" class="radio-header">{{ "type" | i18n }}</label>
+            <div class="radio-group text-default" appBoxRow *ngFor="let o of catchallOptions">
+              <input
+                type="radio"
+                [(ngModel)]="usernameOptions.catchallType"
+                name="CatchallType"
+                id="catchalltype_{{ o.value }}"
+                [value]="o.value"
+                (change)="saveUsernameOptions()"
+                [checked]="usernameOptions.catchallType === o.value"
+              />
+              <label for="catchalltype_{{ o.value }}">
+                {{ o.name }}
+              </label>
+            </div>
+          </div>
+          <div class="box-content-row" appBoxRow>
+            <label for="cloudflare-Recipient">{{ "cloudflareRecipient" | i18n }}</label>
+            <input
+              id="cloudflare-cloudflareRecipient"
+              type="text"
+              name="cloudflareRecipient"
+              [(ngModel)]="usernameOptions.forwardedCloudflareRecipient"
+              (blur)="saveUsernameOptions()"
+            />
+          </div>
+          <div class="box-content-row" appBoxRow>
+            <label for="cloudflare-ApiToken">{{ "cloudflareApiToken" | i18n }}</label>
+            <input
+              id="cloudflare-ApiToken"
+              type="password"
+              name="cloudflareApiToken"
+              [(ngModel)]="usernameOptions.forwardedCloudflareApiToken"
+              (blur)="saveUsernameOptions()"
+            />
+          </div>
+          <div class="box-content-row" appBoxRow>
+            <label for="cloudflare-ZoneId">{{ "cloudflareZoneId" | i18n }}</label>
+            <input
+              id="cloudflare-ZoneId"
+              type="text"
+              name="cloudflareZoneId"
+              [(ngModel)]="usernameOptions.forwardedCloudflareZoneId"
+              (blur)="saveUsernameOptions()"
+            />
+          </div>
+          <div class="box-content-row" appBoxRow>
+            <label for="cloudflare-AccountId">{{ "cloudflareAccountId" | i18n }}</label>
+            <input
+              id="cloudflare-AccountId"
+              type="text"
+              name="cloudflareAccountId"
+              [(ngModel)]="usernameOptions.forwardedCloudflareAccountId"
+              (blur)="saveUsernameOptions()"
+            />
+          </div>
+          <div class="box-content-row" appBoxRow>
+            <label for="cloudflare-AliasDomain">{{ "cloudflareAliasDomain" | i18n }}</label>
+            <input
+              id="cloudflare-AliasDomain"
+              type="text"
+              name="cloudflareAliasDomain"
+              [(ngModel)]="usernameOptions.forwardedCloudflareAliasDomain"
+              (blur)="saveUsernameOptions()"
+            />
+          </div>
+        </ng-container>
         <ng-container *ngIf="usernameOptions.forwardedService === 'firefoxrelay'">
           <div class="box-content-row" appBoxRow>
             <label for="firefox-apikey">{{ "apiAccessToken" | i18n }}</label>
