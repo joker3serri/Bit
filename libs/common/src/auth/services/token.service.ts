@@ -31,7 +31,7 @@ import {
 
 // TODO: write tests for this service
 
-enum TokenStorageLocation {
+export enum TokenStorageLocation {
   Disk = "disk",
   SecureStorage = "secureStorage",
   Memory = "memory",
