@@ -105,13 +105,6 @@ export abstract class EnvironmentService {
    */
   seedUserEnvironment: (userId: UserId) => Promise<void>;
 
-  // ----
-  // The remaining functions should be removed
-  // ----
-
-  /** @deprecated External services shouldn't need to be aware of if base url is set */
-  hasBaseUrl: () => boolean;
-
   /**
    * Retrieves the URL of the cloud web vault app.
    *

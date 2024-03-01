@@ -216,10 +216,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     return new SelfHostedEnvironment(urls);
   }
 
-  hasBaseUrl() {
-    return this.environment.hasBaseUrl();
-  }
-
   getCloudWebVaultUrl() {
     if (this.cloudWebVaultUrl != null) {
       return this.cloudWebVaultUrl;

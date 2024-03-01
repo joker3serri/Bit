@@ -208,7 +208,7 @@ export class ApiService implements ApiServiceAbstraction {
     const response = await this.fetch(
       new Request(env.getIdentityUrl() + "/connect/token", {
         body: this.qsStringify(identityToken),
-        credentials: this.getCredentials(),
+        credentials: await this.getCredentials(),
         cache: "no-store",
         headers: headers,
         method: "POST",
@@ -1465,7 +1465,7 @@ export class ApiService implements ApiServiceAbstraction {
     const response = await this.fetch(
       new Request(env.getEventsUrl() + "/collect", {
         cache: "no-store",
-        credentials: this.getCredentials(),
+        credentials: await this.getCredentials(),
         method: "POST",
         body: JSON.stringify(request),
         headers: headers,
@@ -1627,7 +1627,7 @@ export class ApiService implements ApiServiceAbstraction {
     const response = await this.fetch(
       new Request(env.getIdentityUrl() + path, {
         cache: "no-store",
-        credentials: this.getCredentials(),
+        credentials: await this.getCredentials(),
         headers: headers,
         method: "GET",
       }),
@@ -1767,7 +1767,7 @@ export class ApiService implements ApiServiceAbstraction {
           refresh_token: refreshToken,
         }),
         cache: "no-store",
-        credentials: this.getCredentials(),
+        credentials: await this.getCredentials(),
         headers: headers,
         method: "POST",
       }),
@@ -1834,7 +1834,7 @@ export class ApiService implements ApiServiceAbstraction {
 
     const requestInit: RequestInit = {
       cache: "no-store",
-      credentials: this.getCredentials(),
+      credentials: await this.getCredentials(),
       method: method,
     };
 
@@ -1913,8 +1913,9 @@ export class ApiService implements ApiServiceAbstraction {
       .join("&");
   }
 
-  private getCredentials(): RequestCredentials {
-    if (!this.isWebClient || this.environmentService.hasBaseUrl()) {
+  private async getCredentials(): Promise<RequestCredentials> {
+    const env = await firstValueFrom(this.environmentService.environment$);
+    if (!this.isWebClient || env.hasBaseUrl()) {
       return "include";
     }
     return undefined;

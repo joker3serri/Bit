@@ -35,7 +35,7 @@ export class ConfigCommand {
     ) {
       const env = await firstValueFrom(this.environmentService.environment$);
       const stringRes = new StringResponse(
-        this.environmentService.hasBaseUrl() ? env.getUrls().base : "https://bitwarden.com",
+        env.hasBaseUrl() ? env.getUrls().base : "https://bitwarden.com",
       );
       return Response.success(stringRes);
     }
