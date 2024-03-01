@@ -12,8 +12,8 @@ import { PolicyResponse } from "../../models/response/policy.response";
 export abstract class PolicyService {
   /**
    * All policies for the active user from sync data.
-   * May include policies that are disabled or otherwise do not apply to the user. You probably don't want this!
-   * @deprecated Use {@link get$} or {@link getAll$} to get the PolicyType that you want. This will be removed in a later release.
+   * May include policies that are disabled or otherwise do not apply to the user. Be careful using this!
+   * Consider using {@link get$} or {@link getAll$} instead, which will only return policies that should be enforced against the user.
    */
   policies$: Observable<Policy[]>;
 
@@ -33,8 +33,9 @@ export abstract class PolicyService {
   getAll$: (policyType: PolicyType, userId?: UserId) => Observable<Policy[]>;
 
   /**
-   * Returns all policies of a given type even if they are disabled or do not apply to the user. You probably don't want this!
-   * @deprecated use getAll$ instead which filters out policies that do not apply.
+   * All {@link Policy} objects for the specified user (from sync data).
+   * May include policies that are disabled or otherwise do not apply to the user.
+   * Consider using {@link getAll$} instead, which will only return policies that should be enforced against the user.
    */
   getAll: (policyType: PolicyType) => Promise<Policy[]>;
 
@@ -46,9 +47,6 @@ export abstract class PolicyService {
    */
   policyAppliesToActiveUser$: (policyType: PolicyType) => Observable<boolean>;
 
-  /**
-   * @deprecated Use policyAppliesToActiveUser$ instead
-   */
   policyAppliesToUser: (policyType: PolicyType) => Promise<boolean>;
 
   // Policy specific interfaces

@@ -26,7 +26,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     map((policyData) => policyRecordToArray(policyData)),
   );
 
-  // Deprecated
   policies$ = this.activeUserPolicies$;
 
   constructor(
@@ -58,7 +57,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  // Deprecated
   async getAll(policyType: PolicyType) {
     return await firstValueFrom(
       this.policies$.pipe(map((policies) => policies.filter((p) => p.type === policyType))),
@@ -69,7 +67,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return this.get$(policyType).pipe(map((policy) => policy != null));
   }
 
-  // Deprecated
   async policyAppliesToUser(policyType: PolicyType) {
     return await firstValueFrom(this.policyAppliesToActiveUser$(policyType));
   }
