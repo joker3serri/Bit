@@ -643,6 +643,7 @@ export class Main {
       this.collectionService.clear(userId as UserId),
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
+      this.providerService.save(null, userId as UserId),
     ]);
     await this.stateService.clean();
     process.env.BW_SESSION = null;

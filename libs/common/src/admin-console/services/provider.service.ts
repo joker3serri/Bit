@@ -37,7 +37,7 @@ export class ProviderService implements ProviderServiceAbstraction {
     return await firstValueFrom(this.providers$());
   }
 
-  async save(providers: { [id: string]: ProviderData }) {
-    await this.stateProvider.setUserState(PROVIDERS, providers);
+  async save(providers: { [id: string]: ProviderData }, userId?: UserId) {
+    await this.stateProvider.setUserState(PROVIDERS, providers, userId);
   }
 }
