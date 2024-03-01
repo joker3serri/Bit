@@ -679,7 +679,7 @@ export default class MainBackground {
       this.fileUploadService,
       this.sendService,
     );
-    this.providerService = new ProviderService(this.stateService);
+    this.providerService = new ProviderService(this.stateProvider);
     this.syncService = new SyncService(
       this.apiService,
       this.settingsService,

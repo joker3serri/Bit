@@ -372,7 +372,7 @@ export class Main {
       this.stateProvider,
     );
 
-    this.providerService = new ProviderService(this.stateService);
+    this.providerService = new ProviderService(this.stateProvider);
 
     this.organizationService = new OrganizationService(this.stateService, this.stateProvider);
 

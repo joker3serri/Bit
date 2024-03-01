@@ -29,7 +29,6 @@ import {
   InternalPolicyService,
   PolicyService,
 } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -449,11 +448,6 @@ function getBgService<T>(service: keyof MainBackground) {
         StateProvider,
         AccountServiceAbstraction,
       ],
-    },
-    {
-      provide: ProviderService,
-      useFactory: getBgService<ProviderService>("providerService"),
-      deps: [],
     },
     {
       provide: SECURE_STORAGE,
