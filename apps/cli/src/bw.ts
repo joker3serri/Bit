@@ -639,7 +639,6 @@ export class Main {
     await this.storageService.init();
     await this.stateService.init();
     this.containerService.attachToGlobal(global);
-    await this.environmentService.setUrlsFromStorage();
     const locale = await this.stateService.getLocale();
     await this.i18nService.init(locale);
     this.twoFactorService.init();

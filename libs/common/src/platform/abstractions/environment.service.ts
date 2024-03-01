@@ -96,11 +96,6 @@ export abstract class EnvironmentService {
   setEnvironment: (region: Region, urls?: Urls) => Promise<Urls>;
 
   /**
-   * Load state from disk
-   */
-  setUrlsFromStorage: () => Promise<void>;
-
-  /**
    * Seed the environment for a given user based on the globally set defaults.
    */
   seedUserEnvironment: (userId: UserId) => Promise<void>;

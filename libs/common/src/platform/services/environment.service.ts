@@ -232,13 +232,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     }
   }
 
-  async setUrlsFromStorage(): Promise<void> {
-    const activeUserId = await firstValueFrom(this.activeAccountId$);
-    const state = await this.getEnvironmentState(activeUserId);
-
-    await this.setEnvironment(state?.region ?? DEFAULT_REGION, state?.urls);
-  }
-
   isEmpty(): boolean {
     return isEmpty(this.environment.getUrls());
   }

@@ -359,41 +359,6 @@ describe("EnvironmentService", () => {
     });
   });
 
-  describe("setUrlsFromStorage", () => {
-    it("will set the global data to Region US if no existing data", async () => {
-      await sut.setUrlsFromStorage();
-
-      const env = await firstValueFrom(sut.environment$);
-
-      expect(env.getWebVaultUrl()).toBe("https://vault.bitwarden.com");
-
-      const data = await firstValueFrom(sut.environment$);
-      expect(data.getRegion()).toBe(Region.US);
-    });
-
-    it("will set the urls to whatever is in global", async () => {
-      setGlobalData(Region.EU, new EnvironmentUrls());
-
-      await sut.setUrlsFromStorage();
-
-      const env = await firstValueFrom(sut.environment$);
-
-      expect(env.getWebVaultUrl()).toBe("https://vault.bitwarden.eu");
-    });
-
-    it("will get urls from signed in user", async () => {
-      await switchUser(testUser);
-
-      const userUrls = new EnvironmentUrls();
-      userUrls.base = "base.example.com";
-      await setUserData(Region.SelfHosted, userUrls);
-
-      const env = await firstValueFrom(sut.environment$);
-
-      expect(env.getWebVaultUrl()).toBe("base.example.com");
-    });
-  });
-
   describe("getCloudWebVaultUrl", () => {
     it("no extra initialization, returns US vault", () => {
       expect(sut.getCloudWebVaultUrl()).toBe("https://vault.bitwarden.com");

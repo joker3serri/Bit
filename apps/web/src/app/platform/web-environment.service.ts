@@ -51,11 +51,6 @@ export class WebEnvironmentService extends EnvironmentService {
   async setEnvironment(region: Region, urls?: Urls): Promise<Urls> {
     return;
   }
-
-  // Web cannot set urls from storage
-  async setUrlsFromStorage(): Promise<void> {
-    return;
-  }
 }
 
 class WebCloudEnvironment extends CloudEnvironment {
