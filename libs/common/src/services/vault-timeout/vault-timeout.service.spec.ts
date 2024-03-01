@@ -107,7 +107,8 @@ describe("VaultTimeoutService", () => {
       return Promise.resolve(accounts[userId]?.authStatus);
     });
     stateService.getIsAuthenticated.mockImplementation((options) => {
-      return Promise.resolve(accounts[options.userId]?.isAuthenticated);
+      // Just like actual state service, if no userId is given fallback to active userId
+      return Promise.resolve(accounts[options.userId ?? globalSetups?.userId]?.isAuthenticated);
     });
 
     vaultTimeoutSettingsService.getVaultTimeout.mockImplementation((userId) => {
@@ -339,6 +340,60 @@ describe("VaultTimeoutService", () => {
       await vaultTimeoutService.checkVaultTimeout();
 
       expectNoAction("1");
+    });
+  });
+
+  describe("lock", () => {
+    it("should call state event runner with currently active user if no user passed into lock", async () => {
+      setupAccounts(
+        {
+          user1: {
+            authStatus: AuthenticationStatus.Unlocked,
+            isAuthenticated: true,
+          },
+          user2: {
+            authStatus: AuthenticationStatus.Unlocked,
+            isAuthenticated: true,
+          },
+        },
+        {
+          userId: "user1",
+        },
+      );
+
+      await vaultTimeoutService.lock();
+
+      expect(stateEventRunnerService.handleEvent).toHaveBeenCalledWith("lock", "user1");
+      // Currently these pass `undefined` (or what they were given) as the userId back
+      // but we could change this to give the user that was locked (active) to these methods
+      // so they don't have to get it their own way, but that is a behavioral change that needs
+      // to be tested.
+      expect(messagingService.send).toHaveBeenCalledWith("locked", { userId: undefined });
+      expect(lockedCallback).toHaveBeenCalledWith(undefined);
+    });
+
+    it("should call state event runner with user passed into lock", async () => {
+      setupAccounts(
+        {
+          user1: {
+            authStatus: AuthenticationStatus.Unlocked,
+            isAuthenticated: true,
+          },
+          user2: {
+            authStatus: AuthenticationStatus.Unlocked,
+            isAuthenticated: true,
+          },
+        },
+        {
+          userId: "user1", // Have user1 be active
+        },
+      );
+
+      await vaultTimeoutService.lock("user2");
+
+      expect(stateEventRunnerService.handleEvent).toHaveBeenCalledWith("lock", "user2");
+      expect(messagingService.send).toHaveBeenCalledWith("locked", { userId: "user2" });
+      expect(lockedCallback).toHaveBeenCalledWith("user2");
     });
   });
 });
