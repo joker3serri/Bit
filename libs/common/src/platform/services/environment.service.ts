@@ -92,9 +92,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
   private globalState: GlobalState<EnvironmentState | null>;
 
-  // Temporary local variable, remove once all external functions are async and can depend on the environment$ observable.
-  protected environment: Environment = new CloudEnvironment(DEFAULT_REGION_CONFIG);
-
   // We intentionally don't want the helper on account service, we want the null back if there is no active user
   private activeAccountId$: Observable<UserId | null> = this.accountService.activeAccount$.pipe(
     map((a) => a?.id),
@@ -117,17 +114,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
   constructor(
     private stateProvider: StateProvider,
     private accountService: AccountService,
-    private initializeEnvironment: boolean = true,
   ) {
-    if (this.initializeEnvironment) {
-      // TODO: Get rid of early subscription when all non-async functions are removed
-      this.environment$.subscribe((env) => {
-        if (env != null) {
-          this.environment = env;
-        }
-      });
-    }
-
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
   }
 
@@ -230,10 +217,6 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     if (r != null) {
       this.cloudWebVaultUrl = r.urls.webVault;
     }
-  }
-
-  isEmpty(): boolean {
-    return isEmpty(this.environment.getUrls());
   }
 
   async getEnvironment(userId?: UserId) {
@@ -369,13 +352,11 @@ abstract class UrlEnvironment implements Environment {
       : this.getWebVaultUrl() + "/#/send/";
   }
 
+  /**
+   * Presume that if the region is not self-hosted, it is cloud.
+   */
   isCloud(): boolean {
-    return [
-      "https://api.bitwarden.com",
-      "https://vault.bitwarden.com/api",
-      "https://api.bitwarden.eu",
-      "https://vault.bitwarden.eu/api",
-    ].includes(this.getApiUrl());
+    return this.region !== Region.SelfHosted;
   }
 
   /**

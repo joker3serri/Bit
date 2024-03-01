@@ -24,8 +24,7 @@ export class WebEnvironmentService extends EnvironmentService {
     stateProvider: StateProvider,
     accountService: AccountService,
   ) {
-    // Prevent subscribing to the state driven environment$
-    super(stateProvider, accountService, false);
+    super(stateProvider, accountService);
 
     // The web vault always uses the current location as the base url
     const urls = process.env.URLS as Urls;
@@ -35,15 +34,16 @@ export class WebEnvironmentService extends EnvironmentService {
     const domain = Utils.getDomain(this.win.location.href);
     const region = this.availableRegions().find((r) => Utils.getDomain(r.urls.webVault) === domain);
 
+    let environment: Environment;
     if (region) {
-      this.environment = new WebCloudEnvironment(region, urls);
+      environment = new WebCloudEnvironment(region, urls);
     } else {
-      this.environment = new SelfHostedEnvironment(urls);
+      environment = new SelfHostedEnvironment(urls);
     }
 
     // Override the environment observable with a replay subject
     const subject = new ReplaySubject<Environment>(1);
-    subject.next(this.environment);
+    subject.next(environment);
     this.environment$ = subject.asObservable();
   }
 
