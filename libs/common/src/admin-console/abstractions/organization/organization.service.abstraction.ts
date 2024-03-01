@@ -98,13 +98,7 @@ export function isMember(org: Organization): boolean {
 export abstract class OrganizationService {
   /**
    * Publishes state for all organizations under the active user.
-   *
-   * There are helper functions available for use in pipes that will
-   * filter subscriptions for common tasks like subscribing to only one
-   * organization, but they must be imported directly. See
-   * `organization.service.abstraction` for details.
-   * @returns An observable list of organizations that meet the search criteria
-   * provided.
+   * @returns An observable list of organizations
    */
   organizations$: Observable<Organization[]>;
 
