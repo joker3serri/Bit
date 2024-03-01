@@ -171,11 +171,7 @@ describe("EnvironmentService", () => {
 
   describe("without user", () => {
     it.each(REGION_SETUP)("gets default urls %s", async ({ region, expectedUrls }) => {
-      await stateProvider.global.getFake(ENVIRONMENT_KEY).stateSubject.next({
-        region: region,
-        urls: new EnvironmentUrls(),
-      });
-
+      setGlobalData(region, new EnvironmentUrls());
       const env = await firstValueFrom(sut.environment$);
 
       expect(env.hasBaseUrl()).toBe(false);
@@ -200,6 +196,43 @@ describe("EnvironmentService", () => {
         events: expectedUrls.events,
         scim: expectedUrls.scim.replace("/v2", ""),
         keyConnector: undefined,
+      });
+    });
+
+    it("gets global data", async () => {
+      const globalEnvironmentUrls = new EnvironmentUrls();
+      globalEnvironmentUrls.base = "https://global-url.example.com";
+      globalEnvironmentUrls.keyConnector = "https://global-key-connector.example.com";
+      setGlobalData(Region.SelfHosted, globalEnvironmentUrls);
+
+      const userEnvironmentUrls = new EnvironmentUrls();
+      userEnvironmentUrls.base = "https://user-url.example.com";
+      userEnvironmentUrls.keyConnector = "https://user-key-connector.example.com";
+      setUserData(Region.SelfHosted, userEnvironmentUrls);
+
+      const env = await firstValueFrom(sut.environment$);
+
+      expect(env.getWebVaultUrl()).toBe("https://global-url.example.com");
+      expect(env.getIdentityUrl()).toBe("https://global-url.example.com/identity");
+      expect(env.getApiUrl()).toBe("https://global-url.example.com/api");
+      expect(env.getIconsUrl()).toBe("https://global-url.example.com/icons");
+      expect(env.getNotificationsUrl()).toBe("https://global-url.example.com/notifications");
+      expect(env.getEventsUrl()).toBe("https://global-url.example.com/events");
+      expect(env.getScimUrl()).toBe("https://global-url.example.com/scim/v2");
+      expect(env.getSendUrl()).toBe("https://global-url.example.com/#/send/");
+      expect(env.getKeyConnectorUrl()).toBe("https://global-key-connector.example.com");
+      expect(env.isCloud()).toBe(false);
+      expect(env.getUrls()).toEqual({
+        api: null,
+        base: "https://global-url.example.com",
+        cloudWebVault: undefined,
+        webVault: null,
+        events: null,
+        icons: null,
+        identity: null,
+        keyConnector: "https://global-key-connector.example.com",
+        notifications: null,
+        scim: null,
       });
     });
   });
