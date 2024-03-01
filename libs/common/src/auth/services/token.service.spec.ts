@@ -3,9 +3,18 @@ import { mock } from "jest-mock-extended";
 import { FakeSingleUserStateProvider, FakeGlobalStateProvider } from "../../../spec";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
+import { StorageLocation } from "../../platform/enums";
+import { StorageOptions } from "../../platform/models/domain/storage-options";
+import { UserId } from "../../types/guid";
 
+import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
 import { TokenService, TokenStorageLocation } from "./token.service";
-import { EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL } from "./token.state";
+import {
+  ACCESS_TOKEN_DISK,
+  ACCESS_TOKEN_MEMORY,
+  ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+  EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+} from "./token.state";
 
 type VaultTimeoutSettings = Partial<{
   [key in TokenStorageLocation]: {
@@ -47,46 +56,278 @@ describe("TokenService", () => {
     expect(tokenService).not.toBeFalsy();
   });
 
-  // AccessToken logic
-  describe("AccessToken logic", () => {
-    // TODO: Need to break apart testing this into memory, disk, and secure storage tests
+  describe("AccessToken methods", () => {
+    const accessTokenJwt =
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IkY5NjBFQzY4RThEMTBDMUEzNEE0OUYwODkwQkExQkExMDk4QUIzMjFSUzI1NiIsIng1dCI6Ii1XRHNhT2pSREJvMHBKOElrTG9ib1FtS3N5RSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwibmJmIjoxNzA5MzI0MTExLCJpYXQiOjE3MDkzMjQxMTEsImV4cCI6MTcwOTMyNzcxMSwic2NvcGUiOlsiYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbIkFwcGxpY2F0aW9uIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6ImVjZTcwYTEzLTcyMTYtNDNjNC05OTc3LWIxMDMwMTQ2ZTFlNyIsImF1dGhfdGltZSI6MTcwOTMyNDEwNCwiaWRwIjoiYml0d2FyZGVuIiwicHJlbWl1bSI6ZmFsc2UsImVtYWlsIjoianNuaWRlclx1MDAyQmxvY2FsQGJpdHdhcmRlbi5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInNzdGFtcCI6IkdZN0pBTzY0Q0tLVEtCQjZaRUFVWUwyV09RVTdBU1QyIiwibmFtZSI6IkphcmVkIFNuaWRlciAxIiwib3Jnb3duZXIiOlsiOTJiNDk5MDgtYjUxNC00NWE4LWJhZGItYjEwMzAxNDhmZTUzIiwiMzhlZGUzMjItYjRiNC00YmQ4LTllMDktYjEwNzAxMTJkYzExIiwiYjJkMDcwMjgtYTU4My00YzNlLThkNjAtYjEwNzAxMTk4YzI5IiwiYmY5MzRiYTItMGZkNC00OWYyLWE5NWUtYjEwNzAxMWZjOWU2IiwiYzBiN2Y3NWQtMDE1Zi00MmM5LWIzYTYtYjEwODAxNzYwN2NhIl0sImRldmljZSI6IjRiODcyMzY3LTBkYTYtNDFhMC1hZGNiLTc3ZjJmZWVmYzRmNCIsImp0aSI6Ijc1MTYxQkU0MTMxRkY1QTJERTUxMUI4QzRFMkZGODlBIn0.g-18EOexIbt7YIFW_D79Ilxe5-ZwTVjmFM5aRcLGyDnQZTXihBzYewzOPbQDoz0hdZF-LM8p94-45uYO3TgAUcYe6yOIpL6naJ7yNW8x_AU_Hc2FAChfV5N9mW7vzKkc_SJvHqyMifj6XGDpIwMAUY9U_WbFpPnkF9yO0moLBq5vtOrcnNSarou9kp4mQhf1KR123onO4SnMNrxyht9YWayCA0EyIjMoglQgJo_ecsJrkLCt0va9Xbx6hqYz_cDrcIvLq7NQkIe-ehHAZikTSqB9xaYpx5luWMyE0Wqw_Os47xpH-N56p8bGWPpoEhrDJKaZyl-Hn8--aGcBEu80zgAFKjARNsZzVm1g4UZcrgCOqyYQQi6JkKzIZ8ogGsEEeJSf_FFa0t9k7OFe2vvpfBRpB1OX1-O1hmUFFvX4k1MNd0TsrZSUZe_zwiMoGKsR182TPSdZlc7ucq7mt9oLPzCoJnyDxvm_fjQMaRKa6ITnnuNvA0I8qwqXO-Ga3hb2NZjrzaKh2iZAMlKHZohseX7gtxFh6r6ORgWDd-eUKnCJbLbNtcwQXH_XqPLqLldfdJA27V76GOBJypSqHNqBWYx6CYqCcihyM56SHkomUPcxdjuIZqpWUKKnevuIT_v5da5VnmP0TLi88ZdIjRGCVu9Cipx56dru_wwF_Um9304";
+
+    const accessTokenDecoded = {
+      iss: "http://localhost",
+      nbf: 1709324111,
+      iat: 1709324111,
+      exp: 1709327711,
+      scope: ["api", "offline_access"],
+      amr: ["Application"],
+      client_id: "web",
+      sub: "ece70a13-7216-43c4-9977-b1030146e1e7", // user id
+      auth_time: 1709324104,
+      idp: "bitwarden",
+      premium: false,
+      email: "jsnider+local@bitwarden.com",
+      email_verified: false,
+      sstamp: "GY7JAO64CKKTKBB6ZEAUYL2WOQU7AST2",
+      name: "Jared Snider 1",
+      orgowner: [
+        "92b49908-b514-45a8-badb-b1030148fe53",
+        "38ede322-b4b4-4bd8-9e09-b1070112dc11",
+        "b2d07028-a583-4c3e-8d60-b10701198c29",
+        "bf934ba2-0fd4-49f2-a95e-b107011fc9e6",
+        "c0b7f75d-015f-42c9-b3a6-b108017607ca",
+      ],
+      device: "4b872367-0da6-41a0-adcb-77f2feefc4f4",
+      jti: "75161BE4131FF5A2DE511B8C4E2FF89A",
+    };
+
+    const userIdFromAccessToken: UserId = accessTokenDecoded.sub as UserId;
+
+    const accessTokenPartialSecureStorageKey = `_accessToken`;
+    const accessTokenSecureStorageKey = `${userIdFromAccessToken}${accessTokenPartialSecureStorageKey}`;
+
+    const accessTokenSecureStorageOptions: StorageOptions = {
+      storageLocation: StorageLocation.Disk,
+      useSecureStorage: true,
+      userId: userIdFromAccessToken,
+    };
 
     describe("Memory storage tests", () => {
       const { vaultTimeoutAction, vaultTimeout } =
         vaultTimeoutSettings[TokenStorageLocation.Memory];
 
-      // beforeEach(() => {
-      // })
-
       it("should set the access token in memory", async () => {
-        // TODO: must create valid access token that can be decoded.
-        // Arrange
-        const accessToken = "accessTokenForTestUser";
         // Act
-        await tokenService.setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout);
+        await tokenService.setAccessToken(accessTokenJwt, vaultTimeoutAction, vaultTimeout);
         // Assert
         expect(
-          globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
-        ).toHaveBeenCalledWith({ accessToken });
+          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
+        ).toHaveBeenCalledWith(accessTokenJwt);
+      });
+
+      it("should get the access token from memory with no user id specified (uses global active user)", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
+        // set disk to undefined
+        // singleUserStateProvider
+        //   .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+        //   .stateSubject.next([userIdFromAccessToken, undefined]);
+
+        // Need to have global active id set to the user id
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = await tokenService.getAccessToken();
+
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+
+        // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+        // assert disk was not called
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
+        ).not.toHaveBeenCalled();
+      });
+
+      it("should get the access token from memory for the specified user id", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Act
+        const result = await tokenService.getAccessToken(userIdFromAccessToken);
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
       });
     });
 
-    // describe("setAccessToken", () => {
-    //   it("should set the access token ", async () => {
-    //     // Arrange
-    //     const accessToken = "accessTokenForTestUser";
-    //     //
-    //     // Act
-    //     await tokenService.setAccessToken(accessToken);
-    //     // Assert
-    //     expect(
-    //       globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
-    //     ).toHaveBeenCalledWith({ accessToken });
-    //   });
-    // });
+    describe("Disk storage tests (secure storage not supported on platform)", () => {
+      const { vaultTimeoutAction, vaultTimeout } = vaultTimeoutSettings[TokenStorageLocation.Disk];
+
+      it("should set the access token in disk", async () => {
+        // Act
+        await tokenService.setAccessToken(accessTokenJwt, vaultTimeoutAction, vaultTimeout);
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
+        ).toHaveBeenCalledWith(accessTokenJwt);
+      });
+
+      it("should get the access token from disk with no user id specified", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Need to have global active id set to the user id
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = await tokenService.getAccessToken();
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+      });
+
+      it("should get the access token from disk for the specified user id", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Act
+        const result = await tokenService.getAccessToken(userIdFromAccessToken);
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+      });
+    });
+
+    describe("Disk storage tests (secure storage supported on platform)", () => {
+      const { vaultTimeoutAction, vaultTimeout } = vaultTimeoutSettings[TokenStorageLocation.Disk];
+
+      beforeEach(() => {
+        const supportsSecureStorage = true;
+        tokenService = createTokenService(supportsSecureStorage);
+      });
+
+      it("should set the access token in secure storage, null out data on disk or in memory, and set a flag to indicate the token has been migrated", async () => {
+        // Arrange:
+
+        // For testing purposes, let's assume that the access token is already in disk and memory
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Act
+        await tokenService.setAccessToken(accessTokenJwt, vaultTimeoutAction, vaultTimeout);
+        // Assert
+
+        // assert that the access token was set in secure storage
+        expect(secureStorageService.save).toHaveBeenCalledWith(
+          accessTokenSecureStorageKey,
+          accessTokenJwt,
+          accessTokenSecureStorageOptions,
+        );
+
+        // assert data was migrated out of disk and memory + flag was set
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
+        ).toHaveBeenCalledWith(null);
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
+        ).toHaveBeenCalledWith(null);
+
+        expect(
+          singleUserStateProvider.getFake(
+            userIdFromAccessToken,
+            ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+          ).nextMock,
+        ).toHaveBeenCalledWith(true);
+      });
+
+      it("should get the access token from secure storage when no user id is specified and the migration flag is set to true", async () => {
+        // Arrange
+        secureStorageService.get.mockResolvedValue(accessTokenJwt);
+
+        // Need to have global active id set to the user id
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // set access token migration flag to true
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+          .stateSubject.next([userIdFromAccessToken, true]);
+
+        // Act
+        const result = await tokenService.getAccessToken();
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+      });
+
+      it("should get the access token from secure storage when user id is specified and the migration flag set to true", async () => {
+        // Arrange
+        secureStorageService.get.mockResolvedValue(accessTokenJwt);
+
+        // set access token migration flag to true
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+          .stateSubject.next([userIdFromAccessToken, true]);
+
+        // Act
+        const result = await tokenService.getAccessToken(userIdFromAccessToken);
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+      });
+
+      it("should fallback and get the access token from disk when user id is specified and the migration flag is set to false even if the platform supports secure storage", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // set access token migration flag to false
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+          .stateSubject.next([userIdFromAccessToken, false]);
+
+        // Act
+        const result = await tokenService.getAccessToken(userIdFromAccessToken);
+
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+
+        // assert that secure storage was not called
+        expect(secureStorageService.get).not.toHaveBeenCalled();
+      });
+
+      it("should fallback and get the access token from disk when no user id is specified and the migration flag is set to false even if the platform supports secure storage", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Need to have global active id set to the user id
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // set access token migration flag to false
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+          .stateSubject.next([userIdFromAccessToken, false]);
+
+        // Act
+        const result = await tokenService.getAccessToken();
+
+        // Assert
+        expect(result).toEqual(accessTokenJwt);
+
+        // assert that secure storage was not called
+        expect(secureStorageService.get).not.toHaveBeenCalled();
+      });
+    });
   });
 
-  describe("TwoFactorToken logic", () => {
+  describe("TwoFactorToken methods", () => {
     describe("setTwoFactorToken", () => {
       it("should set the email and two factor token when there hasn't been a previous record (initializing the record)", async () => {
         // Arrange
