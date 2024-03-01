@@ -21,7 +21,8 @@ import { MoveBiometricPromptsToStateProviders } from "./migrations/23-move-biome
 import { SmOnboardingTasksMigrator } from "./migrations/24-move-sm-onboarding-key-to-state-providers";
 import { ClearClipboardDelayMigrator } from "./migrations/25-move-clear-clipboard-to-autofill-settings-state-provider";
 import { BadgeSettingsMigrator } from "./migrations/26-move-badge-settings-to-state-providers";
-import { OrganizationMigrator } from "./migrations/27-move-organization-state-to-state-provider";
+import { MoveBiometricUnlockToStateProviders } from "./migrations/27-move-biometric-unlock-to-state-providers";
+import { OrganizationMigrator } from "./migrations/28-move-organization-state-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
@@ -32,7 +33,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 2;
-export const CURRENT_VERSION = 27;
+export const CURRENT_VERSION = 28;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -62,7 +63,8 @@ export function createMigrationBuilder() {
     .with(SmOnboardingTasksMigrator, 23, 24)
     .with(ClearClipboardDelayMigrator, 24, 25)
     .with(BadgeSettingsMigrator, 25, 26)
-    .with(OrganizationMigrator, 26, CURRENT_VERSION);
+    .with(MoveBiometricUnlockToStateProviders, 26, 27)
+    .with(OrganizationMigrator, 27, CURRENT_VERSION);
 }
 
 export async function currentVersion(

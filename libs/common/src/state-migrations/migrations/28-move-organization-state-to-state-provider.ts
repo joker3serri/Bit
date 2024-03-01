@@ -115,7 +115,7 @@ const USER_ORGANIZATIONS: KeyDefinitionLike = {
   },
 };
 
-export class OrganizationMigrator extends Migrator<26, 27> {
+export class OrganizationMigrator extends Migrator<27, 28> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

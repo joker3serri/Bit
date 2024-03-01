@@ -3,7 +3,7 @@ import { any, MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { OrganizationMigrator } from "./27-move-organization-state-to-state-provider";
+import { OrganizationMigrator } from "./28-move-organization-state-to-state-provider";
 
 const testDate = new Date();
 function exampleOrganization1() {
@@ -121,8 +121,8 @@ describe("OrganizationMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 27);
-      sut = new OrganizationMigrator(26, 27);
+      helper = mockMigrationHelper(exampleJSON(), 28);
+      sut = new OrganizationMigrator(27, 28);
     });
 
     it("should remove organizations from all accounts", async () => {
@@ -149,8 +149,8 @@ describe("OrganizationMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 27);
-      sut = new OrganizationMigrator(26, 27);
+      helper = mockMigrationHelper(rollbackJSON(), 28);
+      sut = new OrganizationMigrator(27, 28);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
