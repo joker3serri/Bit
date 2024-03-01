@@ -6,7 +6,11 @@ import AutofillField from "../models/autofill-field";
 import { WatchedForm } from "../models/watched-form";
 import { FormData } from "../services/abstractions/autofill.service";
 import { GlobalSettings, UserSettings } from "../types";
-import { getFromLocalStorage, setupExtensionDisconnectAction } from "../utils";
+import {
+  getFromLocalStorage,
+  sendExtensionMessage,
+  setupExtensionDisconnectAction,
+} from "../utils";
 
 interface HTMLElementWithFormOpId extends HTMLElement {
   formOpId: string;
@@ -85,13 +89,11 @@ async function loadNotificationBar() {
   ]);
   const changePasswordButtonContainsNames = new Set(["pass", "change", "contras", "senha"]);
 
-  const enableChangedPasswordPrompt = true;
+  const enableChangedPasswordPrompt = await sendExtensionMessage(
+    "bgGetEnableChangedPasswordPrompt",
+  );
+  const enableAddedLoginPrompt = await sendExtensionMessage("bgGetEnableAddedLoginPrompt");
   let showNotificationBar = true;
-
-  sendPlatformMessage({
-    command: "bgGetEnableChangedPasswordPrompt",
-  });
-
   // Look up the active user id from storage
   const activeUserIdKey = "activeUserId";
   const globalStorageKey = "global";
@@ -121,8 +123,10 @@ async function loadNotificationBar() {
       // Example: '{"bitwarden.com":null}'
       const excludedDomainsDict = globalSettings.neverDomains;
       if (!excludedDomainsDict || !(window.location.hostname in excludedDomainsDict)) {
-        // handle the initial page change (null -> actual page)
-        handlePageChange();
+        if (enableAddedLoginPrompt || enableChangedPasswordPrompt) {
+          // If the user has not disabled both notifications, then handle the initial page change (null -> actual page)
+          handlePageChange();
+        }
       }
     }
   }
@@ -201,10 +205,6 @@ async function loadNotificationBar() {
         },
         "*",
       );
-    } else if (msg.command === "setEnableChangedPasswordPrompt") {
-      this.enableChangedPasswordPrompt = msg.data.value;
-      sendResponse();
-      return true;
     }
   }
   // End Message Processing
@@ -350,9 +350,7 @@ async function loadNotificationBar() {
       // to avoid missing any forms that are added after the page loads
       observeDom();
 
-      sendPlatformMessage({
-        command: "checkNotificationQueue",
-      });
+      void sendExtensionMessage("checkNotificationQueue");
     }
 
     // This is a safeguard in case the observer misses a SPA page change.
@@ -390,10 +388,7 @@ async function loadNotificationBar() {
    *
    * */
   function collectPageDetails() {
-    sendPlatformMessage({
-      command: "bgCollectPageDetails",
-      sender: "notificationBar",
-    });
+    void sendExtensionMessage("bgCollectPageDetails", { sender: "notificationBar" });
   }
 
   // End Page Detail Collection Methods
@@ -618,8 +613,12 @@ async function loadNotificationBar() {
         continue;
       }
 
-      // if we have a username and password field,
-      if (watchedForms[i].usernameEl != null && watchedForms[i].passwordEl != null) {
+      // if user has enabled either add login or change password notification, and we have a username and password field
+      if (
+        (enableChangedPasswordPrompt || enableAddedLoginPrompt) &&
+        watchedForms[i].usernameEl != null &&
+        watchedForms[i].passwordEl != null
+      ) {
         // Create a login object from the form data
         const login: AddLoginMessageData = {
           username: watchedForms[i].usernameEl.value,
@@ -632,10 +631,7 @@ async function loadNotificationBar() {
         const passwordPopulated = login.password != null && login.password !== "";
         if (userNamePopulated && passwordPopulated) {
           processedForm(form);
-          sendPlatformMessage({
-            command: "bgAddLogin",
-            login,
-          });
+          void sendExtensionMessage("bgAddLogin", { login });
           break;
         } else if (
           userNamePopulated &&
@@ -709,7 +705,7 @@ async function loadNotificationBar() {
             currentPassword: curPass,
             url: document.URL,
           };
-          sendPlatformMessage({ command: "bgChangedPassword", data });
+          void sendExtensionMessage("bgChangedPassword", { data });
           break;
         }
       }
@@ -921,9 +917,7 @@ async function loadNotificationBar() {
     switch (barType) {
       case "add":
       case "change":
-        sendPlatformMessage({
-          command: "bgRemoveTabFromNotificationQueue",
-        });
+        void sendExtensionMessage("bgRemoveTabFromNotificationQueue");
         break;
       default:
         break;
@@ -948,12 +942,6 @@ async function loadNotificationBar() {
   // End Notification Bar Functions (open, close, height adjustment, etc.)
 
   // Helper Functions
-  function sendPlatformMessage(msg: any) {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    chrome.runtime.sendMessage(msg);
-  }
-
   function isInIframe() {
     try {
       return window.self !== window.top;
