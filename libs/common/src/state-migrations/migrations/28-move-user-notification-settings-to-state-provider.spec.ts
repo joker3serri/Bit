@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { StateDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { UserNotificationSettingsKeyMigrator } from "./27-move-user-notification-settings-to-state-provider";
+import { UserNotificationSettingsKeyMigrator } from "./28-move-user-notification-settings-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -39,8 +39,8 @@ describe("ProviderKeysMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 26);
-      sut = new UserNotificationSettingsKeyMigrator(26, 27);
+      helper = mockMigrationHelper(exampleJSON(), 27);
+      sut = new UserNotificationSettingsKeyMigrator(27, 28);
     });
 
     it("should remove disableAddLoginNotification and disableChangedPasswordNotification global setting", async () => {
@@ -67,8 +67,8 @@ describe("ProviderKeysMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 27);
-      sut = new UserNotificationSettingsKeyMigrator(26, 27);
+      helper = mockMigrationHelper(rollbackJSON(), 28);
+      sut = new UserNotificationSettingsKeyMigrator(27, 28);
     });
 
     it("should null out new global values", async () => {
