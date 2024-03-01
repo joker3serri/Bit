@@ -400,7 +400,6 @@ export class AppComponent implements OnInit, OnDestroy {
             if (message.userId != null) {
               await this.stateService.setActiveUser(message.userId);
             }
-
             const locked =
               (await this.authService.getAuthStatus(message.userId)) ===
               AuthenticationStatus.Locked;
