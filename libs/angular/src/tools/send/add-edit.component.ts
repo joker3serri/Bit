@@ -121,12 +121,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
       { name: i18nService.t("sendTypeFile"), value: SendType.File, premium: true },
       { name: i18nService.t("sendTypeText"), value: SendType.Text, premium: false },
     ];
-
-    firstValueFrom(this.environmentService.environment$)
-      .then((env) => {
-        this.sendLinkBaseUrl = env.getSendUrl();
-      })
-      .catch((e) => logService.error("Unable to get environment" + e));
   }
 
   get link(): string {
@@ -189,6 +183,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
           this.formGroup.controls.hideEmail.disable();
         }
       });
+
+    const env = await firstValueFrom(this.environmentService.environment$);
+    this.sendLinkBaseUrl = env.getSendUrl();
 
     await this.load();
   }

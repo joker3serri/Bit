@@ -96,7 +96,10 @@ export abstract class EnvironmentService {
   setEnvironment: (region: Region, urls?: Urls) => Promise<Urls>;
 
   /**
-   * Seed the environment for a given user based on the globally set defaults.
+   * Seed the environment state for a given user based on the global environment.
+   *
+   * @remarks
+   * Expected to be called only by the StateService when adding a new account.
    */
   seedUserEnvironment: (userId: UserId) => Promise<void>;
 
