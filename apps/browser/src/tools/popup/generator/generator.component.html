@@ -424,24 +424,35 @@
           <div
             class="box-content-row"
             role="radiogroup"
-            aria-labelledby="catchallTypeHeading"
-            *ngIf="catchallOptions.length > 1"
+            aria-labelledby="cloudflareTypeHeading"
+            *ngIf="cloudflareOptions.length > 1"
           >
-            <label id="catchallTypeHeading" class="radio-header">{{ "type" | i18n }}</label>
-            <div class="radio-group text-default" appBoxRow *ngFor="let o of catchallOptions">
+            <label id="cloudflareTypeHeading" class="radio-header">{{ "type" | i18n }}</label>
+            <div class="radio-group text-default" appBoxRow *ngFor="let o of cloudflareOptions">
               <input
                 type="radio"
-                [(ngModel)]="usernameOptions.catchallType"
-                name="CatchallType"
-                id="catchalltype_{{ o.value }}"
+                [(ngModel)]="usernameOptions.cloudflareType"
+                name="CloudflareType"
+                id="cloudflaretype_{{ o.value }}"
                 [value]="o.value"
                 (change)="saveUsernameOptions()"
-                [checked]="usernameOptions.catchallType === o.value"
+                [checked]="usernameOptions.cloudflareType === o.value"
               />
-              <label for="catchalltype_{{ o.value }}">
+              <label for="cloudflaretype_{{ o.value }}">
                 {{ o.name }}
               </label>
             </div>
+          </div>
+          <div class="box-content-row" appBoxRow *ngIf="usernameWebsite">
+            <label for="cloudflare-website">{{ "website" | i18n }}</label>
+            <input
+              id="cloudflare-website"
+              type="text"
+              name="cloudflareWebsite"
+              [value]="usernameOptions.website"
+              disabled
+              readonly
+            />
           </div>
           <div class="box-content-row" appBoxRow>
             <label for="cloudflare-Recipient">{{ "cloudflareRecipient" | i18n }}</label>

@@ -32,6 +32,7 @@ export class GeneratorComponent implements OnInit {
   usernameTypeOptions: any[];
   subaddressOptions: any[];
   catchallOptions: any[];
+  cloudflareOptions: any[];
   forwardOptions: EmailForwarderOptions[];
   usernameOptions: UsernameGeneratorOptions = {};
   passwordOptions: PasswordGeneratorOptions = {};
@@ -90,6 +91,7 @@ export class GeneratorComponent implements OnInit {
     ];
     this.subaddressOptions = [{ name: i18nService.t("random"), value: "random" }];
     this.catchallOptions = [{ name: i18nService.t("random"), value: "random" }];
+    this.cloudflareOptions = [{ name: i18nService.t("random"), value: "random" }];
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.initForwardOptions();
@@ -122,6 +124,7 @@ export class GeneratorComponent implements OnInit {
         const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };
         this.subaddressOptions.push(websiteOption);
         this.catchallOptions.push(websiteOption);
+        this.cloudflareOptions.push(websiteOption);
       }
 
       if (this.type !== "username" && this.type !== "password") {

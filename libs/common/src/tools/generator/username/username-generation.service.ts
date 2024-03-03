@@ -143,7 +143,7 @@ export class UsernameGenerationService implements UsernameGenerationServiceAbstr
       forwarderOptions.cloudflare.zoneId = o.forwardedCloudflareZoneId;
       forwarderOptions.cloudflare.alias = o.forwardedCloudflareAliasDomain;
       forwarderOptions.cloudflare.recipient = o.forwardedCloudflareRecipient;
-      if (o.catchallType === "website-name") {
+      if (o.cloudflareType === "website-name") {
         forwarderOptions.cloudflare.startString = o.website + "." + (await this.randomString(3));
       } else {
         forwarderOptions.cloudflare.startString = await this.randomString(8);
