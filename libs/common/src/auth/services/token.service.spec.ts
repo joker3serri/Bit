@@ -556,7 +556,7 @@ describe("TokenService", () => {
       expect(tokenService.setClientSecret).not.toHaveBeenCalled();
     });
 
-    it("should throw an error if the access token is invalid and no global active user exists", async () => {
+    it("should throw an error if the access token is invalid", async () => {
       // Arrange
       const accessToken = "invalidToken";
       const refreshToken = "refreshToken";
