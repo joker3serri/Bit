@@ -29,6 +29,38 @@ describe("TokenService", () => {
   const diskVaultTimeoutAction = VaultTimeoutAction.Lock;
   const diskVaultTimeout: number = null;
 
+  const accessTokenJwt =
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkY5NjBFQzY4RThEMTBDMUEzNEE0OUYwODkwQkExQkExMDk4QUIzMjFSUzI1NiIsIng1dCI6Ii1XRHNhT2pSREJvMHBKOElrTG9ib1FtS3N5RSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwibmJmIjoxNzA5MzI0MTExLCJpYXQiOjE3MDkzMjQxMTEsImV4cCI6MTcwOTMyNzcxMSwic2NvcGUiOlsiYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbIkFwcGxpY2F0aW9uIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6ImVjZTcwYTEzLTcyMTYtNDNjNC05OTc3LWIxMDMwMTQ2ZTFlNyIsImF1dGhfdGltZSI6MTcwOTMyNDEwNCwiaWRwIjoiYml0d2FyZGVuIiwicHJlbWl1bSI6ZmFsc2UsImVtYWlsIjoianNuaWRlclx1MDAyQmxvY2FsQGJpdHdhcmRlbi5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInNzdGFtcCI6IkdZN0pBTzY0Q0tLVEtCQjZaRUFVWUwyV09RVTdBU1QyIiwibmFtZSI6IkphcmVkIFNuaWRlciAxIiwib3Jnb3duZXIiOlsiOTJiNDk5MDgtYjUxNC00NWE4LWJhZGItYjEwMzAxNDhmZTUzIiwiMzhlZGUzMjItYjRiNC00YmQ4LTllMDktYjEwNzAxMTJkYzExIiwiYjJkMDcwMjgtYTU4My00YzNlLThkNjAtYjEwNzAxMTk4YzI5IiwiYmY5MzRiYTItMGZkNC00OWYyLWE5NWUtYjEwNzAxMWZjOWU2IiwiYzBiN2Y3NWQtMDE1Zi00MmM5LWIzYTYtYjEwODAxNzYwN2NhIl0sImRldmljZSI6IjRiODcyMzY3LTBkYTYtNDFhMC1hZGNiLTc3ZjJmZWVmYzRmNCIsImp0aSI6Ijc1MTYxQkU0MTMxRkY1QTJERTUxMUI4QzRFMkZGODlBIn0.g-18EOexIbt7YIFW_D79Ilxe5-ZwTVjmFM5aRcLGyDnQZTXihBzYewzOPbQDoz0hdZF-LM8p94-45uYO3TgAUcYe6yOIpL6naJ7yNW8x_AU_Hc2FAChfV5N9mW7vzKkc_SJvHqyMifj6XGDpIwMAUY9U_WbFpPnkF9yO0moLBq5vtOrcnNSarou9kp4mQhf1KR123onO4SnMNrxyht9YWayCA0EyIjMoglQgJo_ecsJrkLCt0va9Xbx6hqYz_cDrcIvLq7NQkIe-ehHAZikTSqB9xaYpx5luWMyE0Wqw_Os47xpH-N56p8bGWPpoEhrDJKaZyl-Hn8--aGcBEu80zgAFKjARNsZzVm1g4UZcrgCOqyYQQi6JkKzIZ8ogGsEEeJSf_FFa0t9k7OFe2vvpfBRpB1OX1-O1hmUFFvX4k1MNd0TsrZSUZe_zwiMoGKsR182TPSdZlc7ucq7mt9oLPzCoJnyDxvm_fjQMaRKa6ITnnuNvA0I8qwqXO-Ga3hb2NZjrzaKh2iZAMlKHZohseX7gtxFh6r6ORgWDd-eUKnCJbLbNtcwQXH_XqPLqLldfdJA27V76GOBJypSqHNqBWYx6CYqCcihyM56SHkomUPcxdjuIZqpWUKKnevuIT_v5da5VnmP0TLi88ZdIjRGCVu9Cipx56dru_wwF_Um9304";
+
+  const accessTokenDecoded = {
+    iss: "http://localhost",
+    nbf: 1709324111,
+    iat: 1709324111,
+    exp: 1709327711,
+    scope: ["api", "offline_access"],
+    amr: ["Application"],
+    client_id: "web",
+    sub: "ece70a13-7216-43c4-9977-b1030146e1e7", // user id
+    auth_time: 1709324104,
+    idp: "bitwarden",
+    premium: false,
+    email: "jsnider+local@bitwarden.com",
+    email_verified: false,
+    sstamp: "GY7JAO64CKKTKBB6ZEAUYL2WOQU7AST2",
+    name: "Jared Snider 1",
+    orgowner: [
+      "92b49908-b514-45a8-badb-b1030148fe53",
+      "38ede322-b4b4-4bd8-9e09-b1070112dc11",
+      "b2d07028-a583-4c3e-8d60-b10701198c29",
+      "bf934ba2-0fd4-49f2-a95e-b107011fc9e6",
+      "c0b7f75d-015f-42c9-b3a6-b108017607ca",
+    ],
+    device: "4b872367-0da6-41a0-adcb-77f2feefc4f4",
+    jti: "75161BE4131FF5A2DE511B8C4E2FF89A",
+  };
+
+  const userIdFromAccessToken: UserId = accessTokenDecoded.sub as UserId;
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -44,38 +76,6 @@ describe("TokenService", () => {
   });
 
   describe("Access Token methods", () => {
-    const accessTokenJwt =
-      "eyJhbGciOiJSUzI1NiIsImtpZCI6IkY5NjBFQzY4RThEMTBDMUEzNEE0OUYwODkwQkExQkExMDk4QUIzMjFSUzI1NiIsIng1dCI6Ii1XRHNhT2pSREJvMHBKOElrTG9ib1FtS3N5RSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwibmJmIjoxNzA5MzI0MTExLCJpYXQiOjE3MDkzMjQxMTEsImV4cCI6MTcwOTMyNzcxMSwic2NvcGUiOlsiYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbIkFwcGxpY2F0aW9uIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6ImVjZTcwYTEzLTcyMTYtNDNjNC05OTc3LWIxMDMwMTQ2ZTFlNyIsImF1dGhfdGltZSI6MTcwOTMyNDEwNCwiaWRwIjoiYml0d2FyZGVuIiwicHJlbWl1bSI6ZmFsc2UsImVtYWlsIjoianNuaWRlclx1MDAyQmxvY2FsQGJpdHdhcmRlbi5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInNzdGFtcCI6IkdZN0pBTzY0Q0tLVEtCQjZaRUFVWUwyV09RVTdBU1QyIiwibmFtZSI6IkphcmVkIFNuaWRlciAxIiwib3Jnb3duZXIiOlsiOTJiNDk5MDgtYjUxNC00NWE4LWJhZGItYjEwMzAxNDhmZTUzIiwiMzhlZGUzMjItYjRiNC00YmQ4LTllMDktYjEwNzAxMTJkYzExIiwiYjJkMDcwMjgtYTU4My00YzNlLThkNjAtYjEwNzAxMTk4YzI5IiwiYmY5MzRiYTItMGZkNC00OWYyLWE5NWUtYjEwNzAxMWZjOWU2IiwiYzBiN2Y3NWQtMDE1Zi00MmM5LWIzYTYtYjEwODAxNzYwN2NhIl0sImRldmljZSI6IjRiODcyMzY3LTBkYTYtNDFhMC1hZGNiLTc3ZjJmZWVmYzRmNCIsImp0aSI6Ijc1MTYxQkU0MTMxRkY1QTJERTUxMUI4QzRFMkZGODlBIn0.g-18EOexIbt7YIFW_D79Ilxe5-ZwTVjmFM5aRcLGyDnQZTXihBzYewzOPbQDoz0hdZF-LM8p94-45uYO3TgAUcYe6yOIpL6naJ7yNW8x_AU_Hc2FAChfV5N9mW7vzKkc_SJvHqyMifj6XGDpIwMAUY9U_WbFpPnkF9yO0moLBq5vtOrcnNSarou9kp4mQhf1KR123onO4SnMNrxyht9YWayCA0EyIjMoglQgJo_ecsJrkLCt0va9Xbx6hqYz_cDrcIvLq7NQkIe-ehHAZikTSqB9xaYpx5luWMyE0Wqw_Os47xpH-N56p8bGWPpoEhrDJKaZyl-Hn8--aGcBEu80zgAFKjARNsZzVm1g4UZcrgCOqyYQQi6JkKzIZ8ogGsEEeJSf_FFa0t9k7OFe2vvpfBRpB1OX1-O1hmUFFvX4k1MNd0TsrZSUZe_zwiMoGKsR182TPSdZlc7ucq7mt9oLPzCoJnyDxvm_fjQMaRKa6ITnnuNvA0I8qwqXO-Ga3hb2NZjrzaKh2iZAMlKHZohseX7gtxFh6r6ORgWDd-eUKnCJbLbNtcwQXH_XqPLqLldfdJA27V76GOBJypSqHNqBWYx6CYqCcihyM56SHkomUPcxdjuIZqpWUKKnevuIT_v5da5VnmP0TLi88ZdIjRGCVu9Cipx56dru_wwF_Um9304";
-
-    const accessTokenDecoded = {
-      iss: "http://localhost",
-      nbf: 1709324111,
-      iat: 1709324111,
-      exp: 1709327711,
-      scope: ["api", "offline_access"],
-      amr: ["Application"],
-      client_id: "web",
-      sub: "ece70a13-7216-43c4-9977-b1030146e1e7", // user id
-      auth_time: 1709324104,
-      idp: "bitwarden",
-      premium: false,
-      email: "jsnider+local@bitwarden.com",
-      email_verified: false,
-      sstamp: "GY7JAO64CKKTKBB6ZEAUYL2WOQU7AST2",
-      name: "Jared Snider 1",
-      orgowner: [
-        "92b49908-b514-45a8-badb-b1030148fe53",
-        "38ede322-b4b4-4bd8-9e09-b1070112dc11",
-        "b2d07028-a583-4c3e-8d60-b10701198c29",
-        "bf934ba2-0fd4-49f2-a95e-b107011fc9e6",
-        "c0b7f75d-015f-42c9-b3a6-b108017607ca",
-      ],
-      device: "4b872367-0da6-41a0-adcb-77f2feefc4f4",
-      jti: "75161BE4131FF5A2DE511B8C4E2FF89A",
-    };
-
-    const userIdFromAccessToken: UserId = accessTokenDecoded.sub as UserId;
-
     const accessTokenPartialSecureStorageKey = `_accessToken`;
     const accessTokenSecureStorageKey = `${userIdFromAccessToken}${accessTokenPartialSecureStorageKey}`;
 
@@ -466,6 +466,113 @@ describe("TokenService", () => {
           );
         });
       });
+    });
+  });
+
+  describe("setTokens", () => {
+    it("should set all passed in tokens after deriving user id from the access token", async () => {
+      // Arrange
+      const refreshToken = "refreshToken";
+      // specific vault timeout actions and vault timeouts don't change this test so values don't matter.
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+      const clientId = "clientId";
+      const clientSecret = "clientSecret";
+
+      tokenService.setAccessToken = jest.fn();
+      // any hack allows for mocking private method.
+      (tokenService as any).setRefreshToken = jest.fn();
+      tokenService.setClientId = jest.fn();
+      tokenService.setClientSecret = jest.fn();
+
+      // Act
+      // Note: passing a valid access token so that a valid user id can be determined from the access token
+      await tokenService.setTokens(accessTokenJwt, refreshToken, vaultTimeoutAction, vaultTimeout, [
+        clientId,
+        clientSecret,
+      ]);
+
+      // Assert
+      expect(tokenService.setAccessToken).toHaveBeenCalledWith(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+
+      // any hack allows for testing private methods
+      expect((tokenService as any).setRefreshToken).toHaveBeenCalledWith(
+        refreshToken,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+
+      expect(tokenService.setClientId).toHaveBeenCalledWith(
+        clientId,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+      expect(tokenService.setClientSecret).toHaveBeenCalledWith(
+        clientSecret,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+    });
+
+    it("should not try to set client id and client secret if they are not passed in", async () => {
+      // Arrange
+      const refreshToken = "refreshToken";
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+
+      tokenService.setAccessToken = jest.fn();
+      (tokenService as any).setRefreshToken = jest.fn();
+      tokenService.setClientId = jest.fn();
+      tokenService.setClientSecret = jest.fn();
+
+      // Act
+      await tokenService.setTokens(accessTokenJwt, refreshToken, vaultTimeoutAction, vaultTimeout);
+
+      // Assert
+      expect(tokenService.setAccessToken).toHaveBeenCalledWith(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+
+      // any hack allows for testing private methods
+      expect((tokenService as any).setRefreshToken).toHaveBeenCalledWith(
+        refreshToken,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+
+      expect(tokenService.setClientId).not.toHaveBeenCalled();
+      expect(tokenService.setClientSecret).not.toHaveBeenCalled();
+    });
+
+    it("should throw an error if the access token is invalid and no global active user exists", async () => {
+      // Arrange
+      const accessToken = "invalidToken";
+      const refreshToken = "refreshToken";
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+
+      // Act
+      const result = tokenService.setTokens(
+        accessToken,
+        refreshToken,
+        vaultTimeoutAction,
+        vaultTimeout,
+      );
+
+      // Assert
+      await expect(result).rejects.toThrow("JWT must have 3 parts");
     });
   });
 
