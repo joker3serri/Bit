@@ -6,6 +6,7 @@ import { EncString } from "../../../../platform/models/domain/enc-string";
  */
 export type ForwarderId =
   | "anonaddy"
+  | "cloudflare"
   | "duckduckgo"
   | "fastmail"
   | "firefoxrelay"
@@ -44,6 +45,26 @@ export type ApiOptions = {
    *  This is used to store the token at rest and must be decoded before use.
    */
   encryptedToken?: EncString;
+};
+
+export type CloudflareApiOptions = ApiOptions & {
+  /** Cloudflare Zone ID */
+  zoneId: string;
+
+  /** Cloudflare Account ID */
+  accountId: string;
+
+  /** Cloudflare Generated Email */
+  email: string;
+
+  /** Cloudflare Recipient Email */
+  recipient: string;
+
+  /** Cloudflare Description */
+  description: string;
+
+  /** Zone Id - Domain  */
+  zoneIdDomain: string;
 };
 
 /** Api configuration for forwarders that support self-hosted installations. */

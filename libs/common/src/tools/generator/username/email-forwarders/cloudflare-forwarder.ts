@@ -55,8 +55,10 @@ export class CloudflareForwarder implements Forwarder {
 
     if (response.status === 200 || response.status === 201) {
       return generatedEmail;
-    } else if (response.status === 401) {
+    } else if (response.status === 400) {
       throw "Invalid Cloudflare API token.";
+    } else if (response.status === 404) {
+      throw "Cloudflare could not route the request.";
     } else if (response.status == 409) {
       throw "Duplicate email forwarder.";
     } else if (response?.statusText != null) {

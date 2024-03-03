@@ -13,6 +13,13 @@ export const Forwarders = Object.freeze({
     validForSelfHosted: true,
   } as ForwarderMetadata),
 
+  /** For https://cloudflare.com */
+  Cloudflare: Object.freeze({
+    id: "cloudflare",
+    name: "Cloudflare",
+    validForSelfHosted: true,
+  } as ForwarderMetadata),
+
   /** For https://duckduckgo.com/email/ */
   DuckDuckGo: Object.freeze({
     id: "duckduckgo",
@@ -88,6 +95,13 @@ export const DefaultOptions: UsernameGeneratorOptions = Object.freeze({
       domain: "",
       prefix: "",
       token: "",
+    }),
+    cloudflare: Object.freeze({
+      token: "",
+      accountId: "",
+      zoneId: "",
+      domain: "",
+      recipient: "",
     }),
     addyIo: Object.freeze({
       baseUrl: "https://app.addy.io",
