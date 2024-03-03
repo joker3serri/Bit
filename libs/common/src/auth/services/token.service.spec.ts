@@ -401,34 +401,70 @@ describe("TokenService", () => {
         await expect(result).rejects.toThrow("User id not found. Cannot clear access token.");
       });
 
-      it("should clear the access token from all storage locations for the specified user id", async () => {
-        // Arrange
-        const supportsSecureStorage = true;
-        tokenService = createTokenService(supportsSecureStorage);
+      describe("Secure storage enabled", () => {
+        beforeEach(() => {
+          const supportsSecureStorage = true;
+          tokenService = createTokenService(supportsSecureStorage);
+        });
 
-        singleUserStateProvider
-          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+        it("should clear the access token from all storage locations for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
-        singleUserStateProvider
-          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
-        // Act
-        await tokenService.clearAccessTokenByUserId(userIdFromAccessToken);
+          // Act
+          await tokenService.clearAccessTokenByUserId(userIdFromAccessToken);
 
-        // Assert
-        expect(
-          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
-        ).toHaveBeenCalledWith(null);
-        expect(
-          singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
-        ).toHaveBeenCalledWith(null);
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(null);
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
+          ).toHaveBeenCalledWith(null);
 
-        expect(secureStorageService.remove).toHaveBeenCalledWith(
-          accessTokenSecureStorageKey,
-          accessTokenSecureStorageOptions,
-        );
+          expect(secureStorageService.remove).toHaveBeenCalledWith(
+            accessTokenSecureStorageKey,
+            accessTokenSecureStorageOptions,
+          );
+        });
+
+        it("should clear the access token from all storage locations for the global active user", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await tokenService.clearAccessTokenByUserId();
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(null);
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
+          ).toHaveBeenCalledWith(null);
+
+          expect(secureStorageService.remove).toHaveBeenCalledWith(
+            accessTokenSecureStorageKey,
+            accessTokenSecureStorageOptions,
+          );
+        });
       });
     });
   });
