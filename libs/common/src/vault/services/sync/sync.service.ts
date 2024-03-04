@@ -106,7 +106,7 @@ export class SyncService implements SyncServiceAbstraction {
 
     try {
       await this.apiService.refreshIdentityToken();
-      const response = await this.apiService.getSync(); // this is where premium stuff is coming from. can't separate out into my own service
+      const response = await this.apiService.getSync();
 
       await this.syncProfile(response.profile);
       await this.syncFolders(response.folders);
