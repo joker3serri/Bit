@@ -13,6 +13,8 @@ import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
   ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+  API_KEY_CLIENT_ID_DISK,
+  API_KEY_CLIENT_ID_MEMORY,
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
@@ -536,6 +538,7 @@ describe("TokenService", () => {
           ).toHaveBeenCalledWith(refreshToken);
         });
       });
+
       describe("Disk storage tests (secure storage not supported on platform)", () => {
         it("should set the refresh token in disk when there is an active user in global state", async () => {
           // Arrange
@@ -552,7 +555,7 @@ describe("TokenService", () => {
 
           // Assert
           expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
           ).toHaveBeenCalledWith(refreshToken);
         });
 
@@ -567,10 +570,11 @@ describe("TokenService", () => {
 
           // Assert
           expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
           ).toHaveBeenCalledWith(refreshToken);
         });
       });
+
       describe("Disk storage tests (secure storage supported on platform)", () => {
         beforeEach(() => {
           const supportsSecureStorage = true;
@@ -963,6 +967,85 @@ describe("TokenService", () => {
             refreshTokenSecureStorageKey,
             secureStorageOptions,
           );
+        });
+      });
+    });
+  });
+
+  describe("Client Id methods", () => {
+    const clientId = "clientId";
+
+    describe("setClientId", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        const result = tokenService.setClientId(clientId, VaultTimeoutAction.Lock, null);
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot save client id.");
+      });
+
+      describe("Memory storage tests", () => {
+        it("should set the client id in memory when there is an active user in global state", async () => {
+          // Arrange
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await tokenService.setClientId(clientId, memoryVaultTimeoutAction, memoryVaultTimeout);
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+              .nextMock,
+          ).toHaveBeenCalledWith(clientId);
+        });
+
+        it("should set the client id in memory for the specified user id", async () => {
+          // Act
+          await tokenService.setClientId(
+            clientId,
+            memoryVaultTimeoutAction,
+            memoryVaultTimeout,
+            userIdFromAccessToken,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+              .nextMock,
+          ).toHaveBeenCalledWith(clientId);
+        });
+      });
+
+      describe("Disk storage tests", () => {
+        it("should set the client id in disk when there is an active user in global state", async () => {
+          // Arrange
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await tokenService.setClientId(clientId, diskVaultTimeoutAction, diskVaultTimeout);
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+          ).toHaveBeenCalledWith(clientId);
+        });
+
+        it("should set the client id in disk for the specified user id", async () => {
+          // Act
+          await tokenService.setClientId(
+            clientId,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+            userIdFromAccessToken,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+          ).toHaveBeenCalledWith(clientId);
         });
       });
     });
