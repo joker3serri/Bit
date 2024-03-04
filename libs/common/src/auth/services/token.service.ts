@@ -513,6 +513,10 @@ export class TokenService implements TokenServiceAbstraction {
   async clearTokens(userId?: UserId): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
+    if (!userId) {
+      throw new Error("User id not found. Cannot clear tokens.");
+    }
+
     await Promise.all([
       this.clearAccessToken(userId),
       this.clearRefreshToken(userId),
