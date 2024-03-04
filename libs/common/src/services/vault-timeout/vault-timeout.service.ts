@@ -104,6 +104,10 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     await this.cipherService.clearCache(userId);
 
     await this.stateEventRunnerService.handleEvent("lock", (userId ?? currentUserId) as UserId);
+
+    // FIXME: We should send the userId of the user that was locked, in the case of this method being passed
+    // undefined then it should give back the currentUserId. Better yet, this method shouldn't take
+    // an undefined userId at all. All receivers need to be checked for how they handle getting undefined.
     this.messagingService.send("locked", { userId: userId });
 
     if (this.lockedCallback != null) {
