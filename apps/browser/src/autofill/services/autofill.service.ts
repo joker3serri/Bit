@@ -1382,7 +1382,7 @@ export default class AutofillService implements AutofillServiceInterface {
         .replace(/([a-z])([A-Z])/g, "$1 $2")
         .toLowerCase();
       // Split the attribute by non-alphabetical characters to get the keywords
-      const attributeKeywords = camelCaseSeparatedFieldAttribute.split(/[^A-Za-z]/g);
+      const attributeKeywords = camelCaseSeparatedFieldAttribute.split(/[^a-z]/gi);
 
       for (let keywordIndex = 0; keywordIndex < attributeKeywords.length; keywordIndex++) {
         if (AutofillService.searchFieldNamesSet.has(attributeKeywords[keywordIndex])) {
