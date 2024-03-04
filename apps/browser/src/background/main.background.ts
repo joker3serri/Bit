@@ -55,6 +55,8 @@ import {
   BadgeSettingsServiceAbstraction,
   BadgeSettingsService,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
+import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -295,6 +297,7 @@ export default class MainBackground {
   vaultSettingsService: VaultSettingsServiceAbstraction;
   biometricStateService: BiometricStateService;
   ssoLoginService: SsoLoginServiceAbstraction;
+  billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -676,6 +679,9 @@ export default class MainBackground {
       this.sendService,
     );
     this.providerService = new ProviderService(this.stateService);
+    this.billingAccountProfileStateService = new BillingAccountProfileStateService(
+      this.activeUserStateProvider,
+    );
     this.syncService = new SyncService(
       this.apiService,
       this.settingsService,
@@ -695,6 +701,7 @@ export default class MainBackground {
       this.sendApiService,
       this.stateProvider,
       logoutCallback,
+      this.billingAccountProfileStateService,
     );
     this.eventUploadService = new EventUploadService(
       this.apiService,

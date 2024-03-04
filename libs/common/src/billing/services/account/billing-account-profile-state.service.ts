@@ -34,18 +34,18 @@ export class BillingAccountProfileStateService
     );
 
     this.hasPremiumFromOrganization$ = this.billingAccountProfileState.state$.pipe(
-      map((billingAccountProfile) => !!billingAccountProfile.hasPremiumFromOrganization),
+      map((billingAccountProfile) => !!billingAccountProfile?.hasPremiumFromOrganization),
     );
 
     this.hasPremiumPersonally$ = this.billingAccountProfileState.state$.pipe(
-      map((billingAccountProfile) => !!billingAccountProfile.hasPremiumPersonally),
+      map((billingAccountProfile) => !!billingAccountProfile?.hasPremiumPersonally),
     );
 
     this.canAccessPremium$ = this.billingAccountProfileState.state$.pipe(
       map(
         (billingAccountProfile) =>
-          billingAccountProfile.hasPremiumFromOrganization ||
-          billingAccountProfile.hasPremiumPersonally,
+          billingAccountProfile?.hasPremiumFromOrganization ||
+          billingAccountProfile?.hasPremiumPersonally,
       ),
     );
   }
