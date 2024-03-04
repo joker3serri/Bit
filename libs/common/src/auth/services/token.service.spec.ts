@@ -933,7 +933,7 @@ describe("TokenService", () => {
           );
         });
 
-        it("should clear the access token from all storage locations for the global active user", async () => {
+        it("should clear the refresh token from all storage locations for the global active user", async () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
