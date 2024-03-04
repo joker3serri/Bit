@@ -24,8 +24,8 @@ export class ProviderService implements ProviderServiceAbstraction {
   }
 
   private mapProviderRecordToArray() {
-    return map<Record<string, ProviderData>, Provider[]>((orgs) =>
-      Object.values(orgs ?? {})?.map((o) => new Provider(o)),
+    return map<Record<string, ProviderData>, Provider[]>((providers) =>
+      Object.values(providers ?? {})?.map((o) => new Provider(o)),
     );
   }
 
