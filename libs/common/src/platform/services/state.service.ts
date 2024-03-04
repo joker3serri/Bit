@@ -2441,7 +2441,7 @@ export class StateService<
   }
 
   protected async deAuthenticateAccount(userId: string): Promise<void> {
-    await this.tokenService.clearAccessTokenByUserId(userId as UserId);
+    await this.tokenService.clearAccessToken(userId as UserId);
     await this.setLastActive(null, { userId: userId });
     await this.updateState(async (state) => {
       state.authenticatedAccounts = state.authenticatedAccounts.filter((id) => id !== userId);

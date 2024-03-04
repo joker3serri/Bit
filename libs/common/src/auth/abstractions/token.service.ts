@@ -44,14 +44,14 @@ export abstract class TokenService {
   // TODO: revisit this approach once the state service is fully deprecated.
   /**
    * Clears the access token for the given user id out of memory, disk, and secure storage if supported.
-   * @param userId The user id to clear the access token for.
+   * @param userId The optional user id to clear the access token for; if not provided, the active user id is used.
    * @returns A promise that resolves when the access token has been cleared.
    *
    * Note: This method is required so that the StateService doesn't have to inject the VaultTimeoutSettingsService to
    * pass in the vaultTimeoutAction and vaultTimeout.
    * This avoids a circular dependency between the StateService, TokenService, and VaultTimeoutSettingsService.
    */
-  clearAccessTokenByUserId: (userId?: UserId) => Promise<void>;
+  clearAccessToken: (userId?: UserId) => Promise<void>;
 
   /**
    * Gets the access token

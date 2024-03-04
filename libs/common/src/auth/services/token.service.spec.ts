@@ -393,10 +393,10 @@ describe("TokenService", () => {
       });
     });
 
-    describe("clearAccessTokenByUserId", () => {
+    describe("clearAccessToken", () => {
       it(" should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
-        const result = tokenService.clearAccessTokenByUserId();
+        const result = tokenService.clearAccessToken();
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot clear access token.");
       });
@@ -418,7 +418,7 @@ describe("TokenService", () => {
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
           // Act
-          await tokenService.clearAccessTokenByUserId(userIdFromAccessToken);
+          await tokenService.clearAccessToken(userIdFromAccessToken);
 
           // Assert
           expect(
@@ -450,7 +450,7 @@ describe("TokenService", () => {
             .stateSubject.next(userIdFromAccessToken);
 
           // Act
-          await tokenService.clearAccessTokenByUserId();
+          await tokenService.clearAccessToken();
 
           // Assert
           expect(
@@ -474,7 +474,7 @@ describe("TokenService", () => {
   });
 
   describe("setTokens", () => {
-    it("should set all passed in tokens after deriving user id from the access token", async () => {
+    it("should call to set all passed in tokens after deriving user id from the access token", async () => {
       // Arrange
       const refreshToken = "refreshToken";
       // specific vault timeout actions and vault timeouts don't change this test so values don't matter.
@@ -578,6 +578,10 @@ describe("TokenService", () => {
       // Assert
       await expect(result).rejects.toThrow("JWT must have 3 parts");
     });
+  });
+
+  describe("clearTokens", () => {
+    // it should clear all tokens
   });
 
   describe("setTwoFactorToken", () => {

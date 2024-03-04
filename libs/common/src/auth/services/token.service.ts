@@ -164,7 +164,7 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async clearAccessTokenByUserId(userId?: UserId): Promise<void> {
+  async clearAccessToken(userId?: UserId): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     // If we don't have a user id, we can't clear the value
