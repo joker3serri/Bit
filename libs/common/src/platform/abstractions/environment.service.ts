@@ -57,6 +57,11 @@ export interface Environment {
   getEventsUrl: () => string;
   getIconsUrl: () => string;
   getIdentityUrl: () => string;
+
+  /**
+   * @deprecated This is currently only used by the CLI. This functionality should be extracted since
+   * the CLI relies on changing environment mid-login.
+   */
   getKeyConnectorUrl: () => string | null;
   getNotificationsUrl: () => string;
   getScimUrl: () => string;
