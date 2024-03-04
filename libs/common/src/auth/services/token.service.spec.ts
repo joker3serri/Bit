@@ -409,7 +409,7 @@ describe("TokenService", () => {
     });
 
     describe("clearAccessToken", () => {
-      it(" should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
         const result = tokenService.clearAccessToken();
         // Assert
@@ -487,7 +487,7 @@ describe("TokenService", () => {
   describe("Refresh Token methods", () => {
     const refreshToken = "refreshToken";
     const refreshTokenPartialSecureStorageKey = `_refreshToken`;
-    const refreshTokenSecurekStorageKey = `${userIdFromAccessToken}${refreshTokenPartialSecureStorageKey}`;
+    const refreshTokenSecureStorageKey = `${userIdFromAccessToken}${refreshTokenPartialSecureStorageKey}`;
 
     describe("setRefreshToken", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
@@ -603,7 +603,7 @@ describe("TokenService", () => {
 
           // assert that the refresh token was set in secure storage
           expect(secureStorageService.save).toHaveBeenCalledWith(
-            refreshTokenSecurekStorageKey,
+            refreshTokenSecureStorageKey,
             refreshToken,
             secureStorageOptions,
           );
@@ -645,7 +645,7 @@ describe("TokenService", () => {
 
           // assert that the refresh token was set in secure storage
           expect(secureStorageService.save).toHaveBeenCalledWith(
-            refreshTokenSecurekStorageKey,
+            refreshTokenSecureStorageKey,
             refreshToken,
             secureStorageOptions,
           );
@@ -888,6 +888,81 @@ describe("TokenService", () => {
 
           // assert that secure storage was not called
           expect(secureStorageService.get).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe("clearRefreshToken", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        const result = (tokenService as any).clearRefreshToken();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot clear refresh token.");
+      });
+
+      describe("Secure storage enabled", () => {
+        beforeEach(() => {
+          const supportsSecureStorage = true;
+          tokenService = createTokenService(supportsSecureStorage);
+        });
+
+        it("should clear the refresh token from all storage locations for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Act
+          await (tokenService as any).clearRefreshToken(userIdFromAccessToken);
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(null);
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
+          ).toHaveBeenCalledWith(null);
+
+          expect(secureStorageService.remove).toHaveBeenCalledWith(
+            refreshTokenSecureStorageKey,
+            secureStorageOptions,
+          );
+        });
+
+        it("should clear the access token from all storage locations for the global active user", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await (tokenService as any).clearRefreshToken(userIdFromAccessToken);
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(null);
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
+          ).toHaveBeenCalledWith(null);
+
+          expect(secureStorageService.remove).toHaveBeenCalledWith(
+            refreshTokenSecureStorageKey,
+            secureStorageOptions,
+          );
         });
       });
     });
