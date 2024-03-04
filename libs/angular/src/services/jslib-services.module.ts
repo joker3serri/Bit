@@ -535,6 +535,7 @@ import { ModalService } from "./modal.service";
         TokenServiceAbstraction,
         PolicyServiceAbstraction,
         StateServiceAbstraction,
+        BiometricStateService,
       ],
     },
     {
@@ -683,7 +684,7 @@ import { ModalService } from "./modal.service";
     {
       provide: PolicyApiServiceAbstraction,
       useClass: PolicyApiService,
-      deps: [PolicyServiceAbstraction, ApiServiceAbstraction, StateServiceAbstraction],
+      deps: [InternalPolicyService, ApiServiceAbstraction],
     },
     {
       provide: KeyConnectorServiceAbstraction,
