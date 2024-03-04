@@ -192,6 +192,18 @@ describe("TokenService", () => {
         await expect(result).rejects.toThrow("User id not found. Cannot get access token.");
       });
 
+      it("should return null if no access token is found in memory, disk, or secure storage", async () => {
+        // Arrange
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = await tokenService.getAccessToken();
+        // Assert
+        expect(result).toBeNull();
+      });
+
       describe("Memory storage tests", () => {
         it("should get the access token from memory with no user id specified (uses global active user)", async () => {
           // Arrange
@@ -652,6 +664,230 @@ describe("TokenService", () => {
               REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
             ).nextMock,
           ).toHaveBeenCalledWith(true);
+        });
+      });
+    });
+
+    describe("getRefreshToken", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        const result = (tokenService as any).getRefreshToken();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot get refresh token.");
+      });
+
+      it("should return null if no refresh token is found in memory, disk, or secure storage", async () => {
+        // Arrange
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = await (tokenService as any).getRefreshToken();
+        // Assert
+        expect(result).toBeNull();
+      });
+
+      describe("Memory storage tests", () => {
+        it("should get the refresh token from memory with no user id specified (uses global active user)", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
+          // set disk to undefined
+          // singleUserStateProvider
+          //   .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          const result = await tokenService.getRefreshToken();
+
+          // Assert
+          expect(result).toEqual(refreshToken);
+
+          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+          // assert disk was not called
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
+          ).not.toHaveBeenCalled();
+        });
+
+        it("should get the refresh token from memory for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Act
+          const result = await tokenService.getRefreshToken(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(refreshToken);
+
+          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+          // assert disk was not called
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
+          ).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("Disk storage tests (secure storage not supported on platform)", () => {
+        it("should get the refresh token from disk with no user id specified", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          const result = await tokenService.getRefreshToken();
+          // Assert
+          expect(result).toEqual(refreshToken);
+        });
+
+        it("should get the refresh token from disk for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Act
+          const result = await tokenService.getRefreshToken(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(refreshToken);
+        });
+      });
+
+      describe("Disk storage tests (secure storage supported on platform)", () => {
+        beforeEach(() => {
+          const supportsSecureStorage = true;
+          tokenService = createTokenService(supportsSecureStorage);
+        });
+
+        it("should get the refresh token from secure storage when no user id is specified and the migration flag is set to true", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          secureStorageService.get.mockResolvedValue(refreshToken);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // set access token migration flag to true
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .stateSubject.next([userIdFromAccessToken, true]);
+
+          // Act
+          const result = await tokenService.getRefreshToken();
+          // Assert
+          expect(result).toEqual(refreshToken);
+        });
+
+        it("should get the refresh token from secure storage when user id is specified and the migration flag set to true", async () => {
+          // Arrange
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          secureStorageService.get.mockResolvedValue(refreshToken);
+
+          // set access token migration flag to true
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .stateSubject.next([userIdFromAccessToken, true]);
+
+          // Act
+          const result = await tokenService.getRefreshToken(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(refreshToken);
+        });
+
+        it("should fallback and get the refresh token from disk when user id is specified and the migration flag is set to false even if the platform supports secure storage", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // set refresh token migration flag to false
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .stateSubject.next([userIdFromAccessToken, false]);
+
+          // Act
+          const result = await tokenService.getRefreshToken(userIdFromAccessToken);
+
+          // Assert
+          expect(result).toEqual(refreshToken);
+
+          // assert that secure storage was not called
+          expect(secureStorageService.get).not.toHaveBeenCalled();
+        });
+
+        it("should fallback and get the refresh token from disk when no user id is specified and the migration flag is set to false even if the platform supports secure storage", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // set access token migration flag to false
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .stateSubject.next([userIdFromAccessToken, false]);
+
+          // Act
+          const result = await tokenService.getRefreshToken();
+
+          // Assert
+          expect(result).toEqual(refreshToken);
+
+          // assert that secure storage was not called
+          expect(secureStorageService.get).not.toHaveBeenCalled();
         });
       });
     });
