@@ -54,7 +54,7 @@ jobs:
       azure-login-creds: ${{ steps.config.outputs.azure-login-creds }}
       retrieve-secrets-keyvault: ${{ steps.config.outputs.retrieve-secrets-keyvault }}
       sync-utility: ${{ steps.config.outputs.sync-utility }}
-      sync-delete-destination-files: ${{ steps.config.outputs.sync-not-delete-destination-files }}
+      sync-delete-destination-files: ${{ steps.config.outputs.sync-delete-destination-files }}
     steps:
       - name: Configure
         id: config
