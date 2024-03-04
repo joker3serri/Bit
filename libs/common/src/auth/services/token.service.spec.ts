@@ -189,6 +189,7 @@ describe("TokenService", () => {
     describe("getAccessToken", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
+        // note: don't await here because we want to test the error
         const result = tokenService.getAccessToken();
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot get access token.");
@@ -413,6 +414,7 @@ describe("TokenService", () => {
     describe("clearAccessToken", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
+        // note: don't await here because we want to test the error
         const result = tokenService.clearAccessToken();
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot clear access token.");
@@ -494,6 +496,7 @@ describe("TokenService", () => {
     describe("setRefreshToken", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
+        // note: don't await here because we want to test the error
         const result = (tokenService as any).setRefreshToken(
           refreshToken,
           VaultTimeoutAction.Lock,
@@ -675,6 +678,7 @@ describe("TokenService", () => {
     describe("getRefreshToken", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
+        // note: don't await here because we want to test the error
         const result = (tokenService as any).getRefreshToken();
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot get refresh token.");
@@ -899,6 +903,7 @@ describe("TokenService", () => {
     describe("clearRefreshToken", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
+        // note: don't await here because we want to test the error
         const result = (tokenService as any).clearRefreshToken();
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot clear refresh token.");
@@ -978,6 +983,7 @@ describe("TokenService", () => {
     describe("setClientId", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
+        // note: don't await here because we want to test the error
         const result = tokenService.setClientId(clientId, VaultTimeoutAction.Lock, null);
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot save client id.");
@@ -1047,6 +1053,29 @@ describe("TokenService", () => {
             singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
           ).toHaveBeenCalledWith(clientId);
         });
+      });
+    });
+
+    // TODO: finish adding tests for getClientId
+    describe("getClientId", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the rejection
+        const result = tokenService.getClientId();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot get client id.");
+      });
+
+      it("should return null if no client id is found in memory or disk", async () => {
+        // Arrange
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = await tokenService.getClientId();
+        // Assert
+        expect(result).toBeNull();
       });
     });
   });
