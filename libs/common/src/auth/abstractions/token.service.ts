@@ -20,7 +20,7 @@ export abstract class TokenService {
     accessToken: string,
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     clientIdClientSecret?: [string, string],
   ) => Promise<void>;
 
@@ -37,7 +37,7 @@ export abstract class TokenService {
   setAccessToken: (
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ) => Promise<void>;
 
@@ -77,7 +77,7 @@ export abstract class TokenService {
   setClientId: (
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ) => Promise<void>;
 
@@ -96,7 +96,7 @@ export abstract class TokenService {
   setClientSecret: (
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ) => Promise<void>;
   /**

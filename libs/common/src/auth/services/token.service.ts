@@ -88,7 +88,7 @@ export class TokenService implements TokenServiceAbstraction {
     accessToken: string,
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     clientIdClientSecret?: [string, string],
   ): Promise<any> {
     // get user id from active user state or from the access token
@@ -106,12 +106,10 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  // TODO: consider whether we need to accept vaultTimeout as a number or null everywhere
-
   async setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await this.determineUserIdByAccessTokenOrActiveUser(accessToken);
@@ -232,7 +230,7 @@ export class TokenService implements TokenServiceAbstraction {
   private async setRefreshToken(
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
@@ -354,7 +352,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setClientId(
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
@@ -422,7 +420,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setClientSecret(
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
@@ -636,7 +634,7 @@ export class TokenService implements TokenServiceAbstraction {
 
   private async determineStorageLocation(
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number,
+    vaultTimeout: number | null,
     useSecureStorage: boolean,
   ): Promise<TokenStorageLocation> {
     if (vaultTimeoutAction === VaultTimeoutAction.LogOut && vaultTimeout != null) {
