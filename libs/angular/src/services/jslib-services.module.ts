@@ -520,6 +520,7 @@ import { ModalService } from "./modal.service";
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
         LOGOUT_CALLBACK,
+        BillingAccountProfileStateServiceAbstraction,
       ],
     },
     { provide: BroadcasterServiceAbstraction, useClass: BroadcasterService },
