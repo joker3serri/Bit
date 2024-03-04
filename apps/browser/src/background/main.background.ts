@@ -55,6 +55,10 @@ import {
   BadgeSettingsServiceAbstraction,
   BadgeSettingsService,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
+import {
+  UserNotificationSettingsService,
+  UserNotificationSettingsServiceAbstraction,
+} from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -248,6 +252,7 @@ export default class MainBackground {
   searchService: SearchServiceAbstraction;
   notificationsService: NotificationsServiceAbstraction;
   stateService: StateServiceAbstraction;
+  userNotificationSettingsService: UserNotificationSettingsServiceAbstraction;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
   badgeSettingsService: BadgeSettingsServiceAbstraction;
   systemService: SystemServiceAbstraction;
@@ -419,6 +424,7 @@ export default class MainBackground {
       this.environmentService,
       migrationRunner,
     );
+    this.userNotificationSettingsService = new UserNotificationSettingsService(this.stateProvider);
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => {
@@ -453,6 +459,7 @@ export default class MainBackground {
       this.stateService,
       this.accountService,
       this.stateProvider,
+      this.biometricStateService,
     );
     this.tokenService = new TokenService(this.stateService);
     this.appIdService = new AppIdService(this.storageService);
@@ -491,11 +498,7 @@ export default class MainBackground {
       this.policyService,
     );
     this.badgeSettingsService = new BadgeSettingsService(this.stateProvider);
-    this.policyApiService = new PolicyApiService(
-      this.policyService,
-      this.apiService,
-      this.stateService,
-    );
+    this.policyApiService = new PolicyApiService(this.policyService, this.apiService);
     this.keyConnectorService = new KeyConnectorService(
       this.stateService,
       this.cryptoService,
@@ -619,6 +622,7 @@ export default class MainBackground {
       this.tokenService,
       this.policyService,
       this.stateService,
+      this.biometricStateService,
     );
 
     this.pinCryptoService = new PinCryptoService(
@@ -695,7 +699,6 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
-      this.stateProvider,
       logoutCallback,
     );
     this.eventUploadService = new EventUploadService(
@@ -833,6 +836,7 @@ export default class MainBackground {
       this.stateService,
       this.logService,
       this.authService,
+      this.biometricStateService,
     );
     this.commandsBackground = new CommandsBackground(
       this,
@@ -848,6 +852,7 @@ export default class MainBackground {
       this.policyService,
       this.folderService,
       this.stateService,
+      this.userNotificationSettingsService,
       this.environmentService,
       this.logService,
     );
@@ -1078,7 +1083,7 @@ export default class MainBackground {
     await this.eventUploadService.uploadEvents(userId);
 
     await Promise.all([
-      this.syncService.setLastSync(new Date(0), userId as UserId),
+      this.syncService.setLastSync(new Date(0), userId),
       this.cryptoService.clearKeys(userId),
       this.settingsService.clear(userId),
       this.cipherService.clear(userId),
@@ -1090,10 +1095,12 @@ export default class MainBackground {
       this.keyConnectorService.clear(),
       this.vaultFilterService.clear(),
       this.biometricStateService.logout(userId),
-      /* We intentionally do not clear:
-       *  - autofillSettingsService
-       *  - badgeSettingsService
-       */
+      /*
+      We intentionally do not clear:
+        - autofillSettingsService
+        - badgeSettingsService
+        - userNotificationSettingsService
+      */
     ]);
 
     //Needs to be checked before state is cleaned
