@@ -398,6 +398,48 @@ describe("DefaultActiveUserState", () => {
         "No active user at this time.",
       );
     });
+
+    it.each([null, undefined])(
+      "should register user key definition when state transitions from null-ish (%s) to non-null",
+      async (startingValue: TestState | null) => {
+        diskStorageService.internalUpdateStore({
+          "user_00000000-0000-1000-a000-000000000001_fake_fake": startingValue,
+        });
+
+        await userState.update(() => ({ array: ["one"], date: new Date() }));
+
+        expect(stateEventRegistrarService.registerEvents).toHaveBeenCalledWith(testKeyDefinition);
+      },
+    );
+
+    it("should not register user key definition when state has preexisting value", async () => {
+      diskStorageService.internalUpdateStore({
+        "user_00000000-0000-1000-a000-000000000001_fake_fake": {
+          date: new Date(2019, 1),
+          array: [],
+        },
+      });
+
+      await userState.update(() => ({ array: ["one"], date: new Date() }));
+
+      expect(stateEventRegistrarService.registerEvents).not.toHaveBeenCalled();
+    });
+
+    it.each([null, undefined])(
+      "should not register user key definition when setting value to null-ish (%s) value",
+      async (updatedValue: TestState | null) => {
+        diskStorageService.internalUpdateStore({
+          "user_00000000-0000-1000-a000-000000000001_fake_fake": {
+            date: new Date(2019, 1),
+            array: [],
+          },
+        });
+
+        await userState.update(() => updatedValue);
+
+        expect(stateEventRegistrarService.registerEvents).not.toHaveBeenCalled();
+      },
+    );
   });
 
   describe("update races", () => {

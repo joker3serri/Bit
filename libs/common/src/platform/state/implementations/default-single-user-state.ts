@@ -102,7 +102,7 @@ export class DefaultSingleUserState<T> implements SingleUserState<T> {
 
     const newState = configureState(currentState, combinedDependencies);
     await this.chosenLocation.save(this.storageKey, newState);
-    if (newState != null) {
+    if (newState != null && currentState == null) {
       // Only register this state as something clearable on the first time it saves something
       // worth deleting. This is helpful in making sure there is less of a race to adding events.
       await this.stateEventRegistrarService.registerEvents(this.keyDefinition);
