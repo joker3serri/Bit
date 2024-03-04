@@ -469,6 +469,10 @@ describe("TokenService", () => {
     });
   });
 
+  describe("Refresh Token methods", () => {
+    // TODO: implement tests for refresh token methods
+  });
+
   describe("setTokens", () => {
     it("should set all passed in tokens after deriving user id from the access token", async () => {
       // Arrange
@@ -576,79 +580,77 @@ describe("TokenService", () => {
     });
   });
 
-  describe("TwoFactorToken methods", () => {
-    describe("setTwoFactorToken", () => {
-      it("should set the email and two factor token when there hasn't been a previous record (initializing the record)", async () => {
-        // Arrange
-        const email = "testUser@email.com";
-        const twoFactorToken = "twoFactorTokenForTestUser";
-        // Act
-        await tokenService.setTwoFactorToken(email, twoFactorToken);
-        // Assert
-        expect(
-          globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
-        ).toHaveBeenCalledWith({ [email]: twoFactorToken });
-      });
-
-      it("should set the email and two factor token when there is an initialized value already (updating the existing record)", async () => {
-        // Arrange
-        const email = "testUser@email.com";
-        const twoFactorToken = "twoFactorTokenForTestUser";
-        const initialTwoFactorTokenRecord: Record<string, string> = {
-          otherUser: "otherUserTwoFactorToken",
-        };
-
-        globalStateProvider
-          .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
-
-        // Act
-        await tokenService.setTwoFactorToken(email, twoFactorToken);
-
-        // Assert
-        expect(
-          globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
-        ).toHaveBeenCalledWith({ [email]: twoFactorToken, ...initialTwoFactorTokenRecord });
-      });
+  describe("setTwoFactorToken", () => {
+    it("should set the email and two factor token when there hasn't been a previous record (initializing the record)", async () => {
+      // Arrange
+      const email = "testUser@email.com";
+      const twoFactorToken = "twoFactorTokenForTestUser";
+      // Act
+      await tokenService.setTwoFactorToken(email, twoFactorToken);
+      // Assert
+      expect(
+        globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
+      ).toHaveBeenCalledWith({ [email]: twoFactorToken });
     });
 
-    describe("getTwoFactorToken", () => {
-      it("should return the two factor token for the given email", async () => {
-        // Arrange
-        const email = "testUser";
-        const twoFactorToken = "twoFactorTokenForTestUser";
-        const initialTwoFactorTokenRecord: Record<string, string> = {
-          [email]: twoFactorToken,
-        };
+    it("should set the email and two factor token when there is an initialized value already (updating the existing record)", async () => {
+      // Arrange
+      const email = "testUser@email.com";
+      const twoFactorToken = "twoFactorTokenForTestUser";
+      const initialTwoFactorTokenRecord: Record<string, string> = {
+        otherUser: "otherUserTwoFactorToken",
+      };
 
-        globalStateProvider
-          .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
+      globalStateProvider
+        .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
+        .stateSubject.next(initialTwoFactorTokenRecord);
 
-        // Act
-        const result = await tokenService.getTwoFactorToken(email);
+      // Act
+      await tokenService.setTwoFactorToken(email, twoFactorToken);
 
-        // Assert
-        expect(result).toEqual(twoFactorToken);
-      });
+      // Assert
+      expect(
+        globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
+      ).toHaveBeenCalledWith({ [email]: twoFactorToken, ...initialTwoFactorTokenRecord });
+    });
+  });
 
-      it("should not return the two factor token for an email that doesn't exist", async () => {
-        // Arrange
-        const email = "testUser";
-        const initialTwoFactorTokenRecord: Record<string, string> = {
-          otherUser: "twoFactorTokenForOtherUser",
-        };
+  describe("getTwoFactorToken", () => {
+    it("should return the two factor token for the given email", async () => {
+      // Arrange
+      const email = "testUser";
+      const twoFactorToken = "twoFactorTokenForTestUser";
+      const initialTwoFactorTokenRecord: Record<string, string> = {
+        [email]: twoFactorToken,
+      };
 
-        globalStateProvider
-          .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
+      globalStateProvider
+        .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
+        .stateSubject.next(initialTwoFactorTokenRecord);
 
-        // Act
-        const result = await tokenService.getTwoFactorToken(email);
+      // Act
+      const result = await tokenService.getTwoFactorToken(email);
 
-        // Assert
-        expect(result).toEqual(undefined);
-      });
+      // Assert
+      expect(result).toEqual(twoFactorToken);
+    });
+
+    it("should not return the two factor token for an email that doesn't exist", async () => {
+      // Arrange
+      const email = "testUser";
+      const initialTwoFactorTokenRecord: Record<string, string> = {
+        otherUser: "twoFactorTokenForOtherUser",
+      };
+
+      globalStateProvider
+        .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
+        .stateSubject.next(initialTwoFactorTokenRecord);
+
+      // Act
+      const result = await tokenService.getTwoFactorToken(email);
+
+      // Assert
+      expect(result).toEqual(undefined);
     });
   });
 
