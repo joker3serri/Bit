@@ -54,6 +54,7 @@ jobs:
       azure-login-creds: ${{ steps.config.outputs.azure-login-creds }}
       retrieve-secrets-keyvault: ${{ steps.config.outputs.retrieve-secrets-keyvault }}
       sync-utility: ${{ steps.config.outputs.sync-utility }}
+      sync-not-delete-destination-files: ${{ steps.config.outputs.sync-not-delete-destination-files }}
     steps:
       - name: Configure
         id: config
@@ -68,6 +69,7 @@ jobs:
               echo "environment-artifact=web-*-cloud-QA.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - US QA Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
+              echo "sync-not-delete-destination-files=false" >> $GITHUB_OUTPUT
               ;;
             "EUQA")
               echo "azure-login-creds=AZURE_KV_EU_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -75,6 +77,7 @@ jobs:
               echo "environment-artifact=web-*-cloud-euqa.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - EU QA Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
+              echo "sync-not-delete-destination-files=false" >> $GITHUB_OUTPUT
               ;;
             "USPROD")
               echo "azure-login-creds=AZURE_KV_US_PROD_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -82,6 +85,7 @@ jobs:
               echo "environment-artifact=web-*-cloud-COMMERCIAL.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - US Production Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.bitwarden.com" >> $GITHUB_OUTPUT
+              echo "sync-not-delete-destination-files=false" >> $GITHUB_OUTPUT
               ;;
             "EUPROD")
               echo "azure-login-creds=AZURE_KV_EU_PRD_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -89,6 +93,7 @@ jobs:
               echo "environment-artifact=web-*-cloud-euprd.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - EU Production Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.bitwarden.eu" >> $GITHUB_OUTPUT
+              echo "sync-not-delete-destination-files=false" >> $GITHUB_OUTPUT
               ;;
             "USDEV")
               echo "azure-login-creds=AZURE_KV_US_DEV_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -96,6 +101,7 @@ jobs:
               echo "environment-artifact=web-*-cloud-usdev.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - US Development Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
+              echo "sync-not-delete-destination-files=true" >> $GITHUB_OUTPUT
               ;;
           esac
           # Set the sync utility to use for deployment to the environment (az-sync or azcopy)
@@ -259,7 +265,8 @@ jobs:
           az storage blob sync \
             --source "./build" \
             --container '$web' \
-            --connection-string "${{ steps.retrieve-secrets-az-sync.outputs.sa-bitwarden-web-vault-dev-key-temp }}"
+            --connection-string "${{ steps.retrieve-secrets-az-sync.outputs.sa-bitwarden-web-vault-dev-key-temp }}" \
+            --delete-destination=${{ needs.setup.outputs.sync-not-delete-destination-files }}
 
       - name: Sync to Azure Storage Account using azcopy
         if: ${{ needs.setup.outputs.sync-utility == 'azcopy' }}
@@ -271,7 +278,7 @@ jobs:
           AZCOPY_TENANT_ID: ${{ steps.retrieve-secrets-azcopy.outputs.sp-bitwarden-web-vault-tenant }}
         run: |
           azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
-            --delete-destination=true
+            --delete-destination=${{ needs.setup.outputs.sync-not-delete-destination-files }}
 
       - name: Debug sync logs
         if: ${{ inputs.debug }}
