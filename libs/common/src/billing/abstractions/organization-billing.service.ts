@@ -41,7 +41,9 @@ export type SubscriptionInformation = {
 };
 
 export abstract class OrganizationBillingServiceAbstraction {
-  purchaseSubscription: (subscription: SubscriptionInformation) => Promise<OrganizationResponse>;
+  abstract purchaseSubscription(
+    subscription: SubscriptionInformation,
+  ): Promise<OrganizationResponse>;
 
-  startFree: (subscription: SubscriptionInformation) => Promise<OrganizationResponse>;
+  abstract startFree(subscription: SubscriptionInformation): Promise<OrganizationResponse>;
 }

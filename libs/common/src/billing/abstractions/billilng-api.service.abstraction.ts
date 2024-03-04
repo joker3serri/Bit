@@ -2,10 +2,10 @@ import { SubscriptionCancellationRequest } from "../../billing/models/request/su
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
 
 export abstract class BillingApiServiceAbstraction {
-  cancelOrganizationSubscription: (
+  abstract cancelOrganizationSubscription(
     organizationId: string,
     request: SubscriptionCancellationRequest,
-  ) => Promise<void>;
+  ): Promise<void>;
   cancelPremiumUserSubscription: (request: SubscriptionCancellationRequest) => Promise<void>;
   getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
 }
