@@ -315,6 +315,30 @@ export class TokenService implements TokenServiceAbstraction {
     return null;
   }
 
+  private async clearRefreshToken(userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    // If we don't have a user id, we can't clear the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot clear refresh token.");
+    }
+
+    // TODO: re-eval this once we get shared key definitions for vault timeout and vault timeout action data.
+    // we can't determine storage location w/out vaultTimeoutAction and vaultTimeout
+    // but we can simply clear all locations to avoid the need to require those parameters
+
+    if (this.platformSupportsSecureStorage) {
+      await this.secureStorageService.remove(
+        `${userId}${this.refreshTokenSecureStorageKey}`,
+        this.getSecureStorageOptions(userId),
+      );
+    }
+
+    // Platform doesn't support secure storage, so use state provider implementation
+    await this.singleUserStateProvider.get(userId, REFRESH_TOKEN_MEMORY).update((_) => null);
+    await this.singleUserStateProvider.get(userId, REFRESH_TOKEN_DISK).update((_) => null);
+  }
+
   private async getRefreshTokenMigratedToSecureStorage(userId: UserId): Promise<boolean> {
     return await firstValueFrom(
       this.singleUserStateProvider.get(userId, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE).state$,
@@ -378,6 +402,23 @@ export class TokenService implements TokenServiceAbstraction {
     return await this.getStateValueByUserIdAndKeyDef(userId, API_KEY_CLIENT_ID_DISK);
   }
 
+  private async clearClientId(userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    // If we don't have a user id, we can't clear the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot clear client id.");
+    }
+
+    // TODO: re-eval this once we get shared key definitions for vault timeout and vault timeout action data.
+    // we can't determine storage location w/out vaultTimeoutAction and vaultTimeout
+    // but we can simply clear both locations to avoid the need to require those parameters
+
+    // Platform doesn't support secure storage, so use state provider implementation
+    await this.singleUserStateProvider.get(userId, API_KEY_CLIENT_ID_MEMORY).update((_) => null);
+    await this.singleUserStateProvider.get(userId, API_KEY_CLIENT_ID_DISK).update((_) => null);
+  }
+
   async setClientSecret(
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
@@ -428,6 +469,25 @@ export class TokenService implements TokenServiceAbstraction {
     return await this.getStateValueByUserIdAndKeyDef(userId, API_KEY_CLIENT_SECRET_DISK);
   }
 
+  private async clearClientSecret(userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    // If we don't have a user id, we can't clear the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot clear client secret.");
+    }
+
+    // TODO: re-eval this once we get shared key definitions for vault timeout and vault timeout action data.
+    // we can't determine storage location w/out vaultTimeoutAction and vaultTimeout
+    // but we can simply clear both locations to avoid the need to require those parameters
+
+    // Platform doesn't support secure storage, so use state provider implementation
+    await this.singleUserStateProvider
+      .get(userId, API_KEY_CLIENT_SECRET_MEMORY)
+      .update((_) => null);
+    await this.singleUserStateProvider.get(userId, API_KEY_CLIENT_SECRET_DISK).update((_) => null);
+  }
+
   async setTwoFactorToken(email: string, twoFactorToken: string): Promise<void> {
     await this.emailTwoFactorTokenRecordGlobalState.update((emailTwoFactorTokenRecord) => {
       emailTwoFactorTokenRecord ??= {};
@@ -452,8 +512,15 @@ export class TokenService implements TokenServiceAbstraction {
     });
   }
 
-  async clearTokens(vaultTimeoutAction: VaultTimeoutAction, vaultTimeout: number): Promise<void> {
-    await this.setTokens(null, null, vaultTimeoutAction, vaultTimeout, [null, null]);
+  async clearTokens(userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    await Promise.all([
+      this.clearAccessToken(userId),
+      this.clearRefreshToken(userId),
+      this.clearClientId(userId),
+      this.clearClientSecret(userId),
+    ]);
   }
 
   // TODO: in the future, we should evaluate creating a custom type for the decoded token
