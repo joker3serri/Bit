@@ -111,6 +111,7 @@ type NotificationBackgroundExtensionMessageHandlers = {
   collectPageDetailsResponse: ({ message }: BackgroundMessageParam) => Promise<void>;
   bgGetEnableChangedPasswordPrompt: () => Promise<boolean>;
   bgGetEnableAddedLoginPrompt: () => Promise<boolean>;
+  getWebVaultUrlForNotification: () => string;
 };
 
 export {
