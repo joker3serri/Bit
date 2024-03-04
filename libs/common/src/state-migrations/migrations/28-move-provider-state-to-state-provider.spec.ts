@@ -12,7 +12,7 @@ function exampleProvider1() {
     status: 0,
     type: 0,
     enabled: true,
-    userEvents: true,
+    useEvents: true,
   });
 }
 
