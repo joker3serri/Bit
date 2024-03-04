@@ -179,6 +179,7 @@ export class AccountProfile {
   emailVerified?: boolean;
   everBeenUnlocked?: boolean;
   forceSetPasswordReason?: ForceSetPasswordReason;
+  lastSync?: string;
   userId?: string;
   usesKeyConnector?: boolean;
   keyHash?: string;
