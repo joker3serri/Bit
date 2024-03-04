@@ -1377,10 +1377,12 @@ export default class AutofillService implements AutofillServiceInterface {
         continue;
       }
 
-      const camelCaseSeparatedFieldAttribute = matchFieldAttributeValues[attrIndex] // Separate camel case words and case them to lower case values
+      // Separate camel case words and case them to lower case values
+      const camelCaseSeparatedFieldAttribute = matchFieldAttributeValues[attrIndex]
         .replace(/([a-z])([A-Z])/g, "$1 $2")
         .toLowerCase();
-      const attributeKeywords = camelCaseSeparatedFieldAttribute.split(/[^A-Za-z]/g); // Split the attribute by non-alphabetical characters to get the keywords
+      // Split the attribute by non-alphabetical characters to get the keywords
+      const attributeKeywords = camelCaseSeparatedFieldAttribute.split(/[^A-Za-z]/g);
 
       for (let keywordIndex = 0; keywordIndex < attributeKeywords.length; keywordIndex++) {
         if (AutofillService.searchFieldNamesSet.has(attributeKeywords[keywordIndex])) {
