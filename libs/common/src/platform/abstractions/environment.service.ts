@@ -61,6 +61,9 @@ export interface Environment {
   /**
    * @deprecated This is currently only used by the CLI. This functionality should be extracted since
    * the CLI relies on changing environment mid-login.
+   *
+   * @remarks
+   * Expect this to be null unless the CLI has explicitly set it during the login flow.
    */
   getKeyConnectorUrl: () => string | null;
   getNotificationsUrl: () => string;
