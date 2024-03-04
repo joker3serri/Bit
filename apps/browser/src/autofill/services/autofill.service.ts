@@ -40,6 +40,7 @@ export default class AutofillService implements AutofillServiceInterface {
   private openPasswordRepromptPopoutDebounce: NodeJS.Timeout;
   private currentlyOpeningPasswordRepromptPopout = false;
   private autofillScriptPortsSet = new Set<chrome.runtime.Port>();
+  static searchFieldNamesSet = new Set(AutoFillConstants.SearchFieldNames);
 
   constructor(
     private cipherService: CipherService,
@@ -1364,11 +1365,31 @@ export default class AutofillService implements AutofillServiceInterface {
     return excludedTypes.indexOf(type) > -1;
   }
 
+  /**
+   * Identifies if a passed field contains text artifacts that identify it as a search field.
+   *
+   * @param field - The autofill field that we are validating as a search field
+   */
   private static isSearchField(field: AutofillField) {
     const matchFieldAttributeValues = [field.type, field.htmlName, field.htmlID, field.placeholder];
-    const matchPattern = new RegExp(AutoFillConstants.SearchFieldNames.join("|"), "gi");
+    for (let attrIndex = 0; attrIndex < matchFieldAttributeValues.length; attrIndex++) {
+      if (!matchFieldAttributeValues[attrIndex]) {
+        continue;
+      }
 
-    return Boolean(matchFieldAttributeValues.join(" ").match(matchPattern));
+      const camelCaseSeparatedFieldAttribute = matchFieldAttributeValues[attrIndex] // Separate camel case words and case them to lower case values
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .toLowerCase();
+      const attributeKeywords = camelCaseSeparatedFieldAttribute.split(/[^A-Za-z]/g); // Split the attribute by non-alphabetical characters to get the keywords
+
+      for (let keywordIndex = 0; keywordIndex < attributeKeywords.length; keywordIndex++) {
+        if (AutofillService.searchFieldNamesSet.has(attributeKeywords[keywordIndex])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   static isExcludedFieldType(field: AutofillField, excludedTypes: string[]) {
