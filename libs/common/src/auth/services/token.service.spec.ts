@@ -14,6 +14,9 @@ import {
   ACCESS_TOKEN_MEMORY,
   ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
+  REFRESH_TOKEN_DISK,
+  REFRESH_TOKEN_MEMORY,
+  REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
 
 describe("TokenService", () => {
@@ -61,6 +64,12 @@ describe("TokenService", () => {
 
   const userIdFromAccessToken: UserId = accessTokenDecoded.sub as UserId;
 
+  const secureStorageOptions: StorageOptions = {
+    storageLocation: StorageLocation.Disk,
+    useSecureStorage: true,
+    userId: userIdFromAccessToken,
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -78,12 +87,6 @@ describe("TokenService", () => {
   describe("Access Token methods", () => {
     const accessTokenPartialSecureStorageKey = `_accessToken`;
     const accessTokenSecureStorageKey = `${userIdFromAccessToken}${accessTokenPartialSecureStorageKey}`;
-
-    const accessTokenSecureStorageOptions: StorageOptions = {
-      storageLocation: StorageLocation.Disk,
-      useSecureStorage: true,
-      userId: userIdFromAccessToken,
-    };
 
     describe("setAccessToken", () => {
       it("should throw an error if no user id is provided, there is no active user in global state, and an invalid token is passed in", async () => {
@@ -160,7 +163,7 @@ describe("TokenService", () => {
           expect(secureStorageService.save).toHaveBeenCalledWith(
             accessTokenSecureStorageKey,
             accessTokenJwt,
-            accessTokenSecureStorageOptions,
+            secureStorageOptions,
           );
 
           // assert data was migrated out of disk and memory + flag was set
@@ -430,7 +433,7 @@ describe("TokenService", () => {
 
           expect(secureStorageService.remove).toHaveBeenCalledWith(
             accessTokenSecureStorageKey,
-            accessTokenSecureStorageOptions,
+            secureStorageOptions,
           );
         });
 
@@ -462,7 +465,7 @@ describe("TokenService", () => {
 
           expect(secureStorageService.remove).toHaveBeenCalledWith(
             accessTokenSecureStorageKey,
-            accessTokenSecureStorageOptions,
+            secureStorageOptions,
           );
         });
       });
@@ -470,7 +473,188 @@ describe("TokenService", () => {
   });
 
   describe("Refresh Token methods", () => {
-    // TODO: implement tests for refresh token methods
+    const refreshToken = "refreshToken";
+    const refreshTokenPartialSecureStorageKey = `_refreshToken`;
+    const refreshTokenSecurekStorageKey = `${userIdFromAccessToken}${refreshTokenPartialSecureStorageKey}`;
+
+    describe("setRefreshToken", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        const result = (tokenService as any).setRefreshToken(
+          refreshToken,
+          VaultTimeoutAction.Lock,
+          null,
+        );
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot save refresh token.");
+      });
+
+      describe("Memory storage tests", () => {
+        it("should set the refresh token in memory when there is an active user in global state", async () => {
+          // Arrange
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await (tokenService as any).setRefreshToken(
+            refreshToken,
+            memoryVaultTimeoutAction,
+            memoryVaultTimeout,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(refreshToken);
+        });
+
+        it("should set the refresh token in memory for the specified user id", async () => {
+          // Act
+          await (tokenService as any).setRefreshToken(
+            refreshToken,
+            memoryVaultTimeoutAction,
+            memoryVaultTimeout,
+            userIdFromAccessToken,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(refreshToken);
+        });
+      });
+      describe("Disk storage tests (secure storage not supported on platform)", () => {
+        it("should set the refresh token in disk when there is an active user in global state", async () => {
+          // Arrange
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await (tokenService as any).setRefreshToken(
+            refreshToken,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(refreshToken);
+        });
+
+        it("should set the refresh token in disk for the specified user id", async () => {
+          // Act
+          await (tokenService as any).setRefreshToken(
+            refreshToken,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+            userIdFromAccessToken,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(refreshToken);
+        });
+      });
+      describe("Disk storage tests (secure storage supported on platform)", () => {
+        beforeEach(() => {
+          const supportsSecureStorage = true;
+          tokenService = createTokenService(supportsSecureStorage);
+        });
+
+        it("should set the refresh token in secure storage, null out data on disk or in memory, and set a flag to indicate the token has been migrated when there is an active user in global state ", async () => {
+          // Arrange:
+
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // For testing purposes, let's assume that the token is already in disk and memory
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Act
+          await (tokenService as any).setRefreshToken(
+            refreshToken,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+          );
+          // Assert
+
+          // assert that the refresh token was set in secure storage
+          expect(secureStorageService.save).toHaveBeenCalledWith(
+            refreshTokenSecurekStorageKey,
+            refreshToken,
+            secureStorageOptions,
+          );
+
+          // assert data was migrated out of disk and memory + flag was set
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
+          ).toHaveBeenCalledWith(null);
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(null);
+
+          expect(
+            singleUserStateProvider.getFake(
+              userIdFromAccessToken,
+              REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+            ).nextMock,
+          ).toHaveBeenCalledWith(true);
+        });
+        it("should set the refresh token in secure storage, null out data on disk or in memory, and set a flag to indicate the token has been migrated for the specified user id", async () => {
+          // Arrange:
+          // For testing purposes, let's assume that the token is already in disk and memory
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+
+          // Act
+          await (tokenService as any).setRefreshToken(
+            refreshToken,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+            userIdFromAccessToken,
+          );
+          // Assert
+
+          // assert that the refresh token was set in secure storage
+          expect(secureStorageService.save).toHaveBeenCalledWith(
+            refreshTokenSecurekStorageKey,
+            refreshToken,
+            secureStorageOptions,
+          );
+
+          // assert data was migrated out of disk and memory + flag was set
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
+          ).toHaveBeenCalledWith(null);
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
+          ).toHaveBeenCalledWith(null);
+
+          expect(
+            singleUserStateProvider.getFake(
+              userIdFromAccessToken,
+              REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+            ).nextMock,
+          ).toHaveBeenCalledWith(true);
+        });
+      });
+    });
   });
 
   describe("setTokens", () => {
