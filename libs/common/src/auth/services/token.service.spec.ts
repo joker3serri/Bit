@@ -581,7 +581,64 @@ describe("TokenService", () => {
   });
 
   describe("clearTokens", () => {
-    // it should clear all tokens
+    it("should call to clear all tokens for the specified user id", async () => {
+      // Arrange
+      const userId = "userId" as UserId;
+
+      tokenService.clearAccessToken = jest.fn();
+      (tokenService as any).clearRefreshToken = jest.fn();
+      (tokenService as any).clearClientId = jest.fn();
+      (tokenService as any).clearClientSecret = jest.fn();
+
+      // Act
+
+      await tokenService.clearTokens(userId);
+
+      // Assert
+
+      expect(tokenService.clearAccessToken).toHaveBeenCalledWith(userId);
+      expect((tokenService as any).clearRefreshToken).toHaveBeenCalledWith(userId);
+      expect((tokenService as any).clearClientId).toHaveBeenCalledWith(userId);
+      expect((tokenService as any).clearClientSecret).toHaveBeenCalledWith(userId);
+    });
+
+    it("should call to clear all tokens for the active user id", async () => {
+      // Arrange
+      const userId = "userId" as UserId;
+
+      globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).stateSubject.next(userId);
+
+      tokenService.clearAccessToken = jest.fn();
+      (tokenService as any).clearRefreshToken = jest.fn();
+      (tokenService as any).clearClientId = jest.fn();
+      (tokenService as any).clearClientSecret = jest.fn();
+
+      // Act
+
+      await tokenService.clearTokens();
+
+      // Assert
+
+      expect(tokenService.clearAccessToken).toHaveBeenCalledWith(userId);
+      expect((tokenService as any).clearRefreshToken).toHaveBeenCalledWith(userId);
+      expect((tokenService as any).clearClientId).toHaveBeenCalledWith(userId);
+      expect((tokenService as any).clearClientSecret).toHaveBeenCalledWith(userId);
+    });
+
+    it("should not call to clear all tokens if no user id is provided and there is no active user in global state", async () => {
+      // Arrange
+      tokenService.clearAccessToken = jest.fn();
+      (tokenService as any).clearRefreshToken = jest.fn();
+      (tokenService as any).clearClientId = jest.fn();
+      (tokenService as any).clearClientSecret = jest.fn();
+
+      // Act
+
+      const result = tokenService.clearTokens();
+
+      // Assert
+      await expect(result).rejects.toThrow("User id not found. Cannot clear tokens.");
+    });
   });
 
   describe("setTwoFactorToken", () => {
