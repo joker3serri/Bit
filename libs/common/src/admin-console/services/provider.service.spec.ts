@@ -92,7 +92,7 @@ describe("ProviderService", () => {
       fakeActiveUserState.nextState(arrayToRecord(mockData));
       const providers = await providerService.getAll();
       expect(providers).toHaveLength(5);
-      expect(providers[3]).toEqual(new Provider(mockData[3]));
+      expect(providers).toEqual(mockData.map((x) => new Provider(x)));
     });
 
     it("Returns an empty array if no providers are found in state", async () => {
