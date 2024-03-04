@@ -87,7 +87,6 @@ export default class NotificationBackground {
 
   /**
    * Gets the enableChangedPasswordPrompt setting from the user notification settings service.
-   * @return {Promise<boolean>}
    */
   async getEnableChangedPasswordPrompt(): Promise<boolean> {
     return await firstValueFrom(this.userNotificationSettingsService.enableChangedPasswordPrompt$);
@@ -95,7 +94,6 @@ export default class NotificationBackground {
 
   /**
    * Gets the enableAddedLoginPrompt setting from the user notification settings service.
-   * @return {Promise<boolean>}
    */
   async getEnableAddedLoginPrompt(): Promise<boolean> {
     return await firstValueFrom(this.userNotificationSettingsService.enableAddedLoginPrompt$);
