@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { LOCALE_KEY, PreferredLanguageMigrator } from "./27-move-preferred-language";
+import { LOCALE_KEY, PreferredLanguageMigrator } from "./30-move-preferred-language";
 
 function exampleJSON() {
   return {
@@ -31,8 +31,8 @@ describe("PreferredLanguageMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 26);
-      sut = new PreferredLanguageMigrator(26, 27);
+      helper = mockMigrationHelper(exampleJSON(), 29);
+      sut = new PreferredLanguageMigrator(29, 30);
     });
 
     it("should remove locale setting from global", async () => {
@@ -53,8 +53,8 @@ describe("PreferredLanguageMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 27);
-      sut = new PreferredLanguageMigrator(26, 27);
+      helper = mockMigrationHelper(rollbackJSON(), 30);
+      sut = new PreferredLanguageMigrator(29, 30);
     });
 
     it("should null out new values for global", async () => {
