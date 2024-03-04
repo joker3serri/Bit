@@ -57,7 +57,7 @@ export interface Environment {
   getEventsUrl: () => string;
   getIconsUrl: () => string;
   getIdentityUrl: () => string;
-  getKeyConnectorUrl: () => string;
+  getKeyConnectorUrl: () => string | null;
   getNotificationsUrl: () => string;
   getScimUrl: () => string;
   getSendUrl: () => string;
