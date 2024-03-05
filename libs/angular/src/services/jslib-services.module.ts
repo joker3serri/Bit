@@ -542,6 +542,10 @@ const useClass = <
       ],
     },
     {
+      provide: InternalSendService,
+      useExisting: SendServiceAbstraction,
+    },
+    {
       provide: SendServiceAbstraction,
       useClass: SendService,
       deps: [
