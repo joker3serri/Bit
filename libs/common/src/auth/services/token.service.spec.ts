@@ -15,6 +15,8 @@ import {
   ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   API_KEY_CLIENT_ID_DISK,
   API_KEY_CLIENT_ID_MEMORY,
+  API_KEY_CLIENT_SECRET_DISK,
+  API_KEY_CLIENT_SECRET_MEMORY,
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
@@ -1222,6 +1224,272 @@ describe("TokenService", () => {
         ).toHaveBeenCalledWith(null);
         expect(
           singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+        ).toHaveBeenCalledWith(null);
+      });
+    });
+  });
+
+  describe("Client Secret methods", () => {
+    const clientSecret = "clientSecret";
+
+    describe("setClientSecret", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the error
+        const result = tokenService.setClientSecret(clientSecret, VaultTimeoutAction.Lock, null);
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot save client secret.");
+      });
+
+      describe("Memory storage tests", () => {
+        it("should set the client secret in memory when there is an active user in global state", async () => {
+          // Arrange
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await tokenService.setClientSecret(
+            clientSecret,
+            memoryVaultTimeoutAction,
+            memoryVaultTimeout,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+              .nextMock,
+          ).toHaveBeenCalledWith(clientSecret);
+        });
+
+        it("should set the client secret in memory for the specified user id", async () => {
+          // Act
+          await tokenService.setClientSecret(
+            clientSecret,
+            memoryVaultTimeoutAction,
+            memoryVaultTimeout,
+            userIdFromAccessToken,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+              .nextMock,
+          ).toHaveBeenCalledWith(clientSecret);
+        });
+      });
+
+      describe("Disk storage tests", () => {
+        it("should set the client secret in disk when there is an active user in global state", async () => {
+          // Arrange
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          await tokenService.setClientSecret(
+            clientSecret,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+              .nextMock,
+          ).toHaveBeenCalledWith(clientSecret);
+        });
+
+        it("should set the client secret in disk for the specified user id", async () => {
+          // Act
+          await tokenService.setClientSecret(
+            clientSecret,
+            diskVaultTimeoutAction,
+            diskVaultTimeout,
+            userIdFromAccessToken,
+          );
+
+          // Assert
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+              .nextMock,
+          ).toHaveBeenCalledWith(clientSecret);
+        });
+      });
+    });
+
+    describe("getClientSecret", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the rejection
+        const result = tokenService.getClientSecret();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot get client secret.");
+      });
+
+      it("should return null if no client secret is found in memory or disk", async () => {
+        // Arrange
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = await tokenService.getClientSecret();
+        // Assert
+        expect(result).toBeNull();
+      });
+
+      describe("Memory storage tests", () => {
+        it("should get the client secret from memory with no user id specified (uses global active user)", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
+          // set disk to undefined
+          // singleUserStateProvider
+          //   .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          const result = await tokenService.getClientSecret();
+
+          // Assert
+          expect(result).toEqual(clientSecret);
+
+          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+          // assert disk was not called
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+              .nextMock,
+          ).not.toHaveBeenCalled();
+        });
+
+        it("should get the client secret from memory for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+          // Act
+          const result = await tokenService.getClientSecret(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(clientSecret);
+
+          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+          // assert disk was not called
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+              .nextMock,
+          ).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("Disk storage tests", () => {
+        it("should get the client secret from disk with no user id specified", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          const result = await tokenService.getClientSecret();
+          // Assert
+          expect(result).toEqual(clientSecret);
+        });
+
+        it("should get the client secret from disk for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+          // Act
+          const result = await tokenService.getClientSecret(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(clientSecret);
+        });
+      });
+    });
+
+    describe("clearClientSecret", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the error
+        const result = (tokenService as any).clearClientSecret();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot clear client secret.");
+      });
+
+      it("should clear the client secret from memory and disk for the specified user id", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+        // Act
+        await (tokenService as any).clearClientSecret(userIdFromAccessToken);
+
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+            .nextMock,
+        ).toHaveBeenCalledWith(null);
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+            .nextMock,
+        ).toHaveBeenCalledWith(null);
+      });
+
+      it("should clear the client secret from memory and disk for the global active user", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+
+        // Need to have global active id set to the user id
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        await (tokenService as any).clearClientSecret();
+
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
+            .nextMock,
+        ).toHaveBeenCalledWith(null);
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+            .nextMock,
         ).toHaveBeenCalledWith(null);
       });
     });
