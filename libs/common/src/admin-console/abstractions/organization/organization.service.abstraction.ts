@@ -105,6 +105,12 @@ export abstract class OrganizationService {
   // @todo Clean these up. Continuing to expand them is not recommended.
   // @see https://bitwarden.atlassian.net/browse/AC-2252
   memberOrganizations$: Observable<Organization[]>;
+  /**
+   * @deprecated This is currently only used in the CLI, and should not be
+   * used in any new calls. Use get$ instead for the time being, and we'll be
+   * removing this method soon. See Jira for details:
+   * https://bitwarden.atlassian.net/browse/AC-2252.
+   */
   getFromState: (id: string) => Promise<Organization>;
   canManageSponsorships: () => Promise<boolean>;
   hasOrganizations: () => Promise<boolean>;
