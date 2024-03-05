@@ -2,8 +2,6 @@ import { firstValueFrom } from "rxjs";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { FakeActiveUserState } from "../../../../spec/fake-state";
-import { AccountInfo } from "../../../auth/abstractions/account.service";
-import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { Utils } from "../../../platform/misc/utils";
 import { OrganizationId, UserId } from "../../../types/guid";
 import { OrganizationData } from "../../models/data/organization.data";
@@ -87,31 +85,11 @@ describe("OrganizationService", () => {
    * function can be used to add a new non-active account to the test data.
    * This function is **not** needed to handle creation of the first account,
    * as that is handled by the `FakeAccountService` in `mockAccountServiceWith()`
-   * @param opts.createWithTestOrgs Will add a couple of slim test organizations to
-   * the state of the user being created. Defaults to false.
    * @returns The `UserId` of the newly created state account and the mock data
    * created for them as an `Organization[]`.
    */
-  async function addNonActiveAccountToStateProvider(opts?: {
-    createWithTestOrgs: boolean;
-  }): Promise<[UserId, OrganizationData[]]> {
+  async function addNonActiveAccountToStateProvider(): Promise<[UserId, OrganizationData[]]> {
     const nonActiveUserId = Utils.newGuid() as UserId;
-    // This is the same partial object setup that `mockAccountServiceWith()` uses.
-    // I'm assuming at the time of writing that name, email, and status are
-    // important to the internal functions of StateProvider and should
-    // always be mocked when testing.
-    const fullInfo: AccountInfo = {
-      name: "nonActiveUserName",
-      email: "nonActiveUserEmail",
-      status: AuthenticationStatus.Locked,
-    };
-    // This does **not** change the active user, and instead adds this account
-    // in an inactive state.
-    await fakeAccountService.addAccount(nonActiveUserId, fullInfo);
-
-    if (!opts?.createWithTestOrgs) {
-      return [nonActiveUserId, undefined];
-    }
 
     const mockOrganizations = buildMockOrganizations(10);
     const fakeNonActiveUserState = fakeStateProvider.singleUser.getFake(
@@ -216,7 +194,7 @@ describe("OrganizationService", () => {
         fakeActiveUserState.nextState(arrayToRecord(activeUserMockData));
 
         const [nonActiveUserId, nonActiveUserMockOrganizations] =
-          await addNonActiveAccountToStateProvider({ createWithTestOrgs: true });
+          await addNonActiveAccountToStateProvider();
         // This can be updated to use
         // `firstValueFrom(organizations$(nonActiveUserId)` once all the
         // promise based methods are removed from `OrganizationService` and the
@@ -265,7 +243,7 @@ describe("OrganizationService", () => {
       fakeActiveUserState.nextState(arrayToRecord(activeUserMockData));
 
       const [nonActiveUserId, nonActiveUserMockOrganizations] =
-        await addNonActiveAccountToStateProvider({ createWithTestOrgs: true });
+        await addNonActiveAccountToStateProvider();
       const indexToUpdate = 5;
       const anUpdatedOrganization = {
         ...buildMockOrganizations(1, "UPDATED").pop(),
@@ -329,9 +307,7 @@ describe("OrganizationService", () => {
       const activeUserMockData = buildMockOrganizations(10, "activeUserOrganizations");
       fakeActiveUserState.nextState(arrayToRecord(activeUserMockData));
 
-      const [nonActiveUserId, originalOrganizations] = await addNonActiveAccountToStateProvider({
-        createWithTestOrgs: true,
-      });
+      const [nonActiveUserId, originalOrganizations] = await addNonActiveAccountToStateProvider();
       const newData = buildMockOrganizations(10, "newData");
 
       await organizationService.replace(arrayToRecord(newData), nonActiveUserId);
