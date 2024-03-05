@@ -112,6 +112,16 @@ export abstract class TokenService {
   clearTokens: (userId?: UserId) => Promise<void>;
   decodeAccessToken: (token?: string) => Promise<DecodedAccessToken>;
   getTokenExpirationDate: () => Promise<Date | null>;
+
+  /**
+   * Calculates the adjusted time in seconds until the access token expires, considering an optional offset.
+   *
+   * @param {number} [offsetSeconds=0] - Optional seconds to subtract from the remaining time,
+   *        creating a buffer before actual expiration. Useful for preemptive actions
+   *        before token expiry. A value of 0 or omitting this parameter calculates time
+   *        based on the actual expiration.
+   * @returns {Promise<number>} Promise resolving to the adjusted seconds remaining.
+   */
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;
   tokenNeedsRefresh: (minutes?: number) => Promise<boolean>;
   /**
