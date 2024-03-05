@@ -24,10 +24,7 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import {
-  AccountService,
-  AccountService as AccountServiceAbstraction,
-} from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
@@ -79,8 +76,6 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
-import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
-import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -292,37 +287,6 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: DevicesServiceAbstraction,
       useFactory: getBgService<DevicesServiceAbstraction>("devicesService"),
       deps: [],
-    },
-    {
-      provide: EventUploadService,
-      useFactory: (
-        apiService: ApiService,
-        stateProvider: StateProvider,
-        logService: LogService,
-        accountService: AccountService,
-      ) => {
-        return new EventUploadService(apiService, stateProvider, logService, accountService);
-      },
-      deps: [ApiService, StateProvider, LogService, AccountService],
-    },
-    {
-      provide: EventCollectionService,
-      useFactory: (
-        cipherService: CipherService,
-        stateProvider: StateProvider,
-        organizationService: OrganizationService,
-        eventUploadService: EventUploadService,
-        accountService: AccountService,
-      ) => {
-        return new EventCollectionService(
-          cipherService,
-          stateProvider,
-          organizationService,
-          eventUploadService,
-          accountService,
-        );
-      },
-      deps: [CipherService, StateProvider, OrganizationService, EventUploadService, AccountService],
     },
     {
       provide: PolicyService,
