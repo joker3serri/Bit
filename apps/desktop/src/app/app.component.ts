@@ -40,6 +40,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { StateEventRunnerService } from "@bitwarden/common/platform/state";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -150,6 +151,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     private biometricStateService: BiometricStateService,
+    private stateEventRunnerService: StateEventRunnerService,
     private providerService: ProviderService,
   ) {}
 
@@ -221,13 +223,13 @@ export class AppComponent implements OnInit, OnDestroy {
             const currentUser = await this.stateService.getUserId();
             const accounts = await firstValueFrom(this.stateService.accounts$);
             await this.vaultTimeoutService.lock(currentUser);
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            Promise.all(
-              Object.keys(accounts)
-                .filter((u) => u !== currentUser)
-                .map((u) => this.vaultTimeoutService.lock(u)),
-            );
+            for (const account of Object.keys(accounts)) {
+              if (account === currentUser) {
+                continue;
+              }
+
+              await this.vaultTimeoutService.lock(account);
+            }
             break;
           }
           case "locked":
@@ -585,6 +587,8 @@ export class AppComponent implements OnInit, OnDestroy {
       await this.keyConnectorService.clear();
       await this.biometricStateService.logout(userBeingLoggedOut as UserId);
       await this.providerService.save(null, userBeingLoggedOut as UserId);
+
+      await this.stateEventRunnerService.handleEvent("logout", userBeingLoggedOut as UserId);
 
       preLogoutActiveUserId = this.activeUserId;
       await this.stateService.clean({ userId: userBeingLoggedOut });
