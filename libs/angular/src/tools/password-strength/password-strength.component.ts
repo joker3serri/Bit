@@ -1,21 +1,16 @@
-import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { ProgressModule } from "@bitwarden/components";
 
 export interface PasswordColorText {
   color: string;
   text: string;
 }
-type BackgroundTypes = "danger" | "primary" | "success" | "warning";
 
 @Component({
   selector: "app-password-strength",
   templateUrl: "password-strength.component.html",
-  imports: [ProgressModule, CommonModule],
-  standalone: true,
 })
 export class PasswordStrengthComponent implements OnChanges {
   @Input() showText = false;
@@ -29,7 +24,7 @@ export class PasswordStrengthComponent implements OnChanges {
 
   masterPasswordScore: number;
   scoreWidth = 0;
-  color: BackgroundTypes = "danger";
+  color = "bg-danger";
   text: string;
 
   private masterPasswordStrengthTimeout: any;
@@ -73,19 +68,19 @@ export class PasswordStrengthComponent implements OnChanges {
 
       switch (this.masterPasswordScore) {
         case 4:
-          this.color = "success";
+          this.color = "bg-success";
           this.text = this.i18nService.t("strong");
           break;
         case 3:
-          this.color = "primary";
+          this.color = "bg-primary";
           this.text = this.i18nService.t("good");
           break;
         case 2:
-          this.color = "warning";
+          this.color = "bg-warning";
           this.text = this.i18nService.t("weak");
           break;
         default:
-          this.color = "danger";
+          this.color = "bg-danger";
           this.text = this.masterPasswordScore != null ? this.i18nService.t("weak") : null;
           break;
       }

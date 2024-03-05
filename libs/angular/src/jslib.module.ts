@@ -43,7 +43,6 @@ import { IconComponent } from "./vault/components/icon.component";
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    PasswordStrengthComponent,
   ],
   declarations: [
     A11yInvalidDirective,
@@ -70,6 +69,7 @@ import { IconComponent } from "./vault/components/icon.component";
     CopyClickDirective,
     LaunchClickDirective,
     UserNamePipe,
+    PasswordStrengthComponent,
     UserTypePipe,
     IfFeatureDirective,
     FingerprintPipe,
