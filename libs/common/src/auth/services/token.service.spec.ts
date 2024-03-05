@@ -1056,7 +1056,6 @@ describe("TokenService", () => {
       });
     });
 
-    // TODO: finish adding tests for getClientId
     describe("getClientId", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
@@ -1076,6 +1075,154 @@ describe("TokenService", () => {
         const result = await tokenService.getClientId();
         // Assert
         expect(result).toBeNull();
+      });
+
+      describe("Memory storage tests", () => {
+        it("should get the client id from memory with no user id specified (uses global active user)", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, clientId]);
+
+          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
+          // set disk to undefined
+          // singleUserStateProvider
+          //   .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          const result = await tokenService.getClientId();
+
+          // Assert
+          expect(result).toEqual(clientId);
+
+          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+          // assert disk was not called
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+          ).not.toHaveBeenCalled();
+        });
+
+        it("should get the client id from memory for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, clientId]);
+
+          // Act
+          const result = await tokenService.getClientId(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(clientId);
+
+          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
+          // assert disk was not called
+          expect(
+            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+          ).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("Disk storage tests", () => {
+        it("should get the client id from disk with no user id specified", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+            .stateSubject.next([userIdFromAccessToken, clientId]);
+
+          // Need to have global active id set to the user id
+          globalStateProvider
+            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+            .stateSubject.next(userIdFromAccessToken);
+
+          // Act
+          const result = await tokenService.getClientId();
+          // Assert
+          expect(result).toEqual(clientId);
+        });
+
+        it("should get the client id from disk for the specified user id", async () => {
+          // Arrange
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+            .stateSubject.next([userIdFromAccessToken, clientId]);
+
+          // Act
+          const result = await tokenService.getClientId(userIdFromAccessToken);
+          // Assert
+          expect(result).toEqual(clientId);
+        });
+      });
+    });
+
+    describe("clearClientId", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the error
+        const result = (tokenService as any).clearClientId();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot clear client id.");
+      });
+
+      it("should clear the client id from memory and disk for the specified user id", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, clientId]);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+          .stateSubject.next([userIdFromAccessToken, clientId]);
+
+        // Act
+        await (tokenService as any).clearClientId(userIdFromAccessToken);
+
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY).nextMock,
+        ).toHaveBeenCalledWith(null);
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+        ).toHaveBeenCalledWith(null);
+      });
+
+      it("should clear the client id from memory and disk for the global active user", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, clientId]);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+          .stateSubject.next([userIdFromAccessToken, clientId]);
+
+        // Need to have global active id set to the user id
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        await (tokenService as any).clearClientId();
+
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY).nextMock,
+        ).toHaveBeenCalledWith(null);
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
+        ).toHaveBeenCalledWith(null);
       });
     });
   });
