@@ -1,6 +1,6 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 
-import { ThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
+import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import {
   PinCryptoServiceAbstraction,
@@ -219,6 +219,7 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
+import { ThemeType } from "@bitwarden/common/platform/enums";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -472,7 +473,16 @@ export default class MainBackground {
     );
 
     // We don't need window/document for this theming service as it's only used for getting the configured theme
-    this.themingService = new ThemingService(this.stateProvider, self, self.document);
+    // FIXME: An angular service shouldn't be used in browser background.
+    this.themingService = new AngularThemingService(
+      this.stateProvider,
+      throwError(
+        () =>
+          new Error(
+            "The background instance of ThemingService is not expected to be used for retrieving the system theme.",
+          ),
+      ),
+    );
 
     this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
     this.cryptoService = new BrowserCryptoService(

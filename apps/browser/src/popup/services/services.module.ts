@@ -1,7 +1,7 @@
 import { APP_INITIALIZER, LOCALE_ID, NgModule, NgZone } from "@angular/core";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
-import { ThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
+import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import {
   MEMORY_STORAGE,
@@ -514,12 +514,13 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: AbstractThemingService,
       useFactory: (stateProvider: StateProvider, platformUtilsService: PlatformUtilsService) => {
-        return new ThemingService(
+        return new AngularThemingService(
           stateProvider,
           // Safari doesn't properly handle the (prefers-color-scheme) media query in the popup window, it always returns light.
           // In Safari we have to use the background page instead, which comes with limitations like not dynamically changing the extension theme when the system theme is changed.
-          platformUtilsService.isSafari() ? getBgService<Window>("backgroundWindow")() : window,
-          document,
+          AngularThemingService.createSystemThemeFromWindow(
+            platformUtilsService.isSafari() ? getBgService<Window>("backgroundWindow")() : window,
+          ),
         );
       },
       deps: [StateProvider, PlatformUtilsService],

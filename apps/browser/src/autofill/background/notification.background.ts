@@ -156,7 +156,7 @@ export default class NotificationBackground {
     const notificationType = notificationQueueMessage.type;
     const typeData: Record<string, any> = {
       isVaultLocked: notificationQueueMessage.wasVaultLocked,
-      theme: await this.stateService.getTheme(),
+      theme: await firstValueFrom(this.themingService.configuredTheme$),
     };
 
     switch (notificationType) {

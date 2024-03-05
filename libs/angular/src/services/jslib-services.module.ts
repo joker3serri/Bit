@@ -222,7 +222,7 @@ import { UnauthGuard } from "../auth/guards/unauth.guard";
 import { FormValidationErrorsService as FormValidationErrorsServiceAbstraction } from "../platform/abstractions/form-validation-errors.service";
 import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
-import { ThemingService } from "../platform/services/theming/theming.service";
+import { AngularThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
 
 import {
@@ -754,7 +754,12 @@ import { ModalService } from "./modal.service";
     },
     {
       provide: AbstractThemingService,
-      useClass: ThemingService,
+      useFactory: (stateProvider: StateProvider, window: Window) =>
+        new AngularThemingService(
+          stateProvider,
+          AngularThemingService.createSystemThemeFromWindow(window),
+        ),
+      deps: [StateProvider, WINDOW],
     },
     {
       provide: FormValidationErrorsServiceAbstraction,
