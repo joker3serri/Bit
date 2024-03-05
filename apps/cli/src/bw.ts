@@ -388,7 +388,7 @@ export class Main {
       this.stateProvider,
     );
 
-    this.providerService = new ProviderService(this.stateService);
+    this.providerService = new ProviderService(this.stateProvider);
 
     this.organizationService = new OrganizationService(this.stateService, this.stateProvider);
 
@@ -658,6 +658,7 @@ export class Main {
       this.collectionService.clear(userId as UserId),
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(),
+      this.providerService.save(null, userId as UserId),
     ]);
 
     await this.stateEventRunnerService.handleEvent("logout", userId as UserId);
