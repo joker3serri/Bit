@@ -28,6 +28,11 @@ export const BROWSER_SEND_TYPE_COMPONENT = new KeyDefinition<BrowserComponentSta
   },
 );
 
+/** Retrieve and update the BrowserSendComponentState and the BrowserComponentState
+ *  BrowserSendComponentState contains sends and the type count along with scroll position
+ *  and search text.
+ *  BrowserComponentState contains just scroll position and search text.
+ */
 export class BrowserSendStateService {
   browserSendComponentState$: Observable<BrowserSendComponentState>;
   browserSendTypeComponentState$: Observable<BrowserComponentState>;
