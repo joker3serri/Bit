@@ -9,7 +9,7 @@ import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { UserId } from "../../types/guid";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
-import { TokenService } from "./token.service";
+import { DecodedAccessToken, TokenService } from "./token.service";
 import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
@@ -40,7 +40,7 @@ describe("TokenService", () => {
   const accessTokenJwt =
     "eyJhbGciOiJSUzI1NiIsImtpZCI6IkY5NjBFQzY4RThEMTBDMUEzNEE0OUYwODkwQkExQkExMDk4QUIzMjFSUzI1NiIsIng1dCI6Ii1XRHNhT2pSREJvMHBKOElrTG9ib1FtS3N5RSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwibmJmIjoxNzA5MzI0MTExLCJpYXQiOjE3MDkzMjQxMTEsImV4cCI6MTcwOTMyNzcxMSwic2NvcGUiOlsiYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbIkFwcGxpY2F0aW9uIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6ImVjZTcwYTEzLTcyMTYtNDNjNC05OTc3LWIxMDMwMTQ2ZTFlNyIsImF1dGhfdGltZSI6MTcwOTMyNDEwNCwiaWRwIjoiYml0d2FyZGVuIiwicHJlbWl1bSI6ZmFsc2UsImVtYWlsIjoianNuaWRlclx1MDAyQmxvY2FsQGJpdHdhcmRlbi5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInNzdGFtcCI6IkdZN0pBTzY0Q0tLVEtCQjZaRUFVWUwyV09RVTdBU1QyIiwibmFtZSI6IkphcmVkIFNuaWRlciAxIiwib3Jnb3duZXIiOlsiOTJiNDk5MDgtYjUxNC00NWE4LWJhZGItYjEwMzAxNDhmZTUzIiwiMzhlZGUzMjItYjRiNC00YmQ4LTllMDktYjEwNzAxMTJkYzExIiwiYjJkMDcwMjgtYTU4My00YzNlLThkNjAtYjEwNzAxMTk4YzI5IiwiYmY5MzRiYTItMGZkNC00OWYyLWE5NWUtYjEwNzAxMWZjOWU2IiwiYzBiN2Y3NWQtMDE1Zi00MmM5LWIzYTYtYjEwODAxNzYwN2NhIl0sImRldmljZSI6IjRiODcyMzY3LTBkYTYtNDFhMC1hZGNiLTc3ZjJmZWVmYzRmNCIsImp0aSI6Ijc1MTYxQkU0MTMxRkY1QTJERTUxMUI4QzRFMkZGODlBIn0.g-18EOexIbt7YIFW_D79Ilxe5-ZwTVjmFM5aRcLGyDnQZTXihBzYewzOPbQDoz0hdZF-LM8p94-45uYO3TgAUcYe6yOIpL6naJ7yNW8x_AU_Hc2FAChfV5N9mW7vzKkc_SJvHqyMifj6XGDpIwMAUY9U_WbFpPnkF9yO0moLBq5vtOrcnNSarou9kp4mQhf1KR123onO4SnMNrxyht9YWayCA0EyIjMoglQgJo_ecsJrkLCt0va9Xbx6hqYz_cDrcIvLq7NQkIe-ehHAZikTSqB9xaYpx5luWMyE0Wqw_Os47xpH-N56p8bGWPpoEhrDJKaZyl-Hn8--aGcBEu80zgAFKjARNsZzVm1g4UZcrgCOqyYQQi6JkKzIZ8ogGsEEeJSf_FFa0t9k7OFe2vvpfBRpB1OX1-O1hmUFFvX4k1MNd0TsrZSUZe_zwiMoGKsR182TPSdZlc7ucq7mt9oLPzCoJnyDxvm_fjQMaRKa6ITnnuNvA0I8qwqXO-Ga3hb2NZjrzaKh2iZAMlKHZohseX7gtxFh6r6ORgWDd-eUKnCJbLbNtcwQXH_XqPLqLldfdJA27V76GOBJypSqHNqBWYx6CYqCcihyM56SHkomUPcxdjuIZqpWUKKnevuIT_v5da5VnmP0TLi88ZdIjRGCVu9Cipx56dru_wwF_Um9304";
 
-  const accessTokenDecoded = {
+  const accessTokenDecoded: DecodedAccessToken = {
     iss: "http://localhost",
     nbf: 1709324111,
     iat: 1709324111,
@@ -575,6 +575,72 @@ describe("TokenService", () => {
 
         // Restore original function so other tests are not affected
         jest.restoreAllMocks();
+      });
+    });
+
+    describe("Data methods", () => {
+      describe("getTokenExpirationDate", () => {
+        it("should throw an error if the access token cannot be decoded", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getTokenExpirationDate();
+          // Assert
+          await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
+        });
+
+        it("should return null if the decoded access token is null", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(null);
+
+          // Act
+          const result = await tokenService.getTokenExpirationDate();
+
+          // Assert
+          expect(result).toBeNull();
+        });
+
+        it("should return null if the decoded access token does not have an expiration date", async () => {
+          // Arrange
+          const accessTokenDecodedWithoutExp = { ...accessTokenDecoded };
+          delete accessTokenDecodedWithoutExp.exp;
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithoutExp);
+
+          // Act
+          const result = await tokenService.getTokenExpirationDate();
+
+          // Assert
+          expect(result).toBeNull();
+        });
+
+        it("should return null if the decoded access token has an non numeric expiration date", async () => {
+          // Arrange
+          const accessTokenDecodedWithNonNumericExp = { ...accessTokenDecoded, exp: "non-numeric" };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithNonNumericExp);
+
+          // Act
+          const result = await tokenService.getTokenExpirationDate();
+
+          // Assert
+          expect(result).toBeNull();
+        });
+
+        it("should return the expiration date of the access token", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(accessTokenDecoded);
+
+          // Act
+          const result = await tokenService.getTokenExpirationDate();
+
+          // Assert
+          expect(result).toEqual(new Date(accessTokenDecoded.exp * 1000));
+        });
       });
     });
   });
