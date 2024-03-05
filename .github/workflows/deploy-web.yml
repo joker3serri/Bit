@@ -19,6 +19,10 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
+      invert-sync-delete-destination-files:
+        description: "Invert the default sync-delete-destination-files value"
+        type: boolean
+        default: false
       debug:
         description: "Debug mode"
         type: boolean
@@ -34,6 +38,10 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
+      invert-sync-delete-destination-files:
+        description: "Invert the default sync-delete-destination-files value"
+        type: boolean
+        default: false
       debug:
         description: "Debug mode"
         type: boolean
@@ -62,6 +70,15 @@ jobs:
           ENV_NAME_LOWER=$(echo "${{ inputs.environment }}" | awk '{print tolower($0)}')
           echo "configuring the Web deploy for ${{ inputs.environment }}"
           echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+
+          # Invert the default value for sync-delete-destination-files
+          if [ ${{ inputs.invert-sync-delete-destination-files }} ]; then
+            echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
+          else
+          # This is the default value for USQA, EUQA, USPROD, and EUPROD
+          echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
+          fi
+
           case ${{ inputs.environment }} in
             "USQA")
               echo "azure-login-creds=AZURE_KV_US_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -69,7 +86,6 @@ jobs:
               echo "environment-artifact=web-*-cloud-QA.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - US QA Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
-              echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
               ;;
             "EUQA")
               echo "azure-login-creds=AZURE_KV_EU_QA_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -77,7 +93,6 @@ jobs:
               echo "environment-artifact=web-*-cloud-euqa.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - EU QA Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
-              echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
               ;;
             "USPROD")
               echo "azure-login-creds=AZURE_KV_US_PROD_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -85,7 +100,6 @@ jobs:
               echo "environment-artifact=web-*-cloud-COMMERCIAL.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - US Production Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.bitwarden.com" >> $GITHUB_OUTPUT
-              echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
               ;;
             "EUPROD")
               echo "azure-login-creds=AZURE_KV_EU_PRD_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -93,7 +107,6 @@ jobs:
               echo "environment-artifact=web-*-cloud-euprd.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - EU Production Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.bitwarden.eu" >> $GITHUB_OUTPUT
-              echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
               ;;
             "USDEV")
               echo "azure-login-creds=AZURE_KV_US_DEV_SERVICE_PRINCIPAL" >> $GITHUB_OUTPUT
@@ -101,7 +114,13 @@ jobs:
               echo "environment-artifact=web-*-cloud-usdev.zip" >> $GITHUB_OUTPUT
               echo "environment-name=Web Vault - US Development Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
-              echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
+
+              if [ ${{ inputs.invert-sync-delete-destination-files }} ]; then
+                echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
+              else
+                # This is the default value for USDEV
+                echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
+              fi
               ;;
           esac
           # Set the sync utility to use for deployment to the environment (az-sync or azcopy)
