@@ -1,10 +1,15 @@
 import { ApiService } from "../../../../abstractions/api.service";
+import { CryptoService } from "../../../../platform/abstractions/crypto.service";
+import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../../platform/abstractions/i18n.service";
+import { StateProvider } from "../../../../platform/state";
+import { FIREFOX_RELAY_FORWARDER } from "../../key-definitions";
+import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
 import { Forwarders } from "../options/constants";
-import { Forwarder, ApiOptions } from "../options/forwarder-options";
+import { ApiOptions } from "../options/forwarder-options";
 
 /** Generates a forwarding address for Firefox Relay */
-export class FirefoxRelayForwarder implements Forwarder {
+export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions> {
   /** Instantiates the forwarder
    *  @param apiService used for ajax requests to the forwarding service
    *  @param i18nService used to look up error strings
@@ -12,10 +17,20 @@ export class FirefoxRelayForwarder implements Forwarder {
   constructor(
     private apiService: ApiService,
     private i18nService: I18nService,
-  ) {}
+    encryptService: EncryptService,
+    keyService: CryptoService,
+    stateProvider: StateProvider,
+  ) {
+    super(encryptService, keyService, stateProvider);
+  }
 
-  /** {@link Forwarder.generate} */
-  async generate(website: string | null, options: ApiOptions): Promise<string> {
+  /** {@link ForwarderGeneratorStrategy.generate} */
+  get key() {
+    return FIREFOX_RELAY_FORWARDER;
+  }
+
+  /** {@link GeneratorStrategy.generate} */
+  generate = async (options: ApiOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.FirefoxRelay.name);
       throw error;
@@ -23,9 +38,11 @@ export class FirefoxRelayForwarder implements Forwarder {
 
     const url = "https://relay.firefox.com/api/v1/relayaddresses/";
 
-    const descriptionId =
-      website && website !== "" ? "forwarderGeneratedByWithWebsite" : "forwarderGeneratedBy";
-    const description = this.i18nService.t(descriptionId, website ?? "");
+    let descriptionId = "forwarderGeneratedByWithWebsite";
+    if (!options.website || options.website === "") {
+      descriptionId = "forwarderGeneratedBy";
+    }
+    const description = this.i18nService.t(descriptionId, options.website ?? "");
 
     const request = new Request(url, {
       redirect: "manual",
@@ -37,7 +54,7 @@ export class FirefoxRelayForwarder implements Forwarder {
       }),
       body: JSON.stringify({
         enabled: true,
-        generated_for: website,
+        generated_for: options.website,
         description,
       }),
     });
@@ -53,5 +70,5 @@ export class FirefoxRelayForwarder implements Forwarder {
       const error = this.i18nService.t("forwarderUnknownError", Forwarders.FirefoxRelay.name);
       throw error;
     }
-  }
+  };
 }
