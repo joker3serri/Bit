@@ -19,7 +19,7 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
-      invert-sync-delete-destination-files:
+      invert-default-sync-delete-destination-files-value:
         description: "Invert the default sync-delete-destination-files value"
         type: boolean
         default: false
@@ -38,7 +38,7 @@ on:
         description: "Branch or Tag name to deploy (examples: 'main', 'feature/sm', 'web-v2023.12.0')"
         type: string
         default: main
-      invert-sync-delete-destination-files:
+      invert-default-sync-delete-destination-files-value:
         description: "Invert the default sync-delete-destination-files value"
         type: boolean
         default: false
@@ -72,7 +72,7 @@ jobs:
           echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
 
           # Invert the default value for sync-delete-destination-files
-          if [ ${{ inputs.invert-sync-delete-destination-files }} ]; then
+          if [ ${{ inputs.invert-default-sync-delete-destination-files-value }} ]; then
             echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
           else
           # This is the default value for USQA, EUQA, USPROD, and EUPROD
@@ -115,7 +115,7 @@ jobs:
               echo "environment-name=Web Vault - US Development Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
 
-              if [ ${{ inputs.invert-sync-delete-destination-files }} ]; then
+              if [ ${{ inputs.invert-default-sync-delete-destination-files-value }} ]; then
                 echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
               else
                 # This is the default value for USDEV
