@@ -642,6 +642,66 @@ describe("TokenService", () => {
           expect(result).toEqual(new Date(accessTokenDecoded.exp * 1000));
         });
       });
+
+      describe("tokenSecondsRemaining", () => {
+        it("should return 0 if the tokenExpirationDate is null", async () => {
+          // Arrange
+          tokenService.getTokenExpirationDate = jest.fn().mockResolvedValue(null);
+
+          // Act
+          const result = await tokenService.tokenSecondsRemaining();
+
+          // Assert
+          expect(result).toEqual(0);
+        });
+
+        it("should return the number of seconds remaining until the token expires", async () => {
+          // Arrange
+          // Lock the time to ensure a consistent test environment
+          jest.useFakeTimers().setSystemTime(new Date());
+
+          const nowInSeconds = Math.floor(Date.now() / 1000);
+          const expirationInSeconds = nowInSeconds + 3600; // token expires in 1 hr
+          const expectedSecondsRemaining = expirationInSeconds - nowInSeconds;
+
+          const expirationDate = new Date(0);
+          expirationDate.setUTCSeconds(expirationInSeconds);
+          tokenService.getTokenExpirationDate = jest.fn().mockResolvedValue(expirationDate);
+
+          // Act
+          const result = await tokenService.tokenSecondsRemaining();
+
+          // Assert
+          expect(result).toEqual(expectedSecondsRemaining);
+
+          // Reset the timers to be the real ones
+          jest.useRealTimers();
+        });
+
+        it("should return the number of seconds remaining until the token expires, considering an offset", async () => {
+          // Arrange
+          // Lock the time to ensure a consistent test environment
+          jest.useFakeTimers().setSystemTime(new Date());
+
+          const nowInSeconds = Math.floor(Date.now() / 1000);
+          const offsetSeconds = 300; // 5 minute offset
+          const expirationInSeconds = nowInSeconds + 3600; // token expires in 1 hr
+          const expectedSecondsRemaining = expirationInSeconds - nowInSeconds - offsetSeconds; // Adjust for offset
+
+          const expirationDate = new Date(0);
+          expirationDate.setUTCSeconds(expirationInSeconds);
+          tokenService.getTokenExpirationDate = jest.fn().mockResolvedValue(expirationDate);
+
+          // Act
+          const result = await tokenService.tokenSecondsRemaining(offsetSeconds);
+
+          // Assert
+          expect(result).toEqual(expectedSecondsRemaining);
+
+          // Reset the timers to be the real ones
+          jest.useRealTimers();
+        });
+      });
     });
   });
 
