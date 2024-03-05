@@ -270,8 +270,8 @@ jobs:
           AZCOPY_SPA_CLIENT_SECRET: ${{ steps.retrieve-secrets-azcopy.outputs.sp-bitwarden-web-vault-password }}
           AZCOPY_TENANT_ID: ${{ steps.retrieve-secrets-azcopy.outputs.sp-bitwarden-web-vault-tenant }}
         run: |
-          azcopy sync --compare-hash ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
-            --delete-destination=true
+          azcopy sync ./build 'https://${{ steps.retrieve-secrets-azcopy.outputs.sa-bitwarden-web-vault-name }}.blob.core.windows.net/$web/' \
+            --delete-destination=true --compare-hash
 
       - name: Debug sync logs
         if: ${{ inputs.debug }}
