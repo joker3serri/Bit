@@ -41,6 +41,7 @@ export enum TokenStorageLocation {
  * Type representing the structure of a decoded access token.
  * src: https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
  * Note: all claims are technically optional so we must verify their existence before using them.
+ * Note 2: NumericDate is a number representing a date in seconds since the Unix epoch.
  */
 export type DecodedAccessToken = {
   /** Issuer  - the issuer of the token, typically the URL of the authentication server */
@@ -52,7 +53,7 @@ export type DecodedAccessToken = {
   /** Issued At - a timestamp of when the token was issued */
   iat?: number;
 
-  /** Expiration Time - a timestamp of when the token will expire */
+  /** Expiration Time - a NumericDate timestamp of when the token will expire */
   exp?: number;
 
   /** Scope - the scope of the access request, such as the permissions the token grants */
@@ -629,12 +630,12 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async tokenSecondsRemaining(offsetSeconds = 0): Promise<number> {
-    const d = await this.getTokenExpirationDate();
-    if (d == null) {
+    const date = await this.getTokenExpirationDate();
+    if (date == null) {
       return 0;
     }
 
-    const msRemaining = d.valueOf() - (new Date().valueOf() + offsetSeconds * 1000);
+    const msRemaining = date.valueOf() - (new Date().valueOf() + offsetSeconds * 1000);
     return Math.round(msRemaining / 1000);
   }
 
