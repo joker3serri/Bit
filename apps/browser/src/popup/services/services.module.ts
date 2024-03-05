@@ -24,13 +24,8 @@ import { SettingsService } from "@bitwarden/common/abstractions/settings.service
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
-import {
-  InternalPolicyService,
-  PolicyService,
-} from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
@@ -47,6 +42,10 @@ import {
   AutofillSettingsService,
   AutofillSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  UserNotificationSettingsService,
+  UserNotificationSettingsServiceAbstraction,
+} from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -114,7 +113,6 @@ import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 import { BrowserStateService as StateServiceAbstraction } from "../../platform/services/abstractions/browser-state.service";
 import { BrowserConfigService } from "../../platform/services/browser-config.service";
-import { BrowserCryptoService } from "../../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
 import { BrowserFileDownloadService } from "../../platform/services/browser-file-download.service";
 import { BrowserI18nService } from "../../platform/services/browser-i18n.service";
@@ -148,6 +146,7 @@ function createLocalBgService() {
   return localBgService;
 }
 
+/** @deprecated This method needs to be removed as part of MV3 conversion. Please do not add more and actively try to remove usages */
 function getBgService<T>(service: keyof MainBackground) {
   return (): T => {
     return mainBackground ? (mainBackground[service] as any as T) : null;
@@ -269,39 +268,12 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: CryptoService,
-      useFactory: (
-        keyGenerationService: KeyGenerationService,
-        cryptoFunctionService: CryptoFunctionService,
-        encryptService: EncryptService,
-        platformUtilsService: PlatformUtilsService,
-        logService: LogServiceAbstraction,
-        stateService: StateServiceAbstraction,
-        accountService: AccountServiceAbstraction,
-        stateProvider: StateProvider,
-      ) => {
-        const cryptoService = new BrowserCryptoService(
-          keyGenerationService,
-          cryptoFunctionService,
-          encryptService,
-          platformUtilsService,
-          logService,
-          stateService,
-          accountService,
-          stateProvider,
-        );
+      useFactory: (encryptService: EncryptService) => {
+        const cryptoService = getBgService<CryptoService>("cryptoService")();
         new ContainerService(cryptoService, encryptService).attachToGlobal(self);
         return cryptoService;
       },
-      deps: [
-        KeyGenerationService,
-        CryptoFunctionService,
-        EncryptService,
-        PlatformUtilsService,
-        LogServiceAbstraction,
-        StateServiceAbstraction,
-        AccountServiceAbstraction,
-        StateProvider,
-      ],
+      deps: [EncryptService],
     },
     {
       provide: AuthRequestServiceAbstraction,
@@ -338,17 +310,6 @@ function getBgService<T>(service: keyof MainBackground) {
         return new BrowserPolicyService(stateService, stateProvider, organizationService);
       },
       deps: [StateServiceAbstraction, StateProvider, OrganizationService],
-    },
-    {
-      provide: PolicyApiServiceAbstraction,
-      useFactory: (
-        policyService: InternalPolicyService,
-        apiService: ApiService,
-        stateService: StateService,
-      ) => {
-        return new PolicyApiService(policyService, apiService, stateService);
-      },
-      deps: [InternalPolicyService, ApiService, StateService],
     },
     {
       provide: PlatformUtilsService,
@@ -593,6 +554,11 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: AutofillSettingsServiceAbstraction,
       useClass: AutofillSettingsService,
       deps: [StateProvider, PolicyService],
+    },
+    {
+      provide: UserNotificationSettingsServiceAbstraction,
+      useClass: UserNotificationSettingsService,
+      deps: [StateProvider],
     },
   ],
 })
