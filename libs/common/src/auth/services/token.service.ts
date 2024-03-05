@@ -450,7 +450,7 @@ export class TokenService implements TokenServiceAbstraction {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
-      throw new Error("User id not found. Cannot save client secret.");
+      throw new Error("User id not found. Cannot get client secret.");
     }
 
     // Always read memory first b/c faster
