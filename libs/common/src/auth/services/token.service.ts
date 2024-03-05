@@ -38,23 +38,33 @@ export enum TokenStorageLocation {
 }
 
 export class TokenService implements TokenServiceAbstraction {
-  static decodeAccessToken(token: string): Promise<any> {
+  static decodeAccessToken(token: string): any {
     if (token == null) {
-      throw new Error("Token not provided.");
+      throw new Error("Access token not found.");
     }
 
     const parts = token.split(".");
     if (parts.length !== 3) {
       throw new Error("JWT must have 3 parts");
     }
+    // JWT has 3 parts: header, payload, signature separated by '.'
+    const encodedPayload = parts[1];
 
-    const decoded = Utils.fromUrlB64ToUtf8(parts[1]);
-    if (decoded == null) {
+    let decodedPayloadJSON: string;
+    try {
+      // Attempt to decode from URL-safe Base64 to UTF-8
+      decodedPayloadJSON = Utils.fromUrlB64ToUtf8(encodedPayload);
+    } catch (decodingError) {
       throw new Error("Cannot decode the token");
     }
 
-    const decodedToken = JSON.parse(decoded);
-    return decodedToken;
+    try {
+      // Attempt to parse the JSON payload
+      const decodedToken = JSON.parse(decodedPayloadJSON);
+      return decodedToken;
+    } catch (jsonError) {
+      throw new Error("Cannot parse the token's payload into JSON");
+    }
   }
 
   private readonly accessTokenSecureStorageKey: string = "_accessToken";
@@ -536,7 +546,7 @@ export class TokenService implements TokenServiceAbstraction {
     token = token ?? (await this.getAccessToken());
 
     if (token == null) {
-      throw new Error("Token not found.");
+      throw new Error("Access token not found.");
     }
 
     return TokenService.decodeAccessToken(token);
