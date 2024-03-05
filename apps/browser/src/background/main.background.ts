@@ -1,4 +1,4 @@
-import { firstValueFrom, of, throwError } from "rxjs";
+import { firstValueFrom, throwError } from "rxjs";
 
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
@@ -219,7 +219,6 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
-import { ThemeType } from "@bitwarden/common/platform/enums";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
