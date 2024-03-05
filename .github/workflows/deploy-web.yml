@@ -73,10 +73,10 @@ jobs:
 
           # Invert the default value for sync-delete-destination-files
           if [ ${{ inputs.invert-default-sync-delete-destination-files-value }} ]; then
-            echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
+            echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
           else
           # This is the default value for USQA, EUQA, USPROD, and EUPROD
-          echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
+          echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
           fi
 
           case ${{ inputs.environment }} in
@@ -116,10 +116,10 @@ jobs:
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
 
               if [ ${{ inputs.invert-default-sync-delete-destination-files-value }} ]; then
-                echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
+                echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
               else
                 # This is the default value for USDEV
-                echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
+                echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
               fi
               ;;
           esac
