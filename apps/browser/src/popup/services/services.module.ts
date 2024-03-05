@@ -15,7 +15,6 @@ import {
   LoginStrategyServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
