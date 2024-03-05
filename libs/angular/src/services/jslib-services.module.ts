@@ -1,4 +1,4 @@
-import { InjectionToken, LOCALE_ID, NgModule } from "@angular/core";
+import { LOCALE_ID, NgModule } from "@angular/core";
 
 import {
   AuthRequestServiceAbstraction,
@@ -229,6 +229,7 @@ import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
 
 import {
+  BitInjectionToken,
   LOCALES_DIRECTORY,
   LOCKED_CALLBACK,
   LOG_MAC_FAILURES,
@@ -245,16 +246,19 @@ import {
 import { ModalService } from "./modal.service";
 
 /**
- * Given a tuple, return a tuple of constructors for those types
- * This is used to resolve mismatches between types (the shape of an instantiated class) and constructor types (the non-instantiated class)
+ * Given a type, return a constructor that returns that type
+ * This is used to resolve mismatches between types (generally representing an instantiated class) and constructor types (the non-instantiated class)
  */
-type MapTypeToConstructor<T> = abstract new (...args: any) => T;
-type MapParametersToDeps<T> = { [K in keyof T]: MapTypeToConstructor<T[K]> | InjectionToken<T[K]> };
+type ConstructorForType<T> = abstract new (...args: any) => T;
+
+type MapParametersToDeps<T> = {
+  [K in keyof T]: ConstructorForType<T[K]> | BitInjectionToken<T[K]>;
+};
 
 const useClass = <
   A extends abstract new (...args: any) => any, // A is an abstract class
   I extends Omit<A, "constructor"> & (new (...args: any) => any), // I is the implementation, it must extend A but may have a different ctor signature
-  D extends MapParametersToDeps<ConstructorParameters<I>>, // infer constructor param types from the implementation
+  D extends MapParametersToDeps<ConstructorParameters<I>>, // accept an array of constructor types OR injection tokens matching ctor parameters
 >(obj: {
   provide: A;
   useClass: I;
@@ -292,7 +296,7 @@ const useClass = <
         FolderApiServiceAbstraction,
         InternalOrganizationServiceAbstraction, // Fixed! Was not injecting the Internal service
         SendApiServiceAbstraction,
-        LOGOUT_CALLBACK, // For some reason this will take any InjectionToken, it doesn't compare the generic args :(
+        LOGOUT_CALLBACK,
       ],
     }),
 
