@@ -1,5 +1,6 @@
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { UserId } from "../../types/guid";
+import { DecodedAccessToken } from "../services/token.service";
 
 // TODO: update all docs based on latest changes.
 export abstract class TokenService {
@@ -109,8 +110,8 @@ export abstract class TokenService {
   getTwoFactorToken: (email: string) => Promise<string>;
   clearTwoFactorToken: (email: string) => Promise<void>;
   clearTokens: (userId?: UserId) => Promise<void>;
-  decodeAccessToken: (token?: string) => Promise<any>;
-  getTokenExpirationDate: () => Promise<Date>;
+  decodeAccessToken: (token?: string) => Promise<DecodedAccessToken>;
+  getTokenExpirationDate: () => Promise<Date | null>;
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;
   tokenNeedsRefresh: (minutes?: number) => Promise<boolean>;
   /**

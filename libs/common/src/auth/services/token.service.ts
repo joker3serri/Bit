@@ -37,8 +37,69 @@ export enum TokenStorageLocation {
   Memory = "memory",
 }
 
+/**
+ * Type representing the structure of a decoded access token.
+ * src: https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
+ * Note: all claims are technically optional so we must verify their existence before using them.
+ */
+export type DecodedAccessToken = {
+  /** Issuer  - the issuer of the token, typically the URL of the authentication server */
+  iss?: string;
+
+  /** Not Before - a timestamp defining when the token starts being valid */
+  nbf?: number;
+
+  /** Issued At - a timestamp of when the token was issued */
+  iat?: number;
+
+  /** Expiration Time - a timestamp of when the token will expire */
+  exp?: number;
+
+  /** Scope - the scope of the access request, such as the permissions the token grants */
+  scope?: string[];
+
+  /** Authentication Method References - the methods used in the authentication */
+  amr?: string[];
+
+  /** Client ID - the identifier for the client that requested the token */
+  client_id?: string;
+
+  /** Subject - the unique identifier for the user */
+  sub?: string;
+
+  /** Authentication Time - a timestamp of when the user authentication occurred */
+  auth_time?: number;
+
+  /** Identity Provider - the system or service that authenticated the user */
+  idp?: string;
+
+  /** Premium - a boolean flag indicating whether the account is premium */
+  premium?: boolean;
+
+  /** Email - the user's email address */
+  email?: string;
+
+  /** Email Verified - a boolean flag indicating whether the user's email address has been verified */
+  email_verified?: boolean;
+
+  /** Session Stamp - a unique identifier for the user's session */
+  sstamp?: string;
+
+  /** Name - the name of the user */
+  name?: string;
+
+  /** Organization Owners - a list of organization owner identifiers */
+  orgowner?: string[];
+
+  /** Device - the identifier of the device used */
+  device?: string;
+
+  /** JWT ID - a unique identifier for the JWT */
+  jti?: string;
+};
+
 export class TokenService implements TokenServiceAbstraction {
-  static decodeAccessToken(token: string): any {
+  static decodeAccessToken(token: string): DecodedAccessToken {
     if (token == null) {
       throw new Error("Access token not found.");
     }
@@ -535,14 +596,10 @@ export class TokenService implements TokenServiceAbstraction {
     ]);
   }
 
-  // TODO: in the future, we should evaluate creating a custom type for the decoded token
-  // we also could consider removing these methods that expose account information and
-  // instead require users to go to the account service for this info (e.g. accountService.getEmail())
-
   // jwthelper methods
   // ref https://github.com/auth0/angular-jwt/blob/master/src/angularJwt/services/jwt.js
 
-  async decodeAccessToken(token?: string): Promise<any> {
+  async decodeAccessToken(token?: string): Promise<DecodedAccessToken> {
     token = token ?? (await this.getAccessToken());
 
     if (token == null) {
@@ -552,15 +609,23 @@ export class TokenService implements TokenServiceAbstraction {
     return TokenService.decodeAccessToken(token);
   }
 
-  async getTokenExpirationDate(): Promise<Date> {
-    const decoded = await this.decodeAccessToken();
-    if (typeof decoded.exp === "undefined") {
+  async getTokenExpirationDate(): Promise<Date | null> {
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
+
+    // per RFC, exp claim is optional but if it exists, it should be a number
+    if (!decoded || typeof decoded.exp !== "number") {
       return null;
     }
 
-    const d = new Date(0); // The 0 here is the key, which sets the date to the epoch
-    d.setUTCSeconds(decoded.exp);
-    return d;
+    // The 0 in Date(0) is the key; it sets the date to the epoch
+    const expirationDate = new Date(0);
+    expirationDate.setUTCSeconds(decoded.exp);
+    return expirationDate;
   }
 
   async tokenSecondsRemaining(offsetSeconds = 0): Promise<number> {
