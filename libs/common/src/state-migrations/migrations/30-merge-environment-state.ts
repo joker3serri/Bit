@@ -18,7 +18,7 @@ const ENVIRONMENT_ENVIRONMENT: KeyDefinitionLike = {
   stateDefinition: ENVIRONMENT_STATE,
 };
 
-export class MergeEnvironmentState extends Migrator<26, 27> {
+export class MergeEnvironmentState extends Migrator<29, 30> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<unknown>();
 
