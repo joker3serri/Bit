@@ -15,7 +15,7 @@ export class AngularThemingService implements AbstractThemingService {
   /**
    * Creates a system theme observable based on watching the given window.
    * @param window The window that should be watched for system theme changes.
-   * @returns
+   * @returns An observable that will track the system theme.
    */
   static createSystemThemeFromWindow(window: Window): Observable<ThemeType> {
     return merge(

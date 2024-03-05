@@ -12,14 +12,20 @@ export class MoveThemeToStateProviderMigrator extends Migrator<29, 30> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyGlobalState = await helper.get<ExpectedGlobal>("global");
     const theme = legacyGlobalState?.theme;
-    if (theme) {
+    if (theme != null) {
       await helper.setToGlobal(THEME_SELECTION, theme);
       delete legacyGlobalState.theme;
       await helper.set("global", legacyGlobalState);
     }
   }
 
-  rollback(helper: MigrationHelper): Promise<void> {
-    throw new Error("Method not implemented.");
+  async rollback(helper: MigrationHelper): Promise<void> {
+    const theme = await helper.getFromGlobal<string>(THEME_SELECTION);
+    if (theme != null) {
+      const legacyGlobal = (await helper.get<ExpectedGlobal>("global")) ?? {};
+      legacyGlobal.theme = theme;
+      await helper.set("global", legacyGlobal);
+      await helper.removeFromGlobal(THEME_SELECTION);
+    }
   }
 }

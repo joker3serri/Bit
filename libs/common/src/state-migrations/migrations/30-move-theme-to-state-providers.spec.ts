@@ -32,4 +32,47 @@ describe("MoveThemeToStateProviders", () => {
       },
     );
   });
+
+  describe("rollback", () => {
+    it("migrates state provider theme back to original location when no global", async () => {
+      const output = await runMigrator(
+        sut,
+        {
+          global_theming_selection: "disk",
+        },
+        "rollback",
+      );
+
+      expect(output).toEqual({
+        global: {
+          theme: "disk",
+        },
+      });
+    });
+
+    it("migrates state provider theme back to legacy location when there is an existing global object", async () => {
+      const output = await runMigrator(
+        sut,
+        {
+          global_theming_selection: "disk",
+          global: {
+            other: "stuff",
+          },
+        },
+        "rollback",
+      );
+
+      expect(output).toEqual({
+        global: {
+          theme: "disk",
+          other: "stuff",
+        },
+      });
+    });
+
+    it("does nothing if no theme in state provider location", async () => {
+      const output = await runMigrator(sut, {}, "rollback");
+      expect(output).toEqual({});
+    });
+  });
 });
