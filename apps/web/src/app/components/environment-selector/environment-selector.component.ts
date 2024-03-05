@@ -19,7 +19,7 @@ export class EnvironmentSelectorComponent implements OnInit {
     private router: Router,
   ) {}
 
-  protected AvailableRegions = this.environmentService.availableRegions();
+  protected availableRegions = this.environmentService.availableRegions();
   protected currentRegion?: RegionConfig;
 
   protected showRegionSelector = false;
@@ -30,7 +30,7 @@ export class EnvironmentSelectorComponent implements OnInit {
     this.routeAndParams = `/#${this.router.url}`;
 
     const domain = Utils.getDomain(window.location.href);
-    this.currentRegion = this.AvailableRegions.find(
+    this.currentRegion = this.availableRegions.find(
       (r) => Utils.getDomain(r.urls.webVault) === domain,
     );
   }

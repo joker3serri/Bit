@@ -1,7 +1,6 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, EventEmitter, Output } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { Observable, map } from "rxjs";
 
@@ -50,12 +49,11 @@ export class EnvironmentSelectorComponent {
     },
   ];
 
-  protected AvailableRegions = this.environmentService.availableRegions();
+  protected availableRegions = this.environmentService.availableRegions();
   protected selectedRegion$: Observable<RegionConfig | undefined> =
     this.environmentService.environment$.pipe(
-      takeUntilDestroyed(),
       map((e) => e.getRegion()),
-      map((r) => this.AvailableRegions.find((ar) => ar.key === r)),
+      map((r) => this.availableRegions.find((ar) => ar.key === r)),
     );
 
   constructor(
