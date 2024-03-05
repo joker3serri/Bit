@@ -2,9 +2,7 @@ import { BehaviorSubject, Observable, map } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
-import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
-import { Policy } from "../../admin-console/models/domain/policy";
 import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
@@ -800,24 +798,6 @@ export class StateService<
     );
   }
 
-  @withPrototypeForArrayMembers(Policy)
-  async getDecryptedPolicies(options?: StorageOptions): Promise<Policy[]> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.data?.policies?.decrypted;
-  }
-
-  async setDecryptedPolicies(value: Policy[], options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.data.policies.decrypted = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-  }
-
   @withPrototypeForArrayMembers(SendView)
   async getDecryptedSends(options?: StorageOptions): Promise<SendView[]> {
     return (
@@ -1345,27 +1325,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
     account.settings.pinProtected.encrypted = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  @withPrototypeForObjectValues(PolicyData)
-  async getEncryptedPolicies(options?: StorageOptions): Promise<{ [id: string]: PolicyData }> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.data?.policies?.encrypted;
-  }
-
-  async setEncryptedPolicies(
-    value: { [id: string]: PolicyData },
-    options?: StorageOptions,
-  ): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.data.policies.encrypted = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),

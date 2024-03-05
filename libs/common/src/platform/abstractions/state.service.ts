@@ -1,9 +1,7 @@
 import { Observable } from "rxjs";
 
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
-import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
-import { Policy } from "../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
@@ -183,14 +181,6 @@ export abstract class StateService<T extends Account = Account> {
    */
   setDecryptedPinProtected: (value: EncString, options?: StorageOptions) => Promise<void>;
   /**
-   * @deprecated Do not call this, use PolicyService
-   */
-  getDecryptedPolicies: (options?: StorageOptions) => Promise<Policy[]>;
-  /**
-   * @deprecated Do not call this, use PolicyService
-   */
-  setDecryptedPolicies: (value: Policy[], options?: StorageOptions) => Promise<void>;
-  /**
    * @deprecated Do not call this directly, use SendService
    */
   getDecryptedSends: (options?: StorageOptions) => Promise<SendView[]>;
@@ -280,17 +270,6 @@ export abstract class StateService<T extends Account = Account> {
    * @deprecated For migration purposes only, use setEncryptedUserKeyPin instead
    */
   setEncryptedPinProtected: (value: string, options?: StorageOptions) => Promise<void>;
-  /**
-   * @deprecated Do not call this directly, use PolicyService
-   */
-  getEncryptedPolicies: (options?: StorageOptions) => Promise<{ [id: string]: PolicyData }>;
-  /**
-   * @deprecated Do not call this directly, use PolicyService
-   */
-  setEncryptedPolicies: (
-    value: { [id: string]: PolicyData },
-    options?: StorageOptions,
-  ) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use SendService
    */
