@@ -77,3 +77,5 @@ export const NEW_WEB_LAYOUT_BANNER_DISK = new StateDefinition("newWebLayoutBanne
 export const SM_ONBOARDING_DISK = new StateDefinition("smOnboarding", "disk", {
   web: "disk-local",
 });
+
+export const BROWSER_SEND_MEMORY = new StateDefinition("sendBrowser", "memory");
