@@ -241,9 +241,32 @@ import {
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
 
+/**
+ * Given a tuple, return a tuple of constructors for those types
+ * This is used to resolve mismatches between types (the shape of an instantiated class) and constructor types (the non-instantiated class)
+ */
+type MapTypeToConstructor<T> = { [K in keyof T]: abstract new (...args: any) => T[K] };
+
+const useClass = <
+  A extends abstract new (...args: any) => any, // A is an abstract class
+  I extends Omit<A, "constructor"> & (new (...args: any) => any), // I is the implementation, it must extend A but may have a different ctor signature
+  D extends MapTypeToConstructor<ConstructorParameters<I>>, // infer constructor param types from the implementation
+>(obj: {
+  provide: A;
+  useClass: I;
+  deps: D;
+}) => obj;
+
 @NgModule({
   declarations: [],
   providers: [
+    // typesafe!
+    useClass({
+      provide: PolicyApiServiceAbstraction,
+      useClass: PolicyApiService,
+      deps: [InternalPolicyService, ApiServiceAbstraction],
+    }),
+
     AuthGuard,
     UnauthGuard,
     ModalService,
