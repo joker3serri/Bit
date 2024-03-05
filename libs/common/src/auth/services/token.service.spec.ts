@@ -216,11 +216,10 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
-          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
           // set disk to undefined
-          // singleUserStateProvider
-          //   .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
 
           // Need to have global active id set to the user id
           globalStateProvider
@@ -232,12 +231,6 @@ describe("TokenService", () => {
 
           // Assert
           expect(result).toEqual(accessTokenJwt);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
-          ).not.toHaveBeenCalled();
         });
 
         it("should get the access token from memory for the specified user id", async () => {
@@ -246,16 +239,15 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
+          // set disk to undefined
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
           // Act
           const result = await tokenService.getAccessToken(userIdFromAccessToken);
           // Assert
           expect(result).toEqual(accessTokenJwt);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
-          ).not.toHaveBeenCalled();
         });
       });
 
@@ -705,11 +697,9 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
             .stateSubject.next([userIdFromAccessToken, refreshToken]);
 
-          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
-          // set disk to undefined
-          // singleUserStateProvider
-          //   .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
 
           // Need to have global active id set to the user id
           globalStateProvider
@@ -721,12 +711,6 @@ describe("TokenService", () => {
 
           // Assert
           expect(result).toEqual(refreshToken);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
-          ).not.toHaveBeenCalled();
         });
 
         it("should get the refresh token from memory for the specified user id", async () => {
@@ -735,16 +719,14 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
             .stateSubject.next([userIdFromAccessToken, refreshToken]);
 
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
           // Act
           const result = await tokenService.getRefreshToken(userIdFromAccessToken);
           // Assert
           expect(result).toEqual(refreshToken);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
-          ).not.toHaveBeenCalled();
         });
       });
 
@@ -1086,11 +1068,10 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
             .stateSubject.next([userIdFromAccessToken, clientId]);
 
-          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
           // set disk to undefined
-          // singleUserStateProvider
-          //   .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
 
           // Need to have global active id set to the user id
           globalStateProvider
@@ -1102,12 +1083,6 @@ describe("TokenService", () => {
 
           // Assert
           expect(result).toEqual(clientId);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
-          ).not.toHaveBeenCalled();
         });
 
         it("should get the client id from memory for the specified user id", async () => {
@@ -1116,16 +1091,15 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
             .stateSubject.next([userIdFromAccessToken, clientId]);
 
+          // set disk to undefined
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
           // Act
           const result = await tokenService.getClientId(userIdFromAccessToken);
           // Assert
           expect(result).toEqual(clientId);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK).nextMock,
-          ).not.toHaveBeenCalled();
         });
       });
 
@@ -1346,11 +1320,10 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
             .stateSubject.next([userIdFromAccessToken, clientSecret]);
 
-          // TODO: ask platform why this isn't supported; if I set this, then memory returns undefined.
           // set disk to undefined
-          // singleUserStateProvider
-          //   .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-          //   .stateSubject.next([userIdFromAccessToken, undefined]);
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
 
           // Need to have global active id set to the user id
           globalStateProvider
@@ -1362,13 +1335,6 @@ describe("TokenService", () => {
 
           // Assert
           expect(result).toEqual(clientSecret);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-              .nextMock,
-          ).not.toHaveBeenCalled();
         });
 
         it("should get the client secret from memory for the specified user id", async () => {
@@ -1377,17 +1343,15 @@ describe("TokenService", () => {
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
             .stateSubject.next([userIdFromAccessToken, clientSecret]);
 
+          // set disk to undefined
+          singleUserStateProvider
+            .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
+            .stateSubject.next([userIdFromAccessToken, undefined]);
+
           // Act
           const result = await tokenService.getClientSecret(userIdFromAccessToken);
           // Assert
           expect(result).toEqual(clientSecret);
-
-          // TODO: this isn't the best way to handle this. Remove this once we can set the disk to undefined.
-          // assert disk was not called
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-              .nextMock,
-          ).not.toHaveBeenCalled();
         });
       });
 
