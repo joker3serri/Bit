@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from "@angular/core";
+import { InjectionToken, LOCALE_ID, NgModule } from "@angular/core";
 
 import {
   AuthRequestServiceAbstraction,
@@ -245,12 +245,13 @@ import { ModalService } from "./modal.service";
  * Given a tuple, return a tuple of constructors for those types
  * This is used to resolve mismatches between types (the shape of an instantiated class) and constructor types (the non-instantiated class)
  */
-type MapTypeToConstructor<T> = { [K in keyof T]: abstract new (...args: any) => T[K] };
+type MapTypeToConstructor<T> = abstract new (...args: any) => T;
+type MapParametersToDeps<T> = { [K in keyof T]: MapTypeToConstructor<T[K]> | InjectionToken<T[K]> };
 
 const useClass = <
   A extends abstract new (...args: any) => any, // A is an abstract class
   I extends Omit<A, "constructor"> & (new (...args: any) => any), // I is the implementation, it must extend A but may have a different ctor signature
-  D extends MapTypeToConstructor<ConstructorParameters<I>>, // infer constructor param types from the implementation
+  D extends MapParametersToDeps<ConstructorParameters<I>>, // infer constructor param types from the implementation
 >(obj: {
   provide: A;
   useClass: I;
@@ -265,6 +266,31 @@ const useClass = <
       provide: PolicyApiServiceAbstraction,
       useClass: PolicyApiService,
       deps: [InternalPolicyService, ApiServiceAbstraction],
+    }),
+
+    // Something more complex
+    useClass({
+      provide: SyncServiceAbstraction,
+      useClass: SyncService,
+      deps: [
+        ApiServiceAbstraction,
+        SettingsServiceAbstraction,
+        FolderServiceAbstraction, // These are genuine mistakes! Should be injecting the internal service
+        CipherServiceAbstraction,
+        CryptoServiceAbstraction,
+        CollectionServiceAbstraction,
+        MessagingServiceAbstraction,
+        PolicyServiceAbstraction,
+        SendServiceAbstraction,
+        LogService,
+        KeyConnectorServiceAbstraction,
+        StateServiceAbstraction,
+        ProviderServiceAbstraction,
+        FolderApiServiceAbstraction,
+        OrganizationServiceAbstraction,
+        SendApiServiceAbstraction,
+        LOGOUT_CALLBACK, // For some reason this will take any InjectionToken, it does not throw if generic args don't match
+      ],
     }),
 
     AuthGuard,
@@ -522,29 +548,6 @@ const useClass = <
       provide: SendApiServiceAbstraction,
       useClass: SendApiService,
       deps: [ApiServiceAbstraction, FileUploadServiceAbstraction, SendServiceAbstraction],
-    },
-    {
-      provide: SyncServiceAbstraction,
-      useClass: SyncService,
-      deps: [
-        ApiServiceAbstraction,
-        SettingsServiceAbstraction,
-        FolderServiceAbstraction,
-        CipherServiceAbstraction,
-        CryptoServiceAbstraction,
-        CollectionServiceAbstraction,
-        MessagingServiceAbstraction,
-        PolicyServiceAbstraction,
-        SendServiceAbstraction,
-        LogService,
-        KeyConnectorServiceAbstraction,
-        StateServiceAbstraction,
-        ProviderServiceAbstraction,
-        FolderApiServiceAbstraction,
-        OrganizationServiceAbstraction,
-        SendApiServiceAbstraction,
-        LOGOUT_CALLBACK,
-      ],
     },
     { provide: BroadcasterServiceAbstraction, useClass: BroadcasterService },
     {
