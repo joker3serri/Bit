@@ -242,8 +242,9 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: LogServiceAbstraction,
-      useFactory: getBgService<ConsoleLogService>("logService"),
-      deps: [],
+      useFactory: (platformUtilsService: PlatformUtilsService) =>
+        new ConsoleLogService(platformUtilsService.isDev()),
+      deps: [PlatformUtilsService],
     },
     {
       provide: BrowserEnvironmentService,
