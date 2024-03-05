@@ -236,7 +236,6 @@ describe("OrganizationService", () => {
       const mockData = buildMockOrganizations();
       await organizationService.upsert(mockData[0]);
       const result = await firstValueFrom(organizationService.organizations$);
-      expect(result).not.toEqual(undefined || null || []);
       expect(result).toEqual(mockData.map((x) => new Organization(x)));
     });
 
