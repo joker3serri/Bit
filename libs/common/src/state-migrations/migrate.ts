@@ -20,12 +20,12 @@ import { CollapsedGroupingsMigrator } from "./migrations/22-move-collapsed-group
 import { MoveBiometricPromptsToStateProviders } from "./migrations/23-move-biometric-prompts-to-state-providers";
 import { SmOnboardingTasksMigrator } from "./migrations/24-move-sm-onboarding-key-to-state-providers";
 import { ClearClipboardDelayMigrator } from "./migrations/25-move-clear-clipboard-to-autofill-settings-state-provider";
-import { PreferredLanguageMigrator } from "./migrations/30-move-preferred-language";
 import { RevertLastSyncMigrator } from "./migrations/26-revert-move-last-sync-to-state-provider";
 import { BadgeSettingsMigrator } from "./migrations/27-move-badge-settings-to-state-providers";
 import { MoveBiometricUnlockToStateProviders } from "./migrations/28-move-biometric-unlock-to-state-providers";
 import { UserNotificationSettingsKeyMigrator } from "./migrations/29-move-user-notification-settings-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
+import { PreferredLanguageMigrator } from "./migrations/30-move-preferred-language";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
