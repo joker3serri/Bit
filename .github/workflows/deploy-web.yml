@@ -45,7 +45,7 @@ on:
       debug:
         description: "Debug mode"
         type: boolean
-        default: false
+        default: true
 
 permissions:
   deployments: write
