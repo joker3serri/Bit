@@ -179,7 +179,10 @@ import {
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
-import { SendService as SendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
+import {
+  InternalSendService,
+  SendService as SendServiceAbstraction,
+} from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
@@ -275,21 +278,21 @@ const useClass = <
       deps: [
         ApiServiceAbstraction,
         SettingsServiceAbstraction,
-        FolderServiceAbstraction, // These are genuine mistakes! Should be injecting the internal service
+        InternalFolderService, // Fixed! Was not injecting the Internal service
         CipherServiceAbstraction,
         CryptoServiceAbstraction,
         CollectionServiceAbstraction,
         MessagingServiceAbstraction,
-        PolicyServiceAbstraction,
-        SendServiceAbstraction,
+        InternalPolicyService, // Fixed! Was not injecting the Internal service
+        InternalSendService, // Fixed! Was not injecting the Internal service
         LogService,
         KeyConnectorServiceAbstraction,
         StateServiceAbstraction,
         ProviderServiceAbstraction,
         FolderApiServiceAbstraction,
-        OrganizationServiceAbstraction,
+        InternalOrganizationServiceAbstraction, // Fixed! Was not injecting the Internal service
         SendApiServiceAbstraction,
-        LOGOUT_CALLBACK, // For some reason this will take any InjectionToken, it does not throw if generic args don't match
+        LOGOUT_CALLBACK, // For some reason this will take any InjectionToken, it doesn't compare the generic args :(
       ],
     }),
 
