@@ -22,7 +22,7 @@ on:
       debug:
         description: "Debug mode"
         type: boolean
-        default: true
+        default: false
 
   workflow_call:
     inputs:
