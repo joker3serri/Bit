@@ -7602,5 +7602,8 @@
   },
   "providerPortal": {
     "message": "Provider Portal"
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }
