@@ -227,6 +227,7 @@ import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
+import { useClass, useFactory, useValue } from "../utils/dependency-helpers";
 
 import {
   LOCALES_DIRECTORY,
@@ -243,7 +244,6 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
-import { useClass, useValue } from "../utils/dependency-helpers";
 
 @NgModule({
   declarations: [],
@@ -308,13 +308,13 @@ import { useClass, useValue } from "../utils/dependency-helpers";
       provide: STATE_SERVICE_USE_CACHE,
       useValue: true,
     },
-    {
+    useFactory({
       provide: LOGOUT_CALLBACK,
       useFactory:
         (messagingService: MessagingServiceAbstraction) => (expired: boolean, userId?: string) =>
-          messagingService.send("logout", { expired: expired, userId: userId }),
+          Promise.resolve(messagingService.send("logout", { expired: expired, userId: userId })),
       deps: [MessagingServiceAbstraction],
-    },
+    }),
     {
       provide: LOCKED_CALLBACK,
       useValue: null,

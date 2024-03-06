@@ -29,3 +29,13 @@ export const useValue = <
   provide: A;
   useValue: V;
 }) => obj;
+
+export const useFactory = <
+  A extends SafeInjectionToken<any>,
+  I extends (...args: any) => SafeInjectionTokenType<A>,
+  D extends MapParametersToDeps<Parameters<I>>,
+>(obj: {
+  provide: A;
+  useFactory: I;
+  deps: D;
+}) => obj;
