@@ -706,6 +706,56 @@ describe("TokenService", () => {
           jest.useRealTimers();
         });
       });
+
+      describe("tokenNeedsRefresh", () => {
+        it("should return true if token is within the default refresh threshold (5 min)", async () => {
+          // Arrange
+          const tokenSecondsRemaining = 60;
+          tokenService.tokenSecondsRemaining = jest.fn().mockResolvedValue(tokenSecondsRemaining);
+
+          // Act
+          const result = await tokenService.tokenNeedsRefresh();
+
+          // Assert
+          expect(result).toEqual(true);
+        });
+
+        it("should return false if token is outside the default refresh threshold (5 min)", async () => {
+          // Arrange
+          const tokenSecondsRemaining = 600;
+          tokenService.tokenSecondsRemaining = jest.fn().mockResolvedValue(tokenSecondsRemaining);
+
+          // Act
+          const result = await tokenService.tokenNeedsRefresh();
+
+          // Assert
+          expect(result).toEqual(false);
+        });
+
+        it("should return true if token is within the specified refresh threshold", async () => {
+          // Arrange
+          const tokenSecondsRemaining = 60;
+          tokenService.tokenSecondsRemaining = jest.fn().mockResolvedValue(tokenSecondsRemaining);
+
+          // Act
+          const result = await tokenService.tokenNeedsRefresh(2);
+
+          // Assert
+          expect(result).toEqual(true);
+        });
+
+        it("should return false if token is outside the specified refresh threshold", async () => {
+          // Arrange
+          const tokenSecondsRemaining = 600;
+          tokenService.tokenSecondsRemaining = jest.fn().mockResolvedValue(tokenSecondsRemaining);
+
+          // Act
+          const result = await tokenService.tokenNeedsRefresh(5);
+
+          // Assert
+          expect(result).toEqual(false);
+        });
+      });
     });
   });
 
