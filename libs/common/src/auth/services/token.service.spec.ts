@@ -658,7 +658,9 @@ describe("TokenService", () => {
         it("should return the number of seconds remaining until the token expires", async () => {
           // Arrange
           // Lock the time to ensure a consistent test environment
-          jest.useFakeTimers().setSystemTime(new Date());
+          // otherwise we have flaky issues with set system time date and the Date.now() call.
+          const fixedCurrentTime = new Date("2024-03-06T00:00:00Z");
+          jest.useFakeTimers().setSystemTime(fixedCurrentTime);
 
           const nowInSeconds = Math.floor(Date.now() / 1000);
           const expirationInSeconds = nowInSeconds + 3600; // token expires in 1 hr
@@ -681,7 +683,9 @@ describe("TokenService", () => {
         it("should return the number of seconds remaining until the token expires, considering an offset", async () => {
           // Arrange
           // Lock the time to ensure a consistent test environment
-          jest.useFakeTimers().setSystemTime(new Date());
+          // otherwise we have flaky issues with set system time date and the Date.now() call.
+          const fixedCurrentTime = new Date("2024-03-06T00:00:00Z");
+          jest.useFakeTimers().setSystemTime(fixedCurrentTime);
 
           const nowInSeconds = Math.floor(Date.now() / 1000);
           const offsetSeconds = 300; // 5 minute offset
