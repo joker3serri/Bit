@@ -172,9 +172,7 @@ export default class RuntimeBackground {
               msg.sender === "autofill_cmd",
             );
             if (totpCode != null) {
-              // FIXME-MV3-REQ: [PM-5880] Usage of `window` will be removed when the copyToClipboard method is refactored for mv3
-              // eslint-disable-next-line no-restricted-globals
-              this.platformUtilsService.copyToClipboard(totpCode, { window });
+              this.platformUtilsService.copyToClipboard(totpCode);
             }
             break;
           }
@@ -263,9 +261,7 @@ export default class RuntimeBackground {
         });
         break;
       case "getClickedElementResponse":
-        // FIXME-MV3-REQ: [PM-5880] Usage of `window` will be removed when the copyToClipboard method is refactored for mv3
-        // eslint-disable-next-line no-restricted-globals
-        this.platformUtilsService.copyToClipboard(msg.identifier, { window });
+        this.platformUtilsService.copyToClipboard(msg.identifier);
         break;
       case "triggerFido2ContentScriptInjection":
         await this.fido2Service.injectFido2ContentScripts(sender);
@@ -323,9 +319,7 @@ export default class RuntimeBackground {
     });
 
     if (totpCode != null) {
-      // FIXME-MV3-REQ: [PM-5880] Usage of `window` will be removed when the copyToClipboard method is refactored for mv3
-      // eslint-disable-next-line no-restricted-globals
-      this.platformUtilsService.copyToClipboard(totpCode, { window });
+      this.platformUtilsService.copyToClipboard(totpCode);
     }
 
     // reset
@@ -351,10 +345,34 @@ export default class RuntimeBackground {
           if (await this.environmentService.hasManagedEnvironment()) {
             await this.environmentService.setUrlsToManagedEnvironment();
           }
+
+          await this.sendBwInstalledMessageToVault();
         }
 
         this.onInstalledReason = null;
       }
     }, 100);
+  }
+
+  async sendBwInstalledMessageToVault() {
+    try {
+      const vaultUrl = this.environmentService.getWebVaultUrl();
+      const urlObj = new URL(vaultUrl);
+
+      const tabs = await BrowserApi.tabsQuery({ url: `${urlObj.href}*` });
+
+      if (!tabs?.length) {
+        return;
+      }
+
+      for (const tab of tabs) {
+        await BrowserApi.executeScriptInTab(tab.id, {
+          file: "content/send-on-installed-message.js",
+          runAt: "document_end",
+        });
+      }
+    } catch (e) {
+      this.logService.error(`Error sending on installed message to vault: ${e}`);
+    }
   }
 }
