@@ -678,8 +678,14 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getEmail(): Promise<string> {
-    const decoded = await this.decodeAccessToken();
-    if (typeof decoded.email === "undefined") {
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
+
+    if (!decoded || typeof decoded.email !== "string") {
       throw new Error("No email found");
     }
 
