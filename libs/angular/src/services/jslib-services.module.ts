@@ -243,7 +243,7 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
-import { useClass } from "../utils/dependency-helpers";
+import { useClass, useValue } from "../utils/dependency-helpers";
 
 @NgModule({
   declarations: [],
@@ -291,10 +291,10 @@ import { useClass } from "../utils/dependency-helpers";
       useFactory: (i18nService: I18nServiceAbstraction) => i18nService.translationLocale,
       deps: [I18nServiceAbstraction],
     },
-    {
+    useValue({
       provide: LOCALES_DIRECTORY,
       useValue: "./locales",
-    },
+    }),
     {
       provide: SYSTEM_LANGUAGE,
       useFactory: (window: Window) => window.navigator.language,

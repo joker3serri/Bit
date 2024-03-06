@@ -15,7 +15,7 @@ import { StateFactory } from "@bitwarden/common/platform/factories/state-factory
  * This is solved by assigning T to an arbitrary property.
  */
 export class SafeInjectionToken<T> extends InjectionToken<T> {
-  protected readonly bitTypeRecord: T;
+  readonly bitTypeRecord: T;
 }
 
 export const WINDOW = new SafeInjectionToken<Window>("WINDOW");

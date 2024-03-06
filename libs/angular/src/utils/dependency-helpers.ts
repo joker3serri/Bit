@@ -10,6 +10,8 @@ type MapParametersToDeps<T> = {
   [K in keyof T]: ConstructorForType<T[K]> | SafeInjectionToken<T[K]>;
 };
 
+type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : never;
+
 export const useClass = <
   A extends abstract new (...args: any) => InstanceType<A>, // A is an abstract class
   I extends new (...args: any) => InstanceType<A>, // I is the implementation, it has a non-abstract ctor that returns a type that extends A
@@ -18,4 +20,12 @@ export const useClass = <
   provide: A;
   useClass: I;
   deps: D;
+}) => obj;
+
+export const useValue = <
+  A extends SafeInjectionToken<any>,
+  V extends SafeInjectionTokenType<A>,
+>(obj: {
+  provide: A;
+  useValue: V;
 }) => obj;
