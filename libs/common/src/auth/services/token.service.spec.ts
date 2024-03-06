@@ -805,6 +805,55 @@ describe("TokenService", () => {
           expect(result).toEqual(userIdFromAccessToken);
         });
       });
+
+      describe("getUserIdFromAccessToken", () => {
+        it("should throw an error if the access token cannot be decoded", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = (tokenService as any).getUserIdFromAccessToken(accessTokenJwt);
+          // Assert
+          await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
+        });
+
+        it("should throw an error if the decoded access token is null", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(null);
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = (tokenService as any).getUserIdFromAccessToken(accessTokenJwt);
+          // Assert
+          await expect(result).rejects.toThrow("No user id found");
+        });
+
+        it("should throw an error if the decoded access token has a non-string user id", async () => {
+          // Arrange
+          const accessTokenDecodedWithNonStringSub = { ...accessTokenDecoded, sub: 123 };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithNonStringSub);
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = (tokenService as any).getUserIdFromAccessToken(accessTokenJwt);
+          // Assert
+          await expect(result).rejects.toThrow("No user id found");
+        });
+
+        it("should return the user id from the decoded access token", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(accessTokenDecoded);
+
+          // Act
+          const result = await (tokenService as any).getUserIdFromAccessToken(accessTokenJwt);
+
+          // Assert
+          expect(result).toEqual(userIdFromAccessToken);
+        });
+      });
     });
   });
 
