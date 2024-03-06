@@ -856,7 +856,6 @@ describe("TokenService", () => {
       });
 
       describe("getEmail", () => {
-        // should throw an error if the access token cannot be decoded
         it("should throw an error if the access token cannot be decoded", async () => {
           // Arrange
           tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
