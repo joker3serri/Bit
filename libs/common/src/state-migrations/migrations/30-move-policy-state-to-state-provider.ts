@@ -39,7 +39,7 @@ const POLICIES_KEY: KeyDefinitionLike = {
   },
 };
 
-export class PolicyMigrator extends Migrator<25, 26> {
+export class PolicyMigrator extends Migrator<29, 30> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
 
