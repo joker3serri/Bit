@@ -8,7 +8,8 @@ import { Subject, takeUntil } from "rxjs";
 })
 export class SecretsManagerContentComponent implements OnInit, OnDestroy {
   header: string;
-  headline = "Secure your business with a simpler, faster way to secure and manage secrets";
+  headline =
+    "A simpler, faster way to secure and automate secrets across code and infrastructure deployments";
   primaryPoints: string[];
   calloutHeadline: string;
   callouts: string[];
