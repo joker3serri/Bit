@@ -69,7 +69,7 @@ describe("BiometricStateService", () => {
   });
 
   describe("fingerprintValidated$", () => {
-    it("should track the fingerprint validated state", async () => {
+    it("emits when the fingerprint validated state changes", async () => {
       const state = stateProvider.global.getFake(FINGERPRINT_VALIDATED);
       state.stateSubject.next(undefined);
 
@@ -223,10 +223,18 @@ describe("BiometricStateService", () => {
   });
 
   describe("setFingerprintValidated", () => {
-    it("should update the biometricFingerprintValidated state", async () => {
+    it("updates fingerprintValidated$", async () => {
       await sut.setFingerprintValidated(true);
 
       expect(await firstValueFrom(sut.fingerprintValidated$)).toBe(true);
+    });
+
+    it("updates state", async () => {
+      await sut.setFingerprintValidated(true);
+
+      expect(stateProvider.global.getFake(FINGERPRINT_VALIDATED).nextMock).toHaveBeenCalledWith(
+        true,
+      );
     });
   });
 });
