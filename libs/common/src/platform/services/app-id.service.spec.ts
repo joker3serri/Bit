@@ -1,19 +1,16 @@
-import { AbstractStorageService } from "../abstractions/storage.service";
-import { HtmlStorageLocation } from "../enums";
+import { FakeGlobalStateProvider } from "../../../spec";
 import { Utils } from "../misc/utils";
 
-import { AppIdService } from "./app-id.service";
+import { ANONYMOUS_APP_ID_KEY, APP_ID_KEY, AppIdService } from "./app-id.service";
 
 describe("AppIdService", () => {
-  let storageService: AbstractStorageService;
-  let appIdService: AppIdService;
+  const globalStateProvider = new FakeGlobalStateProvider();
+  const appIdState = globalStateProvider.getFake(APP_ID_KEY);
+  const anonymousAppIdState = globalStateProvider.getFake(ANONYMOUS_APP_ID_KEY);
+  let sut: AppIdService;
 
   beforeEach(() => {
-    storageService = {
-      get: jest.fn(),
-      save: jest.fn(),
-    } as any;
-    appIdService = new AppIdService(storageService);
+    sut = new AppIdService(globalStateProvider);
   });
 
   afterEach(() => {
@@ -22,91 +19,83 @@ describe("AppIdService", () => {
 
   describe("getAppId", () => {
     it("returns the existing appId when it exists", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce("existingAppId");
+      appIdState.stateSubject.next("existingAppId");
 
-      const appId = await appIdService.getAppId();
+      const appId = await sut.getAppId();
 
       expect(appId).toBe("existingAppId");
     });
 
-    it("uses the util function to create a new id when it AppId does not exist", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce(null);
-      const spy = jest.spyOn(Utils, "newGuid");
+    it.each([null, undefined])(
+      "uses the util function to create a new id when it AppId does not exist",
+      async (value) => {
+        appIdState.stateSubject.next(value);
+        const spy = jest.spyOn(Utils, "newGuid");
 
-      await appIdService.getAppId();
+        await sut.getAppId();
 
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
+        expect(spy).toHaveBeenCalledTimes(1);
+      },
+    );
 
-    it("returns a new appId when it does not exist", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce(null);
+    it.each([null, undefined])("returns a new appId when it does not exist", async (value) => {
+      appIdState.stateSubject.next(value);
 
-      const appId = await appIdService.getAppId();
+      const appId = await sut.getAppId();
 
       expect(appId).toMatch(Utils.guidRegex);
-      expect(storageService.save).toHaveBeenCalledWith("appId", appId, {
-        htmlStorageLocation: HtmlStorageLocation.Local,
-      });
     });
 
-    it("stores the new guid when it an existing one is not found", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce(null);
-      (storageService.save as jest.Mock).mockResolvedValueOnce(undefined);
+    it.each([null, undefined])(
+      "stores the new guid when it an existing one is not found",
+      async (value) => {
+        appIdState.stateSubject.next(value);
 
-      await appIdService.getAppId();
+        const appId = await sut.getAppId();
 
-      expect(storageService.save).toHaveBeenCalledWith(
-        "appId",
-        expect.stringMatching(Utils.guidRegex),
-        {
-          htmlStorageLocation: HtmlStorageLocation.Local,
-        },
-      );
-    });
+        expect(appIdState.nextMock).toHaveBeenCalledWith(appId);
+      },
+    );
   });
 
   describe("getAnonymousAppId", () => {
     it("returns the existing appId when it exists", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce("existingAppId");
+      anonymousAppIdState.stateSubject.next("existingAppId");
 
-      const appId = await appIdService.getAnonymousAppId();
+      const appId = await sut.getAnonymousAppId();
 
       expect(appId).toBe("existingAppId");
     });
 
-    it("uses the util function to create a new id when it AppId does not exist", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce(null);
-      const spy = jest.spyOn(Utils, "newGuid");
+    it.each([null, undefined])(
+      "uses the util function to create a new id when it AppId does not exist",
+      async (value) => {
+        anonymousAppIdState.stateSubject.next(value);
+        const spy = jest.spyOn(Utils, "newGuid");
 
-      await appIdService.getAnonymousAppId();
+        await sut.getAnonymousAppId();
 
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
+        expect(spy).toHaveBeenCalledTimes(1);
+      },
+    );
 
-    it("returns a new appId when it does not exist", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce(null);
+    it.each([null, undefined])("returns a new appId when it does not exist", async (value) => {
+      anonymousAppIdState.stateSubject.next(value);
 
-      const appId = await appIdService.getAnonymousAppId();
+      const appId = await sut.getAnonymousAppId();
 
       expect(appId).toMatch(Utils.guidRegex);
-      expect(storageService.save).toHaveBeenCalledWith("anonymousAppId", appId, {
-        htmlStorageLocation: HtmlStorageLocation.Local,
-      });
     });
 
-    it("stores the new guid when it an existing one is not found", async () => {
-      (storageService.get as jest.Mock).mockResolvedValueOnce(null);
-      (storageService.save as jest.Mock).mockResolvedValueOnce(undefined);
+    it.each([null, undefined])(
+      "stores the new guid when it an existing one is not found",
+      async (value) => {
+        anonymousAppIdState.stateSubject.next(value);
 
-      await appIdService.getAnonymousAppId();
+        const appId = await sut.getAnonymousAppId();
 
-      expect(storageService.save).toHaveBeenCalledWith(
-        "anonymousAppId",
-        expect.stringMatching(Utils.guidRegex),
-        {
-          htmlStorageLocation: HtmlStorageLocation.Local,
-        },
-      );
-    });
+        expect(anonymousAppIdState.nextMock).toHaveBeenCalledWith(appId);
+      },
+    );
   });
 });

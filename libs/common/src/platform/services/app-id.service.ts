@@ -1,31 +1,28 @@
 import { AppIdService as AppIdServiceAbstraction } from "../abstractions/app-id.service";
-import { AbstractStorageService } from "../abstractions/storage.service";
-import { HtmlStorageLocation } from "../enums";
 import { Utils } from "../misc/utils";
+import { APPLICATION_ID_DISK, GlobalStateProvider, KeyDefinition } from "../state";
+
+export const APP_ID_KEY = new KeyDefinition(APPLICATION_ID_DISK, "appId", {
+  deserializer: (value: string) => value,
+});
+export const ANONYMOUS_APP_ID_KEY = new KeyDefinition(APPLICATION_ID_DISK, "anonymousAppId", {
+  deserializer: (value: string) => value,
+});
 
 export class AppIdService implements AppIdServiceAbstraction {
-  constructor(private storageService: AbstractStorageService) {}
+  private appIdState = this.globalStateProvider.get(APP_ID_KEY);
+  private anonymousAppIdState = this.globalStateProvider.get(ANONYMOUS_APP_ID_KEY);
+  constructor(private globalStateProvider: GlobalStateProvider) {}
 
-  getAppId(): Promise<string> {
-    return this.makeAndGetAppId("appId");
+  async getAppId(): Promise<string> {
+    return await this.appIdState.update(() => Utils.newGuid(), {
+      shouldUpdate: (value) => value == null,
+    });
   }
 
-  getAnonymousAppId(): Promise<string> {
-    return this.makeAndGetAppId("anonymousAppId");
-  }
-
-  private async makeAndGetAppId(key: string) {
-    const existingId = await this.storageService.get<string>(key, {
-      htmlStorageLocation: HtmlStorageLocation.Local,
+  async getAnonymousAppId(): Promise<string> {
+    return await this.anonymousAppIdState.update(() => Utils.newGuid(), {
+      shouldUpdate: (value) => value == null,
     });
-    if (existingId != null) {
-      return existingId;
-    }
-
-    const guid = Utils.newGuid();
-    await this.storageService.save(key, guid, {
-      htmlStorageLocation: HtmlStorageLocation.Local,
-    });
-    return guid;
   }
 }
