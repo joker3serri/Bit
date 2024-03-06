@@ -1,4 +1,4 @@
-import { BitInjectionToken } from "../services/injection-tokens";
+import { SafeInjectionToken } from "../services/injection-tokens";
 
 /**
  * Given a type, return a constructor that returns that type
@@ -7,7 +7,7 @@ import { BitInjectionToken } from "../services/injection-tokens";
 type ConstructorForType<T> = abstract new (...args: any) => T;
 
 type MapParametersToDeps<T> = {
-  [K in keyof T]: ConstructorForType<T[K]> | BitInjectionToken<T[K]>;
+  [K in keyof T]: ConstructorForType<T[K]> | SafeInjectionToken<T[K]>;
 };
 
 export const useClass = <

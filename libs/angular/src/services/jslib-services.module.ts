@@ -227,7 +227,6 @@ import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
-import { useClass } from "../utils/dependency-helpers";
 
 import {
   LOCALES_DIRECTORY,
@@ -244,6 +243,7 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
+import { useClass } from "../utils/dependency-helpers";
 
 @NgModule({
   declarations: [],
