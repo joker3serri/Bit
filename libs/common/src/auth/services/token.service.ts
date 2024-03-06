@@ -708,8 +708,14 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getName(): Promise<string> {
-    const decoded = await this.decodeAccessToken();
-    if (typeof decoded.name === "undefined") {
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
+
+    if (!decoded || typeof decoded.name !== "string") {
       return null;
     }
 

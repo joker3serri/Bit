@@ -955,6 +955,55 @@ describe("TokenService", () => {
           expect(result).toEqual(accessTokenDecoded.email_verified);
         });
       });
+
+      describe("getName", () => {
+        it("should throw an error if the access token cannot be decoded", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getName();
+          // Assert
+          await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
+        });
+
+        it("should return null if the decoded access token is null", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(null);
+
+          // Act
+          const result = await tokenService.getName();
+
+          // Assert
+          expect(result).toBeNull();
+        });
+
+        it("should return null if the decoded access token has a non-string name", async () => {
+          // Arrange
+          const accessTokenDecodedWithNonStringName = { ...accessTokenDecoded, name: 123 };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithNonStringName);
+
+          // Act
+          const result = await tokenService.getName();
+
+          // Assert
+          expect(result).toBeNull();
+        });
+
+        it("should return the name from the decoded access token", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(accessTokenDecoded);
+
+          // Act
+          const result = await tokenService.getName();
+
+          // Assert
+          expect(result).toEqual(accessTokenDecoded.name);
+        });
+      });
     });
   });
 
