@@ -54,6 +54,7 @@ export interface CollectionDialogParams {
   parentCollectionId?: string;
   showOrgSelector?: boolean;
   collectionIds?: string[];
+  readOnly?: boolean;
 }
 
 export interface CollectionDialogResult {

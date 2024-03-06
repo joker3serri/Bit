@@ -17,7 +17,7 @@ const icon = svgIcon`<svg xmlns="http://www.w3.org/2000/svg" width="120" height=
     <button
       slot="button"
       bitButton
-      (click)="editInfoClicked.emit()"
+      (click)="viewCollectionClicked.emit()"
       buttonType="secondary"
       type="button"
     >
@@ -28,5 +28,5 @@ const icon = svgIcon`<svg xmlns="http://www.w3.org/2000/svg" width="120" height=
 export class CollectionAccessRestrictedComponent {
   protected icon = icon;
 
-  @Output() editInfoClicked = new EventEmitter<void>();
+  @Output() viewCollectionClicked = new EventEmitter<void>();
 }
