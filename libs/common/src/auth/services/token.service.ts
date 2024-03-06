@@ -648,8 +648,14 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getUserId(): Promise<UserId> {
-    const decoded = await this.decodeAccessToken();
-    if (typeof decoded.sub === "undefined") {
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
+
+    if (!decoded || typeof decoded.sub !== "string") {
       throw new Error("No user id found");
     }
 
