@@ -83,7 +83,10 @@ export type DecodedAccessToken = {
   /** Email Verified - a boolean flag indicating whether the user's email address has been verified */
   email_verified?: boolean;
 
-  /** Session Stamp - a unique identifier for the user's session */
+  /**
+   * Security Stamp - a unique identifier which invalidates the access token if it changes in the db
+   * (typically after critical account changes like a password change)
+   */
   sstamp?: string;
 
   /** Name - the name of the user */
