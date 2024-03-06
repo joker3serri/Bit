@@ -9,6 +9,14 @@ import { Policy } from "../../models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../models/response/policy.response";
 
+/**
+ * These PolicyTypes require the Single Org Policy to be enabled first
+ */
+type SingleOrgPolicyTypes =
+  | PolicyType.RequireSso
+  | PolicyType.MaximumVaultTimeout
+  | PolicyType.ResetPassword;
+
 export abstract class PolicyService {
   /**
    * All policies for the active user from sync data.
@@ -19,15 +27,17 @@ export abstract class PolicyService {
 
   /**
    * @returns the first {@link Policy} found that applies to the active user.
-   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * This may only be used for policies that require the Single Org Policy to be enabled, otherwise there may be multiple
+   * policies that could apply and you should use getAll$ instead.
+   * @remarks A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    * @param policyType the {@link PolicyType} to search for
    * @see {@link getAll$} if you need all policies of a given type
    */
-  get$: (policyType: PolicyType) => Observable<Policy>;
+  get$: (policyType: SingleOrgPolicyTypes) => Observable<Policy>;
 
   /**
    * @returns all {@link Policy} objects of a given type that apply to the specified user (or the active user if not specified).
-   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * @remarks A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    * @param policyType the {@link PolicyType} to search for
    */
   getAll$: (policyType: PolicyType, userId?: UserId) => Observable<Policy[]>;
@@ -41,7 +51,7 @@ export abstract class PolicyService {
 
   /**
    * @returns true if a policy of the specified type applies to the active user, otherwise false.
-   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * @remarks A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    * This does not take into account the policy's configuration - if that is important, use {@link getAll$} to get the
    * {@link Policy} objects and then filter by Policy.data.
    */
