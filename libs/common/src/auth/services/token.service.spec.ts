@@ -1004,6 +1004,55 @@ describe("TokenService", () => {
           expect(result).toEqual(accessTokenDecoded.name);
         });
       });
+
+      describe("getIssuer", () => {
+        it("should throw an error if the access token cannot be decoded", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getIssuer();
+          // Assert
+          await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
+        });
+
+        it("should throw an error if the decoded access token is null", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(null);
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getIssuer();
+          // Assert
+          await expect(result).rejects.toThrow("No issuer found");
+        });
+
+        it("should throw an error if the decoded access token has a non-string iss", async () => {
+          // Arrange
+          const accessTokenDecodedWithNonStringIss = { ...accessTokenDecoded, iss: 123 };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithNonStringIss);
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getIssuer();
+          // Assert
+          await expect(result).rejects.toThrow("No issuer found");
+        });
+
+        it("should return the issuer from the decoded access token", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(accessTokenDecoded);
+
+          // Act
+          const result = await tokenService.getIssuer();
+
+          // Assert
+          expect(result).toEqual(accessTokenDecoded.iss);
+        });
+      });
     });
   });
 

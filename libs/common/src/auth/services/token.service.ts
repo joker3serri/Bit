@@ -723,12 +723,18 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getIssuer(): Promise<string> {
-    const decoded = await this.decodeAccessToken();
-    if (typeof decoded.iss === "undefined") {
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
+
+    if (!decoded || typeof decoded.iss !== "string") {
       throw new Error("No issuer found");
     }
 
-    return decoded.iss as string;
+    return decoded.iss;
   }
 
   async getIsExternal(): Promise<boolean> {
