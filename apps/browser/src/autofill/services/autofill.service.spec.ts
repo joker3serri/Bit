@@ -1,7 +1,9 @@
 import { mock, mockReset } from "jest-mock-extended";
+import { of } from "rxjs";
 
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
@@ -57,6 +59,7 @@ describe("AutofillService", () => {
   const logService = mock<LogService>();
   const settingsService = mock<SettingsService>();
   const userVerificationService = mock<UserVerificationService>();
+  const billingAccountProfileStateService = mock<BillingAccountProfileStateServiceAbstraction>();
 
   beforeEach(() => {
     autofillService = new AutofillService(
@@ -68,6 +71,7 @@ describe("AutofillService", () => {
       logService,
       settingsService,
       userVerificationService,
+      billingAccountProfileStateService,
     );
   });
 
@@ -456,6 +460,7 @@ describe("AutofillService", () => {
 
       it("throws an error if an autofill did not occur for any of the passed pages", async () => {
         autofillOptions.tab.url = "https://a-different-url.com";
+        billingAccountProfileStateService.canAccessPremium$ = of(true);
 
         try {
           await autofillService.doAutoFill(autofillOptions);
@@ -467,7 +472,6 @@ describe("AutofillService", () => {
     });
 
     it("will autofill login data for a page", async () => {
-      jest.spyOn(stateService, "getCanAccessPremium");
       jest.spyOn(stateService, "getDefaultUriMatch");
       jest.spyOn(autofillService as any, "generateFillScript");
       jest.spyOn(autofillService as any, "generateLoginFillScript");
@@ -478,7 +482,6 @@ describe("AutofillService", () => {
       const autofillResult = await autofillService.doAutoFill(autofillOptions);
 
       const currentAutofillPageDetails = autofillOptions.pageDetails[0];
-      expect(stateService.getCanAccessPremium).toHaveBeenCalled();
       expect(stateService.getDefaultUriMatch).toHaveBeenCalled();
       expect(autofillService["generateFillScript"]).toHaveBeenCalledWith(
         currentAutofillPageDetails.details,
@@ -641,7 +644,7 @@ describe("AutofillService", () => {
     it("returns a TOTP value", async () => {
       const totpCode = "123456";
       autofillOptions.cipher.login.totp = "totp";
-      jest.spyOn(stateService, "getCanAccessPremium").mockResolvedValue(true);
+      billingAccountProfileStateService.canAccessPremium$ = of(true);
       jest.spyOn(autofillService, "getShouldAutoCopyTotp").mockResolvedValue(true);
       jest.spyOn(totpService, "getCode").mockResolvedValue(totpCode);
 
@@ -654,7 +657,7 @@ describe("AutofillService", () => {
 
     it("does not return a TOTP value if the user does not have premium features", async () => {
       autofillOptions.cipher.login.totp = "totp";
-      jest.spyOn(stateService, "getCanAccessPremium").mockResolvedValue(false);
+      billingAccountProfileStateService.canAccessPremium$ = of(false);
       jest.spyOn(autofillService, "getShouldAutoCopyTotp").mockResolvedValue(true);
 
       const autofillResult = await autofillService.doAutoFill(autofillOptions);
@@ -688,7 +691,7 @@ describe("AutofillService", () => {
     it("returns a null value if the user cannot access premium and the organization does not use TOTP", async () => {
       autofillOptions.cipher.login.totp = "totp";
       autofillOptions.cipher.organizationUseTotp = false;
-      jest.spyOn(stateService, "getCanAccessPremium").mockResolvedValueOnce(false);
+      billingAccountProfileStateService.canAccessPremium$ = of(false);
 
       const autofillResult = await autofillService.doAutoFill(autofillOptions);
 
@@ -698,13 +701,12 @@ describe("AutofillService", () => {
     it("returns a null value if the user has disabled `auto TOTP copy`", async () => {
       autofillOptions.cipher.login.totp = "totp";
       autofillOptions.cipher.organizationUseTotp = true;
-      jest.spyOn(stateService, "getCanAccessPremium").mockResolvedValue(true);
+      billingAccountProfileStateService.canAccessPremium$ = of(true);
       jest.spyOn(autofillService, "getShouldAutoCopyTotp").mockResolvedValue(false);
       jest.spyOn(totpService, "getCode");
 
       const autofillResult = await autofillService.doAutoFill(autofillOptions);
 
-      expect(stateService.getCanAccessPremium).toHaveBeenCalled();
       expect(autofillService.getShouldAutoCopyTotp).toHaveBeenCalled();
       expect(totpService.getCode).not.toHaveBeenCalled();
       expect(autofillResult).toBeNull();

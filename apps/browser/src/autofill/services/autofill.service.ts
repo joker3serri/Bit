@@ -4,6 +4,7 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -50,6 +51,7 @@ export default class AutofillService implements AutofillServiceInterface {
     private logService: LogService,
     private settingsService: SettingsService,
     private userVerificationService: UserVerificationService,
+    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
   ) {}
 
   /**
@@ -228,7 +230,9 @@ export default class AutofillService implements AutofillServiceInterface {
 
     let totp: string | null = null;
 
-    const canAccessPremium = await this.stateService.getCanAccessPremium();
+    const canAccessPremium = await firstValueFrom(
+      this.billingAccountProfileStateService.canAccessPremium$,
+    );
     const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
 
     if (!canAccessPremium) {
