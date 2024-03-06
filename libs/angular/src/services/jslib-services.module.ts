@@ -227,9 +227,9 @@ import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
+import { useClass } from "../utils/dependency-helpers";
 
 import {
-  BitInjectionToken,
   LOCALES_DIRECTORY,
   LOCKED_CALLBACK,
   LOG_MAC_FAILURES,
@@ -244,26 +244,6 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
-
-/**
- * Given a type, return a constructor that returns that type
- * This is used to resolve mismatches between types (generally representing an instantiated class) and constructor types (the non-instantiated class)
- */
-type ConstructorForType<T> = abstract new (...args: any) => T;
-
-type MapParametersToDeps<T> = {
-  [K in keyof T]: ConstructorForType<T[K]> | BitInjectionToken<T[K]>;
-};
-
-const useClass = <
-  A extends abstract new (...args: any) => InstanceType<A>, // A is an abstract class
-  I extends new (...args: any) => InstanceType<A>, // I is the implementation, it has a non-abstract ctor that returns a type that extends A
-  D extends MapParametersToDeps<ConstructorParameters<I>>, // accept an array of constructor types OR injection tokens matching ctor parameters
->(obj: {
-  provide: A;
-  useClass: I;
-  deps: D;
-}) => obj;
 
 @NgModule({
   declarations: [],
