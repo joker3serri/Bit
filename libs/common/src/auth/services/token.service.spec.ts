@@ -903,6 +903,58 @@ describe("TokenService", () => {
           expect(result).toEqual(accessTokenDecoded.email);
         });
       });
+
+      describe("getEmailVerified", () => {
+        it("should throw an error if the access token cannot be decoded", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getEmailVerified();
+          // Assert
+          await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
+        });
+
+        it("should throw an error if the decoded access token is null", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(null);
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getEmailVerified();
+          // Assert
+          await expect(result).rejects.toThrow("No email verification found");
+        });
+
+        it("should throw an error if the decoded access token has a non-boolean email_verified", async () => {
+          // Arrange
+          const accessTokenDecodedWithNonBooleanEmailVerified = {
+            ...accessTokenDecoded,
+            email_verified: 123,
+          };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithNonBooleanEmailVerified);
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getEmailVerified();
+          // Assert
+          await expect(result).rejects.toThrow("No email verification found");
+        });
+
+        it("should return the email_verified from the decoded access token", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(accessTokenDecoded);
+
+          // Act
+          const result = await tokenService.getEmailVerified();
+
+          // Assert
+          expect(result).toEqual(accessTokenDecoded.email_verified);
+        });
+      });
     });
   });
 

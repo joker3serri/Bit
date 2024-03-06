@@ -693,8 +693,14 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getEmailVerified(): Promise<boolean> {
-    const decoded = await this.decodeAccessToken();
-    if (typeof decoded.email_verified === "undefined") {
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
+
+    if (!decoded || typeof decoded.email_verified !== "boolean") {
       throw new Error("No email verification found");
     }
 
