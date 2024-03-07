@@ -1,7 +1,7 @@
 import { APP_INITIALIZER, LOCALE_ID, NgModule, NgZone } from "@angular/core";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
-import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
+import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import {
   MEMORY_STORAGE,
