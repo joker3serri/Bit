@@ -689,7 +689,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("No email found");
     }
 
-    return decoded.email as string;
+    return decoded.email;
   }
 
   async getEmailVerified(): Promise<boolean> {
@@ -704,7 +704,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("No email verification found");
     }
 
-    return decoded.email_verified as boolean;
+    return decoded.email_verified;
   }
 
   async getName(): Promise<string> {
@@ -719,7 +719,7 @@ export class TokenService implements TokenServiceAbstraction {
       return null;
     }
 
-    return decoded.name as string;
+    return decoded.name;
   }
 
   async getIssuer(): Promise<string> {
