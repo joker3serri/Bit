@@ -1,7 +1,7 @@
 import { DecodedAccessToken } from "@bitwarden/common/auth/services/token.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-import { decodeJwtTokenToJson } from "./decodeJwtTokenToJson.utility";
+import { decodeJwtTokenToJson } from "./decode-jwt-token-to-json.utility";
 
 describe("decodeJwtTokenToJson", () => {
   const accessTokenJwt =

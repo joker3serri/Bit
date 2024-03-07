@@ -1,1 +1,1 @@
-export * from "./decodeJwtTokenToJson.utility";
+export * from "./decode-jwt-token-to-json.utility";
