@@ -165,7 +165,7 @@ export class TokenService implements TokenServiceAbstraction {
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number | null,
     clientIdClientSecret?: [string, string],
-  ): Promise<any> {
+  ): Promise<void> {
     // get user id from active user state or from the access token
     const userId: UserId = await this.determineUserIdByAccessTokenOrActiveUser(accessToken);
 
