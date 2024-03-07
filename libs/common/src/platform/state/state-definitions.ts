@@ -26,7 +26,9 @@ export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 // Auth
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
-export const LOGIN_DISK = new StateDefinition("login", "disk", { web: "disk-local" });
+export const REMEMBER_EMAIL_DISK = new StateDefinition("rememberEmail", "disk", {
+  web: "disk-local",
+});
 export const SSO_DISK = new StateDefinition("ssoLogin", "disk");
 
 // Autofill

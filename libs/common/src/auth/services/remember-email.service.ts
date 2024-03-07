@@ -1,9 +1,14 @@
 import { firstValueFrom } from "rxjs";
 
-import { GlobalState, KeyDefinition, LOGIN_DISK, StateProvider } from "../../platform/state";
+import {
+  GlobalState,
+  KeyDefinition,
+  REMEMBER_EMAIL_DISK,
+  StateProvider,
+} from "../../platform/state";
 import { RememberEmailService as RememberEmailServiceAbstraction } from "../abstractions/remember-email.service";
 
-const REMEMBERED_EMAIL = new KeyDefinition<string>(LOGIN_DISK, "rememberedEmail", {
+const REMEMBERED_EMAIL = new KeyDefinition<string>(REMEMBER_EMAIL_DISK, "rememberedEmail", {
   deserializer: (rememberedEmail) => rememberedEmail,
 });
 
