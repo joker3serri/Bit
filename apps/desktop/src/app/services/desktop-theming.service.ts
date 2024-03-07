@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { defer, fromEventPattern, merge } from "rxjs";
 
-import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
+import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 
