@@ -36,7 +36,7 @@ export class InitService {
       }
 
       const htmlEl = window.document.documentElement;
-      this.themingService.monitorThemeChanges(this.document);
+      this.themingService.applyThemeChangesTo(this.document);
       htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
 
       // Workaround for slow performance on external monitors on Chrome + MacOS

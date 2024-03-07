@@ -61,7 +61,7 @@ export class InitService {
       setTimeout(() => this.notificationsService.init(), 3000);
       const htmlEl = this.win.document.documentElement;
       htmlEl.classList.add("os_" + this.platformUtilsService.getDeviceString());
-      this.themingService.monitorThemeChanges(this.document);
+      this.themingService.applyThemeChangesTo(this.document);
       let installAction = null;
       const installedVersion = await this.stateService.getInstalledVersion();
       const currentVersion = await this.platformUtilsService.getApplicationVersion();
