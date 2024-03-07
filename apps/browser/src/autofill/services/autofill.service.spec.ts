@@ -1,6 +1,7 @@
 import { mock, mockReset } from "jest-mock-extended";
 
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
+import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { EventType } from "@bitwarden/common/enums";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -26,18 +27,17 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
 import { AutofillPort } from "../enums/autofill-port.enums";
+import AutofillField from "../models/autofill-field";
+import AutofillPageDetails from "../models/autofill-page-details";
+import AutofillScript from "../models/autofill-script";
 import {
   createAutofillFieldMock,
   createAutofillPageDetailsMock,
   createAutofillScriptMock,
   createChromeTabMock,
   createGenerateFillScriptOptionsMock,
-} from "../jest/autofill-mocks";
-import { triggerTestFailure } from "../jest/testing-utils";
-import AutofillField from "../models/autofill-field";
-import AutofillPageDetails from "../models/autofill-page-details";
-import AutofillScript from "../models/autofill-script";
-import { AutofillOverlayVisibility } from "../utils/autofill-overlay.enum";
+} from "../spec/autofill-mocks";
+import { triggerTestFailure } from "../spec/testing-utils";
 
 import {
   AutoFillOptions,
@@ -166,11 +166,10 @@ describe("AutofillService", () => {
       jest
         .spyOn(autofillService, "getOverlayVisibility")
         .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
+      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
     });
 
     it("accepts an extension message sender and injects the autofill scripts into the tab of the sender", async () => {
-      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
-
       await autofillService.injectAutofillScripts(sender.tab, sender.frameId, true);
 
       [autofillOverlayBootstrapScript, ...defaultAutofillScripts].forEach((scriptName) => {
@@ -195,11 +194,6 @@ describe("AutofillService", () => {
     });
 
     it("will inject the bootstrap-autofill-overlay script if the user has the autofill overlay enabled", async () => {
-      jest
-        .spyOn(autofillService, "getOverlayVisibility")
-        .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
-      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
-
       await autofillService.injectAutofillScripts(sender.tab, sender.frameId);
 
       expect(BrowserApi.executeScriptInTab).toHaveBeenCalledWith(tabMock.id, {
@@ -218,7 +212,6 @@ describe("AutofillService", () => {
       jest
         .spyOn(autofillService, "getOverlayVisibility")
         .mockResolvedValue(AutofillOverlayVisibility.Off);
-      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
 
       await autofillService.injectAutofillScripts(sender.tab, sender.frameId);
 
@@ -235,8 +228,6 @@ describe("AutofillService", () => {
     });
 
     it("injects the content-message-handler script if not injecting on page load", async () => {
-      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
-
       await autofillService.injectAutofillScripts(sender.tab, sender.frameId, false);
 
       expect(BrowserApi.executeScriptInTab).toHaveBeenCalledWith(tabMock.id, {
