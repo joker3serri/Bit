@@ -93,6 +93,8 @@ export default class RuntimeBackground {
   async processMessage(msg: any, sender: chrome.runtime.MessageSender) {
     switch (msg.command) {
       case "loggedIn":
+        await this.sendBwInstalledMessageToVault();
+        break;
       case "unlocked": {
         let item: LockedVaultPendingNotificationsData;
 
@@ -345,8 +347,6 @@ export default class RuntimeBackground {
           if (await this.environmentService.hasManagedEnvironment()) {
             await this.environmentService.setUrlsToManagedEnvironment();
           }
-
-          await this.sendBwInstalledMessageToVault();
         }
 
         this.onInstalledReason = null;
