@@ -108,6 +108,8 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
+  ImportCollectionService,
+  ImportCollectionServiceAbstraction,
   ImportService,
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
@@ -167,6 +169,7 @@ export class Main {
   containerService: ContainerService;
   auditService: AuditService;
   importService: ImportServiceAbstraction;
+  importCollectionService: ImportCollectionServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
   exportService: VaultExportServiceAbstraction;
   individualExportService: IndividualVaultExportServiceAbstraction;
@@ -574,6 +577,7 @@ export class Main {
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
 
     this.importApiService = new ImportApiService(this.apiService);
+    this.importCollectionService = new ImportCollectionService(this.collectionService);
 
     this.importService = new ImportService(
       this.cipherService,
@@ -582,6 +586,7 @@ export class Main {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.importCollectionService,
     );
 
     this.individualExportService = new IndividualVaultExportService(

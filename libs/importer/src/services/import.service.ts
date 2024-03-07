@@ -88,6 +88,8 @@ import { ImportResult } from "../models/import-result";
 import { ImportApiServiceAbstraction } from "../services/import-api.service.abstraction";
 import { ImportServiceAbstraction } from "../services/import.service.abstraction";
 
+import { ImportCollectionServiceAbstraction } from "./import-collection.service.abstraction";
+
 export class ImportService implements ImportServiceAbstraction {
   featuredImportOptions = featuredImportOptions as readonly ImportOption[];
 
@@ -100,6 +102,7 @@ export class ImportService implements ImportServiceAbstraction {
     private i18nService: I18nService,
     private collectionService: CollectionService,
     private cryptoService: CryptoService,
+    private importCollectionService: ImportCollectionServiceAbstraction,
   ) {}
 
   getImportOptions(): ImportOption[] {
@@ -435,7 +438,8 @@ export class ImportService implements ImportServiceAbstraction {
     }
 
     if (organizationId) {
-      const collectionViews: CollectionView[] = await this.collectionService.getAllDecrypted();
+      const collectionViews: CollectionView[] =
+        await this.importCollectionService.getAllCollections(organizationId);
       const targetCollection = collectionViews.find((c) => c.id === importTarget);
 
       const noCollectionRelationShips: [number, number][] = [];

@@ -27,6 +27,10 @@ import {
 } from "../../../vault/background/service_factories/folder-service.factory";
 
 import { importApiServiceFactory, ImportApiServiceInitOptions } from "./import-api-service.factory";
+import {
+  importCollectionServiceFactory,
+  ImportCollectionServiceInitOptions,
+} from "./import-collection-service.factory";
 
 type ImportServiceFactoryOptions = FactoryOptions;
 
@@ -36,7 +40,8 @@ export type ImportServiceInitOptions = ImportServiceFactoryOptions &
   ImportApiServiceInitOptions &
   I18nServiceInitOptions &
   CollectionServiceInitOptions &
-  CryptoServiceInitOptions;
+  CryptoServiceInitOptions &
+  ImportCollectionServiceInitOptions;
 
 export function importServiceFactory(
   cache: {
@@ -56,6 +61,7 @@ export function importServiceFactory(
         await i18nServiceFactory(cache, opts),
         await collectionServiceFactory(cache, opts),
         await cryptoServiceFactory(cache, opts),
+        await importCollectionServiceFactory(cache, opts),
       ),
   );
 }

@@ -2,11 +2,9 @@ import { CommonModule } from "@angular/common";
 import {
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   ViewChild,
 } from "@angular/core";
@@ -97,6 +95,7 @@ import { ImportLastPassComponent } from "./lastpass";
         I18nService,
         CollectionService,
         CryptoService,
+        ImportCollectionServiceAbstraction,
       ],
     },
   ],
@@ -183,8 +182,6 @@ export class ImportComponent implements OnInit, OnDestroy {
     protected organizationService: OrganizationService,
     protected collectionService: CollectionService,
     protected formBuilder: FormBuilder,
-    @Inject(ImportCollectionServiceAbstraction)
-    @Optional()
     protected importCollectionService: ImportCollectionServiceAbstraction,
   ) {}
 
@@ -228,7 +225,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
     this.collections$ = Utils.asyncToObservable(() =>
       this.importCollectionService
-        .getAllAdminCollections(this.organizationId)
+        .getAllCollections(this.organizationId)
         .then((collections) => collections.sort(Utils.getSortFunction(this.i18nService, "name"))),
     );
 
@@ -255,8 +252,8 @@ export class ImportComponent implements OnInit, OnDestroy {
           organizations.find((x) => x.id == this.organizationId)?.flexibleCollections ?? false;
         if (value) {
           this.collections$ = Utils.asyncToObservable(() =>
-            this.collectionService
-              .getAllDecrypted()
+            this.importCollectionService
+              .getAllCollections()
               .then((decryptedCollections) =>
                 decryptedCollections
                   .filter(

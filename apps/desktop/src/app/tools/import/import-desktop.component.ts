@@ -3,8 +3,14 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { AsyncActionsModule, ButtonModule, DialogModule } from "@bitwarden/components";
 import { ImportComponent } from "@bitwarden/importer/ui";
+
+import {
+  ImportCollectionService,
+  ImportCollectionServiceAbstraction,
+} from "../../../../../../libs/importer/src/services";
 
 @Component({
   templateUrl: "import-desktop.component.html",
@@ -16,6 +22,13 @@ import { ImportComponent } from "@bitwarden/importer/ui";
     AsyncActionsModule,
     ButtonModule,
     ImportComponent,
+  ],
+  providers: [
+    {
+      provide: ImportCollectionServiceAbstraction,
+      useClass: ImportCollectionService,
+      deps: [CollectionService],
+    },
   ],
 })
 export class ImportDesktopComponent {

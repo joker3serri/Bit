@@ -14,6 +14,7 @@ import { Importer } from "../importers/importer";
 import { ImportResult } from "../models/import-result";
 
 import { ImportApiServiceAbstraction } from "./import-api.service.abstraction";
+import { ImportCollectionService } from "./import-collection.service";
 import { ImportService } from "./import.service";
 
 describe("ImportService", () => {
@@ -24,6 +25,7 @@ describe("ImportService", () => {
   let i18nService: MockProxy<I18nService>;
   let collectionService: MockProxy<CollectionService>;
   let cryptoService: MockProxy<CryptoService>;
+  let importCollectionService: ImportCollectionService;
 
   beforeEach(() => {
     cipherService = mock<CipherService>();
@@ -32,6 +34,7 @@ describe("ImportService", () => {
     i18nService = mock<I18nService>();
     collectionService = mock<CollectionService>();
     cryptoService = mock<CryptoService>();
+    importCollectionService = new ImportCollectionService(collectionService);
 
     importService = new ImportService(
       cipherService,
@@ -40,6 +43,7 @@ describe("ImportService", () => {
       i18nService,
       collectionService,
       cryptoService,
+      importCollectionService,
     );
   });
 
@@ -174,6 +178,32 @@ describe("ImportService", () => {
       expect(importResult.collections[0].name).toBe(myImportTarget);
       expect(importResult.collections[1].name).toBe(`${myImportTarget}/${mockCollection1.name}`);
       expect(importResult.collections[2].name).toBe(`${myImportTarget}/${mockCollection2.name}`);
+    });
+
+    it("passing importCollectionService calls collectionService", async () => {
+      importService = new ImportService(
+        cipherService,
+        folderService,
+        importApiService,
+        i18nService,
+        collectionService,
+        cryptoService,
+        importCollectionService,
+      );
+
+      collectionService.getAllDecrypted.mockResolvedValue([
+        mockImportTargetCollection,
+        mockCollection1,
+        mockCollection2,
+      ]);
+
+      const myImportTarget = "myImportTarget";
+
+      importResult.collections.push(mockCollection1);
+      importResult.collections.push(mockCollection2);
+
+      await importService["setImportTarget"](importResult, organizationId, myImportTarget);
+      expect(collectionService.getAllDecrypted).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -162,8 +162,10 @@ import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-set
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
+  ImportCollectionServiceAbstraction,
   ImportService,
   ImportServiceAbstraction,
+  ImportCollectionService,
 } from "@bitwarden/importer/core";
 import {
   IndividualVaultExportService,
@@ -250,6 +252,7 @@ export default class MainBackground {
   authService: AuthServiceAbstraction;
   loginStrategyService: LoginStrategyServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
+  importCollectionService: ImportCollectionServiceAbstraction;
   importService: ImportServiceAbstraction;
   exportService: VaultExportServiceAbstraction;
   searchService: SearchServiceAbstraction;
@@ -742,6 +745,8 @@ export default class MainBackground {
 
     this.importApiService = new ImportApiService(this.apiService);
 
+    this.importCollectionService = new ImportCollectionService(this.collectionService);
+
     this.importService = new ImportService(
       this.cipherService,
       this.folderService,
@@ -749,6 +754,7 @@ export default class MainBackground {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.importCollectionService,
     );
 
     this.individualVaultExportService = new IndividualVaultExportService(
