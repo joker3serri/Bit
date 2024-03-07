@@ -764,7 +764,7 @@ import { ModalService } from "./modal.service";
     {
       provide: ProviderServiceAbstraction,
       useClass: ProviderService,
-      deps: [StateServiceAbstraction],
+      deps: [StateProvider],
     },
     {
       provide: TwoFactorServiceAbstraction,
