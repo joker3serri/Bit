@@ -46,7 +46,12 @@ export abstract class NavBaseComponent {
    *
    * See {@link RouterLinkActive.routerLinkActiveOptions}
    */
-  @Input() routerLinkActiveOptions?: RouterLinkActive["routerLinkActiveOptions"];
+  @Input() routerLinkActiveOptions?: RouterLinkActive["routerLinkActiveOptions"] = {
+    paths: "subset",
+    queryParams: "ignored",
+    fragment: "ignored",
+    matrixParams: "ignored",
+  };
 
   /**
    * If this item is used within a tree, set `variant` to `"tree"`
