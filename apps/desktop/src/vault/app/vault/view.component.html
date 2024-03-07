@@ -46,8 +46,17 @@
                 (dragstart)="setTextDataOnDrag($event, cipher.login.password)"
                 >{{ "password" | i18n }}</span
               >
-              <div *ngIf="!showPassword" class="monospaced">
-                {{ cipher.login.maskedPassword }}
+              <div
+                *ngIf="!showPassword"
+                class="monospaced box-password tw-cursor-pointer"
+                (click)="copy(cipher.login.password, 'password', 'Password')"
+              >
+                <div class="masked-password">
+                  {{ cipher.login.maskedPassword }}
+                </div>
+                <div class="password">
+                  {{ cipher.login.password }}
+                </div>
               </div>
               <div
                 *ngIf="showPassword && !showPasswordCount"

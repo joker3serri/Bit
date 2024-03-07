@@ -87,6 +87,17 @@ app-root {
       &:last-child {
         margin-bottom: 30px;
       }
+      .box-password .password {
+        display: none;
+      }
+      .box-password:hover {
+        > .masked-password {
+          display: none;
+        }
+        > .password {
+          display: unset;
+        }
+      }
     }
 
     > form {
