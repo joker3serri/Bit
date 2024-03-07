@@ -1,23 +1,11 @@
 import { Directive, EventEmitter, Input, Output } from "@angular/core";
-import {
-  ActivatedRoute,
-  IsActiveMatchOptions,
-  RouterLink,
-  RouterLinkActive,
-} from "@angular/router";
-
-/** A component that creates a link within its template. */
-type LinkComponent = {
-  route?: RouterLink["routerLink"];
-  relativeTo?: RouterLink["relativeTo"];
-  routerLinkActiveOptions?: RouterLinkActive["routerLinkActiveOptions"];
-};
+import { RouterLink, RouterLinkActive } from "@angular/router";
 
 /**
- * Base class used in `NavGroupComponent` and `NavItemComponent`
+ * `NavGroupComponent` builds upon `NavItemComponent`. This class represents the properties that are passed down to `NavItemComponent`.
  */
 @Directive()
-export abstract class NavBaseComponent implements LinkComponent {
+export abstract class NavBaseComponent {
   /**
    * Text to display in main content
    */
@@ -34,30 +22,31 @@ export abstract class NavBaseComponent implements LinkComponent {
   @Input() icon: string;
 
   /**
-   * Route to be passed to internal `routerLink`
+   * Optional route to be passed to internal `routerLink`. If not provided, the nav component will render as a button.
    *
-   * See {@link RouterLink.routerLink}
+   * See: {@link RouterLink.routerLink}
+   *
+   * ---
+   *
+   * We can't name this "routerLink" because Angular will mount the `RouterLink` directive.
+   *
+   * See: {@link https://github.com/angular/angular/issues/24482}
    */
-  @Input() route?: string | any[];
+  @Input() route?: RouterLink["routerLink"];
 
   /**
    * Passed to internal `routerLink`
    *
    * See {@link RouterLink.relativeTo}
    */
-  @Input() relativeTo?: ActivatedRoute | null;
+  @Input() relativeTo?: RouterLink["relativeTo"];
 
   /**
    * Passed to internal `routerLink`
    *
    * See {@link RouterLinkActive.routerLinkActiveOptions}
    */
-  @Input() routerLinkActiveOptions?: { exact: boolean } | IsActiveMatchOptions = {
-    paths: "subset",
-    queryParams: "ignored",
-    fragment: "ignored",
-    matrixParams: "ignored",
-  };
+  @Input() routerLinkActiveOptions?: RouterLinkActive["routerLinkActiveOptions"];
 
   /**
    * If this item is used within a tree, set `variant` to `"tree"`
