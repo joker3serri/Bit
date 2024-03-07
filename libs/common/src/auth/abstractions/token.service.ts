@@ -137,7 +137,18 @@ export abstract class TokenService {
    * @returns A promise that resolves when the two factor token has been cleared.
    */
   clearTwoFactorToken: (email: string) => Promise<void>;
+
+  /**
+   * Decodes the access token.
+   * @param token The access token to decode.
+   * @returns A promise that resolves with the decoded access token.
+   */
   decodeAccessToken: (token?: string) => Promise<DecodedAccessToken>;
+
+  /**
+   * Gets the expiration date for the access token. Returns if token can't be decoded or has no expiration
+   * @returns A promise that resolves with the expiration date for the access token.
+   */
   getTokenExpirationDate: () => Promise<Date | null>;
 
   /**
