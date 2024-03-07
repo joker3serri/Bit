@@ -6,9 +6,6 @@ const setTheme = () => {
     // has had a chance to run, can be remove in the future.
     // TODO: Choose future date
     const globalState = window.localStorage.getItem("global");
-    if (!globalState) {
-      return null;
-    }
 
     const parsedGlobalState = JSON.parse(globalState) as { theme?: string } | null;
     return parsedGlobalState ? parsedGlobalState.theme : null;
