@@ -27,7 +27,7 @@ export class DuckDuckGoForwarder extends ForwarderGeneratorStrategy<ApiOptions> 
     super(encryptService, keyService, stateProvider);
   }
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.key} */
   get key() {
     return DUCK_DUCK_GO_FORWARDER;
   }

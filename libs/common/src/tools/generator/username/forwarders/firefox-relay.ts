@@ -27,7 +27,7 @@ export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions
     super(encryptService, keyService, stateProvider);
   }
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.key} */
   get key() {
     return FIREFOX_RELAY_FORWARDER;
   }

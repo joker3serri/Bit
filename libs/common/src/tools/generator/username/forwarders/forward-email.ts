@@ -30,7 +30,7 @@ export class ForwardEmailForwarder extends ForwarderGeneratorStrategy<
     super(encryptService, keyService, stateProvider);
   }
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.key} */
   get key() {
     return FORWARD_EMAIL_FORWARDER;
   }

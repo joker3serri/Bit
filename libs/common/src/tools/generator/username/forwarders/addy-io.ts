@@ -29,7 +29,7 @@ export class AddyIoForwarder extends ForwarderGeneratorStrategy<
     super(encryptService, keyService, stateProvider);
   }
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.key} */
   get key() {
     return ADDY_IO_FORWARDER;
   }

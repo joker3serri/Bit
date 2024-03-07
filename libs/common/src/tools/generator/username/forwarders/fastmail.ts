@@ -27,7 +27,7 @@ export class FastmailForwarder extends ForwarderGeneratorStrategy<ApiOptions & E
     super(encryptService, keyService, stateProvider);
   }
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.key} */
   get key() {
     return FASTMAIL_FORWARDER;
   }

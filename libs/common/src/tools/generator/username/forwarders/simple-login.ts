@@ -27,7 +27,7 @@ export class SimpleLoginForwarder extends ForwarderGeneratorStrategy<SelfHostedA
     super(encryptService, keyService, stateProvider);
   }
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.key} */
   get key() {
     return SIMPLE_LOGIN_FORWARDER;
   }
