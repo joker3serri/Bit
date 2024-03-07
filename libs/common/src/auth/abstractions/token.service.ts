@@ -2,7 +2,6 @@ import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { UserId } from "../../types/guid";
 import { DecodedAccessToken } from "../services/token.service";
 
-// TODO: update all docs based on latest changes.
 export abstract class TokenService {
   /**
    * Sets the access token, refresh token, API Key Client ID, and API Key Client Secret in memory or disk
@@ -26,6 +25,13 @@ export abstract class TokenService {
   ) => Promise<void>;
 
   /**
+   * Clears the access token, refresh token, API Key Client ID, and API Key Client Secret out of memory, disk, and secure storage if supported.
+   * @param userId The optional user id to clear the tokens for; if not provided, the active user id is used.
+   * @returns A promise that resolves when the tokens have been cleared.
+   */
+  clearTokens: (userId?: UserId) => Promise<void>;
+
+  /**
    * Sets the access token in memory or disk based on the given vaultTimeoutAction and vaultTimeout
    * and either the given user id or the active user id.
    * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
@@ -42,7 +48,7 @@ export abstract class TokenService {
     userId?: UserId,
   ) => Promise<void>;
 
-  // TODO: revisit this approach once the state service is fully deprecated.
+  // TODO: revisit having this public clear method approach once the state service is fully deprecated.
   /**
    * Clears the access token for the given user id out of memory, disk, and secure storage if supported.
    * @param userId The optional user id to clear the access token for; if not provided, the active user id is used.
@@ -87,6 +93,7 @@ export abstract class TokenService {
    * @returns A promise that resolves with the API Key Client ID.
    */
   getClientId: (userId?: UserId) => Promise<string>;
+
   /**
    * Sets the API Key Client Secret for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
    * @param clientSecret The API Key Client Secret to set.
@@ -100,30 +107,57 @@ export abstract class TokenService {
     vaultTimeout: number | null,
     userId?: UserId,
   ) => Promise<void>;
+
   /**
    * Gets the API Key Client Secret for the active user.
    * @returns A promise that resolves with the API Key Client Secret.
    */
   getClientSecret: (userId?: UserId) => Promise<string>;
 
+  /**
+   * Sets the two factor token for the given email in global state.
+   * The two factor token is set when the user checks "remember me" when completing two factor
+   * authentication and it is used to bypass two factor authentication for a period of time.
+   * @param email The email to set the two factor token for.
+   * @param twoFactorToken The two factor token to set.
+   * @returns A promise that resolves when the two factor token has been set.
+   */
   setTwoFactorToken: (email: string, twoFactorToken: string) => Promise<void>;
+
+  /**
+   * Gets the two factor token for the given email.
+   * @param email The email to get the two factor token for.
+   * @returns A promise that resolves with the two factor token for the given email.
+   */
   getTwoFactorToken: (email: string) => Promise<string>;
+
+  /**
+   * Clears the two factor token for the given email out of global state.
+   * @param email The email to clear the two factor token for.
+   * @returns A promise that resolves when the two factor token has been cleared.
+   */
   clearTwoFactorToken: (email: string) => Promise<void>;
-  clearTokens: (userId?: UserId) => Promise<void>;
   decodeAccessToken: (token?: string) => Promise<DecodedAccessToken>;
   getTokenExpirationDate: () => Promise<Date | null>;
 
   /**
    * Calculates the adjusted time in seconds until the access token expires, considering an optional offset.
    *
-   * @param {number} [offsetSeconds=0] - Optional seconds to subtract from the remaining time,
-   *        creating a buffer before actual expiration. Useful for preemptive actions
-   *        before token expiry. A value of 0 or omitting this parameter calculates time
-   *        based on the actual expiration.
+   * @param {number} [offsetSeconds=0] Optional seconds to subtract from the remaining time,
+   * creating a buffer before actual expiration. Useful for preemptive actions
+   * before token expiry. A value of 0 or omitting this parameter calculates time
+   * based on the actual expiration.
    * @returns {Promise<number>} Promise resolving to the adjusted seconds remaining.
    */
   tokenSecondsRemaining: (offsetSeconds?: number) => Promise<number>;
+
+  /**
+   * Checks if the access token needs to be refreshed.
+   * @param {number} [minutes=5] - Optional number of minutes before the access token expires to consider refreshing it.
+   * @returns A promise that resolves with a boolean indicating if the access token needs to be refreshed.
+   */
   tokenNeedsRefresh: (minutes?: number) => Promise<boolean>;
+
   /**
    * Gets the user id for the active user from the access token.
    * @returns A promise that resolves with the user id for the active user.
@@ -137,13 +171,29 @@ export abstract class TokenService {
    * @deprecated Use AccountService.activeAccount$ instead.
    */
   getEmail: () => Promise<string>;
+
+  /**
+   * Gets the email verified status for the active user from the access token.
+   * @returns A promise that resolves with the email verified status for the active user.
+   */
   getEmailVerified: () => Promise<boolean>;
+
   /**
    * Gets the name for the active user from the access token.
    * @returns A promise that resolves with the name for the active user.
    * @deprecated Use AccountService.activeAccount$ instead.
    */
   getName: () => Promise<string>;
+
+  /**
+   * Gets the issuer for the active user from the access token.
+   * @returns A promise that resolves with the issuer for the active user.
+   */
   getIssuer: () => Promise<string>;
+
+  /**
+   * Gets whether or not the user authenticated via an external mechanism.
+   * @returns A promise that resolves with a boolean representing the user's external authN status.
+   */
   getIsExternal: () => Promise<boolean>;
 }
