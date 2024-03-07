@@ -10,6 +10,7 @@ import {
   settingsServiceFactory,
   SettingsServiceInitOptions,
 } from "../../../background/service-factories/settings-service.factory";
+import { billingAccountProfileStateServiceFactory } from "../../../platform/background/service-factories/billing-account-profile-state-service.factory";
 import {
   CachedServices,
   factory,
@@ -69,6 +70,7 @@ export function autofillServiceFactory(
         await logServiceFactory(cache, opts),
         await settingsServiceFactory(cache, opts),
         await userVerificationServiceFactory(cache, opts),
+        await billingAccountProfileStateServiceFactory(cache, opts),
       ),
   );
 }

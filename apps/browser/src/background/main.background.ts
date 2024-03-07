@@ -746,6 +746,7 @@ export default class MainBackground {
       this.logService,
       this.settingsService,
       this.userVerificationService,
+      this.billingAccountProfileStateService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -964,6 +965,7 @@ export default class MainBackground {
         this.stateService,
         this.i18nService,
         this.logService,
+        this.billingAccountProfileStateService,
       );
 
       this.cipherContextMenuHandler = new CipherContextMenuHandler(
