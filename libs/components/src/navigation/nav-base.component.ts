@@ -1,11 +1,22 @@
 import { Directive, EventEmitter, Input, Output } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import {
+  ActivatedRoute,
+  IsActiveMatchOptions,
+  RouterLink,
+  RouterLinkActive,
+} from "@angular/router";
+
+type LinkComponent = {
+  route?: RouterLink["routerLink"];
+  relativeTo?: RouterLink["relativeTo"];
+  routerLinkActiveOptions?: RouterLinkActive["routerLinkActiveOptions"];
+};
 
 /**
  * Base class used in `NavGroupComponent` and `NavItemComponent`
  */
 @Directive()
-export abstract class NavBaseComponent {
+export abstract class NavBaseComponent implements LinkComponent {
   /**
    * Text to display in main content
    */
@@ -23,13 +34,24 @@ export abstract class NavBaseComponent {
 
   /**
    * Route to be passed to internal `routerLink`
+   *
+   * See {@link RouterLink.routerLink}
    */
-  @Input() route: string | any[];
+  @Input() route?: string | any[];
 
   /**
    * Passed to internal `routerLink`
+   *
+   * See {@link RouterLink.relativeTo}
    */
   @Input() relativeTo?: ActivatedRoute | null;
+
+  /**
+   * Passed to internal `routerLink`
+   *
+   * See {@link RouterLinkActive.routerLinkActiveOptions}
+   */
+  @Input() routerLinkActiveOptions?: { exact: boolean } | IsActiveMatchOptions;
 
   /**
    * If this item is used within a tree, set `variant` to `"tree"`
