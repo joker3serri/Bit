@@ -35,7 +35,7 @@ export class ForwardEmailForwarder extends ForwarderGeneratorStrategy<
     return FORWARD_EMAIL_FORWARDER;
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: ApiOptions & EmailDomainOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.ForwardEmail.name);

@@ -32,7 +32,7 @@ export class SimpleLoginForwarder extends ForwarderGeneratorStrategy<SelfHostedA
     return SIMPLE_LOGIN_FORWARDER;
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: SelfHostedApiOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.SimpleLogin.name);

@@ -32,7 +32,7 @@ export class FastmailForwarder extends ForwarderGeneratorStrategy<ApiOptions & E
     return FASTMAIL_FORWARDER;
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: ApiOptions & EmailPrefixOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.Fastmail.name);

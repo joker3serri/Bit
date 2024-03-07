@@ -34,7 +34,7 @@ export class AddyIoForwarder extends ForwarderGeneratorStrategy<
     return ADDY_IO_FORWARDER;
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: SelfHostedApiOptions & EmailDomainOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.AddyIo.name);

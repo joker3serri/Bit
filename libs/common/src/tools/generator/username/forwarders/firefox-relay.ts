@@ -32,7 +32,7 @@ export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions
     return FIREFOX_RELAY_FORWARDER;
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: ApiOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.FirefoxRelay.name);

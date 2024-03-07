@@ -32,7 +32,7 @@ export class DuckDuckGoForwarder extends ForwarderGeneratorStrategy<ApiOptions> 
     return DUCK_DUCK_GO_FORWARDER;
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: ApiOptions): Promise<string> => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.DuckDuckGo.name);
