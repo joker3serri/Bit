@@ -56,9 +56,9 @@ import {
 } from "../../../tools/background/service_factories/password-strength-service.factory";
 
 import {
-  authRequestCryptoServiceFactory,
-  AuthRequestCryptoServiceInitOptions,
-} from "./auth-request-crypto-service.factory";
+  authRequestServiceFactory,
+  AuthRequestServiceInitOptions,
+} from "./auth-request-service.factory";
 import {
   deviceTrustCryptoServiceFactory,
   DeviceTrustCryptoServiceInitOptions,
@@ -88,7 +88,7 @@ export type LoginStrategyServiceInitOptions = LoginStrategyServiceFactoryOptions
   PolicyServiceInitOptions &
   PasswordStrengthServiceInitOptions &
   DeviceTrustCryptoServiceInitOptions &
-  AuthRequestCryptoServiceInitOptions &
+  AuthRequestServiceInitOptions &
   GlobalStateProviderInitOptions;
 
 export function loginStrategyServiceFactory(
@@ -117,7 +117,7 @@ export function loginStrategyServiceFactory(
         await passwordStrengthServiceFactory(cache, opts),
         await policyServiceFactory(cache, opts),
         await deviceTrustCryptoServiceFactory(cache, opts),
-        await authRequestCryptoServiceFactory(cache, opts),
+        await authRequestServiceFactory(cache, opts),
         await globalStateProviderFactory(cache, opts),
       ),
   );
