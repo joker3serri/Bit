@@ -13,6 +13,9 @@ export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions
   /** Instantiates the forwarder
    *  @param apiService used for ajax requests to the forwarding service
    *  @param i18nService used to look up error strings
+   *  @param encryptService protects sensitive forwarder options
+   *  @param keyService looks up the user key when protecting data.
+   *  @param stateProvider creates the durable state for options storage
    */
   constructor(
     private apiService: ApiService,
