@@ -1053,6 +1053,53 @@ describe("TokenService", () => {
           expect(result).toEqual(accessTokenDecoded.iss);
         });
       });
+
+      describe("getIsExternal", () => {
+        it("should throw an error if the access token cannot be decoded", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockRejectedValue(new Error("Mock error"));
+
+          // Act
+          // note: don't await here because we want to test the error
+          const result = tokenService.getIsExternal();
+          // Assert
+          await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
+        });
+
+        it("should return false if the amr (Authentication Method Reference) claim does not contain 'external'", async () => {
+          // Arrange
+          const accessTokenDecodedWithoutExternalAmr = {
+            ...accessTokenDecoded,
+            amr: ["not-external"],
+          };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithoutExternalAmr);
+
+          // Act
+          const result = await tokenService.getIsExternal();
+
+          // Assert
+          expect(result).toEqual(false);
+        });
+
+        it("should return true if the amr (Authentication Method Reference) claim contains 'external'", async () => {
+          // Arrange
+          const accessTokenDecodedWithExternalAmr = {
+            ...accessTokenDecoded,
+            amr: ["external"],
+          };
+          tokenService.decodeAccessToken = jest
+            .fn()
+            .mockResolvedValue(accessTokenDecodedWithExternalAmr);
+
+          // Act
+          const result = await tokenService.getIsExternal();
+
+          // Assert
+          expect(result).toEqual(true);
+        });
+      });
     });
   });
 

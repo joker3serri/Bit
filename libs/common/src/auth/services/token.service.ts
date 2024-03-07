@@ -59,7 +59,7 @@ export type DecodedAccessToken = {
   /** Scope - the scope of the access request, such as the permissions the token grants */
   scope?: string[];
 
-  /** Authentication Method References - the methods used in the authentication */
+  /** Authentication Method Reference - the methods used in the authentication */
   amr?: string[];
 
   /** Client ID - the identifier for the client that requested the token */
@@ -738,7 +738,12 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   async getIsExternal(): Promise<boolean> {
-    const decoded = await this.decodeAccessToken();
+    let decoded: DecodedAccessToken;
+    try {
+      decoded = await this.decodeAccessToken();
+    } catch (error) {
+      throw new Error("Failed to decode access token: " + error.message);
+    }
 
     return Array.isArray(decoded.amr) && decoded.amr.includes("external");
   }
