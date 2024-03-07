@@ -189,12 +189,11 @@ describe("TokenService", () => {
     });
 
     describe("getAccessToken", () => {
-      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should return undefined if no user id is provided and there is no active user in global state", async () => {
         // Act
-        // note: don't await here because we want to test the error
-        const result = tokenService.getAccessToken();
+        const result = await tokenService.getAccessToken();
         // Assert
-        await expect(result).rejects.toThrow("User id not found. Cannot get access token.");
+        expect(result).toBeUndefined();
       });
 
       it("should return null if no access token is found in memory, disk, or secure storage", async () => {
@@ -1218,12 +1217,11 @@ describe("TokenService", () => {
     });
 
     describe("getRefreshToken", () => {
-      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should return undefined if no user id is provided and there is no active user in global state", async () => {
         // Act
-        // note: don't await here because we want to test the error
-        const result = (tokenService as any).getRefreshToken();
+        const result = await (tokenService as any).getRefreshToken();
         // Assert
-        await expect(result).rejects.toThrow("User id not found. Cannot get refresh token.");
+        expect(result).toBeUndefined();
       });
 
       it("should return null if no refresh token is found in memory, disk, or secure storage", async () => {
@@ -1589,12 +1587,11 @@ describe("TokenService", () => {
     });
 
     describe("getClientId", () => {
-      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should return undefined if no user id is provided and there is no active user in global state", async () => {
         // Act
-        // note: don't await here because we want to test the rejection
-        const result = tokenService.getClientId();
+        const result = await tokenService.getClientId();
         // Assert
-        await expect(result).rejects.toThrow("User id not found. Cannot get client id.");
+        expect(result).toBeUndefined();
       });
 
       it("should return null if no client id is found in memory or disk", async () => {
@@ -1841,12 +1838,11 @@ describe("TokenService", () => {
     });
 
     describe("getClientSecret", () => {
-      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should return undefined if no user id is provided and there is no active user in global state", async () => {
         // Act
-        // note: don't await here because we want to test the rejection
-        const result = tokenService.getClientSecret();
+        const result = await tokenService.getClientSecret();
         // Assert
-        await expect(result).rejects.toThrow("User id not found. Cannot get client secret.");
+        expect(result).toBeUndefined();
       });
 
       it("should return null if no client secret is found in memory or disk", async () => {

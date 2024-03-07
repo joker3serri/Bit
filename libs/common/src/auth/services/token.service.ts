@@ -235,7 +235,7 @@ export class TokenService implements TokenServiceAbstraction {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
-      throw new Error("User id not found. Cannot get access token.");
+      return undefined;
     }
 
     const accessTokenMigratedToSecureStorage =
@@ -324,11 +324,11 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async getRefreshToken(userId?: UserId): Promise<string> {
+  async getRefreshToken(userId?: UserId): Promise<string | undefined> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
-      throw new Error("User id not found. Cannot get refresh token.");
+      return undefined;
     }
 
     const refreshTokenMigratedToSecureStorage =
@@ -424,11 +424,11 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async getClientId(userId?: UserId): Promise<string> {
+  async getClientId(userId?: UserId): Promise<string | undefined> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
-      throw new Error("User id not found. Cannot get client id.");
+      return undefined;
     }
 
     // Always read memory first b/c faster
@@ -491,11 +491,11 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async getClientSecret(userId?: UserId): Promise<string> {
+  async getClientSecret(userId?: UserId): Promise<string | undefined> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
-      throw new Error("User id not found. Cannot get client secret.");
+      return undefined;
     }
 
     // Always read memory first b/c faster

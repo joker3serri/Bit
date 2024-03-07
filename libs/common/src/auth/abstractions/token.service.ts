@@ -63,16 +63,16 @@ export abstract class TokenService {
   /**
    * Gets the access token
    * @param userId - The optional user id to get the access token for; if not provided, the active user is used.
-   * @returns A promise that resolves with the access token for the given user id.
+   * @returns A promise that resolves with the access token or undefined.
    */
-  getAccessToken: (userId?: UserId) => Promise<string>;
+  getAccessToken: (userId?: UserId) => Promise<string | undefined>;
 
   /**
    * Gets the refresh token.
    * @param userId - The optional user id to get the refresh token for; if not provided, the active user is used.
-   * @returns A promise that resolves with the refresh token.
+   * @returns A promise that resolves with the refresh token or undefined.
    */
-  getRefreshToken: (userId?: UserId) => Promise<string>;
+  getRefreshToken: (userId?: UserId) => Promise<string | undefined>;
 
   /**
    * Sets the API Key Client ID for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
@@ -90,9 +90,9 @@ export abstract class TokenService {
 
   /**
    * Gets the API Key Client ID for the active user.
-   * @returns A promise that resolves with the API Key Client ID.
+   * @returns A promise that resolves with the API Key Client ID or undefined
    */
-  getClientId: (userId?: UserId) => Promise<string>;
+  getClientId: (userId?: UserId) => Promise<string | undefined>;
 
   /**
    * Sets the API Key Client Secret for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
@@ -110,9 +110,9 @@ export abstract class TokenService {
 
   /**
    * Gets the API Key Client Secret for the active user.
-   * @returns A promise that resolves with the API Key Client Secret.
+   * @returns A promise that resolves with the API Key Client Secret or undefined
    */
-  getClientSecret: (userId?: UserId) => Promise<string>;
+  getClientSecret: (userId?: UserId) => Promise<string | undefined>;
 
   /**
    * Sets the two factor token for the given email in global state.
