@@ -6,6 +6,7 @@ import {
   RouterLinkActive,
 } from "@angular/router";
 
+/** A component that creates a link within its template. */
 type LinkComponent = {
   route?: RouterLink["routerLink"];
   relativeTo?: RouterLink["relativeTo"];
@@ -51,7 +52,12 @@ export abstract class NavBaseComponent implements LinkComponent {
    *
    * See {@link RouterLinkActive.routerLinkActiveOptions}
    */
-  @Input() routerLinkActiveOptions?: { exact: boolean } | IsActiveMatchOptions;
+  @Input() routerLinkActiveOptions?: { exact: boolean } | IsActiveMatchOptions = {
+    paths: "subset",
+    queryParams: "ignored",
+    fragment: "ignored",
+    matrixParams: "ignored",
+  };
 
   /**
    * If this item is used within a tree, set `variant` to `"tree"`
