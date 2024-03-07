@@ -574,7 +574,6 @@ export class Main {
       this.organizationService,
       this.sendApiService,
       this.avatarService,
-      this.stateProvider,
       async (expired: boolean) => await this.logout(),
     );
 

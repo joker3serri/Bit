@@ -718,7 +718,6 @@ export default class MainBackground {
       this.organizationService,
       this.sendApiService,
       this.avatarService,
-      this.stateProvider,
       logoutCallback,
     );
     this.eventUploadService = new EventUploadService(

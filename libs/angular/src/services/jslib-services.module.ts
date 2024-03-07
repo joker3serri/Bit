@@ -521,7 +521,6 @@ import { ModalService } from "./modal.service";
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
         AvatarServiceAbstraction,
-        StateProvider,
         LOGOUT_CALLBACK,
       ],
     },
