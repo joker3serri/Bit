@@ -2,13 +2,9 @@ import { Injectable } from "@angular/core";
 import { fromEvent, map, merge, Observable, of, Subscription, switchMap } from "rxjs";
 
 import { ThemeType } from "@bitwarden/common/platform/enums";
-import { KeyDefinition, StateProvider, THEMING_DISK } from "@bitwarden/common/platform/state";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 
 import { AbstractThemingService } from "./theming.service.abstraction";
-
-const THEME_SELECTION = new KeyDefinition<ThemeType>(THEMING_DISK, "selection", {
-  deserializer: (s) => s,
-});
 
 @Injectable()
 export class AngularThemingService implements AbstractThemingService {
@@ -33,13 +29,7 @@ export class AngularThemingService implements AbstractThemingService {
     );
   }
 
-  private readonly selectedThemeState = this.stateProvider.getGlobal(THEME_SELECTION);
-
-  readonly configuredTheme$ = this.selectedThemeState.state$.pipe(
-    map((theme) => theme ?? ThemeType.Light),
-  );
-
-  readonly theme$ = this.configuredTheme$.pipe(
+  readonly theme$ = this.themeStateService.selectedTheme$.pipe(
     switchMap((configuredTheme) => {
       if (configuredTheme === ThemeType.System) {
         return this.systemTheme$;
@@ -50,11 +40,11 @@ export class AngularThemingService implements AbstractThemingService {
   );
 
   constructor(
-    private stateProvider: StateProvider,
+    private themeStateService: ThemeStateService,
     private systemTheme$: Observable<ThemeType>,
   ) {}
 
-  monitorThemeChanges(document: Document): Subscription {
+  applyThemeChangesTo(document: Document): Subscription {
     return this.theme$.subscribe((theme) => {
       document.documentElement.classList.remove(
         "theme_" + ThemeType.Light,
@@ -63,12 +53,6 @@ export class AngularThemingService implements AbstractThemingService {
         "theme_" + ThemeType.SolarizedDark,
       );
       document.documentElement.classList.add("theme_" + theme);
-    });
-  }
-
-  async updateConfiguredTheme(theme: ThemeType): Promise<void> {
-    await this.selectedThemeState.update(() => theme, {
-      shouldUpdate: (currentTheme) => currentTheme !== theme,
     });
   }
 }

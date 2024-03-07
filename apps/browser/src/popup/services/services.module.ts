@@ -76,6 +76,7 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import { DerivedStateProvider, StateProvider } from "@bitwarden/common/platform/state";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -505,7 +506,10 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: AbstractThemingService,
-      useFactory: (stateProvider: StateProvider, platformUtilsService: PlatformUtilsService) => {
+      useFactory: (
+        themeStateService: ThemeStateService,
+        platformUtilsService: PlatformUtilsService,
+      ) => {
         // Safari doesn't properly handle the (prefers-color-scheme) media query in the popup window, it always returns light.
         // In Safari, we have to use the background page instead, which comes with limitations like not dynamically changing the extension theme when the system theme is changed.
         let windowContext = window;
@@ -515,11 +519,11 @@ function getBgService<T>(service: keyof MainBackground) {
         }
 
         return new AngularThemingService(
-          stateProvider,
+          themeStateService,
           AngularThemingService.createSystemThemeFromWindow(windowContext),
         );
       },
-      deps: [StateProvider, PlatformUtilsService],
+      deps: [ThemeStateService, PlatformUtilsService],
     },
     {
       provide: ConfigService,

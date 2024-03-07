@@ -154,6 +154,10 @@ import { DefaultStateProvider } from "@bitwarden/common/platform/state/implement
 import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 import { StateEventRunnerService } from "@bitwarden/common/platform/state/state-event-runner.service";
 /* eslint-enable import/no-restricted-paths */
+import {
+  DefaultThemeStateService,
+  ThemeStateService,
+} from "@bitwarden/common/platform/theming/theme-state.service";
 import { AvatarUpdateService } from "@bitwarden/common/services/account/avatar-update.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
@@ -754,12 +758,12 @@ import { ModalService } from "./modal.service";
     },
     {
       provide: AbstractThemingService,
-      useFactory: (stateProvider: StateProvider, window: Window) =>
+      useFactory: (themeStateService: ThemeStateService, window: Window) =>
         new AngularThemingService(
-          stateProvider,
+          themeStateService,
           AngularThemingService.createSystemThemeFromWindow(window),
         ),
-      deps: [StateProvider, WINDOW],
+      deps: [ThemeStateService, WINDOW],
     },
     {
       provide: FormValidationErrorsServiceAbstraction,
@@ -994,6 +998,11 @@ import { ModalService } from "./modal.service";
       provide: PaymentMethodWarningsServiceAbstraction,
       useClass: PaymentMethodWarningsService,
       deps: [BillingApiServiceAbstraction, StateProvider],
+    },
+    {
+      provide: ThemeStateService,
+      useClass: DefaultThemeStateService,
+      deps: [GlobalStateProvider],
     },
   ],
 })

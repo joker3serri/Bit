@@ -1,13 +1,13 @@
 import { mock, mockReset } from "jest-mock-extended";
-import { BehaviorSubject } from "rxjs";
+import { of } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { I18nService } from "@bitwarden/common/platform/services/i18n.service";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
@@ -53,7 +53,7 @@ describe("OverlayBackground", () => {
   const autofillSettingsService = mock<AutofillSettingsService>();
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<BrowserPlatformUtilsService>();
-  const themingService = mock<AbstractThemingService>();
+  const themeStateService = mock<ThemeStateService>();
   const initOverlayElementPorts = async (options = { initList: true, initButton: true }) => {
     const { initList, initButton } = options;
     if (initButton) {
@@ -80,14 +80,14 @@ describe("OverlayBackground", () => {
       autofillSettingsService,
       i18nService,
       platformUtilsService,
-      themingService,
+      themeStateService,
     );
 
     jest
       .spyOn(overlayBackground as any, "getOverlayVisibility")
       .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
 
-    themingService.configuredTheme$ = new BehaviorSubject<ThemeType>(null);
+    themeStateService.selectedTheme$ = of(ThemeType.Light);
 
     void overlayBackground.init();
   });
@@ -997,7 +997,7 @@ describe("OverlayBackground", () => {
     });
 
     it("gets the system theme", async () => {
-      themingService.configuredTheme$ = new BehaviorSubject<ThemeType>(ThemeType.System);
+      themeStateService.selectedTheme$ = of(ThemeType.System);
 
       await initOverlayElementPorts({ initList: true, initButton: false });
       await flushPromises();

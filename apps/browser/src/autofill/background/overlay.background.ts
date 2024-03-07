@@ -1,6 +1,5 @@
 import { firstValueFrom } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -10,6 +9,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
@@ -100,7 +100,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private themingService: AbstractThemingService,
+    private themeStateService: ThemeStateService,
   ) {
     this.iconsServerUrl = this.environmentService.getIconsUrl();
   }
@@ -700,7 +700,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
       command: `initAutofillOverlay${isOverlayListPort ? "List" : "Button"}`,
       authStatus: await this.getAuthStatus(),
       styleSheetUrl: chrome.runtime.getURL(`overlay/${isOverlayListPort ? "list" : "button"}.css`),
-      theme: await firstValueFrom(this.themingService.configuredTheme$),
+      theme: await firstValueFrom(this.themeStateService.selectedTheme$),
       translations: this.getTranslations(),
       ciphers: isOverlayListPort ? this.getOverlayCipherData() : null,
     });

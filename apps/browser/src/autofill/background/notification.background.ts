@@ -1,6 +1,5 @@
 import { firstValueFrom } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -9,6 +8,7 @@ import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/au
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -74,7 +74,7 @@ export default class NotificationBackground {
     private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
     private environmentService: EnvironmentService,
     private logService: LogService,
-    private themingService: AbstractThemingService,
+    private themeStateService: ThemeStateService,
   ) {}
 
   async init() {
@@ -156,7 +156,7 @@ export default class NotificationBackground {
     const notificationType = notificationQueueMessage.type;
     const typeData: Record<string, any> = {
       isVaultLocked: notificationQueueMessage.wasVaultLocked,
-      theme: await firstValueFrom(this.themingService.configuredTheme$),
+      theme: await firstValueFrom(this.themeStateService.selectedTheme$),
     };
 
     switch (notificationType) {

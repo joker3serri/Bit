@@ -3,7 +3,7 @@ import { defer, fromEventPattern, merge } from "rxjs";
 
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/theming.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 
 @Injectable()
 export class DesktopThemingService extends AngularThemingService {
@@ -16,7 +16,7 @@ export class DesktopThemingService extends AngularThemingService {
     );
   }
 
-  constructor(stateProvider: StateProvider) {
-    super(stateProvider, DesktopThemingService.createSystemThemeObservable());
+  constructor(themeStateService: ThemeStateService) {
+    super(themeStateService, DesktopThemingService.createSystemThemeObservable());
   }
 }
