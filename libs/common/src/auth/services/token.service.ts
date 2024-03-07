@@ -29,8 +29,6 @@ import {
   REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
 
-// TODO: write tests for this service
-
 export enum TokenStorageLocation {
   Disk = "disk",
   SecureStorage = "secureStorage",
