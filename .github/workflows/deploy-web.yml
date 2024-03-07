@@ -26,7 +26,7 @@ on:
       debug:
         description: "Debug mode"
         type: boolean
-        default: false
+        default: true
 
   workflow_call:
     inputs:
@@ -72,11 +72,11 @@ jobs:
           echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
 
           # Invert the default value for sync-delete-destination-files
-          if [ ${{ inputs.invert-default-sync-delete-destination-files-value }} ]; then
+          if [[ "${{ inputs.invert-default-sync-delete-destination-files-value }}" == "true" ]]; then
             echo "sync-delete-destination-files=true" >> $GITHUB_OUTPUT
           else
-          # This is the default value for USQA, EUQA, USPROD, and EUPROD
-          echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
+            # This is the default value for USQA, EUQA, USPROD, and EUPROD
+            echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
           fi
 
           case ${{ inputs.environment }} in
@@ -115,7 +115,7 @@ jobs:
               echo "environment-name=Web Vault - US Development Cloud" >> $GITHUB_OUTPUT
               echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
 
-              if [ ${{ inputs.invert-default-sync-delete-destination-files-value }} ]; then
+              if [[ "${{ inputs.invert-default-sync-delete-destination-files-value }}" == "true" ]]; then
                 echo "sync-delete-destination-files=false" >> $GITHUB_OUTPUT
               else
                 # This is the default value for USDEV
