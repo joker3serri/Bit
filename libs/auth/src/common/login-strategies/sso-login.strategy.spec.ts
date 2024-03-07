@@ -298,9 +298,7 @@ describe("SsoLoginStrategy", () => {
 
         await ssoLoginStrategy.logIn(credentials);
 
-        expect(
-          authRequestCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash,
-        ).toHaveBeenCalled();
+        expect(authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash).toHaveBeenCalled();
         expect(deviceTrustCryptoService.decryptUserKeyWithDeviceKey).not.toHaveBeenCalled();
       });
 
@@ -317,7 +315,7 @@ describe("SsoLoginStrategy", () => {
 
         await ssoLoginStrategy.logIn(credentials);
 
-        expect(authRequestCryptoService.setUserKeyAfterDecryptingSharedUserKey).toHaveBeenCalled();
+        expect(authRequestService.setUserKeyAfterDecryptingSharedUserKey).toHaveBeenCalled();
         expect(deviceTrustCryptoService.decryptUserKeyWithDeviceKey).not.toHaveBeenCalled();
       });
 
@@ -334,7 +332,7 @@ describe("SsoLoginStrategy", () => {
 
         await ssoLoginStrategy.logIn(credentials);
 
-        expect(authRequestCryptoService.setUserKeyAfterDecryptingSharedUserKey).toHaveBeenCalled();
+        expect(authRequestService.setUserKeyAfterDecryptingSharedUserKey).toHaveBeenCalled();
         expect(deviceTrustCryptoService.trustDeviceIfRequired).toHaveBeenCalled();
       });
 
@@ -346,11 +344,9 @@ describe("SsoLoginStrategy", () => {
 
         expect(stateService.setAdminAuthRequest).toHaveBeenCalledWith(null);
         expect(
-          authRequestCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash,
+          authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash,
         ).not.toHaveBeenCalled();
-        expect(
-          authRequestCryptoService.setUserKeyAfterDecryptingSharedUserKey,
-        ).not.toHaveBeenCalled();
+        expect(authRequestService.setUserKeyAfterDecryptingSharedUserKey).not.toHaveBeenCalled();
         expect(deviceTrustCryptoService.trustDeviceIfRequired).not.toHaveBeenCalled();
       });
 

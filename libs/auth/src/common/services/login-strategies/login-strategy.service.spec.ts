@@ -2,7 +2,6 @@ import { MockProxy, mock } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AuthRequestCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth-request-crypto.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -25,6 +24,7 @@ import { KdfType } from "@bitwarden/common/platform/enums";
 import { FakeGlobalState, FakeGlobalStateProvider } from "@bitwarden/common/spec";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 
+import { AuthRequestServiceAbstraction } from "../../abstractions";
 import { PasswordLoginCredentials } from "../../models";
 
 import { LoginStrategyService } from "./login-strategy.service";
@@ -49,7 +49,7 @@ describe("LoginStrategyService", () => {
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
   let policyService: MockProxy<PolicyService>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
-  let authReqCryptoService: MockProxy<AuthRequestCryptoServiceAbstraction>;
+  let authRequestService: MockProxy<AuthRequestServiceAbstraction>;
 
   let stateProvider: FakeGlobalStateProvider;
   let loginStrategyCacheExpirationState: FakeGlobalState<Date | null>;
@@ -71,7 +71,7 @@ describe("LoginStrategyService", () => {
     passwordStrengthService = mock<PasswordStrengthServiceAbstraction>();
     policyService = mock<PolicyService>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
-    authReqCryptoService = mock<AuthRequestCryptoServiceAbstraction>();
+    authRequestService = mock<AuthRequestServiceAbstraction>();
     stateProvider = new FakeGlobalStateProvider();
 
     sut = new LoginStrategyService(
@@ -91,7 +91,7 @@ describe("LoginStrategyService", () => {
       passwordStrengthService,
       policyService,
       deviceTrustCryptoService,
-      authReqCryptoService,
+      authRequestService,
       stateProvider,
     );
 
