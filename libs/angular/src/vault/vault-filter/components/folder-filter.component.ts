@@ -123,7 +123,6 @@ export class FolderFilterComponent {
       await this.saveCipher(encryptCipher);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("editedItem"));
       this.messagingService.send("editedCipher");
-      // await this.applyFilter(node);
       this.folderOnDrag = "";
       await this.onMoveCipher.emit();
       return true;
