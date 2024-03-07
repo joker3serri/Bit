@@ -4,7 +4,7 @@ const setTheme = () => {
   const getLegacyTheme = (): string | null => {
     // MANUAL-STATE-ACCESS: Calling global to get setting before migration
     // has had a chance to run, can be remove in the future.
-    // TODO: Choose future date
+    // Tracking Issue: https://bitwarden.atlassian.net/browse/PM-6676
     const globalState = window.localStorage.getItem("global");
 
     const parsedGlobalState = JSON.parse(globalState) as { theme?: string } | null;
