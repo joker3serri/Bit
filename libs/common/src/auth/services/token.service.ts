@@ -1,9 +1,10 @@
 import { firstValueFrom } from "rxjs";
 
+import { decodeJwtTokenToJson } from "@bitwarden/auth/common";
+
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
-import { Utils } from "../../platform/misc/utils";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
 import {
   GlobalState,
@@ -36,7 +37,7 @@ export enum TokenStorageLocation {
 }
 
 /**
- * Type representing the structure of a decoded access token.
+ * Type representing the structure of a standard Bitwarden decoded access token.
  * src: https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
  * Note: all claims are technically optional so we must verify their existence before using them.
  * Note 2: NumericDate is a number representing a date in seconds since the Unix epoch.
@@ -101,35 +102,6 @@ export type DecodedAccessToken = {
 };
 
 export class TokenService implements TokenServiceAbstraction {
-  static decodeAccessToken(token: string): DecodedAccessToken {
-    if (token == null) {
-      throw new Error("Access token not found.");
-    }
-
-    const parts = token.split(".");
-    if (parts.length !== 3) {
-      throw new Error("JWT must have 3 parts");
-    }
-    // JWT has 3 parts: header, payload, signature separated by '.'
-    const encodedPayload = parts[1];
-
-    let decodedPayloadJSON: string;
-    try {
-      // Attempt to decode from URL-safe Base64 to UTF-8
-      decodedPayloadJSON = Utils.fromUrlB64ToUtf8(encodedPayload);
-    } catch (decodingError) {
-      throw new Error("Cannot decode the token");
-    }
-
-    try {
-      // Attempt to parse the JSON payload
-      const decodedToken = JSON.parse(decodedPayloadJSON);
-      return decodedToken;
-    } catch (jsonError) {
-      throw new Error("Cannot parse the token's payload into JSON");
-    }
-  }
-
   private readonly accessTokenSecureStorageKey: string = "_accessToken";
 
   private readonly refreshTokenSecureStorageKey: string = "_refreshToken";
@@ -608,8 +580,11 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("Access token not found.");
     }
 
-    return TokenService.decodeAccessToken(token);
+    return decodeJwtTokenToJson(token) as DecodedAccessToken;
   }
+
+  // TODO: PM-6678- tech debt - consider consolidating the return types of all these access
+  // token data retrieval methods to return null if something goes wrong instead of throwing an error.
 
   async getTokenExpirationDate(): Promise<Date | null> {
     let decoded: DecodedAccessToken;

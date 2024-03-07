@@ -4,7 +4,6 @@ import { FakeSingleUserStateProvider, FakeGlobalStateProvider } from "../../../s
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
-import { Utils } from "../../platform/misc/utils";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { UserId } from "../../types/guid";
 
@@ -494,87 +493,15 @@ describe("TokenService", () => {
         await expect(result).rejects.toThrow("Access token not found.");
       });
 
-      it("should call static decodeAccessToken method if an access token can be retrieved from state", async () => {
+      it("should decode the access token", async () => {
         // Arrange
         tokenService.getAccessToken = jest.fn().mockResolvedValue(accessTokenJwt);
-        const mockDecodeAccessToken = jest.spyOn(TokenService, "decodeAccessToken");
 
         // Act
-        await tokenService.decodeAccessToken();
-
-        // Assert
-        expect(mockDecodeAccessToken).toHaveBeenCalledWith(accessTokenJwt);
-      });
-
-      it("should call static decodeAccessToken method if an access token is passed in", async () => {
-        // Arrange
-        const mockDecodeAccessToken = jest.spyOn(TokenService, "decodeAccessToken");
-
-        // Act
-        await tokenService.decodeAccessToken(accessTokenJwt);
-
-        // Assert
-        expect(mockDecodeAccessToken).toHaveBeenCalledWith(accessTokenJwt);
-      });
-    });
-
-    describe("TokenService.decodeAccessToken", () => {
-      it("should decode the access token", () => {
-        // Act
-        const result = TokenService.decodeAccessToken(accessTokenJwt);
+        const result = await tokenService.decodeAccessToken();
 
         // Assert
         expect(result).toEqual(accessTokenDecoded);
-      });
-
-      it("should throw an error if the access token is null", () => {
-        // Act && Assert
-        expect(() => TokenService.decodeAccessToken(null)).toThrow("Access token not found.");
-      });
-
-      it("should throw an error if the access token is missing 3 parts", () => {
-        // Act && Assert
-        expect(() => TokenService.decodeAccessToken("invalidToken")).toThrow(
-          "JWT must have 3 parts",
-        );
-      });
-
-      it("should throw an error if the access token payload contains invalid JSON", () => {
-        // Arrange: Create a token with a valid format but with a payload that's valid Base64 but not valid JSON
-        const header = btoa(JSON.stringify({ alg: "none" }));
-        // Create a Base64-encoded string which fails to parse as JSON
-        const payload = btoa("invalid JSON");
-        const signature = "signature";
-        const malformedToken = `${header}.${payload}.${signature}`;
-
-        // Act & Assert
-        expect(() => TokenService.decodeAccessToken(malformedToken)).toThrow(
-          "Cannot parse the token's payload into JSON",
-        );
-      });
-
-      it("should throw an error if the access token cannot be decoded", () => {
-        // Arrange: Create a token with a valid format
-        const header = btoa(JSON.stringify({ alg: "none" }));
-        const payload = "invalidPayloadBecauseWeWillMockTheFailure";
-        const signature = "signature";
-        const malformedToken = `${header}.${payload}.${signature}`;
-
-        // Mock Utils.fromUrlB64ToUtf8 to throw an error for this specific payload
-        jest.spyOn(Utils, "fromUrlB64ToUtf8").mockImplementation((input) => {
-          if (input === payload) {
-            throw new Error("Mock error");
-          }
-          return input; // Default behavior for other inputs
-        });
-
-        // Act & Assert
-        expect(() => TokenService.decodeAccessToken(malformedToken)).toThrow(
-          "Cannot decode the token",
-        );
-
-        // Restore original function so other tests are not affected
-        jest.restoreAllMocks();
       });
     });
 
