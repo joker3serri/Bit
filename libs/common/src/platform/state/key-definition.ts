@@ -1,6 +1,6 @@
-import { type Jsonify } from "type-fest";
+import { Jsonify } from "type-fest";
 
-import { type StorageKey } from "../../types/state";
+import { StorageKey } from "../../types/state";
 
 import { array, record } from "./deserialization-helpers";
 import { StateDefinition } from "./state-definition";
