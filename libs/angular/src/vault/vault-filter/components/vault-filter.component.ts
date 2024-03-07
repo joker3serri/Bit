@@ -24,6 +24,7 @@ export class VaultFilterComponent implements OnInit {
   @Output() onFilterChange = new EventEmitter<VaultFilter>();
   @Output() onAddFolder = new EventEmitter<never>();
   @Output() onEditFolder = new EventEmitter<FolderView>();
+  @Output() onMoveCipher = new EventEmitter<never>();
 
   isLoaded = false;
   collapsedFilterNodes: Set<string>;
@@ -51,6 +52,7 @@ export class VaultFilterComponent implements OnInit {
     this.folders$ = await this.vaultFilterService.buildNestedFolders();
     this.collections = await this.initCollections();
     this.isLoaded = true;
+    this.activeFilter.status = "all";
   }
 
   // overwritten in web for organization vaults
@@ -96,6 +98,10 @@ export class VaultFilterComponent implements OnInit {
 
   editFolder(folder: FolderView) {
     this.onEditFolder.emit(folder);
+  }
+
+  moveCipher() {
+    this.onMoveCipher.emit();
   }
 
   protected async pruneInvalidatedFilterSelections(filter: VaultFilter): Promise<VaultFilter> {

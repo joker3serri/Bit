@@ -33,4 +33,8 @@ export class VaultItemsComponent extends BaseVaultItemsComponent {
   trackByFn(index: number, c: CipherView) {
     return c.id;
   }
+
+  setCipherIdOnDrag(event: DragEvent, data: string) {
+    event.dataTransfer.setData("cipherId", data);
+  }
 }
