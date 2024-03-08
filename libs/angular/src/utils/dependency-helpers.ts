@@ -1,4 +1,5 @@
-import { Constructor } from "type-fest";
+import { Provider } from "@angular/core";
+import { Constructor, Opaque } from "type-fest";
 
 import { SafeInjectionToken } from "../services/injection-tokens";
 
@@ -11,6 +12,8 @@ type MapParametersToDeps<T> = {
 
 type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : never;
 
+export type SafeProvider = Opaque<Provider>;
+
 export const useClass = <
   A extends AbstractConstructor<any>, // A is an abstract class
   I extends Constructor<InstanceType<A>>, // I is the implementation, it has a non-abstract ctor that returns a type that extends A
@@ -19,7 +22,7 @@ export const useClass = <
   provide: A;
   useClass: I;
   deps: D;
-}) => obj;
+}) => obj as Provider as SafeProvider;
 
 export const useValue = <
   A extends SafeInjectionToken<any>,
@@ -27,7 +30,7 @@ export const useValue = <
 >(obj: {
   provide: A;
   useValue: V;
-}) => obj;
+}) => obj as SafeProvider;
 
 type FunctionOrConstructorParameters<T> =
   T extends Constructor<any>
@@ -50,4 +53,4 @@ export const useFactory = <
   provide: A;
   useFactory: I;
   deps: D;
-}) => obj;
+}) => obj as unknown as SafeProvider; // prevented from casting to Provider because D can be 'never'
