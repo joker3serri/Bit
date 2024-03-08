@@ -479,6 +479,7 @@ function getBgService<T>(service: keyof MainBackground) {
         LogServiceAbstraction,
         AccountServiceAbstraction,
         EnvironmentService,
+        TokenService,
         MigrationRunner,
       ],
     },
