@@ -65,8 +65,8 @@ describe("VaultSettingsKeyMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 30);
-      sut = new VaultSettingsKeyMigrator(30, 31);
+      helper = mockMigrationHelper(exampleJSON(), 29);
+      sut = new VaultSettingsKeyMigrator(29, 30);
     });
 
     it("should remove dontShowCardsCurrentTab and dontShowIdentitiesCurrentTab from all accounts", async () => {
@@ -99,8 +99,8 @@ describe("VaultSettingsKeyMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 31);
-      sut = new VaultSettingsKeyMigrator(30, 31);
+      helper = mockMigrationHelper(rollbackJSON(), 30);
+      sut = new VaultSettingsKeyMigrator(29, 30);
     });
 
     it("should null out new values for each account", async () => {

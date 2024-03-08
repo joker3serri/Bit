@@ -16,7 +16,7 @@ const vaultSettingsStateDefinition: {
   },
 };
 
-export class VaultSettingsKeyMigrator extends Migrator<30, 31> {
+export class VaultSettingsKeyMigrator extends Migrator<29, 30> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountState>();
 
