@@ -8,12 +8,12 @@ import {
   AutofillOverlayVisibility,
 } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { Region } from "@bitwarden/common/platform/abstractions/environment.service";
-import { ThemeType } from "@bitwarden/common/platform/enums";
 import {
-  CloudEnvironment,
   EnvironmentService,
-} from "@bitwarden/common/platform/services/environment.service";
+  Region,
+} from "@bitwarden/common/platform/abstractions/environment.service";
+import { ThemeType } from "@bitwarden/common/platform/enums";
+import { CloudEnvironment } from "@bitwarden/common/platform/services/environment.service";
 import { I18nService } from "@bitwarden/common/platform/services/i18n.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";

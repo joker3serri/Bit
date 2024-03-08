@@ -49,7 +49,7 @@ export class Main {
   memoryStorageForStateProviders: MemoryStorageServiceForStateProviders;
   messagingService: ElectronMainMessagingService;
   stateService: StateService;
-  environmentService: EnvironmentService;
+  environmentService: DefaultEnvironmentService;
   mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   migrationRunner: MigrationRunner;

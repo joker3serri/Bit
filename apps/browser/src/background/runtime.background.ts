@@ -360,7 +360,8 @@ export default class RuntimeBackground {
 
   async sendBwInstalledMessageToVault() {
     try {
-      const vaultUrl = this.environmentService.getWebVaultUrl();
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const vaultUrl = env.getWebVaultUrl();
       const urlObj = new URL(vaultUrl);
 
       const tabs = await BrowserApi.tabsQuery({ url: `${urlObj.href}*` });
