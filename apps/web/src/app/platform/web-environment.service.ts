@@ -10,7 +10,7 @@ import {
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   CloudEnvironment,
-  EnvironmentService,
+  DefaultEnvironmentService,
   SelfHostedEnvironment,
 } from "@bitwarden/common/platform/services/environment.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
@@ -18,7 +18,7 @@ import { StateProvider } from "@bitwarden/common/platform/state";
 /**
  * Web specific environment service. Ensures that the urls are set from the window location.
  */
-export class WebEnvironmentService extends EnvironmentService {
+export class WebEnvironmentService extends DefaultEnvironmentService {
   constructor(
     private win: Window,
     stateProvider: StateProvider,

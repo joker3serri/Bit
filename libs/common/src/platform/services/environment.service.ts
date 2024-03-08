@@ -4,14 +4,22 @@ import { Jsonify } from "type-fest";
 import { AccountService } from "../../auth/abstractions/account.service";
 import { UserId } from "../../types/guid";
 import {
-  EnvironmentService as EnvironmentServiceAbstraction,
+  EnvironmentService,
   Environment,
   Region,
   RegionConfig,
   Urls,
+  CloudRegion,
 } from "../abstractions/environment.service";
 import { Utils } from "../misc/utils";
-import { ENVIRONMENT_DISK, GlobalState, KeyDefinition, StateProvider } from "../state";
+import {
+  ActiveUserState,
+  ENVIRONMENT_DISK,
+  ENVIRONMENT_MEMORY,
+  GlobalState,
+  KeyDefinition,
+  StateProvider,
+} from "../state";
 
 export class EnvironmentUrls {
   base: string = null;
@@ -26,6 +34,10 @@ export class EnvironmentUrls {
 
 class EnvironmentState {
   region: Region;
+  /**
+   * Optional as it may not initially be known.
+   */
+  cloudRegion?: CloudRegion;
   urls: EnvironmentUrls;
 
   static fromJSON(obj: Jsonify<EnvironmentState>): EnvironmentState {
@@ -40,6 +52,10 @@ export const ENVIRONMENT_KEY = new KeyDefinition<EnvironmentState>(
     deserializer: EnvironmentState.fromJSON,
   },
 );
+
+export const CLOUD_REGION_KEY = new KeyDefinition<CloudRegion>(ENVIRONMENT_MEMORY, "cloudRegion", {
+  deserializer: (b) => b,
+});
 
 /**
  * The production regions available for selection.
@@ -87,10 +103,9 @@ const DEFAULT_REGION = Region.US;
  */
 const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_REGION);
 
-export class EnvironmentService implements EnvironmentServiceAbstraction {
-  private cloudWebVaultUrl: string;
-
+export class DefaultEnvironmentService implements EnvironmentService {
   private globalState: GlobalState<EnvironmentState | null>;
+  private activeCloudRegionState: ActiveUserState<CloudRegion>;
 
   // We intentionally don't want the helper on account service, we want the null back if there is no active user
   private activeAccountId$: Observable<UserId | null> = this.accountService.activeAccount$.pipe(
@@ -116,6 +131,7 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     private accountService: AccountService,
   ) {
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
+    this.activeCloudRegionState = this.stateProvider.getActive(CLOUD_REGION_KEY);
   }
 
   availableRegions(): RegionConfig[] {
@@ -203,20 +219,24 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     return new SelfHostedEnvironment(urls);
   }
 
-  getCloudWebVaultUrl() {
-    if (this.cloudWebVaultUrl != null) {
-      return this.cloudWebVaultUrl;
+  /**
+   * Attempts to get the cloud region from the active user state, falling back to the default region if not set.
+   */
+  async getCloudWebVaultUrl() {
+    const state = await firstValueFrom(this.activeCloudRegionState.state$);
+    if (state != null) {
+      const config = this.getRegionConfig(state);
+
+      if (config != null) {
+        return config.urls.webVault;
+      }
     }
 
     return DEFAULT_REGION_CONFIG.urls.webVault;
   }
 
-  setCloudWebVaultUrl(region: Region) {
-    const r = this.getRegionConfig(region);
-
-    if (r != null) {
-      this.cloudWebVaultUrl = r.urls.webVault;
-    }
+  async setCloudRegion(region: CloudRegion) {
+    await this.activeCloudRegionState.update(() => region);
   }
 
   async getEnvironment(userId?: UserId) {
@@ -277,6 +297,7 @@ abstract class UrlEnvironment implements Environment {
   constructor(
     protected region: Region,
     protected urls: Urls,
+    protected cloudWebVaultUrl?: string,
   ) {
     // Scim is always null for self-hosted
     if (region == Region.SelfHosted) {
@@ -357,6 +378,14 @@ abstract class UrlEnvironment implements Environment {
    */
   isCloud(): boolean {
     return this.region !== Region.SelfHosted;
+  }
+
+  getCloudWebVaultUrl() {
+    if (this.cloudWebVaultUrl != null) {
+      return this.cloudWebVaultUrl;
+    }
+
+    return DEFAULT_REGION_CONFIG.urls.webVault;
   }
 
   /**

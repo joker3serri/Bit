@@ -49,10 +49,10 @@ export class UserSubscriptionComponent implements OnInit {
     private configService: ConfigService,
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
-    this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
   }
 
   async ngOnInit() {
+    this.cloudWebVaultUrl = await this.environmentService.getCloudWebVaultUrl();
     this.presentUserWithOffboardingSurvey$ = this.configService.getFeatureFlag$<boolean>(
       FeatureFlag.AC1607_PresentUserOffboardingSurvey,
     );

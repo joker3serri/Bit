@@ -82,11 +82,11 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
     private dialogService: DialogService,
-  ) {
-    this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
-  }
+  ) {}
 
   async ngOnInit() {
+    this.cloudWebVaultUrl = await this.environmentService.getCloudWebVaultUrl();
+
     this.route.params
       .pipe(
         concatMap(async (params) => {

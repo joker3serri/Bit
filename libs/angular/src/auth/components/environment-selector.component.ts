@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import { Observable, map } from "rxjs";
 
 import {
-  EnvironmentService as EnvironmentServiceAbstraction,
+  EnvironmentService,
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -57,7 +57,7 @@ export class EnvironmentSelectorComponent {
     );
 
   constructor(
-    protected environmentService: EnvironmentServiceAbstraction,
+    protected environmentService: EnvironmentService,
     protected router: Router,
   ) {}
 

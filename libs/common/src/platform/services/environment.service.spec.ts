@@ -4,9 +4,9 @@ import { FakeStateProvider, awaitAsync } from "../../../spec";
 import { FakeAccountService } from "../../../spec/fake-account-service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { UserId } from "../../types/guid";
-import { Region } from "../abstractions/environment.service";
+import { CloudRegion, Region } from "../abstractions/environment.service";
 
-import { ENVIRONMENT_KEY, EnvironmentService, EnvironmentUrls } from "./environment.service";
+import { ENVIRONMENT_KEY, DefaultEnvironmentService, EnvironmentUrls } from "./environment.service";
 
 // There are a few main states EnvironmentService could be in when first used
 // 1. Not initialized, no active user. Hopefully not to likely but possible
@@ -17,7 +17,7 @@ describe("EnvironmentService", () => {
   let accountService: FakeAccountService;
   let stateProvider: FakeStateProvider;
 
-  let sut: EnvironmentService;
+  let sut: DefaultEnvironmentService;
 
   const testUser = "00000000-0000-1000-a000-000000000001" as UserId;
   const alternateTestUser = "00000000-0000-1000-a000-000000000002" as UserId;
@@ -37,7 +37,7 @@ describe("EnvironmentService", () => {
     });
     stateProvider = new FakeStateProvider(accountService);
 
-    sut = new EnvironmentService(stateProvider, accountService);
+    sut = new DefaultEnvironmentService(stateProvider, accountService);
   });
 
   const switchUser = async (userId: UserId) => {
@@ -393,8 +393,8 @@ describe("EnvironmentService", () => {
   });
 
   describe("getCloudWebVaultUrl", () => {
-    it("no extra initialization, returns US vault", () => {
-      expect(sut.getCloudWebVaultUrl()).toBe("https://vault.bitwarden.com");
+    it("no extra initialization, returns US vault", async () => {
+      expect(await sut.getCloudWebVaultUrl()).toBe("https://vault.bitwarden.com");
     });
 
     it.each([
@@ -403,9 +403,9 @@ describe("EnvironmentService", () => {
       { region: Region.SelfHosted, expectedVault: "https://vault.bitwarden.com" },
     ])(
       "no extra initialization, returns expected host for each region %s",
-      ({ region, expectedVault }) => {
-        expect(sut.setCloudWebVaultUrl(region));
-        expect(sut.getCloudWebVaultUrl()).toBe(expectedVault);
+      async ({ region, expectedVault }) => {
+        expect(await sut.setCloudRegion(region as CloudRegion));
+        expect(await sut.getCloudWebVaultUrl()).toBe(expectedVault);
       },
     );
   });

@@ -25,6 +25,7 @@ export const CRYPTO_MEMORY = new StateDefinition("crypto", "memory");
 export const SSO_DISK = new StateDefinition("ssoLogin", "disk");
 
 export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
+export const ENVIRONMENT_MEMORY = new StateDefinition("environment", "memory");
 
 export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk", {
   web: "disk-local",

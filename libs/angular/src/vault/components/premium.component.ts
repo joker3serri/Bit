@@ -23,11 +23,10 @@ export class PremiumComponent implements OnInit {
     protected stateService: StateService,
     protected dialogService: DialogService,
     private environmentService: EnvironmentService,
-  ) {
-    this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
-  }
+  ) {}
 
   async ngOnInit() {
+    this.cloudWebVaultUrl = await this.environmentService.getCloudWebVaultUrl();
     this.isPremium = await this.stateService.getCanAccessPremium();
   }
 

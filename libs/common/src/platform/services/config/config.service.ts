@@ -105,7 +105,7 @@ export class ConfigService implements ConfigServiceAbstraction {
     }
 
     await this.stateService.setServerConfig(data);
-    this.environmentService.setCloudWebVaultUrl(data.environment?.cloudRegion);
+    await this.environmentService.setCloudRegion(data.environment?.cloudRegion);
   }
 
   /**

@@ -23,6 +23,11 @@ export enum Region {
   SelfHosted = "Self-hosted",
 }
 
+/**
+ * The possible cloud regions.
+ */
+export type CloudRegion = Exclude<Region, Region.SelfHosted>;
+
 export type RegionConfig = {
   // Beware this isn't completely true, it's actually a string for custom environments,
   // which are currently only supported in web where it doesn't matter.
@@ -117,13 +122,13 @@ export abstract class EnvironmentService {
    * @returns The URL of the cloud web vault app.
    * @remarks Use this method only in views exclusive to self-host instances.
    */
-  getCloudWebVaultUrl: () => string;
+  getCloudWebVaultUrl: () => Promise<string>;
   /**
    * Sets the URL of the cloud web vault app based on the region parameter.
    *
    * @param region - The region of the cloud web vault app.
    */
-  setCloudWebVaultUrl: (region: Region) => void;
+  setCloudRegion: (region: Region) => Promise<void>;
 
   /**
    * Get the environment from state. Useful if you need to get the environment for another user.
