@@ -25,7 +25,8 @@ import { BadgeSettingsMigrator } from "./migrations/27-move-badge-settings-to-st
 import { MoveBiometricUnlockToStateProviders } from "./migrations/28-move-biometric-unlock-to-state-providers";
 import { UserNotificationSettingsKeyMigrator } from "./migrations/29-move-user-notification-settings-to-state-provider";
 import { FixPremiumMigrator } from "./migrations/3-fix-premium";
-import { MergeEnvironmentState } from "./migrations/30-merge-environment-state";
+import { PolicyMigrator } from "./migrations/30-move-policy-state-to-state-provider";
+import { MergeEnvironmentState } from "./migrations/31-merge-environment-state";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
@@ -36,8 +37,7 @@ import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 2;
 
-export const CURRENT_VERSION = 30;
-
+export const CURRENT_VERSION = 31;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -70,7 +70,8 @@ export function createMigrationBuilder() {
     .with(BadgeSettingsMigrator, 26, 27)
     .with(MoveBiometricUnlockToStateProviders, 27, 28)
     .with(UserNotificationSettingsKeyMigrator, 28, 29)
-    .with(MergeEnvironmentState, 29, CURRENT_VERSION);
+    .with(PolicyMigrator, 29, 30)
+    .with(MergeEnvironmentState, 30, CURRENT_VERSION);
 }
 
 export async function currentVersion(
