@@ -30,6 +30,6 @@ export abstract class VaultFilterService {
     head: CipherTypeFilter,
     array: CipherTypeFilter[],
   ) => Observable<TreeNode<CipherTypeFilter>>;
-  // TODO: Remove this from org vault when collection admin service adopts state management for collections
+  // TODO: Remove this from org vault when collection admin service adopts state management
   reloadCollections?: (collections: CollectionAdminView[]) => void;
 }
