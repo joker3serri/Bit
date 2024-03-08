@@ -157,7 +157,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
         name: baseAccounts[userId].profile.name,
         email: baseAccounts[userId].profile.email,
         authenticationStatus: await this.authService.getAuthStatus(userId),
-        avatarColor: await this.avatarService.getUserAvatarColor(userId as UserId),
+        avatarColor: await firstValueFrom(this.avatarService.getUserAvatarColor$(userId as UserId)),
         server: await this.environmentService.getHost(userId),
       };
     }

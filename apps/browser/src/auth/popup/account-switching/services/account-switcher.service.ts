@@ -68,7 +68,9 @@ export class AccountSwitcherService {
               server: await this.environmentService.getHost(id),
               status: account.status,
               isActive: id === activeAccount?.id,
-              avatarColor: await this.avatarService.getUserAvatarColor(id as UserId),
+              avatarColor: await firstValueFrom(
+                this.avatarService.getUserAvatarColor$(id as UserId),
+              ),
             };
           }),
         );

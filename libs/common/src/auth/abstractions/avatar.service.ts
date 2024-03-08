@@ -23,7 +23,7 @@ export abstract class AvatarService {
    *          avatar color, use the avatarColor$ observable above instead.
    *
    * @param userId the userId of the user whose avatar color should be retreived
-   * @return a string of the avatar color of the specified user
+   * @return an Observable that emits a string of the avatar color of the specified user
    */
-  abstract getUserAvatarColor(userId: UserId): Promise<string | null>;
+  abstract getUserAvatarColor$(userId: UserId): Observable<string | null>;
 }

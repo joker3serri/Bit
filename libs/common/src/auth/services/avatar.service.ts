@@ -1,4 +1,4 @@
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { UpdateAvatarRequest } from "../../models/request/update-avatar.request";
@@ -27,7 +27,7 @@ export class AvatarService implements AvatarServiceAbstraction {
     await this.stateProvider.setUserState(AVATAR_COLOR, avatarColor);
   }
 
-  async getUserAvatarColor(userId: UserId): Promise<string | null> {
-    return firstValueFrom(this.stateProvider.getUser(userId, AVATAR_COLOR).state$);
+  getUserAvatarColor$(userId: UserId): Observable<string | null> {
+    return this.stateProvider.getUser(userId, AVATAR_COLOR).state$;
   }
 }
