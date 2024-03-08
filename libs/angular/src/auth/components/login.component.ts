@@ -149,6 +149,11 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
         this.captchaToken,
         null,
       );
+
+      // We need to set the email here so that the base login strategy can access the email
+      // to check if the user has a saved 2FA token.
+      this.loginService.setEmail(data.email);
+
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
       this.setFormValues();
