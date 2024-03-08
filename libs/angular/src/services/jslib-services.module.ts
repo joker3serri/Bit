@@ -256,8 +256,8 @@ import { ModalService } from "./modal.service";
 
 /**
  * An array of provider definitions used in the ngModule.
- * You MUST use a helper function (useValue, useFactory, useClass or useExisting) to define your provider.
- * This ensures that your definition is typesafe.
+ * If you want to use useValue, useFactory, useClass or useExisting options, you MUST use one of the helper functions
+ * of the same name. This ensures that your definition is typesafe.
  * If you need help please ask for it, do NOT change the type of this array.
  */
 const typesafeProviders: Array<SafeProvider | Constructor<any>> = [

@@ -3,6 +3,12 @@ import { Constructor, Opaque } from "type-fest";
 
 import { SafeInjectionToken } from "../services/injection-tokens";
 
+/**
+ * The return type of our dependency helper functions.
+ * Used to distinguish a type safe provider definition from a non-type safe provider definition.
+ */
+export type SafeProvider = Opaque<Provider>;
+
 // TODO: type-fest also provides a type like this when we upgrade >= 3.7.0
 type AbstractConstructor<T> = abstract new (...args: any) => T;
 
@@ -12,8 +18,10 @@ type MapParametersToDeps<T> = {
 
 type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : never;
 
-export type SafeProvider = Opaque<Provider>;
-
+/**
+ * Register a dependency in the providers array using the useClass option.
+ * Guarantees that the values are type safe, e.g. you have correctly specified the deps for your implementation.
+ */
 export const useClass = <
   A extends AbstractConstructor<any>, // A is an abstract class
   I extends Constructor<InstanceType<A>>, // I is the implementation, it has a non-abstract ctor that returns a type that extends A
@@ -24,6 +32,10 @@ export const useClass = <
   deps: D;
 }) => obj as Provider as SafeProvider;
 
+/**
+ * Register a dependency in the providers array using the useValue option.
+ * Guarantees that the values are type safe, e.g. the value type matches the InjectionToken type.
+ */
 export const useValue = <
   A extends SafeInjectionToken<any>,
   V extends SafeInjectionTokenType<A>,
@@ -39,6 +51,10 @@ type FunctionOrConstructorParameters<T> =
       ? Parameters<T>
       : never;
 
+/**
+ * Register a dependency in the providers array using the useFactory option.
+ * Guarantees that the values are type safe, e.g. you have correctly specified the deps for your function.
+ */
 export const useFactory = <
   A extends SafeInjectionToken<any> | AbstractConstructor<any>,
   I extends (
@@ -55,10 +71,13 @@ export const useFactory = <
   deps: D;
 }) => obj as unknown as SafeProvider; // prevented from casting to Provider because D can be 'never'
 
-// This is less strict than other helpers because of our current usage.
-// We often use useExisting to register "Internal" variants of classes that are in fact implemented
-// by an existing provider but not exposed by its abstract interface. We can't know that here, so we have to settle
-// for using Partial which at least ensures some overlap.
+/**
+ * Register a dependency in the providers array using the useExisting option.
+ * Provides only limited type safety, be careful.
+ * @remarks This is not fully type safe because we often use this to register for "Internal" variants where the
+ * developer knows that the existing definition implements an extended interface, but this is not discoverable via the
+ * type system.
+ */
 export const useExisting = <
   A extends Constructor<any> | AbstractConstructor<any>,
   I extends Constructor<Partial<InstanceType<A>>> | AbstractConstructor<Partial<InstanceType<A>>>,
