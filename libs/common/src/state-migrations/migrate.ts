@@ -26,6 +26,7 @@ import { MoveBiometricUnlockToStateProviders } from "./migrations/28-move-biomet
 import { UserNotificationSettingsKeyMigrator } from "./migrations/29-move-user-notification-settings-to-state-provider";
 import { PolicyMigrator } from "./migrations/30-move-policy-state-to-state-provider";
 import { EnableContextMenuMigrator } from "./migrations/31-move-enable-context-menu-to-autofill-settings-state-provider";
+import { TokenServiceStateProviderMigrator } from "./migrations/32-migrate-token-svc-to-state-provider";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
@@ -35,7 +36,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 3;
-export const CURRENT_VERSION = 31;
+export const CURRENT_VERSION = 32;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -68,8 +69,8 @@ export function createMigrationBuilder() {
     .with(MoveBiometricUnlockToStateProviders, 27, 28)
     .with(UserNotificationSettingsKeyMigrator, 28, 29)
     .with(PolicyMigrator, 29, 30)
-    .with(EnableContextMenuMigrator, 30, CURRENT_VERSION);
-  // .with(TokenServiceStateProviderMigrator, 29, CURRENT_VERSION);
+    .with(EnableContextMenuMigrator, 30, 31)
+    .with(TokenServiceStateProviderMigrator, 31, CURRENT_VERSION);
 }
 
 export async function currentVersion(

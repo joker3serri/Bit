@@ -10,7 +10,7 @@ import {
   API_KEY_CLIENT_ID_DISK,
   API_KEY_CLIENT_SECRET_DISK,
   TokenServiceStateProviderMigrator,
-} from "./30-migrate-token-svc-to-state-provider";
+} from "./32-migrate-token-svc-to-state-provider";
 
 // Represents data in state service pre-migration
 function preMigrationJson() {
@@ -120,8 +120,8 @@ describe("TokenServiceStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationJson(), 29);
-      sut = new TokenServiceStateProviderMigrator(29, 30);
+      helper = mockMigrationHelper(preMigrationJson(), 31);
+      sut = new TokenServiceStateProviderMigrator(31, 32);
     });
 
     it("should remove state service data from all accounts that have it", async () => {
@@ -188,8 +188,8 @@ describe("TokenServiceStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 30);
-      sut = new TokenServiceStateProviderMigrator(29, 30);
+      helper = mockMigrationHelper(rollbackJSON(), 32);
+      sut = new TokenServiceStateProviderMigrator(31, 32);
     });
 
     it("should null out newly migrated entries in state provider framework", async () => {
