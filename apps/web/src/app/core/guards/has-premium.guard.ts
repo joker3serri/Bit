@@ -4,8 +4,10 @@ import {
   RouterStateSnapshot,
   Router,
   CanActivateFn,
+  UrlTree,
 } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -15,24 +17,26 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
  * message and blocks navigation.
  */
 export function hasPremiumGuard(): CanActivateFn {
-  return async (_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) => {
+  return (
+    _route: ActivatedRouteSnapshot,
+    _state: RouterStateSnapshot,
+  ): Observable<boolean | UrlTree> => {
     const router = inject(Router);
     const messagingService = inject(MessagingService);
     const billingAccountProfileStateService = inject(BillingAccountProfileStateServiceAbstraction);
 
-    const userHasPremium = await firstValueFrom(
-      billingAccountProfileStateService.canAccessPremium$,
+    return billingAccountProfileStateService.canAccessPremium$.pipe(
+      tap((userHasPremium: boolean) => {
+        if (!userHasPremium) {
+          messagingService.send("premiumRequired");
+        }
+      }),
+      // Prevent trapping the user on the login page, since that's an awful UX flow
+      tap((userHasPremium: boolean) => {
+        if (!userHasPremium && router.url === "/login") {
+          return router.createUrlTree(["/"]);
+        }
+      }),
     );
-
-    if (!userHasPremium) {
-      messagingService.send("premiumRequired");
-    }
-
-    // Prevent trapping the user on the login page, since that's an awful UX flow
-    if (!userHasPremium && router.url === "/login") {
-      return router.createUrlTree(["/"]);
-    }
-
-    return userHasPremium;
   };
 }
