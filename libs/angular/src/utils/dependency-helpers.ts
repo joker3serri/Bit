@@ -12,7 +12,7 @@ type MapParametersToDeps<T> = {
 type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : never;
 
 export const useClass = <
-  A extends AbstractConstructor<InstanceType<A>>, // A is an abstract class
+  A extends AbstractConstructor<any>, // A is an abstract class
   I extends Constructor<InstanceType<A>>, // I is the implementation, it has a non-abstract ctor that returns a type that extends A
   D extends MapParametersToDeps<ConstructorParameters<I>>, // accept an array of constructor types OR injection tokens matching ctor parameters
 >(obj: {
@@ -29,10 +29,23 @@ export const useValue = <
   useValue: V;
 }) => obj;
 
+type FunctionOrConstructorParameters<T> =
+  T extends Constructor<any>
+    ? ConstructorParameters<T>
+    : T extends (...args: any) => any
+      ? Parameters<T>
+      : never;
+
 export const useFactory = <
-  A extends SafeInjectionToken<any>,
-  I extends (...args: any) => SafeInjectionTokenType<A>,
-  D extends MapParametersToDeps<Parameters<I>>,
+  A extends SafeInjectionToken<any> | AbstractConstructor<any>,
+  I extends (
+    ...args: any
+  ) => A extends SafeInjectionToken<any>
+    ? SafeInjectionTokenType<A>
+    : A extends AbstractConstructor<any>
+      ? InstanceType<A>
+      : never,
+  D extends MapParametersToDeps<FunctionOrConstructorParameters<I>>,
 >(obj: {
   provide: A;
   useFactory: I;

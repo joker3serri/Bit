@@ -345,7 +345,7 @@ import { ModalService } from "./modal.service";
       useClass: CipherFileUploadService,
       deps: [ApiServiceAbstraction, FileUploadServiceAbstraction],
     }),
-    {
+    useFactory({
       provide: CipherServiceAbstraction,
       useFactory: (
         cryptoService: CryptoServiceAbstraction,
@@ -383,7 +383,7 @@ import { ModalService } from "./modal.service";
         CipherFileUploadServiceAbstraction,
         ConfigServiceAbstraction,
       ],
-    },
+    }),
     useClass({
       provide: FolderServiceAbstraction,
       useClass: FolderService,
@@ -428,7 +428,7 @@ import { ModalService } from "./modal.service";
       useClass: AvatarUpdateService,
       deps: [ApiServiceAbstraction, StateServiceAbstraction],
     }),
-    { provide: LogService, useFactory: () => new ConsoleLogService(false) },
+    useFactory({ provide: LogService, useFactory: () => new ConsoleLogService(false), deps: [] }),
     useClass({
       provide: CollectionServiceAbstraction,
       useClass: CollectionService,
@@ -664,11 +664,11 @@ import { ModalService } from "./modal.service";
       useClass: WebCryptoFunctionService,
       deps: [WINDOW],
     }),
-    {
+    useFactory({
       provide: EncryptService,
       useFactory: encryptServiceFactory,
       deps: [CryptoFunctionServiceAbstraction, LogService, LOG_MAC_FAILURES],
-    },
+    }),
     useClass({
       provide: EventUploadServiceAbstraction,
       useClass: EventUploadService,
