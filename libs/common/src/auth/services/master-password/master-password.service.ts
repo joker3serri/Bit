@@ -6,6 +6,7 @@ import {
   MASTER_PASSWORD_DISK,
   MASTER_PASSWORD_MEMORY,
   StateProvider,
+  UserKeyDefinition,
 } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { MasterKey } from "../../../types/key";
@@ -20,11 +21,12 @@ const MASTER_KEY_HASH = new KeyDefinition<string>(MASTER_PASSWORD_MEMORY, "maste
   deserializer: (masterKeyHash) => masterKeyHash,
 });
 
-const FORCE_SET_PASSWORD_REASON = new KeyDefinition<ForceSetPasswordReason>(
+const FORCE_SET_PASSWORD_REASON = new UserKeyDefinition<ForceSetPasswordReason>(
   MASTER_PASSWORD_DISK,
   "forceSetPasswordReason",
   {
     deserializer: (reason) => reason,
+    clearOn: ["lock", "logout"],
   },
 );
 
