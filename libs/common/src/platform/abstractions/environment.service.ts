@@ -45,23 +45,23 @@ export interface Environment {
   /**
    * Retrieve the current region.
    */
-  getRegion: () => Region;
+  getRegion(): Region;
   /**
    * Retrieve the urls, should only be used when configuring the environment.
    */
-  getUrls: () => Urls;
+  getUrls(): Urls;
 
   /**
    * Identify if the region is a cloud environment.
    *
    * @returns true if the environment is a cloud environment, false otherwise.
    */
-  isCloud: () => boolean;
+  isCloud(): boolean;
 
-  getApiUrl: () => string;
-  getEventsUrl: () => string;
-  getIconsUrl: () => string;
-  getIdentityUrl: () => string;
+  getApiUrl(): string;
+  getEventsUrl(): string;
+  getIconsUrl(): string;
+  getIdentityUrl(): string;
 
   /**
    * @deprecated This is currently only used by the CLI. This functionality should be extracted since
@@ -70,11 +70,11 @@ export interface Environment {
    * @remarks
    * Expect this to be null unless the CLI has explicitly set it during the login flow.
    */
-  getKeyConnectorUrl: () => string | null;
-  getNotificationsUrl: () => string;
-  getScimUrl: () => string;
-  getSendUrl: () => string;
-  getWebVaultUrl: () => string;
+  getKeyConnectorUrl(): string | null;
+  getNotificationsUrl(): string;
+  getScimUrl(): string;
+  getSendUrl(): string;
+  getWebVaultUrl(): string;
 
   /**
    * Get a friendly hostname for the environment.
@@ -82,17 +82,17 @@ export interface Environment {
    * - For self-hosted this is the web vault url without protocol prefix.
    * - For cloud environments it's the domain key.
    */
-  getHostname: () => string;
+  getHostname(): string;
 
   // Not sure why we provide this, evaluate if we can remove it.
-  hasBaseUrl: () => boolean;
+  hasBaseUrl(): boolean;
 }
 
 /**
  * The environment service. Provides access to set the current environment urls and region.
  */
 export abstract class EnvironmentService {
-  environment$: Observable<Environment>;
+  abstract environment$: Observable<Environment>;
 
   /**
    * Retrieve all the available regions for environment selectors.
@@ -101,12 +101,12 @@ export abstract class EnvironmentService {
    * Expect all builds to include production environments, QA builds to also include QA
    * environments and dev builds to include localhost.
    */
-  availableRegions: () => RegionConfig[];
+  abstract availableRegions(): RegionConfig[];
 
   /**
    * Set the global environment.
    */
-  setEnvironment: (region: Region, urls?: Urls) => Promise<Urls>;
+  abstract setEnvironment(region: Region, urls?: Urls): Promise<Urls>;
 
   /**
    * Seed the environment state for a given user based on the global environment.
@@ -114,7 +114,7 @@ export abstract class EnvironmentService {
    * @remarks
    * Expected to be called only by the StateService when adding a new account.
    */
-  seedUserEnvironment: (userId: UserId) => Promise<void>;
+  abstract seedUserEnvironment(userId: UserId): Promise<void>;
 
   /**
    * Retrieves the URL of the cloud web vault app.
@@ -122,16 +122,16 @@ export abstract class EnvironmentService {
    * @returns The URL of the cloud web vault app.
    * @remarks Use this method only in views exclusive to self-host instances.
    */
-  getCloudWebVaultUrl: () => Promise<string>;
+  abstract getCloudWebVaultUrl(): Promise<string>;
   /**
    * Sets the URL of the cloud web vault app based on the region parameter.
    *
    * @param region - The region of the cloud web vault app.
    */
-  setCloudRegion: (region: Region) => Promise<void>;
+  abstract setCloudRegion(region: Region): Promise<void>;
 
   /**
    * Get the environment from state. Useful if you need to get the environment for another user.
    */
-  getEnvironment: (userId?: string) => Promise<Environment | undefined>;
+  abstract getEnvironment(userId?: string): Promise<Environment | undefined>;
 }
