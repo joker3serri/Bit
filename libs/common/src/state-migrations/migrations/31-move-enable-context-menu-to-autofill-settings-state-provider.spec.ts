@@ -3,7 +3,7 @@ import { any, MockProxy } from "jest-mock-extended";
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { EnableContextMenuMigrator } from "./30-move-enable-context-menu-to-autofill-settings-state-provider";
+import { EnableContextMenuMigrator } from "./31-move-enable-context-menu-to-autofill-settings-state-provider";
 
 function exampleJSON() {
   return {
@@ -38,8 +38,8 @@ describe("EnableContextMenuMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 29);
-      sut = new EnableContextMenuMigrator(29, 30);
+      helper = mockMigrationHelper(exampleJSON(), 30);
+      sut = new EnableContextMenuMigrator(30, 31);
     });
 
     it("should remove global disableContextMenuItem setting", async () => {
@@ -61,8 +61,8 @@ describe("EnableContextMenuMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 30);
-      sut = new EnableContextMenuMigrator(29, 30);
+      helper = mockMigrationHelper(rollbackJSON(), 31);
+      sut = new EnableContextMenuMigrator(30, 31);
     });
 
     it("should null out new enableContextMenu global value", async () => {

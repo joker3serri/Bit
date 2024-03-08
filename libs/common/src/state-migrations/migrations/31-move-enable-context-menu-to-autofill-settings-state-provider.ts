@@ -12,7 +12,7 @@ const enableContextMenuKeyDefinition: KeyDefinitionLike = {
   key: "enableContextMenu",
 };
 
-export class EnableContextMenuMigrator extends Migrator<29, 30> {
+export class EnableContextMenuMigrator extends Migrator<30, 31> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const globalState = await helper.get<ExpectedGlobalState>("global");
 
