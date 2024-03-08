@@ -14,7 +14,7 @@ export const FORCE_SET_PASSWORD_REASON_DEFINITION: KeyDefinitionLike = {
   },
 };
 
-export class MoveForceSetPasswordReasonToStateProviderMigrator extends Migrator<29, 30> {
+export class MoveForceSetPasswordReasonToStateProviderMigrator extends Migrator<31, 32> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

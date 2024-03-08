@@ -6,7 +6,7 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 import {
   FORCE_SET_PASSWORD_REASON_DEFINITION,
   MoveForceSetPasswordReasonToStateProviderMigrator,
-} from "./30-move-force-set-password-to-state-providers";
+} from "./32-move-force-set-password-to-state-providers";
 
 function preMigrationState() {
   return {
@@ -77,8 +77,8 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationState(), 29);
-      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(29, 30);
+      helper = mockMigrationHelper(preMigrationState(), 31);
+      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(31, 32);
     });
 
     it("should remove properties from existing accounts", async () => {
@@ -116,8 +116,8 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(postMigrationState(), 29);
-      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(29, 30);
+      helper = mockMigrationHelper(postMigrationState(), 31);
+      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(31, 32);
     });
 
     it.each(["FirstAccount", "SecondAccount"])("should null out new values", async (userId) => {
