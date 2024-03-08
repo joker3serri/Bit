@@ -1,5 +1,5 @@
-import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
@@ -18,13 +18,11 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
 @Directive()
-export class AttachmentsComponent implements OnInit, OnDestroy {
+export class AttachmentsComponent implements OnInit {
   @Input() cipherId: string;
   @Output() onUploadedAttachment = new EventEmitter();
   @Output() onDeletedAttachment = new EventEmitter();
   @Output() onReuploadedAttachment = new EventEmitter();
-
-  private componentIsDestroyed$ = new Subject<boolean>();
 
   cipher: CipherView;
   cipherDomain: Cipher;
@@ -51,11 +49,6 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.init();
-  }
-
-  ngOnDestroy() {
-    this.componentIsDestroyed$.next(true);
-    this.componentIsDestroyed$.complete();
   }
 
   async submit() {
@@ -195,11 +188,10 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
       await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain),
     );
 
-    this.billingAccountProfileStateService.canAccessPremium$
-      .pipe(takeUntil(this.componentIsDestroyed$))
-      .subscribe((canAccessPremium: boolean) => {
-        this.canAccessAttachments = canAccessPremium || this.cipher.organizationId != null;
-      });
+    const canAccessPremium = await firstValueFrom(
+      this.billingAccountProfileStateService.canAccessPremium$,
+    );
+    this.canAccessAttachments = canAccessPremium || this.cipher.organizationId != null;
 
     if (!this.canAccessAttachments) {
       const confirmed = await this.dialogService.openSimpleDialog({

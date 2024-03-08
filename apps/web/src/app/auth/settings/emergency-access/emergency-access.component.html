@@ -22,7 +22,7 @@
         class="btn btn-sm btn-outline-primary ml-3"
         type="button"
         (click)="invite()"
-        [disabled]="!canAccessPremium"
+        [disabled]="!(canAccessPremium$ | async)"
       >
         <i aria-hidden="true" class="bwi bwi-plus bwi-fw"></i>
         {{ "addEmergencyContact" | i18n }}

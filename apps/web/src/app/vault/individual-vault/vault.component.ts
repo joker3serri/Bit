@@ -514,10 +514,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.canAccessPremium$,
-    );
-    if (cipher.organizationId == null && !canAccessPremium) {
+    if (cipher.organizationId == null && !this.canAccessPremium) {
       this.messagingService.send("premiumRequired");
       return;
     } else if (cipher.organizationId != null) {

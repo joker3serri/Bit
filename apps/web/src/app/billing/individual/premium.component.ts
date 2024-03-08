@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -17,11 +17,11 @@ import { PaymentComponent, TaxInfoComponent } from "../shared";
 @Component({
   templateUrl: "premium.component.html",
 })
-export class PremiumComponent implements OnInit, OnDestroy {
+export class PremiumComponent implements OnInit {
   @ViewChild(PaymentComponent) paymentComponent: PaymentComponent;
   @ViewChild(TaxInfoComponent) taxInfoComponent: TaxInfoComponent;
 
-  canAccessPremium = false;
+  canAccessPremium$: Observable<boolean>;
   selfHosted = false;
   premiumPrice = 10;
   familyPlanMaxUserCount = 6;
@@ -30,8 +30,6 @@ export class PremiumComponent implements OnInit, OnDestroy {
   cloudWebVaultUrl: string;
 
   formPromise: Promise<any>;
-
-  private componentIsDestroyed$ = new Subject<boolean>();
 
   constructor(
     private apiService: ApiService,
@@ -47,26 +45,16 @@ export class PremiumComponent implements OnInit, OnDestroy {
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
     this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
+    this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
   }
 
   async ngOnInit() {
-    this.billingAccountProfileStateService.canAccessPremium$
-      .pipe(takeUntil(this.componentIsDestroyed$))
-      .subscribe((canAccessPremium: boolean) => {
-        this.canAccessPremium = canAccessPremium;
-      });
-
     if (await firstValueFrom(this.billingAccountProfileStateService.hasPremiumPersonally$)) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["/settings/subscription/user-subscription"]);
       return;
     }
-  }
-
-  ngOnDestroy() {
-    this.componentIsDestroyed$.next(true);
-    this.componentIsDestroyed$.complete();
   }
 
   async submit() {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { firstValueFrom, Observable, Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -40,7 +40,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
   organizationId: string;
   organization: Organization;
   providers: any[] = [];
-  canAccessPremium: boolean;
+  canAccessPremium$: Observable<boolean>;
   showPolicyWarning = false;
   loading = true;
   modal: ModalRef;
@@ -56,16 +56,12 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     protected modalService: ModalService,
     protected messagingService: MessagingService,
     protected policyService: PolicyService,
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
-  ) {}
+    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+  ) {
+    this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
+  }
 
   async ngOnInit() {
-    this.billingAccountProfileStateService.canAccessPremium$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((canAccessPremium: boolean) => {
-        this.canAccessPremium = canAccessPremium;
-      });
-
     for (const key in TwoFactorProviders) {
       // eslint-disable-next-line
       if (!TwoFactorProviders.hasOwnProperty(key)) {
@@ -178,7 +174,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
   }
 
   async premiumRequired() {
-    if (!this.canAccessPremium) {
+    if (!(await firstValueFrom(this.canAccessPremium$))) {
       this.messagingService.send("premiumRequired");
       return;
     }

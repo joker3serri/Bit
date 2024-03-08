@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -209,10 +209,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
       .subscribe((premium: boolean) => {
         this.canAccessPremium = premium;
       });
+    const canAccessPremium = await firstValueFrom(
+      this.billingAccountProfileStateService.canAccessPremium$,
+    );
 
     this.emailVerified = await this.stateService.getEmailVerified();
 
-    this.type = !this.canAccessPremium || !this.emailVerified ? SendType.Text : SendType.File;
+    this.type = !canAccessPremium || !this.emailVerified ? SendType.Text : SendType.File;
     if (this.send == null) {
       if (this.editMode) {
         const send = this.loadSend();

@@ -1,5 +1,5 @@
-import { Directive, OnDestroy, OnInit } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { Directive } from "@angular/core";
+import { Observable, Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
@@ -11,8 +11,8 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DialogService } from "@bitwarden/components";
 
 @Directive()
-export class PremiumComponent implements OnInit, OnDestroy {
-  isPremium = false;
+export class PremiumComponent {
+  isPremium$: Observable<boolean>;
   price = 10;
   refreshPromise: Promise<any>;
   cloudWebVaultUrl: string;
@@ -26,20 +26,10 @@ export class PremiumComponent implements OnInit, OnDestroy {
     protected stateService: StateService,
     protected dialogService: DialogService,
     environmentService: EnvironmentService,
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
   ) {
     this.cloudWebVaultUrl = environmentService.getCloudWebVaultUrl();
-  }
-
-  ngOnInit() {
-    this.billingAccountProfileStateService.canAccessPremium$
-      .pipe(takeUntil(this.directiveIsDestroyed$))
-      .subscribe((canAccessPremium: boolean) => (this.isPremium = canAccessPremium));
-  }
-
-  ngOnDestroy() {
-    this.directiveIsDestroyed$.next(true);
-    this.directiveIsDestroyed$.complete();
+    this.isPremium$ = billingAccountProfileStateService.canAccessPremium$;
   }
 
   async refresh() {

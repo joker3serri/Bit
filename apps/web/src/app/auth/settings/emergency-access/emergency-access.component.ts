@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Observable, firstValueFrom } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -29,7 +29,7 @@ import { EmergencyAccessTakeoverComponent } from "./takeover/emergency-access-ta
   templateUrl: "emergency-access.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class EmergencyAccessComponent implements OnInit, OnDestroy {
+export class EmergencyAccessComponent implements OnInit {
   @ViewChild("addEdit", { read: ViewContainerRef, static: true }) addEditModalRef: ViewContainerRef;
   @ViewChild("takeoverTemplate", { read: ViewContainerRef, static: true })
   takeoverModalRef: ViewContainerRef;
@@ -37,15 +37,13 @@ export class EmergencyAccessComponent implements OnInit, OnDestroy {
   confirmModalRef: ViewContainerRef;
 
   loaded = false;
-  canAccessPremium: boolean;
+  canAccessPremium$: Observable<boolean>;
   trustedContacts: GranteeEmergencyAccess[];
   grantedContacts: GrantorEmergencyAccess[];
   emergencyAccessType = EmergencyAccessType;
   emergencyAccessStatusType = EmergencyAccessStatusType;
   actionPromise: Promise<any>;
   isOrganizationOwner: boolean;
-
-  private componentIsDestroyed$ = new Subject<boolean>();
 
   constructor(
     private emergencyAccessService: EmergencyAccessService,
@@ -58,26 +56,17 @@ export class EmergencyAccessComponent implements OnInit, OnDestroy {
     private stateService: StateService,
     private organizationService: OrganizationService,
     protected dialogService: DialogService,
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
-  ) {}
+    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+  ) {
+    this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
+  }
 
   async ngOnInit() {
-    this.billingAccountProfileStateService.canAccessPremium$
-      .pipe(takeUntil(this.componentIsDestroyed$))
-      .subscribe((canAccessPremium: boolean) => {
-        this.canAccessPremium = canAccessPremium;
-      });
-
     const orgs = await this.organizationService.getAll();
     this.isOrganizationOwner = orgs.some((o) => o.isOwner);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.load();
-  }
-
-  ngOnDestroy() {
-    this.componentIsDestroyed$.next(true);
-    this.componentIsDestroyed$.complete();
   }
 
   async load() {
@@ -87,20 +76,23 @@ export class EmergencyAccessComponent implements OnInit, OnDestroy {
   }
 
   async premiumRequired() {
-    if (!this.canAccessPremium) {
+    const canAccessPremium = await firstValueFrom(this.canAccessPremium$);
+
+    if (!canAccessPremium) {
       this.messagingService.send("premiumRequired");
       return;
     }
   }
 
   async edit(details: GranteeEmergencyAccess) {
+    const canAccessPremium = await firstValueFrom(this.canAccessPremium$);
     const [modal] = await this.modalService.openViewRef(
       EmergencyAccessAddEditComponent,
       this.addEditModalRef,
       (comp) => {
         comp.name = this.userNamePipe.transform(details);
         comp.emergencyAccessId = details?.id;
-        comp.readOnly = !this.canAccessPremium;
+        comp.readOnly = !canAccessPremium;
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onSaved.subscribe(() => {
           modal.close();
