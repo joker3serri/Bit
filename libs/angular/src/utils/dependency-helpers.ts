@@ -54,3 +54,15 @@ export const useFactory = <
   useFactory: I;
   deps: D;
 }) => obj as unknown as SafeProvider; // prevented from casting to Provider because D can be 'never'
+
+// This is less strict than other helpers because of our current usage.
+// We often use useExisting to register "Internal" variants of classes that are in fact implemented
+// by an existing provider but not exposed by its abstract interface. We can't know that here, so we have to settle
+// for using Partial which at least ensures some overlap.
+export const useExisting = <
+  A extends Constructor<any> | AbstractConstructor<any>,
+  I extends Constructor<Partial<InstanceType<A>>> | AbstractConstructor<Partial<InstanceType<A>>>,
+>(obj: {
+  provide: A;
+  useExisting: I;
+}) => obj as SafeProvider;

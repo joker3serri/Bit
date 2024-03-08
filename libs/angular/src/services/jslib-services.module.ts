@@ -229,7 +229,13 @@ import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
-import { SafeProvider, useClass, useFactory, useValue } from "../utils/dependency-helpers";
+import {
+  SafeProvider,
+  useClass,
+  useExisting,
+  useFactory,
+  useValue,
+} from "../utils/dependency-helpers";
 
 import {
   LOCALES_DIRECTORY,
@@ -254,7 +260,7 @@ import { ModalService } from "./modal.service";
  * This ensures that your definition is typesafe.
  * If you need help please ask for it, do NOT change the type of this array.
  */
-const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
+const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
   AuthGuard,
   UnauthGuard,
   ModalService,
@@ -405,10 +411,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
       StateProvider,
     ],
   }),
-  {
+  useExisting({
     provide: InternalFolderService,
     useExisting: FolderServiceAbstraction,
-  },
+  }),
   useClass({
     provide: FolderApiServiceAbstraction,
     useClass: FolderApiService,
@@ -429,10 +435,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
     useClass: AccountServiceImplementation,
     deps: [MessagingServiceAbstraction, LogService, GlobalStateProvider],
   }),
-  {
+  useExisting({
     provide: InternalAccountService,
     useExisting: AccountServiceAbstraction,
-  },
+  }),
   useClass({
     provide: AccountUpdateServiceAbstraction,
     useClass: AvatarUpdateService,
@@ -504,10 +510,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
       LOGOUT_CALLBACK,
     ],
   }),
-  {
+  useExisting({
     provide: InternalSendService,
     useExisting: SendServiceAbstraction,
-  },
+  }),
   useClass({
     provide: SendServiceAbstraction,
     useClass: SendService,
@@ -582,10 +588,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
       LOGOUT_CALLBACK,
     ],
   }),
-  {
+  useExisting({
     provide: VaultTimeoutServiceAbstraction,
     useExisting: VaultTimeoutService,
-  },
+  }),
   useClass({
     provide: SsoLoginServiceAbstraction,
     useClass: SsoLoginService,
@@ -701,10 +707,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
     useClass: PolicyService,
     deps: [StateProvider, OrganizationServiceAbstraction],
   }),
-  {
+  useExisting({
     provide: InternalPolicyService,
     useExisting: PolicyServiceAbstraction,
-  },
+  }),
   useClass({
     provide: PolicyApiServiceAbstraction,
     useClass: PolicyApiService,
@@ -743,10 +749,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
     useClass: OrganizationService,
     deps: [StateServiceAbstraction, StateProvider],
   }),
-  {
+  useExisting({
     provide: InternalOrganizationServiceAbstraction,
     useExisting: OrganizationServiceAbstraction,
-  },
+  }),
   useClass({
     provide: OrganizationUserService,
     useClass: OrganizationUserServiceImplementation,
@@ -813,10 +819,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
       LogService,
     ],
   }),
-  {
+  useExisting({
     provide: ConfigServiceAbstraction,
     useExisting: ConfigService,
-  },
+  }),
   useClass({
     provide: ConfigApiServiceAbstraction,
     useClass: ConfigApiService,
@@ -842,10 +848,10 @@ const typesafeProviders: SafeProvider[] | Constructor<any>[] = [
     useClass: OrgDomainService,
     deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction],
   }),
-  {
+  useExisting({
     provide: OrgDomainInternalServiceAbstraction,
     useExisting: OrgDomainServiceAbstraction,
-  },
+  }),
   useClass({
     provide: OrgDomainApiServiceAbstraction,
     useClass: OrgDomainApiService,
