@@ -34,10 +34,6 @@ export class EnvironmentUrls {
 
 class EnvironmentState {
   region: Region;
-  /**
-   * Optional as it may not initially be known.
-   */
-  cloudRegion?: CloudRegion;
   urls: EnvironmentUrls;
 
   static fromJSON(obj: Jsonify<EnvironmentState>): EnvironmentState {
