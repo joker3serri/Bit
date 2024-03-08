@@ -7,15 +7,15 @@ import {
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 
+declare const tag: unique symbol;
 /**
  * A (more) typesafe version of InjectionToken.
  * The default angular implementation does not use the generic type to define the structure of the object,
- * so the structural type system will not object to a mismatch in generic types.
- * e.g. const test: InjectionToken<string> = new InjectionToken<number>(); // compiles just fine
- * This is solved by assigning T to an arbitrary property.
+ * so the structural type system will not complain about a mismatch in the type parameter.
+ * This is solved by assigning T to an arbitrary private property.
  */
 export class SafeInjectionToken<T> extends InjectionToken<T> {
-  readonly bitTypeRecord: T;
+  private readonly [tag]: T;
 }
 
 export const WINDOW = new SafeInjectionToken<Window>("WINDOW");
