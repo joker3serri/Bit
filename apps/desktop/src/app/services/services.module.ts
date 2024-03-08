@@ -138,6 +138,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         StateServiceAbstraction,
         AutofillSettingsServiceAbstraction,
         VaultTimeoutSettingsService,
+        BiometricStateService,
       ],
     },
     {
