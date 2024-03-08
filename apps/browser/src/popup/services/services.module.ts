@@ -251,8 +251,6 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
-    // TODO: remove this as state provider should remove the need for this; test to confirm
-    { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
     {
       provide: I18nServiceAbstraction,
       useFactory: (stateService: BrowserStateService) => {
