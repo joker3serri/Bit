@@ -2,6 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
 import { NOOP_COMMAND_SUFFIX } from "@bitwarden/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -15,6 +16,7 @@ import { MainContextMenuHandler } from "./main-context-menu-handler";
 
 describe("context-menu", () => {
   let stateService: MockProxy<BrowserStateService>;
+  let autofillSettingsService: MockProxy<AutofillSettingsServiceAbstraction>;
   let i18nService: MockProxy<I18nService>;
   let logService: MockProxy<LogService>;
   let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateServiceAbstraction>;
@@ -29,6 +31,7 @@ describe("context-menu", () => {
 
   beforeEach(() => {
     stateService = mock();
+    autofillSettingsService = mock();
     i18nService = mock();
     logService = mock();
     billingAccountProfileStateService = mock();
@@ -47,17 +50,19 @@ describe("context-menu", () => {
     i18nService.t.mockImplementation((key) => key);
     sut = new MainContextMenuHandler(
       stateService,
+      autofillSettingsService,
       i18nService,
       logService,
       billingAccountProfileStateService,
     );
+    autofillSettingsService.enableContextMenu$ = of(true);
   });
 
   afterEach(() => jest.resetAllMocks());
 
   describe("init", () => {
     it("has menu disabled", async () => {
-      stateService.getDisableContextMenuItem.mockResolvedValue(true);
+      autofillSettingsService.enableContextMenu$ = of(false);
 
       const createdMenu = await sut.init();
       expect(createdMenu).toBeFalsy();
@@ -65,7 +70,7 @@ describe("context-menu", () => {
     });
 
     it("has menu enabled, but does not have premium", async () => {
-      stateService.getDisableContextMenuItem.mockResolvedValue(false);
+      autofillSettingsService.enableContextMenu$ = of(true);
       billingAccountProfileStateService.canAccessPremium$ = of(false);
 
       const createdMenu = await sut.init();
@@ -74,7 +79,7 @@ describe("context-menu", () => {
     });
 
     it("has menu enabled and has premium", async () => {
-      stateService.getDisableContextMenuItem.mockResolvedValue(false);
+      autofillSettingsService.enableContextMenu$ = of(true);
       billingAccountProfileStateService.canAccessPremium$ = of(true);
 
       const createdMenu = await sut.init();

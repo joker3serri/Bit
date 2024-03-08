@@ -16,6 +16,7 @@ import {
   ROOT_ID,
   SEPARATOR_ID,
 } from "@bitwarden/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -25,6 +26,7 @@ import { GlobalState } from "@bitwarden/common/platform/models/domain/global-sta
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
+import { autofillSettingsServiceFactory } from "../../autofill/background/service_factories/autofill-settings-service.factory";
 import { Account } from "../../models/account";
 import { billingAccountProfileStateServiceFactory } from "../../platform/background/service-factories/billing-account-profile-state-service.factory";
 import { CachedServices } from "../../platform/background/service-factories/factory-options";
@@ -160,6 +162,7 @@ export class MainContextMenuHandler {
 
   constructor(
     private stateService: BrowserStateService,
+    private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private i18nService: I18nService,
     private logService: LogService,
     private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
@@ -188,6 +191,7 @@ export class MainContextMenuHandler {
 
     return new MainContextMenuHandler(
       await stateServiceFactory(cachedServices, serviceOptions),
+      await autofillSettingsServiceFactory(cachedServices, serviceOptions),
       await i18nServiceFactory(cachedServices, serviceOptions),
       await logServiceFactory(cachedServices, serviceOptions),
       await billingAccountProfileStateServiceFactory(cachedServices, serviceOptions),
@@ -199,8 +203,8 @@ export class MainContextMenuHandler {
    * @returns a boolean showing whether or not items were created
    */
   async init(): Promise<boolean> {
-    const menuDisabled = await this.stateService.getDisableContextMenuItem();
-    if (menuDisabled) {
+    const menuEnabled = await firstValueFrom(this.autofillSettingsService.enableContextMenu$);
+    if (!menuEnabled) {
       await MainContextMenuHandler.removeAll();
       return false;
     }
