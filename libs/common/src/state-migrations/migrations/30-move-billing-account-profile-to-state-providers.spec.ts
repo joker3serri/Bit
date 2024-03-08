@@ -58,15 +58,12 @@ describe("MoveBillingAccountProfileToStateProviders migrator", () => {
 
     it("removes from all accounts", async () => {
       await sut.migrate(helper);
-      expect(helper.set).toHaveBeenCalledTimes(3);
+      expect(helper.set).toHaveBeenCalledTimes(1);
       expect(helper.set).toHaveBeenCalledWith("user-1", {
         profile: {
           otherStuff: "otherStuff2",
         },
         otherStuff: "otherStuff3",
-      });
-      expect(helper.set).toHaveBeenCalledWith("user-2", {
-        otherStuff: "otherStuff4",
       });
     });
 

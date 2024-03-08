@@ -33,11 +33,11 @@ export class MoveBillingAccountProfileMigrator extends Migrator<29, 30> {
           hasPremiumPersonally: hasPremiumPersonally,
           hasPremiumFromOrganization: hasPremiumFromOrganization,
         });
-      }
 
-      delete account?.profile?.hasPremiumPersonally;
-      delete account?.profile?.hasPremiumFromOrganization;
-      await helper.set(userId, account);
+        delete account?.profile?.hasPremiumPersonally;
+        delete account?.profile?.hasPremiumFromOrganization;
+        await helper.set(userId, account);
+      }
     };
 
     await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);

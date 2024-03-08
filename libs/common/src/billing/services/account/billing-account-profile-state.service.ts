@@ -50,23 +50,15 @@ export class BillingAccountProfileStateService
     );
   }
 
-  setHasPremiumPersonally = async (value: boolean): Promise<void> => {
+  async setHasPremium(
+    hasPremiumPersonally: boolean,
+    hasPremiumFromOrganization: boolean,
+  ): Promise<void> {
     await this.billingAccountProfileState.update((billingAccountProfile) => {
-      billingAccountProfile ||= {
-        hasPremiumFromOrganization: false,
-        hasPremiumPersonally: false,
+      return {
+        hasPremiumPersonally,
+        hasPremiumFromOrganization,
       };
-      return { ...billingAccountProfile, hasPremiumPersonally: value };
     });
-  };
-
-  setHasPremiumFromOrganization = async (value: boolean): Promise<void> => {
-    await this.billingAccountProfileState.update((billingAccountProfile) => {
-      billingAccountProfile ||= {
-        hasPremiumFromOrganization: false,
-        hasPremiumPersonally: false,
-      };
-      return { ...billingAccountProfile, hasPremiumFromOrganization: value };
-    });
-  };
+  }
 }

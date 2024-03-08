@@ -10,6 +10,8 @@ export abstract class BillingAccountProfileStateServiceAbstraction {
   hasPremiumPersonally$: Observable<boolean>;
   canAccessPremium$: Observable<boolean>;
 
-  abstract setHasPremiumPersonally(value: boolean): Promise<void>;
-  abstract setHasPremiumFromOrganization(value: boolean): Promise<void>;
+  abstract setHasPremium(
+    hasPremiumPersonally: boolean,
+    hasPremiumFromOrganization: boolean,
+  ): Promise<void>;
 }
