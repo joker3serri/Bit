@@ -293,7 +293,6 @@ abstract class UrlEnvironment implements Environment {
   constructor(
     protected region: Region,
     protected urls: Urls,
-    protected cloudWebVaultUrl?: string,
   ) {
     // Scim is always null for self-hosted
     if (region == Region.SelfHosted) {
@@ -374,14 +373,6 @@ abstract class UrlEnvironment implements Environment {
    */
   isCloud(): boolean {
     return this.region !== Region.SelfHosted;
-  }
-
-  getCloudWebVaultUrl() {
-    if (this.cloudWebVaultUrl != null) {
-      return this.cloudWebVaultUrl;
-    }
-
-    return DEFAULT_REGION_CONFIG.urls.webVault;
   }
 
   /**
