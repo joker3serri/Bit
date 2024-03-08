@@ -106,9 +106,9 @@ export abstract class LoginStrategy {
       return userProvidedTwoFactor;
     }
 
-    const storedTwoFactorToken = await this.tokenService.getTwoFactorToken(
-      this.loginService.getEmail(),
-    );
+    const email = this.loginService.getEmail();
+
+    const storedTwoFactorToken = await this.tokenService.getTwoFactorToken(email);
     if (storedTwoFactorToken != null) {
       return new TokenTwoFactorRequest(TwoFactorProviderType.Remember, storedTwoFactorToken, false);
     }
