@@ -21,11 +21,11 @@ export class AvatarColorMigrator extends Migrator<29, 30> {
         // Move account avatarColor
         if (account?.settings?.avatarColor != null) {
           await helper.setToUser(userId, AVATAR_COLOR_KEY, account.settings.avatarColor);
-        }
 
-        // Delete old account avatarColor property
-        delete account?.settings?.avatarColor;
-        await helper.set(userId, account);
+          // Delete old account avatarColor property
+          delete account?.settings?.avatarColor;
+          await helper.set(userId, account);
+        }
       }),
     );
   }
