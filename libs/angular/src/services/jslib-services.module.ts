@@ -1,3 +1,4 @@
+import { DOCUMENT } from "@angular/common";
 import { LOCALE_ID, NgModule } from "@angular/core";
 
 import {
@@ -237,6 +238,7 @@ import {
   MEMORY_STORAGE,
   OBSERVABLE_DISK_STORAGE,
   OBSERVABLE_MEMORY_STORAGE,
+  SafeInjectionToken,
   SECURE_STORAGE,
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
@@ -252,29 +254,29 @@ import { ModalService } from "./modal.service";
     UnauthGuard,
     ModalService,
     PasswordRepromptService,
-    { provide: WINDOW, useValue: window },
-    {
-      provide: LOCALE_ID,
+    useValue({ provide: WINDOW, useValue: window }),
+    useFactory({
+      provide: LOCALE_ID as SafeInjectionToken<string>,
       useFactory: (i18nService: I18nServiceAbstraction) => i18nService.translationLocale,
       deps: [I18nServiceAbstraction],
-    },
+    }),
     useValue({
       provide: LOCALES_DIRECTORY,
       useValue: "./locales",
     }),
-    {
+    useFactory({
       provide: SYSTEM_LANGUAGE,
       useFactory: (window: Window) => window.navigator.language,
       deps: [WINDOW],
-    },
-    {
+    }),
+    useValue({
       provide: STATE_FACTORY,
       useValue: new StateFactory(GlobalState, Account),
-    },
-    {
+    }),
+    useValue({
       provide: STATE_SERVICE_USE_CACHE,
       useValue: true,
-    },
+    }),
     useFactory({
       provide: LOGOUT_CALLBACK,
       useFactory:
@@ -282,25 +284,25 @@ import { ModalService } from "./modal.service";
           Promise.resolve(messagingService.send("logout", { expired: expired, userId: userId })),
       deps: [MessagingServiceAbstraction],
     }),
-    {
+    useValue({
       provide: LOCKED_CALLBACK,
       useValue: null,
-    },
-    {
+    }),
+    useValue({
       provide: LOG_MAC_FAILURES,
       useValue: true,
-    },
-    {
+    }),
+    useClass({
       provide: AppIdServiceAbstraction,
       useClass: AppIdService,
       deps: [AbstractStorageService],
-    },
-    {
+    }),
+    useClass({
       provide: AuditServiceAbstraction,
       useClass: AuditService,
       deps: [CryptoFunctionServiceAbstraction, ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: AuthServiceAbstraction,
       useClass: AuthService,
       deps: [
@@ -309,8 +311,8 @@ import { ModalService } from "./modal.service";
         ApiServiceAbstraction,
         StateServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: LoginStrategyServiceAbstraction,
       useClass: LoginStrategyService,
       deps: [
@@ -332,17 +334,17 @@ import { ModalService } from "./modal.service";
         DeviceTrustCryptoServiceAbstraction,
         AuthRequestServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: FileUploadServiceAbstraction,
       useClass: FileUploadService,
-      deps: [LoginServiceAbstraction],
-    },
-    {
+      deps: [LogService],
+    }),
+    useClass({
       provide: CipherFileUploadServiceAbstraction,
       useClass: CipherFileUploadService,
       deps: [ApiServiceAbstraction, FileUploadServiceAbstraction],
-    },
+    }),
     {
       provide: CipherServiceAbstraction,
       useFactory: (
@@ -382,7 +384,7 @@ import { ModalService } from "./modal.service";
         ConfigServiceAbstraction,
       ],
     },
-    {
+    useClass({
       provide: FolderServiceAbstraction,
       useClass: FolderService,
       deps: [
@@ -392,17 +394,17 @@ import { ModalService } from "./modal.service";
         StateServiceAbstraction,
         StateProvider,
       ],
-    },
+    }),
     {
       provide: InternalFolderService,
       useExisting: FolderServiceAbstraction,
     },
-    {
+    useClass({
       provide: FolderApiServiceAbstraction,
       useClass: FolderApiService,
-      deps: [FolderServiceAbstraction, ApiServiceAbstraction],
-    },
-    {
+      deps: [InternalFolderService, ApiServiceAbstraction],
+    }),
+    useClass({
       provide: AccountApiServiceAbstraction,
       useClass: AccountApiServiceImplementation,
       deps: [
@@ -411,44 +413,44 @@ import { ModalService } from "./modal.service";
         LogService,
         InternalAccountService,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: AccountServiceAbstraction,
       useClass: AccountServiceImplementation,
       deps: [MessagingServiceAbstraction, LogService, GlobalStateProvider],
-    },
+    }),
     {
       provide: InternalAccountService,
       useExisting: AccountServiceAbstraction,
     },
-    {
+    useClass({
       provide: AccountUpdateServiceAbstraction,
       useClass: AvatarUpdateService,
       deps: [ApiServiceAbstraction, StateServiceAbstraction],
-    },
+    }),
     { provide: LogService, useFactory: () => new ConsoleLogService(false) },
-    {
+    useClass({
       provide: CollectionServiceAbstraction,
       useClass: CollectionService,
       deps: [CryptoServiceAbstraction, I18nServiceAbstraction, StateProvider],
-    },
-    {
+    }),
+    useClass({
       provide: EnvironmentServiceAbstraction,
       useClass: EnvironmentService,
       deps: [StateProvider, AccountServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: TotpServiceAbstraction,
       useClass: TotpService,
-      deps: [CryptoFunctionServiceAbstraction, LogService, StateServiceAbstraction],
-    },
+      deps: [CryptoFunctionServiceAbstraction, LogService],
+    }),
     { provide: TokenServiceAbstraction, useClass: TokenService, deps: [StateServiceAbstraction] },
-    {
+    useClass({
       provide: KeyGenerationServiceAbstraction,
       useClass: KeyGenerationService,
       deps: [CryptoFunctionServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,
       deps: [
@@ -461,23 +463,23 @@ import { ModalService } from "./modal.service";
         AccountServiceAbstraction,
         StateProvider,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: PasswordStrengthServiceAbstraction,
       useClass: PasswordStrengthService,
       deps: [],
-    },
-    {
+    }),
+    useClass({
       provide: PasswordGenerationServiceAbstraction,
       useClass: PasswordGenerationService,
       deps: [CryptoServiceAbstraction, PolicyServiceAbstraction, StateServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: UsernameGenerationServiceAbstraction,
       useClass: UsernameGenerationService,
       deps: [CryptoServiceAbstraction, StateServiceAbstraction, ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: ApiServiceAbstraction,
       useClass: ApiService,
       deps: [
@@ -487,12 +489,12 @@ import { ModalService } from "./modal.service";
         AppIdServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
-    },
+    }),
     {
       provide: InternalSendService,
       useExisting: SendServiceAbstraction,
     },
-    {
+    useClass({
       provide: SendServiceAbstraction,
       useClass: SendService,
       deps: [
@@ -501,12 +503,12 @@ import { ModalService } from "./modal.service";
         KeyGenerationServiceAbstraction,
         StateServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: SendApiServiceAbstraction,
       useClass: SendApiService,
-      deps: [ApiServiceAbstraction, FileUploadServiceAbstraction, SendServiceAbstraction],
-    },
+      deps: [ApiServiceAbstraction, FileUploadServiceAbstraction, InternalSendService],
+    }),
     useClass({
       provide: SyncServiceAbstraction,
       useClass: SyncService,
@@ -530,13 +532,13 @@ import { ModalService } from "./modal.service";
         LOGOUT_CALLBACK,
       ],
     }),
-    { provide: BroadcasterServiceAbstraction, useClass: BroadcasterService },
-    {
+    useClass({ provide: BroadcasterServiceAbstraction, useClass: BroadcasterService, deps: [] }),
+    useClass({
       provide: SettingsServiceAbstraction,
       useClass: SettingsService,
       deps: [StateServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: VaultTimeoutSettingsServiceAbstraction,
       useClass: VaultTimeoutSettingsService,
       deps: [
@@ -546,8 +548,8 @@ import { ModalService } from "./modal.service";
         StateServiceAbstraction,
         BiometricStateService,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: VaultTimeoutService,
       useClass: VaultTimeoutService,
       deps: [
@@ -565,17 +567,17 @@ import { ModalService } from "./modal.service";
         LOCKED_CALLBACK,
         LOGOUT_CALLBACK,
       ],
-    },
+    }),
     {
       provide: VaultTimeoutServiceAbstraction,
       useExisting: VaultTimeoutService,
     },
-    {
+    useClass({
       provide: SsoLoginServiceAbstraction,
       useClass: SsoLoginService,
       deps: [StateProvider],
-    },
-    {
+    }),
+    useClass({
       provide: StateServiceAbstraction,
       useClass: StateService,
       deps: [
@@ -589,13 +591,13 @@ import { ModalService } from "./modal.service";
         MigrationRunner,
         STATE_SERVICE_USE_CACHE,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: ImportApiServiceAbstraction,
       useClass: ImportApiService,
       deps: [ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: ImportServiceAbstraction,
       useClass: ImportService,
       deps: [
@@ -606,8 +608,8 @@ import { ModalService } from "./modal.service";
         CollectionServiceAbstraction,
         CryptoServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: IndividualVaultExportServiceAbstraction,
       useClass: IndividualVaultExportService,
       deps: [
@@ -617,7 +619,7 @@ import { ModalService } from "./modal.service";
         CryptoFunctionServiceAbstraction,
         StateServiceAbstraction,
       ],
-    },
+    }),
     {
       provide: OrganizationVaultExportServiceAbstraction,
       useClass: OrganizationVaultExportService,
@@ -630,17 +632,17 @@ import { ModalService } from "./modal.service";
         CollectionServiceAbstraction,
       ],
     },
-    {
+    useClass({
       provide: VaultExportServiceAbstraction,
       useClass: VaultExportService,
       deps: [IndividualVaultExportServiceAbstraction, OrganizationVaultExportServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: SearchServiceAbstraction,
       useClass: SearchService,
       deps: [LogService, I18nServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: NotificationsServiceAbstraction,
       useClass: devFlagEnabled("noopNotifications")
         ? NoopNotificationsService
@@ -656,23 +658,23 @@ import { ModalService } from "./modal.service";
         AuthServiceAbstraction,
         MessagingServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: CryptoFunctionServiceAbstraction,
       useClass: WebCryptoFunctionService,
       deps: [WINDOW],
-    },
+    }),
     {
       provide: EncryptService,
       useFactory: encryptServiceFactory,
       deps: [CryptoFunctionServiceAbstraction, LogService, LOG_MAC_FAILURES],
     },
-    {
+    useClass({
       provide: EventUploadServiceAbstraction,
       useClass: EventUploadService,
       deps: [ApiServiceAbstraction, StateServiceAbstraction, LogService],
-    },
-    {
+    }),
+    useClass({
       provide: EventCollectionServiceAbstraction,
       useClass: EventCollectionService,
       deps: [
@@ -681,12 +683,12 @@ import { ModalService } from "./modal.service";
         OrganizationServiceAbstraction,
         EventUploadServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: PolicyServiceAbstraction,
       useClass: PolicyService,
       deps: [StateProvider, OrganizationServiceAbstraction],
-    },
+    }),
     {
       provide: InternalPolicyService,
       useExisting: PolicyServiceAbstraction,
@@ -696,7 +698,7 @@ import { ModalService } from "./modal.service";
       useClass: PolicyApiService,
       deps: [InternalPolicyService, ApiServiceAbstraction],
     }),
-    {
+    useClass({
       provide: KeyConnectorServiceAbstraction,
       useClass: KeyConnectorService,
       deps: [
@@ -709,8 +711,8 @@ import { ModalService } from "./modal.service";
         KeyGenerationServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: UserVerificationServiceAbstraction,
       useClass: UserVerificationService,
       deps: [
@@ -723,22 +725,22 @@ import { ModalService } from "./modal.service";
         VaultTimeoutSettingsServiceAbstraction,
         PlatformUtilsServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: OrganizationServiceAbstraction,
       useClass: OrganizationService,
       deps: [StateServiceAbstraction, StateProvider],
-    },
+    }),
     {
       provide: InternalOrganizationServiceAbstraction,
       useExisting: OrganizationServiceAbstraction,
     },
-    {
+    useClass({
       provide: OrganizationUserService,
       useClass: OrganizationUserServiceImplementation,
       deps: [ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: PasswordResetEnrollmentServiceAbstraction,
       useClass: PasswordResetEnrollmentServiceImplementation,
       deps: [
@@ -748,31 +750,33 @@ import { ModalService } from "./modal.service";
         OrganizationUserService,
         I18nServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: ProviderServiceAbstraction,
       useClass: ProviderService,
       deps: [StateProvider],
-    },
-    {
+    }),
+    useClass({
       provide: TwoFactorServiceAbstraction,
       useClass: TwoFactorService,
       deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: AbstractThemingService,
       useClass: ThemingService,
-    },
-    {
+      deps: [StateServiceAbstraction, WINDOW, DOCUMENT as SafeInjectionToken<Document>],
+    }),
+    useClass({
       provide: FormValidationErrorsServiceAbstraction,
       useClass: FormValidationErrorsService,
-    },
-    {
+      deps: [],
+    }),
+    useClass({
       provide: UserVerificationApiServiceAbstraction,
       useClass: UserVerificationApiService,
       deps: [ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: OrganizationApiServiceAbstraction,
       useClass: OrganizationApiService,
       // This is a slightly odd dependency tree for a specialized api service
@@ -780,12 +784,13 @@ import { ModalService } from "./modal.service";
       // rather than updating the OrganizationService directly. Instead OrganizationService
       // subscribes to sync notifications and will update itself based on that.
       deps: [ApiServiceAbstraction, SyncServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: SyncNotifierServiceAbstraction,
       useClass: SyncNotifierService,
-    },
-    {
+      deps: [],
+    }),
+    useClass({
       provide: ConfigService,
       useClass: ConfigService,
       deps: [
@@ -795,56 +800,56 @@ import { ModalService } from "./modal.service";
         EnvironmentServiceAbstraction,
         LogService,
       ],
-    },
+    }),
     {
       provide: ConfigServiceAbstraction,
       useExisting: ConfigService,
     },
-    {
+    useClass({
       provide: ConfigApiServiceAbstraction,
       useClass: ConfigApiService,
       deps: [ApiServiceAbstraction, AuthServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: AnonymousHubServiceAbstraction,
       useClass: AnonymousHubService,
       deps: [EnvironmentServiceAbstraction, LoginStrategyServiceAbstraction, LogService],
-    },
-    {
+    }),
+    useClass({
       provide: ValidationServiceAbstraction,
       useClass: ValidationService,
       deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: LoginServiceAbstraction,
       useClass: LoginService,
       deps: [StateServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: OrgDomainServiceAbstraction,
       useClass: OrgDomainService,
       deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction],
-    },
+    }),
     {
       provide: OrgDomainInternalServiceAbstraction,
       useExisting: OrgDomainServiceAbstraction,
     },
-    {
+    useClass({
       provide: OrgDomainApiServiceAbstraction,
       useClass: OrgDomainApiService,
-      deps: [OrgDomainServiceAbstraction, ApiServiceAbstraction],
-    },
-    {
+      deps: [OrgDomainInternalServiceAbstraction, ApiServiceAbstraction],
+    }),
+    useClass({
       provide: DevicesApiServiceAbstraction,
       useClass: DevicesApiServiceImplementation,
       deps: [ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: DevicesServiceAbstraction,
       useClass: DevicesServiceImplementation,
       deps: [DevicesApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: DeviceTrustCryptoServiceAbstraction,
       useClass: DeviceTrustCryptoService,
       deps: [
@@ -858,8 +863,8 @@ import { ModalService } from "./modal.service";
         I18nServiceAbstraction,
         PlatformUtilsServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: AuthRequestServiceAbstraction,
       useClass: AuthRequestService,
       deps: [
@@ -868,8 +873,8 @@ import { ModalService } from "./modal.service";
         ApiServiceAbstraction,
         StateServiceAbstraction,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: PinCryptoServiceAbstraction,
       useClass: PinCryptoService,
       deps: [
@@ -878,19 +883,18 @@ import { ModalService } from "./modal.service";
         VaultTimeoutSettingsServiceAbstraction,
         LogService,
       ],
-    },
-
-    {
+    }),
+    useClass({
       provide: WebAuthnLoginPrfCryptoServiceAbstraction,
       useClass: WebAuthnLoginPrfCryptoService,
       deps: [CryptoFunctionServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: WebAuthnLoginApiServiceAbstraction,
       useClass: WebAuthnLoginApiService,
       deps: [ApiServiceAbstraction, EnvironmentServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: WebAuthnLoginServiceAbstraction,
       useClass: WebAuthnLoginService,
       deps: [
@@ -900,43 +904,43 @@ import { ModalService } from "./modal.service";
         WINDOW,
         LogService,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: StorageServiceProvider,
       useClass: StorageServiceProvider,
       deps: [OBSERVABLE_DISK_STORAGE, OBSERVABLE_MEMORY_STORAGE],
-    },
-    {
+    }),
+    useClass({
       provide: StateEventRegistrarService,
       useClass: StateEventRegistrarService,
       deps: [GlobalStateProvider, StorageServiceProvider],
-    },
-    {
+    }),
+    useClass({
       provide: StateEventRunnerService,
       useClass: StateEventRunnerService,
       deps: [GlobalStateProvider, StorageServiceProvider],
-    },
-    {
+    }),
+    useClass({
       provide: GlobalStateProvider,
       useClass: DefaultGlobalStateProvider,
       deps: [StorageServiceProvider],
-    },
-    {
+    }),
+    useClass({
       provide: ActiveUserStateProvider,
       useClass: DefaultActiveUserStateProvider,
       deps: [AccountServiceAbstraction, StorageServiceProvider, StateEventRegistrarService],
-    },
-    {
+    }),
+    useClass({
       provide: SingleUserStateProvider,
       useClass: DefaultSingleUserStateProvider,
       deps: [StorageServiceProvider, StateEventRegistrarService],
-    },
-    {
+    }),
+    useClass({
       provide: DerivedStateProvider,
       useClass: DefaultDerivedStateProvider,
       deps: [OBSERVABLE_MEMORY_STORAGE],
-    },
-    {
+    }),
+    useClass({
       provide: StateProvider,
       useClass: DefaultStateProvider,
       deps: [
@@ -945,8 +949,8 @@ import { ModalService } from "./modal.service";
         GlobalStateProvider,
         DerivedStateProvider,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: OrganizationBillingServiceAbstraction,
       useClass: OrganizationBillingService,
       deps: [
@@ -954,49 +958,48 @@ import { ModalService } from "./modal.service";
         EncryptService,
         I18nServiceAbstraction,
         OrganizationApiServiceAbstraction,
-        OrganizationServiceAbstraction,
-        StateProvider,
       ],
-    },
-    {
+    }),
+    useClass({
       provide: AutofillSettingsServiceAbstraction,
       useClass: AutofillSettingsService,
       deps: [StateProvider, PolicyServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: BadgeSettingsServiceAbstraction,
       useClass: BadgeSettingsService,
       deps: [StateProvider],
-    },
-    {
+    }),
+    useClass({
       provide: BiometricStateService,
       useClass: DefaultBiometricStateService,
       deps: [StateProvider],
-    },
-    {
+    }),
+    useClass({
       provide: VaultSettingsServiceAbstraction,
       useClass: VaultSettingsService,
       deps: [StateProvider],
-    },
-    {
+    }),
+    useClass({
       provide: MigrationRunner,
       useClass: MigrationRunner,
       deps: [AbstractStorageService, LogService, MigrationBuilderService],
-    },
-    {
+    }),
+    useClass({
       provide: MigrationBuilderService,
       useClass: MigrationBuilderService,
-    },
-    {
+      deps: [],
+    }),
+    useClass({
       provide: BillingApiServiceAbstraction,
       useClass: BillingApiService,
       deps: [ApiServiceAbstraction],
-    },
-    {
+    }),
+    useClass({
       provide: PaymentMethodWarningsServiceAbstraction,
       useClass: PaymentMethodWarningsService,
       deps: [BillingApiServiceAbstraction, StateProvider],
-    },
+    }),
   ],
 })
 export class JslibServicesModule {}

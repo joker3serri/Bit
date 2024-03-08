@@ -42,4 +42,4 @@ export const LOCKED_CALLBACK = new SafeInjectionToken<(userId?: string) => Promi
 );
 export const LOCALES_DIRECTORY = new SafeInjectionToken<string>("LOCALES_DIRECTORY");
 export const SYSTEM_LANGUAGE = new SafeInjectionToken<string>("SYSTEM_LANGUAGE");
-export const LOG_MAC_FAILURES = new SafeInjectionToken<string>("LOG_MAC_FAILURES");
+export const LOG_MAC_FAILURES = new SafeInjectionToken<boolean>("LOG_MAC_FAILURES");
