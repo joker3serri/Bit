@@ -34,7 +34,7 @@ export class Policy extends Domain {
     return new Policy(new PolicyData(response));
   }
 
-  static fromListResponse(response: ListResponse<PolicyResponse>): Policy[] {
-    return response.data?.map((d) => Policy.fromResponse(d));
+  static fromListResponse(response: ListResponse<PolicyResponse>): Policy[] | undefined {
+    return response.data?.map((d) => Policy.fromResponse(d)) ?? undefined;
   }
 }
