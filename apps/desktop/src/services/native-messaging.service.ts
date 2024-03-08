@@ -9,6 +9,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -39,6 +40,7 @@ export class NativeMessagingService {
     private i18nService: I18nService,
     private messagingService: MessagingService,
     private stateService: StateService,
+    private biometricStateService: BiometricStateService,
     private nativeMessageHandler: NativeMessageHandlerService,
     private dialogService: DialogService,
     private ngZone: NgZone,
@@ -139,7 +141,11 @@ export class NativeMessagingService {
           return this.send({ command: "biometricUnlock", response: "not supported" }, appId);
         }
 
-        if (!(await this.stateService.getBiometricUnlock({ userId: message.userId }))) {
+        const biometricUnlockPromise =
+          message.userId == null
+            ? firstValueFrom(this.biometricStateService.biometricUnlockEnabled$)
+            : this.biometricStateService.getBiometricUnlockEnabled(message.userId as UserId);
+        if (!(await biometricUnlockPromise)) {
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.send({ command: "biometricUnlock", response: "not enabled" }, appId);

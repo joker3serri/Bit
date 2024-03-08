@@ -2,7 +2,6 @@ import { Jsonify } from "type-fest";
 
 import { OrganizationData } from "../../../admin-console/models/data/organization.data";
 import { PolicyData } from "../../../admin-console/models/data/policy.data";
-import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../../auth/models/domain/admin-auth-req-storable";
 import { KeyConnectorUserDecryptionOption } from "../../../auth/models/domain/user-decryption-options/key-connector-user-decryption-option";
@@ -94,7 +93,6 @@ export class AccountData {
   addEditCipherInfo?: AddEditCipherInfo;
   eventCollection?: EventData[];
   organizations?: { [id: string]: OrganizationData };
-  providers?: { [id: string]: ProviderData };
 
   static fromJSON(obj: DeepJsonify<AccountData>): AccountData {
     if (obj == null) {
@@ -175,6 +173,7 @@ export class AccountProfile {
   everBeenUnlocked?: boolean;
   hasPremiumPersonally?: boolean;
   hasPremiumFromOrganization?: boolean;
+  lastSync?: string;
   userId?: string;
   usesKeyConnector?: boolean;
   kdfIterations?: number;
@@ -193,9 +192,7 @@ export class AccountProfile {
 
 export class AccountSettings {
   autoConfirmFingerPrints?: boolean;
-  biometricUnlock?: boolean;
   defaultUriMatch?: UriMatchType;
-  disableBadgeCounter?: boolean;
   disableGa?: boolean;
   dontShowCardsCurrentTab?: boolean;
   dontShowIdentitiesCurrentTab?: boolean;

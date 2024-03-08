@@ -30,6 +30,10 @@ import {
   PlatformUtilsServiceInitOptions,
 } from "../../platform/background/service-factories/platform-utils-service.factory";
 import {
+  stateEventRunnerServiceFactory,
+  StateEventRunnerServiceInitOptions,
+} from "../../platform/background/service-factories/state-event-runner-service.factory";
+import {
   StateServiceInitOptions,
   stateServiceFactory,
 } from "../../platform/background/service-factories/state-service.factory";
@@ -72,7 +76,8 @@ export type VaultTimeoutServiceInitOptions = VaultTimeoutServiceFactoryOptions &
   SearchServiceInitOptions &
   StateServiceInitOptions &
   AuthServiceInitOptions &
-  VaultTimeoutSettingsServiceInitOptions;
+  VaultTimeoutSettingsServiceInitOptions &
+  StateEventRunnerServiceInitOptions;
 
 export function vaultTimeoutServiceFactory(
   cache: { vaultTimeoutService?: AbstractVaultTimeoutService } & CachedServices,
@@ -96,6 +101,7 @@ export function vaultTimeoutServiceFactory(
         await stateServiceFactory(cache, opts),
         await authServiceFactory(cache, opts),
         await vaultTimeoutSettingsServiceFactory(cache, opts),
+        await stateEventRunnerServiceFactory(cache, opts),
         opts.vaultTimeoutServiceOptions.lockedCallback,
         opts.vaultTimeoutServiceOptions.loggedOutCallback,
       ),

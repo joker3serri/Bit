@@ -18,6 +18,7 @@ import {
 } from "../../background/service-factories/log-service.factory";
 import { BrowserCryptoService } from "../../services/browser-crypto.service";
 
+import { biometricStateServiceFactory } from "./biometric-state-service.factory";
 import {
   cryptoFunctionServiceFactory,
   CryptoFunctionServiceInitOptions,
@@ -66,6 +67,7 @@ export function cryptoServiceFactory(
         await stateServiceFactory(cache, opts),
         await accountServiceFactory(cache, opts),
         await stateProviderFactory(cache, opts),
+        await biometricStateServiceFactory(cache, opts),
       ),
   );
 }

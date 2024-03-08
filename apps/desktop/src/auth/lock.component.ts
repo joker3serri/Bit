@@ -178,7 +178,7 @@ export class LockComponent extends BaseLockComponent {
       return;
     }
 
-    if (await this.stateService.getBiometricUnlock()) {
+    if (await firstValueFrom(this.biometricStateService.biometricUnlockEnabled$)) {
       const response = await this.dialogService.openSimpleDialog({
         title: { key: "windowsBiometricUpdateWarningTitle" },
         content: { key: "windowsBiometricUpdateWarning" },

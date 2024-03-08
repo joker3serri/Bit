@@ -110,7 +110,7 @@ export class LockComponent extends BaseLockComponent {
 
   async ngOnInit() {
     await super.ngOnInit();
-    const disableAutoBiometricsPrompt = await firstValueFrom(
+    const autoBiometricsPrompt = await firstValueFrom(
       this.biometricStateService.promptAutomatically$,
     );
 
@@ -118,7 +118,7 @@ export class LockComponent extends BaseLockComponent {
       document.getElementById(this.pinEnabled ? "pin" : "masterPassword")?.focus();
       if (
         this.biometricLock &&
-        !disableAutoBiometricsPrompt &&
+        autoBiometricsPrompt &&
         this.isInitialLockScreen &&
         (await this.authService.getAuthStatus()) === AuthenticationStatus.Locked
       ) {
