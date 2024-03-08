@@ -248,43 +248,10 @@ import { ModalService } from "./modal.service";
 @NgModule({
   declarations: [],
   providers: [
-    // typesafe!
-    useClass({
-      provide: PolicyApiServiceAbstraction,
-      useClass: PolicyApiService,
-      deps: [InternalPolicyService, ApiServiceAbstraction],
-    }),
-
-    // Something more complex
-    useClass({
-      provide: SyncServiceAbstraction,
-      useClass: SyncService,
-      deps: [
-        ApiServiceAbstraction,
-        SettingsServiceAbstraction,
-        InternalFolderService, // Fixed! Was not injecting the Internal service
-        CipherServiceAbstraction,
-        CryptoServiceAbstraction,
-        CollectionServiceAbstraction,
-        MessagingServiceAbstraction,
-        InternalPolicyService, // Fixed! Was not injecting the Internal service
-        InternalSendService, // Fixed! Was not injecting the Internal service
-        LogService,
-        KeyConnectorServiceAbstraction,
-        StateServiceAbstraction,
-        ProviderServiceAbstraction,
-        FolderApiServiceAbstraction,
-        InternalOrganizationServiceAbstraction, // Fixed! Was not injecting the Internal service
-        SendApiServiceAbstraction,
-        LOGOUT_CALLBACK,
-      ],
-    }),
-
     AuthGuard,
     UnauthGuard,
     ModalService,
     PasswordRepromptService,
-
     { provide: WINDOW, useValue: window },
     {
       provide: LOCALE_ID,
@@ -540,6 +507,29 @@ import { ModalService } from "./modal.service";
       useClass: SendApiService,
       deps: [ApiServiceAbstraction, FileUploadServiceAbstraction, SendServiceAbstraction],
     },
+    useClass({
+      provide: SyncServiceAbstraction,
+      useClass: SyncService,
+      deps: [
+        ApiServiceAbstraction,
+        SettingsServiceAbstraction,
+        InternalFolderService,
+        CipherServiceAbstraction,
+        CryptoServiceAbstraction,
+        CollectionServiceAbstraction,
+        MessagingServiceAbstraction,
+        InternalPolicyService,
+        InternalSendService,
+        LogService,
+        KeyConnectorServiceAbstraction,
+        StateServiceAbstraction,
+        ProviderServiceAbstraction,
+        FolderApiServiceAbstraction,
+        InternalOrganizationServiceAbstraction,
+        SendApiServiceAbstraction,
+        LOGOUT_CALLBACK,
+      ],
+    }),
     { provide: BroadcasterServiceAbstraction, useClass: BroadcasterService },
     {
       provide: SettingsServiceAbstraction,
@@ -701,11 +691,11 @@ import { ModalService } from "./modal.service";
       provide: InternalPolicyService,
       useExisting: PolicyServiceAbstraction,
     },
-    {
+    useClass({
       provide: PolicyApiServiceAbstraction,
       useClass: PolicyApiService,
       deps: [InternalPolicyService, ApiServiceAbstraction],
-    },
+    }),
     {
       provide: KeyConnectorServiceAbstraction,
       useClass: KeyConnectorService,
