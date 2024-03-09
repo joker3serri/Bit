@@ -11,7 +11,7 @@ import {
 } from "rxjs";
 
 import { UserId } from "../../../types/guid";
-import { StateUpdateOptions, populateOptionsWithDefault } from "../state-update-options";
+import { StateUpdateOptions } from "../state-update-options";
 import { UserKeyDefinition } from "../user-key-definition";
 import { ActiveUserState, CombinedState, activeMarker } from "../user-state";
 import { SingleUserStateProvider } from "../user-state.provider";
@@ -44,23 +44,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
   async update<TCombine>(
     configureState: (state: T, dependency: TCombine) => T,
     options: StateUpdateOptions<T, TCombine> = {},
-  ): Promise<[UserId, T]> {
-    options = populateOptionsWithDefault(options);
-    try {
-      if (this.updatePromise != null) {
-        await this.updatePromise;
-      }
-      this.updatePromise = this.internalUpdate(configureState, options);
-      const [userId, newState] = await this.updatePromise;
-      return [userId, newState];
-    } finally {
-      this.updatePromise = null;
-    }
-  }
-
-  private async internalUpdate<TCombine>(
-    configureState: (state: T, dependency: TCombine) => T,
-    options: StateUpdateOptions<T, TCombine>,
   ): Promise<[UserId, T]> {
     const userId = await firstValueFrom(
       this.activeUserId$.pipe(
