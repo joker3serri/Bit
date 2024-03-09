@@ -25,12 +25,32 @@ export abstract class StateProvider {
    *
    * @remarks If userId is falsy the observable returned will point to the currently active user _and not update if the active user changes_.
    * This is different to how `getActive` works and more similar to `getUser` for whatever user happens to be active at the time of the call.
+   * If no user happens to be active at the time this method is called with a falsy userId then this observable will never emit a value until
+   * a user becomes active. If you are not confident a user is active at the time this method is called, you may want to pipe a call to `timeout`
+   * or instead call {@link getUserStateOrDefault$} and supply a value you would rather have given in the case of no passed in userId and no active user.
    *
    * @param keyDefinition - The key definition for the state you want to get.
    * @param userId - The userId for which you want the state for. If not provided, the state for the currently active user will be returned.
    */
-  getUserState$: <T>(keyDefinition: KeyDefinition<T>, userId?: UserId) => Observable<T>;
+  getUserState$: <T>(
+    keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
+    userId?: UserId,
+  ) => Observable<T>;
 
+  /**
+   * Gets a state observable for a given key and userId
+   *
+   * @remarks If userId is falsy the observable return will point to the currently active user but will not follow subsequent active user changes,
+   * if there is no immediately available active user, then it will fallback to returning a default value in an observable.
+   *
+   * @param keyDefinition - The key definition for the state you want to get.
+   * @param config.userId - The userId for which you want the state for. If not provided, the state for the currently active user will be returned.
+   * @param config.defaultValue - The default value that should be wrapped in an observable if no active user is immediately available and no truthy userId is passed in.
+   */
+  getUserStateOrDefault$: <T>(
+    keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
+    config: { userId: UserId | undefined; defaultValue?: T },
+  ) => Observable<T>;
   /**
    * Sets the state for a given key and userId.
    *
