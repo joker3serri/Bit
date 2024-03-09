@@ -51,7 +51,7 @@ describe("EnvironmentService", () => {
     );
     stateProvider = new DefaultStateProvider(
       new DefaultActiveUserStateProvider(accountService, singleUserStateProvider),
-      new DefaultSingleUserStateProvider(storageServiceProvider, stateEventRegistrarService),
+      singleUserStateProvider,
       new DefaultGlobalStateProvider(storageServiceProvider),
       new DefaultDerivedStateProvider(memoryStorageService),
     );
