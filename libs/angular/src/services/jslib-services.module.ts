@@ -917,7 +917,7 @@ import { ModalService } from "./modal.service";
     {
       provide: ActiveUserStateProvider,
       useClass: DefaultActiveUserStateProvider,
-      deps: [AccountServiceAbstraction, StorageServiceProvider, StateEventRegistrarService],
+      deps: [AccountServiceAbstraction, SingleUserStateProvider],
     },
     {
       provide: SingleUserStateProvider,
