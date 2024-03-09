@@ -1,3 +1,5 @@
+import { EOL } from "os";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -73,7 +75,7 @@ export class GetCommand extends DownloadCommand {
       case "username":
         return await this.getUsername(id);
       case "password":
-        return await this.getPassword(id);
+        return await this.getPassword(id, normalizedOptions);
       case "uri":
         return await this.getUri(id);
       case "totp":
@@ -81,7 +83,7 @@ export class GetCommand extends DownloadCommand {
       case "notes":
         return await this.getNotes(id);
       case "exposed":
-        return await this.getExposed(id);
+        return await this.getExposed(id, normalizedOptions);
       case "attachment":
         return await this.getAttachment(id, normalizedOptions);
       case "folder":
@@ -176,7 +178,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getPassword(id: string) {
+  private async getPassword(id: string, options: Options) {
     const cipherResponse = await this.getCipher(
       id,
       (c) => c.type === CipherType.Login && !Utils.isNullOrWhitespace(c.login.password),
@@ -194,7 +196,14 @@ export class GetCommand extends DownloadCommand {
       return Response.error("No password available for this login.");
     }
 
-    const res = new StringResponse(cipher.login.password);
+    if (options.characters.some((x) => x > cipher.login.password.length)) {
+      return Response.error("All selected characters must fall within the length of the password.");
+    }
+    const pwd =
+      options.characters.length > 0
+        ? options.characters.map((x: number) => `${x}: ${cipher.login.password[x - 1]}`).join(EOL)
+        : cipher.login.password;
+    const res = new StringResponse(pwd);
     return Response.success(res);
   }
 
@@ -282,8 +291,8 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getExposed(id: string) {
-    const passwordResponse = await this.getPassword(id);
+  private async getExposed(id: string, options: Options) {
+    const passwordResponse = await this.getPassword(id, options);
     if (!passwordResponse.success) {
       return passwordResponse;
     }
@@ -548,10 +557,16 @@ class Options {
   itemId: string;
   organizationId: string;
   output: string;
+  characters: Array<number>;
 
   constructor(passedOptions: Record<string, any>) {
     this.organizationId = passedOptions?.organizationid || passedOptions?.organizationId;
     this.itemId = passedOptions?.itemid || passedOptions?.itemId;
     this.output = passedOptions?.output;
+    this.characters =
+      passedOptions?.characters
+        ?.split(",")
+        .map((item: string) => parseInt(item, 10))
+        .filter((x: number) => !isNaN(x)) ?? [];
   }
 }

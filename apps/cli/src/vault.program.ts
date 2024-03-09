@@ -148,6 +148,7 @@ export class VaultProgram extends Program {
       .option("--itemid <itemid>", "Attachment's item id.")
       .option("--output <output>", "Output directory or filename for attachment.")
       .option("--organizationid <organizationid>", "Organization id for an organization object.")
+      .option("--characters <characters>", "selected characters to return from the item")
       .on("--help", () => {
         writeLn("\n  If raw output is specified and no output filename or directory is given for");
         writeLn("  an attachment query, the attachment content is written to stdout.");
