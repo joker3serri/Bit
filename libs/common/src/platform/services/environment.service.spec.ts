@@ -45,12 +45,12 @@ describe("EnvironmentService", () => {
     storageServiceProvider = new StorageServiceProvider(diskStorageService, memoryStorageService);
 
     accountService = mockAccountServiceWith(undefined);
+    const singleUserStateProvider = new DefaultSingleUserStateProvider(
+      storageServiceProvider,
+      stateEventRegistrarService,
+    );
     stateProvider = new DefaultStateProvider(
-      new DefaultActiveUserStateProvider(
-        accountService,
-        storageServiceProvider,
-        stateEventRegistrarService,
-      ),
+      new DefaultActiveUserStateProvider(accountService, singleUserStateProvider),
       new DefaultSingleUserStateProvider(storageServiceProvider, stateEventRegistrarService),
       new DefaultGlobalStateProvider(storageServiceProvider),
       new DefaultDerivedStateProvider(memoryStorageService),
