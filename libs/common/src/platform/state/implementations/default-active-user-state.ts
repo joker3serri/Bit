@@ -6,7 +6,6 @@ import {
   timeout,
   throwError,
   NEVER,
-  tap,
   filter,
 } from "rxjs";
 
@@ -18,8 +17,6 @@ import { SingleUserStateProvider } from "../user-state.provider";
 
 export class DefaultActiveUserState<T> implements ActiveUserState<T> {
   [activeMarker]: true;
-  private updatePromise: Promise<[UserId, T]> | null = null;
-
   combinedState$: Observable<CombinedState<T>>;
   state$: Observable<T>;
 
@@ -29,7 +26,6 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
     private singleUserStateProvider: SingleUserStateProvider,
   ) {
     this.combinedState$ = this.activeUserId$.pipe(
-      tap(() => (this.updatePromise = null)),
       switchMap((userId) =>
         userId != null
           ? this.singleUserStateProvider.get(userId, this.keyDefinition).combinedState$
