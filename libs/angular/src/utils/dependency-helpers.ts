@@ -39,26 +39,26 @@ type SafeValueProvider<A extends SafeInjectionToken<any>, V extends SafeInjectio
   useValue: V;
 };
 
-type FunctionOrConstructorParameters<T> =
-  T extends Constructor<any>
-    ? ConstructorParameters<T>
-    : T extends (...args: any) => any
-      ? Parameters<T>
-      : never;
+/**
+ * Represents a dependency provided with the useFactory option where a SafeInjectionToken is used as the token.
+ */
+type SafeFactoryProviderWithToken<
+  A extends SafeInjectionToken<any>,
+  I extends (...args: any) => InstanceType<SafeInjectionTokenType<A>>,
+  D extends MapParametersToDeps<Parameters<I>>,
+> = {
+  provide: A;
+  useFactory: I;
+  deps: D;
+};
 
 /**
- * Represents a dependency provided with the useFactory option.
+ * Represents a dependency provided with the useFactory option where an abstract class is used as the token.
  */
-type SafeFactoryProvider<
-  A extends SafeInjectionToken<any> | AbstractConstructor<any>,
-  I extends (
-    ...args: any
-  ) => A extends SafeInjectionToken<any>
-    ? SafeInjectionTokenType<A>
-    : A extends AbstractConstructor<any>
-      ? InstanceType<A>
-      : never,
-  D extends MapParametersToDeps<FunctionOrConstructorParameters<I>>,
+type SafeFactoryProviderWithClass<
+  A extends AbstractConstructor<any>,
+  I extends (...args: any) => InstanceType<A>,
+  D extends MapParametersToDeps<Parameters<I>>,
 > = {
   provide: A;
   useFactory: I;
@@ -83,20 +83,22 @@ type SafeExistingProvider<
  * @returns The exact same object without modification (pass-through).
  */
 export const safeProvider = <
+  // types for useClass
   AClass extends AbstractConstructor<any>,
   IClass extends Constructor<InstanceType<AClass>>,
   DClass extends MapParametersToDeps<ConstructorParameters<IClass>>,
+  // types for useValue
   AValue extends SafeInjectionToken<any>,
   VValue extends SafeInjectionTokenType<AValue>,
-  AFactory extends SafeInjectionToken<any> | AbstractConstructor<any>,
-  IFactory extends (
-    ...args: any
-  ) => AFactory extends SafeInjectionToken<any>
-    ? SafeInjectionTokenType<AFactory>
-    : AFactory extends AbstractConstructor<any>
-      ? InstanceType<AFactory>
-      : never,
-  DFactory extends MapParametersToDeps<FunctionOrConstructorParameters<IFactory>>,
+  // types for useFactoryWithToken
+  AFactoryToken extends SafeInjectionToken<any>,
+  IFactoryToken extends (...args: any) => InstanceType<SafeInjectionTokenType<AFactoryToken>>,
+  DFactoryToken extends MapParametersToDeps<Parameters<IFactoryToken>>,
+  // types for useFactoryWithClass
+  AFactoryClass extends AbstractConstructor<any>,
+  IFactoryClass extends (...args: any) => InstanceType<AFactoryClass>,
+  DFactoryClass extends MapParametersToDeps<Parameters<IFactoryClass>>,
+  // types for useExisting
   AExisting extends Constructor<any> | AbstractConstructor<any>,
   IExisting extends
     | Constructor<InstanceType<AExisting>>
@@ -105,7 +107,8 @@ export const safeProvider = <
   provider:
     | SafeClassProvider<AClass, IClass, DClass>
     | SafeValueProvider<AValue, VValue>
-    | SafeFactoryProvider<AFactory, IFactory, DFactory>
+    | SafeFactoryProviderWithToken<AFactoryToken, IFactoryToken, DFactoryToken>
+    | SafeFactoryProviderWithClass<AFactoryClass, IFactoryClass, DFactoryClass>
     | SafeExistingProvider<AExisting, IExisting>
     | Constructor<unknown>,
 ): SafeProvider => provider as SafeProvider;
