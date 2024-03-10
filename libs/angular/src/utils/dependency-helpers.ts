@@ -19,8 +19,7 @@ type MapParametersToDeps<T> = {
 type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : never;
 
 /**
- * Register a dependency in the providers array using the useClass option.
- * Guarantees that the values are type safe, e.g. you have correctly specified the deps for your implementation.
+ * Represents a dependency provided with the useClass option.
  */
 type SafeClassProvider<
   A extends AbstractConstructor<any>,
@@ -33,8 +32,7 @@ type SafeClassProvider<
 };
 
 /**
- * Register a dependency in the providers array using the useValue option.
- * Guarantees that the values are type safe, e.g. the value type matches the InjectionToken type.
+ * Represents a dependency provided with the useValue option.
  */
 type SafeValueProvider<A extends SafeInjectionToken<any>, V extends SafeInjectionTokenType<A>> = {
   provide: A;
@@ -49,8 +47,7 @@ type FunctionOrConstructorParameters<T> =
       : never;
 
 /**
- * Register a dependency in the providers array using the useFactory option.
- * Guarantees that the values are type safe, e.g. you have correctly specified the deps for your function.
+ * Represents a dependency provided with the useFactory option.
  */
 type SafeFactoryProvider<
   A extends SafeInjectionToken<any> | AbstractConstructor<any>,
@@ -69,8 +66,7 @@ type SafeFactoryProvider<
 };
 
 /**
- * Register a dependency in the providers array using the useExisting option.
- * Guarantees that the values are type safe, e.g. the interfaces of the two tokens match.
+ * Represents a dependency provided with the useExisting option.
  */
 type SafeExistingProvider<
   A extends Constructor<any> | AbstractConstructor<any>,
@@ -80,6 +76,12 @@ type SafeExistingProvider<
   useExisting: I;
 };
 
+/**
+ * A factory function that creates a provider for the ngModule providers array.
+ * This guarantees type safety for your provider definition. It does nothing at runtime.
+ * @param provider Your provider object in the usual shape (e.g. using useClass, useValue, useFactory, etc.)
+ * @returns The exact same object without modification (pass-through).
+ */
 export const safeProvider = <
   AClass extends AbstractConstructor<any>,
   IClass extends Constructor<InstanceType<AClass>>,
