@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { LOCALE_ID, NgModule } from "@angular/core";
-import { Constructor, UnwrapOpaque } from "type-fest";
+import { UnwrapOpaque } from "type-fest";
 
 import {
   AuthRequestServiceAbstraction,
@@ -254,11 +254,11 @@ import { ModalService } from "./modal.service";
  * of the same name. This ensures that your definition is typesafe.
  * If you need help please ask for it, do NOT change the type of this array.
  */
-const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
-  AuthGuard,
-  UnauthGuard,
-  ModalService,
-  PasswordRepromptService,
+const typesafeProviders: Array<SafeProvider> = [
+  safeProvider(AuthGuard),
+  safeProvider(UnauthGuard),
+  safeProvider(ModalService),
+  safeProvider(PasswordRepromptService),
   safeProvider({ provide: WINDOW, useValue: window }),
   safeProvider({
     provide: LOCALE_ID as SafeInjectionToken<string>,
