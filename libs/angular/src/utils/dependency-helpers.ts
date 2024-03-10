@@ -70,14 +70,11 @@ type SafeFactoryProvider<
 
 /**
  * Register a dependency in the providers array using the useExisting option.
- * Provides only limited type safety, be careful.
- * @remarks This is not fully type safe because we often use this to register for "Internal" variants where the
- * developer knows that the existing definition implements an extended interface, but this is not discoverable via the
- * type system.
+ * Guarantees that the values are type safe, e.g. the interfaces of the two tokens match.
  */
 type SafeExistingProvider<
   A extends Constructor<any> | AbstractConstructor<any>,
-  I extends Constructor<Partial<InstanceType<A>>> | AbstractConstructor<Partial<InstanceType<A>>>,
+  I extends Constructor<InstanceType<A>> | AbstractConstructor<InstanceType<A>>,
 > = {
   provide: A;
   useExisting: I;
@@ -100,8 +97,8 @@ export const safeProvider = <
   DFactory extends MapParametersToDeps<FunctionOrConstructorParameters<IFactory>>,
   AExisting extends Constructor<any> | AbstractConstructor<any>,
   IExisting extends
-    | Constructor<Partial<InstanceType<AExisting>>>
-    | AbstractConstructor<Partial<InstanceType<AExisting>>>,
+    | Constructor<InstanceType<AExisting>>
+    | AbstractConstructor<InstanceType<AExisting>>,
 >(
   provider:
     | SafeClassProvider<AClass, IClass, DClass>

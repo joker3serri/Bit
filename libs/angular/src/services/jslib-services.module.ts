@@ -395,7 +395,7 @@ const typesafeProviders: Array<SafeProvider> = [
     ],
   }),
   safeProvider({
-    provide: FolderServiceAbstraction,
+    provide: InternalFolderService,
     useClass: FolderService,
     deps: [
       CryptoServiceAbstraction,
@@ -406,8 +406,8 @@ const typesafeProviders: Array<SafeProvider> = [
     ],
   }),
   safeProvider({
-    provide: InternalFolderService,
-    useExisting: FolderServiceAbstraction,
+    provide: FolderServiceAbstraction,
+    useExisting: InternalFolderService,
   }),
   safeProvider({
     provide: FolderApiServiceAbstraction,
@@ -425,13 +425,13 @@ const typesafeProviders: Array<SafeProvider> = [
     ],
   }),
   safeProvider({
-    provide: AccountServiceAbstraction,
+    provide: InternalAccountService,
     useClass: AccountServiceImplementation,
     deps: [MessagingServiceAbstraction, LogService, GlobalStateProvider],
   }),
   safeProvider({
-    provide: InternalAccountService,
-    useExisting: AccountServiceAbstraction,
+    provide: AccountServiceAbstraction,
+    useExisting: InternalAccountService,
   }),
   safeProvider({
     provide: AccountUpdateServiceAbstraction,
@@ -505,11 +505,11 @@ const typesafeProviders: Array<SafeProvider> = [
     ],
   }),
   safeProvider({
-    provide: InternalSendService,
-    useExisting: SendServiceAbstraction,
+    provide: SendServiceAbstraction,
+    useExisting: InternalSendService,
   }),
   safeProvider({
-    provide: SendServiceAbstraction,
+    provide: InternalSendService,
     useClass: SendService,
     deps: [
       CryptoServiceAbstraction,
@@ -702,8 +702,8 @@ const typesafeProviders: Array<SafeProvider> = [
     deps: [StateProvider, OrganizationServiceAbstraction],
   }),
   safeProvider({
-    provide: InternalPolicyService,
-    useExisting: PolicyServiceAbstraction,
+    provide: PolicyServiceAbstraction,
+    useExisting: InternalPolicyService,
   }),
   safeProvider({
     provide: PolicyApiServiceAbstraction,
@@ -739,13 +739,13 @@ const typesafeProviders: Array<SafeProvider> = [
     ],
   }),
   safeProvider({
-    provide: OrganizationServiceAbstraction,
+    provide: InternalOrganizationServiceAbstraction,
     useClass: OrganizationService,
     deps: [StateServiceAbstraction, StateProvider],
   }),
   safeProvider({
-    provide: InternalOrganizationServiceAbstraction,
-    useExisting: OrganizationServiceAbstraction,
+    provide: OrganizationServiceAbstraction,
+    useExisting: InternalOrganizationServiceAbstraction,
   }),
   safeProvider({
     provide: OrganizationUserService,
@@ -838,13 +838,13 @@ const typesafeProviders: Array<SafeProvider> = [
     deps: [StateServiceAbstraction],
   }),
   safeProvider({
-    provide: OrgDomainServiceAbstraction,
+    provide: OrgDomainInternalServiceAbstraction,
     useClass: OrgDomainService,
     deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction],
   }),
   safeProvider({
-    provide: OrgDomainInternalServiceAbstraction,
-    useExisting: OrgDomainServiceAbstraction,
+    provide: OrgDomainServiceAbstraction,
+    useExisting: OrgDomainInternalServiceAbstraction,
   }),
   safeProvider({
     provide: OrgDomainApiServiceAbstraction,
