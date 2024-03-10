@@ -22,27 +22,24 @@ type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : nev
  * Register a dependency in the providers array using the useClass option.
  * Guarantees that the values are type safe, e.g. you have correctly specified the deps for your implementation.
  */
-export const useClass = <
-  A extends AbstractConstructor<any>, // A is an abstract class
-  I extends Constructor<InstanceType<A>>, // I is the implementation, it has a non-abstract ctor that returns a type that extends A
-  D extends MapParametersToDeps<ConstructorParameters<I>>, // accept an array of constructor types OR injection tokens matching ctor parameters
->(obj: {
+type SafeClassProvider<
+  A extends AbstractConstructor<any>,
+  I extends Constructor<InstanceType<A>>,
+  D extends MapParametersToDeps<ConstructorParameters<I>>,
+> = {
   provide: A;
   useClass: I;
   deps: D;
-}) => obj as Provider as SafeProvider;
+};
 
 /**
  * Register a dependency in the providers array using the useValue option.
  * Guarantees that the values are type safe, e.g. the value type matches the InjectionToken type.
  */
-export const useValue = <
-  A extends SafeInjectionToken<any>,
-  V extends SafeInjectionTokenType<A>,
->(obj: {
+type SafeValueProvider<A extends SafeInjectionToken<any>, V extends SafeInjectionTokenType<A>> = {
   provide: A;
   useValue: V;
-}) => obj as SafeProvider;
+};
 
 type FunctionOrConstructorParameters<T> =
   T extends Constructor<any>
@@ -55,7 +52,7 @@ type FunctionOrConstructorParameters<T> =
  * Register a dependency in the providers array using the useFactory option.
  * Guarantees that the values are type safe, e.g. you have correctly specified the deps for your function.
  */
-export const useFactory = <
+type SafeFactoryProvider<
   A extends SafeInjectionToken<any> | AbstractConstructor<any>,
   I extends (
     ...args: any
@@ -65,11 +62,11 @@ export const useFactory = <
       ? InstanceType<A>
       : never,
   D extends MapParametersToDeps<FunctionOrConstructorParameters<I>>,
->(obj: {
+> = {
   provide: A;
   useFactory: I;
   deps: D;
-}) => obj as unknown as SafeProvider; // prevented from casting to Provider because D can be 'never'
+};
 
 /**
  * Register a dependency in the providers array using the useExisting option.
@@ -78,10 +75,38 @@ export const useFactory = <
  * developer knows that the existing definition implements an extended interface, but this is not discoverable via the
  * type system.
  */
-export const useExisting = <
+type SafeExistingProvider<
   A extends Constructor<any> | AbstractConstructor<any>,
   I extends Constructor<Partial<InstanceType<A>>> | AbstractConstructor<Partial<InstanceType<A>>>,
->(obj: {
+> = {
   provide: A;
   useExisting: I;
-}) => obj as SafeProvider;
+};
+
+export const safeProvider = <
+  AClass extends AbstractConstructor<any>,
+  IClass extends Constructor<InstanceType<AClass>>,
+  DClass extends MapParametersToDeps<ConstructorParameters<IClass>>,
+  AValue extends SafeInjectionToken<any>,
+  VValue extends SafeInjectionTokenType<AValue>,
+  AFactory extends SafeInjectionToken<any> | AbstractConstructor<any>,
+  IFactory extends (
+    ...args: any
+  ) => AFactory extends SafeInjectionToken<any>
+    ? SafeInjectionTokenType<AFactory>
+    : AFactory extends AbstractConstructor<any>
+      ? InstanceType<AFactory>
+      : never,
+  DFactory extends MapParametersToDeps<FunctionOrConstructorParameters<IFactory>>,
+  AExisting extends Constructor<any> | AbstractConstructor<any>,
+  IExisting extends
+    | Constructor<Partial<InstanceType<AExisting>>>
+    | AbstractConstructor<Partial<InstanceType<AExisting>>>,
+>(
+  provider:
+    | SafeClassProvider<AClass, IClass, DClass>
+    | SafeValueProvider<AValue, VValue>
+    | SafeFactoryProvider<AFactory, IFactory, DFactory>
+    | SafeExistingProvider<AExisting, IExisting>
+    | Constructor<unknown>,
+): SafeProvider => provider as SafeProvider;

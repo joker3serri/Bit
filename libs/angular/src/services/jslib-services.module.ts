@@ -229,13 +229,7 @@ import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
-import {
-  SafeProvider,
-  useClass,
-  useExisting,
-  useFactory,
-  useValue,
-} from "../utils/dependency-helpers";
+import { safeProvider, SafeProvider } from "../utils/dependency-helpers";
 
 import {
   LOCALES_DIRECTORY,
@@ -265,60 +259,60 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
   UnauthGuard,
   ModalService,
   PasswordRepromptService,
-  useValue({ provide: WINDOW, useValue: window }),
-  useFactory({
+  safeProvider({ provide: WINDOW, useValue: window }),
+  safeProvider({
     provide: LOCALE_ID as SafeInjectionToken<string>,
     useFactory: (i18nService: I18nServiceAbstraction) => i18nService.translationLocale,
     deps: [I18nServiceAbstraction],
   }),
-  useValue({
+  safeProvider({
     provide: LOCALES_DIRECTORY,
     useValue: "./locales",
   }),
-  useFactory({
+  safeProvider({
     provide: SYSTEM_LANGUAGE,
     useFactory: (window: Window) => window.navigator.language,
     deps: [WINDOW],
   }),
-  useValue({
+  safeProvider({
     provide: STATE_FACTORY,
     useValue: new StateFactory(GlobalState, Account),
   }),
-  useValue({
+  safeProvider({
     provide: STATE_SERVICE_USE_CACHE,
     useValue: true,
   }),
-  useFactory({
+  safeProvider({
     provide: LOGOUT_CALLBACK,
     useFactory:
       (messagingService: MessagingServiceAbstraction) => (expired: boolean, userId?: string) =>
         Promise.resolve(messagingService.send("logout", { expired: expired, userId: userId })),
     deps: [MessagingServiceAbstraction],
   }),
-  useValue({
+  safeProvider({
     provide: LOCKED_CALLBACK,
     useValue: null,
   }),
-  useValue({
+  safeProvider({
     provide: LOG_MAC_FAILURES,
     useValue: true,
   }),
-  useClass({
+  safeProvider({
     provide: AppIdServiceAbstraction,
     useClass: AppIdService,
     deps: [AbstractStorageService],
   }),
-  useClass({
+  safeProvider({
     provide: AuditServiceAbstraction,
     useClass: AuditService,
     deps: [CryptoFunctionServiceAbstraction, ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: AuditServiceAbstraction,
     useClass: AuditService,
     deps: [CryptoFunctionServiceAbstraction, ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: AuthServiceAbstraction,
     useClass: AuthService,
     deps: [
@@ -328,7 +322,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       StateServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: LoginStrategyServiceAbstraction,
     useClass: LoginStrategyService,
     deps: [
@@ -351,17 +345,17 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       AuthRequestServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: FileUploadServiceAbstraction,
     useClass: FileUploadService,
     deps: [LogService],
   }),
-  useClass({
+  safeProvider({
     provide: CipherFileUploadServiceAbstraction,
     useClass: CipherFileUploadService,
     deps: [ApiServiceAbstraction, FileUploadServiceAbstraction],
   }),
-  useFactory({
+  safeProvider({
     provide: CipherServiceAbstraction,
     useFactory: (
       cryptoService: CryptoServiceAbstraction,
@@ -400,7 +394,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       ConfigServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: FolderServiceAbstraction,
     useClass: FolderService,
     deps: [
@@ -411,16 +405,16 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       StateProvider,
     ],
   }),
-  useExisting({
+  safeProvider({
     provide: InternalFolderService,
     useExisting: FolderServiceAbstraction,
   }),
-  useClass({
+  safeProvider({
     provide: FolderApiServiceAbstraction,
     useClass: FolderApiService,
     deps: [InternalFolderService, ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: AccountApiServiceAbstraction,
     useClass: AccountApiServiceImplementation,
     deps: [
@@ -430,47 +424,47 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       InternalAccountService,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: AccountServiceAbstraction,
     useClass: AccountServiceImplementation,
     deps: [MessagingServiceAbstraction, LogService, GlobalStateProvider],
   }),
-  useExisting({
+  safeProvider({
     provide: InternalAccountService,
     useExisting: AccountServiceAbstraction,
   }),
-  useClass({
+  safeProvider({
     provide: AccountUpdateServiceAbstraction,
     useClass: AvatarUpdateService,
     deps: [ApiServiceAbstraction, StateServiceAbstraction],
   }),
-  useFactory({ provide: LogService, useFactory: () => new ConsoleLogService(false), deps: [] }),
-  useClass({
+  safeProvider({ provide: LogService, useFactory: () => new ConsoleLogService(false), deps: [] }),
+  safeProvider({
     provide: CollectionServiceAbstraction,
     useClass: CollectionService,
     deps: [CryptoServiceAbstraction, I18nServiceAbstraction, StateProvider],
   }),
-  useClass({
+  safeProvider({
     provide: EnvironmentServiceAbstraction,
     useClass: EnvironmentService,
     deps: [StateProvider, AccountServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: TotpServiceAbstraction,
     useClass: TotpService,
     deps: [CryptoFunctionServiceAbstraction, LogService],
   }),
-  useClass({
+  safeProvider({
     provide: TokenServiceAbstraction,
     useClass: TokenService,
     deps: [StateServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: KeyGenerationServiceAbstraction,
     useClass: KeyGenerationService,
     deps: [CryptoFunctionServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: CryptoServiceAbstraction,
     useClass: CryptoService,
     deps: [
@@ -484,22 +478,22 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       StateProvider,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: PasswordStrengthServiceAbstraction,
     useClass: PasswordStrengthService,
     deps: [],
   }),
-  useClass({
+  safeProvider({
     provide: PasswordGenerationServiceAbstraction,
     useClass: PasswordGenerationService,
     deps: [CryptoServiceAbstraction, PolicyServiceAbstraction, StateServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: UsernameGenerationServiceAbstraction,
     useClass: UsernameGenerationService,
     deps: [CryptoServiceAbstraction, StateServiceAbstraction, ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: ApiServiceAbstraction,
     useClass: ApiService,
     deps: [
@@ -510,11 +504,11 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LOGOUT_CALLBACK,
     ],
   }),
-  useExisting({
+  safeProvider({
     provide: InternalSendService,
     useExisting: SendServiceAbstraction,
   }),
-  useClass({
+  safeProvider({
     provide: SendServiceAbstraction,
     useClass: SendService,
     deps: [
@@ -524,12 +518,12 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       StateServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: SendApiServiceAbstraction,
     useClass: SendApiService,
     deps: [ApiServiceAbstraction, FileUploadServiceAbstraction, InternalSendService],
   }),
-  useClass({
+  safeProvider({
     provide: SyncServiceAbstraction,
     useClass: SyncService,
     deps: [
@@ -552,13 +546,13 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LOGOUT_CALLBACK,
     ],
   }),
-  useClass({ provide: BroadcasterServiceAbstraction, useClass: BroadcasterService, deps: [] }),
-  useClass({
+  safeProvider({ provide: BroadcasterServiceAbstraction, useClass: BroadcasterService, deps: [] }),
+  safeProvider({
     provide: SettingsServiceAbstraction,
     useClass: SettingsService,
     deps: [StateServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: VaultTimeoutSettingsServiceAbstraction,
     useClass: VaultTimeoutSettingsService,
     deps: [
@@ -569,7 +563,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       BiometricStateService,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: VaultTimeoutService,
     useClass: VaultTimeoutService,
     deps: [
@@ -588,16 +582,16 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LOGOUT_CALLBACK,
     ],
   }),
-  useExisting({
+  safeProvider({
     provide: VaultTimeoutServiceAbstraction,
     useExisting: VaultTimeoutService,
   }),
-  useClass({
+  safeProvider({
     provide: SsoLoginServiceAbstraction,
     useClass: SsoLoginService,
     deps: [StateProvider],
   }),
-  useClass({
+  safeProvider({
     provide: StateServiceAbstraction,
     useClass: StateService,
     deps: [
@@ -612,12 +606,12 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       STATE_SERVICE_USE_CACHE,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: ImportApiServiceAbstraction,
     useClass: ImportApiService,
     deps: [ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: ImportServiceAbstraction,
     useClass: ImportService,
     deps: [
@@ -629,7 +623,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       CryptoServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: IndividualVaultExportServiceAbstraction,
     useClass: IndividualVaultExportService,
     deps: [
@@ -640,7 +634,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       StateServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: OrganizationVaultExportServiceAbstraction,
     useClass: OrganizationVaultExportService,
     deps: [
@@ -652,17 +646,17 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       CollectionServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: VaultExportServiceAbstraction,
     useClass: VaultExportService,
     deps: [IndividualVaultExportServiceAbstraction, OrganizationVaultExportServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: SearchServiceAbstraction,
     useClass: SearchService,
     deps: [LogService, I18nServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: NotificationsServiceAbstraction,
     useClass: devFlagEnabled("noopNotifications") ? NoopNotificationsService : NotificationsService,
     deps: [
@@ -677,22 +671,22 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       MessagingServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: CryptoFunctionServiceAbstraction,
     useClass: WebCryptoFunctionService,
     deps: [WINDOW],
   }),
-  useFactory({
+  safeProvider({
     provide: EncryptService,
     useFactory: encryptServiceFactory,
     deps: [CryptoFunctionServiceAbstraction, LogService, LOG_MAC_FAILURES],
   }),
-  useClass({
+  safeProvider({
     provide: EventUploadServiceAbstraction,
     useClass: EventUploadService,
     deps: [ApiServiceAbstraction, StateServiceAbstraction, LogService],
   }),
-  useClass({
+  safeProvider({
     provide: EventCollectionServiceAbstraction,
     useClass: EventCollectionService,
     deps: [
@@ -702,21 +696,21 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       EventUploadServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: PolicyServiceAbstraction,
     useClass: PolicyService,
     deps: [StateProvider, OrganizationServiceAbstraction],
   }),
-  useExisting({
+  safeProvider({
     provide: InternalPolicyService,
     useExisting: PolicyServiceAbstraction,
   }),
-  useClass({
+  safeProvider({
     provide: PolicyApiServiceAbstraction,
     useClass: PolicyApiService,
     deps: [InternalPolicyService, ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: KeyConnectorServiceAbstraction,
     useClass: KeyConnectorService,
     deps: [
@@ -730,7 +724,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LOGOUT_CALLBACK,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: UserVerificationServiceAbstraction,
     useClass: UserVerificationService,
     deps: [
@@ -744,21 +738,21 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       PlatformUtilsServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: OrganizationServiceAbstraction,
     useClass: OrganizationService,
     deps: [StateServiceAbstraction, StateProvider],
   }),
-  useExisting({
+  safeProvider({
     provide: InternalOrganizationServiceAbstraction,
     useExisting: OrganizationServiceAbstraction,
   }),
-  useClass({
+  safeProvider({
     provide: OrganizationUserService,
     useClass: OrganizationUserServiceImplementation,
     deps: [ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: PasswordResetEnrollmentServiceAbstraction,
     useClass: PasswordResetEnrollmentServiceImplementation,
     deps: [
@@ -769,32 +763,32 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       I18nServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: ProviderServiceAbstraction,
     useClass: ProviderService,
     deps: [StateProvider],
   }),
-  useClass({
+  safeProvider({
     provide: TwoFactorServiceAbstraction,
     useClass: TwoFactorService,
     deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: AbstractThemingService,
     useClass: ThemingService,
     deps: [StateServiceAbstraction, WINDOW, DOCUMENT as SafeInjectionToken<Document>],
   }),
-  useClass({
+  safeProvider({
     provide: FormValidationErrorsServiceAbstraction,
     useClass: FormValidationErrorsService,
     deps: [],
   }),
-  useClass({
+  safeProvider({
     provide: UserVerificationApiServiceAbstraction,
     useClass: UserVerificationApiService,
     deps: [ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: OrganizationApiServiceAbstraction,
     useClass: OrganizationApiService,
     // This is a slightly odd dependency tree for a specialized api service
@@ -803,12 +797,12 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
     // subscribes to sync notifications and will update itself based on that.
     deps: [ApiServiceAbstraction, SyncServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: SyncNotifierServiceAbstraction,
     useClass: SyncNotifierService,
     deps: [],
   }),
-  useClass({
+  safeProvider({
     provide: ConfigService,
     useClass: ConfigService,
     deps: [
@@ -819,55 +813,55 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LogService,
     ],
   }),
-  useExisting({
+  safeProvider({
     provide: ConfigServiceAbstraction,
     useExisting: ConfigService,
   }),
-  useClass({
+  safeProvider({
     provide: ConfigApiServiceAbstraction,
     useClass: ConfigApiService,
     deps: [ApiServiceAbstraction, AuthServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: AnonymousHubServiceAbstraction,
     useClass: AnonymousHubService,
     deps: [EnvironmentServiceAbstraction, LoginStrategyServiceAbstraction, LogService],
   }),
-  useClass({
+  safeProvider({
     provide: ValidationServiceAbstraction,
     useClass: ValidationService,
     deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: LoginServiceAbstraction,
     useClass: LoginService,
     deps: [StateServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: OrgDomainServiceAbstraction,
     useClass: OrgDomainService,
     deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction],
   }),
-  useExisting({
+  safeProvider({
     provide: OrgDomainInternalServiceAbstraction,
     useExisting: OrgDomainServiceAbstraction,
   }),
-  useClass({
+  safeProvider({
     provide: OrgDomainApiServiceAbstraction,
     useClass: OrgDomainApiService,
     deps: [OrgDomainInternalServiceAbstraction, ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: DevicesApiServiceAbstraction,
     useClass: DevicesApiServiceImplementation,
     deps: [ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: DevicesServiceAbstraction,
     useClass: DevicesServiceImplementation,
     deps: [DevicesApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: DeviceTrustCryptoServiceAbstraction,
     useClass: DeviceTrustCryptoService,
     deps: [
@@ -882,7 +876,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       PlatformUtilsServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: AuthRequestServiceAbstraction,
     useClass: AuthRequestService,
     deps: [
@@ -892,7 +886,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       StateServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: PinCryptoServiceAbstraction,
     useClass: PinCryptoService,
     deps: [
@@ -902,17 +896,17 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LogService,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: WebAuthnLoginPrfCryptoServiceAbstraction,
     useClass: WebAuthnLoginPrfCryptoService,
     deps: [CryptoFunctionServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: WebAuthnLoginApiServiceAbstraction,
     useClass: WebAuthnLoginApiService,
     deps: [ApiServiceAbstraction, EnvironmentServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: WebAuthnLoginServiceAbstraction,
     useClass: WebAuthnLoginService,
     deps: [
@@ -923,42 +917,42 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       LogService,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: StorageServiceProvider,
     useClass: StorageServiceProvider,
     deps: [OBSERVABLE_DISK_STORAGE, OBSERVABLE_MEMORY_STORAGE],
   }),
-  useClass({
+  safeProvider({
     provide: StateEventRegistrarService,
     useClass: StateEventRegistrarService,
     deps: [GlobalStateProvider, StorageServiceProvider],
   }),
-  useClass({
+  safeProvider({
     provide: StateEventRunnerService,
     useClass: StateEventRunnerService,
     deps: [GlobalStateProvider, StorageServiceProvider],
   }),
-  useClass({
+  safeProvider({
     provide: GlobalStateProvider,
     useClass: DefaultGlobalStateProvider,
     deps: [StorageServiceProvider],
   }),
-  useClass({
+  safeProvider({
     provide: ActiveUserStateProvider,
     useClass: DefaultActiveUserStateProvider,
     deps: [AccountServiceAbstraction, StorageServiceProvider, StateEventRegistrarService],
   }),
-  useClass({
+  safeProvider({
     provide: SingleUserStateProvider,
     useClass: DefaultSingleUserStateProvider,
     deps: [StorageServiceProvider, StateEventRegistrarService],
   }),
-  useClass({
+  safeProvider({
     provide: DerivedStateProvider,
     useClass: DefaultDerivedStateProvider,
     deps: [OBSERVABLE_MEMORY_STORAGE],
   }),
-  useClass({
+  safeProvider({
     provide: StateProvider,
     useClass: DefaultStateProvider,
     deps: [
@@ -968,7 +962,7 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       DerivedStateProvider,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: OrganizationBillingServiceAbstraction,
     useClass: OrganizationBillingService,
     deps: [
@@ -978,42 +972,42 @@ const typesafeProviders: Array<SafeProvider | Constructor<any>> = [
       OrganizationApiServiceAbstraction,
     ],
   }),
-  useClass({
+  safeProvider({
     provide: AutofillSettingsServiceAbstraction,
     useClass: AutofillSettingsService,
     deps: [StateProvider, PolicyServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: BadgeSettingsServiceAbstraction,
     useClass: BadgeSettingsService,
     deps: [StateProvider],
   }),
-  useClass({
+  safeProvider({
     provide: BiometricStateService,
     useClass: DefaultBiometricStateService,
     deps: [StateProvider],
   }),
-  useClass({
+  safeProvider({
     provide: VaultSettingsServiceAbstraction,
     useClass: VaultSettingsService,
     deps: [StateProvider],
   }),
-  useClass({
+  safeProvider({
     provide: MigrationRunner,
     useClass: MigrationRunner,
     deps: [AbstractStorageService, LogService, MigrationBuilderService],
   }),
-  useClass({
+  safeProvider({
     provide: MigrationBuilderService,
     useClass: MigrationBuilderService,
     deps: [],
   }),
-  useClass({
+  safeProvider({
     provide: BillingApiServiceAbstraction,
     useClass: BillingApiService,
     deps: [ApiServiceAbstraction],
   }),
-  useClass({
+  safeProvider({
     provide: PaymentMethodWarningsServiceAbstraction,
     useClass: PaymentMethodWarningsService,
     deps: [BillingApiServiceAbstraction, StateProvider],
