@@ -249,9 +249,8 @@ import {
 import { ModalService } from "./modal.service";
 
 /**
- * An array of provider definitions used in the ngModule.
- * If you want to use useValue, useFactory, useClass or useExisting options, you MUST use one of the helper functions
- * of the same name. This ensures that your definition is typesafe.
+ * Provider definitions used in the ngModule.
+ * Add your provider definition here using the safeProvider function as a wrapper. This will give you type safety.
  * If you need help please ask for it, do NOT change the type of this array.
  */
 const typesafeProviders: Array<SafeProvider> = [
@@ -1026,7 +1025,7 @@ function encryptServiceFactory(
 
 @NgModule({
   declarations: [],
-  // Do not register your dependency here! Add it to the typesafeProviders array using a helper function
+  // Do not register your dependency here! Add it to the typesafeProviders array using the helper function
   providers: typesafeProviders as UnwrapOpaque<SafeProvider>[],
 })
 export class JslibServicesModule {}
