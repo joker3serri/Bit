@@ -814,6 +814,7 @@ export default class MainBackground {
       this.stateService,
       this.autofillSettingsService,
       this.vaultTimeoutSettingsService,
+      this.biometricStateService,
     );
 
     // Other fields
@@ -949,6 +950,7 @@ export default class MainBackground {
     if (!this.popupOnlyContext) {
       this.mainContextMenuHandler = new MainContextMenuHandler(
         this.stateService,
+        this.autofillSettingsService,
         this.i18nService,
         this.logService,
       );
