@@ -7,7 +7,7 @@ import {
   ANONYMOUS_APP_ID_KEY,
   APP_ID_KEY,
   AppIdMigrator,
-} from "./30-move-app-id-to-state-providers";
+} from "./32-move-app-id-to-state-providers";
 
 function exampleJSON() {
   return {
@@ -51,8 +51,8 @@ describe("AppIdMigrator", () => {
 
   describe("migrate with both ids", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 29);
-      sut = new AppIdMigrator(29, 30);
+      helper = mockMigrationHelper(exampleJSON(), 31);
+      sut = new AppIdMigrator(31, 32);
     });
 
     it("removes appId", async () => {
@@ -78,8 +78,8 @@ describe("AppIdMigrator", () => {
 
   describe("migrate with missing appId", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(missingAppIdJSON(), 29);
-      sut = new AppIdMigrator(29, 30);
+      helper = mockMigrationHelper(missingAppIdJSON(), 31);
+      sut = new AppIdMigrator(31, 32);
     });
 
     it("does not set appId", async () => {
@@ -105,8 +105,8 @@ describe("AppIdMigrator", () => {
 
   describe("migrate with missing anonymousAppId", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(missingAnonymousAppIdJSON(), 29);
-      sut = new AppIdMigrator(29, 30);
+      helper = mockMigrationHelper(missingAnonymousAppIdJSON(), 31);
+      sut = new AppIdMigrator(31, 32);
     });
 
     it("sets appId", async () => {
@@ -132,8 +132,8 @@ describe("AppIdMigrator", () => {
 
   describe("migrate with missing appId and anonymousAppId", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(missingBothJSON(), 29);
-      sut = new AppIdMigrator(29, 30);
+      helper = mockMigrationHelper(missingBothJSON(), 31);
+      sut = new AppIdMigrator(31, 32);
     });
 
     it("does not set appId", async () => {
@@ -159,8 +159,8 @@ describe("AppIdMigrator", () => {
 
   describe("rollback with both Ids", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 30);
-      sut = new AppIdMigrator(29, 30);
+      helper = mockMigrationHelper(rollbackJSON(), 32);
+      sut = new AppIdMigrator(31, 32);
     });
 
     it("removes appId", async () => {
@@ -186,8 +186,8 @@ describe("AppIdMigrator", () => {
 
   describe("rollback missing both Ids", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(missingBothJSON(), 30);
-      sut = new AppIdMigrator(29, 30);
+      helper = mockMigrationHelper(missingBothJSON(), 32);
+      sut = new AppIdMigrator(31, 32);
     });
 
     it("does not set appId for providers", async () => {
