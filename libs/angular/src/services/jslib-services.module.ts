@@ -696,7 +696,7 @@ const typesafeProviders: Array<SafeProvider> = [
     ],
   }),
   safeProvider({
-    provide: PolicyServiceAbstraction,
+    provide: InternalPolicyService,
     useClass: PolicyService,
     deps: [StateProvider, OrganizationServiceAbstraction],
   }),
