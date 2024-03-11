@@ -30,22 +30,6 @@ describe("OrganizationService", () => {
   }
 
   /**
-   * There are a few assertions in this spec that check for array equality
-   * but want to ignore a specific index that _should_ be different. This
-   * function takes two arrays, and an index. It checks for equality of the
-   * arrays, but splices out the specified index from both arrays first.
-   */
-  function isEqualExceptForIndex(x: any[], y: any[], indexToExclude: number) {
-    return (
-      JSON.stringify([
-        ...x.slice(0, indexToExclude - 1),
-        ...x.slice(indexToExclude + 1, x.length),
-      ]) ===
-      JSON.stringify([...y.slice(0, indexToExclude - 1), ...y.slice(indexToExclude + 1, y.length)])
-    );
-  }
-
-  /**
    * Builds a simple mock `OrganizationData[]` array that can be used in tests
    * to populate state.
    * @param count The number of organizations to populate the list with. The
@@ -229,13 +213,12 @@ describe("OrganizationService", () => {
       const result = await firstValueFrom(organizationService.organizations$);
       expect(result[indexToUpdate]).not.toEqual(new Organization(mockData[indexToUpdate]));
       expect(result[indexToUpdate].id).toEqual(new Organization(mockData[indexToUpdate]).id);
-      expect(
-        isEqualExceptForIndex(
-          result,
-          mockData.map((x) => new Organization(x)),
-          indexToUpdate,
-        ),
-      ).toBeTruthy();
+
+      // As an extra precaution lets ensure no other element of the array was
+      // modified.
+      delete result[indexToUpdate];
+      delete mockData[indexToUpdate];
+      expect(result).toEqual(mockData);
     });
 
     it("can also update an organization in state for a non-active user, if requested", async () => {
@@ -263,13 +246,12 @@ describe("OrganizationService", () => {
       expect(result[indexToUpdate].id).toEqual(
         new Organization(nonActiveUserMockOrganizations[indexToUpdate]).id,
       );
-      expect(
-        isEqualExceptForIndex(
-          result,
-          nonActiveUserMockOrganizations.map((x) => new Organization(x)),
-          indexToUpdate,
-        ),
-      ).toBeTruthy();
+
+      // As an extra precaution lets ensure no other element of the array was
+      // modified.
+      delete result[indexToUpdate];
+      delete nonActiveUserMockOrganizations[indexToUpdate];
+      expect(result).toEqual(nonActiveUserMockOrganizations.map((x) => new Organization(x)));
 
       // Just to be safe, lets make sure the active user didn't get updated
       // at all
