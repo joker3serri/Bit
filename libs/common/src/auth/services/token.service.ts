@@ -540,16 +540,22 @@ export class TokenService implements TokenServiceAbstraction {
     });
   }
 
-  async getTwoFactorToken(email: string): Promise<string> {
+  async getTwoFactorToken(email: string): Promise<string | null> {
     const emailTwoFactorTokenRecord: Record<string, string> = await firstValueFrom(
       this.emailTwoFactorTokenRecordGlobalState.state$,
     );
+
+    if (!emailTwoFactorTokenRecord) {
+      return null;
+    }
 
     return emailTwoFactorTokenRecord[email];
   }
 
   async clearTwoFactorToken(email: string): Promise<void> {
     await this.emailTwoFactorTokenRecordGlobalState.update((emailTwoFactorTokenRecord) => {
+      emailTwoFactorTokenRecord ??= {};
+
       emailTwoFactorTokenRecord[email] = null;
       return emailTwoFactorTokenRecord;
     });

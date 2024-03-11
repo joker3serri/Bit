@@ -127,9 +127,9 @@ export abstract class TokenService {
   /**
    * Gets the two factor token for the given email.
    * @param email The email to get the two factor token for.
-   * @returns A promise that resolves with the two factor token for the given email.
+   * @returns A promise that resolves with the two factor token for the given email or null if it isn't found.
    */
-  getTwoFactorToken: (email: string) => Promise<string>;
+  getTwoFactorToken: (email: string) => Promise<string | null>;
 
   /**
    * Clears the two factor token for the given email out of global state.
