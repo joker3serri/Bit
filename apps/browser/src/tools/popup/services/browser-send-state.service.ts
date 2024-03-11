@@ -1,37 +1,13 @@
 import { Observable, firstValueFrom } from "rxjs";
-import { Jsonify } from "type-fest";
 
-import {
-  ActiveUserState,
-  KeyDefinition,
-  BROWSER_SEND_MEMORY,
-  StateProvider,
-} from "@bitwarden/common/platform/state";
+import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
 
 import { BrowserComponentState } from "../../../models/browserComponentState";
 import { BrowserSendComponentState } from "../../../models/browserSendComponentState";
 
-export const BROWSER_SEND_COMPONENT = new KeyDefinition<BrowserSendComponentState>(
-  BROWSER_SEND_MEMORY,
-  "browser_send_component",
-  {
-    deserializer: (obj: Jsonify<BrowserSendComponentState>) =>
-      BrowserSendComponentState.fromJSON(obj),
-  },
-);
+import { BROWSER_SEND_COMPONENT, BROWSER_SEND_TYPE_COMPONENT } from "./key-definitions";
 
-export const BROWSER_SEND_TYPE_COMPONENT = new KeyDefinition<BrowserComponentState>(
-  BROWSER_SEND_MEMORY,
-  "browser_send_type_component",
-  {
-    deserializer: (obj: Jsonify<BrowserComponentState>) => BrowserComponentState.fromJSON(obj),
-  },
-);
-
-/** Retrieve and update the BrowserSendComponentState and the BrowserComponentState
- *  BrowserSendComponentState contains sends and the type count along with scroll position
- *  and search text.
- *  BrowserComponentState contains just scroll position and search text.
+/** Get or set the active user's component state for the Send browser component
  */
 export class BrowserSendStateService {
   browserSendComponentState$: Observable<BrowserSendComponentState>;
@@ -50,18 +26,32 @@ export class BrowserSendStateService {
     this.browserSendTypeComponentState$ = this.activeUserBrowserSendTypeComponentState.state$;
   }
 
+  /** Get the active user's browser send component state
+   *  @returns { BrowserSendComponentState } contains the sends and type counts along with the scroll position and search text for the
+   *  send component on the browser
+   */
   async getBrowserSendComponentState(): Promise<BrowserSendComponentState> {
     return await firstValueFrom(this.browserSendComponentState$);
   }
 
+  /** Set the active user's browser send component state
+   *  @param { BrowserSendComponentState } value sets the sends and type counts along with the scroll position and search text for
+   *  the send component on the browser
+   */
   async setBrowserSendComponentState(value: BrowserSendComponentState): Promise<void> {
     await this.activeUserBrowserSendComponentState.update(() => value);
   }
 
+  /** Get the active user's browser component state
+   *  @returns { BrowserComponentState } contains the scroll position and search text for the sends menu on the browser
+   */
   async getBrowserSendTypeComponentState(): Promise<BrowserComponentState> {
     return await firstValueFrom(this.browserSendTypeComponentState$);
   }
 
+  /** Set the active user's browser component state
+   *  @param { BrowserComponentState } value set the scroll position and search text for the send component on the browser
+   */
   async setBrowserSendTypeComponentState(value: BrowserComponentState): Promise<void> {
     await this.activeUserBrowserSendTypeComponentState.update(() => value);
   }
