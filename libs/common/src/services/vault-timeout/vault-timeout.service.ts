@@ -75,7 +75,6 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   }
 
   async lock(userId?: string): Promise<void> {
-    userId ??= (await firstValueFrom(this.accountService.activeAccount$)).id;
     const authed = await this.stateService.getIsAuthenticated({ userId: userId });
     if (!authed) {
       return;
@@ -89,7 +88,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       await this.logOut(userId);
     }
 
-    const currentUserId = await this.stateService.getUserId();
+    const currentUserId = (await firstValueFrom(this.accountService.activeAccount$)).id;
 
     if (userId == null || userId === currentUserId) {
       this.searchService.clearIndex();
@@ -97,11 +96,11 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       await this.collectionService.clearActiveUserCache();
     }
 
+    await this.masterPasswordService.setMasterKey(null, (userId ?? currentUserId) as UserId);
+
     await this.stateService.setEverBeenUnlocked(true, { userId: userId });
     await this.stateService.setUserKeyAutoUnlock(null, { userId: userId });
     await this.stateService.setCryptoMasterKeyAuto(null, { userId: userId });
-
-    await this.masterPasswordService.setMasterKey(null, userId as UserId);
 
     await this.cryptoService.clearUserKey(false, userId);
     await this.cryptoService.clearOrgKeys(true, userId);
