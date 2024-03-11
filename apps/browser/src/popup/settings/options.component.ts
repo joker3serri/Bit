@@ -5,6 +5,8 @@ import { AbstractThemingService } from "@bitwarden/angular/platform/services/the
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { BadgeSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/badge-settings.service";
+import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
+import { ClearClipboardDelaySetting } from "@bitwarden/common/autofill/types";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -12,7 +14,6 @@ import { ThemeType } from "@bitwarden/common/platform/enums";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { UriMatchType } from "@bitwarden/common/vault/enums";
 
-import { ClearClipboardDelaySetting } from "../../../../../apps/browser/src/autofill/constants";
 import { enableAccountSwitching } from "../../platform/flags";
 
 @Component({
@@ -47,6 +48,7 @@ export class OptionsComponent implements OnInit {
   constructor(
     private messagingService: MessagingService,
     private stateService: StateService,
+    private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private badgeSettingsService: BadgeSettingsServiceAbstraction,
     i18nService: I18nService,
@@ -95,12 +97,17 @@ export class OptionsComponent implements OnInit {
       this.autofillSettingsService.autofillOnPageLoadDefault$,
     );
 
-    this.enableAddLoginNotification = !(await this.stateService.getDisableAddLoginNotification());
+    this.enableAddLoginNotification = await firstValueFrom(
+      this.userNotificationSettingsService.enableAddedLoginPrompt$,
+    );
 
-    this.enableChangedPasswordNotification =
-      !(await this.stateService.getDisableChangedPasswordNotification());
+    this.enableChangedPasswordNotification = await firstValueFrom(
+      this.userNotificationSettingsService.enableChangedPasswordPrompt$,
+    );
 
-    this.enableContextMenuItem = !(await this.stateService.getDisableContextMenuItem());
+    this.enableContextMenuItem = await firstValueFrom(
+      this.autofillSettingsService.enableContextMenu$,
+    );
 
     this.showCardsCurrentTab = !(await this.stateService.getDontShowCardsCurrentTab());
     this.showIdentitiesCurrentTab = !(await this.stateService.getDontShowIdentitiesCurrentTab());
@@ -122,12 +129,14 @@ export class OptionsComponent implements OnInit {
   }
 
   async updateAddLoginNotification() {
-    await this.stateService.setDisableAddLoginNotification(!this.enableAddLoginNotification);
+    await this.userNotificationSettingsService.setEnableAddedLoginPrompt(
+      this.enableAddLoginNotification,
+    );
   }
 
   async updateChangedPasswordNotification() {
-    await this.stateService.setDisableChangedPasswordNotification(
-      !this.enableChangedPasswordNotification,
+    await this.userNotificationSettingsService.setEnableChangedPasswordPrompt(
+      this.enableChangedPasswordNotification,
     );
   }
 
@@ -136,7 +145,7 @@ export class OptionsComponent implements OnInit {
   }
 
   async updateContextMenuItem() {
-    await this.stateService.setDisableContextMenuItem(!this.enableContextMenuItem);
+    await this.autofillSettingsService.setEnableContextMenu(this.enableContextMenuItem);
     this.messagingService.send("bgUpdateContextMenu");
   }
 
