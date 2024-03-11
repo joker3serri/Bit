@@ -107,9 +107,15 @@ export abstract class LoginStrategy {
       return userProvidedTwoFactor;
     }
 
-    const storedTwoFactorToken = await this.tokenService.getTwoFactorToken(email);
-    if (storedTwoFactorToken != null) {
-      return new TokenTwoFactorRequest(TwoFactorProviderType.Remember, storedTwoFactorToken, false);
+    if (email) {
+      const storedTwoFactorToken = await this.tokenService.getTwoFactorToken(email);
+      if (storedTwoFactorToken != null) {
+        return new TokenTwoFactorRequest(
+          TwoFactorProviderType.Remember,
+          storedTwoFactorToken,
+          false,
+        );
+      }
     }
 
     return new TokenTwoFactorRequest();
