@@ -1,4 +1,4 @@
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
@@ -26,12 +26,10 @@ import { LogService } from "../../../platform/abstractions/log.service";
 import { MessagingService } from "../../../platform/abstractions/messaging.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { sequentialize } from "../../../platform/misc/sequentialize";
-import { KeyDefinition, StateProvider, SYNC_STATE } from "../../../platform/state";
 import { SendData } from "../../../tools/send/models/data/send.data";
 import { SendResponse } from "../../../tools/send/models/response/send.response";
 import { SendApiService } from "../../../tools/send/services/send-api.service.abstraction";
 import { InternalSendService } from "../../../tools/send/services/send.service.abstraction";
-import { UserId } from "../../../types/guid";
 import { CipherService } from "../../../vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "../../../vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService } from "../../../vault/abstractions/folder/folder.service.abstraction";
@@ -44,22 +42,8 @@ import { CollectionService } from "../../abstractions/collection.service";
 import { CollectionData } from "../../models/data/collection.data";
 import { CollectionDetailsResponse } from "../../models/response/collection.response";
 
-const LAST_SYNC_KEY = new KeyDefinition<string | null>(SYNC_STATE, "lastSync", {
-  deserializer: (value) => value,
-});
-
 export class SyncService implements SyncServiceAbstraction {
-  private lastSyncState = this.stateProvider.getActive(LAST_SYNC_KEY);
-
   syncInProgress = false;
-  lastSync$ = this.lastSyncState.state$.pipe(
-    map((value) => {
-      if (value == null) {
-        return null;
-      }
-      return new Date(value);
-    }),
-  );
 
   constructor(
     private apiService: ApiService,
@@ -79,20 +63,24 @@ export class SyncService implements SyncServiceAbstraction {
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
-    private stateProvider: StateProvider,
     private logoutCallback: (expired: boolean) => Promise<void>,
   ) {}
 
-  async getLastSync(): Promise<Date | null> {
-    return await firstValueFrom(this.lastSync$);
+  async getLastSync(): Promise<Date> {
+    if ((await this.stateService.getUserId()) == null) {
+      return null;
+    }
+
+    const lastSync = await this.stateService.getLastSync();
+    if (lastSync) {
+      return new Date(lastSync);
+    }
+
+    return null;
   }
 
-  async setLastSync(date: Date, userId?: UserId): Promise<any> {
-    if (userId !== undefined) {
-      await this.stateProvider.getUser(userId, LAST_SYNC_KEY).update(() => date.toJSON());
-    } else {
-      await this.lastSyncState.update(() => date.toJSON());
-    }
+  async setLastSync(date: Date, userId?: string): Promise<any> {
+    await this.stateService.setLastSync(date.toJSON(), { userId: userId });
   }
 
   @sequentialize(() => "fullSync")
@@ -334,14 +322,14 @@ export class SyncService implements SyncServiceAbstraction {
 
     await this.setForceSetPasswordReasonIfNeeded(response);
 
-    await this.syncProfileOrganizations(response);
-
     const providers: { [id: string]: ProviderData } = {};
     response.providers.forEach((p) => {
       providers[p.id] = new ProviderData(p);
     });
 
     await this.providerService.save(providers);
+
+    await this.syncProfileOrganizations(response);
 
     if (await this.keyConnectorService.userNeedsMigration()) {
       await this.keyConnectorService.setConvertAccountRequired(true);
