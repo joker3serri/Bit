@@ -307,11 +307,6 @@ const typesafeProviders: Array<SafeProvider> = [
     deps: [CryptoFunctionServiceAbstraction, ApiServiceAbstraction],
   }),
   safeProvider({
-    provide: AuditServiceAbstraction,
-    useClass: AuditService,
-    deps: [CryptoFunctionServiceAbstraction, ApiServiceAbstraction],
-  }),
-  safeProvider({
     provide: AuthServiceAbstraction,
     useClass: AuthService,
     deps: [
