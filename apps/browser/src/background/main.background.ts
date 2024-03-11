@@ -23,6 +23,7 @@ import { InternalPolicyService as InternalPolicyServiceAbstraction } from "@bitw
 import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/services/organization/organization.service";
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
+import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -175,7 +176,6 @@ import {
   VaultExportServiceAbstraction,
 } from "@bitwarden/vault-export-core";
 
-import { BrowserPolicyService } from "../admin-console/services/browser-policy.service";
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
 import OverlayBackground from "../autofill/background/overlay.background";
@@ -195,12 +195,12 @@ import { BrowserStateService as StateServiceAbstraction } from "../platform/serv
 import { BrowserConfigService } from "../platform/services/browser-config.service";
 import { BrowserCryptoService } from "../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
-import { BrowserI18nService } from "../platform/services/browser-i18n.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
 import BrowserMessagingPrivateModeBackgroundService from "../platform/services/browser-messaging-private-mode-background.service";
 import BrowserMessagingService from "../platform/services/browser-messaging.service";
 import BrowserPlatformUtilsService from "../platform/services/browser-platform-utils.service";
 import { BrowserStateService } from "../platform/services/browser-state.service";
+import I18nService from "../platform/services/i18n.service";
 import { LocalBackedSessionStorageService } from "../platform/services/local-backed-session-storage.service";
 import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
@@ -325,7 +325,7 @@ export default class MainBackground {
   popupOnlyContext: boolean;
 
   constructor(public isPrivateMode: boolean = false) {
-    this.popupOnlyContext = isPrivateMode || BrowserApi.manifestVersion === 3;
+    this.popupOnlyContext = isPrivateMode || BrowserApi.isManifestVersion(3);
 
     // Services
     const lockedCallback = async (userId?: string) => {
@@ -353,20 +353,18 @@ export default class MainBackground {
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
     this.secureStorageService = new BrowserLocalStorageService();
-    this.memoryStorageService =
-      BrowserApi.manifestVersion === 3
-        ? new LocalBackedSessionStorageService(
-            new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
-            this.keyGenerationService,
-          )
-        : new MemoryStorageService();
-    this.memoryStorageForStateProviders =
-      BrowserApi.manifestVersion === 3
-        ? new LocalBackedSessionStorageService(
-            new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
-            this.keyGenerationService,
-          )
-        : new BackgroundMemoryStorageService();
+    this.memoryStorageService = BrowserApi.isManifestVersion(3)
+      ? new LocalBackedSessionStorageService(
+          new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
+          this.keyGenerationService,
+        )
+      : new MemoryStorageService();
+    this.memoryStorageForStateProviders = BrowserApi.isManifestVersion(3)
+      ? new LocalBackedSessionStorageService(
+          new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
+          this.keyGenerationService,
+        )
+      : new BackgroundMemoryStorageService();
 
     const storageServiceProvider = new StorageServiceProvider(
       this.storageService as BrowserLocalStorageService,
@@ -462,9 +460,9 @@ export default class MainBackground {
           return promise.then((result) => result.response === "unlocked");
         }
       },
-      window,
+      self,
     );
-    this.i18nService = new BrowserI18nService(BrowserApi.getUILanguage(), this.stateService);
+    this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
     this.cryptoService = new BrowserCryptoService(
       this.keyGenerationService,
       this.cryptoFunctionService,
@@ -500,11 +498,7 @@ export default class MainBackground {
     );
     this.syncNotifierService = new SyncNotifierService();
     this.organizationService = new OrganizationService(this.stateProvider);
-    this.policyService = new BrowserPolicyService(
-      this.stateService,
-      this.stateProvider,
-      this.organizationService,
-    );
+    this.policyService = new PolicyService(this.stateProvider, this.organizationService);
     this.autofillSettingsService = new AutofillSettingsService(
       this.stateProvider,
       this.policyService,
@@ -817,6 +811,7 @@ export default class MainBackground {
       this.stateService,
       this.autofillSettingsService,
       this.vaultTimeoutSettingsService,
+      this.biometricStateService,
     );
 
     // Other fields
@@ -895,11 +890,11 @@ export default class MainBackground {
     );
     if (!this.popupOnlyContext) {
       const contextMenuClickedHandler = new ContextMenuClickedHandler(
-        (options) => this.platformUtilsService.copyToClipboard(options.text, { window: self }),
+        (options) => this.platformUtilsService.copyToClipboard(options.text),
         async (_tab) => {
           const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
           const password = await this.passwordGenerationService.generatePassword(options);
-          this.platformUtilsService.copyToClipboard(password, { window: window });
+          this.platformUtilsService.copyToClipboard(password);
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.passwordGenerationService.addHistory(password);
@@ -952,6 +947,7 @@ export default class MainBackground {
     if (!this.popupOnlyContext) {
       this.mainContextMenuHandler = new MainContextMenuHandler(
         this.stateService,
+        this.autofillSettingsService,
         this.i18nService,
         this.logService,
       );
@@ -970,7 +966,7 @@ export default class MainBackground {
     await this.stateService.init();
 
     await this.vaultTimeoutService.init(true);
-    await (this.i18nService as BrowserI18nService).init();
+    await (this.i18nService as I18nService).init();
     await (this.eventUploadService as EventUploadService).init(true);
     await this.runtimeBackground.init();
     await this.notificationBackground.init();
@@ -1141,7 +1137,7 @@ export default class MainBackground {
       await this.reseedStorage();
     }
 
-    if (BrowserApi.manifestVersion === 3) {
+    if (BrowserApi.isManifestVersion(3)) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       BrowserApi.sendMessage("updateBadge");
