@@ -5,6 +5,7 @@ import {
   combineLatest,
   concatMap,
   filter,
+  firstValueFrom,
   map,
   Observable,
   Subject,
@@ -133,8 +134,8 @@ export class Fido2Component implements OnInit, OnDestroy {
       concatMap(async (message) => {
         switch (message.type) {
           case "ConfirmNewCredentialRequest": {
-            const equivalentDomains = await this.domainSettingsService.getUrlEquivalentDomains(
-              this.url,
+            const equivalentDomains = await firstValueFrom(
+              this.domainSettingsService.getUrlEquivalentDomains(this.url),
             );
 
             this.ciphers = (await this.cipherService.getAllDecrypted()).filter(
@@ -319,7 +320,9 @@ export class Fido2Component implements OnInit, OnDestroy {
         this.ciphers,
       );
     } else {
-      const equivalentDomains = await this.domainSettingsService.getUrlEquivalentDomains(this.url);
+      const equivalentDomains = await firstValueFrom(
+        this.domainSettingsService.getUrlEquivalentDomains(this.url),
+      );
       this.displayedCiphers = this.ciphers.filter((cipher) =>
         cipher.login.matchesUri(this.url, equivalentDomains),
       );

@@ -362,7 +362,9 @@ export class CipherService implements CipherServiceAbstraction {
       return Promise.resolve([]);
     }
 
-    const equivalentDomains = await this.domainSettingsService.getUrlEquivalentDomains(url);
+    const equivalentDomains = await firstValueFrom(
+      this.domainSettingsService.getUrlEquivalentDomains(url),
+    );
     const ciphers = await this.getAllDecrypted();
     defaultMatch ??= await firstValueFrom(this.domainSettingsService.defaultUriMatchStrategy$);
 

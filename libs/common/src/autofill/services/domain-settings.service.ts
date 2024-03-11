@@ -1,4 +1,4 @@
-import { map, firstValueFrom, Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import {
   NeverDomains,
@@ -40,7 +40,7 @@ export abstract class DefaultDomainSettingsService {
   setEquivalentDomains: (newValue: EquivalentDomains) => Promise<void>;
   defaultUriMatchStrategy$: Observable<UriMatchStrategySetting>;
   setDefaultUriMatchStrategy: (newValue: UriMatchStrategySetting) => Promise<void>;
-  getUrlEquivalentDomains: (url: string) => Promise<Set<string>>;
+  getUrlEquivalentDomains: (url: string) => Observable<Set<string>>;
 }
 
 export class DomainSettingsService implements DefaultDomainSettingsService {
@@ -78,24 +78,20 @@ export class DomainSettingsService implements DefaultDomainSettingsService {
     await this.defaultUriMatchStrategyState.update(() => newValue);
   }
 
-  async getUrlEquivalentDomains(url: string): Promise<Set<string>> {
-    const domain = Utils.getDomain(url);
-    if (domain == null) {
-      return new Set();
-    }
+  getUrlEquivalentDomains(url: string): Observable<Set<string>> {
+    const domains$ = this.equivalentDomains$.pipe(
+      map((equivalentDomains) => {
+        const domain = Utils.getDomain(url);
+        if (domain == null || equivalentDomains == null) {
+          return new Set() as Set<string>;
+        }
 
-    const equivalentDomains = await firstValueFrom(this.equivalentDomains$);
+        const equivalents = equivalentDomains.filter((ed) => ed.includes(domain)).flat();
 
-    let result: string[] = [];
+        return new Set(equivalents);
+      }),
+    );
 
-    if (equivalentDomains != null) {
-      equivalentDomains
-        .filter((ed) => ed.length > 0 && ed.includes(domain))
-        .forEach((ed) => {
-          result = result.concat(ed);
-        });
-    }
-
-    return new Set(result);
+    return domains$;
   }
 }
