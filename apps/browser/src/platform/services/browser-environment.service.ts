@@ -1,4 +1,3 @@
-import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -10,7 +9,6 @@ import { StateProvider } from "@bitwarden/common/platform/state";
 import { GroupPolicyEnvironment } from "../../admin-console/types/group-policy-environment";
 import { devFlagEnabled, devFlagValue } from "../flags";
 
-@Injectable()
 export class BrowserEnvironmentService extends DefaultEnvironmentService {
   constructor(
     private logService: LogService,

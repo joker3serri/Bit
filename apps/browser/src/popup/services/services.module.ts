@@ -241,7 +241,11 @@ function getBgService<T>(service: keyof MainBackground) {
         new ConsoleLogService(platformUtilsService.isDev()),
       deps: [PlatformUtilsService],
     },
-    BrowserEnvironmentService,
+    {
+      provide: BrowserEnvironmentService,
+      useClass: BrowserEnvironmentService,
+      deps: [LogService, StateProvider, AccountServiceAbstraction],
+    },
     {
       provide: EnvironmentService,
       useExisting: BrowserEnvironmentService,
