@@ -331,7 +331,7 @@ function getBgService<T>(service: keyof MainBackground) {
               error: string;
             }>("biometricUnlock");
             if (!response.result) {
-              throw new Error(response.error);
+              throw response.error;
             }
             return response.result;
           },
