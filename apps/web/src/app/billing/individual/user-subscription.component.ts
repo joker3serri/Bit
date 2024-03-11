@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { lastValueFrom, Observable } from "rxjs";
+import { firstValueFrom, lastValueFrom, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SubscriptionResponse } from "@bitwarden/common/billing/models/response/subscription.response";
@@ -52,7 +52,7 @@ export class UserSubscriptionComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.cloudWebVaultUrl = await this.environmentService.getCloudWebVaultUrl();
+    this.cloudWebVaultUrl = await firstValueFrom(this.environmentService.cloudWebVaultUrl$);
     this.presentUserWithOffboardingSurvey$ = this.configService.getFeatureFlag$<boolean>(
       FeatureFlag.AC1607_PresentUserOffboardingSurvey,
     );

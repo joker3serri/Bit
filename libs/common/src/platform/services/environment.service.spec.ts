@@ -392,9 +392,9 @@ describe("EnvironmentService", () => {
     });
   });
 
-  describe("getCloudWebVaultUrl", () => {
+  describe("cloudWebVaultUrl$", () => {
     it("no extra initialization, returns US vault", async () => {
-      expect(await sut.getCloudWebVaultUrl()).toBe("https://vault.bitwarden.com");
+      expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe("https://vault.bitwarden.com");
     });
 
     it.each([
@@ -405,7 +405,7 @@ describe("EnvironmentService", () => {
       "no extra initialization, returns expected host for each region %s",
       async ({ region, expectedVault }) => {
         expect(await sut.setCloudRegion(region as CloudRegion));
-        expect(await sut.getCloudWebVaultUrl()).toBe(expectedVault);
+        expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe(expectedVault);
       },
     );
   });

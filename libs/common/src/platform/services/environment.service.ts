@@ -121,6 +121,7 @@ export class DefaultEnvironmentService implements EnvironmentService {
       return this.buildEnvironment(state?.region, state?.urls);
     }),
   );
+  cloudWebVaultUrl$: Observable<string>;
 
   constructor(
     private stateProvider: StateProvider,
@@ -128,6 +129,19 @@ export class DefaultEnvironmentService implements EnvironmentService {
   ) {
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
     this.activeCloudRegionState = this.stateProvider.getActive(CLOUD_REGION_KEY);
+
+    this.cloudWebVaultUrl$ = this.activeCloudRegionState.state$.pipe(
+      map((region) => {
+        if (region != null) {
+          const config = this.getRegionConfig(region);
+
+          if (config != null) {
+            return config.urls.webVault;
+          }
+        }
+        return DEFAULT_REGION_CONFIG.urls.webVault;
+      }),
+    );
   }
 
   availableRegions(): RegionConfig[] {
@@ -213,22 +227,6 @@ export class DefaultEnvironmentService implements EnvironmentService {
     }
 
     return new SelfHostedEnvironment(urls);
-  }
-
-  /**
-   * Attempts to get the cloud region from the active user state, falling back to the default region if not set.
-   */
-  async getCloudWebVaultUrl() {
-    const state = await firstValueFrom(this.activeCloudRegionState.state$);
-    if (state != null) {
-      const config = this.getRegionConfig(state);
-
-      if (config != null) {
-        return config.urls.webVault;
-      }
-    }
-
-    return DEFAULT_REGION_CONFIG.urls.webVault;
   }
 
   async setCloudRegion(region: CloudRegion) {

@@ -93,6 +93,7 @@ export interface Environment {
  */
 export abstract class EnvironmentService {
   abstract environment$: Observable<Environment>;
+  abstract cloudWebVaultUrl$: Observable<string>;
 
   /**
    * Retrieve all the available regions for environment selectors.
@@ -116,13 +117,6 @@ export abstract class EnvironmentService {
    */
   abstract seedUserEnvironment(userId: UserId): Promise<void>;
 
-  /**
-   * Retrieves the URL of the cloud web vault app.
-   *
-   * @returns The URL of the cloud web vault app.
-   * @remarks Use this method only in views exclusive to self-host instances.
-   */
-  abstract getCloudWebVaultUrl(): Promise<string>;
   /**
    * Sets the URL of the cloud web vault app based on the region parameter.
    *

@@ -1,4 +1,5 @@
 import { Directive, OnInit } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -26,7 +27,7 @@ export class PremiumComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.cloudWebVaultUrl = await this.environmentService.getCloudWebVaultUrl();
+    this.cloudWebVaultUrl = await firstValueFrom(this.environmentService.cloudWebVaultUrl$);
     this.isPremium = await this.stateService.getCanAccessPremium();
   }
 

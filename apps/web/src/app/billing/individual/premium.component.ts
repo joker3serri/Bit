@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -46,7 +47,7 @@ export class PremiumComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.cloudWebVaultUrl = await this.environmentService.getCloudWebVaultUrl();
+    this.cloudWebVaultUrl = await firstValueFrom(this.environmentService.cloudWebVaultUrl$);
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     const premiumPersonally = await this.stateService.getHasPremiumPersonally();
     if (premiumPersonally) {
