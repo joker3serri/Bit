@@ -27,7 +27,7 @@ type KeyDefinitionRequirements<T> = {
   cleanupDelayMs: number;
 };
 
-export class StateBase<T, KeyDef extends KeyDefinitionRequirements<T>> {
+export abstract class StateBase<T, KeyDef extends KeyDefinitionRequirements<T>> {
   private updatePromise: Promise<T>;
 
   readonly state$: Observable<T>;
@@ -92,13 +92,12 @@ export class StateBase<T, KeyDef extends KeyDefinitionRequirements<T>> {
     }
 
     const newState = configureState(currentState, combinedDependencies);
-    await this.storageService.save(this.key, newState);
-    await this.postStorageSave(newState, currentState);
+    await this.doStorageSave(newState, currentState);
     return newState;
   }
 
-  protected postStorageSave(newState: T, oldState: T): Promise<void> {
-    return Promise.resolve();
+  protected async doStorageSave(newState: T, oldState: T) {
+    await this.storageService.save(this.key, newState);
   }
 
   /** For use in update methods, does not wait for update to complete before yielding state.

@@ -27,7 +27,8 @@ export class DefaultSingleUserState<T>
     this.combinedState$ = combineLatest([of(userId), this.state$]);
   }
 
-  protected override async postStorageSave(newState: T, oldState: T): Promise<void> {
+  protected override async doStorageSave(newState: T, oldState: T): Promise<void> {
+    await super.doStorageSave(newState, oldState);
     if (newState != null && oldState == null) {
       await this.stateEventRegistrarService.registerEvents(this.keyDefinition);
     }
