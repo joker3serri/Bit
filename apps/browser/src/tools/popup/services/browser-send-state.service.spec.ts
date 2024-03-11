@@ -3,7 +3,6 @@ import {
   mockAccountServiceWith,
 } from "@bitwarden/common/../spec/fake-account-service";
 import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
-import { Jsonify } from "type-fest";
 
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { awaitAsync } from "@bitwarden/common/spec/utils";
@@ -14,7 +13,6 @@ import { BrowserComponentState } from "../../../models/browserComponentState";
 import { BrowserSendComponentState } from "../../../models/browserSendComponentState";
 
 import { BrowserSendStateService } from "./browser-send-state.service";
-import { BROWSER_SEND_COMPONENT, BROWSER_SEND_TYPE_COMPONENT } from "./key-definitions";
 
 describe("Browser Send State Service", () => {
   let stateProvider: FakeStateProvider;
@@ -46,22 +44,6 @@ describe("Browser Send State Service", () => {
     });
   });
 
-  describe("BROWSER_SEND_COMPONENT key definition", () => {
-    it("should deserialize BrowserSendComponentState", () => {
-      const keyDef = BROWSER_SEND_COMPONENT;
-
-      const expectedState = {
-        typeCounts: new Map<SendType, number>(),
-      };
-
-      const result = keyDef.deserializer(
-        JSON.parse(JSON.stringify(expectedState)) as Jsonify<BrowserSendComponentState>,
-      );
-
-      expect(result).toEqual(expectedState);
-    });
-  });
-
   describe("getBrowserSendTypeComponentState", () => {
     it("should return BrowserComponentState", async () => {
       const state = new BrowserComponentState();
@@ -74,21 +56,6 @@ describe("Browser Send State Service", () => {
 
       const actual = await stateService.getBrowserSendTypeComponentState();
       expect(actual).toStrictEqual(state);
-    });
-  });
-
-  describe("BROWSER_SEND_TYPE_COMPONENT key definition", () => {
-    it("should deserialize BrowserComponentState", () => {
-      const keyDef = BROWSER_SEND_TYPE_COMPONENT;
-
-      const expectedState = {
-        scrollY: 0,
-        searchText: "test",
-      };
-
-      const result = keyDef.deserializer(JSON.parse(JSON.stringify(expectedState)));
-
-      expect(result).toEqual(expectedState);
     });
   });
 });
