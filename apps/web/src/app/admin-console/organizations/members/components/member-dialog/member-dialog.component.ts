@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
@@ -48,7 +48,7 @@ import {
 } from "../../../shared/components/access-selector";
 
 import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
-import { orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator } from "./validators/org-without-additional-seat-limit-reached-with-upgrade-path.validator";
+import { orgSeatLimitReachedValidator } from "./validators/org-seat-limit-reached.validator";
 
 export enum MemberDialogTab {
   Role = 0,
@@ -77,7 +77,7 @@ export enum MemberDialogResult {
 @Component({
   templateUrl: "member-dialog.component.html",
 })
-export class MemberDialogComponent implements OnInit, OnDestroy {
+export class MemberDialogComponent implements OnDestroy {
   loading = true;
   editMode = false;
   isRevoked = false;
@@ -93,7 +93,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   protected formGroup = this.formBuilder.group({
-    emails: ["", { updateOn: "blur" }],
+    emails: [""],
     type: OrganizationUserType.User,
     externalId: this.formBuilder.control({ value: "", disabled: true }),
     accessAllCollections: false,
@@ -141,7 +141,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private dialogRef: DialogRef<MemberDialogResult>,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
     // TODO: We should really look into consolidating naming conventions for these services
     private collectionAdminService: CollectionAdminService,
@@ -151,16 +150,15 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private configService: ConfigServiceAbstraction,
     private accountService: AccountService,
-  ) {}
+    organizationService: OrganizationService,
+  ) {
+    this.organization$ = organizationService
+      .get$(this.params.organizationId)
+      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
 
-  async ngOnInit() {
     this.editMode = this.params.organizationUserId != null;
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
-
-    this.organization$ = this.organizationService
-      .get$(this.params.organizationId)
-      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
 
     const groups$ = this.organization$.pipe(
       switchMap((organization) =>
@@ -233,7 +231,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     const emailsControlValidators = [
       Validators.required,
       commaSeparatedEmails,
-      orgWithoutAdditionalSeatLimitReachedWithUpgradePathValidator(
+      orgSeatLimitReachedValidator(
         organization,
         this.params.allOrganizationUserEmails,
         this.i18nService.t("subscriptionUpgrade", organization.seats),
