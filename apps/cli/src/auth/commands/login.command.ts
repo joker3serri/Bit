@@ -203,6 +203,7 @@ export class LoginCommand {
             ssoCodeVerifier,
             this.ssoRedirectUri,
             orgIdentifier,
+            undefined,
             twoFactor,
           ),
         );

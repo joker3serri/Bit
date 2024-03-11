@@ -303,6 +303,9 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   async saveEmailSettings() {
     this.setFormValues();
     await this.loginService.saveEmailSettings();
+
+    // Save off email for SSO
+    await this.ssoLoginService.setSsoEmail(this.formGroup.value.email);
   }
 
   // Legacy accounts used the master key to encrypt data. Migration is required

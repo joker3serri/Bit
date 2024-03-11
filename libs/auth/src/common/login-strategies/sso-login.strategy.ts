@@ -66,7 +66,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       credentials.code,
       credentials.codeVerifier,
       credentials.redirectUrl,
-      await this.buildTwoFactor(credentials.twoFactor), //, credentials.email
+      await this.buildTwoFactor(credentials.twoFactor, credentials.email),
       await this.buildDeviceRequest(),
     );
 

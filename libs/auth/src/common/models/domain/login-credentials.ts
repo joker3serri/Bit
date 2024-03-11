@@ -23,6 +23,7 @@ export class SsoLoginCredentials {
     public codeVerifier: string,
     public redirectUrl: string,
     public orgId: string,
+    public email?: string,
     public twoFactor?: TokenTwoFactorRequest,
   ) {}
 }
