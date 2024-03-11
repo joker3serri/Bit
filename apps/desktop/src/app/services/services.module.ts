@@ -2,6 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { APP_INITIALIZER, InjectionToken, NgModule } from "@angular/core";
 
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
+import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   SECURE_STORAGE,
   STATE_FACTORY,
@@ -15,7 +16,6 @@ import {
   SafeInjectionToken,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { safeProvider } from "@bitwarden/angular/utils/dependency-helpers";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";

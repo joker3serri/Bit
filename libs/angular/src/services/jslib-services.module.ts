@@ -229,7 +229,7 @@ import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
-import { safeProvider, SafeProvider } from "../utils/dependency-helpers";
+import { safeProvider, SafeProvider } from "../platform/utils/safe-provider";
 
 import {
   LOCALES_DIRECTORY,

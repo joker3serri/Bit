@@ -1,7 +1,7 @@
 import { Provider } from "@angular/core";
 import { Constructor, Opaque } from "type-fest";
 
-import { SafeInjectionToken } from "../services/injection-tokens";
+import { SafeInjectionToken } from "../../services/injection-tokens";
 
 /**
  * The return type of our dependency helper functions.
