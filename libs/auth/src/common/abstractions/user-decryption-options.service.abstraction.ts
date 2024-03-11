@@ -5,14 +5,14 @@ import { UserDecryptionOptions } from "../models";
 export abstract class UserDecryptionOptionsServiceAbstraction {
   /**
    * Returns what decryption options are available for the current user.
-   * Note: this is sent from the server on authentication
+   * @remark This is sent from the server on authentication.
    */
-  userDecryptionOptions$: Observable<UserDecryptionOptions>;
+  abstract userDecryptionOptions$: Observable<UserDecryptionOptions>;
   /**
-   * Whether the current user has a master password.
-   * Note: this only checks what is stored on the server, not the local state
+   * Uses user decryption options to determine if current user has a master password.
+   * @remark This only checks what is stored on the server, not the local state.
    */
-  hasMasterPassword$: Observable<boolean>;
+  abstract hasMasterPassword$: Observable<boolean>;
 
   /**
    * Returns the user decryption options for the given user id.
@@ -22,5 +22,12 @@ export abstract class UserDecryptionOptionsServiceAbstraction {
 }
 
 export abstract class InternalUserDecryptionOptionsServiceAbstraction extends UserDecryptionOptionsServiceAbstraction {
+  /**
+   * Sets the current decryption options for the user, contains the current configuration
+   * of the users account related to how they can decrypt their vault.
+   * @remark Intended to be used when user decryption options are received from server, does
+   * not update the server.
+   * @param userDecryptionOptions Current user decryption options received from server.
+   */
   abstract setUserDecryptionOptions(userDecryptionOptions: UserDecryptionOptions): Promise<void>;
 }
