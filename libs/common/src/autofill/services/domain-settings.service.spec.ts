@@ -1,4 +1,4 @@
-import { of } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 
 import { FakeStateProvider, FakeAccountService, mockAccountServiceWith } from "../../../spec";
 import { Utils } from "../../platform/misc/utils";
@@ -35,14 +35,16 @@ describe("DomainSettingsService", () => {
         "exampleapp.co.uk",
       ]);
 
-      const actual = await domainSettingsService.getUrlEquivalentDomains("example.co.uk");
+      const actual = await firstValueFrom(
+        domainSettingsService.getUrlEquivalentDomains("example.co.uk"),
+      );
 
       expect(domainSettingsService.getUrlEquivalentDomains).toHaveBeenCalledWith("example.co.uk");
       expect(actual).toEqual(expected);
     });
 
     it("returns an empty set if there are no equivalent domains", async () => {
-      const actual = await domainSettingsService.getUrlEquivalentDomains("asdf");
+      const actual = await firstValueFrom(domainSettingsService.getUrlEquivalentDomains("asdf"));
 
       expect(domainSettingsService.getUrlEquivalentDomains).toHaveBeenCalledWith("asdf");
       expect(actual).toEqual(new Set());

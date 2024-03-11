@@ -162,7 +162,7 @@ describe("DomainSettingsMigrator", () => {
       expect(helper.setToUser).toHaveBeenCalledWith(
         "user-2",
         { ...domainSettingsStateDefinition, key: "equivalentDomains" },
-        ["apple.com", "icloud.com"],
+        [["apple.com", "icloud.com"]],
       );
       expect(helper.setToUser).toHaveBeenCalledWith(
         "user-3",
