@@ -234,7 +234,6 @@ export class Main {
       p = path.join(process.env.HOME, ".config/Bitwarden CLI");
     }
 
-    this.i18nService = new I18nService("en", "./locales");
     this.platformUtilsService = new CliPlatformUtilsService(ClientType.Cli, packageJson);
     this.logService = new ConsoleLogService(
       this.platformUtilsService.isDev(),
@@ -272,6 +271,8 @@ export class Main {
       this.globalStateProvider,
       storageServiceProvider,
     );
+
+    this.i18nService = new I18nService("en", "./locales", this.globalStateProvider);
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       storageServiceProvider,
@@ -673,8 +674,7 @@ export class Main {
     await this.stateService.init();
     this.containerService.attachToGlobal(global);
     await this.environmentService.setUrlsFromStorage();
-    const locale = await this.stateService.getLocale();
-    await this.i18nService.init(locale);
+    await this.i18nService.init();
     this.twoFactorService.init();
     this.configService.init();
 
