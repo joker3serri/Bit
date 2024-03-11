@@ -589,7 +589,6 @@ export class AppComponent implements OnInit, OnDestroy {
       await this.keyConnectorService.clear();
       await this.biometricStateService.logout(userBeingLoggedOut as UserId);
       await this.providerService.save(null, userBeingLoggedOut as UserId);
-      await this.organizationService.replace(null, userBeingLoggedOut as UserId);
 
       await this.stateEventRunnerService.handleEvent("logout", userBeingLoggedOut as UserId);
 

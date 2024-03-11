@@ -284,7 +284,6 @@ export class AppComponent implements OnDestroy, OnInit {
       this.keyConnectorService.clear(),
       this.biometricStateService.logout(userId as UserId),
       this.paymentMethodWarningService.clear(),
-      this.organizationService.replace(null, userId as UserId),
     ]);
 
     await this.stateEventRunnerService.handleEvent("logout", userId as UserId);

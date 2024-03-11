@@ -653,7 +653,6 @@ export class Main {
       this.policyService.clear(userId as UserId),
       this.passwordGenerationService.clear(),
       this.providerService.save(null, userId as UserId),
-      this.organizationService.replace(null, userId as UserId),
     ]);
 
     await this.stateEventRunnerService.handleEvent("logout", userId as UserId);

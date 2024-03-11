@@ -1,7 +1,7 @@
 import { map, Observable, firstValueFrom } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { KeyDefinition, ORGANIZATIONS_DISK, StateProvider } from "../../../platform/state";
+import { ORGANIZATIONS_DISK, StateProvider, UserKeyDefinition } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { InternalOrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { OrganizationData } from "../../models/data/organization.data";
@@ -13,11 +13,12 @@ import { Organization } from "../../models/domain/organization";
  * has some properties that contain functions. This should probably get
  * cleaned up.
  */
-export const ORGANIZATIONS = KeyDefinition.record<OrganizationData>(
+export const ORGANIZATIONS = UserKeyDefinition.record<OrganizationData>(
   ORGANIZATIONS_DISK,
   "organizations",
   {
     deserializer: (obj: Jsonify<OrganizationData>) => OrganizationData.fromJSON(obj),
+    clearOn: ["logout"],
   },
 );
 
