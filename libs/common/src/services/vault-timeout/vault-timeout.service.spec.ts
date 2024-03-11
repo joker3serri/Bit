@@ -135,7 +135,7 @@ describe("VaultTimeoutService", () => {
 
     stateService.activeAccount$ = new BehaviorSubject<string>(globalSetups?.userId);
 
-    if (globalSetups.userId) {
+    if (globalSetups?.userId) {
       accountService.activeAccountSubject.next({
         id: globalSetups.userId as UserId,
         status: accounts[globalSetups.userId]?.authStatus,
