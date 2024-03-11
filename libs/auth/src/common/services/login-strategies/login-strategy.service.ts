@@ -4,7 +4,6 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
@@ -107,7 +106,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
-    protected loginService: LoginService,
     protected authRequestService: AuthRequestServiceAbstraction,
   ) {}
 
@@ -140,7 +138,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.loginService,
           this.passwordStrengthService,
           this.policyService,
           this,
@@ -157,7 +154,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.loginService,
           this.keyConnectorService,
           this.deviceTrustCryptoService,
           this.authRequestService,
@@ -175,7 +171,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.loginService,
           this.environmentService,
           this.keyConnectorService,
         );
@@ -191,7 +186,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.loginService,
           this.deviceTrustCryptoService,
         );
         break;
@@ -206,7 +200,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.loginService,
         );
         break;
     }

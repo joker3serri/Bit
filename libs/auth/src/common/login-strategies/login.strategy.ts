@@ -1,5 +1,4 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -59,7 +58,6 @@ export abstract class LoginStrategy {
     protected logService: LogService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
-    protected loginService: LoginService,
   ) {}
 
   abstract logIn(

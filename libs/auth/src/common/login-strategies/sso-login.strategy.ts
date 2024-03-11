@@ -1,7 +1,6 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -43,7 +42,6 @@ export class SsoLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
-    loginService: LoginService,
     private keyConnectorService: KeyConnectorService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authRequestService: AuthRequestServiceAbstraction,
@@ -59,7 +57,6 @@ export class SsoLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
-      loginService,
     );
   }
 
@@ -69,7 +66,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       credentials.code,
       credentials.codeVerifier,
       credentials.redirectUrl,
-      await this.buildTwoFactor(credentials.twoFactor),
+      await this.buildTwoFactor(credentials.twoFactor), //, credentials.email
       await this.buildDeviceRequest(),
     );
 

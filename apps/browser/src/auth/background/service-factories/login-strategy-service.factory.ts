@@ -63,7 +63,6 @@ import {
   keyConnectorServiceFactory,
   KeyConnectorServiceInitOptions,
 } from "./key-connector-service.factory";
-import { loginServiceFactory, LoginServiceInitOptions } from "./login-service.factory";
 import { tokenServiceFactory, TokenServiceInitOptions } from "./token-service.factory";
 import { twoFactorServiceFactory, TwoFactorServiceInitOptions } from "./two-factor-service.factory";
 
@@ -85,7 +84,6 @@ export type LoginStrategyServiceInitOptions = LoginStrategyServiceFactoryOptions
   PolicyServiceInitOptions &
   PasswordStrengthServiceInitOptions &
   DeviceTrustCryptoServiceInitOptions &
-  LoginServiceInitOptions &
   AuthRequestServiceInitOptions;
 
 export function loginStrategyServiceFactory(
@@ -114,7 +112,6 @@ export function loginStrategyServiceFactory(
         await passwordStrengthServiceFactory(cache, opts),
         await policyServiceFactory(cache, opts),
         await deviceTrustCryptoServiceFactory(cache, opts),
-        await loginServiceFactory(cache, opts),
         await authRequestServiceFactory(cache, opts),
       ),
   );

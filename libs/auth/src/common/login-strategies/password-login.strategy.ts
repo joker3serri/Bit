@@ -1,7 +1,6 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -56,7 +55,6 @@ export class PasswordLoginStrategy extends LoginStrategy {
     logService: LogService,
     protected stateService: StateService,
     twoFactorService: TwoFactorService,
-    loginService: LoginService,
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private policyService: PolicyService,
     private loginStrategyService: LoginStrategyServiceAbstraction,
@@ -71,7 +69,6 @@ export class PasswordLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
-      loginService,
     );
   }
 

@@ -334,7 +334,6 @@ import { ModalService } from "./modal.service";
         PasswordStrengthServiceAbstraction,
         PolicyServiceAbstraction,
         DeviceTrustCryptoServiceAbstraction,
-        LoginServiceAbstraction,
         AuthRequestServiceAbstraction,
       ],
     },
