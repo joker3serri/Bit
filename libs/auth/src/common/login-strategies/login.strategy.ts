@@ -101,12 +101,11 @@ export abstract class LoginStrategy {
     return new DeviceRequest(appId, this.platformUtilsService);
   }
 
-  protected async buildTwoFactor(userProvidedTwoFactor?: TokenTwoFactorRequest) {
+  // Ensure that email is provided from any login strategies that support remember 2FA functionality.
+  protected async buildTwoFactor(userProvidedTwoFactor?: TokenTwoFactorRequest, email?: string) {
     if (userProvidedTwoFactor != null) {
       return userProvidedTwoFactor;
     }
-
-    const email = this.loginService.getEmail();
 
     const storedTwoFactorToken = await this.tokenService.getTwoFactorToken(email);
     if (storedTwoFactorToken != null) {

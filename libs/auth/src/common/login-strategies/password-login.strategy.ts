@@ -112,7 +112,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
       email,
       masterKeyHash,
       captchaToken,
-      await this.buildTwoFactor(twoFactor),
+      await this.buildTwoFactor(twoFactor, email),
       await this.buildDeviceRequest(),
     );
 
