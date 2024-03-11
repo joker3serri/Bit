@@ -12,7 +12,7 @@ export const LOCALE_KEY = {
   },
 };
 
-export class PreferredLanguageMigrator extends Migrator<29, 30> {
+export class PreferredLanguageMigrator extends Migrator<31, 32> {
   async migrate(helper: MigrationHelper): Promise<void> {
     // global state
     const global = await helper.get<ExpectedGlobal>("global");
