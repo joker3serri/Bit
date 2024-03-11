@@ -197,6 +197,11 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     this.permissionList = getPermissionList(value);
   }
 
+  /**
+   * Flag for if the multi select should be hidden (ex: readonly mode)
+   */
+  @Input() hideMultiSelect: boolean;
+
   private _flexibleCollectionsEnabled: boolean;
 
   constructor(
