@@ -187,5 +187,25 @@ describe("ImportService", () => {
         `${mockImportTargetCollection.name}/${mockCollection2.name}`,
       );
     });
+
+    it("passing importTarget as null on setImportTarget with organizationId throws error", async () => {
+      const setImportTargetMethod = importService["setImportTarget"](
+        null,
+        organizationId,
+        new Object() as FolderView,
+      );
+
+      await expect(setImportTargetMethod).rejects.toThrow("Error assigning target collection");
+    });
+
+    it("passing importTarget as null on setImportTarget throws error", async () => {
+      const setImportTargetMethod = importService["setImportTarget"](
+        null,
+        "",
+        new Object() as CollectionView,
+      );
+
+      await expect(setImportTargetMethod).rejects.toThrow("Error assigning target folder");
+    });
   });
 });
