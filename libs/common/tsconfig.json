@@ -1,11 +1,5 @@
 {
   "extends": "../shared/tsconfig.libs",
-  "include": [
-    "src",
-    "spec",
-    "./custom-matchers.d.ts",
-    "../auth/src/common/models/domain/user-decryption-options",
-    "../auth/src/common/models/domain/user-decryption-options.ts"
-  ],
+  "include": ["src", "spec", "./custom-matchers.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
