@@ -170,7 +170,7 @@ jobs:
         with:
           file_path: "apps/browser/src/manifest.json"
           version: ${{ inputs.version_number_override }}
-      
+
       - name: Bump Browser Version - Manifest - Automatic Calculation
         if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
         uses: bitwarden/gh-actions/version-bump@main
@@ -184,7 +184,7 @@ jobs:
         with:
           file_path: "apps/browser/src/manifest.v3.json"
           version: ${{ inputs.version_number_override }}
-      
+
       - name: Bump Browser Version - Manifest v3 - Automatic Calculation
         if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
         uses: bitwarden/gh-actions/version-bump@main
@@ -303,7 +303,7 @@ jobs:
         if: ${{ inputs.bump_desktop == true && inputs.version_number_override != '' }}
         run: npm version ${{ inputs.version_number_override }}
         working-directory: "apps/desktop/src"
-      
+
       - name: Bump Desktop Version - App - Automatic Calculation
         if: ${{ inputs.bump_desktop == true && inputs.version_number_override == '' }}
         env:
@@ -341,7 +341,7 @@ jobs:
             exit 1
           fi
         working-directory: apps/web
-      
+
       - name: Calculate next Web release version
         if: ${{ inputs.bump_web == true && inputs.version_number_override == '' }}
         id: calculate-next-web-version
@@ -353,7 +353,7 @@ jobs:
         if: ${{ inputs.bump_web == true && inputs.version_number_override != '' }}
         id: bump-web-version-override
         run: npm version --workspace=@bitwarden/web-vault ${{ inputs.version_number_override }}
-      
+
       - name: Bump Web Version - Automatic Calculation
         if: ${{ inputs.bump_web == true && inputs.version_number_override == '' }}
         id: bump-web-version-automatic
