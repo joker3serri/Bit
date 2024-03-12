@@ -25,6 +25,7 @@ import {
   FakeGlobalState,
   FakeSingleUserState,
 } from "./fake-state";
+import { isUserKeyDefinition } from "../src/platform/state/user-key-definition";
 
 export class FakeGlobalStateProvider implements GlobalStateProvider {
   mock = mock<GlobalStateProvider>();
@@ -161,7 +162,11 @@ export class FakeStateProvider implements StateProvider {
     keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
     userId?: UserId,
   ): Observable<T> {
-    this.mock.getUserState$(keyDefinition, userId);
+    if (isUserKeyDefinition(keyDefinition)) {
+      this.mock.getUserState$(keyDefinition, userId);
+    } else {
+      this.mock.getUserState$(keyDefinition, userId);
+    }
     if (userId) {
       return this.getUser<T>(userId, keyDefinition).state$;
     }
