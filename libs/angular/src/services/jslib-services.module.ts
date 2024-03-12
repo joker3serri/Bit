@@ -341,7 +341,7 @@ const typesafeProviders: Array<SafeProvider> = [
       PolicyServiceAbstraction,
       DeviceTrustCryptoServiceAbstraction,
       AuthRequestServiceAbstraction,
-      GlobalStateProvider
+      GlobalStateProvider,
     ],
   }),
   safeProvider({
