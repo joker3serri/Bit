@@ -67,7 +67,10 @@ class Options {
     this.capitalize = CliUtils.convertBooleanOption(passedOptions?.capitalize);
     this.includeNumber = CliUtils.convertBooleanOption(passedOptions?.includeNumber);
     this.ambiguous = CliUtils.convertBooleanOption(passedOptions?.ambiguous);
-    this.length = CliUtils.convertNumberOption(passedOptions?.length, 14);
+    this.length = CliUtils.convertNumberOption(
+      passedOptions?.length,
+      DefaultPasswordGenerationOptions.length,
+    );
     this.type = passedOptions?.passphrase ? "passphrase" : "password";
     this.separator = CliUtils.convertStringOption(
       passedOptions?.separator,
@@ -77,7 +80,10 @@ class Options {
       passedOptions?.words,
       DefaultPassphraseGenerationOptions.numWords,
     );
-    this.minNumber = CliUtils.convertNumberOption(passedOptions?.minNumber, 1);
+    this.minNumber = CliUtils.convertNumberOption(
+      passedOptions?.minNumber,
+      DefaultPasswordGenerationOptions.minNumber,
+    );
     this.minSpecial = CliUtils.convertNumberOption(
       passedOptions?.minSpecial,
       DefaultPasswordGenerationOptions.minSpecial,
