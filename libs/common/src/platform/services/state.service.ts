@@ -33,8 +33,11 @@ import {
 import { HtmlStorageLocation, KdfType, StorageLocation } from "../enums";
 import { StateFactory } from "../factories/state-factory";
 import { Utils } from "../misc/utils";
-import { ServerConfigData } from "../models/data/server-config.data";
-import { Account, AccountData, AccountSettings } from "../models/domain/account";
+import {
+  Account,
+  AccountData,
+  AccountSettings,
+} from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { GlobalState } from "../models/domain/global-state";
 import { State } from "../models/domain/state";
@@ -1587,23 +1590,6 @@ export class StateService<
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
-  }
-
-  async setServerConfig(value: ServerConfigData, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-    account.settings.serverConfig = value;
-    return await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-  }
-
-  async getServerConfig(options: StorageOptions): Promise<ServerConfigData> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
-    )?.settings?.serverConfig;
   }
 
   async getDeepLinkRedirectUrl(options?: StorageOptions): Promise<string> {
