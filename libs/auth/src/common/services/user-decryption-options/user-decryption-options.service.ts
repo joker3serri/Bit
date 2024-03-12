@@ -2,20 +2,21 @@ import { map } from "rxjs";
 
 import {
   ActiveUserState,
-  KeyDefinition,
   StateProvider,
   USER_DECRYPTION_OPTIONS_DISK,
+  UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/src/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
 import { UserDecryptionOptions } from "../../models";
 
-export const USER_DECRYPTION_OPTIONS = new KeyDefinition<UserDecryptionOptions>(
+export const USER_DECRYPTION_OPTIONS = new UserKeyDefinition<UserDecryptionOptions>(
   USER_DECRYPTION_OPTIONS_DISK,
   "decryptionOptions",
   {
     deserializer: (decryptionOptions) => UserDecryptionOptions.fromJSON(decryptionOptions),
+    clearOn: ["logout"],
   },
 );
 
