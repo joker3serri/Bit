@@ -45,7 +45,7 @@ export class PremiumComponent implements OnInit {
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
     this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
-    this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
+    this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
   }
 
   async ngOnInit() {

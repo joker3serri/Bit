@@ -102,7 +102,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     this.cleanUp();
 
     this.canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.canAccessPremium$,
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
     );
     if (this.showTotp()) {
       await this.totpUpdateCode();

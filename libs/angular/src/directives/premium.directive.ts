@@ -19,7 +19,7 @@ export class PremiumDirective implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.billingAccountProfileStateService.canAccessPremium$
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$
       .pipe(takeUntil(this.directiveIsDestroyed$))
       .subscribe((premium: boolean) => {
         if (premium) {

@@ -17,7 +17,9 @@ export class NotPremiumDirective implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    const premium = await firstValueFrom(this.billingAccountProfileStateService.canAccessPremium$);
+    const premium = await firstValueFrom(
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
+    );
 
     if (premium) {
       this.viewContainer.clear();

@@ -71,7 +71,7 @@ describe("context-menu", () => {
 
     it("has menu enabled, but does not have premium", async () => {
       autofillSettingsService.enableContextMenu$ = of(true);
-      billingAccountProfileStateService.canAccessPremium$ = of(false);
+      billingAccountProfileStateService.hasPremiumFromAnySource$ = of(false);
 
       const createdMenu = await sut.init();
       expect(createdMenu).toBeTruthy();
@@ -80,7 +80,7 @@ describe("context-menu", () => {
 
     it("has menu enabled and has premium", async () => {
       autofillSettingsService.enableContextMenu$ = of(true);
-      billingAccountProfileStateService.canAccessPremium$ = of(true);
+      billingAccountProfileStateService.hasPremiumFromAnySource$ = of(true);
 
       const createdMenu = await sut.init();
       expect(createdMenu).toBeTruthy();
@@ -134,7 +134,7 @@ describe("context-menu", () => {
     });
 
     it("create entry for each cipher piece", async () => {
-      billingAccountProfileStateService.canAccessPremium$ = of(true);
+      billingAccountProfileStateService.hasPremiumFromAnySource$ = of(true);
 
       await sut.loadOptions("TEST_TITLE", "1", createCipher());
 
@@ -143,7 +143,7 @@ describe("context-menu", () => {
     });
 
     it("creates a login/unlock item for each context menu action option when user is not authenticated", async () => {
-      billingAccountProfileStateService.canAccessPremium$ = of(true);
+      billingAccountProfileStateService.hasPremiumFromAnySource$ = of(true);
 
       await sut.loadOptions("TEST_TITLE", "NOOP");
 

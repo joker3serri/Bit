@@ -204,7 +204,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         await this.syncService.fullSync(false);
 
         const canAccessPremium = await firstValueFrom(
-          this.billingAccountProfileStateService.canAccessPremium$,
+          this.billingAccountProfileStateService.hasPremiumFromAnySource$,
         );
         this.showPremiumCallout =
           !this.showVerifyEmail && !canAccessPremium && !this.platformUtilsService.isSelfHost();
@@ -369,7 +369,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         switchMap(() =>
           combineLatest([
             filter$,
-            this.billingAccountProfileStateService.canAccessPremium$,
+            this.billingAccountProfileStateService.hasPremiumFromAnySource$,
             allCollections$,
             this.organizationService.organizations$,
             ciphers$,

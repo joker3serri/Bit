@@ -120,7 +120,7 @@ export class ViewComponent implements OnDestroy, OnInit {
       });
     });
 
-    this.billingAccountProfileStateService.canAccessPremium$
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$
       .pipe(takeUntil(this.directiveIsDestroyed$))
       .subscribe((canAccessPremium: boolean) => {
         this.canAccessPremium = canAccessPremium;

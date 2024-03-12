@@ -65,7 +65,7 @@ export class EmergencyAccessComponent implements OnInit {
     protected dialogService: DialogService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
-    this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
+    this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
   }
 
   async ngOnInit() {

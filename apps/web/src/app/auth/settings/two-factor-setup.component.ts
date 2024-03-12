@@ -58,7 +58,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     protected policyService: PolicyService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
-    this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
+    this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
   }
 
   async ngOnInit() {

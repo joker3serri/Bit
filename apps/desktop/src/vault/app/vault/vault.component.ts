@@ -110,7 +110,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.billingAccountProfileStateService.canAccessPremium$
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$
       .pipe(takeUntil(this.componentIsDestroyed$))
       .subscribe((canAccessPremium: boolean) => {
         this.userHasPremiumAccess = canAccessPremium;

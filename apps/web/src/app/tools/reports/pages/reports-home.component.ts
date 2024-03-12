@@ -17,7 +17,7 @@ export class ReportsHomeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const userHasPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.canAccessPremium$,
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
     );
     const reportRequiresPremium = userHasPremium
       ? ReportVariant.Enabled

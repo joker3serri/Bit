@@ -25,7 +25,7 @@ export function hasPremiumGuard(): CanActivateFn {
     const messagingService = inject(MessagingService);
     const billingAccountProfileStateService = inject(BillingAccountProfileStateService);
 
-    return billingAccountProfileStateService.canAccessPremium$.pipe(
+    return billingAccountProfileStateService.hasPremiumFromAnySource$.pipe(
       tap((userHasPremium: boolean) => {
         if (!userHasPremium) {
           messagingService.send("premiumRequired");

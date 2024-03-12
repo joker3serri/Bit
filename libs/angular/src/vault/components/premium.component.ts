@@ -29,7 +29,7 @@ export class PremiumComponent {
     billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.cloudWebVaultUrl = environmentService.getCloudWebVaultUrl();
-    this.isPremium$ = billingAccountProfileStateService.canAccessPremium$;
+    this.isPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
   }
 
   async refresh() {

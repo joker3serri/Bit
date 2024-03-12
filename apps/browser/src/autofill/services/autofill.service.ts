@@ -231,7 +231,7 @@ export default class AutofillService implements AutofillServiceInterface {
     let totp: string | null = null;
 
     const canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.canAccessPremium$,
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
     );
     const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
 

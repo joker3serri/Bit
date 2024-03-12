@@ -208,7 +208,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async load() {
     this.canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.canAccessPremium$,
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
     );
 
     this.emailVerified = await this.stateService.getEmailVerified();

@@ -84,7 +84,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
       this.billingAccountProfileStateService.hasPremiumPersonally$,
     );
     const hasPremiumFromOrg = await firstValueFrom(
-      this.billingAccountProfileStateService.hasPremiumFromOrganization$,
+      this.billingAccountProfileStateService.hasPremiumFromAnyOrganization$,
     );
     const selfHosted = this.platformUtilsService.isSelfHost();
 

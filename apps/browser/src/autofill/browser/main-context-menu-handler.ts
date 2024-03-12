@@ -218,7 +218,7 @@ export class MainContextMenuHandler {
       for (const options of this.initContextMenuItems) {
         if (
           options.checkPremiumAccess &&
-          !(await firstValueFrom(this.billingAccountProfileStateService.canAccessPremium$))
+          !(await firstValueFrom(this.billingAccountProfileStateService.hasPremiumFromAnySource$))
         ) {
           continue;
         }
@@ -315,7 +315,7 @@ export class MainContextMenuHandler {
       }
 
       const canAccessPremium = await firstValueFrom(
-        this.billingAccountProfileStateService.canAccessPremium$,
+        this.billingAccountProfileStateService.hasPremiumFromAnySource$,
       );
       if (canAccessPremium && (!cipher || !Utils.isNullOrEmpty(cipher.login?.totp))) {
         await createChildItem(COPY_VERIFICATION_CODE_ID);

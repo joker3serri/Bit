@@ -38,18 +38,18 @@ describe("BillingAccountProfileStateService", () => {
     return jest.resetAllMocks();
   });
 
-  describe("hasPremiumFromOrganization$", () => {
-    it("should emit changes in hasPremiumFromOrganization", async () => {
+  describe("accountHasPremiumFromAnyOrganization$", () => {
+    it("should emit changes in hasPremiumFromAnyOrganization", async () => {
       billingAccountProfileState.nextState({
         hasPremiumPersonally: false,
-        hasPremiumFromOrganization: true,
+        hasPremiumFromAnyOrganization: true,
       });
 
-      expect(await firstValueFrom(sut.hasPremiumFromOrganization$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$)).toBe(true);
     });
 
     it("should emit once when calling setHasPremium once", async () => {
-      const emissions = trackEmissions(sut.hasPremiumFromOrganization$);
+      const emissions = trackEmissions(sut.hasPremiumFromAnyOrganization$);
       const startingEmissionCount = emissions.length;
 
       await sut.setHasPremium(true, true);
@@ -63,7 +63,7 @@ describe("BillingAccountProfileStateService", () => {
     it("should emit changes in hasPremiumPersonally", async () => {
       billingAccountProfileState.nextState({
         hasPremiumPersonally: true,
-        hasPremiumFromOrganization: false,
+        hasPremiumFromAnyOrganization: false,
       });
 
       expect(await firstValueFrom(sut.hasPremiumPersonally$)).toBe(true);
@@ -84,32 +84,32 @@ describe("BillingAccountProfileStateService", () => {
     it("should emit changes in hasPremiumPersonally", async () => {
       billingAccountProfileState.nextState({
         hasPremiumPersonally: true,
-        hasPremiumFromOrganization: false,
+        hasPremiumFromAnyOrganization: false,
       });
 
-      expect(await firstValueFrom(sut.canAccessPremium$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnySource$)).toBe(true);
     });
 
-    it("should emit changes in hasPremiumFromOrganization", async () => {
+    it("should emit changes in hasPremiumFromAnyOrganization", async () => {
       billingAccountProfileState.nextState({
         hasPremiumPersonally: false,
-        hasPremiumFromOrganization: true,
+        hasPremiumFromAnyOrganization: true,
       });
 
-      expect(await firstValueFrom(sut.canAccessPremium$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnySource$)).toBe(true);
     });
 
-    it("should emit changes in both hasPremiumPersonally and hasPremiumFromOrganization", async () => {
+    it("should emit changes in both hasPremiumPersonally and hasPremiumFromAnyOrganization", async () => {
       billingAccountProfileState.nextState({
         hasPremiumPersonally: true,
-        hasPremiumFromOrganization: true,
+        hasPremiumFromAnyOrganization: true,
       });
 
-      expect(await firstValueFrom(sut.canAccessPremium$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnySource$)).toBe(true);
     });
 
     it("should emit once when calling setHasPremium once", async () => {
-      const emissions = trackEmissions(sut.canAccessPremium$);
+      const emissions = trackEmissions(sut.hasPremiumFromAnySource$);
       const startingEmissionCount = emissions.length;
 
       await sut.setHasPremium(true, true);
@@ -126,10 +126,10 @@ describe("BillingAccountProfileStateService", () => {
       expect(await firstValueFrom(sut.hasPremiumPersonally$)).toBe(true);
     });
 
-    it("should have `hasPremiumFromOrganization$` emit `true` when passing `true` as an argument for hasPremiumFromOrganization", async () => {
+    it("should have `hasPremiumFromAnyOrganization$` emit `true` when passing `true` as an argument for hasPremiumFromAnyOrganization", async () => {
       await sut.setHasPremium(false, true);
 
-      expect(await firstValueFrom(sut.hasPremiumFromOrganization$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$)).toBe(true);
     });
 
     it("should have `hasPremiumPersonally$` emit `false` when passing `false` as an argument for hasPremiumPersonally", async () => {
@@ -138,28 +138,28 @@ describe("BillingAccountProfileStateService", () => {
       expect(await firstValueFrom(sut.hasPremiumPersonally$)).toBe(false);
     });
 
-    it("should have `hasPremiumFromOrganization$` emit `false` when passing `false` as an argument for hasPremiumFromOrganization", async () => {
+    it("should have `hasPremiumFromAnyOrganization$` emit `false` when passing `false` as an argument for hasPremiumFromAnyOrganization", async () => {
       await sut.setHasPremium(false, false);
 
-      expect(await firstValueFrom(sut.hasPremiumFromOrganization$)).toBe(false);
+      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$)).toBe(false);
     });
 
     it("should have `canAccessPremium$` emit `true` when passing `true` as an argument for hasPremiumPersonally", async () => {
       await sut.setHasPremium(true, false);
 
-      expect(await firstValueFrom(sut.canAccessPremium$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnySource$)).toBe(true);
     });
 
-    it("should have `canAccessPremium$` emit `true` when passing `true` as an argument for hasPremiumFromOrganization", async () => {
+    it("should have `canAccessPremium$` emit `true` when passing `true` as an argument for hasPremiumFromAnyOrganization", async () => {
       await sut.setHasPremium(false, true);
 
-      expect(await firstValueFrom(sut.canAccessPremium$)).toBe(true);
+      expect(await firstValueFrom(sut.hasPremiumFromAnySource$)).toBe(true);
     });
 
     it("should have `canAccessPremium$` emit `false` when passing `false` for all arguments", async () => {
       await sut.setHasPremium(false, false);
 
-      expect(await firstValueFrom(sut.canAccessPremium$)).toBe(false);
+      expect(await firstValueFrom(sut.hasPremiumFromAnySource$)).toBe(false);
     });
   });
 });

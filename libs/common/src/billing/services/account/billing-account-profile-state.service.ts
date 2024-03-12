@@ -22,27 +22,27 @@ export const BILLING_ACCOUNT_PROFILE_KEY_DEFINITION = new KeyDefinition<BillingA
 export class DefaultBillingAccountProfileStateService implements BillingAccountProfileStateService {
   private billingAccountProfileState: ActiveUserState<BillingAccountProfile>;
 
-  hasPremiumFromOrganization$: Observable<boolean>;
+  hasPremiumFromAnyOrganization$: Observable<boolean>;
   hasPremiumPersonally$: Observable<boolean>;
-  canAccessPremium$: Observable<boolean>;
+  hasPremiumFromAnySource$: Observable<boolean>;
 
   constructor(activeUserStateProvider: ActiveUserStateProvider) {
     this.billingAccountProfileState = activeUserStateProvider.get(
       BILLING_ACCOUNT_PROFILE_KEY_DEFINITION,
     );
 
-    this.hasPremiumFromOrganization$ = this.billingAccountProfileState.state$.pipe(
-      map((billingAccountProfile) => !!billingAccountProfile?.hasPremiumFromOrganization),
+    this.hasPremiumFromAnyOrganization$ = this.billingAccountProfileState.state$.pipe(
+      map((billingAccountProfile) => !!billingAccountProfile?.hasPremiumFromAnyOrganization),
     );
 
     this.hasPremiumPersonally$ = this.billingAccountProfileState.state$.pipe(
       map((billingAccountProfile) => !!billingAccountProfile?.hasPremiumPersonally),
     );
 
-    this.canAccessPremium$ = this.billingAccountProfileState.state$.pipe(
+    this.hasPremiumFromAnySource$ = this.billingAccountProfileState.state$.pipe(
       map(
         (billingAccountProfile) =>
-          billingAccountProfile?.hasPremiumFromOrganization ||
+          billingAccountProfile?.hasPremiumFromAnyOrganization ||
           billingAccountProfile?.hasPremiumPersonally,
       ),
     );
@@ -50,12 +50,12 @@ export class DefaultBillingAccountProfileStateService implements BillingAccountP
 
   async setHasPremium(
     hasPremiumPersonally: boolean,
-    hasPremiumFromOrganization: boolean,
+    hasPremiumFromAnyOrganization: boolean,
   ): Promise<void> {
     await this.billingAccountProfileState.update((billingAccountProfile) => {
       return {
-        hasPremiumPersonally,
-        hasPremiumFromOrganization,
+        hasPremiumPersonally: hasPremiumPersonally,
+        hasPremiumFromAnyOrganization: hasPremiumFromAnyOrganization,
       };
     });
   }
