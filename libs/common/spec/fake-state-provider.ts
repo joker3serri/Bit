@@ -95,7 +95,10 @@ export class FakeSingleUserStateProvider implements SingleUserStateProvider {
     return result as SingleUserState<T>;
   }
 
-  getFake<T>(userId: UserId, keyDefinition: KeyDefinition<T>): FakeSingleUserState<T> {
+  getFake<T>(
+    userId: UserId,
+    keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
+  ): FakeSingleUserState<T> {
     return this.get(userId, keyDefinition) as FakeSingleUserState<T>;
   }
 
@@ -137,7 +140,7 @@ export class FakeActiveUserStateProvider implements ActiveUserStateProvider {
     return result as ActiveUserState<T>;
   }
 
-  getFake<T>(keyDefinition: KeyDefinition<T>): FakeActiveUserState<T> {
+  getFake<T>(keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>): FakeActiveUserState<T> {
     return this.get(keyDefinition) as FakeActiveUserState<T>;
   }
 
