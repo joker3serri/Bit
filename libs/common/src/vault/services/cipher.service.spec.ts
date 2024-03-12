@@ -5,7 +5,7 @@ import { makeStaticByteArray } from "../../../spec/utils";
 import { ApiService } from "../../abstractions/api.service";
 import { SearchService } from "../../abstractions/search.service";
 import { AutofillSettingsService } from "../../autofill/services/autofill-settings.service";
-import { DefaultDomainSettingsService } from "../../autofill/services/domain-settings.service";
+import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
 import { UriMatchStrategy } from "../../models/domain/domain-service";
 import { ConfigServiceAbstraction } from "../../platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -102,7 +102,7 @@ describe("Cipher Service", () => {
   const cryptoService = mock<CryptoService>();
   const stateService = mock<StateService>();
   const autofillSettingsService = mock<AutofillSettingsService>();
-  const domainSettingsService = mock<DefaultDomainSettingsService>();
+  const domainSettingsService = mock<DomainSettingsService>();
   const apiService = mock<ApiService>();
   const cipherFileUploadService = mock<CipherFileUploadService>();
   const i18nService = mock<I18nService>();
