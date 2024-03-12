@@ -136,7 +136,7 @@ export default class RuntimeBackground {
             await this.main.refreshBadge();
             await this.main.refreshMenu();
           }, 2000);
-          this.configService.triggerServerConfigFetch();
+          await this.configService.ensureConfigFetched();
         }
         break;
       case "openPopup":

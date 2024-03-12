@@ -849,14 +849,7 @@ const typesafeProviders: Array<SafeProvider> = [
   safeProvider({
     provide: ConfigService,
     useClass: ConfigService,
-    deps: [
-      StateServiceAbstraction,
-      ConfigApiServiceAbstraction,
-      AuthServiceAbstraction,
-      EnvironmentService,
-      LogService,
-      StateProvider,
-    ],
+    deps: [ConfigApiServiceAbstraction, EnvironmentService, LogService, StateProvider],
   }),
   safeProvider({
     provide: ConfigServiceAbstraction,
