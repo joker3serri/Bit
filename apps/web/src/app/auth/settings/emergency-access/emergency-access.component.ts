@@ -3,7 +3,7 @@ import { lastValueFrom, Observable, firstValueFrom } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -63,7 +63,7 @@ export class EmergencyAccessComponent implements OnInit {
     private stateService: StateService,
     private organizationService: OrganizationService,
     protected dialogService: DialogService,
-    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
   }

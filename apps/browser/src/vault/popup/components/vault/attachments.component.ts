@@ -5,7 +5,7 @@ import { first } from "rxjs/operators";
 
 import { AttachmentsComponent as BaseAttachmentsComponent } from "@bitwarden/angular/vault/components/attachments.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -35,7 +35,7 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     logService: LogService,
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
-    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     super(
       cipherService,

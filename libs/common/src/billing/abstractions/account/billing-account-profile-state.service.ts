@@ -5,7 +5,7 @@ export type BillingAccountProfile = {
   hasPremiumFromOrganization: boolean;
 };
 
-export abstract class BillingAccountProfileStateServiceAbstraction {
+export abstract class BillingAccountProfileStateService {
   hasPremiumFromOrganization$: Observable<boolean>;
   hasPremiumPersonally$: Observable<boolean>;
   canAccessPremium$: Observable<boolean>;

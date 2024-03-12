@@ -8,7 +8,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
 import { TwoFactorDuoComponent } from "../../../auth/settings/two-factor-duo.component";
@@ -28,7 +28,7 @@ export class TwoFactorSetupComponent extends BaseTwoFactorSetupComponent {
     policyService: PolicyService,
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
-    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     super(
       apiService,

@@ -16,7 +16,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EventType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -106,7 +106,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private searchBarService: SearchBarService,
     private apiService: ApiService,
     private dialogService: DialogService,
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async ngOnInit() {

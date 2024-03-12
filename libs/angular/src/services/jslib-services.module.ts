@@ -90,11 +90,11 @@ import {
   BadgeSettingsServiceAbstraction,
   BadgeSettingsService,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
 import { PaymentMethodWarningsServiceAbstraction } from "@bitwarden/common/billing/abstractions/payment-method-warnings-service.abstraction";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
+import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { BillingApiService } from "@bitwarden/common/billing/services/billing-api.service";
 import { OrganizationBillingService } from "@bitwarden/common/billing/services/organization-billing.service";
 import { PaymentMethodWarningsService } from "@bitwarden/common/billing/services/payment-method-warnings.service";
@@ -523,7 +523,7 @@ import { ModalService } from "./modal.service";
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
         LOGOUT_CALLBACK,
-        BillingAccountProfileStateServiceAbstraction,
+        BillingAccountProfileStateService,
       ],
     },
     { provide: BroadcasterServiceAbstraction, useClass: BroadcasterService },
@@ -994,8 +994,8 @@ import { ModalService } from "./modal.service";
       deps: [BillingApiServiceAbstraction, StateProvider],
     },
     {
-      provide: BillingAccountProfileStateServiceAbstraction,
-      useClass: BillingAccountProfileStateService,
+      provide: BillingAccountProfileStateService,
+      useClass: DefaultBillingAccountProfileStateService,
       deps: [ActiveUserStateProvider],
     },
   ],

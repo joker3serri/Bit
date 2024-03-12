@@ -9,7 +9,7 @@ import {
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
 /**
@@ -23,7 +23,7 @@ export function hasPremiumGuard(): CanActivateFn {
   ): Observable<boolean | UrlTree> => {
     const router = inject(Router);
     const messagingService = inject(MessagingService);
-    const billingAccountProfileStateService = inject(BillingAccountProfileStateServiceAbstraction);
+    const billingAccountProfileStateService = inject(BillingAccountProfileStateService);
 
     return billingAccountProfileStateService.canAccessPremium$.pipe(
       tap((userHasPremium: boolean) => {

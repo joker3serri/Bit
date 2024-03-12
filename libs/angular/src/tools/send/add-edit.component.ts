@@ -5,7 +5,7 @@ import { BehaviorSubject, Subject, concatMap, firstValueFrom, map, takeUntil } f
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -117,7 +117,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected sendApiService: SendApiService,
     protected dialogService: DialogService,
     protected formBuilder: FormBuilder,
-    protected billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    protected billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.typeOptions = [
       { name: i18nService.t("sendTypeFile"), value: SendType.File, premium: true },

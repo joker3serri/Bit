@@ -8,16 +8,16 @@ import {
   trackEmissions,
 } from "../../../../spec";
 import { UserId } from "../../../types/guid";
-import { BillingAccountProfile } from "../../abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfile } from "../../abstractions/account/billing-account-profile-state.service";
 
 import {
   BILLING_ACCOUNT_PROFILE_KEY_DEFINITION,
-  BillingAccountProfileStateService,
+  DefaultBillingAccountProfileStateService,
 } from "./billing-account-profile-state.service";
 
 describe("BillingAccountProfileStateService", () => {
   let activeUserStateProvider: FakeActiveUserStateProvider;
-  let sut: BillingAccountProfileStateService;
+  let sut: DefaultBillingAccountProfileStateService;
   let billingAccountProfileState: FakeActiveUserState<BillingAccountProfile>;
   let accountService: FakeAccountService;
 
@@ -27,7 +27,7 @@ describe("BillingAccountProfileStateService", () => {
     accountService = mockAccountServiceWith(userId);
     activeUserStateProvider = new FakeActiveUserStateProvider(accountService);
 
-    sut = new BillingAccountProfileStateService(activeUserStateProvider);
+    sut = new DefaultBillingAccountProfileStateService(activeUserStateProvider);
 
     billingAccountProfileState = activeUserStateProvider.getFake(
       BILLING_ACCOUNT_PROFILE_KEY_DEFINITION,

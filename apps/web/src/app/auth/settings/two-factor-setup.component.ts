@@ -9,7 +9,7 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { TwoFactorProviders } from "@bitwarden/common/auth/services/two-factor.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ProductType } from "@bitwarden/common/enums";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
@@ -56,7 +56,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     protected modalService: ModalService,
     protected messagingService: MessagingService,
     protected policyService: PolicyService,
-    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.canAccessPremium$ = billingAccountProfileStateService.canAccessPremium$;
   }

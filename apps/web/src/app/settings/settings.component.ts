@@ -3,7 +3,7 @@ import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
@@ -25,7 +25,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     private organizationService: OrganizationService,
     private apiService: ApiService,
-    private billingAccountProfileStateServiceAbstraction: BillingAccountProfileStateServiceAbstraction,
+    private billingAccountProfileStateServiceAbstraction: BillingAccountProfileStateService,
   ) {}
 
   async ngOnInit() {

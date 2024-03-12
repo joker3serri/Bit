@@ -8,8 +8,8 @@ import {
 } from "../../../platform/state";
 import {
   BillingAccountProfile,
-  BillingAccountProfileStateServiceAbstraction,
-} from "../../abstractions/account/billing-account-profile-state.service.abstraction";
+  BillingAccountProfileStateService,
+} from "../../abstractions/account/billing-account-profile-state.service";
 
 export const BILLING_ACCOUNT_PROFILE_KEY_DEFINITION = new KeyDefinition<BillingAccountProfile>(
   BILLING_DISK,
@@ -19,9 +19,7 @@ export const BILLING_ACCOUNT_PROFILE_KEY_DEFINITION = new KeyDefinition<BillingA
   },
 );
 
-export class BillingAccountProfileStateService
-  implements BillingAccountProfileStateServiceAbstraction
-{
+export class DefaultBillingAccountProfileStateService implements BillingAccountProfileStateService {
   private billingAccountProfileState: ActiveUserState<BillingAccountProfile>;
 
   hasPremiumFromOrganization$: Observable<boolean>;

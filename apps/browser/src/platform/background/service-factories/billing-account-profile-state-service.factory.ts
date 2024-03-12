@@ -1,5 +1,5 @@
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 
 import { activeUserStateProviderFactory } from "./active-user-state-provider.factory";
 import { FactoryOptions, CachedServices, factory } from "./factory-options";
@@ -12,15 +12,17 @@ export type BillingAccountProfileStateServiceInitOptions =
 
 export function billingAccountProfileStateServiceFactory(
   cache: {
-    billingAccountProfileStateService?: BillingAccountProfileStateServiceAbstraction;
+    billingAccountProfileStateService?: BillingAccountProfileStateService;
   } & CachedServices,
   opts: BillingAccountProfileStateServiceInitOptions,
-): Promise<BillingAccountProfileStateServiceAbstraction> {
+): Promise<BillingAccountProfileStateService> {
   return factory(
     cache,
     "billingAccountProfileStateService",
     opts,
     async () =>
-      new BillingAccountProfileStateService(await activeUserStateProviderFactory(cache, opts)),
+      new DefaultBillingAccountProfileStateService(
+        await activeUserStateProviderFactory(cache, opts),
+      ),
   );
 }

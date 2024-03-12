@@ -2,7 +2,7 @@ import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
@@ -44,7 +44,7 @@ export class AttachmentsComponent implements OnInit {
     protected stateService: StateService,
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
-    protected billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    protected billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async ngOnInit() {

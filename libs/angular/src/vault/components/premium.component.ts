@@ -2,7 +2,7 @@ import { Directive } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -26,7 +26,7 @@ export class PremiumComponent {
     protected stateService: StateService,
     protected dialogService: DialogService,
     environmentService: EnvironmentService,
-    billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.cloudWebVaultUrl = environmentService.getCloudWebVaultUrl();
     this.isPremium$ = billingAccountProfileStateService.canAccessPremium$;

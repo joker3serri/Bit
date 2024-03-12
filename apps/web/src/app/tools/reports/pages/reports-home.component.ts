@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 
 import { reports, ReportType } from "../reports";
 import { ReportEntry, ReportVariant } from "../shared";
@@ -13,9 +13,7 @@ import { ReportEntry, ReportVariant } from "../shared";
 export class ReportsHomeComponent implements OnInit {
   reports: ReportEntry[];
 
-  constructor(
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
-  ) {}
+  constructor(private billingAccountProfileStateService: BillingAccountProfileStateService) {}
 
   async ngOnInit(): Promise<void> {
     const userHasPremium = await firstValueFrom(

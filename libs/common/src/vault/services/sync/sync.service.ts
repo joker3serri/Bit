@@ -10,7 +10,7 @@ import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
-import { BillingAccountProfileStateServiceAbstraction } from "../../../billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "../../../billing/abstractions/account/billing-account-profile-state.service";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,
@@ -61,7 +61,7 @@ export class SyncService implements SyncServiceAbstraction {
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
     private logoutCallback: (expired: boolean) => Promise<void>,
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async getLastSync(): Promise<Date> {

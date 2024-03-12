@@ -1,7 +1,7 @@
 import { Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 
 /**
  * Only shows the element if the user has premium.
@@ -15,7 +15,7 @@ export class PremiumDirective implements OnInit, OnDestroy {
   constructor(
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
-    private billingAccountProfileStateService: BillingAccountProfileStateServiceAbstraction,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async ngOnInit(): Promise<void> {

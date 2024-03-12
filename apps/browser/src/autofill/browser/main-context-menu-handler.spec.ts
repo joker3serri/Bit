@@ -3,7 +3,7 @@ import { of } from "rxjs";
 
 import { NOOP_COMMAND_SUFFIX } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { BillingAccountProfileStateServiceAbstraction } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -19,7 +19,7 @@ describe("context-menu", () => {
   let autofillSettingsService: MockProxy<AutofillSettingsServiceAbstraction>;
   let i18nService: MockProxy<I18nService>;
   let logService: MockProxy<LogService>;
-  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   let removeAllSpy: jest.SpyInstance<void, [callback?: () => void]>;
   let createSpy: jest.SpyInstance<
