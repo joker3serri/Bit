@@ -88,12 +88,6 @@ export class UserDecryptionOptions {
   /** {@link KeyConnectorUserDecryptionOption} */
   keyConnectorOption?: KeyConnectorUserDecryptionOption;
 
-  constructor(init?: Partial<UserDecryptionOptions>) {
-    if (init) {
-      Object.assign(this, init);
-    }
-  }
-
   /**
    * Initializes a new instance of the UserDecryptionOptions from a response object.
    * @param response user decryption options response object

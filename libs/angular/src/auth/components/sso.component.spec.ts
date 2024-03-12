@@ -5,10 +5,10 @@ import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject, Observable, of } from "rxjs";
 
 import {
-  KeyConnectorUserDecryptionOption,
+  FakeKeyConnectorUserDecryptionOption as KeyConnectorUserDecryptionOption,
   LoginStrategyServiceAbstraction,
-  TrustedDeviceUserDecryptionOption,
-  UserDecryptionOptions,
+  FakeTrustedDeviceUserDecryptionOption as TrustedDeviceUserDecryptionOption,
+  FakeUserDecryptionOptions as UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";

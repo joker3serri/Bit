@@ -7,10 +7,10 @@ import { BehaviorSubject } from "rxjs";
 // eslint-disable-next-line no-restricted-imports
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import {
-  KeyConnectorUserDecryptionOption,
+  FakeKeyConnectorUserDecryptionOption as KeyConnectorUserDecryptionOption,
   LoginStrategyServiceAbstraction,
-  TrustedDeviceUserDecryptionOption,
-  UserDecryptionOptions,
+  FakeTrustedDeviceUserDecryptionOption as TrustedDeviceUserDecryptionOption,
+  FakeUserDecryptionOptions as UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
