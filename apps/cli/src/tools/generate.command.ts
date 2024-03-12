@@ -1,6 +1,9 @@
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DefaultPassphraseGenerationOptions } from "@bitwarden/common/tools/generator/passphrase";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import {
+  DefaultPasswordGenerationOptions,
+  PasswordGenerationServiceAbstraction,
+} from "@bitwarden/common/tools/generator/password";
 import { PasswordGeneratorOptions } from "@bitwarden/common/tools/generator/password/password-generator-options";
 
 import { Response } from "../models/response";
@@ -75,7 +78,10 @@ class Options {
       DefaultPassphraseGenerationOptions.numWords,
     );
     this.minNumber = CliUtils.convertNumberOption(passedOptions?.minNumber, 1);
-    this.minSpecial = CliUtils.convertNumberOption(passedOptions?.minSpecial, 1);
+    this.minSpecial = CliUtils.convertNumberOption(
+      passedOptions?.minSpecial,
+      DefaultPasswordGenerationOptions.minSpecial,
+    );
 
     if (!this.uppercase && !this.lowercase && !this.special && !this.number) {
       this.lowercase = true;
