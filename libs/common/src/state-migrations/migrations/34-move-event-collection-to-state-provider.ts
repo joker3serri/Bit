@@ -14,7 +14,7 @@ const EVENT_COLLECTION: KeyDefinitionLike = {
   key: "eventCollection",
 };
 
-export class EventCollectionMigrator extends Migrator<32, 33> {
+export class EventCollectionMigrator extends Migrator<33, 34> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountState>();
 
