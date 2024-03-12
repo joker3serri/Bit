@@ -14,30 +14,35 @@ import {
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
+import { AvatarModule } from "../../avatar";
+import { BadgeModule } from "../../badge";
 import { BannerModule } from "../../banner";
+import { BreadcrumbsModule } from "../../breadcrumbs";
 import { ButtonModule } from "../../button";
 import { CalloutModule } from "../../callout";
 import { CheckboxModule } from "../../checkbox";
-import { ColorPasswordModule } from "../../color-password/color-password.module";
+import { ColorPasswordModule } from "../../color-password";
 import { FormControlModule } from "../../form-control";
 import { FormFieldModule } from "../../form-field";
-import { IconModule } from "../../icon/icon.module";
+import { IconModule } from "../../icon";
 import { IconButtonModule } from "../../icon-button";
-import { InputModule } from "../../input/input.module";
-import { LayoutComponent } from "../../layout/layout.component";
+import { InputModule } from "../../input";
+import { LayoutComponent } from "../../layout";
 import { LinkModule } from "../../link";
 import { MenuModule } from "../../menu";
-import { MultiSelectModule } from "../../multi-select/multi-select.module";
+import { MultiSelectModule } from "../../multi-select";
 import { NavigationModule } from "../../navigation";
-import { NoItemsModule } from "../../no-items/no-items.module";
+import { NoItemsModule } from "../../no-items";
+import { PopoverModule } from "../../popover";
 import { ProgressModule } from "../../progress";
 import { RadioButtonModule } from "../../radio-button";
 import { SearchModule } from "../../search";
-import { SectionComponent } from "../../section/section.component";
+import { SectionComponent } from "../../section";
 import { SelectModule } from "../../select";
 import { SharedModule } from "../../shared";
-import { TableModule } from "../../table/table.module";
-import { TabsModule } from "../../tabs/tabs.module";
+import { TableModule } from "../../table";
+import { TabsModule } from "../../tabs";
+import { ToggleGroupModule } from "../../toggle-group";
 import { TypographyModule } from "../../typography";
 import { I18nMockService } from "../../utils/i18n-mock.service";
 
@@ -46,9 +51,18 @@ import { I18nMockService } from "../../utils/i18n-mock.service";
   // TODO fix layout main scroll and get rid of this hardcoded style
   template: `<div style="height: 92vh">
     <bit-section>
+      <p>
+        <bit-breadcrumbs [show]="show">
+          <bit-breadcrumb *ngFor="let item of navItems" [icon]="item.icon" [route]="[item.route]">
+            {{ item.name }}
+          </bit-breadcrumb>
+        </bit-breadcrumbs>
+      </p>
       <bit-banner bannerType="info"> This content is very important </bit-banner>
       <div class="tw-text-center tw-mb-6 tw-mt-6">
-        <h1 bitTypography="h1" class="tw-text-main">Bitwarden</h1>
+        <h1 bitTypography="h1" class="tw-text-main">
+          Bitwarden <bit-avatar text="Bit Warden"></bit-avatar>
+        </h1>
         <a bitLink linkType="primary" href="#">Learn more</a>
       </div>
 
@@ -101,6 +115,27 @@ import { I18nMockService } from "../../utils/i18n-mock.service";
                 </tr>
               </ng-template>
             </bit-table>
+            <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">
+              Companies using Bitwarden
+            </h2>
+            <div class="tw-mt-6 tw-mb-6 tw-flex tw-justify-center">
+              <bit-toggle-group [(selected)]="selectedToggle" aria-label="Company list filter">
+                <bit-toggle value="all"> All <span bitBadge variant="info">3</span> </bit-toggle>
+
+                <bit-toggle value="large">
+                  Enterprise <span bitBadge variant="info">2</span>
+                </bit-toggle>
+
+                <bit-toggle value="small">
+                  Mid-sized <span bitBadge variant="info">1</span>
+                </bit-toggle>
+              </bit-toggle-group>
+            </div>
+            <ul *ngFor="let company of companyList">
+              <li *ngIf="company.size === selectedToggle || selectedToggle === 'all'">
+                {{ company.name }}
+              </li>
+            </ul>
             <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">Survey</h2>
             <bit-main-form></bit-main-form>
           </div>
@@ -120,7 +155,20 @@ import { I18nMockService } from "../../utils/i18n-mock.service";
     </bit-section>
   </div>`,
 })
-class MainComponent {}
+class MainComponent {
+  selectedToggle: "all" | "large" | "small" = "all";
+
+  companyList = [
+    { name: "A large enterprise company", size: "large" },
+    { name: "Another enterprise company", size: "large" },
+    { name: "A smaller company", size: "small" },
+  ];
+
+  navItems = [
+    { icon: "bwi-collection", name: "Password Managers", route: "/" },
+    { icon: "bwi-collection", name: "Favorites", route: "/" },
+  ];
+}
 
 @Component({
   selector: "bit-main-form",
@@ -130,12 +178,12 @@ class MainComponent {}
     </div>
 
     <bit-form-field>
-      <bit-label>Your Favorite Feature</bit-label>
+      <bit-label>Your favorite feature</bit-label>
       <input bitInput formControlName="favFeature" />
     </bit-form-field>
 
     <bit-form-field>
-      <bit-label>Your Favorite Color</bit-label>
+      <bit-label>Your favorite color</bit-label>
       <bit-select formControlName="favColor">
         <bit-option
           *ngFor="let color of colors"
@@ -146,7 +194,7 @@ class MainComponent {}
     </bit-form-field>
 
     <bit-form-field>
-      <bit-label>Your Top 3 Worst Passwords</bit-label>
+      <bit-label>Your top 3 worst passwords</bit-label>
       <bit-multi-select
         class="tw-w-full"
         formControlName="topWorstPasswords"
@@ -157,12 +205,22 @@ class MainComponent {}
     </bit-form-field>
 
     <bit-form-field>
-      <bit-label>How Many Passwords Do You Have</bit-label>
+      <bit-label>How many passwords do you have?</bit-label>
       <input bitInput type="number" formControlName="numPasswords" min="0" max="150" />
     </bit-form-field>
 
     <bit-form-field>
-      <bit-label>A Random Password</bit-label>
+      <bit-label>
+        A random password
+        <button
+          type="button"
+          class="tw-border-none tw-bg-transparent tw-text-primary-500"
+          [bitPopoverTriggerFor]="myPopover"
+          #triggerRef="popoverTrigger"
+        >
+          <i class="bwi bwi-question-circle"></i>
+        </button>
+      </bit-label>
       <input bitInput type="password" formControlName="password" />
       <button
         type="button"
@@ -202,6 +260,15 @@ class MainComponent {}
 
     <button type="submit" bitButton buttonType="primary" (click)="(submit)">Submit</button>
     <bit-error-summary [formGroup]="formObj"></bit-error-summary>
+
+    <bit-popover [title]="'Password help'" #myPopover>
+      <div>A strong password has the following:</div>
+      <ul class="tw-mt-2 tw-mb-0 tw-pl-4">
+        <li>Letters</li>
+        <li>Numbers</li>
+        <li>Special characters</li>
+      </ul>
+    </bit-popover>
   </form>`,
 })
 class MainForm {
@@ -249,7 +316,10 @@ export default {
     moduleMetadata({
       declarations: [MainComponent, MainForm],
       imports: [
+        AvatarModule,
+        BadgeModule,
         BannerModule,
+        BreadcrumbsModule,
         ButtonModule,
         CommonModule,
         CalloutModule,
@@ -268,6 +338,7 @@ export default {
         NavigationModule,
         NgSelectModule,
         NoItemsModule,
+        PopoverModule,
         ProgressModule,
         RadioButtonModule,
         ReactiveFormsModule,
@@ -278,6 +349,7 @@ export default {
         SharedModule,
         TableModule,
         TabsModule,
+        ToggleGroupModule,
         TypographyModule,
       ],
       providers: [
