@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveThemeToStateProviderMigrator } from "./30-move-theme-to-state-providers";
+import { MoveThemeToStateProviderMigrator } from "./33-move-theme-to-state-providers";
 
 describe("MoveThemeToStateProviders", () => {
-  const sut = new MoveThemeToStateProviderMigrator(29, 30);
+  const sut = new MoveThemeToStateProviderMigrator(32, 33);
 
   describe("migrate", () => {
     it("migrates global theme and deletes it", async () => {
