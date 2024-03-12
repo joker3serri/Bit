@@ -105,7 +105,9 @@ export class OptionsComponent implements OnInit {
       this.userNotificationSettingsService.enableChangedPasswordPrompt$,
     );
 
-    this.enableContextMenuItem = !(await this.stateService.getDisableContextMenuItem());
+    this.enableContextMenuItem = await firstValueFrom(
+      this.autofillSettingsService.enableContextMenu$,
+    );
 
     this.showCardsCurrentTab = await firstValueFrom(this.vaultSettingsService.showCardsCurrentTab$);
     this.showIdentitiesCurrentTab = await firstValueFrom(
@@ -145,7 +147,7 @@ export class OptionsComponent implements OnInit {
   }
 
   async updateContextMenuItem() {
-    await this.stateService.setDisableContextMenuItem(!this.enableContextMenuItem);
+    await this.autofillSettingsService.setEnableContextMenu(this.enableContextMenuItem);
     this.messagingService.send("bgUpdateContextMenu");
   }
 
