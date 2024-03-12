@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { EventCollectionMigrator } from "./34-move-event-collection-to-state-provider";
+import { EventCollectionMigrator } from "./35-move-event-collection-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -88,8 +88,8 @@ describe("EventCollectionMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 33);
-      sut = new EventCollectionMigrator(33, 34);
+      helper = mockMigrationHelper(exampleJSON(), 34);
+      sut = new EventCollectionMigrator(34, 35);
     });
 
     it("should remove event collections from all accounts", async () => {
@@ -124,8 +124,8 @@ describe("EventCollectionMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 34);
-      sut = new EventCollectionMigrator(33, 34);
+      helper = mockMigrationHelper(rollbackJSON(), 35);
+      sut = new EventCollectionMigrator(34, 35);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
