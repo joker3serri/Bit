@@ -92,6 +92,10 @@ import {
   BadgeSettingsServiceAbstraction,
   BadgeSettingsService,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
+import {
+  DomainSettingsService,
+  DefaultDomainSettingsService,
+} from "@bitwarden/common/autofill/services/domain-settings.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
 import { PaymentMethodWarningsServiceAbstraction } from "@bitwarden/common/billing/abstractions/payment-method-warnings-service.abstraction";
@@ -299,7 +303,7 @@ const typesafeProviders: Array<SafeProvider> = [
   safeProvider({
     provide: AppIdServiceAbstraction,
     useClass: AppIdService,
-    deps: [AbstractStorageService],
+    deps: [GlobalStateProvider],
   }),
   safeProvider({
     provide: AuditServiceAbstraction,
@@ -337,6 +341,7 @@ const typesafeProviders: Array<SafeProvider> = [
       PolicyServiceAbstraction,
       DeviceTrustCryptoServiceAbstraction,
       AuthRequestServiceAbstraction,
+      GlobalStateProvider
     ],
   }),
   safeProvider({
@@ -353,7 +358,7 @@ const typesafeProviders: Array<SafeProvider> = [
     provide: CipherServiceAbstraction,
     useFactory: (
       cryptoService: CryptoServiceAbstraction,
-      settingsService: SettingsServiceAbstraction,
+      domainSettingsService: DomainSettingsService,
       apiService: ApiServiceAbstraction,
       i18nService: I18nServiceAbstraction,
       searchService: SearchServiceAbstraction,
@@ -365,7 +370,7 @@ const typesafeProviders: Array<SafeProvider> = [
     ) =>
       new CipherService(
         cryptoService,
-        settingsService,
+        domainSettingsService,
         apiService,
         i18nService,
         searchService,
@@ -377,7 +382,7 @@ const typesafeProviders: Array<SafeProvider> = [
       ),
     deps: [
       CryptoServiceAbstraction,
-      SettingsServiceAbstraction,
+      DomainSettingsService,
       ApiServiceAbstraction,
       I18nServiceAbstraction,
       SearchServiceAbstraction,
@@ -522,7 +527,7 @@ const typesafeProviders: Array<SafeProvider> = [
     useClass: SyncService,
     deps: [
       ApiServiceAbstraction,
-      SettingsServiceAbstraction,
+      DomainSettingsService,
       InternalFolderService,
       CipherServiceAbstraction,
       CryptoServiceAbstraction,
@@ -751,7 +756,7 @@ const typesafeProviders: Array<SafeProvider> = [
     useClass: PasswordResetEnrollmentServiceImplementation,
     deps: [
       OrganizationApiServiceAbstraction,
-      StateServiceAbstraction,
+      AccountServiceAbstraction,
       CryptoServiceAbstraction,
       OrganizationUserService,
       I18nServiceAbstraction,
@@ -974,6 +979,11 @@ const typesafeProviders: Array<SafeProvider> = [
   safeProvider({
     provide: BadgeSettingsServiceAbstraction,
     useClass: BadgeSettingsService,
+    deps: [StateProvider],
+  }),
+  safeProvider({
+    provide: DomainSettingsService,
+    useClass: DefaultDomainSettingsService,
     deps: [StateProvider],
   }),
   safeProvider({
