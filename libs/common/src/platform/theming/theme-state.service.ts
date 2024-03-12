@@ -23,9 +23,12 @@ const THEME_SELECTION = new KeyDefinition<ThemeType>(THEMING_DISK, "selection", 
 export class DefaultThemeStateService implements ThemeStateService {
   private readonly selectedThemeState = this.globalStateProvider.get(THEME_SELECTION);
 
-  selectedTheme$ = this.selectedThemeState.state$.pipe(map((theme) => theme ?? ThemeType.Light));
+  selectedTheme$ = this.selectedThemeState.state$.pipe(map((theme) => theme ?? this.defaultTheme));
 
-  constructor(private globalStateProvider: GlobalStateProvider) {}
+  constructor(
+    private globalStateProvider: GlobalStateProvider,
+    private defaultTheme: ThemeType = ThemeType.System,
+  ) {}
 
   async setSelectedTheme(theme: ThemeType): Promise<void> {
     await this.selectedThemeState.update(() => theme, {
