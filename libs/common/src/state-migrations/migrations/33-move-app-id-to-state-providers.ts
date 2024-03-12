@@ -14,7 +14,7 @@ export const ANONYMOUS_APP_ID_KEY: KeyDefinitionLike = {
   stateDefinition: { name: "applicationId" },
 };
 
-export class AppIdMigrator extends Migrator<31, 32> {
+export class AppIdMigrator extends Migrator<32, 33> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const appId = await helper.get<string>(APP_ID_STORAGE_KEY);
     const anonymousAppId = await helper.get<string>(ANONYMOUS_APP_ID_STORAGE_KEY);
