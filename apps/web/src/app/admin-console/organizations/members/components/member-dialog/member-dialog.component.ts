@@ -173,8 +173,7 @@ export class MemberDialogComponent implements OnDestroy {
       : of(null);
 
     // The orgUser cannot manage their own Group assignments if collection access is restricted
-    // TODO: hide access-selector dropdown in this case (for both groups and collections)
-    // TODO: fix disabled state of access-selector so that the X button for each row is hidden
+    // TODO: fix disabled state of access-selector rows so that any controls are hidden
     this.restrictedAccess$ = combineLatest([
       this.organization$,
       userDetails$,
@@ -193,15 +192,13 @@ export class MemberDialogComponent implements OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
-    this.restrictedAccess$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((readonlyCollectionsAndGroups) => {
-        if (readonlyCollectionsAndGroups) {
-          this.formGroup.controls.groups.disable();
-        } else {
-          this.formGroup.controls.groups.enable();
-        }
-      });
+    this.restrictedAccess$.pipe(takeUntil(this.destroy$)).subscribe((restrictedAccess) => {
+      if (restrictedAccess) {
+        this.formGroup.controls.groups.disable();
+      } else {
+        this.formGroup.controls.groups.enable();
+      }
+    });
 
     combineLatest({
       organization: this.organization$,
