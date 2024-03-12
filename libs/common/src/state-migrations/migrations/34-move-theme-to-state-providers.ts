@@ -8,7 +8,7 @@ const THEME_SELECTION: KeyDefinitionLike = {
   stateDefinition: { name: "theming" },
 };
 
-export class MoveThemeToStateProviderMigrator extends Migrator<32, 33> {
+export class MoveThemeToStateProviderMigrator extends Migrator<33, 34> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyGlobalState = await helper.get<ExpectedGlobal>("global");
     const theme = legacyGlobalState?.theme;

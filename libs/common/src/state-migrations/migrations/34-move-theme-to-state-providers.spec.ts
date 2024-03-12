@@ -1,6 +1,6 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveThemeToStateProviderMigrator } from "./33-move-theme-to-state-providers";
+import { MoveThemeToStateProviderMigrator } from "./34-move-theme-to-state-providers";
 
 describe("MoveThemeToStateProviders", () => {
   const sut = new MoveThemeToStateProviderMigrator(32, 33);
