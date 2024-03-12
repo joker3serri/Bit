@@ -38,10 +38,7 @@ import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
 import { MainCryptoFunctionService } from "./platform/main/main-crypto-function.service";
 import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
-import {
-  ELECTRON_SUPPORTS_SECURE_STORAGE,
-  ElectronPlatformUtilsService,
-} from "./platform/services/electron-platform-utils.service";
+import { ELECTRON_SUPPORTS_SECURE_STORAGE } from "./platform/services/electron-platform-utils.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
@@ -60,7 +57,6 @@ export class Main {
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   migrationRunner: MigrationRunner;
   tokenService: TokenServiceAbstraction;
-  platformUtilsService: ElectronPlatformUtilsService;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -197,11 +193,6 @@ export class Main {
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
     });
-
-    this.platformUtilsService = new ElectronPlatformUtilsService(
-      this.i18nService,
-      this.messagingService,
-    );
 
     this.powerMonitorMain = new PowerMonitorMain(this.messagingService);
     this.menuMain = new MenuMain(
