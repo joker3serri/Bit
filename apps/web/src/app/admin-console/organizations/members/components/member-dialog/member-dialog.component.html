@@ -400,7 +400,7 @@
         <bit-tab *ngIf="organization.useGroups" [label]="'groups' | i18n">
           <div class="tw-mb-6">
             {{
-              (readonlyCollectionsAndGroups$ | async)
+              (restrictedAccess$ | async)
                 ? ("restrictedGroupAccess" | i18n)
                 : ("groupAccessUserDesc" | i18n)
             }}
@@ -415,13 +415,10 @@
           ></bit-access-selector>
         </bit-tab>
         <bit-tab [label]="'collections' | i18n">
-          <div class="tw-mb-6" *ngIf="readonlyCollectionsAndGroups$ | async">
+          <div class="tw-mb-6" *ngIf="restrictedAccess$ | async">
             {{ "restrictedCollectionAccess" | i18n }}
           </div>
-          <div
-            *ngIf="organization.useGroups && !(readonlyCollectionsAndGroups$ | async)"
-            class="tw-mb-6"
-          >
+          <div *ngIf="organization.useGroups && !(restrictedAccess$ | async)" class="tw-mb-6">
             {{ "userPermissionOverrideHelper" | i18n }}
           </div>
           <div *ngIf="!organization.flexibleCollections" class="tw-mb-6">

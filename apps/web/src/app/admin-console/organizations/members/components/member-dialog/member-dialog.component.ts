@@ -102,7 +102,7 @@ export class MemberDialogComponent implements OnDestroy {
     groups: [[] as AccessItemValue[]],
   });
 
-  protected readonlyCollectionsAndGroups$: Observable<boolean>;
+  protected restrictedAccess$: Observable<boolean>;
 
   protected permissionsGroup = this.formBuilder.group({
     manageAssignedCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
@@ -172,8 +172,10 @@ export class MemberDialogComponent implements OnDestroy {
       ? this.userService.get(this.params.organizationId, this.params.organizationUserId)
       : of(null);
 
-    // This modal is read-only if the user is editing themselves and their collection access is restricted
-    this.readonlyCollectionsAndGroups$ = combineLatest([
+    // The orgUser cannot manage their own Group assignments if collection access is restricted
+    // TODO: hide access-selector dropdown in this case (for both groups and collections)
+    // TODO: fix disabled state of access-selector so that the X button for each row is hidden
+    this.restrictedAccess$ = combineLatest([
       this.organization$,
       userDetails$,
       this.accountService.activeAccount$,
@@ -181,22 +183,22 @@ export class MemberDialogComponent implements OnDestroy {
     ]).pipe(
       map(
         ([organization, userDetails, activeAccount, flexibleCollectionsV1Enabled]) =>
-          userDetails.userId == activeAccount.id &&
+          // Feature flag conditionals
           flexibleCollectionsV1Enabled &&
           organization.flexibleCollections &&
+          // Business logic conditionals
+          userDetails.userId == activeAccount.id &&
           !organization.allowAdminAccessToAllCollectionItems,
       ),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
-    this.readonlyCollectionsAndGroups$
+    this.restrictedAccess$
       .pipe(takeUntil(this.destroy$))
       .subscribe((readonlyCollectionsAndGroups) => {
         if (readonlyCollectionsAndGroups) {
-          this.formGroup.controls.access.disable();
           this.formGroup.controls.groups.disable();
         } else {
-          this.formGroup.controls.access.enable();
           this.formGroup.controls.groups.enable();
         }
       });
