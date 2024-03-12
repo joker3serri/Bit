@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { Observable, firstValueFrom } from "rxjs";
 
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
@@ -30,8 +30,8 @@ export class AutofillComponent implements OnInit {
   autoFillOnPageLoadOptions: any[];
   defaultUriMatch = UriMatchType.Domain;
   uriMatchOptions: any[];
-  autofillKeyboardHelperText: string;
   accountSwitcherEnabled = false;
+  autofillKeyboardShortcut$: Observable<string>;
 
   constructor(
     private stateService: StateService,
@@ -71,6 +71,7 @@ export class AutofillComponent implements OnInit {
 
     this.accountSwitcherEnabled = enableAccountSwitching();
     this.disablePasswordManagerLink = this.getDisablePasswordManagerLink();
+    this.autofillKeyboardShortcut$ = this.autofillService.shortcut$;
   }
 
   async ngOnInit() {
@@ -96,9 +97,6 @@ export class AutofillComponent implements OnInit {
 
     const defaultUriMatch = await this.stateService.getDefaultUriMatch();
     this.defaultUriMatch = defaultUriMatch == null ? UriMatchType.Domain : defaultUriMatch;
-
-    const command = await this.platformUtilsService.getAutofillKeyboardShortcut();
-    await this.setAutofillKeyboardHelperText(command);
   }
 
   async updateAutoFillOverlayVisibility() {
@@ -120,14 +118,6 @@ export class AutofillComponent implements OnInit {
 
   async saveDefaultUriMatch() {
     await this.stateService.setDefaultUriMatch(this.defaultUriMatch);
-  }
-
-  private async setAutofillKeyboardHelperText(command: string) {
-    if (command) {
-      this.autofillKeyboardHelperText = this.i18nService.t("autofillShortcutText", command);
-    } else {
-      this.autofillKeyboardHelperText = this.i18nService.t("autofillShortcutNotSet");
-    }
   }
 
   async commandSettings() {

@@ -337,7 +337,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       !(await firstValueFrom(this.autofillSettingsService.autofillOnPageLoadCalloutIsDismissed$));
 
     if (this.showHowToAutofill) {
-      const autofillCommand = await this.platformUtilsService.getAutofillKeyboardShortcut();
+      // FIXME: Refactor to utilize the observable in the template
+      const autofillCommand = await firstValueFrom(this.autofillService.shortcut$);
       await this.setAutofillCalloutText(autofillCommand);
     }
   }
