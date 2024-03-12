@@ -10,7 +10,14 @@ import { BROWSER_SEND_COMPONENT, BROWSER_SEND_TYPE_COMPONENT } from "./key-defin
 /** Get or set the active user's component state for the Send browser component
  */
 export class BrowserSendStateService {
+  /** Observable that contains the current state for active user Sends including the send data and type counts
+   *  along with the search text and scroll position
+   */
   browserSendComponentState$: Observable<BrowserSendComponentState>;
+
+  /** Observable that contains the  current state for active user Sends that only includes the search text
+   *  and scroll position
+   */
   browserSendTypeComponentState$: Observable<BrowserComponentState>;
 
   private activeUserBrowserSendComponentState: ActiveUserState<BrowserSendComponentState>;
