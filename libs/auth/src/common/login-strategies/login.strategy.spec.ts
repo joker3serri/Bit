@@ -2,7 +2,6 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -106,7 +105,6 @@ describe("LoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
-  let loginService: MockProxy<LoginService>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
 
@@ -124,7 +122,6 @@ describe("LoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
-    loginService = mock<LoginService>();
 
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
@@ -143,7 +140,6 @@ describe("LoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
-      loginService,
       passwordStrengthService,
       policyService,
       loginStrategyService,
