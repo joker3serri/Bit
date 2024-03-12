@@ -190,6 +190,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
         }
       });
 
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((hasPremiumFromAnySource) => {
+        this.canAccessPremium = hasPremiumFromAnySource;
+      });
+
     await this.load();
   }
 
@@ -207,10 +213,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async load() {
-    this.canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
-    );
-
     this.emailVerified = await this.stateService.getEmailVerified();
 
     this.type = !this.canAccessPremium || !this.emailVerified ? SendType.Text : SendType.File;
