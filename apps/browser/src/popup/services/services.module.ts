@@ -77,7 +77,6 @@ import {
   GlobalStateProvider,
   StateProvider,
 } from "@bitwarden/common/platform/state";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
@@ -492,7 +491,7 @@ function getBgService<T>(service: keyof MainBackground) {
 
         return AngularThemingService.createSystemThemeFromWindow(windowContext);
       },
-      deps: [ThemeStateService, PlatformUtilsService],
+      deps: [PlatformUtilsService],
     },
     {
       provide: ConfigService,
