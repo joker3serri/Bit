@@ -5,7 +5,6 @@ import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-re
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
-import { EventData } from "../../models/data/event.data";
 import { WindowState } from "../../models/domain/window-state";
 import { GeneratorOptions } from "../../tools/generator/generator-options";
 import { GeneratedPasswordHistory, PasswordGeneratorOptions } from "../../tools/generator/password";
@@ -277,8 +276,6 @@ export abstract class StateService<T extends Account = Account> {
   setEncryptedSends: (value: { [id: string]: SendData }, options?: StorageOptions) => Promise<void>;
   getEquivalentDomains: (options?: StorageOptions) => Promise<string[][]>;
   setEquivalentDomains: (value: string, options?: StorageOptions) => Promise<void>;
-  getEventCollection: (options?: StorageOptions) => Promise<EventData[]>;
-  setEventCollection: (value: EventData[], options?: StorageOptions) => Promise<void>;
   getEverBeenUnlocked: (options?: StorageOptions) => Promise<boolean>;
   setEverBeenUnlocked: (value: boolean, options?: StorageOptions) => Promise<void>;
   getForceSetPasswordReason: (options?: StorageOptions) => Promise<ForceSetPasswordReason>;

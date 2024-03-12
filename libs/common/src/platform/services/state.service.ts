@@ -9,7 +9,6 @@ import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-passw
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
-import { EventData } from "../../models/data/event.data";
 import { WindowState } from "../../models/domain/window-state";
 import { GeneratorOptions } from "../../tools/generator/generator-options";
 import { GeneratedPasswordHistory, PasswordGeneratorOptions } from "../../tools/generator/password";
@@ -1344,24 +1343,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
     account.settings.equivalentDomains = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  @withPrototypeForArrayMembers(EventData)
-  async getEventCollection(options?: StorageOptions): Promise<EventData[]> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.data?.eventCollection;
-  }
-
-  async setEventCollection(value: EventData[], options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.data.eventCollection = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
