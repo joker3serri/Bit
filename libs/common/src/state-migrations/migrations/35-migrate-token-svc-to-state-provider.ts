@@ -51,7 +51,7 @@ export const API_KEY_CLIENT_SECRET_DISK: KeyDefinitionLike = {
   stateDefinition: TOKEN_STATE_DEF_LIKE,
 };
 
-export class TokenServiceStateProviderMigrator extends Migrator<31, 32> {
+export class TokenServiceStateProviderMigrator extends Migrator<34, 35> {
   async migrate(helper: MigrationHelper): Promise<void> {
     // Move global data
     const globalData = await helper.get<ExpectedGlobalType>("global");
