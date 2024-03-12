@@ -3,7 +3,7 @@ import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -53,7 +53,7 @@ export class Fido2UseBrowserLinkComponent {
 
   constructor(
     private stateService: StateService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
   ) {}

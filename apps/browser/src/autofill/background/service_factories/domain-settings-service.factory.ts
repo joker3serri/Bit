@@ -1,4 +1,4 @@
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 
 import {
   CachedServices,
@@ -13,13 +13,13 @@ import {
 export type DomainSettingsServiceInitOptions = FactoryOptions & StateProviderInitOptions;
 
 export function domainSettingsServiceFactory(
-  cache: { domainSettingsService?: DomainSettingsService } & CachedServices,
+  cache: { domainSettingsService?: DefaultDomainSettingsService } & CachedServices,
   opts: DomainSettingsServiceInitOptions,
-): Promise<DomainSettingsService> {
+): Promise<DefaultDomainSettingsService> {
   return factory(
     cache,
     "domainSettingsService",
     opts,
-    async () => new DomainSettingsService(await stateProviderFactory(cache, opts)),
+    async () => new DefaultDomainSettingsService(await stateProviderFactory(cache, opts)),
   );
 }

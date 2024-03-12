@@ -2,7 +2,7 @@ import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -32,7 +32,7 @@ export class ExcludedDomainsComponent implements OnInit, OnDestroy {
 
   constructor(
     private stateService: StateService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private i18nService: I18nService,
     private router: Router,
     private broadcasterService: BroadcasterService,

@@ -4,10 +4,10 @@ import { FakeStateProvider, FakeAccountService, mockAccountServiceWith } from ".
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
 
-import { DomainSettingsService, DefaultDomainSettingsService } from "./domain-settings.service";
+import { DefaultDomainSettingsService, DomainSettingsService } from "./domain-settings.service";
 
-describe("DomainSettingsService", () => {
-  let domainSettingsService: DefaultDomainSettingsService;
+describe("DefaultDomainSettingsService", () => {
+  let domainSettingsService: DomainSettingsService;
   const mockUserId = Utils.newGuid() as UserId;
   const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
   const fakeStateProvider: FakeStateProvider = new FakeStateProvider(accountService);
@@ -19,7 +19,7 @@ describe("DomainSettingsService", () => {
   ];
 
   beforeEach(() => {
-    domainSettingsService = new DomainSettingsService(fakeStateProvider);
+    domainSettingsService = new DefaultDomainSettingsService(fakeStateProvider);
 
     jest.spyOn(domainSettingsService, "getUrlEquivalentDomains");
     domainSettingsService.equivalentDomains$ = of(mockEquivalentDomains);

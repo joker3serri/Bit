@@ -3,7 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
 import { EventType } from "@bitwarden/common/enums";
 import {
@@ -52,7 +52,7 @@ export default class AutofillService implements AutofillServiceInterface {
     private totpService: TotpService,
     private eventCollectionService: EventCollectionService,
     private logService: LogService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private userVerificationService: UserVerificationService,
   ) {}
 

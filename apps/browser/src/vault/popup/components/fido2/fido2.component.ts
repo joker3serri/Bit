@@ -14,7 +14,7 @@ import {
 } from "rxjs";
 
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -73,7 +73,7 @@ export class Fido2Component implements OnInit, OnDestroy {
     private cipherService: CipherService,
     private passwordRepromptService: PasswordRepromptService,
     private platformUtilsService: PlatformUtilsService,
-    private domainSettingsService: DomainSettingsService,
+    private domainSettingsService: DefaultDomainSettingsService,
     private searchService: SearchService,
     private logService: LogService,
     private dialogService: DialogService,

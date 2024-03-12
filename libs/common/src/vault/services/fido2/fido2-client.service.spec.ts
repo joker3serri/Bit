@@ -3,7 +3,7 @@ import { of } from "rxjs";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
-import { DefaultDomainSettingsService } from "../../../autofill/services/domain-settings.service";
+import { DomainSettingsService } from "../../../autofill/services/domain-settings.service";
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { Utils } from "../../../platform/misc/utils";
@@ -35,7 +35,7 @@ describe("FidoAuthenticatorService", () => {
   let authService!: MockProxy<AuthService>;
   let stateService!: MockProxy<StateService>;
   let vaultSettingsService: MockProxy<VaultSettingsService>;
-  let domainSettingsService: MockProxy<DefaultDomainSettingsService>;
+  let domainSettingsService: MockProxy<DomainSettingsService>;
   let client!: Fido2ClientService;
   let tab!: chrome.tabs.Tab;
 
@@ -45,7 +45,7 @@ describe("FidoAuthenticatorService", () => {
     authService = mock<AuthService>();
     stateService = mock<StateService>();
     vaultSettingsService = mock<VaultSettingsService>();
-    domainSettingsService = mock<DefaultDomainSettingsService>();
+    domainSettingsService = mock<DomainSettingsService>();
 
     client = new Fido2ClientService(
       authenticator,

@@ -3,7 +3,7 @@ import { firstValueFrom } from "rxjs";
 
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
 import {
   UriMatchStrategy,
@@ -38,7 +38,7 @@ export class AutofillComponent implements OnInit {
   constructor(
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private autofillService: AutofillService,
     private dialogService: DialogService,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,

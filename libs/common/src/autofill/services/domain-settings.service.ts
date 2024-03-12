@@ -33,7 +33,7 @@ const DEFAULT_URI_MATCH_STRATEGY = new KeyDefinition(
   },
 );
 
-export abstract class DefaultDomainSettingsService {
+export abstract class DomainSettingsService {
   neverDomains$: Observable<NeverDomains>;
   setNeverDomains: (newValue: NeverDomains) => Promise<void>;
   equivalentDomains$: Observable<EquivalentDomains>;
@@ -43,7 +43,7 @@ export abstract class DefaultDomainSettingsService {
   getUrlEquivalentDomains: (url: string) => Observable<Set<string>>;
 }
 
-export class DomainSettingsService implements DefaultDomainSettingsService {
+export class DefaultDomainSettingsService implements DomainSettingsService {
   private neverDomainsState: GlobalState<NeverDomains>;
   readonly neverDomains$: Observable<NeverDomains>;
 

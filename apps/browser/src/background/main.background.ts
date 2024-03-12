@@ -57,8 +57,8 @@ import {
   BadgeSettingsService,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
 import {
-  DefaultDomainSettingsService,
   DomainSettingsService,
+  DefaultDomainSettingsService,
 } from "@bitwarden/common/autofill/services/domain-settings.service";
 import {
   UserNotificationSettingsService,
@@ -263,7 +263,7 @@ export default class MainBackground {
   userNotificationSettingsService: UserNotificationSettingsServiceAbstraction;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
   badgeSettingsService: BadgeSettingsServiceAbstraction;
-  domainSettingsService: DefaultDomainSettingsService;
+  domainSettingsService: DomainSettingsService;
   systemService: SystemServiceAbstraction;
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
@@ -471,7 +471,7 @@ export default class MainBackground {
       this.appIdService,
       (expired: boolean) => this.logout(expired),
     );
-    this.domainSettingsService = new DomainSettingsService(this.stateProvider);
+    this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
     this.settingsService = new BrowserSettingsService(this.stateService);
     this.fileUploadService = new FileUploadService(this.logService);
     this.cipherFileUploadService = new CipherFileUploadService(

@@ -9,7 +9,7 @@ import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
-import { DefaultDomainSettingsService } from "../../../autofill/services/domain-settings.service";
+import { DomainSettingsService } from "../../../autofill/services/domain-settings.service";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,
@@ -44,7 +44,7 @@ export class SyncService implements SyncServiceAbstraction {
 
   constructor(
     private apiService: ApiService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private folderService: InternalFolderService,
     private cipherService: CipherService,
     private cryptoService: CryptoService,

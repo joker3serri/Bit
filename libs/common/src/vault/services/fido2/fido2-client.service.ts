@@ -3,7 +3,7 @@ import { parse } from "tldts";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
-import { DefaultDomainSettingsService } from "../../../autofill/services/domain-settings.service";
+import { DomainSettingsService } from "../../../autofill/services/domain-settings.service";
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { StateService } from "../../../platform/abstractions/state.service";
@@ -45,7 +45,7 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     private authService: AuthService,
     private stateService: StateService,
     private vaultSettingsService: VaultSettingsService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private logService?: LogService,
   ) {}
 

@@ -5,7 +5,7 @@ import { AbstractThemingService } from "@bitwarden/angular/platform/services/the
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { BadgeSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/badge-settings.service";
-import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { ClearClipboardDelaySetting } from "@bitwarden/common/autofill/types";
 import {
@@ -54,7 +54,7 @@ export class OptionsComponent implements OnInit {
     private stateService: StateService,
     private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private badgeSettingsService: BadgeSettingsServiceAbstraction,
     i18nService: I18nService,
     private themingService: AbstractThemingService,

@@ -5,7 +5,7 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { NOTIFICATION_BAR_LIFESPAN_MS } from "@bitwarden/common/autofill/constants";
-import { DefaultDomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -74,7 +74,7 @@ export default class NotificationBackground {
     private folderService: FolderService,
     private stateService: BrowserStateService,
     private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private environmentService: EnvironmentService,
     private logService: LogService,
   ) {}

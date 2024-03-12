@@ -4,7 +4,7 @@ import { SemVer } from "semver";
 import { ApiService } from "../../abstractions/api.service";
 import { SearchService } from "../../abstractions/search.service";
 import { AutofillSettingsServiceAbstraction } from "../../autofill/services/autofill-settings.service";
-import { DefaultDomainSettingsService } from "../../autofill/services/domain-settings.service";
+import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
 import { UriMatchStrategySetting } from "../../models/domain/domain-service";
 import { ErrorResponse } from "../../models/response/error.response";
 import { ListResponse } from "../../models/response/list.response";
@@ -62,7 +62,7 @@ export class CipherService implements CipherServiceAbstraction {
 
   constructor(
     private cryptoService: CryptoService,
-    private domainSettingsService: DefaultDomainSettingsService,
+    private domainSettingsService: DomainSettingsService,
     private apiService: ApiService,
     private i18nService: I18nService,
     private searchService: SearchService,

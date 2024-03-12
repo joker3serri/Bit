@@ -5,8 +5,8 @@ import { UserVerificationService } from "@bitwarden/common/auth/services/user-ve
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import {
-  DomainSettingsService,
   DefaultDomainSettingsService,
+  DomainSettingsService,
 } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { EventType } from "@bitwarden/common/enums";
 import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
@@ -67,7 +67,7 @@ describe("AutofillService", () => {
   const mockUserId = Utils.newGuid() as UserId;
   const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
   const fakeStateProvider: FakeStateProvider = new FakeStateProvider(accountService);
-  let domainSettingsService: DefaultDomainSettingsService;
+  let domainSettingsService: DomainSettingsService;
   const totpService = mock<TotpService>();
   const eventCollectionService = mock<EventCollectionService>();
   const logService = mock<LogService>();
@@ -85,7 +85,7 @@ describe("AutofillService", () => {
       userVerificationService,
     );
 
-    domainSettingsService = new DomainSettingsService(fakeStateProvider);
+    domainSettingsService = new DefaultDomainSettingsService(fakeStateProvider);
     domainSettingsService.equivalentDomains$ = of(mockEquivalentDomains);
   });
 
