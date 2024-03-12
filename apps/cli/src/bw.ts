@@ -338,7 +338,7 @@ export class Main {
       this.stateProvider,
     );
 
-    this.appIdService = new AppIdService(this.storageService);
+    this.appIdService = new AppIdService(this.globalStateProvider);
     this.tokenService = new TokenService(this.stateService);
 
     const customUserAgent =

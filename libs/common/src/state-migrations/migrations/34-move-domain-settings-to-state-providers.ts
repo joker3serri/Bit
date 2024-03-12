@@ -46,7 +46,7 @@ const neverDomainsDefinition: KeyDefinitionLike = {
   key: "neverDomains",
 };
 
-export class DomainSettingsMigrator extends Migrator<32, 33> {
+export class DomainSettingsMigrator extends Migrator<33, 34> {
   async migrate(helper: MigrationHelper): Promise<void> {
     let updateAccount = false;
 
