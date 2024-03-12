@@ -30,6 +30,7 @@ export const BILLING_DISK = new StateDefinition("billing", "disk");
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
 export const SSO_DISK = new StateDefinition("ssoLogin", "disk");
+export const LOGIN_STRATEGY_MEMORY = new StateDefinition("loginStrategy", "memory");
 
 // Autofill
 
@@ -52,6 +53,9 @@ export const NEW_WEB_LAYOUT_BANNER_DISK = new StateDefinition("newWebLayoutBanne
 
 // Platform
 
+export const APPLICATION_ID_DISK = new StateDefinition("applicationId", "disk", {
+  web: "disk-local",
+});
 export const BIOMETRIC_SETTINGS_DISK = new StateDefinition("biometricSettings", "disk");
 export const CLEAR_EVENT_DISK = new StateDefinition("clearEvent", "disk");
 export const CRYPTO_DISK = new StateDefinition("crypto", "disk");

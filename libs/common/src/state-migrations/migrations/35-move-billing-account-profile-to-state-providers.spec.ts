@@ -6,7 +6,7 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 import {
   BILLING_ACCOUNT_PROFILE_KEY_DEFINITION,
   MoveBillingAccountProfileMigrator,
-} from "./33-move-billing-account-profile-to-state-providers";
+} from "./35-move-billing-account-profile-to-state-providers";
 
 const exampleJSON = () => ({
   global: {
@@ -53,7 +53,7 @@ describe("MoveBillingAccountProfileToStateProviders migrator", () => {
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(exampleJSON(), 33);
-      sut = new MoveBillingAccountProfileMigrator(32, 33);
+      sut = new MoveBillingAccountProfileMigrator(34, 35);
     });
 
     it("removes from all accounts", async () => {
@@ -87,7 +87,7 @@ describe("MoveBillingAccountProfileToStateProviders migrator", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJSON(), 33);
-      sut = new MoveBillingAccountProfileMigrator(32, 33);
+      sut = new MoveBillingAccountProfileMigrator(34, 35);
     });
 
     it("nulls out new values", async () => {
