@@ -3,19 +3,20 @@ import "lit/polyfill-support.js";
 import { FocusableElement, tabbable } from "tabbable";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { EVENTS, AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 
 import { FocusedFieldData } from "../background/abstractions/overlay.background";
-import { EVENTS } from "../constants";
 import AutofillField from "../models/autofill-field";
 import AutofillOverlayButtonIframe from "../overlay/iframe-content/autofill-overlay-button-iframe";
 import AutofillOverlayListIframe from "../overlay/iframe-content/autofill-overlay-list-iframe";
 import { ElementWithOpId, FillableFormFieldElement, FormFieldElement } from "../types";
-import { generateRandomCustomElementName, sendExtensionMessage, setElementStyles } from "../utils";
 import {
-  AutofillOverlayElement,
-  RedirectFocusDirection,
-  AutofillOverlayVisibility,
-} from "../utils/autofill-overlay.enum";
+  elementIsFillableFormField,
+  generateRandomCustomElementName,
+  sendExtensionMessage,
+  setElementStyles,
+} from "../utils";
+import { AutofillOverlayElement, RedirectFocusDirection } from "../utils/autofill-overlay.enum";
 
 import {
   AutofillOverlayContentService as AutofillOverlayContentServiceInterface,
@@ -408,7 +409,7 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    * @param formFieldElement - The form field element that triggered the input event.
    */
   private triggerFormFieldInput(formFieldElement: ElementWithOpId<FormFieldElement>) {
-    if (formFieldElement instanceof HTMLSpanElement) {
+    if (!elementIsFillableFormField(formFieldElement)) {
       return;
     }
 
@@ -645,12 +646,10 @@ class AutofillOverlayContentService implements AutofillOverlayContentServiceInte
    */
   private toggleOverlayHidden(isHidden: boolean) {
     const displayValue = isHidden ? "none" : "block";
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.sendExtensionMessage("updateAutofillOverlayHidden", { display: displayValue });
+    void this.sendExtensionMessage("updateAutofillOverlayHidden", { display: displayValue });
 
-    this.isOverlayButtonVisible = !isHidden;
-    this.isOverlayListVisible = !isHidden;
+    this.isOverlayButtonVisible = !!this.overlayButtonElement && !isHidden;
+    this.isOverlayListVisible = !!this.overlayListElement && !isHidden;
   }
 
   /**
