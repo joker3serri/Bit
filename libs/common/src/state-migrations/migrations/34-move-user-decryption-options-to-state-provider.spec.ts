@@ -3,7 +3,7 @@ import { any, MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { UserDecryptionOptionsMigrator } from "./33-move-user-decryption-options-to-state-provider";
+import { UserDecryptionOptionsMigrator } from "./34-move-user-decryption-options-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -126,8 +126,8 @@ describe("UserDecryptionOptionsMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 32);
-      sut = new UserDecryptionOptionsMigrator(32, 33);
+      helper = mockMigrationHelper(exampleJSON(), 33);
+      sut = new UserDecryptionOptionsMigrator(33, 34);
     });
 
     it("should remove decryptionOptions from all accounts", async () => {
@@ -179,8 +179,8 @@ describe("UserDecryptionOptionsMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 32);
-      sut = new UserDecryptionOptionsMigrator(32, 33);
+      helper = mockMigrationHelper(rollbackJSON(), 33);
+      sut = new UserDecryptionOptionsMigrator(33, 34);
     });
 
     it.each(["FirstAccount", "SecondAccount", "ThirdAccount"])(
