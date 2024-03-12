@@ -1,8 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { fromEvent, map, merge, Observable, of, Subscription, switchMap } from "rxjs";
 
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+
+import { SYSTEM_THEME_OBSERVABLE } from "../../../services/injection-tokens";
 
 import { AbstractThemingService } from "./theming.service.abstraction";
 
@@ -41,6 +43,7 @@ export class AngularThemingService implements AbstractThemingService {
 
   constructor(
     private themeStateService: ThemeStateService,
+    @Inject(SYSTEM_THEME_OBSERVABLE)
     private systemTheme$: Observable<ThemeType>,
   ) {}
 

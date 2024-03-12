@@ -5,6 +5,7 @@ import {
   AbstractStorageService,
   ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
+import { ThemeType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 
 export const WINDOW = new InjectionToken<Window>("WINDOW");
@@ -30,3 +31,4 @@ export const LOCKED_CALLBACK = new InjectionToken<(userId?: string) => Promise<v
 export const LOCALES_DIRECTORY = new InjectionToken<string>("LOCALES_DIRECTORY");
 export const SYSTEM_LANGUAGE = new InjectionToken<string>("SYSTEM_LANGUAGE");
 export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
+export const SYSTEM_THEME_OBSERVABLE = new InjectionToken<ThemeType>("SYSTEM_THEME_OBSERVABLE");

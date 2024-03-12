@@ -241,6 +241,7 @@ import {
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
   SYSTEM_LANGUAGE,
+  SYSTEM_THEME_OBSERVABLE,
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
@@ -758,12 +759,7 @@ import { ModalService } from "./modal.service";
     },
     {
       provide: AbstractThemingService,
-      useFactory: (themeStateService: ThemeStateService, window: Window) =>
-        new AngularThemingService(
-          themeStateService,
-          AngularThemingService.createSystemThemeFromWindow(window),
-        ),
-      deps: [ThemeStateService, WINDOW],
+      useClass: AngularThemingService,
     },
     {
       provide: FormValidationErrorsServiceAbstraction,
@@ -1003,6 +999,11 @@ import { ModalService } from "./modal.service";
       provide: ThemeStateService,
       useClass: DefaultThemeStateService,
       deps: [GlobalStateProvider],
+    },
+    {
+      provide: SYSTEM_THEME_OBSERVABLE,
+      useFactory: (window: Window) => AngularThemingService.createSystemThemeFromWindow(window),
+      deps: [WINDOW],
     },
   ],
 })
