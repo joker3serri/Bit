@@ -3,7 +3,7 @@ import { runMigrator } from "../migration-helper.spec";
 import { MoveThemeToStateProviderMigrator } from "./34-move-theme-to-state-providers";
 
 describe("MoveThemeToStateProviders", () => {
-  const sut = new MoveThemeToStateProviderMigrator(32, 33);
+  const sut = new MoveThemeToStateProviderMigrator(33, 34);
 
   describe("migrate", () => {
     it("migrates global theme and deletes it", async () => {
