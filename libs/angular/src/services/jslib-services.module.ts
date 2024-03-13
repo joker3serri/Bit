@@ -545,6 +545,7 @@ const typesafeProviders: Array<SafeProvider> = [
       InternalOrganizationServiceAbstraction,
       SendApiServiceAbstraction,
       LOGOUT_CALLBACK,
+      BillingAccountProfileStateService,
     ],
   }),
   safeProvider({ provide: BroadcasterServiceAbstraction, useClass: BroadcasterService, deps: [] }),
