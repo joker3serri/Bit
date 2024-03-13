@@ -1,5 +1,5 @@
 import { matches, mock } from "jest-mock-extended";
-import { BehaviorSubject, firstValueFrom, timeout } from "rxjs";
+import { BehaviorSubject, firstValueFrom, of, timeout } from "rxjs";
 
 import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
@@ -25,8 +25,10 @@ describe("AccountSwitcherService", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
     accountService.accounts$ = accountsSubject;
     accountService.activeAccount$ = activeAccountSubject;
+
     accountSwitcherService = new AccountSwitcherService(
       accountService,
       avatarService,
@@ -44,6 +46,7 @@ describe("AccountSwitcherService", () => {
         status: AuthenticationStatus.Unlocked,
       };
 
+      avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
       accountsSubject.next({
         "1": user1AccountInfo,
       } as Record<UserId, AccountInfo>);
@@ -72,6 +75,7 @@ describe("AccountSwitcherService", () => {
             status: AuthenticationStatus.Unlocked,
           };
         }
+        avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
         accountsSubject.next(seedAccounts);
         activeAccountSubject.next(
           Object.assign(seedAccounts["1" as UserId], { id: "1" as UserId }),
