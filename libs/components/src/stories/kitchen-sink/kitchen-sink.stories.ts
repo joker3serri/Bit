@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, importProvidersFrom } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { action } from "@storybook/addon-actions";
@@ -22,6 +23,7 @@ import { ButtonModule } from "../../button";
 import { CalloutModule } from "../../callout";
 import { CheckboxModule } from "../../checkbox";
 import { ColorPasswordModule } from "../../color-password";
+import { DialogService, DialogModule, SimpleDialogOptions } from "../../dialog";
 import { FormControlModule } from "../../form-control";
 import { FormFieldModule } from "../../form-field";
 import { IconModule } from "../../icon";
@@ -258,7 +260,7 @@ class MainComponent {
       </bit-radio-button>
     </bit-radio-group>
 
-    <button type="submit" bitButton buttonType="primary" (click)="(submit)">Submit</button>
+    <button bitButton buttonType="primary" (click)="(submit)">Submit</button>
     <bit-error-summary [formGroup]="formObj"></bit-error-summary>
 
     <bit-popover [title]="'Password help'" #myPopover>
@@ -272,6 +274,17 @@ class MainComponent {
   </form>`,
 })
 class MainForm {
+  constructor(public dialogService: DialogService) {}
+
+  protected dialog: SimpleDialogOptions = {
+    title: "Confirm",
+    content: "Are you sure you want to submit?",
+    type: "primary",
+    acceptButtonText: "Yes",
+    cancelButtonText: "No",
+    acceptAction: async () => this.acceptDialog(),
+  };
+
   formObj = new FormBuilder().group({
     favFeature: ["", [Validators.required]],
     favColor: [undefined as string | undefined, [Validators.required]],
@@ -282,7 +295,14 @@ class MainForm {
     password: ["", [Validators.required]],
   });
 
-  submit = () => this.formObj.markAllAsTouched();
+  async submit() {
+    await this.dialogService.openSimpleDialog(this.dialog);
+  }
+
+  acceptDialog() {
+    this.formObj.markAllAsTouched();
+    this.dialogService.closeAll();
+  }
 
   onItemsConfirmed = action("onItemsConfirmed");
 
@@ -325,6 +345,7 @@ export default {
         CalloutModule,
         CheckboxModule,
         ColorPasswordModule,
+        DialogModule,
         FormControlModule,
         FormFieldModule,
         FormsModule,
@@ -353,6 +374,7 @@ export default {
         TypographyModule,
       ],
       providers: [
+        DialogService,
         {
           provide: I18nService,
           useFactory: () => {
@@ -382,6 +404,7 @@ export default {
     }),
     applicationConfig({
       providers: [
+        provideNoopAnimations(),
         importProvidersFrom(
           RouterModule.forRoot(
             [
