@@ -88,8 +88,8 @@ describe("EventCollectionMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 34);
-      sut = new EventCollectionMigrator(34, 35);
+      helper = mockMigrationHelper(exampleJSON(), 35);
+      sut = new EventCollectionMigrator(35, 36);
     });
 
     it("should remove event collections from all accounts", async () => {
@@ -124,8 +124,8 @@ describe("EventCollectionMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 35);
-      sut = new EventCollectionMigrator(34, 35);
+      helper = mockMigrationHelper(rollbackJSON(), 36);
+      sut = new EventCollectionMigrator(35, 36);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {
