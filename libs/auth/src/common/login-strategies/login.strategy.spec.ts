@@ -310,6 +310,7 @@ describe("LoginStrategy", () => {
 
       expect(stateService.addAccount).not.toHaveBeenCalled();
       expect(messagingService.send).not.toHaveBeenCalled();
+      expect(tokenService.clearTwoFactorToken).toHaveBeenCalled();
 
       const expected = new AuthResult();
       expected.twoFactorProviders = new Map<TwoFactorProviderType, { [key: string]: string }>();

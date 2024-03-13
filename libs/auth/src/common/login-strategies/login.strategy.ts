@@ -50,6 +50,11 @@ export abstract class LoginStrategyData {
     | SsoTokenRequest
     | WebAuthnLoginTokenRequest;
   captchaBypassToken?: string;
+
+  /**
+   * User's entered email obtained pre-login.
+   */
+  abstract userEnteredEmail?: string;
 }
 
 export abstract class LoginStrategy {
@@ -246,6 +251,10 @@ export abstract class LoginStrategy {
   }
 
   private async processTwoFactorResponse(response: IdentityTwoFactorResponse): Promise<AuthResult> {
+    // If we get a 2FA required response, then we should clear the 2FA token
+    // just in case as it is no longer valid.
+    await this.clearTwoFactorToken();
+
     const result = new AuthResult();
     result.twoFactorProviders = response.twoFactorProviders2;
 
@@ -254,6 +263,11 @@ export abstract class LoginStrategy {
     result.ssoEmail2FaSessionToken = response.ssoEmail2faSessionToken;
     result.email = response.email;
     return result;
+  }
+
+  private async clearTwoFactorToken() {
+    const email = this.cache.value.userEnteredEmail;
+    await this.tokenService.clearTwoFactorToken(email);
   }
 
   private async processCaptchaResponse(response: IdentityCaptchaResponse): Promise<AuthResult> {
