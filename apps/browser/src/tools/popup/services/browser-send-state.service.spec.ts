@@ -3,9 +3,9 @@ import {
   mockAccountServiceWith,
 } from "@bitwarden/common/../spec/fake-account-service";
 import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+import { awaitAsync } from "@bitwarden/common/../spec/utils";
 
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { awaitAsync } from "@bitwarden/common/spec/utils";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { UserId } from "@bitwarden/common/types/guid";
 
