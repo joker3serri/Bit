@@ -29,8 +29,8 @@ import { EnableContextMenuMigrator } from "./migrations/31-move-enable-context-m
 import { PreferredLanguageMigrator } from "./migrations/32-move-preferred-language";
 import { AppIdMigrator } from "./migrations/33-move-app-id-to-state-providers";
 import { DomainSettingsMigrator } from "./migrations/34-move-domain-settings-to-state-providers";
-// import { TokenServiceStateProviderMigrator } from "./migrations/35-migrate-token-svc-to-state-provider";
 import { MoveThemeToStateProviderMigrator } from "./migrations/35-move-theme-to-state-providers";
+import { TokenServiceStateProviderMigrator } from "./migrations/36-migrate-token-svc-to-state-provider";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
@@ -40,7 +40,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 3;
-export const CURRENT_VERSION = 35;
+export const CURRENT_VERSION = 36;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -77,8 +77,8 @@ export function createMigrationBuilder() {
     .with(PreferredLanguageMigrator, 31, 32)
     .with(AppIdMigrator, 32, 33)
     .with(DomainSettingsMigrator, 33, 34)
-    .with(MoveThemeToStateProviderMigrator, 34, CURRENT_VERSION);
-  // .with(TokenServiceStateProviderMigrator, 34, CURRENT_VERSION);
+    .with(MoveThemeToStateProviderMigrator, 34, 35)
+    .with(TokenServiceStateProviderMigrator, 35, CURRENT_VERSION);
 }
 
 export async function currentVersion(
