@@ -555,8 +555,7 @@ export class TokenService implements TokenServiceAbstraction {
   async clearTwoFactorToken(email: string): Promise<void> {
     await this.emailTwoFactorTokenRecordGlobalState.update((emailTwoFactorTokenRecord) => {
       emailTwoFactorTokenRecord ??= {};
-
-      emailTwoFactorTokenRecord[email] = null;
+      delete emailTwoFactorTokenRecord[email];
       return emailTwoFactorTokenRecord;
     });
   }
