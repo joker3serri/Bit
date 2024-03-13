@@ -116,6 +116,7 @@ import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
 import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 /* eslint-enable import/no-restricted-paths */
+import { DefaultThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
@@ -450,6 +451,9 @@ export default class MainBackground {
       async () => this.biometricUnlock(),
       self,
     );
+
+    const themeStateService = new DefaultThemeStateService(this.globalStateProvider);
+
     this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
     this.cryptoService = new BrowserCryptoService(
       this.keyGenerationService,
@@ -863,6 +867,7 @@ export default class MainBackground {
       this.domainSettingsService,
       this.environmentService,
       this.logService,
+      themeStateService,
     );
     this.overlayBackground = new OverlayBackground(
       this.cipherService,
@@ -874,6 +879,7 @@ export default class MainBackground {
       this.autofillSettingsService,
       this.i18nService,
       this.platformUtilsService,
+      themeStateService,
     );
     this.filelessImporterBackground = new FilelessImporterBackground(
       this.configService,

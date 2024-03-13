@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper, runMigrator } from "../migration-helper.spec";
 
-import { AvatarColorMigrator } from "./35-move-avatar-color-to-state-providers";
+import { AvatarColorMigrator } from "./36-move-avatar-color-to-state-providers";
 
 function rollbackJSON() {
   return {
@@ -26,7 +26,7 @@ function rollbackJSON() {
 }
 
 describe("AvatarColorMigrator", () => {
-  const migrator = new AvatarColorMigrator(34, 35);
+  const migrator = new AvatarColorMigrator(35, 36);
 
   it("should migrate the avatarColor property from the account settings object to a user StorageKey", async () => {
     const output = await runMigrator(migrator, {
@@ -108,8 +108,8 @@ describe("AvatarColorMigrator", () => {
     };
 
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 35);
-      sut = new AvatarColorMigrator(34, 35);
+      helper = mockMigrationHelper(rollbackJSON(), 36);
+      sut = new AvatarColorMigrator(35, 36);
     });
 
     it("should null out the avatarColor user StorageKey for each account", async () => {
