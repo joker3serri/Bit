@@ -135,7 +135,7 @@ import { Account } from "@bitwarden/common/platform/models/domain/account";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
-import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
+import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
@@ -847,13 +847,13 @@ const typesafeProviders: Array<SafeProvider> = [
     deps: [],
   }),
   safeProvider({
-    provide: ConfigService,
-    useClass: ConfigService,
+    provide: DefaultConfigService,
+    useClass: DefaultConfigService,
     deps: [ConfigApiServiceAbstraction, EnvironmentService, LogService, StateProvider],
   }),
   safeProvider({
     provide: ConfigServiceAbstraction,
-    useExisting: ConfigService,
+    useExisting: DefaultConfigService,
   }),
   safeProvider({
     provide: ConfigApiServiceAbstraction,
