@@ -25,6 +25,9 @@ export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
+  encryptedExportType = EncryptedExportType;
+  protected showFilePassword: boolean;
+
   filePasswordValue: string = null;
   private _disabledByPolicy = false;
 
@@ -123,6 +126,20 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   get encryptedFormat() {
     return this.format === "encrypted_json";
+  }
+
+  get isFileEncryptedExport() {
+    return (
+      this.format === "encrypted_json" &&
+      this.fileEncryptionType === EncryptedExportType.FileEncrypted
+    );
+  }
+
+  get isAccountEncryptedExport() {
+    return (
+      this.format === "encrypted_json" &&
+      this.fileEncryptionType === EncryptedExportType.AccountEncrypted
+    );
   }
 
   protected async doExport() {

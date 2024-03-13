@@ -11,7 +11,6 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
@@ -22,9 +21,6 @@ import { openUserVerificationPrompt } from "../../auth/shared/components/user-ve
   templateUrl: "export.component.html",
 })
 export class ExportComponent extends BaseExportComponent {
-  encryptedExportType = EncryptedExportType;
-  protected showFilePassword: boolean;
-
   constructor(
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
@@ -113,19 +109,5 @@ export class ExportComponent extends BaseExportComponent {
     }
 
     return firstValueFrom(ref.closed);
-  }
-
-  get isFileEncryptedExport() {
-    return (
-      this.format === "encrypted_json" &&
-      this.fileEncryptionType === EncryptedExportType.FileEncrypted
-    );
-  }
-
-  get isAccountEncryptedExport() {
-    return (
-      this.format === "encrypted_json" &&
-      this.fileEncryptionType === EncryptedExportType.AccountEncrypted
-    );
   }
 }
