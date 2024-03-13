@@ -1,8 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
 
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { CipherExport } from "@bitwarden/common/models/export/cipher.export";
 import { CollectionExport } from "@bitwarden/common/models/export/collection.export";
 import { FolderExport } from "@bitwarden/common/models/export/folder.export";
@@ -30,6 +33,7 @@ export class CreateCommand {
     private cryptoService: CryptoService,
     private apiService: ApiService,
     private folderApiService: FolderApiServiceAbstraction,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async run(
@@ -124,7 +128,10 @@ export class CreateCommand {
       return Response.notFound();
     }
 
-    if (cipher.organizationId == null && !(await this.stateService.getCanAccessPremium())) {
+    if (
+      cipher.organizationId == null &&
+      !(await firstValueFrom(this.billingAccountProfileStateService.hasPremiumFromAnySource$))
+    ) {
       return Response.error("Premium status is required to use this feature.");
     }
 

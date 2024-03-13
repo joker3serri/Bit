@@ -188,6 +188,7 @@ export class VaultProgram extends Program {
           this.main.apiService,
           this.main.organizationService,
           this.main.eventCollectionService,
+          this.main.billingAccountProfileStateService,
         );
         const response = await command.run(object, id, cmd);
         this.processResponse(response);
@@ -230,6 +231,7 @@ export class VaultProgram extends Program {
           this.main.cryptoService,
           this.main.apiService,
           this.main.folderApiService,
+          this.main.billingAccountProfileStateService,
         );
         const response = await command.run(object, encodedJson, cmd);
         this.processResponse(response);
@@ -316,6 +318,7 @@ export class VaultProgram extends Program {
           this.main.stateService,
           this.main.apiService,
           this.main.folderApiService,
+          this.main.billingAccountProfileStateService,
         );
         const response = await command.run(object, id, cmd);
         this.processResponse(response);

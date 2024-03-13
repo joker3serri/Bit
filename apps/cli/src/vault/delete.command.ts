@@ -1,4 +1,7 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -15,6 +18,7 @@ export class DeleteCommand {
     private stateService: StateService,
     private apiService: ApiService,
     private folderApiService: FolderApiServiceAbstraction,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async run(object: string, id: string, cmdOptions: Record<string, any>): Promise<Response> {
@@ -75,7 +79,10 @@ export class DeleteCommand {
       return Response.error("Attachment `" + id + "` was not found.");
     }
 
-    if (cipher.organizationId == null && !(await this.stateService.getCanAccessPremium())) {
+    if (
+      cipher.organizationId == null &&
+      !(await firstValueFrom(this.billingAccountProfileStateService.hasPremiumFromAnySource$))
+    ) {
       return Response.error("Premium status is required to use this feature.");
     }
 

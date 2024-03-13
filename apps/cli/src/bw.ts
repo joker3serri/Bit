@@ -449,6 +449,10 @@ export class Main {
       this.stateService,
     );
 
+    this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
+      this.activeUserStateProvider,
+    );
+
     this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
@@ -557,10 +561,6 @@ export class Main {
       this.stateEventRunnerService,
       lockedCallback,
       null,
-    );
-
-    this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
-      this.activeUserStateProvider,
     );
 
     this.syncService = new SyncService(
