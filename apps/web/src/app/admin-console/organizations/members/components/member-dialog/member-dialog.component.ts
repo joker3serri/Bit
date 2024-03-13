@@ -405,7 +405,11 @@ export class MemberDialogComponent implements OnDestroy {
     userView.collections = this.formGroup.value.access
       .filter((v) => v.type === AccessItemType.Collection)
       .map(convertToSelectionView);
-    userView.groups = this.formGroup.value.groups.map((m) => m.id);
+
+    userView.groups = (await firstValueFrom(this.restrictedAccess$))
+      ? null
+      : this.formGroup.value.groups.map((m) => m.id);
+
     userView.accessSecretsManager = this.formGroup.value.accessSecretsManager;
 
     if (this.editMode) {
