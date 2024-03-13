@@ -15,6 +15,7 @@ import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request
 import { IdentityCaptchaResponse } from "@bitwarden/common/auth/models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -64,6 +65,7 @@ export abstract class LoginStrategy {
     protected logService: LogService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
+    protected billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   abstract exportCache(): CacheData;
@@ -149,7 +151,6 @@ export abstract class LoginStrategy {
             userId,
             name: accountInformation.name,
             email: accountInformation.email,
-            hasPremiumPersonally: accountInformation.premium,
             kdfIterations: tokenResponse.kdfIterations,
             kdfMemory: tokenResponse.kdfMemory,
             kdfParallelism: tokenResponse.kdfParallelism,
@@ -168,6 +169,8 @@ export abstract class LoginStrategy {
         adminAuthRequest: adminAuthRequest?.toJSON(),
       }),
     );
+
+    await this.billingAccountProfileStateService.setHasPremium(accountInformation.premium, false);
   }
 
   protected async processTokenResponse(response: IdentityTokenResponse): Promise<AuthResult> {

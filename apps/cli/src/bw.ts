@@ -468,6 +468,7 @@ export class Main {
       this.deviceTrustCryptoService,
       this.authRequestService,
       this.globalStateProvider,
+      this.billingAccountProfileStateService,
     );
 
     this.authService = new AuthService(

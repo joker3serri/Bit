@@ -566,6 +566,10 @@ export default class MainBackground {
       this.stateService,
     );
 
+    this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
+      this.activeUserStateProvider,
+    );
+
     this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
@@ -585,6 +589,7 @@ export default class MainBackground {
       this.deviceTrustCryptoService,
       this.authRequestService,
       this.globalStateProvider,
+      this.billingAccountProfileStateService,
     );
 
     this.ssoLoginService = new SsoLoginService(this.stateProvider);
@@ -689,9 +694,6 @@ export default class MainBackground {
       this.sendService,
     );
     this.providerService = new ProviderService(this.stateProvider);
-    this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
-      this.activeUserStateProvider,
-    );
     this.syncService = new SyncService(
       this.apiService,
       this.domainSettingsService,

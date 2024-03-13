@@ -363,6 +363,7 @@ const typesafeProviders: Array<SafeProvider> = [
       DeviceTrustCryptoServiceAbstraction,
       AuthRequestServiceAbstraction,
       GlobalStateProvider,
+      BillingAccountProfileStateService,
     ],
   }),
   safeProvider({

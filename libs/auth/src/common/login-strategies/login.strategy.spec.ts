@@ -14,6 +14,7 @@ import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/id
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
 import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -108,6 +109,7 @@ describe("LoginStrategy", () => {
   let twoFactorService: MockProxy<TwoFactorService>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   let passwordLoginStrategy: PasswordLoginStrategy;
   let credentials: PasswordLoginCredentials;
@@ -125,6 +127,7 @@ describe("LoginStrategy", () => {
     twoFactorService = mock<TwoFactorService>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.calledWith(accessToken).mockResolvedValue(decodedToken);
@@ -144,6 +147,7 @@ describe("LoginStrategy", () => {
       passwordStrengthService,
       policyService,
       loginStrategyService,
+      billingAccountProfileStateService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
   });
@@ -177,7 +181,6 @@ describe("LoginStrategy", () => {
               userId: userId,
               name: name,
               email: email,
-              hasPremiumPersonally: false,
               kdfIterations: kdfIterations,
               kdfType: kdf,
             },
@@ -397,6 +400,7 @@ describe("LoginStrategy", () => {
         passwordStrengthService,
         policyService,
         loginStrategyService,
+        billingAccountProfileStateService,
       );
 
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
