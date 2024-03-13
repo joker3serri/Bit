@@ -53,7 +53,7 @@ export class ExportComponent extends BaseExportComponent {
     );
   }
 
-  async submit() {
+  submit = async () => {
     if (this.isFileEncryptedExport && this.filePassword != this.confirmFilePassword) {
       this.platformUtilsService.showToast(
         "error",
@@ -85,7 +85,7 @@ export class ExportComponent extends BaseExportComponent {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.doExport();
-  }
+  };
 
   protected saved() {
     super.saved();

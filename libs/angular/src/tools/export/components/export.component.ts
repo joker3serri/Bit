@@ -26,7 +26,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
   filePasswordValue: string = null;
-  formPromise: Promise<string>;
   private _disabledByPolicy = false;
 
   protected organizationId: string = null;
@@ -128,8 +127,7 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   protected async doExport() {
     try {
-      this.formPromise = this.getExportData();
-      const data = await this.formPromise;
+      const data = await this.getExportData();
       this.downloadFile(data);
       this.saved();
       await this.collectEvent();
