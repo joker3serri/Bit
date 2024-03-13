@@ -38,4 +38,8 @@ export class I18nMockService implements I18nService {
   async setLocale(locale: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
+
+  init(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
