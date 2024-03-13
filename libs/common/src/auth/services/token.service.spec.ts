@@ -2278,10 +2278,10 @@ describe("TokenService", () => {
         // Assert
         expect(
           globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
-        ).toHaveBeenCalledWith({ testUser: null });
+        ).toHaveBeenCalledWith({});
       });
 
-      it("should initialize the record if it doesn't exist and set the value to null", async () => {
+      it("should initialize the record if it doesn't exist and delete the value", async () => {
         // Arrange
         const email = "testUser";
 
@@ -2291,7 +2291,7 @@ describe("TokenService", () => {
         // Assert
         expect(
           globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextMock,
-        ).toHaveBeenCalledWith({ testUser: null });
+        ).toHaveBeenCalledWith({});
       });
     });
   });
