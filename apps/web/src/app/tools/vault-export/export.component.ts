@@ -64,7 +64,7 @@ export class ExportComponent extends BaseExportComponent {
     }
 
     this.exportForm.markAllAsTouched();
-    if (!this.exportForm.valid) {
+    if (this.exportForm.invalid) {
       return;
     }
 
