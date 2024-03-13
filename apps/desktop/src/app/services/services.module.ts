@@ -1,6 +1,8 @@
+import { DOCUMENT } from "@angular/common";
 import { APP_INITIALIZER, InjectionToken, NgModule } from "@angular/core";
 
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
+import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   SECURE_STORAGE,
   STATE_FACTORY,
@@ -12,6 +14,7 @@ import {
   OBSERVABLE_DISK_STORAGE,
   WINDOW,
   SUPPORTS_SECURE_STORAGE,
+  SafeInjectionToken,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -161,10 +164,11 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       provide: FileDownloadService,
       useClass: DesktopFileDownloadService,
     },
-    {
+    safeProvider({
       provide: AbstractThemingService,
       useClass: DesktopThemingService,
-    },
+      deps: [StateServiceAbstraction, WINDOW, DOCUMENT as SafeInjectionToken<Document>],
+    }),
     {
       provide: EncryptedMessageHandlerService,
       deps: [
