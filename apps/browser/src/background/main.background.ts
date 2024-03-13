@@ -57,6 +57,10 @@ import {
   BadgeSettingsService,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
 import {
+  DomainSettingsService,
+  DefaultDomainSettingsService,
+} from "@bitwarden/common/autofill/services/domain-settings.service";
+import {
   UserNotificationSettingsService,
   UserNotificationSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/user-notification-settings.service";
@@ -260,6 +264,7 @@ export default class MainBackground {
   userNotificationSettingsService: UserNotificationSettingsServiceAbstraction;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
   badgeSettingsService: BadgeSettingsServiceAbstraction;
+  domainSettingsService: DomainSettingsService;
   systemService: SystemServiceAbstraction;
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
@@ -470,6 +475,7 @@ export default class MainBackground {
       this.appIdService,
       (expired: boolean) => this.logout(expired),
     );
+    this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
     this.settingsService = new BrowserSettingsService(this.stateService);
     this.fileUploadService = new FileUploadService(this.logService);
     this.cipherFileUploadService = new CipherFileUploadService(
@@ -575,6 +581,7 @@ export default class MainBackground {
       this.policyService,
       this.deviceTrustCryptoService,
       this.authRequestService,
+      this.globalStateProvider,
     );
 
     this.ssoLoginService = new SsoLoginService(this.stateProvider);
@@ -594,7 +601,7 @@ export default class MainBackground {
 
     this.cipherService = new CipherService(
       this.cryptoService,
-      this.settingsService,
+      this.domainSettingsService,
       this.apiService,
       this.i18nService,
       this.searchService,
@@ -681,7 +688,7 @@ export default class MainBackground {
     this.providerService = new ProviderService(this.stateProvider);
     this.syncService = new SyncService(
       this.apiService,
-      this.settingsService,
+      this.domainSettingsService,
       this.folderService,
       this.cipherService,
       this.cryptoService,
@@ -718,7 +725,7 @@ export default class MainBackground {
       this.totpService,
       this.eventCollectionService,
       this.logService,
-      this.settingsService,
+      this.domainSettingsService,
       this.userVerificationService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
@@ -782,6 +789,7 @@ export default class MainBackground {
       this.authService,
       this.stateService,
       this.vaultSettingsService,
+      this.domainSettingsService,
       this.logService,
     );
 
@@ -851,6 +859,7 @@ export default class MainBackground {
       this.folderService,
       this.stateService,
       this.userNotificationSettingsService,
+      this.domainSettingsService,
       this.environmentService,
       this.logService,
       themeStateService,
@@ -1086,7 +1095,6 @@ export default class MainBackground {
     await Promise.all([
       this.syncService.setLastSync(new Date(0), userId),
       this.cryptoService.clearKeys(userId),
-      this.settingsService.clear(userId),
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId),

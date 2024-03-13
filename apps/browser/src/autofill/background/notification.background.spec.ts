@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { UserNotificationSettingsService } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
@@ -48,6 +49,7 @@ describe("NotificationBackground", () => {
   const folderService = mock<FolderService>();
   const stateService = mock<BrowserStateService>();
   const userNotificationSettingsService = mock<UserNotificationSettingsService>();
+  const domainSettingsService = mock<DomainSettingsService>();
   const environmentService = mock<EnvironmentService>();
   const logService = mock<LogService>();
   const themeStateService = mock<ThemeStateService>();
@@ -61,6 +63,7 @@ describe("NotificationBackground", () => {
       folderService,
       stateService,
       userNotificationSettingsService,
+      domainSettingsService,
       environmentService,
       logService,
       themeStateService,
