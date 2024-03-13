@@ -70,7 +70,6 @@ describe("context-menu", () => {
     });
 
     it("has menu enabled, but does not have premium", async () => {
-      autofillSettingsService.enableContextMenu$ = of(true);
       billingAccountProfileStateService.hasPremiumFromAnySource$ = of(false);
 
       const createdMenu = await sut.init();
@@ -79,7 +78,6 @@ describe("context-menu", () => {
     });
 
     it("has menu enabled and has premium", async () => {
-      autofillSettingsService.enableContextMenu$ = of(true);
       billingAccountProfileStateService.hasPremiumFromAnySource$ = of(true);
 
       const createdMenu = await sut.init();
