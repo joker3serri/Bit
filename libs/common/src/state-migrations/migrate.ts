@@ -29,7 +29,8 @@ import { EnableContextMenuMigrator } from "./migrations/31-move-enable-context-m
 import { PreferredLanguageMigrator } from "./migrations/32-move-preferred-language";
 import { AppIdMigrator } from "./migrations/33-move-app-id-to-state-providers";
 import { DomainSettingsMigrator } from "./migrations/34-move-domain-settings-to-state-providers";
-import { TokenServiceStateProviderMigrator } from "./migrations/35-migrate-token-svc-to-state-provider";
+// import { TokenServiceStateProviderMigrator } from "./migrations/35-migrate-token-svc-to-state-provider";
+import { MoveThemeToStateProviderMigrator } from "./migrations/35-move-theme-to-state-providers";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
@@ -76,7 +77,8 @@ export function createMigrationBuilder() {
     .with(PreferredLanguageMigrator, 31, 32)
     .with(AppIdMigrator, 32, 33)
     .with(DomainSettingsMigrator, 33, 34)
-    .with(TokenServiceStateProviderMigrator, 34, CURRENT_VERSION);
+    .with(MoveThemeToStateProviderMigrator, 34, CURRENT_VERSION);
+  // .with(TokenServiceStateProviderMigrator, 34, CURRENT_VERSION);
 }
 
 export async function currentVersion(

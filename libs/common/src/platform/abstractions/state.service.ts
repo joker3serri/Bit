@@ -18,7 +18,7 @@ import { CipherData } from "../../vault/models/data/cipher.data";
 import { LocalData } from "../../vault/models/data/local.data";
 import { CipherView } from "../../vault/models/view/cipher.view";
 import { AddEditCipherInfo } from "../../vault/types/add-edit-cipher-info";
-import { KdfType, ThemeType } from "../enums";
+import { KdfType } from "../enums";
 import { ServerConfigData } from "../models/data/server-config.data";
 import { Account, AccountDecryptionOptions } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
@@ -335,8 +335,6 @@ export abstract class StateService<T extends Account = Account> {
   setRememberedEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getSecurityStamp: (options?: StorageOptions) => Promise<string>;
   setSecurityStamp: (value: string, options?: StorageOptions) => Promise<void>;
-  getTheme: (options?: StorageOptions) => Promise<ThemeType>;
-  setTheme: (value: ThemeType, options?: StorageOptions) => Promise<void>;
   getUserId: (options?: StorageOptions) => Promise<string>;
   getUsesKeyConnector: (options?: StorageOptions) => Promise<boolean>;
   setUsesKeyConnector: (value: boolean, options?: StorageOptions) => Promise<void>;
