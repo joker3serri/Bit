@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { EventCollectionMigrator } from "./35-move-event-collection-to-state-provider";
+import { EventCollectionMigrator } from "./36-move-event-collection-to-state-provider";
 
 function exampleJSON() {
   return {
