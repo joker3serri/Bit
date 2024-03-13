@@ -1,7 +1,7 @@
 {
   "name": "@bitwarden/vault-export-ui",
   "version": "0.0.0",
-  "description": "Home for UI components of the Bitwarden vault exporters.",
+  "description": "Angular components for the Bitwarden vault exporter",
   "keywords": [
     "bitwarden"
   ],
