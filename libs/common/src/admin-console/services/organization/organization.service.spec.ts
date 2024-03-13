@@ -35,13 +35,13 @@ describe("OrganizationService", () => {
    * function takes two arrays, and an index. It checks for equality of the
    * arrays, but splices out the specified index from both arrays first.
    */
-  function isEqualExceptForIndex(x: any[], y: any[], indexToExclude: number) {
+  function expectIsEqualExceptForIndex(x: any[], y: any[], indexToExclude: number) {
     // Clone the arrays to avoid modifying the reference values
     const a = [...x];
     const b = [...y];
     delete a[indexToExclude];
     delete b[indexToExclude];
-    return a === b;
+    expect(a).toEqual(b);
   }
 
   /**
@@ -228,13 +228,11 @@ describe("OrganizationService", () => {
       const result = await firstValueFrom(organizationService.organizations$);
       expect(result[indexToUpdate]).not.toEqual(new Organization(mockData[indexToUpdate]));
       expect(result[indexToUpdate].id).toEqual(new Organization(mockData[indexToUpdate]).id);
-      expect(
-        isEqualExceptForIndex(
-          result,
-          mockData.map((x) => new Organization(x)),
-          indexToUpdate,
-        ),
-      ).toBeTruthy();
+      expectIsEqualExceptForIndex(
+        result,
+        mockData.map((x) => new Organization(x)),
+        indexToUpdate,
+      );
     });
 
     it("can also update an organization in state for a non-active user, if requested", async () => {
@@ -262,13 +260,11 @@ describe("OrganizationService", () => {
       expect(result[indexToUpdate].id).toEqual(
         new Organization(nonActiveUserMockOrganizations[indexToUpdate]).id,
       );
-      expect(
-        isEqualExceptForIndex(
-          result,
-          nonActiveUserMockOrganizations.map((x) => new Organization(x)),
-          indexToUpdate,
-        ),
-      ).toBeTruthy();
+      expectIsEqualExceptForIndex(
+        result,
+        nonActiveUserMockOrganizations.map((x) => new Organization(x)),
+        indexToUpdate,
+      );
 
       // Just to be safe, lets make sure the active user didn't get updated
       // at all
