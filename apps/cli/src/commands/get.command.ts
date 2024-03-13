@@ -60,7 +60,7 @@ export class GetCommand extends DownloadCommand {
     private apiService: ApiService,
     private organizationService: OrganizationService,
     private eventCollectionService: EventCollectionService,
-    private billingAccountProfileStateService: BillingAccountProfileStateService,
+    private accountProfileService: BillingAccountProfileStateService,
   ) {
     super(cryptoService);
   }
@@ -256,7 +256,7 @@ export class GetCommand extends DownloadCommand {
     }
 
     const canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
+      this.accountProfileService.hasPremiumFromAnySource$,
     );
     if (!canAccessPremium) {
       const originalCipher = await this.cipherService.get(cipher.id);
@@ -340,7 +340,10 @@ export class GetCommand extends DownloadCommand {
       return Response.multipleResults(attachments.map((a) => a.id));
     }
 
-    if (!(await firstValueFrom(this.billingAccountProfileStateService.hasPremiumFromAnySource$))) {
+    const canAccessPremium = await firstValueFrom(
+      this.accountProfileService.hasPremiumFromAnySource$,
+    );
+    if (!canAccessPremium) {
       const originalCipher = await this.cipherService.get(cipher.id);
       if (originalCipher == null || originalCipher.organizationId == null) {
         return Response.error("Premium status is required to use this feature.");

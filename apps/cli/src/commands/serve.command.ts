@@ -83,7 +83,6 @@ export class ServeCommand {
     this.createCommand = new CreateCommand(
       this.main.cipherService,
       this.main.folderService,
-      this.main.stateService,
       this.main.cryptoService,
       this.main.apiService,
       this.main.folderApiService,
@@ -110,7 +109,6 @@ export class ServeCommand {
     this.deleteCommand = new DeleteCommand(
       this.main.cipherService,
       this.main.folderService,
-      this.main.stateService,
       this.main.apiService,
       this.main.folderApiService,
       this.main.billingAccountProfileStateService,
@@ -138,7 +136,6 @@ export class ServeCommand {
 
     this.sendCreateCommand = new SendCreateCommand(
       this.main.sendService,
-      this.main.stateService,
       this.main.environmentService,
       this.main.sendApiService,
       this.main.billingAccountProfileStateService,
@@ -152,7 +149,6 @@ export class ServeCommand {
     );
     this.sendEditCommand = new SendEditCommand(
       this.main.sendService,
-      this.main.stateService,
       this.sendGetCommand,
       this.main.sendApiService,
       this.main.billingAccountProfileStateService,

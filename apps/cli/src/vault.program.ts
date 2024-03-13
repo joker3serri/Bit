@@ -227,7 +227,6 @@ export class VaultProgram extends Program {
         const command = new CreateCommand(
           this.main.cipherService,
           this.main.folderService,
-          this.main.stateService,
           this.main.cryptoService,
           this.main.apiService,
           this.main.folderApiService,
@@ -315,7 +314,6 @@ export class VaultProgram extends Program {
         const command = new DeleteCommand(
           this.main.cipherService,
           this.main.folderService,
-          this.main.stateService,
           this.main.apiService,
           this.main.folderApiService,
           this.main.billingAccountProfileStateService,
