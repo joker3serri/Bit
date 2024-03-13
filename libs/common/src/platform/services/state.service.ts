@@ -1,7 +1,6 @@
 import { BehaviorSubject, Observable, map } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
-import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
@@ -409,20 +408,6 @@ export class StateService<
 
     if (account.profile?.hasPremiumFromOrganization) {
       return true;
-    }
-
-    // TODO: older server versions won't send the hasPremiumFromOrganization flag, so we're keeping the old logic
-    // for backwards compatibility. It can be removed after everyone has upgraded.
-    const organizations = await this.getOrganizations(options);
-    if (organizations == null) {
-      return false;
-    }
-
-    for (const id of Object.keys(organizations)) {
-      const o = organizations[id];
-      if (o.enabled && o.usersGetPremium && !o.isProviderUser) {
-        return true;
-      }
     }
 
     return false;
@@ -1605,32 +1590,6 @@ export class StateService<
     await this.saveGlobals(
       globals,
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-  }
-
-  /**
-   * @deprecated Do not call this directly, use OrganizationService
-   */
-  async getOrganizations(options?: StorageOptions): Promise<{ [id: string]: OrganizationData }> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.data?.organizations;
-  }
-
-  /**
-   * @deprecated Do not call this directly, use OrganizationService
-   */
-  async setOrganizations(
-    value: { [id: string]: OrganizationData },
-    options?: StorageOptions,
-  ): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.data.organizations = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
   }
 
