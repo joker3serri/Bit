@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper, StateDefinitionLike } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { VaultSettingsKeyMigrator } from "./33-move-show-card-and-identity-to-state-provider";
+import { VaultSettingsKeyMigrator } from "./36-move-show-card-and-identity-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -65,8 +65,8 @@ describe("VaultSettingsKeyMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 32);
-      sut = new VaultSettingsKeyMigrator(32, 33);
+      helper = mockMigrationHelper(exampleJSON(), 35);
+      sut = new VaultSettingsKeyMigrator(35, 36);
     });
 
     it("should remove dontShowCardsCurrentTab and dontShowIdentitiesCurrentTab from all accounts", async () => {
@@ -99,8 +99,8 @@ describe("VaultSettingsKeyMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 33);
-      sut = new VaultSettingsKeyMigrator(32, 33);
+      helper = mockMigrationHelper(rollbackJSON(), 36);
+      sut = new VaultSettingsKeyMigrator(35, 36);
     });
 
     it("should null out new values for each account", async () => {
