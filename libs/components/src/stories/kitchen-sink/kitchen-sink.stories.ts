@@ -95,16 +95,27 @@ class MainComponent {
 export default {
   title: "Documentation / Kitchen Sink",
   component: LayoutComponent,
+  parameters: {
+    themes: {
+      themeOverride: "light",
+    },
+    theme: "light",
+  },
   decorators: [
     componentWrapperDecorator(
       /**
        * Applying a CSS transform makes a `position: fixed` element act like it is `position: relative`
        * https://github.com/storybookjs/storybook/issues/8011#issue-490251969
        */
-      (story) =>
-        /* HTML */ `<div class="tw-scale-100 tw-border-2 tw-border-solid tw-border-[red]">
+      (story) => {
+        return /* HTML */ `<div class="tw-scale-100 tw-border-2 tw-border-solid tw-border-[red]">
           ${story}
-        </div>`,
+        </div>`;
+      },
+      ({ globals }) => {
+        const themeOverride = globals["theme"] === "both" ? "light" : globals["theme"];
+        return { theme: themeOverride };
+      },
     ),
     moduleMetadata({
       declarations: [MainComponent],
