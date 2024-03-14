@@ -17,7 +17,7 @@ import {
 } from "../../platform/state";
 
 const SHOW_FAVICONS = new KeyDefinition(DOMAIN_SETTINGS_DISK, "showFavicons", {
-  deserializer: (value: boolean) => value ?? null,
+  deserializer: (value: boolean) => value ?? true,
 });
 
 const NEVER_DOMAINS = new KeyDefinition(DOMAIN_SETTINGS_DISK, "neverDomains", {
@@ -64,7 +64,7 @@ export class DefaultDomainSettingsService implements DomainSettingsService {
 
   constructor(private stateProvider: StateProvider) {
     this.showFaviconsState = this.stateProvider.getGlobal(SHOW_FAVICONS);
-    this.showFavicons$ = this.showFaviconsState.state$.pipe(map((x) => x ?? null));
+    this.showFavicons$ = this.showFaviconsState.state$.pipe(map((x) => x ?? true));
 
     this.neverDomainsState = this.stateProvider.getGlobal(NEVER_DOMAINS);
     this.neverDomains$ = this.neverDomainsState.state$.pipe(map((x) => x ?? null));
