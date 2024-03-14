@@ -41,8 +41,7 @@ import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.com
 
 @Component({
   selector: "bit-tab-main",
-  // TODO fix layout main scroll and get rid of this hardcoded style
-  template: `<div>
+  template: `
     <bit-section>
       <p>
         <bit-breadcrumbs [show]="show">
@@ -51,7 +50,9 @@ import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.com
           </bit-breadcrumb>
         </bit-breadcrumbs>
       </p>
+
       <bit-banner bannerType="info"> This content is very important </bit-banner>
+
       <div class="tw-text-center tw-mb-6 tw-mt-6">
         <h1 bitTypography="h1" class="tw-text-main">
           Bitwarden <bit-avatar text="Bit Warden"></bit-avatar>
@@ -70,6 +71,7 @@ import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.com
           <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">Survey</h2>
           <bit-kitchen-sink-form></bit-kitchen-sink-form>
         </bit-tab>
+
         <bit-tab label="Empty tab" data-testid="empty-tab">
           <bit-callout type="info" title="Notice"> Under construction </bit-callout>
           <bit-no-items class="tw-text-main">
@@ -83,7 +85,7 @@ import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.com
         </bit-tab>
       </bit-tab-group>
     </bit-section>
-  </div>`,
+  `,
 })
 class MainComponent {
   navItems = [
@@ -95,12 +97,6 @@ class MainComponent {
 export default {
   title: "Documentation / Kitchen Sink",
   component: LayoutComponent,
-  parameters: {
-    themes: {
-      themeOverride: "light",
-    },
-    theme: "light",
-  },
   decorators: [
     componentWrapperDecorator(
       /**
@@ -239,7 +235,7 @@ export const EmptyTab: Story = {
   ...Default,
   play: async (context) => {
     const canvas = context.canvasElement;
-    const emptyTab = getAllByRole(canvas, "tab")[1];
+    const emptyTab = getByRole(canvas, "tab", { name: "Empty tab" });
     await userEvent.click(emptyTab);
   },
 };

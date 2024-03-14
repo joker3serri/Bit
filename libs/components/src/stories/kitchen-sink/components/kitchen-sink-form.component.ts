@@ -61,98 +61,100 @@ import { I18nMockService } from "../../../utils/i18n-mock.service";
       },
     },
   ],
-  template: `<form [formGroup]="formObj" (ngSubmit)="submit()">
-    <div class="tw-mb-6">
-      <bit-progress [barWidth]="50"></bit-progress>
-    </div>
+  template: `
+    <form [formGroup]="formObj" (ngSubmit)="submit()">
+      <div class="tw-mb-6">
+        <bit-progress [barWidth]="50"></bit-progress>
+      </div>
 
-    <bit-form-field>
-      <bit-label>Your favorite feature</bit-label>
-      <input bitInput formControlName="favFeature" />
-    </bit-form-field>
+      <bit-form-field>
+        <bit-label>Your favorite feature</bit-label>
+        <input bitInput formControlName="favFeature" />
+      </bit-form-field>
 
-    <bit-form-field>
-      <bit-label>Your favorite color</bit-label>
-      <bit-select formControlName="favColor">
-        <bit-option
-          *ngFor="let color of colors"
-          [value]="color.value"
-          [label]="color.name"
-        ></bit-option>
-      </bit-select>
-    </bit-form-field>
+      <bit-form-field>
+        <bit-label>Your favorite color</bit-label>
+        <bit-select formControlName="favColor">
+          <bit-option
+            *ngFor="let color of colors"
+            [value]="color.value"
+            [label]="color.name"
+          ></bit-option>
+        </bit-select>
+      </bit-form-field>
 
-    <bit-form-field>
-      <bit-label>Your top 3 worst passwords</bit-label>
-      <bit-multi-select
-        class="tw-w-full"
-        formControlName="topWorstPasswords"
-        [baseItems]="worstPasswords"
-      >
-      </bit-multi-select>
-    </bit-form-field>
-
-    <bit-form-field>
-      <bit-label>How many passwords do you have?</bit-label>
-      <input bitInput type="number" formControlName="numPasswords" min="0" max="150" />
-    </bit-form-field>
-
-    <bit-form-field>
-      <bit-label>
-        A random password
-        <button
-          type="button"
-          class="tw-border-none tw-bg-transparent tw-text-primary-500"
-          [bitPopoverTriggerFor]="myPopover"
-          #triggerRef="popoverTrigger"
+      <bit-form-field>
+        <bit-label>Your top 3 worst passwords</bit-label>
+        <bit-multi-select
+          class="tw-w-full"
+          formControlName="topWorstPasswords"
+          [baseItems]="worstPasswords"
         >
-          <i class="bwi bwi-question-circle"></i>
-        </button>
-      </bit-label>
-      <input bitInput type="password" formControlName="password" />
-      <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
-    </bit-form-field>
+        </bit-multi-select>
+      </bit-form-field>
 
-    <div class="tw-mb-6">
-      <span bitTypography="body1" class="tw-text-main">
-        An example of a strong password: &nbsp;
-      </span>
+      <bit-form-field>
+        <bit-label>How many passwords do you have?</bit-label>
+        <input bitInput type="number" formControlName="numPasswords" min="0" max="150" />
+      </bit-form-field>
 
-      <bit-color-password
-        class="tw-text-base"
-        [password]="'Wq$Jk😀7j  DX#rS5Sdi!z'"
-        [showCount]="true"
-      ></bit-color-password>
-    </div>
+      <bit-form-field>
+        <bit-label>
+          A random password
+          <button
+            type="button"
+            class="tw-border-none tw-bg-transparent tw-text-primary-500"
+            [bitPopoverTriggerFor]="myPopover"
+            #triggerRef="popoverTrigger"
+          >
+            <i class="bwi bwi-question-circle"></i>
+          </button>
+        </bit-label>
+        <input bitInput type="password" formControlName="password" />
+        <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
+      </bit-form-field>
 
-    <bit-form-control>
-      <bit-label>Check if you love security</bit-label>
-      <input type="checkbox" bitCheckbox formControlName="loveSecurity" />
-      <bit-hint>Required!!!!!</bit-hint>
-    </bit-form-control>
+      <div class="tw-mb-6">
+        <span bitTypography="body1" class="tw-text-main">
+          An example of a strong password: &nbsp;
+        </span>
 
-    <bit-radio-group formControlName="current">
-      <bit-label>Do you currently use Bitwarden?</bit-label>
-      <bit-radio-button value="yes">
-        <bit-label>Yes</bit-label>
-      </bit-radio-button>
-      <bit-radio-button value="no">
-        <bit-label>No</bit-label>
-      </bit-radio-button>
-    </bit-radio-group>
+        <bit-color-password
+          class="tw-text-base"
+          [password]="'Wq$Jk😀7j  DX#rS5Sdi!z'"
+          [showCount]="true"
+        ></bit-color-password>
+      </div>
 
-    <button bitButton buttonType="primary" (click)="(submit)">Submit</button>
-    <bit-error-summary [formGroup]="formObj"></bit-error-summary>
+      <bit-form-control>
+        <bit-label>Check if you love security</bit-label>
+        <input type="checkbox" bitCheckbox formControlName="loveSecurity" />
+        <bit-hint>Required!!!!!</bit-hint>
+      </bit-form-control>
 
-    <bit-popover [title]="'Password help'" #myPopover>
-      <div>A strong password has the following:</div>
-      <ul class="tw-mt-2 tw-mb-0 tw-pl-4">
-        <li>Letters</li>
-        <li>Numbers</li>
-        <li>Special characters</li>
-      </ul>
-    </bit-popover>
-  </form>`,
+      <bit-radio-group formControlName="current">
+        <bit-label>Do you currently use Bitwarden?</bit-label>
+        <bit-radio-button value="yes">
+          <bit-label>Yes</bit-label>
+        </bit-radio-button>
+        <bit-radio-button value="no">
+          <bit-label>No</bit-label>
+        </bit-radio-button>
+      </bit-radio-group>
+
+      <button bitButton buttonType="primary" (click)="(submit)">Submit</button>
+      <bit-error-summary [formGroup]="formObj"></bit-error-summary>
+
+      <bit-popover [title]="'Password help'" #myPopover>
+        <div>A strong password has the following:</div>
+        <ul class="tw-mt-2 tw-mb-0 tw-pl-4">
+          <li>Letters</li>
+          <li>Numbers</li>
+          <li>Special characters</li>
+        </ul>
+      </bit-popover>
+    </form>
+  `,
 })
 export class KitchenSinkForm {
   constructor(public dialogService: DialogService) {}

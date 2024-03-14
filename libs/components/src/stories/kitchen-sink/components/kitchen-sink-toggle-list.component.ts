@@ -7,7 +7,8 @@ import { ToggleGroupModule } from "../../../toggle-group";
   standalone: true,
   selector: "bit-kitchen-sink-toggle-list",
   imports: [CommonModule, ToggleGroupModule],
-  template: ` <div class="tw-mt-6 tw-mb-6 tw-flex tw-justify-center">
+  template: `
+    <div class="tw-mt-6 tw-mb-6 tw-flex tw-justify-center">
       <bit-toggle-group [(selected)]="selectedToggle" aria-label="Company list filter">
         <bit-toggle value="all"> All <span bitBadge variant="info">3</span> </bit-toggle>
 
@@ -20,7 +21,8 @@ import { ToggleGroupModule } from "../../../toggle-group";
       <li *ngIf="company.size === selectedToggle || selectedToggle === 'all'">
         {{ company.name }}
       </li>
-    </ul>`,
+    </ul>
+  `,
 })
 export class KitchenSinkToggleList {
   selectedToggle: "all" | "large" | "small" = "all";
