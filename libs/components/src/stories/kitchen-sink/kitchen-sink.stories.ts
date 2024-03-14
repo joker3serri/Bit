@@ -42,7 +42,7 @@ import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.com
 @Component({
   selector: "bit-tab-main",
   // TODO fix layout main scroll and get rid of this hardcoded style
-  template: `<div style="height: 92vh">
+  template: `<div>
     <bit-section>
       <p>
         <bit-breadcrumbs [show]="show">

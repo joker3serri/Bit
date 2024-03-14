@@ -195,5 +195,9 @@ export class KitchenSinkForm {
     { id: "1", listName: "1234", labelName: "1234" },
     { id: "2", listName: "admin", labelName: "admin" },
     { id: "3", listName: "password", labelName: "password" },
+    { id: "4", listName: "querty", labelName: "querty" },
+    { id: "5", listName: "letmein", labelName: "letmein" },
+    { id: "6", listName: "trustno1", labelName: "trustno1" },
+    { id: "7", listName: "1qaz2wsx", labelName: "1qaz2wsx" },
   ];
 }
