@@ -560,6 +560,12 @@
   "newAccountCreated": {
     "message": "החשבון החדש שלך נוצר בהצלחה! כעת ניתן להתחבר למערכת."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassSent": {
     "message": "שלחנו לך אימייל עם רמז לסיסמה הראשית."
   },
@@ -1393,13 +1399,13 @@
     "message": "קוד PIN לא תקין."
   },
   "tooManyInvalidPinEntryAttemptsLoggingOut": {
-    "message": "Too many invalid PIN entry attempts. Logging out."
+    "message": "יותר מדי ניסיונות שגויים להקלדת קוד אישי. יצאת מהמערכת."
   },
   "unlockWithWindowsHello": {
     "message": "שחרור נעילה עם Windows Hello"
   },
   "additionalWindowsHelloSettings": {
-    "message": "Additional Windows Hello settings"
+    "message": "הגדרות נוספות של Windows Hello"
   },
   "windowsHelloConsentMessage": {
     "message": "אימות עבור Bitwarden."
@@ -1546,6 +1552,10 @@
   "orgRequiresYouToSetPassword": {
     "message": "Your organization requires you to set a master password.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "verificationRequired": {
+    "message": "נדרש אימות",
+    "description": "Default title for the user verification dialog."
   },
   "currentMasterPass": {
     "message": "Current master password"
@@ -1871,6 +1881,42 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
+  },
+  "tryAgain": {
+    "message": "לנסות שוב"
+  },
+  "verificationRequiredForActionSetPinToContinue": {
+    "message": "צריך אימות לביצוע הפעולה הזאת. נא להגדיר קוד אישי כדי להמשיך."
+  },
+  "setPin": {
+    "message": "הגדרת קוד אישי"
+  },
+  "verifyWithBiometrics": {
+    "message": "אימות עם זיהוי ביומטרי"
+  },
+  "awaitingConfirmation": {
+    "message": "בהמתנה לאישור"
+  },
+  "couldNotCompleteBiometrics": {
+    "message": "לא ניתן להשלים את האימות הביומטרי."
+  },
+  "needADifferentMethod": {
+    "message": "עדיף שיטה אחרת?"
+  },
+  "useMasterPassword": {
+    "message": "להשתמש בסיסמה ראשית"
+  },
+  "usePin": {
+    "message": "להשתמש בקוד אישי"
+  },
+  "useBiometrics": {
+    "message": "להשתמש בזיהוי ביומטרי"
+  },
+  "enterVerificationCodeSentToEmail": {
+    "message": "נא למלא את קוד האימות שנשלח לכתובת הדוא״ל שלך."
+  },
+  "resendCode": {
+    "message": "שליחת הקוד מחדש"
   },
   "hours": {
     "message": "שעות"
@@ -2485,6 +2531,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch Duo and follow the steps to finish logging in."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Duo two-step login is required for your account."
+  },
+  "launchDuo": {
+    "message": "Launch Duo in Browser"
+  },
   "importFormatError": {
     "message": "Data is not formatted correctly. Please check your import file and try again."
   },
@@ -2564,6 +2619,15 @@
   },
   "incorrectUsernameOrPassword": {
     "message": "Incorrect username or password"
+  },
+  "incorrectPassword": {
+    "message": "סיסמה שגויה"
+  },
+  "incorrectCode": {
+    "message": "קוד שגוי"
+  },
+  "incorrectPin": {
+    "message": "קוד אישי שגוי"
   },
   "multifactorAuthenticationFailed": {
     "message": "Multifactor authentication failed"

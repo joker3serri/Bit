@@ -1,11 +1,19 @@
+import { firstValueFrom } from "rxjs";
+
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
 import { EventType } from "@bitwarden/common/enums";
+import {
+  UriMatchStrategySetting,
+  UriMatchStrategy,
+} from "@bitwarden/common/models/domain/domain-service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { FieldType, UriMatchType, CipherType } from "@bitwarden/common/vault/enums";
+import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
@@ -17,7 +25,6 @@ import { AutofillPort } from "../enums/autofill-port.enums";
 import AutofillField from "../models/autofill-field";
 import AutofillPageDetails from "../models/autofill-page-details";
 import AutofillScript from "../models/autofill-script";
-import { AutofillOverlayVisibility } from "../utils/autofill-overlay.enum";
 
 import {
   AutoFillOptions,
@@ -37,14 +44,16 @@ export default class AutofillService implements AutofillServiceInterface {
   private openPasswordRepromptPopoutDebounce: NodeJS.Timeout;
   private currentlyOpeningPasswordRepromptPopout = false;
   private autofillScriptPortsSet = new Set<chrome.runtime.Port>();
+  static searchFieldNamesSet = new Set(AutoFillConstants.SearchFieldNames);
 
   constructor(
     private cipherService: CipherService,
     private stateService: BrowserStateService,
+    private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private totpService: TotpService,
     private eventCollectionService: EventCollectionService,
     private logService: LogService,
-    private settingsService: SettingsService,
+    private domainSettingsService: DomainSettingsService,
     private userVerificationService: UserVerificationService,
   ) {}
 
@@ -57,6 +66,8 @@ export default class AutofillService implements AutofillServiceInterface {
   async loadAutofillScriptsOnInstall() {
     BrowserApi.addListener(chrome.runtime.onConnect, this.handleInjectedScriptPortConnection);
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.injectAutofillScriptsInAllTabs();
   }
 
@@ -72,6 +83,8 @@ export default class AutofillService implements AutofillServiceInterface {
       this.autofillScriptPortsSet.delete(port);
     });
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.injectAutofillScriptsInAllTabs();
   }
 
@@ -89,19 +102,19 @@ export default class AutofillService implements AutofillServiceInterface {
     frameId = 0,
     triggeringOnPageLoad = true,
   ): Promise<void> {
-    const isUsingAutofillOverlay =
-      (await this.settingsService.getAutoFillOverlayVisibility()) !== AutofillOverlayVisibility.Off;
-    const mainAutofillScript = isUsingAutofillOverlay
+    const mainAutofillScript = (await this.getOverlayVisibility())
       ? "bootstrap-autofill-overlay.js"
       : "bootstrap-autofill.js";
 
     const injectedScripts = [mainAutofillScript];
 
-    if (triggeringOnPageLoad) {
+    const autoFillOnPageLoadIsEnabled = await this.getAutofillOnPageLoad();
+
+    if (triggeringOnPageLoad && autoFillOnPageLoadIsEnabled) {
       injectedScripts.push("autofiller.js");
     } else {
       await BrowserApi.executeScriptInTab(tab.id, {
-        file: "content/bootstrap-content-message-handler.js",
+        file: "content/content-message-handler.js",
         runAt: "document_start",
       });
     }
@@ -187,6 +200,34 @@ export default class AutofillService implements AutofillServiceInterface {
   }
 
   /**
+   * Gets the overlay's visibility setting from the autofill settings service.
+   */
+  async getOverlayVisibility(): Promise<InlineMenuVisibilitySetting> {
+    return await firstValueFrom(this.autofillSettingsService.inlineMenuVisibility$);
+  }
+
+  /**
+   * Gets the setting for automatically copying TOTP upon autofill from the autofill settings service.
+   */
+  async getShouldAutoCopyTotp(): Promise<boolean> {
+    return await firstValueFrom(this.autofillSettingsService.autoCopyTotp$);
+  }
+
+  /**
+   * Gets the autofill on page load setting from the autofill settings service.
+   */
+  async getAutofillOnPageLoad(): Promise<boolean> {
+    return await firstValueFrom(this.autofillSettingsService.autofillOnPageLoad$);
+  }
+
+  /**
+   * Gets the default URI match strategy setting from the domain settings service.
+   */
+  async getDefaultUriMatchStrategy(): Promise<UriMatchStrategySetting> {
+    return await firstValueFrom(this.domainSettingsService.defaultUriMatchStrategy$);
+  }
+
+  /**
    * Autofill a given tab with a given login item
    * @param {AutoFillOptions} options Instructions about the autofill operation, including tab and login item
    * @returns {Promise<string | null>} The TOTP code of the successfully autofilled login, if any
@@ -200,7 +241,7 @@ export default class AutofillService implements AutofillServiceInterface {
     let totp: string | null = null;
 
     const canAccessPremium = await this.stateService.getCanAccessPremium();
-    const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
+    const defaultUriMatch = await this.getDefaultUriMatchStrategy();
 
     if (!canAccessPremium) {
       options.cipher.login.totp = null;
@@ -243,9 +284,13 @@ export default class AutofillService implements AutofillServiceInterface {
 
         didAutofill = true;
         if (!options.skipLastUsed) {
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.cipherService.updateLastUsedDate(options.cipher.id);
         }
 
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         BrowserApi.tabSendMessage(
           tab,
           {
@@ -267,16 +312,17 @@ export default class AutofillService implements AutofillServiceInterface {
           return;
         }
 
-        totp = await this.stateService.getDisableAutoTotpCopy().then((disabled) => {
-          if (!disabled) {
-            return this.totpService.getCode(options.cipher.login.totp);
-          }
-          return null;
-        });
+        const shouldAutoCopyTotp = await this.getShouldAutoCopyTotp();
+
+        totp = shouldAutoCopyTotp
+          ? await this.totpService.getCode(options.cipher.login.totp)
+          : null;
       }),
     );
 
     if (didAutofill) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(EventType.Cipher_ClientAutofilled, options.cipher.id);
       if (totp !== null) {
         return totp;
@@ -545,9 +591,9 @@ export default class AutofillService implements AutofillServiceInterface {
     let totp: AutofillField = null;
     const login = options.cipher.login;
     fillScript.savedUrls =
-      login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
+      login?.uris?.filter((u) => u.match != UriMatchStrategy.Never).map((u) => u.uri) ?? [];
 
-    fillScript.untrustedIframe = this.inUntrustedIframe(pageDetails.url, options);
+    fillScript.untrustedIframe = await this.inUntrustedIframe(pageDetails.url, options);
 
     let passwordFields = AutofillService.loadPasswordFields(
       pageDetails,
@@ -1032,7 +1078,10 @@ export default class AutofillService implements AutofillServiceInterface {
    * @returns {boolean} `true` if the iframe is untrusted and a warning should be shown, `false` otherwise
    * @private
    */
-  private inUntrustedIframe(pageUrl: string, options: GenerateFillScriptOptions): boolean {
+  private async inUntrustedIframe(
+    pageUrl: string,
+    options: GenerateFillScriptOptions,
+  ): Promise<boolean> {
     // If the pageUrl (from the content script) matches the tabUrl (from the sender tab), we are not in an iframe
     // This also avoids a false positive if no URI is saved and the user triggers auto-fill anyway
     if (pageUrl === options.tabUrl) {
@@ -1042,7 +1091,9 @@ export default class AutofillService implements AutofillServiceInterface {
     // Check the pageUrl against cipher URIs using the configured match detection.
     // Remember: if we are in this function, the tabUrl already matches a saved URI for the login.
     // We need to verify the pageUrl also matches.
-    const equivalentDomains = this.settingsService.getEquivalentDomains(pageUrl);
+    const equivalentDomains = await firstValueFrom(
+      this.domainSettingsService.getUrlEquivalentDomains(pageUrl),
+    );
     const matchesUri = options.cipher.login.matchesUri(
       pageUrl,
       equivalentDomains,
@@ -1330,11 +1381,33 @@ export default class AutofillService implements AutofillServiceInterface {
     return excludedTypes.indexOf(type) > -1;
   }
 
+  /**
+   * Identifies if a passed field contains text artifacts that identify it as a search field.
+   *
+   * @param field - The autofill field that we are validating as a search field
+   */
   private static isSearchField(field: AutofillField) {
     const matchFieldAttributeValues = [field.type, field.htmlName, field.htmlID, field.placeholder];
-    const matchPattern = new RegExp(AutoFillConstants.SearchFieldNames.join("|"), "gi");
+    for (let attrIndex = 0; attrIndex < matchFieldAttributeValues.length; attrIndex++) {
+      if (!matchFieldAttributeValues[attrIndex]) {
+        continue;
+      }
 
-    return Boolean(matchFieldAttributeValues.join(" ").match(matchPattern));
+      // Separate camel case words and case them to lower case values
+      const camelCaseSeparatedFieldAttribute = matchFieldAttributeValues[attrIndex]
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .toLowerCase();
+      // Split the attribute by non-alphabetical characters to get the keywords
+      const attributeKeywords = camelCaseSeparatedFieldAttribute.split(/[^a-z]/gi);
+
+      for (let keywordIndex = 0; keywordIndex < attributeKeywords.length; keywordIndex++) {
+        if (AutofillService.searchFieldNamesSet.has(attributeKeywords[keywordIndex])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   static isExcludedFieldType(field: AutofillField, excludedTypes: string[]) {
@@ -1347,11 +1420,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     // Check if the input is an untyped/mistyped search input
-    if (this.isSearchField(field)) {
-      return true;
-    }
-
-    return false;
+    return this.isSearchField(field);
   }
 
   /**
@@ -1475,11 +1544,7 @@ export default class AutofillService implements AutofillServiceInterface {
       return false;
     }
 
-    if (AutoFillConstants.PasswordFieldExcludeList.some((i) => cleanedValue.indexOf(i) > -1)) {
-      return false;
-    }
-
-    return true;
+    return !AutoFillConstants.PasswordFieldExcludeList.some((i) => cleanedValue.indexOf(i) > -1);
   }
 
   static fieldHasDisqualifyingAttributeValue(field: AutofillField) {
@@ -1522,7 +1587,11 @@ export default class AutofillService implements AutofillServiceInterface {
     const arr: AutofillField[] = [];
 
     pageDetails.fields.forEach((f) => {
-      if (AutofillService.isExcludedFieldType(f, AutoFillConstants.ExcludedAutofillLoginTypes)) {
+      const isPassword = f.type === "password";
+      if (
+        !isPassword &&
+        AutofillService.isExcludedFieldType(f, AutoFillConstants.ExcludedAutofillLoginTypes)
+      ) {
         return;
       }
 
@@ -1531,23 +1600,16 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
-      const isPassword = f.type === "password";
-
       const isLikePassword = () => {
         if (f.type !== "text") {
           return false;
         }
 
-        if (AutofillService.valueIsLikePassword(f.htmlID)) {
-          return true;
-        }
-
-        if (AutofillService.valueIsLikePassword(f.htmlName)) {
-          return true;
-        }
-
-        if (AutofillService.valueIsLikePassword(f.placeholder)) {
-          return true;
+        const testedValues = [f.htmlID, f.htmlName, f.placeholder];
+        for (let i = 0; i < testedValues.length; i++) {
+          if (AutofillService.valueIsLikePassword(testedValues[i])) {
+            return true;
+          }
         }
 
         return false;
@@ -2000,6 +2062,8 @@ export default class AutofillService implements AutofillServiceInterface {
     for (let index = 0; index < tabs.length; index++) {
       const tab = tabs[index];
       if (tab.url?.startsWith("http")) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.injectAutofillScripts(tab, 0, false);
       }
     }

@@ -8,6 +8,7 @@ import { firstValueFrom } from "rxjs";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 
 import { WindowState } from "../platform/models/domain/window-state";
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
@@ -31,13 +32,14 @@ export class WindowMain {
   private windowStateChangeTimer: NodeJS.Timeout;
   private windowStates: { [key: string]: WindowState } = {};
   private enableAlwaysOnTop = false;
-  private session: Electron.Session;
+  session: Electron.Session;
 
   readonly defaultWidth = 950;
   readonly defaultHeight = 600;
 
   constructor(
     private stateService: StateService,
+    private biometricStateService: BiometricStateService,
     private logService: LogService,
     private storageService: AbstractStorageService,
     private desktopSettingsService: DesktopSettingsService,
@@ -60,6 +62,8 @@ export class WindowMain {
       }
 
       this.win.webContents.reloadIgnoringCache();
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.session.clearCache();
     });
 
@@ -91,9 +95,9 @@ export class WindowMain {
 
         // This method will be called when Electron is shutting
         // down the application.
-        app.on("before-quit", () => {
+        app.on("before-quit", async () => {
           // Allow biometric to auto-prompt on reload
-          this.stateService.setBiometricPromptCancelled(false);
+          await this.biometricStateService.resetPromptCancelled();
           this.isQuitting = true;
         });
 
@@ -159,12 +163,13 @@ export class WindowMain {
       backgroundColor: await this.getBackgroundColor(),
       alwaysOnTop: this.enableAlwaysOnTop,
       webPreferences: {
-        // preload: path.join(__dirname, "preload.js"),
+        preload: path.join(__dirname, "preload.js"),
         spellcheck: false,
-        nodeIntegration: true,
+        nodeIntegration: false,
         backgroundThrottling: false,
-        contextIsolation: false,
+        contextIsolation: true,
         session: this.session,
+        devTools: isDev(),
       },
     });
 
@@ -180,6 +185,8 @@ export class WindowMain {
     this.win.show();
 
     // and load the index.html of the app.
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.win.loadURL(
       url.format({
         protocol: "file:",
@@ -242,8 +249,7 @@ export class WindowMain {
   // Retrieve the background color
   // Resolves background color missmatch when starting the application.
   async getBackgroundColor(): Promise<string> {
-    const data: { theme?: string } = await this.storageService.get("global");
-    let theme = data?.theme;
+    let theme = await this.storageService.get("global_theming_selection");
 
     if (theme == null || theme === "system") {
       theme = nativeTheme.shouldUseDarkColors ? "dark" : "light";

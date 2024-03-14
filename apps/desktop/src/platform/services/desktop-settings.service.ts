@@ -14,19 +14,33 @@ const WINDOW_KEY = new KeyDefinition<WindowState | null>(DESKTOP_SETTINGS_DISK, 
   deserializer: (s) => s,
 });
 
-const ALWAYS_ON_TOP_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "alwaysOnTop");
+const ALWAYS_ON_TOP_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "alwaysOnTop", {
+  deserializer: (b) => b,
+});
 
-const CLOSE_TO_TRAY_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "closeToTray");
+const CLOSE_TO_TRAY_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "closeToTray", {
+  deserializer: (b) => b,
+});
 
-const MINIMIZE_TO_TRAY_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "minimizeToTray");
+const MINIMIZE_TO_TRAY_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "minimizeToTray", {
+  deserializer: (b) => b,
+});
 
-const START_TO_TRAY_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "startToTray");
+const START_TO_TRAY_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "startToTray", {
+  deserializer: (b) => b,
+});
 
-const TRAY_ENABLED_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "trayEnabled");
+const TRAY_ENABLED_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "trayEnabled", {
+  deserializer: (b) => b,
+});
 
-const OPEN_AT_LOGIN_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "openAtLogin");
+const OPEN_AT_LOGIN_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "openAtLogin", {
+  deserializer: (b) => b,
+});
 
-const ALWAYS_SHOW_DOCK_KEY = KeyDefinition.boolean(DESKTOP_SETTINGS_DISK, "alwaysShowDock");
+const ALWAYS_SHOW_DOCK_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "alwaysShowDock", {
+  deserializer: (b) => b,
+});
 
 export class DesktopSettingsService {
   private windowState: GlobalState<WindowState>;

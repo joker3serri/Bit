@@ -560,6 +560,12 @@
   "newAccountCreated": {
     "message": "Váš nový účet bol vytvorený! Teraz sa môžete prihlásiť."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "Úspešne ste sa prihlásili"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Toto okno môžete zavrieť"
+  },
   "masterPassSent": {
     "message": "Emailom sme vám poslali nápoveď k hlavnému heslu."
   },
@@ -1547,6 +1553,10 @@
     "message": "Vaša organizácia vyžaduje, aby ste nastavili hlavné heslo.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
+  "verificationRequired": {
+    "message": "Vyžaduje sa overenie",
+    "description": "Default title for the user verification dialog."
+  },
   "currentMasterPass": {
     "message": "Súčasné hlavné heslo"
   },
@@ -1871,6 +1881,42 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "Vaše hlavné heslo nespĺňa jednu alebo viacero podmienok vašej organizácie. Ak chcete získať prístup k trezoru, musíte teraz aktualizovať svoje hlavné heslo. Pokračovaním sa odhlásite z aktuálnej relácie a budete sa musieť znova prihlásiť. Aktívne relácie na iných zariadeniach môžu zostať aktívne až jednu hodinu."
+  },
+  "tryAgain": {
+    "message": "Skúsiť znova"
+  },
+  "verificationRequiredForActionSetPinToContinue": {
+    "message": "Pre túto akciu sa vyžaduje overenie. Ak chcete pokračovať, nastavte PIN kód."
+  },
+  "setPin": {
+    "message": "Nastaviť PIN kód"
+  },
+  "verifyWithBiometrics": {
+    "message": "Overiť pomocou biometrie"
+  },
+  "awaitingConfirmation": {
+    "message": "Čakajúce potvrdenie"
+  },
+  "couldNotCompleteBiometrics": {
+    "message": "Overenie pomocou biometrie zlyhalo."
+  },
+  "needADifferentMethod": {
+    "message": "Potrebujete inú metódu?"
+  },
+  "useMasterPassword": {
+    "message": "Použiť hlavné heslo"
+  },
+  "usePin": {
+    "message": "Použiť PIN kód"
+  },
+  "useBiometrics": {
+    "message": "Použiť biometrické údaje"
+  },
+  "enterVerificationCodeSentToEmail": {
+    "message": "Zadajte overovací kód, ktorý vám bol zaslaný na e-mail."
+  },
+  "resendCode": {
+    "message": "Znova odoslať kód"
   },
   "hours": {
     "message": "Hodiny"
@@ -2485,6 +2531,15 @@
       }
     }
   },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Spustite DuO a postupujte podľa pokynov na dokončenie prihlásenia."
+  },
+  "duoRequiredByOrgForAccount": {
+    "message": "Pre váš účet je potrebné dvojstupňové prihlásenie Duo."
+  },
+  "launchDuo": {
+    "message": "Spustiť Duo v prehliadači"
+  },
   "importFormatError": {
     "message": "Dáta nie sú správne formátované. Prosím, overte importovaný súbor a skúste to znova."
   },
@@ -2564,6 +2619,15 @@
   },
   "incorrectUsernameOrPassword": {
     "message": "Nesprávne používateľské meno alebo heslo"
+  },
+  "incorrectPassword": {
+    "message": "Nesprávne heslo"
+  },
+  "incorrectCode": {
+    "message": "Nesprávny kód"
+  },
+  "incorrectPin": {
+    "message": "Nesprávny PIN kód"
   },
   "multifactorAuthenticationFailed": {
     "message": "Viacfaktorové overenie zlyhalo"
