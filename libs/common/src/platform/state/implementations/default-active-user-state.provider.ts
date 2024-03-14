@@ -28,8 +28,9 @@ export class DefaultActiveUserStateProvider implements ActiveUserStateProvider {
       keyDefinition = UserKeyDefinition.fromBaseKeyDefinition(keyDefinition);
     }
 
-    // We don't need to do any caching of active user state since it relies on single
-    // user state under the hood and their cache is more than enough.
+    // All other providers cache the creation of their corresponding `State` objects, this instance
+    // doesn't need to do that since it calls `SingleUserStateProvider` it will go through their caching
+    // layer, because of that, the creation of this instance is quite simple and not worth caching.
     return new DefaultActiveUserState(
       keyDefinition,
       this.activeUserId$,
