@@ -787,6 +787,7 @@ import { ModalService } from "./modal.service";
         AuthServiceAbstraction,
         EnvironmentService,
         LogService,
+        StateProvider,
       ],
     },
     {

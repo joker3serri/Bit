@@ -13,7 +13,6 @@ import {
 } from "../abstractions/environment.service";
 import { Utils } from "../misc/utils";
 import {
-  ActiveUserState,
   ENVIRONMENT_DISK,
   ENVIRONMENT_MEMORY,
   GlobalState,
@@ -101,26 +100,14 @@ const DEFAULT_REGION_CONFIG = PRODUCTION_REGIONS.find((r) => r.key === DEFAULT_R
 
 export class DefaultEnvironmentService implements EnvironmentService {
   private globalState: GlobalState<EnvironmentState | null>;
-  private activeCloudRegionState: ActiveUserState<CloudRegion>;
+  private globalCloudRegionState: GlobalState<CloudRegion | null>;
 
   // We intentionally don't want the helper on account service, we want the null back if there is no active user
   private activeAccountId$: Observable<UserId | null> = this.accountService.activeAccount$.pipe(
     map((a) => a?.id),
   );
 
-  environment$: Observable<Environment> = this.activeAccountId$.pipe(
-    // Use == here to not trigger on undefined -> null transition
-    distinctUntilChanged((oldUserId: UserId, newUserId: UserId) => oldUserId == newUserId),
-    switchMap((userId) => {
-      const t = userId
-        ? this.stateProvider.getUser(userId, ENVIRONMENT_KEY).state$
-        : this.stateProvider.getGlobal(ENVIRONMENT_KEY).state$;
-      return t;
-    }),
-    map((state) => {
-      return this.buildEnvironment(state?.region, state?.urls);
-    }),
-  );
+  environment$: Observable<Environment>;
   cloudWebVaultUrl$: Observable<string>;
 
   constructor(
@@ -128,9 +115,31 @@ export class DefaultEnvironmentService implements EnvironmentService {
     private accountService: AccountService,
   ) {
     this.globalState = this.stateProvider.getGlobal(ENVIRONMENT_KEY);
-    this.activeCloudRegionState = this.stateProvider.getActive(CLOUD_REGION_KEY);
+    this.globalCloudRegionState = this.stateProvider.getGlobal(CLOUD_REGION_KEY);
 
-    this.cloudWebVaultUrl$ = this.activeCloudRegionState.state$.pipe(
+    const account$ = this.activeAccountId$.pipe(
+      // Use == here to not trigger on undefined -> null transition
+      distinctUntilChanged((oldUserId: UserId, newUserId: UserId) => oldUserId == newUserId),
+    );
+
+    this.environment$ = account$.pipe(
+      switchMap((userId) => {
+        const t = userId
+          ? this.stateProvider.getUser(userId, ENVIRONMENT_KEY).state$
+          : this.stateProvider.getGlobal(ENVIRONMENT_KEY).state$;
+        return t;
+      }),
+      map((state) => {
+        return this.buildEnvironment(state?.region, state?.urls);
+      }),
+    );
+    this.cloudWebVaultUrl$ = account$.pipe(
+      switchMap((userId) => {
+        const t = userId
+          ? this.stateProvider.getUser(userId, CLOUD_REGION_KEY).state$
+          : this.stateProvider.getGlobal(CLOUD_REGION_KEY).state$;
+        return t;
+      }),
       map((region) => {
         if (region != null) {
           const config = this.getRegionConfig(region);
@@ -229,8 +238,12 @@ export class DefaultEnvironmentService implements EnvironmentService {
     return new SelfHostedEnvironment(urls);
   }
 
-  async setCloudRegion(region: CloudRegion) {
-    await this.activeCloudRegionState.update(() => region);
+  async setCloudRegion(userId: UserId, region: CloudRegion) {
+    if (userId == null) {
+      await this.globalCloudRegionState.update(() => region);
+    } else {
+      await this.stateProvider.getUser(userId, CLOUD_REGION_KEY).update(() => region);
+    }
   }
 
   async getEnvironment(userId?: UserId) {

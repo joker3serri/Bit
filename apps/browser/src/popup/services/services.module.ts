@@ -513,6 +513,7 @@ function getBgService<T>(service: keyof MainBackground) {
         ConfigApiServiceAbstraction,
         AuthServiceAbstraction,
         EnvironmentService,
+        StateProvider,
         LogService,
       ],
     },

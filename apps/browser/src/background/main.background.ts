@@ -602,6 +602,7 @@ export default class MainBackground {
       this.authService,
       this.environmentService,
       this.logService,
+      this.stateProvider,
       true,
     );
 

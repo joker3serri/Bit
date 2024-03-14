@@ -408,7 +408,9 @@ describe("EnvironmentService", () => {
     ])(
       "no extra initialization, returns expected host for each region %s",
       async ({ region, expectedVault }) => {
-        expect(await sut.setCloudRegion(region as CloudRegion));
+        await switchUser(testUser);
+
+        expect(await sut.setCloudRegion(testUser, region as CloudRegion));
         expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe(expectedVault);
       },
     );

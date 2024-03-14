@@ -120,9 +120,10 @@ export abstract class EnvironmentService {
   /**
    * Sets the URL of the cloud web vault app based on the region parameter.
    *
+   * @param userId - The user id to set the cloud web vault app URL for. If null or undefined the global environment is set.
    * @param region - The region of the cloud web vault app.
    */
-  abstract setCloudRegion(region: Region): Promise<void>;
+  abstract setCloudRegion(userId: UserId, region: Region): Promise<void>;
 
   /**
    * Get the environment from state. Useful if you need to get the environment for another user.
