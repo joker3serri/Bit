@@ -1,13 +1,4 @@
-import {
-  Observable,
-  map,
-  switchMap,
-  firstValueFrom,
-  timeout,
-  throwError,
-  NEVER,
-  filter,
-} from "rxjs";
+import { Observable, map, switchMap, firstValueFrom, timeout, throwError, NEVER } from "rxjs";
 
 import { UserId } from "../../../types/guid";
 import { StateUpdateOptions } from "../state-update-options";
@@ -43,17 +34,29 @@ export class DefaultActiveUserState<T> implements ActiveUserState<T> {
   ): Promise<[UserId, T]> {
     const userId = await firstValueFrom(
       this.activeUserId$.pipe(
-        filter((userId) => userId != null),
         timeout({
           first: 1000,
-          with: () => throwError(() => new Error("No active user at this time.")),
+          with: () =>
+            throwError(
+              () =>
+                new Error(
+                  `Timeout while retrieving active user for key ${this.keyDefinition.fullName}.`,
+                ),
+            ),
         }),
       ),
     );
+    if (userId == null) {
+      throw new Error(
+        `Error storing ${this.keyDefinition.fullName} for the active user: No active user at this time.`,
+      );
+    }
 
-    const singleUserState = this.singleUserStateProvider.get(userId, this.keyDefinition);
-
-    // Delegate the update call to the single user state so we can only implement it once
-    return [userId, await singleUserState.update(configureState, options)];
+    return [
+      userId,
+      await this.singleUserStateProvider
+        .get(userId, this.keyDefinition)
+        .update(configureState, options),
+    ];
   }
 }
