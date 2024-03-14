@@ -2,9 +2,10 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { concatMap, firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -13,6 +14,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { Account } from "@bitwarden/common/platform/models/domain/account";
+import { UserId } from "@bitwarden/common/types/guid";
 
 type ActiveAccount = {
   id: string;
@@ -85,6 +87,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
   constructor(
     private stateService: StateService,
     private authService: AuthService,
+    private avatarService: AvatarService,
     private messagingService: MessagingService,
     private router: Router,
     private tokenService: TokenService,
@@ -103,7 +106,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
               id: await this.tokenService.getUserId(),
               name: (await this.tokenService.getName()) ?? (await this.tokenService.getEmail()),
               email: await this.tokenService.getEmail(),
-              avatarColor: await this.stateService.getAvatarColor(),
+              avatarColor: await firstValueFrom(this.avatarService.avatarColor$),
               server: await this.environmentService.getHost(),
             };
           } catch {
@@ -156,7 +159,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
         name: baseAccounts[userId].profile.name,
         email: baseAccounts[userId].profile.email,
         authenticationStatus: await this.authService.getAuthStatus(userId),
-        avatarColor: await this.stateService.getAvatarColor({ userId: userId }),
+        avatarColor: await firstValueFrom(this.avatarService.getUserAvatarColor$(userId as UserId)),
         server: await this.environmentService.getHost(userId),
       };
     }

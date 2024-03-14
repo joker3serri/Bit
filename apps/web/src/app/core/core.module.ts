@@ -23,6 +23,7 @@ import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/comm
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
+import { ThemeType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
@@ -33,6 +34,10 @@ import { StorageServiceProvider } from "@bitwarden/common/platform/services/stor
 import { StateProvider, GlobalStateProvider } from "@bitwarden/common/platform/state";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 /* eslint-enable import/no-restricted-paths -- Implementation for memory storage */
+import {
+  DefaultThemeStateService,
+  ThemeStateService,
+} from "@bitwarden/common/platform/theming/theme-state.service";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { HtmlStorageService } from "../core/html-storage.service";
@@ -133,6 +138,13 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
         MigrationBuilderService,
         OBSERVABLE_DISK_LOCAL_STORAGE,
       ],
+    },
+    {
+      provide: ThemeStateService,
+      useFactory: (globalStateProvider: GlobalStateProvider) =>
+        // Web chooses to have Light as the default theme
+        new DefaultThemeStateService(globalStateProvider, ThemeType.Light),
+      deps: [GlobalStateProvider],
     },
   ],
 })

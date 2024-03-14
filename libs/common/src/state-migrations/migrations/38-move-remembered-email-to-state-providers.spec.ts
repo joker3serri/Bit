@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper, runMigrator } from "../migration-helper.spec";
 
-import { RememberedEmailMigrator } from "./34-move-remembered-email-to-state-providers";
+import { RememberedEmailMigrator } from "./38-move-remembered-email-to-state-providers";
 
 function rollbackJSON() {
   return {
@@ -15,7 +15,7 @@ function rollbackJSON() {
 }
 
 describe("RememberedEmailMigrator", () => {
-  const migrator = new RememberedEmailMigrator(33, 34);
+  const migrator = new RememberedEmailMigrator(37, 38);
 
   describe("migrate", () => {
     it("should migrate the rememberedEmail property from the legacy global object to a global StorageKey", async () => {
@@ -57,8 +57,8 @@ describe("RememberedEmailMigrator", () => {
     };
 
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 34);
-      sut = new RememberedEmailMigrator(33, 34);
+      helper = mockMigrationHelper(rollbackJSON(), 38);
+      sut = new RememberedEmailMigrator(37, 38);
     });
 
     it("should null out the rememberEmail global StorageKey", async () => {

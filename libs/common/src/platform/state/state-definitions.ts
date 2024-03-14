@@ -26,6 +26,8 @@ export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 // Auth
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
+export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-local" });
+export const LOGIN_STRATEGY_MEMORY = new StateDefinition("loginStrategy", "memory");
 export const REMEMBER_EMAIL_DISK = new StateDefinition("rememberEmail", "disk", {
   web: "disk-local",
 });
@@ -40,6 +42,8 @@ export const USER_NOTIFICATION_SETTINGS_DISK = new StateDefinition(
 );
 
 // Billing
+
+export const DOMAIN_SETTINGS_DISK = new StateDefinition("domainSettings", "disk");
 
 export const AUTOFILL_SETTINGS_DISK = new StateDefinition("autofillSettings", "disk");
 export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSettingsLocal", "disk", {
@@ -63,6 +67,7 @@ export const CLEAR_EVENT_DISK = new StateDefinition("clearEvent", "disk");
 export const CRYPTO_DISK = new StateDefinition("crypto", "disk");
 export const CRYPTO_MEMORY = new StateDefinition("crypto", "memory");
 export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
+export const THEMING_DISK = new StateDefinition("theming", "disk");
 export const TRANSLATION_DISK = new StateDefinition("translation", "disk");
 
 // Secrets Manager
