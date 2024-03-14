@@ -93,14 +93,21 @@ describe("TokenService", () => {
     const accessTokenSecureStorageKey = `${userIdFromAccessToken}${accessTokenPartialSecureStorageKey}`;
 
     describe("setAccessToken", () => {
-      it("should throw an error if no user id is provided, there is no active user in global state, and an invalid token is passed in", async () => {
+      it("should throw an error if the access token is null", async () => {
+        // Act
+        const result = tokenService.setAccessToken(null, VaultTimeoutAction.Lock, null);
+        // Assert
+        await expect(result).rejects.toThrow("Access token is required.");
+      });
+
+      it("should throw an error if an invalid token is passed in", async () => {
         // Act
         const result = tokenService.setAccessToken("invalidToken", VaultTimeoutAction.Lock, null);
         // Assert
         await expect(result).rejects.toThrow("JWT must have 3 parts");
       });
 
-      it("should not throw an error if no user id is provided and there is no active user in global state as long as the token is valid", async () => {
+      it("should not throw an error as long as the token is valid", async () => {
         // Act
         const result = tokenService.setAccessToken(accessTokenJwt, VaultTimeoutAction.Lock, null);
         // Assert
@@ -1035,7 +1042,7 @@ describe("TokenService", () => {
     const refreshTokenSecureStorageKey = `${userIdFromAccessToken}${refreshTokenPartialSecureStorageKey}`;
 
     describe("setRefreshToken", () => {
-      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should throw an error if no user id is provided", async () => {
         // Act
         // note: don't await here because we want to test the error
         const result = (tokenService as any).setRefreshToken(
@@ -1048,25 +1055,6 @@ describe("TokenService", () => {
       });
 
       describe("Memory storage tests", () => {
-        it("should set the refresh token in memory when there is an active user in global state", async () => {
-          // Arrange
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
-
-          // Act
-          await (tokenService as any).setRefreshToken(
-            refreshToken,
-            memoryVaultTimeoutAction,
-            memoryVaultTimeout,
-          );
-
-          // Assert
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
-          ).toHaveBeenCalledWith(refreshToken);
-        });
-
         it("should set the refresh token in memory for the specified user id", async () => {
           // Act
           await (tokenService as any).setRefreshToken(
@@ -1084,25 +1072,6 @@ describe("TokenService", () => {
       });
 
       describe("Disk storage tests (secure storage not supported on platform)", () => {
-        it("should set the refresh token in disk when there is an active user in global state", async () => {
-          // Arrange
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
-
-          // Act
-          await (tokenService as any).setRefreshToken(
-            refreshToken,
-            diskVaultTimeoutAction,
-            diskVaultTimeout,
-          );
-
-          // Assert
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
-          ).toHaveBeenCalledWith(refreshToken);
-        });
-
         it("should set the refresh token in disk for the specified user id", async () => {
           // Act
           await (tokenService as any).setRefreshToken(
@@ -1125,52 +1094,6 @@ describe("TokenService", () => {
           tokenService = createTokenService(supportsSecureStorage);
         });
 
-        it("should set the refresh token in secure storage, null out data on disk or in memory, and set a flag to indicate the token has been migrated when there is an active user in global state ", async () => {
-          // Arrange:
-
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
-
-          // For testing purposes, let's assume that the token is already in disk and memory
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
-
-          // Act
-          await (tokenService as any).setRefreshToken(
-            refreshToken,
-            diskVaultTimeoutAction,
-            diskVaultTimeout,
-          );
-          // Assert
-
-          // assert that the refresh token was set in secure storage
-          expect(secureStorageService.save).toHaveBeenCalledWith(
-            refreshTokenSecureStorageKey,
-            refreshToken,
-            secureStorageOptions,
-          );
-
-          // assert data was migrated out of disk and memory + flag was set
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
-          ).toHaveBeenCalledWith(null);
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
-          ).toHaveBeenCalledWith(null);
-
-          expect(
-            singleUserStateProvider.getFake(
-              userIdFromAccessToken,
-              REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-            ).nextMock,
-          ).toHaveBeenCalledWith(true);
-        });
         it("should set the refresh token in secure storage, null out data on disk or in memory, and set a flag to indicate the token has been migrated for the specified user id", async () => {
           // Arrange:
           // For testing purposes, let's assume that the token is already in disk and memory
@@ -1431,7 +1354,7 @@ describe("TokenService", () => {
     });
 
     describe("clearRefreshToken", () => {
-      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+      it("should throw an error if no user id is provided", async () => {
         // Act
         // note: don't await here because we want to test the error
         const result = (tokenService as any).clearRefreshToken();
@@ -1454,38 +1377,6 @@ describe("TokenService", () => {
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
             .stateSubject.next([userIdFromAccessToken, refreshToken]);
-
-          // Act
-          await (tokenService as any).clearRefreshToken(userIdFromAccessToken);
-
-          // Assert
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
-          ).toHaveBeenCalledWith(null);
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
-          ).toHaveBeenCalledWith(null);
-
-          expect(secureStorageService.remove).toHaveBeenCalledWith(
-            refreshTokenSecureStorageKey,
-            secureStorageOptions,
-          );
-        });
-
-        it("should clear the refresh token from all storage locations for the global active user", async () => {
-          // Arrange
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
-
-          // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
 
           // Act
           await (tokenService as any).clearRefreshToken(userIdFromAccessToken);
@@ -2013,7 +1904,7 @@ describe("TokenService", () => {
       const clientId = "clientId";
       const clientSecret = "clientSecret";
 
-      tokenService.setAccessToken = jest.fn();
+      (tokenService as any)._setAccessToken = jest.fn();
       // any hack allows for mocking private method.
       (tokenService as any).setRefreshToken = jest.fn();
       tokenService.setClientId = jest.fn();
@@ -2027,7 +1918,7 @@ describe("TokenService", () => {
       ]);
 
       // Assert
-      expect(tokenService.setAccessToken).toHaveBeenCalledWith(
+      expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
         accessTokenJwt,
         vaultTimeoutAction,
         vaultTimeout,
@@ -2062,7 +1953,7 @@ describe("TokenService", () => {
       const vaultTimeoutAction = VaultTimeoutAction.Lock;
       const vaultTimeout = 30;
 
-      tokenService.setAccessToken = jest.fn();
+      (tokenService as any)._setAccessToken = jest.fn();
       (tokenService as any).setRefreshToken = jest.fn();
       tokenService.setClientId = jest.fn();
       tokenService.setClientSecret = jest.fn();
@@ -2071,7 +1962,7 @@ describe("TokenService", () => {
       await tokenService.setTokens(accessTokenJwt, refreshToken, vaultTimeoutAction, vaultTimeout);
 
       // Assert
-      expect(tokenService.setAccessToken).toHaveBeenCalledWith(
+      expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
         accessTokenJwt,
         vaultTimeoutAction,
         vaultTimeout,
@@ -2107,6 +1998,44 @@ describe("TokenService", () => {
 
       // Assert
       await expect(result).rejects.toThrow("JWT must have 3 parts");
+    });
+
+    it("should throw an error if the access token is missing", async () => {
+      // Arrange
+      const accessToken: string = null;
+      const refreshToken = "refreshToken";
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+
+      // Act
+      const result = tokenService.setTokens(
+        accessToken,
+        refreshToken,
+        vaultTimeoutAction,
+        vaultTimeout,
+      );
+
+      // Assert
+      await expect(result).rejects.toThrow("Access token and refresh token are required.");
+    });
+
+    it("should throw an error if the refresh token is missing", async () => {
+      // Arrange
+      const accessToken = "accessToken";
+      const refreshToken: string = null;
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+
+      // Act
+      const result = tokenService.setTokens(
+        accessToken,
+        refreshToken,
+        vaultTimeoutAction,
+        vaultTimeout,
+      );
+
+      // Assert
+      await expect(result).rejects.toThrow("Access token and refresh token are required.");
     });
   });
 

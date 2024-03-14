@@ -136,14 +136,18 @@ export class TokenService implements TokenServiceAbstraction {
     vaultTimeout: number | null,
     clientIdClientSecret?: [string, string],
   ): Promise<void> {
-    // get user id from active user state or from the access token
-    const userId: UserId = await this.determineUserIdByAccessTokenOrActiveUser(accessToken);
+    if (!accessToken || !refreshToken) {
+      throw new Error("Access token and refresh token are required.");
+    }
+
+    // get user id the access token
+    const userId: UserId = await this.getUserIdFromAccessToken(accessToken);
 
     if (!userId) {
       throw new Error("User id not found. Cannot set tokens.");
     }
 
-    await this.setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
+    await this._setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
     await this.setRefreshToken(refreshToken, vaultTimeoutAction, vaultTimeout, userId);
     if (clientIdClientSecret != null) {
       await this.setClientId(clientIdClientSecret[0], vaultTimeoutAction, vaultTimeout, userId);
@@ -151,19 +155,17 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  async setAccessToken(
+  /**
+   * Internal helper for set access token which always requires user id.
+   * This is useful because setTokens always will have a user id from the access token whereas
+   * the public setAccessToken method does not.
+   */
+  private async _setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number | null,
-    userId?: UserId,
+    userId: UserId,
   ): Promise<void> {
-    userId ??= await this.determineUserIdByAccessTokenOrActiveUser(accessToken);
-
-    // If we don't have a user id, we can't save the value
-    if (!userId) {
-      throw new Error("User id not found. Cannot save access token.");
-    }
-
     const storageLocation = await this.determineStorageLocation(
       vaultTimeoutAction,
       vaultTimeout,
@@ -198,13 +200,22 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  private async determineUserIdByAccessTokenOrActiveUser(accessToken?: string): Promise<UserId> {
-    // Either get the user id from the access token or from the active user state
-    if (accessToken) {
-      return await this.getUserIdFromAccessToken(accessToken);
-    } else {
-      return await firstValueFrom(this.activeUserIdGlobalState.state$);
+  async setAccessToken(
+    accessToken: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number | null,
+  ): Promise<void> {
+    if (!accessToken) {
+      throw new Error("Access token is required.");
     }
+    const userId: UserId = await this.getUserIdFromAccessToken(accessToken);
+
+    // If we don't have a user id, we can't save the value
+    if (!userId) {
+      throw new Error("User id not found. Cannot save access token.");
+    }
+
+    await this._setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
   }
 
   async clearAccessToken(userId?: UserId): Promise<void> {
@@ -276,10 +287,8 @@ export class TokenService implements TokenServiceAbstraction {
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number | null,
-    userId?: UserId,
+    userId: UserId,
   ): Promise<void> {
-    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
-
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save refresh token.");
@@ -358,9 +367,7 @@ export class TokenService implements TokenServiceAbstraction {
     return null;
   }
 
-  private async clearRefreshToken(userId?: UserId): Promise<void> {
-    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
-
+  private async clearRefreshToken(userId: UserId): Promise<void> {
     // If we don't have a user id, we can't clear the value
     if (!userId) {
       throw new Error("User id not found. Cannot clear refresh token.");

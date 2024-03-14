@@ -5,7 +5,7 @@ import { DecodedAccessToken } from "../services/token.service";
 export abstract class TokenService {
   /**
    * Sets the access token, refresh token, API Key Client ID, and API Key Client Secret in memory or disk
-   * based on the given vaultTimeoutAction and vaultTimeout and either the derived access token user id or the active user id.
+   * based on the given vaultTimeoutAction and vaultTimeout and the derived access token user id.
    * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
    * Note 2: this method also enforces always setting the access token and the refresh token together as
    * we can retrieve the user id required to set the refresh token from the access token for efficiency.
@@ -33,19 +33,17 @@ export abstract class TokenService {
 
   /**
    * Sets the access token in memory or disk based on the given vaultTimeoutAction and vaultTimeout
-   * and either the given user id or the active user id.
+   * and the user id read off the access token
    * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
    * @param accessToken The access token to set.
    * @param vaultTimeoutAction The action to take when the vault times out.
    * @param vaultTimeout The timeout for the vault.
-   * @param userId The user id to set the access token for.
    * @returns A promise that resolves when the access token has been set.
    */
   setAccessToken: (
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number | null,
-    userId?: UserId,
   ) => Promise<void>;
 
   // TODO: revisit having this public clear method approach once the state service is fully deprecated.
