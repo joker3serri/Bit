@@ -135,8 +135,7 @@ export class Main {
 
     const activeUserStateProvider = new DefaultActiveUserStateProvider(
       accountService,
-      storageServiceProvider,
-      stateEventRegistrarService,
+      singleUserStateProvider,
     );
 
     const stateProvider = new DefaultStateProvider(
