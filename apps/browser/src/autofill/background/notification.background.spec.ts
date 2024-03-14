@@ -7,7 +7,7 @@ import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { UserNotificationSettingsService } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/environment.service";
+import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";

@@ -13,7 +13,7 @@ import {
   Region,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
-import { CloudEnvironment } from "@bitwarden/common/platform/services/environment.service";
+import { CloudEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
 import { I18nService } from "@bitwarden/common/platform/services/i18n.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";

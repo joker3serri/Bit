@@ -128,7 +128,7 @@ import { ConsoleLogService } from "@bitwarden/common/platform/services/console-l
 import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";

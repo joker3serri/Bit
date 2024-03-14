@@ -52,7 +52,7 @@ import { ConfigApiService } from "@bitwarden/common/platform/services/config/con
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";

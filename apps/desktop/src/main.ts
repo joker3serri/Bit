@@ -7,7 +7,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";

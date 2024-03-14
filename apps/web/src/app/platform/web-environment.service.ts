@@ -12,7 +12,7 @@ import {
   CloudEnvironment,
   DefaultEnvironmentService,
   SelfHostedEnvironment,
-} from "@bitwarden/common/platform/services/environment.service";
+} from "@bitwarden/common/platform/services/default-environment.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 
 /**

@@ -6,7 +6,11 @@ import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { UserId } from "../../types/guid";
 import { CloudRegion, Region } from "../abstractions/environment.service";
 
-import { ENVIRONMENT_KEY, DefaultEnvironmentService, EnvironmentUrls } from "./environment.service";
+import {
+  ENVIRONMENT_KEY,
+  DefaultEnvironmentService,
+  EnvironmentUrls,
+} from "./default-environment.service";
 
 // There are a few main states EnvironmentService could be in when first used
 // 1. Not initialized, no active user. Hopefully not to likely but possible

@@ -3,7 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { Region } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 
 import { GroupPolicyEnvironment } from "../../admin-console/types/group-policy-environment";
