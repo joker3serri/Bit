@@ -8,7 +8,10 @@ import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { AbstractStorageService } from "../../platform/abstractions/storage.service";
+import { StorageLocation } from "../../platform/enums";
 import { EncString } from "../../platform/models/domain/enc-string";
+import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import {
   ActiveUserState,
@@ -16,6 +19,7 @@ import {
   KeyDefinition,
   StateProvider,
 } from "../../platform/state";
+import { UserId } from "../../types/guid";
 import { UserKey, DeviceKey } from "../../types/key";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
@@ -46,6 +50,10 @@ export const SHOULD_TRUST_DEVICE = new KeyDefinition<boolean>(
 
 export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstraction {
   private deviceKeyState: ActiveUserState<DeviceKey>;
+
+  private readonly platformSupportsSecureStorage =
+    this.platformUtilsService.supportsSecureStorage();
+  private readonly deviceKeySecureStorageKey: string = "_deviceKey";
   private shouldTrustDeviceState: ActiveUserState<boolean>;
 
   constructor(
@@ -59,6 +67,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private stateProvider: StateProvider,
+    private secureStorageService: AbstractStorageService,
   ) {
     this.deviceKeyState = this.stateProvider.getActive(DEVICE_KEY);
     this.shouldTrustDeviceState = this.stateProvider.getActive(SHOULD_TRUST_DEVICE);
@@ -187,11 +196,40 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     await this.devicesApiService.updateTrust(trustRequest, deviceIdentifier);
   }
 
-  async getDeviceKey(): Promise<DeviceKey> {
+  async getDeviceKey(): Promise<DeviceKey | null> {
+    if (this.platformSupportsSecureStorage) {
+      // get active user id
+      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+      if (!userId) {
+        throw new Error("No active user id found. Cannot get device key from secure storage.");
+      }
+
+      return await this.secureStorageService.get<DeviceKey>(
+        `${userId}${this.deviceKeySecureStorageKey}`,
+        this.getSecureStorageOptions(userId),
+      );
+    }
+
     return firstValueFrom(this.deviceKeyState.state$);
   }
 
   private async setDeviceKey(deviceKey: DeviceKey | null): Promise<void> {
+    if (this.platformSupportsSecureStorage) {
+      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+      if (!userId) {
+        throw new Error("No active user id found. Cannot set device key in secure storage.");
+      }
+
+      await this.secureStorageService.save<DeviceKey>(
+        `${userId}${this.deviceKeySecureStorageKey}`,
+        deviceKey,
+        this.getSecureStorageOptions(userId),
+      );
+      return;
+    }
+
     await this.deviceKeyState.update((_) => deviceKey);
   }
 
@@ -238,5 +276,13 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
   async supportsDeviceTrust(): Promise<boolean> {
     const decryptionOptions = await this.stateService.getAccountDecryptionOptions();
     return decryptionOptions?.trustedDeviceOption != null;
+  }
+
+  private getSecureStorageOptions(userId: UserId): StorageOptions {
+    return {
+      storageLocation: StorageLocation.Disk,
+      useSecureStorage: true,
+      userId: userId,
+    };
   }
 }

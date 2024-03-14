@@ -438,6 +438,7 @@ export class Main {
       this.i18nService,
       this.platformUtilsService,
       this.stateProvider,
+      this.secureStorageService,
     );
 
     this.authRequestService = new AuthRequestService(

@@ -13,7 +13,11 @@ export abstract class DeviceTrustCryptoServiceAbstraction {
   trustDeviceIfRequired: () => Promise<void>;
 
   trustDevice: () => Promise<DeviceResponse>;
-  getDeviceKey: () => Promise<DeviceKey>;
+
+  /**
+   * Retrieves the device key if it exists from state or secure storage if supported for the active user.
+   */
+  getDeviceKey: () => Promise<DeviceKey | null>;
   decryptUserKeyWithDeviceKey: (
     encryptedDevicePrivateKey: EncString,
     encryptedUserKey: EncString,
