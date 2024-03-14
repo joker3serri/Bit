@@ -13,6 +13,7 @@ import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { EncryptionType } from "../../platform/enums/encryption-type.enum";
 import { Utils } from "../../platform/misc/utils";
 import { EncString } from "../../platform/models/domain/enc-string";
@@ -43,6 +44,7 @@ describe("deviceTrustCryptoService", () => {
   const devicesApiService = mock<DevicesApiServiceAbstraction>();
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<PlatformUtilsService>();
+  const secureStorageService = mock<AbstractStorageService>();
 
   let stateProvider: FakeStateProvider;
 
@@ -51,22 +53,9 @@ describe("deviceTrustCryptoService", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    accountService = mockAccountServiceWith(mockUserId);
-    stateProvider = new FakeStateProvider(accountService);
-
-    deviceTrustCryptoService = new DeviceTrustCryptoService(
-      keyGenerationService,
-      cryptoFunctionService,
-      cryptoService,
-      encryptService,
-      stateService,
-      appIdService,
-      devicesApiService,
-      i18nService,
-      platformUtilsService,
-      stateProvider,
-    );
+    const supportsSecureStorage = false; // default to false; tests will override as needed
+    // By default all the tests will have a mocked active user in state provider.
+    deviceTrustCryptoService = createDeviceTrustCryptoService(mockUserId, supportsSecureStorage);
   });
 
   it("instantiates", () => {
@@ -145,22 +134,76 @@ describe("deviceTrustCryptoService", () => {
         deviceKeyState = stateProvider.activeUser.getFake(DEVICE_KEY);
       });
 
-      it("returns null when there is not an existing device key", async () => {
-        deviceKeyState.nextState(null);
+      describe("Secure Storage not supported", () => {
+        it("returns null when there is not an existing device key", async () => {
+          deviceKeyState.nextState(null);
 
-        const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+          const deviceKey = await deviceTrustCryptoService.getDeviceKey();
 
-        expect(deviceKey).toBeNull();
+          expect(deviceKey).toBeNull();
+          expect(secureStorageService.get).not.toHaveBeenCalled();
+        });
+
+        it("returns the device key when there is an existing device key", async () => {
+          deviceKeyState.nextState(existingDeviceKey);
+
+          const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+
+          expect(deviceKey).not.toBeNull();
+          expect(deviceKey).toBeInstanceOf(SymmetricCryptoKey);
+          expect(deviceKey).toEqual(existingDeviceKey);
+          expect(secureStorageService.get).not.toHaveBeenCalled();
+        });
       });
 
-      it("returns the device key when there is an existing device key", async () => {
-        deviceKeyState.nextState(existingDeviceKey);
+      describe("Secure Storage supported with an active user", () => {
+        beforeEach(() => {
+          const supportsSecureStorage = true;
+          deviceTrustCryptoService = createDeviceTrustCryptoService(
+            mockUserId,
+            supportsSecureStorage,
+          );
+        });
 
-        const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+        it("returns null when there is not an existing device key for the active user", async () => {
+          secureStorageService.get.mockResolvedValue(null);
 
-        expect(deviceKey).not.toBeNull();
-        expect(deviceKey).toBeInstanceOf(SymmetricCryptoKey);
-        expect(deviceKey).toEqual(existingDeviceKey);
+          // Act
+          const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+
+          // Assert
+          expect(deviceKey).toBeNull();
+        });
+
+        it("returns the device key when there is an existing device key for the active user", async () => {
+          // Arrange
+          secureStorageService.get.mockResolvedValue(existingDeviceKey);
+
+          // Act
+          const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+
+          // Assert
+          expect(deviceKey).not.toBeNull();
+          expect(deviceKey).toBeInstanceOf(SymmetricCryptoKey);
+          expect(deviceKey).toEqual(existingDeviceKey);
+        });
+      });
+
+      describe("Secure Storage supported without an active user", () => {
+        beforeEach(() => {
+          const mockUserId: UserId = null;
+          const supportsSecureStorage = true;
+          deviceTrustCryptoService = createDeviceTrustCryptoService(
+            mockUserId,
+            supportsSecureStorage,
+          );
+        });
+
+        it("throws an error when there is no active user", async () => {
+          await expect(deviceTrustCryptoService.getDeviceKey()).rejects.toThrow(
+            "No active user id found. Cannot get device key from secure storage.",
+          );
+        });
       });
     });
 
@@ -622,4 +665,29 @@ describe("deviceTrustCryptoService", () => {
       });
     });
   });
+
+  // Helpers
+  function createDeviceTrustCryptoService(
+    mockUserId: UserId | null,
+    supportsSecureStorage: boolean,
+  ) {
+    accountService = mockAccountServiceWith(mockUserId);
+    stateProvider = new FakeStateProvider(accountService);
+
+    platformUtilsService.supportsSecureStorage.mockReturnValue(supportsSecureStorage);
+
+    return new DeviceTrustCryptoService(
+      keyGenerationService,
+      cryptoFunctionService,
+      cryptoService,
+      encryptService,
+      stateService,
+      appIdService,
+      devicesApiService,
+      i18nService,
+      platformUtilsService,
+      stateProvider,
+      secureStorageService,
+    );
+  }
 });
