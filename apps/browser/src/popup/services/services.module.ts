@@ -90,13 +90,20 @@ import {
 } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
-import { CipherFileUploadService } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
+import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
+import { TotpService as TotpServiceAbstractions } from "@bitwarden/common/vault/abstractions/totp.service";
+import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
+import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService } from "@bitwarden/components";
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
-import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
+import {
+  IndividualVaultExportServiceAbstraction,
+  OrganizationVaultExportServiceAbstraction,
+  VaultExportService,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/vault-export-core";
 
 import { BrowserOrganizationService } from "../../admin-console/services/browser-organization.service";
 import { UnauthGuardService } from "../../auth/popup/services";
@@ -190,6 +197,7 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<SsoLoginServiceAbstraction>("ssoLoginService"),
       deps: [],
     },
+    // TODO: Still undecided on how to handle the search service as the popup search service depends on the search index built on the base class. I don't think we should store the index in state as it is a large object and it could have performance implications.
     {
       provide: SearchServiceAbstraction,
       useFactory: (logService: ConsoleLogService, i18nService: I18nServiceAbstraction) => {
@@ -202,9 +210,9 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [LogServiceAbstraction, I18nServiceAbstraction],
     },
     {
-      provide: CipherFileUploadService,
-      useFactory: getBgService<CipherFileUploadService>("cipherFileUploadService"),
-      deps: [],
+      provide: CipherFileUploadServiceAbstraction,
+      useClass: CipherFileUploadService,
+      deps: [ApiService, FileUploadService],
     },
     { provide: CipherService, useFactory: getBgService<CipherService>("cipherService"), deps: [] },
     {
@@ -232,7 +240,11 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<EnvironmentService>("environmentService"),
       deps: [],
     },
-    { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
+    {
+      provide: TotpServiceAbstractions,
+      useClass: TotpService,
+      deps: [CryptoFunctionService, LogService],
+    },
     { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
     {
       provide: I18nServiceAbstraction,
@@ -371,8 +383,8 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: VaultExportServiceAbstraction,
-      useFactory: getBgService<VaultExportServiceAbstraction>("exportService"),
-      deps: [],
+      useClass: VaultExportService,
+      deps: [IndividualVaultExportServiceAbstraction, OrganizationVaultExportServiceAbstraction],
     },
     {
       provide: KeyConnectorService,
