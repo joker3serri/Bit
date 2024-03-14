@@ -1,7 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
 import { makeEncString, trackEmissions } from "../../../spec";
-import { mockAccountServiceWith } from "../../../spec/fake-account-service";
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeSingleUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { UserId } from "../../types/guid";
@@ -23,10 +23,11 @@ describe("BiometricStateService", () => {
   const userId = "userId" as UserId;
   const encClientKeyHalf = makeEncString();
   const encryptedClientKeyHalf = encClientKeyHalf.encryptedString;
-  const accountService = mockAccountServiceWith(userId);
+  let accountService: FakeAccountService;
   let stateProvider: FakeStateProvider;
 
   beforeEach(() => {
+    accountService = mockAccountServiceWith(userId);
     stateProvider = new FakeStateProvider(accountService);
 
     sut = new DefaultBiometricStateService(stateProvider);
@@ -164,6 +165,15 @@ describe("BiometricStateService", () => {
       const nextMock = stateProvider.global.getFake(PROMPT_CANCELLED).nextMock;
       expect(nextMock).toHaveBeenCalledWith({ ...existingState, [userId]: true });
       expect(nextMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("throws when called with no active user", async () => {
+      await accountService.switchAccount(null);
+      await expect(sut.setPromptCancelled()).rejects.toThrow(
+        "Cannot update biometric prompt cancelled state without an active user",
+      );
+      const nextMock = stateProvider.global.getFake(PROMPT_CANCELLED).nextMock;
+      expect(nextMock).not.toHaveBeenCalled();
     });
   });
 

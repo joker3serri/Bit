@@ -236,6 +236,14 @@ export class DefaultBiometricStateService implements BiometricStateService {
       },
       {
         combineLatestWith: this.stateProvider.activeUserId$,
+        shouldUpdate: (_, userId) => {
+          if (userId == null) {
+            throw new Error(
+              "Cannot update biometric prompt cancelled state without an active user",
+            );
+          }
+          return true;
+        },
       },
     );
   }
