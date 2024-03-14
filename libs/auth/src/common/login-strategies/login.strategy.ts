@@ -51,7 +51,7 @@ export abstract class LoginStrategyData {
     | WebAuthnLoginTokenRequest;
   captchaBypassToken?: string;
 
-   /** User's entered email obtained pre-login. */
+  /** User's entered email obtained pre-login. */
   abstract userEnteredEmail?: string;
 }
 
@@ -114,8 +114,20 @@ export abstract class LoginStrategy {
     return new DeviceRequest(appId, this.platformUtilsService);
   }
 
-  // Ensure that email is provided from any login strategies that support remember 2FA functionality.
-  protected async buildTwoFactor(userProvidedTwoFactor?: TokenTwoFactorRequest, email?: string) {
+  /**
+   * Builds the TokenTwoFactorRequest to be used within other login strategies token requests
+   * to the server.
+   * If the user provided a 2FA token in an already created TokenTwoFactorRequest, it will be used.
+   * If not, and the user has previously remembered a 2FA token, it will be used.
+   * If neither of these are true, an empty TokenTwoFactorRequest will be returned.
+   * @param userProvidedTwoFactor - optional - The 2FA token request provided by the caller
+   * @param email - optional - ensure that email is provided for any login strategies that support remember 2FA functionality
+   * @returns a promise which resolves to a TokenTwoFactorRequest to be sent to the server
+   */
+  protected async buildTwoFactor(
+    userProvidedTwoFactor?: TokenTwoFactorRequest,
+    email?: string,
+  ): Promise<TokenTwoFactorRequest> {
     if (userProvidedTwoFactor != null) {
       return userProvidedTwoFactor;
     }
@@ -134,7 +146,14 @@ export abstract class LoginStrategy {
     return new TokenTwoFactorRequest();
   }
 
-  protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
+  /**
+   * Initializes the account with information from the IdTokenResponse after successful login.
+   * It also sets the access token and refresh token in the token service.
+   *
+   * @param {IdentityTokenResponse} tokenResponse - The response from the server containing the identity token.
+   * @returns {Promise<void>} - A promise that resolves when the account information has been successfully saved.
+   */
+  protected async saveAccountInformation(tokenResponse: IdentityTokenResponse): Promise<void> {
     const accountInformation = await this.tokenService.decodeAccessToken(tokenResponse.accessToken);
 
     // Must persist existing device key if it exists for trusted device decryption to work
@@ -248,6 +267,13 @@ export abstract class LoginStrategy {
     }
   }
 
+  /**
+   * Handles the response from the server when a 2FA is required.
+   * It clears any existing 2FA token, as it's no longer valid, and sets up the necessary data for the 2FA process.
+   *
+   * @param {IdentityTwoFactorResponse} response - The response from the server indicating that 2FA is required.
+   * @returns {Promise<AuthResult>} - A promise that resolves to an AuthResult object
+   */
   private async processTwoFactorResponse(response: IdentityTwoFactorResponse): Promise<AuthResult> {
     // If we get a 2FA required response, then we should clear the 2FA token
     // just in case as it is no longer valid.
@@ -263,9 +289,14 @@ export abstract class LoginStrategy {
     return result;
   }
 
+  /**
+   * Clears the 2FA token from the token service using the user's email if it exists
+   */
   private async clearTwoFactorToken() {
     const email = this.cache.value.userEnteredEmail;
-    await this.tokenService.clearTwoFactorToken(email);
+    if (email) {
+      await this.tokenService.clearTwoFactorToken(email);
+    }
   }
 
   private async processCaptchaResponse(response: IdentityCaptchaResponse): Promise<AuthResult> {
