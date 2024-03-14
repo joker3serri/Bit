@@ -196,8 +196,6 @@ export class AccountSettings {
   autoConfirmFingerPrints?: boolean;
   defaultUriMatch?: UriMatchStrategySetting;
   disableGa?: boolean;
-  dontShowCardsCurrentTab?: boolean;
-  dontShowIdentitiesCurrentTab?: boolean;
   enableAlwaysOnTop?: boolean;
   enableBiometric?: boolean;
   minimizeOnCopyToClipboard?: boolean;
