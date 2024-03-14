@@ -33,9 +33,7 @@ import { LoginStrategy, LoginStrategyData } from "./login.strategy";
 export class PasswordLoginStrategyData implements LoginStrategyData {
   tokenRequest: PasswordTokenRequest;
 
-  /**
-   * User's entered email obtained pre-login. Always present in MP login.
-   */
+  /** User's entered email obtained pre-login. Always present in MP login. */
   userEnteredEmail: string;
 
   captchaBypassToken?: string;
