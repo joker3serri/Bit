@@ -1035,14 +1035,14 @@ export class VaultComponent implements OnInit, OnDestroy {
   async editCollection(
     c: CollectionView,
     tab: CollectionDialogTabType,
-    readOnly: boolean = false,
+    readonly: boolean = false,
   ): Promise<void> {
     const dialog = openCollectionDialog(this.dialogService, {
       data: {
         collectionId: c?.id,
         organizationId: this.organization?.id,
         initialTab: tab,
-        readOnly: readOnly,
+        readonly: readonly,
       },
     });
 

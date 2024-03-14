@@ -54,7 +54,7 @@ export interface CollectionDialogParams {
   parentCollectionId?: string;
   showOrgSelector?: boolean;
   collectionIds?: string[];
-  readOnly?: boolean;
+  readonly?: boolean;
 }
 
 export interface CollectionDialogResult {
@@ -210,7 +210,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
               access: accessSelections,
             });
             this.collection.manage = collection?.manage ?? false; // Get manage flag from sync data collection
-            this.showDeleteButton = this.collection.canDelete(organization);
+            this.showDeleteButton = !this.readonly && this.collection.canDelete(organization);
           } else {
             this.nestOptions = collections;
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);
@@ -245,6 +245,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           }
           this.formGroup.controls.access.updateValueAndValidity();
 
+          this.handleFormGroupReadOnly(this.readonly);
+
           this.loading = false;
         },
       );
@@ -258,11 +260,22 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     return this.params.collectionId != undefined;
   }
 
+  protected get readonly() {
+    return this.params.readonly === true;
+  }
+
   protected async cancel() {
     this.close(CollectionDialogAction.Canceled);
   }
 
   protected submit = async () => {
+    // eslint-disable-next-line
+    console.log("SUBMIT HANDLER");
+    // Saving a collection is prohibited while in read only mode
+    if (this.readonly) {
+      return;
+    }
+
     this.formGroup.markAllAsTouched();
 
     if (this.formGroup.invalid) {
@@ -317,6 +330,11 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   };
 
   protected delete = async () => {
+    // Deleting a collection is prohibited while in read only mode
+    if (this.readonly) {
+      return;
+    }
+
     const confirmed = await this.dialogService.openSimpleDialog({
       title: this.collection?.name,
       content: { key: "deleteCollectionConfirmation" },
@@ -341,6 +359,20 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private handleFormGroupReadOnly(readonly: boolean) {
+    if (readonly) {
+      this.formGroup.controls.name.disable();
+      this.formGroup.controls.externalId.disable();
+      this.formGroup.controls.parent.disable();
+      this.formGroup.controls.access.disable();
+    } else {
+      this.formGroup.controls.name.enable();
+      this.formGroup.controls.externalId.enable();
+      this.formGroup.controls.parent.enable();
+      this.formGroup.controls.access.enable();
+    }
   }
 
   private close(action: CollectionDialogAction, collection?: CollectionResponse | CollectionView) {

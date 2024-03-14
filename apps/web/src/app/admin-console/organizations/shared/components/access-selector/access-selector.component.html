@@ -22,7 +22,7 @@
     </select>
   </bit-form-field>
 
-  <bit-form-field class="tw-grow" *ngIf="!hideMultiSelect">
+  <bit-form-field class="tw-grow" *ngIf="!disabled">
     <bit-label>{{ selectorLabelText }}</bit-label>
     <bit-multi-select
       class="tw-w-full"
@@ -139,7 +139,7 @@
 
       <td bitCell class="tw-text-right">
         <button
-          *ngIf="!item.readonly"
+          *ngIf="!disabled && !item.readonly"
           type="button"
           bitIconButton="bwi-close"
           buttonType="muted"

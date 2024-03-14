@@ -7504,6 +7504,9 @@
   "collectionAccessRestricted": {
     "message": "Collection access is restricted"
   },
+  "readOnlyCollectionAccess": {
+    "message": "You do not have access to manage this collection."
+  },
   "grantCollectionAccess": {
     "message": "Grant groups or members access to this collection."
   },

@@ -121,6 +121,13 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   protected permissionList: Permission[];
   protected initialPermission = CollectionPermission.View;
 
+  /**
+   * When disabled, the access selector will make the assumption that a readonly state is desired.
+   * The PermissionMode will be set to Readonly
+   * The Multi-Select control will be hidden
+   * The delete action on each row item will be hidden
+   * The readonly permission label/property needs to configured on the access item views being passed into the component
+   */
   disabled: boolean;
 
   /**
@@ -197,11 +204,6 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     this.permissionList = getPermissionList(value);
   }
 
-  /**
-   * Flag for if the multi select should be hidden (ex: readonly mode)
-   */
-  @Input() hideMultiSelect: boolean;
-
   private _flexibleCollectionsEnabled: boolean;
 
   constructor(
@@ -222,6 +224,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   /** Required for NG_VALUE_ACCESSOR */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    this.permissionMode = PermissionMode.Readonly;
 
     // Keep the internal FormGroup in sync
     if (this.disabled) {
