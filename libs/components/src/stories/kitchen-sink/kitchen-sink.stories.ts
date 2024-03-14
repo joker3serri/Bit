@@ -10,6 +10,7 @@ import {
   componentWrapperDecorator,
   moduleMetadata,
 } from "@storybook/angular";
+import { userEvent, getAllByRole, getByRole, getByLabelText } from "@storybook/testing-library";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
@@ -69,7 +70,7 @@ import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.com
           <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">Survey</h2>
           <bit-kitchen-sink-form></bit-kitchen-sink-form>
         </bit-tab>
-        <bit-tab label="Empty tab">
+        <bit-tab label="Empty tab" data-testid="empty-tab">
           <bit-callout type="info" title="Notice"> Under construction </bit-callout>
           <bit-no-items class="tw-text-main">
             <ng-container slot="title">This tab is empty</ng-container>
@@ -185,5 +186,49 @@ export const Default: Story = {
         <router-outlet></router-outlet>
       </bit-layout>`,
     };
+  },
+};
+
+export const MenuOpen: Story = {
+  ...Default,
+  play: async (context) => {
+    const canvas = context.canvasElement;
+    const table = getByRole(canvas, "table");
+
+    const menuButton = getAllByRole(table, "button")[0];
+    await userEvent.click(menuButton);
+  },
+};
+
+export const PopoverOpen: Story = {
+  ...Default,
+  play: async (context) => {
+    const canvas = context.canvasElement;
+    const passwordLabelIcon = getByLabelText(canvas, "A random password (required)", {
+      selector: "button",
+    });
+
+    await userEvent.click(passwordLabelIcon);
+  },
+};
+
+export const DialogOpen: Story = {
+  ...Default,
+  play: async (context) => {
+    const canvas = context.canvasElement;
+    const submitButton = getByRole(canvas, "button", {
+      name: "Submit",
+    });
+
+    await userEvent.click(submitButton);
+  },
+};
+
+export const EmptyTab: Story = {
+  ...Default,
+  play: async (context) => {
+    const canvas = context.canvasElement;
+    const emptyTab = getAllByRole(canvas, "tab")[1];
+    await userEvent.click(emptyTab);
   },
 };
