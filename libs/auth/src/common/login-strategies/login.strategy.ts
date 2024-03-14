@@ -51,9 +51,7 @@ export abstract class LoginStrategyData {
     | WebAuthnLoginTokenRequest;
   captchaBypassToken?: string;
 
-  /**
-   * User's entered email obtained pre-login.
-   */
+   /** User's entered email obtained pre-login. */
   abstract userEnteredEmail?: string;
 }
 
