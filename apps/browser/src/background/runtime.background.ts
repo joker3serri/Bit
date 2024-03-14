@@ -94,12 +94,12 @@ export default class RuntimeBackground {
   async processMessage(msg: any, sender: chrome.runtime.MessageSender) {
     switch (msg.command) {
       case "loggedIn":
-        // Send extension install message for vault onboarding component
-        // eslint disabled, do not want break statement here
-        await this.sendBwInstalledMessageToVault();
-      // eslint-disable-next-line
       case "unlocked": {
         let item: LockedVaultPendingNotificationsData;
+
+        if (msg.command === "loggedIn") {
+          await this.sendBwInstalledMessageToVault();
+        }
 
         if (this.lockedVaultPendingNotifications?.length > 0) {
           item = this.lockedVaultPendingNotifications.pop();
