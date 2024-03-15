@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveDesktopSettingsMigrator } from "./39-move-desktop-settings";
+import { MoveDesktopSettingsMigrator } from "./40-move-desktop-settings";
 
 describe("MoveDesktopSettings", () => {
-  const sut = new MoveDesktopSettingsMigrator(38, 39);
+  const sut = new MoveDesktopSettingsMigrator(39, 40);
 
   it("can migrate truthy values", async () => {
     const output = await runMigrator(sut, {

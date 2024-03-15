@@ -33,8 +33,9 @@ import { MoveThemeToStateProviderMigrator } from "./migrations/35-move-theme-to-
 import { VaultSettingsKeyMigrator } from "./migrations/36-move-show-card-and-identity-to-state-provider";
 import { AvatarColorMigrator } from "./migrations/37-move-avatar-color-to-state-providers";
 import { TokenServiceStateProviderMigrator } from "./migrations/38-migrate-token-svc-to-state-provider";
-import { MoveDesktopSettingsMigrator } from "./migrations/39-move-desktop-settings";
+import { MoveBillingAccountProfileMigrator } from "./migrations/39-move-billing-account-profile-to-state-providers";
 import { RemoveEverBeenUnlockedMigrator } from "./migrations/4-remove-ever-been-unlocked";
+import { MoveDesktopSettingsMigrator } from "./migrations/40-move-desktop-settings";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
 import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-auto-prompt-to-account";
@@ -84,7 +85,8 @@ export function createMigrationBuilder() {
     .with(VaultSettingsKeyMigrator, 35, 36)
     .with(AvatarColorMigrator, 36, 37)
     .with(TokenServiceStateProviderMigrator, 37, 38)
-    .with(MoveDesktopSettingsMigrator, 38, CURRENT_VERSION);
+    .with(MoveBillingAccountProfileMigrator, 38, 39)
+    .with(MoveDesktopSettingsMigrator, 39, 40);
 }
 
 export async function currentVersion(

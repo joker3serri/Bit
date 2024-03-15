@@ -49,7 +49,7 @@ const ALWAYS_SHOW_DOCK_KEY: KeyDefinitionLike = {
   stateDefinition: DESKTOP_SETTINGS_STATE,
 };
 
-export class MoveDesktopSettingsMigrator extends Migrator<38, 39> {
+export class MoveDesktopSettingsMigrator extends Migrator<39, 40> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyGlobal = await helper.get<ExpectedGlobalType>("global");
 
