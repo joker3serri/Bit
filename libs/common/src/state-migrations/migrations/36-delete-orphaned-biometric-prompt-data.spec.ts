@@ -4,7 +4,7 @@ import { IRREVERSIBLE } from "../migrator";
 import { DeleteBiometricPromptCancelledData } from "./36-delete-orphaned-biometric-prompt-data";
 
 describe("MoveThemeToStateProviders", () => {
-  const sut = new DeleteBiometricPromptCancelledData(36, 37);
+  const sut = new DeleteBiometricPromptCancelledData(35, 36);
 
   describe("migrate", () => {
     it("deletes promptCancelled from all users", async () => {
