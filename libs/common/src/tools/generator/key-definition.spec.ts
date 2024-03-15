@@ -1,5 +1,6 @@
+import { GeneratedCredential } from "./history";
 import {
-  ENCRYPTED_HISTORY,
+  GENERATOR_HISTORY,
   EFF_USERNAME_SETTINGS,
   CATCHALL_SETTINGS,
   SUBADDRESS_SETTINGS,
@@ -102,11 +103,20 @@ describe("Key definitions", () => {
     });
   });
 
-  describe("ENCRYPTED_HISTORY", () => {
-    it("should pass through deserialization", () => {
-      const value = {};
-      const result = ENCRYPTED_HISTORY.deserializer(value as any);
-      expect(result).toBe(value);
+  describe("GENERATOR_HISTORY", () => {
+    it("should deserialize generated credentials", () => {
+      const jsonValue = [
+        { credential: "example", category: "password", generationDate: 100 }
+      ] as any;
+
+      const [result] = GENERATOR_HISTORY.deserializer(jsonValue);
+
+      expect(result).toBeInstanceOf(GeneratedCredential);
+      expect(result).toEqual({
+        credential: "example",
+        category: "password",
+        generationDate: new Date(100)
+      });
     });
   });
 });

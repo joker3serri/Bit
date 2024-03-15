@@ -1,7 +1,7 @@
 import { GENERATOR_DISK, KeyDefinition } from "../../platform/state";
 
+import { GeneratedCredential } from "./history/generated-credential";
 import { PassphraseGenerationOptions } from "./passphrase/passphrase-generation-options";
-import { GeneratedPasswordHistory } from "./password/generated-password-history";
 import { PasswordGenerationOptions } from "./password/password-generation-options";
 import { CatchallGenerationOptions } from "./username/catchall-generator-options";
 import { EffUsernameGenerationOptions } from "./username/eff-username-generator-options";
@@ -107,10 +107,10 @@ export const SIMPLE_LOGIN_FORWARDER = new KeyDefinition<SelfHostedApiOptions>(
 );
 
 /** encrypted password generation history */
-export const ENCRYPTED_HISTORY = new KeyDefinition<GeneratedPasswordHistory>(
+export const GENERATOR_HISTORY = new KeyDefinition<GeneratedCredential[]>(
   GENERATOR_DISK,
-  "passwordGeneratorHistory",
+  "localGeneratorHistory",
   {
-    deserializer: (value) => value,
+    deserializer: (entries) => entries.map((e) => GeneratedCredential.fromJSON(e)),
   },
 );
