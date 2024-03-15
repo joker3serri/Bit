@@ -1,4 +1,4 @@
-import { Observable, combineLatest, map } from "rxjs";
+import { Observable, map, of, switchMap } from "rxjs";
 
 import {
   ActiveUserState,
@@ -72,13 +72,20 @@ export class DesktopSettingsService {
       ),
     );
 
-    this.alwaysOnTop$ = combineLatest([
-      this.alwaysOnTopUserState.state$,
-      this.alwaysOnTopGlobalState.state$,
-    ]).pipe(
-      map(([userPreference, globalPreference]) => {
-        return userPreference ?? globalPreference ?? false;
-      }),
+    const alwaysOnTopGlobal$ = this.alwaysOnTopGlobalState.state$.pipe(
+      map((value) => value ?? false),
+    );
+
+    this.alwaysOnTop$ = this.stateProvider.activeUserId$.pipe(
+      switchMap((userId) =>
+        userId != null
+          ? // If there is an active user, prefer their value, else use the global value
+            this.stateProvider
+              .getUser(userId, ALWAYS_ON_TOP_KEY)
+              // If the user setting is null, go and try the global value
+              .state$.pipe(switchMap((value) => (value != null ? of(value) : alwaysOnTopGlobal$)))
+          : alwaysOnTopGlobal$,
+      ),
     );
 
     this.closeToTray$ = this.closeToTrayState.state$.pipe(map((value) => value ?? false));
