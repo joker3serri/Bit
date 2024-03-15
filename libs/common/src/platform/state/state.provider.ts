@@ -23,7 +23,7 @@ export abstract class StateProvider {
   /**
    * Gets a state observable for a given key and userId.
    *
-   * @remarks If userId is falsy the observable returned will point to the currently active user _and not update if the active user changes_.
+   * @remarks If userId is falsy the observable returned will attempt to point to the currently active user _and not update if the active user changes_.
    * This is different to how `getActive` works and more similar to `getUser` for whatever user happens to be active at the time of the call.
    * If no user happens to be active at the time this method is called with a falsy userId then this observable will never emit a value until
    * a user becomes active. If you are not confident a user is active at the time this method is called, you may want to pipe a call to `timeout`
@@ -40,8 +40,8 @@ export abstract class StateProvider {
   /**
    * Gets a state observable for a given key and userId
    *
-   * @remarks If userId is falsy the observable return will point to the currently active user but will not follow subsequent active user changes,
-   * if there is no immediately available active user, then it will fallback to returning a default value in an observable.
+   * @remarks If userId is falsy the observable return will first attempt to point to the currently active user but will not follow subsequent active user changes,
+   * if there is no immediately available active user, then it will fallback to returning a default value in an observable that immediately completes.
    *
    * @param keyDefinition - The key definition for the state you want to get.
    * @param config.userId - The userId for which you want the state for. If not provided, the state for the currently active user will be returned.

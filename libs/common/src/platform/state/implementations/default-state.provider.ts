@@ -39,7 +39,7 @@ export class DefaultStateProvider implements StateProvider {
 
   getUserStateOrDefault$<T>(
     keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
-    config: { userId: UserId | undefined; defaultValue?: T } = { userId: undefined },
+    config: { userId: UserId | undefined; defaultValue?: T },
   ): Observable<T> {
     const { userId, defaultValue = null } = config;
     if (userId) {

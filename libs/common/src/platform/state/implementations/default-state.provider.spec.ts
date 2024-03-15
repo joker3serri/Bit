@@ -50,13 +50,25 @@ describe("DefaultStateProvider", () => {
   });
 
   describe.each([
-    <T>(keyDefinition: KeyDefinition<T>, userId?: UserId) =>
-      sut.getUserState$(keyDefinition, userId),
-    <T>(keyDefinition: KeyDefinition<T>, userId?: UserId) =>
-      sut.getUserStateOrDefault$(keyDefinition, { userId: userId }),
+    [
+      "getUserState$",
+      (keyDefinition: KeyDefinition<string>, userId?: UserId) =>
+        sut.getUserState$(keyDefinition, userId),
+    ],
+    [
+      "getUserStateOrDefault$",
+      (keyDefinition: KeyDefinition<string>, userId?: UserId) =>
+        sut.getUserStateOrDefault$(keyDefinition, { userId: userId }),
+    ],
   ])(
-    "getUserState$ & getUserStateOrDefault$",
-    (methodUnderTest: <T>(keyDefinition: KeyDefinition<T>, userId?: UserId) => Observable<T>) => {
+    "Shared behavior for %s",
+    (
+      _testName: string,
+      methodUnderTest: (
+        keyDefinition: KeyDefinition<string>,
+        userId?: UserId,
+      ) => Observable<string>,
+    ) => {
       const accountInfo = { email: "email", name: "name", status: AuthenticationStatus.LoggedOut };
       const keyDefinition = new KeyDefinition<string>(new StateDefinition("test", "disk"), "test", {
         deserializer: (s) => s,
