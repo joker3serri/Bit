@@ -20,8 +20,8 @@ export class EmailService implements EmailServiceAbstraction {
     return this.email;
   }
 
-  setEmail(value: string) {
-    this.email = value;
+  setEmail(email: string) {
+    this.email = email;
   }
 
   getRememberEmail() {
