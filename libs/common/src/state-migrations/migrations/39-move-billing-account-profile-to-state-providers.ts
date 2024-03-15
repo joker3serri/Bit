@@ -20,7 +20,7 @@ export const BILLING_ACCOUNT_PROFILE_KEY_DEFINITION: KeyDefinitionLike = {
   },
 };
 
-export class MoveBillingAccountProfileMigrator extends Migrator<37, 38> {
+export class MoveBillingAccountProfileMigrator extends Migrator<38, 39> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
 
