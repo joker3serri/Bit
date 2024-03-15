@@ -10,7 +10,7 @@ const STORED_EMAIL: KeyDefinitionLike = {
   stateDefinition: EMAIL_STATE,
 };
 
-export class RememberedEmailMigrator extends Migrator<38, 39> {
+export class RememberedEmailMigrator extends Migrator<39, 40> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyGlobal = await helper.get<ExpectedGlobalState>("global");
 
