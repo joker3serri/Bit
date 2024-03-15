@@ -26,7 +26,7 @@ export abstract class StateProvider {
    *
    * @remarks If userId is falsy the observable returned will attempt to point to the currently active user _and not update if the active user changes_.
    * This is different to how `getActive` works and more similar to `getUser` for whatever user happens to be active at the time of the call.
-   * If no user happens to be active at the time this method is called with a falsy userId then this observable will never emit a value until
+   * If no user happens to be active at the time this method is called with a falsy userId then this observable will not emit a value until
    * a user becomes active. If you are not confident a user is active at the time this method is called, you may want to pipe a call to `timeout`
    * or instead call {@link getUserStateOrDefault$} and supply a value you would rather have given in the case of no passed in userId and no active user.
    *
@@ -42,7 +42,7 @@ export abstract class StateProvider {
    *
    * @remarks If userId is falsy the observable returned will attempt to point to the currently active user _and not update if the active user changes_.
    * This is different to how `getActive` works and more similar to `getUser` for whatever user happens to be active at the time of the call.
-   * If no user happens to be active at the time this method is called with a falsy userId then this observable will never emit a value until
+   * If no user happens to be active at the time this method is called with a falsy userId then this observable will not emit a value until
    * a user becomes active. If you are not confident a user is active at the time this method is called, you may want to pipe a call to `timeout`
    * or instead call {@link getUserStateOrDefault$} and supply a value you would rather have given in the case of no passed in userId and no active user.
    *
