@@ -1,10 +1,10 @@
 import { runMigrator } from "../migration-helper.spec";
 import { IRREVERSIBLE } from "../migrator";
 
-import { DeleteBiometricPromptCancelledData } from "./38-delete-orphaned-biometric-prompt-data";
+import { DeleteBiometricPromptCancelledData } from "./39-delete-orphaned-biometric-prompt-data";
 
 describe("MoveThemeToStateProviders", () => {
-  const sut = new DeleteBiometricPromptCancelledData(37, 38);
+  const sut = new DeleteBiometricPromptCancelledData(38, 39);
 
   describe("migrate", () => {
     it("deletes promptCancelled from all users", async () => {
