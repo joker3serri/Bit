@@ -14,9 +14,11 @@ import { KeyGenerationService } from "../../platform/abstractions/key-generation
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
+import { StorageLocation } from "../../platform/enums";
 import { EncryptionType } from "../../platform/enums/encryption-type.enum";
 import { Utils } from "../../platform/misc/utils";
 import { EncString } from "../../platform/models/domain/enc-string";
+import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
@@ -50,6 +52,15 @@ describe("deviceTrustCryptoService", () => {
 
   const mockUserId = Utils.newGuid() as UserId;
   let accountService: FakeAccountService;
+
+  const deviceKeyPartialSecureStorageKey = "_deviceKey";
+  const deviceKeySecureStorageKey = `${mockUserId}${deviceKeyPartialSecureStorageKey}`;
+
+  const secureStorageOptions: StorageOptions = {
+    storageLocation: StorageLocation.Disk,
+    useSecureStorage: true,
+    userId: mockUserId,
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -208,24 +219,77 @@ describe("deviceTrustCryptoService", () => {
     });
 
     describe("setDeviceKey", () => {
-      it("sets the device key in the state service", async () => {
-        const deviceKeyState: FakeActiveUserState<DeviceKey> =
-          stateProvider.activeUser.getFake(DEVICE_KEY);
-        deviceKeyState.nextState(null);
+      describe("Secure Storage not supported", () => {
+        it("successfully sets the device key in state provider", async () => {
+          const deviceKeyState: FakeActiveUserState<DeviceKey> =
+            stateProvider.activeUser.getFake(DEVICE_KEY);
+          deviceKeyState.nextState(null);
 
-        const newDeviceKey = new SymmetricCryptoKey(
-          new Uint8Array(deviceKeyBytesLength) as CsprngArray,
-        ) as DeviceKey;
+          const newDeviceKey = new SymmetricCryptoKey(
+            new Uint8Array(deviceKeyBytesLength) as CsprngArray,
+          ) as DeviceKey;
 
-        // TypeScript will allow calling private methods if the object is of type 'any'
-        // This is a hacky workaround, but it allows for cleaner tests
-        await (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey);
+          // TypeScript will allow calling private methods if the object is of type 'any'
+          // This is a hacky workaround, but it allows for cleaner tests
+          await (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey);
 
-        const deviceKey = await deviceTrustCryptoService.getDeviceKey();
+          expect(deviceKeyState.nextMock).toHaveBeenCalledWith([mockUserId, newDeviceKey]);
+        });
+      });
+      describe("Secure Storage supported with an active user", () => {
+        beforeEach(() => {
+          const supportsSecureStorage = true;
+          deviceTrustCryptoService = createDeviceTrustCryptoService(
+            mockUserId,
+            supportsSecureStorage,
+          );
+        });
 
-        expect(deviceKey).not.toBeNull();
-        expect(deviceKey).toBeInstanceOf(SymmetricCryptoKey);
-        expect(deviceKey).toEqual(newDeviceKey);
+        it("successfully sets the device key in secure storage", async () => {
+          // Arrange
+          const deviceKeyState: FakeActiveUserState<DeviceKey> =
+            stateProvider.activeUser.getFake(DEVICE_KEY);
+          deviceKeyState.nextState(null);
+
+          secureStorageService.get.mockResolvedValue(null);
+
+          const newDeviceKey = new SymmetricCryptoKey(
+            new Uint8Array(deviceKeyBytesLength) as CsprngArray,
+          ) as DeviceKey;
+
+          // Act
+          // TypeScript will allow calling private methods if the object is of type 'any'
+          // This is a hacky workaround, but it allows for cleaner tests
+          await (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey);
+
+          // Assert
+          expect(deviceKeyState.nextMock).not.toHaveBeenCalled();
+          expect(secureStorageService.save).toHaveBeenCalledWith(
+            deviceKeySecureStorageKey,
+            newDeviceKey,
+            secureStorageOptions,
+          );
+        });
+      });
+      describe("Secure Storage supported without an active user", () => {
+        beforeEach(() => {
+          const mockUserId: UserId = null;
+          const supportsSecureStorage = true;
+          deviceTrustCryptoService = createDeviceTrustCryptoService(
+            mockUserId,
+            supportsSecureStorage,
+          );
+        });
+
+        it("throws an error when there is no active user", async () => {
+          const newDeviceKey = new SymmetricCryptoKey(
+            new Uint8Array(deviceKeyBytesLength) as CsprngArray,
+          ) as DeviceKey;
+
+          await expect(
+            (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey),
+          ).rejects.toThrow("No active user id found. Cannot set device key in secure storage.");
+        });
       });
     });
 
