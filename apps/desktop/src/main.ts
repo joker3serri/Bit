@@ -148,7 +148,7 @@ export class Main {
 
     this.environmentService = new EnvironmentService(stateProvider, accountService);
 
-    // Note: secure storage service is not available and should be called in the main background process.
+    // Note: secure storage service is not available and should not be called in the main background process.
     const illegalSecureStorageService = new IllegalSecureStorageService();
 
     this.tokenService = new TokenService(
