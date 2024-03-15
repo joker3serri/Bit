@@ -34,8 +34,8 @@ export abstract class EmailService {
   clearValues: () => void;
   /**
    * - If rememberEmail is true, sets the storedEmail to the current email.
-   * - If rememberEmail is false, sets the storedEmail to false.
-   * - Then runs sets the email and rememberEmail properties to null.
+   * - If rememberEmail is false, sets the storedEmail to null.
+   * - Then sets the email and rememberEmail properties to null.
    * @returns A promise that resolves once the email settings are saved.
    */
   saveEmailSettings: () => Promise<void>;
