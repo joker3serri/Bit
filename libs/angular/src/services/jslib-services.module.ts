@@ -903,7 +903,7 @@ const typesafeProviders: Array<SafeProvider> = [
       I18nServiceAbstraction,
       PlatformUtilsServiceAbstraction,
       StateProvider,
-      AbstractStorageService,
+      SECURE_STORAGE,
     ],
   }),
   safeProvider({
