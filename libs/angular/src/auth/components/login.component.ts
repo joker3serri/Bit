@@ -98,23 +98,21 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
 
       if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
         this.formGroup.get("email").setValue(queryParamsEmail);
-        this.emailService.setEmail(queryParamsEmail);
         this.paramEmailSet = true;
       }
     });
-    let email = this.emailService.getEmail();
-
-    if (email == null || email === "") {
-      email = await this.emailService.getStoredEmail();
-    }
 
     if (!this.paramEmailSet) {
-      this.formGroup.get("email")?.setValue(email ?? "");
+      const storedEmail = await this.emailService.getStoredEmail();
+      this.formGroup.get("email")?.setValue(storedEmail ?? "");
     }
+
     let rememberEmail = this.emailService.getRememberEmail();
+
     if (rememberEmail == null) {
       rememberEmail = (await this.emailService.getStoredEmail()) != null;
     }
+
     this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
   }
 
