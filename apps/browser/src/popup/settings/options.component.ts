@@ -13,7 +13,6 @@ import {
 } from "@bitwarden/common/models/domain/domain-service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
@@ -51,7 +50,6 @@ export class OptionsComponent implements OnInit {
 
   constructor(
     private messagingService: MessagingService,
-    private stateService: StateService,
     private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private domainSettingsService: DomainSettingsService,
@@ -114,8 +112,10 @@ export class OptionsComponent implements OnInit {
       this.autofillSettingsService.enableContextMenu$,
     );
 
-    this.showCardsCurrentTab = !(await this.stateService.getDontShowCardsCurrentTab());
-    this.showIdentitiesCurrentTab = !(await this.stateService.getDontShowIdentitiesCurrentTab());
+    this.showCardsCurrentTab = await firstValueFrom(this.vaultSettingsService.showCardsCurrentTab$);
+    this.showIdentitiesCurrentTab = await firstValueFrom(
+      this.vaultSettingsService.showIdentitiesCurrentTab$,
+    );
 
     this.enableAutoTotpCopy = await firstValueFrom(this.autofillSettingsService.autoCopyTotp$);
 
@@ -178,11 +178,11 @@ export class OptionsComponent implements OnInit {
   }
 
   async updateShowCardsCurrentTab() {
-    await this.stateService.setDontShowCardsCurrentTab(!this.showCardsCurrentTab);
+    await this.vaultSettingsService.setShowCardsCurrentTab(this.showCardsCurrentTab);
   }
 
   async updateShowIdentitiesCurrentTab() {
-    await this.stateService.setDontShowIdentitiesCurrentTab(!this.showIdentitiesCurrentTab);
+    await this.vaultSettingsService.setShowIdentitiesCurrentTab(this.showIdentitiesCurrentTab);
   }
 
   async saveTheme() {

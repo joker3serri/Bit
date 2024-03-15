@@ -8,7 +8,6 @@ import {
   AuthRequestServiceAbstraction,
   AuthRequestService,
 } from "@bitwarden/auth/common";
-import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -39,6 +38,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
@@ -117,7 +117,6 @@ import { DefaultStateProvider } from "@bitwarden/common/platform/state/implement
 import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 /* eslint-enable import/no-restricted-paths */
 import { DefaultThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { AvatarUpdateService } from "@bitwarden/common/services/account/avatar-update.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
@@ -125,6 +124,7 @@ import { EventUploadService } from "@bitwarden/common/services/event/event-uploa
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
+import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/src/auth/abstractions/avatar.service";
 import {
   PasswordGenerationService,
   PasswordGenerationServiceAbstraction,
@@ -288,7 +288,7 @@ export default class MainBackground {
   fido2UserInterfaceService: Fido2UserInterfaceServiceAbstraction;
   fido2AuthenticatorService: Fido2AuthenticatorServiceAbstraction;
   fido2ClientService: Fido2ClientServiceAbstraction;
-  avatarUpdateService: AvatarUpdateServiceAbstraction;
+  avatarService: AvatarServiceAbstraction;
   mainContextMenuHandler: MainContextMenuHandler;
   cipherContextMenuHandler: CipherContextMenuHandler;
   configService: BrowserConfigService;
@@ -409,8 +409,7 @@ export default class MainBackground {
     );
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
-      storageServiceProvider,
-      stateEventRegistrarService,
+      this.singleUserStateProvider,
     );
     this.derivedStateProvider = new BackgroundDerivedStateProvider(
       this.memoryStorageForStateProviders,
@@ -428,6 +427,21 @@ export default class MainBackground {
     );
     this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
 
+    this.userNotificationSettingsService = new UserNotificationSettingsService(this.stateProvider);
+    this.platformUtilsService = new BackgroundPlatformUtilsService(
+      this.messagingService,
+      (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
+      async () => this.biometricUnlock(),
+      self,
+    );
+
+    this.tokenService = new TokenService(
+      this.singleUserStateProvider,
+      this.globalStateProvider,
+      this.platformUtilsService.supportsSecureStorage(),
+      this.secureStorageService,
+    );
+
     const migrationRunner = new MigrationRunner(
       this.storageService,
       this.logService,
@@ -442,14 +456,8 @@ export default class MainBackground {
       new StateFactory(GlobalState, Account),
       this.accountService,
       this.environmentService,
+      this.tokenService,
       migrationRunner,
-    );
-    this.userNotificationSettingsService = new UserNotificationSettingsService(this.stateProvider);
-    this.platformUtilsService = new BackgroundPlatformUtilsService(
-      this.messagingService,
-      (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
-      async () => this.biometricUnlock(),
-      self,
     );
 
     const themeStateService = new DefaultThemeStateService(this.globalStateProvider);
@@ -466,13 +474,14 @@ export default class MainBackground {
       this.stateProvider,
       this.biometricStateService,
     );
-    this.tokenService = new TokenService(this.stateService);
+
     this.appIdService = new AppIdService(this.globalStateProvider);
     this.apiService = new ApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
+      this.stateService,
       (expired: boolean) => this.logout(expired),
     );
     this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
@@ -685,7 +694,11 @@ export default class MainBackground {
       this.fileUploadService,
       this.sendService,
     );
+
+    this.avatarService = new AvatarService(this.apiService, this.stateProvider);
+
     this.providerService = new ProviderService(this.stateProvider);
+
     this.syncService = new SyncService(
       this.apiService,
       this.domainSettingsService,
@@ -703,6 +716,7 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
+      this.avatarService,
       logoutCallback,
     );
     this.eventUploadService = new EventUploadService(
@@ -789,7 +803,6 @@ export default class MainBackground {
       this.fido2AuthenticatorService,
       this.configService,
       this.authService,
-      this.stateService,
       this.vaultSettingsService,
       this.domainSettingsService,
       this.logService,
@@ -837,7 +850,6 @@ export default class MainBackground {
       this.cryptoService,
       this.cryptoFunctionService,
       this.runtimeBackground,
-      this.i18nService,
       this.messagingService,
       this.appIdService,
       this.platformUtilsService,
@@ -944,8 +956,6 @@ export default class MainBackground {
       this.stateService,
       this.apiService,
     );
-
-    this.avatarUpdateService = new AvatarUpdateService(this.apiService, this.stateService);
 
     if (!this.popupOnlyContext) {
       this.mainContextMenuHandler = new MainContextMenuHandler(

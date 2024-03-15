@@ -26,7 +26,13 @@ export const PROVIDERS_DISK = new StateDefinition("providers", "disk");
 // Auth
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
+export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-local" });
 export const SSO_DISK = new StateDefinition("ssoLogin", "disk");
+export const TOKEN_DISK = new StateDefinition("token", "disk");
+export const TOKEN_DISK_LOCAL = new StateDefinition("tokenDiskLocal", "disk", {
+  web: "disk-local",
+});
+export const TOKEN_MEMORY = new StateDefinition("token", "memory");
 export const LOGIN_STRATEGY_MEMORY = new StateDefinition("loginStrategy", "memory");
 
 // Autofill
