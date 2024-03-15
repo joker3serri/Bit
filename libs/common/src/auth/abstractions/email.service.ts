@@ -1,10 +1,10 @@
-export abstract class RememberEmailService {
+export abstract class EmailService {
   getEmail: () => string;
-  getRememberEmail: () => boolean;
   setEmail: (value: string) => void;
+  getRememberEmail: () => boolean;
   setRememberEmail: (value: boolean) => void;
-  clearValues: () => void;
   getStoredEmail: () => Promise<string>;
   setStoredEmail: (value: string) => Promise<void>;
+  clearValues: () => void;
   saveEmailSettings: () => Promise<void>;
 }

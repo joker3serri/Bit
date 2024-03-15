@@ -6,7 +6,7 @@ import { take, takeUntil } from "rxjs/operators";
 
 import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -77,7 +77,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     protected formBuilder: FormBuilder,
     protected formValidationErrorService: FormValidationErrorsService,
     protected route: ActivatedRoute,
-    protected rememberEmailService: RememberEmailService,
+    protected emailService: EmailService,
     protected ssoLoginService: SsoLoginServiceAbstraction,
     protected webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
@@ -98,22 +98,22 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
 
       if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
         this.formGroup.get("email").setValue(queryParamsEmail);
-        this.rememberEmailService.setEmail(queryParamsEmail);
+        this.emailService.setEmail(queryParamsEmail);
         this.paramEmailSet = true;
       }
     });
-    let email = this.rememberEmailService.getEmail();
+    let email = this.emailService.getEmail();
 
     if (email == null || email === "") {
-      email = await this.rememberEmailService.getStoredEmail();
+      email = await this.emailService.getStoredEmail();
     }
 
     if (!this.paramEmailSet) {
       this.formGroup.get("email")?.setValue(email ?? "");
     }
-    let rememberEmail = this.rememberEmailService.getRememberEmail();
+    let rememberEmail = this.emailService.getRememberEmail();
     if (rememberEmail == null) {
-      rememberEmail = (await this.rememberEmailService.getStoredEmail()) != null;
+      rememberEmail = (await this.emailService.getStoredEmail()) != null;
     }
     this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
   }
@@ -152,7 +152,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
       this.setFormValues();
-      await this.rememberEmailService.saveEmailSettings();
+      await this.emailService.saveEmailSettings();
       if (this.handleCaptchaRequired(response)) {
         return;
       } else if (this.handleMigrateEncryptionKey(response)) {
@@ -295,13 +295,13 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   }
 
   setFormValues() {
-    this.rememberEmailService.setEmail(this.formGroup.value.email);
-    this.rememberEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    this.emailService.setEmail(this.formGroup.value.email);
+    this.emailService.setRememberEmail(this.formGroup.value.rememberEmail);
   }
 
   async saveEmailSettings() {
     this.setFormValues();
-    await this.rememberEmailService.saveEmailSettings();
+    await this.emailService.saveEmailSettings();
   }
 
   // Legacy accounts used the master key to encrypt data. Migration is required

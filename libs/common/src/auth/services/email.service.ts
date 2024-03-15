@@ -1,18 +1,13 @@
 import { firstValueFrom } from "rxjs";
 
-import {
-  GlobalState,
-  KeyDefinition,
-  REMEMBER_EMAIL_DISK,
-  StateProvider,
-} from "../../platform/state";
-import { RememberEmailService as RememberEmailServiceAbstraction } from "../abstractions/remember-email.service";
+import { GlobalState, KeyDefinition, EMAIL_DISK, StateProvider } from "../../platform/state";
+import { EmailService as EmailServiceAbstraction } from "../abstractions/email.service";
 
-const STORED_EMAIL = new KeyDefinition<string>(REMEMBER_EMAIL_DISK, "storedEmail", {
+const STORED_EMAIL = new KeyDefinition<string>(EMAIL_DISK, "storedEmail", {
   deserializer: (value: string) => value,
 });
 
-export class RememberEmailService implements RememberEmailServiceAbstraction {
+export class EmailService implements EmailServiceAbstraction {
   private email: string;
   private rememberEmail: boolean;
   private storedEmail: GlobalState<string>;
@@ -25,21 +20,16 @@ export class RememberEmailService implements RememberEmailServiceAbstraction {
     return this.email;
   }
 
-  getRememberEmail() {
-    return this.rememberEmail;
-  }
-
   setEmail(value: string) {
     this.email = value;
   }
 
-  setRememberEmail(value: boolean) {
-    this.rememberEmail = value;
+  getRememberEmail() {
+    return this.rememberEmail;
   }
 
-  clearValues() {
-    this.email = null;
-    this.rememberEmail = null;
+  setRememberEmail(value: boolean) {
+    this.rememberEmail = value;
   }
 
   getStoredEmail(): Promise<string> {
@@ -48,6 +38,11 @@ export class RememberEmailService implements RememberEmailServiceAbstraction {
 
   async setStoredEmail(value: string): Promise<void> {
     await this.storedEmail.update((_) => value);
+  }
+
+  clearValues() {
+    this.email = null;
+    this.rememberEmail = null;
   }
 
   async saveEmailSettings() {

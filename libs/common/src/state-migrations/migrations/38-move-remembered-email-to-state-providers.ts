@@ -3,11 +3,11 @@ import { Migrator } from "../migrator";
 
 type ExpectedGlobalState = { rememberedEmail?: string };
 
-const REMEMBER_EMAIL_STATE: StateDefinitionLike = { name: "rememberEmail" };
+const EMAIL_STATE: StateDefinitionLike = { name: "email" };
 
 const STORED_EMAIL: KeyDefinitionLike = {
   key: "storedEmail",
-  stateDefinition: REMEMBER_EMAIL_STATE,
+  stateDefinition: EMAIL_STATE,
 };
 
 export class RememberedEmailMigrator extends Migrator<37, 38> {

@@ -19,8 +19,8 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
@@ -79,7 +79,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected activatedRoute: ActivatedRoute,
     protected messagingService: MessagingService,
     protected tokenService: TokenService,
-    protected rememberEmailService: RememberEmailService,
+    protected emailService: EmailService,
     protected organizationApiService: OrganizationApiServiceAbstraction,
     protected cryptoService: CryptoService,
     protected organizationUserService: OrganizationUserService,
@@ -240,14 +240,14 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.rememberEmailService.setEmail(this.data.userEmail);
+    this.emailService.setEmail(this.data.userEmail);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/login-with-device"]);
   }
 
   async requestAdminApproval() {
-    this.rememberEmailService.setEmail(this.data.userEmail);
+    this.emailService.setEmail(this.data.userEmail);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/admin-approval-requested"]);

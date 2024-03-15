@@ -10,7 +10,7 @@ function rollbackJSON() {
     global: {
       extra: "data",
     },
-    global_rememberEmail_storedEmail: "user@example.com",
+    global_email_storedEmail: "user@example.com",
   };
 }
 
@@ -18,7 +18,7 @@ describe("RememberedEmailMigrator", () => {
   const migrator = new RememberedEmailMigrator(37, 38);
 
   describe("migrate", () => {
-    it("should migrate the rememberedEmail property from the legacy global object to a global StorageKey", async () => {
+    it("should migrate the rememberedEmail property from the legacy global object to a global StorageKey as 'storedEmail'", async () => {
       const output = await runMigrator(migrator, {
         global: {
           rememberedEmail: "user@example.com",
@@ -30,7 +30,7 @@ describe("RememberedEmailMigrator", () => {
         global: {
           extra: "data",
         },
-        global_rememberEmail_storedEmail: "user@example.com",
+        global_email_storedEmail: "user@example.com",
       });
     });
 

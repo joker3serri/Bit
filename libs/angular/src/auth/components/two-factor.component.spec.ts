@@ -7,7 +7,7 @@ import { MockProxy, mock } from "jest-mock-extended";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -55,7 +55,7 @@ describe("TwoFactorComponent", () => {
   let mockLogService: MockProxy<LogService>;
   let mockTwoFactorService: MockProxy<TwoFactorService>;
   let mockAppIdService: MockProxy<AppIdService>;
-  let mockLoginService: MockProxy<RememberEmailService>;
+  let mockLoginService: MockProxy<EmailService>;
   let mockSsoLoginService: MockProxy<SsoLoginServiceAbstraction>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
 
@@ -82,7 +82,7 @@ describe("TwoFactorComponent", () => {
     mockLogService = mock<LogService>();
     mockTwoFactorService = mock<TwoFactorService>();
     mockAppIdService = mock<AppIdService>();
-    mockLoginService = mock<RememberEmailService>();
+    mockLoginService = mock<EmailService>();
     mockSsoLoginService = mock<SsoLoginServiceAbstraction>();
     mockConfigService = mock<ConfigServiceAbstraction>();
 
@@ -152,7 +152,7 @@ describe("TwoFactorComponent", () => {
         { provide: LogService, useValue: mockLogService },
         { provide: TwoFactorService, useValue: mockTwoFactorService },
         { provide: AppIdService, useValue: mockAppIdService },
-        { provide: RememberEmailService, useValue: mockLoginService },
+        { provide: EmailService, useValue: mockLoginService },
         { provide: SsoLoginServiceAbstraction, useValue: mockSsoLoginService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
       ],
@@ -267,10 +267,10 @@ describe("TwoFactorComponent", () => {
         expect(component.onSuccessfulLogin).toHaveBeenCalled();
       });
 
-      it("calls rememberEmailService.clearValues() when login is successful", async () => {
+      it("calls emailService.clearValues() when login is successful", async () => {
         // Arrange
         mockLoginStrategyService.logInTwoFactor.mockResolvedValue(new AuthResult());
-        // spy on rememberEmailService.clearValues
+        // spy on emailService.clearValues
         const clearValuesSpy = jest.spyOn(mockLoginService, "clearValues");
 
         // Act

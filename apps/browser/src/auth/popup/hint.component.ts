@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { HintComponent as BaseHintComponent } from "@bitwarden/angular/auth/components/hint.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -20,9 +20,9 @@ export class HintComponent extends BaseHintComponent {
     apiService: ApiService,
     logService: LogService,
     private route: ActivatedRoute,
-    rememberEmailService: RememberEmailService,
+    emailService: EmailService,
   ) {
-    super(router, i18nService, apiService, platformUtilsService, logService, rememberEmailService);
+    super(router, i18nService, apiService, platformUtilsService, logService, emailService);
 
     super.onSuccessfulSubmit = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.

@@ -6,7 +6,7 @@ import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -43,7 +43,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     logService: LogService,
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
-    rememberEmailService: RememberEmailService,
+    emailService: EmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigServiceAbstraction,
     @Inject(WINDOW) protected win: Window,
@@ -61,7 +61,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
       logService,
       twoFactorService,
       appIdService,
-      rememberEmailService,
+      emailService,
       ssoLoginService,
       configService,
     );
@@ -98,7 +98,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
   }
 
   goAfterLogIn = async () => {
-    this.rememberEmailService.clearValues();
+    this.emailService.clearValues();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate([this.successRoute], {

@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -32,13 +32,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
-    private rememberEmailService: RememberEmailService,
+    private emailService: EmailService,
     private accountSwitcherService: AccountSwitcherService,
   ) {}
 
   async ngOnInit(): Promise<void> {
-    let savedEmail = this.rememberEmailService.getEmail();
-    const rememberEmail = this.rememberEmailService.getRememberEmail();
+    let savedEmail = this.emailService.getEmail();
+    const rememberEmail = this.emailService.getRememberEmail();
 
     if (savedEmail != null) {
       this.formGroup.patchValue({
@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         rememberEmail: rememberEmail,
       });
     } else {
-      savedEmail = await this.rememberEmailService.getStoredEmail();
+      savedEmail = await this.emailService.getStoredEmail();
       if (savedEmail != null) {
         this.formGroup.patchValue({
           email: savedEmail,
@@ -85,8 +85,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.rememberEmailService.setEmail(this.formGroup.value.email);
-    this.rememberEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    this.emailService.setEmail(this.formGroup.value.email);
+    this.emailService.setRememberEmail(this.formGroup.value.rememberEmail);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["login"], { queryParams: { email: this.formGroup.value.email } });
@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   setFormValues() {
-    this.rememberEmailService.setEmail(this.formGroup.value.email);
-    this.rememberEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    this.emailService.setEmail(this.formGroup.value.email);
+    this.emailService.setRememberEmail(this.formGroup.value.rememberEmail);
   }
 }

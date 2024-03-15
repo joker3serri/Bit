@@ -2,7 +2,7 @@ import { Directive, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { RememberEmailService } from "@bitwarden/common/auth/abstractions/remember-email.service";
+import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
 import { PasswordHintRequest } from "@bitwarden/common/auth/models/request/password-hint.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -22,11 +22,11 @@ export class HintComponent implements OnInit {
     protected apiService: ApiService,
     protected platformUtilsService: PlatformUtilsService,
     private logService: LogService,
-    private rememberEmailService: RememberEmailService,
+    private emailService: EmailService,
   ) {}
 
   ngOnInit(): void {
-    this.email = this.rememberEmailService.getEmail() ?? "";
+    this.email = this.emailService.getEmail() ?? "";
   }
 
   async submit() {
