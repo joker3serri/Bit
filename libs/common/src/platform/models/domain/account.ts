@@ -110,7 +110,6 @@ export class AccountKeys {
   masterKeyEncryptedUserKey?: string;
   deviceKey?: ReturnType<SymmetricCryptoKey["toJSON"]>;
   publicKey?: Uint8Array;
-  apiKeyClientSecret?: string;
 
   /** @deprecated July 2023, left for migration purposes*/
   cryptoMasterKey?: SymmetricCryptoKey;
@@ -165,7 +164,6 @@ export class AccountKeys {
 }
 
 export class AccountProfile {
-  apiKeyClientId?: string;
   convertAccountToKeyConnector?: boolean;
   name?: string;
   email?: string;
@@ -231,8 +229,6 @@ export class AccountSettings {
 }
 
 export class AccountTokens {
-  accessToken?: string;
-  refreshToken?: string;
   securityStamp?: string;
 
   static fromJSON(obj: Jsonify<AccountTokens>): AccountTokens {

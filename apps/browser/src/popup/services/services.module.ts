@@ -232,7 +232,6 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
-    { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
     {
       provide: I18nServiceAbstraction,
       useFactory: (globalStateProvider: GlobalStateProvider) => {
@@ -437,6 +436,7 @@ function getBgService<T>(service: keyof MainBackground) {
         logService: LogServiceAbstraction,
         accountService: AccountServiceAbstraction,
         environmentService: EnvironmentService,
+        tokenService: TokenService,
         migrationRunner: MigrationRunner,
       ) => {
         return new BrowserStateService(
@@ -447,6 +447,7 @@ function getBgService<T>(service: keyof MainBackground) {
           new StateFactory(GlobalState, Account),
           accountService,
           environmentService,
+          tokenService,
           migrationRunner,
         );
       },
@@ -457,6 +458,7 @@ function getBgService<T>(service: keyof MainBackground) {
         LogServiceAbstraction,
         AccountServiceAbstraction,
         EnvironmentService,
+        TokenService,
         MigrationRunner,
       ],
     },
