@@ -66,7 +66,11 @@ export class DesktopSettingsService {
     this.openAtLoginState = this.stateProvider.getGlobal(OPEN_AT_LOGIN_KEY);
     this.alwaysShowDockState = this.stateProvider.getGlobal(ALWAYS_SHOW_DOCK_KEY);
 
-    this.window$ = this.windowState.state$;
+    this.window$ = this.windowState.state$.pipe(
+      map((window) =>
+        window != null && Object.keys(window).length > 0 ? window : new WindowState(),
+      ),
+    );
 
     this.alwaysOnTop$ = combineLatest([
       this.alwaysOnTopUserState.state$,
