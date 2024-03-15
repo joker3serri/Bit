@@ -337,58 +337,6 @@ export class StateService<
     );
   }
 
-  async getCanAccessPremium(options?: StorageOptions): Promise<boolean> {
-    if (!(await this.getIsAuthenticated(options))) {
-      return false;
-    }
-
-    return (
-      (await this.getHasPremiumPersonally(options)) ||
-      (await this.getHasPremiumFromOrganization(options))
-    );
-  }
-
-  async getHasPremiumPersonally(options?: StorageOptions): Promise<boolean> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    return account?.profile?.hasPremiumPersonally;
-  }
-
-  async setHasPremiumPersonally(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.profile.hasPremiumPersonally = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  async getHasPremiumFromOrganization(options?: StorageOptions): Promise<boolean> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-
-    if (account.profile?.hasPremiumFromOrganization) {
-      return true;
-    }
-
-    return false;
-  }
-
-  async setHasPremiumFromOrganization(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.profile.hasPremiumFromOrganization = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
   async getConvertAccountToKeyConnector(options?: StorageOptions): Promise<boolean> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))

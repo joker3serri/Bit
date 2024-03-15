@@ -65,6 +65,8 @@ import {
   UserNotificationSettingsService,
   UserNotificationSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/user-notification-settings.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -311,6 +313,7 @@ export default class MainBackground {
   biometricStateService: BiometricStateService;
   stateEventRunnerService: StateEventRunnerService;
   ssoLoginService: SsoLoginServiceAbstraction;
+  billingAccountProfileStateService: BillingAccountProfileStateService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -569,6 +572,10 @@ export default class MainBackground {
       this.stateService,
     );
 
+    this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
+      this.activeUserStateProvider,
+    );
+
     this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
@@ -588,6 +595,7 @@ export default class MainBackground {
       this.deviceTrustCryptoService,
       this.authRequestService,
       this.globalStateProvider,
+      this.billingAccountProfileStateService,
     );
 
     this.ssoLoginService = new SsoLoginService(this.stateProvider);
@@ -715,6 +723,7 @@ export default class MainBackground {
       this.sendApiService,
       this.avatarService,
       logoutCallback,
+      this.billingAccountProfileStateService,
     );
     this.eventUploadService = new EventUploadService(
       this.apiService,
@@ -738,6 +747,7 @@ export default class MainBackground {
       this.logService,
       this.domainSettingsService,
       this.userVerificationService,
+      this.billingAccountProfileStateService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -958,6 +968,7 @@ export default class MainBackground {
         this.autofillSettingsService,
         this.i18nService,
         this.logService,
+        this.billingAccountProfileStateService,
       );
 
       this.cipherContextMenuHandler = new CipherContextMenuHandler(
