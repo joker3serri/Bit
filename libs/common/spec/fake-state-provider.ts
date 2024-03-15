@@ -180,7 +180,11 @@ export class FakeStateProvider implements StateProvider {
     config: { userId: UserId | undefined; defaultValue?: T },
   ): Observable<T> {
     const { userId, defaultValue = null } = config;
-    this.mock.getUserStateOrDefault$(keyDefinition, config);
+    if (isUserKeyDefinition(keyDefinition)) {
+      this.mock.getUserStateOrDefault$(keyDefinition, config);
+    } else {
+      this.mock.getUserStateOrDefault$(keyDefinition, config);
+    }
     if (userId) {
       return this.getUser<T>(userId, keyDefinition).state$;
     }
