@@ -84,7 +84,7 @@ describe("PasswordLoginStrategy", () => {
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.mockResolvedValue({});
+    tokenService.decodeAccessToken.mockResolvedValue({});
 
     loginStrategyService.makePreloginKey.mockResolvedValue(masterKey);
 

@@ -313,6 +313,13 @@ export class Main {
 
     this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
 
+    this.tokenService = new TokenService(
+      this.singleUserStateProvider,
+      this.globalStateProvider,
+      this.platformUtilsService.supportsSecureStorage(),
+      this.secureStorageService,
+    );
+
     const migrationRunner = new MigrationRunner(
       this.storageService,
       this.logService,
@@ -327,6 +334,7 @@ export class Main {
       new StateFactory(GlobalState, Account),
       this.accountService,
       this.environmentService,
+      this.tokenService,
       migrationRunner,
     );
 
@@ -344,7 +352,6 @@ export class Main {
     );
 
     this.appIdService = new AppIdService(this.globalStateProvider);
-    this.tokenService = new TokenService(this.stateService);
 
     const customUserAgent =
       "Bitwarden_CLI/" +
@@ -357,6 +364,7 @@ export class Main {
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
+      this.stateService,
       async (expired: boolean) => await this.logout(),
       customUserAgent,
     );
