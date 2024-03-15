@@ -4,6 +4,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -35,6 +36,7 @@ describe("UserApiLoginStrategy", () => {
   let twoFactorService: MockProxy<TwoFactorService>;
   let keyConnectorService: MockProxy<KeyConnectorService>;
   let environmentService: MockProxy<EnvironmentService>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   let apiLogInStrategy: UserApiLoginStrategy;
   let credentials: UserApiLoginCredentials;
@@ -56,6 +58,7 @@ describe("UserApiLoginStrategy", () => {
     twoFactorService = mock<TwoFactorService>();
     keyConnectorService = mock<KeyConnectorService>();
     environmentService = mock<EnvironmentService>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.getTwoFactorToken.mockResolvedValue(null);
@@ -74,6 +77,7 @@ describe("UserApiLoginStrategy", () => {
       twoFactorService,
       environmentService,
       keyConnectorService,
+      billingAccountProfileStateService,
     );
 
     credentials = new UserApiLoginCredentials(apiClientId, apiClientSecret);
