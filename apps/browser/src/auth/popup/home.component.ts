@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         rememberEmail: rememberEmail,
       });
     } else {
-      savedEmail = await this.rememberEmailService.getRememberedEmail();
+      savedEmail = await this.rememberEmailService.getStoredEmail();
       if (savedEmail != null) {
         this.formGroup.patchValue({
           email: savedEmail,

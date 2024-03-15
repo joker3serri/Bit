@@ -474,7 +474,7 @@ export class LoginViaAuthRequestComponent
   async setRememberEmailValues() {
     const rememberEmail = this.rememberEmailService.getRememberEmail();
     const rememberedEmail = this.rememberEmailService.getEmail();
-    await this.rememberEmailService.setRememberedEmail(rememberEmail ? rememberedEmail : null);
+    await this.rememberEmailService.setStoredEmail(rememberEmail ? rememberedEmail : null);
     this.rememberEmailService.clearValues();
   }
 

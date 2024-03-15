@@ -3,11 +3,11 @@ import { Migrator } from "../migrator";
 
 type ExpectedGlobalState = { rememberedEmail?: string };
 
-const LOGIN_STATE: StateDefinitionLike = { name: "login" };
+const REMEMBER_EMAIL_STATE: StateDefinitionLike = { name: "rememberEmail" };
 
-const REMEMBERED_EMAIL: KeyDefinitionLike = {
-  key: "rememberedEmail",
-  stateDefinition: LOGIN_STATE,
+const STORED_EMAIL: KeyDefinitionLike = {
+  key: "storedEmail",
+  stateDefinition: REMEMBER_EMAIL_STATE,
 };
 
 export class RememberedEmailMigrator extends Migrator<37, 38> {
@@ -16,7 +16,7 @@ export class RememberedEmailMigrator extends Migrator<37, 38> {
 
     // Move global data
     if (legacyGlobal?.rememberedEmail != null) {
-      await helper.setToGlobal(REMEMBERED_EMAIL, legacyGlobal.rememberedEmail);
+      await helper.setToGlobal(STORED_EMAIL, legacyGlobal.rememberedEmail);
     }
 
     // Delete legacy global data
@@ -27,16 +27,16 @@ export class RememberedEmailMigrator extends Migrator<37, 38> {
   async rollback(helper: MigrationHelper): Promise<void> {
     let legacyGlobal = await helper.get<ExpectedGlobalState>("global");
     let updatedLegacyGlobal = false;
-    const globalRememberedEmail = await helper.getFromGlobal<string>(REMEMBERED_EMAIL);
+    const globalStoredEmail = await helper.getFromGlobal<string>(STORED_EMAIL);
 
-    if (globalRememberedEmail) {
+    if (globalStoredEmail) {
       if (!legacyGlobal) {
         legacyGlobal = {};
       }
 
       updatedLegacyGlobal = true;
-      legacyGlobal.rememberedEmail = globalRememberedEmail;
-      await helper.setToGlobal(REMEMBERED_EMAIL, null);
+      legacyGlobal.rememberedEmail = globalStoredEmail;
+      await helper.setToGlobal(STORED_EMAIL, null);
     }
 
     if (updatedLegacyGlobal) {

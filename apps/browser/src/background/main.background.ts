@@ -1061,7 +1061,7 @@ export default class MainBackground {
       await this.stateService.setActiveUser(userId);
 
       if (userId == null) {
-        await this.rememberEmailService.setRememberedEmail(null);
+        await this.rememberEmailService.setStoredEmail(null);
         await this.refreshBadge();
         await this.refreshMenu();
         await this.overlayBackground.updateOverlayCiphers();

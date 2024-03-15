@@ -105,7 +105,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     let email = this.rememberEmailService.getEmail();
 
     if (email == null || email === "") {
-      email = await this.rememberEmailService.getRememberedEmail();
+      email = await this.rememberEmailService.getStoredEmail();
     }
 
     if (!this.paramEmailSet) {
@@ -113,7 +113,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     }
     let rememberEmail = this.rememberEmailService.getRememberEmail();
     if (rememberEmail == null) {
-      rememberEmail = (await this.rememberEmailService.getRememberedEmail()) != null;
+      rememberEmail = (await this.rememberEmailService.getStoredEmail()) != null;
     }
     this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
   }
