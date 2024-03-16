@@ -34,7 +34,9 @@ export class VaultItemsComponent extends BaseVaultItemsComponent {
     return c.id;
   }
 
-  setCipherIdOnDrag(event: DragEvent, data: string) {
-    event.dataTransfer.setData("cipherId", data);
+  setCipherOnDrag(event: DragEvent, cipher: CipherView) {
+    if (!cipher.organizationId) {
+      event.dataTransfer.setData("cipherId", cipher.id);
+    }
   }
 }

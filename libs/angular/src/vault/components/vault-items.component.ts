@@ -13,7 +13,7 @@ export class VaultItemsComponent {
   @Output() onCipherRightClicked = new EventEmitter<CipherView>();
   @Output() onAddCipher = new EventEmitter();
   @Output() onAddCipherOptions = new EventEmitter();
-  @ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport;
+  @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
 
   loaded = false;
   ciphers: CipherView[] = [];
@@ -51,9 +51,10 @@ export class VaultItemsComponent {
   }
 
   async refresh() {
-    const scrollPosition = this.viewport.measureScrollOffset("top");
+    const scrollPosition = this.viewport?.measureScrollOffset("top");
     await this.reload(this.filter, this.deleted);
     if (scrollPosition > 0) {
+      // this is a workaround to prevent the ViewChild viewport from being undefined.
       setTimeout(() => {
         this.viewport?.scrollToOffset(scrollPosition);
       });

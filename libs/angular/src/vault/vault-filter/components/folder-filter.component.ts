@@ -28,7 +28,6 @@ export class FolderFilterComponent {
   @Output() onFilterChange: EventEmitter<VaultFilter> = new EventEmitter<VaultFilter>();
   @Output() onAddFolder = new EventEmitter();
   @Output() onEditFolder = new EventEmitter<FolderView>();
-  @Output() onMoveCipher = new EventEmitter();
   organization: Organization;
   folderOnDrag: string = "";
 
@@ -122,9 +121,8 @@ export class FolderFilterComponent {
     try {
       await this.saveCipher(encryptCipher);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("editedItem"));
-      this.messagingService.send("editedCipher");
+      this.messagingService.send("refreshCiphers");
       this.folderOnDrag = "";
-      await this.onMoveCipher.emit();
       return true;
     } catch (e) {
       this.logService.error(e);

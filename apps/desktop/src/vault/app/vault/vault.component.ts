@@ -469,10 +469,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     await this.vaultItemsComponent.refresh();
   }
 
-  async onMoveCipher() {
-    await this.vaultItemsComponent.refresh();
-  }
-
   async restoredCipher(cipher: CipherView) {
     this.cipherId = null;
     this.action = null;
