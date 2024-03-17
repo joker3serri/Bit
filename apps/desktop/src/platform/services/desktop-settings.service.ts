@@ -1,9 +1,7 @@
-import { Observable, map, of, switchMap } from "rxjs";
+import { Observable, map } from "rxjs";
 
 import {
-  ActiveUserState,
   DESKTOP_SETTINGS_DISK,
-  GlobalState,
   KeyDefinition,
   StateProvider,
 } from "@bitwarden/common/platform/state";
@@ -12,10 +10,6 @@ import { WindowState } from "../models/domain/window-state";
 
 const WINDOW_KEY = new KeyDefinition<WindowState | null>(DESKTOP_SETTINGS_DISK, "window", {
   deserializer: (s) => s,
-});
-
-const ALWAYS_ON_TOP_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "alwaysOnTop", {
-  deserializer: (b) => b,
 });
 
 const CLOSE_TO_TRAY_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "closeToTray", {
@@ -43,104 +37,114 @@ const ALWAYS_SHOW_DOCK_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "
 });
 
 export class DesktopSettingsService {
-  private windowState: GlobalState<WindowState>;
+  private readonly windowState = this.stateProvider.getGlobal(WINDOW_KEY);
 
-  // TODO: Active user state for this as well
-  private alwaysOnTopGlobalState: GlobalState<boolean>;
-  private alwaysOnTopUserState: ActiveUserState<boolean>;
-  private closeToTrayState: GlobalState<boolean>;
-  private minimizeToTrayState: GlobalState<boolean>;
-  private startToTrayState: GlobalState<boolean>;
-  private trayEnabledState: GlobalState<boolean>;
-  private openAtLoginState: GlobalState<boolean>;
-  private alwaysShowDockState: GlobalState<boolean>;
+  private readonly closeToTrayState = this.stateProvider.getGlobal(CLOSE_TO_TRAY_KEY);
+  /**
+   *
+   */
+  closeToTray$ = this.closeToTrayState.state$.pipe(map((value) => value ?? false));
+
+  private readonly minimizeToTrayState = this.stateProvider.getGlobal(MINIMIZE_TO_TRAY_KEY);
+  /**
+   *
+   */
+  minimizeToTray$ = this.minimizeToTrayState.state$.pipe(map((value) => value ?? false));
+
+  private readonly startToTrayState = this.stateProvider.getGlobal(START_TO_TRAY_KEY);
+  /**
+   *
+   */
+  startToTray$ = this.startToTrayState.state$.pipe(map((value) => value ?? false));
+
+  private readonly trayEnabledState = this.stateProvider.getGlobal(TRAY_ENABLED_KEY);
+  /**
+   *
+   */
+  trayEnabled$ = this.trayEnabledState.state$.pipe(map((value) => value ?? false));
+
+  private readonly openAtLoginState = this.stateProvider.getGlobal(OPEN_AT_LOGIN_KEY);
+  /**
+   *
+   */
+  openAtLogin$ = this.openAtLoginState.state$.pipe(map((value) => value ?? false));
+
+  private readonly alwaysShowDockState = this.stateProvider.getGlobal(ALWAYS_SHOW_DOCK_KEY);
+  /**
+   *
+   */
+  alwaysShowDock$ = this.alwaysShowDockState.state$.pipe(map((value) => value ?? false));
 
   constructor(private stateProvider: StateProvider) {
-    this.windowState = this.stateProvider.getGlobal(WINDOW_KEY);
-    this.alwaysOnTopGlobalState = this.stateProvider.getGlobal(ALWAYS_ON_TOP_KEY);
-    this.alwaysOnTopUserState = this.stateProvider.getActive(ALWAYS_ON_TOP_KEY);
-    this.closeToTrayState = this.stateProvider.getGlobal(CLOSE_TO_TRAY_KEY);
-    this.minimizeToTrayState = this.stateProvider.getGlobal(MINIMIZE_TO_TRAY_KEY);
-    this.startToTrayState = this.stateProvider.getGlobal(START_TO_TRAY_KEY);
-    this.trayEnabledState = this.stateProvider.getGlobal(TRAY_ENABLED_KEY);
-    this.openAtLoginState = this.stateProvider.getGlobal(OPEN_AT_LOGIN_KEY);
-    this.alwaysShowDockState = this.stateProvider.getGlobal(ALWAYS_SHOW_DOCK_KEY);
-
     this.window$ = this.windowState.state$.pipe(
       map((window) =>
         window != null && Object.keys(window).length > 0 ? window : new WindowState(),
       ),
     );
-
-    const alwaysOnTopGlobal$ = this.alwaysOnTopGlobalState.state$.pipe(
-      map((value) => value ?? false),
-    );
-
-    this.alwaysOnTop$ = this.stateProvider.activeUserId$.pipe(
-      switchMap((userId) =>
-        userId != null
-          ? // If there is an active user, prefer their value, else use the global value
-            this.stateProvider
-              .getUser(userId, ALWAYS_ON_TOP_KEY)
-              // If the user setting is null, go and try the global value
-              .state$.pipe(switchMap((value) => (value != null ? of(value) : alwaysOnTopGlobal$)))
-          : alwaysOnTopGlobal$,
-      ),
-    );
-
-    this.closeToTray$ = this.closeToTrayState.state$.pipe(map((value) => value ?? false));
-    this.minimizeToTray$ = this.minimizeToTrayState.state$.pipe(map((value) => value ?? false));
-    this.startToTray$ = this.startToTrayState.state$.pipe(map((value) => value ?? false));
-    this.trayEnabled$ = this.trayEnabledState.state$.pipe(map((value) => value ?? false));
-    this.openAtLogin$ = this.openAtLoginState.state$.pipe(map((value) => value ?? false));
-    this.alwaysShowDock$ = this.alwaysShowDockState.state$.pipe(map((value) => value ?? false));
   }
 
+  /**
+   *
+   */
   window$: Observable<WindowState>;
 
+  /**
+   *
+   * @param windowState
+   */
   async setWindow(windowState: WindowState) {
     await this.windowState.update(() => windowState);
   }
 
+  /**
+   *
+   */
   alwaysOnTop$: Observable<boolean>;
 
-  async setAlwaysOnTop(value: boolean) {
-    await this.alwaysOnTopUserState.update(() => value);
-    await this.alwaysOnTopGlobalState.update(() => value);
-  }
-
-  closeToTray$: Observable<boolean>;
-
+  /**
+   *
+   * @param value
+   */
   async setCloseToTray(value: boolean) {
     await this.closeToTrayState.update(() => value);
   }
 
-  minimizeToTray$: Observable<boolean>;
-
+  /**
+   *
+   * @param value
+   */
   async setMinimizeToTray(value: boolean) {
     await this.minimizeToTrayState.update(() => value);
   }
 
-  startToTray$: Observable<boolean>;
-
+  /**
+   *
+   * @param value
+   */
   async setStartToTray(value: boolean) {
     await this.startToTrayState.update(() => value);
   }
 
-  trayEnabled$: Observable<boolean>;
-
+  /**
+   *
+   * @param value
+   */
   async setTrayEnabled(value: boolean) {
     await this.trayEnabledState.update(() => value);
   }
 
-  openAtLogin$: Observable<boolean>;
-
+  /**
+   *
+   * @param value
+   */
   async setOpenAtLogin(value: boolean) {
     await this.openAtLoginState.update(() => value);
   }
 
-  alwaysShowDock$: Observable<boolean>;
-
+  /**
+   *
+   * @param value
+   */
   async setAlwaysShowDock(value: boolean) {
     await this.alwaysShowDockState.update(() => value);
   }

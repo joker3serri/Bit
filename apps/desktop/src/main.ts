@@ -111,6 +111,7 @@ export class Main {
     storageDefaults["global.vaultTimeoutAction"] = "lock";
     this.storageService = new ElectronStorageService(app.getPath("userData"), storageDefaults);
     this.memoryStorageService = new MemoryStorageService();
+    // TODO: Will any calls to active work here? This needs to be synced up more than likely
     this.memoryStorageForStateProviders = new MemoryStorageServiceForStateProviders();
     const storageServiceProvider = new StorageServiceProvider(
       this.storageService,
@@ -192,7 +193,7 @@ export class Main {
       (arg) => this.processDeepLink(arg),
       (win) => this.trayMain.setupWindowListeners(win),
     );
-    this.messagingMain = new MessagingMain(this, this.stateService, this.desktopSettingsService);
+    this.messagingMain = new MessagingMain(this, this.desktopSettingsService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
 
@@ -265,6 +266,7 @@ export class Main {
         this.powerMonitorMain.init();
         await this.updaterMain.init();
 
+        // TODO: Migrate these settings
         if (
           (await this.stateService.getEnableBrowserIntegration()) ||
           (await this.stateService.getEnableDuckDuckGoBrowserIntegration())

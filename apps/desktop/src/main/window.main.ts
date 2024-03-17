@@ -268,7 +268,7 @@ export class WindowMain {
   async toggleAlwaysOnTop() {
     this.enableAlwaysOnTop = !this.win.isAlwaysOnTop();
     this.win.setAlwaysOnTop(this.enableAlwaysOnTop);
-    await this.desktopSettingsService.setAlwaysOnTop(this.enableAlwaysOnTop);
+    await this.stateService.setEnableAlwaysOnTop(this.enableAlwaysOnTop);
   }
 
   private windowStateChangeHandler(configKey: string, win: BrowserWindow) {

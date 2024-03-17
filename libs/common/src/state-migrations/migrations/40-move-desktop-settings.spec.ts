@@ -30,6 +30,7 @@ describe("MoveDesktopSettings", () => {
       user1: {
         settings: {
           enableAlwaysOnTop: true,
+          minimizeOnCopyToClipboard: true,
         },
       },
     });
@@ -58,6 +59,7 @@ describe("MoveDesktopSettings", () => {
         settings: {},
       },
       user_user1_desktopSettings_alwaysOnTop: true,
+      user_user1_desktopSettings_minimizeOnCopy: true,
     });
   });
 
@@ -77,6 +79,7 @@ describe("MoveDesktopSettings", () => {
       user1: {
         settings: {
           enableAlwaysOnTop: false,
+          minimizeOnCopyToClipboard: false,
         },
       },
     });
@@ -96,6 +99,7 @@ describe("MoveDesktopSettings", () => {
         settings: {},
       },
       user_user1_desktopSettings_alwaysOnTop: false,
+      user_user1_desktopSettings_minimizeOnCopy: false,
     });
   });
 });

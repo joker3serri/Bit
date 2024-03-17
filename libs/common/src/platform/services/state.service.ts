@@ -905,6 +905,36 @@ export class StateService<
     );
   }
 
+  async getEnableAlwaysOnTop(options?: StorageOptions): Promise<boolean> {
+    const accountPreference = (
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+    )?.settings?.enableAlwaysOnTop;
+    const globalPreference = (
+      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+    )?.enableAlwaysOnTop;
+    return accountPreference ?? globalPreference ?? false;
+  }
+
+  async setEnableAlwaysOnTop(value: boolean, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    account.settings.enableAlwaysOnTop = value;
+    await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    globals.enableAlwaysOnTop = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+  }
+
   async getEnableBrowserIntegration(options?: StorageOptions): Promise<boolean> {
     return (
       (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
@@ -1280,23 +1310,6 @@ export class StateService<
     await this.saveGlobals(
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-  }
-
-  async getMainWindowSize(options?: StorageOptions): Promise<number> {
-    return (
-      await this.getGlobals(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.mainWindowSize;
-  }
-
-  async setMainWindowSize(value: number, options?: StorageOptions): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    globals.mainWindowSize = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
