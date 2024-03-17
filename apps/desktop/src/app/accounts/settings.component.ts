@@ -542,6 +542,7 @@ export class SettingsComponent implements OnInit {
     }
 
     await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
+    // TODO: Ideally the DesktopSettingsService.trayEnabled$ could be subscribed to instead of using messaging.
     this.messagingService.send(this.form.value.enableTray ? "showTray" : "removeTray");
   }
 
@@ -576,6 +577,7 @@ export class SettingsComponent implements OnInit {
 
   async saveOpenAtLogin() {
     await this.desktopSettingsService.setOpenAtLogin(this.form.value.openAtLogin);
+    // TODO: Ideally DesktopSettingsService.openAtLogin$ could be subscribed to directly rather than sending a message
     this.messagingService.send(
       this.form.value.openAtLogin ? "addOpenAtLogin" : "removeOpenAtLogin",
     );
