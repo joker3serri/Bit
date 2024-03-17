@@ -44,7 +44,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 3;
-export const CURRENT_VERSION = 39;
+export const CURRENT_VERSION = 40;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -86,7 +86,7 @@ export function createMigrationBuilder() {
     .with(AvatarColorMigrator, 36, 37)
     .with(TokenServiceStateProviderMigrator, 37, 38)
     .with(MoveBillingAccountProfileMigrator, 38, 39)
-    .with(MoveDesktopSettingsMigrator, 39, 40);
+    .with(MoveDesktopSettingsMigrator, 39, CURRENT_VERSION);
 }
 
 export async function currentVersion(
