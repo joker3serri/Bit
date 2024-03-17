@@ -32,39 +32,6 @@ pub fn get_password<'a>(service: &str, account: &str) -> Result<String> {
         unsafe { CredFree(credential as *mut _) };
     });
 
-    result.map_err(|e| anyhow!(convert_error(e)))?;
-
-    let password = unsafe {
-        U16String::from_ptr(
-            (*credential).CredentialBlob as *const u16,
-            (*credential).CredentialBlobSize as usize / 2,
-        )
-        .to_string_lossy()
-    };
-
-    Ok(String::from(password))
-}
-
-// Remove this after sufficient releases
-pub fn get_password_keytar<'a>(service: &str, account: &str) -> Result<String> {
-    let target_name = U16CString::from_str(target_name(service, account))?;
-
-    let mut credential: *mut CREDENTIALW = std::ptr::null_mut();
-    let credential_ptr = &mut credential;
-
-    let result = unsafe {
-        CredReadW(
-            PCWSTR(target_name.as_ptr()),
-            CRED_TYPE_GENERIC,
-            CRED_FLAGS_NONE,
-            credential_ptr,
-        )
-    };
-
-    scopeguard::defer!({
-        unsafe { CredFree(credential as *mut _) };
-    });
-
     result?;
 
     let password = unsafe {
@@ -77,7 +44,13 @@ pub fn get_password_keytar<'a>(service: &str, account: &str) -> Result<String> {
     Ok(String::from(password))
 }
 
+// Remove this after sufficient releases
+pub fn get_password_keytar<'a>(service: &str, account: &str) -> Result<String> {
+    get_password(service, account)
+}
+
 pub fn set_password(service: &str, account: &str, password: &str) -> Result<()> {
+    println!("--------------------set_password--------------------");
     let mut target_name = U16CString::from_str(target_name(service, account))?;
     let mut user_name = U16CString::from_str(account)?;
     let last_written = FILETIME {
@@ -85,8 +58,8 @@ pub fn set_password(service: &str, account: &str, password: &str) -> Result<()> 
         dwHighDateTime: 0,
     };
 
-    let credential = U16CString::from_str(password)?;
-    let credential_len = password.len() as u32 * 2;
+    let credential = password.as_ptr() as *mut u8;
+    let credential_len = password.len() as u32;
 
     let credential = CREDENTIALW {
         Flags: CRED_FLAGS(CRED_FLAGS_NONE),
@@ -95,7 +68,7 @@ pub fn set_password(service: &str, account: &str, password: &str) -> Result<()> 
         Comment: PWSTR::null(),
         LastWritten: last_written,
         CredentialBlobSize: credential_len,
-        CredentialBlob: credential.as_ptr() as *mut u8,
+        CredentialBlob: credential,
         Persist: CRED_PERSIST_ENTERPRISE,
         AttributeCount: 0,
         Attributes: std::ptr::null_mut(),
