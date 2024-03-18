@@ -38,13 +38,13 @@ import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main
 import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
 import { MainCryptoFunctionService } from "./platform/main/main-crypto-function.service";
+import { DesktopSettingsService } from "./platform/services/desktop-settings.service";
 import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
 import { ELECTRON_SUPPORTS_SECURE_STORAGE } from "./platform/services/electron-platform-utils.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
 import { IllegalSecureStorageService } from "./platform/services/illegal-secure-storage-service";
-import { DesktopSettingsService } from "./services/desktop-settings.service";
 import { ElectronMainMessagingService } from "./services/electron-main-messaging.service";
 
 export class Main {

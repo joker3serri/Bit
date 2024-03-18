@@ -24,7 +24,7 @@ import { DialogService } from "@bitwarden/components";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { flagEnabled } from "../../platform/flags";
-import { DesktopSettingsService } from "../../services/desktop-settings.service";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 
 @Component({
   selector: "app-settings",

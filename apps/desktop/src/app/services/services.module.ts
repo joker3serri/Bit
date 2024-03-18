@@ -54,6 +54,7 @@ import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
 import {
@@ -66,7 +67,6 @@ import { ElectronRendererStorageService } from "../../platform/services/electron
 import { ElectronStateService } from "../../platform/services/electron-state.service";
 import { I18nRendererService } from "../../platform/services/i18n.renderer.service";
 import { fromIpcSystemTheme } from "../../platform/utils/from-ipc-system-theme";
-import { DesktopSettingsService } from "../../services/desktop-settings.service";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
 import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
