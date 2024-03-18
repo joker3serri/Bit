@@ -8,7 +8,7 @@ import { first } from "rxjs/operators";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
@@ -85,7 +85,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected logService: LogService,
     protected twoFactorService: TwoFactorService,
     protected appIdService: AppIdService,
-    protected emailService: EmailService,
+    protected emailService: LoginEmailService,
     protected ssoLoginService: SsoLoginServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
   ) {

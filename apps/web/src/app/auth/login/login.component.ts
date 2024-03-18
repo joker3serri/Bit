@@ -14,7 +14,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -62,7 +62,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     private routerService: RouterService,
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
-    emailService: EmailService,
+    emailService: LoginEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {

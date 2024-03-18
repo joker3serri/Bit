@@ -30,14 +30,14 @@ import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/a
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
-import { EmailService as EmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/email.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginEmailService as LoginEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
-import { EmailService } from "@bitwarden/common/auth/services/email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/services/login-email.service";
 import {
   AutofillSettingsService,
   AutofillSettingsServiceAbstraction,
@@ -485,8 +485,8 @@ function getBgService<T>(service: keyof MainBackground) {
       useClass: BrowserFileDownloadService,
     },
     {
-      provide: EmailServiceAbstraction,
-      useClass: EmailService,
+      provide: LoginEmailServiceAbstraction,
+      useClass: LoginEmailService,
       deps: [StateProvider],
     },
     {

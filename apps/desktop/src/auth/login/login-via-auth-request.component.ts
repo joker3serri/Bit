@@ -12,7 +12,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
-import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -56,7 +56,7 @@ export class LoginViaAuthRequestComponent
     private modalService: ModalService,
     syncService: SyncService,
     stateService: StateService,
-    emailService: EmailService,
+    emailService: LoginEmailService,
     deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     authRequestService: AuthRequestServiceAbstraction,
     loginStrategyService: LoginStrategyServiceAbstraction,

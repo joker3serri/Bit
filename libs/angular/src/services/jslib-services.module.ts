@@ -54,8 +54,8 @@ import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/aut
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { EmailService as EmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/email.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { LoginEmailService as LoginEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
@@ -73,8 +73,8 @@ import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
-import { EmailService } from "@bitwarden/common/auth/services/email.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
+import { LoginEmailService } from "@bitwarden/common/auth/services/login-email.service";
 import { PasswordResetEnrollmentServiceImplementation } from "@bitwarden/common/auth/services/password-reset-enrollment.service.implementation";
 import { SsoLoginService } from "@bitwarden/common/auth/services/sso-login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
@@ -865,8 +865,8 @@ const typesafeProviders: Array<SafeProvider> = [
     deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
   }),
   safeProvider({
-    provide: EmailServiceAbstraction,
-    useClass: EmailService,
+    provide: LoginEmailServiceAbstraction,
+    useClass: LoginEmailService,
     deps: [StateProvider],
   }),
   safeProvider({

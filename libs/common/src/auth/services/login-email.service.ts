@@ -1,13 +1,13 @@
 import { firstValueFrom } from "rxjs";
 
-import { GlobalState, KeyDefinition, EMAIL_DISK, StateProvider } from "../../platform/state";
-import { EmailService as EmailServiceAbstraction } from "../abstractions/email.service";
+import { GlobalState, KeyDefinition, LOGIN_EMAIL_DISK, StateProvider } from "../../platform/state";
+import { LoginEmailService as LoginEmailServiceAbstraction } from "../abstractions/login-email.service";
 
-const STORED_EMAIL = new KeyDefinition<string>(EMAIL_DISK, "storedEmail", {
+const STORED_EMAIL = new KeyDefinition<string>(LOGIN_EMAIL_DISK, "storedEmail", {
   deserializer: (value: string) => value,
 });
 
-export class EmailService implements EmailServiceAbstraction {
+export class LoginEmailService implements LoginEmailServiceAbstraction {
   private email: string;
   private rememberEmail: boolean;
   private storedEmail: GlobalState<string>;

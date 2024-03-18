@@ -30,7 +30,7 @@ export const BILLING_DISK = new StateDefinition("billing", "disk");
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
 export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-local" });
-export const EMAIL_DISK = new StateDefinition("email", "disk", {
+export const LOGIN_EMAIL_DISK = new StateDefinition("loginEmail", "disk", {
   web: "disk-local",
 });
 export const LOGIN_STRATEGY_MEMORY = new StateDefinition("loginStrategy", "memory");

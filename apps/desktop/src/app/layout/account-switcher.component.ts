@@ -6,7 +6,7 @@ import { concatMap, firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -92,7 +92,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     private router: Router,
     private tokenService: TokenService,
     private environmentService: EnvironmentService,
-    private emailService: EmailService,
+    private emailService: LoginEmailService,
   ) {}
 
   async ngOnInit(): Promise<void> {

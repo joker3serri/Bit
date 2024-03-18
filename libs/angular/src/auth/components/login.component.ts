@@ -6,7 +6,7 @@ import { take, takeUntil } from "rxjs/operators";
 
 import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { EmailService } from "@bitwarden/common/auth/abstractions/email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -77,7 +77,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     protected formBuilder: FormBuilder,
     protected formValidationErrorService: FormValidationErrorsService,
     protected route: ActivatedRoute,
-    protected emailService: EmailService,
+    protected emailService: LoginEmailService,
     protected ssoLoginService: SsoLoginServiceAbstraction,
     protected webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {

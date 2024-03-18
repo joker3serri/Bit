@@ -1,5 +1,5 @@
-import { EmailService as EmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/email.service";
-import { EmailService } from "@bitwarden/common/auth/services/email.service";
+import { LoginEmailService as LoginEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/services/login-email.service";
 
 import {
   CachedServices,
@@ -16,13 +16,13 @@ type EmailServiceFactoryOptions = FactoryOptions;
 export type EmailServiceInitOptions = EmailServiceFactoryOptions & StateProviderInitOptions;
 
 export function emailServiceFactory(
-  cache: { emailService?: EmailServiceAbstraction } & CachedServices,
+  cache: { emailService?: LoginEmailServiceAbstraction } & CachedServices,
   opts: EmailServiceInitOptions,
-): Promise<EmailServiceAbstraction> {
+): Promise<LoginEmailServiceAbstraction> {
   return factory(
     cache,
     "emailService",
     opts,
-    async () => new EmailService(await stateProviderFactory(cache, opts)),
+    async () => new LoginEmailService(await stateProviderFactory(cache, opts)),
   );
 }

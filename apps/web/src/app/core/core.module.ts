@@ -14,8 +14,8 @@ import {
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
-import { EmailService as EmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/email.service";
-import { EmailService } from "@bitwarden/common/auth/services/email.service";
+import { LoginEmailService as LoginEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-email.service";
+import { LoginEmailService } from "@bitwarden/common/auth/services/login-email.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -115,8 +115,8 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
       useClass: WebFileDownloadService,
     },
     {
-      provide: EmailServiceAbstraction,
-      useClass: EmailService,
+      provide: LoginEmailServiceAbstraction,
+      useClass: LoginEmailService,
       deps: [StateProvider],
     },
     CollectionAdminService,

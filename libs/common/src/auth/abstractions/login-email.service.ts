@@ -1,4 +1,4 @@
-export abstract class EmailService {
+export abstract class LoginEmailService {
   /**
    * Gets the current email being used in the login process.
    * @returns A string of the email.
