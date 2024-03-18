@@ -570,7 +570,8 @@ export class PeopleComponent
   }
 
   async bulkEnableSM() {
-    const users = this.getCheckedUsers();
+    const users = this.getCheckedUsers().filter((ou) => !ou.accessSecretsManager);
+
     if (users.length === 0) {
       this.platformUtilsService.showToast(
         "error",
