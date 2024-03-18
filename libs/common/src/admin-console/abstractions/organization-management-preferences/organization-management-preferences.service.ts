@@ -6,11 +6,11 @@ import { Observable } from "rxjs";
  */
 export class OrganizationManagementPreference<T> {
   state$: Observable<T>;
-  update: (value: T) => Promise<void>;
+  set: (value: T) => Promise<void>;
 
-  constructor(state$: Observable<T>, updateFn: (value: T) => Promise<void>) {
+  constructor(state$: Observable<T>, setFn: (value: T) => Promise<void>) {
     this.state$ = state$;
-    this.update = updateFn;
+    this.set = setFn;
   }
 }
 

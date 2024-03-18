@@ -40,7 +40,7 @@ export class DefaultOrganizationManagementPreferencesService
   /**
    * Returns an `OrganizationManagementPreference` object for the provided
    * `KeyDefinition`. This object can then be used by callers to subscribe to
-   * a given key, or update its value in state.
+   * a given key, or set its value in state.
    */
   private buildOrganizationManagementPreference<T>(
     keyDefinition: UserKeyDefinition<T>,
@@ -48,22 +48,22 @@ export class DefaultOrganizationManagementPreferencesService
   ) {
     return new OrganizationManagementPreference<T>(
       this.getKeyFromState(keyDefinition).state$.pipe(map((x) => x ?? defaultValue)),
-      this.updateKeyInStateFn(keyDefinition),
+      this.setKeyInStateFn(keyDefinition),
     );
   }
 
   /**
    * Returns the full `ActiveUserState` value for a given `keyDefinition`
-   * The returned value can then be called for subscription || update operations
+   * The returned value can then be called for subscription || set operations
    */
   private getKeyFromState<T>(keyDefinition: UserKeyDefinition<T>) {
     return this.stateProvider.getActive(keyDefinition);
   }
 
   /**
-   * Returns a function that can be called to update the given `keyDefinition` in state
+   * Returns a function that can be called to set the given `keyDefinition` in state
    */
-  private updateKeyInStateFn<T>(keyDefinition: UserKeyDefinition<T>) {
+  private setKeyInStateFn<T>(keyDefinition: UserKeyDefinition<T>) {
     return async (value: T) => {
       await this.getKeyFromState(keyDefinition).update(() => value);
     };

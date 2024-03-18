@@ -63,7 +63,7 @@ export class EmergencyAccessConfirmComponent implements OnInit {
     }
 
     if (this.confirmForm.get("dontAskAgain").value) {
-      await this.organizationManagementPreferencesService.autoConfirmFingerPrints.update(true);
+      await this.organizationManagementPreferencesService.autoConfirmFingerPrints.set(true);
     }
 
     try {

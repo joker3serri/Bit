@@ -26,15 +26,15 @@ describe("OrganizationManagementPreferencesService", () => {
       expect(value).toEqual(false);
     });
     it("returns true if set", async () => {
-      await organizationManagementPreferencesService.autoConfirmFingerPrints.update(true);
+      await organizationManagementPreferencesService.autoConfirmFingerPrints.set(true);
       const value = await firstValueFrom(
         organizationManagementPreferencesService.autoConfirmFingerPrints.state$,
       );
       expect(value).toEqual(true);
     });
     it("can be unset", async () => {
-      await organizationManagementPreferencesService.autoConfirmFingerPrints.update(true);
-      await organizationManagementPreferencesService.autoConfirmFingerPrints.update(false);
+      await organizationManagementPreferencesService.autoConfirmFingerPrints.set(true);
+      await organizationManagementPreferencesService.autoConfirmFingerPrints.set(false);
       const value = await firstValueFrom(
         organizationManagementPreferencesService.autoConfirmFingerPrints.state$,
       );
