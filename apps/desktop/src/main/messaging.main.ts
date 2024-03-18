@@ -3,6 +3,7 @@ import * as path from "path";
 
 import { app, ipcMain } from "electron";
 
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { Main } from "../main";
@@ -19,17 +20,26 @@ export class MessagingMain {
     private main: Main,
     private stateService: StateService,
     private desktopSettingsService: DesktopSettingsService,
+    private logService: LogService,
   ) {}
 
   init() {
     this.scheduleNextSync();
     if (process.platform === "linux") {
-      // FIXME: Add logging service and catch exceptions
-      void this.desktopSettingsService.setOpenAtLogin(fs.existsSync(this.linuxStartupFile()));
+      this.desktopSettingsService
+        .setOpenAtLogin(fs.existsSync(this.linuxStartupFile()))
+        .catch((err) => {
+          this.logService.error(
+            `Error while setting open at login setting for linux: ${err?.message ?? "Unknown Error"}`,
+          );
+        });
     } else {
       const loginSettings = app.getLoginItemSettings();
-      // FIXME: Add logging service and catch exceptions
-      void this.desktopSettingsService.setOpenAtLogin(loginSettings.openAtLogin);
+      this.desktopSettingsService.setOpenAtLogin(loginSettings.openAtLogin).catch((err) => {
+        this.logService.error(
+          `Error while setting open at login setting: ${err?.message ?? "Unknown Error"}`,
+        );
+      });
     }
     ipcMain.on("messagingService", async (event: any, message: any) => this.onMessage(message));
   }

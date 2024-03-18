@@ -197,7 +197,12 @@ export class Main {
       (arg) => this.processDeepLink(arg),
       (win) => this.trayMain.setupWindowListeners(win),
     );
-    this.messagingMain = new MessagingMain(this, this.desktopSettingsService);
+    this.messagingMain = new MessagingMain(
+      this,
+      this.stateService,
+      this.desktopSettingsService,
+      this.logService,
+    );
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
 
@@ -263,9 +268,7 @@ export class Main {
           },
         ]);
         if (await firstValueFrom(this.desktopSettingsService.startToTray$)) {
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.trayMain.hideToTray();
+          await this.trayMain.hideToTray();
         }
         this.powerMonitorMain.init();
         await this.updaterMain.init();

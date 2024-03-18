@@ -144,7 +144,7 @@ export class WindowMain {
       this.defaultWidth,
       this.defaultHeight,
     );
-    this.enableAlwaysOnTop = await firstValueFrom(this.desktopSettingsService.alwaysOnTop$);
+    this.enableAlwaysOnTop = await this.stateService.getEnableAlwaysOnTop();
 
     this.session = session.fromPartition("persist:bitwarden", { cache: false });
 
