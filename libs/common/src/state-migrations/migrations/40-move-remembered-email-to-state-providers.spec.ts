@@ -52,7 +52,7 @@ describe("RememberedEmailMigrator", () => {
     const keyDefinitionLike = {
       key: "storedEmail",
       stateDefinition: {
-        name: "rememberEmail",
+        name: "email",
       },
     };
 
@@ -68,12 +68,12 @@ describe("RememberedEmailMigrator", () => {
       expect(helper.setToGlobal).toHaveBeenCalledWith(keyDefinitionLike, null);
     });
 
-    it("should add the storedEmail property back to legacy global object", async () => {
+    it("should add the rememberedEmail property back to legacy global object", async () => {
       await sut.rollback(helper);
 
       expect(helper.set).toHaveBeenCalledTimes(1);
       expect(helper.set).toHaveBeenCalledWith("global", {
-        storedEmail: "user@example.com",
+        rememberedEmail: "user@example.com",
         extra: "data",
       });
     });
