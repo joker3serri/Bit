@@ -112,7 +112,6 @@ export class Main {
     storageDefaults["global.vaultTimeoutAction"] = "lock";
     this.storageService = new ElectronStorageService(app.getPath("userData"), storageDefaults);
     this.memoryStorageService = new MemoryStorageService();
-    // TODO: Will any calls to active work here? This needs to be synced up more than likely
     this.memoryStorageForStateProviders = new MemoryStorageServiceForStateProviders();
     const storageServiceProvider = new StorageServiceProvider(
       this.storageService,
@@ -273,7 +272,6 @@ export class Main {
         this.powerMonitorMain.init();
         await this.updaterMain.init();
 
-        // TODO: Migrate these settings
         if (
           (await this.stateService.getEnableBrowserIntegration()) ||
           (await this.stateService.getEnableDuckDuckGoBrowserIntegration())
