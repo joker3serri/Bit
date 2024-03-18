@@ -22,7 +22,7 @@ export class UserConfirmComponent implements OnInit {
   constructor(
     private cryptoService: CryptoService,
     private logService: LogService,
-    private organizationManagementPreferenceService: OrganizationManagementPreferencesService,
+    private organizationManagementPreferencesService: OrganizationManagementPreferencesService,
   ) {}
 
   async ngOnInit() {
