@@ -2,7 +2,9 @@ import * as path from "path";
 
 import { app } from "electron";
 
+import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
+import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
@@ -13,11 +15,13 @@ import { MigrationBuilderService } from "@bitwarden/common/platform/services/mig
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopMessagingService } from "@bitwarden/common/platform/services/noop-messaging.service";
 /* eslint-disable import/no-restricted-paths -- We need the implementation to inject, but generally this should not be accessed */
+import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-active-user-state.provider";
 import { DefaultDerivedStateProvider } from "@bitwarden/common/platform/state/implementations/default-derived-state.provider";
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
 import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
+import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 /* eslint-enable import/no-restricted-paths */
 
@@ -34,6 +38,7 @@ import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
 import { MainCryptoFunctionService } from "./platform/main/main-crypto-function.service";
 import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
+import { ELECTRON_SUPPORTS_SECURE_STORAGE } from "./platform/services/electron-platform-utils.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
@@ -51,6 +56,7 @@ export class Main {
   mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   migrationRunner: MigrationRunner;
+  tokenService: TokenServiceAbstraction;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -95,7 +101,6 @@ export class Main {
     }
 
     this.logService = new ElectronLogMainService(null, app.getPath("userData"));
-    this.i18nService = new I18nMainService("en", "./locales/");
 
     const storageDefaults: any = {};
     // Default vault timeout to "on restart", and action to "lock"
@@ -104,10 +109,13 @@ export class Main {
     this.storageService = new ElectronStorageService(app.getPath("userData"), storageDefaults);
     this.memoryStorageService = new MemoryStorageService();
     this.memoryStorageForStateProviders = new MemoryStorageServiceForStateProviders();
-    const globalStateProvider = new DefaultGlobalStateProvider(
-      this.memoryStorageForStateProviders,
+    const storageServiceProvider = new StorageServiceProvider(
       this.storageService,
+      this.memoryStorageForStateProviders,
     );
+    const globalStateProvider = new DefaultGlobalStateProvider(storageServiceProvider);
+
+    this.i18nService = new I18nMainService("en", "./locales/", globalStateProvider);
 
     const accountService = new AccountServiceImplementation(
       new NoopMessagingService(),
@@ -115,18 +123,36 @@ export class Main {
       globalStateProvider,
     );
 
+    const stateEventRegistrarService = new StateEventRegistrarService(
+      globalStateProvider,
+      storageServiceProvider,
+    );
+
+    const singleUserStateProvider = new DefaultSingleUserStateProvider(
+      storageServiceProvider,
+      stateEventRegistrarService,
+    );
+
+    const activeUserStateProvider = new DefaultActiveUserStateProvider(
+      accountService,
+      singleUserStateProvider,
+    );
+
     const stateProvider = new DefaultStateProvider(
-      new DefaultActiveUserStateProvider(
-        accountService,
-        this.memoryStorageForStateProviders,
-        this.storageService,
-      ),
-      new DefaultSingleUserStateProvider(this.memoryStorageForStateProviders, this.storageService),
+      activeUserStateProvider,
+      singleUserStateProvider,
       globalStateProvider,
       new DefaultDerivedStateProvider(this.memoryStorageForStateProviders),
     );
 
     this.environmentService = new EnvironmentService(stateProvider, accountService);
+
+    this.tokenService = new TokenService(
+      singleUserStateProvider,
+      globalStateProvider,
+      ELECTRON_SUPPORTS_SECURE_STORAGE,
+      this.storageService,
+    );
 
     this.migrationRunner = new MigrationRunner(
       this.storageService,
@@ -145,6 +171,7 @@ export class Main {
       new StateFactory(GlobalState, Account),
       accountService, // will not broadcast logouts. This is a hack until we can remove messaging dependency
       this.environmentService,
+      this.tokenService,
       this.migrationRunner,
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
@@ -166,6 +193,7 @@ export class Main {
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
     });
+
     this.powerMonitorMain = new PowerMonitorMain(this.messagingService);
     this.menuMain = new MenuMain(
       this.i18nService,
@@ -210,8 +238,7 @@ export class Main {
     this.migrationRunner.run().then(
       async () => {
         await this.windowMain.init();
-        const locale = await this.stateService.getLocale();
-        await this.i18nService.init(locale != null ? locale : app.getLocale());
+        await this.i18nService.init();
         this.messagingMain.init();
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
