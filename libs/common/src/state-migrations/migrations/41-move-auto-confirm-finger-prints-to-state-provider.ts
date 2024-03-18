@@ -14,7 +14,7 @@ const AUTO_CONFIRM_FINGERPRINTS: KeyDefinitionLike = {
   stateDefinition: ORGANIZATION_MANAGEMENT_PREFERENCES,
 };
 
-export class AutoConfirmFingerPrintsMigrator extends Migrator<39, 40> {
+export class AutoConfirmFingerPrintsMigrator extends Migrator<40, 41> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountState>();
 
