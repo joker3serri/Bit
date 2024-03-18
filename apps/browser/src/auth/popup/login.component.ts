@@ -45,7 +45,7 @@ export class LoginComponent extends BaseLoginComponent {
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
     route: ActivatedRoute,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
@@ -65,7 +65,7 @@ export class LoginComponent extends BaseLoginComponent {
       formBuilder,
       formValidationErrorService,
       route,
-      emailService,
+      loginEmailService,
       ssoLoginService,
       webAuthnLoginService,
     );
@@ -76,8 +76,8 @@ export class LoginComponent extends BaseLoginComponent {
     this.showPasswordless = flagEnabled("showPasswordless");
 
     if (this.showPasswordless) {
-      this.formGroup.controls.email.setValue(this.emailService.getEmail());
-      this.formGroup.controls.rememberEmail.setValue(this.emailService.getRememberEmail());
+      this.formGroup.controls.email.setValue(this.loginEmailService.getEmail());
+      this.formGroup.controls.rememberEmail.setValue(this.loginEmailService.getRememberEmail());
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.validateEmail();
@@ -93,7 +93,7 @@ export class LoginComponent extends BaseLoginComponent {
   async launchSsoBrowser() {
     // Save off email for SSO
     await this.ssoLoginService.setSsoEmail(this.formGroup.value.email);
-    await this.emailService.saveEmailSettings();
+    await this.loginEmailService.saveEmailSettings();
     // Generate necessary sso params
     const passwordOptions: any = {
       type: "password",

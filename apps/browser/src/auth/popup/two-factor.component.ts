@@ -54,7 +54,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     logService: LogService,
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
     configService: ConfigServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     private dialogService: DialogService,
@@ -74,7 +74,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       logService,
       twoFactorService,
       appIdService,
-      emailService,
+      loginEmailService,
       ssoLoginService,
       configService,
     );

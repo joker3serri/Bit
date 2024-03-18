@@ -79,7 +79,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected activatedRoute: ActivatedRoute,
     protected messagingService: MessagingService,
     protected tokenService: TokenService,
-    protected emailService: LoginEmailService,
+    protected loginEmailService: LoginEmailService,
     protected organizationApiService: OrganizationApiServiceAbstraction,
     protected cryptoService: CryptoService,
     protected organizationUserService: OrganizationUserService,
@@ -240,14 +240,14 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.emailService.setEmail(this.data.userEmail);
+    this.loginEmailService.setEmail(this.data.userEmail);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/login-with-device"]);
   }
 
   async requestAdminApproval() {
-    this.emailService.setEmail(this.data.userEmail);
+    this.loginEmailService.setEmail(this.data.userEmail);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/admin-approval-requested"]);

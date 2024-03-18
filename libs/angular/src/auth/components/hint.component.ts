@@ -22,11 +22,11 @@ export class HintComponent implements OnInit {
     protected apiService: ApiService,
     protected platformUtilsService: PlatformUtilsService,
     private logService: LogService,
-    private emailService: LoginEmailService,
+    private loginEmailService: LoginEmailService,
   ) {}
 
   ngOnInit(): void {
-    this.email = this.emailService.getEmail() ?? "";
+    this.email = this.loginEmailService.getEmail() ?? "";
   }
 
   async submit() {

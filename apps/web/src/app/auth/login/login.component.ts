@@ -62,7 +62,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     private routerService: RouterService,
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
@@ -82,7 +82,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       formBuilder,
       formValidationErrorService,
       route,
-      emailService,
+      loginEmailService,
       ssoLoginService,
       webAuthnLoginService,
     );
@@ -173,7 +173,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       }
     }
 
-    this.emailService.clearValues();
+    this.loginEmailService.clearValues();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate([this.successRoute]);
@@ -205,7 +205,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     const rememberEmail = this.formGroup.value.rememberEmail;
 
     if (!rememberEmail) {
-      await this.emailService.setStoredEmail(null);
+      await this.loginEmailService.setStoredEmail(null);
     }
     await super.submit(false);
   }

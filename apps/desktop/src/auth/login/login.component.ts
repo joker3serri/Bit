@@ -73,7 +73,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
     route: ActivatedRoute,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
@@ -93,7 +93,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
       formBuilder,
       formValidationErrorService,
       route,
-      emailService,
+      loginEmailService,
       ssoLoginService,
       webAuthnLoginService,
     );

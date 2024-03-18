@@ -85,7 +85,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected logService: LogService,
     protected twoFactorService: TwoFactorService,
     protected appIdService: AppIdService,
-    protected emailService: LoginEmailService,
+    protected loginEmailService: LoginEmailService,
     protected ssoLoginService: SsoLoginServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
   ) {
@@ -283,7 +283,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     // - TDE login decryption options component
     // - Browser SSO on extension open
     await this.ssoLoginService.setActiveUserOrganizationSsoIdentifier(this.orgIdentifier);
-    this.emailService.clearValues();
+    this.loginEmailService.clearValues();
 
     // note: this flow affects both TDE & standard users
     if (this.isForcePasswordResetRequired(authResult)) {

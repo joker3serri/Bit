@@ -52,7 +52,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     logService: LogService,
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigServiceAbstraction,
     @Inject(WINDOW) protected win: Window,
@@ -70,7 +70,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       logService,
       twoFactorService,
       appIdService,
-      emailService,
+      loginEmailService,
       ssoLoginService,
       configService,
     );

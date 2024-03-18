@@ -258,7 +258,7 @@ export default class MainBackground {
   auditService: AuditServiceAbstraction;
   authService: AuthServiceAbstraction;
   loginStrategyService: LoginStrategyServiceAbstraction;
-  emailService: LoginEmailServiceAbstraction;
+  loginEmailService: LoginEmailServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
   importService: ImportServiceAbstraction;
   exportService: VaultExportServiceAbstraction;
@@ -1076,7 +1076,7 @@ export default class MainBackground {
       await this.stateService.setActiveUser(userId);
 
       if (userId == null) {
-        await this.emailService.setStoredEmail(null);
+        await this.loginEmailService.setStoredEmail(null);
         await this.refreshBadge();
         await this.refreshMenu();
         await this.overlayBackground.updateOverlayCiphers();

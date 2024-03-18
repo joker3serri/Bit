@@ -20,9 +20,9 @@ export class HintComponent extends BaseHintComponent {
     apiService: ApiService,
     logService: LogService,
     private route: ActivatedRoute,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
   ) {
-    super(router, i18nService, apiService, platformUtilsService, logService, emailService);
+    super(router, i18nService, apiService, platformUtilsService, logService, loginEmailService);
 
     super.onSuccessfulSubmit = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.

@@ -77,7 +77,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     protected formBuilder: FormBuilder,
     protected formValidationErrorService: FormValidationErrorsService,
     protected route: ActivatedRoute,
-    protected emailService: LoginEmailService,
+    protected loginEmailService: LoginEmailService,
     protected ssoLoginService: SsoLoginServiceAbstraction,
     protected webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
@@ -103,14 +103,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     });
 
     if (!this.paramEmailSet) {
-      const storedEmail = await this.emailService.getStoredEmail();
+      const storedEmail = await this.loginEmailService.getStoredEmail();
       this.formGroup.get("email")?.setValue(storedEmail ?? "");
     }
 
-    let rememberEmail = this.emailService.getRememberEmail();
+    let rememberEmail = this.loginEmailService.getRememberEmail();
 
     if (rememberEmail == null) {
-      rememberEmail = (await this.emailService.getStoredEmail()) != null;
+      rememberEmail = (await this.loginEmailService.getStoredEmail()) != null;
     }
 
     this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
@@ -151,7 +151,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
       this.setFormValues();
-      await this.emailService.saveEmailSettings();
+      await this.loginEmailService.saveEmailSettings();
       if (this.handleCaptchaRequired(response)) {
         return;
       } else if (this.handleMigrateEncryptionKey(response)) {
@@ -294,13 +294,13 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   }
 
   setFormValues() {
-    this.emailService.setEmail(this.formGroup.value.email);
-    this.emailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    this.loginEmailService.setEmail(this.formGroup.value.email);
+    this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
   }
 
   async saveEmailSettings() {
     this.setFormValues();
-    await this.emailService.saveEmailSettings();
+    await this.loginEmailService.saveEmailSettings();
 
     // Save off email for SSO
     await this.ssoLoginService.setSsoEmail(this.formGroup.value.email);

@@ -92,7 +92,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     private router: Router,
     private tokenService: TokenService,
     private environmentService: EnvironmentService,
-    private emailService: LoginEmailService,
+    private loginEmailService: LoginEmailService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -139,7 +139,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
 
   async addAccount() {
     this.close();
-    await this.emailService.setStoredEmail(null);
+    await this.loginEmailService.setStoredEmail(null);
     await this.router.navigate(["/login"]);
     await this.stateService.setActiveUser(null);
   }

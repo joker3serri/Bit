@@ -84,7 +84,7 @@ export class LoginViaAuthRequestComponent
     private anonymousHubService: AnonymousHubService,
     private validationService: ValidationService,
     private stateService: StateService,
-    private emailService: LoginEmailService,
+    private loginEmailService: LoginEmailService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authRequestService: AuthRequestServiceAbstraction,
     private loginStrategyService: LoginStrategyServiceAbstraction,
@@ -95,7 +95,7 @@ export class LoginViaAuthRequestComponent
     // Why would the existence of the email depend on the navigation?
     const navigation = this.router.getCurrentNavigation();
     if (navigation) {
-      this.email = this.emailService.getEmail();
+      this.email = this.loginEmailService.getEmail();
     }
 
     //gets signalR push notification
@@ -150,7 +150,7 @@ export class LoginViaAuthRequestComponent
     } else {
       // Standard auth request
       // TODO: evaluate if we can remove the setting of this.email in the constructor
-      this.email = this.emailService.getEmail();
+      this.email = this.loginEmailService.getEmail();
 
       if (!this.email) {
         this.platformUtilsService.showToast("error", null, this.i18nService.t("userEmailMissing"));
@@ -472,10 +472,10 @@ export class LoginViaAuthRequestComponent
   }
 
   async setRememberEmailValues() {
-    const rememberEmail = this.emailService.getRememberEmail();
-    const rememberedEmail = this.emailService.getEmail();
-    await this.emailService.setStoredEmail(rememberEmail ? rememberedEmail : null);
-    this.emailService.clearValues();
+    const rememberEmail = this.loginEmailService.getRememberEmail();
+    const rememberedEmail = this.loginEmailService.getEmail();
+    await this.loginEmailService.setStoredEmail(rememberEmail ? rememberedEmail : null);
+    this.loginEmailService.clearValues();
   }
 
   private async handleSuccessfulLoginNavigation() {

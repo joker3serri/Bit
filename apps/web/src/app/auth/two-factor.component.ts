@@ -43,7 +43,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     logService: LogService,
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigServiceAbstraction,
     @Inject(WINDOW) protected win: Window,
@@ -61,7 +61,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
       logService,
       twoFactorService,
       appIdService,
-      emailService,
+      loginEmailService,
       ssoLoginService,
       configService,
     );
@@ -98,7 +98,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
   }
 
   goAfterLogIn = async () => {
-    this.emailService.clearValues();
+    this.loginEmailService.clearValues();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate([this.successRoute], {

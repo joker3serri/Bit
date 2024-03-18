@@ -19,8 +19,8 @@ export class HintComponent extends BaseHintComponent {
     i18nService: I18nService,
     apiService: ApiService,
     logService: LogService,
-    emailService: LoginEmailService,
+    loginEmailService: LoginEmailService,
   ) {
-    super(router, i18nService, apiService, platformUtilsService, logService, emailService);
+    super(router, i18nService, apiService, platformUtilsService, logService, loginEmailService);
   }
 }
