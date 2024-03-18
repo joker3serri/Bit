@@ -45,7 +45,7 @@ export class UserConfirmComponent implements OnInit {
     }
 
     if (this.dontAskAgain) {
-      await this.organizationManagementPreferenceService.autoConfirmFingerPrints.update(true);
+      await this.organizationManagementPreferencesService.autoConfirmFingerPrints.update(true);
     }
 
     this.onConfirmedUser.emit();
