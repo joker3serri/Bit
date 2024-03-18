@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.environmentSelector.onOpenSelfHostedSettings
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => {
-        this.setFormValues();
+        this.setLoginEmailValues();
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.router.navigate(["environment"]);
@@ -85,8 +85,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loginEmailService.setEmail(this.formGroup.value.email);
-    this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    this.setLoginEmailValues();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["login"], { queryParams: { email: this.formGroup.value.email } });
@@ -96,7 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     return this.environmentService.hasBaseUrl() ? this.environmentService.getWebVaultUrl() : null;
   }
 
-  setFormValues() {
+  setLoginEmailValues() {
     this.loginEmailService.setEmail(this.formGroup.value.email);
     this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
   }

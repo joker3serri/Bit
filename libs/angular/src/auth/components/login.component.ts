@@ -150,7 +150,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
 
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
-      this.setFormValues();
+      this.setLoginEmailValues();
       await this.loginEmailService.saveEmailSettings();
       if (this.handleCaptchaRequired(response)) {
         return;
@@ -216,7 +216,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       return;
     }
 
-    this.setFormValues();
+    this.setLoginEmailValues();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/login-with-device"]);
@@ -293,13 +293,13 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     }
   }
 
-  setFormValues() {
+  setLoginEmailValues() {
     this.loginEmailService.setEmail(this.formGroup.value.email);
     this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
   }
 
   async saveEmailSettings() {
-    this.setFormValues();
+    this.setLoginEmailValues();
     await this.loginEmailService.saveEmailSettings();
 
     // Save off email for SSO
