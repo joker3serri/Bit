@@ -227,8 +227,6 @@ export abstract class StateService<T extends Account = Account> {
     value: boolean,
     options?: StorageOptions,
   ) => Promise<void>;
-  getEnableHardwareAcceleration: (options?: StorageOptions) => Promise<boolean>;
-  setEnableHardwareAcceleration: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEnableCloseToTray: (options?: StorageOptions) => Promise<boolean>;
   setEnableCloseToTray: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEnableDuckDuckGoBrowserIntegration: (options?: StorageOptions) => Promise<boolean>;

@@ -65,6 +65,7 @@ export const CRYPTO_MEMORY = new StateDefinition("crypto", "memory");
 export const ENVIRONMENT_DISK = new StateDefinition("environment", "disk");
 export const THEMING_DISK = new StateDefinition("theming", "disk");
 export const TRANSLATION_DISK = new StateDefinition("translation", "disk");
+export const DESKTOP_SETTINGS_DISK = new StateDefinition("desktopSettings", "disk");
 
 // Secrets Manager
 

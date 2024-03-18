@@ -3,7 +3,6 @@ import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, firstValueFrom, Observable, Subject } from "rxjs";
 import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
-import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -25,6 +24,7 @@ import { DialogService } from "@bitwarden/components";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { flagEnabled } from "../../platform/flags";
+import { DesktopSettingsService } from "../../services/desktop-settings.service";
 
 @Component({
   selector: "app-settings",
@@ -116,12 +116,12 @@ export class SettingsComponent implements OnInit {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private messagingService: MessagingService,
     private cryptoService: CryptoService,
-    private modalService: ModalService,
     private themeStateService: ThemeStateService,
     private settingsService: SettingsService,
     private dialogService: DialogService,
     private userVerificationService: UserVerificationServiceAbstraction,
     private biometricStateService: BiometricStateService,
+    private desktopSettingsService: DesktopSettingsService,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
@@ -262,7 +262,9 @@ export class SettingsComponent implements OnInit {
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
-      enableHardwareAcceleration: await this.stateService.getEnableHardwareAcceleration(),
+      enableHardwareAcceleration: await firstValueFrom(
+        this.desktopSettingsService.hardwareAcceleration$,
+      ),
       enableDuckDuckGoBrowserIntegration:
         await this.stateService.getEnableDuckDuckGoBrowserIntegration(),
       theme: await firstValueFrom(this.themeStateService.selectedTheme$),
@@ -660,7 +662,9 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveHardwareAcceleration() {
-    await this.stateService.setEnableHardwareAcceleration(this.form.value.enableHardwareAcceleration);
+    await this.desktopSettingsService.setHardwareAcceleration(
+      this.form.value.enableHardwareAcceleration,
+    );
   }
 
   async updateApproveLoginRequests() {

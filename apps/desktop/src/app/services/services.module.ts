@@ -61,6 +61,7 @@ import { ElectronRendererStorageService } from "../../platform/services/electron
 import { ElectronStateService } from "../../platform/services/electron-state.service";
 import { I18nRendererService } from "../../platform/services/i18n.renderer.service";
 import { fromIpcSystemTheme } from "../../platform/utils/from-ipc-system-theme";
+import { DesktopSettingsService } from "../../services/desktop-settings.service";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
 import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
@@ -199,6 +200,11 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         StateProvider,
         BiometricStateService,
       ],
+    },
+    {
+      provide: DesktopSettingsService,
+      useClass: DesktopSettingsService,
+      deps: [StateProvider],
     },
   ],
 })

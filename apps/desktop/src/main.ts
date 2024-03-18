@@ -1,6 +1,7 @@
 import * as path from "path";
 
 import { app } from "electron";
+import { firstValueFrom } from "rxjs";
 
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -39,6 +40,7 @@ import { ElectronLogMainService } from "./platform/services/electron-log.main.se
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
+import { DesktopSettingsService } from "./services/desktop-settings.service";
 import { ElectronMainMessagingService } from "./services/electron-main-messaging.service";
 
 export class Main {
@@ -53,6 +55,7 @@ export class Main {
   mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   migrationRunner: MigrationRunner;
+  desktopSettingsService: DesktopSettingsService;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -171,6 +174,7 @@ export class Main {
     this.messagingMain = new MessagingMain(this, this.stateService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.stateService);
+    this.desktopSettingsService = new DesktopSettingsService(stateProvider);
 
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
@@ -214,11 +218,11 @@ export class Main {
   }
 
   bootstrap() {
-    this.toggleHardwareAcceleration();
     this.desktopCredentialStorageListener.init();
     // Run migrations first, then other things
     this.migrationRunner.run().then(
       async () => {
+        await this.toggleHardwareAcceleration();
         await this.windowMain.init();
         await this.i18nService.init();
         this.messagingMain.init();
@@ -291,9 +295,12 @@ export class Main {
   }
 
   private async toggleHardwareAcceleration(): Promise<void> {
-    const enableHardwareRendering =
-      await this.stateService.getEnableHardwareAcceleration();
-    if (!enableHardwareRendering) {
+    const hardwareAcceleration = await firstValueFrom(
+      this.desktopSettingsService.hardwareAcceleration$,
+    );
+
+    if (!hardwareAcceleration) {
+      this.logService.warning("Hardware acceleration is disabled");
       app.disableHardwareAcceleration();
     }
   }

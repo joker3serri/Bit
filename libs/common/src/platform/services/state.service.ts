@@ -1591,24 +1591,6 @@ export class StateService<
     );
   }
 
-  async getEnableHardwareAcceleration(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.enableHardwareAcceleration ?? true
-    );
-  }
-
-  async setEnableHardwareAcceleration(value: boolean, options?: StorageOptions): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-    globals.enableHardwareAcceleration = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-  }
-
   async getOrganizationInvitation(options?: StorageOptions): Promise<any> {
     return (
       await this.getGlobals(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
