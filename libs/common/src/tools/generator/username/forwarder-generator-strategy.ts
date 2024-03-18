@@ -65,6 +65,7 @@ export abstract class ForwarderGeneratorStrategy<
         Record<keyof Options, never>,
         Omit<Options, "website">
       >(userId, key, this.stateProvider, encryptor);
+
       this.durableStates.set(userId, state);
     }
 
