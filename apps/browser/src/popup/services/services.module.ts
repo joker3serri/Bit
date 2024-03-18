@@ -98,7 +98,6 @@ import { DialogService } from "@bitwarden/components";
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
-import { BrowserOrganizationService } from "../../admin-console/services/browser-organization.service";
 import { UnauthGuardService } from "../../auth/popup/services";
 import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
 import MainBackground from "../../background/main.background";
@@ -233,7 +232,6 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
-    { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
     {
       provide: I18nServiceAbstraction,
       useFactory: (globalStateProvider: GlobalStateProvider) => {
@@ -400,13 +398,6 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     {
-      provide: OrganizationService,
-      useFactory: (stateService: StateServiceAbstraction, stateProvider: StateProvider) => {
-        return new BrowserOrganizationService(stateService, stateProvider);
-      },
-      deps: [StateServiceAbstraction, StateProvider],
-    },
-    {
       provide: VaultFilterService,
       useClass: VaultFilterService,
       deps: [
@@ -445,6 +436,7 @@ function getBgService<T>(service: keyof MainBackground) {
         logService: LogServiceAbstraction,
         accountService: AccountServiceAbstraction,
         environmentService: EnvironmentService,
+        tokenService: TokenService,
         migrationRunner: MigrationRunner,
       ) => {
         return new BrowserStateService(
@@ -455,6 +447,7 @@ function getBgService<T>(service: keyof MainBackground) {
           new StateFactory(GlobalState, Account),
           accountService,
           environmentService,
+          tokenService,
           migrationRunner,
         );
       },
@@ -465,6 +458,7 @@ function getBgService<T>(service: keyof MainBackground) {
         LogServiceAbstraction,
         AccountServiceAbstraction,
         EnvironmentService,
+        TokenService,
         MigrationRunner,
       ],
     },

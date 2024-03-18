@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
 
-import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
@@ -52,25 +51,15 @@ export abstract class StateService<T extends Account = Account> {
   clean: (options?: StorageOptions) => Promise<UserId>;
   init: (initOptions?: InitOptions) => Promise<void>;
 
-  getAccessToken: (options?: StorageOptions) => Promise<string>;
-  setAccessToken: (value: string, options?: StorageOptions) => Promise<void>;
   getAddEditCipherInfo: (options?: StorageOptions) => Promise<AddEditCipherInfo>;
   setAddEditCipherInfo: (value: AddEditCipherInfo, options?: StorageOptions) => Promise<void>;
   getAlwaysShowDock: (options?: StorageOptions) => Promise<boolean>;
   setAlwaysShowDock: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getApiKeyClientId: (options?: StorageOptions) => Promise<string>;
-  setApiKeyClientId: (value: string, options?: StorageOptions) => Promise<void>;
-  getApiKeyClientSecret: (options?: StorageOptions) => Promise<string>;
-  setApiKeyClientSecret: (value: string, options?: StorageOptions) => Promise<void>;
+
   getAutoConfirmFingerPrints: (options?: StorageOptions) => Promise<boolean>;
   setAutoConfirmFingerprints: (value: boolean, options?: StorageOptions) => Promise<void>;
   getBiometricFingerprintValidated: (options?: StorageOptions) => Promise<boolean>;
   setBiometricFingerprintValidated: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getCanAccessPremium: (options?: StorageOptions) => Promise<boolean>;
-  getHasPremiumPersonally: (options?: StorageOptions) => Promise<boolean>;
-  setHasPremiumPersonally: (value: boolean, options?: StorageOptions) => Promise<void>;
-  setHasPremiumFromOrganization: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getHasPremiumFromOrganization: (options?: StorageOptions) => Promise<boolean>;
   getConvertAccountToKeyConnector: (options?: StorageOptions) => Promise<boolean>;
   setConvertAccountToKeyConnector: (value: boolean, options?: StorageOptions) => Promise<void>;
   /**
@@ -301,17 +290,6 @@ export abstract class StateService<T extends Account = Account> {
   setOpenAtLogin: (value: boolean, options?: StorageOptions) => Promise<void>;
   getOrganizationInvitation: (options?: StorageOptions) => Promise<any>;
   setOrganizationInvitation: (value: any, options?: StorageOptions) => Promise<void>;
-  /**
-   * @deprecated Do not call this directly, use OrganizationService
-   */
-  getOrganizations: (options?: StorageOptions) => Promise<{ [id: string]: OrganizationData }>;
-  /**
-   * @deprecated Do not call this directly, use OrganizationService
-   */
-  setOrganizations: (
-    value: { [id: string]: OrganizationData },
-    options?: StorageOptions,
-  ) => Promise<void>;
   getPasswordGenerationOptions: (options?: StorageOptions) => Promise<PasswordGeneratorOptions>;
   setPasswordGenerationOptions: (
     value: PasswordGeneratorOptions,
@@ -332,14 +310,10 @@ export abstract class StateService<T extends Account = Account> {
    * Sets the user's Pin, encrypted by the user key
    */
   setProtectedPin: (value: string, options?: StorageOptions) => Promise<void>;
-  getRefreshToken: (options?: StorageOptions) => Promise<string>;
-  setRefreshToken: (value: string, options?: StorageOptions) => Promise<void>;
   getRememberedEmail: (options?: StorageOptions) => Promise<string>;
   setRememberedEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getSecurityStamp: (options?: StorageOptions) => Promise<string>;
   setSecurityStamp: (value: string, options?: StorageOptions) => Promise<void>;
-  getTwoFactorToken: (options?: StorageOptions) => Promise<string>;
-  setTwoFactorToken: (value: string, options?: StorageOptions) => Promise<void>;
   getUserId: (options?: StorageOptions) => Promise<string>;
   getUsesKeyConnector: (options?: StorageOptions) => Promise<boolean>;
   setUsesKeyConnector: (value: boolean, options?: StorageOptions) => Promise<void>;
