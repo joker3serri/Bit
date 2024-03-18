@@ -92,3 +92,4 @@ export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk", {
 export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk", {
   web: "disk-local",
 });
+export const VAULT_SEARCH_MEMORY = new StateDefinition("vaultSearch", "memory");

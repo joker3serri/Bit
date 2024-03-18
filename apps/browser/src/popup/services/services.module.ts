@@ -78,7 +78,6 @@ import {
   GlobalStateProvider,
   StateProvider,
 } from "@bitwarden/common/platform/state";
-import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
@@ -197,17 +196,12 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<SsoLoginServiceAbstraction>("ssoLoginService"),
       deps: [],
     },
-    // TODO: Still undecided on how to handle the search service as the popup search service depends on the search index built on the base class. I don't think we should store the index in state as it is a large object and it could have performance implications.
+    // TODO: Review and finalize the strategy for managing and accessing the lunr search index within the popup.
+    // The current implementation stores the index in memory using the state provider, another consideration is to reindex the ciphers each time it is needed
     {
       provide: SearchServiceAbstraction,
-      useFactory: (logService: ConsoleLogService, i18nService: I18nServiceAbstraction) => {
-        return new PopupSearchService(
-          getBgService<SearchService>("searchService")(),
-          logService,
-          i18nService,
-        );
-      },
-      deps: [LogServiceAbstraction, I18nServiceAbstraction],
+      useClass: PopupSearchService,
+      deps: [LogServiceAbstraction, I18nServiceAbstraction, StateProvider],
     },
     {
       provide: CipherFileUploadServiceAbstraction,
