@@ -10,6 +10,10 @@ import {
 } from "../../../platform/background/service-factories/api-service.factory";
 import { appIdServiceFactory } from "../../../platform/background/service-factories/app-id-service.factory";
 import {
+  billingAccountProfileStateServiceFactory,
+  BillingAccountProfileStateServiceInitOptions,
+} from "../../../platform/background/service-factories/billing-account-profile-state-service.factory";
+import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,
 } from "../../../platform/background/service-factories/crypto-service.factory";
@@ -26,6 +30,10 @@ import {
   factory,
   FactoryOptions,
 } from "../../../platform/background/service-factories/factory-options";
+import {
+  globalStateProviderFactory,
+  GlobalStateProviderInitOptions,
+} from "../../../platform/background/service-factories/global-state-provider.factory";
 import {
   i18nServiceFactory,
   I18nServiceInitOptions,
@@ -89,7 +97,9 @@ export type LoginStrategyServiceInitOptions = LoginStrategyServiceFactoryOptions
   PasswordStrengthServiceInitOptions &
   DeviceTrustCryptoServiceInitOptions &
   AuthRequestServiceInitOptions &
-  UserDecryptionOptionsServiceInitOptions;
+  UserDecryptionOptionsServiceInitOptions &
+  GlobalStateProviderInitOptions &
+  BillingAccountProfileStateServiceInitOptions;
 
 export function loginStrategyServiceFactory(
   cache: { loginStrategyService?: LoginStrategyServiceAbstraction } & CachedServices,
@@ -119,6 +129,8 @@ export function loginStrategyServiceFactory(
         await deviceTrustCryptoServiceFactory(cache, opts),
         await authRequestServiceFactory(cache, opts),
         await internalUserDecryptionOptionServiceFactory(cache, opts),
+        await globalStateProviderFactory(cache, opts),
+        await billingAccountProfileStateServiceFactory(cache, opts),
       ),
   );
 }

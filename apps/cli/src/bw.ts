@@ -25,10 +25,12 @@ import { PolicyApiService } from "@bitwarden/common/admin-console/services/polic
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
@@ -37,6 +39,12 @@ import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.ser
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  DefaultDomainSettingsService,
+  DomainSettingsService,
+} from "@bitwarden/common/autofill/services/domain-settings.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
@@ -193,6 +201,7 @@ export class Main {
   pinCryptoService: PinCryptoServiceAbstraction;
   stateService: StateService;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
+  domainSettingsService: DomainSettingsService;
   organizationService: OrganizationService;
   providerService: ProviderService;
   twoFactorService: TwoFactorService;
@@ -214,8 +223,10 @@ export class Main {
   derivedStateProvider: DerivedStateProvider;
   stateProvider: StateProvider;
   loginStrategyService: LoginStrategyServiceAbstraction;
+  avatarService: AvatarServiceAbstraction;
   stateEventRunnerService: StateEventRunnerService;
   biometricStateService: BiometricStateService;
+  billingAccountProfileStateService: BillingAccountProfileStateService;
 
   constructor() {
     let p = null;
@@ -289,8 +300,7 @@ export class Main {
 
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
-      storageServiceProvider,
-      stateEventRegistrarService,
+      this.singleUserStateProvider,
     );
 
     this.derivedStateProvider = new DefaultDerivedStateProvider(
@@ -306,6 +316,13 @@ export class Main {
 
     this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
 
+    this.tokenService = new TokenService(
+      this.singleUserStateProvider,
+      this.globalStateProvider,
+      this.platformUtilsService.supportsSecureStorage(),
+      this.secureStorageService,
+    );
+
     const migrationRunner = new MigrationRunner(
       this.storageService,
       this.logService,
@@ -320,6 +337,7 @@ export class Main {
       new StateFactory(GlobalState, Account),
       this.accountService,
       this.environmentService,
+      this.tokenService,
       migrationRunner,
     );
 
@@ -336,8 +354,7 @@ export class Main {
       this.stateProvider,
     );
 
-    this.appIdService = new AppIdService(this.storageService);
-    this.tokenService = new TokenService(this.stateService);
+    this.appIdService = new AppIdService(this.globalStateProvider);
 
     const customUserAgent =
       "Bitwarden_CLI/" +
@@ -350,6 +367,7 @@ export class Main {
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
+      this.stateService,
       async (expired: boolean) => await this.logout(),
       customUserAgent,
     );
@@ -361,6 +379,7 @@ export class Main {
     this.containerService = new ContainerService(this.cryptoService, this.encryptService);
 
     this.settingsService = new SettingsService(this.stateService);
+    this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
 
     this.fileUploadService = new FileUploadService(this.logService);
 
@@ -446,6 +465,10 @@ export class Main {
       this.stateService,
     );
 
+    this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
+      this.activeUserStateProvider,
+    );
+
     this.loginStrategyService = new LoginStrategyService(
       this.cryptoService,
       this.apiService,
@@ -465,6 +488,8 @@ export class Main {
       this.deviceTrustCryptoService,
       this.authRequestService,
       this.userDecryptionOptionsService,
+      this.globalStateProvider,
+      this.billingAccountProfileStateService,
     );
 
     this.authService = new AuthService(
@@ -487,7 +512,7 @@ export class Main {
 
     this.cipherService = new CipherService(
       this.cryptoService,
-      this.settingsService,
+      this.domainSettingsService,
       this.apiService,
       this.i18nService,
       this.searchService,
@@ -557,9 +582,11 @@ export class Main {
       null,
     );
 
+    this.avatarService = new AvatarService(this.apiService, this.stateProvider);
+
     this.syncService = new SyncService(
       this.apiService,
-      this.settingsService,
+      this.domainSettingsService,
       this.folderService,
       this.cipherService,
       this.cryptoService,
@@ -575,7 +602,9 @@ export class Main {
       this.organizationService,
       this.sendApiService,
       this.userDecryptionOptionsService,
+      this.avatarService,
       async (expired: boolean) => await this.logout(),
+      this.billingAccountProfileStateService,
     );
 
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
@@ -656,7 +685,6 @@ export class Main {
     await Promise.all([
       this.syncService.setLastSync(new Date(0)),
       this.cryptoService.clearKeys(),
-      this.settingsService.clear(userId),
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId as UserId),

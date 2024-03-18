@@ -14,6 +14,8 @@ import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/id
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
 import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -41,7 +43,7 @@ import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions
 import { PasswordLoginCredentials } from "../models";
 import { UserDecryptionOptions } from "../models/domain/user-decryption-options";
 
-import { PasswordLoginStrategy } from "./password-login.strategy";
+import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
 
 const email = "hello@world.com";
 const masterPassword = "password";
@@ -95,6 +97,8 @@ export function identityTokenResponseFactory(
 
 // TODO: add tests for latest changes to base class for TDE
 describe("LoginStrategy", () => {
+  let cache: PasswordLoginStrategyData;
+
   let loginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
@@ -108,6 +112,7 @@ describe("LoginStrategy", () => {
   let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   let passwordLoginStrategy: PasswordLoginStrategy;
   let credentials: PasswordLoginCredentials;
@@ -126,12 +131,14 @@ describe("LoginStrategy", () => {
     userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.calledWith(accessToken).mockResolvedValue(decodedToken);
+    tokenService.decodeAccessToken.calledWith(accessToken).mockResolvedValue(decodedToken);
 
     // The base class is abstract so we test it via PasswordLoginStrategy
     passwordLoginStrategy = new PasswordLoginStrategy(
+      cache,
       cryptoService,
       apiService,
       tokenService,
@@ -145,6 +152,7 @@ describe("LoginStrategy", () => {
       passwordStrengthService,
       policyService,
       loginStrategyService,
+      billingAccountProfileStateService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
   });
@@ -168,7 +176,20 @@ describe("LoginStrategy", () => {
       const idTokenResponse = identityTokenResponseFactory();
       apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
 
+      const mockVaultTimeoutAction = VaultTimeoutAction.Lock;
+      const mockVaultTimeout = 1000;
+
+      stateService.getVaultTimeoutAction.mockResolvedValue(mockVaultTimeoutAction);
+      stateService.getVaultTimeout.mockResolvedValue(mockVaultTimeout);
+
       await passwordLoginStrategy.logIn(credentials);
+
+      expect(tokenService.setTokens).toHaveBeenCalledWith(
+        accessToken,
+        refreshToken,
+        mockVaultTimeoutAction,
+        mockVaultTimeout,
+      );
 
       expect(stateService.addAccount).toHaveBeenCalledWith(
         new Account({
@@ -178,17 +199,12 @@ describe("LoginStrategy", () => {
               userId: userId,
               name: name,
               email: email,
-              hasPremiumPersonally: false,
               kdfIterations: kdfIterations,
               kdfType: kdf,
             },
           },
           tokens: {
             ...new AccountTokens(),
-            ...{
-              accessToken: accessToken,
-              refreshToken: refreshToken,
-            },
           },
           keys: new AccountKeys(),
         }),
@@ -302,6 +318,7 @@ describe("LoginStrategy", () => {
 
       expect(stateService.addAccount).not.toHaveBeenCalled();
       expect(messagingService.send).not.toHaveBeenCalled();
+      expect(tokenService.clearTwoFactorToken).toHaveBeenCalled();
 
       const expected = new AuthResult();
       expected.twoFactorProviders = new Map<TwoFactorProviderType, { [key: string]: string }>();
@@ -383,11 +400,25 @@ describe("LoginStrategy", () => {
 
     it("sends 2FA token provided by user to server (two-step)", async () => {
       // Simulate a partially completed login
-      passwordLoginStrategy.tokenRequest = new PasswordTokenRequest(
-        email,
-        masterPasswordHash,
-        null,
-        null,
+      cache = new PasswordLoginStrategyData();
+      cache.tokenRequest = new PasswordTokenRequest(email, masterPasswordHash, null, null);
+
+      passwordLoginStrategy = new PasswordLoginStrategy(
+        cache,
+        cryptoService,
+        apiService,
+        tokenService,
+        appIdService,
+        platformUtilsService,
+        messagingService,
+        logService,
+        stateService,
+        twoFactorService,
+        userDecryptionOptionsService,
+        passwordStrengthService,
+        policyService,
+        loginStrategyService,
+        billingAccountProfileStateService,
       );
 
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
