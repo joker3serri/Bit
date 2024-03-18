@@ -11,17 +11,18 @@ import {
   StateProviderInitOptions,
 } from "../../../platform/background/service-factories/state-provider.factory";
 
-type EmailServiceFactoryOptions = FactoryOptions;
+type LoginEmailServiceFactoryOptions = FactoryOptions;
 
-export type EmailServiceInitOptions = EmailServiceFactoryOptions & StateProviderInitOptions;
+export type LoginEmailServiceInitOptions = LoginEmailServiceFactoryOptions &
+  StateProviderInitOptions;
 
-export function emailServiceFactory(
-  cache: { emailService?: LoginEmailServiceAbstraction } & CachedServices,
-  opts: EmailServiceInitOptions,
+export function loginEmailServiceFactory(
+  cache: { loginEmailService?: LoginEmailServiceAbstraction } & CachedServices,
+  opts: LoginEmailServiceInitOptions,
 ): Promise<LoginEmailServiceAbstraction> {
   return factory(
     cache,
-    "emailService",
+    "loginEmailService",
     opts,
     async () => new LoginEmailService(await stateProviderFactory(cache, opts)),
   );
