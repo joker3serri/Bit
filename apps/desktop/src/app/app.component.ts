@@ -21,6 +21,7 @@ import { NotificationsService } from "@bitwarden/common/abstractions/notificatio
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
+import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -151,6 +152,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private biometricStateService: BiometricStateService,
     private stateEventRunnerService: StateEventRunnerService,
     private providerService: ProviderService,
+    private organizationService: InternalOrganizationServiceAbstraction,
   ) {}
 
   ngOnInit() {
@@ -572,7 +574,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     let preLogoutActiveUserId;
     try {
-      await this.eventUploadService.uploadEvents(userBeingLoggedOut);
+      // Provide the userId of the user to upload events for
+      await this.eventUploadService.uploadEvents(userBeingLoggedOut as UserId);
       await this.syncService.setLastSync(new Date(0), userBeingLoggedOut);
       await this.cryptoService.clearKeys(userBeingLoggedOut);
       await this.cipherService.clear(userBeingLoggedOut);

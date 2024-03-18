@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { EnableFaviconMigrator } from "./40-move-enable-favicon-to-domain-settings-state-provider";
+import { EnableFaviconMigrator } from "./42-move-enable-favicon-to-domain-settings-state-provider";
 
 function exampleJSON() {
   return {
@@ -62,8 +62,8 @@ describe("EnableFaviconMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 39);
-      sut = new EnableFaviconMigrator(39, 40);
+      helper = mockMigrationHelper(exampleJSON(), 41);
+      sut = new EnableFaviconMigrator(41, 42);
     });
 
     it("should remove global disableFavicon", async () => {
@@ -84,8 +84,8 @@ describe("EnableFaviconMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 40);
-      sut = new EnableFaviconMigrator(39, 40);
+      helper = mockMigrationHelper(rollbackJSON(), 42);
+      sut = new EnableFaviconMigrator(41, 42);
     });
 
     it("should null global showFavicons", async () => {

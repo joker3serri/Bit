@@ -483,7 +483,12 @@ const typesafeProviders: Array<SafeProvider> = [
   safeProvider({
     provide: TokenServiceAbstraction,
     useClass: TokenService,
-    deps: [SingleUserStateProvider, GlobalStateProvider, SUPPORTS_SECURE_STORAGE, SECURE_STORAGE],
+    deps: [
+      SingleUserStateProvider,
+      GlobalStateProvider,
+      SUPPORTS_SECURE_STORAGE,
+      AbstractStorageService,
+    ],
   }),
   safeProvider({
     provide: KeyGenerationServiceAbstraction,
@@ -709,16 +714,17 @@ const typesafeProviders: Array<SafeProvider> = [
   safeProvider({
     provide: EventUploadServiceAbstraction,
     useClass: EventUploadService,
-    deps: [ApiServiceAbstraction, StateServiceAbstraction, LogService],
+    deps: [ApiServiceAbstraction, StateProvider, LogService, AccountServiceAbstraction],
   }),
   safeProvider({
     provide: EventCollectionServiceAbstraction,
     useClass: EventCollectionService,
     deps: [
       CipherServiceAbstraction,
-      StateServiceAbstraction,
+      StateProvider,
       OrganizationServiceAbstraction,
       EventUploadServiceAbstraction,
+      AccountServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -766,7 +772,7 @@ const typesafeProviders: Array<SafeProvider> = [
   safeProvider({
     provide: InternalOrganizationServiceAbstraction,
     useClass: OrganizationService,
-    deps: [StateServiceAbstraction, StateProvider],
+    deps: [StateProvider],
   }),
   safeProvider({
     provide: OrganizationServiceAbstraction,

@@ -12,7 +12,7 @@ const ShowFaviconDefinition: KeyDefinitionLike = {
   key: "showFavicons",
 };
 
-export class EnableFaviconMigrator extends Migrator<39, 40> {
+export class EnableFaviconMigrator extends Migrator<41, 42> {
   async migrate(helper: MigrationHelper): Promise<void> {
     // global state ("disableFavicon" -> "showFavicons")
     const globalState = await helper.get<ExpectedGlobalState>("global");
