@@ -126,8 +126,8 @@ describe("UserDecryptionOptionsMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 39);
-      sut = new UserDecryptionOptionsMigrator(39, 40);
+      helper = mockMigrationHelper(exampleJSON(), 42);
+      sut = new UserDecryptionOptionsMigrator(42, 43);
     });
 
     it("should remove decryptionOptions from all accounts", async () => {
@@ -177,8 +177,8 @@ describe("UserDecryptionOptionsMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 39);
-      sut = new UserDecryptionOptionsMigrator(39, 40);
+      helper = mockMigrationHelper(rollbackJSON(), 43);
+      sut = new UserDecryptionOptionsMigrator(42, 43);
     });
 
     it.each(["FirstAccount", "SecondAccount", "ThirdAccount"])(
