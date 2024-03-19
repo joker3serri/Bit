@@ -4,10 +4,12 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { UserNotificationSettingsService } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
@@ -48,8 +50,10 @@ describe("NotificationBackground", () => {
   const folderService = mock<FolderService>();
   const stateService = mock<BrowserStateService>();
   const userNotificationSettingsService = mock<UserNotificationSettingsService>();
+  const domainSettingsService = mock<DomainSettingsService>();
   const environmentService = mock<EnvironmentService>();
   const logService = mock<LogService>();
+  const themeStateService = mock<ThemeStateService>();
 
   beforeEach(() => {
     notificationBackground = new NotificationBackground(
@@ -60,8 +64,10 @@ describe("NotificationBackground", () => {
       folderService,
       stateService,
       userNotificationSettingsService,
+      domainSettingsService,
       environmentService,
       logService,
+      themeStateService,
     );
   });
 

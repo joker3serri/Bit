@@ -1,3 +1,4 @@
+import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
 
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
@@ -14,8 +15,6 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
 
-import { I18nService } from "../core/i18n.service";
-
 @Injectable()
 export class InitService {
   constructor(
@@ -30,6 +29,7 @@ export class InitService {
     private themingService: AbstractThemingService,
     private encryptService: EncryptService,
     private configService: ConfigService,
+    @Inject(DOCUMENT) private document: Document,
   ) {}
 
   init() {
@@ -38,13 +38,12 @@ export class InitService {
 
       setTimeout(() => this.notificationsService.init(), 3000);
       await this.vaultTimeoutService.init(true);
-      const locale = await this.stateService.getLocale();
-      await (this.i18nService as I18nService).init(locale);
+      await this.i18nService.init();
       (this.eventUploadService as EventUploadService).init(true);
       this.twoFactorService.init();
       const htmlEl = this.win.document.documentElement;
       htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
-      await this.themingService.monitorThemeChanges();
+      this.themingService.applyThemeChangesTo(this.document);
       const containerService = new ContainerService(this.cryptoService, this.encryptService);
       containerService.attachToGlobal(this.win);
 

@@ -11,6 +11,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -93,7 +94,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   }
 
   async ngOnInit() {
-    if (!this.authing || this.twoFactorService.getProviders() == null) {
+    if (!(await this.authing()) || this.twoFactorService.getProviders() == null) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate([this.loginRoute]);
@@ -106,7 +107,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       }
     });
 
-    if (this.needsLock) {
+    if (await this.needsLock()) {
       this.successRoute = "lock";
     }
 
@@ -428,7 +429,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       return;
     }
 
-    if (this.loginStrategyService.email == null) {
+    if ((await this.loginStrategyService.getEmail()) == null) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -439,12 +440,13 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
 
     try {
       const request = new TwoFactorEmailRequest();
-      request.email = this.loginStrategyService.email;
-      request.masterPasswordHash = this.loginStrategyService.masterPasswordHash;
-      request.ssoEmail2FaSessionToken = this.loginStrategyService.ssoEmail2FaSessionToken;
+      request.email = await this.loginStrategyService.getEmail();
+      request.masterPasswordHash = await this.loginStrategyService.getMasterPasswordHash();
+      request.ssoEmail2FaSessionToken =
+        await this.loginStrategyService.getSsoEmail2FaSessionToken();
       request.deviceIdentifier = await this.appIdService.getAppId();
-      request.authRequestAccessCode = this.loginStrategyService.accessCode;
-      request.authRequestId = this.loginStrategyService.authRequestId;
+      request.authRequestAccessCode = await this.loginStrategyService.getAccessCode();
+      request.authRequestId = await this.loginStrategyService.getAuthRequestId();
       this.emailPromise = this.apiService.postTwoFactorEmail(request);
       await this.emailPromise;
       if (doToast) {
@@ -478,20 +480,13 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     }
   }
 
-  get authing(): boolean {
-    return (
-      this.loginStrategyService.authingWithPassword() ||
-      this.loginStrategyService.authingWithSso() ||
-      this.loginStrategyService.authingWithUserApiKey() ||
-      this.loginStrategyService.authingWithPasswordless()
-    );
+  private async authing(): Promise<boolean> {
+    return (await firstValueFrom(this.loginStrategyService.currentAuthType$)) !== null;
   }
 
-  get needsLock(): boolean {
-    return (
-      this.loginStrategyService.authingWithSso() ||
-      this.loginStrategyService.authingWithUserApiKey()
-    );
+  private async needsLock(): Promise<boolean> {
+    const authType = await firstValueFrom(this.loginStrategyService.currentAuthType$);
+    return authType == AuthenticationType.Sso || authType == AuthenticationType.UserApiKey;
   }
 
   // implemented in clients

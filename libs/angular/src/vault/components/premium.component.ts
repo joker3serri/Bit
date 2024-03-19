@@ -1,7 +1,8 @@
-import { Directive, OnInit } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { OnInit, Directive } from "@angular/core";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -11,7 +12,7 @@ import { DialogService } from "@bitwarden/components";
 
 @Directive()
 export class PremiumComponent implements OnInit {
-  isPremium = false;
+  isPremium$: Observable<boolean>;
   price = 10;
   refreshPromise: Promise<any>;
   cloudWebVaultUrl: string;
@@ -24,11 +25,13 @@ export class PremiumComponent implements OnInit {
     protected stateService: StateService,
     protected dialogService: DialogService,
     private environmentService: EnvironmentService,
-  ) {}
+    billingAccountProfileStateService: BillingAccountProfileStateService,
+  ) {
+    this.isPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
+  }
 
   async ngOnInit() {
     this.cloudWebVaultUrl = await firstValueFrom(this.environmentService.cloudWebVaultUrl$);
-    this.isPremium = await this.stateService.getCanAccessPremium();
   }
 
   async refresh() {
@@ -36,7 +39,6 @@ export class PremiumComponent implements OnInit {
       this.refreshPromise = this.apiService.refreshIdentityToken();
       await this.refreshPromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("refreshComplete"));
-      this.isPremium = await this.stateService.getCanAccessPremium();
     } catch (e) {
       this.logService.error(e);
     }
