@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper, runMigrator } from "../migration-helper.spec";
 
-import { AutoConfirmFingerPrintsMigrator } from "./41-move-auto-confirm-finger-prints-to-state-provider";
+import { AutoConfirmFingerPrintsMigrator } from "./43-move-auto-confirm-finger-prints-to-state-provider";
 
 function rollbackJSON() {
   return {
@@ -26,7 +26,7 @@ function rollbackJSON() {
 }
 
 describe("AutoConfirmFingerPrintsMigrator", () => {
-  const migrator = new AutoConfirmFingerPrintsMigrator(40, 41);
+  const migrator = new AutoConfirmFingerPrintsMigrator(42, 43);
 
   it("should migrate the autoConfirmFingerPrints property from the account settings object to a user StorageKey", async () => {
     const output = await runMigrator(migrator, {
@@ -78,8 +78,8 @@ describe("AutoConfirmFingerPrintsMigrator", () => {
     };
 
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 41);
-      sut = new AutoConfirmFingerPrintsMigrator(40, 41);
+      helper = mockMigrationHelper(rollbackJSON(), 43);
+      sut = new AutoConfirmFingerPrintsMigrator(42, 43);
     });
 
     it("should null the autoConfirmFingerPrints user StorageKey for each account", async () => {
