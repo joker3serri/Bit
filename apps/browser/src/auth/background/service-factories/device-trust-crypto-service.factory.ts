@@ -43,7 +43,10 @@ import {
   stateServiceFactory,
 } from "../../../platform/background/service-factories/state-service.factory";
 
-import { userDecryptionOptionsServiceFactory } from "./user-decryption-options-service.factory";
+import {
+  UserDecryptionOptionsServiceInitOptions,
+  userDecryptionOptionsServiceFactory,
+} from "./user-decryption-options-service.factory";
 
 type DeviceTrustCryptoServiceFactoryOptions = FactoryOptions;
 
@@ -56,7 +59,8 @@ export type DeviceTrustCryptoServiceInitOptions = DeviceTrustCryptoServiceFactor
   AppIdServiceInitOptions &
   DevicesApiServiceInitOptions &
   I18nServiceInitOptions &
-  PlatformUtilsServiceInitOptions;
+  PlatformUtilsServiceInitOptions &
+  UserDecryptionOptionsServiceInitOptions;
 
 export function deviceTrustCryptoServiceFactory(
   cache: { deviceTrustCryptoService?: DeviceTrustCryptoServiceAbstraction } & CachedServices,
