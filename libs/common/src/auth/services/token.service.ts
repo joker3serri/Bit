@@ -1,4 +1,5 @@
 import { firstValueFrom } from "rxjs";
+import { Opaque } from "type-fest";
 
 import { decodeJwtTokenToJson } from "@bitwarden/auth/common";
 
@@ -6,6 +7,7 @@ import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
+import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import {
   GlobalState,
   GlobalStateProvider,
@@ -101,7 +103,16 @@ export type DecodedAccessToken = {
   jti?: string;
 };
 
+/**
+ * A symmetric key for encrypting the access token before the token is stored on disk.
+ * This key should be stored in secure storage.
+ * */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type AccessTokenKey = Opaque<SymmetricCryptoKey, "DeviceKey">;
+
 export class TokenService implements TokenServiceAbstraction {
+  private readonly accessTokenKeySecureStorageKey: string = "_accessTokenKey";
+
   private readonly accessTokenSecureStorageKey: string = "_accessToken";
 
   private readonly refreshTokenSecureStorageKey: string = "_refreshToken";
@@ -120,6 +131,10 @@ export class TokenService implements TokenServiceAbstraction {
   ) {
     this.initializeState();
   }
+
+  // pivoting to an approach where we create a symmetric key we store in secure storage
+  // which is used to protect the data before persisting to disk.
+  // We will also use the same symmetric key to decrypt the data when reading from disk.
 
   private initializeState(): void {
     this.emailTwoFactorTokenRecordGlobalState = this.globalStateProvider.get(
@@ -155,6 +170,28 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
+  // private async getOrMakeAccessTokenEncryptionKey(userId: UserId): AccessTokenKey {
+  //   if (!this.platformSupportsSecureStorage) {
+  //     throw new Error("Platform does not support secure storage. Cannot obtain access token key.");
+  //   }
+
+  //   // First see if we have an accessTokenKey in secure storage
+  //   const accessTokenKey = await this.secureStorageService.get<AccessTokenKey>(
+  //     `${userId}${this.accessTokenKeySecureStorageKey}`,
+  //     this.getSecureStorageOptions(userId),
+  //   );
+
+  //   if (accessTokenKey) {
+  //     return accessTokenKey;
+  //   }
+
+  //   // If we don't have an accessTokenKey, make one and save it to secure storage then return it
+  //   // const newAccessTokenKey = SymmetricCryptoKey.generate();
+
+  //   // await this.keyGenerationService.createKey(512)) as DeviceKey
+
+  // }
+
   /**
    * Internal helper for set access token which always requires user id.
    * This is useful because setTokens always will have a user id from the access token whereas
@@ -174,6 +211,10 @@ export class TokenService implements TokenServiceAbstraction {
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage:
+        // private getOrMakeAccessTokenKey method
+        // -- private getAccessTokenKey method
+        // -- private makeAccessTokeKey method
+
         await this.saveStringToSecureStorage(userId, this.accessTokenSecureStorageKey, accessToken);
 
         // TODO: PM-6408 - https://bitwarden.atlassian.net/browse/PM-6408
@@ -417,7 +458,7 @@ export class TokenService implements TokenServiceAbstraction {
     const storageLocation = await this.determineStorageLocation(
       vaultTimeoutAction,
       vaultTimeout,
-      false,
+      false, // don't use secure storage for client id
     );
 
     if (storageLocation === TokenStorageLocation.Disk) {
@@ -484,7 +525,7 @@ export class TokenService implements TokenServiceAbstraction {
     const storageLocation = await this.determineStorageLocation(
       vaultTimeoutAction,
       vaultTimeout,
-      false,
+      false, // don't use secure storage for client secret
     );
 
     if (storageLocation === TokenStorageLocation.Disk) {
