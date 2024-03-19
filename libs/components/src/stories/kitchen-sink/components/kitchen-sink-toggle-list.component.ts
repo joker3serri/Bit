@@ -1,14 +1,13 @@
-import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
-import { ToggleGroupModule } from "../../../toggle-group";
+import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 
 @Component({
   standalone: true,
   selector: "bit-kitchen-sink-toggle-list",
-  imports: [CommonModule, ToggleGroupModule],
+  imports: [KitchenSinkSharedModule],
   template: `
-    <div class="tw-mt-6 tw-mb-6 tw-flex tw-justify-center">
+    <div class="tw-mt-6 tw-mb-6">
       <bit-toggle-group [(selected)]="selectedToggle" aria-label="Company list filter">
         <bit-toggle value="all"> All <span bitBadge variant="info">3</span> </bit-toggle>
 

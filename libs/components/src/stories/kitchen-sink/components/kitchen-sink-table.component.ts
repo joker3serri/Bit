@@ -1,13 +1,11 @@
 import { Component } from "@angular/core";
 
-import { IconButtonModule } from "../../../icon-button";
-import { MenuModule } from "../../../menu";
-import { TableModule } from "../../../table";
+import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 
 @Component({
   standalone: true,
   selector: "bit-kitchen-sink-table",
-  imports: [IconButtonModule, MenuModule, TableModule],
+  imports: [KitchenSinkSharedModule],
   template: `
     <bit-table>
       <ng-container header>

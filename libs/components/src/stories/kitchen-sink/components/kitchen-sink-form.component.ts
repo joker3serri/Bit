@@ -1,42 +1,16 @@
-import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { ButtonModule } from "../../../button";
-import { CheckboxModule } from "../../../checkbox";
-import { ColorPasswordModule } from "../../../color-password";
 import { DialogService, SimpleDialogOptions } from "../../../dialog";
-import { FormControlModule } from "../../../form-control";
-import { FormFieldModule } from "../../../form-field";
-import { IconButtonModule } from "../../../icon-button";
-import { InputModule } from "../../../input";
-import { PopoverModule } from "../../../popover";
-import { ProgressModule } from "../../../progress";
-import { RadioButtonModule } from "../../../radio-button";
-import { SelectModule } from "../../../select";
 import { I18nMockService } from "../../../utils/i18n-mock.service";
+import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 
 @Component({
   standalone: true,
   selector: "bit-kitchen-sink-form",
-  imports: [
-    ButtonModule,
-    CheckboxModule,
-    ColorPasswordModule,
-    CommonModule,
-    FormControlModule,
-    FormFieldModule,
-    FormsModule,
-    IconButtonModule,
-    InputModule,
-    PopoverModule,
-    ProgressModule,
-    RadioButtonModule,
-    ReactiveFormsModule,
-    SelectModule,
-  ],
+  imports: [KitchenSinkSharedModule],
   providers: [
     DialogService,
     {
@@ -129,7 +103,7 @@ import { I18nMockService } from "../../../utils/i18n-mock.service";
       <bit-form-control>
         <bit-label>Check if you love security</bit-label>
         <input type="checkbox" bitCheckbox formControlName="loveSecurity" />
-        <bit-hint>Required!!!!!</bit-hint>
+        <bit-hint>Hint: the correct answer is yes!</bit-hint>
       </bit-form-control>
 
       <bit-radio-group formControlName="current">

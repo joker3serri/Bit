@@ -1,6 +1,4 @@
-import { CommonModule } from "@angular/common";
-import { Component, importProvidersFrom } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { importProvidersFrom } from "@angular/core";
 import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import {
@@ -10,89 +8,25 @@ import {
   componentWrapperDecorator,
   moduleMetadata,
 } from "@storybook/angular";
-import { userEvent, getAllByRole, getByRole, getByLabelText } from "@storybook/testing-library";
+import {
+  userEvent,
+  getAllByRole,
+  getByRole,
+  getByLabelText,
+  fireEvent,
+} from "@storybook/testing-library";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { AvatarModule } from "../../avatar";
-import { BadgeModule } from "../../badge";
-import { BannerModule } from "../../banner";
-import { BreadcrumbsModule } from "../../breadcrumbs";
-import { ButtonModule } from "../../button";
-import { CalloutModule } from "../../callout";
-import { DialogService, DialogModule } from "../../dialog";
-import { IconModule } from "../../icon";
-import { IconButtonModule } from "../../icon-button";
+import { DialogService } from "../../dialog";
 import { LayoutComponent } from "../../layout";
-import { LinkModule } from "../../link";
-import { NavigationModule } from "../../navigation";
-import { NoItemsModule } from "../../no-items";
-import { PopoverModule } from "../../popover";
-import { SearchModule } from "../../search";
-import { SectionComponent } from "../../section";
-import { SharedModule } from "../../shared";
-import { TabsModule } from "../../tabs";
-import { TypographyModule } from "../../typography";
 import { I18nMockService } from "../../utils/i18n-mock.service";
 
 import { KitchenSinkForm } from "./components/kitchen-sink-form.component";
+import { KitchenSinkMainComponent } from "./components/kitchen-sink-main.component";
 import { KitchenSinkTable } from "./components/kitchen-sink-table.component";
 import { KitchenSinkToggleList } from "./components/kitchen-sink-toggle-list.component";
-
-@Component({
-  selector: "bit-tab-main",
-  template: `
-    <bit-section>
-      <p>
-        <bit-breadcrumbs [show]="show">
-          <bit-breadcrumb *ngFor="let item of navItems" [icon]="item.icon" [route]="[item.route]">
-            {{ item.name }}
-          </bit-breadcrumb>
-        </bit-breadcrumbs>
-      </p>
-
-      <bit-banner bannerType="info"> This content is very important </bit-banner>
-
-      <div class="tw-text-center tw-mb-6 tw-mt-6">
-        <h1 bitTypography="h1" class="tw-text-main">
-          Bitwarden <bit-avatar text="Bit Warden"></bit-avatar>
-        </h1>
-        <a bitLink linkType="primary" href="#">Learn more</a>
-      </div>
-
-      <bit-tab-group label="Main content tabs" class="tw-text-main">
-        <bit-tab label="Evaluation">
-          <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">About</h2>
-          <bit-kitchen-sink-table></bit-kitchen-sink-table>
-          <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">
-            Companies using Bitwarden
-          </h2>
-          <bit-kitchen-sink-toggle-list></bit-kitchen-sink-toggle-list>
-          <h2 bitTypography="h2" class="tw-text-main tw-text-center tw-mt-6 tw-mb-6">Survey</h2>
-          <bit-kitchen-sink-form></bit-kitchen-sink-form>
-        </bit-tab>
-
-        <bit-tab label="Empty tab" data-testid="empty-tab">
-          <bit-callout type="info" title="Notice"> Under construction </bit-callout>
-          <bit-no-items class="tw-text-main">
-            <ng-container slot="title">This tab is empty</ng-container>
-            <ng-container slot="description">
-              <p bitTypography="body2">Try searching for what you are looking for:</p>
-              <bit-search [(ngModel)]="searchText" [placeholder]="placeholder"></bit-search>
-              <p bitTypography="helper">Note that the search bar is not functional</p>
-            </ng-container>
-          </bit-no-items>
-        </bit-tab>
-      </bit-tab-group>
-    </bit-section>
-  `,
-})
-class MainComponent {
-  navItems = [
-    { icon: "bwi-collection", name: "Password Managers", route: "/" },
-    { icon: "bwi-collection", name: "Favorites", route: "/" },
-  ];
-}
+import { KitchenSinkSharedModule } from "./kitchen-sink-shared.module";
 
 export default {
   title: "Documentation / Kitchen Sink",
@@ -109,38 +43,21 @@ export default {
         </div>`;
       },
       ({ globals }) => {
+        /**
+         * avoid a bug with the way that we render the same component twice in the same iframe and how
+         * that interacts with the router-outlet
+         */
         const themeOverride = globals["theme"] === "both" ? "light" : globals["theme"];
         return { theme: themeOverride };
       },
     ),
     moduleMetadata({
-      declarations: [MainComponent],
       imports: [
-        AvatarModule,
-        BadgeModule,
-        BannerModule,
-        BreadcrumbsModule,
-        ButtonModule,
-        CommonModule,
-        CalloutModule,
-        DialogModule,
-        FormsModule,
-        IconButtonModule,
-        IconModule,
+        KitchenSinkSharedModule,
         KitchenSinkForm,
+        KitchenSinkMainComponent,
         KitchenSinkTable,
         KitchenSinkToggleList,
-        LayoutComponent,
-        LinkModule,
-        NavigationModule,
-        NoItemsModule,
-        PopoverModule,
-        RouterModule,
-        SearchModule,
-        SectionComponent,
-        SharedModule,
-        TabsModule,
-        TypographyModule,
       ],
       providers: [
         DialogService,
@@ -165,7 +82,7 @@ export default {
           RouterModule.forRoot(
             [
               { path: "", redirectTo: "bitwarden", pathMatch: "full" },
-              { path: "bitwarden", component: MainComponent },
+              { path: "bitwarden", component: KitchenSinkMainComponent },
             ],
             { useHash: true },
           ),
@@ -207,6 +124,19 @@ export const MenuOpen: Story = {
   },
 };
 
+export const DefaultDialogOpen: Story = {
+  ...Default,
+  play: (context) => {
+    const canvas = context.canvasElement;
+    const dialogButton = getByRole(canvas, "button", {
+      name: "Open Dialog",
+    });
+
+    // workaround for userEvent not firing in FF https://github.com/testing-library/user-event/issues/1075
+    fireEvent.click(dialogButton);
+  },
+};
+
 export const PopoverOpen: Story = {
   ...Default,
   play: async (context) => {
@@ -219,15 +149,16 @@ export const PopoverOpen: Story = {
   },
 };
 
-export const DialogOpen: Story = {
+export const SimpleDialogOpen: Story = {
   ...Default,
-  play: async (context) => {
+  play: (context) => {
     const canvas = context.canvasElement;
     const submitButton = getByRole(canvas, "button", {
       name: "Submit",
     });
 
-    await userEvent.click(submitButton);
+    // workaround for userEvent not firing in FF https://github.com/testing-library/user-event/issues/1075
+    fireEvent.click(submitButton);
   },
 };
 
