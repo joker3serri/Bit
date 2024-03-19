@@ -236,7 +236,6 @@ function getBgService<T>(service: keyof MainBackground) {
       useClass: TotpService,
       deps: [CryptoFunctionService, LogService],
     },
-    { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
     {
       provide: I18nServiceAbstraction,
       useFactory: (globalStateProvider: GlobalStateProvider) => {
