@@ -39,7 +39,7 @@ export class ExportScopeCalloutComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if (!this.organizationService.hasOrganizations()) {
+    if (!(await this.organizationService.hasOrganizations())) {
       return;
     }
 
@@ -53,7 +53,7 @@ export class ExportScopeCalloutComponent implements OnInit {
         ? {
             title: "exportingOrganizationVaultTitle",
             description: "exportingOrganizationVaultDesc",
-            scopeIdentifier: this.organizationService.get(organizationId).name,
+            scopeIdentifier: (await this.organizationService.get(organizationId)).name,
           }
         : {
             title: "exportingPersonalVaultTitle",
