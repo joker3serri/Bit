@@ -53,6 +53,7 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
+import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { Account } from "../../models/account";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
@@ -211,6 +212,11 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         StateProvider,
         BiometricStateService,
       ],
+    },
+    {
+      provide: DesktopAutofillSettingsService,
+      useClass: DesktopAutofillSettingsService,
+      deps: [StateProvider],
     },
   ],
 })

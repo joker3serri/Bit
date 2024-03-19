@@ -24,6 +24,7 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 import { DialogService } from "@bitwarden/components";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
+import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { flagEnabled } from "../../platform/flags";
 
 @Component({
@@ -121,6 +122,7 @@ export class SettingsComponent implements OnInit {
     private dialogService: DialogService,
     private userVerificationService: UserVerificationServiceAbstraction,
     private biometricStateService: BiometricStateService,
+    private desktopAutofillSettingsService: DesktopAutofillSettingsService,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
@@ -261,8 +263,9 @@ export class SettingsComponent implements OnInit {
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
-      enableDuckDuckGoBrowserIntegration:
-        await this.stateService.getEnableDuckDuckGoBrowserIntegration(),
+      enableDuckDuckGoBrowserIntegration: await firstValueFrom(
+        this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
+      ),
       theme: await firstValueFrom(this.themeStateService.selectedTheme$),
       locale: await firstValueFrom(this.i18nService.userSetLocale$),
     };
@@ -636,7 +639,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveDdgBrowserIntegration() {
-    await this.stateService.setEnableDuckDuckGoBrowserIntegration(
+    await this.desktopAutofillSettingsService.setEnableDuckDuckGoBrowserIntegration(
       this.form.value.enableDuckDuckGoBrowserIntegration,
     );
 
