@@ -1,3 +1,5 @@
+import { map } from "rxjs";
+
 import {
   AUTOFILL_SETTINGS_DISK,
   KeyDefinition,
@@ -8,7 +10,7 @@ const ENABLE_DUCK_DUCK_GO_BROWSER_INTEGRATION = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK,
   "enableDuckDuckGoBrowserIntegration",
   {
-    deserializer: (value: boolean) => value ?? false,
+    deserializer: (v: boolean) => v,
   },
 );
 
@@ -17,7 +19,7 @@ export class DesktopAutofillSettingsService {
     ENABLE_DUCK_DUCK_GO_BROWSER_INTEGRATION,
   );
   readonly enableDuckDuckGoBrowserIntegration$ =
-    this.enableDuckDuckGoBrowserIntegrationState.state$;
+    this.enableDuckDuckGoBrowserIntegrationState.state$.pipe(map((x) => x ?? false));
 
   constructor(private stateProvider: StateProvider) {}
 
