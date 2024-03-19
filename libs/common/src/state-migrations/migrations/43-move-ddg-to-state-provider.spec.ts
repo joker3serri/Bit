@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveDdgToStateProviderMigrator } from "./42-move-ddg-to-state-provider";
+import { MoveDdgToStateProviderMigrator } from "./43-move-ddg-to-state-provider";
 
 describe("MoveDdgToStateProviderMigrator", () => {
-  const migrator = new MoveDdgToStateProviderMigrator(41, 42);
+  const migrator = new MoveDdgToStateProviderMigrator(42, 43);
 
   it("migrate", async () => {
     const output = await runMigrator(migrator, {
