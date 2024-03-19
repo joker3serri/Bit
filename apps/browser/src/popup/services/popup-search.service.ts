@@ -21,6 +21,6 @@ export class PopupSearchService extends SearchService {
   }
 
   async getIndexForSearch() {
-    return await super.getSearchIndex();
+    return await super.getIndexForSearch();
   }
 }

@@ -130,7 +130,7 @@ export class SearchService implements SearchServiceAbstraction {
     ciphers.forEach((c) => builder.add(c));
     this.index = builder.build();
 
-    await this.setSearchIndex(this.index.toJSON() as SerializedLunrIndex);
+    await this.setIndexForSearch(this.index.toJSON() as SerializedLunrIndex);
 
     this.indexing = false;
 
@@ -171,7 +171,7 @@ export class SearchService implements SearchServiceAbstraction {
       }
     }
 
-    const index = await this.getSearchIndex();
+    const index = await this.getIndexForSearch();
     if (index == null) {
       // Fall back to basic search if index is not available
       return this.searchCiphersBasic(ciphers, query);
@@ -265,11 +265,11 @@ export class SearchService implements SearchServiceAbstraction {
     return sendsMatched.concat(lowPriorityMatched);
   }
 
-  async getSearchIndex(): Promise<lunr.Index | null> {
+  async getIndexForSearch(): Promise<lunr.Index | null> {
     return await firstValueFrom(this.index$);
   }
 
-  private async setSearchIndex(index: SerializedLunrIndex): Promise<void> {
+  private async setIndexForSearch(index: SerializedLunrIndex): Promise<void> {
     await this.searchIndexState.update(() => index);
   }
 
