@@ -7609,15 +7609,13 @@
   "providerPortal": {
     "message": "Provider Portal"
   },
-<<<<<<< HEAD
   "viewCollection": {
     "message": "View collection"
-=======
+  },
   "restrictedGroupAccess": {
     "message": "You cannot add yourself to groups."
   },
   "restrictedCollectionAccess": {
     "message": "You cannot add yourself to collections."
->>>>>>> main
   }
 }
