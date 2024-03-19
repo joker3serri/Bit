@@ -488,7 +488,7 @@ const typesafeProviders: Array<SafeProvider> = [
   }),
   safeProvider({
     provide: UserDecryptionOptionsServiceAbstraction,
-    useExisting: UserDecryptionOptionsServiceAbstraction,
+    useExisting: InternalUserDecryptionOptionsServiceAbstraction,
   }),
   safeProvider({
     provide: TotpServiceAbstraction,

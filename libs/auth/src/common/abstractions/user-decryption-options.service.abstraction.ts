@@ -10,7 +10,8 @@ export abstract class UserDecryptionOptionsServiceAbstraction {
   abstract userDecryptionOptions$: Observable<UserDecryptionOptions>;
   /**
    * Uses user decryption options to determine if current user has a master password.
-   * @remark This only checks what is stored on the server, not the local state.
+   * @remark This is sent from the server, and does not indicate if the master password
+   * was used to login and/or if a master key is saved locally.
    */
   abstract hasMasterPassword$: Observable<boolean>;
 
@@ -26,7 +27,7 @@ export abstract class InternalUserDecryptionOptionsServiceAbstraction extends Us
    * Sets the current decryption options for the user, contains the current configuration
    * of the users account related to how they can decrypt their vault.
    * @remark Intended to be used when user decryption options are received from server, does
-   * not update the server.
+   * not update the server. Consider syncing instead of updating locally.
    * @param userDecryptionOptions Current user decryption options received from server.
    */
   abstract setUserDecryptionOptions(userDecryptionOptions: UserDecryptionOptions): Promise<void>;

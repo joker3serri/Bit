@@ -44,7 +44,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    private UserDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
+    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private dialogService: DialogService,
   ) {}
 
@@ -56,7 +56,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
     combineLatest([
       this.organization$,
       resetPasswordPolicies$,
-      this.UserDecryptionOptionsService.userDecryptionOptions$,
+      this.userDecryptionOptionsService.userDecryptionOptions$,
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([organization, resetPasswordPolicies, decryptionOptions]) => {
