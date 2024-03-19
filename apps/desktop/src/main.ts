@@ -192,12 +192,7 @@ export class Main {
       (arg) => this.processDeepLink(arg),
       (win) => this.trayMain.setupWindowListeners(win),
     );
-    this.messagingMain = new MessagingMain(
-      this,
-      this.stateService,
-      this.desktopSettingsService,
-      this.logService,
-    );
+    this.messagingMain = new MessagingMain(this, this.stateService, this.desktopSettingsService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
 
@@ -250,7 +245,7 @@ export class Main {
       async () => {
         await this.windowMain.init();
         await this.i18nService.init();
-        this.messagingMain.init();
+        await this.messagingMain.init();
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.menuMain.init();
