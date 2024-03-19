@@ -3864,8 +3864,8 @@
   "twoStepLoginPolicyDesc": {
     "message": "Require members to set up two-step login."
   },
-  "twoStepLoginPolicyWarning": {
-    "message": "Organization members who are not owners or admins and do not have two-step login setup for their account will be removed from the organization and will receive an email notifying them about the change."
+  "twoStepLoginPolicyWarn": {
+    "message": "To enable this policy, all existing Organization members must have already set a master password or set up 2FA."
   },
   "twoStepLoginPolicyUserWarning": {
     "message": "You are a member of an organization that requires two-step login to be setup on your user account. If you turn off all two-step login providers you will be automatically removed from these organizations."
