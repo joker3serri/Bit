@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { Observable } from "rxjs";
 
 import { GlobalState, KeyDefinition, LOGIN_EMAIL_DISK, StateProvider } from "../../platform/state";
 import { LoginEmailService as LoginEmailServiceAbstraction } from "../abstractions/login-email.service";
@@ -10,10 +10,13 @@ const STORED_EMAIL = new KeyDefinition<string>(LOGIN_EMAIL_DISK, "storedEmail", 
 export class LoginEmailService implements LoginEmailServiceAbstraction {
   private email: string;
   private rememberEmail: boolean;
-  private storedEmail: GlobalState<string>;
+
+  private readonly storedEmailState: GlobalState<string>;
+  storedEmail$: Observable<string>;
 
   constructor(private stateProvider: StateProvider) {
-    this.storedEmail = this.stateProvider.getGlobal(STORED_EMAIL);
+    this.storedEmailState = this.stateProvider.getGlobal(STORED_EMAIL);
+    this.storedEmail$ = this.storedEmailState.state$;
   }
 
   getEmail() {
@@ -32,12 +35,8 @@ export class LoginEmailService implements LoginEmailServiceAbstraction {
     this.rememberEmail = value;
   }
 
-  getStoredEmail(): Promise<string> {
-    return firstValueFrom(this.storedEmail.state$);
-  }
-
   async setStoredEmail(value: string): Promise<void> {
-    await this.storedEmail.update((_) => value);
+    await this.storedEmailState.update((_) => value);
   }
 
   clearValues() {

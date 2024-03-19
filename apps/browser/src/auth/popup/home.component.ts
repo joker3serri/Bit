@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, takeUntil } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
 import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         rememberEmail: rememberEmail,
       });
     } else {
-      savedEmail = await this.loginEmailService.getStoredEmail();
+      savedEmail = await firstValueFrom(this.loginEmailService.storedEmail$);
       if (savedEmail != null) {
         this.formGroup.patchValue({
           email: savedEmail,

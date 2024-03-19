@@ -1,7 +1,7 @@
 import { Directive, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, firstValueFrom } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 
 import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
@@ -103,14 +103,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     });
 
     if (!this.paramEmailSet) {
-      const storedEmail = await this.loginEmailService.getStoredEmail();
+      const storedEmail = await firstValueFrom(this.loginEmailService.storedEmail$);
       this.formGroup.get("email")?.setValue(storedEmail ?? "");
     }
 
     let rememberEmail = this.loginEmailService.getRememberEmail();
 
     if (rememberEmail == null) {
-      rememberEmail = (await this.loginEmailService.getStoredEmail()) != null;
+      rememberEmail = (await firstValueFrom(this.loginEmailService.storedEmail$)) != null;
     }
 
     this.formGroup.get("rememberEmail")?.setValue(rememberEmail);

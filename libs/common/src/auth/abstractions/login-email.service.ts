@@ -1,4 +1,10 @@
+import { Observable } from "rxjs";
+
 export abstract class LoginEmailService {
+  /**
+   * An observable that monitors the storedEmail
+   */
+  storedEmail$: Observable<string>;
   /**
    * Gets the current email being used in the login process.
    * @returns A string of the email.
@@ -18,11 +24,6 @@ export abstract class LoginEmailService {
    * Sets whether or not the email should be stored on disk.
    */
   setRememberEmail: (value: boolean) => void;
-  /**
-   * Gets the email that was stored on disk when the user logged in with the "Remember email" checkbox selected.
-   * @returns A promise that resolves with the stored email.
-   */
-  getStoredEmail: () => Promise<string>;
   /**
    * Sets the email to store on disk.
    * @returns A promise that resolves when the email has been set.
