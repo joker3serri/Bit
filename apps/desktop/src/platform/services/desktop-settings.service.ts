@@ -36,6 +36,10 @@ const ALWAYS_SHOW_DOCK_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "
   deserializer: (b) => b,
 });
 
+const ALWAYS_ON_TOP_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "alwaysOnTop", {
+  deserializer: (b) => b,
+});
+
 /**
  * Various settings for controlling application behavior specific to the desktop client.
  */
@@ -77,6 +81,10 @@ export class DesktopSettingsService {
    * The application setting for whether or not the application should show up in the dock.
    */
   alwaysShowDock$ = this.alwaysShowDockState.state$.pipe(map((value) => value ?? false));
+
+  private readonly alwaysOnTopState = this.stateProvider.getGlobal(ALWAYS_ON_TOP_KEY);
+
+  alwaysOnTop$ = this.alwaysOnTopState.state$.pipe(map((value) => value ?? false));
 
   constructor(private stateProvider: StateProvider) {
     this.window$ = this.windowState.state$.pipe(
@@ -145,5 +153,13 @@ export class DesktopSettingsService {
    */
   async setAlwaysShowDock(value: boolean) {
     await this.alwaysShowDockState.update(() => value);
+  }
+
+  /**
+   * Sets the setting for whether or not the application should stay on top of all other windows.
+   * @param value `true` if the application should stay on top, `false` if it should not.
+   */
+  async setAlwaysOnTop(value: boolean) {
+    await this.alwaysOnTopState.update(() => value);
   }
 }

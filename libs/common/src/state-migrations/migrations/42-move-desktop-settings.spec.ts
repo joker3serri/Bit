@@ -7,7 +7,7 @@ describe("MoveDesktopSettings", () => {
 
   it("can migrate truthy values", async () => {
     const output = await runMigrator(sut, {
-      authenticatedAccounts: ["user1"] as const,
+      authenticatedAccounts: ["user1"],
       global: {
         window: {
           width: 400,
@@ -27,13 +27,16 @@ describe("MoveDesktopSettings", () => {
         openAtLogin: true,
         alwaysShowDock: true,
       },
+      user1: {
+        settings: {
+          enableAlwaysOnTop: true,
+        },
+      },
     });
 
     expect(output).toEqual({
       authenticatedAccounts: ["user1"],
-      global: {
-        enableAlwaysOnTop: true,
-      },
+      global: {},
       global_desktopSettings_window: {
         width: 400,
         height: 400,
@@ -50,6 +53,10 @@ describe("MoveDesktopSettings", () => {
       global_desktopSettings_trayEnabled: true,
       global_desktopSettings_openAtLogin: true,
       global_desktopSettings_alwaysShowDock: true,
+      global_desktopSettings_alwaysOnTop: true,
+      user1: {
+        settings: {},
+      },
     });
   });
 
@@ -64,6 +71,12 @@ describe("MoveDesktopSettings", () => {
         enableTray: false,
         openAtLogin: false,
         alwaysShowDock: false,
+        enableAlwaysOnTop: false,
+      },
+      user1: {
+        settings: {
+          enableAlwaysOnTop: false,
+        },
       },
     });
 
@@ -77,6 +90,10 @@ describe("MoveDesktopSettings", () => {
       global_desktopSettings_trayEnabled: false,
       global_desktopSettings_openAtLogin: false,
       global_desktopSettings_alwaysShowDock: false,
+      global_desktopSettings_alwaysOnTop: false,
+      user1: {
+        settings: {},
+      },
     });
   });
 

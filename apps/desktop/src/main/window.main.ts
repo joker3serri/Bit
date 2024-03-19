@@ -144,7 +144,7 @@ export class WindowMain {
       this.defaultWidth,
       this.defaultHeight,
     );
-    this.enableAlwaysOnTop = await this.stateService.getEnableAlwaysOnTop();
+    this.enableAlwaysOnTop = await firstValueFrom(this.desktopSettingsService.alwaysOnTop$);
 
     this.session = session.fromPartition("persist:bitwarden", { cache: false });
 
@@ -268,7 +268,7 @@ export class WindowMain {
   async toggleAlwaysOnTop() {
     this.enableAlwaysOnTop = !this.win.isAlwaysOnTop();
     this.win.setAlwaysOnTop(this.enableAlwaysOnTop);
-    await this.stateService.setEnableAlwaysOnTop(this.enableAlwaysOnTop);
+    await this.desktopSettingsService.setAlwaysOnTop(this.enableAlwaysOnTop);
   }
 
   private windowStateChangeHandler(configKey: string, win: BrowserWindow) {

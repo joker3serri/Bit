@@ -2,7 +2,6 @@ import { KeyDefinitionLike, MigrationHelper, StateDefinitionLike } from "../migr
 import { IRREVERSIBLE, Migrator } from "../migrator";
 
 type ExpectedGlobalType = {
-  enableAlwaysOnTop?: boolean;
   window?: object;
   enableTray?: boolean;
   enableMinimizeToTray?: boolean;
@@ -10,6 +9,13 @@ type ExpectedGlobalType = {
   enableStartToTray?: boolean;
   openAtLogin?: boolean;
   alwaysShowDock?: boolean;
+  enableAlwaysOnTop?: boolean;
+};
+
+type ExpectedAccountType = {
+  settings?: {
+    enableAlwaysOnTop?: boolean;
+  };
 };
 
 const DESKTOP_SETTINGS_STATE: StateDefinitionLike = { name: "desktopSettings" };
@@ -38,6 +44,11 @@ const OPEN_AT_LOGIN_KEY: KeyDefinitionLike = {
 };
 const ALWAYS_SHOW_DOCK_KEY: KeyDefinitionLike = {
   key: "alwaysShowDock",
+  stateDefinition: DESKTOP_SETTINGS_STATE,
+};
+
+const ALWAYS_ON_TOP_KEY: KeyDefinitionLike = {
+  key: "alwaysOnTop",
   stateDefinition: DESKTOP_SETTINGS_STATE,
 };
 
@@ -88,9 +99,27 @@ export class MoveDesktopSettingsMigrator extends Migrator<41, 42> {
       delete legacyGlobal.alwaysShowDock;
     }
 
+    if (legacyGlobal?.enableAlwaysOnTop != null) {
+      await helper.setToGlobal(ALWAYS_ON_TOP_KEY, legacyGlobal.enableAlwaysOnTop);
+      updatedGlobal = true;
+      delete legacyGlobal.enableAlwaysOnTop;
+    }
+
     if (updatedGlobal) {
       await helper.set("global", legacyGlobal);
     }
+
+    async function migrateAccount(userId: string, account: ExpectedAccountType) {
+      // We only migrate the global setting for this, if we find it on the account object
+      // just delete it.
+      if (account?.settings?.enableAlwaysOnTop != null) {
+        delete account.settings.enableAlwaysOnTop;
+        await helper.set(userId, account);
+      }
+    }
+
+    const accounts = await helper.getAccounts<ExpectedAccountType>();
+    await Promise.all(accounts.map(({ userId, account }) => migrateAccount(userId, account)));
   }
 
   rollback(helper: MigrationHelper): Promise<void> {

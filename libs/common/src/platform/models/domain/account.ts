@@ -190,7 +190,6 @@ export class AccountSettings {
   autoConfirmFingerPrints?: boolean;
   defaultUriMatch?: UriMatchStrategySetting;
   disableGa?: boolean;
-  enableAlwaysOnTop?: boolean;
   enableBiometric?: boolean;
   minimizeOnCopyToClipboard?: boolean;
   passwordGenerationOptions?: PasswordGeneratorOptions;
