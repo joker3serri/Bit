@@ -172,8 +172,6 @@ describe("UserDecryptionOptionsMigrator", () => {
           keyConnectorUrl: "https://selfhosted.bitwarden.com",
         },
       });
-
-      expect(helper.setToUser).toHaveBeenCalledWith("ThirdAccount", keyDefinitionLike, undefined);
     });
   });
 
