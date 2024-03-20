@@ -2,19 +2,28 @@ import * as path from "path";
 
 import { app } from "electron";
 
+import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
+import { TokenService } from "@bitwarden/common/auth/services/token.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
+import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
+import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopMessagingService } from "@bitwarden/common/platform/services/noop-messaging.service";
 /* eslint-disable import/no-restricted-paths -- We need the implementation to inject, but generally this should not be accessed */
+import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-active-user-state.provider";
 import { DefaultDerivedStateProvider } from "@bitwarden/common/platform/state/implementations/default-derived-state.provider";
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
 import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
-/*/ eslint-enable import/no-restricted-paths */
+import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
+import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
+/* eslint-enable import/no-restricted-paths */
 
 import { MenuMain } from "./main/menu/menu.main";
 import { MessagingMain } from "./main/messaging.main";
@@ -27,21 +36,27 @@ import { Account } from "./models/account";
 import { BiometricsService, BiometricsServiceAbstraction } from "./platform/main/biometric/index";
 import { ClipboardMain } from "./platform/main/clipboard.main";
 import { DesktopCredentialStorageListener } from "./platform/main/desktop-credential-storage-listener";
-import { ElectronLogService } from "./platform/services/electron-log.service";
+import { MainCryptoFunctionService } from "./platform/main/main-crypto-function.service";
+import { ElectronLogMainService } from "./platform/services/electron-log.main.service";
+import { ELECTRON_SUPPORTS_SECURE_STORAGE } from "./platform/services/electron-platform-utils.service";
 import { ElectronStateService } from "./platform/services/electron-state.service";
 import { ElectronStorageService } from "./platform/services/electron-storage.service";
 import { I18nMainService } from "./platform/services/i18n.main.service";
 import { ElectronMainMessagingService } from "./services/electron-main-messaging.service";
 
 export class Main {
-  logService: ElectronLogService;
+  logService: ElectronLogMainService;
   i18nService: I18nMainService;
   storageService: ElectronStorageService;
   memoryStorageService: MemoryStorageService;
+  memoryStorageForStateProviders: MemoryStorageServiceForStateProviders;
   messagingService: ElectronMainMessagingService;
-  stateService: ElectronStateService;
+  stateService: StateService;
   environmentService: EnvironmentService;
+  mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
+  migrationRunner: MigrationRunner;
+  tokenService: TokenServiceAbstraction;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -85,9 +100,7 @@ export class Main {
       });
     }
 
-    this.logService = new ElectronLogService(null, app.getPath("userData"));
-    this.logService.init();
-    this.i18nService = new I18nMainService("en", "./locales/");
+    this.logService = new ElectronLogMainService(null, app.getPath("userData"));
 
     const storageDefaults: any = {};
     // Default vault timeout to "on restart", and action to "lock"
@@ -95,10 +108,14 @@ export class Main {
     storageDefaults["global.vaultTimeoutAction"] = "lock";
     this.storageService = new ElectronStorageService(app.getPath("userData"), storageDefaults);
     this.memoryStorageService = new MemoryStorageService();
-    const globalStateProvider = new DefaultGlobalStateProvider(
-      this.memoryStorageService,
+    this.memoryStorageForStateProviders = new MemoryStorageServiceForStateProviders();
+    const storageServiceProvider = new StorageServiceProvider(
       this.storageService,
+      this.memoryStorageForStateProviders,
     );
+    const globalStateProvider = new DefaultGlobalStateProvider(storageServiceProvider);
+
+    this.i18nService = new I18nMainService("en", "./locales/", globalStateProvider);
 
     const accountService = new AccountServiceImplementation(
       new NoopMessagingService(),
@@ -106,18 +123,42 @@ export class Main {
       globalStateProvider,
     );
 
-    const stateProvider = new DefaultStateProvider(
-      new DefaultActiveUserStateProvider(
-        accountService,
-        this.memoryStorageService,
-        this.storageService,
-      ),
-      new DefaultSingleUserStateProvider(this.memoryStorageService, this.storageService),
+    const stateEventRegistrarService = new StateEventRegistrarService(
       globalStateProvider,
-      new DefaultDerivedStateProvider(this.memoryStorageService),
+      storageServiceProvider,
+    );
+
+    const singleUserStateProvider = new DefaultSingleUserStateProvider(
+      storageServiceProvider,
+      stateEventRegistrarService,
+    );
+
+    const activeUserStateProvider = new DefaultActiveUserStateProvider(
+      accountService,
+      singleUserStateProvider,
+    );
+
+    const stateProvider = new DefaultStateProvider(
+      activeUserStateProvider,
+      singleUserStateProvider,
+      globalStateProvider,
+      new DefaultDerivedStateProvider(this.memoryStorageForStateProviders),
     );
 
     this.environmentService = new EnvironmentService(stateProvider, accountService);
+
+    this.tokenService = new TokenService(
+      singleUserStateProvider,
+      globalStateProvider,
+      ELECTRON_SUPPORTS_SECURE_STORAGE,
+      this.storageService,
+    );
+
+    this.migrationRunner = new MigrationRunner(
+      this.storageService,
+      this.logService,
+      new MigrationBuilderService(),
+    );
 
     // TODO: this state service will have access to on disk storage, but not in memory storage.
     // If we could get this to work using the stateService singleton that the rest of the app uses we could save
@@ -130,11 +171,16 @@ export class Main {
       new StateFactory(GlobalState, Account),
       accountService, // will not broadcast logouts. This is a hack until we can remove messaging dependency
       this.environmentService,
+      this.tokenService,
+      this.migrationRunner,
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
 
+    const biometricStateService = new DefaultBiometricStateService(stateProvider);
+
     this.windowMain = new WindowMain(
       this.stateService,
+      biometricStateService,
       this.logService,
       this.storageService,
       (arg) => this.processDeepLink(arg),
@@ -147,6 +193,7 @@ export class Main {
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
     });
+
     this.powerMonitorMain = new PowerMonitorMain(this.messagingService);
     this.menuMain = new MenuMain(
       this.i18nService,
@@ -159,10 +206,10 @@ export class Main {
     this.biometricsService = new BiometricsService(
       this.i18nService,
       this.windowMain,
-      this.stateService,
       this.logService,
       this.messagingService,
       process.platform,
+      biometricStateService,
     );
 
     this.desktopCredentialStorageListener = new DesktopCredentialStorageListener(
@@ -180,15 +227,21 @@ export class Main {
 
     this.clipboardMain = new ClipboardMain();
     this.clipboardMain.init();
+
+    this.mainCryptoFunctionService = new MainCryptoFunctionService();
+    this.mainCryptoFunctionService.init();
   }
 
   bootstrap() {
     this.desktopCredentialStorageListener.init();
-    this.windowMain.init().then(
+    // Run migrations first, then other things
+    this.migrationRunner.run().then(
       async () => {
-        const locale = await this.stateService.getLocale();
-        await this.i18nService.init(locale != null ? locale : app.getLocale());
+        await this.windowMain.init();
+        await this.i18nService.init();
         this.messagingMain.init();
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.menuMain.init();
         await this.trayMain.init("Bitwarden", [
           {
@@ -199,18 +252,19 @@ export class Main {
           },
         ]);
         if (await this.stateService.getEnableStartToTray()) {
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.trayMain.hideToTray();
         }
         this.powerMonitorMain.init();
         await this.updaterMain.init();
-        if (this.biometricsService != null) {
-          await this.biometricsService.init();
-        }
 
         if (
           (await this.stateService.getEnableBrowserIntegration()) ||
           (await this.stateService.getEnableDuckDuckGoBrowserIntegration())
         ) {
+          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.nativeMessagingMain.listen();
         }
 
@@ -250,19 +304,7 @@ export class Main {
     argv
       .filter((s) => s.indexOf("bitwarden://") === 0)
       .forEach((s) => {
-        const url = new URL(s);
-        const code = url.searchParams.get("code");
-        const receivedState = url.searchParams.get("state");
-
-        if (code == null || receivedState == null) {
-          return;
-        }
-
-        const message =
-          s.indexOf("bitwarden://import-callback-lp") === 0
-            ? "importCallbackLastPass"
-            : "ssoCallback";
-        this.messagingService.send(message, { code: code, state: receivedState });
+        this.messagingService.send("deepLink", { urlString: s });
       });
   }
 }

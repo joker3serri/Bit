@@ -110,7 +110,7 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
       return;
     }
     this.loading = true;
-    this.userOrg = this.organizationService.get(this.organizationId);
+    this.userOrg = await this.organizationService.get(this.organizationId);
     if (this.userOrg.canViewSubscription) {
       const subscriptionResponse = await this.organizationApiService.getSubscription(
         this.organizationId,
@@ -139,6 +139,8 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   }
 
   licenseUploaded() {
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.load();
     this.messagingService.send("updatedOrgLicense");
   }
@@ -158,6 +160,8 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     this.form.get("updateMethod").setValue(LicenseOptions.SYNC);
     await this.organizationApiService.selfHostedSyncLicense(this.organizationId);
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.load();
     await this.loadOrganizationConnection();
     this.messagingService.send("updatedOrgLicense");

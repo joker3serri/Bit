@@ -14,11 +14,11 @@ export class NavigationComponent {
   protected readonly logo = SecretsManagerLogo;
   protected orgFilter = (org: Organization) => org.canAccessSecretsManager;
   protected isAdmin$ = this.route.params.pipe(
-    map((params) => this.organizationService.get(params.organizationId)?.isAdmin),
+    map(async (params) => (await this.organizationService.get(params.organizationId))?.isAdmin),
   );
 
   constructor(
-    private route: ActivatedRoute,
+    protected route: ActivatedRoute,
     private organizationService: OrganizationService,
   ) {}
 }

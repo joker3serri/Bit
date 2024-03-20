@@ -6,15 +6,16 @@ import { first } from "rxjs/operators";
 
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
@@ -23,7 +24,6 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
@@ -45,7 +45,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
   constructor(
     devicesApiService: DevicesApiServiceAbstraction,
     appIdService: AppIdService,
-    authService: AuthService,
+    loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
     route: ActivatedRoute,
@@ -59,17 +59,17 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     logService: LogService,
     ngZone: NgZone,
     protected stateService: StateService,
-    private messagingService: MessagingService,
     private routerService: RouterService,
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
     loginService: LoginService,
+    ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {
     super(
       devicesApiService,
       appIdService,
-      authService,
+      loginStrategyService,
       router,
       platformUtilsService,
       i18nService,
@@ -83,11 +83,9 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       formValidationErrorService,
       route,
       loginService,
+      ssoLoginService,
       webAuthnLoginService,
     );
-    this.onSuccessfulLogin = async () => {
-      this.messagingService.send("setFullWidth");
-    };
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
     this.showPasswordless = flagEnabled("showPasswordless");
   }
@@ -122,7 +120,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
           invite.email,
           invite.organizationUserId,
         );
-        policyList = this.policyService.mapPoliciesFromToken(this.policies);
+        policyList = Policy.fromListResponse(this.policies);
       } catch (e) {
         this.logService.error(e);
       }
@@ -168,17 +166,23 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
         const policiesData: { [id: string]: PolicyData } = {};
         this.policies.data.map((p) => (policiesData[p.id] = new PolicyData(p)));
         await this.policyService.replace(policiesData);
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.router.navigate(["update-password"]);
         return;
       }
     }
 
     this.loginService.clearValues();
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate([this.successRoute]);
   }
 
   goToHint() {
     this.setFormValues();
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigateByUrl("/hint");
   }
 
@@ -186,10 +190,14 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     const email = this.formGroup.value.email;
 
     if (email) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["/register"], { queryParams: { email: email } });
       return;
     }
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/register"]);
   }
 
@@ -206,6 +214,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     if (!result.requiresEncryptionKeyMigration) {
       return false;
     }
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["migrate-legacy-encryption"]);
     return true;
   }

@@ -23,6 +23,8 @@ export class ExportScopeCalloutComponent implements OnInit {
 
   @Input() set organizationId(value: string) {
     this._organizationId = value;
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.getScopeMessage(this._organizationId);
   }
 
@@ -32,7 +34,7 @@ export class ExportScopeCalloutComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if (!this.organizationService.hasOrganizations()) {
+    if (!(await this.organizationService.hasOrganizations())) {
       return;
     }
 
@@ -46,7 +48,7 @@ export class ExportScopeCalloutComponent implements OnInit {
         ? {
             title: "exportingOrganizationVaultTitle",
             description: "exportingOrganizationVaultDesc",
-            scopeIdentifier: this.organizationService.get(organizationId).name,
+            scopeIdentifier: (await this.organizationService.get(organizationId)).name,
           }
         : {
             title: "exportingPersonalVaultTitle",

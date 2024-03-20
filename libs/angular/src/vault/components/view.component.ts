@@ -9,12 +9,13 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EventType } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -68,6 +69,7 @@ export class ViewComponent implements OnDestroy, OnInit {
   private totpInterval: any;
   private previousCipherId: string;
   private passwordReprompted = false;
+  private directiveIsDestroyed$ = new Subject<boolean>();
 
   get fido2CredentialCreationDateValue(): string {
     const dateCreated = this.i18nService.t("dateCreated");
@@ -99,10 +101,13 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
     protected datePipe: DatePipe,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   ngOnInit() {
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.ngZone.run(async () => {
         switch (message.command) {
           case "syncCompleted":
@@ -114,11 +119,19 @@ export class ViewComponent implements OnDestroy, OnInit {
         }
       });
     });
+
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$
+      .pipe(takeUntil(this.directiveIsDestroyed$))
+      .subscribe((canAccessPremium: boolean) => {
+        this.canAccessPremium = canAccessPremium;
+      });
   }
 
   ngOnDestroy() {
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
     this.cleanUp();
+    this.directiveIsDestroyed$.next(true);
+    this.directiveIsDestroyed$.complete();
   }
 
   async load() {
@@ -128,7 +141,6 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.cipher = await cipher.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(cipher),
     );
-    this.canAccessPremium = await this.stateService.getCanAccessPremium();
     this.showPremiumRequiredTotp =
       this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;
 
@@ -153,6 +165,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     }
 
     if (this.previousCipherId !== this.cipherId) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(EventType.Cipher_ClientViewed, this.cipherId);
     }
     this.previousCipherId = this.cipherId;
@@ -253,6 +267,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.showPassword = !this.showPassword;
     this.showPasswordCount = false;
     if (this.showPassword) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledPasswordVisible,
         this.cipherId,
@@ -275,6 +291,8 @@ export class ViewComponent implements OnDestroy, OnInit {
 
     this.showCardNumber = !this.showCardNumber;
     if (this.showCardNumber) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledCardNumberVisible,
         this.cipherId,
@@ -289,6 +307,8 @@ export class ViewComponent implements OnDestroy, OnInit {
 
     this.showCardCode = !this.showCardCode;
     if (this.showCardCode) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledCardCodeVisible,
         this.cipherId,
@@ -325,6 +345,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     }
 
     if (cipherId) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.cipherService.updateLastLaunchedDate(cipherId);
     }
 
@@ -352,10 +374,16 @@ export class ViewComponent implements OnDestroy, OnInit {
     );
 
     if (typeI18nKey === "password") {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
     } else if (typeI18nKey === "securityCode") {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
     } else if (aType === "H_Field") {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedHiddenField, this.cipherId);
     }
 

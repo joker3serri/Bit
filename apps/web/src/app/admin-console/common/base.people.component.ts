@@ -1,10 +1,12 @@
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { OrganizationManagementPreferencesService } from "@bitwarden/common/admin-console/abstractions/organization-management-preferences/organization-management-preferences.service";
 import {
   OrganizationUserStatusType,
   OrganizationUserType,
@@ -17,7 +19,6 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
@@ -109,8 +110,8 @@ export abstract class BasePeopleComponent<
     private logService: LogService,
     private searchPipe: SearchPipe,
     protected userNamePipe: UserNamePipe,
-    protected stateService: StateService,
     protected dialogService: DialogService,
+    protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
   ) {}
 
   abstract edit(user: UserType): void;
@@ -164,6 +165,8 @@ export abstract class BasePeopleComponent<
     }
     // Reset checkbox selecton
     this.selectAll(false);
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.resetPaging();
   }
 
@@ -349,7 +352,9 @@ export abstract class BasePeopleComponent<
       const publicKeyResponse = await this.apiService.getUserPublicKey(user.userId);
       const publicKey = Utils.fromB64ToArray(publicKeyResponse.publicKey);
 
-      const autoConfirm = await this.stateService.getAutoConfirmFingerPrints();
+      const autoConfirm = await firstValueFrom(
+        this.organizationManagementPreferencesService.autoConfirmFingerPrints.state$,
+      );
       if (autoConfirm == null || !autoConfirm) {
         const [modal] = await this.modalService.openViewRef(
           UserConfirmComponent,
@@ -392,6 +397,8 @@ export abstract class BasePeopleComponent<
   isPaging() {
     const searching = this.isSearching();
     if (searching && this.didScroll) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.resetPaging();
     }
     return !searching && this.users && this.users.length > this.pageSize;
@@ -409,6 +416,8 @@ export abstract class BasePeopleComponent<
     let index = this.users.indexOf(user);
     if (index > -1) {
       this.users.splice(index, 1);
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.resetPaging();
     }
 

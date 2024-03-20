@@ -1,33 +1,48 @@
 import { mock, mockReset } from "jest-mock-extended";
+import { of } from "rxjs";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import {
+  SHOW_AUTOFILL_BUTTON,
+  AutofillOverlayVisibility,
+} from "@bitwarden/common/autofill/constants";
+import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  DefaultDomainSettingsService,
+  DomainSettingsService,
+} from "@bitwarden/common/autofill/services/domain-settings.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { I18nService } from "@bitwarden/common/platform/services/i18n.service";
-import { SettingsService } from "@bitwarden/common/services/settings.service";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import {
+  FakeStateProvider,
+  FakeAccountService,
+  mockAccountServiceWith,
+} from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
-import BrowserPlatformUtilsService from "../../platform/services/browser-platform-utils.service";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
-import { SHOW_AUTOFILL_BUTTON } from "../constants";
+import { BrowserPlatformUtilsService } from "../../platform/services/platform-utils/browser-platform-utils.service";
+import { AutofillService } from "../services/abstractions/autofill.service";
 import {
   createAutofillPageDetailsMock,
   createChromeTabMock,
   createFocusedFieldDataMock,
   createPageDetailMock,
   createPortSpyMock,
-} from "../jest/autofill-mocks";
-import { flushPromises, sendExtensionRuntimeMessage, sendPortMessage } from "../jest/testing-utils";
-import { AutofillService } from "../services/abstractions/autofill.service";
+} from "../spec/autofill-mocks";
+import { flushPromises, sendExtensionRuntimeMessage, sendPortMessage } from "../spec/testing-utils";
 import {
   AutofillOverlayElement,
   AutofillOverlayPort,
-  AutofillOverlayVisibility,
   RedirectFocusDirection,
 } from "../utils/autofill-overlay.enum";
 
@@ -36,6 +51,10 @@ import OverlayBackground from "./overlay.background";
 const iconServerUrl = "https://icons.bitwarden.com/";
 
 describe("OverlayBackground", () => {
+  const mockUserId = Utils.newGuid() as UserId;
+  const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
+  const fakeStateProvider: FakeStateProvider = new FakeStateProvider(accountService);
+  let domainSettingsService: DomainSettingsService;
   let buttonPortSpy: chrome.runtime.Port;
   let listPortSpy: chrome.runtime.Port;
   let overlayBackground: OverlayBackground;
@@ -45,19 +64,20 @@ describe("OverlayBackground", () => {
   const environmentService = mock<EnvironmentService>({
     getIconsUrl: () => iconServerUrl,
   });
-  const settingsService = mock<SettingsService>();
   const stateService = mock<BrowserStateService>();
+  const autofillSettingsService = mock<AutofillSettingsService>();
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<BrowserPlatformUtilsService>();
-  const initOverlayElementPorts = (options = { initList: true, initButton: true }) => {
+  const themeStateService = mock<ThemeStateService>();
+  const initOverlayElementPorts = async (options = { initList: true, initButton: true }) => {
     const { initList, initButton } = options;
     if (initButton) {
-      overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.Button));
+      await overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.Button));
       buttonPortSpy = overlayBackground["overlayButtonPort"];
     }
 
     if (initList) {
-      overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.List));
+      await overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.List));
       listPortSpy = overlayBackground["overlayListPort"];
     }
 
@@ -65,17 +85,28 @@ describe("OverlayBackground", () => {
   };
 
   beforeEach(() => {
+    domainSettingsService = new DefaultDomainSettingsService(fakeStateProvider);
     overlayBackground = new OverlayBackground(
       cipherService,
       autofillService,
       authService,
       environmentService,
-      settingsService,
+      domainSettingsService,
       stateService,
+      autofillSettingsService,
       i18nService,
       platformUtilsService,
+      themeStateService,
     );
-    overlayBackground.init();
+
+    jest
+      .spyOn(overlayBackground as any, "getOverlayVisibility")
+      .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
+
+    themeStateService.selectedTheme$ = of(ThemeType.Light);
+    domainSettingsService.showFavicons$ = of(true);
+
+    void overlayBackground.init();
   });
 
   afterEach(() => {
@@ -194,7 +225,7 @@ describe("OverlayBackground", () => {
             },
             id: "overlay-cipher-0",
             login: {
-              username: "us*******2",
+              username: "username-2",
             },
             name: "name-2",
             reprompt: cipher2.reprompt,
@@ -211,7 +242,7 @@ describe("OverlayBackground", () => {
             },
             id: "overlay-cipher-1",
             login: {
-              username: "us*******1",
+              username: "username-1",
             },
             name: "name-1",
             reprompt: cipher1.reprompt,
@@ -258,7 +289,7 @@ describe("OverlayBackground", () => {
       card: { subTitle: "Mastercard, *1234" },
     });
 
-    it("formats and returns the cipher data", () => {
+    it("formats and returns the cipher data", async () => {
       overlayBackground["overlayLoginCiphers"] = new Map([
         ["overlay-cipher-0", cipher2],
         ["overlay-cipher-1", cipher1],
@@ -266,7 +297,7 @@ describe("OverlayBackground", () => {
         ["overlay-cipher-3", cipher4],
       ]);
 
-      const overlayCipherData = overlayBackground["getOverlayCipherData"]();
+      const overlayCipherData = await overlayBackground["getOverlayCipherData"]();
 
       expect(overlayCipherData).toStrictEqual([
         {
@@ -280,7 +311,7 @@ describe("OverlayBackground", () => {
           },
           id: "overlay-cipher-0",
           login: {
-            username: "us*******2",
+            username: "username-2",
           },
           name: "name-2",
           reprompt: cipher2.reprompt,
@@ -297,7 +328,7 @@ describe("OverlayBackground", () => {
           },
           id: "overlay-cipher-1",
           login: {
-            username: "us*******1",
+            username: "username-1",
           },
           name: "name-1",
           reprompt: cipher1.reprompt,
@@ -334,48 +365,6 @@ describe("OverlayBackground", () => {
           type: 3,
         },
       ]);
-    });
-  });
-
-  describe("obscureName", () => {
-    it("returns an empty string if the name is falsy", () => {
-      const name: string = undefined;
-
-      const obscureName = overlayBackground["obscureName"](name);
-
-      expect(obscureName).toBe("");
-    });
-
-    it("will not attempt to obscure a username that is only a domain", () => {
-      const name = "@domain.com";
-
-      const obscureName = overlayBackground["obscureName"](name);
-
-      expect(obscureName).toBe(name);
-    });
-
-    it("will obscure all characters of a name that is less than 5 characters expect for the first character", () => {
-      const name = "name@domain.com";
-
-      const obscureName = overlayBackground["obscureName"](name);
-
-      expect(obscureName).toBe("n***@domain.com");
-    });
-
-    it("will obscure all characters of a name that is greater than 4 characters by less than 6 ", () => {
-      const name = "name1@domain.com";
-
-      const obscureName = overlayBackground["obscureName"](name);
-
-      expect(obscureName).toBe("na***@domain.com");
-    });
-
-    it("will obscure all characters of a name that is greater than 5 characters except for the first two characters and the last character", () => {
-      const name = "name12@domain.com";
-
-      const obscureName = overlayBackground["obscureName"](name);
-
-      expect(obscureName).toBe("na***2@domain.com");
     });
   });
 
@@ -564,8 +553,8 @@ describe("OverlayBackground", () => {
       });
 
       describe("autofillOverlayElementClosed message handler", () => {
-        beforeEach(() => {
-          initOverlayElementPorts();
+        beforeEach(async () => {
+          await initOverlayElementPorts();
         });
 
         it("disconnects the button element port", () => {
@@ -607,6 +596,8 @@ describe("OverlayBackground", () => {
         });
 
         it("will open the add edit popout window after creating a new cipher", async () => {
+          jest.spyOn(BrowserApi, "sendMessage");
+
           sendExtensionRuntimeMessage(
             {
               command: "autofillOverlayAddNewVaultItem",
@@ -622,6 +613,9 @@ describe("OverlayBackground", () => {
           await flushPromises();
 
           expect(overlayBackground["stateService"].setAddEditCipherInfo).toHaveBeenCalled();
+          expect(BrowserApi.sendMessage).toHaveBeenCalledWith(
+            "inlineAutofillMenuRefreshAddEditCipher",
+          );
           expect(overlayBackground["openAddEditVaultItemPopout"]).toHaveBeenCalled();
         });
       });
@@ -629,7 +623,7 @@ describe("OverlayBackground", () => {
       describe("getAutofillOverlayVisibility message handler", () => {
         beforeEach(() => {
           jest
-            .spyOn(overlayBackground["settingsService"], "getAutoFillOverlayVisibility")
+            .spyOn(overlayBackground as any, "getOverlayVisibility")
             .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
         });
 
@@ -637,7 +631,7 @@ describe("OverlayBackground", () => {
           sendExtensionRuntimeMessage({ command: "getAutofillOverlayVisibility" });
           await flushPromises();
 
-          expect(overlayBackground["overlayVisibility"]).toBe(
+          expect(await overlayBackground["getOverlayVisibility"]()).toBe(
             AutofillOverlayVisibility.OnFieldFocus,
           );
         });
@@ -657,8 +651,8 @@ describe("OverlayBackground", () => {
       });
 
       describe("checkAutofillOverlayFocused message handler", () => {
-        beforeEach(() => {
-          initOverlayElementPorts();
+        beforeEach(async () => {
+          await initOverlayElementPorts();
         });
 
         it("will check if the overlay list is focused if the list port is open", () => {
@@ -687,8 +681,8 @@ describe("OverlayBackground", () => {
       });
 
       describe("focusAutofillOverlayList message handler", () => {
-        it("will send a `focusOverlayList` message to the overlay list port", () => {
-          initOverlayElementPorts({ initList: true, initButton: false });
+        it("will send a `focusOverlayList` message to the overlay list port", async () => {
+          await initOverlayElementPorts({ initList: true, initButton: false });
 
           sendExtensionRuntimeMessage({ command: "focusAutofillOverlayList" });
 
@@ -697,10 +691,15 @@ describe("OverlayBackground", () => {
       });
 
       describe("updateAutofillOverlayPosition message handler", () => {
-        beforeEach(() => {
-          overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.List));
+        beforeEach(async () => {
+          await overlayBackground["handlePortOnConnect"](
+            createPortSpyMock(AutofillOverlayPort.List),
+          );
           listPortSpy = overlayBackground["overlayListPort"];
-          overlayBackground["handlePortOnConnect"](createPortSpyMock(AutofillOverlayPort.Button));
+
+          await overlayBackground["handlePortOnConnect"](
+            createPortSpyMock(AutofillOverlayPort.Button),
+          );
           buttonPortSpy = overlayBackground["overlayButtonPort"];
         });
 
@@ -803,8 +802,8 @@ describe("OverlayBackground", () => {
       });
 
       describe("updateOverlayHidden", () => {
-        beforeEach(() => {
-          initOverlayElementPorts();
+        beforeEach(async () => {
+          await initOverlayElementPorts();
         });
 
         it("returns early if the display value is not provided", () => {
@@ -901,7 +900,7 @@ describe("OverlayBackground", () => {
           const message = {
             command: "unlockCompleted",
             data: {
-              commandToRetry: { msg: { command: "" } },
+              commandToRetry: { message: { command: "" } },
             },
           };
 
@@ -917,7 +916,7 @@ describe("OverlayBackground", () => {
           const message = {
             command: "unlockCompleted",
             data: {
-              commandToRetry: { msg: { command: "openAutofillOverlay" } },
+              commandToRetry: { message: { command: "openAutofillOverlay" } },
             },
           };
           jest.spyOn(BrowserApi, "getTabFromCurrentWindowId").mockResolvedValueOnce(sender.tab);
@@ -974,17 +973,17 @@ describe("OverlayBackground", () => {
       jest.spyOn(overlayBackground as any, "getOverlayCipherData").mockImplementation();
     });
 
-    it("skips setting up the overlay port if the port connection is not for an overlay element", () => {
+    it("skips setting up the overlay port if the port connection is not for an overlay element", async () => {
       const port = createPortSpyMock("not-an-overlay-element");
 
-      overlayBackground["handlePortOnConnect"](port);
+      await overlayBackground["handlePortOnConnect"](port);
 
       expect(port.onMessage.addListener).not.toHaveBeenCalled();
       expect(port.postMessage).not.toHaveBeenCalled();
     });
 
     it("sets up the overlay list port if the port connection is for the overlay list", async () => {
-      initOverlayElementPorts({ initList: true, initButton: false });
+      await initOverlayElementPorts({ initList: true, initButton: false });
       await flushPromises();
 
       expect(overlayBackground["overlayButtonPort"]).toBeUndefined();
@@ -1000,7 +999,7 @@ describe("OverlayBackground", () => {
     });
 
     it("sets up the overlay button port if the port connection is for the overlay button", async () => {
-      initOverlayElementPorts({ initList: false, initButton: true });
+      await initOverlayElementPorts({ initList: false, initButton: true });
       await flushPromises();
 
       expect(overlayBackground["overlayListPort"]).toBeUndefined();
@@ -1015,19 +1014,20 @@ describe("OverlayBackground", () => {
     });
 
     it("gets the system theme", async () => {
-      jest.spyOn(overlayBackground["stateService"], "getTheme").mockResolvedValue(ThemeType.System);
-      window.matchMedia = jest.fn(() => mock<MediaQueryList>({ matches: true }));
+      themeStateService.selectedTheme$ = of(ThemeType.System);
 
-      initOverlayElementPorts({ initList: true, initButton: false });
+      await initOverlayElementPorts({ initList: true, initButton: false });
       await flushPromises();
 
-      expect(window.matchMedia).toHaveBeenCalledWith("(prefers-color-scheme: dark)");
+      expect(listPortSpy.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({ theme: ThemeType.System }),
+      );
     });
   });
 
   describe("handleOverlayElementPortMessage", () => {
-    beforeEach(() => {
-      initOverlayElementPorts();
+    beforeEach(async () => {
+      await initOverlayElementPorts();
       overlayBackground["userAuthStatus"] = AuthenticationStatus.Unlocked;
     });
 
@@ -1171,7 +1171,7 @@ describe("OverlayBackground", () => {
             "addToLockedVaultPendingNotifications",
             {
               commandToRetry: {
-                msg: { command: "openAutofillOverlay" },
+                message: { command: "openAutofillOverlay" },
                 sender: listPortSpy.sender,
               },
               target: "overlay.background",
@@ -1282,7 +1282,7 @@ describe("OverlayBackground", () => {
           });
           await flushPromises();
 
-          expect(copyToClipboardSpy).toHaveBeenCalledWith("totp-code", { window });
+          expect(copyToClipboardSpy).toHaveBeenCalledWith("totp-code");
         });
       });
 
