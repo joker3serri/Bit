@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { DialogService, SimpleDialogOptions } from "../../../dialog";
+import { DialogService } from "../../../dialog";
 import { I18nMockService } from "../../../utils/i18n-mock.service";
 import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 
@@ -36,7 +36,7 @@ import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
     },
   ],
   template: `
-    <form [formGroup]="formObj" (ngSubmit)="submit()">
+    <form [formGroup]="formObj" [bitSubmit]="submit">
       <div class="tw-mb-6">
         <bit-progress [barWidth]="50"></bit-progress>
       </div>
@@ -59,11 +59,7 @@ import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 
       <bit-form-field>
         <bit-label>Your top 3 worst passwords</bit-label>
-        <bit-multi-select
-          class="tw-w-full"
-          formControlName="topWorstPasswords"
-          [baseItems]="worstPasswords"
-        >
+        <bit-multi-select formControlName="topWorstPasswords" [baseItems]="worstPasswords">
         </bit-multi-select>
       </bit-form-field>
 
@@ -76,8 +72,8 @@ import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
         <bit-label>
           A random password
           <button
-            type="button"
-            class="tw-border-none tw-bg-transparent tw-text-primary-500"
+            bitLink
+            linkType="primary"
             [bitPopoverTriggerFor]="myPopover"
             #triggerRef="popoverTrigger"
           >
@@ -116,7 +112,7 @@ import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
         </bit-radio-button>
       </bit-radio-group>
 
-      <button bitButton buttonType="primary" (click)="(submit)">Submit</button>
+      <button bitButton bitFormButton buttonType="primary" type="submit">Submit</button>
       <bit-error-summary [formGroup]="formObj"></bit-error-summary>
 
       <bit-popover [title]="'Password help'" #myPopover>
@@ -131,18 +127,12 @@ import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
   `,
 })
 export class KitchenSinkForm {
-  constructor(public dialogService: DialogService) {}
+  constructor(
+    public dialogService: DialogService,
+    public formBuilder: FormBuilder,
+  ) {}
 
-  protected dialog: SimpleDialogOptions = {
-    title: "Confirm",
-    content: "Are you sure you want to submit?",
-    type: "primary",
-    acceptButtonText: "Yes",
-    cancelButtonText: "No",
-    acceptAction: async () => this.acceptDialog(),
-  };
-
-  formObj = new FormBuilder().group({
+  formObj = this.formBuilder.group({
     favFeature: ["", [Validators.required]],
     favColor: [undefined as string | undefined, [Validators.required]],
     topWorstPasswords: [undefined as string | undefined],
@@ -152,9 +142,16 @@ export class KitchenSinkForm {
     password: ["", [Validators.required]],
   });
 
-  async submit() {
-    await this.dialogService.openSimpleDialog(this.dialog);
-  }
+  submit = async () => {
+    await this.dialogService.openSimpleDialog({
+      title: "Confirm",
+      content: "Are you sure you want to submit?",
+      type: "primary",
+      acceptButtonText: "Yes",
+      cancelButtonText: "No",
+      acceptAction: async () => this.acceptDialog(),
+    });
+  };
 
   acceptDialog() {
     this.formObj.markAllAsTouched();

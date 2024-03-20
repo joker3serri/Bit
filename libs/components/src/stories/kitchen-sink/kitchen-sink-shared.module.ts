@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 
+import { AsyncActionsModule } from "../../async-actions";
 import { AvatarModule } from "../../avatar";
 import { BadgeModule } from "../../badge";
 import { BannerModule } from "../../banner";
@@ -36,6 +37,7 @@ import { TypographyModule } from "../../typography";
 
 @NgModule({
   imports: [
+    AsyncActionsModule,
     AvatarModule,
     BadgeModule,
     BannerModule,
@@ -72,6 +74,7 @@ import { TypographyModule } from "../../typography";
     TypographyModule,
   ],
   exports: [
+    AsyncActionsModule,
     AvatarModule,
     BadgeModule,
     BannerModule,
