@@ -105,8 +105,13 @@ export class AddEditComponent extends BaseAddEditComponent {
   }
 
   protected async loadCipher() {
-    if (!this.organization.canEditAllCiphers(this.flexibleCollectionsV1Enabled)) {
-      return await super.loadCipher();
+    const firstCipherCheck = await super.loadCipher();
+
+    if (
+      !this.organization.canEditAllCiphers(this.flexibleCollectionsV1Enabled) &&
+      firstCipherCheck != null
+    ) {
+      return firstCipherCheck;
     }
     const response = await this.apiService.getCipherAdmin(this.cipherId);
     const data = new CipherData(response);
