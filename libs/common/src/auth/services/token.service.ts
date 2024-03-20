@@ -241,7 +241,12 @@ export class TokenService implements TokenServiceAbstraction {
       return null;
     }
 
-    return await this.encryptService.decryptToUtf8(encryptedAccessToken, accessTokenKey);
+    const decryptedAccessToken = await this.encryptService.decryptToUtf8(
+      encryptedAccessToken,
+      accessTokenKey,
+    );
+
+    return decryptedAccessToken;
   }
 
   /**
@@ -362,6 +367,9 @@ export class TokenService implements TokenServiceAbstraction {
       // We know this is an encrypted access token because we have an access token key
       // note: EncryptedString is just an opaque string.
       const encryptedAccessTokenEncString = new EncString(accessTokenDisk as EncryptedString);
+
+      // TODO: consider adding a try catch here to handle any errors that may occur during decryption
+      // and return null if an error occurs.
 
       const decryptedAccessToken = await this.decryptAccessToken(
         encryptedAccessTokenEncString,
