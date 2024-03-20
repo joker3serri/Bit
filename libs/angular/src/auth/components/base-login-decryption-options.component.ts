@@ -241,22 +241,16 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     }
 
     this.loginEmailService.setEmail(this.data.userEmail);
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/login-with-device"]);
+    await this.router.navigate(["/login-with-device"]);
   }
 
   async requestAdminApproval() {
     this.loginEmailService.setEmail(this.data.userEmail);
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/admin-approval-requested"]);
+    await this.router.navigate(["/admin-approval-requested"]);
   }
 
   async approveWithMasterPassword() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/lock"], { queryParams: { from: "login-initiated" } });
+    await this.router.navigate(["/lock"], { queryParams: { from: "login-initiated" } });
   }
 
   async createUser() {
