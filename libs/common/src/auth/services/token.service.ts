@@ -223,11 +223,13 @@ export class TokenService implements TokenServiceAbstraction {
   private async decryptAccessToken(
     encryptedAccessToken: EncString,
     userId: UserId,
-  ): Promise<string> {
+  ): Promise<string | null> {
     const accessTokenKey = await this.getAccessTokenKey(userId);
 
     if (!accessTokenKey) {
-      throw new Error("Access token key not found.");
+      // If we don't have an accessTokenKey, then that means we don't have an access token as it hasn't been set yet
+      // and we have to return null here to properly indicate the the user isn't logged in.
+      return null;
     }
 
     return await this.encryptService.decryptToUtf8(encryptedAccessToken, accessTokenKey);
