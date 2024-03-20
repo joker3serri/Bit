@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { firstValueFrom } from "rxjs";
 import { Opaque } from "type-fest";
 
@@ -274,7 +275,15 @@ export class TokenService implements TokenServiceAbstraction {
         // a symmetric key (the accessTokenKey) to encrypt the access token before storing the
         // access token on disk. The accessTokenKey will be stored in secure storage.
 
+        console.group("_setAccessToken");
+
+        console.log("userId", userId);
+        console.log("accessToken", accessToken);
+
+        console.log("calling to encryptAccessToken");
         const encryptedAccessToken: EncString = await this.encryptAccessToken(accessToken, userId);
+
+        console.groupEnd();
 
         // Save the encrypted access token to disk
         await this.singleUserStateProvider
@@ -351,7 +360,11 @@ export class TokenService implements TokenServiceAbstraction {
     }
 
     if (this.platformSupportsSecureStorage) {
+      console.group("getAccessToken");
+      console.log("userId", userId);
       const accessTokenDisk = await this.getStateValueByUserIdAndKeyDef(userId, ACCESS_TOKEN_DISK);
+
+      console.log("accessTokenDisk", accessTokenDisk);
 
       if (!accessTokenDisk) {
         return null;
@@ -359,7 +372,11 @@ export class TokenService implements TokenServiceAbstraction {
 
       const accessTokenKey = await this.getAccessTokenKey(userId);
 
+      console.log("accessTokenKey", accessTokenKey);
+
       if (!accessTokenKey) {
+        console.groupEnd();
+
         // We know this is an unencrypted access token because we don't have an access token key
         return accessTokenDisk;
       }
@@ -375,6 +392,10 @@ export class TokenService implements TokenServiceAbstraction {
         encryptedAccessTokenEncString,
         userId,
       );
+
+      console.log("decryptedAccessToken", decryptedAccessToken);
+
+      console.groupEnd();
 
       return decryptedAccessToken;
     }
