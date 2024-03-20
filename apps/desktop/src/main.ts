@@ -5,11 +5,13 @@ import { app } from "electron";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
+import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
 import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
@@ -60,6 +62,7 @@ export class Main {
   migrationRunner: MigrationRunner;
   tokenService: TokenServiceAbstraction;
   keyGenerationService: KeyGenerationServiceAbstraction;
+  encryptService: EncryptService;
 
   windowMain: WindowMain;
   messagingMain: MessagingMain;
@@ -155,12 +158,19 @@ export class Main {
 
     this.keyGenerationService = new KeyGenerationService(this.mainCryptoFunctionService);
 
+    this.encryptService = new EncryptServiceImplementation(
+      this.mainCryptoFunctionService,
+      this.logService,
+      true, // log mac failures
+    );
+
     this.tokenService = new TokenService(
       singleUserStateProvider,
       globalStateProvider,
       ELECTRON_SUPPORTS_SECURE_STORAGE,
       this.storageService,
       this.keyGenerationService,
+      this.encryptService,
     );
 
     this.migrationRunner = new MigrationRunner(

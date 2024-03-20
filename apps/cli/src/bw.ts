@@ -319,6 +319,7 @@ export class Main {
       this.platformUtilsService.supportsSecureStorage(),
       this.secureStorageService,
       this.keyGenerationService,
+      this.encryptService,
     );
 
     const migrationRunner = new MigrationRunner(

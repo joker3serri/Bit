@@ -2,6 +2,10 @@ import { TokenService as AbstractTokenService } from "@bitwarden/common/auth/abs
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 
 import {
+  EncryptServiceInitOptions,
+  encryptServiceFactory,
+} from "../../../platform/background/service-factories/encrypt-service.factory";
+import {
   FactoryOptions,
   CachedServices,
   factory,
@@ -34,7 +38,8 @@ export type TokenServiceInitOptions = TokenServiceFactoryOptions &
   GlobalStateProviderInitOptions &
   PlatformUtilsServiceInitOptions &
   SecureStorageServiceInitOptions &
-  KeyGenerationServiceInitOptions;
+  KeyGenerationServiceInitOptions &
+  EncryptServiceInitOptions;
 
 export function tokenServiceFactory(
   cache: { tokenService?: AbstractTokenService } & CachedServices,
@@ -51,6 +56,7 @@ export function tokenServiceFactory(
         (await platformUtilsServiceFactory(cache, opts)).supportsSecureStorage(),
         await secureStorageServiceFactory(cache, opts),
         await keyGenerationServiceFactory(cache, opts),
+        await encryptServiceFactory(cache, opts),
       ),
   );
 }
