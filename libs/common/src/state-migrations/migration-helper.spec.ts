@@ -176,7 +176,7 @@ export function mockMigrationHelper(
   );
   mockHelper.getAccounts.mockImplementation(() => helper.getAccounts());
 
-  jest.spyOn(mockHelper, "type", "get").mockReturnValue("general");
+  Object.defineProperty(mockHelper, "type", { value: "general " });
 
   return mockHelper;
 }
