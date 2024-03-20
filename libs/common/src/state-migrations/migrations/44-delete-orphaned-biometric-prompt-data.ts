@@ -6,7 +6,7 @@ export const PROMPT_CANCELLED: KeyDefinitionLike = {
   stateDefinition: { name: "biometricSettings" },
 };
 
-export class DeleteBiometricPromptCancelledData extends Migrator<41, 42> {
+export class DeleteBiometricPromptCancelledData extends Migrator<43, 44> {
   async migrate(helper: MigrationHelper): Promise<void> {
     await Promise.all(
       (await helper.getAccounts()).map(async ({ userId }) => {
