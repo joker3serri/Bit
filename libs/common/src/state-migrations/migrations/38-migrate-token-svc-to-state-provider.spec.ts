@@ -116,6 +116,10 @@ function rollbackJSON() {
 
 describe("TokenServiceStateProviderMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
+
+  // TODO: figure out how to do this
+  // helper.type = "web-disk-local";
+
   let sut: TokenServiceStateProviderMigrator;
 
   describe("migrate", () => {
