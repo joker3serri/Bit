@@ -177,7 +177,7 @@ describe("UserDecryptionOptionsMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 43);
+      helper = mockMigrationHelper(rollbackJSON(), 44);
       sut = new UserDecryptionOptionsMigrator(43, 44);
     });
 
