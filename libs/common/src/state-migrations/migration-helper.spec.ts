@@ -175,6 +175,9 @@ export function mockMigrationHelper(
     helper.setToUser(userId, keyDefinition, value),
   );
   mockHelper.getAccounts.mockImplementation(() => helper.getAccounts());
+
+  jest.spyOn(mockHelper, "type", "get").mockReturnValue("general");
+
   return mockHelper;
 }
 
