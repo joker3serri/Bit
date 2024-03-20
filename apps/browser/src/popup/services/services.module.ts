@@ -95,7 +95,6 @@ import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vau
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { DialogService } from "@bitwarden/components";
-import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
 import { UnauthGuardService } from "../../auth/popup/services";
@@ -342,11 +341,6 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: AutofillService,
       useFactory: getBgService<AutofillService>("autofillService"),
-      deps: [],
-    },
-    {
-      provide: ImportServiceAbstraction,
-      useFactory: getBgService<ImportServiceAbstraction>("importService"),
       deps: [],
     },
     {
