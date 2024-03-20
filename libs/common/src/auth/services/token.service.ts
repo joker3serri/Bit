@@ -194,7 +194,7 @@ export class TokenService implements TokenServiceAbstraction {
     return newAccessTokenKey;
   }
 
-  private async getOrCreateAccessTokenEncryptionKey(userId: UserId): Promise<AccessTokenKey> {
+  private async getOrCreateAccessTokenKey(userId: UserId): Promise<AccessTokenKey> {
     if (!this.platformSupportsSecureStorage) {
       throw new Error("Platform does not support secure storage. Cannot obtain access token key.");
     }
@@ -215,7 +215,7 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   private async encryptAccessToken(accessToken: string, userId: UserId): Promise<EncString> {
-    const accessTokenKey = await this.getOrCreateAccessTokenEncryptionKey(userId);
+    const accessTokenKey = await this.getOrCreateAccessTokenKey(userId);
 
     return await this.encryptService.encrypt(accessToken, accessTokenKey);
   }
