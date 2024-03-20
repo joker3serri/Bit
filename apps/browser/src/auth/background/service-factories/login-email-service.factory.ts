@@ -1,5 +1,4 @@
-import { LoginEmailService as LoginEmailServiceAbstraction } from "@bitwarden/common/auth/abstractions/login-email.service";
-import { LoginEmailService } from "@bitwarden/common/auth/services/login-email.service";
+import { LoginEmailServiceAbstraction, LoginEmailService } from "@bitwarden/auth/common";
 
 import {
   CachedServices,

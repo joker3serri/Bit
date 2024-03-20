@@ -4,9 +4,11 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  LoginEmailServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -43,7 +45,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     logService: LogService,
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
-    loginEmailService: LoginEmailService,
+    loginEmailService: LoginEmailServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigServiceAbstraction,
     @Inject(WINDOW) protected win: Window,

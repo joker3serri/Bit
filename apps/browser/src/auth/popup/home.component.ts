@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
-import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
+import { LoginEmailServiceAbstraction } from "@bitwarden/auth/common";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
-    private loginEmailService: LoginEmailService,
+    private loginEmailService: LoginEmailServiceAbstraction,
     private accountSwitcherService: AccountSwitcherService,
   ) {}
 

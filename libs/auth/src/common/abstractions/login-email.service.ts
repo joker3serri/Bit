@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-export abstract class LoginEmailService {
+export abstract class LoginEmailServiceAbstraction {
   /**
    * An observable that monitors the storedEmail
    */

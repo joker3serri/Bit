@@ -1,7 +1,12 @@
 import { Observable } from "rxjs";
 
-import { GlobalState, KeyDefinition, LOGIN_EMAIL_DISK, StateProvider } from "../../platform/state";
-import { LoginEmailService as LoginEmailServiceAbstraction } from "../abstractions/login-email.service";
+import {
+  GlobalState,
+  KeyDefinition,
+  LOGIN_EMAIL_DISK,
+  StateProvider,
+} from "../../../../../common/src/platform/state";
+import { LoginEmailServiceAbstraction } from "../../abstractions/login-email.service";
 
 const STORED_EMAIL = new KeyDefinition<string>(LOGIN_EMAIL_DISK, "storedEmail", {
   deserializer: (value: string) => value,

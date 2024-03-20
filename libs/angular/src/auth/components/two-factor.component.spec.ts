@@ -5,9 +5,11 @@ import { MockProxy, mock } from "jest-mock-extended";
 
 // eslint-disable-next-line no-restricted-imports
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  LoginEmailServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -55,7 +57,7 @@ describe("TwoFactorComponent", () => {
   let mockLogService: MockProxy<LogService>;
   let mockTwoFactorService: MockProxy<TwoFactorService>;
   let mockAppIdService: MockProxy<AppIdService>;
-  let mockLoginService: MockProxy<LoginEmailService>;
+  let mockLoginService: MockProxy<LoginEmailServiceAbstraction>;
   let mockSsoLoginService: MockProxy<SsoLoginServiceAbstraction>;
   let mockConfigService: MockProxy<ConfigServiceAbstraction>;
 
@@ -82,7 +84,7 @@ describe("TwoFactorComponent", () => {
     mockLogService = mock<LogService>();
     mockTwoFactorService = mock<TwoFactorService>();
     mockAppIdService = mock<AppIdService>();
-    mockLoginService = mock<LoginEmailService>();
+    mockLoginService = mock<LoginEmailServiceAbstraction>();
     mockSsoLoginService = mock<SsoLoginServiceAbstraction>();
     mockConfigService = mock<ConfigServiceAbstraction>();
 
@@ -152,7 +154,7 @@ describe("TwoFactorComponent", () => {
         { provide: LogService, useValue: mockLogService },
         { provide: TwoFactorService, useValue: mockTwoFactorService },
         { provide: AppIdService, useValue: mockAppIdService },
-        { provide: LoginEmailService, useValue: mockLoginService },
+        { provide: LoginEmailServiceAbstraction, useValue: mockLoginService },
         { provide: SsoLoginServiceAbstraction, useValue: mockSsoLoginService },
         { provide: ConfigServiceAbstraction, useValue: mockConfigService },
       ],

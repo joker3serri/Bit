@@ -7,9 +7,11 @@ import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  LoginEmailServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -73,7 +75,7 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
     route: ActivatedRoute,
-    loginEmailService: LoginEmailService,
+    loginEmailService: LoginEmailServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
   ) {

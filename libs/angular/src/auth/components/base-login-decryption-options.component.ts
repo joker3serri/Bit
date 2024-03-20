@@ -14,12 +14,12 @@ import {
   throwError,
 } from "rxjs";
 
+import { LoginEmailServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
-import { LoginEmailService } from "@bitwarden/common/auth/abstractions/login-email.service";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -79,7 +79,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     protected activatedRoute: ActivatedRoute,
     protected messagingService: MessagingService,
     protected tokenService: TokenService,
-    protected loginEmailService: LoginEmailService,
+    protected loginEmailService: LoginEmailServiceAbstraction,
     protected organizationApiService: OrganizationApiServiceAbstraction,
     protected cryptoService: CryptoService,
     protected organizationUserService: OrganizationUserService,
