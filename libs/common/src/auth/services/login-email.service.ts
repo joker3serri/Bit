@@ -35,17 +35,13 @@ export class LoginEmailService implements LoginEmailServiceAbstraction {
     this.rememberEmail = value;
   }
 
-  async setStoredEmail(value: string): Promise<void> {
-    await this.storedEmailState.update((_) => value);
-  }
-
   clearValues() {
     this.email = null;
     this.rememberEmail = null;
   }
 
   async saveEmailSettings() {
-    await this.setStoredEmail(this.rememberEmail ? this.email : null);
+    await this.storedEmailState.update(() => (this.rememberEmail ? this.email : null));
     this.clearValues();
   }
 }

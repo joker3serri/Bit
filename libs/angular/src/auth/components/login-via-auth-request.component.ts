@@ -471,17 +471,20 @@ export class LoginViaAuthRequestComponent
     }
   }
 
-  async setRememberEmailValues() {
-    const rememberEmail = this.loginEmailService.getRememberEmail();
-    const rememberedEmail = this.loginEmailService.getEmail();
-    await this.loginEmailService.setStoredEmail(rememberEmail ? rememberedEmail : null);
-    this.loginEmailService.clearValues();
-  }
+  // async setRememberEmailValues() {
+  //   const email = this.loginEmailService.getEmail();
+  //   const rememberEmail = this.loginEmailService.getRememberEmail();
+
+  //   await this.loginEmailService.saveEmailSettings()
+
+  //   await this.loginEmailService.setStoredEmail(rememberEmail ? email : null);
+  //   this.loginEmailService.clearValues();
+  // }
 
   private async handleSuccessfulLoginNavigation() {
     if (this.state === State.StandardAuthRequest) {
       // Only need to set remembered email on standard login with auth req flow
-      await this.setRememberEmailValues();
+      await this.loginEmailService.saveEmailSettings();
     }
 
     if (this.onSuccessfulLogin != null) {

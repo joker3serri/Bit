@@ -25,17 +25,12 @@ export abstract class LoginEmailService {
    */
   setRememberEmail: (value: boolean) => void;
   /**
-   * Sets the email to store on disk.
-   * @returns A promise that resolves when the email has been set.
-   */
-  setStoredEmail: (value: string) => Promise<void>;
-  /**
    * Sets the email and rememberEmail properties to null.
    */
   clearValues: () => void;
   /**
-   * - If rememberEmail is true, sets the storedEmail to the current email.
-   * - If rememberEmail is false, sets the storedEmail to null.
+   * - If rememberEmail is true, sets the storedEmail on disk to the current email.
+   * - If rememberEmail is false, sets the storedEmail on disk to null.
    * - Then sets the email and rememberEmail properties to null.
    * @returns A promise that resolves once the email settings are saved.
    */

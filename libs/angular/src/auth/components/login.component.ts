@@ -97,14 +97,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       const queryParamsEmail = params.email;
 
       if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
-        this.formGroup.get("email").setValue(queryParamsEmail);
+        this.formGroup.controls.email.setValue(queryParamsEmail);
         this.paramEmailSet = true;
       }
     });
 
     if (!this.paramEmailSet) {
       const storedEmail = await firstValueFrom(this.loginEmailService.storedEmail$);
-      this.formGroup.get("email")?.setValue(storedEmail ?? "");
+      this.formGroup.controls.email.setValue(storedEmail ?? "");
     }
 
     let rememberEmail = this.loginEmailService.getRememberEmail();
@@ -113,7 +113,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       rememberEmail = (await firstValueFrom(this.loginEmailService.storedEmail$)) != null;
     }
 
-    this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
+    this.formGroup.controls.rememberEmail.setValue(rememberEmail);
   }
 
   ngOnDestroy() {
@@ -150,8 +150,10 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
 
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
+
       this.setLoginEmailValues();
       await this.loginEmailService.saveEmailSettings();
+
       if (this.handleCaptchaRequired(response)) {
         return;
       } else if (this.handleMigrateEncryptionKey(response)) {

@@ -37,21 +37,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    let savedEmail = this.loginEmailService.getEmail();
+    const email = this.loginEmailService.getEmail();
     const rememberEmail = this.loginEmailService.getRememberEmail();
 
-    if (savedEmail != null) {
-      this.formGroup.patchValue({
-        email: savedEmail,
-        rememberEmail: rememberEmail,
-      });
+    if (email != null) {
+      this.formGroup.patchValue({ email, rememberEmail });
     } else {
-      savedEmail = await firstValueFrom(this.loginEmailService.storedEmail$);
-      if (savedEmail != null) {
-        this.formGroup.patchValue({
-          email: savedEmail,
-          rememberEmail: true,
-        });
+      const storedEmail = await firstValueFrom(this.loginEmailService.storedEmail$);
+
+      if (storedEmail != null) {
+        this.formGroup.patchValue({ email: storedEmail, rememberEmail: true });
       }
     }
 
@@ -74,7 +69,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     return this.accountSwitcherService.availableAccounts$;
   }
 
-  submit() {
+  async submit() {
     this.formGroup.markAllAsTouched();
     if (this.formGroup.invalid) {
       this.platformUtilsService.showToast(

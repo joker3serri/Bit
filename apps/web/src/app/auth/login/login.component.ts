@@ -201,15 +201,6 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     this.router.navigate(["/register"]);
   }
 
-  async submit() {
-    const rememberEmail = this.formGroup.value.rememberEmail;
-
-    if (!rememberEmail) {
-      await this.loginEmailService.setStoredEmail(null);
-    }
-    await super.submit(false);
-  }
-
   protected override handleMigrateEncryptionKey(result: AuthResult): boolean {
     if (!result.requiresEncryptionKeyMigration) {
       return false;
