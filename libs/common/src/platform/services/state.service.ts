@@ -618,6 +618,10 @@ export class StateService<
   }
 
   async setDecryptedCiphers(value: CipherView[], options?: StorageOptions): Promise<void> {
+    if (value == null || value.length === 0) {
+      // Don't cache a list of ciphers that might either be wrong or a true empty vault.
+      return;
+    }
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
