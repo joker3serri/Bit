@@ -215,7 +215,6 @@ export class TokenService implements TokenServiceAbstraction {
   }
 
   private async encryptAccessToken(accessToken: string, userId: UserId): Promise<EncString> {
-    // TODO: should this be just set instead of a get or set?
     const accessTokenKey = await this.getOrCreateAccessTokenEncryptionKey(userId);
 
     return await this.encryptService.encrypt(accessToken, accessTokenKey);
