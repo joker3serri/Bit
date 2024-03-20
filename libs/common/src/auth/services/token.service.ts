@@ -4,9 +4,11 @@ import { Opaque } from "type-fest";
 import { decodeJwtTokenToJson } from "@bitwarden/auth/common";
 
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
+import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
+import { EncString } from "../../platform/models/domain/enc-string";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import {
@@ -130,6 +132,7 @@ export class TokenService implements TokenServiceAbstraction {
     private readonly platformSupportsSecureStorage: boolean,
     private secureStorageService: AbstractStorageService,
     private keyGenerationService: KeyGenerationService,
+    private encryptService: EncryptService,
   ) {
     this.initializeState();
   }
@@ -172,25 +175,63 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  private async getOrMakeAccessTokenEncryptionKey(userId: UserId): AccessTokenKey {
+  private async getAccessTokenKey(userId: UserId): Promise<AccessTokenKey | null> {
+    return this.secureStorageService.get<AccessTokenKey>(
+      `${userId}${this.accessTokenKeySecureStorageKey}`,
+      this.getSecureStorageOptions(userId),
+    );
+  }
+
+  private async createAndSaveAccessTokenKey(userId: UserId): Promise<AccessTokenKey> {
+    const newAccessTokenKey = (await this.keyGenerationService.createKey(512)) as AccessTokenKey;
+
+    await this.secureStorageService.save<AccessTokenKey>(
+      `${userId}${this.accessTokenKeySecureStorageKey}`,
+      newAccessTokenKey,
+      this.getSecureStorageOptions(userId),
+    );
+
+    return newAccessTokenKey;
+  }
+
+  private async getOrCreateAccessTokenEncryptionKey(userId: UserId): Promise<AccessTokenKey> {
     if (!this.platformSupportsSecureStorage) {
       throw new Error("Platform does not support secure storage. Cannot obtain access token key.");
     }
 
-    // First see if we have an accessTokenKey in secure storage
-    const accessTokenKey = await this.secureStorageService.get<AccessTokenKey>(
-      `${userId}${this.accessTokenKeySecureStorageKey}`,
-      this.getSecureStorageOptions(userId),
-    );
-
-    if (accessTokenKey) {
-      return accessTokenKey;
+    if (!userId) {
+      throw new Error("User id not found. Cannot obtain access token key.");
     }
 
-    // If we don't have an accessTokenKey, make one and save it to secure storage then return it
-    // const newAccessTokenKey = SymmetricCryptoKey.generate();
+    // First see if we have an accessTokenKey in secure storage and return it if we do
+    let accessTokenKey: AccessTokenKey = await this.getAccessTokenKey(userId);
 
-    // await this.keyGenerationService.createKey(512)) as DeviceKey
+    if (!accessTokenKey) {
+      // Otherwise, create a new one and save it to secure storage, then return it
+      accessTokenKey = await this.createAndSaveAccessTokenKey(userId);
+    }
+
+    return accessTokenKey;
+  }
+
+  private async encryptAccessToken(accessToken: string, userId: UserId): Promise<EncString> {
+    // TODO: should this be just set instead of a get or set?
+    const accessTokenKey = await this.getOrCreateAccessTokenEncryptionKey(userId);
+
+    return await this.encryptService.encrypt(accessToken, accessTokenKey);
+  }
+
+  private async decryptAccessToken(
+    encryptedAccessToken: EncString,
+    userId: UserId,
+  ): Promise<string> {
+    const accessTokenKey = await this.getAccessTokenKey(userId);
+
+    if (!accessTokenKey) {
+      throw new Error("Access token key not found.");
+    }
+
+    return await this.encryptService.decryptToUtf8(encryptedAccessToken, accessTokenKey);
   }
 
   /**
@@ -212,9 +253,16 @@ export class TokenService implements TokenServiceAbstraction {
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage:
-        // private getOrMakeAccessTokenKey method
-        // -- private getAccessTokenKey method
-        // -- private makeAccessTokeKey method
+        // So, due to the variable length nature of the access token and length limitations among
+        // OS implementations of credential stores (Windows), we cannot store it directly in secure
+        // storage as we can with the refresh token which has a fixed length. Instead, we will use
+        // a symmetric key (the accessTokenKey) to encrypt the access token before storing the
+        // access token on disk. The accessTokenKey will be stored in secure storage.
+
+        // TODO: Add encryptService to deps
+        // TODO: call encryptAccessToken
+
+        // Encrypt the access token using the accessTokenKey
 
         await this.saveStringToSecureStorage(userId, this.accessTokenSecureStorageKey, accessToken);
 
