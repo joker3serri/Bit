@@ -4,6 +4,7 @@ import { Opaque } from "type-fest";
 import { decodeJwtTokenToJson } from "@bitwarden/auth/common";
 
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
+import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
@@ -128,6 +129,7 @@ export class TokenService implements TokenServiceAbstraction {
     private globalStateProvider: GlobalStateProvider,
     private readonly platformSupportsSecureStorage: boolean,
     private secureStorageService: AbstractStorageService,
+    private keyGenerationService: KeyGenerationService,
   ) {
     this.initializeState();
   }
@@ -170,27 +172,26 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  // private async getOrMakeAccessTokenEncryptionKey(userId: UserId): AccessTokenKey {
-  //   if (!this.platformSupportsSecureStorage) {
-  //     throw new Error("Platform does not support secure storage. Cannot obtain access token key.");
-  //   }
+  private async getOrMakeAccessTokenEncryptionKey(userId: UserId): AccessTokenKey {
+    if (!this.platformSupportsSecureStorage) {
+      throw new Error("Platform does not support secure storage. Cannot obtain access token key.");
+    }
 
-  //   // First see if we have an accessTokenKey in secure storage
-  //   const accessTokenKey = await this.secureStorageService.get<AccessTokenKey>(
-  //     `${userId}${this.accessTokenKeySecureStorageKey}`,
-  //     this.getSecureStorageOptions(userId),
-  //   );
+    // First see if we have an accessTokenKey in secure storage
+    const accessTokenKey = await this.secureStorageService.get<AccessTokenKey>(
+      `${userId}${this.accessTokenKeySecureStorageKey}`,
+      this.getSecureStorageOptions(userId),
+    );
 
-  //   if (accessTokenKey) {
-  //     return accessTokenKey;
-  //   }
+    if (accessTokenKey) {
+      return accessTokenKey;
+    }
 
-  //   // If we don't have an accessTokenKey, make one and save it to secure storage then return it
-  //   // const newAccessTokenKey = SymmetricCryptoKey.generate();
+    // If we don't have an accessTokenKey, make one and save it to secure storage then return it
+    // const newAccessTokenKey = SymmetricCryptoKey.generate();
 
-  //   // await this.keyGenerationService.createKey(512)) as DeviceKey
-
-  // }
+    // await this.keyGenerationService.createKey(512)) as DeviceKey
+  }
 
   /**
    * Internal helper for set access token which always requires user id.

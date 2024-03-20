@@ -440,6 +440,7 @@ export default class MainBackground {
       this.globalStateProvider,
       this.platformUtilsService.supportsSecureStorage(),
       this.secureStorageService,
+      this.keyGenerationService,
     );
 
     const migrationRunner = new MigrationRunner(

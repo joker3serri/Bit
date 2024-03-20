@@ -490,6 +490,7 @@ const typesafeProviders: Array<SafeProvider> = [
       GlobalStateProvider,
       SUPPORTS_SECURE_STORAGE,
       AbstractStorageService,
+      KeyGenerationServiceAbstraction,
     ],
   }),
   safeProvider({

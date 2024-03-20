@@ -11,6 +11,10 @@ import {
   globalStateProviderFactory,
 } from "../../../platform/background/service-factories/global-state-provider.factory";
 import {
+  KeyGenerationServiceInitOptions,
+  keyGenerationServiceFactory,
+} from "../../../platform/background/service-factories/key-generation-service.factory";
+import {
   PlatformUtilsServiceInitOptions,
   platformUtilsServiceFactory,
 } from "../../../platform/background/service-factories/platform-utils-service.factory";
@@ -29,7 +33,8 @@ export type TokenServiceInitOptions = TokenServiceFactoryOptions &
   SingleUserStateProviderInitOptions &
   GlobalStateProviderInitOptions &
   PlatformUtilsServiceInitOptions &
-  SecureStorageServiceInitOptions;
+  SecureStorageServiceInitOptions &
+  KeyGenerationServiceInitOptions;
 
 export function tokenServiceFactory(
   cache: { tokenService?: AbstractTokenService } & CachedServices,
@@ -45,6 +50,7 @@ export function tokenServiceFactory(
         await globalStateProviderFactory(cache, opts),
         (await platformUtilsServiceFactory(cache, opts)).supportsSecureStorage(),
         await secureStorageServiceFactory(cache, opts),
+        await keyGenerationServiceFactory(cache, opts),
       ),
   );
 }

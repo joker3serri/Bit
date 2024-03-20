@@ -311,11 +311,14 @@ export class Main {
 
     this.environmentService = new EnvironmentService(this.stateProvider, this.accountService);
 
+    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
+
     this.tokenService = new TokenService(
       this.singleUserStateProvider,
       this.globalStateProvider,
       this.platformUtilsService.supportsSecureStorage(),
       this.secureStorageService,
+      this.keyGenerationService,
     );
 
     const migrationRunner = new MigrationRunner(
@@ -335,8 +338,6 @@ export class Main {
       this.tokenService,
       migrationRunner,
     );
-
-    this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
 
     this.cryptoService = new CryptoService(
       this.keyGenerationService,
