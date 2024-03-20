@@ -82,7 +82,6 @@ import {
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import {
@@ -291,11 +290,6 @@ function getBgService<T>(service: keyof MainBackground) {
         );
       },
       deps: [DomSanitizer, ToastrService],
-    },
-    {
-      provide: PasswordStrengthServiceAbstraction,
-      useFactory: getBgService<PasswordStrengthServiceAbstraction>("passwordStrengthService"),
-      deps: [],
     },
     {
       provide: PasswordGenerationServiceAbstraction,
