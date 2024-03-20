@@ -24,7 +24,7 @@ const USER_DECRYPTION_OPTIONS: KeyDefinitionLike = {
   },
 };
 
-export class UserDecryptionOptionsMigrator extends Migrator<42, 43> {
+export class UserDecryptionOptionsMigrator extends Migrator<43, 44> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

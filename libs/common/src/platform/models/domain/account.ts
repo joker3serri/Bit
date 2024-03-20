@@ -184,7 +184,6 @@ export class AccountProfile {
 }
 
 export class AccountSettings {
-  autoConfirmFingerPrints?: boolean;
   defaultUriMatch?: UriMatchStrategySetting;
   disableGa?: boolean;
   enableAlwaysOnTop?: boolean;
