@@ -12,7 +12,6 @@ import { DecodedAccessToken, TokenService } from "./token.service";
 import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
-  ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   API_KEY_CLIENT_ID_DISK,
   API_KEY_CLIENT_ID_MEMORY,
   API_KEY_CLIENT_SECRET_DISK,
@@ -22,6 +21,8 @@ import {
   REFRESH_TOKEN_MEMORY,
   REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
+
+// TODO: update all tests based on access token changes.
 
 describe("TokenService", () => {
   let tokenService: TokenService;
@@ -188,7 +189,7 @@ describe("TokenService", () => {
           expect(
             singleUserStateProvider.getFake(
               userIdFromAccessToken,
-              ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+              ACCESS_TOKEN_MIGRATED_TO_BE_ENCRYPTED_ON_DISK,
             ).nextMock,
           ).toHaveBeenCalledWith(true);
         });
@@ -321,7 +322,7 @@ describe("TokenService", () => {
 
           // set access token migration flag to true
           singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_BE_ENCRYPTED_ON_DISK)
             .stateSubject.next([userIdFromAccessToken, true]);
 
           // Act
@@ -345,7 +346,7 @@ describe("TokenService", () => {
 
           // set access token migration flag to true
           singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_BE_ENCRYPTED_ON_DISK)
             .stateSubject.next([userIdFromAccessToken, true]);
 
           // Act
@@ -366,7 +367,7 @@ describe("TokenService", () => {
 
           // set access token migration flag to false
           singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_BE_ENCRYPTED_ON_DISK)
             .stateSubject.next([userIdFromAccessToken, false]);
 
           // Act
@@ -396,7 +397,7 @@ describe("TokenService", () => {
 
           // set access token migration flag to false
           singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
+            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_BE_ENCRYPTED_ON_DISK)
             .stateSubject.next([userIdFromAccessToken, false]);
 
           // Act
