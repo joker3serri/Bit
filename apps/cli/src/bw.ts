@@ -501,7 +501,7 @@ export class Main {
       this.stateService,
     );
 
-    this.configApiService = new ConfigApiService(this.apiService, this.authService);
+    this.configApiService = new ConfigApiService(this.apiService, this.tokenService);
 
     this.configService = new DefaultConfigService(
       this.configApiService,
