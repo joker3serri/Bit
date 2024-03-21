@@ -22,6 +22,7 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
@@ -39,6 +40,7 @@ describe("UserApiLoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let keyConnectorService: MockProxy<KeyConnectorService>;
   let environmentService: MockProxy<EnvironmentService>;
   let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
@@ -61,6 +63,7 @@ describe("UserApiLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     keyConnectorService = mock<KeyConnectorService>();
     environmentService = mock<EnvironmentService>();
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
@@ -80,6 +83,7 @@ describe("UserApiLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
       environmentService,
       keyConnectorService,
       billingAccountProfileStateService,

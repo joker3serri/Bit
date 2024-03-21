@@ -4,7 +4,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
@@ -40,6 +43,7 @@ export class SsoComponent extends BaseSsoComponent {
     syncService: SyncService,
     environmentService: EnvironmentService,
     logService: LogService,
+    userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     configService: ConfigServiceAbstraction,
     protected authService: AuthService,
     @Inject(WINDOW) private win: Window,
@@ -57,6 +61,7 @@ export class SsoComponent extends BaseSsoComponent {
       environmentService,
       passwordGenerationService,
       logService,
+      userDecryptionOptionsService,
       configService,
     );
 

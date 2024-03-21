@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MergeEnvironmentState } from "./44-merge-environment-state";
+import { MergeEnvironmentState } from "./45-merge-environment-state";
 
 describe("MergeEnvironmentState", () => {
-  const migrator = new MergeEnvironmentState(43, 44);
+  const migrator = new MergeEnvironmentState(44, 45);
 
   it("can migrate all data", async () => {
     const output = await runMigrator(migrator, {
