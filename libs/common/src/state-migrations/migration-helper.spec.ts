@@ -176,7 +176,7 @@ export function mockMigrationHelper(
   );
   mockHelper.getAccounts.mockImplementation(() => helper.getAccounts());
 
-  Object.defineProperty(mockHelper, "type", { value: "general " });
+  Object.defineProperty(mockHelper, "type", { value: "general" });
 
   return mockHelper;
 }
