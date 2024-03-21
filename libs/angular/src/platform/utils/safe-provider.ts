@@ -21,9 +21,22 @@ type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : nev
 /**
  * Represents a dependency provided with the useClass option.
  */
-type SafeClassProvider<
+type SafeClassProviderWithClass<
   A extends AbstractConstructor<any>,
   I extends Constructor<InstanceType<A>>,
+  D extends MapParametersToDeps<ConstructorParameters<I>>,
+> = {
+  provide: A;
+  useClass: I;
+  deps: D;
+};
+
+/**
+ * Represents a dependency provided with the useClass option.
+ */
+type SafeClassProviderWithToken<
+  A extends SafeInjectionToken<any>,
+  I extends Constructor<InstanceType<SafeInjectionTokenType<A>>>,
   D extends MapParametersToDeps<ConstructorParameters<I>>,
 > = {
   provide: A;
@@ -97,10 +110,14 @@ type SafeExistingProviderWithToken<
  * @returns The exact same object without modification (pass-through).
  */
 export const safeProvider = <
-  // types for useClass
-  AClass extends AbstractConstructor<any>,
-  IClass extends Constructor<InstanceType<AClass>>,
-  DClass extends MapParametersToDeps<ConstructorParameters<IClass>>,
+  // types for useClass with Class
+  AClassClass extends AbstractConstructor<any>,
+  IClassClass extends Constructor<InstanceType<AClassClass>>,
+  DClassClass extends MapParametersToDeps<ConstructorParameters<IClassClass>>,
+  // types for useClass with Token
+  AClassToken extends SafeInjectionToken<any>,
+  IClassToken extends Constructor<InstanceType<SafeInjectionTokenType<AClassToken>>>,
+  DClassToken extends MapParametersToDeps<ConstructorParameters<IClassToken>>,
   // types for useValue
   AValue extends SafeInjectionToken<any>,
   VValue extends SafeInjectionTokenType<AValue>,
@@ -124,7 +141,8 @@ export const safeProvider = <
     | AbstractConstructor<InstanceType<SafeInjectionTokenType<AExistingToken>>>,
 >(
   provider:
-    | SafeClassProvider<AClass, IClass, DClass>
+    | SafeClassProviderWithClass<AClassClass, IClassClass, DClassClass>
+    | SafeClassProviderWithToken<AClassToken, IClassToken, DClassToken>
     | SafeValueProvider<AValue, VValue>
     | SafeFactoryProviderWithToken<AFactoryToken, IFactoryToken, DFactoryToken>
     | SafeFactoryProviderWithClass<AFactoryClass, IFactoryClass, DFactoryClass>

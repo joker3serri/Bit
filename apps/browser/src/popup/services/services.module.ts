@@ -1,5 +1,6 @@
 import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
+import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
@@ -11,6 +12,7 @@ import {
   OBSERVABLE_DISK_STORAGE,
   OBSERVABLE_MEMORY_STORAGE,
   SYSTEM_THEME_OBSERVABLE,
+  SafeInjectionToken,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import {
@@ -86,10 +88,7 @@ import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import {
-  InternalSendService as InternalSendServiceAbstraction,
-  SendService,
-} from "@bitwarden/common/tools/send/services/send.service.abstraction";
+import { InternalSendService as InternalSendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
@@ -157,12 +156,16 @@ function getBgService<T>(service: keyof MainBackground) {
     safeProvider(DialogService),
     safeProvider(PopupCloseWarningService),
     safeProvider({
-      provide: APP_INITIALIZER,
+      provide: APP_INITIALIZER as SafeInjectionToken<() => Promise<void>>,
       useFactory: (initService: InitService) => initService.init(),
       deps: [InitService],
       multi: true,
     }),
-    safeProvider({ provide: BaseUnauthGuardService, useClass: UnauthGuardService }),
+    safeProvider({
+      provide: BaseUnauthGuardService,
+      useClass: UnauthGuardService,
+      deps: [AuthServiceAbstraction, Router],
+    }),
     safeProvider({
       provide: MessagingService,
       useFactory: () => {
@@ -170,6 +173,7 @@ function getBgService<T>(service: keyof MainBackground) {
           ? new BrowserMessagingPrivateModePopupService()
           : new BrowserMessagingService();
       },
+      deps: [],
     }),
     safeProvider({
       provide: TwoFactorService,
@@ -200,7 +204,7 @@ function getBgService<T>(service: keyof MainBackground) {
           i18nService,
         );
       },
-      deps: [LogServiceAbstraction, I18nServiceAbstraction],
+      deps: [ConsoleLogService, I18nServiceAbstraction],
     }),
     safeProvider({
       provide: CipherFileUploadService,
@@ -224,17 +228,21 @@ function getBgService<T>(service: keyof MainBackground) {
     }),
     safeProvider({
       provide: LogServiceAbstraction,
+      useExisting: ConsoleLogService,
+    }),
+    safeProvider({
+      provide: ConsoleLogService,
       useFactory: (platformUtilsService: PlatformUtilsService) =>
         new ConsoleLogService(platformUtilsService.isDev()),
       deps: [PlatformUtilsService],
     }),
     safeProvider({
-      provide: BrowserEnvironmentService,
-      useExisting: EnvironmentService,
+      provide: EnvironmentService,
+      useExisting: BrowserEnvironmentService,
     }),
     safeProvider({
-      provide: EnvironmentService,
-      useFactory: getBgService<EnvironmentService>("environmentService"),
+      provide: BrowserEnvironmentService,
+      useFactory: getBgService<BrowserEnvironmentService>("environmentService"),
       deps: [],
     }),
     safeProvider({
@@ -313,7 +321,7 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     }),
     safeProvider({
-      provide: SendService,
+      provide: InternalSendServiceAbstraction,
       useFactory: (
         cryptoService: CryptoService,
         i18nService: I18nServiceAbstraction,
@@ -328,10 +336,6 @@ function getBgService<T>(service: keyof MainBackground) {
         );
       },
       deps: [CryptoService, I18nServiceAbstraction, KeyGenerationService, StateServiceAbstraction],
-    }),
-    safeProvider({
-      provide: InternalSendServiceAbstraction,
-      useExisting: SendService,
     }),
     safeProvider({
       provide: SendApiServiceAbstraction,
@@ -419,6 +423,7 @@ function getBgService<T>(service: keyof MainBackground) {
     safeProvider({
       provide: MEMORY_STORAGE,
       useFactory: getBgService<AbstractStorageService>("memoryStorageService"),
+      deps: [],
     }),
     safeProvider({
       provide: OBSERVABLE_MEMORY_STORAGE,
