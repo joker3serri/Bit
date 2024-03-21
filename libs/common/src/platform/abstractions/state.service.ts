@@ -259,8 +259,6 @@ export abstract class StateService<T extends Account = Account> {
     value: { [cipherId: string]: LocalData },
     options?: StorageOptions,
   ) => Promise<void>;
-  getLocale: (options?: StorageOptions) => Promise<string>;
-  setLocale: (value: string, options?: StorageOptions) => Promise<void>;
   getMainWindowSize: (options?: StorageOptions) => Promise<number>;
   setMainWindowSize: (value: number, options?: StorageOptions) => Promise<void>;
   getMinimizeOnCopyToClipboard: (options?: StorageOptions) => Promise<boolean>;

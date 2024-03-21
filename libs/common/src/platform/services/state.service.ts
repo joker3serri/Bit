@@ -1292,23 +1292,6 @@ export class StateService<
     );
   }
 
-  async getLocale(options?: StorageOptions): Promise<string> {
-    return (
-      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
-    )?.locale;
-  }
-
-  async setLocale(value: string, options?: StorageOptions): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-    globals.locale = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-  }
-
   async getMainWindowSize(options?: StorageOptions): Promise<number> {
     return (
       await this.getGlobals(this.reconcileOptions(options, await this.defaultInMemoryOptions()))

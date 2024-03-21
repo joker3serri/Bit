@@ -4,7 +4,6 @@ import { ThemeType } from "../../enums";
 export class GlobalState {
   enableAlwaysOnTop?: boolean;
   installedVersion?: string;
-  locale?: string;
   organizationInvitation?: any;
   rememberedEmail?: string;
   theme?: ThemeType = ThemeType.System;
