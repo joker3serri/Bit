@@ -23,6 +23,5 @@ export class GlobalState {
   alwaysShowDock?: boolean;
   enableBrowserIntegration?: boolean;
   enableBrowserIntegrationFingerprint?: boolean;
-  enableDuckDuckGoBrowserIntegration?: boolean;
   deepLinkRedirectUrl?: string;
 }

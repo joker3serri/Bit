@@ -205,11 +205,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getEnableCloseToTray: (options?: StorageOptions) => Promise<boolean>;
   setEnableCloseToTray: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getEnableDuckDuckGoBrowserIntegration: (options?: StorageOptions) => Promise<boolean>;
-  setEnableDuckDuckGoBrowserIntegration: (
-    value: boolean,
-    options?: StorageOptions,
-  ) => Promise<void>;
   getEnableMinimizeToTray: (options?: StorageOptions) => Promise<boolean>;
   setEnableMinimizeToTray: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEnableStartToTray: (options?: StorageOptions) => Promise<boolean>;
