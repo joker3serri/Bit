@@ -1,15 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { lastValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { SubscriptionResponse } from "@bitwarden/common/billing/models/response/subscription.response";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DialogService } from "@bitwarden/components";
 
 import {
@@ -34,7 +34,6 @@ export class UserSubscriptionComponent implements OnInit {
   reinstatePromise: Promise<any>;
 
   constructor(
-    private stateService: StateService,
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
@@ -43,6 +42,7 @@ export class UserSubscriptionComponent implements OnInit {
     private fileDownloadService: FileDownloadService,
     private dialogService: DialogService,
     private environmentService: EnvironmentService,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
     this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
@@ -58,8 +58,7 @@ export class UserSubscriptionComponent implements OnInit {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    if (this.stateService.getHasPremiumPersonally()) {
+    if (await firstValueFrom(this.billingAccountProfileStateService.hasPremiumPersonally$)) {
       this.loading = true;
       this.sub = await this.apiService.getUserSubscription();
     } else {
