@@ -4,7 +4,7 @@ import { Constructor, Opaque } from "type-fest";
 import { SafeInjectionToken } from "../../services/injection-tokens";
 
 /**
- * The return type of our dependency helper functions.
+ * The return type of the {@link safeProvider} helper function.
  * Used to distinguish a type safe provider definition from a non-type safe provider definition.
  */
 export type SafeProvider = Opaque<Provider>;
