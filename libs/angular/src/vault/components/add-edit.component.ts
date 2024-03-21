@@ -652,7 +652,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     const isNotClone = this.editMode && !this.cloneMode;
     let orgAdmin = this.organization?.isAdmin;
 
-    if (this.flexibleCollectionsV1Enabled) {
+    // checking collectionIds to address unassigned ciphers which can only be modified by Admins
+    if (this.flexibleCollectionsV1Enabled && cipher.collectionIds) {
       // Flexible Collections V1 restricts admins, check the organization setting via canEditAllCiphers
       orgAdmin = this.organization?.canEditAllCiphers(true);
     }

@@ -539,8 +539,7 @@ export class CipherService implements CipherServiceAbstraction {
 
   async updateWithServer(cipher: Cipher, orgAdmin?: boolean, isNotClone?: boolean): Promise<any> {
     let response: CipherResponse;
-    // If cipher.collectionIds is undefined this cipher is an unassigned item and we will use the putCipherAdmin call
-    if ((orgAdmin || !cipher.collectionIds) && isNotClone) {
+    if (orgAdmin && isNotClone) {
       const request = new CipherRequest(cipher);
       response = await this.apiService.putCipherAdmin(cipher.id, request);
     } else if (cipher.edit) {
