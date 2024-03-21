@@ -47,30 +47,17 @@ type SafeValueProvider<A extends SafeInjectionToken<any>, V extends SafeInjectio
 };
 
 /**
- * Represents a dependency provided with the useFactory option where a SafeInjectionToken is used as the token.
+ * Represents a dependency provided with the useFactory option.
  */
-type SafeFactoryProviderWithToken<
-  A extends SafeInjectionToken<any>,
-  I extends (...args: any) => InstanceType<SafeInjectionTokenType<A>>,
+type SafeFactoryProvider<
+  A extends AbstractConstructor<any> | SafeInjectionToken<any>,
+  I extends (...args: any) => ProviderInstanceType<A>,
   D extends MapParametersToDeps<Parameters<I>>,
 > = {
   provide: A;
   useFactory: I;
   deps: D;
   multi?: boolean;
-};
-
-/**
- * Represents a dependency provided with the useFactory option where an abstract class is used as the token.
- */
-type SafeFactoryProviderWithClass<
-  A extends AbstractConstructor<any>,
-  I extends (...args: any) => InstanceType<A>,
-  D extends MapParametersToDeps<Parameters<I>>,
-> = {
-  provide: A;
-  useFactory: I;
-  deps: D;
 };
 
 /**
@@ -112,13 +99,9 @@ export const safeProvider = <
   AValue extends SafeInjectionToken<any>,
   VValue extends SafeInjectionTokenType<AValue>,
   // types for useFactoryWithToken
-  AFactoryToken extends SafeInjectionToken<any>,
-  IFactoryToken extends (...args: any) => InstanceType<SafeInjectionTokenType<AFactoryToken>>,
-  DFactoryToken extends MapParametersToDeps<Parameters<IFactoryToken>>,
-  // types for useFactoryWithClass
-  AFactoryClass extends AbstractConstructor<any>,
-  IFactoryClass extends (...args: any) => InstanceType<AFactoryClass>,
-  DFactoryClass extends MapParametersToDeps<Parameters<IFactoryClass>>,
+  AFactory extends AbstractConstructor<any> | SafeInjectionToken<any>,
+  IFactory extends (...args: any) => ProviderInstanceType<AFactory>,
+  DFactory extends MapParametersToDeps<Parameters<IFactory>>,
   // types for useExistingWithClass
   AExistingClass extends Constructor<any> | AbstractConstructor<any>,
   IExistingClass extends
@@ -133,8 +116,7 @@ export const safeProvider = <
   provider:
     | SafeClassProvider<AClass, IClass, DClass>
     | SafeValueProvider<AValue, VValue>
-    | SafeFactoryProviderWithToken<AFactoryToken, IFactoryToken, DFactoryToken>
-    | SafeFactoryProviderWithClass<AFactoryClass, IFactoryClass, DFactoryClass>
+    | SafeFactoryProvider<AFactory, IFactory, DFactory>
     | SafeExistingProviderWithClass<AExistingClass, IExistingClass>
     | SafeExistingProviderWithToken<AExistingToken, IExistingToken>
     | Constructor<unknown>,
