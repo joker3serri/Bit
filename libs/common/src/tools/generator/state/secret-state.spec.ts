@@ -112,12 +112,25 @@ describe("UserEncryptor", () => {
       expect(result).toEqual(value);
     });
 
+    it("round-trips json-serializable values", async () => {
+      const provider = await fakeStateProvider();
+      const encryptor = mockEncryptor();
+      const state = SecretState.from(SomeUser, FOOBAR_VALUE, provider, encryptor);
+      const value = { foo: true, bar: true, date: new Date(1) };
+
+      await state.update(() => value);
+      await awaitAsync();
+      const result = await firstValueFrom(state.state$);
+
+      expect(result).toEqual(value);
+    });
+
     it("state$ gets a set array", async () => {
       const provider = await fakeStateProvider();
       const encryptor = mockEncryptor();
       const state = SecretState.from(SomeUser, FOOBAR_ARRAY, provider, encryptor);
       const array = [
-        { foo: true, bar: false },
+        { foo: true, bar: false, date: new Date(1) },
         { foo: false, bar: true },
       ];
 
@@ -133,8 +146,8 @@ describe("UserEncryptor", () => {
       const encryptor = mockEncryptor();
       const state = SecretState.from(SomeUser, FOOBAR_RECORD, provider, encryptor);
       const record = {
-        baz: { foo: true, bar: false },
-        biz: { foo: true, bar: false },
+        baz: { foo: true, bar: false, date: new Date(1) },
+        biz: { foo: false, bar: true },
       };
 
       await state.update(() => record);
@@ -156,19 +169,6 @@ describe("UserEncryptor", () => {
 
       expect(result).toEqual(value);
       expect(userId).toEqual(SomeUser);
-    });
-
-    it("round-trips json-serializable values", async () => {
-      const provider = await fakeStateProvider();
-      const encryptor = mockEncryptor();
-      const state = SecretState.from(SomeUser, FOOBAR_VALUE, provider, encryptor);
-      const value = { foo: true, bar: true, date: new Date(1) };
-
-      await state.update(() => value);
-      await awaitAsync();
-      const result = await firstValueFrom(state.state$);
-
-      expect(result).toEqual(value);
     });
 
     it("gets the last set value", async () => {
