@@ -59,7 +59,6 @@ export class Main {
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   desktopSettingsService: DesktopSettingsService;
   migrationRunner: MigrationRunner;
-  desktopSettingsService: DesktopSettingsService;
   tokenService: TokenServiceAbstraction;
 
   windowMain: WindowMain;
@@ -196,7 +195,6 @@ export class Main {
     this.messagingMain = new MessagingMain(this, this.stateService, this.desktopSettingsService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
-    this.desktopSettingsService = new DesktopSettingsService(stateProvider);
 
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);

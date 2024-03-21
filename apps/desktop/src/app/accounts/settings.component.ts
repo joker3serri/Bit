@@ -122,7 +122,6 @@ export class SettingsComponent implements OnInit {
     private userVerificationService: UserVerificationServiceAbstraction,
     private desktopSettingsService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
-    private desktopSettingsService: DesktopSettingsService,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
