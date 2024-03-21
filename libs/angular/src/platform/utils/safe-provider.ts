@@ -69,9 +69,22 @@ type SafeFactoryProviderWithClass<
 /**
  * Represents a dependency provided with the useExisting option.
  */
-type SafeExistingProvider<
+type SafeExistingProviderWithClass<
   A extends Constructor<any> | AbstractConstructor<any>,
   I extends Constructor<InstanceType<A>> | AbstractConstructor<InstanceType<A>>,
+> = {
+  provide: A;
+  useExisting: I;
+};
+
+/**
+ * Represents a dependency provided with the useExisting option.
+ */
+type SafeExistingProviderWithToken<
+  A extends SafeInjectionToken<any>,
+  I extends
+    | Constructor<InstanceType<SafeInjectionTokenType<A>>>
+    | AbstractConstructor<InstanceType<SafeInjectionTokenType<A>>>,
 > = {
   provide: A;
   useExisting: I;
@@ -99,17 +112,23 @@ export const safeProvider = <
   AFactoryClass extends AbstractConstructor<any>,
   IFactoryClass extends (...args: any) => InstanceType<AFactoryClass>,
   DFactoryClass extends MapParametersToDeps<Parameters<IFactoryClass>>,
-  // types for useExisting
-  AExisting extends Constructor<any> | AbstractConstructor<any>,
-  IExisting extends
-    | Constructor<InstanceType<AExisting>>
-    | AbstractConstructor<InstanceType<AExisting>>,
+  // types for useExistingWithClass
+  AExistingClass extends Constructor<any> | AbstractConstructor<any>,
+  IExistingClass extends
+    | Constructor<InstanceType<AExistingClass>>
+    | AbstractConstructor<InstanceType<AExistingClass>>,
+  // types for useExistingWithToken
+  AExistingToken extends SafeInjectionToken<any>,
+  IExistingToken extends
+    | Constructor<InstanceType<SafeInjectionTokenType<AExistingToken>>>
+    | AbstractConstructor<InstanceType<SafeInjectionTokenType<AExistingToken>>>,
 >(
   provider:
     | SafeClassProvider<AClass, IClass, DClass>
     | SafeValueProvider<AValue, VValue>
     | SafeFactoryProviderWithToken<AFactoryToken, IFactoryToken, DFactoryToken>
     | SafeFactoryProviderWithClass<AFactoryClass, IFactoryClass, DFactoryClass>
-    | SafeExistingProvider<AExisting, IExisting>
+    | SafeExistingProviderWithClass<AExistingClass, IExistingClass>
+    | SafeExistingProviderWithToken<AExistingToken, IExistingToken>
     | Constructor<unknown>,
 ): SafeProvider => provider as SafeProvider;
