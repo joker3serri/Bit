@@ -18,6 +18,9 @@ type MapParametersToDeps<T> = {
 
 type SafeInjectionTokenType<T> = T extends SafeInjectionToken<infer J> ? J : never;
 
+/**
+ * Gets the instance type from a constructor, abstract constructor, or SafeInjectionToken
+ */
 type ProviderInstanceType<T> =
   T extends SafeInjectionToken<any>
     ? InstanceType<SafeInjectionTokenType<T>>
@@ -85,7 +88,7 @@ export const safeProvider = <
   // types for useValue
   AValue extends SafeInjectionToken<any>,
   VValue extends SafeInjectionTokenType<AValue>,
-  // types for useFactoryWithToken
+  // types for useFactory
   AFactory extends AbstractConstructor<any> | SafeInjectionToken<any>,
   IFactory extends (...args: any) => ProviderInstanceType<AFactory>,
   DFactory extends MapParametersToDeps<Parameters<IFactory>>,
