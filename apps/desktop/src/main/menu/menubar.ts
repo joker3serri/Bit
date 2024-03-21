@@ -3,7 +3,7 @@ import { Menu, MenuItemConstructorOptions } from "electron";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
-import { DesktopSettingsService } from "../../services/desktop-settings.service";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { isMac } from "../../utils";
 import { UpdaterMain } from "../updater.main";
 import { WindowMain } from "../window.main";
