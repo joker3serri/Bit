@@ -56,7 +56,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
   private overlayListPort: chrome.runtime.Port;
   private focusedFieldData: FocusedFieldData;
   private overlayPageTranslations: Record<string, string>;
-  private readonly iconsServerUrl: string;
+  private iconsServerUrl: string;
   private readonly extensionMessageHandlers: OverlayBackgroundExtensionMessageHandlers = {
     openAutofillOverlay: () => this.openOverlay(false),
     autofillOverlayElementClosed: ({ message }) => this.overlayElementClosed(message),
@@ -101,9 +101,7 @@ class OverlayBackground implements OverlayBackgroundInterface {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private themeStateService: ThemeStateService,
-  ) {
-    this.iconsServerUrl = this.environmentService.getIconsUrl();
-  }
+  ) {}
 
   /**
    * Removes cached page details for a tab
@@ -126,6 +124,8 @@ class OverlayBackground implements OverlayBackgroundInterface {
    */
   async init() {
     this.setupExtensionMessageListeners();
+    const env = await firstValueFrom(this.environmentService.environment$);
+    this.iconsServerUrl = env.getIconsUrl();
     await this.getOverlayVisibility();
     await this.getAuthStatus();
   }
