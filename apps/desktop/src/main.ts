@@ -175,6 +175,7 @@ export class Main {
       illegalSecureStorageService,
       this.keyGenerationService,
       this.encryptService,
+      this.logService,
     );
 
     this.migrationRunner = new MigrationRunner(

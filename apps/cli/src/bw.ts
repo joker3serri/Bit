@@ -320,6 +320,7 @@ export class Main {
       this.secureStorageService,
       this.keyGenerationService,
       this.encryptService,
+      this.logService,
     );
 
     const migrationRunner = new MigrationRunner(

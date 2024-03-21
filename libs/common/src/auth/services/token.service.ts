@@ -6,6 +6,7 @@ import { decodeJwtTokenToJson } from "@bitwarden/auth/common";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
+import { LogService } from "../../platform/abstractions/log.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { EncString, EncryptedString } from "../../platform/models/domain/enc-string";
@@ -129,6 +130,7 @@ export class TokenService implements TokenServiceAbstraction {
     private secureStorageService: AbstractStorageService,
     private keyGenerationService: KeyGenerationService,
     private encryptService: EncryptService,
+    private logService: LogService,
   ) {
     this.initializeState();
   }
@@ -268,11 +270,9 @@ export class TokenService implements TokenServiceAbstraction {
 
     switch (storageLocation) {
       case TokenStorageLocation.SecureStorage: {
-        // So, due to the variable length nature of the access token and length limitations among
-        // OS implementations of credential stores (Windows), we cannot store it directly in secure
-        // storage as we can with the refresh token which has a fixed length. Instead, we will use
-        // a symmetric key (the accessTokenKey) to encrypt the access token before storing the
-        // access token on disk. The accessTokenKey will be stored in secure storage.
+        // Secure storage implementations have variable length limitations (Windows), so we cannot
+        // store the access token directly. Instead, we encrypt with accessTokenKey and store that
+        // in secure storage.
 
         const encryptedAccessToken: EncString = await this.encryptAccessToken(accessToken, userId);
 
@@ -295,6 +295,7 @@ export class TokenService implements TokenServiceAbstraction {
           .update((_) => accessToken);
         return;
       case TokenStorageLocation.Memory:
+        // Access token stored in memory due to vault timeout settings
         await this.singleUserStateProvider
           .get(userId, ACCESS_TOKEN_MEMORY)
           .update((_) => accessToken);
@@ -350,13 +351,22 @@ export class TokenService implements TokenServiceAbstraction {
       return undefined;
     }
 
+    // Try to get the access token from memory
+    const accessTokenMemory = await this.getStateValueByUserIdAndKeyDef(
+      userId,
+      ACCESS_TOKEN_MEMORY,
+    );
+    if (accessTokenMemory != null) {
+      return accessTokenMemory;
+    }
+
+    // If memory is null, read from disk
+    const accessTokenDisk = await this.getStateValueByUserIdAndKeyDef(userId, ACCESS_TOKEN_DISK);
+    if (!accessTokenDisk) {
+      return null;
+    }
+
     if (this.platformSupportsSecureStorage) {
-      const accessTokenDisk = await this.getStateValueByUserIdAndKeyDef(userId, ACCESS_TOKEN_DISK);
-
-      if (!accessTokenDisk) {
-        return null;
-      }
-
       const accessTokenKey = await this.getAccessTokenKey(userId);
 
       if (!accessTokenKey) {
@@ -364,33 +374,22 @@ export class TokenService implements TokenServiceAbstraction {
         return accessTokenDisk;
       }
 
-      // We know this is an encrypted access token because we have an access token key
-      // note: EncryptedString is just an opaque string.
-      const encryptedAccessTokenEncString = new EncString(accessTokenDisk as EncryptedString);
+      try {
+        const encryptedAccessTokenEncString = new EncString(accessTokenDisk as EncryptedString);
 
-      // TODO: consider adding a try catch here to handle any errors that may occur during decryption
-      // and return null if an error occurs.
-
-      const decryptedAccessToken = await this.decryptAccessToken(
-        encryptedAccessTokenEncString,
-        userId,
-      );
-
-      return decryptedAccessToken;
+        const decryptedAccessToken = await this.decryptAccessToken(
+          encryptedAccessTokenEncString,
+          userId,
+        );
+        return decryptedAccessToken;
+      } catch (error) {
+        // If an error occurs during decryption, return null for logout.
+        // We don't try to recover here since we'd like to know
+        // if access token and key are getting out of sync.
+        this.logService.error("Failed to decrypt access token");
+        return null;
+      }
     }
-
-    // Try to get the access token from memory
-    const accessTokenMemory = await this.getStateValueByUserIdAndKeyDef(
-      userId,
-      ACCESS_TOKEN_MEMORY,
-    );
-
-    if (accessTokenMemory != null) {
-      return accessTokenMemory;
-    }
-
-    // If memory is null, read from disk
-    const accessTokenDisk = await this.getStateValueByUserIdAndKeyDef(userId, ACCESS_TOKEN_DISK);
     return accessTokenDisk;
   }
 
@@ -680,6 +679,7 @@ export class TokenService implements TokenServiceAbstraction {
     });
   }
 
+  // TODO: stop accepting optional userIds
   async clearTokens(userId?: UserId): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 

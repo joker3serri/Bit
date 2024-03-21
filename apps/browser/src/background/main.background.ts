@@ -442,6 +442,7 @@ export default class MainBackground {
       this.secureStorageService,
       this.keyGenerationService,
       this.encryptService,
+      this.logService,
     );
 
     const migrationRunner = new MigrationRunner(

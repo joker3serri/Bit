@@ -19,6 +19,10 @@ import {
   keyGenerationServiceFactory,
 } from "../../../platform/background/service-factories/key-generation-service.factory";
 import {
+  LogServiceInitOptions,
+  logServiceFactory,
+} from "../../../platform/background/service-factories/log-service.factory";
+import {
   PlatformUtilsServiceInitOptions,
   platformUtilsServiceFactory,
 } from "../../../platform/background/service-factories/platform-utils-service.factory";
@@ -39,7 +43,8 @@ export type TokenServiceInitOptions = TokenServiceFactoryOptions &
   PlatformUtilsServiceInitOptions &
   SecureStorageServiceInitOptions &
   KeyGenerationServiceInitOptions &
-  EncryptServiceInitOptions;
+  EncryptServiceInitOptions &
+  LogServiceInitOptions;
 
 export function tokenServiceFactory(
   cache: { tokenService?: AbstractTokenService } & CachedServices,
@@ -57,6 +62,7 @@ export function tokenServiceFactory(
         await secureStorageServiceFactory(cache, opts),
         await keyGenerationServiceFactory(cache, opts),
         await encryptServiceFactory(cache, opts),
+        await logServiceFactory(cache, opts),
       ),
   );
 }
