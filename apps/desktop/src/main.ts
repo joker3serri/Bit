@@ -323,12 +323,13 @@ export class Main {
       this.logService.warning("Hardware acceleration is disabled");
       app.disableHardwareAcceleration();
     } else if (isMacAppStore()) {
-      // We disable hardware acceleration on Mac App Store builds with amd switchable GPUs due to:
+      // We disable hardware acceleration on Mac App Store builds for iMacs with amd switchable GPUs due to:
       // https://github.com/electron/electron/issues/41346
       const gpuInfo: any = await app.getGPUInfo("basic");
       const badGpu = gpuInfo?.auxAttributes?.amdSwitchable ?? false;
+      const isImac = gpuInfo?.machineModelName == "iMac";
 
-      if (badGpu) {
+      if (isImac && badGpu) {
         this.logService.warning(
           "Bad GPU detected, hardware acceleration is disabled for compatibility",
         );
