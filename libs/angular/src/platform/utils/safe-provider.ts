@@ -50,6 +50,7 @@ type SafeFactoryProviderWithToken<
   provide: A;
   useFactory: I;
   deps: D;
+  multi?: boolean;
 };
 
 /**
