@@ -16,7 +16,7 @@ export class MigrationHelper {
     public currentVersion: number,
     private storageService: AbstractStorageService,
     public logService: LogService,
-    type: MigrationHelperType = "general",
+    type: MigrationHelperType,
   ) {
     this.type = type;
   }

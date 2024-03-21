@@ -37,7 +37,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
     storage = mock();
     storage.get.mockImplementation((key) => (exampleJSON as any)[key]);
 
-    sut = new MigrationHelper(0, storage, logService);
+    sut = new MigrationHelper(0, storage, logService, "general");
   });
 
   describe("get", () => {
@@ -157,7 +157,7 @@ export function mockMigrationHelper(
   storage.save.mockImplementation(async (key, value) => {
     (storageJson as any)[key] = value;
   });
-  const helper = new MigrationHelper(stateVersion, storage, logService);
+  const helper = new MigrationHelper(stateVersion, storage, logService, "general");
 
   const mockHelper = mock<MigrationHelper>();
   mockHelper.get.mockImplementation((key) => helper.get(key));
@@ -298,7 +298,7 @@ export async function runMigrator<
   const allInjectedData = injectData(initalData, []);
 
   const fakeStorageService = new FakeStorageService(initalData);
-  const helper = new MigrationHelper(migrator.fromVersion, fakeStorageService, mock());
+  const helper = new MigrationHelper(migrator.fromVersion, fakeStorageService, mock(), "general");
 
   // Run their migrations
   if (direction === "rollback") {
