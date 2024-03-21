@@ -5,7 +5,7 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
-import { DesktopSettingsService } from "../../services/desktop-settings.service";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { UpdaterMain } from "../updater.main";
 import { WindowMain } from "../window.main";
 
