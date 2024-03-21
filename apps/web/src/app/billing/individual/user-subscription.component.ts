@@ -45,10 +45,10 @@ export class UserSubscriptionComponent implements OnInit {
     private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
-    this.cloudWebVaultUrl = this.environmentService.getCloudWebVaultUrl();
   }
 
   async ngOnInit() {
+    this.cloudWebVaultUrl = await firstValueFrom(this.environmentService.cloudWebVaultUrl$);
     await this.load();
     this.firstLoaded = true;
   }
