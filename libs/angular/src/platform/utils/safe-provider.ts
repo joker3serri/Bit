@@ -63,22 +63,9 @@ type SafeFactoryProvider<
 /**
  * Represents a dependency provided with the useExisting option.
  */
-type SafeExistingProviderWithClass<
-  A extends Constructor<any> | AbstractConstructor<any>,
-  I extends Constructor<InstanceType<A>> | AbstractConstructor<InstanceType<A>>,
-> = {
-  provide: A;
-  useExisting: I;
-};
-
-/**
- * Represents a dependency provided with the useExisting option.
- */
-type SafeExistingProviderWithToken<
-  A extends SafeInjectionToken<any>,
-  I extends
-    | Constructor<InstanceType<SafeInjectionTokenType<A>>>
-    | AbstractConstructor<InstanceType<SafeInjectionTokenType<A>>>,
+type SafeExistingProvider<
+  A extends Constructor<any> | AbstractConstructor<any> | SafeInjectionToken<any>,
+  I extends Constructor<ProviderInstanceType<A>> | AbstractConstructor<ProviderInstanceType<A>>,
 > = {
   provide: A;
   useExisting: I;
@@ -102,22 +89,16 @@ export const safeProvider = <
   AFactory extends AbstractConstructor<any> | SafeInjectionToken<any>,
   IFactory extends (...args: any) => ProviderInstanceType<AFactory>,
   DFactory extends MapParametersToDeps<Parameters<IFactory>>,
-  // types for useExistingWithClass
-  AExistingClass extends Constructor<any> | AbstractConstructor<any>,
-  IExistingClass extends
-    | Constructor<InstanceType<AExistingClass>>
-    | AbstractConstructor<InstanceType<AExistingClass>>,
-  // types for useExistingWithToken
-  AExistingToken extends SafeInjectionToken<any>,
-  IExistingToken extends
-    | Constructor<InstanceType<SafeInjectionTokenType<AExistingToken>>>
-    | AbstractConstructor<InstanceType<SafeInjectionTokenType<AExistingToken>>>,
+  // types for useExisting
+  AExisting extends Constructor<any> | AbstractConstructor<any> | SafeInjectionToken<any>,
+  IExisting extends
+    | Constructor<ProviderInstanceType<AExisting>>
+    | AbstractConstructor<ProviderInstanceType<AExisting>>,
 >(
   provider:
     | SafeClassProvider<AClass, IClass, DClass>
     | SafeValueProvider<AValue, VValue>
     | SafeFactoryProvider<AFactory, IFactory, DFactory>
-    | SafeExistingProviderWithClass<AExistingClass, IExistingClass>
-    | SafeExistingProviderWithToken<AExistingToken, IExistingToken>
+    | SafeExistingProvider<AExisting, IExisting>
     | Constructor<unknown>,
 ): SafeProvider => provider as SafeProvider;
