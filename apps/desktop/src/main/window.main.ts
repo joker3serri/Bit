@@ -97,7 +97,7 @@ export class WindowMain {
         // down the application.
         app.on("before-quit", async () => {
           // Allow biometric to auto-prompt on reload
-          await this.biometricStateService.resetPromptCancelled();
+          await this.biometricStateService.resetAllPromptCancelled();
           this.isQuitting = true;
         });
 

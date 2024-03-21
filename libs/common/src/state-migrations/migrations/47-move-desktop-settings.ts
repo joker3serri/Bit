@@ -52,7 +52,7 @@ const ALWAYS_ON_TOP_KEY: KeyDefinitionLike = {
   stateDefinition: DESKTOP_SETTINGS_STATE,
 };
 
-export class MoveDesktopSettingsMigrator extends Migrator<41, 42> {
+export class MoveDesktopSettingsMigrator extends Migrator<46, 47> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyGlobal = await helper.get<ExpectedGlobalType>("global");
 

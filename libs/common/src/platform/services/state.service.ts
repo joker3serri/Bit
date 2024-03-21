@@ -33,12 +33,7 @@ import { HtmlStorageLocation, KdfType, StorageLocation } from "../enums";
 import { StateFactory } from "../factories/state-factory";
 import { Utils } from "../misc/utils";
 import { ServerConfigData } from "../models/data/server-config.data";
-import {
-  Account,
-  AccountData,
-  AccountDecryptionOptions,
-  AccountSettings,
-} from "../models/domain/account";
+import { Account, AccountData, AccountSettings } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { GlobalState } from "../models/domain/global-state";
 import { State } from "../models/domain/state";
@@ -278,24 +273,6 @@ export class StateService<
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-  }
-
-  async getAutoConfirmFingerPrints(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.autoConfirmFingerPrints ?? false
-    );
-  }
-
-  async setAutoConfirmFingerprints(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.settings.autoConfirmFingerPrints = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
   }
 
@@ -691,27 +668,6 @@ export class StateService<
     );
   }
 
-  async getDisableFavicon(options?: StorageOptions): Promise<boolean> {
-    return (
-      (
-        await this.getGlobals(
-          this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-        )
-      )?.disableFavicon ?? false
-    );
-  }
-
-  async setDisableFavicon(value: boolean, options?: StorageOptions): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-    globals.disableFavicon = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
-    );
-  }
-
   async getDisableGa(options?: StorageOptions): Promise<boolean> {
     return (
       (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
@@ -833,37 +789,6 @@ export class StateService<
     const account = await this.getAccount(options);
 
     account.settings.trustDeviceChoiceForDecryption = value;
-
-    await this.saveAccount(account, options);
-  }
-
-  async getAccountDecryptionOptions(
-    options?: StorageOptions,
-  ): Promise<AccountDecryptionOptions | null> {
-    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
-
-    if (options?.userId == null) {
-      return null;
-    }
-
-    const account = await this.getAccount(options);
-
-    return account?.decryptionOptions as AccountDecryptionOptions;
-  }
-
-  async setAccountDecryptionOptions(
-    value: AccountDecryptionOptions,
-    options?: StorageOptions,
-  ): Promise<void> {
-    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
-
-    if (options?.userId == null) {
-      return;
-    }
-
-    const account = await this.getAccount(options);
-
-    account.decryptionOptions = value;
 
     await this.saveAccount(account, options);
   }

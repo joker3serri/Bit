@@ -3,13 +3,12 @@ import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, firstValueFrom, Observable, Subject } from "rxjs";
 import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
-import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { DeviceType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -98,6 +97,7 @@ export class SettingsComponent implements OnInit {
       value: false,
       disabled: true,
     }),
+    enableHardwareAcceleration: true,
     enableDuckDuckGoBrowserIntegration: false,
     theme: [null as ThemeType | null],
     locale: [null as string | null],
@@ -116,13 +116,13 @@ export class SettingsComponent implements OnInit {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private messagingService: MessagingService,
     private cryptoService: CryptoService,
-    private modalService: ModalService,
     private themeStateService: ThemeStateService,
-    private settingsService: SettingsService,
+    private domainSettingsService: DomainSettingsService,
     private dialogService: DialogService,
     private userVerificationService: UserVerificationServiceAbstraction,
     private desktopSettingsService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
+    private desktopSettingsService: DesktopSettingsService,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
@@ -253,7 +253,7 @@ export class SettingsComponent implements OnInit {
       approveLoginRequests: (await this.stateService.getApproveLoginRequests()) ?? false,
       clearClipboard: await firstValueFrom(this.autofillSettingsService.clearClipboardDelay$),
       minimizeOnCopyToClipboard: await this.stateService.getMinimizeOnCopyToClipboard(),
-      enableFavicons: !(await this.stateService.getDisableFavicon()),
+      enableFavicons: await firstValueFrom(this.domainSettingsService.showFavicons$),
       enableTray: await firstValueFrom(this.desktopSettingsService.trayEnabled$),
       enableMinToTray: await firstValueFrom(this.desktopSettingsService.minimizeToTray$),
       enableCloseToTray: await firstValueFrom(this.desktopSettingsService.closeToTray$),
@@ -263,6 +263,9 @@ export class SettingsComponent implements OnInit {
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
+      enableHardwareAcceleration: await firstValueFrom(
+        this.desktopSettingsService.hardwareAcceleration$,
+      ),
       enableDuckDuckGoBrowserIntegration:
         await this.stateService.getEnableDuckDuckGoBrowserIntegration(),
       theme: await firstValueFrom(this.themeStateService.selectedTheme$),
@@ -500,7 +503,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveFavicons() {
-    await this.settingsService.setDisableFavicon(!this.form.value.enableFavicons);
+    await this.domainSettingsService.setShowFavicons(this.form.value.enableFavicons);
     this.messagingService.send("refreshCiphers");
   }
 
@@ -656,6 +659,12 @@ export class SettingsComponent implements OnInit {
   async saveBrowserIntegrationFingerprint() {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.form.value.enableBrowserIntegrationFingerprint,
+    );
+  }
+
+  async saveHardwareAcceleration() {
+    await this.desktopSettingsService.setHardwareAcceleration(
+      this.form.value.enableHardwareAcceleration,
     );
   }
 

@@ -7,7 +7,6 @@ export class GlobalState {
   rememberedEmail?: string;
   theme?: ThemeType = ThemeType.System;
   twoFactorToken?: string;
-  disableFavicon?: boolean;
   biometricFingerprintValidated?: boolean;
   vaultTimeout?: number;
   vaultTimeoutAction?: string;

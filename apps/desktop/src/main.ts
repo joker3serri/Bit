@@ -10,7 +10,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
-import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
@@ -54,11 +54,12 @@ export class Main {
   memoryStorageForStateProviders: MemoryStorageServiceForStateProviders;
   messagingService: ElectronMainMessagingService;
   stateService: StateService;
-  environmentService: EnvironmentService;
+  environmentService: DefaultEnvironmentService;
   mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
   desktopSettingsService: DesktopSettingsService;
   migrationRunner: MigrationRunner;
+  desktopSettingsService: DesktopSettingsService;
   tokenService: TokenServiceAbstraction;
 
   windowMain: WindowMain;
@@ -148,7 +149,7 @@ export class Main {
       new DefaultDerivedStateProvider(this.memoryStorageForStateProviders),
     );
 
-    this.environmentService = new EnvironmentService(stateProvider, accountService);
+    this.environmentService = new DefaultEnvironmentService(stateProvider, accountService);
 
     this.tokenService = new TokenService(
       singleUserStateProvider,
@@ -195,6 +196,7 @@ export class Main {
     this.messagingMain = new MessagingMain(this, this.stateService, this.desktopSettingsService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
+    this.desktopSettingsService = new DesktopSettingsService(stateProvider);
 
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
@@ -243,6 +245,7 @@ export class Main {
     // Run migrations first, then other things
     this.migrationRunner.run().then(
       async () => {
+        await this.toggleHardwareAcceleration();
         await this.windowMain.init();
         await this.i18nService.init();
         await this.messagingMain.init();
@@ -310,5 +313,16 @@ export class Main {
       .forEach((s) => {
         this.messagingService.send("deepLink", { urlString: s });
       });
+  }
+
+  private async toggleHardwareAcceleration(): Promise<void> {
+    const hardwareAcceleration = await firstValueFrom(
+      this.desktopSettingsService.hardwareAcceleration$,
+    );
+
+    if (!hardwareAcceleration) {
+      this.logService.warning("Hardware acceleration is disabled");
+      app.disableHardwareAcceleration();
+    }
   }
 }

@@ -8,6 +8,14 @@ import {
 
 import { WindowState } from "../models/domain/window-state";
 
+export const HARDWARE_ACCELERATION = new KeyDefinition<boolean>(
+  DESKTOP_SETTINGS_DISK,
+  "hardwareAcceleration",
+  {
+    deserializer: (v: boolean) => v,
+  },
+);
+
 const WINDOW_KEY = new KeyDefinition<WindowState | null>(DESKTOP_SETTINGS_DISK, "window", {
   deserializer: (s) => s,
 });
@@ -44,6 +52,9 @@ const ALWAYS_ON_TOP_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "alw
  * Various settings for controlling application behavior specific to the desktop client.
  */
 export class DesktopSettingsService {
+  private hwState = this.stateProvider.getGlobal(HARDWARE_ACCELERATION);
+  hardwareAcceleration$ = this.hwState.state$.pipe(map((v) => v ?? true));
+
   private readonly windowState = this.stateProvider.getGlobal(WINDOW_KEY);
 
   private readonly closeToTrayState = this.stateProvider.getGlobal(CLOSE_TO_TRAY_KEY);
@@ -92,6 +103,10 @@ export class DesktopSettingsService {
         window != null && Object.keys(window).length > 0 ? window : new WindowState(),
       ),
     );
+  }
+
+  async setHardwareAcceleration(enabled: boolean) {
+    await this.hwState.update(() => enabled);
   }
 
   /**

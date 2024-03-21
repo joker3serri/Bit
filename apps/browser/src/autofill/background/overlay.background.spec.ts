@@ -1,5 +1,5 @@
 import { mock, mockReset } from "jest-mock-extended";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
@@ -8,11 +8,25 @@ import {
   AutofillOverlayVisibility,
 } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  DefaultDomainSettingsService,
+  DomainSettingsService,
+} from "@bitwarden/common/autofill/services/domain-settings.service";
+import {
+  EnvironmentService,
+  Region,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CloudEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
 import { I18nService } from "@bitwarden/common/platform/services/i18n.service";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { SettingsService } from "@bitwarden/common/services/settings.service";
+import {
+  FakeStateProvider,
+  FakeAccountService,
+  mockAccountServiceWith,
+} from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -38,19 +52,26 @@ import {
 
 import OverlayBackground from "./overlay.background";
 
-const iconServerUrl = "https://icons.bitwarden.com/";
-
 describe("OverlayBackground", () => {
+  const mockUserId = Utils.newGuid() as UserId;
+  const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
+  const fakeStateProvider: FakeStateProvider = new FakeStateProvider(accountService);
+  let domainSettingsService: DomainSettingsService;
   let buttonPortSpy: chrome.runtime.Port;
   let listPortSpy: chrome.runtime.Port;
   let overlayBackground: OverlayBackground;
   const cipherService = mock<CipherService>();
   const autofillService = mock<AutofillService>();
   const authService = mock<AuthService>();
-  const environmentService = mock<EnvironmentService>({
-    getIconsUrl: () => iconServerUrl,
-  });
-  const settingsService = mock<SettingsService>();
+
+  const environmentService = mock<EnvironmentService>();
+  environmentService.environment$ = new BehaviorSubject(
+    new CloudEnvironment({
+      key: Region.US,
+      domain: "bitwarden.com",
+      urls: { icons: "https://icons.bitwarden.com/" },
+    }),
+  );
   const stateService = mock<BrowserStateService>();
   const autofillSettingsService = mock<AutofillSettingsService>();
   const i18nService = mock<I18nService>();
@@ -72,12 +93,13 @@ describe("OverlayBackground", () => {
   };
 
   beforeEach(() => {
+    domainSettingsService = new DefaultDomainSettingsService(fakeStateProvider);
     overlayBackground = new OverlayBackground(
       cipherService,
       autofillService,
       authService,
       environmentService,
-      settingsService,
+      domainSettingsService,
       stateService,
       autofillSettingsService,
       i18nService,
@@ -90,6 +112,7 @@ describe("OverlayBackground", () => {
       .mockResolvedValue(AutofillOverlayVisibility.OnFieldFocus);
 
     themeStateService.selectedTheme$ = of(ThemeType.Light);
+    domainSettingsService.showFavicons$ = of(true);
 
     void overlayBackground.init();
   });
@@ -274,7 +297,7 @@ describe("OverlayBackground", () => {
       card: { subTitle: "Mastercard, *1234" },
     });
 
-    it("formats and returns the cipher data", () => {
+    it("formats and returns the cipher data", async () => {
       overlayBackground["overlayLoginCiphers"] = new Map([
         ["overlay-cipher-0", cipher2],
         ["overlay-cipher-1", cipher1],
@@ -282,7 +305,7 @@ describe("OverlayBackground", () => {
         ["overlay-cipher-3", cipher4],
       ]);
 
-      const overlayCipherData = overlayBackground["getOverlayCipherData"]();
+      const overlayCipherData = await overlayBackground["getOverlayCipherData"]();
 
       expect(overlayCipherData).toStrictEqual([
         {
