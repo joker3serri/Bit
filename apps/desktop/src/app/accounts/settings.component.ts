@@ -25,6 +25,7 @@ import { DialogService } from "@bitwarden/components";
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { flagEnabled } from "../../platform/flags";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 
 @Component({
   selector: "app-settings",
@@ -97,6 +98,7 @@ export class SettingsComponent implements OnInit {
       value: false,
       disabled: true,
     }),
+    enableHardwareAcceleration: true,
     enableDuckDuckGoBrowserIntegration: false,
     theme: [null as ThemeType | null],
     locale: [null as string | null],
@@ -120,6 +122,7 @@ export class SettingsComponent implements OnInit {
     private dialogService: DialogService,
     private userVerificationService: UserVerificationServiceAbstraction,
     private biometricStateService: BiometricStateService,
+    private desktopSettingsService: DesktopSettingsService,
     private desktopAutofillSettingsService: DesktopAutofillSettingsService,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
@@ -263,6 +266,9 @@ export class SettingsComponent implements OnInit {
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
       enableDuckDuckGoBrowserIntegration: await firstValueFrom(
         this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
+      ),
+      enableHardwareAcceleration: await firstValueFrom(
+        this.desktopSettingsService.hardwareAcceleration$,
       ),
       theme: await firstValueFrom(this.themeStateService.selectedTheme$),
       locale: await firstValueFrom(this.i18nService.userSetLocale$),
@@ -655,6 +661,12 @@ export class SettingsComponent implements OnInit {
   async saveBrowserIntegrationFingerprint() {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.form.value.enableBrowserIntegrationFingerprint,
+    );
+  }
+
+  async saveHardwareAcceleration() {
+    await this.desktopSettingsService.setHardwareAcceleration(
+      this.form.value.enableHardwareAcceleration,
     );
   }
 
