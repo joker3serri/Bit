@@ -12,7 +12,7 @@ export const DDG_KEY: KeyDefinitionLike = {
   },
 };
 
-export class MoveDdgToStateProviderMigrator extends Migrator<45, 46> {
+export class MoveDdgToStateProviderMigrator extends Migrator<47, 48> {
   async migrate(helper: MigrationHelper): Promise<void> {
     // global state
     const global = await helper.get<ExpectedGlobal>("global");
