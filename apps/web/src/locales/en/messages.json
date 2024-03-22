@@ -7604,7 +7604,7 @@
     "message": "You cannot add yourself to groups."
   },
   "restrictedCollectionAccess": {
-    "message": "You cannot add yourself to collectiSons."
+    "message": "You cannot add yourself to collections."
   },
   "assign": {
     "message": "Assign"
