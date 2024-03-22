@@ -15,7 +15,7 @@ type ExpectedAccountType = {
   };
 };
 
-export class AccountServerConfigMigrator extends Migrator<45, 46> {
+export class AccountServerConfigMigrator extends Migrator<47, 48> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
 
