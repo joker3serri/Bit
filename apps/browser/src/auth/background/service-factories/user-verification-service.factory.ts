@@ -37,6 +37,10 @@ import {
 } from "./key-connector-service.factory";
 import { PinCryptoServiceInitOptions, pinCryptoServiceFactory } from "./pin-crypto-service.factory";
 import {
+  userDecryptionOptionsServiceFactory,
+  UserDecryptionOptionsServiceInitOptions,
+} from "./user-decryption-options-service.factory";
+import {
   UserVerificationApiServiceInitOptions,
   userVerificationApiServiceFactory,
 } from "./user-verification-api-service.factory";
@@ -49,6 +53,7 @@ export type UserVerificationServiceInitOptions = UserVerificationServiceFactoryO
   KeyConnectorServiceInitOptions &
   I18nServiceInitOptions &
   UserVerificationApiServiceInitOptions &
+  UserDecryptionOptionsServiceInitOptions &
   PinCryptoServiceInitOptions &
   LogServiceInitOptions &
   VaultTimeoutSettingsServiceInitOptions &
@@ -69,6 +74,7 @@ export function userVerificationServiceFactory(
         await keyConnectorServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         await userVerificationApiServiceFactory(cache, opts),
+        await userDecryptionOptionsServiceFactory(cache, opts),
         await pinCryptoServiceFactory(cache, opts),
         await logServiceFactory(cache, opts),
         await vaultTimeoutSettingsServiceFactory(cache, opts),
