@@ -3,7 +3,6 @@ import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   SECURE_STORAGE,
-  STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
   LOCALES_DIRECTORY,
   SYSTEM_LANGUAGE,
@@ -78,6 +77,9 @@ import { InitService } from "./init.service";
 import { RendererCryptoFunctionService } from "./renderer-crypto-function.service";
 
 const RELOAD_CALLBACK = new SafeInjectionToken<() => any>("RELOAD_CALLBACK");
+
+// This is defined separately so that we specify the app-specific types for StateFactory
+const STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, Account>>("STATE_FACTORY");
 
 @NgModule({
   imports: [JslibServicesModule],
