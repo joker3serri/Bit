@@ -9,7 +9,7 @@ export type KeyDefinitionLike = {
   key: string;
 };
 
-type MigrationHelperType = "general" | "web-disk-local";
+export type MigrationHelperType = "general" | "web-disk-local";
 
 export class MigrationHelper {
   constructor(
@@ -31,7 +31,7 @@ export class MigrationHelper {
    * @remarks The preferrable way of writing migrations is ALWAYS to be defensive and reflect on the data you are given back. This
    * should really only be used when reflecting on the data given isn't enough.
    */
-  readonly type: MigrationHelperType;
+  type: MigrationHelperType;
 
   /**
    * Gets a value from the storage service at the given key.

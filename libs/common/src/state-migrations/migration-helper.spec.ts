@@ -9,7 +9,7 @@ import { AbstractStorageService } from "../platform/abstractions/storage.service
 // eslint-disable-next-line import/no-restricted-paths -- Needed to generate unique strings for injection
 import { Utils } from "../platform/misc/utils";
 
-import { MigrationHelper } from "./migration-helper";
+import { MigrationHelper, MigrationHelperType } from "./migration-helper";
 import { Migrator } from "./migrator";
 
 const exampleJSON = {
@@ -150,6 +150,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 export function mockMigrationHelper(
   storageJson: any,
   stateVersion = 0,
+  type: MigrationHelperType = "general",
 ): MockProxy<MigrationHelper> {
   const logService: MockProxy<LogService> = mock();
   const storage: MockProxy<AbstractStorageService> = mock();
@@ -157,7 +158,7 @@ export function mockMigrationHelper(
   storage.save.mockImplementation(async (key, value) => {
     (storageJson as any)[key] = value;
   });
-  const helper = new MigrationHelper(stateVersion, storage, logService, "general");
+  const helper = new MigrationHelper(stateVersion, storage, logService, type);
 
   const mockHelper = mock<MigrationHelper>();
   mockHelper.get.mockImplementation((key) => helper.get(key));
@@ -176,7 +177,7 @@ export function mockMigrationHelper(
   );
   mockHelper.getAccounts.mockImplementation(() => helper.getAccounts());
 
-  Object.defineProperty(mockHelper, "type", { value: "general" });
+  mockHelper.type = helper.type;
 
   return mockHelper;
 }
