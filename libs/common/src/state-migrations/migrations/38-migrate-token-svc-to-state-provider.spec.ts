@@ -196,7 +196,7 @@ describe("TokenServiceStateProviderMigrator", () => {
     });
     describe("Local storage", () => {
       beforeEach(() => {
-        Object.defineProperty(helper, "type", { value: "web-disk-local" });
+        helper = mockMigrationHelper(preMigrationJson(), 37, "web-disk-local");
       });
       it("should remove state service data from all accounts that have it", async () => {
         await sut.migrate(helper);
