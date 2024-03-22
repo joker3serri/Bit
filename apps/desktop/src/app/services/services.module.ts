@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, InjectionToken, NgModule } from "@angular/core";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 
 import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
@@ -13,6 +13,7 @@ import {
   WINDOW,
   SUPPORTS_SECURE_STORAGE,
   SYSTEM_THEME_OBSERVABLE,
+  SafeInjectionToken,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -76,7 +77,7 @@ import { DesktopFileDownloadService } from "./desktop-file-download.service";
 import { InitService } from "./init.service";
 import { RendererCryptoFunctionService } from "./renderer-crypto-function.service";
 
-const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
+const RELOAD_CALLBACK = new SafeInjectionToken<() => any>("RELOAD_CALLBACK");
 
 @NgModule({
   imports: [JslibServicesModule],
@@ -88,7 +89,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
     safeProvider(LoginGuard),
     safeProvider(DialogService),
     safeProvider({
-      provide: APP_INITIALIZER,
+      provide: APP_INITIALIZER as SafeInjectionToken<() => void>,
       useFactory: (initService: InitService) => initService.init(),
       deps: [InitService],
       multi: true,
@@ -128,12 +129,21 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       useClass: ElectronRendererMessagingService,
       deps: [BroadcasterServiceAbstraction],
     }),
-    safeProvider({ provide: AbstractStorageService, useClass: ElectronRendererStorageService }),
-    safeProvider({ provide: SECURE_STORAGE, useClass: ElectronRendererSecureStorageService }),
-    safeProvider({ provide: MEMORY_STORAGE, useClass: MemoryStorageService }),
+    safeProvider({
+      provide: AbstractStorageService,
+      useClass: ElectronRendererStorageService,
+      deps: [],
+    }),
+    safeProvider({
+      provide: SECURE_STORAGE,
+      useClass: ElectronRendererSecureStorageService,
+      deps: [],
+    }),
+    safeProvider({ provide: MEMORY_STORAGE, useClass: MemoryStorageService, deps: [] }),
     safeProvider({
       provide: OBSERVABLE_MEMORY_STORAGE,
       useClass: MemoryStorageServiceForStateProviders,
+      deps: [],
     }),
     safeProvider({ provide: OBSERVABLE_DISK_STORAGE, useExisting: AbstractStorageService }),
     safeProvider({
@@ -168,10 +178,12 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
     safeProvider({
       provide: FileDownloadService,
       useClass: DesktopFileDownloadService,
+      deps: [],
     }),
     safeProvider({
       provide: SYSTEM_THEME_OBSERVABLE,
       useFactory: () => fromIpcSystemTheme(),
+      deps: [],
     }),
     safeProvider({
       provide: EncryptedMessageHandlerService,
