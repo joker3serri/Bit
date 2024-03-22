@@ -10,7 +10,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DefaultBiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
-import { EnvironmentService } from "@bitwarden/common/platform/services/environment.service";
+import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
@@ -54,11 +54,11 @@ export class Main {
   memoryStorageForStateProviders: MemoryStorageServiceForStateProviders;
   messagingService: ElectronMainMessagingService;
   stateService: StateService;
-  environmentService: EnvironmentService;
+  environmentService: DefaultEnvironmentService;
   mainCryptoFunctionService: MainCryptoFunctionService;
   desktopCredentialStorageListener: DesktopCredentialStorageListener;
-  migrationRunner: MigrationRunner;
   desktopSettingsService: DesktopSettingsService;
+  migrationRunner: MigrationRunner;
   tokenService: TokenServiceAbstraction;
 
   windowMain: WindowMain;
@@ -148,7 +148,7 @@ export class Main {
       new DefaultDerivedStateProvider(this.memoryStorageForStateProviders),
     );
 
-    this.environmentService = new EnvironmentService(stateProvider, accountService);
+    this.environmentService = new DefaultEnvironmentService(stateProvider, accountService);
 
     this.tokenService = new TokenService(
       singleUserStateProvider,
@@ -179,6 +179,8 @@ export class Main {
       false, // Do not use disk caching because this will get out of sync with the renderer service
     );
 
+    this.desktopSettingsService = new DesktopSettingsService(stateProvider);
+
     const biometricStateService = new DefaultBiometricStateService(stateProvider);
 
     this.windowMain = new WindowMain(
@@ -186,13 +188,13 @@ export class Main {
       biometricStateService,
       this.logService,
       this.storageService,
+      this.desktopSettingsService,
       (arg) => this.processDeepLink(arg),
       (win) => this.trayMain.setupWindowListeners(win),
     );
-    this.messagingMain = new MessagingMain(this, this.stateService);
+    this.messagingMain = new MessagingMain(this, this.stateService, this.desktopSettingsService);
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
-    this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.stateService);
-    this.desktopSettingsService = new DesktopSettingsService(stateProvider);
+    this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
 
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
       this.messagingMain.onMessage(message);
@@ -245,7 +247,7 @@ export class Main {
         await this.toggleHardwareAcceleration();
         await this.windowMain.init();
         await this.i18nService.init();
-        this.messagingMain.init();
+        await this.messagingMain.init();
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.menuMain.init();
@@ -257,10 +259,8 @@ export class Main {
             click: () => this.messagingService.send("lockVault"),
           },
         ]);
-        if (await this.stateService.getEnableStartToTray()) {
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.trayMain.hideToTray();
+        if (await firstValueFrom(this.desktopSettingsService.startToTray$)) {
+          await this.trayMain.hideToTray();
         }
         this.powerMonitorMain.init();
         await this.updaterMain.init();

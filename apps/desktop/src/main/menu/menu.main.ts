@@ -50,7 +50,8 @@ export class MenuMain {
   }
 
   private async getWebVaultUrl() {
-    return this.environmentService.getWebVaultUrl() ?? cloudWebVaultUrl;
+    const env = await firstValueFrom(this.environmentService.environment$);
+    return env.getWebVaultUrl() ?? cloudWebVaultUrl;
   }
 
   private initContextMenu() {
