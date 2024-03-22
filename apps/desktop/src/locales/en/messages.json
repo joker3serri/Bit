@@ -2687,5 +2687,11 @@
   "commonImportFormats": {
     "message": "Common formats",
     "description": "Label indicating the most common import formats"
+  },
+  "removePasskey": {
+    "message": "Remove passkey"
+  },
+  "passkeyRemoved": {
+    "message": "Passkey removed"
   }
 }

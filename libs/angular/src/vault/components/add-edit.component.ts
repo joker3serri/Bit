@@ -83,6 +83,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   reprompt = false;
   canUseReprompt = true;
   organization: Organization;
+  passkeyRemovedAnnouncement = false;
 
   protected componentName = "";
   protected destroy$ = new Subject<void>();
@@ -400,6 +401,19 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (i > -1) {
       this.cipher.login.uris.splice(i, 1);
     }
+  }
+
+  removePasskey() {
+    if (this.cipher.type !== CipherType.Login || this.cipher.login.fido2Credentials == null) {
+      return;
+    }
+
+    // Announce the removal of the passkey
+    this.passkeyRemovedAnnouncement = true;
+
+    this.cipher.login.fido2Credentials = null;
+
+    document.getElementById("loginTotp")?.focus();
   }
 
   onCardNumberChange(): void {
