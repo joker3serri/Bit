@@ -7697,5 +7697,50 @@
   },
   "limitMachineAccountsDesc": {
     "message": "Set a limit for your machine accounts. Once this limit is reached, you will not be able to create new machine accounts."
+  },
+  "viewMachineAccount": {
+    "message": "View machine account",
+    "description": "Action to view the details of a machine account."
+  },
+  "editMachineAccount": {
+    "message": "Edit machine account",
+    "description": "Title for editing a machine account."
+  },
+  "deleteMachineAccount": {
+    "message": "Delete machine account",
+    "description": "Title for the action to delete a single machine account."
+  },
+  "deleteMachineAccountDialogMessage": {
+    "message": "Deleting machine account $SERVICE_ACCOUNT$ is permanent and irreversible.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Machine account name"
+      }
+    }
+  },
+  "deleteMachineAccountToast": {
+    "message": "machine account deleted"
+  },
+  "newMachineAccount": {
+    "message": "New machine account",
+    "description": "Title for creating a new machine account."
+  },
+  "machineAccount": {
+    "message": "Machine account",
+    "description": "A machine user which can be used to automate processes and access secrets in the system."
+  },
+  "machineAccountName": {
+    "message": "Machine account name",
+    "description": "Label for the name of a machine account"
+  },
+  "machineAccountPeopleDescription": {
+    "message": "Grant groups or people access to this machine account."
+  },
+  "machineAccountProjectsDescription": {
+    "message": "Assign projects to this machine account. "
+  },
+  "machineAccountEmptyProjectAccessPolicies": {
+    "message": "Add projects to grant access"
   }
 }

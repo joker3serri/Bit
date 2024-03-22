@@ -107,6 +107,6 @@ export class ServiceAccountDialogComponent {
   }
 
   get title() {
-    return this.data.operation === OperationType.Add ? "newServiceAccount" : "editServiceAccount";
+    return this.data.operation === OperationType.Add ? "newMachineAccount" : "editMachineAccount";
   }
 }

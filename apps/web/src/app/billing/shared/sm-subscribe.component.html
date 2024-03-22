@@ -20,7 +20,7 @@
         <ng-template #unlimitedProjects>
           <li>{{ "unlimitedProjects" | i18n }}</li>
         </ng-template>
-        <li>{{ "machineAccountsIncluded" | i18n: machineAccountsIncluded }}</li>
+        <li>{{ "machineAccountsIncluded" | i18n: serviceAccountsIncluded }}</li>
         <li *ngIf="product != productTypes.Free">
           {{
             "additionalMachineAccountCost" | i18n: (monthlyCostPerServiceAccount | currency: "$")
@@ -57,7 +57,7 @@
           <bit-label>{{ "additionalMachineAccounts" | i18n }}</bit-label>
           <input bitInput formControlName="additionalServiceAccounts" type="number" />
           <bit-hint>
-            {{ "includedMachineAccounts" | i18n: machineAccountsIncluded }}
+            {{ "includedMachineAccounts" | i18n: serviceAccountsIncluded }}
             {{
               "addAdditionalMachineAccounts" | i18n: (monthlyCostPerServiceAccount | currency: "$")
             }}

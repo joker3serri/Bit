@@ -43,13 +43,13 @@ export class ServiceAccountDeleteDialogComponent {
 
   get title() {
     return this.data.serviceAccounts.length === 1
-      ? this.i18nService.t("deleteServiceAccount")
+      ? this.i18nService.t("deleteMachineAccount")
       : this.i18nService.t("deleteMachineAccounts");
   }
 
   get dialogContent() {
     return this.data.serviceAccounts.length === 1
-      ? this.i18nService.t("deleteServiceAccountDialogMessage", this.data.serviceAccounts[0].name)
+      ? this.i18nService.t("deleteMachineAccountDialogMessage", this.data.serviceAccounts[0].name)
       : this.i18nService.t("deleteMachineAccountsDialogMessage");
   }
 
@@ -79,7 +79,7 @@ export class ServiceAccountDeleteDialogComponent {
 
     const message =
       this.data.serviceAccounts.length === 1
-        ? "deleteServiceAccountToast"
+        ? "deleteMachineAccountToast"
         : "deleteMachineAccountsToast";
     this.platformUtilsService.showToast("success", null, this.i18nService.t(message));
   }
@@ -89,7 +89,7 @@ export class ServiceAccountDeleteDialogComponent {
       data: {
         title: "deleteMachineAccounts",
         subTitle: "machineAccounts",
-        columnTitle: "serviceAccountName",
+        columnTitle: "machineAccountName",
         message: "bulkDeleteProjectsErrorMessage",
         details: bulkStatusResults,
       },
