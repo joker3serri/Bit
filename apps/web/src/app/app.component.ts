@@ -4,16 +4,17 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import * as jq from "jquery";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, switchMap, takeUntil, timer } from "rxjs";
 
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
+import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { PaymentMethodWarningsServiceAbstraction as PaymentMethodWarningService } from "@bitwarden/common/billing/abstractions/payment-method-warnings-service.abstraction";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -21,6 +22,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { StateEventRunnerService } from "@bitwarden/common/platform/state";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -41,10 +43,10 @@ import {
   SingleOrgPolicy,
   TwoFactorAuthenticationPolicy,
 } from "./admin-console/organizations/policies";
-import { RouterService } from "./core";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
+const PaymentMethodWarningsRefresh = 60000; // 1 Minute
 
 @Component({
   selector: "app-root",
@@ -55,12 +57,12 @@ export class AppComponent implements OnDestroy, OnInit {
   private idleTimer: number = null;
   private isIdle = false;
   private destroy$ = new Subject<void>();
+  private paymentMethodWarningsRefresh$ = timer(0, PaymentMethodWarningsRefresh);
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private broadcasterService: BroadcasterService,
     private folderService: InternalFolderService,
-    private settingsService: SettingsService,
     private syncService: SyncService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private cipherService: CipherService,
@@ -76,7 +78,6 @@ export class AppComponent implements OnDestroy, OnInit {
     private sanitizer: DomSanitizer,
     private searchService: SearchService,
     private notificationsService: NotificationsService,
-    private routerService: RouterService,
     private stateService: StateService,
     private eventUploadService: EventUploadService,
     private policyService: InternalPolicyService,
@@ -85,6 +86,9 @@ export class AppComponent implements OnDestroy, OnInit {
     private configService: ConfigServiceAbstraction,
     private dialogService: DialogService,
     private biometricStateService: BiometricStateService,
+    private stateEventRunnerService: StateEventRunnerService,
+    private paymentMethodWarningService: PaymentMethodWarningService,
+    private organizationService: InternalOrganizationServiceAbstraction,
   ) {}
 
   ngOnInit() {
@@ -238,6 +242,21 @@ export class AppComponent implements OnDestroy, OnInit {
       new DisableSendPolicy(),
       new SendOptionsPolicy(),
     ]);
+
+    this.paymentMethodWarningsRefresh$
+      .pipe(
+        switchMap(() => this.organizationService.memberOrganizations$),
+        switchMap(
+          async (organizations) =>
+            await Promise.all(
+              organizations.map((organization) =>
+                this.paymentMethodWarningService.update(organization.id),
+              ),
+            ),
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
@@ -252,7 +271,6 @@ export class AppComponent implements OnDestroy, OnInit {
     await Promise.all([
       this.syncService.setLastSync(new Date(0)),
       this.cryptoService.clearKeys(),
-      this.settingsService.clear(userId),
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId),
@@ -260,7 +278,10 @@ export class AppComponent implements OnDestroy, OnInit {
       this.passwordGenerationService.clear(),
       this.keyConnectorService.clear(),
       this.biometricStateService.logout(userId as UserId),
+      this.paymentMethodWarningService.clear(),
     ]);
+
+    await this.stateEventRunnerService.handleEvent("logout", userId as UserId);
 
     this.searchService.clearIndex();
     this.authService.logOut(async () => {

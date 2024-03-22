@@ -2,12 +2,12 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, EventEmitter, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, map, merge } from "rxjs";
+import { Observable, map } from "rxjs";
 
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import {
-  EnvironmentService as EnvironmentServiceAbstraction,
+  EnvironmentService,
   Region,
+  RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 
 @Component({
@@ -35,12 +35,9 @@ import {
   ],
 })
 export class EnvironmentSelectorComponent {
-  protected ServerEnvironmentType = Region;
-
   @Output() onOpenSelfHostedSettings = new EventEmitter();
-  protected selectedEnvironment$: Observable<Region>;
   protected isOpen = false;
-
+  protected ServerEnvironmentType = Region;
   protected overlayPosition: ConnectedPosition[] = [
     {
       originX: "start",
@@ -50,19 +47,19 @@ export class EnvironmentSelectorComponent {
     },
   ];
 
-  constructor(
-    protected environmentService: EnvironmentServiceAbstraction,
-    protected configService: ConfigServiceAbstraction,
-    protected router: Router,
-  ) {
-    // Update the environment info when the server config or environment URLs change.
-    this.selectedEnvironment$ = merge(
-      this.configService.serverConfig$,
-      this.environmentService.urls,
-    ).pipe(map(() => this.environmentService.selectedRegion));
-  }
+  protected availableRegions = this.environmentService.availableRegions();
+  protected selectedRegion$: Observable<RegionConfig | undefined> =
+    this.environmentService.environment$.pipe(
+      map((e) => e.getRegion()),
+      map((r) => this.availableRegions.find((ar) => ar.key === r)),
+    );
 
-  protected async toggle(option: Region) {
+  constructor(
+    protected environmentService: EnvironmentService,
+    protected router: Router,
+  ) {}
+
+  async toggle(option: Region) {
     this.isOpen = !this.isOpen;
     if (option === null) {
       return;
@@ -73,10 +70,10 @@ export class EnvironmentSelectorComponent {
       return;
     }
 
-    await this.environmentService.setRegion(option);
+    await this.environmentService.setEnvironment(option);
   }
 
-  protected close() {
+  close() {
     this.isOpen = false;
   }
 }

@@ -10,7 +10,6 @@ import { OrganizationTaxInfoUpdateRequest } from "../../../billing/models/reques
 import { PaymentRequest } from "../../../billing/models/request/payment.request";
 import { SecretsManagerSubscribeRequest } from "../../../billing/models/request/sm-subscribe.request";
 import { BillingResponse } from "../../../billing/models/response/billing.response";
-import { OrganizationRisksSubscriptionFailureResponse } from "../../../billing/models/response/organization-risks-subscription-failure.response";
 import { OrganizationSubscriptionResponse } from "../../../billing/models/response/organization-subscription.response";
 import { PaymentResponse } from "../../../billing/models/response/payment.response";
 import { TaxInfoResponse } from "../../../billing/models/response/tax-info.response";
@@ -185,10 +184,6 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     );
   }
 
-  async cancel(id: string): Promise<void> {
-    return this.apiService.send("POST", "/organizations/" + id + "/cancel", null, true, false);
-  }
-
   async reinstate(id: string): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/reinstate", null, true, false);
   }
@@ -342,20 +337,6 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     const data = new OrganizationResponse(r);
     await this.syncService.fullSync(true);
     return data;
-  }
-
-  async risksSubscriptionFailure(
-    id: string,
-  ): Promise<OrganizationRisksSubscriptionFailureResponse> {
-    const r = await this.apiService.send(
-      "GET",
-      "/organizations/" + id + "/risks-subscription-failure",
-      null,
-      true,
-      true,
-    );
-
-    return new OrganizationRisksSubscriptionFailureResponse(r);
   }
 
   async enableCollectionEnhancements(id: string): Promise<void> {

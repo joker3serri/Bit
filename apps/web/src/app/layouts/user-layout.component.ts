@@ -1,17 +1,20 @@
 import { CommonModule } from "@angular/common";
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { ConfigServiceAbstraction as ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
-import { PaymentMethodBannersComponent } from "../components/payment-method-banners/payment-method-banners.component";
+import { PaymentMethodWarningsModule } from "../billing/shared";
 
 import { PasswordManagerLogo } from "./password-manager-logo";
 
@@ -28,7 +31,7 @@ const BroadcasterSubscriptionId = "UserLayoutComponent";
     LayoutComponent,
     IconModule,
     NavigationModule,
-    PaymentMethodBannersComponent,
+    PaymentMethodWarningsModule,
   ],
 })
 export class UserLayoutComponent implements OnInit, OnDestroy {
@@ -36,14 +39,20 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   hasFamilySponsorshipAvailable: boolean;
   hideSubscription: boolean;
 
+  protected showPaymentMethodWarningBanners$ = this.configService.getFeatureFlag$(
+    FeatureFlag.ShowPaymentMethodWarningBanners,
+    false,
+  );
+
   constructor(
     private broadcasterService: BroadcasterService,
     private ngZone: NgZone,
     private platformUtilsService: PlatformUtilsService,
     private organizationService: OrganizationService,
-    private stateService: StateService,
     private apiService: ApiService,
     private syncService: SyncService,
+    private configService: ConfigService,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async ngOnInit() {
@@ -71,16 +80,21 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   }
 
   async load() {
-    const premium = await this.stateService.getHasPremiumPersonally();
+    const hasPremiumPersonally = await firstValueFrom(
+      this.billingAccountProfileStateService.hasPremiumPersonally$,
+    );
+    const hasPremiumFromOrg = await firstValueFrom(
+      this.billingAccountProfileStateService.hasPremiumFromAnyOrganization$,
+    );
     const selfHosted = this.platformUtilsService.isSelfHost();
 
     this.hasFamilySponsorshipAvailable = await this.organizationService.canManageSponsorships();
-    const hasPremiumFromOrg = await this.stateService.getHasPremiumFromOrganization();
     let billing = null;
     if (!selfHosted) {
       // TODO: We should remove the need to call this!
       billing = await this.apiService.getUserBillingHistory();
     }
-    this.hideSubscription = !premium && hasPremiumFromOrg && (selfHosted || billing?.hasNoHistory);
+    this.hideSubscription =
+      !hasPremiumPersonally && hasPremiumFromOrg && (selfHosted || billing?.hasNoHistory);
   }
 }

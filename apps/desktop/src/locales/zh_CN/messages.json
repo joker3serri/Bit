@@ -1644,6 +1644,12 @@
   "enableBrowserIntegrationFingerprintDesc": {
     "message": "在您的桌面与浏览器间建立连接时，通过要求指纹短语确认，来增加一个额外的安全层。每次建立连接都需要用户操作和验证。"
   },
+  "enableHardwareAcceleration": {
+    "message": "使用硬件加速"
+  },
+  "enableHardwareAccelerationDesc": {
+    "message": "此设置默认为开启。仅当您遇到图形问题时才关闭。需要重启。"
+  },
   "approve": {
     "message": "批准"
   },
@@ -2340,12 +2346,6 @@
   "loggingInOn": {
     "message": "登录到"
   },
-  "usDomain": {
-    "message": "bitwarden.com"
-  },
-  "euDomain": {
-    "message": "bitwarden.eu"
-  },
   "selfHostedServer": {
     "message": "自托管"
   },
@@ -2535,7 +2535,7 @@
     "message": "启动 Duo 然后按照步骤完成登录。"
   },
   "duoRequiredByOrgForAccount": {
-    "message": "您的账户需要 Duo 两步登录。"
+    "message": "您的账户要求使用 Duo 两步登录。"
   },
   "launchDuo": {
     "message": "在浏览器中启动 Duo"

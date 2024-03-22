@@ -46,10 +46,6 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     return this.formGroup.value.email;
   }
 
-  get selfHostedDomain() {
-    return this.environmentService.hasBaseUrl() ? this.environmentService.getWebVaultUrl() : null;
-  }
-
   constructor(
     devicesApiService: DevicesApiServiceAbstraction,
     appIdService: AppIdService,

@@ -578,6 +578,9 @@
   "access": {
     "message": "Доступ"
   },
+  "accessLevel": {
+    "message": "Рівень доступу"
+  },
   "loggedOut": {
     "message": "Ви вийшли"
   },
@@ -1349,13 +1352,17 @@
   },
   "onboardingImportDataDetailsPartOne": {
     "message": "Якщо у вас немає даних для імпорту, можете створити ",
-    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. (Optional second half: You may need to wait until your administrator confirms your organization membership.)"
   },
   "onboardingImportDataDetailsLink": {
     "message": "новий елемент",
-    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. (Optional second half: You may need to wait until your administrator confirms your organization membership.)"
   },
-  "onboardingImportDataDetailsPartTwo": {
+  "onboardingImportDataDetailsPartTwoNoOrgs": {
+    "message": " натомість.",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead."
+  },
+  "onboardingImportDataDetailsPartTwoWithOrgs": {
     "message": " натомість. Можливо, доведеться зачекати доки адміністратор підтвердить вашу участь в організації.",
     "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
   },
@@ -6669,11 +6676,11 @@
   "resendCode": {
     "message": "Надіслати новий код"
   },
-  "membersColumnHeader": {
-    "message": "Учасник/Група"
-  },
-  "groupAndMemberColumnHeader": {
+  "memberColumnHeader": {
     "message": "Учасник"
+  },
+  "groupSlashMemberColumnHeader": {
+    "message": "Група/учасник"
   },
   "selectGroupsAndMembers": {
     "message": "Виберіть групи та учасників"
@@ -7055,12 +7062,6 @@
   },
   "enforceOnLoginDesc": {
     "message": "Вимагати від наявних учасників змінювати паролі"
-  },
-  "usDomain": {
-    "message": "bitwarden.com"
-  },
-  "euDomain": {
-    "message": "bitwarden.eu"
   },
   "smProjectDeleteAccessRestricted": {
     "message": "У вас немає дозволу на видалення цього проєкту",
@@ -7500,6 +7501,9 @@
   "grantCollectionAccess": {
     "message": "Надайте групам або учасникам доступ до цієї збірки."
   },
+  "grantCollectionAccessMembersOnly": {
+    "message": "Надайте учасникам доступ до цієї збірки."
+  },
   "adminCollectionAccess": {
     "message": "Адміністратори мають доступ і можливість керування збірками."
   },
@@ -7595,5 +7599,11 @@
   },
   "providerPortal": {
     "message": "Портал провайдера"
+  },
+  "restrictedGroupAccess": {
+    "message": "Ви не можете додати себе до груп."
+  },
+  "restrictedCollectionAccess": {
+    "message": "Ви не можете додати себе до збірок."
   }
 }
