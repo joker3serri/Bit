@@ -1,5 +1,6 @@
 import { APP_INITIALIZER, InjectionToken, NgModule } from "@angular/core";
 
+import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   SECURE_STORAGE,
   STATE_FACTORY,
@@ -81,54 +82,61 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
   imports: [JslibServicesModule],
   declarations: [],
   providers: [
-    InitService,
-    NativeMessagingService,
-    SearchBarService,
-    LoginGuard,
-    DialogService,
-    {
+    safeProvider(InitService),
+    safeProvider(NativeMessagingService),
+    safeProvider(SearchBarService),
+    safeProvider(LoginGuard),
+    safeProvider(DialogService),
+    safeProvider({
       provide: APP_INITIALIZER,
       useFactory: (initService: InitService) => initService.init(),
       deps: [InitService],
       multi: true,
-    },
-    {
+    }),
+    safeProvider({
       provide: STATE_FACTORY,
       useValue: new StateFactory(GlobalState, Account),
-    },
-    {
+    }),
+    safeProvider({
       provide: RELOAD_CALLBACK,
       useValue: null,
-    },
-    { provide: LogServiceAbstraction, useClass: ElectronLogRendererService, deps: [] },
-    {
+    }),
+    safeProvider({
+      provide: LogServiceAbstraction,
+      useClass: ElectronLogRendererService,
+      deps: [],
+    }),
+    safeProvider({
       provide: PlatformUtilsServiceAbstraction,
       useClass: ElectronPlatformUtilsService,
       deps: [I18nServiceAbstraction, MessagingServiceAbstraction],
-    },
-    {
+    }),
+    safeProvider({
       // We manually override the value of SUPPORTS_SECURE_STORAGE here to avoid
       // the TokenService having to inject the PlatformUtilsService which introduces a
       // circular dependency on Desktop only.
       provide: SUPPORTS_SECURE_STORAGE,
       useValue: ELECTRON_SUPPORTS_SECURE_STORAGE,
-    },
-    {
+    }),
+    safeProvider({
       provide: I18nServiceAbstraction,
       useClass: I18nRendererService,
       deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY, GlobalStateProvider],
-    },
-    {
+    }),
+    safeProvider({
       provide: MessagingServiceAbstraction,
       useClass: ElectronRendererMessagingService,
       deps: [BroadcasterServiceAbstraction],
-    },
-    { provide: AbstractStorageService, useClass: ElectronRendererStorageService },
-    { provide: SECURE_STORAGE, useClass: ElectronRendererSecureStorageService },
-    { provide: MEMORY_STORAGE, useClass: MemoryStorageService },
-    { provide: OBSERVABLE_MEMORY_STORAGE, useClass: MemoryStorageServiceForStateProviders },
-    { provide: OBSERVABLE_DISK_STORAGE, useExisting: AbstractStorageService },
-    {
+    }),
+    safeProvider({ provide: AbstractStorageService, useClass: ElectronRendererStorageService }),
+    safeProvider({ provide: SECURE_STORAGE, useClass: ElectronRendererSecureStorageService }),
+    safeProvider({ provide: MEMORY_STORAGE, useClass: MemoryStorageService }),
+    safeProvider({
+      provide: OBSERVABLE_MEMORY_STORAGE,
+      useClass: MemoryStorageServiceForStateProviders,
+    }),
+    safeProvider({ provide: OBSERVABLE_DISK_STORAGE, useExisting: AbstractStorageService }),
+    safeProvider({
       provide: SystemServiceAbstraction,
       useClass: SystemService,
       deps: [
@@ -140,8 +148,8 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         VaultTimeoutSettingsService,
         BiometricStateService,
       ],
-    },
-    {
+    }),
+    safeProvider({
       provide: StateServiceAbstraction,
       useClass: ElectronStateService,
       deps: [
@@ -156,16 +164,16 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         MigrationRunner,
         STATE_SERVICE_USE_CACHE,
       ],
-    },
-    {
+    }),
+    safeProvider({
       provide: FileDownloadService,
       useClass: DesktopFileDownloadService,
-    },
-    {
+    }),
+    safeProvider({
       provide: SYSTEM_THEME_OBSERVABLE,
       useFactory: () => fromIpcSystemTheme(),
-    },
-    {
+    }),
+    safeProvider({
       provide: EncryptedMessageHandlerService,
       deps: [
         StateServiceAbstraction,
@@ -175,8 +183,8 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         MessagingServiceAbstraction,
         PasswordGenerationServiceAbstraction,
       ],
-    },
-    {
+    }),
+    safeProvider({
       provide: NativeMessageHandlerService,
       deps: [
         StateServiceAbstraction,
@@ -186,18 +194,18 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         EncryptedMessageHandlerService,
         DialogService,
       ],
-    },
-    {
+    }),
+    safeProvider({
       provide: LoginServiceAbstraction,
       useClass: LoginService,
       deps: [StateServiceAbstraction],
-    },
-    {
+    }),
+    safeProvider({
       provide: CryptoFunctionServiceAbstraction,
       useClass: RendererCryptoFunctionService,
       deps: [WINDOW],
-    },
-    {
+    }),
+    safeProvider({
       provide: CryptoServiceAbstraction,
       useClass: ElectronCryptoService,
       deps: [
@@ -211,7 +219,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         StateProvider,
         BiometricStateService,
       ],
-    },
+    }),
   ],
 })
 export class ServicesModule {}
