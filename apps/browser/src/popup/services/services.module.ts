@@ -223,12 +223,12 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: BrowserEnvironmentService,
-      useExisting: EnvironmentService,
+      useClass: BrowserEnvironmentService,
+      deps: [LogService, StateProvider, AccountServiceAbstraction],
     },
     {
       provide: EnvironmentService,
-      useFactory: getBgService<EnvironmentService>("environmentService"),
-      deps: [],
+      useExisting: BrowserEnvironmentService,
     },
     { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
     {
@@ -488,6 +488,7 @@ function getBgService<T>(service: keyof MainBackground) {
         ConfigApiServiceAbstraction,
         AuthServiceAbstraction,
         EnvironmentService,
+        StateProvider,
         LogService,
       ],
     },
