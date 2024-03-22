@@ -45,10 +45,8 @@ export const GLOBAL_SERVER_CONFIGURATIONS = KeyDefinition.record<ServerConfig, A
 export class DefaultConfigService implements ConfigService {
   private failedFetchFallbackSubject = new Subject<ServerConfig>();
 
-  /** {@link ConfigService.serverConfig$} */
   serverConfig$: Observable<ServerConfig>;
 
-  /** {@link ConfigService.cloudRegion$} */
   cloudRegion$: Observable<Region>;
 
   constructor(
@@ -92,7 +90,6 @@ export class DefaultConfigService implements ConfigService {
       map((config) => config?.environment?.cloudRegion ?? Region.US),
     );
   }
-  /** {@link ConfigService.getFeatureFlag$} */
   getFeatureFlag$<T extends FeatureFlagValue>(key: FeatureFlag, defaultValue?: T) {
     return this.serverConfig$.pipe(
       map((serverConfig) => {
@@ -105,12 +102,10 @@ export class DefaultConfigService implements ConfigService {
     );
   }
 
-  /** {@link ConfigService.getFeatureFlag} */
   async getFeatureFlag<T extends FeatureFlagValue>(key: FeatureFlag, defaultValue?: T) {
     return await firstValueFrom(this.getFeatureFlag$(key, defaultValue));
   }
 
-  /** {@link ConfigService.checkServerMeetsVersionRequirement$} */
   checkServerMeetsVersionRequirement$(minimumRequiredServerVersion: SemVer) {
     return this.serverConfig$.pipe(
       map((serverConfig) => {
@@ -123,7 +118,6 @@ export class DefaultConfigService implements ConfigService {
     );
   }
 
-  /** {@link ConfigService.ensureConfigFetched} */
   async ensureConfigFetched() {
     // Triggering a retrieval for the given user ensures that the config is less than RETRIEVAL_INTERVAL old
     await firstValueFrom(this.serverConfig$);
