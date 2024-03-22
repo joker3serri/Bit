@@ -69,7 +69,7 @@ export class ServiceAccountDialogComponent {
       this.platformUtilsService.showToast(
         "error",
         null,
-        this.i18nService.t("serviceAccountsCannotCreate"),
+        this.i18nService.t("machineAccountsCannotCreate"),
       );
       return;
     }
