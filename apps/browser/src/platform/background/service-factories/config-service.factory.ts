@@ -10,11 +10,7 @@ import { FactoryOptions, CachedServices, factory } from "./factory-options";
 import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
 import { stateProviderFactory, StateProviderInitOptions } from "./state-provider.factory";
 
-type ConfigServiceFactoryOptions = FactoryOptions & {
-  configServiceOptions?: {
-    subscribe?: boolean;
-  };
-};
+type ConfigServiceFactoryOptions = FactoryOptions;
 
 export type ConfigServiceInitOptions = ConfigServiceFactoryOptions &
   ConfigApiServiceInitOptions &
