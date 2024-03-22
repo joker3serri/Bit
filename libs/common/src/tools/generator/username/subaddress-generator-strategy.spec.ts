@@ -9,6 +9,8 @@ import { UserId } from "../../../types/guid";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { SUBADDRESS_SETTINGS } from "../key-definitions";
 
+import { SubaddressGenerationOptions } from "./subaddress-generator-options";
+
 import { SubaddressGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
 const SomeUser = "some user" as UserId;
@@ -82,16 +84,14 @@ describe("Email subaddress list generation strategy", () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
       const strategy = new SubaddressGeneratorStrategy(legacy, null);
       const options = {
-        type: "website-name" as const,
-        email: "someone@example.com",
-      };
+        subaddressType: "website-name",
+        subaddressEmail: "someone@example.com",
+        website: "foo.com",
+      } as SubaddressGenerationOptions;
 
       await strategy.generate(options);
 
-      expect(legacy.generateSubaddress).toHaveBeenCalledWith({
-        subaddressType: "website-name" as const,
-        subaddressEmail: "someone@example.com",
-      });
+      expect(legacy.generateSubaddress).toHaveBeenCalledWith(options);
     });
   });
 });

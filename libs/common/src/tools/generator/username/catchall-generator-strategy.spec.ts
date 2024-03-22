@@ -9,6 +9,8 @@ import { UserId } from "../../../types/guid";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { CATCHALL_SETTINGS } from "../key-definitions";
 
+import { CatchallGenerationOptions } from "./catchall-generator-options";
+
 import { CatchallGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
 const SomeUser = "some user" as UserId;
@@ -82,16 +84,14 @@ describe("Email subaddress list generation strategy", () => {
       const legacy = mock<UsernameGenerationServiceAbstraction>();
       const strategy = new CatchallGeneratorStrategy(legacy, null);
       const options = {
-        type: "website-name" as const,
-        domain: "example.com",
-      };
+        catchallType: "website-name",
+        catchallDomain: "example.com",
+        website: "foo.com",
+      } as CatchallGenerationOptions;
 
       await strategy.generate(options);
 
-      expect(legacy.generateCatchall).toHaveBeenCalledWith({
-        catchallType: "website-name" as const,
-        catchallDomain: "example.com",
-      });
+      expect(legacy.generateCatchall).toHaveBeenCalledWith(options);
     });
   });
 });

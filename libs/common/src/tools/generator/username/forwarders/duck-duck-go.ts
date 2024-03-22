@@ -68,3 +68,8 @@ export class DuckDuckGoForwarder extends ForwarderGeneratorStrategy<ApiOptions> 
     }
   };
 }
+
+export const DefaultOptions = Object.freeze({
+  website: null,
+  token: "",
+});

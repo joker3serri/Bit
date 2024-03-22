@@ -141,3 +141,10 @@ export class FastmailForwarder extends ForwarderGeneratorStrategy<ApiOptions & E
     return null;
   }
 }
+
+export const DefaultOptions = Object.freeze({
+  website: null,
+  domain: "",
+  prefix: "",
+  token: "",
+});

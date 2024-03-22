@@ -96,3 +96,9 @@ export class ForwardEmailForwarder extends ForwarderGeneratorStrategy<
     }
   };
 }
+
+export const DefaultOptions = Object.freeze({
+  website: null,
+  token: "",
+  domain: "",
+});

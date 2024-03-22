@@ -11,8 +11,8 @@ import { PolicyType } from "../../../admin-console/enums";
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
+import { PasswordGenerationServiceAbstraction } from "../abstractions/password-generation.service.abstraction";
 import { PASSPHRASE_SETTINGS } from "../key-definitions";
-import { PasswordGenerationServiceAbstraction } from "../password/password-generation.service.abstraction";
 
 import { DisabledPassphraseGeneratorPolicy } from "./passphrase-generator-policy";
 

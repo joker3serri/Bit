@@ -5,10 +5,10 @@ import { PolicyType } from "../../../admin-console/enums";
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
+import { PasswordGenerationServiceAbstraction } from "../abstractions/password-generation.service.abstraction";
 import { PASSWORD_SETTINGS } from "../key-definitions";
 
 import { PasswordGenerationOptions } from "./password-generation-options";
-import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
 import { PasswordGeneratorOptionsEvaluator } from "./password-generator-options-evaluator";
 import {
   DisabledPasswordGeneratorPolicy,

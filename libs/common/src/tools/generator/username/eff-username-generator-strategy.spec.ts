@@ -84,6 +84,7 @@ describe("EFF long word list generation strategy", () => {
       const options = {
         wordCapitalize: false,
         wordIncludeNumber: false,
+        website: null as string,
       };
 
       await strategy.generate(options);

@@ -80,3 +80,9 @@ export class SimpleLoginForwarder extends ForwarderGeneratorStrategy<SelfHostedA
     }
   };
 }
+
+export const DefaultOptions = Object.freeze({
+  website: null,
+  baseUrl: "https://app.simplelogin.io",
+  token: "",
+});

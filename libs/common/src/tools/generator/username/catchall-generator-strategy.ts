@@ -3,12 +3,12 @@ import { Policy } from "../../../admin-console/models/domain/policy";
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { GeneratorStrategy } from "../abstractions";
+import { UsernameGenerationServiceAbstraction } from "../abstractions/username-generation.service.abstraction";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { CATCHALL_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
 import { CatchallGenerationOptions } from "./catchall-generator-options";
-import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";
 
 const ONE_MINUTE = 60 * 1000;
 
@@ -57,9 +57,6 @@ export class CatchallGeneratorStrategy
 
   /** {@link GeneratorStrategy.generate} */
   generate(options: CatchallGenerationOptions) {
-    return this.usernameService.generateCatchall({
-      catchallDomain: options.domain,
-      catchallType: options.type,
-    });
+    return this.usernameService.generateCatchall(options);
   }
 }

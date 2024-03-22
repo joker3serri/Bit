@@ -91,3 +91,10 @@ export class AddyIoForwarder extends ForwarderGeneratorStrategy<
     }
   };
 }
+
+export const DefaultOptions = Object.freeze({
+  website: null,
+  baseUrl: "https://app.addy.io",
+  domain: "",
+  token: "",
+});
