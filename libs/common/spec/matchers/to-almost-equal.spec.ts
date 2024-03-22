@@ -1,4 +1,4 @@
-describe("toBeCloseTo custom matcher", () => {
+describe("toAlmostEqual custom matcher", () => {
   it("matches identical Dates", () => {
     const date = new Date();
     expect(date).toAlmostEqual(date);
