@@ -55,7 +55,9 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
+import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { Account } from "../../models/account";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
 import {
@@ -216,6 +218,7 @@ const safeProviders: SafeProvider[] = [
       MessagingServiceAbstraction,
       EncryptedMessageHandlerService,
       DialogService,
+      DesktopAutofillSettingsService,
     ],
   }),
   safeProvider({
@@ -242,6 +245,14 @@ const safeProviders: SafeProvider[] = [
       StateProvider,
       BiometricStateService,
     ],
+  }),
+  safeProvider({
+    provide: DesktopSettingsService,
+    deps: [StateProvider],
+  }),
+  safeProvider({
+    provide: DesktopAutofillSettingsService,
+    deps: [StateProvider],
   }),
 ];
 

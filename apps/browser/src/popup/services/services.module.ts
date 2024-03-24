@@ -85,7 +85,6 @@ import {
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { InternalSendService as InternalSendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
@@ -96,7 +95,6 @@ import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vau
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { DialogService } from "@bitwarden/components";
-import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
 import { UnauthGuardService } from "../../auth/popup/services";
@@ -244,8 +242,8 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: BrowserEnvironmentService,
-    useFactory: getBgService<BrowserEnvironmentService>("environmentService"),
-    deps: [],
+    useClass: BrowserEnvironmentService,
+    deps: [LogService, StateProvider, AccountServiceAbstraction],
   }),
   safeProvider({
     provide: TotpService,
@@ -313,11 +311,6 @@ const safeProviders: SafeProvider[] = [
     deps: [DomSanitizer, ToastrService],
   }),
   safeProvider({
-    provide: PasswordStrengthServiceAbstraction,
-    useFactory: getBgService<PasswordStrengthServiceAbstraction>("passwordStrengthService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: PasswordGenerationServiceAbstraction,
     useFactory: getBgService<PasswordGenerationServiceAbstraction>("passwordGenerationService"),
     deps: [],
@@ -368,11 +361,6 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: AutofillService,
     useFactory: getBgService<AutofillService>("autofillService"),
-    deps: [],
-  }),
-  safeProvider({
-    provide: ImportServiceAbstraction,
-    useFactory: getBgService<ImportServiceAbstraction>("importService"),
     deps: [],
   }),
   safeProvider({
@@ -515,6 +503,7 @@ const safeProviders: SafeProvider[] = [
       AuthServiceAbstraction,
       EnvironmentService,
       LogService,
+      StateProvider,
     ],
   }),
   safeProvider({
