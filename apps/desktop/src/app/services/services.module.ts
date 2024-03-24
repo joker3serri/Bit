@@ -13,6 +13,7 @@ import {
   SUPPORTS_SECURE_STORAGE,
   SYSTEM_THEME_OBSERVABLE,
   SafeInjectionToken,
+  STATE_FACTORY,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -78,8 +79,10 @@ import { RendererCryptoFunctionService } from "./renderer-crypto-function.servic
 
 const RELOAD_CALLBACK = new SafeInjectionToken<() => any>("RELOAD_CALLBACK");
 
-// This is defined separately so that we specify the app-specific types for StateFactory
-const STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, Account>>("STATE_FACTORY");
+// Desktop has its own GlobalState definition which must be used in its StateService
+const DESKTOP_STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, Account>>(
+  "STATE_FACTORY",
+);
 
 @NgModule({
   imports: [JslibServicesModule],
@@ -97,8 +100,12 @@ const STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, Account>>
       multi: true,
     }),
     safeProvider({
-      provide: STATE_FACTORY,
+      provide: DESKTOP_STATE_FACTORY,
       useValue: new StateFactory(GlobalState, Account),
+    }),
+    safeProvider({
+      provide: STATE_FACTORY,
+      useValue: null,
     }),
     safeProvider({
       provide: RELOAD_CALLBACK,
@@ -169,7 +176,7 @@ const STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, Account>>
         SECURE_STORAGE,
         MEMORY_STORAGE,
         LogService,
-        STATE_FACTORY,
+        DESKTOP_STATE_FACTORY,
         AccountServiceAbstraction,
         EnvironmentService,
         TokenService,
