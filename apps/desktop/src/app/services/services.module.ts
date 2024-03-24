@@ -1,6 +1,6 @@
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 
-import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
+import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   SECURE_STORAGE,
   STATE_SERVICE_USE_CACHE,
@@ -84,163 +84,171 @@ const DESKTOP_STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, A
   "DESKTOP_STATE_FACTORY",
 );
 
+/**
+ * Provider definitions used in the ngModule.
+ * Add your provider definition here using the safeProvider function as a wrapper. This will give you type safety.
+ * If you need help please ask for it, do NOT change the type of this array.
+ */
+const safeProviders: SafeProvider[] = [
+  safeProvider(InitService),
+  safeProvider(NativeMessagingService),
+  safeProvider(SearchBarService),
+  safeProvider(LoginGuard),
+  safeProvider(DialogService),
+  safeProvider({
+    provide: APP_INITIALIZER as SafeInjectionToken<() => void>,
+    useFactory: (initService: InitService) => initService.init(),
+    deps: [InitService],
+    multi: true,
+  }),
+  safeProvider({
+    provide: DESKTOP_STATE_FACTORY,
+    useValue: new StateFactory(GlobalState, Account),
+  }),
+  safeProvider({
+    provide: STATE_FACTORY,
+    useValue: null,
+  }),
+  safeProvider({
+    provide: RELOAD_CALLBACK,
+    useValue: null,
+  }),
+  safeProvider({
+    provide: LogServiceAbstraction,
+    useClass: ElectronLogRendererService,
+    deps: [],
+  }),
+  safeProvider({
+    provide: PlatformUtilsServiceAbstraction,
+    useClass: ElectronPlatformUtilsService,
+    deps: [I18nServiceAbstraction, MessagingServiceAbstraction],
+  }),
+  safeProvider({
+    // We manually override the value of SUPPORTS_SECURE_STORAGE here to avoid
+    // the TokenService having to inject the PlatformUtilsService which introduces a
+    // circular dependency on Desktop only.
+    provide: SUPPORTS_SECURE_STORAGE,
+    useValue: ELECTRON_SUPPORTS_SECURE_STORAGE,
+  }),
+  safeProvider({
+    provide: I18nServiceAbstraction,
+    useClass: I18nRendererService,
+    deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY, GlobalStateProvider],
+  }),
+  safeProvider({
+    provide: MessagingServiceAbstraction,
+    useClass: ElectronRendererMessagingService,
+    deps: [BroadcasterServiceAbstraction],
+  }),
+  safeProvider({
+    provide: AbstractStorageService,
+    useClass: ElectronRendererStorageService,
+    deps: [],
+  }),
+  safeProvider({
+    provide: SECURE_STORAGE,
+    useClass: ElectronRendererSecureStorageService,
+    deps: [],
+  }),
+  safeProvider({ provide: MEMORY_STORAGE, useClass: MemoryStorageService, deps: [] }),
+  safeProvider({
+    provide: OBSERVABLE_MEMORY_STORAGE,
+    useClass: MemoryStorageServiceForStateProviders,
+    deps: [],
+  }),
+  safeProvider({ provide: OBSERVABLE_DISK_STORAGE, useExisting: AbstractStorageService }),
+  safeProvider({
+    provide: SystemServiceAbstraction,
+    useClass: SystemService,
+    deps: [
+      MessagingServiceAbstraction,
+      PlatformUtilsServiceAbstraction,
+      RELOAD_CALLBACK,
+      StateServiceAbstraction,
+      AutofillSettingsServiceAbstraction,
+      VaultTimeoutSettingsService,
+      BiometricStateService,
+    ],
+  }),
+  safeProvider({
+    provide: StateServiceAbstraction,
+    useClass: ElectronStateService,
+    deps: [
+      AbstractStorageService,
+      SECURE_STORAGE,
+      MEMORY_STORAGE,
+      LogService,
+      DESKTOP_STATE_FACTORY,
+      AccountServiceAbstraction,
+      EnvironmentService,
+      TokenService,
+      MigrationRunner,
+      STATE_SERVICE_USE_CACHE,
+    ],
+  }),
+  safeProvider({
+    provide: FileDownloadService,
+    useClass: DesktopFileDownloadService,
+    deps: [],
+  }),
+  safeProvider({
+    provide: SYSTEM_THEME_OBSERVABLE,
+    useFactory: () => fromIpcSystemTheme(),
+    deps: [],
+  }),
+  safeProvider({
+    provide: EncryptedMessageHandlerService,
+    deps: [
+      StateServiceAbstraction,
+      AuthServiceAbstraction,
+      CipherServiceAbstraction,
+      PolicyServiceAbstraction,
+      MessagingServiceAbstraction,
+      PasswordGenerationServiceAbstraction,
+    ],
+  }),
+  safeProvider({
+    provide: NativeMessageHandlerService,
+    deps: [
+      StateServiceAbstraction,
+      CryptoServiceAbstraction,
+      CryptoFunctionServiceAbstraction,
+      MessagingServiceAbstraction,
+      EncryptedMessageHandlerService,
+      DialogService,
+    ],
+  }),
+  safeProvider({
+    provide: LoginServiceAbstraction,
+    useClass: LoginService,
+    deps: [StateServiceAbstraction],
+  }),
+  safeProvider({
+    provide: CryptoFunctionServiceAbstraction,
+    useClass: RendererCryptoFunctionService,
+    deps: [WINDOW],
+  }),
+  safeProvider({
+    provide: CryptoServiceAbstraction,
+    useClass: ElectronCryptoService,
+    deps: [
+      KeyGenerationServiceAbstraction,
+      CryptoFunctionServiceAbstraction,
+      EncryptService,
+      PlatformUtilsServiceAbstraction,
+      LogService,
+      StateServiceAbstraction,
+      AccountServiceAbstraction,
+      StateProvider,
+      BiometricStateService,
+    ],
+  }),
+];
+
 @NgModule({
   imports: [JslibServicesModule],
   declarations: [],
-  providers: [
-    safeProvider(InitService),
-    safeProvider(NativeMessagingService),
-    safeProvider(SearchBarService),
-    safeProvider(LoginGuard),
-    safeProvider(DialogService),
-    safeProvider({
-      provide: APP_INITIALIZER as SafeInjectionToken<() => void>,
-      useFactory: (initService: InitService) => initService.init(),
-      deps: [InitService],
-      multi: true,
-    }),
-    safeProvider({
-      provide: DESKTOP_STATE_FACTORY,
-      useValue: new StateFactory(GlobalState, Account),
-    }),
-    safeProvider({
-      provide: STATE_FACTORY,
-      useValue: null,
-    }),
-    safeProvider({
-      provide: RELOAD_CALLBACK,
-      useValue: null,
-    }),
-    safeProvider({
-      provide: LogServiceAbstraction,
-      useClass: ElectronLogRendererService,
-      deps: [],
-    }),
-    safeProvider({
-      provide: PlatformUtilsServiceAbstraction,
-      useClass: ElectronPlatformUtilsService,
-      deps: [I18nServiceAbstraction, MessagingServiceAbstraction],
-    }),
-    safeProvider({
-      // We manually override the value of SUPPORTS_SECURE_STORAGE here to avoid
-      // the TokenService having to inject the PlatformUtilsService which introduces a
-      // circular dependency on Desktop only.
-      provide: SUPPORTS_SECURE_STORAGE,
-      useValue: ELECTRON_SUPPORTS_SECURE_STORAGE,
-    }),
-    safeProvider({
-      provide: I18nServiceAbstraction,
-      useClass: I18nRendererService,
-      deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY, GlobalStateProvider],
-    }),
-    safeProvider({
-      provide: MessagingServiceAbstraction,
-      useClass: ElectronRendererMessagingService,
-      deps: [BroadcasterServiceAbstraction],
-    }),
-    safeProvider({
-      provide: AbstractStorageService,
-      useClass: ElectronRendererStorageService,
-      deps: [],
-    }),
-    safeProvider({
-      provide: SECURE_STORAGE,
-      useClass: ElectronRendererSecureStorageService,
-      deps: [],
-    }),
-    safeProvider({ provide: MEMORY_STORAGE, useClass: MemoryStorageService, deps: [] }),
-    safeProvider({
-      provide: OBSERVABLE_MEMORY_STORAGE,
-      useClass: MemoryStorageServiceForStateProviders,
-      deps: [],
-    }),
-    safeProvider({ provide: OBSERVABLE_DISK_STORAGE, useExisting: AbstractStorageService }),
-    safeProvider({
-      provide: SystemServiceAbstraction,
-      useClass: SystemService,
-      deps: [
-        MessagingServiceAbstraction,
-        PlatformUtilsServiceAbstraction,
-        RELOAD_CALLBACK,
-        StateServiceAbstraction,
-        AutofillSettingsServiceAbstraction,
-        VaultTimeoutSettingsService,
-        BiometricStateService,
-      ],
-    }),
-    safeProvider({
-      provide: StateServiceAbstraction,
-      useClass: ElectronStateService,
-      deps: [
-        AbstractStorageService,
-        SECURE_STORAGE,
-        MEMORY_STORAGE,
-        LogService,
-        DESKTOP_STATE_FACTORY,
-        AccountServiceAbstraction,
-        EnvironmentService,
-        TokenService,
-        MigrationRunner,
-        STATE_SERVICE_USE_CACHE,
-      ],
-    }),
-    safeProvider({
-      provide: FileDownloadService,
-      useClass: DesktopFileDownloadService,
-      deps: [],
-    }),
-    safeProvider({
-      provide: SYSTEM_THEME_OBSERVABLE,
-      useFactory: () => fromIpcSystemTheme(),
-      deps: [],
-    }),
-    safeProvider({
-      provide: EncryptedMessageHandlerService,
-      deps: [
-        StateServiceAbstraction,
-        AuthServiceAbstraction,
-        CipherServiceAbstraction,
-        PolicyServiceAbstraction,
-        MessagingServiceAbstraction,
-        PasswordGenerationServiceAbstraction,
-      ],
-    }),
-    safeProvider({
-      provide: NativeMessageHandlerService,
-      deps: [
-        StateServiceAbstraction,
-        CryptoServiceAbstraction,
-        CryptoFunctionServiceAbstraction,
-        MessagingServiceAbstraction,
-        EncryptedMessageHandlerService,
-        DialogService,
-      ],
-    }),
-    safeProvider({
-      provide: LoginServiceAbstraction,
-      useClass: LoginService,
-      deps: [StateServiceAbstraction],
-    }),
-    safeProvider({
-      provide: CryptoFunctionServiceAbstraction,
-      useClass: RendererCryptoFunctionService,
-      deps: [WINDOW],
-    }),
-    safeProvider({
-      provide: CryptoServiceAbstraction,
-      useClass: ElectronCryptoService,
-      deps: [
-        KeyGenerationServiceAbstraction,
-        CryptoFunctionServiceAbstraction,
-        EncryptService,
-        PlatformUtilsServiceAbstraction,
-        LogService,
-        StateServiceAbstraction,
-        AccountServiceAbstraction,
-        StateProvider,
-        BiometricStateService,
-      ],
-    }),
-  ],
+  // Do not register your dependency here! Add it to the typesafeProviders array using the helper function
+  providers: safeProviders,
 })
 export class ServicesModule {}
