@@ -79,7 +79,7 @@ import { RendererCryptoFunctionService } from "./renderer-crypto-function.servic
 
 const RELOAD_CALLBACK = new SafeInjectionToken<() => any>("RELOAD_CALLBACK");
 
-// Desktop has its own GlobalState definition which must be used in its StateService
+// Desktop has its own Account definition which must be used in its StateService
 const DESKTOP_STATE_FACTORY = new SafeInjectionToken<StateFactory<GlobalState, Account>>(
   "DESKTOP_STATE_FACTORY",
 );
