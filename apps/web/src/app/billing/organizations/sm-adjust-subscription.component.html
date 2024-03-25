@@ -68,7 +68,7 @@
     </bit-hint>
   </bit-form-control>
   <bit-form-field class="tw-w-2/3" *ngIf="formGroup.value.limitServiceAccounts">
-    <bit-label>{{ "serviceAccountLimit" | i18n }}</bit-label>
+    <bit-label>{{ "machineAccountLimit" | i18n }}</bit-label>
     <input
       bitInput
       id="additionalServiceAccountLimit"
@@ -81,7 +81,7 @@
       <div>
         {{ "includedMachineAccounts" | i18n: options.baseServiceAccountCount }}
       </div>
-      <strong>{{ "maxServiceAccountCost" | i18n }}:</strong>
+      <strong>{{ "maxMachineAccountCost" | i18n }}:</strong>
       {{ maxAdditionalServiceAccounts }} &times;
       {{ options.additionalServiceAccountPrice | currency: "$" }} =
       {{ maxServiceAccountTotalCost | currency: "$" }} / {{ options.interval | i18n }}
