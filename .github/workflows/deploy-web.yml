@@ -46,6 +46,10 @@ on:
         description: "Debug mode"
         type: boolean
         default: true
+      build-web-run-id:
+        description: "Build-web workflow specific Run ID"
+        type: string
+        required: true
 
 permissions:
   deployments: write
@@ -193,6 +197,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.branch-or-tag }}
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
+          run_id: ${{ inputs.build-web-run-id }}
 
       - name: Login to Azure
         if: ${{ steps.download-artifacts.outcome == 'failure' }}
