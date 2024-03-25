@@ -51,7 +51,7 @@ on:
         type: boolean
         default: true
       build-web-run-id:
-        description: "Build-web workflow specific Run ID"
+        description: "Build-web workflow Run ID to use for artifact download"
         type: string
         required: false
 
