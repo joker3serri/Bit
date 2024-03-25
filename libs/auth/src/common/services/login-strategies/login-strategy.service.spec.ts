@@ -11,6 +11,7 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -24,8 +25,12 @@ import { KdfType } from "@bitwarden/common/platform/enums";
 import { FakeGlobalState, FakeGlobalStateProvider } from "@bitwarden/common/spec";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 
-import { AuthRequestServiceAbstraction } from "../../abstractions";
+import {
+  AuthRequestServiceAbstraction,
+  InternalUserDecryptionOptionsServiceAbstraction,
+} from "../../abstractions";
 import { PasswordLoginCredentials } from "../../models";
+import { UserDecryptionOptionsService } from "../user-decryption-options/user-decryption-options.service";
 
 import { LoginStrategyService } from "./login-strategy.service";
 import { CACHE_EXPIRATION_KEY } from "./login-strategy.state";
@@ -50,6 +55,8 @@ describe("LoginStrategyService", () => {
   let policyService: MockProxy<PolicyService>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
   let authRequestService: MockProxy<AuthRequestServiceAbstraction>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   let stateProvider: FakeGlobalStateProvider;
   let loginStrategyCacheExpirationState: FakeGlobalState<Date | null>;
@@ -72,6 +79,8 @@ describe("LoginStrategyService", () => {
     policyService = mock<PolicyService>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
     authRequestService = mock<AuthRequestServiceAbstraction>();
+    userDecryptionOptionsService = mock<UserDecryptionOptionsService>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
     stateProvider = new FakeGlobalStateProvider();
 
     sut = new LoginStrategyService(
@@ -92,7 +101,9 @@ describe("LoginStrategyService", () => {
       policyService,
       deviceTrustCryptoService,
       authRequestService,
+      userDecryptionOptionsService,
       stateProvider,
+      billingAccountProfileStateService,
     );
 
     loginStrategyCacheExpirationState = stateProvider.getFake(CACHE_EXPIRATION_KEY);
@@ -114,7 +125,7 @@ describe("LoginStrategyService", () => {
         token_type: "Bearer",
       }),
     );
-    tokenService.decodeToken.calledWith("ACCESS_TOKEN").mockResolvedValue({
+    tokenService.decodeAccessToken.calledWith("ACCESS_TOKEN").mockResolvedValue({
       sub: "USER_ID",
       name: "NAME",
       email: "EMAIL",
@@ -161,7 +172,7 @@ describe("LoginStrategyService", () => {
       }),
     );
 
-    tokenService.decodeToken.calledWith("ACCESS_TOKEN").mockResolvedValue({
+    tokenService.decodeAccessToken.calledWith("ACCESS_TOKEN").mockResolvedValue({
       sub: "USER_ID",
       name: "NAME",
       email: "EMAIL",
