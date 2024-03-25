@@ -218,13 +218,13 @@ export class LockComponent implements OnInit, OnDestroy {
       kdf,
       kdfConfig,
     );
-    const storedPasswordHash = await firstValueFrom(
+    const storedMasterKeyHash = await firstValueFrom(
       this.masterPasswordService.masterKeyHash$(userId),
     );
 
     let passwordValid = false;
 
-    if (storedPasswordHash != null) {
+    if (storedMasterKeyHash != null) {
       // Offline unlock possible
       passwordValid = await this.cryptoService.compareAndUpdateKeyHash(
         this.masterPassword,

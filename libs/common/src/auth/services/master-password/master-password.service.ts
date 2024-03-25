@@ -12,22 +12,25 @@ import { MasterKey } from "../../../types/key";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { ForceSetPasswordReason } from "../../models/domain/force-set-password-reason";
 
+/** Memory since master key shouldn't be available on lock */
 const MASTER_KEY = new UserKeyDefinition<MasterKey>(MASTER_PASSWORD_MEMORY, "masterKey", {
   deserializer: (masterKey) => SymmetricCryptoKey.fromJSON(masterKey) as MasterKey,
   clearOn: ["lock", "logout"],
 });
 
-const MASTER_KEY_HASH = new UserKeyDefinition<string>(MASTER_PASSWORD_MEMORY, "masterKeyHash", {
+/** Disk since master key hash is used for unlock */
+const MASTER_KEY_HASH = new UserKeyDefinition<string>(MASTER_PASSWORD_DISK, "masterKeyHash", {
   deserializer: (masterKeyHash) => masterKeyHash,
-  clearOn: ["lock", "logout"],
+  clearOn: ["logout"],
 });
 
+/** Disk to persist through lock and account switches */
 const FORCE_SET_PASSWORD_REASON = new UserKeyDefinition<ForceSetPasswordReason>(
   MASTER_PASSWORD_DISK,
   "forceSetPasswordReason",
   {
     deserializer: (reason) => reason,
-    clearOn: ["lock", "logout"],
+    clearOn: ["logout"],
   },
 );
 

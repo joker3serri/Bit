@@ -5,7 +5,8 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 
 import {
   FORCE_SET_PASSWORD_REASON_DEFINITION,
-  MoveForceSetPasswordReasonToStateProviderMigrator,
+  MASTER_KEY_HASH_DEFINITION,
+  MoveKeyHashAndForceSetPasswordReasonToStateProviderMigrator,
 } from "./32-move-force-set-password-to-state-providers";
 
 function preMigrationState() {
@@ -18,6 +19,7 @@ function preMigrationState() {
     "FirstAccount": {
       profile: {
         forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
+        keyHash: "FirstAccount_keyHash",
         otherStuff: "overStuff2",
       },
       otherStuff: "otherStuff3",
@@ -26,6 +28,7 @@ function preMigrationState() {
     "SecondAccount": {
       profile: {
         forceSetPasswordReason: "SecondAccount_forceSetPasswordReason",
+        keyHash: "SecondAccount_keyHash",
         otherStuff: "otherStuff4",
       },
       otherStuff: "otherStuff5",
@@ -42,8 +45,10 @@ function preMigrationState() {
 function postMigrationState() {
   return {
     user_FirstAccount_masterPassword_forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
+    user_FirstAccount_masterPassword_masterKeyHash: "FirstAccount_keyHash",
     user_SecondAccount_masterPassword_forceSetPasswordReason:
       "SecondAccount_forceSetPasswordReason",
+    user_SecondAccount_masterPassword_masterKeyHash: "SecondAccount_keyHash",
     global: {
       otherStuff: "otherStuff1",
     },
@@ -73,12 +78,12 @@ function postMigrationState() {
 
 describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
   let helper: MockProxy<MigrationHelper>;
-  let sut: MoveForceSetPasswordReasonToStateProviderMigrator;
+  let sut: MoveKeyHashAndForceSetPasswordReasonToStateProviderMigrator;
 
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(preMigrationState(), 31);
-      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(31, 32);
+      sut = new MoveKeyHashAndForceSetPasswordReasonToStateProviderMigrator(31, 32);
     });
 
     it("should remove properties from existing accounts", async () => {
@@ -107,9 +112,21 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
       );
 
       expect(helper.setToUser).toHaveBeenCalledWith(
+        "FirstAccount",
+        MASTER_KEY_HASH_DEFINITION,
+        "FirstAccount_keyHash",
+      );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(
         "SecondAccount",
         FORCE_SET_PASSWORD_REASON_DEFINITION,
         "SecondAccount_forceSetPasswordReason",
+      );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "SecondAccount",
+        MASTER_KEY_HASH_DEFINITION,
+        "SecondAccount_keyHash",
       );
     });
   });
@@ -117,7 +134,7 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(postMigrationState(), 31);
-      sut = new MoveForceSetPasswordReasonToStateProviderMigrator(31, 32);
+      sut = new MoveKeyHashAndForceSetPasswordReasonToStateProviderMigrator(31, 32);
     });
 
     it.each(["FirstAccount", "SecondAccount"])("should null out new values", async (userId) => {
@@ -128,6 +145,8 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
         FORCE_SET_PASSWORD_REASON_DEFINITION,
         null,
       );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(userId, MASTER_KEY_HASH_DEFINITION, null);
     });
 
     it("should add explicit value back to accounts", async () => {
@@ -136,6 +155,7 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
         profile: {
           forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
+          keyHash: "FirstAccount_keyHash",
           otherStuff: "overStuff2",
         },
         otherStuff: "otherStuff3",
@@ -143,6 +163,7 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
       expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
         profile: {
           forceSetPasswordReason: "SecondAccount_forceSetPasswordReason",
+          keyHash: "SecondAccount_keyHash",
           otherStuff: "otherStuff4",
         },
         otherStuff: "otherStuff5",
