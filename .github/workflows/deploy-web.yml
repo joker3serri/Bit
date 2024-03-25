@@ -27,6 +27,10 @@ on:
         description: "Debug mode"
         type: boolean
         default: false
+      build-web-run-id:
+        description: "Build-web workflow specific Run ID"
+        type: number
+        required: false
 
   workflow_call:
     inputs:
@@ -49,7 +53,7 @@ on:
       build-web-run-id:
         description: "Build-web workflow specific Run ID"
         type: number
-        required: true
+        required: false
 
 permissions:
   deployments: write
