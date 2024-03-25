@@ -31,6 +31,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
@@ -47,6 +48,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
   resetPasswordAutoEnroll = false;
   onSuccessfulChangePassword: () => Promise<void>;
   successRoute = "vault";
+  userId: UserId;
 
   forceSetPasswordReason: ForceSetPasswordReason = ForceSetPasswordReason.None;
   ForceSetPasswordReason = ForceSetPasswordReason;
@@ -91,10 +93,10 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     await this.syncService.fullSync(true);
     this.syncLoading = false;
 
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    this.userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
 
     this.forceSetPasswordReason = await firstValueFrom(
-      this.masterPasswordService.forceSetPasswordReason$(userId),
+      this.masterPasswordService.forceSetPasswordReason$(this.userId),
     );
 
     this.route.queryParams
@@ -233,8 +235,10 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     keyPair: [string, EncString] | null,
   ) {
     // Clear force set password reason to allow navigation back to vault.
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    await this.masterPasswordService.setForceSetPasswordReason(ForceSetPasswordReason.None, userId);
+    await this.masterPasswordService.setForceSetPasswordReason(
+      ForceSetPasswordReason.None,
+      this.userId,
+    );
 
     // User now has a password so update account decryption options in state
     const acctDecryptionOpts: AccountDecryptionOptions =
@@ -245,7 +249,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
 
     await this.stateService.setKdfType(this.kdf);
     await this.stateService.setKdfConfig(this.kdfConfig);
-    await this.masterPasswordService.setMasterKey(masterKey, userId);
+    await this.masterPasswordService.setMasterKey(masterKey, this.userId);
     await this.cryptoService.setUserKey(userKey[0]);
 
     // Set private key only for new JIT provisioned users in MP encryption orgs
@@ -263,6 +267,6 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
       masterKey,
       HashPurpose.LocalAuthorization,
     );
-    await this.masterPasswordService.setMasterKeyHash(localMasterKeyHash, userId);
+    await this.masterPasswordService.setMasterKeyHash(localMasterKeyHash, this.userId);
   }
 }
