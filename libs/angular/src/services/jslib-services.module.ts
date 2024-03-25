@@ -702,12 +702,12 @@ import { ModalService } from "./modal.service";
       deps: [InternalPolicyService, ApiServiceAbstraction],
     },
     {
-      provide: MasterPasswordServiceAbstraction,
+      provide: InternalMasterPasswordServiceAbstraction,
       useClass: MasterPasswordService,
       deps: [StateProvider],
     },
     {
-      provide: InternalMasterPasswordServiceAbstraction,
+      provide: MasterPasswordServiceAbstraction,
       useExisting: MasterPasswordServiceAbstraction,
     },
     {
