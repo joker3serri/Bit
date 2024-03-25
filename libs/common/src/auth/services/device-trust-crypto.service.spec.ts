@@ -1,6 +1,9 @@
 import { matches, mock } from "jest-mock-extended";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+
+import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
@@ -47,6 +50,9 @@ describe("deviceTrustCryptoService", () => {
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<PlatformUtilsService>();
   const secureStorageService = mock<AbstractStorageService>();
+
+  const userDecryptionOptionsService = mock<UserDecryptionOptionsServiceAbstraction>();
+  const decryptionOptions = new BehaviorSubject<UserDecryptionOptions>(null);
 
   let stateProvider: FakeStateProvider;
 
@@ -740,6 +746,9 @@ describe("deviceTrustCryptoService", () => {
 
     platformUtilsService.supportsSecureStorage.mockReturnValue(supportsSecureStorage);
 
+    decryptionOptions.next({} as any);
+    userDecryptionOptionsService.userDecryptionOptions$ = decryptionOptions;
+
     return new DeviceTrustCryptoService(
       keyGenerationService,
       cryptoFunctionService,
@@ -752,6 +761,7 @@ describe("deviceTrustCryptoService", () => {
       platformUtilsService,
       stateProvider,
       secureStorageService,
+      userDecryptionOptionsService,
     );
   }
 });

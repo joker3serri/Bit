@@ -1,4 +1,6 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
+
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
@@ -55,6 +57,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     this.platformUtilsService.supportsSecureStorage();
   private readonly deviceKeySecureStorageKey: string = "_deviceKey";
   private shouldTrustDeviceState: ActiveUserState<boolean>;
+  supportsDeviceTrust$: Observable<boolean>;
 
   constructor(
     private keyGenerationService: KeyGenerationService,
@@ -68,9 +71,14 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private platformUtilsService: PlatformUtilsService,
     private stateProvider: StateProvider,
     private secureStorageService: AbstractStorageService,
+    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
   ) {
     this.deviceKeyState = this.stateProvider.getActive(DEVICE_KEY);
     this.shouldTrustDeviceState = this.stateProvider.getActive(SHOULD_TRUST_DEVICE);
+
+    this.supportsDeviceTrust$ = this.userDecryptionOptionsService.userDecryptionOptions$.pipe(
+      map((options) => options?.trustedDeviceOption != null ?? false),
+    );
   }
 
   /**
@@ -271,11 +279,6 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
 
       return null;
     }
-  }
-
-  async supportsDeviceTrust(): Promise<boolean> {
-    const decryptionOptions = await this.stateService.getAccountDecryptionOptions();
-    return decryptionOptions?.trustedDeviceOption != null;
   }
 
   private getSecureStorageOptions(userId: UserId): StorageOptions {

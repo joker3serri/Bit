@@ -51,6 +51,11 @@ import {
   secureStorageServiceFactory,
 } from "../../../platform/background/service-factories/storage-service.factory";
 
+import {
+  UserDecryptionOptionsServiceInitOptions,
+  userDecryptionOptionsServiceFactory,
+} from "./user-decryption-options-service.factory";
+
 type DeviceTrustCryptoServiceFactoryOptions = FactoryOptions;
 
 export type DeviceTrustCryptoServiceInitOptions = DeviceTrustCryptoServiceFactoryOptions &
@@ -64,7 +69,8 @@ export type DeviceTrustCryptoServiceInitOptions = DeviceTrustCryptoServiceFactor
   I18nServiceInitOptions &
   PlatformUtilsServiceInitOptions &
   StateProviderInitOptions &
-  SecureStorageServiceInitOptions;
+  SecureStorageServiceInitOptions &
+  UserDecryptionOptionsServiceInitOptions;
 
 export function deviceTrustCryptoServiceFactory(
   cache: { deviceTrustCryptoService?: DeviceTrustCryptoServiceAbstraction } & CachedServices,
@@ -87,6 +93,7 @@ export function deviceTrustCryptoServiceFactory(
         await platformUtilsServiceFactory(cache, opts),
         await stateProviderFactory(cache, opts),
         await secureStorageServiceFactory(cache, opts),
+        await userDecryptionOptionsServiceFactory(cache, opts),
       ),
   );
 }
