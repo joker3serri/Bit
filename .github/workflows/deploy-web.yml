@@ -29,7 +29,7 @@ on:
         default: false
       build-web-run-id:
         description: "Build-web workflow specific Run ID"
-        type: number
+        type: string
         required: false
 
   workflow_call:
@@ -52,7 +52,7 @@ on:
         default: true
       build-web-run-id:
         description: "Build-web workflow specific Run ID"
-        type: number
+        type: string
         required: false
 
 permissions:
