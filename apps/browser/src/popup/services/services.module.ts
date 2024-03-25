@@ -19,7 +19,6 @@ import {
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
-import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -40,6 +39,10 @@ import {
   AutofillSettingsService,
   AutofillSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import {
+  DefaultDomainSettingsService,
+  DomainSettingsService,
+} from "@bitwarden/common/autofill/services/domain-settings.service";
 import {
   UserNotificationSettingsService,
   UserNotificationSettingsServiceAbstraction,
@@ -78,7 +81,6 @@ import {
 } from "@bitwarden/common/platform/state";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import {
@@ -94,7 +96,6 @@ import { TotpService as TotpServiceAbstractions } from "@bitwarden/common/vault/
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService } from "@bitwarden/components";
-import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 import {
   IndividualVaultExportServiceAbstraction,
   OrganizationVaultExportServiceAbstraction,
@@ -121,7 +122,6 @@ import { ForegroundPlatformUtilsService } from "../../platform/services/platform
 import { ForegroundDerivedStateProvider } from "../../platform/state/foreground-derived-state.provider";
 import { ForegroundMemoryStorageService } from "../../platform/storage/foreground-memory-storage.service";
 import { BrowserSendService } from "../../services/browser-send.service";
-import { BrowserSettingsService } from "../../services/browser-settings.service";
 import { FilePopoutUtilsService } from "../../tools/popup/services/file-popout-utils.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
@@ -224,12 +224,12 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     {
       provide: BrowserEnvironmentService,
-      useExisting: EnvironmentService,
+      useClass: BrowserEnvironmentService,
+      deps: [LogService, StateProvider, AccountServiceAbstraction],
     },
     {
       provide: EnvironmentService,
-      useFactory: getBgService<EnvironmentService>("environmentService"),
-      deps: [],
+      useExisting: BrowserEnvironmentService,
     },
     {
       provide: TotpServiceAbstractions,
@@ -297,11 +297,6 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [DomSanitizer, ToastrService],
     },
     {
-      provide: PasswordStrengthServiceAbstraction,
-      useFactory: getBgService<PasswordStrengthServiceAbstraction>("passwordStrengthService"),
-      deps: [],
-    },
-    {
       provide: PasswordGenerationServiceAbstraction,
       useFactory: getBgService<PasswordGenerationServiceAbstraction>("passwordGenerationService"),
       deps: [],
@@ -340,11 +335,9 @@ function getBgService<T>(service: keyof MainBackground) {
     },
     { provide: SyncService, useFactory: getBgService<SyncService>("syncService"), deps: [] },
     {
-      provide: SettingsService,
-      useFactory: (stateService: StateServiceAbstraction) => {
-        return new BrowserSettingsService(stateService);
-      },
-      deps: [StateServiceAbstraction],
+      provide: DomainSettingsService,
+      useClass: DefaultDomainSettingsService,
+      deps: [StateProvider],
     },
     {
       provide: AbstractStorageService,
@@ -354,11 +347,6 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: AutofillService,
       useFactory: getBgService<AutofillService>("autofillService"),
-      deps: [],
-    },
-    {
-      provide: ImportServiceAbstraction,
-      useFactory: getBgService<ImportServiceAbstraction>("importService"),
       deps: [],
     },
     {
@@ -498,6 +486,7 @@ function getBgService<T>(service: keyof MainBackground) {
         ConfigApiServiceAbstraction,
         AuthServiceAbstraction,
         EnvironmentService,
+        StateProvider,
         LogService,
       ],
     },
