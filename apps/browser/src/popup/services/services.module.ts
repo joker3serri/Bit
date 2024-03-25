@@ -59,10 +59,7 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { FileUploadService } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
-import {
-  LogService,
-  LogService as LogServiceAbstraction,
-} from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
@@ -197,14 +194,14 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: SearchServiceAbstraction,
-    useFactory: (logService: ConsoleLogService, i18nService: I18nServiceAbstraction) => {
+    useFactory: (logService: LogServiceAbstraction, i18nService: I18nServiceAbstraction) => {
       return new PopupSearchService(
         getBgService<SearchService>("searchService")(),
         logService,
         i18nService,
       );
     },
-    deps: [ConsoleLogService, I18nServiceAbstraction],
+    deps: [LogServiceAbstraction, I18nServiceAbstraction],
   }),
   safeProvider({
     provide: CipherFileUploadService,
@@ -228,10 +225,6 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: LogServiceAbstraction,
-    useExisting: ConsoleLogService,
-  }),
-  safeProvider({
-    provide: ConsoleLogService,
     useFactory: (platformUtilsService: PlatformUtilsService) =>
       new ConsoleLogService(platformUtilsService.isDev()),
     deps: [PlatformUtilsService],
@@ -243,7 +236,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: BrowserEnvironmentService,
     useClass: BrowserEnvironmentService,
-    deps: [LogService, StateProvider, AccountServiceAbstraction],
+    deps: [LogServiceAbstraction, StateProvider, AccountServiceAbstraction],
   }),
   safeProvider({
     provide: TotpService,
@@ -502,7 +495,7 @@ const safeProviders: SafeProvider[] = [
       ConfigApiServiceAbstraction,
       AuthServiceAbstraction,
       EnvironmentService,
-      LogService,
+      LogServiceAbstraction,
       StateProvider,
     ],
   }),
