@@ -8,8 +8,8 @@ import { I18nService } from "../platform/abstractions/i18n.service";
 import { LogService } from "../platform/abstractions/log.service";
 import {
   ActiveUserState,
-  KeyDefinition,
   StateProvider,
+  UserKeyDefinition,
   VAULT_SEARCH_MEMORY,
 } from "../platform/state";
 import { SendView } from "../tools/send/models/view/send.view";
@@ -25,11 +25,12 @@ export type SerializedLunrIndex = {
   pipeline: string[];
 };
 
-export const LUNR_SEARCH_INDEX = new KeyDefinition<SerializedLunrIndex>(
+export const LUNR_SEARCH_INDEX = new UserKeyDefinition<SerializedLunrIndex>(
   VAULT_SEARCH_MEMORY,
   "searchIndex",
   {
     deserializer: (obj: Jsonify<SerializedLunrIndex>) => obj,
+    clearOn: ["lock"],
   },
 );
 
