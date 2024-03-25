@@ -368,33 +368,25 @@ jobs:
         run: |
           if [[ "${{ steps.bump-browser-version-override.outcome }}" = "success" ]]; then
             echo "version_browser=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
-          fi
-
-          if [[ "${{ steps.bump-browser-version-automatic.outcome }}" = "success" ]]; then
+          elif [[ "${{ steps.bump-browser-version-automatic.outcome }}" = "success" ]]; then
             echo "version_browser=${{ steps.calculate-next-browser-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [[ "${{ steps.bump-cli-version-override.outcome }}" = "success" ]]; then
             echo "version_cli=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
-          fi
-
-          if [[ "${{ steps.bump-cli-version-automatic.outcome }}" = "success" ]]; then
+          elif [[ "${{ steps.bump-cli-version-automatic.outcome }}" = "success" ]]; then
             echo "version_cli=${{ steps.calculate-next-cli-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [[ "${{ steps.bump-desktop-version-override.outcome }}" = "success" ]]; then
             echo "version_desktop=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
-          fi
-
-          if [[ "${{ steps.bump-desktop-version-automatic.outcome }}" = "success" ]]; then
+          elif [[ "${{ steps.bump-desktop-version-automatic.outcome }}" = "success" ]]; then
             echo "version_desktop=${{ steps.calculate-next-desktop-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [[ "${{ steps.bump-web-version-override.outcome }}" = "success" ]]; then
             echo "version_web=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
-          fi
-
-          if [[ "${{ steps.bump-web-version-automatic.outcome }}" = "success" ]]; then
+          elif [[ "${{ steps.bump-web-version-automatic.outcome }}" = "success" ]]; then
             echo "version_web=${{ steps.calculate-next-web-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
