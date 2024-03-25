@@ -177,7 +177,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async isLegacyUser(masterKey?: MasterKey, userId?: UserId): Promise<boolean> {
-    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     masterKey ??= await firstValueFrom(this.masterPasswordService.masterKey$(userId));
 
     return await this.validateUserKey(masterKey as unknown as UserKey);
@@ -185,7 +185,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   // TODO: legacy support for user key is no longer needed since we require users to migrate on login
   async getUserKeyWithLegacySupport(userId?: UserId): Promise<UserKey> {
-    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
 
     const userKey = await this.getUserKey(userId);
     if (userKey) {
@@ -225,7 +225,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async makeUserKey(masterKey: MasterKey): Promise<[UserKey, EncString]> {
     if (!masterKey) {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
       masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     }
     if (masterKey == null) {
@@ -270,7 +270,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   // TODO: Move to MasterPasswordService
   async getOrDeriveMasterKey(password: string, userId?: UserId) {
-    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     return (masterKey ||= await this.makeMasterKey(
       password,
@@ -314,6 +314,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     userKey?: EncString,
     userId?: UserId,
   ): Promise<UserKey> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     masterKey ??= await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (masterKey == null) {
       throw new Error("No master key found.");
@@ -360,7 +361,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     hashPurpose?: HashPurpose,
   ): Promise<string> {
     if (!key) {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
       key = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     }
 
@@ -375,7 +376,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   // TODO: move to MasterPasswordService
   async compareAndUpdateKeyHash(masterPassword: string, masterKey: MasterKey): Promise<boolean> {
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
     const storedPasswordHash = await firstValueFrom(
       this.masterPasswordService.masterKeyHash$(userId),
     );
@@ -453,7 +454,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearOrgKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
     const userIdIsActive = userId == null || userId === activeUserId;
 
     if (!memoryOnly) {
@@ -499,7 +500,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearProviderKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
     const userIdIsActive = userId == null || userId === activeUserId;
 
     if (!memoryOnly) {
@@ -570,7 +571,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearKeyPair(memoryOnly?: boolean, userId?: UserId): Promise<void[]> {
-    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
     const userIdIsActive = userId == null || userId === activeUserId;
 
     if (!memoryOnly) {
@@ -653,7 +654,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearKeys(userId?: UserId): Promise<any> {
-    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     await this.masterPasswordService.setMasterKeyHash(null, userId);
 
     await this.clearUserKey(true, userId);
@@ -1011,7 +1012,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     if (await this.isLegacyUser(masterKey, userId)) {
       // Legacy users don't have a user key, so no need to migrate.
       // Instead, set the master key for additional isLegacyUser checks that will log the user out.
-      userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
       await this.masterPasswordService.setMasterKey(masterKey, userId);
       return;
     }
