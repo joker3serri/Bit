@@ -25,8 +25,6 @@ import {
   REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
 } from "./token.state";
 
-// TODO: update all tests based on access token changes.
-
 describe("TokenService", () => {
   let tokenService: TokenService;
   let singleUserStateProvider: FakeSingleUserStateProvider;
@@ -103,6 +101,9 @@ describe("TokenService", () => {
   });
 
   describe("Access Token methods", () => {
+    const accessTokenKeyPartialSecureStorageKey = `_accessTokenKey`;
+    const accessTokenKeySecureStorageKey = `${userIdFromAccessToken}${accessTokenKeyPartialSecureStorageKey}`;
+
     describe("setAccessToken", () => {
       it("should throw an error if the access token is null", async () => {
         // Act
@@ -161,7 +162,7 @@ describe("TokenService", () => {
           tokenService = createTokenService(supportsSecureStorage);
         });
 
-        it("should set an access token key in secure storage, the encrypted access token in disk, and clear out token in memory", async () => {
+        it("should set an access token key in secure storage, the encrypted access token in disk, and clear out the token in memory", async () => {
           // Arrange:
 
           // For testing purposes, let's assume that the access token is already in memory
@@ -170,8 +171,11 @@ describe("TokenService", () => {
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
           keyGenerationService.createKey.mockResolvedValue("accessTokenKey" as any);
+
+          const mockEncryptedAccessToken = "encryptedAccessToken";
+
           encryptService.encrypt.mockResolvedValue({
-            encryptedString: "encryptedAccessToken",
+            encryptedString: mockEncryptedAccessToken,
           } as any);
 
           // Act
@@ -184,7 +188,7 @@ describe("TokenService", () => {
 
           // assert that the AccessTokenKey was set in secure storage
           expect(secureStorageService.save).toHaveBeenCalledWith(
-            expect.any(String),
+            accessTokenKeySecureStorageKey,
             "accessTokenKey",
             secureStorageOptions,
           );
@@ -192,7 +196,7 @@ describe("TokenService", () => {
           // assert that the access token was encrypted and set in disk
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
-          ).toHaveBeenCalledWith("encryptedAccessToken");
+          ).toHaveBeenCalledWith(mockEncryptedAccessToken);
 
           // assert data was migrated out of memory
           expect(
@@ -294,11 +298,11 @@ describe("TokenService", () => {
 
         test.each([
           [
-            "should get the access token from secure storage when user id is provided",
+            "should get the encrypted access token from disk, decrypt it, and return it when user id is provided",
             userIdFromAccessToken,
           ],
           [
-            "should get the access token from secure storage when no user id is provided",
+            "should get the encrypted access token from disk, decrypt it, and return it when no user id is provided",
             undefined,
           ],
         ])("%s", async (_, userId) => {
@@ -330,11 +334,11 @@ describe("TokenService", () => {
 
         test.each([
           [
-            "should fallback and get the access token from disk when user id is provided even if the platform supports secure storage",
+            "should fallback and get the unencrypted access token from disk when there isn't an access token key in secure storage and a user id is provided",
             userIdFromAccessToken,
           ],
           [
-            "should fallback and get the access token from disk when no user id is provided even if the platform supports secure storage",
+            "should fallback and get the unencrypted access token from disk when there isn't an access token key in secure storage and no user id is provided",
             undefined,
           ],
         ])("%s", async (_, userId) => {
@@ -418,7 +422,7 @@ describe("TokenService", () => {
           ).toHaveBeenCalledWith(null);
 
           expect(secureStorageService.remove).toHaveBeenCalledWith(
-            expect.any(String),
+            accessTokenKeySecureStorageKey,
             secureStorageOptions,
           );
         });
