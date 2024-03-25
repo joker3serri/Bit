@@ -308,7 +308,7 @@ jobs:
               owner: 'bitwarden',
               repo: 'clients',
               workflow_id: 'deploy-web.yml',
-              ref: 'main',
+              ref: 'task/DEVOPS-1843',
               inputs: {
                 'environment': 'USDEV',
                 'branch-or-tag': 'task/DEVOPS-1843',
