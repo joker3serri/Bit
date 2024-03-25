@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { AccountServerConfigMigrator } from "./48-move-account-server-configs";
+import { AccountServerConfigMigrator } from "./49-move-account-server-configs";
 
 describe("AccountServerConfigMigrator", () => {
-  const migrator = new AccountServerConfigMigrator(47, 48);
+  const migrator = new AccountServerConfigMigrator(48, 49);
 
   describe("all data", () => {
     function toMigrate() {
