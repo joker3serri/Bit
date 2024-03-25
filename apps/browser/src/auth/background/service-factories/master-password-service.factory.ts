@@ -19,10 +19,10 @@ type MasterPasswordServiceFactoryOptions = FactoryOptions;
 export type MasterPasswordServiceInitOptions = MasterPasswordServiceFactoryOptions &
   StateProviderInitOptions;
 
-export function masterPasswordServiceFactory(
+export function internalMasterPasswordServiceFactory(
   cache: { masterPasswordService?: InternalMasterPasswordServiceAbstraction } & CachedServices,
   opts: MasterPasswordServiceInitOptions,
-): Promise<MasterPasswordServiceAbstraction> {
+): Promise<InternalMasterPasswordServiceAbstraction> {
   return factory(
     cache,
     "masterPasswordService",
@@ -31,12 +31,12 @@ export function masterPasswordServiceFactory(
   );
 }
 
-export async function internalMasterPasswordServiceFactory(
+export async function masterPasswordServiceFactory(
   cache: { masterPasswordService?: InternalMasterPasswordServiceAbstraction } & CachedServices,
   opts: MasterPasswordServiceInitOptions,
-): Promise<InternalMasterPasswordServiceAbstraction> {
-  return (await masterPasswordServiceFactory(
+): Promise<MasterPasswordServiceAbstraction> {
+  return (await internalMasterPasswordServiceFactory(
     cache,
     opts,
-  )) as InternalMasterPasswordServiceAbstraction;
+  )) as MasterPasswordServiceAbstraction;
 }
