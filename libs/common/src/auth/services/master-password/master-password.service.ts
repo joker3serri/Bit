@@ -35,28 +35,55 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
   constructor(private stateProvider: StateProvider) {}
 
   masterKey$(userId: UserId): Observable<MasterKey> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
     return this.stateProvider.getUser(userId, MASTER_KEY).state$;
   }
 
   masterKeyHash$(userId: UserId): Observable<string> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
     return this.stateProvider.getUser(userId, MASTER_KEY_HASH).state$;
   }
 
   forceSetPasswordReason$(userId: UserId): Observable<ForceSetPasswordReason> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
     return this.stateProvider
       .getUser(userId, FORCE_SET_PASSWORD_REASON)
       .state$.pipe(map((reason) => reason ?? ForceSetPasswordReason.None));
   }
 
   async setMasterKey(masterKey: MasterKey, userId: UserId): Promise<void> {
+    if (masterKey == null) {
+      throw new Error("Master key is required.");
+    }
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
     await this.stateProvider.getUser(userId, MASTER_KEY).update((_) => masterKey);
   }
 
   async setMasterKeyHash(masterKeyHash: string, userId: UserId): Promise<void> {
+    if (masterKeyHash == null) {
+      throw new Error("Master key hash is required.");
+    }
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
     await this.stateProvider.getUser(userId, MASTER_KEY_HASH).update((_) => masterKeyHash);
   }
 
   async setForceSetPasswordReason(reason: ForceSetPasswordReason, userId: UserId): Promise<void> {
+    if (reason == null) {
+      throw new Error("Reason is required.");
+    }
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
     await this.stateProvider.getUser(userId, FORCE_SET_PASSWORD_REASON).update((_) => reason);
   }
 }
