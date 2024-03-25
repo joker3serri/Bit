@@ -1,31 +1,32 @@
 import { Meta, StoryObj } from "@storybook/angular";
 
+import { UserVerificationBiometricsIcon } from "../../../auth/src/angular/icons/user-verification-biometrics-fingerprint.icon";
+
 import { BitIconComponent } from "./icon.component";
+import * as GenericIcons from "./icons";
 
 export default {
   title: "Component Library/Icon",
   component: BitIconComponent,
-  args: {
-    icon: "reportExposedPasswords",
-  },
 } as Meta;
 
 type Story = StoryObj<BitIconComponent>;
 
-export const ReportExposedPasswords: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <div class="tw-bg-primary-500 tw-p-5">
-      <bit-icon [icon]="icon" class="tw-text-primary-300"></bit-icon>
-    </div>
-    `,
-  }),
+export const GenericIcon: Story = {
+  args: {
+    icon: GenericIcons.NoAccess,
+  },
+  argTypes: {
+    icon: {
+      options: Object.keys(GenericIcons),
+      mapping: GenericIcons,
+      control: { type: "select" },
+    },
+  },
 };
 
-export const UnknownIcon: Story = {
-  ...ReportExposedPasswords,
+export const CustomIcon: Story = {
   args: {
-    icon: "unknown" as any,
+    icon: UserVerificationBiometricsIcon,
   },
 };
