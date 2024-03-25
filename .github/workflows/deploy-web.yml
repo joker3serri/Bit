@@ -48,7 +48,7 @@ on:
         default: true
       build-web-run-id:
         description: "Build-web workflow specific Run ID"
-        type: string
+        type: number
         required: true
 
 permissions:
