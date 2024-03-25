@@ -1,4 +1,4 @@
-import { Observable, concatMap, of, zip, map } from "rxjs";
+import { Observable, map } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
@@ -51,17 +51,45 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
   // wiring the derived and secret states together.
   private constructor(
     private readonly key: SecretKeyDefinition<Outer, Id, Plaintext, Disclosed, Secret>,
-    private readonly encryptor: UserEncryptor<Secret>,
-    private readonly encrypted: SingleUserState<ClassifiedFormat<Id, Disclosed>[]>,
-    private readonly plaintext: DerivedState<Outer>,
+    private readonly encryptor: UserEncryptor,
+    userId: UserId,
+    provider: StateProvider,
   ) {
-    this.state$ = plaintext.state$;
-    this.combinedState$ = plaintext.state$.pipe(map((state) => [this.encrypted.userId, state]));
+    const secretKey = new KeyDefinition<ClassifiedFormat<Id, Disclosed>[]>(
+      key.stateDefinition,
+      key.key,
+      {
+        cleanupDelayMs: key.options.cleanupDelayMs,
+        deserializer: (jsonValue) => jsonValue as ClassifiedFormat<Id, Disclosed>[],
+      },
+    );
+    this.encryptedState = provider.getUser(userId, secretKey);
+
+    // construct plaintext store
+    const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat<Id, Disclosed>[], Outer>(
+      secretKey,
+      {
+        derive: async (from) => this.declassifyAll(from),
+        deserializer: (d) => this.deserializeAll(d),
+        cleanupDelayMs: key.options.cleanupDelayMs,
+      },
+    );
+    this.plaintextState = provider.getDerived(
+      this.encryptedState.state$,
+      plaintextDefinition,
+      null,
+    );
+
+    this.state$ = this.plaintextState.state$;
+    this.combinedState$ = this.plaintextState.state$.pipe(map((state) => [userId, state]));
   }
+
+  private readonly encryptedState: SingleUserState<ClassifiedFormat<Id, Disclosed>[]>;
+  private readonly plaintextState: DerivedState<Outer>;
 
   /** {@link SingleUserState.userId} */
   get userId() {
-    return this.encrypted.userId;
+    return this.encryptedState.userId;
   }
 
   /** Observes changes to the decrypted secret state. The observer
@@ -89,65 +117,80 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
     userId: UserId,
     key: SecretKeyDefinition<Outer, Id, TFrom, Disclosed, Secret>,
     provider: StateProvider,
-    encryptor: UserEncryptor<Secret>,
+    encryptor: UserEncryptor,
   ) {
-    // construct encrypted backing store while avoiding collisions between the derived key and the
-    // backing storage key.
-    const secretKey = new KeyDefinition<ClassifiedFormat<Id, Disclosed>[]>(
-      key.stateDefinition,
-      key.key,
-      {
-        cleanupDelayMs: key.options.cleanupDelayMs,
-        // FIXME: When the fakes run deserializers and serialization can be guaranteed through
-        // state providers, decode `jsonValue.secret` instead of it running in `derive`.
-        deserializer: (jsonValue) => jsonValue as ClassifiedFormat<Id, Disclosed>[],
-      },
-    );
-    const encryptedState = provider.getUser(userId, secretKey);
-
-    // construct plaintext store
-    const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat<Id, Disclosed>[], Outer>(
-      secretKey,
-      {
-        derive: async (from) => {
-          // fail fast if there's no value
-          if (from === null || from === undefined) {
-            return null;
-          }
-
-          // decrypt each item
-          const decryptTasks = from.map(async ({ id, secret, disclosed }) => {
-            const encrypted = EncString.fromJSON(secret);
-            const decrypted = await encryptor.decrypt(encrypted, encryptedState.userId);
-
-            const declassified = key.classifier.declassify(disclosed, decrypted);
-            const result = key.options.deserializer(declassified);
-
-            return [id, result] as const;
-          });
-
-          // reconstruct expected type
-          const results = await Promise.all(decryptTasks);
-          const result = key.reconstruct(results);
-
-          return result;
-        },
-        // wire in the caller's deserializer for memory serialization
-        deserializer: (d) => {
-          const items = key.deconstruct(d);
-          const results = items.map(([k, v]) => [k, key.options.deserializer(v)] as const);
-          const result = key.reconstruct(results);
-          return result;
-        },
-        // cache the decrypted data in memory
-        cleanupDelayMs: key.options.cleanupDelayMs,
-      },
-    );
-    const plaintextState = provider.getDerived(encryptedState.state$, plaintextDefinition, null);
-
-    // wrap the encrypted and plaintext states in a `SecretState` facade
-    const secretState = new SecretState(key, encryptor, encryptedState, plaintextState);
+    const secretState = new SecretState(key, encryptor, userId, provider);
     return secretState;
+  }
+
+  private async declassifyItem({ id, secret, disclosed }: ClassifiedFormat<Id, Disclosed>) {
+    const encrypted = EncString.fromJSON(secret);
+    const decrypted = await this.encryptor.decrypt(encrypted, this.encryptedState.userId);
+
+    const declassified = this.key.classifier.declassify(disclosed, decrypted);
+    const result = this.deserializeItem([id, declassified]);
+
+    return result;
+  }
+
+  private async declassifyAll(data: ClassifiedFormat<Id, Disclosed>[]) {
+    // fail fast if there's no value
+    if (data === null || data === undefined) {
+      return null;
+    }
+
+    // decrypt each item
+    const decryptTasks = data.map(async (item) => this.declassifyItem(item));
+
+    // reconstruct expected type
+    const results = await Promise.all(decryptTasks);
+    const result = this.key.reconstruct(results);
+
+    return result;
+  }
+
+  private async classifyItem([id, item]: [Id, Plaintext]) {
+    const classified = this.key.classifier.classify(item);
+    const encrypted = await this.encryptor.encrypt(classified.secret, this.encryptedState.userId);
+
+    // the deserializer in the plaintextState's `derive` configuration always runs, but
+    // `encryptedState` is not guaranteed to serialize the data, so it's necessary to
+    // round-trip `encrypted` proactively.
+    const serialized = {
+      id,
+      secret: JSON.parse(JSON.stringify(encrypted)),
+      disclosed: classified.disclosed,
+    } as ClassifiedFormat<Id, Disclosed>;
+
+    return serialized;
+  }
+
+  private async classifyAll(data: Outer) {
+    // fail fast if there's no value
+    if (data === null || data === undefined) {
+      return null;
+    }
+
+    // convert the object to a list format so that all encrypt and decrypt
+    // operations are self-similar
+    const desconstructed = this.key.deconstruct(data);
+
+    // encrypt each value individually
+    const classifyTasks = desconstructed.map(async (item) => this.classifyItem(item));
+    const classified = await Promise.all(classifyTasks);
+
+    return classified;
+  }
+
+  private deserializeItem([key, value]: [Id, Jsonify<Plaintext>]) {
+    return [key, this.key.options.deserializer(value)] as const;
+  }
+
+  private deserializeAll(data: Jsonify<Outer>) {
+    const items = this.key.deconstruct(data);
+    const results = items.map((item) => this.deserializeItem(item));
+    const result = this.key.reconstruct(results);
+    return result;
   }
 
   /** Updates the secret stored by this state.
@@ -167,71 +210,30 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
     configureState: (state: Outer, dependencies: TCombine) => Outer,
     options: StateUpdateOptions<Outer, TCombine> = null,
   ): Promise<Outer> {
-    // reactively grab the latest state from the caller. `zip` requires each
-    // observable has a value, so `combined$` provides a default if necessary.
-    const combined$ = options?.combineLatestWith ?? of(undefined);
-    const newState$ = zip(this.plaintext.state$, combined$).pipe(
-      concatMap(([currentState, combined]) =>
-        this.prepareCryptoState(
-          currentState,
-          () => options?.shouldUpdate?.(currentState, combined) ?? true,
-          () => configureState(currentState, combined),
-        ),
-      ),
-    );
-
-    // update the backing store
-    let latestValue: Outer = null;
-    await this.encrypted.update((_, [, newStoredState]) => newStoredState, {
-      combineLatestWith: newState$,
-      shouldUpdate: (_, [shouldUpdate, , newState]) => {
-        // need to grab the latest value from the closure since the derived state
-        // could return its cached value, and this must be done in `shouldUpdate`
-        // because `configureState` may not run.
-        latestValue = newState;
-        return shouldUpdate;
+    // read the backing store
+    let latestClassified: ClassifiedFormat<Id, Disclosed>[];
+    let latestCombined: TCombine;
+    await this.encryptedState.update((c) => c, {
+      shouldUpdate: (latest, combined) => {
+        latestClassified = latest;
+        latestCombined = combined;
+        return false;
       },
+      combineLatestWith: options?.combineLatestWith,
     });
 
-    return latestValue;
-  }
-
-  private async prepareCryptoState(
-    currentState: Outer,
-    shouldUpdate: () => boolean,
-    configureState: () => Outer,
-  ): Promise<[boolean, ClassifiedFormat<Id, Disclosed>[], Outer]> {
-    // determine whether an update is necessary
-    if (!shouldUpdate()) {
-      return [false, undefined, currentState];
+    // exit early if there's no update to apply
+    const latestDeclassified = await this.declassifyAll(latestClassified);
+    const shouldUpdate = options?.shouldUpdate?.(latestDeclassified, latestCombined) ?? true;
+    if (!shouldUpdate) {
+      return latestDeclassified;
     }
 
-    // calculate the update
-    const newState = configureState();
-    if (newState === null || newState === undefined) {
-      return [true, newState as any, newState];
-    }
+    // apply the update
+    const updatedDeclassified = configureState(latestDeclassified, latestCombined);
+    const updatedClassified = await this.classifyAll(updatedDeclassified);
+    await this.encryptedState.update(() => updatedClassified);
 
-    // convert the object to a list format so that all encrypt and decrypt
-    // operations are self-similar
-    const desconstructed = this.key.deconstruct(newState);
-
-    // encrypt each value individually
-    const encryptTasks = desconstructed.map(async ([id, state]) => {
-      const classified = this.key.classifier.classify(state);
-      const encrypted = await this.encryptor.encrypt(classified.secret, this.encrypted.userId);
-
-      // the deserializer in the plaintextState's `derive` configuration always runs, but
-      // `encryptedState` is not guaranteed to serialize the data, so it's necessary to
-      // round-trip it proactively. This will cause some duplicate work in those situations
-      // where the backing store does deserialize the data.
-      const serialized = JSON.parse(
-        JSON.stringify({ id, secret: encrypted, disclosed: classified.disclosed }),
-      );
-      return serialized as ClassifiedFormat<Id, Disclosed>;
-    });
-    const serializedState = await Promise.all(encryptTasks);
-
-    return [true, serializedState, newState];
+    return updatedDeclassified;
   }
 }
