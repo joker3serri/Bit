@@ -185,7 +185,6 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
             if (response == null) {
               throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
             }
-            const userId = await this.stateService.getUserId();
             const publicKey = Utils.fromB64ToArray(response.publicKey);
 
             // RSA Encrypt user key with organization public key
@@ -198,7 +197,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
 
             return this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
               this.orgId,
-              userId,
+              this.userId,
               resetRequest,
             );
           });
