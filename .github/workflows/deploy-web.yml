@@ -191,7 +191,20 @@ jobs:
     env:
       _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
     steps:
+      - name: Download latest cloud asset using GitHub Run ID
+        if: ${{ inputs.build-web-run-id }}
+        uses: bitwarden/gh-actions/download-artifacts@main
+        id: download-latest-artifacts
+        continue-on-error: true
+        with:
+          workflow: build-web.yml
+          path: apps/web
+          workflow_conclusion: success
+          run_id: ${{ inputs.build-web-run-id }}
+          artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
+
       - name: 'Download latest cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
+        if: ${{ !inputs.build-web-run-id }}
         uses: bitwarden/gh-actions/download-artifacts@main
         id: download-artifacts
         continue-on-error: true
@@ -201,7 +214,6 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.branch-or-tag }}
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
-          run_id: ${{ inputs.build-web-run-id }}
 
       - name: Login to Azure
         if: ${{ steps.download-artifacts.outcome == 'failure' }}
