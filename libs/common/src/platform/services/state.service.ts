@@ -311,31 +311,6 @@ export class StateService<
   }
 
   /**
-   * The master key encrypted User symmetric key, saved on every auth
-   * so we can unlock with MP offline
-   */
-  async getMasterKeyEncryptedUserKey(options?: StorageOptions): Promise<string> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.keys.masterKeyEncryptedUserKey;
-  }
-
-  /**
-   * The master key encrypted User symmetric key, saved on every auth
-   * so we can unlock with MP offline
-   */
-  async setMasterKeyEncryptedUserKey(value: string, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.keys.masterKeyEncryptedUserKey = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  /**
    * user key when using the "never" option of vault timeout
    */
   async getUserKeyAutoUnlock(options?: StorageOptions): Promise<string> {

@@ -277,7 +277,10 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async setMasterKeyEncryptedUserKey(userKeyMasterKey: string, userId?: UserId): Promise<void> {
-    await this.stateService.setMasterKeyEncryptedUserKey(userKeyMasterKey, { userId: userId });
+    await this.masterPasswordService.setMasterKeyEncryptedUserKey(
+      new EncString(userKeyMasterKey),
+      userId,
+    );
   }
 
   // TODO: Move to MasterPasswordService
@@ -321,6 +324,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     return await this.buildProtectedSymmetricKey(masterKey, userKey.key);
   }
 
+  // TODO: move to master password service
   async decryptUserKeyWithMasterKey(
     masterKey: MasterKey,
     userKey?: EncString,
@@ -332,22 +336,19 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("No master key found.");
     }
 
-    if (!userKey) {
-      let masterKeyEncryptedUserKey = await this.stateService.getMasterKeyEncryptedUserKey({
-        userId: userId,
-      });
+    if (userKey == null) {
+      let userKey = await this.masterPasswordService.getMasterKeyEncryptedUserKey(userId);
 
       // Try one more way to get the user key if it still wasn't found.
-      if (masterKeyEncryptedUserKey == null) {
-        masterKeyEncryptedUserKey = await this.stateService.getEncryptedCryptoSymmetricKey({
+      if (userKey == null) {
+        const deprecatedKey = await this.stateService.getEncryptedCryptoSymmetricKey({
           userId: userId,
         });
+        if (deprecatedKey == null) {
+          throw new Error("No encrypted user key found.");
+        }
+        userKey = new EncString(deprecatedKey);
       }
-
-      if (masterKeyEncryptedUserKey == null) {
-        throw new Error("No encrypted user key found.");
-      }
-      userKey = new EncString(masterKeyEncryptedUserKey);
     }
 
     let decUserKey: Uint8Array;

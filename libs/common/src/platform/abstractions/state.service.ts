@@ -54,14 +54,6 @@ export abstract class StateService<T extends Account = Account> {
   getConvertAccountToKeyConnector: (options?: StorageOptions) => Promise<boolean>;
   setConvertAccountToKeyConnector: (value: boolean, options?: StorageOptions) => Promise<void>;
   /**
-   * Gets the user key encrypted by the master key
-   */
-  getMasterKeyEncryptedUserKey: (options?: StorageOptions) => Promise<string>;
-  /**
-   * Sets the user key encrypted by the master key
-   */
-  setMasterKeyEncryptedUserKey: (value: string, options?: StorageOptions) => Promise<void>;
-  /**
    * Gets the user's auto key
    */
   getUserKeyAutoUnlock: (options?: StorageOptions) => Promise<string>;

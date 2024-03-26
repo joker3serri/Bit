@@ -1,5 +1,6 @@
-import { map, Observable } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
 
+import { EncString } from "../../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import {
   MASTER_PASSWORD_DISK,
@@ -23,6 +24,15 @@ const MASTER_KEY_HASH = new UserKeyDefinition<string>(MASTER_PASSWORD_DISK, "mas
   deserializer: (masterKeyHash) => masterKeyHash,
   clearOn: ["logout"],
 });
+
+const MASTER_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncString>(
+  MASTER_PASSWORD_DISK,
+  "masterKeyEncryptedUserKey",
+  {
+    deserializer: (key) => EncString.fromJSON(key),
+    clearOn: ["logout"],
+  },
+);
 
 /** Disk to persist through lock and account switches */
 const FORCE_SET_PASSWORD_REASON = new UserKeyDefinition<ForceSetPasswordReason>(
@@ -60,6 +70,17 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
       .state$.pipe(map((reason) => reason ?? ForceSetPasswordReason.None));
   }
 
+  // TODO: Remove this method and decrypt directly in the service instead
+  async getMasterKeyEncryptedUserKey(userId: UserId): Promise<EncString> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
+    const key = await firstValueFrom(
+      this.stateProvider.getUser(userId, MASTER_KEY_ENCRYPTED_USER_KEY).state$,
+    );
+    return key;
+  }
+
   async setMasterKey(masterKey: MasterKey, userId: UserId): Promise<void> {
     if (masterKey == null) {
       throw new Error("Master key is required.");
@@ -78,6 +99,18 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
       throw new Error("User ID is required.");
     }
     await this.stateProvider.getUser(userId, MASTER_KEY_HASH).update((_) => masterKeyHash);
+  }
+
+  async setMasterKeyEncryptedUserKey(encryptedKey: EncString, userId: UserId): Promise<void> {
+    if (encryptedKey == null) {
+      throw new Error("Encrypted Key is required.");
+    }
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
+    await this.stateProvider
+      .getUser(userId, MASTER_KEY_ENCRYPTED_USER_KEY)
+      .update((_) => encryptedKey);
   }
 
   async setForceSetPasswordReason(reason: ForceSetPasswordReason, userId: UserId): Promise<void> {

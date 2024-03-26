@@ -99,7 +99,6 @@ export class AccountData {
 }
 
 export class AccountKeys {
-  masterKeyEncryptedUserKey?: string;
   deviceKey?: ReturnType<SymmetricCryptoKey["toJSON"]>;
   publicKey?: Uint8Array;
 

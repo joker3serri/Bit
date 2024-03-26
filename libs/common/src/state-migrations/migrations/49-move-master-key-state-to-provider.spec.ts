@@ -5,6 +5,7 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 
 import {
   FORCE_SET_PASSWORD_REASON_DEFINITION,
+  MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION,
   MASTER_KEY_HASH_DEFINITION,
   MoveMasterKeyStateToProviderMigrator,
 } from "./49-move-master-key-state-to-provider";
@@ -22,6 +23,9 @@ function preMigrationState() {
         keyHash: "FirstAccount_keyHash",
         otherStuff: "overStuff2",
       },
+      keys: {
+        masterKeyEncryptedUserKey: "FirstAccount_masterKeyEncryptedUserKey",
+      },
       otherStuff: "otherStuff3",
     },
     // prettier-ignore
@@ -30,6 +34,9 @@ function preMigrationState() {
         forceSetPasswordReason: "SecondAccount_forceSetPasswordReason",
         keyHash: "SecondAccount_keyHash",
         otherStuff: "otherStuff4",
+      },
+      keys: {
+        masterKeyEncryptedUserKey: "SecondAccount_masterKeyEncryptedUserKey",
       },
       otherStuff: "otherStuff5",
     },
@@ -46,9 +53,13 @@ function postMigrationState() {
   return {
     user_FirstAccount_masterPassword_forceSetPasswordReason: "FirstAccount_forceSetPasswordReason",
     user_FirstAccount_masterPassword_masterKeyHash: "FirstAccount_keyHash",
+    user_FirstAccount_masterPassword_masterKeyEncryptedUserKey:
+      "FirstAccount_masterKeyEncryptedUserKey",
     user_SecondAccount_masterPassword_forceSetPasswordReason:
       "SecondAccount_forceSetPasswordReason",
     user_SecondAccount_masterPassword_masterKeyHash: "SecondAccount_keyHash",
+    user_SecondAccount_masterPassword_masterKeyEncryptedUserKey:
+      "SecondAccount_masterKeyEncryptedUserKey",
     global: {
       otherStuff: "otherStuff1",
     },
@@ -92,12 +103,14 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
         profile: {
           otherStuff: "overStuff2",
         },
+        keys: {},
         otherStuff: "otherStuff3",
       });
       expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
         profile: {
           otherStuff: "otherStuff4",
         },
+        keys: {},
         otherStuff: "otherStuff5",
       });
     });
@@ -118,6 +131,12 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
       );
 
       expect(helper.setToUser).toHaveBeenCalledWith(
+        "FirstAccount",
+        MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION,
+        "FirstAccount_masterKeyEncryptedUserKey",
+      );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(
         "SecondAccount",
         FORCE_SET_PASSWORD_REASON_DEFINITION,
         "SecondAccount_forceSetPasswordReason",
@@ -127,6 +146,12 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
         "SecondAccount",
         MASTER_KEY_HASH_DEFINITION,
         "SecondAccount_keyHash",
+      );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "SecondAccount",
+        MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION,
+        "SecondAccount_masterKeyEncryptedUserKey",
       );
     });
   });
@@ -158,6 +183,9 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
           keyHash: "FirstAccount_keyHash",
           otherStuff: "overStuff2",
         },
+        keys: {
+          masterKeyEncryptedUserKey: "FirstAccount_masterKeyEncryptedUserKey",
+        },
         otherStuff: "otherStuff3",
       });
       expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
@@ -165,6 +193,9 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
           forceSetPasswordReason: "SecondAccount_forceSetPasswordReason",
           keyHash: "SecondAccount_keyHash",
           otherStuff: "otherStuff4",
+        },
+        keys: {
+          masterKeyEncryptedUserKey: "SecondAccount_masterKeyEncryptedUserKey",
         },
         otherStuff: "otherStuff5",
       });

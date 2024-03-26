@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 
+import { EncString } from "../../platform/models/domain/enc-string";
 import { UserId } from "../../types/guid";
 import { MasterKey } from "../../types/key";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
@@ -23,6 +24,12 @@ export abstract class MasterPasswordServiceAbstraction {
    * @throws If the user ID is missing.
    */
   abstract masterKeyHash$: (userId: UserId) => Observable<string>;
+  /**
+   * Returns the master key encrypted user key for the user.
+   * @param userId The user ID.
+   * @throws If the user ID is missing.
+   */
+  abstract getMasterKeyEncryptedUserKey: (userId: UserId) => Promise<EncString>;
 }
 
 export abstract class InternalMasterPasswordServiceAbstraction extends MasterPasswordServiceAbstraction {
@@ -40,6 +47,13 @@ export abstract class InternalMasterPasswordServiceAbstraction extends MasterPas
    * @throws If the user ID or master key hash is missing.
    */
   abstract setMasterKeyHash: (masterKeyHash: string, userId: UserId) => Promise<void>;
+  /**
+   * Set the master key encrypted user key for the user.
+   * @param encryptedKey The master key encrypted user key.
+   * @param userId The user ID.
+   * @throws If the user ID or encrypted key is missing.
+   */
+  abstract setMasterKeyEncryptedUserKey: (encryptedKey: EncString, userId: UserId) => Promise<void>;
   /**
    * Set the force set password reason for the user.
    * @param reason The reason the user is being forced to set a password.

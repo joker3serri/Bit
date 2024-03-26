@@ -1,6 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { ReplaySubject, Observable } from "rxjs";
 
+import { EncString } from "../../../platform/models/domain/enc-string";
 import { UserId } from "../../../types/guid";
 import { MasterKey } from "../../../types/key";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
@@ -31,6 +32,14 @@ export class FakeMasterPasswordService implements InternalMasterPasswordServiceA
 
   masterKeyHash$(userId: UserId): Observable<string> {
     return this.masterKeyHashSubject.asObservable();
+  }
+
+  getMasterKeyEncryptedUserKey(userId: UserId): Promise<EncString> {
+    return this.mock.getMasterKeyEncryptedUserKey(userId);
+  }
+
+  setMasterKeyEncryptedUserKey(encryptedKey: EncString, userId: UserId): Promise<void> {
+    return this.mock.setMasterKeyEncryptedUserKey(encryptedKey, userId);
   }
 
   setMasterKeyHash(masterKeyHash: string, userId: UserId): Promise<void> {

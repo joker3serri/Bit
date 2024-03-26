@@ -2,6 +2,9 @@ import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { Migrator } from "../migrator";
 
 type ExpectedAccountType = {
+  keys?: {
+    masterKeyEncryptedUserKey?: string;
+  };
   profile?: {
     forceSetPasswordReason?: number;
     keyHash?: string;
@@ -17,6 +20,13 @@ export const FORCE_SET_PASSWORD_REASON_DEFINITION: KeyDefinitionLike = {
 
 export const MASTER_KEY_HASH_DEFINITION: KeyDefinitionLike = {
   key: "masterKeyHash",
+  stateDefinition: {
+    name: "masterPassword",
+  },
+};
+
+export const MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION: KeyDefinitionLike = {
+  key: "masterKeyEncryptedUserKey",
   stateDefinition: {
     name: "masterPassword",
   },
@@ -45,6 +55,18 @@ export class MoveMasterKeyStateToProviderMigrator extends Migrator<48, 49> {
         delete account.profile.keyHash;
         await helper.set(userId, account);
       }
+
+      const masterKeyEncryptedUserKey = account?.keys?.masterKeyEncryptedUserKey;
+      if (masterKeyEncryptedUserKey != null) {
+        await helper.setToUser(
+          userId,
+          MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION,
+          masterKeyEncryptedUserKey,
+        );
+
+        delete account.keys.masterKeyEncryptedUserKey;
+        await helper.set(userId, account);
+      }
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);
@@ -57,15 +79,24 @@ export class MoveMasterKeyStateToProviderMigrator extends Migrator<48, 49> {
         FORCE_SET_PASSWORD_REASON_DEFINITION,
       );
       const masterKeyHash = await helper.getFromUser(userId, MASTER_KEY_HASH_DEFINITION);
+      const masterKeyEncryptedUserKey = await helper.getFromUser(
+        userId,
+        MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION,
+      );
       if (account != null) {
         if (forceSetPasswordReason != null) {
           account.profile = Object.assign(account.profile ?? {}, {
-            forceSetPasswordReason: forceSetPasswordReason,
+            forceSetPasswordReason,
           });
         }
         if (masterKeyHash != null) {
           account.profile = Object.assign(account.profile ?? {}, {
             keyHash: masterKeyHash,
+          });
+        }
+        if (masterKeyEncryptedUserKey != null) {
+          account.keys = Object.assign(account.keys ?? {}, {
+            masterKeyEncryptedUserKey,
           });
         }
         await helper.set(userId, account);
