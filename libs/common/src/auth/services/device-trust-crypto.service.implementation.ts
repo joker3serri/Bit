@@ -82,7 +82,9 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
    * Note: this value should only be used once and then reset
    */
   async getShouldTrustDevice(): Promise<boolean> {
-    return firstValueFrom(this.shouldTrustDeviceState.state$);
+    const shouldTrustDevice = await firstValueFrom(this.shouldTrustDeviceState.state$);
+
+    return shouldTrustDevice;
   }
 
   async setShouldTrustDevice(value: boolean): Promise<void> {
@@ -215,7 +217,9 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
       );
     }
 
-    return firstValueFrom(this.deviceKeyState.state$);
+    const deviceKey = await firstValueFrom(this.deviceKeyState.state$);
+
+    return deviceKey;
   }
 
   private async setDeviceKey(deviceKey: DeviceKey | null): Promise<void> {
@@ -239,7 +243,9 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
 
   private async makeDeviceKey(): Promise<DeviceKey> {
     // Create 512-bit device key
-    return (await this.keyGenerationService.createKey(512)) as DeviceKey;
+    const deviceKey = (await this.keyGenerationService.createKey(512)) as DeviceKey;
+
+    return deviceKey;
   }
 
   async decryptUserKeyWithDeviceKey(
