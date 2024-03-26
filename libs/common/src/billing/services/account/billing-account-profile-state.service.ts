@@ -52,8 +52,8 @@ export class DefaultBillingAccountProfileStateService implements BillingAccountP
     this.hasPremiumFromAnySource$ = billingAccountProfileOrNull.pipe(
       map(
         (billingAccountProfile) =>
-          billingAccountProfile?.hasPremiumFromAnyOrganization ||
-          billingAccountProfile?.hasPremiumPersonally,
+          billingAccountProfile?.hasPremiumFromAnyOrganization === true ||
+          billingAccountProfile?.hasPremiumPersonally === true,
       ),
     );
   }
