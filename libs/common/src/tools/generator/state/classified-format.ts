@@ -4,8 +4,6 @@ import { Jsonify } from "type-fest";
  *  encrypted state. Notably, this interface ensures that `Disclosed`
  *  round trips through JSON serialization. It also preserves the
  *  Id.
- *  @remarks Tuple representation chosen because it matches
- *  `Object.entries` format.
  */
 export type ClassifiedFormat<Id, Disclosed> = {
   /** Identifies records. `null` when storing a `value` */
