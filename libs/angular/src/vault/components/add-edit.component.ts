@@ -409,10 +409,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }
 
     this.cipher.login.fido2Credentials = null;
-
-    const announcer = document.getElementById("passkeyRemovedAnnouncer");
-    announcer.textContent = this.i18nService.t("passkeyRemoved");
-    setTimeout(() => (announcer.textContent = ""), 2000);
   }
 
   onCardNumberChange(): void {

@@ -132,13 +132,6 @@
 
           <!--Passkey-->
           <div
-            aria-live="polite"
-            aria-atomic="true"
-            class="sr-only"
-            id="passkeyRemovedAnnouncer"
-          ></div>
-
-          <div
             class="box"
             *ngIf="cipher.login.hasFido2Credentials && !cloneMode"
             tabindex="0"
