@@ -216,7 +216,24 @@ describe("deviceTrustCryptoService", () => {
 
         it("throws an error when there is no active user", async () => {
           await expect(deviceTrustCryptoService.getDeviceKey()).rejects.toThrow(
-            "No active user id found. Cannot get device key from secure storage.",
+            "No active user id found. Cannot get device key.",
+          );
+        });
+      });
+
+      describe("Secure Storage not supported without an active user", () => {
+        beforeEach(() => {
+          const mockUserId: UserId = null;
+          const supportsSecureStorage = false;
+          deviceTrustCryptoService = createDeviceTrustCryptoService(
+            mockUserId,
+            supportsSecureStorage,
+          );
+        });
+
+        it("throws an error when there is no active user", async () => {
+          await expect(deviceTrustCryptoService.getDeviceKey()).rejects.toThrow(
+            "No active user id found. Cannot get device key.",
           );
         });
       });
