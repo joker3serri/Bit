@@ -52,9 +52,7 @@ function rollbackJSON() {
     },
     user_user1_deviceTrust_shouldTrustDevice: true,
 
-    // User2 migrated data
-    user_user2_deviceTrust_deviceKey: null as any,
-    user_user2_deviceTrust_shouldTrustDevice: null as any,
+    // User2 does not have migrated data
 
     global: {
       otherStuff: "otherStuff1",
