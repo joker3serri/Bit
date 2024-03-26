@@ -9,7 +9,7 @@
   <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 </ng-container>
 
-<form [formGroup]="ssoConfigForm" [bitSubmit]="submit" *ngIf="!loading">
+<form [formGroup]="ssoConfigForm" [bitSubmit]="submit" *ngIf="!loading" class="tw-w-2/3">
   <p>
     {{ "ssoPolicyHelpStart" | i18n }}
     <a routerLink="../policies">{{ "ssoPolicyHelpAnchor" | i18n }}</a>
@@ -25,7 +25,7 @@
       <bit-hint>{{ "allowSsoDesc" | i18n }}</bit-hint>
     </bit-form-control>
 
-    <bit-form-field class="tw-w-2/3">
+    <bit-form-field>
       <bit-label>{{ "ssoIdentifier" | i18n }}</bit-label>
       <input bitInput type="text" formControlName="ssoIdentifier" />
       <bit-hint>
@@ -36,7 +36,7 @@
 
     <hr />
 
-    <bit-radio-group class="tw-w-2/3" formControlName="memberDecryptionType">
+    <bit-radio-group formControlName="memberDecryptionType">
       <bit-label>{{ "memberDecryptionOption" | i18n }}</bit-label>
 
       <bit-radio-button
@@ -105,7 +105,7 @@
         {{ "keyConnectorWarning" | i18n }}
       </app-callout>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "keyConnectorUrl" | i18n }}</bit-label>
         <input
           bitInput
@@ -146,7 +146,7 @@
 
     <hr />
 
-    <bit-form-field class="tw-w-2/3">
+    <bit-form-field>
       <bit-label>{{ "type" | i18n }}</bit-label>
       <select bitInput formControlName="configType">
         <option *ngFor="let o of ssoTypeOptions" [ngValue]="o.value" disabled="{{ o.disabled }}">
@@ -164,7 +164,7 @@
     <div class="config-section">
       <h2 class="secondary-header">{{ "openIdConnectConfig" | i18n }}</h2>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "callbackPath" | i18n }}</bit-label>
         <input bitInput disabled [value]="callbackPath" />
         <button
@@ -176,7 +176,7 @@
         ></button>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "signedOutCallbackPath" | i18n }}</bit-label>
         <input bitInput disabled [value]="signedOutCallbackPath" />
         <button
@@ -188,28 +188,28 @@
         ></button>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "authority" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="authority" appInputStripSpaces />
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "clientId" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="clientId" appInputStripSpaces />
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "clientSecret" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="clientSecret" appInputStripSpaces />
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "metadataAddress" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="metadataAddress" appInputStripSpaces />
         <bit-hint>{{ "openIdAuthorityRequired" | i18n }}</bit-hint>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "oidcRedirectBehavior" | i18n }}</bit-label>
         <select bitInput formControlName="redirectBehavior">
           <option
@@ -222,7 +222,7 @@
         </select>
       </bit-form-field>
 
-      <bit-form-control class="tw-w-2/3">
+      <bit-form-control>
         <bit-label>{{ "getClaimsFromUserInfoEndpoint" | i18n }}</bit-label>
         <input
           bitCheckbox
@@ -260,37 +260,37 @@
         </button>
       </div>
       <div id="customizations" [hidden]="!showOpenIdCustomizations">
-        <bit-form-field class="tw-w-2/3">
+        <bit-form-field>
           <bit-label>{{ "additionalScopes" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="additionalScopes" />
           <bit-hint>{{ "separateMultipleWithComma" | i18n }}</bit-hint>
         </bit-form-field>
 
-        <bit-form-field class="tw-w-2/3">
+        <bit-form-field>
           <bit-label>{{ "additionalUserIdClaimTypes" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="additionalUserIdClaimTypes" />
           <bit-hint>{{ "separateMultipleWithComma" | i18n }}</bit-hint>
         </bit-form-field>
 
-        <bit-form-field class="tw-w-2/3">
+        <bit-form-field>
           <bit-label>{{ "additionalEmailClaimTypes" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="additionalEmailClaimTypes" />
           <bit-hint>{{ "separateMultipleWithComma" | i18n }}</bit-hint>
         </bit-form-field>
 
-        <bit-form-field class="tw-w-2/3">
+        <bit-form-field>
           <bit-label>{{ "additionalNameClaimTypes" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="additionalNameClaimTypes" />
           <bit-hint>{{ "separateMultipleWithComma" | i18n }}</bit-hint>
         </bit-form-field>
 
-        <bit-form-field class="tw-w-2/3">
+        <bit-form-field>
           <bit-label>{{ "acrValues" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="acrValues" />
           <bit-hint>acr_values</bit-hint>
         </bit-form-field>
 
-        <bit-form-field class="tw-w-2/3">
+        <bit-form-field>
           <bit-label>{{ "expectedReturnAcrValue" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="expectedReturnAcrValue" />
           <bit-hint>acr_validaton</bit-hint>
@@ -316,7 +316,7 @@
         <bit-hint>{{ "spUniqueEntityIdDesc" | i18n }}</bit-hint>
       </bit-form-control>
 
-      <bit-form-field class="tw-w-2/3" *ngIf="ssoConfigForm.value.saml.spUniqueEntityId">
+      <bit-form-field *ngIf="ssoConfigForm.value.saml.spUniqueEntityId">
         <bit-label>{{ "spEntityId" | i18n }}</bit-label>
         <input bitInput disabled [value]="spEntityId" />
         <button
@@ -328,7 +328,7 @@
         ></button>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3" *ngIf="!ssoConfigForm.value.saml.spUniqueEntityId">
+      <bit-form-field *ngIf="!ssoConfigForm.value.saml.spUniqueEntityId">
         <bit-label>{{ "spEntityId" | i18n }}</bit-label>
         <input bitInput disabled [value]="spEntityIdStatic" />
         <button
@@ -340,7 +340,7 @@
         ></button>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "spMetadataUrl" | i18n }}</bit-label>
         <input bitInput disabled [value]="spMetadataUrl" />
         <button
@@ -361,7 +361,7 @@
         ></button>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "spAcsUrl" | i18n }}</bit-label>
         <input bitInput disabled [value]="spAcsUrl" />
         <button
@@ -373,7 +373,7 @@
         ></button>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "spNameIdFormat" | i18n }}</bit-label>
         <select bitInput formControlName="spNameIdFormat">
           <option
@@ -386,7 +386,7 @@
         </select>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "spOutboundSigningAlgorithm" | i18n }}</bit-label>
         <select bitInput formControlName="spOutboundSigningAlgorithm">
           <option
@@ -399,7 +399,7 @@
         </select>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "spSigningBehavior" | i18n }}</bit-label>
         <select bitInput formControlName="spSigningBehavior">
           <option
@@ -412,7 +412,7 @@
         </select>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "spMinIncomingSigningAlgorithm" | i18n }}</bit-label>
         <select bitInput formControlName="spMinIncomingSigningAlgorithm">
           <option
@@ -450,12 +450,12 @@
     <div class="config-section">
       <h2 class="secondary-header">{{ "samlIdpConfig" | i18n }}</h2>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "idpEntityId" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="idpEntityId" />
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "idpBindingType" | i18n }}</bit-label>
         <select bitInput formControlName="idpBindingType">
           <option
@@ -468,7 +468,7 @@
         </select>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "idpSingleSignOnServiceUrl" | i18n }}</bit-label>
         <input
           bitInput
@@ -479,7 +479,7 @@
         <bit-hint>{{ "idpSingleSignOnServiceUrlRequired" | i18n }}</bit-hint>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "idpSingleLogoutServiceUrl" | i18n }}</bit-label>
         <input
           bitInput
@@ -489,12 +489,12 @@
         />
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "idpX509PublicCert" | i18n }}</bit-label>
         <textarea bitInput rows="6" formControlName="idpX509PublicCert"></textarea>
       </bit-form-field>
 
-      <bit-form-field class="tw-w-2/3">
+      <bit-form-field>
         <bit-label>{{ "idpOutboundSigningAlgorithm" | i18n }}</bit-label>
         <select bitInput formControlName="idpOutboundSigningAlgorithm">
           <option
@@ -514,7 +514,7 @@
         [label]="'idpAllowUnsolicitedAuthnResponse' | i18n"
       ></app-input-checkbox> -->
 
-      <bit-form-control class="tw-w-2/3">
+      <bit-form-control>
         <bit-label>{{ "idpAllowOutboundLogoutRequests" | i18n }}</bit-label>
         <input
           bitCheckbox
@@ -524,7 +524,7 @@
         />
       </bit-form-control>
 
-      <bit-form-control class="tw-w-2/3">
+      <bit-form-control>
         <bit-label>{{ "idpSignAuthenticationRequests" | i18n }}</bit-label>
         <input
           bitCheckbox
