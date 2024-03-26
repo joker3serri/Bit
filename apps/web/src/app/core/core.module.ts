@@ -11,10 +11,13 @@ import {
   OBSERVABLE_MEMORY_STORAGE,
   OBSERVABLE_DISK_STORAGE,
   OBSERVABLE_DISK_LOCAL_STORAGE,
+  WINDOW,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import { LoginEmailServiceAbstraction, LoginEmailService } from "@bitwarden/auth/common";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -28,9 +31,9 @@ import { MemoryStorageService } from "@bitwarden/common/platform/services/memory
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-/* eslint-disable import/no-restricted-paths -- Implementation for memory storage */
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
-import { StateProvider, GlobalStateProvider } from "@bitwarden/common/platform/state";
+/* eslint-disable import/no-restricted-paths -- Implementation for memory storage */
+import { GlobalStateProvider, StateProvider } from "@bitwarden/common/platform/state";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 /* eslint-enable import/no-restricted-paths -- Implementation for memory storage */
 import {
@@ -41,6 +44,7 @@ import {
 import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
+import { WebEnvironmentService } from "../platform/web-environment.service";
 import { WebMigrationRunner } from "../platform/web-migration-runner";
 import { WebStorageServiceProvider } from "../platform/web-storage-service.provider";
 import { WindowStorageService } from "../platform/window-storage.service";
@@ -137,6 +141,11 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
         MigrationBuilderService,
         OBSERVABLE_DISK_LOCAL_STORAGE,
       ],
+    },
+    {
+      provide: EnvironmentService,
+      useClass: WebEnvironmentService,
+      deps: [WINDOW, StateProvider, AccountService],
     },
     {
       provide: ThemeStateService,

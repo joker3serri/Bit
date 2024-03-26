@@ -87,10 +87,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     super(environmentService, i18nService, platformUtilsService);
   }
 
-  get selfHostedDomain() {
-    return this.environmentService.hasBaseUrl() ? this.environmentService.getWebVaultUrl() : null;
-  }
-
   async ngOnInit() {
     this.route?.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (!params) {
@@ -248,7 +244,8 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     await this.ssoLoginService.setCodeVerifier(ssoCodeVerifier);
 
     // Build URI
-    const webUrl = this.environmentService.getWebVaultUrl();
+    const env = await firstValueFrom(this.environmentService.environment$);
+    const webUrl = env.getWebVaultUrl();
 
     // Launch browser
     this.platformUtilsService.launchUri(
