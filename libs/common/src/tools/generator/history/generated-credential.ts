@@ -15,9 +15,9 @@ export class GeneratedCredential {
   constructor(
     readonly credential: string,
     readonly category: GeneratorCategory,
-    generationDate: Date | number
-  ){
-    if(typeof generationDate === "number"){
+    generationDate: Date | number,
+  ) {
+    if (typeof generationDate === "number") {
       this.generationDate = new Date(generationDate);
     } else {
       this.generationDate = generationDate;
@@ -25,11 +25,15 @@ export class GeneratedCredential {
   }
 
   /** The date that the credential was generated */
-  generationDate: Date
+  generationDate: Date;
 
   /** Constructs a credential from its `toJSON` representation */
   static fromJSON(jsonValue: Jsonify<GeneratedCredential>) {
-    return new GeneratedCredential(jsonValue.credential, jsonValue.category, jsonValue.generationDate);
+    return new GeneratedCredential(
+      jsonValue.credential,
+      jsonValue.category,
+      jsonValue.generationDate,
+    );
   }
 
   /** Serializes a credential to a JSON-compatible object */
@@ -37,7 +41,7 @@ export class GeneratedCredential {
     return {
       credential: this.credential,
       category: this.category,
-      generationDate: this.generationDate.valueOf()
+      generationDate: this.generationDate.valueOf(),
     };
   }
-};
+}

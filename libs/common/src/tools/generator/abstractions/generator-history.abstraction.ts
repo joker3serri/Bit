@@ -18,7 +18,12 @@ export abstract class GeneratorHistoryService {
    *  @returns a promise that completes with the added credential. If the credential
    *    wasn't added, then the promise completes with `null`.
    */
-  track: (userId: UserId, credential: string, category: GeneratorCategory, date?: Date) => Promise<GeneratedCredential | null>;
+  track: (
+    userId: UserId,
+    credential: string,
+    category: GeneratorCategory,
+    date?: Date,
+  ) => Promise<GeneratedCredential | null>;
 
   /** Removes a matching credential from the history service.
    *  @param userId identifies the user taking the credential.

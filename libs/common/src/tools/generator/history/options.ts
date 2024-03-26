@@ -6,5 +6,5 @@ export type HistoryServiceOptions = {
   /** Total number of records retained across all types.
    *  @remarks Setting this to 0 or less disables history completely.
    * */
-  maxTotal: number,
-}
+  maxTotal: number;
+};
