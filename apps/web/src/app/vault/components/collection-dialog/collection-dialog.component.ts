@@ -249,7 +249,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           }
           this.formGroup.controls.access.updateValueAndValidity();
 
-          this.handleFormGroupReadOnly(this.dialogReadonly);
+          this.handleFormGroupReadonly(this.dialogReadonly);
 
           this.loading = false;
         },
@@ -363,7 +363,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private handleFormGroupReadOnly(readonly: boolean) {
+  private handleFormGroupReadonly(readonly: boolean) {
     if (readonly) {
       this.formGroup.controls.name.disable();
       this.formGroup.controls.externalId.disable();
