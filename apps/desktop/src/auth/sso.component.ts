@@ -2,7 +2,10 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
@@ -36,6 +39,7 @@ export class SsoComponent extends BaseSsoComponent {
     environmentService: EnvironmentService,
     passwordGenerationService: PasswordGenerationServiceAbstraction,
     logService: LogService,
+    userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     configService: ConfigServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     accountService: AccountService,
@@ -53,6 +57,7 @@ export class SsoComponent extends BaseSsoComponent {
       environmentService,
       passwordGenerationService,
       logService,
+      userDecryptionOptionsService,
       configService,
       masterPasswordService,
       accountService,

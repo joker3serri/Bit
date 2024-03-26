@@ -1,4 +1,5 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, BehaviorSubject } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -8,6 +9,8 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -16,14 +19,28 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
+import { CacheData } from "../services/login-strategies/login-strategy.state";
 
-import { LoginStrategy } from "./login.strategy";
+import { LoginStrategy, LoginStrategyData } from "./login.strategy";
+
+export class UserApiLoginStrategyData implements LoginStrategyData {
+  tokenRequest: UserApiTokenRequest;
+  captchaBypassToken: string;
+
+  static fromJSON(obj: Jsonify<UserApiLoginStrategyData>): UserApiLoginStrategyData {
+    return Object.assign(new UserApiLoginStrategyData(), obj, {
+      tokenRequest: UserApiTokenRequest.fromJSON(obj.tokenRequest),
+    });
+  }
+}
 
 export class UserApiLoginStrategy extends LoginStrategy {
-  tokenRequest: UserApiTokenRequest;
+  protected cache: BehaviorSubject<UserApiLoginStrategyData>;
 
   constructor(
+    data: UserApiLoginStrategyData,
     accountService: AccountService,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     cryptoService: CryptoService,
@@ -35,8 +52,10 @@ export class UserApiLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     private environmentService: EnvironmentService,
     private keyConnectorService: KeyConnectorService,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     super(
       accountService,
@@ -50,16 +69,21 @@ export class UserApiLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
+      billingAccountProfileStateService,
     );
+    this.cache = new BehaviorSubject(data);
   }
 
   override async logIn(credentials: UserApiLoginCredentials) {
-    this.tokenRequest = new UserApiTokenRequest(
+    const data = new UserApiLoginStrategyData();
+    data.tokenRequest = new UserApiTokenRequest(
       credentials.clientId,
       credentials.clientSecret,
       await this.buildTwoFactor(),
       await this.buildDeviceRequest(),
     );
+    this.cache.next(data);
 
     const [authResult] = await this.startLogIn();
     return authResult;
@@ -67,7 +91,8 @@ export class UserApiLoginStrategy extends LoginStrategy {
 
   protected override async setMasterKey(response: IdentityTokenResponse) {
     if (response.apiUseKeyConnector) {
-      const keyConnectorUrl = this.environmentService.getKeyConnectorUrl();
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const keyConnectorUrl = env.getKeyConnectorUrl();
       await this.keyConnectorService.setMasterKeyFromUrl(keyConnectorUrl);
     }
   }
@@ -93,7 +118,27 @@ export class UserApiLoginStrategy extends LoginStrategy {
 
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
     await super.saveAccountInformation(tokenResponse);
-    await this.stateService.setApiKeyClientId(this.tokenRequest.clientId);
-    await this.stateService.setApiKeyClientSecret(this.tokenRequest.clientSecret);
+
+    const vaultTimeout = await this.stateService.getVaultTimeout();
+    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
+
+    const tokenRequest = this.cache.value.tokenRequest;
+
+    await this.tokenService.setClientId(
+      tokenRequest.clientId,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
+    await this.tokenService.setClientSecret(
+      tokenRequest.clientSecret,
+      vaultTimeoutAction as VaultTimeoutAction,
+      vaultTimeout,
+    );
+  }
+
+  exportCache(): CacheData {
+    return {
+      userApiKey: this.cache.value,
+    };
   }
 }

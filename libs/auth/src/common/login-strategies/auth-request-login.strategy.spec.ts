@@ -6,6 +6,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -19,12 +20,18 @@ import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
 
-import { AuthRequestLoginStrategy } from "./auth-request-login.strategy";
+import {
+  AuthRequestLoginStrategy,
+  AuthRequestLoginStrategyData,
+} from "./auth-request-login.strategy";
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 
 describe("AuthRequestLoginStrategy", () => {
+  let cache: AuthRequestLoginStrategyData;
+
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -34,7 +41,9 @@ describe("AuthRequestLoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let userDecryptionOptions: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   const mockUserId = Utils.newGuid() as UserId;
   let accountService: FakeAccountService;
@@ -65,16 +74,19 @@ describe("AuthRequestLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptions = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
 
     accountService = mockAccountServiceWith(mockUserId);
     masterPasswordService = new FakeMasterPasswordService();
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.mockResolvedValue({});
+    tokenService.decodeAccessToken.mockResolvedValue({});
 
     authRequestLoginStrategy = new AuthRequestLoginStrategy(
+      cache,
       accountService,
       masterPasswordService,
       cryptoService,
@@ -86,7 +98,9 @@ describe("AuthRequestLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptions,
       deviceTrustCryptoService,
+      billingAccountProfileStateService,
     );
 
     tokenResponse = identityTokenResponseFactory();

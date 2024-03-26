@@ -1,9 +1,13 @@
 import { Component, Inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -41,6 +45,7 @@ export class SsoComponent extends BaseSsoComponent {
     syncService: SyncService,
     environmentService: EnvironmentService,
     logService: LogService,
+    userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     configService: ConfigServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     accountService: AccountService,
@@ -60,14 +65,15 @@ export class SsoComponent extends BaseSsoComponent {
       environmentService,
       passwordGenerationService,
       logService,
+      userDecryptionOptionsService,
       configService,
       masterPasswordService,
       accountService,
     );
 
-    const url = this.environmentService.getWebVaultUrl();
-
-    this.redirectUri = url + "/sso-connector.html";
+    environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
+      this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";
+    });
     this.clientId = "browser";
 
     super.onSuccessfulLogin = async () => {

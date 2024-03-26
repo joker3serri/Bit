@@ -4,7 +4,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
@@ -46,6 +49,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
     loginService: LoginService,
+    userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
@@ -66,6 +70,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
       twoFactorService,
       appIdService,
       loginService,
+      userDecryptionOptionsService,
       ssoLoginService,
       configService,
       masterPasswordService,
@@ -128,7 +133,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     await this.submit();
   };
 
-  override launchDuoFrameless() {
+  override async launchDuoFrameless() {
     const duoHandOffMessage = {
       title: this.i18nService.t("youSuccessfullyLoggedIn"),
       message: this.i18nService.t("thisWindowWillCloseIn5Seconds"),
