@@ -201,14 +201,13 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
   }
 
   async getDeviceKey(): Promise<DeviceKey | null> {
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (!userId) {
+      throw new Error("No active user id found. Cannot get device key.");
+    }
+
     if (this.platformSupportsSecureStorage) {
-      // get active user id
-      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
-
-      if (!userId) {
-        throw new Error("No active user id found. Cannot get device key from secure storage.");
-      }
-
       return await this.secureStorageService.get<DeviceKey>(
         `${userId}${this.deviceKeySecureStorageKey}`,
         this.getSecureStorageOptions(userId),
