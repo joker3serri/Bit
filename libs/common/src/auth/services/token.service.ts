@@ -386,7 +386,9 @@ export class TokenService implements TokenServiceAbstraction {
         // If an error occurs during decryption, return null for logout.
         // We don't try to recover here since we'd like to know
         // if access token and key are getting out of sync.
-        this.logService.error("Failed to decrypt access token");
+        this.logService.error(
+          `Failed to decrypt access token: ${error?.message ?? "Unknown error."}`,
+        );
         return null;
       }
     }
