@@ -77,7 +77,7 @@ async function fakeStateProvider() {
   return stateProvider;
 }
 
-describe("UserEncryptor", () => {
+describe("SecretState", () => {
   describe("from", () => {
     it("returns a state store", async () => {
       const provider = await fakeStateProvider();

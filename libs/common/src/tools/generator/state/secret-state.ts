@@ -1,11 +1,7 @@
-import { Observable, map } from "rxjs";
-import { Jsonify } from "type-fest";
+import { Observable, map, concatMap, share, ReplaySubject, timer } from "rxjs";
 
 import { EncString } from "../../../platform/models/domain/enc-string";
 import {
-  DeriveDefinition,
-  DerivedState,
-  KeyDefinition,
   SingleUserState,
   StateProvider,
   StateUpdateOptions,
@@ -13,28 +9,11 @@ import {
 } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 
+import { ClassifiedFormat } from "./classified-format";
 import { SecretKeyDefinition } from "./secret-key-definition";
 import { UserEncryptor } from "./user-encryptor.abstraction";
 
-/** Describes the structure of data stored by the SecretState's
- *  encrypted state. Notably, this interface ensures that `Disclosed`
- *  round trips through JSON serialization. It also preserves the
- *  Id.
- *  @remarks Tuple representation chosen because it matches
- *  `Object.entries` format.
- */
-type ClassifiedFormat<Id, Disclosed> = {
-  /** Identifies records. `null` when storing a `value` */
-  readonly id: Id | null;
-  /** Serialized {@link EncString} of the secret state's
-   *  secret-level classified data.
-   */
-  readonly secret: string;
-  /** serialized representation of the secret state's
-   * disclosed-level classified data.
-   */
-  readonly disclosed: Jsonify<Disclosed>;
-};
+const ONE_MINUTE = 1000 * 60;
 
 /** Stores account-specific secrets protected by a UserKeyEncryptor.
  *
@@ -55,37 +34,26 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
     userId: UserId,
     provider: StateProvider,
   ) {
-    const secretKey = new KeyDefinition<ClassifiedFormat<Id, Disclosed>[]>(
-      key.stateDefinition,
-      key.key,
-      {
-        cleanupDelayMs: key.options.cleanupDelayMs,
-        deserializer: (jsonValue) => jsonValue as ClassifiedFormat<Id, Disclosed>[],
-      },
-    );
-    this.encryptedState = provider.getUser(userId, secretKey);
+    // construct the backing store
+    this.encryptedState = provider.getUser(userId, key.toEncryptedStateKey());
 
-    // construct plaintext store
-    const plaintextDefinition = DeriveDefinition.from<ClassifiedFormat<Id, Disclosed>[], Outer>(
-      secretKey,
-      {
-        derive: async (from) => this.declassifyAll(from),
-        deserializer: (d) => this.deserializeAll(d),
-        cleanupDelayMs: key.options.cleanupDelayMs,
-      },
-    );
-    this.plaintextState = provider.getDerived(
-      this.encryptedState.state$,
-      plaintextDefinition,
-      null,
+    // cache plaintext
+    this.combinedState$ = this.encryptedState.combinedState$.pipe(
+      concatMap(
+        async ([userId, state]) => [userId, await this.declassifyAll(state)] as [UserId, Outer],
+      ),
+      share({
+        connector: () => {
+          return new ReplaySubject<[UserId, Outer]>(1);
+        },
+        resetOnRefCountZero: () => timer(key.options.cleanupDelayMs ?? ONE_MINUTE),
+      }),
     );
 
-    this.state$ = this.plaintextState.state$;
-    this.combinedState$ = this.plaintextState.state$.pipe(map((state) => [userId, state]));
+    this.state$ = this.combinedState$.pipe(map(([, state]) => state));
   }
 
   private readonly encryptedState: SingleUserState<ClassifiedFormat<Id, Disclosed>[]>;
-  private readonly plaintextState: DerivedState<Outer>;
 
   /** {@link SingleUserState.userId} */
   get userId() {
@@ -128,7 +96,7 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
     const decrypted = await this.encryptor.decrypt(encrypted, this.encryptedState.userId);
 
     const declassified = this.key.classifier.declassify(disclosed, decrypted);
-    const result = this.deserializeItem([id, declassified]);
+    const result = [id, this.key.options.deserializer(declassified)] as const;
 
     return result;
   }
@@ -180,17 +148,6 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
     const classified = await Promise.all(classifyTasks);
 
     return classified;
-  }
-
-  private deserializeItem([key, value]: [Id, Jsonify<Plaintext>]) {
-    return [key, this.key.options.deserializer(value)] as const;
-  }
-
-  private deserializeAll(data: Jsonify<Outer>) {
-    const items = this.key.deconstruct(data);
-    const results = items.map((item) => this.deserializeItem(item));
-    const result = this.key.reconstruct(results);
-    return result;
   }
 
   /** Updates the secret stored by this state.
