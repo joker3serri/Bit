@@ -470,7 +470,7 @@ export class Main {
     );
 
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
-      this.activeUserStateProvider,
+      this.stateProvider,
     );
 
     this.loginStrategyService = new LoginStrategyService(
@@ -497,6 +497,7 @@ export class Main {
     );
 
     this.authService = new AuthService(
+      this.accountService,
       this.messagingService,
       this.cryptoService,
       this.apiService,
