@@ -408,12 +408,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Announce the removal of the passkey
-    this.passkeyRemovedAnnouncement = true;
-
     this.cipher.login.fido2Credentials = null;
 
-    document.getElementById("loginTotp")?.focus();
+    const announcer = document.getElementById("passkeyRemovedAnnouncer");
+    announcer.textContent = this.i18nService.t("passkeyRemoved");
+    setTimeout(() => (announcer.textContent = ""), 2000);
   }
 
   onCardNumberChange(): void {

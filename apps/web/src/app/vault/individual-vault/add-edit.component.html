@@ -191,14 +191,14 @@
               </button>
             </div>
           </div>
-          <pre>
-            {{ passkeyRemovedAnnouncement }}
-          </pre>
-          <div aria-live="polite" *ngIf="passkeyRemovedAnnouncement" class="sr-only">
-            {{ "passkeyRemoved" | i18n }}
-          </div>
-          <ng-container>
-            <div class="tw-flex tw-flex-row" *ngIf="cipher.login.hasFido2Credentials">
+          <div
+            aria-live="assertive"
+            aria-atomic="true"
+            class="sr-only"
+            id="passkeyRemovedAnnouncer"
+          ></div>
+          <ng-container *ngIf="cipher.login.hasFido2Credentials">
+            <div class="tw-flex tw-flex-row">
               <div class="tw-mb-4 tw-w-1/2">
                 <label for="loginFido2credential">{{ "typePasskey" | i18n }}</label>
                 <div
