@@ -1,5 +1,4 @@
-import { GeneratedCredential } from "./generated-credential";
-import { GeneratorCategory } from "./options";
+import { GeneratorCategory, GeneratedCredential } from "./";
 
 describe("GeneratedCredential", () => {
   describe("constructor", () => {
