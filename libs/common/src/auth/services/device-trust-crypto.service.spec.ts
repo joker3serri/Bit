@@ -15,7 +15,6 @@ import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
-import { StateService } from "../../platform/abstractions/state.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { EncryptionType } from "../../platform/enums/encryption-type.enum";
@@ -44,7 +43,6 @@ describe("deviceTrustCryptoService", () => {
   const cryptoFunctionService = mock<CryptoFunctionService>();
   const cryptoService = mock<CryptoService>();
   const encryptService = mock<EncryptService>();
-  const stateService = mock<StateService>();
   const appIdService = mock<AppIdService>();
   const devicesApiService = mock<DevicesApiServiceAbstraction>();
   const i18nService = mock<I18nService>();
@@ -754,7 +752,6 @@ describe("deviceTrustCryptoService", () => {
       cryptoFunctionService,
       cryptoService,
       encryptService,
-      stateService,
       appIdService,
       devicesApiService,
       i18nService,

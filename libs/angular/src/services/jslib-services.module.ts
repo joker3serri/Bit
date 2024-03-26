@@ -914,7 +914,6 @@ const typesafeProviders: Array<SafeProvider> = [
       CryptoFunctionServiceAbstraction,
       CryptoServiceAbstraction,
       EncryptService,
-      StateServiceAbstraction,
       AppIdServiceAbstraction,
       DevicesApiServiceAbstraction,
       I18nServiceAbstraction,

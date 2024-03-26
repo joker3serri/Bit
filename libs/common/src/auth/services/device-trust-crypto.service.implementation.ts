@@ -9,7 +9,6 @@ import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
-import { StateService } from "../../platform/abstractions/state.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { EncString } from "../../platform/models/domain/enc-string";
@@ -60,7 +59,6 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private cryptoFunctionService: CryptoFunctionService,
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
-    private stateService: StateService,
     private appIdService: AppIdService,
     private devicesApiService: DevicesApiServiceAbstraction,
     private i18nService: I18nService,
