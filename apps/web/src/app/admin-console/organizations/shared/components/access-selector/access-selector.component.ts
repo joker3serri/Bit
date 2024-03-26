@@ -229,10 +229,10 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   /** Required for NG_VALUE_ACCESSOR */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
-    this.permissionMode = PermissionMode.Readonly;
 
     // Keep the internal FormGroup in sync
     if (this.disabled) {
+      this.permissionMode = PermissionMode.Readonly;
       this.formGroup.disable();
     } else {
       this.formGroup.enable();
