@@ -344,6 +344,7 @@ const safeProviders: SafeProvider[] = [
     provide: AuthServiceAbstraction,
     useClass: AuthService,
     deps: [
+      AccountServiceAbstraction,
       MessagingServiceAbstraction,
       CryptoServiceAbstraction,
       ApiServiceAbstraction,
@@ -501,7 +502,10 @@ const safeProviders: SafeProvider[] = [
       SingleUserStateProvider,
       GlobalStateProvider,
       SUPPORTS_SECURE_STORAGE,
-      AbstractStorageService,
+      SECURE_STORAGE,
+      KeyGenerationServiceAbstraction,
+      EncryptService,
+      LogService,
     ],
   }),
   safeProvider({
@@ -1065,7 +1069,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: BillingAccountProfileStateService,
     useClass: DefaultBillingAccountProfileStateService,
-    deps: [ActiveUserStateProvider],
+    deps: [StateProvider],
   }),
   safeProvider({
     provide: OrganizationManagementPreferencesService,
