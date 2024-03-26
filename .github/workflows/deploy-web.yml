@@ -169,7 +169,7 @@ jobs:
       _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
     steps:
       - name: 'Download latest cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         id: download-artifacts
         continue-on-error: true
         with:
@@ -250,7 +250,7 @@ jobs:
           secrets: "sa-bitwarden-web-vault-name,sp-bitwarden-web-vault-password,sp-bitwarden-web-vault-appid,sp-bitwarden-web-vault-tenant"
 
       - name: 'Download cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-web.yml
           path: apps/web

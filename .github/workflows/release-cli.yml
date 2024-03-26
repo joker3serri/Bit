@@ -78,7 +78,7 @@ jobs:
 
       - name: Download all Release artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli
@@ -87,7 +87,7 @@ jobs:
 
       - name: Dry Run - Download all artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli
@@ -160,7 +160,7 @@ jobs:
 
       - name: Download artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli
@@ -170,7 +170,7 @@ jobs:
 
       - name: Dry Run - Download artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli
@@ -220,7 +220,7 @@ jobs:
 
       - name: Download artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli/dist
@@ -230,7 +230,7 @@ jobs:
 
       - name: Dry Run - Download artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli/dist
@@ -270,7 +270,7 @@ jobs:
 
       - name: Download artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli/build
@@ -280,7 +280,7 @@ jobs:
 
       - name: Dry Run - Download artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-cli.yml
           path: apps/cli/build

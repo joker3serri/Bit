@@ -134,7 +134,7 @@ jobs:
 
       - name: Download latest build artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-web.yml
           path: apps/web/artifacts
@@ -145,7 +145,7 @@ jobs:
 
       - name: Dry Run - Download latest build artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@423bb8e005741b475b39038b28845d13ffd09c87
         with:
           workflow: build-web.yml
           path: apps/web/artifacts
