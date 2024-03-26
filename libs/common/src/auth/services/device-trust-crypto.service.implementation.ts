@@ -32,16 +32,12 @@ import {
   UpdateDevicesTrustRequest,
 } from "../models/request/update-devices-trust.request";
 
-/**
- * Uses disk storage so that the device key can persist after log out and tab removal.
- */
+/** Uses disk storage so that the device key can persist after log out and tab removal. */
 export const DEVICE_KEY = new KeyDefinition<DeviceKey>(DEVICE_TRUST_DISK, "deviceKey", {
   deserializer: (deviceKey) => SymmetricCryptoKey.fromJSON(deviceKey) as DeviceKey,
 });
 
-/**
- * Uses disk storage so that the shouldTrustDevice bool can persist across login.
- */
+/** Uses disk storage so that the shouldTrustDevice bool can persist across login. */
 export const SHOULD_TRUST_DEVICE = new KeyDefinition<boolean>(
   DEVICE_TRUST_DISK,
   "shouldTrustDevice",
