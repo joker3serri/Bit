@@ -10,6 +10,7 @@ import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/for
 import { SsoTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/sso-token.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
@@ -20,7 +21,10 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
-import { AuthRequestServiceAbstraction } from "../abstractions";
+import {
+  InternalUserDecryptionOptionsServiceAbstraction,
+  AuthRequestServiceAbstraction,
+} from "../abstractions";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
 import { CacheData } from "../services/login-strategies/login-strategy.state";
 
@@ -29,6 +33,10 @@ import { LoginStrategyData, LoginStrategy } from "./login.strategy";
 export class SsoLoginStrategyData implements LoginStrategyData {
   captchaBypassToken: string;
   tokenRequest: SsoTokenRequest;
+  /**
+   * User's entered email obtained pre-login. Present in most SSO flows, but not CLI + SSO Flow.
+   */
+  userEnteredEmail?: string;
   /**
    * User email address. Only available after authentication.
    */
@@ -79,10 +87,12 @@ export class SsoLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     private keyConnectorService: KeyConnectorService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authRequestService: AuthRequestServiceAbstraction,
     private i18nService: I18nService,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     super(
       cryptoService,
@@ -94,6 +104,8 @@ export class SsoLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
+      billingAccountProfileStateService,
     );
 
     this.cache = new BehaviorSubject(data);
@@ -105,11 +117,14 @@ export class SsoLoginStrategy extends LoginStrategy {
   async logIn(credentials: SsoLoginCredentials) {
     const data = new SsoLoginStrategyData();
     data.orgId = credentials.orgId;
+
+    data.userEnteredEmail = credentials.email;
+
     data.tokenRequest = new SsoTokenRequest(
       credentials.code,
       credentials.codeVerifier,
       credentials.redirectUrl,
-      await this.buildTwoFactor(credentials.twoFactor),
+      await this.buildTwoFactor(credentials.twoFactor, credentials.email),
       await this.buildDeviceRequest(),
     );
 
