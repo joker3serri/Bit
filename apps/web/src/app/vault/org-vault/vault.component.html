@@ -51,9 +51,6 @@
       [cloneableOrganizationCiphers]="true"
       [showAdminActions]="true"
       (onEvent)="onVaultItemsEvent($event)"
-      [showBulkEditCollectionAccess]="
-        (showBulkEditCollectionAccess$ | async) && organization?.flexibleCollections
-      "
       [showBulkAddToCollections]="organization?.flexibleCollections"
       [viewingOrgVault]="true"
     >

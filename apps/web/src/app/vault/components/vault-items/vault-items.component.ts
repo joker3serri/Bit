@@ -41,7 +41,6 @@ export class VaultItemsComponent {
   @Input() allOrganizations: Organization[] = [];
   @Input() allCollections: CollectionView[] = [];
   @Input() allGroups: GroupView[] = [];
-  @Input() showBulkEditCollectionAccess = false;
   @Input() showBulkAddToCollections = false;
   @Input() showPermissionsColumn = false;
   @Input() viewingOrgVault: boolean;
