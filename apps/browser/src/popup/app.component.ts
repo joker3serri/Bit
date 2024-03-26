@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
-import { filter, concatMap, Subject, takeUntil, firstValueFrom, tap, map } from "rxjs";
+import { Subject, takeUntil, firstValueFrom, concatMap, filter, tap } from "rxjs";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private messageListener: MessageListener,
     private toastService: ToastService,
+    private accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -53,14 +55,13 @@ export class AppComponent implements OnInit, OnDestroy {
     // Clear them aggressively to make sure this doesn't occur
     await this.clearComponentStates();
 
-    this.stateService.activeAccount$.pipe(takeUntil(this.destroy$)).subscribe((userId) => {
-      this.activeUserId = userId;
+    this.accountService.activeAccount$.pipe(takeUntil(this.destroy$)).subscribe((account) => {
+      this.activeUserId = account?.id;
     });
 
     this.authService.activeAccountStatus$
       .pipe(
-        map((status) => status === AuthenticationStatus.Unlocked),
-        filter((unlocked) => unlocked),
+        filter((status) => status === AuthenticationStatus.Unlocked),
         concatMap(async () => {
           await this.recordActivity();
         }),
