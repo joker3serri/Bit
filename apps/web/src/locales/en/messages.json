@@ -7646,9 +7646,17 @@
   "machineAccountsCannotCreate": {
     "message": "Machine accounts cannot be created in suspended organizations. Please contact your organization owner for assistance."
   },
+  "machineAccount": {
+    "message": "Machine account",
+    "description": "A machine user which can be used to automate processes and access secrets in the system."
+  },
   "machineAccounts": {
     "message": "Machine accounts",
     "description": "The title for the section that deals with machine accounts."
+  },
+  "newMachineAccount": {
+    "message": "New machine account",
+    "description": "Title for creating a new machine account."
   },
   "machineAccountsNoItemsMessage": {
     "message": "Create a new machine account to get started automating secret access.",
@@ -7661,6 +7669,14 @@
   "deleteMachineAccounts": {
     "message": "Delete machine accounts",
     "description": "Title for the action to delete one or multiple machine accounts."
+  },
+  "deleteMachineAccount": {
+    "message": "Delete machine account",
+    "description": "Title for the action to delete a single machine account."
+  },
+  "viewMachineAccount": {
+    "message": "View machine account",
+    "description": "Action to view the details of a machine account."
   },
   "deleteMachineAccountsDialogMessage": {
     "message": "Deleting machine accounts is permanent and irreversible."
@@ -7735,22 +7751,14 @@
   "limitMachineAccountsDesc": {
     "message": "Set a limit for your machine accounts. Once this limit is reached, you will not be able to create new machine accounts."
   },
-  "viewMachineAccount": {
-    "message": "View machine account",
-    "description": "Action to view the details of a machine account."
-  },
   "editMachineAccount": {
     "message": "Edit machine account",
     "description": "Title for editing a machine account."
   },
-  "deleteMachineAccount": {
-    "message": "Delete machine account",
-    "description": "Title for the action to delete a single machine account."
-  },
   "deleteMachineAccountDialogMessage": {
-    "message": "Deleting machine account $SERVICE_ACCOUNT$ is permanent and irreversible.",
+    "message": "Deleting machine account $MACHINE_ACCOUNT$ is permanent and irreversible.",
     "placeholders": {
-      "service_account": {
+      "machine_account": {
         "content": "$1",
         "example": "Machine account name"
       }
@@ -7758,14 +7766,6 @@
   },
   "deleteMachineAccountToast": {
     "message": "machine account deleted"
-  },
-  "newMachineAccount": {
-    "message": "New machine account",
-    "description": "Title for creating a new machine account."
-  },
-  "machineAccount": {
-    "message": "Machine account",
-    "description": "A machine user which can be used to automate processes and access secrets in the system."
   },
   "machineAccountName": {
     "message": "Machine account name",
