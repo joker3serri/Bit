@@ -104,8 +104,6 @@ export class AccountKeys {
   publicKey?: Uint8Array;
 
   /** @deprecated July 2023, left for migration purposes*/
-  cryptoMasterKey?: SymmetricCryptoKey;
-  /** @deprecated July 2023, left for migration purposes*/
   cryptoMasterKeyAuto?: string;
   /** @deprecated July 2023, left for migration purposes*/
   cryptoMasterKeyBiometric?: string;

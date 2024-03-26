@@ -311,16 +311,6 @@ export class StateService<
   }
 
   /**
-   * @deprecated Do not save the Master Key. Use the User Symmetric Key instead
-   */
-  async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    return account?.keys?.cryptoMasterKey;
-  }
-
-  /**
    * The master key encrypted User symmetric key, saved on every auth
    * so we can unlock with MP offline
    */

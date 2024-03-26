@@ -19,7 +19,6 @@ import { ServerConfigData } from "../models/data/server-config.data";
 import { Account } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
 /**
  * Options for customizing the initiation behavior.
@@ -106,10 +105,6 @@ export abstract class StateService<T extends Account = Account> {
    * @deprecated For migration purposes only, use getUserKeyMasterKey instead
    */
   getEncryptedCryptoSymmetricKey: (options?: StorageOptions) => Promise<string>;
-  /**
-   * @deprecated For legacy purposes only, use getMasterKey instead
-   */
-  getCryptoMasterKey: (options?: StorageOptions) => Promise<SymmetricCryptoKey>;
   /**
    * @deprecated For migration purposes only, use getUserKeyAuto instead
    */
