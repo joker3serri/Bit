@@ -1,9 +1,11 @@
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { Migrator } from "../migrator";
 
-type ExpectedAccountState = {
-  usesKeyConnector?: boolean;
-  convertAccountToKeyConnector?: boolean;
+type ExpectedAccountType = {
+  profile?: {
+    usesKeyConnector?: boolean;
+    convertAccountToKeyConnector?: boolean;
+  };
 };
 
 const usesKeyConnectorKeyDefinition: KeyDefinitionLike = {
@@ -22,57 +24,55 @@ const convertAccountToKeyConnectorKeyDefinition: KeyDefinitionLike = {
 
 export class KeyConnectorMigrator extends Migrator<48, 49> {
   async migrate(helper: MigrationHelper): Promise<void> {
-    const profileState = await helper.get<ExpectedAccountState>("profile");
-
-    // profile.usesKeyConnector -> usesKeyConnector
-    if (profileState?.usesKeyConnector != null) {
-      await helper.setToGlobal(usesKeyConnectorKeyDefinition, profileState.usesKeyConnector);
-
-      delete profileState.usesKeyConnector;
-
-      await helper.set<ExpectedAccountState>("profile", profileState);
+    const accounts = await helper.getAccounts<ExpectedAccountType>();
+    async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
+      const usesKeyConnector = account?.profile?.usesKeyConnector;
+      const convertAccountToKeyConnector = account?.profile?.convertAccountToKeyConnector;
+      if (usesKeyConnector == null && convertAccountToKeyConnector == null) {
+        return;
+      }
+      if (usesKeyConnector != null) {
+        await helper.setToUser(userId, usesKeyConnectorKeyDefinition, usesKeyConnector);
+        delete account.profile.usesKeyConnector;
+      }
+      if (convertAccountToKeyConnector != null) {
+        await helper.setToUser(
+          userId,
+          convertAccountToKeyConnectorKeyDefinition,
+          convertAccountToKeyConnector,
+        );
+        delete account.profile.convertAccountToKeyConnector;
+      }
+      await helper.set(userId, account);
     }
-
-    // profile.convertAccountToKeyConnector -> convertAccountToKeyConnector
-    if (profileState?.convertAccountToKeyConnector != null) {
-      await helper.setToGlobal(
-        convertAccountToKeyConnectorKeyDefinition,
-        profileState.convertAccountToKeyConnector,
-      );
-
-      delete profileState.convertAccountToKeyConnector;
-
-      await helper.set<ExpectedAccountState>("profile", profileState);
-    }
+    await Promise.all([...accounts.map(({ userId, account }) => migrateAccount(userId, account))]);
   }
 
   async rollback(helper: MigrationHelper): Promise<void> {
-    const globalState = (await helper.get<ExpectedAccountState>("profile")) || {};
-
-    const usesKeyConnector: boolean = await helper.getFromGlobal(usesKeyConnectorKeyDefinition);
-
-    // usesKeyConnector -> profile.usesKeyConnector
-    if (usesKeyConnector != null) {
-      await helper.set<ExpectedAccountState>("profile", {
-        ...globalState,
-        usesKeyConnector: usesKeyConnector,
-      });
-
-      await helper.setToGlobal(usesKeyConnectorKeyDefinition, null);
+    const accounts = await helper.getAccounts<ExpectedAccountType>();
+    async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
+      const usesKeyConnector: boolean = await helper.getFromUser(
+        userId,
+        usesKeyConnectorKeyDefinition,
+      );
+      const convertAccountToKeyConnector: boolean = await helper.getFromUser(
+        userId,
+        convertAccountToKeyConnectorKeyDefinition,
+      );
+      if (usesKeyConnector == null && convertAccountToKeyConnector == null) {
+        return;
+      }
+      if (usesKeyConnector != null) {
+        account.profile.usesKeyConnector = usesKeyConnector;
+        await helper.setToUser(userId, usesKeyConnectorKeyDefinition, null);
+      }
+      if (convertAccountToKeyConnector != null) {
+        account.profile.convertAccountToKeyConnector = convertAccountToKeyConnector;
+        await helper.setToUser(userId, convertAccountToKeyConnectorKeyDefinition, null);
+      }
+      await helper.set(userId, account);
     }
 
-    const convertAccountToKeyConnector: boolean = await helper.getFromGlobal(
-      convertAccountToKeyConnectorKeyDefinition,
-    );
-
-    // usesKeyConnector -> profile.convertAccountToKeyConnector
-    if (convertAccountToKeyConnector != null) {
-      await helper.set<ExpectedAccountState>("profile", {
-        ...globalState,
-        convertAccountToKeyConnector: convertAccountToKeyConnector,
-      });
-
-      await helper.setToGlobal(convertAccountToKeyConnectorKeyDefinition, null);
-    }
+    await Promise.all([...accounts.map(({ userId, account }) => rollbackAccount(userId, account))]);
   }
 }

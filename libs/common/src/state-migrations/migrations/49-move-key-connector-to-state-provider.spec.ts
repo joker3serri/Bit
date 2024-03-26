@@ -7,25 +7,51 @@ import { KeyConnectorMigrator } from "./49-move-key-connector-to-state-provider"
 
 function exampleJSON() {
   return {
-    profile: {
-      usesKeyConnector: true,
-      convertAccountToKeyConnector: true,
-      otherProfileStuff: "profile.otherStuff1",
+    global: {
+      otherStuff: "otherStuff1",
+    },
+    authenticatedAccounts: ["FirstAccount", "SecondAccount", "ThirdAccount"],
+    FirstAccount: {
+      profile: {
+        usesKeyConnector: true,
+        convertAccountToKeyConnector: false,
+        otherStuff: "otherStuff2",
+      },
+      otherStuff: "otherStuff3",
+    },
+    SecondAccount: {
+      profile: {
+        usesKeyConnector: true,
+        convertAccountToKeyConnector: true,
+        otherStuff: "otherStuff4",
+      },
+      otherStuff: "otherStuff5",
     },
   };
 }
 
 function rollbackJSON() {
   return {
-    global_keyConnector_usesKeyConnector: false,
-    global_keyConnector_convertAccountToKeyConnector: false,
+    user_FirstAccount_keyConnector_usesKeyConnector: true,
+    user_FirstAccount_keyConnector_convertAccountToKeyConnector: false,
+    user_SecondAccount_keyConnector_usesKeyConnector: true,
+    user_SecondAccount_keyConnector_convertAccountToKeyConnector: true,
     global: {
-      otherGlobalStuff: "global.otherStuff1",
+      otherStuff: "otherStuff1",
     },
-    profile: {
-      otherProfileStuff: "profile.otherStuff1",
+    authenticatedAccounts: ["FirstAccount", "SecondAccount", "ThirdAccount"],
+    FirstAccount: {
+      profile: {
+        otherStuff: "otherStuff2",
+      },
+      otherStuff: "otherStuff3",
     },
-    otherStuff: "otherStuff2",
+    SecondAccount: {
+      profile: {
+        otherStuff: "otherStuff4",
+      },
+      otherStuff: "otherStuff5",
+    },
   };
 }
 
@@ -56,27 +82,41 @@ describe("KeyConnectorMigrator", () => {
     it("should remove usesKeyConnector and convertAccountToKeyConnector from Profile", async () => {
       await sut.migrate(helper);
 
+      // Set is called 2 times even though there are 3 accounts. Since the target properties don't exist in ThirdAccount, they are not set.
       expect(helper.set).toHaveBeenCalledTimes(2);
-      expect(helper.set).toHaveBeenCalledWith("profile", {
-        otherProfileStuff: "profile.otherStuff1",
+      expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
+        profile: {
+          otherStuff: "otherStuff2",
+        },
+        otherStuff: "otherStuff3",
       });
-    });
-
-    it("should set usesKeyConnector globally", async () => {
-      await sut.migrate(helper);
-
-      expect(helper.setToGlobal).toHaveBeenCalledTimes(2);
-      expect(helper.setToGlobal).toHaveBeenCalledWith(usesKeyConnectorKeyDefinition, true);
-    });
-
-    it("should set convertAccountToKeyConnector globally", async () => {
-      await sut.migrate(helper);
-
-      expect(helper.setToGlobal).toHaveBeenCalledTimes(2);
-      expect(helper.setToGlobal).toHaveBeenCalledWith(
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "FirstAccount",
+        usesKeyConnectorKeyDefinition,
+        true,
+      );
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "FirstAccount",
+        convertAccountToKeyConnectorKeyDefinition,
+        false,
+      );
+      expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
+        profile: {
+          otherStuff: "otherStuff4",
+        },
+        otherStuff: "otherStuff5",
+      });
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "SecondAccount",
+        usesKeyConnectorKeyDefinition,
+        true,
+      );
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "SecondAccount",
         convertAccountToKeyConnectorKeyDefinition,
         true,
       );
+      expect(helper.setToUser).not.toHaveBeenCalledWith("ThirdAccount");
     });
   });
 
@@ -89,32 +129,47 @@ describe("KeyConnectorMigrator", () => {
     it("should null out new usesKeyConnector global value", async () => {
       await sut.rollback(helper);
 
-      expect(helper.setToGlobal).toHaveBeenCalledTimes(2);
-      expect(helper.setToGlobal).toHaveBeenCalledWith(usesKeyConnectorKeyDefinition, null);
-      expect(helper.setToGlobal).toHaveBeenCalledWith(
+      expect(helper.setToUser).toHaveBeenCalledTimes(4);
+      expect(helper.set).toHaveBeenCalledTimes(2);
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "FirstAccount",
+        usesKeyConnectorKeyDefinition,
+        null,
+      );
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "FirstAccount",
         convertAccountToKeyConnectorKeyDefinition,
         null,
       );
-    });
-
-    it("should add usesKeyConnector profile value to profile", async () => {
-      await sut.rollback(helper);
-
-      expect(helper.set).toHaveBeenCalledTimes(2);
-      expect(helper.set).toHaveBeenCalledWith("profile", {
-        usesKeyConnector: false,
-        otherProfileStuff: "profile.otherStuff1",
+      expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
+        profile: {
+          usesKeyConnector: true,
+          convertAccountToKeyConnector: false,
+          otherStuff: "otherStuff2",
+        },
+        otherStuff: "otherStuff3",
       });
-    });
-
-    it("should add convertAccountToKeyConnector profile value to profile", async () => {
-      await sut.rollback(helper);
-
-      expect(helper.set).toHaveBeenCalledTimes(2);
-      expect(helper.set).toHaveBeenCalledWith("profile", {
-        convertAccountToKeyConnector: false,
-        otherProfileStuff: "profile.otherStuff1",
+      // expect(helper.set).toHaveBeenCalledWith("FirstAccount", {});
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "SecondAccount",
+        usesKeyConnectorKeyDefinition,
+        null,
+      );
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "SecondAccount",
+        convertAccountToKeyConnectorKeyDefinition,
+        null,
+      );
+      expect(helper.set).toHaveBeenCalledWith("SecondAccount", {
+        profile: {
+          usesKeyConnector: true,
+          convertAccountToKeyConnector: true,
+          otherStuff: "otherStuff4",
+        },
+        otherStuff: "otherStuff5",
       });
+      expect(helper.setToUser).not.toHaveBeenCalledWith("ThirdAccount");
+      expect(helper.set).not.toHaveBeenCalledWith("ThirdAccount");
     });
   });
 });
