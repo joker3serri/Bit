@@ -283,7 +283,7 @@ export class TokenService implements TokenServiceAbstraction {
 
   // Private because we only ever set the refresh token when also setting the access token
   // and we need the user id from the access token to save to secure storage
-  private async setRefreshToken(
+  async setRefreshToken(
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number | null,

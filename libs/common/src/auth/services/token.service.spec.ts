@@ -1045,9 +1045,10 @@ describe("TokenService", () => {
       it("should throw an error if no user id is provided", async () => {
         // Act
         // note: don't await here because we want to test the error
-        const result = (tokenService as any).setRefreshToken(
+        const result = tokenService.setRefreshToken(
           refreshToken,
           VaultTimeoutAction.Lock,
+          null,
           null,
         );
         // Assert
@@ -1057,7 +1058,7 @@ describe("TokenService", () => {
       describe("Memory storage tests", () => {
         it("should set the refresh token in memory for the specified user id", async () => {
           // Act
-          await (tokenService as any).setRefreshToken(
+          await tokenService.setRefreshToken(
             refreshToken,
             memoryVaultTimeoutAction,
             memoryVaultTimeout,
@@ -1074,7 +1075,7 @@ describe("TokenService", () => {
       describe("Disk storage tests (secure storage not supported on platform)", () => {
         it("should set the refresh token in disk for the specified user id", async () => {
           // Act
-          await (tokenService as any).setRefreshToken(
+          await tokenService.setRefreshToken(
             refreshToken,
             diskVaultTimeoutAction,
             diskVaultTimeout,
@@ -1106,7 +1107,7 @@ describe("TokenService", () => {
             .stateSubject.next([userIdFromAccessToken, refreshToken]);
 
           // Act
-          await (tokenService as any).setRefreshToken(
+          await tokenService.setRefreshToken(
             refreshToken,
             diskVaultTimeoutAction,
             diskVaultTimeout,
@@ -1906,7 +1907,7 @@ describe("TokenService", () => {
 
       (tokenService as any)._setAccessToken = jest.fn();
       // any hack allows for mocking private method.
-      (tokenService as any).setRefreshToken = jest.fn();
+      tokenService.setRefreshToken = jest.fn();
       tokenService.setClientId = jest.fn();
       tokenService.setClientSecret = jest.fn();
 
@@ -1926,7 +1927,7 @@ describe("TokenService", () => {
       );
 
       // any hack allows for testing private methods
-      expect((tokenService as any).setRefreshToken).toHaveBeenCalledWith(
+      expect(tokenService.setRefreshToken).toHaveBeenCalledWith(
         refreshToken,
         vaultTimeoutAction,
         vaultTimeout,
@@ -1954,7 +1955,7 @@ describe("TokenService", () => {
       const vaultTimeout = 30;
 
       (tokenService as any)._setAccessToken = jest.fn();
-      (tokenService as any).setRefreshToken = jest.fn();
+      tokenService.setRefreshToken = jest.fn();
       tokenService.setClientId = jest.fn();
       tokenService.setClientSecret = jest.fn();
 
@@ -1970,7 +1971,7 @@ describe("TokenService", () => {
       );
 
       // any hack allows for testing private methods
-      expect((tokenService as any).setRefreshToken).toHaveBeenCalledWith(
+      expect(tokenService.setRefreshToken).toHaveBeenCalledWith(
         refreshToken,
         vaultTimeoutAction,
         vaultTimeout,

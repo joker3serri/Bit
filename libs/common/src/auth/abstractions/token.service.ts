@@ -73,6 +73,22 @@ export abstract class TokenService {
   getRefreshToken: (userId?: UserId) => Promise<string | undefined>;
 
   /**
+   * Sets the refresh token in memory or disk based on the given vaultTimeoutAction and vaultTimeout
+   * and the user id
+   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
+   * @param refreshToken The refresh token to set.
+   * @param vaultTimeoutAction The action to take when the vault times out.
+   * @param vaultTimeout The timeout for the vault.
+   * @returns A promise that resolves when the refresh token has been set.
+   */
+  setRefreshToken: (
+    refreshToken: string,
+    vaultTimeoutAction: VaultTimeoutAction,
+    vaultTimeout: number | null,
+    userId: UserId,
+  ) => Promise<void>;
+
+  /**
    * Sets the API Key Client ID for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
    * @param clientId The API Key Client ID to set.
    * @param vaultTimeoutAction The action to take when the vault times out.
