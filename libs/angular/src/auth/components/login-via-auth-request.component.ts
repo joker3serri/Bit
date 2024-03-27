@@ -41,7 +41,6 @@ enum State {
   AdminAuthRequest,
 }
 
-// TODO: update deps of all child components to match the super class
 @Directive()
 export class LoginViaAuthRequestComponent
   extends CaptchaProtectedComponent
