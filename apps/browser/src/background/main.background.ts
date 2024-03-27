@@ -446,6 +446,9 @@ export default class MainBackground {
       this.globalStateProvider,
       this.platformUtilsService.supportsSecureStorage(),
       this.secureStorageService,
+      this.keyGenerationService,
+      this.encryptService,
+      this.logService,
     );
 
     const migrationRunner = new MigrationRunner(
@@ -577,6 +580,7 @@ export default class MainBackground {
     );
 
     this.authService = new AuthService(
+      this.accountService,
       backgroundMessagingService,
       this.cryptoService,
       this.apiService,
@@ -584,7 +588,7 @@ export default class MainBackground {
     );
 
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
-      this.activeUserStateProvider,
+      this.stateProvider,
     );
 
     this.loginStrategyService = new LoginStrategyService(
