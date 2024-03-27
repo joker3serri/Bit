@@ -1,19 +1,21 @@
 import { SEND_USER_ENCRYPTED, SEND_USER_DECRYPTED } from "./key-definitions";
+import { testSendData, testSendViewData } from "./test-data/send-tests.data";
 
 describe("Key definitions", () => {
   describe("SEND_USER_ENCRYPTED", () => {
     it("should pass through deserialization", () => {
-      const value: any = {};
-      const result = SEND_USER_ENCRYPTED.deserializer(value);
-      expect(result).toStrictEqual(value);
+      const result = SEND_USER_ENCRYPTED.deserializer(
+        JSON.parse(JSON.stringify(testSendData("1", "Test Send Data"))),
+      );
+      expect(result).toStrictEqual(testSendData);
     });
   });
 
   describe("SEND_USER_DECRYPTED", () => {
     it("should pass through deserialization", () => {
-      const value: any = {};
-      const result = SEND_USER_DECRYPTED.deserializer(value);
-      expect(result).toStrictEqual(value);
+      const sendViews = [testSendViewData("1", "Test Send View")];
+      const result = SEND_USER_DECRYPTED.deserializer(JSON.parse(JSON.stringify(sendViews)));
+      expect(result).toEqual(sendViews);
     });
   });
 });
