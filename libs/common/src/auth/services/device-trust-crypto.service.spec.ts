@@ -137,11 +137,14 @@ describe("deviceTrustCryptoService", () => {
 
     describe("getDeviceKey", () => {
       let existingDeviceKey: DeviceKey;
+      let existingDeviceKeyB64: { keyB64: string };
 
       beforeEach(() => {
         existingDeviceKey = new SymmetricCryptoKey(
           new Uint8Array(deviceKeyBytesLength) as CsprngArray,
         ) as DeviceKey;
+
+        existingDeviceKeyB64 = existingDeviceKey.toJSON();
       });
 
       describe("Secure Storage not supported", () => {
@@ -175,7 +178,7 @@ describe("deviceTrustCryptoService", () => {
           );
         });
 
-        it("returns null when there is not an existing device key for the active user", async () => {
+        it("returns null when there is not an existing device key for the passed in user id", async () => {
           secureStorageService.get.mockResolvedValue(null);
 
           // Act
@@ -185,9 +188,9 @@ describe("deviceTrustCryptoService", () => {
           expect(deviceKey).toBeNull();
         });
 
-        it("returns the device key when there is an existing device key for the active user", async () => {
+        it("returns the device key when there is an existing device key for the passed in user id", async () => {
           // Arrange
-          secureStorageService.get.mockResolvedValue(existingDeviceKey);
+          secureStorageService.get.mockResolvedValue(existingDeviceKeyB64);
 
           // Act
           const deviceKey = await deviceTrustCryptoService.getDeviceKey(mockUserId);
@@ -226,7 +229,7 @@ describe("deviceTrustCryptoService", () => {
           );
         });
       });
-      describe("Secure Storage supported with an active user", () => {
+      describe("Secure Storage supported", () => {
         beforeEach(() => {
           const supportsSecureStorage = true;
           deviceTrustCryptoService = createDeviceTrustCryptoService(
@@ -259,25 +262,15 @@ describe("deviceTrustCryptoService", () => {
           );
         });
       });
-      describe("Secure Storage supported without an active user", () => {
-        beforeEach(() => {
-          const mockUserId: UserId = null;
-          const supportsSecureStorage = true;
-          deviceTrustCryptoService = createDeviceTrustCryptoService(
-            mockUserId,
-            supportsSecureStorage,
-          );
-        });
 
-        it("throws an error when a null user id is passed in", async () => {
-          const newDeviceKey = new SymmetricCryptoKey(
-            new Uint8Array(deviceKeyBytesLength) as CsprngArray,
-          ) as DeviceKey;
+      it("throws an error when a null user id is passed in", async () => {
+        const newDeviceKey = new SymmetricCryptoKey(
+          new Uint8Array(deviceKeyBytesLength) as CsprngArray,
+        ) as DeviceKey;
 
-          await expect(
-            (deviceTrustCryptoService as any).setDeviceKey(null, newDeviceKey),
-          ).rejects.toThrow("UserId is required. Cannot set device key.");
-        });
+        await expect(
+          (deviceTrustCryptoService as any).setDeviceKey(null, newDeviceKey),
+        ).rejects.toThrow("UserId is required. Cannot set device key.");
       });
     });
 
@@ -501,6 +494,12 @@ describe("deviceTrustCryptoService", () => {
           );
         },
       );
+
+      it("throws an error when a null user id is passed in", async () => {
+        await expect(deviceTrustCryptoService.trustDevice(null)).rejects.toThrow(
+          "UserId is required. Cannot trust device.",
+        );
+      });
     });
 
     describe("decryptUserKeyWithDeviceKey", () => {
@@ -527,6 +526,17 @@ describe("deviceTrustCryptoService", () => {
         );
 
         jest.clearAllMocks();
+      });
+
+      it("throws an error when a null user id is passed in", async () => {
+        await expect(
+          deviceTrustCryptoService.decryptUserKeyWithDeviceKey(
+            null,
+            mockEncryptedDevicePrivateKey,
+            mockEncryptedUserKey,
+            mockDeviceKey,
+          ),
+        ).rejects.toThrow("UserId is required. Cannot decrypt user key with device key.");
       });
 
       it("returns null when device key isn't provided", async () => {
@@ -592,6 +602,12 @@ describe("deviceTrustCryptoService", () => {
         fakeNewUserKeyData.fill(FakeNewUserKeyMarker, 0, 1);
         fakeNewUserKey = new SymmetricCryptoKey(fakeNewUserKeyData) as UserKey;
         cryptoService.activeUserKey$ = of(fakeNewUserKey);
+      });
+
+      it("throws an error when a null user id is passed in", async () => {
+        await expect(
+          deviceTrustCryptoService.rotateDevicesTrust(null, fakeNewUserKey, ""),
+        ).rejects.toThrow("UserId is required. Cannot rotate device's trust.");
       });
 
       it("does an early exit when the current device is not a trusted device", async () => {
