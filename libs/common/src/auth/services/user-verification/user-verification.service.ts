@@ -11,7 +11,6 @@ import { PlatformUtilsService } from "../../../platform/abstractions/platform-ut
 import { StateService } from "../../../platform/abstractions/state.service";
 import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enum";
 import { UserKey } from "../../../types/key";
-import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../../abstractions/key-connector.service";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
@@ -36,7 +35,6 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   constructor(
     private stateService: StateService,
     private cryptoService: CryptoService,
-    private keyConnectorService: KeyConnectorServiceAbstraction,
     private i18nService: I18nService,
     private userVerificationApiService: UserVerificationApiServiceAbstraction,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,

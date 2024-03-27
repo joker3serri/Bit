@@ -28,7 +28,7 @@ export const USES_KEY_CONNECTOR = new UserKeyDefinition<boolean>(
   "usesKeyConnector",
   {
     deserializer: (usesKeyConnector) => usesKeyConnector,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
