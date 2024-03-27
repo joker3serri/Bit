@@ -36,8 +36,6 @@ import {
   DeviceTrustCryptoService,
 } from "./device-trust-crypto.service.implementation";
 
-// TODO: figure out why desktop is failing to decrypt on a trusted device
-// TODO: update tests to pass
 describe("deviceTrustCryptoService", () => {
   let deviceTrustCryptoService: DeviceTrustCryptoService;
 
@@ -271,14 +269,14 @@ describe("deviceTrustCryptoService", () => {
           );
         });
 
-        it("throws an error when there is no active user", async () => {
+        it("throws an error when a null user id is passed in", async () => {
           const newDeviceKey = new SymmetricCryptoKey(
             new Uint8Array(deviceKeyBytesLength) as CsprngArray,
           ) as DeviceKey;
 
           await expect(
-            (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey),
-          ).rejects.toThrow("No active user id found. Cannot set device key in secure storage.");
+            (deviceTrustCryptoService as any).setDeviceKey(null, newDeviceKey),
+          ).rejects.toThrow("UserId is required. Cannot set device key.");
         });
       });
     });
@@ -438,7 +436,7 @@ describe("deviceTrustCryptoService", () => {
         // setup the spy to return null
         cryptoSvcGetUserKeySpy.mockResolvedValue(null);
         // check if the expected error is thrown
-        await expect(deviceTrustCryptoService.trustDevice()).rejects.toThrow(
+        await expect(deviceTrustCryptoService.trustDevice(mockUserId)).rejects.toThrow(
           "User symmetric key not found",
         );
 
@@ -448,7 +446,7 @@ describe("deviceTrustCryptoService", () => {
         // setup the spy to return undefined
         cryptoSvcGetUserKeySpy.mockResolvedValue(undefined);
         // check if the expected error is thrown
-        await expect(deviceTrustCryptoService.trustDevice()).rejects.toThrow(
+        await expect(deviceTrustCryptoService.trustDevice(mockUserId)).rejects.toThrow(
           "User symmetric key not found",
         );
       });
@@ -531,20 +529,15 @@ describe("deviceTrustCryptoService", () => {
         jest.clearAllMocks();
       });
 
-      it("returns null when device key isn't provided and isn't in state", async () => {
-        const getDeviceKeySpy = jest
-          .spyOn(deviceTrustCryptoService, "getDeviceKey")
-          .mockResolvedValue(null);
-
+      it("returns null when device key isn't provided", async () => {
         const result = await deviceTrustCryptoService.decryptUserKeyWithDeviceKey(
           mockUserId,
           mockEncryptedDevicePrivateKey,
           mockEncryptedUserKey,
+          mockDeviceKey,
         );
 
         expect(result).toBeNull();
-
-        expect(getDeviceKeySpy).toHaveBeenCalledTimes(1);
       });
 
       it("successfully returns the user key when provided keys (including device key) can decrypt it", async () => {
@@ -567,32 +560,6 @@ describe("deviceTrustCryptoService", () => {
         expect(rsaDecryptSpy).toHaveBeenCalledTimes(1);
       });
 
-      it("successfully returns the user key when a device key is not provided (retrieves device key from state)", async () => {
-        const getDeviceKeySpy = jest
-          .spyOn(deviceTrustCryptoService, "getDeviceKey")
-          .mockResolvedValue(mockDeviceKey);
-
-        const decryptToBytesSpy = jest
-          .spyOn(encryptService, "decryptToBytes")
-          .mockResolvedValue(new Uint8Array(userKeyBytesLength));
-        const rsaDecryptSpy = jest
-          .spyOn(cryptoService, "rsaDecrypt")
-          .mockResolvedValue(new Uint8Array(userKeyBytesLength));
-
-        // Call without providing a device key
-        const result = await deviceTrustCryptoService.decryptUserKeyWithDeviceKey(
-          mockUserId,
-          mockEncryptedDevicePrivateKey,
-          mockEncryptedUserKey,
-        );
-
-        expect(getDeviceKeySpy).toHaveBeenCalledTimes(1);
-
-        expect(result).toEqual(mockUserKey);
-        expect(decryptToBytesSpy).toHaveBeenCalledTimes(1);
-        expect(rsaDecryptSpy).toHaveBeenCalledTimes(1);
-      });
-
       it("returns null and removes device key when the decryption fails", async () => {
         const decryptToBytesSpy = jest
           .spyOn(encryptService, "decryptToBytes")
@@ -609,7 +576,7 @@ describe("deviceTrustCryptoService", () => {
         expect(result).toBeNull();
         expect(decryptToBytesSpy).toHaveBeenCalledTimes(1);
         expect(setDeviceKeySpy).toHaveBeenCalledTimes(1);
-        expect(setDeviceKeySpy).toHaveBeenCalledWith(null);
+        expect(setDeviceKeySpy).toHaveBeenCalledWith(mockUserId, null);
       });
     });
 
@@ -638,12 +605,11 @@ describe("deviceTrustCryptoService", () => {
       });
 
       describe("is on a trusted device", () => {
-        beforeEach(() => {
-          const deviceKeyState: FakeActiveUserState<DeviceKey> =
-            stateProvider.activeUser.getFake(DEVICE_KEY);
-          deviceKeyState.nextState(
-            new SymmetricCryptoKey(new Uint8Array(deviceKeyBytesLength)) as DeviceKey,
-          );
+        beforeEach(async () => {
+          const mockDeviceKey = new SymmetricCryptoKey(
+            new Uint8Array(deviceKeyBytesLength),
+          ) as DeviceKey;
+          await stateProvider.setUserState(DEVICE_KEY, mockDeviceKey, mockUserId);
         });
 
         it("rotates current device keys and calls api service when the current device is trusted", async () => {
