@@ -6,6 +6,7 @@ import { OrganizationConnectionRequest } from "../admin-console/models/request/o
 import { ProviderAddOrganizationRequest } from "../admin-console/models/request/provider/provider-add-organization.request";
 import { ProviderOrganizationCreateRequest } from "../admin-console/models/request/provider/provider-organization-create.request";
 import { ProviderSetupRequest } from "../admin-console/models/request/provider/provider-setup.request";
+import { ProviderSubscriptionUpdateRequest } from "../admin-console/models/request/provider/provider-subscription-update.request";
 import { ProviderUpdateRequest } from "../admin-console/models/request/provider/provider-update.request";
 import { ProviderUserAcceptRequest } from "../admin-console/models/request/provider/provider-user-accept.request";
 import { ProviderUserBulkConfirmRequest } from "../admin-console/models/request/provider/provider-user-bulk-confirm.request";
@@ -24,6 +25,7 @@ import {
   ProviderOrganizationOrganizationDetailsResponse,
   ProviderOrganizationResponse,
 } from "../admin-console/models/response/provider/provider-organization.response";
+import { ProviderSubscriptionResponse } from "../admin-console/models/response/provider/provider-subscription.response";
 import { ProviderUserBulkPublicKeyResponse } from "../admin-console/models/response/provider/provider-user-bulk-public-key.response";
 import { ProviderUserBulkResponse } from "../admin-console/models/response/provider/provider-user-bulk.response";
 import {
@@ -1303,6 +1305,30 @@ export class ApiService implements ApiServiceAbstraction {
       true,
     );
     return new ListResponse(r, ProviderOrganizationOrganizationDetailsResponse);
+  }
+  async getProviderClientSubscriptions(providerId: string): Promise<ProviderSubscriptionResponse> {
+    const r = await this.send(
+      "GET",
+      "/providers/" + providerId + "/billing/subscription",
+      null,
+      true,
+      true,
+    );
+    return new ProviderSubscriptionResponse(r);
+  }
+  async putProviderClientSubscriptions(
+    providerId: string,
+    organizationId: string,
+    request: ProviderSubscriptionUpdateRequest,
+  ): Promise<any> {
+    const response = await this.send(
+      "PUT",
+      "/providers/" + providerId + "/organizations/" + organizationId,
+      request,
+      true,
+      true,
+    );
+    return new response();
   }
 
   postProviderAddOrganization(
