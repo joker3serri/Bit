@@ -782,7 +782,6 @@ const typesafeProviders: Array<SafeProvider> = [
     deps: [
       StateServiceAbstraction,
       CryptoServiceAbstraction,
-      KeyConnectorServiceAbstraction,
       I18nServiceAbstraction,
       UserVerificationApiServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
