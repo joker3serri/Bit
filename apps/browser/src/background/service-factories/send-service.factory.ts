@@ -23,7 +23,6 @@ import {
   StateServiceInitOptions,
 } from "../../platform/background/service-factories/state-service.factory";
 
-
 type SendServiceFactoryOptions = FactoryOptions;
 
 export type SendServiceInitOptions = SendServiceFactoryOptions &
