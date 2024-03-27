@@ -184,17 +184,11 @@ describe("LoginStrategy", () => {
 
       await passwordLoginStrategy.logIn(credentials);
 
-      expect(tokenService.setAccessToken).toHaveBeenCalledWith(
+      expect(tokenService.setTokens).toHaveBeenCalledWith(
         accessToken,
         mockVaultTimeoutAction,
         mockVaultTimeout,
-      );
-
-      expect(tokenService.setRefreshToken).toHaveBeenCalledWith(
         refreshToken,
-        mockVaultTimeoutAction,
-        mockVaultTimeout,
-        userId,
       );
 
       expect(stateService.addAccount).toHaveBeenCalledWith(

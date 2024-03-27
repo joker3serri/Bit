@@ -31,7 +31,6 @@ import {
   AccountProfile,
   AccountTokens,
 } from "@bitwarden/common/platform/models/domain/account";
-import { UserId } from "@bitwarden/common/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import {
@@ -181,21 +180,12 @@ export abstract class LoginStrategy {
 
     // set access token and refresh token before account initialization so authN status can be accurate
     // User id will be derived from the access token.
-    await this.tokenService.setAccessToken(
+    await this.tokenService.setTokens(
       tokenResponse.accessToken,
       vaultTimeoutAction as VaultTimeoutAction,
       vaultTimeout,
+      tokenResponse.refreshToken, // Note: CLI login via API key sends undefined for refresh token.
     );
-
-    if (tokenResponse.refreshToken) {
-      // Note: only set the refresh token if it exists in the response. CLI login via API key sends undefined for refresh token.
-      await this.tokenService.setRefreshToken(
-        tokenResponse.refreshToken,
-        vaultTimeoutAction as VaultTimeoutAction,
-        vaultTimeout,
-        userId as UserId,
-      );
-    }
 
     await this.stateService.addAccount(
       new Account({

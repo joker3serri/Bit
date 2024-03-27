@@ -10,17 +10,18 @@ export abstract class TokenService {
    * Note 2: this method also enforces always setting the access token and the refresh token together as
    * we can retrieve the user id required to set the refresh token from the access token for efficiency.
    * @param accessToken The access token to set.
-   * @param refreshToken The refresh token to set.
-   * @param clientIdClientSecret The API Key Client ID and Client Secret to set.
    * @param vaultTimeoutAction The action to take when the vault times out.
    * @param vaultTimeout The timeout for the vault.
+   * @param refreshToken The optional refresh token to set. Note: this is undefined when using the CLI Login Via API Key flow
+   * @param clientIdClientSecret The API Key Client ID and Client Secret to set.
+   *
    * @returns A promise that resolves when the tokens have been set.
    */
   setTokens: (
     accessToken: string,
-    refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
     vaultTimeout: number | null,
+    refreshToken?: string,
     clientIdClientSecret?: [string, string],
   ) => Promise<void>;
 
@@ -71,22 +72,6 @@ export abstract class TokenService {
    * @returns A promise that resolves with the refresh token or undefined.
    */
   getRefreshToken: (userId?: UserId) => Promise<string | undefined>;
-
-  /**
-   * Sets the refresh token in memory or disk based on the given vaultTimeoutAction and vaultTimeout
-   * and the user id
-   * Note: for platforms that support secure storage, the access & refresh tokens are stored in secure storage instead of on disk.
-   * @param refreshToken The refresh token to set.
-   * @param vaultTimeoutAction The action to take when the vault times out.
-   * @param vaultTimeout The timeout for the vault.
-   * @returns A promise that resolves when the refresh token has been set.
-   */
-  setRefreshToken: (
-    refreshToken: string,
-    vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
-    userId: UserId,
-  ) => Promise<void>;
 
   /**
    * Sets the API Key Client ID for the active user id in memory or disk based on the given vaultTimeoutAction and vaultTimeout.
