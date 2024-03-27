@@ -5,6 +5,8 @@ import {
   PinCryptoService,
   LoginStrategyServiceAbstraction,
   LoginStrategyService,
+  InternalUserDecryptionOptionsServiceAbstraction,
+  UserDecryptionOptionsService,
   AuthRequestServiceAbstraction,
   AuthRequestService,
 } from "@bitwarden/auth/common";
@@ -242,6 +244,7 @@ export default class MainBackground {
   environmentService: BrowserEnvironmentService;
   cipherService: CipherServiceAbstraction;
   folderService: InternalFolderServiceAbstraction;
+  userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction;
   collectionService: CollectionServiceAbstraction;
   vaultTimeoutService: VaultTimeoutService;
   vaultTimeoutSettingsService: VaultTimeoutSettingsServiceAbstraction;
@@ -440,6 +443,9 @@ export default class MainBackground {
       this.globalStateProvider,
       this.platformUtilsService.supportsSecureStorage(),
       this.secureStorageService,
+      this.keyGenerationService,
+      this.encryptService,
+      this.logService,
     );
 
     const migrationRunner = new MigrationRunner(
@@ -539,6 +545,8 @@ export default class MainBackground {
       };
     })();
 
+    this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
+
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
     this.deviceTrustCryptoService = new DeviceTrustCryptoService(
       this.keyGenerationService,
@@ -550,6 +558,7 @@ export default class MainBackground {
       this.devicesApiService,
       this.i18nService,
       this.platformUtilsService,
+      this.userDecryptionOptionsService,
     );
 
     this.devicesService = new DevicesServiceImplementation(this.devicesApiService);
@@ -562,6 +571,7 @@ export default class MainBackground {
     );
 
     this.authService = new AuthService(
+      this.accountService,
       backgroundMessagingService,
       this.cryptoService,
       this.apiService,
@@ -569,7 +579,7 @@ export default class MainBackground {
     );
 
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
-      this.activeUserStateProvider,
+      this.stateProvider,
     );
 
     this.loginStrategyService = new LoginStrategyService(
@@ -590,6 +600,7 @@ export default class MainBackground {
       this.policyService,
       this.deviceTrustCryptoService,
       this.authRequestService,
+      this.userDecryptionOptionsService,
       this.globalStateProvider,
       this.billingAccountProfileStateService,
     );
@@ -606,6 +617,7 @@ export default class MainBackground {
       this.authService,
       this.environmentService,
       this.logService,
+      this.stateProvider,
       true,
     );
 
@@ -631,6 +643,7 @@ export default class MainBackground {
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.userDecryptionOptionsService,
       this.cryptoService,
       this.tokenService,
       this.policyService,
@@ -650,6 +663,7 @@ export default class MainBackground {
       this.cryptoService,
       this.i18nService,
       this.userVerificationApiService,
+      this.userDecryptionOptionsService,
       this.pinCryptoService,
       this.logService,
       this.vaultTimeoutSettingsService,
@@ -717,6 +731,7 @@ export default class MainBackground {
       this.folderApiService,
       this.organizationService,
       this.sendApiService,
+      this.userDecryptionOptionsService,
       this.avatarService,
       logoutCallback,
       this.billingAccountProfileStateService,
@@ -1022,10 +1037,6 @@ export default class MainBackground {
 
     return new Promise<void>((resolve) => {
       setTimeout(async () => {
-        await this.environmentService.setUrlsFromStorage();
-        // Workaround to ignore stateService.activeAccount until URLs are set
-        // TODO: Remove this when implementing ticket PM-2637
-        this.environmentService.initialized = true;
         if (!this.isPrivateMode) {
           await this.refreshBadge();
         }

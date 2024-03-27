@@ -246,7 +246,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       });
 
     const filter$ = this.routedVaultFilterService.filter$;
-    const allCollections$ = Utils.asyncToObservable(() => this.collectionService.getAllDecrypted());
+    const allCollections$ = this.collectionService.decryptedCollections$;
     const nestedCollections$ = allCollections$.pipe(
       map((collections) => getNestedCollectionTree(collections)),
     );
@@ -405,10 +405,6 @@ export class VaultComponent implements OnInit, OnDestroy {
             filter.type !== "trash" &&
             (filter.organizationId === undefined || filter.organizationId === Unassigned);
           this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
-
-          // This is a temporary fix to avoid double fetching collections.
-          // TODO: Remove when implementing new VVR menu
-          this.vaultFilterService.reloadCollections(allCollections);
 
           this.performingInitialLoad = false;
           this.refreshing = false;
