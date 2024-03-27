@@ -114,14 +114,18 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     safeProvider({
       provide: PlatformUtilsServiceAbstraction,
       useClass: WebPlatformUtilsService,
-      deps: [],
+      useAngularDecorators: true,
     }),
     safeProvider({
       provide: MessagingServiceAbstraction,
       useClass: BroadcasterMessagingService,
-      deps: [],
+      useAngularDecorators: true,
     }),
-    safeProvider({ provide: ModalServiceAbstraction, useClass: ModalService, deps: [] }),
+    safeProvider({
+      provide: ModalServiceAbstraction,
+      useClass: ModalService,
+      useAngularDecorators: true,
+    }),
     safeProvider(StateService),
     safeProvider({
       provide: BaseStateServiceAbstraction,
@@ -130,7 +134,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     safeProvider({
       provide: FileDownloadService,
       useClass: WebFileDownloadService,
-      deps: [],
+      useAngularDecorators: true,
     }),
     safeProvider({
       provide: LoginServiceAbstraction,
