@@ -224,7 +224,7 @@ describe("deviceTrustCryptoService", () => {
 
           expect(stateProvider.mock.setUserState).toHaveBeenLastCalledWith(
             DEVICE_KEY,
-            newDeviceKey,
+            newDeviceKey.toJSON(),
             mockUserId,
           );
         });
