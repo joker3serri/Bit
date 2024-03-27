@@ -221,12 +221,11 @@ describe("deviceTrustCryptoService", () => {
           // This is a hacky workaround, but it allows for cleaner tests
           await (deviceTrustCryptoService as any).setDeviceKey(mockUserId, newDeviceKey);
 
-          // TODO: figure out why this isn't working.
-          expect(stateProvider.mock.setUserState).toHaveBeenLastCalledWith([
+          expect(stateProvider.mock.setUserState).toHaveBeenLastCalledWith(
             DEVICE_KEY,
             newDeviceKey,
             mockUserId,
-          ]);
+          );
         });
       });
       describe("Secure Storage supported with an active user", () => {
@@ -240,9 +239,7 @@ describe("deviceTrustCryptoService", () => {
 
         it("successfully sets the device key in secure storage", async () => {
           // Arrange
-          const deviceKeyState: FakeActiveUserState<DeviceKey> =
-            stateProvider.activeUser.getFake(DEVICE_KEY);
-          deviceKeyState.nextState(null);
+          await stateProvider.setUserState(DEVICE_KEY, null, mockUserId);
 
           secureStorageService.get.mockResolvedValue(null);
 
@@ -253,10 +250,10 @@ describe("deviceTrustCryptoService", () => {
           // Act
           // TypeScript will allow calling private methods if the object is of type 'any'
           // This is a hacky workaround, but it allows for cleaner tests
-          await (deviceTrustCryptoService as any).setDeviceKey(newDeviceKey);
+          await (deviceTrustCryptoService as any).setDeviceKey(mockUserId, newDeviceKey);
 
           // Assert
-          expect(deviceKeyState.nextMock).not.toHaveBeenCalled();
+          expect(stateProvider.mock.setUserState).not.toHaveBeenCalledTimes(2);
           expect(secureStorageService.save).toHaveBeenCalledWith(
             deviceKeySecureStorageKey,
             newDeviceKey,
