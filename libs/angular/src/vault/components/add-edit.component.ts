@@ -83,7 +83,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   reprompt = false;
   canUseReprompt = true;
   organization: Organization;
-  passkeyRemovedAnnouncement = false;
 
   protected componentName = "";
   protected destroy$ = new Subject<void>();
