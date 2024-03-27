@@ -661,7 +661,6 @@ export default class MainBackground {
     this.userVerificationService = new UserVerificationService(
       this.stateService,
       this.cryptoService,
-      this.keyConnectorService,
       this.i18nService,
       this.userVerificationApiService,
       this.userDecryptionOptionsService,
