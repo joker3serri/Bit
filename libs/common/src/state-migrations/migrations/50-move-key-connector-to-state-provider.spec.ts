@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { KeyConnectorMigrator } from "./49-move-key-connector-to-state-provider";
+import { KeyConnectorMigrator } from "./50-move-key-connector-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -75,8 +75,8 @@ describe("KeyConnectorMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 49);
-      sut = new KeyConnectorMigrator(48, 49);
+      helper = mockMigrationHelper(exampleJSON(), 50);
+      sut = new KeyConnectorMigrator(49, 50);
     });
 
     it("should remove usesKeyConnector and convertAccountToKeyConnector from Profile", async () => {
@@ -122,8 +122,8 @@ describe("KeyConnectorMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 49);
-      sut = new KeyConnectorMigrator(48, 49);
+      helper = mockMigrationHelper(rollbackJSON(), 50);
+      sut = new KeyConnectorMigrator(49, 50);
     });
 
     it("should null out new usesKeyConnector global value", async () => {
@@ -149,7 +149,6 @@ describe("KeyConnectorMigrator", () => {
         },
         otherStuff: "otherStuff3",
       });
-      // expect(helper.set).toHaveBeenCalledWith("FirstAccount", {});
       expect(helper.setToUser).toHaveBeenCalledWith(
         "SecondAccount",
         usesKeyConnectorKeyDefinition,

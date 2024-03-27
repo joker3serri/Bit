@@ -22,7 +22,7 @@ const convertAccountToKeyConnectorKeyDefinition: KeyDefinitionLike = {
   },
 };
 
-export class KeyConnectorMigrator extends Migrator<48, 49> {
+export class KeyConnectorMigrator extends Migrator<49, 50> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
