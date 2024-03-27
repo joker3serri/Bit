@@ -1,7 +1,5 @@
 import { Meta, StoryObj } from "@storybook/angular";
 
-import { UserVerificationBiometricsIcon } from "../../../auth/src/angular/icons/user-verification-biometrics-fingerprint.icon";
-
 import { BitIconComponent } from "./icon.component";
 import * as GenericIcons from "./icons";
 
@@ -12,7 +10,7 @@ export default {
 
 type Story = StoryObj<BitIconComponent>;
 
-export const GenericIcon: Story = {
+export const Default: Story = {
   args: {
     icon: GenericIcons.NoAccess,
   },
@@ -22,11 +20,5 @@ export const GenericIcon: Story = {
       mapping: GenericIcons,
       control: { type: "select" },
     },
-  },
-};
-
-export const CustomIcon: Story = {
-  args: {
-    icon: UserVerificationBiometricsIcon,
   },
 };
