@@ -162,12 +162,16 @@ export class ElectronCryptoService extends CryptoService {
       const oldBiometricKey = await this.stateService.getCryptoMasterKeyBiometric({ userId });
       // decrypt
       const masterKey = new SymmetricCryptoKey(Utils.fromB64ToArray(oldBiometricKey)) as MasterKey;
-      let encUserKey = await this.stateService.getEncryptedCryptoSymmetricKey();
-      encUserKey = encUserKey ?? (await this.stateService.getMasterKeyEncryptedUserKey());
+      userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const encUserKeyPrim = await this.stateService.getEncryptedCryptoSymmetricKey();
+      const encUserKey =
+        encUserKeyPrim != null
+          ? new EncString(encUserKeyPrim)
+          : await this.masterPasswordService.getMasterKeyEncryptedUserKey(userId);
       if (!encUserKey) {
         throw new Error("No user key found during biometric migration");
       }
-      const userKey = await this.decryptUserKeyWithMasterKey(masterKey, new EncString(encUserKey));
+      const userKey = await this.decryptUserKeyWithMasterKey(masterKey, encUserKey);
       // migrate
       await this.storeBiometricKey(userKey, userId);
       await this.stateService.setCryptoMasterKeyBiometric(null, { userId });

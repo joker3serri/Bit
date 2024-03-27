@@ -340,10 +340,14 @@ export class NativeMessagingBackground {
               ) as UserKey;
               await this.cryptoService.setUserKey(userKey);
             } else if (message.keyB64) {
+              const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
               // Backwards compatibility to support cases in which the user hasn't updated their desktop app
               // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3472)
-              let encUserKey = await this.stateService.getEncryptedCryptoSymmetricKey();
-              encUserKey ||= await this.stateService.getMasterKeyEncryptedUserKey();
+              const encUserKeyPrim = await this.stateService.getEncryptedCryptoSymmetricKey();
+              const encUserKey =
+                encUserKeyPrim != null
+                  ? new EncString(encUserKeyPrim)
+                  : await this.masterPasswordService.getMasterKeyEncryptedUserKey(userId);
               if (!encUserKey) {
                 throw new Error("No encrypted user key found");
               }
@@ -352,9 +356,8 @@ export class NativeMessagingBackground {
               ) as MasterKey;
               const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(
                 masterKey,
-                new EncString(encUserKey),
+                encUserKey,
               );
-              const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
               await this.masterPasswordService.setMasterKey(masterKey, userId);
               await this.cryptoService.setUserKey(userKey);
             } else {
