@@ -222,10 +222,13 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     }
 
     if (this.platformSupportsSecureStorage) {
-      return await this.secureStorageService.get<DeviceKey>(
-        `${userId}${this.deviceKeySecureStorageKey}`,
-        this.getSecureStorageOptions(userId),
-      );
+      const deviceKeyB64 = await this.secureStorageService.get<
+        ReturnType<SymmetricCryptoKey["toJSON"]>
+      >(`${userId}${this.deviceKeySecureStorageKey}`, this.getSecureStorageOptions(userId));
+
+      const deviceKey = SymmetricCryptoKey.fromJSON(deviceKeyB64) as DeviceKey;
+
+      return deviceKey;
     }
 
     const deviceKey = await firstValueFrom(this.stateProvider.getUserState$(DEVICE_KEY, userId));
