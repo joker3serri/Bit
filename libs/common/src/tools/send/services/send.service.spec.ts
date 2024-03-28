@@ -5,8 +5,10 @@ import {
   FakeAccountService,
   FakeActiveUserState,
   FakeStateProvider,
+  awaitAsync,
   mockAccountServiceWith,
 } from "../../../../spec";
+import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
@@ -58,13 +60,12 @@ describe("SendService", () => {
 
     (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
 
-    sendService = new SendService(
-      cryptoService,
-      i18nService,
-      keyGenerationService,
-      sendStateProvider,
-      accountService,
-    );
+    accountService.activeAccountSubject.next({
+      id: mockUserId,
+      email: "email",
+      name: "name",
+      status: AuthenticationStatus.Unlocked,
+    });
 
     // Initial encrypted state
     encryptedState = stateProvider.activeUser.getFake(SEND_USER_ENCRYPTED);
@@ -74,6 +75,14 @@ describe("SendService", () => {
     // Initial decrypted state
     decryptedState = stateProvider.activeUser.getFake(SEND_USER_DECRYPTED);
     decryptedState.nextState([testSendViewData("1", "Test Send")]);
+
+    sendService = new SendService(
+      cryptoService,
+      i18nService,
+      keyGenerationService,
+      sendStateProvider,
+      accountService,
+    );
   });
 
   describe("get", () => {
@@ -401,9 +410,9 @@ describe("SendService", () => {
   });
 
   it("getAllDecryptedFromState", async () => {
-    await sendService.getAllDecryptedFromState();
+    const sends = await sendService.getAllDecryptedFromState();
 
-    expect(sendStateProvider.getDecryptedSends).toHaveBeenCalledTimes(1);
+    expect(sends[0]).toMatchObject(testSendViewData("1", "Test Send"));
   });
 
   describe("getRotatedKeys", () => {
@@ -458,24 +467,35 @@ describe("SendService", () => {
 
   it("clear", async () => {
     await sendService.clear();
-
+    await awaitAsync();
     expect(await firstValueFrom(sendService.sends$)).toEqual([]);
   });
+  describe("Delete", () => {
+    it("Sends count should decrease after delete", async () => {
+      const sendsBeforeDelete = await firstValueFrom(sendService.sends$);
+      await sendService.delete(sendsBeforeDelete[0].id);
 
-  describe("delete", () => {
-    it("exists", async () => {
-      await sendService.delete("1");
-
-      expect(sendStateProvider.getEncryptedSends).toHaveBeenCalledTimes(2);
-      expect(sendStateProvider.setEncryptedSends).toHaveBeenCalledTimes(1);
+      const sendsAfterDelete = await firstValueFrom(sendService.sends$);
+      expect(sendsAfterDelete.length).toBeLessThan(sendsBeforeDelete.length);
     });
 
-    it("does not exist", async () => {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      sendService.delete("1");
+    it("Intended send should be delete", async () => {
+      const sendsBeforeDelete = await firstValueFrom(sendService.sends$);
+      await sendService.delete(sendsBeforeDelete[0].id);
+      const sendsAfterDelete = await firstValueFrom(sendService.sends$);
+      expect(sendsAfterDelete[0]).not.toBe(sendsBeforeDelete[0]);
+    });
 
-      expect(sendStateProvider.getEncryptedSends).toHaveBeenCalledTimes(2);
+    it("Deleting on an empty sends array should not throw", async () => {
+      sendStateProvider.getEncryptedSends = jest.fn().mockResolvedValue(null);
+      await expect(sendService.delete("2")).resolves.not.toThrow();
+    });
+
+    it("Delete multiple sends", async () => {
+      await sendService.upsert(testSendData("2", "send data 2"));
+      await sendService.delete(["1", "2"]);
+      const sendsAfterDelete = await firstValueFrom(sendService.sends$);
+      expect(sendsAfterDelete.length).toBe(0);
     });
   });
 });

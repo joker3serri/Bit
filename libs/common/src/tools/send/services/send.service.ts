@@ -257,6 +257,8 @@ export class SendService implements InternalSendServiceAbstraction {
   async clear(userId?: string): Promise<any> {
     await this.stateService.setDecryptedSends(null);
     await this.stateService.setEncryptedSends(null);
+
+    await this.updateObservables(null);
   }
 
   async delete(id: string | string[]): Promise<any> {
