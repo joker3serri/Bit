@@ -251,6 +251,7 @@
       "files": ["apps/browser/src/**/*.ts"],
       "excludedFiles": [
         "apps/browser/src/**/{content,popup,spec}/**/*.ts",
+        "apps/browser/src/**/autofill/{notification,overlay}/**/*.ts",
         "apps/browser/src/**/*.spec.ts"
       ],
       "rules": {
