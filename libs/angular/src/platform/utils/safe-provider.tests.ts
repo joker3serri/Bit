@@ -81,7 +81,7 @@ safeProvider({
 safeProvider({
   provide: FooService,
   useClass: DefaultFooService,
-  // ts-expect-error
+  // @ts-expect-error
   deps: [FooFactory, BarFactory],
 });
 
