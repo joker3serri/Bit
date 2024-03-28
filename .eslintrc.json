@@ -252,6 +252,7 @@
       "excludedFiles": [
         "apps/browser/src/**/{content,popup,spec}/**/*.ts",
         "apps/browser/src/**/autofill/{notification,overlay}/**/*.ts",
+        "apps/browser/src/**/autofill/**/{autofill-overlay-content,collect-autofill-content,dom-element-visibility,insert-autofill-content}.service.ts",
         "apps/browser/src/**/*.spec.ts"
       ],
       "rules": {
