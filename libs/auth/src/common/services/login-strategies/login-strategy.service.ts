@@ -20,6 +20,7 @@ import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { PasswordlessAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
@@ -39,6 +40,7 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { MasterKey } from "@bitwarden/common/types/key";
 
 import { AuthRequestServiceAbstraction, LoginStrategyServiceAbstraction } from "../../abstractions";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
 import { AuthRequestLoginStrategy } from "../../login-strategies/auth-request-login.strategy";
 import { PasswordLoginStrategy } from "../../login-strategies/password-login.strategy";
 import { SsoLoginStrategy } from "../../login-strategies/sso-login.strategy";
@@ -100,7 +102,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     protected authRequestService: AuthRequestServiceAbstraction,
+    protected userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     protected stateProvider: GlobalStateProvider,
+    protected billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -133,8 +137,8 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   async getMasterPasswordHash(): Promise<string | null> {
     const strategy = await firstValueFrom(this.loginStrategy$);
 
-    if ("masterKeyHash$" in strategy) {
-      return await firstValueFrom(strategy.masterKeyHash$);
+    if ("serverMasterKeyHash$" in strategy) {
+      return await firstValueFrom(strategy.serverMasterKeyHash$);
     }
     return null;
   }
@@ -352,9 +356,11 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
               this.logService,
               this.stateService,
               this.twoFactorService,
+              this.userDecryptionOptionsService,
               this.passwordStrengthService,
               this.policyService,
               this,
+              this.billingAccountProfileStateService,
             );
           case AuthenticationType.Sso:
             return new SsoLoginStrategy(
@@ -368,10 +374,12 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
               this.logService,
               this.stateService,
               this.twoFactorService,
+              this.userDecryptionOptionsService,
               this.keyConnectorService,
               this.deviceTrustCryptoService,
               this.authRequestService,
               this.i18nService,
+              this.billingAccountProfileStateService,
             );
           case AuthenticationType.UserApiKey:
             return new UserApiLoginStrategy(
@@ -385,8 +393,10 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
               this.logService,
               this.stateService,
               this.twoFactorService,
+              this.userDecryptionOptionsService,
               this.environmentService,
               this.keyConnectorService,
+              this.billingAccountProfileStateService,
             );
           case AuthenticationType.AuthRequest:
             return new AuthRequestLoginStrategy(
@@ -400,7 +410,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
               this.logService,
               this.stateService,
               this.twoFactorService,
+              this.userDecryptionOptionsService,
               this.deviceTrustCryptoService,
+              this.billingAccountProfileStateService,
             );
           case AuthenticationType.WebAuthn:
             return new WebAuthnLoginStrategy(
@@ -414,6 +426,8 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
               this.logService,
               this.stateService,
               this.twoFactorService,
+              this.userDecryptionOptionsService,
+              this.billingAccountProfileStateService,
             );
         }
       }),

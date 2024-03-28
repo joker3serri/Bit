@@ -7,6 +7,7 @@ import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -16,6 +17,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserKey } from "@bitwarden/common/types/key";
 
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions";
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 import { CacheData } from "../services/login-strategies/login-strategy.state";
 
@@ -48,6 +50,8 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
+    billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {
     super(
       cryptoService,
@@ -59,6 +63,8 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
+      billingAccountProfileStateService,
     );
 
     this.cache = new BehaviorSubject(data);

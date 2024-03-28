@@ -14,6 +14,8 @@ import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/id
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
 import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -26,7 +28,6 @@ import {
   AccountProfile,
   AccountTokens,
   AccountKeys,
-  AccountDecryptionOptions,
 } from "@bitwarden/common/platform/models/domain/account";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -37,8 +38,10 @@ import {
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserKey, MasterKey, DeviceKey } from "@bitwarden/common/types/key";
 
-import { LoginStrategyServiceAbstraction } from "../abstractions/login-strategy.service";
-import { PasswordLoginCredentials } from "../models/domain/login-credentials";
+import { LoginStrategyServiceAbstraction } from "../abstractions";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
+import { PasswordLoginCredentials } from "../models";
+import { UserDecryptionOptions } from "../models/domain/user-decryption-options";
 
 import { PasswordLoginStrategy, PasswordLoginStrategyData } from "./password-login.strategy";
 
@@ -106,8 +109,10 @@ describe("LoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
 
   let passwordLoginStrategy: PasswordLoginStrategy;
   let credentials: PasswordLoginCredentials;
@@ -123,11 +128,13 @@ describe("LoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.calledWith(accessToken).mockResolvedValue(decodedToken);
+    tokenService.decodeAccessToken.calledWith(accessToken).mockResolvedValue(decodedToken);
 
     // The base class is abstract so we test it via PasswordLoginStrategy
     passwordLoginStrategy = new PasswordLoginStrategy(
@@ -141,9 +148,11 @@ describe("LoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
       passwordStrengthService,
       policyService,
       loginStrategyService,
+      billingAccountProfileStateService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
   });
@@ -167,7 +176,20 @@ describe("LoginStrategy", () => {
       const idTokenResponse = identityTokenResponseFactory();
       apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
 
+      const mockVaultTimeoutAction = VaultTimeoutAction.Lock;
+      const mockVaultTimeout = 1000;
+
+      stateService.getVaultTimeoutAction.mockResolvedValue(mockVaultTimeoutAction);
+      stateService.getVaultTimeout.mockResolvedValue(mockVaultTimeout);
+
       await passwordLoginStrategy.logIn(credentials);
+
+      expect(tokenService.setTokens).toHaveBeenCalledWith(
+        accessToken,
+        mockVaultTimeoutAction,
+        mockVaultTimeout,
+        refreshToken,
+      );
 
       expect(stateService.addAccount).toHaveBeenCalledWith(
         new Account({
@@ -177,21 +199,18 @@ describe("LoginStrategy", () => {
               userId: userId,
               name: name,
               email: email,
-              hasPremiumPersonally: false,
               kdfIterations: kdfIterations,
               kdfType: kdf,
             },
           },
           tokens: {
             ...new AccountTokens(),
-            ...{
-              accessToken: accessToken,
-              refreshToken: refreshToken,
-            },
           },
           keys: new AccountKeys(),
-          decryptionOptions: AccountDecryptionOptions.fromResponse(idTokenResponse),
         }),
+      );
+      expect(userDecryptionOptionsService.setUserDecryptionOptions).toHaveBeenCalledWith(
+        UserDecryptionOptions.fromResponse(idTokenResponse),
       );
       expect(messagingService.send).toHaveBeenCalledWith("loggedIn");
     });
@@ -299,6 +318,7 @@ describe("LoginStrategy", () => {
 
       expect(stateService.addAccount).not.toHaveBeenCalled();
       expect(messagingService.send).not.toHaveBeenCalled();
+      expect(tokenService.clearTwoFactorToken).toHaveBeenCalled();
 
       const expected = new AuthResult();
       expected.twoFactorProviders = new Map<TwoFactorProviderType, { [key: string]: string }>();
@@ -394,9 +414,11 @@ describe("LoginStrategy", () => {
         logService,
         stateService,
         twoFactorService,
+        userDecryptionOptionsService,
         passwordStrengthService,
         policyService,
         loginStrategyService,
+        billingAccountProfileStateService,
       );
 
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());

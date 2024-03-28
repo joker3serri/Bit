@@ -11,6 +11,7 @@ import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -77,6 +78,7 @@ export default class NotificationBackground {
     private domainSettingsService: DomainSettingsService,
     private environmentService: EnvironmentService,
     private logService: LogService,
+    private themeStateService: ThemeStateService,
   ) {}
 
   async init() {
@@ -163,9 +165,10 @@ export default class NotificationBackground {
     notificationQueueMessage: NotificationQueueMessageItem,
   ) {
     const notificationType = notificationQueueMessage.type;
+
     const typeData: Record<string, any> = {
       isVaultLocked: notificationQueueMessage.wasVaultLocked,
-      theme: await this.stateService.getTheme(),
+      theme: await firstValueFrom(this.themeStateService.selectedTheme$),
     };
 
     switch (notificationType) {
@@ -653,8 +656,9 @@ export default class NotificationBackground {
     return await firstValueFrom(this.folderService.folderViews$);
   }
 
-  private getWebVaultUrl(): string {
-    return this.environmentService.getWebVaultUrl();
+  private async getWebVaultUrl(): Promise<string> {
+    const env = await firstValueFrom(this.environmentService.environment$);
+    return env.getWebVaultUrl();
   }
 
   private async removeIndividualVault(): Promise<boolean> {
