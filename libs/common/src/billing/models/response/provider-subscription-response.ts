@@ -1,4 +1,4 @@
-import { BaseResponse } from "../../../../models/response/base.response";
+import { BaseResponse } from "../../../models/response/base.response";
 
 import { ProviderPlansResponse } from "./provider-plans.response";
 

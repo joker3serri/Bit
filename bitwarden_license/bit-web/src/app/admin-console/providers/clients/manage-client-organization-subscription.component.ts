@@ -1,8 +1,8 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
-import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-subscription-update.request";
-import { ProviderPlansResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-plans.response";
+import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/provider-subscription-update.request";
+import { ProviderPlansResponse } from "@bitwarden/common/billing/models/response/provider-plans.response";
 import { BillingApiService } from "@bitwarden/common/billing/services/billing-api.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
