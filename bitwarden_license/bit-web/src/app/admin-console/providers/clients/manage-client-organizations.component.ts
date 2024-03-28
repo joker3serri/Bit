@@ -6,13 +6,9 @@ import { first } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
-import { PlanType } from "@bitwarden/common/billing/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
@@ -21,13 +17,6 @@ import { DialogService, TableDataSource } from "@bitwarden/components";
 import { WebProviderService } from "../services/web-provider.service";
 
 import { ManageClientOrganizationSubscriptionComponent } from "./manage-client-organization-subscription.component";
-
-const DisallowedPlanTypes = [
-  PlanType.Free,
-  PlanType.FamiliesAnnually2019,
-  PlanType.FamiliesAnnually,
-  PlanType.TeamsStarter,
-];
 
 @Component({
   templateUrl: "manage-client-organizations.component.html",
@@ -38,10 +27,8 @@ export class ManageClientOrganizationsComponent implements OnInit {
   providerId: string;
   assignedSeats: number;
   unassignedSeats: number;
-  addableOrganizations: Organization[];
   loading = true;
   manageOrganizations = false;
-  showAddExisting = false;
 
   set searchText(search: string) {
     this.selection.clear();
@@ -67,8 +54,6 @@ export class ManageClientOrganizationsComponent implements OnInit {
     private i18nService: I18nService,
     private validationService: ValidationService,
     private webProviderService: WebProviderService,
-    private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiServiceAbstraction,
     private dialogService: DialogService,
   ) {}
 
@@ -92,19 +77,6 @@ export class ManageClientOrganizationsComponent implements OnInit {
     this.dataSource.data = this.clients;
     this.manageOrganizations =
       (await this.providerService.get(this.providerId)).type === ProviderUserType.ProviderAdmin;
-
-    const candidateOrgs = (await this.organizationService.getAll()).filter(
-      (o) => o.isOwner && o.providerId == null,
-    );
-    const allowedOrgsIds = await Promise.all(
-      candidateOrgs.map((o) => this.organizationApiService.get(o.id)),
-    ).then((orgs) =>
-      orgs.filter((o) => !DisallowedPlanTypes.includes(o.planType)).map((o) => o.id),
-    );
-
-    this.addableOrganizations = candidateOrgs.filter((o) => allowedOrgsIds.includes(o.id));
-
-    this.showAddExisting = this.addableOrganizations.length !== 0;
 
     this.loading = false;
   }

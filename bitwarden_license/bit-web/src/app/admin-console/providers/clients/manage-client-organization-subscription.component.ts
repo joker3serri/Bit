@@ -1,9 +1,9 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
+import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/provider-subscription-update.request";
 import { ProviderPlansResponse } from "@bitwarden/common/billing/models/response/provider-plans.response";
-import { BillingApiService } from "@bitwarden/common/billing/services/billing-api.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
@@ -28,7 +28,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   assignedSeats: number;
   unassignedSeats: number;
   AdditionalSeatPurchased: number;
-  minimumFloor: number;
+  remainingOpenSeats: number;
 
   constructor(
     public dialogRef: DialogRef,
@@ -45,18 +45,14 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.loadData();
-  }
-
-  async loadData() {
     try {
       const response = await this.billingApiService.getProviderClientSubscriptions(this.providerId);
       this.AdditionalSeatPurchased = this.getProviderAssignedSeats(response.providerPlans);
       const seatMinimum = this.getProviderSeatMinimum(response.providerPlans);
-      this.minimumFloor = this.assignedSeats - seatMinimum;
+      this.remainingOpenSeats = this.assignedSeats - seatMinimum;
     } catch (error) {
       this.AdditionalSeatPurchased = 0;
-      this.minimumFloor = 0;
+      this.remainingOpenSeats = 0;
     }
     this.loading = false;
   }

@@ -20,14 +20,16 @@
         [(ngModel)]="assignedSeats"
       />
     </bit-form-field>
-    <p *ngIf="minimumFloor == 0 && unassignedSeats > 0">
-      <small class="tw-text-muted">{{ unassignedSeats }}</small>
-      <small class="tw-text-muted">{{ "unassignedSeatsDescription" | i18n }}</small>
-    </p>
-    <p *ngIf="minimumFloor == 0 && unassignedSeats > 0">
-      <small class="tw-text-muted">{{ AdditionalSeatPurchased }}</small>
-      <small class="tw-text-muted">{{ "purchaseSeatDescription" | i18n }}</small>
-    </p>
+    <ng-container *ngIf="remainingOpenSeats === 0 && unassignedSeats > 0">
+      <p>
+        <small class="tw-text-muted">{{ unassignedSeats }}</small>
+        <small class="tw-text-muted">{{ "unassignedSeatsDescription" | i18n }}</small>
+      </p>
+      <p>
+        <small class="tw-text-muted">{{ AdditionalSeatPurchased }}</small>
+        <small class="tw-text-muted">{{ "purchaseSeatDescription" | i18n }}</small>
+      </p>
+    </ng-container>
   </div>
   <ng-container bitDialogFooter>
     <button
