@@ -40,7 +40,7 @@ export abstract class GeneratorHistoryService {
 
   /** Lists all credentials for a user.
    *  @param userId identifies the user listing the credential.
-   *  @remarks This field is eventually consistent with `add`, `take`, and `clear` operations.
+   *  @remarks This field is eventually consistent with `track` and `take` operations.
    *    It is not guaranteed to immediately reflect those changes.
    */
   credentials$: (userId: UserId) => Observable<GeneratedCredential[]>;

@@ -14,7 +14,7 @@ describe("GeneratedCredential", () => {
       expect(result.category).toEqual("passphrase");
     });
 
-    it("passes thorugh date parameters", () => {
+    it("passes through date parameters", () => {
       const result = new GeneratedCredential("example", "password", new Date(100));
 
       expect(result.generationDate).toEqual(new Date(100));
