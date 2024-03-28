@@ -100,7 +100,10 @@ type AllowAngularDecorators<T extends { deps: any }> = T | UseAngularDecorators<
 
 /**
  * A factory function that creates a provider for the ngModule providers array.
- * This guarantees type safety for your provider definition. It does nothing at runtime.
+ * This (almost) guarantees type safety for your provider definition. It does nothing at runtime.
+ * Warning: the useAngularDecorators option provides an override where your class uses the Injectable decorator,
+ * however this cannot be enforced by the type system and will not cause an error if the decorator is not used.
+ * @example safeProvider({ provide: MyService, useClass: DefaultMyService, deps: [AnotherService] })
  * @param provider Your provider object in the usual shape (e.g. using useClass, useValue, useFactory, etc.)
  * @returns The exact same object without modification (pass-through).
  */
