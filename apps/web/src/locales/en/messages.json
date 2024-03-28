@@ -4957,7 +4957,7 @@
     "message": "Add existing organization"
   },
   "addNewOrganization": {
-    "message": "Add New organization"
+    "message": "Add new organization"
   },
   "myProvider": {
     "message": "My Provider"
@@ -7659,7 +7659,7 @@
     "message": "Remaining"
   },
   "unlinkOrganization": {
-    "message": "Unlink Organization"
+    "message": "Unlink organization"
   },
   "manageSeats": {
     "message": "MANAGE SEATS"
@@ -7674,6 +7674,6 @@
     "message": "Additional seats purchased"
   },
   "assignedSeatCannotUpdate": {
-    "message": "Assigned Seats can not be updated . Please contact your organization owner for assistance."
+    "message": "Assigned Seats can not be updated. Please contact your organization owner for assistance."
   }
 }
