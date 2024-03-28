@@ -17,6 +17,10 @@ export abstract class GeneratorHistoryService {
    *    uses the date the credential was added to the store instead.
    *  @returns a promise that completes with the added credential. If the credential
    *    wasn't added, then the promise completes with `null`.
+   *  @remarks this service is not suitable for use with vault items/ciphers. It models only
+   *    a history of an individually generated credential, while a vault item's history
+   *    may contain several credentials that are better modelled as atomic versions of the
+   *    vault item itself.
    */
   track: (
     userId: UserId,
