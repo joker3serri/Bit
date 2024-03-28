@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, map } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
 import { AccountService } from "../../auth/abstractions/account.service";
@@ -73,8 +73,6 @@ export class StateService<
   protected activeAccountSubject = new BehaviorSubject<string | null>(null);
   activeAccount$ = this.activeAccountSubject.asObservable();
 
-  activeAccountUnlocked$: Observable<boolean>;
-
   private hasBeenInited = false;
   protected isRecoveredSession = false;
 
@@ -94,13 +92,7 @@ export class StateService<
     protected tokenService: TokenService,
     private migrationRunner: MigrationRunner,
     protected useAccountCache: boolean = true,
-  ) {
-    this.activeAccountUnlocked$ = this.accountService.activeAccount$.pipe(
-      map((a) => {
-        return a?.status === AuthenticationStatus.Unlocked;
-      }),
-    );
-  }
+  ) {}
 
   async init(initOptions: InitOptions = {}): Promise<void> {
     // Deconstruct and apply defaults
