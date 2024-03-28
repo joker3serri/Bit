@@ -1,9 +1,9 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-subscription-update.request";
 import { ProviderPlansResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-plans.response";
+import { BillingApiService } from "@bitwarden/common/billing/services/billing-api.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
@@ -33,7 +33,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) protected data: ManageClientOrganizationDialogParams,
-    private apiService: ApiService,
+    private billingApiService: BillingApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
   ) {
@@ -50,7 +50,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
 
   async loadData() {
     try {
-      const response = await this.apiService.getProviderClientSubscriptions(this.providerId);
+      const response = await this.billingApiService.getProviderClientSubscriptions(this.providerId);
       this.AdditionalSeatPurchased = this.getProviderAssignedSeats(response.providerPlans);
       const seatMinimum = this.getProviderSeatMinimum(response.providerPlans);
       this.minimumFloor = this.assignedSeats - seatMinimum;
@@ -74,7 +74,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     const request = new ProviderSubscriptionUpdateRequest();
     request.assignedSeats = assignedSeats;
 
-    //await this.apiService.putProviderClientSubscriptions(this.providerId,this.organizationId,request);
+    //await this.billingApiService.putProviderClientSubscriptions(this.providerId,this.organizationId,request);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
 
     this.dialogRef.close();

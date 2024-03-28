@@ -1,4 +1,6 @@
 import { ApiService } from "../../abstractions/api.service";
+import { ProviderSubscriptionUpdateRequest } from "../../admin-console/models/request/provider/provider-subscription-update.request";
+import { ProviderSubscriptionResponse } from "../../admin-console/models/response/provider/provider-subscription.response";
 import { BillingApiServiceAbstraction } from "../../billing/abstractions/billilng-api.service.abstraction";
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
@@ -33,5 +35,31 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     );
 
     return new OrganizationBillingStatusResponse(r);
+  }
+
+  async getProviderClientSubscriptions(providerId: string): Promise<ProviderSubscriptionResponse> {
+    const r = await this.apiService.send(
+      "GET",
+      "/providers/" + providerId + "/billing/subscription",
+      null,
+      true,
+      true,
+    );
+    return new ProviderSubscriptionResponse(r);
+  }
+
+  async putProviderClientSubscriptions(
+    providerId: string,
+    organizationId: string,
+    request: ProviderSubscriptionUpdateRequest,
+  ): Promise<any> {
+    const response = await this.apiService.send(
+      "PUT",
+      "/providers/" + providerId + "/organizations/" + organizationId,
+      request,
+      true,
+      true,
+    );
+    return new response();
   }
 }

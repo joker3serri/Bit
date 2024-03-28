@@ -23,7 +23,6 @@ import {
   ProviderOrganizationOrganizationDetailsResponse,
   ProviderOrganizationResponse,
 } from "../admin-console/models/response/provider/provider-organization.response";
-import { ProviderSubscriptionResponse } from "../admin-console/models/response/provider/provider-subscription.response";
 import { ProviderUserBulkPublicKeyResponse } from "../admin-console/models/response/provider/provider-user-bulk-public-key.response";
 import { ProviderUserBulkResponse } from "../admin-console/models/response/provider/provider-user-bulk.response";
 import {
@@ -501,10 +500,4 @@ export abstract class ApiService {
   ) => Promise<void>;
   getKeyConnectorAlive: (keyConnectorUrl: string) => Promise<void>;
   getOrganizationExport: (organizationId: string) => Promise<OrganizationExportResponse>;
-  getProviderClientSubscriptions: (providerId: string) => Promise<ProviderSubscriptionResponse>;
-  putProviderClientSubscriptions: (
-    providerId: string,
-    organizationId: string,
-    request: any,
-  ) => Promise<any>;
 }
