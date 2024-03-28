@@ -293,23 +293,6 @@ export class StateService<
     );
   }
 
-  async getConvertAccountToKeyConnector(options?: StorageOptions): Promise<boolean> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.profile?.convertAccountToKeyConnector;
-  }
-
-  async setConvertAccountToKeyConnector(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.profile.convertAccountToKeyConnector = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
   /**
    * @deprecated Do not save the Master Key. Use the User Symmetric Key instead
    */
@@ -1298,23 +1281,6 @@ export class StateService<
     )?.profile?.userId;
   }
 
-  async getUsesKeyConnector(options?: StorageOptions): Promise<boolean> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.profile?.usesKeyConnector;
-  }
-
-  async setUsesKeyConnector(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    account.profile.usesKeyConnector = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
   async getVaultTimeout(options?: StorageOptions): Promise<number> {
     const accountVaultTimeout = (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
@@ -1763,7 +1729,9 @@ export class StateService<
   }
 
   protected async deAuthenticateAccount(userId: string): Promise<void> {
-    await this.tokenService.clearAccessToken(userId as UserId);
+    // We must have a manual call to clear tokens as we can't leverage state provider to clean
+    // up our data as we have secure storage in the mix.
+    await this.tokenService.clearTokens(userId as UserId);
     await this.setLastActive(null, { userId: userId });
     await this.updateState(async (state) => {
       state.authenticatedAccounts = state.authenticatedAccounts.filter((id) => id !== userId);
