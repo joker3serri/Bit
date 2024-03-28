@@ -1,5 +1,7 @@
 import { BehaviorSubject, Observable, concatMap, distinctUntilChanged, map } from "rxjs";
 
+import { AuthService } from "../../../auth/abstractions/auth.service";
+import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../../platform/abstractions/key-generation.service";
@@ -36,9 +38,11 @@ export class SendService implements InternalSendServiceAbstraction {
     private i18nService: I18nService,
     private keyGenerationService: KeyGenerationService,
     private stateService: StateService,
+    private authService: AuthService,
   ) {
-    this.stateService.activeAccountUnlocked$
+    this.authService.activeAccountStatus$
       .pipe(
+        map((status) => status === AuthenticationStatus.Unlocked),
         concatMap(async (unlocked) => {
           if (Utils.global.bitwardenContainerService == null) {
             return;

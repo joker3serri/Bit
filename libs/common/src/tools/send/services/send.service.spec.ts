@@ -1,6 +1,8 @@
 import { any, mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject, firstValueFrom } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 
+import { AuthService } from "../../../auth/abstractions/auth.service";
+import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
@@ -30,16 +32,13 @@ describe("SendService", () => {
   let sendService: SendService;
 
   let stateService: MockProxy<StateService>;
-  let activeAccount: BehaviorSubject<string>;
-  let activeAccountUnlocked: BehaviorSubject<boolean>;
+  let authService: MockProxy<AuthService>;
 
   beforeEach(() => {
-    activeAccount = new BehaviorSubject("123");
-    activeAccountUnlocked = new BehaviorSubject(true);
-
     stateService = mock<StateService>();
-    stateService.activeAccount$ = activeAccount;
-    stateService.activeAccountUnlocked$ = activeAccountUnlocked;
+    authService = mock();
+    authService.activeAccountStatus$ = of(AuthenticationStatus.Unlocked);
+    stateService.activeAccount$ = of("123");
     (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
 
     stateService.getEncryptedSends.calledWith(any()).mockResolvedValue({
@@ -50,12 +49,13 @@ describe("SendService", () => {
       .calledWith(any())
       .mockResolvedValue([sendView("1", "Test Send")]);
 
-    sendService = new SendService(cryptoService, i18nService, keyGenerationService, stateService);
-  });
-
-  afterEach(() => {
-    activeAccount.complete();
-    activeAccountUnlocked.complete();
+    sendService = new SendService(
+      cryptoService,
+      i18nService,
+      keyGenerationService,
+      stateService,
+      authService,
+    );
   });
 
   describe("get", () => {

@@ -2,7 +2,6 @@ import { firstValueFrom } from "rxjs";
 
 import { FakeStateProvider, awaitAsync } from "../../../spec";
 import { FakeAccountService } from "../../../spec/fake-account-service";
-import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { UserId } from "../../types/guid";
 import { CloudRegion, Region } from "../abstractions/environment.service";
 
@@ -31,12 +30,10 @@ describe("EnvironmentService", () => {
       [testUser]: {
         name: "name",
         email: "email",
-        status: AuthenticationStatus.Locked,
       },
       [alternateTestUser]: {
         name: "name",
         email: "email",
-        status: AuthenticationStatus.Locked,
       },
     });
     stateProvider = new FakeStateProvider(accountService);
@@ -49,7 +46,6 @@ describe("EnvironmentService", () => {
       id: userId,
       email: "test@example.com",
       name: `Test Name ${userId}`,
-      status: AuthenticationStatus.Unlocked,
     });
     await awaitAsync();
   };

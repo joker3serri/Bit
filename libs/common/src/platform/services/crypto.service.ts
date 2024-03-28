@@ -6,7 +6,6 @@ import { ProfileOrganizationResponse } from "../../admin-console/models/response
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 import { AccountService } from "../../auth/abstractions/account.service";
-import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
 import { CsprngArray } from "../../types/csprng";
@@ -150,8 +149,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     [userId, key] = await this.stateProvider.setUserState(USER_KEY, key, userId);
     await this.stateProvider.setUserState(USER_EVER_HAD_USER_KEY, true, userId);
 
-    await this.accountService.setAccountStatus(userId, AuthenticationStatus.Unlocked);
-
     await this.storeAdditionalKeys(key, userId);
   }
 
@@ -245,7 +242,6 @@ export class CryptoService implements CryptoServiceAbstraction {
   async clearUserKey(clearStoredKeys = true, userId?: UserId): Promise<void> {
     // Set userId to ensure we have one for the account status update
     [userId] = await this.stateProvider.setUserState(USER_KEY, null, userId);
-    await this.accountService.setMaxAccountStatus(userId, AuthenticationStatus.Locked);
     if (clearStoredKeys) {
       await this.clearAllStoredUserKeys(userId);
     }
