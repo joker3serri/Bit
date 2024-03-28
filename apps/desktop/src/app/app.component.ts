@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { firstValueFrom, map, Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -40,7 +40,6 @@ import { SystemService } from "@bitwarden/common/platform/abstractions/system.se
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateEventRunnerService } from "@bitwarden/common/platform/state";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -565,7 +564,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private async logOut(expired: boolean, userId?: string) {
-    const userBeingLoggedOut = await this.stateService.getUserId({ userId: userId });
+    const userBeingLoggedOut = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
 
     // Mark account as being cleaned up so that the updateAppMenu logic (executed on syncCompleted)
     // doesn't attempt to update a user that is being logged out as we will manually
@@ -575,7 +576,7 @@ export class AppComponent implements OnInit, OnDestroy {
     let preLogoutActiveUserId;
     try {
       // Provide the userId of the user to upload events for
-      await this.eventUploadService.uploadEvents(userBeingLoggedOut as UserId);
+      await this.eventUploadService.uploadEvents(userBeingLoggedOut);
       await this.syncService.setLastSync(new Date(0), userBeingLoggedOut);
       await this.cryptoService.clearKeys(userBeingLoggedOut);
       await this.cipherService.clear(userBeingLoggedOut);
@@ -583,12 +584,13 @@ export class AppComponent implements OnInit, OnDestroy {
       await this.collectionService.clear(userBeingLoggedOut);
       await this.passwordGenerationService.clear(userBeingLoggedOut);
       await this.vaultTimeoutSettingsService.clear(userBeingLoggedOut);
-      await this.biometricStateService.logout(userBeingLoggedOut as UserId);
+      await this.biometricStateService.logout(userBeingLoggedOut);
 
-      await this.stateEventRunnerService.handleEvent("logout", userBeingLoggedOut as UserId);
+      await this.stateEventRunnerService.handleEvent("logout", userBeingLoggedOut);
 
       preLogoutActiveUserId = this.activeUserId;
       await this.stateService.clean({ userId: userBeingLoggedOut });
+      await this.accountService.clean(userBeingLoggedOut);
     } finally {
       this.finishAccountCleanUp(userBeingLoggedOut);
     }
