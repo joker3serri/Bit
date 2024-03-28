@@ -39,7 +39,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
   private autofillFieldElements: AutofillFieldElements = new Map();
   private currentLocationHref = "";
   private mutationObserver: MutationObserver;
-  private updateAutofillElementsAfterMutationTimeout: NodeJS.Timeout;
+  private updateAutofillElementsAfterMutationTimeout: number | NodeJS.Timeout;
   private readonly updateAfterMutationTimeoutDelay = 1000;
   private readonly ignoredInputTypes = new Set([
     "hidden",
