@@ -143,9 +143,13 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     }),
     safeProvider(CollectionAdminService),
     safeProvider({
-      provide: OBSERVABLE_DISK_LOCAL_STORAGE,
+      provide: WindowStorageService,
       useFactory: () => new WindowStorageService(window.localStorage),
       deps: [],
+    }),
+    safeProvider({
+      provide: OBSERVABLE_DISK_LOCAL_STORAGE,
+      useExisting: WindowStorageService,
     }),
     safeProvider({
       provide: StorageServiceProvider,
@@ -155,12 +159,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     safeProvider({
       provide: MigrationRunner,
       useClass: WebMigrationRunner,
-      deps: [
-        AbstractStorageService,
-        LogService,
-        MigrationBuilderService,
-        OBSERVABLE_DISK_LOCAL_STORAGE,
-      ],
+      deps: [AbstractStorageService, LogService, MigrationBuilderService, WindowStorageService],
     }),
     safeProvider({
       provide: EnvironmentService,
