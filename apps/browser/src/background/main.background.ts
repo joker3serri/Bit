@@ -577,6 +577,7 @@ export default class MainBackground {
       this.cryptoService,
       this.apiService,
       this.stateService,
+      this.tokenService,
     );
 
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
