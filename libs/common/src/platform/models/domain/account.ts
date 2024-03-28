@@ -155,7 +155,6 @@ export class AccountKeys {
 }
 
 export class AccountProfile {
-  convertAccountToKeyConnector?: boolean;
   name?: string;
   email?: string;
   emailVerified?: boolean;
@@ -163,7 +162,6 @@ export class AccountProfile {
   forceSetPasswordReason?: ForceSetPasswordReason;
   lastSync?: string;
   userId?: string;
-  usesKeyConnector?: boolean;
   keyHash?: string;
   kdfIterations?: number;
   kdfMemory?: number;
