@@ -20,7 +20,7 @@
         [(ngModel)]="assignedSeats"
       />
     </bit-form-field>
-    <ng-container *ngIf="remainingOpenSeats === 0 && unassignedSeats > 0">
+    <ng-container *ngIf="remainingOpenSeats > 0">
       <p>
         <small class="tw-text-muted">{{ unassignedSeats }}</small>
         <small class="tw-text-muted">{{ "unassignedSeatsDescription" | i18n }}</small>

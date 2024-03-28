@@ -7,9 +7,10 @@ import { ProvidersComponent } from "@bitwarden/web-vault/app/admin-console/provi
 import { FrontendLayoutComponent } from "@bitwarden/web-vault/app/layouts/frontend-layout.component";
 import { UserLayoutComponent } from "@bitwarden/web-vault/app/layouts/user-layout.component";
 
+import { ManageClientOrganizationsComponent } from "../../billing/providers/clients/manage-client-organizations.component";
+
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
-import { ManageClientOrganizationsComponent } from "./clients/manage-client-organizations.component";
 import { ProviderPermissionsGuard } from "./guards/provider-permissions.guard";
 import { AcceptProviderComponent } from "./manage/accept-provider.component";
 import { EventsComponent } from "./manage/events.component";

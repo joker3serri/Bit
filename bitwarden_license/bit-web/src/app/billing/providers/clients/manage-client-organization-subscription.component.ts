@@ -1,6 +1,7 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
+import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/provider-subscription-update.request";
 import { ProviderPlansResponse } from "@bitwarden/common/billing/models/response/provider-plans.response";
@@ -9,11 +10,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { DialogService } from "@bitwarden/components";
 
 type ManageClientOrganizationDialogParams = {
-  organizationId: string;
-  providerId: string;
-  clientName: string;
-  assignedSeats: number;
-  unassignedSeats: number;
+  organization: ProviderOrganizationOrganizationDetailsResponse;
 };
 
 @Component({
@@ -27,6 +24,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   clientName: string;
   assignedSeats: number;
   unassignedSeats: number;
+  planName: string;
   AdditionalSeatPurchased: number;
   remainingOpenSeats: number;
 
@@ -37,19 +35,23 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
   ) {
-    this.organizationId = data.organizationId;
-    this.providerId = data.providerId;
-    this.clientName = data.clientName;
-    this.assignedSeats = data.assignedSeats;
-    this.unassignedSeats = data.unassignedSeats;
+    this.organizationId = data.organization.organizationId;
+    this.providerId = data.organization.providerId;
+    this.clientName = data.organization.organizationName;
+    this.assignedSeats = data.organization.seats;
+    this.unassignedSeats = data.organization.seats - data.organization.userCount;
+    this.planName = data.organization.plan;
   }
 
   async ngOnInit() {
     try {
       const response = await this.billingApiService.getProviderClientSubscriptions(this.providerId);
-      this.AdditionalSeatPurchased = this.getProviderAssignedSeats(response.providerPlans);
-      const seatMinimum = this.getProviderSeatMinimum(response.providerPlans);
-      this.remainingOpenSeats = this.assignedSeats - seatMinimum;
+      this.AdditionalSeatPurchased = this.getPurchasedSeatsByPlan(
+        this.planName,
+        response.providerPlans,
+      );
+      const seatMinimum = this.getProviderSeatMinimumByPlan(this.planName, response.providerPlans);
+      this.remainingOpenSeats = seatMinimum - this.assignedSeats;
     } catch (error) {
       this.AdditionalSeatPurchased = 0;
       this.remainingOpenSeats = 0;
@@ -76,18 +78,22 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  getProviderAssignedSeats(plans: ProviderPlansResponse[]) {
-    return plans.reduce(
-      (total: number, plan: ProviderPlansResponse) => total + plan.purchasedSeats,
-      0,
-    );
+  getPurchasedSeatsByPlan(planName: string, plans: ProviderPlansResponse[]): number {
+    const plan = plans.find((plan) => plan.planName === planName);
+    if (plan) {
+      return plan.purchasedSeats;
+    } else {
+      return 0;
+    }
   }
 
-  getProviderSeatMinimum(plans: ProviderPlansResponse[]) {
-    return plans.reduce(
-      (total: number, plan: ProviderPlansResponse) => total + plan.seatMinimum,
-      0,
-    );
+  getProviderSeatMinimumByPlan(planName: string, plans: ProviderPlansResponse[]) {
+    const plan = plans.find((plan) => plan.planName === planName);
+    if (plan) {
+      return plan.seatMinimum;
+    } else {
+      return 0;
+    }
   }
 
   static open(dialogService: DialogService, data: ManageClientOrganizationDialogParams) {

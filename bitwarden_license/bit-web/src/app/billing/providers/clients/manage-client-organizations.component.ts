@@ -14,7 +14,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { DialogService, TableDataSource } from "@bitwarden/components";
 
-import { WebProviderService } from "../services/web-provider.service";
+import { WebProviderService } from "../../../admin-console/providers/services/web-provider.service";
 
 import { ManageClientOrganizationSubscriptionComponent } from "./manage-client-organization-subscription.component";
 
@@ -25,8 +25,6 @@ import { ManageClientOrganizationSubscriptionComponent } from "./manage-client-o
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class ManageClientOrganizationsComponent implements OnInit {
   providerId: string;
-  assignedSeats: number;
-  unassignedSeats: number;
   loading = true;
   manageOrganizations = false;
 
@@ -81,22 +79,6 @@ export class ManageClientOrganizationsComponent implements OnInit {
     this.loading = false;
   }
 
-  getProviderAssignedSeats(clients: ProviderOrganizationOrganizationDetailsResponse[]) {
-    this.assignedSeats = clients.reduce(
-      (total: number, client: ProviderOrganizationOrganizationDetailsResponse) =>
-        total + client.seats,
-      0,
-    );
-  }
-
-  getProviderUnassignedSeats(clients: ProviderOrganizationOrganizationDetailsResponse[]) {
-    this.unassignedSeats = clients.reduce(
-      (total: number, client: ProviderOrganizationOrganizationDetailsResponse) =>
-        total + client.userCount,
-      0,
-    );
-  }
-
   isPaging() {
     const searching = this.isSearching();
     if (searching && this.didScroll) {
@@ -139,14 +121,8 @@ export class ManageClientOrganizationsComponent implements OnInit {
       return;
     }
 
-    this.getProviderAssignedSeats(this.clients);
-    this.getProviderUnassignedSeats(this.clients);
     const dialogRef = ManageClientOrganizationSubscriptionComponent.open(this.dialogService, {
-      organizationId: organization.id,
-      providerId: organization.providerId,
-      clientName: organization.organizationName,
-      assignedSeats: this.assignedSeats,
-      unassignedSeats: this.assignedSeats - this.unassignedSeats,
+      organization: organization,
     });
 
     await firstValueFrom(dialogRef.closed);
