@@ -53,13 +53,12 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     organizationId: string,
     request: ProviderSubscriptionUpdateRequest,
   ): Promise<any> {
-    const response = await this.apiService.send(
+    return await this.apiService.send(
       "PUT",
       "/providers/" + providerId + "/organizations/" + organizationId,
       request,
       true,
-      true,
+      false,
     );
-    return new response();
   }
 }

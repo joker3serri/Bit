@@ -6,6 +6,7 @@ import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/co
 import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/provider-subscription-update.request";
 import { Plans } from "@bitwarden/common/billing/models/response/provider-subscription-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
@@ -34,6 +35,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     private billingApiService: BillingApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
+    private logService: LogService,
   ) {
     this.organizationId = data.organization.organizationId;
     this.providerId = data.organization.providerId;
@@ -66,12 +68,35 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
       );
       return;
     }
+    try {
+      const request = new ProviderSubscriptionUpdateRequest();
+      request.assignedSeats = assignedSeats;
 
-    const request = new ProviderSubscriptionUpdateRequest();
-    request.assignedSeats = assignedSeats;
-
-    //await this.billingApiService.putProviderClientSubscriptions(this.providerId,this.organizationId,request);
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
+      await this.billingApiService.putProviderClientSubscriptions(
+        this.providerId,
+        this.organizationId,
+        request,
+      );
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("subscriptionUpdated"),
+      );
+    } catch (ex) {
+      if (ex.statusCode === 204) {
+        this.platformUtilsService.showToast(
+          "success",
+          null,
+          this.i18nService.t("subscriptionUpdated"),
+        );
+      } else {
+        this.platformUtilsService.showToast(
+          "success",
+          null,
+          this.i18nService.t("assignedSeatCannotUpdate"),
+        );
+      }
+    }
 
     this.dialogRef.close();
   }

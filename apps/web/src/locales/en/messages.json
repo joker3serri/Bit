@@ -7675,5 +7675,8 @@
   },
   "assignedSeatCannotUpdate": {
     "message": "Assigned Seats can not be updated. Please contact your organization owner for assistance."
+  },
+  "subscriptionUpdateFailed": {
+    "message": "Subscription update failed"
   }
 }
