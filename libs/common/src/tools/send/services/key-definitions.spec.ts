@@ -7,7 +7,7 @@ describe("Key definitions", () => {
       const result = SEND_USER_ENCRYPTED.deserializer(
         JSON.parse(JSON.stringify(testSendData("1", "Test Send Data"))),
       );
-      expect(result).toStrictEqual(testSendData);
+      expect(result).toEqual(testSendData("1", "Test Send Data"));
     });
   });
 
