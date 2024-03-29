@@ -26,9 +26,6 @@ export class SendService implements InternalSendServiceAbstraction {
   readonly sendKeySalt = "bitwarden-send";
   readonly sendKeyPurpose = "send";
 
-  // sends$: Observable<Send[]>;
-  // sendViews$: Observable<SendView[]>;
-
   sends$ = this.stateProvider.encryptedState$.pipe(
     map((record) => Object.values(record || {}).map((data) => new Send(data))),
   );
