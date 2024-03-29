@@ -51,10 +51,11 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
         response.providerPlans,
       );
       const seatMinimum = this.getProviderSeatMinimumByPlan(this.planName, response.providerPlans);
-      this.remainingOpenSeats = seatMinimum - this.assignedSeats;
+      const assignedByPlan = this.getAssignedByPlan(this.planName, response.providerPlans);
+      this.remainingOpenSeats = seatMinimum - assignedByPlan;
     } catch (error) {
-      this.AdditionalSeatPurchased = 0;
       this.remainingOpenSeats = 0;
+      this.AdditionalSeatPurchased = 0;
     }
     this.loading = false;
   }
@@ -82,6 +83,15 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     const plan = plans.find((plan) => plan.planName === planName);
     if (plan) {
       return plan.purchasedSeats;
+    } else {
+      return 0;
+    }
+  }
+
+  getAssignedByPlan(planName: string, plans: ProviderPlansResponse[]): number {
+    const plan = plans.find((plan) => plan.planName === planName);
+    if (plan) {
+      return plan.assignedSeats;
     } else {
       return 0;
     }

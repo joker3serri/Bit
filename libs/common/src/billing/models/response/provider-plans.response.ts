@@ -3,6 +3,7 @@ import { BaseResponse } from "../../../models/response/base.response";
 export class ProviderPlansResponse extends BaseResponse {
   planName: string;
   seatMinimum: number;
+  assignedSeats: number;
   purchasedSeats: number;
   cost: number;
   cadence: string;
@@ -11,6 +12,7 @@ export class ProviderPlansResponse extends BaseResponse {
     super(response);
     this.planName = this.getResponseProperty("PlanName");
     this.seatMinimum = this.getResponseProperty("SeatMinimum");
+    this.assignedSeats = this.getResponseProperty("AssignedSeats");
     this.purchasedSeats = this.getResponseProperty("PurchasedSeats");
     this.cost = this.getResponseProperty("Cost");
     this.cadence = this.getResponseProperty("Cadence");
