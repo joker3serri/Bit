@@ -18,7 +18,6 @@ import { CipherView } from "../../../vault/models/view/cipher.view";
 import { AddEditCipherInfo } from "../../../vault/types/add-edit-cipher-info";
 import { KdfType } from "../../enums";
 import { Utils } from "../../misc/utils";
-import { ServerConfigData } from "../../models/data/server-config.data";
 
 import { EncryptedString, EncString } from "./enc-string";
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";
@@ -152,7 +151,6 @@ export class AccountKeys {
 }
 
 export class AccountProfile {
-  convertAccountToKeyConnector?: boolean;
   name?: string;
   email?: string;
   emailVerified?: boolean;
@@ -160,7 +158,6 @@ export class AccountProfile {
   forceSetPasswordReason?: ForceSetPasswordReason;
   lastSync?: string;
   userId?: string;
-  usesKeyConnector?: boolean;
   keyHash?: string;
   kdfIterations?: number;
   kdfMemory?: number;
@@ -187,7 +184,6 @@ export class AccountSettings {
   protectedPin?: string;
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
-  serverConfig?: ServerConfigData;
   approveLoginRequests?: boolean;
   trustDeviceChoiceForDecryption?: boolean;
 
@@ -204,7 +200,6 @@ export class AccountSettings {
         obj?.pinProtected,
         EncString.fromJSON,
       ),
-      serverConfig: ServerConfigData.fromJSON(obj?.serverConfig),
     });
   }
 }
