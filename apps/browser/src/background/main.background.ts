@@ -705,7 +705,7 @@ export default class MainBackground {
       this.i18nService,
       this.keyGenerationService,
       this.sendStateProvider,
-      this.accountService,
+      this.encryptService,
     );
     this.sendApiService = new SendApiService(
       this.apiService,

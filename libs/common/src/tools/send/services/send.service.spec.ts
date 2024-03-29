@@ -81,22 +81,8 @@ describe("SendService", () => {
       i18nService,
       keyGenerationService,
       sendStateProvider,
-      accountService,
+      encryptService,
     );
-  });
-
-  describe("get", () => {
-    it("exists", async () => {
-      const result = sendService.get("1");
-
-      expect(result).toEqual(testSend("1", "Test Send"));
-    });
-
-    it("does not exist", async () => {
-      const result = sendService.get("2");
-
-      expect(result).toBe(undefined);
-    });
   });
 
   describe("get$", () => {
@@ -418,9 +404,9 @@ describe("SendService", () => {
   describe("getRotatedKeys", () => {
     let encryptedKey: EncString;
     beforeEach(() => {
-      cryptoService.decryptToBytes.mockResolvedValue(new Uint8Array(32));
+      encryptService.decryptToBytes.mockResolvedValue(new Uint8Array(32));
       encryptedKey = new EncString("Re-encrypted Send Key");
-      cryptoService.encrypt.mockResolvedValue(encryptedKey);
+      encryptService.encrypt.mockResolvedValue(encryptedKey);
     });
 
     it("returns re-encrypted user sends", async () => {
@@ -434,6 +420,8 @@ describe("SendService", () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       sendService.replace(null);
+
+      await awaitAsync();
 
       const newUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
       const result = await sendService.getRotatedKeys(newUserKey);

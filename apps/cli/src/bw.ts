@@ -397,7 +397,7 @@ export class Main {
       this.i18nService,
       this.keyGenerationService,
       this.sendStateProvider,
-      this.accountService,
+      this.encryptService,
     );
 
     this.cipherFileUploadService = new CipherFileUploadService(

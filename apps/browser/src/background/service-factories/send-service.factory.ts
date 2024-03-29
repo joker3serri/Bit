@@ -2,13 +2,13 @@ import { SendService } from "@bitwarden/common/tools/send/services/send.service"
 import { InternalSendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
 import {
-  AccountServiceInitOptions,
-  accountServiceFactory,
-} from "../../auth/background/service-factories/account-service.factory";
-import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,
 } from "../../platform/background/service-factories/crypto-service.factory";
+import {
+  EncryptServiceInitOptions,
+  encryptServiceFactory,
+} from "../../platform/background/service-factories/encrypt-service.factory";
 import {
   FactoryOptions,
   CachedServices,
@@ -33,7 +33,7 @@ export type SendServiceInitOptions = SendServiceFactoryOptions &
   I18nServiceInitOptions &
   KeyGenerationServiceInitOptions &
   StateProviderInitOptions &
-  AccountServiceInitOptions;
+  EncryptServiceInitOptions;
 
 export function sendServiceFactory(
   cache: { sendService?: InternalSendService } & CachedServices,
@@ -49,7 +49,7 @@ export function sendServiceFactory(
         await i18nServiceFactory(cache, opts),
         await keyGenerationServiceFactory(cache, opts),
         await sendStateProviderFactory(cache, opts),
-        await accountServiceFactory(cache, opts),
+        await encryptServiceFactory(cache, opts),
       ),
   );
 }
