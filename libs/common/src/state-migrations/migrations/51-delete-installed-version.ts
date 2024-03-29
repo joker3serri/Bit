@@ -1,5 +1,5 @@
 import { MigrationHelper } from "../migration-helper";
-import { Migrator } from "../migrator";
+import { IRREVERSIBLE, Migrator } from "../migrator";
 
 type ExpectedGlobal = {
   installedVersion?: string;
@@ -14,6 +14,6 @@ export class DeleteInstalledVersion extends Migrator<50, 51> {
     }
   }
   rollback(helper: MigrationHelper): Promise<void> {
-    throw new Error("Method not implemented.");
+    throw IRREVERSIBLE;
   }
 }
