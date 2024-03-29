@@ -16,7 +16,6 @@ import {
   STATE_FACTORY,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { LoginEmailServiceAbstraction, LoginEmailService } from "@bitwarden/auth/common";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
@@ -219,11 +218,6 @@ const safeProviders: SafeProvider[] = [
       DialogService,
       DesktopAutofillSettingsService,
     ],
-  }),
-  safeProvider({
-    provide: LoginEmailServiceAbstraction,
-    useClass: LoginEmailService,
-    deps: [StateProvider],
   }),
   safeProvider({
     provide: CryptoFunctionServiceAbstraction,

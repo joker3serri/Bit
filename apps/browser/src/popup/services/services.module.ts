@@ -18,8 +18,6 @@ import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.
 import {
   AuthRequestServiceAbstraction,
   LoginStrategyServiceAbstraction,
-  LoginEmailServiceAbstraction,
-  LoginEmailService,
 } from "@bitwarden/auth/common";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
@@ -428,11 +426,6 @@ const safeProviders: SafeProvider[] = [
     provide: FileDownloadService,
     useClass: BrowserFileDownloadService,
     deps: [],
-  }),
-  safeProvider({
-    provide: LoginEmailServiceAbstraction,
-    useClass: LoginEmailService,
-    deps: [StateProvider],
   }),
   safeProvider({
     provide: SYSTEM_THEME_OBSERVABLE,
