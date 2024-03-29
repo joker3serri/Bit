@@ -15,6 +15,7 @@ import {
 import { CollectionId, UserId } from "../../types/guid";
 import { CollectionService as CollectionServiceAbstraction } from "../../vault/abstractions/collection.service";
 import { CollectionData } from "../models/data/collection.data";
+import { Cipher } from "../models/domain/cipher";
 import { Collection } from "../models/domain/collection";
 import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
@@ -130,6 +131,23 @@ export class CollectionService implements CollectionServiceAbstraction {
 
   async getAllDecrypted(): Promise<CollectionView[]> {
     return await firstValueFrom(this.decryptedCollections$);
+  }
+
+  async checkCipherEditValue(cipher: Cipher): Promise<Cipher> {
+    const allCollections = await this.getAllDecrypted();
+    const cipherCollections = cipher.collectionIds;
+
+    let managedCollection = false;
+
+    for (const collection of allCollections) {
+      if (cipherCollections.includes(collection.id) && collection.manage) {
+        managedCollection = true;
+        break;
+      }
+    }
+
+    cipher.edit = managedCollection;
+    return cipher;
   }
 
   async getAllNested(collections: CollectionView[] = null): Promise<TreeNode<CollectionView>[]> {

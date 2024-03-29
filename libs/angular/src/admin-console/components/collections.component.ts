@@ -79,7 +79,7 @@ export class CollectionsComponent implements OnInit {
     }
     this.cipherDomain.collectionIds = selectedCollectionIds;
     try {
-      this.formPromise = this.saveCollections();
+      this.formPromise = await this.saveCollections();
       await this.formPromise;
       this.onSavedCollections.emit();
       this.platformUtilsService.showToast("success", null, this.i18nService.t("editedItem"));
@@ -103,7 +103,8 @@ export class CollectionsComponent implements OnInit {
     );
   }
 
-  protected saveCollections() {
-    return this.cipherService.saveCollectionsWithServer(this.cipherDomain);
+  protected async saveCollections() {
+    const checkCipherEdit = await this.collectionService.checkCipherEditValue(this.cipherDomain);
+    return this.cipherService.saveCollectionsWithServer(checkCipherEdit);
   }
 }
