@@ -7678,6 +7678,15 @@
     "message": "View machine account",
     "description": "Action to view the details of a machine account."
   },
+  "deleteMachineAccountDialogMessage": {
+    "message": "Deleting machine account $MACHINE_ACCOUNT$ is permanent and irreversible.",
+    "placeholders": {
+      "machine_account": {
+        "content": "$1",
+        "example": "Machine account name"
+      }
+    }
+  },
   "deleteMachineAccountsDialogMessage": {
     "message": "Deleting machine accounts is permanent and irreversible."
   },
@@ -7690,12 +7699,31 @@
       }
     }
   },
+  "deleteMachineAccountToast": {
+    "message": "Machine account deleted"
+  },
   "deleteMachineAccountsToast": {
     "message": "Machine accounts deleted"
   },
   "searchMachineAccounts": {
     "message": "Search machine accounts",
     "description": "Placeholder text for searching machine accounts."
+  },
+  "editMachineAccount": {
+    "message": "Edit machine account",
+    "description": "Title for editing a machine account."
+  },
+  "machineAccountName": {
+    "message": "Machine account name",
+    "description": "Label for the name of a machine account"
+  },
+  "machineAccountCreated": {
+    "message": "Machine account created",
+    "description": "Notifies that a new machine account has been created"
+  },
+  "machineAccountUpdated": {
+    "message": "Machine account updated",
+    "description": "Notifies that a machine account has been updated"
   },
   "projectMachineAccountsDescription": {
     "message": "Grant machine accounts access to this project."
@@ -7705,6 +7733,24 @@
   },
   "projectEmptyMachineAccountAccessPolicies": {
     "message": "Add machine accounts to grant access"
+  },
+  "machineAccountPeopleDescription": {
+    "message": "Grant groups or people access to this machine account."
+  },
+  "machineAccountProjectsDescription": {
+    "message": "Assign projects to this machine account. "
+  },
+  "createMachineAccount": {
+    "message": "Create a machine account"
+  },
+  "maPeopleWarningMessage": {
+    "message": "Removing people from a machine account does not remove the access tokens they created. For security best practice, it is recommended to revoke access tokens created by people removed from a machine account."
+  },
+  "smAccessRemovalWarningMaTitle": {
+    "message": "Remove access to this machine account"
+  },
+  "smAccessRemovalWarningMaMessage": {
+    "message": "This action will remove your access to the machine account."
   },
   "machineAccountsIncluded": {
     "message": "$COUNT$ machine accounts included",
@@ -7751,66 +7797,13 @@
   "limitMachineAccountsDesc": {
     "message": "Set a limit for your machine accounts. Once this limit is reached, you will not be able to create new machine accounts."
   },
-  "editMachineAccount": {
-    "message": "Edit machine account",
-    "description": "Title for editing a machine account."
-  },
-  "deleteMachineAccountDialogMessage": {
-    "message": "Deleting machine account $MACHINE_ACCOUNT$ is permanent and irreversible.",
-    "placeholders": {
-      "machine_account": {
-        "content": "$1",
-        "example": "Machine account name"
-      }
-    }
-  },
-  "deleteMachineAccountToast": {
-    "message": "machine account deleted"
-  },
-  "machineAccountName": {
-    "message": "Machine account name",
-    "description": "Label for the name of a machine account"
-  },
-  "machineAccountPeopleDescription": {
-    "message": "Grant groups or people access to this machine account."
-  },
-  "machineAccountProjectsDescription": {
-    "message": "Assign projects to this machine account. "
-  },
-  "machineAccountEmptyProjectAccessPolicies": {
-    "message": "Add projects to grant access"
-  },
   "machineAccountLimit": {
     "message": "Machine account limit (optional)"
   },
   "maxMachineAccountCost": {
     "message": "Max potential machine account cost"
   },
-  "createMachineAccount": {
-    "message": "Create a machine account"
-  },
   "machineAccountAccessUpdated": {
     "message": "Machine account access updated"
-  },
-  "machineAccountCreated": {
-    "message": "Machine account created",
-    "description": "Notifies that a new machine account has been created"
-  },
-  "machineAccountUpdated": {
-    "message": "Machine account updated",
-    "description": "Notifies that a machine account has been updated"
-  },
-  "newMaSelectAccess": {
-    "message": "Type or select projects or secrets",
-    "description": "Instructions for selecting projects or secrets for a new machine account"
-  },
-  "maPeopleWarningMessage": {
-    "message": "Removing people from a machine account does not remove the access tokens they created. For security best practice, it is recommended to revoke access tokens created by people removed from a machine account."
-  },
-  "smAccessRemovalWarningMaTitle": {
-    "message": "Remove access to this machine account"
-  },
-  "smAccessRemovalWarningMaMessage": {
-    "message": "This action will remove your access to the machine account."
   }
 }
