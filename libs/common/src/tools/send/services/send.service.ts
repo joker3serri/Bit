@@ -26,8 +26,17 @@ export class SendService implements InternalSendServiceAbstraction {
   readonly sendKeySalt = "bitwarden-send";
   readonly sendKeyPurpose = "send";
 
-  sends$: Observable<Send[]>;
-  sendViews$: Observable<SendView[]>;
+  // sends$: Observable<Send[]>;
+  // sendViews$: Observable<SendView[]>;
+
+  sends$ = this.stateProvider.encryptedState$.pipe(
+    map((record) => Object.values(record || {}).map((data) => new Send(data))),
+  );
+  sendViews$ = this.stateProvider.encryptedState$.pipe(
+    concatMap((record) =>
+      this.decryptSends(Object.values(record || {}).map((data) => new Send(data))),
+    ),
+  );
 
   constructor(
     private cryptoService: CryptoService,
@@ -35,17 +44,7 @@ export class SendService implements InternalSendServiceAbstraction {
     private keyGenerationService: KeyGenerationService,
     private stateProvider: SendStateProvider,
     private encryptService: EncryptService,
-  ) {
-    this.sends$ = this.stateProvider.encryptedState$.pipe(
-      map((record) => Object.values(record || {}).map((data) => new Send(data))),
-    );
-
-    this.sendViews$ = this.stateProvider.encryptedState$.pipe(
-      concatMap((record) =>
-        this.decryptSends(Object.values(record || {}).map((data) => new Send(data))),
-      ),
-    );
-  }
+  ) {}
 
   async encrypt(
     model: SendView,
