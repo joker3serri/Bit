@@ -42,7 +42,6 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     this.providerId = data.organization.providerId;
     this.clientName = data.organization.organizationName;
     this.assignedSeats = data.organization.seats;
-    this.unassignedSeats = data.organization.seats - data.organization.userCount;
     this.planName = data.organization.plan;
   }
 
@@ -53,6 +52,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
       const seatMinimum = this.getProviderSeatMinimumByPlan(this.planName, response.plans);
       const assignedByPlan = this.getAssignedByPlan(this.planName, response.plans);
       this.remainingOpenSeats = seatMinimum - assignedByPlan;
+      this.unassignedSeats = Math.abs(this.remainingOpenSeats);
     } catch (error) {
       this.remainingOpenSeats = 0;
       this.AdditionalSeatPurchased = 0;
@@ -69,36 +69,16 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
       );
       return;
     }
-    try {
-      const request = new ProviderSubscriptionUpdateRequest();
-      request.assignedSeats = assignedSeats;
 
-      await this.billingApiService.putProviderClientSubscriptions(
-        this.providerId,
-        this.providerOrganizationId,
-        request,
-      );
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("subscriptionUpdated"),
-      );
-    } catch (ex) {
-      if (ex.statusCode === 204) {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("subscriptionUpdated"),
-        );
-      } else {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("assignedSeatCannotUpdate"),
-        );
-      }
-    }
+    const request = new ProviderSubscriptionUpdateRequest();
+    request.assignedSeats = assignedSeats;
 
+    await this.billingApiService.putProviderClientSubscriptions(
+      this.providerId,
+      this.providerOrganizationId,
+      request,
+    );
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
     this.dialogRef.close();
   }
 
