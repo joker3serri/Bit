@@ -105,7 +105,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.activeAccountId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
 
-    await this.setupRememberDeviceValueChanges();
+    this.setupRememberDeviceValueChanges();
 
     // Persist user choice from state if it exists
     await this.setRememberDeviceDefaultValue();
@@ -165,7 +165,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.rememberDevice.setValue(rememberDevice);
   }
 
-  private async setupRememberDeviceValueChanges() {
+  private setupRememberDeviceValueChanges() {
     this.rememberDevice.valueChanges
       .pipe(
         switchMap((value) =>
