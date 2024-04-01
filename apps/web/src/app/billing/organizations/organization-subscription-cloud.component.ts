@@ -41,6 +41,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   showSecretsManagerSubscribe = false;
   firstLoaded = false;
   loading: boolean;
+  locale: string;
 
   protected readonly teamsStarter = ProductType.TeamsStarter;
 
@@ -86,6 +87,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       return;
     }
     this.loading = true;
+    this.locale = await firstValueFrom(this.i18nService.locale$);
     this.userOrg = await this.organizationService.get(this.organizationId);
     if (this.userOrg.canViewSubscription) {
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
