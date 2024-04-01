@@ -589,6 +589,7 @@ export class PeopleComponent
 
     await lastValueFrom(dialogRef.closed);
     this.selectAll(false);
+    await this.load();
   }
 
   async events(user: OrganizationUserView) {
