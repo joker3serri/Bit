@@ -10,7 +10,8 @@ import {
   timeout,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -48,9 +49,29 @@ export class AccountSwitcherService {
     private messagingService: MessagingService,
     private environmentService: EnvironmentService,
     private logService: LogService,
+    private authService: AuthService,
   ) {
+    const accountsWithStatuses$ = this.accountService.accounts$.pipe(
+      map((accounts) => Object.entries(accounts) as [UserId, AccountInfo][]),
+      switchMap((entries) =>
+        combineLatest(
+          entries.map(([id, account]) =>
+            this.authService.authStatusFor$(id).pipe(map((status) => ({ ...account, id, status }))),
+          ),
+        ),
+      ),
+      map((accounts) =>
+        accounts.reduce(
+          (acc, account) => {
+            acc[account.id] = account;
+            return acc;
+          },
+          {} as Record<UserId, AccountInfo & { status: AuthenticationStatus }>,
+        ),
+      ),
+    );
     this.availableAccounts$ = combineLatest([
-      this.accountService.accounts$,
+      accountsWithStatuses$,
       this.accountService.activeAccount$,
     ]).pipe(
       switchMap(async ([accounts, activeAccount]) => {

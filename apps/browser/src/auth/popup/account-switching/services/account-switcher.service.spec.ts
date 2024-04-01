@@ -2,6 +2,7 @@ import { matches, mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of, timeout } from "rxjs";
 
 import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -20,6 +21,7 @@ describe("AccountSwitcherService", () => {
   const messagingService = mock<MessagingService>();
   const environmentService = mock<EnvironmentService>();
   const logService = mock<LogService>();
+  const authService = mock<AuthService>();
 
   let accountSwitcherService: AccountSwitcherService;
 
@@ -29,12 +31,16 @@ describe("AccountSwitcherService", () => {
     accountService.accounts$ = accountsSubject;
     accountService.activeAccount$ = activeAccountSubject;
 
+    // default all accounts to be unlocked
+    authService.authStatusFor$.mockReturnValue(new BehaviorSubject(AuthenticationStatus.Unlocked));
+
     accountSwitcherService = new AccountSwitcherService(
       accountService,
       avatarService,
       messagingService,
       environmentService,
       logService,
+      authService,
     );
   });
 
@@ -43,7 +49,6 @@ describe("AccountSwitcherService", () => {
       const user1AccountInfo: AccountInfo = {
         name: "Test User 1",
         email: "test1@email.com",
-        status: AuthenticationStatus.Unlocked,
       };
 
       avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
@@ -72,7 +77,6 @@ describe("AccountSwitcherService", () => {
           seedAccounts[`${i}` as UserId] = {
             email: `test${i}@email.com`,
             name: "Test User ${i}",
-            status: AuthenticationStatus.Unlocked,
           };
         }
         avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
@@ -89,6 +93,25 @@ describe("AccountSwitcherService", () => {
         });
       },
     );
+
+    it("only displays accounts that are not logged out", async () => {
+      const user1AccountInfo: AccountInfo = {
+        name: "Test User 1",
+        email: "",
+      };
+      accountsSubject.next({
+        "1": user1AccountInfo,
+      } as Record<UserId, AccountInfo>);
+      authService.authStatusFor$.mockReturnValueOnce(of(AuthenticationStatus.LoggedOut));
+
+      const accounts = await firstValueFrom(
+        accountSwitcherService.availableAccounts$.pipe(timeout(20)),
+      );
+
+      // Add account only
+      expect(accounts).toHaveLength(1);
+      expect(accounts[0].id).toBe("addAccount");
+    });
   });
 
   describe("selectAccount", () => {
