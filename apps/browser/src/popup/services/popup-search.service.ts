@@ -12,7 +12,7 @@ export class PopupSearchService extends SearchService {
     super(consoleLogService, i18nService, stateProvider);
   }
 
-  clearIndex() {
+  clearIndex(): Promise<void> {
     throw new Error("Not available.");
   }
 

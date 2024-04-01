@@ -1142,7 +1142,7 @@ export default class MainBackground {
     const newActiveUser = await this.stateService.clean({ userId: userId });
 
     if (userId == null || userId === currentUserId) {
-      this.searchService.clearIndex();
+      await this.searchService.clearIndex();
     }
 
     await this.stateEventRunnerService.handleEvent("logout", currentUserId as UserId);
