@@ -47,7 +47,7 @@ import { MoveDdgToStateProviderMigrator } from "./migrations/48-move-ddg-to-stat
 import { AccountServerConfigMigrator } from "./migrations/49-move-account-server-configs";
 import { AddKeyTypeToOrgKeysMigrator } from "./migrations/5-add-key-type-to-org-keys";
 import { KeyConnectorMigrator } from "./migrations/50-move-key-connector-to-state-provider";
-import { DeviceTrustCryptoServiceStateProviderMigrator } from "./migrations/51-migrate-device-trust-crypto-svc-to-state-providers";
+import { RememberedEmailMigrator } from "./migrations/51-move-remembered-email-to-state-providers";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
 import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-auto-prompt-to-account";
 import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";
@@ -108,7 +108,8 @@ export function createMigrationBuilder() {
     .with(MoveDdgToStateProviderMigrator, 47, 48)
     .with(AccountServerConfigMigrator, 48, 49)
     .with(KeyConnectorMigrator, 49, 50)
-    .with(DeviceTrustCryptoServiceStateProviderMigrator, 50, CURRENT_VERSION);
+    .with(RememberedEmailMigrator, 50, CURRENT_VERSION);
+  // .with(DeviceTrustCryptoServiceStateProviderMigrator, 50, CURRENT_VERSION);
 }
 
 export async function currentVersion(
