@@ -11,7 +11,7 @@ export interface UserState<T> {
   /** Emits a stream of data. Emits null if the user does not have specified state. */
   readonly state$: Observable<T | null>;
 
-  /** Emits a stream of data alongside the user id the data corresponds to. */
+  /** Emits a stream of tuples, with the first element being a user id and the second element being the data for that user. */
   readonly combinedState$: Observable<CombinedState<T>>;
 }
 
