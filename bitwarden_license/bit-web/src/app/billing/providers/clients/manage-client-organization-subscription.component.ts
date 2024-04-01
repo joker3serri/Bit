@@ -20,8 +20,9 @@ type ManageClientOrganizationDialogParams = {
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   loading = true;
-  organizationId: string;
+  providerOrganizationId: string;
   providerId: string;
+
   clientName: string;
   assignedSeats: number;
   unassignedSeats: number;
@@ -37,7 +38,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
   ) {
-    this.organizationId = data.organization.organizationId;
+    this.providerOrganizationId = data.organization.id;
     this.providerId = data.organization.providerId;
     this.clientName = data.organization.organizationName;
     this.assignedSeats = data.organization.seats;
@@ -74,7 +75,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
 
       await this.billingApiService.putProviderClientSubscriptions(
         this.providerId,
-        this.organizationId,
+        this.providerOrganizationId,
         request,
       );
       this.platformUtilsService.showToast(
