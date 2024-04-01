@@ -29,7 +29,7 @@ export const SHOULD_TRUST_DEVICE: KeyDefinitionLike = {
   },
 };
 
-export class DeviceTrustCryptoServiceStateProviderMigrator extends Migrator<50, 51> {
+export class DeviceTrustCryptoServiceStateProviderMigrator extends Migrator<51, 52> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
