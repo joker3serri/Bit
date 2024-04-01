@@ -3,7 +3,7 @@ import { MockProxy, any } from "jest-mock-extended";
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { SendMigrator } from "./52-move-encrypted-sends";
+import { SendMigrator } from "./54-move-encrypted-sends";
 
 function exampleJSON() {
   return {
@@ -122,8 +122,8 @@ describe("SendMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 51);
-      sut = new SendMigrator(51, 52);
+      helper = mockMigrationHelper(exampleJSON(), 53);
+      sut = new SendMigrator(53, 54);
     });
 
     it("should remove encrypted sends from all accounts", async () => {
@@ -174,8 +174,8 @@ describe("SendMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 52);
-      sut = new SendMigrator(51, 52);
+      helper = mockMigrationHelper(rollbackJSON(), 54);
+      sut = new SendMigrator(53, 54);
     });
 
     it.each(["user-1", "user-2"])("should null out new values", async (userId) => {

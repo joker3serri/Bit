@@ -63,13 +63,6 @@ export class DataEncryptionPair<TEncrypted, TDecrypted> {
   decrypted?: TDecrypted[];
 }
 
-// This is a temporary structure to handle migrated `DataEncryptionPair` to
-//  avoid needing a data migration at this stage. It should be replaced with
-//  proper data migrations when `DataEncryptionPair` is deprecated.
-export class TemporaryDataEncryption<TEncrypted> {
-  encrypted?: { [id: string]: TEncrypted };
-}
-
 export class AccountData {
   ciphers?: DataEncryptionPair<CipherData, CipherView> = new DataEncryptionPair<
     CipherData,
@@ -99,7 +92,6 @@ export class AccountData {
 export class AccountKeys {
   masterKey?: MasterKey;
   masterKeyEncryptedUserKey?: string;
-  deviceKey?: ReturnType<SymmetricCryptoKey["toJSON"]>;
   publicKey?: Uint8Array;
 
   /** @deprecated July 2023, left for migration purposes*/
@@ -129,7 +121,6 @@ export class AccountKeys {
     }
     return Object.assign(new AccountKeys(), obj, {
       masterKey: SymmetricCryptoKey.fromJSON(obj?.masterKey),
-      deviceKey: obj?.deviceKey,
       cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey),
       cryptoSymmetricKey: EncryptionPair.fromJSON(
         obj?.cryptoSymmetricKey,
@@ -179,8 +170,6 @@ export class AccountProfile {
 
 export class AccountSettings {
   defaultUriMatch?: UriMatchStrategySetting;
-  disableGa?: boolean;
-  enableBiometric?: boolean;
   minimizeOnCopyToClipboard?: boolean;
   passwordGenerationOptions?: PasswordGeneratorOptions;
   usernameGenerationOptions?: UsernameGeneratorOptions;
@@ -191,8 +180,6 @@ export class AccountSettings {
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
   approveLoginRequests?: boolean;
-  avatarColor?: string;
-  trustDeviceChoiceForDecryption?: boolean;
 
   /** @deprecated July 2023, left for migration purposes*/
   pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();

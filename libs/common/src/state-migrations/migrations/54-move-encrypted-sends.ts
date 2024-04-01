@@ -30,7 +30,7 @@ const ENCRYPTED_SENDS: KeyDefinitionLike = {
  * Only encrypted sends are stored on disk. Only the encrypted items need to be
  * migrated from the previous sends state data.
  */
-export class SendMigrator extends Migrator<51, 52> {
+export class SendMigrator extends Migrator<53, 54> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedSendState>();
 
