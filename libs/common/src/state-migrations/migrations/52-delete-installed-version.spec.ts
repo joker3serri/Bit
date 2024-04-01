@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { DeleteInstalledVersion } from "./51-delete-installed-version";
+import { DeleteInstalledVersion } from "./52-delete-installed-version";
 
 describe("DeleteInstalledVersion", () => {
-  const sut = new DeleteInstalledVersion(50, 51);
+  const sut = new DeleteInstalledVersion(51, 52);
 
   describe("migrate", () => {
     it("can delete data if there", async () => {
