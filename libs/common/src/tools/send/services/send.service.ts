@@ -74,6 +74,9 @@ export class SendService implements InternalSendServiceAbstraction {
       );
       send.password = passwordKey.keyB64;
     }
+    if (key == null) {
+      key = await this.cryptoService.getUserKey();
+    }
     send.key = await this.encryptService.encrypt(model.key, key);
     send.name = await this.encryptService.encrypt(model.name, model.cryptoKey);
     send.notes = await this.encryptService.encrypt(model.notes, model.cryptoKey);
@@ -307,6 +310,9 @@ export class SendService implements InternalSendServiceAbstraction {
     data: ArrayBuffer,
     key: SymmetricCryptoKey,
   ): Promise<[EncString, EncArrayBuffer]> {
+    if (key == null) {
+      key = await this.cryptoService.getUserKey();
+    }
     const encFileName = await this.encryptService.encrypt(fileName, key);
     const encFileData = await this.encryptService.encryptToBytes(new Uint8Array(data), key);
     return [encFileName, encFileData];
