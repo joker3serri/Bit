@@ -388,11 +388,21 @@ export class Main {
 
     this.fileUploadService = new FileUploadService(this.logService);
 
+    this.authService = new AuthService(
+      this.accountService,
+      this.messagingService,
+      this.cryptoService,
+      this.apiService,
+      this.stateService,
+      this.tokenService,
+    );
+
     this.sendService = new SendService(
       this.cryptoService,
       this.i18nService,
       this.keyGenerationService,
       this.stateService,
+      this.authService,
     );
 
     this.cipherFileUploadService = new CipherFileUploadService(
@@ -496,15 +506,6 @@ export class Main {
       this.userDecryptionOptionsService,
       this.globalStateProvider,
       this.billingAccountProfileStateService,
-    );
-
-    this.authService = new AuthService(
-      this.accountService,
-      this.messagingService,
-      this.cryptoService,
-      this.apiService,
-      this.stateService,
-      this.tokenService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.tokenService);
@@ -659,7 +660,7 @@ export class Main {
       this.apiService,
       this.stateProvider,
       this.logService,
-      this.accountService,
+      this.authService,
     );
 
     this.eventCollectionService = new EventCollectionService(
@@ -667,7 +668,7 @@ export class Main {
       this.stateProvider,
       this.organizationService,
       this.eventUploadService,
-      this.accountService,
+      this.authService,
     );
   }
 
