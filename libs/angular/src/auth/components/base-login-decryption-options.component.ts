@@ -12,7 +12,6 @@ import {
   takeUntil,
   defer,
   throwError,
-  first,
 } from "rxjs";
 
 import {
@@ -36,6 +35,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { UserId } from "@bitwarden/common/types/guid";
 
 enum State {
   NewUser,
@@ -66,6 +66,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   protected data?: Data;
   protected loading = true;
+
+  activeAccountId: UserId;
 
   // Remember device means for the user to trust the device
   rememberDeviceForm = this.formBuilder.group({
@@ -101,6 +103,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.loading = true;
+    this.activeAccountId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
 
     await this.setupRememberDeviceValueChanges();
 
@@ -153,9 +156,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
   }
 
   private async setRememberDeviceDefaultValue() {
-    const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
     const rememberDeviceFromState = await this.deviceTrustCryptoService.getShouldTrustDevice(
-      activeAccount.id,
+      this.activeAccountId,
     );
 
     const rememberDevice = rememberDeviceFromState ?? true;
@@ -167,13 +169,8 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
     this.rememberDevice.valueChanges
       .pipe(
         switchMap((value) =>
-          this.accountService.activeAccount$.pipe(
-            first(),
-            switchMap((activeAccount) =>
-              defer(() =>
-                this.deviceTrustCryptoService.setShouldTrustDevice(activeAccount.id, value),
-              ),
-            ),
+          defer(() =>
+            this.deviceTrustCryptoService.setShouldTrustDevice(this.activeAccountId, value),
           ),
         ),
         takeUntil(this.destroy$),
@@ -297,8 +294,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
       await this.passwordResetEnrollmentService.enroll(this.data.organizationId);
 
       if (this.rememberDeviceForm.value.rememberDevice) {
-        const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
-        await this.deviceTrustCryptoService.trustDevice(activeAccount.id);
+        await this.deviceTrustCryptoService.trustDevice(this.activeAccountId);
       }
     } catch (error) {
       this.validationService.showError(error);
