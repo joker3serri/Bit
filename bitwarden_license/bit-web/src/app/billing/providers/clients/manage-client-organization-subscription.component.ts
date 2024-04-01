@@ -6,7 +6,6 @@ import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/co
 import { ProviderSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/provider-subscription-update.request";
 import { Plans } from "@bitwarden/common/billing/models/response/provider-subscription-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
@@ -36,7 +35,6 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     private billingApiService: BillingApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private logService: LogService,
   ) {
     this.providerOrganizationId = data.organization.id;
     this.providerId = data.organization.providerId;
