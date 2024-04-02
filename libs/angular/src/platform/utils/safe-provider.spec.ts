@@ -40,6 +40,15 @@ class DefaultBarService implements BarService {
   }
 }
 
+abstract class FooBarService {}
+
+class DefaultFooBarService {
+  constructor(
+    private fooFactory: FooFactory,
+    private barFactory: BarFactory,
+  ) {}
+}
+
 // useClass happy path with deps
 safeProvider({
   provide: FooService,
@@ -84,6 +93,14 @@ safeProvider({
   useClass: DefaultFooService,
   // @ts-expect-error
   deps: [FooFactory, BarFactory],
+});
+
+// useClass: expect error if deps are in the wrong order
+safeProvider({
+  provide: FooBarService,
+  useClass: DefaultFooBarService,
+  // @ts-expect-error
+  deps: [BarFactory, FooFactory],
 });
 
 // useClass: expect error if no deps specified and not using Angular decorators
