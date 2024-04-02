@@ -59,6 +59,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   }
 
   async updateSubscription(assignedSeats: number) {
+    this.loading = true;
     if (!assignedSeats) {
       this.platformUtilsService.showToast(
         "error",
@@ -77,6 +78,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
       request,
     );
     this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
+    this.loading = false;
     this.dialogRef.close();
   }
 
