@@ -12,7 +12,13 @@ export class LoggingErrorHandler extends ErrorHandler {
   private injector = inject(Injector);
 
   override handleError(error: any): void {
-    const logService = this.injector.get(LogService);
-    logService.error(error);
+  override handleError(error: any): void {
+    try {
+      const logService = this.injector.get(LogService, null);
+      logService.error(error);
+    } catch {
+      super.handleError(error);
+    }
+  }
   }
 }
