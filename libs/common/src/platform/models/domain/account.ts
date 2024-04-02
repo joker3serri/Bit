@@ -3,7 +3,7 @@ import { Jsonify } from "type-fest";
 import { AdminAuthRequestStorable } from "../../../auth/models/domain/admin-auth-req-storable";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
 import { UriMatchStrategySetting } from "../../../models/domain/domain-service";
-import { GeneratorNavigation } from "../../../tools/generator/navigation/generator-navigation";
+import { GeneratorOptions } from "../../../tools/generator/generator-options";
 import {
   GeneratedPasswordHistory,
   PasswordGeneratorOptions,
@@ -189,7 +189,7 @@ export class AccountSettings {
   minimizeOnCopyToClipboard?: boolean;
   passwordGenerationOptions?: PasswordGeneratorOptions;
   usernameGenerationOptions?: UsernameGeneratorOptions;
-  generatorOptions?: GeneratorNavigation;
+  generatorOptions?: GeneratorOptions;
   pinKeyEncryptedUserKey?: EncryptedString;
   pinKeyEncryptedUserKeyEphemeral?: EncryptedString;
   protectedPin?: string;

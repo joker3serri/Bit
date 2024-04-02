@@ -4,7 +4,7 @@ import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-re
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
-import { GeneratorNavigation } from "../../tools/generator/navigation/generator-navigation";
+import { GeneratorOptions } from "../../tools/generator/generator-options";
 import { GeneratedPasswordHistory, PasswordGeneratorOptions } from "../../tools/generator/password";
 import { UsernameGeneratorOptions } from "../../tools/generator/username";
 import { SendData } from "../../tools/send/models/data/send.data";
@@ -254,8 +254,8 @@ export abstract class StateService<T extends Account = Account> {
     value: UsernameGeneratorOptions,
     options?: StorageOptions,
   ) => Promise<void>;
-  getGeneratorOptions: (options?: StorageOptions) => Promise<GeneratorNavigation>;
-  setGeneratorOptions: (value: GeneratorNavigation, options?: StorageOptions) => Promise<void>;
+  getGeneratorOptions: (options?: StorageOptions) => Promise<GeneratorOptions>;
+  setGeneratorOptions: (value: GeneratorOptions, options?: StorageOptions) => Promise<void>;
   /**
    * Gets the user's Pin, encrypted by the user key
    */
