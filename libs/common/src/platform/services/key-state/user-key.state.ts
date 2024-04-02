@@ -65,6 +65,7 @@ export const USER_PUBLIC_KEY = DeriveDefinition.from<
     return (await cryptoFunctionService.rsaExtractPublicKey(privateKey)) as UserPublicKey;
   },
 });
-export const USER_KEY = new KeyDefinition<UserKey>(CRYPTO_MEMORY, "userKey", {
+export const USER_KEY = new UserKeyDefinition<UserKey>(CRYPTO_MEMORY, "userKey", {
   deserializer: (obj) => SymmetricCryptoKey.fromJSON(obj) as UserKey,
+  clearOn: ["logout", "lock"],
 });
