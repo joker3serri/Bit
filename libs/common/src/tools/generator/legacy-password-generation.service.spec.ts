@@ -138,7 +138,7 @@ describe("LegacyPasswordGenerationService", () => {
       const generator = new LegacyPasswordGenerationService(null, null, null, innerPassphrase);
       const options = {} as PasswordGeneratorOptions;
 
-      await generator.generatePassword(options);
+      await generator.generatePassphrase(options);
 
       expect(innerPassphrase.generate).toHaveBeenCalledWith(options);
     });
