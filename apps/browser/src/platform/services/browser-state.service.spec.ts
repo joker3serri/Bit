@@ -1,4 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
+import { firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -15,8 +16,6 @@ import { mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { Account } from "../../models/account";
-import { BrowserComponentState } from "../../models/browserComponentState";
-import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 
 import { BrowserStateService } from "./browser-state.service";
 
@@ -83,24 +82,17 @@ describe("Browser State Service", () => {
       );
     });
 
-    describe("getBrowserGroupingComponentState", () => {
-      it("should return a BrowserGroupingsComponentState", async () => {
-        state.accounts[userId].groupings = new BrowserGroupingsComponentState();
+    describe("add Account", () => {
+      it("should add account", async () => {
+        const newUserId = "newUserId" as UserId;
+        const newAcct = new Account({
+          profile: { userId: newUserId },
+        });
 
-        const actual = await sut.getBrowserGroupingComponentState();
-        expect(actual).toBeInstanceOf(BrowserGroupingsComponentState);
-      });
-    });
+        await sut.addAccount(newAcct);
 
-    describe("getBrowserVaultItemsComponentState", () => {
-      it("should return a BrowserComponentState", async () => {
-        const componentState = new BrowserComponentState();
-        componentState.scrollY = 0;
-        componentState.searchText = "test";
-        state.accounts[userId].ciphers = componentState;
-
-        const actual = await sut.getBrowserVaultItemsComponentState();
-        expect(actual).toStrictEqual(componentState);
+        const accts = await firstValueFrom(sut.accounts$);
+        expect(accts[newUserId]).toBeDefined();
       });
     });
   });

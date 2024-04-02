@@ -2,20 +2,8 @@ import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/p
 import { StorageOptions } from "@bitwarden/common/platform/models/domain/storage-options";
 
 import { Account } from "../../../models/account";
-import { BrowserComponentState } from "../../../models/browserComponentState";
-import { BrowserGroupingsComponentState } from "../../../models/browserGroupingsComponentState";
 
 export abstract class BrowserStateService extends BaseStateServiceAbstraction<Account> {
-  getBrowserGroupingComponentState: (
-    options?: StorageOptions,
-  ) => Promise<BrowserGroupingsComponentState>;
-  setBrowserGroupingComponentState: (
-    value: BrowserGroupingsComponentState,
-    options?: StorageOptions,
-  ) => Promise<void>;
-  getBrowserVaultItemsComponentState: (options?: StorageOptions) => Promise<BrowserComponentState>;
-  setBrowserVaultItemsComponentState: (
-    value: BrowserComponentState,
-    options?: StorageOptions,
-  ) => Promise<void>;
+  addAccount: (account: Account) => Promise<void>;
+  getIsAuthenticated: (options?: StorageOptions) => Promise<boolean>;
 }
