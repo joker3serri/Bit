@@ -10,6 +10,8 @@ import { UserId } from "../../../types/guid";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { EFF_USERNAME_SETTINGS } from "../key-definitions";
 
+import { DefaultEffUsernameOptions } from "./eff-username-generator-options";
+
 import { EffUsernameGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
 const SomeUser = "some user" as UserId;
@@ -44,6 +46,16 @@ describe("EFF long word list generation strategy", () => {
       strategy.durableState(SomeUser);
 
       expect(provider.getUser).toHaveBeenCalledWith(SomeUser, EFF_USERNAME_SETTINGS);
+    });
+  });
+
+  describe("defaults$", () => {
+    it("should return the default subaddress options", async () => {
+      const strategy = new EffUsernameGeneratorStrategy(null, null);
+
+      const result = await firstValueFrom(strategy.defaults$(SomeUser));
+
+      expect(result).toEqual(DefaultEffUsernameOptions);
     });
   });
 

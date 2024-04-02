@@ -1,4 +1,4 @@
-import { map, pipe } from "rxjs";
+import { BehaviorSubject, map, pipe } from "rxjs";
 
 import { PolicyType } from "../../../admin-console/enums";
 import { StateProvider } from "../../../platform/state";
@@ -9,7 +9,7 @@ import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { CATCHALL_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
-import { CatchallGenerationOptions } from "./catchall-generator-options";
+import { CatchallGenerationOptions, DefaultCatchallOptions } from "./catchall-generator-options";
 
 const ONE_MINUTE = 60 * 1000;
 
@@ -28,6 +28,11 @@ export class CatchallGeneratorStrategy
   /** {@link GeneratorStrategy.durableState} */
   durableState(id: UserId) {
     return this.stateProvider.getUser(id, CATCHALL_SETTINGS);
+  }
+
+  /** {@link GeneratorStrategy.defaults$} */
+  defaults$(userId: UserId) {
+    return new BehaviorSubject({ ...DefaultCatchallOptions }).asObservable();
   }
 
   /** {@link GeneratorStrategy.policy} */

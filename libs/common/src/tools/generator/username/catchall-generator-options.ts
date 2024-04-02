@@ -14,6 +14,8 @@ export type CatchallGenerationOptions = {
 } & RequestOptions;
 
 /** The default options for catchall address generation. */
-export const DefaultCatchallOptions: Partial<CatchallGenerationOptions> = Object.freeze({
+export const DefaultCatchallOptions: CatchallGenerationOptions = Object.freeze({
   catchallType: "random",
+  catchallDomain: "",
+  website: null,
 });

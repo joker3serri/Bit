@@ -10,7 +10,8 @@ export type EffUsernameGenerationOptions = {
 } & RequestOptions;
 
 /** The default options for EFF long word generation. */
-export const DefaultEffUsernameOptions: Partial<EffUsernameGenerationOptions> = Object.freeze({
+export const DefaultEffUsernameOptions: EffUsernameGenerationOptions = Object.freeze({
   wordCapitalize: false,
   wordIncludeNumber: false,
+  website: null,
 });

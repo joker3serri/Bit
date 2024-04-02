@@ -11,6 +11,8 @@ export type SubaddressGenerationOptions = {
 } & RequestOptions;
 
 /** The default options for email subaddress generation. */
-export const DefaultSubaddressOptions: Partial<SubaddressGenerationOptions> = Object.freeze({
+export const DefaultSubaddressOptions: SubaddressGenerationOptions = Object.freeze({
   subaddressType: "random",
+  subaddressEmail: "",
+  website: null,
 });

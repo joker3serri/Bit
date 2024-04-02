@@ -10,7 +10,7 @@ import { UserId } from "../../../types/guid";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { CATCHALL_SETTINGS } from "../key-definitions";
 
-import { CatchallGenerationOptions } from "./catchall-generator-options";
+import { CatchallGenerationOptions, DefaultCatchallOptions } from "./catchall-generator-options";
 
 import { CatchallGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
@@ -46,6 +46,16 @@ describe("Email subaddress list generation strategy", () => {
       strategy.durableState(SomeUser);
 
       expect(provider.getUser).toHaveBeenCalledWith(SomeUser, CATCHALL_SETTINGS);
+    });
+  });
+
+  describe("defaults$", () => {
+    it("should return the default subaddress options", async () => {
+      const strategy = new CatchallGeneratorStrategy(null, null);
+
+      const result = await firstValueFrom(strategy.defaults$(SomeUser));
+
+      expect(result).toEqual(DefaultCatchallOptions);
     });
   });
 

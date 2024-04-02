@@ -8,7 +8,7 @@ import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-re
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
-import { GeneratorOptions } from "../../tools/generator/generator-options";
+import { GeneratorNavigation } from "@bitwarden/common/tools/generator/navigation/generator-navigation";
 import { GeneratedPasswordHistory, PasswordGeneratorOptions } from "../../tools/generator/password";
 import { UsernameGeneratorOptions } from "../../tools/generator/username";
 import { SendData } from "../../tools/send/models/data/send.data";
@@ -1224,13 +1224,13 @@ export class StateService<
     );
   }
 
-  async getGeneratorOptions(options?: StorageOptions): Promise<GeneratorOptions> {
+  async getGeneratorOptions(options?: StorageOptions): Promise<GeneratorNavigation> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.generatorOptions;
   }
 
-  async setGeneratorOptions(value: GeneratorOptions, options?: StorageOptions): Promise<void> {
+  async setGeneratorOptions(value: GeneratorNavigation, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
     );

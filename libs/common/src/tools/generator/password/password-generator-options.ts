@@ -1,4 +1,4 @@
-import { GeneratorOptions } from "../generator-options";
+import { GeneratorNavigation } from "../navigation/generator-navigation";
 import { PassphraseGenerationOptions } from "../passphrase/passphrase-generation-options";
 
 import { PasswordGenerationOptions } from "./password-generation-options";
@@ -8,4 +8,4 @@ import { PasswordGenerationOptions } from "./password-generation-options";
  */
 export type PasswordGeneratorOptions = PasswordGenerationOptions &
   PassphraseGenerationOptions &
-  GeneratorOptions;
+  GeneratorNavigation;

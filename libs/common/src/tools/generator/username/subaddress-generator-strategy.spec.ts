@@ -10,7 +10,10 @@ import { UserId } from "../../../types/guid";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { SUBADDRESS_SETTINGS } from "../key-definitions";
 
-import { SubaddressGenerationOptions } from "./subaddress-generator-options";
+import {
+  DefaultSubaddressOptions,
+  SubaddressGenerationOptions,
+} from "./subaddress-generator-options";
 
 import { SubaddressGeneratorStrategy, UsernameGenerationServiceAbstraction } from ".";
 
@@ -46,6 +49,16 @@ describe("Email subaddress list generation strategy", () => {
       strategy.durableState(SomeUser);
 
       expect(provider.getUser).toHaveBeenCalledWith(SomeUser, SUBADDRESS_SETTINGS);
+    });
+  });
+
+  describe("defaults$", () => {
+    it("should return the default subaddress options", async () => {
+      const strategy = new SubaddressGeneratorStrategy(null, null);
+
+      const result = await firstValueFrom(strategy.defaults$(SomeUser));
+
+      expect(result).toEqual(DefaultSubaddressOptions);
     });
   });
 

@@ -1,0 +1,38 @@
+import { PolicyType } from "../../../admin-console/enums";
+// FIXME: use index.ts imports once policy abstractions and models
+// implement ADR-0002
+import { Policy } from "../../../admin-console/models/domain/policy";
+import { GeneratorType } from "../generator-type";
+
+/** Policy settings affecting password generator navigation */
+export type GeneratorNavigationPolicy = {
+  /** The type of generator that should be shown by default when opening
+   *  the password generator.
+   */
+  defaultType?: GeneratorType;
+};
+
+/** Reduces a policy into an accumulator by preferring the password generator
+ *  type to other generator types.
+ *  @param acc the accumulator
+ *  @param policy the policy to reduce
+ *  @returns the resulting `GeneratorNavigationPolicy`
+ */
+export function preferPassword(
+  acc: GeneratorNavigationPolicy,
+  policy: Policy,
+): GeneratorNavigationPolicy {
+  if (policy.type !== PolicyType.PasswordGenerator || !policy.enabled) {
+    return acc;
+  } else if (acc.defaultType !== "password" && policy.data.defaultType) {
+    acc.defaultType = policy.data.defaultType;
+    return acc;
+  } else {
+    return acc;
+  }
+}
+
+/** The default options for password generation policy. */
+export const DisabledGeneratorNavigationPolicy: GeneratorNavigationPolicy = Object.freeze({
+  defaultType: undefined,
+});

@@ -1,4 +1,4 @@
-import { map, pipe } from "rxjs";
+import { BehaviorSubject, map, pipe } from "rxjs";
 
 import { PolicyType } from "../../../admin-console/enums";
 import { StateProvider } from "../../../platform/state";
@@ -9,7 +9,10 @@ import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { EFF_USERNAME_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
-import { EffUsernameGenerationOptions } from "./eff-username-generator-options";
+import {
+  DefaultEffUsernameOptions,
+  EffUsernameGenerationOptions,
+} from "./eff-username-generator-options";
 
 const ONE_MINUTE = 60 * 1000;
 
@@ -28,6 +31,11 @@ export class EffUsernameGeneratorStrategy
   /** {@link GeneratorStrategy.durableState} */
   durableState(id: UserId) {
     return this.stateProvider.getUser(id, EFF_USERNAME_SETTINGS);
+  }
+
+  /** {@link GeneratorStrategy.defaults$} */
+  defaults$(userId: UserId) {
+    return new BehaviorSubject({ ...DefaultEffUsernameOptions }).asObservable();
   }
 
   /** {@link GeneratorStrategy.policy} */

@@ -8,11 +8,11 @@ import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateProvider } from "../../platform/state";
 
-import { GeneratorService } from "./abstractions";
+import { GeneratorService, GeneratorNavigationService } from "./abstractions";
 import { UsernameGenerationServiceAbstraction } from "./abstractions/username-generation.service.abstraction";
 import { DefaultGeneratorService } from "./default-generator.service";
-import { GeneratorOptions } from "./generator-options";
-import { GENERATOR_SETTINGS } from "./key-definitions";
+import { DefaultGeneratorNavigationService } from "./navigation/default-generator-navigation.service";
+import { GeneratorNavigation } from "./navigation/generator-navigation";
 import { NoPolicy } from "./no-policy";
 import {
   CatchallGeneratorStrategy,
@@ -40,7 +40,7 @@ import { UsernameGeneratorOptions } from "./username/username-generation-options
 import { UsernameGenerationService } from "./username/username-generation.service";
 
 type MappedOptions = {
-  generator: GeneratorOptions;
+  generator: GeneratorNavigation;
   algorithms: {
     catchall: CatchallGenerationOptions;
     effUsername: EffUsernameGenerationOptions;
@@ -56,103 +56,108 @@ type MappedOptions = {
   };
 };
 
+export function legacyPasswordGenerationServiceFactory(
+  apiService: ApiService,
+  i18nService: I18nService,
+  cryptoService: CryptoService,
+  encryptService: EncryptService,
+  policyService: PolicyService,
+  accountService: AccountService,
+  stateProvider: StateProvider,
+): UsernameGenerationServiceAbstraction {
+  // FIXME: Once the username generation service is replaced with this service
+  // in the clients, factor out the deprecated service in its entirety.
+  const deprecatedService = new UsernameGenerationService(cryptoService, null, null);
+
+  const effUsername = new DefaultGeneratorService(
+    new EffUsernameGeneratorStrategy(deprecatedService, stateProvider),
+    policyService,
+  );
+
+  const subaddress = new DefaultGeneratorService(
+    new SubaddressGeneratorStrategy(deprecatedService, stateProvider),
+    policyService,
+  );
+
+  const catchall = new DefaultGeneratorService(
+    new CatchallGeneratorStrategy(deprecatedService, stateProvider),
+    policyService,
+  );
+
+  const addyIo = new DefaultGeneratorService(
+    new AddyIoForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
+    policyService,
+  );
+
+  const duckDuckGo = new DefaultGeneratorService(
+    new DuckDuckGoForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
+    policyService,
+  );
+
+  const fastmail = new DefaultGeneratorService(
+    new FastmailForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
+    policyService,
+  );
+
+  const firefoxRelay = new DefaultGeneratorService(
+    new FirefoxRelayForwarder(
+      apiService,
+      i18nService,
+      encryptService,
+      cryptoService,
+      stateProvider,
+    ),
+    policyService,
+  );
+
+  const forwardEmail = new DefaultGeneratorService(
+    new ForwardEmailForwarder(
+      apiService,
+      i18nService,
+      encryptService,
+      cryptoService,
+      stateProvider,
+    ),
+    policyService,
+  );
+
+  const simpleLogin = new DefaultGeneratorService(
+    new SimpleLoginForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
+    policyService,
+  );
+
+  const navigation = new DefaultGeneratorNavigationService(stateProvider, policyService);
+
+  return new LegacyUsernameGenerationService(
+    accountService,
+    navigation,
+    catchall,
+    effUsername,
+    subaddress,
+    addyIo,
+    duckDuckGo,
+    fastmail,
+    firefoxRelay,
+    forwardEmail,
+    simpleLogin,
+  );
+}
+
 /** Adapts the generator 2.0 design to 1.0 angular services. */
 export class LegacyUsernameGenerationService implements UsernameGenerationServiceAbstraction {
   constructor(
-    apiService: ApiService,
-    cryptoService: CryptoService,
-    encryptService: EncryptService,
-    i18nService: I18nService,
-    policyService: PolicyService,
     private readonly accountService: AccountService,
-    private readonly stateProvider: StateProvider,
-  ) {
-    const deprecatedService = new UsernameGenerationService(cryptoService, null, null);
-
-    this.effUsername = new DefaultGeneratorService(
-      new EffUsernameGeneratorStrategy(deprecatedService, stateProvider),
-      policyService,
-    );
-
-    this.subaddress = new DefaultGeneratorService(
-      new SubaddressGeneratorStrategy(deprecatedService, stateProvider),
-      policyService,
-    );
-
-    this.catchall = new DefaultGeneratorService(
-      new CatchallGeneratorStrategy(deprecatedService, stateProvider),
-      policyService,
-    );
-
-    this.catchall = new DefaultGeneratorService(
-      new CatchallGeneratorStrategy(deprecatedService, stateProvider),
-      policyService,
-    );
-
-    this.addyIo = new DefaultGeneratorService(
-      new AddyIoForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
-      policyService,
-    );
-
-    this.duckDuckGo = new DefaultGeneratorService(
-      new DuckDuckGoForwarder(
-        apiService,
-        i18nService,
-        encryptService,
-        cryptoService,
-        stateProvider,
-      ),
-      policyService,
-    );
-
-    this.fastmail = new DefaultGeneratorService(
-      new FastmailForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
-      policyService,
-    );
-
-    this.firefoxRelay = new DefaultGeneratorService(
-      new FirefoxRelayForwarder(
-        apiService,
-        i18nService,
-        encryptService,
-        cryptoService,
-        stateProvider,
-      ),
-      policyService,
-    );
-
-    this.forwardEmail = new DefaultGeneratorService(
-      new ForwardEmailForwarder(
-        apiService,
-        i18nService,
-        encryptService,
-        cryptoService,
-        stateProvider,
-      ),
-      policyService,
-    );
-
-    this.simpleLogin = new DefaultGeneratorService(
-      new SimpleLoginForwarder(
-        apiService,
-        i18nService,
-        encryptService,
-        cryptoService,
-        stateProvider,
-      ),
-      policyService,
-    );
-  }
-
-  private readonly catchall: GeneratorService<CatchallGenerationOptions, NoPolicy>;
-  private readonly effUsername: GeneratorService<EffUsernameGenerationOptions, NoPolicy>;
-  private readonly subaddress: GeneratorService<SubaddressGenerationOptions, NoPolicy>;
-  private readonly addyIo: GeneratorService<SelfHostedApiOptions & EmailDomainOptions, NoPolicy>;
-  private readonly duckDuckGo: GeneratorService<ApiOptions, NoPolicy>;
-  private readonly fastmail: GeneratorService<ApiOptions & EmailPrefixOptions, NoPolicy>;
-  private readonly firefoxRelay: GeneratorService<ApiOptions, NoPolicy>;
-  private readonly forwardEmail: GeneratorService<ApiOptions & EmailDomainOptions, NoPolicy>;
-  private readonly simpleLogin: GeneratorService<SelfHostedApiOptions, NoPolicy>;
+    private readonly navigation: GeneratorNavigationService,
+    private readonly catchall: GeneratorService<CatchallGenerationOptions, NoPolicy>,
+    private readonly effUsername: GeneratorService<EffUsernameGenerationOptions, NoPolicy>,
+    private readonly subaddress: GeneratorService<SubaddressGenerationOptions, NoPolicy>,
+    private readonly addyIo: GeneratorService<SelfHostedApiOptions & EmailDomainOptions, NoPolicy>,
+    private readonly duckDuckGo: GeneratorService<ApiOptions, NoPolicy>,
+    private readonly fastmail: GeneratorService<ApiOptions & EmailPrefixOptions, NoPolicy>,
+    private readonly firefoxRelay: GeneratorService<ApiOptions, NoPolicy>,
+    private readonly forwardEmail: GeneratorService<ApiOptions & EmailDomainOptions, NoPolicy>,
+    private readonly simpleLogin: GeneratorService<SelfHostedApiOptions, NoPolicy>,
+  ) {}
 
   generateUsername(options: UsernameGeneratorOptions) {
     if (options.type === "catchall") {
@@ -204,35 +209,66 @@ export class LegacyUsernameGenerationService implements UsernameGenerationServic
     const options$ = this.accountService.activeAccount$.pipe(
       concatMap((account) =>
         zip(
-          this.stateProvider.getUserState$(GENERATOR_SETTINGS, account.id),
+          this.navigation.options$(account.id),
+          this.navigation.defaults$(account.id),
           this.catchall.options$(account.id),
+          this.catchall.defaults$(account.id),
           this.effUsername.options$(account.id),
+          this.effUsername.defaults$(account.id),
           this.subaddress.options$(account.id),
+          this.subaddress.defaults$(account.id),
           this.addyIo.options$(account.id),
+          this.addyIo.defaults$(account.id),
           this.duckDuckGo.options$(account.id),
+          this.duckDuckGo.defaults$(account.id),
           this.fastmail.options$(account.id),
+          this.fastmail.defaults$(account.id),
           this.firefoxRelay.options$(account.id),
+          this.firefoxRelay.defaults$(account.id),
           this.forwardEmail.options$(account.id),
+          this.forwardEmail.defaults$(account.id),
           this.simpleLogin.options$(account.id),
+          this.simpleLogin.defaults$(account.id),
         ),
       ),
       map(
         ([
-          generator,
-          catchall,
-          effUsername,
-          subaddress,
-          addyIo,
-          duckDuckGo,
-          fastmail,
-          firefoxRelay,
-          forwardEmail,
-          simpleLogin,
+          generatorOptions,
+          generatorDefaults,
+          catchallOptions,
+          catchallDefaults,
+          effUsernameOptions,
+          effUsernameDefaults,
+          subaddressOptions,
+          subaddressDefaults,
+          addyIoOptions,
+          addyIoDefaults,
+          duckDuckGoOptions,
+          duckDuckGoDefaults,
+          fastmailOptions,
+          fastmailDefaults,
+          firefoxRelayOptions,
+          firefoxRelayDefaults,
+          forwardEmailOptions,
+          forwardEmailDefaults,
+          simpleLoginOptions,
+          simpleLoginDefaults,
         ]) =>
           this.toUsernameOptions({
-            generator,
-            algorithms: { catchall, effUsername, subaddress },
-            forwarders: { addyIo, duckDuckGo, fastmail, firefoxRelay, forwardEmail, simpleLogin },
+            generator: generatorOptions ?? generatorDefaults,
+            algorithms: {
+              catchall: catchallOptions ?? catchallDefaults,
+              effUsername: effUsernameOptions ?? effUsernameDefaults,
+              subaddress: subaddressOptions ?? subaddressDefaults,
+            },
+            forwarders: {
+              addyIo: addyIoOptions ?? addyIoDefaults,
+              duckDuckGo: duckDuckGoOptions ?? duckDuckGoDefaults,
+              fastmail: fastmailOptions ?? fastmailDefaults,
+              firefoxRelay: firefoxRelayOptions ?? firefoxRelayDefaults,
+              forwardEmail: forwardEmailOptions ?? forwardEmailDefaults,
+              simpleLogin: simpleLoginOptions ?? simpleLoginDefaults,
+            },
           }),
       ),
     );
@@ -244,10 +280,11 @@ export class LegacyUsernameGenerationService implements UsernameGenerationServic
     const stored = this.toStoredOptions(options);
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a.id)));
 
-    // generator settings needs to preserve whether password or passphrase is selected
-    await this.stateProvider
-      .getUser(userId, GENERATOR_SETTINGS)
-      .update((state) => Object.assign(state, stored.generator));
+    // generator settings needs to preserve whether password or passphrase is selected,
+    // so `navigationOptions` is mutated.
+    let navigationOptions = await firstValueFrom(this.navigation.options$(userId));
+    navigationOptions = Object.assign(navigationOptions, stored.generator);
+    await this.navigation.saveOptions(userId, navigationOptions);
 
     // overwrite all other settings with latest values
     await Promise.all([
@@ -300,12 +337,36 @@ export class LegacyUsernameGenerationService implements UsernameGenerationServic
       forwarder: options.forwardedService,
     };
 
-    return { generator, forwarders } as MappedOptions;
+    const algorithms = {
+      effUsername: {
+        wordCapitalize: options.wordCapitalize,
+        wordIncludeNumber: options.wordIncludeNumber,
+        website: options.website,
+      },
+      subaddress: {
+        subaddressType: options.subaddressType,
+        subaddressEmail: options.subaddressEmail,
+        website: options.website,
+      },
+      catchall: {
+        catchallType: options.catchallType,
+        catchallDomain: options.catchallDomain,
+        website: options.website,
+      },
+    };
+
+    return { generator, algorithms, forwarders } as MappedOptions;
   }
 
   private toUsernameOptions(options: MappedOptions) {
     return {
       type: options.generator.username,
+      wordCapitalize: options.algorithms.effUsername.wordCapitalize,
+      wordIncludeNumber: options.algorithms.effUsername.wordIncludeNumber,
+      subaddressType: options.algorithms.subaddress.subaddressType,
+      subaddressEmail: options.algorithms.subaddress.subaddressEmail,
+      catchallType: options.algorithms.catchall.catchallType,
+      catchallDomain: options.algorithms.catchall.catchallDomain,
       forwardedService: options.generator.forwarder,
       forwardedAnonAddyApiToken: options.forwarders.addyIo.token,
       forwardedAnonAddyDomain: options.forwarders.addyIo.domain,

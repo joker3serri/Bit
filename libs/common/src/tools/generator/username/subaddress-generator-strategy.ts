@@ -1,4 +1,4 @@
-import { map, pipe } from "rxjs";
+import { BehaviorSubject, map, pipe } from "rxjs";
 
 import { PolicyType } from "../../../admin-console/enums";
 import { StateProvider } from "../../../platform/state";
@@ -9,7 +9,10 @@ import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { SUBADDRESS_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
-import { SubaddressGenerationOptions } from "./subaddress-generator-options";
+import {
+  DefaultSubaddressOptions,
+  SubaddressGenerationOptions,
+} from "./subaddress-generator-options";
 
 const ONE_MINUTE = 60 * 1000;
 
@@ -32,6 +35,11 @@ export class SubaddressGeneratorStrategy
   /** {@link GeneratorStrategy.durableState} */
   durableState(id: UserId) {
     return this.stateProvider.getUser(id, SUBADDRESS_SETTINGS);
+  }
+
+  /** {@link GeneratorStrategy.defaults$} */
+  defaults$(userId: UserId) {
+    return new BehaviorSubject({ ...DefaultSubaddressOptions }).asObservable();
   }
 
   /** {@link GeneratorStrategy.policy} */
