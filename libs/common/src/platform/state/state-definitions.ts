@@ -48,6 +48,9 @@ export const TOKEN_DISK_LOCAL = new StateDefinition("tokenDiskLocal", "disk", {
   web: "disk-local",
 });
 export const TOKEN_MEMORY = new StateDefinition("token", "memory");
+export const DEVICE_TRUST_DISK_LOCAL = new StateDefinition("deviceTrust", "disk", {
+  web: "disk-local",
+});
 export const USER_DECRYPTION_OPTIONS_DISK = new StateDefinition("userDecryptionOptions", "disk");
 
 // Autofill
@@ -115,3 +118,4 @@ export const VAULT_ONBOARDING = new StateDefinition("vaultOnboarding", "disk", {
 export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk", {
   web: "disk-local",
 });
+export const VAULT_BROWSER_MEMORY = new StateDefinition("vaultBrowser", "memory");
