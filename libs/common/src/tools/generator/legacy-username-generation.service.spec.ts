@@ -12,8 +12,20 @@ import { GeneratorNavigationEvaluator } from "./navigation/generator-navigation-
 import { GeneratorNavigationPolicy } from "./navigation/generator-navigation-policy";
 import { NoPolicy } from "./no-policy";
 import { UsernameGeneratorOptions } from "./username";
-import { CatchallGenerationOptions } from "./username/catchall-generator-options";
-import { EffUsernameGenerationOptions } from "./username/eff-username-generator-options";
+import {
+  CatchallGenerationOptions,
+  DefaultCatchallOptions,
+} from "./username/catchall-generator-options";
+import {
+  DefaultEffUsernameOptions,
+  EffUsernameGenerationOptions,
+} from "./username/eff-username-generator-options";
+import { DefaultAddyIoOptions } from "./username/forwarders/addy-io";
+import { DefaultDuckDuckGoOptions } from "./username/forwarders/duck-duck-go";
+import { DefaultFastmailOptions } from "./username/forwarders/fastmail";
+import { DefaultFirefoxRelayOptions } from "./username/forwarders/firefox-relay";
+import { DefaultForwardEmailOptions } from "./username/forwarders/forward-email";
+import { DefaultSimpleLoginOptions } from "./username/forwarders/simple-login";
 import { Forwarders } from "./username/options/constants";
 import {
   ApiOptions,
@@ -21,7 +33,10 @@ import {
   EmailPrefixOptions,
   SelfHostedApiOptions,
 } from "./username/options/forwarder-options";
-import { SubaddressGenerationOptions } from "./username/subaddress-generator-options";
+import {
+  DefaultSubaddressOptions,
+  SubaddressGenerationOptions,
+} from "./username/subaddress-generator-options";
 
 const SomeUser = "userId" as UserId;
 
@@ -551,6 +566,72 @@ describe("LegacyUsernameGenerationService", () => {
         forwardedForwardEmailDomain: "example.com",
         forwardedSimpleLoginApiKey: "simpleLoginToken",
         forwardedSimpleLoginBaseUrl: "https://simplelogin.api.example.com",
+      });
+    });
+
+    it("sets default options when an inner service lacks a value", async () => {
+      const account = mockAccountServiceWith(SomeUser);
+      const navigation = createNavigationGenerator(null);
+      const catchall = createGenerator<CatchallGenerationOptions>(null, DefaultCatchallOptions);
+      const effUsername = createGenerator<EffUsernameGenerationOptions>(
+        null,
+        DefaultEffUsernameOptions,
+      );
+      const subaddress = createGenerator<SubaddressGenerationOptions>(
+        null,
+        DefaultSubaddressOptions,
+      );
+      const addyIo = createGenerator<SelfHostedApiOptions & EmailDomainOptions>(
+        null,
+        DefaultAddyIoOptions,
+      );
+      const duckDuckGo = createGenerator<ApiOptions>(null, DefaultDuckDuckGoOptions);
+      const fastmail = createGenerator<ApiOptions & EmailPrefixOptions>(
+        null,
+        DefaultFastmailOptions,
+      );
+      const firefoxRelay = createGenerator<ApiOptions>(null, DefaultFirefoxRelayOptions);
+      const forwardEmail = createGenerator<ApiOptions & EmailDomainOptions>(
+        null,
+        DefaultForwardEmailOptions,
+      );
+      const simpleLogin = createGenerator<SelfHostedApiOptions>(null, DefaultSimpleLoginOptions);
+
+      const generator = new LegacyUsernameGenerationService(
+        account,
+        navigation,
+        catchall,
+        effUsername,
+        subaddress,
+        addyIo,
+        duckDuckGo,
+        fastmail,
+        firefoxRelay,
+        forwardEmail,
+        simpleLogin,
+      );
+
+      const result = await generator.getOptions();
+
+      expect(result).toEqual({
+        type: DefaultGeneratorNavigation.username,
+        catchallType: DefaultCatchallOptions.catchallType,
+        catchallDomain: DefaultCatchallOptions.catchallDomain,
+        wordCapitalize: DefaultEffUsernameOptions.wordCapitalize,
+        wordIncludeNumber: DefaultEffUsernameOptions.wordIncludeNumber,
+        subaddressType: DefaultSubaddressOptions.subaddressType,
+        subaddressEmail: DefaultSubaddressOptions.subaddressEmail,
+        forwardedService: DefaultGeneratorNavigation.forwarder,
+        forwardedAnonAddyApiToken: DefaultAddyIoOptions.token,
+        forwardedAnonAddyDomain: DefaultAddyIoOptions.domain,
+        forwardedAnonAddyBaseUrl: DefaultAddyIoOptions.baseUrl,
+        forwardedDuckDuckGoToken: DefaultDuckDuckGoOptions.token,
+        forwardedFastmailApiToken: DefaultFastmailOptions.token,
+        forwardedFirefoxApiToken: DefaultFirefoxRelayOptions.token,
+        forwardedForwardEmailApiToken: DefaultForwardEmailOptions.token,
+        forwardedForwardEmailDomain: DefaultForwardEmailOptions.domain,
+        forwardedSimpleLoginApiKey: DefaultSimpleLoginOptions.token,
+        forwardedSimpleLoginBaseUrl: DefaultSimpleLoginOptions.baseUrl,
       });
     });
   });

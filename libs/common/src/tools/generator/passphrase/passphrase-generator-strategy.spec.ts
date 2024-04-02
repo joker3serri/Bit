@@ -16,7 +16,11 @@ import { PASSPHRASE_SETTINGS } from "../key-definitions";
 
 import { DisabledPassphraseGeneratorPolicy } from "./passphrase-generator-policy";
 
-import { PassphraseGeneratorOptionsEvaluator, PassphraseGeneratorStrategy } from ".";
+import {
+  DefaultPassphraseGenerationOptions,
+  PassphraseGeneratorOptionsEvaluator,
+  PassphraseGeneratorStrategy,
+} from ".";
 
 const SomeUser = "some user" as UserId;
 
@@ -67,6 +71,16 @@ describe("Password generation strategy", () => {
       strategy.durableState(SomeUser);
 
       expect(provider.getUser).toHaveBeenCalledWith(SomeUser, PASSPHRASE_SETTINGS);
+    });
+  });
+
+  describe("defaults$", () => {
+    it("should return the default subaddress options", async () => {
+      const strategy = new PassphraseGeneratorStrategy(null, null);
+
+      const result = await firstValueFrom(strategy.defaults$(SomeUser));
+
+      expect(result).toEqual(DefaultPassphraseGenerationOptions);
     });
   });
 
