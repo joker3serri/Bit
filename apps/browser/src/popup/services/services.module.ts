@@ -103,6 +103,7 @@ import { ForegroundDerivedStateProvider } from "../../platform/state/foreground-
 import { ForegroundMemoryStorageService } from "../../platform/storage/foreground-memory-storage.service";
 import { BrowserSendStateService } from "../../tools/popup/services/browser-send-state.service";
 import { FilePopoutUtilsService } from "../../tools/popup/services/file-popout-utils.service";
+import { VaultBrowserStateService } from "../../vault/services/vault-browser-state.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
 import { DebounceNavigationService } from "./debounce-navigation.service";
@@ -377,6 +378,13 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OBSERVABLE_DISK_STORAGE,
     useExisting: AbstractStorageService,
+  }),
+  safeProvider({
+    provide: VaultBrowserStateService,
+    useFactory: (stateProvider: StateProvider) => {
+      return new VaultBrowserStateService(stateProvider);
+    },
+    deps: [StateProvider],
   }),
   safeProvider({
     provide: StateServiceAbstraction,

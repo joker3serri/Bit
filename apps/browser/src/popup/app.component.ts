@@ -13,6 +13,7 @@ import { ZonedMessageListenerService } from "../platform/browser/zoned-message-l
 import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
 import { ForegroundPlatformUtilsService } from "../platform/services/platform-utils/foreground-platform-utils.service";
 import { BrowserSendStateService } from "../tools/popup/services/browser-send-state.service";
+import { VaultBrowserStateService } from "../vault/services/vault-browser-state.service";
 
 import { routerTransition } from "./app-routing.animations";
 import { DesktopSyncVerificationDialogComponent } from "./components/desktop-sync-verification-dialog.component";
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private stateService: BrowserStateService,
     private browserSendStateService: BrowserSendStateService,
+    private vaultBrowserStateService: VaultBrowserStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private platformUtilsService: ForegroundPlatformUtilsService,
@@ -229,8 +231,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     await Promise.all([
-      this.stateService.setBrowserGroupingComponentState(null),
-      this.stateService.setBrowserVaultItemsComponentState(null),
+      this.vaultBrowserStateService.setBrowserGroupingsComponentState(null),
+      this.vaultBrowserStateService.setBrowserVaultItemsComponentState(null),
       this.browserSendStateService.setBrowserSendComponentState(null),
       this.browserSendStateService.setBrowserSendTypeComponentState(null),
     ]);
