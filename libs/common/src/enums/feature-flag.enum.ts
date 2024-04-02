@@ -7,6 +7,7 @@ export enum FeatureFlag {
   KeyRotationImprovements = "key-rotation-improvements",
   FlexibleCollectionsMigration = "flexible-collections-migration",
   ShowPaymentMethodWarningBanners = "show-payment-method-warning-banners",
+  EnableConsolidatedBilling = "enable-consolidated-billing",
   AC1795_UpdatedSubscriptionStatusSection = "AC-1795_updated-subscription-status-section",
 }
 
