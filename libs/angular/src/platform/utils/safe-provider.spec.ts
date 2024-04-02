@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // This rule bans @ts-expect-error comments without explanation. In this file, we use it to test our types, and
-// explanation is provided in header comments before each test. No additional explanation is required.
+// explanation is provided in header comments before each test.
 
 import { safeProvider } from "./safe-provider";
 
