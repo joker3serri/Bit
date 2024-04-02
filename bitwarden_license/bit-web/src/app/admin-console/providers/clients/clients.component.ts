@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, Subject, firstValueFrom, from } from "rxjs";
 import { first, switchMap, takeUntil } from "rxjs/operators";
 
@@ -13,6 +13,8 @@ import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { PlanType } from "@bitwarden/common/billing/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -48,6 +50,11 @@ export class ClientsComponent implements OnInit {
   protected pageSize = 100;
   protected actionPromise: Promise<unknown>;
   private pagedClientsCount = 0;
+
+  protected enableConsolidatedBilling$ = this.configService.getFeatureFlag$(
+    FeatureFlag.EnableConsolidatedBilling,
+    false,
+  );
   private destroy$ = new Subject<void>();
   private _searchText$ = new BehaviorSubject<string>("");
   private isSearching: boolean = false;
@@ -62,6 +69,7 @@ export class ClientsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private providerService: ProviderService,
     private apiService: ApiService,
     private searchService: SearchService,
@@ -74,31 +82,38 @@ export class ClientsComponent implements OnInit {
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private dialogService: DialogService,
+    private configService: ConfigService,
   ) {}
 
   async ngOnInit() {
-    this.route.parent.params
-      .pipe(
-        switchMap((params) => {
-          this.providerId = params.providerId;
-          return from(this.load());
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
+    const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
 
-    this.route.queryParams.pipe(first(), takeUntil(this.destroy$)).subscribe((qParams) => {
-      this.searchText = qParams.search;
-    });
+    if (enableConsolidatedBilling) {
+      await this.router.navigate(["../manage-client-organizations"], { relativeTo: this.route });
+    } else {
+      this.route.parent.params
+        .pipe(
+          switchMap((params) => {
+            this.providerId = params.providerId;
+            return from(this.load());
+          }),
+          takeUntil(this.destroy$),
+        )
+        .subscribe();
 
-    this._searchText$
-      .pipe(
-        switchMap((searchText) => from(this.searchService.isSearchable(searchText))),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((isSearchable) => {
-        this.isSearching = isSearchable;
+      this.route.queryParams.pipe(first(), takeUntil(this.destroy$)).subscribe((qParams) => {
+        this.searchText = qParams.search;
       });
+
+      this._searchText$
+        .pipe(
+          switchMap((searchText) => from(this.searchService.isSearchable(searchText))),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((isSearchable) => {
+          this.isSearching = isSearchable;
+        });
+    }
   }
 
   ngOnDestroy() {
