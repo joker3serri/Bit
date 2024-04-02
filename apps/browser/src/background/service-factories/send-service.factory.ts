@@ -22,9 +22,11 @@ import {
   KeyGenerationServiceInitOptions,
   keyGenerationServiceFactory,
 } from "../../platform/background/service-factories/key-generation-service.factory";
-import { StateProviderInitOptions } from "../../platform/background/service-factories/state-provider.factory";
 
-import { sendStateProviderFactory } from "./send-state-provider.factory";
+import {
+  SendStateProviderInitOptions,
+  sendStateProviderFactory,
+} from "./send-state-provider.factory";
 
 type SendServiceFactoryOptions = FactoryOptions;
 
@@ -32,7 +34,7 @@ export type SendServiceInitOptions = SendServiceFactoryOptions &
   CryptoServiceInitOptions &
   I18nServiceInitOptions &
   KeyGenerationServiceInitOptions &
-  StateProviderInitOptions &
+  SendStateProviderInitOptions &
   EncryptServiceInitOptions;
 
 export function sendServiceFactory(
