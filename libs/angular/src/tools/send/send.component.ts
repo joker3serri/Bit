@@ -32,7 +32,6 @@ export class SendComponent implements OnInit, OnDestroy {
   expired = false;
   type: SendType = null;
   sends: SendView[] = [];
-  // searchText: string;
   selectedType: SendType;
   selectedAll: boolean;
   filter: (cipher: SendView) => boolean;
