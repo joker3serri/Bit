@@ -22,14 +22,15 @@ export function preferPassword(
   acc: GeneratorNavigationPolicy,
   policy: Policy,
 ): GeneratorNavigationPolicy {
-  if (policy.type !== PolicyType.PasswordGenerator || !policy.enabled) {
-    return acc;
-  } else if (acc.defaultType !== "password" && policy.data.defaultType) {
-    acc.defaultType = policy.data.defaultType;
-    return acc;
-  } else {
+  const isEnabled = policy.type === PolicyType.PasswordGenerator && policy.enabled;
+  if (!isEnabled) {
     return acc;
   }
+
+  const isOverridable = acc.defaultType !== "password" && policy.data.defaultType;
+  const result = isOverridable ? { ...acc, defaultType: policy.data.defaultType } : acc;
+
+  return result;
 }
 
 /** The default options for password generation policy. */
