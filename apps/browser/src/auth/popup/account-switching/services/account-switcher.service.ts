@@ -10,7 +10,7 @@ import {
   timeout,
 } from "rxjs";
 
-import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -51,43 +51,25 @@ export class AccountSwitcherService {
     private logService: LogService,
     private authService: AuthService,
   ) {
-    const accountsWithStatuses$ = this.accountService.accounts$.pipe(
-      map((accounts) => Object.entries(accounts) as [UserId, AccountInfo][]),
-      switchMap((entries) =>
-        combineLatest(
-          entries.map(([id, account]) =>
-            this.authService.authStatusFor$(id).pipe(map((status) => ({ ...account, id, status }))),
-          ),
-        ),
-      ),
-      map((accounts) =>
-        accounts.reduce(
-          (acc, account) => {
-            acc[account.id] = account;
-            return acc;
-          },
-          {} as Record<UserId, AccountInfo & { status: AuthenticationStatus }>,
-        ),
-      ),
-    );
     this.availableAccounts$ = combineLatest([
-      accountsWithStatuses$,
+      accountService.accounts$,
+      authService.authStatuses$,
       this.accountService.activeAccount$,
     ]).pipe(
-      switchMap(async ([accounts, activeAccount]) => {
-        const accountEntries = Object.entries(accounts).filter(
-          ([_, account]) => account.status !== AuthenticationStatus.LoggedOut,
+      switchMap(async ([accounts, accountStatuses, activeAccount]) => {
+        const loggedInIds = Object.keys(accounts).filter(
+          (id: UserId) => accountStatuses[id] !== AuthenticationStatus.LoggedOut,
         );
         // Accounts shouldn't ever be more than ACCOUNT_LIMIT but just in case do a greater than
-        const hasMaxAccounts = accountEntries.length >= this.ACCOUNT_LIMIT;
+        const hasMaxAccounts = loggedInIds.length >= this.ACCOUNT_LIMIT;
         const options: AvailableAccount[] = await Promise.all(
-          accountEntries.map(async ([id, account]) => {
+          loggedInIds.map(async (id: UserId) => {
             return {
-              name: account.name ?? account.email,
-              email: account.email,
+              name: accounts[id].name ?? accounts[id].email,
+              email: accounts[id].email,
               id: id,
               server: (await this.environmentService.getEnvironment(id))?.getHostname(),
-              status: account.status,
+              status: accountStatuses[id],
               isActive: id === activeAccount?.id,
               avatarColor: await firstValueFrom(
                 this.avatarService.getUserAvatarColor$(id as UserId),
