@@ -26,7 +26,7 @@ export abstract class CryptoService {
    * any other necessary versions (such as auto, biometrics,
    * or pin)
    *
-   * @throws when key is null. Use {@link clearUserKey} instead
+   * @throws when key is null. Lock the account to clear a key
    * @param key The user key to set
    * @param userId The desired user
    */
@@ -93,13 +93,6 @@ export abstract class CryptoService {
    * @returns A new user key and the master key protected version of it
    */
   abstract makeUserKey(key: MasterKey): Promise<[UserKey, EncString]>;
-  /**
-   * Clears the user key
-   * @param clearStoredKeys Clears all stored versions of the user keys as well,
-   * such as the biometrics key
-   * @param userId The desired user
-   */
-  abstract clearUserKey(clearSecretStorage?: boolean, userId?: string): Promise<void>;
   /**
    * Clears the user's stored version of the user key
    * @param keySuffix The desired version of the key to clear

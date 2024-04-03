@@ -18,6 +18,7 @@ import { Utils } from "../misc/utils";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { CryptoService } from "../services/crypto.service";
+import { UserKeyDefinition } from "../state";
 
 import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "./key-state/org-keys.state";
 import { USER_ENCRYPTED_PROVIDER_KEYS } from "./key-state/provider-keys.state";
@@ -336,38 +337,6 @@ describe("cryptoService", () => {
     });
   });
 
-  describe("clearUserKey", () => {
-    it.each([mockUserId, null])("should clear the User Key for id %2", async (userId) => {
-      await cryptoService.clearUserKey(false, userId);
-
-      expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(USER_KEY, null, userId);
-    });
-
-    it("should update status to locked", async () => {
-      await cryptoService.clearUserKey(false, mockUserId);
-
-      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
-        mockUserId,
-        AuthenticationStatus.Locked,
-      );
-    });
-
-    it.each([true, false])(
-      "should clear stored user keys if clearAll is true (%s)",
-      async (clear) => {
-        const clearSpy = (cryptoService["clearAllStoredUserKeys"] = jest.fn());
-        await cryptoService.clearUserKey(clear, mockUserId);
-
-        if (clear) {
-          expect(clearSpy).toHaveBeenCalledWith(mockUserId);
-          expect(clearSpy).toHaveBeenCalledTimes(1);
-        } else {
-          expect(clearSpy).not.toHaveBeenCalled();
-        }
-      },
-    );
-  });
-
   describe("clearKeys", () => {
     it("resolves active user id when called with no user id", async () => {
       let callCount = 0;
@@ -382,9 +351,26 @@ describe("cryptoService", () => {
       accountService.activeAccount$ = accountService.activeAccountSubject.asObservable();
     });
 
-    describe.each([USER_ENCRYPTED_ORGANIZATION_KEYS, USER_ENCRYPTED_PROVIDER_KEYS])(
+    it("sets the maximum account status of the active user id to locked when user id is not specified", async () => {
+      await cryptoService.clearKeys();
+      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
+        mockUserId,
+        AuthenticationStatus.Locked,
+      );
+    });
+
+    it("sets the maximum account status of the specified user id to locked when user id is specified", async () => {
+      const userId = "someOtherUser" as UserId;
+      await cryptoService.clearKeys(userId);
+      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
+        userId,
+        AuthenticationStatus.Locked,
+      );
+    });
+
+    describe.each([USER_ENCRYPTED_ORGANIZATION_KEYS, USER_ENCRYPTED_PROVIDER_KEYS, USER_KEY])(
       "key removal",
-      (key) => {
+      (key: UserKeyDefinition<unknown>) => {
         it(`clears ${key.key} for active user when unspecified`, async () => {
           await cryptoService.clearKeys(null);
 
@@ -464,40 +450,6 @@ describe("cryptoService", () => {
         mockUserId,
         USER_ENCRYPTED_PRIVATE_KEY,
       );
-    });
-  });
-
-  describe("clearUserKey", () => {
-    it("clears the user key for the active user when no userId is specified", async () => {
-      await cryptoService.clearUserKey(false);
-      expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(USER_KEY, null, undefined);
-    });
-
-    it("clears the user key for the specified user when a userId is specified", async () => {
-      await cryptoService.clearUserKey(false, "someOtherUser" as UserId);
-      expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(USER_KEY, null, "someOtherUser");
-    });
-
-    it("sets the maximum account status of the active user id to locked when user id is not specified", async () => {
-      await cryptoService.clearUserKey(false);
-      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
-        mockUserId,
-        AuthenticationStatus.Locked,
-      );
-    });
-
-    it("sets the maximum account status of the specified user id to locked when user id is specified", async () => {
-      await cryptoService.clearUserKey(false, "someOtherUser" as UserId);
-      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
-        "someOtherUser" as UserId,
-        AuthenticationStatus.Locked,
-      );
-    });
-
-    it("clears all stored user keys when clearAll is true", async () => {
-      const clearAllSpy = (cryptoService["clearAllStoredUserKeys"] = jest.fn());
-      await cryptoService.clearUserKey(true);
-      expect(clearAllSpy).toHaveBeenCalledWith(mockUserId);
     });
   });
 });

@@ -144,7 +144,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {
     if (key == null) {
-      throw new Error("No key provided. Use ClearUserKey to clear the key");
+      throw new Error("No key provided. Lock the user to clear the key");
     }
     // Set userId to ensure we have one for the account status update
     [userId, key] = await this.stateProvider.setUserState(USER_KEY, key, userId);
@@ -242,13 +242,19 @@ export class CryptoService implements CryptoServiceAbstraction {
     return this.buildProtectedSymmetricKey(masterKey, newUserKey.key);
   }
 
-  async clearUserKey(clearStoredKeys = true, userId?: UserId): Promise<void> {
-    // Set userId to ensure we have one for the account status update
-    [userId] = await this.stateProvider.setUserState(USER_KEY, null, userId);
-    await this.accountService.setMaxAccountStatus(userId, AuthenticationStatus.Locked);
-    if (clearStoredKeys) {
-      await this.clearAllStoredUserKeys(userId);
+  /**
+   * Clears the user key. Clears all stored versions of the user keys as well, such as the biometrics key
+   * @param userId The desired user
+   */
+  async clearUserKey(userId: UserId): Promise<void> {
+    if (userId == null) {
+      // nothing to do
+      return;
     }
+    // Set userId to ensure we have one for the account status update
+    await this.stateProvider.setUserState(USER_KEY, null, userId);
+    await this.accountService.setMaxAccountStatus(userId, AuthenticationStatus.Locked);
+    await this.clearAllStoredUserKeys(userId);
   }
 
   async clearStoredUserKey(keySuffix: KeySuffixOptions, userId?: UserId): Promise<void> {
@@ -661,7 +667,7 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("Cannot clear keys, no user Id resolved.");
     }
 
-    await this.clearUserKey(true, userId);
+    await this.clearUserKey(userId);
     await this.clearMasterKeyHash(userId);
     await this.clearOrgKeys(userId);
     await this.clearProviderKeys(userId);
