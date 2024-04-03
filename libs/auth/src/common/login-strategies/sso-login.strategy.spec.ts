@@ -5,6 +5,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
@@ -26,7 +27,6 @@ import {
   AuthRequestServiceAbstraction,
   InternalUserDecryptionOptionsServiceAbstraction,
 } from "../abstractions";
-import { AdminAuthRequestStorable } from "../models/data/admin-auth-req-storable";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
@@ -289,7 +289,7 @@ describe("SsoLoginStrategy", () => {
           id: "1",
           privateKey: "PRIVATE" as any,
         } as AdminAuthRequestStorable;
-        stateService.getAdminAuthRequest.mockResolvedValue(
+        authRequestService.getAdminAuthRequest.mockResolvedValue(
           new AdminAuthRequestStorable(adminAuthRequest),
         );
       });
@@ -352,7 +352,7 @@ describe("SsoLoginStrategy", () => {
 
         await ssoLoginStrategy.logIn(credentials);
 
-        expect(stateService.setAdminAuthRequest).toHaveBeenCalledWith(null);
+        expect(authRequestService.clearAdminAuthRequest).toHaveBeenCalled();
         expect(
           authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash,
         ).not.toHaveBeenCalled();
