@@ -50,7 +50,10 @@ describe.each([
       return typeof value === "object" && value !== null && !Array.isArray(value);
     }
 
-    function testDeserialization<T>(keyDefinition: KeyDefinition<T>, state: T) {
+    function testDeserialization<T>(
+      keyDefinition: KeyDefinition<T> | UserKeyDefinition<T>,
+      state: T,
+    ) {
       const deserialized = keyDefinition.deserializer(JSON.parse(JSON.stringify(state)));
       expect(deserialized).toEqual(state);
     }
