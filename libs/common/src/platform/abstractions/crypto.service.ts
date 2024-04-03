@@ -239,12 +239,6 @@ export abstract class CryptoService {
     key: T,
   ): Promise<[SymmetricCryptoKey, EncString]>;
   /**
-   * Clears the user's stored organization keys
-   * @param memoryOnly Clear only the in-memory keys
-   * @param userId The desired user
-   */
-  abstract clearOrgKeys(memoryOnly?: boolean, userId?: string): Promise<void>;
-  /**
    * Stores the encrypted provider keys and clears any decrypted
    * provider keys currently in memory
    * @param providers The providers to set keys for

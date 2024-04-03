@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended";
-import { firstValueFrom, of } from "rxjs";
+import { firstValueFrom, of, tap } from "rxjs";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState, FakeSingleUserState } from "../../../spec/fake-state";
@@ -368,63 +368,41 @@ describe("cryptoService", () => {
     );
   });
 
-  describe("clearOrgKeys", () => {
-    let forceMemorySpy: jest.Mock;
-    beforeEach(() => {
-      forceMemorySpy = cryptoService["activeUserOrgKeysState"].forceValue = jest.fn();
-    });
-    it("clears in memory org keys when called with memoryOnly", async () => {
-      await cryptoService.clearOrgKeys(true);
+  describe("clearKeys", () => {
+    it("resolves active user id when called with no user id", async () => {
+      let callCount = 0;
+      accountService.activeAccount$ = accountService.activeAccountSubject.pipe(
+        tap(() => callCount++),
+      );
 
-      expect(forceMemorySpy).toHaveBeenCalledWith({});
-    });
+      await cryptoService.clearKeys(null);
+      expect(callCount).toBe(3); // 1 for initial, 1 for provider keys, 1 for key pair
 
-    it("does not clear memory when called with the non active user and memory only", async () => {
-      await cryptoService.clearOrgKeys(true, "someOtherUser" as UserId);
-
-      expect(forceMemorySpy).not.toHaveBeenCalled();
+      // revert to the original state
+      accountService.activeAccount$ = accountService.activeAccountSubject.asObservable();
     });
 
-    it("does not write to disk state if called with memory only", async () => {
-      await cryptoService.clearOrgKeys(true);
+    it("clears org keys for the active user when unspecified", async () => {
+      await cryptoService.clearKeys(null);
 
-      expect(stateProvider.singleUser.mock.get).not.toHaveBeenCalled();
-    });
-
-    it("clears disk state when called with diskOnly", async () => {
-      await cryptoService.clearOrgKeys(false);
-
-      expect(stateProvider.singleUser.mock.get).toHaveBeenCalledWith(
+      const encryptedOrgKeyState = stateProvider.singleUser.getFake(
         mockUserId,
         USER_ENCRYPTED_ORGANIZATION_KEYS,
       );
-      expect(
-        stateProvider.singleUser.getFake(mockUserId, USER_ENCRYPTED_ORGANIZATION_KEYS).nextMock,
-      ).toHaveBeenCalledWith(null);
+      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledTimes(1);
+      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledWith(null);
     });
 
-    it("clears another user's disk state when called with diskOnly and that user", async () => {
-      await cryptoService.clearOrgKeys(false, "someOtherUser" as UserId);
+    it("clears org keys for the specified user when specified", async () => {
+      const userId = "someOtherUser" as UserId;
+      await cryptoService.clearKeys(userId);
 
-      expect(stateProvider.singleUser.mock.get).toHaveBeenCalledWith(
-        "someOtherUser" as UserId,
+      const encryptedOrgKeyState = stateProvider.singleUser.getFake(
+        userId,
         USER_ENCRYPTED_ORGANIZATION_KEYS,
       );
-      expect(
-        stateProvider.singleUser.getFake(
-          "someOtherUser" as UserId,
-          USER_ENCRYPTED_ORGANIZATION_KEYS,
-        ).nextMock,
-      ).toHaveBeenCalledWith(null);
-    });
-
-    it("does not clear active user disk state when called with diskOnly and a different specified user", async () => {
-      await cryptoService.clearOrgKeys(false, "someOtherUser" as UserId);
-
-      expect(stateProvider.singleUser.mock.get).not.toHaveBeenCalledWith(
-        mockUserId,
-        USER_ENCRYPTED_ORGANIZATION_KEYS,
-      );
+      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledTimes(1);
+      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledWith(null);
     });
   });
 
