@@ -126,5 +126,6 @@ export const GENERATOR_HISTORY = SecretKeyDefinition.array(
   SecretClassifier.allSecret<GeneratedCredential>(),
   {
     deserializer: GeneratedCredential.fromJSON,
+    clearOn: [],
   },
 );

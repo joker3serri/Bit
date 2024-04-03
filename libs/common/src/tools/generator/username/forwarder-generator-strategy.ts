@@ -56,6 +56,7 @@ export abstract class ForwarderGeneratorStrategy<
       const key = SecretKeyDefinition.value(this.key.stateDefinition, this.key.key, classifier, {
         deserializer: (d) => this.key.deserializer(d),
         cleanupDelayMs: this.key.cleanupDelayMs,
+        clearOn: this.key.clearOn,
       });
 
       // the type parameter is explicit because type inference fails for `Omit<Options, "website">`
