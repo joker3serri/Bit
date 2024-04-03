@@ -1,4 +1,4 @@
-import { KeyDefinition } from "../../platform/state";
+import { KeyDefinition, UserKeyDefinition } from "../../platform/state";
 
 import {
   ACCESS_TOKEN_DISK,
@@ -28,8 +28,8 @@ describe.each([
   "deserializes state key definitions",
   (
     keyDefinition:
-      | KeyDefinition<string>
-      | KeyDefinition<boolean>
+      | UserKeyDefinition<string>
+      | UserKeyDefinition<boolean>
       | KeyDefinition<Record<string, string>>,
     state: string | boolean | Record<string, string>,
   ) => {
