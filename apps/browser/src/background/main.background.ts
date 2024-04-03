@@ -581,6 +581,7 @@ export default class MainBackground {
       this.cryptoService,
       this.apiService,
       this.stateService,
+      this.stateProvider,
     );
 
     this.authService = new AuthService(

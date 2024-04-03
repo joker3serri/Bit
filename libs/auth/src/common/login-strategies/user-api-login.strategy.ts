@@ -16,6 +16,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
@@ -91,7 +92,10 @@ export class UserApiLoginStrategy extends LoginStrategy {
     }
   }
 
-  protected override async setUserKey(response: IdentityTokenResponse): Promise<void> {
+  protected override async setUserKey(
+    response: IdentityTokenResponse,
+    userId: UserId,
+  ): Promise<void> {
     await this.cryptoService.setMasterKeyEncryptedUserKey(response.key);
 
     if (response.apiUseKeyConnector) {
@@ -109,8 +113,8 @@ export class UserApiLoginStrategy extends LoginStrategy {
     );
   }
 
-  protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
-    await super.saveAccountInformation(tokenResponse);
+  protected async saveAccountInformation(tokenResponse: IdentityTokenResponse): Promise<UserId> {
+    const userId = await super.saveAccountInformation(tokenResponse);
 
     const vaultTimeout = await this.stateService.getVaultTimeout();
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
@@ -127,6 +131,7 @@ export class UserApiLoginStrategy extends LoginStrategy {
       vaultTimeoutAction as VaultTimeoutAction,
       vaultTimeout,
     );
+    return userId;
   }
 
   exportCache(): CacheData {

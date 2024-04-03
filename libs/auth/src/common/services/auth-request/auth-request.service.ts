@@ -1,6 +1,8 @@
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, firstValueFrom } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { PasswordlessAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
@@ -9,9 +11,42 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import {
+  AUTH_REQUEST_DISK_LOCAL,
+  StateProvider,
+  UserKeyDefinition,
+} from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 
 import { AuthRequestServiceAbstraction } from "../../abstractions/auth-request.service.abstraction";
+
+/**
+ * Disk-local to maintain consistency between tabs (even though
+ * approvals are currently only available on desktop). We don't
+ * want to clear this on logout as it's a user preference.
+ */
+export const ACCEPT_AUTH_REQUESTS_KEY = new UserKeyDefinition<boolean>(
+  AUTH_REQUEST_DISK_LOCAL,
+  "acceptAuthRequests",
+  {
+    deserializer: (value) => value ?? false,
+    clearOn: [],
+  },
+);
+
+/**
+ * Disk-local to maintain consistency between tabs. We don't want to
+ * clear this on logout since admin auth requests are long-lived.
+ */
+export const ADMIN_AUTH_REQUEST_KEY = new UserKeyDefinition<Jsonify<AdminAuthRequestStorable>>(
+  AUTH_REQUEST_DISK_LOCAL,
+  "adminAuthRequest",
+  {
+    deserializer: (value) => value,
+    clearOn: [],
+  },
+);
 
 export class AuthRequestService implements AuthRequestServiceAbstraction {
   private authRequestPushNotificationSubject = new Subject<string>();
@@ -22,8 +57,59 @@ export class AuthRequestService implements AuthRequestServiceAbstraction {
     private cryptoService: CryptoService,
     private apiService: ApiService,
     private stateService: StateService,
+    private stateProvider: StateProvider,
   ) {
     this.authRequestPushNotification$ = this.authRequestPushNotificationSubject.asObservable();
+  }
+
+  async getAcceptAuthRequests(userId: UserId): Promise<boolean> {
+    if (userId == null) {
+      throw new Error("User ID is required");
+    }
+
+    const value = await firstValueFrom(
+      this.stateProvider.getUser(userId, ACCEPT_AUTH_REQUESTS_KEY).state$,
+    );
+    return value;
+  }
+
+  async setAcceptAuthRequests(accept: boolean, userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required");
+    }
+
+    await this.stateProvider.setUserState(ACCEPT_AUTH_REQUESTS_KEY, accept, userId);
+  }
+
+  async getAdminAuthRequest(userId: UserId): Promise<AdminAuthRequestStorable | null> {
+    if (userId == null) {
+      throw new Error("User ID is required");
+    }
+
+    const authRequestSerialized = await firstValueFrom(
+      this.stateProvider.getUser(userId, ADMIN_AUTH_REQUEST_KEY).state$,
+    );
+    const adminAuthRequestStorable = AdminAuthRequestStorable.fromJSON(authRequestSerialized);
+    return adminAuthRequestStorable;
+  }
+
+  async setAdminAuthRequest(authRequest: AdminAuthRequestStorable, userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required");
+    }
+    if (authRequest == null) {
+      throw new Error("Auth request is required");
+    }
+
+    await this.stateProvider.setUserState(ADMIN_AUTH_REQUEST_KEY, authRequest.toJSON(), userId);
+  }
+
+  async clearAdminAuthRequest(userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required");
+    }
+
+    await this.stateProvider.setUserState(ADMIN_AUTH_REQUEST_KEY, null, userId);
   }
 
   async approveOrDenyAuthRequest(
