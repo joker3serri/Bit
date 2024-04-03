@@ -287,12 +287,6 @@ export abstract class CryptoService {
    */
   abstract makeKeyPair(key?: SymmetricCryptoKey): Promise<[string, EncString]>;
   /**
-   * Clears the user's key pair
-   * @param memoryOnly Clear only the in-memory keys
-   * @param userId The desired user
-   */
-  abstract clearKeyPair(memoryOnly?: boolean, userId?: string): Promise<void[]>;
-  /**
    * @param pin The user's pin
    * @param salt The user's salt
    * @param kdf The user's kdf

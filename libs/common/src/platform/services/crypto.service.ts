@@ -577,26 +577,17 @@ export class CryptoService implements CryptoServiceAbstraction {
     return [publicB64, privateEnc];
   }
 
-  async clearKeyPair(memoryOnly?: boolean, userId?: UserId): Promise<void[]> {
-    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    const userIdIsActive = userId == null || userId === activeUserId;
-
-    if (!memoryOnly) {
-      if (userId == null && activeUserId == null) {
-        // nothing to do
-        return;
-      }
-      await this.stateProvider
-        .getUser(userId ?? activeUserId, USER_ENCRYPTED_PRIVATE_KEY)
-        .update(() => null);
+  /**
+   * Clears the user's key pair
+   * @param userId The desired user
+   */
+  private async clearKeyPair(userId: UserId): Promise<void[]> {
+    if (userId == null) {
+      // nothing to do
       return;
     }
 
-    // decrypted key pair is only cached for active users
-    if (userIdIsActive) {
-      await this.activeUserPrivateKeyState.forceValue(null);
-      await this.activeUserPublicKeyState.forceValue(null);
-    }
+    await this.stateProvider.setUserState(USER_ENCRYPTED_PRIVATE_KEY, null, userId);
   }
 
   async makePinKey(pin: string, salt: string, kdf: KdfType, kdfConfig: KdfConfig): Promise<PinKey> {
@@ -671,7 +662,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     await this.clearMasterKeyHash(userId);
     await this.clearOrgKeys(userId);
     await this.clearProviderKeys(userId);
-    await this.clearKeyPair(false, userId);
+    await this.clearKeyPair(userId);
     await this.clearPinKeys(userId);
     await this.stateProvider.setUserState(USER_EVER_HAD_USER_KEY, null, userId);
   }
