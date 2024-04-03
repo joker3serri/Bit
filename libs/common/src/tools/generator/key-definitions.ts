@@ -1,4 +1,4 @@
-import { GENERATOR_DISK, KeyDefinition } from "../../platform/state";
+import { GENERATOR_DISK, UserKeyDefinition } from "../../platform/state";
 
 import { GeneratedCredential } from "./history/generated-credential";
 import { PassphraseGenerationOptions } from "./passphrase/passphrase-generation-options";
@@ -16,95 +16,106 @@ import {
 import { SubaddressGenerationOptions } from "./username/subaddress-generator-options";
 
 /** plaintext password generation options */
-export const PASSWORD_SETTINGS = new KeyDefinition<PasswordGenerationOptions>(
+export const PASSWORD_SETTINGS = new UserKeyDefinition<PasswordGenerationOptions>(
   GENERATOR_DISK,
   "passwordGeneratorSettings",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
 /** plaintext passphrase generation options */
-export const PASSPHRASE_SETTINGS = new KeyDefinition<PassphraseGenerationOptions>(
+export const PASSPHRASE_SETTINGS = new UserKeyDefinition<PassphraseGenerationOptions>(
   GENERATOR_DISK,
   "passphraseGeneratorSettings",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
 /** plaintext username generation options */
-export const EFF_USERNAME_SETTINGS = new KeyDefinition<EffUsernameGenerationOptions>(
+export const EFF_USERNAME_SETTINGS = new UserKeyDefinition<EffUsernameGenerationOptions>(
   GENERATOR_DISK,
   "effUsernameGeneratorSettings",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
 /** catchall email generation options */
-export const CATCHALL_SETTINGS = new KeyDefinition<CatchallGenerationOptions>(
+export const CATCHALL_SETTINGS = new UserKeyDefinition<CatchallGenerationOptions>(
   GENERATOR_DISK,
   "catchallGeneratorSettings",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
 /** email subaddress generation options */
-export const SUBADDRESS_SETTINGS = new KeyDefinition<SubaddressGenerationOptions>(
+export const SUBADDRESS_SETTINGS = new UserKeyDefinition<SubaddressGenerationOptions>(
   GENERATOR_DISK,
   "subaddressGeneratorSettings",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
-export const ADDY_IO_FORWARDER = new KeyDefinition<SelfHostedApiOptions & EmailDomainOptions>(
+export const ADDY_IO_FORWARDER = new UserKeyDefinition<SelfHostedApiOptions & EmailDomainOptions>(
   GENERATOR_DISK,
   "addyIoForwarder",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
-export const DUCK_DUCK_GO_FORWARDER = new KeyDefinition<ApiOptions>(
+export const DUCK_DUCK_GO_FORWARDER = new UserKeyDefinition<ApiOptions>(
   GENERATOR_DISK,
   "duckDuckGoForwarder",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
-export const FASTMAIL_FORWARDER = new KeyDefinition<ApiOptions & EmailPrefixOptions>(
+export const FASTMAIL_FORWARDER = new UserKeyDefinition<ApiOptions & EmailPrefixOptions>(
   GENERATOR_DISK,
   "fastmailForwarder",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
-export const FIREFOX_RELAY_FORWARDER = new KeyDefinition<ApiOptions>(
+export const FIREFOX_RELAY_FORWARDER = new UserKeyDefinition<ApiOptions>(
   GENERATOR_DISK,
   "firefoxRelayForwarder",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
-export const FORWARD_EMAIL_FORWARDER = new KeyDefinition<ApiOptions & EmailDomainOptions>(
+export const FORWARD_EMAIL_FORWARDER = new UserKeyDefinition<ApiOptions & EmailDomainOptions>(
   GENERATOR_DISK,
   "forwardEmailForwarder",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
-export const SIMPLE_LOGIN_FORWARDER = new KeyDefinition<SelfHostedApiOptions>(
+export const SIMPLE_LOGIN_FORWARDER = new UserKeyDefinition<SelfHostedApiOptions>(
   GENERATOR_DISK,
   "simpleLoginForwarder",
   {
     deserializer: (value) => value,
+    clearOn: ["logout"],
   },
 );
 
