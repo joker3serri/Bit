@@ -38,6 +38,7 @@ export const BILLING_DISK = new StateDefinition("billing", "disk");
 export const KEY_CONNECTOR_DISK = new StateDefinition("keyConnector", "disk");
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
 export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-local" });
+export const ROUTER_DISK = new StateDefinition("router", "disk");
 export const LOGIN_EMAIL_DISK = new StateDefinition("loginEmail", "disk", {
   web: "disk-local",
 });
@@ -103,6 +104,10 @@ export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
 export const BROWSER_SEND_MEMORY = new StateDefinition("sendBrowser", "memory");
 export const EVENT_COLLECTION_DISK = new StateDefinition("eventCollection", "disk");
+export const SEND_DISK = new StateDefinition("encryptedSend", "disk", {
+  web: "memory",
+});
+export const SEND_MEMORY = new StateDefinition("decryptedSend", "memory");
 
 // Vault
 
