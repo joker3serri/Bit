@@ -255,11 +255,6 @@ export abstract class CryptoService {
    */
   abstract getProviderKeys(): Promise<Record<ProviderId, ProviderKey>>;
   /**
-   * @param memoryOnly Clear only the in-memory keys
-   * @param userId The desired user
-   */
-  abstract clearProviderKeys(memoryOnly?: boolean, userId?: string): Promise<void>;
-  /**
    * Returns the public key from memory. If not available, extracts it
    * from the private key and stores it in memory
    * @returns The user's public key

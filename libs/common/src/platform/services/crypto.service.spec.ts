@@ -376,92 +376,33 @@ describe("cryptoService", () => {
       );
 
       await cryptoService.clearKeys(null);
-      expect(callCount).toBe(3); // 1 for initial, 1 for provider keys, 1 for key pair
+      expect(callCount).toBe(2); // 1 for initial, 1 for key pair
 
       // revert to the original state
       accountService.activeAccount$ = accountService.activeAccountSubject.asObservable();
     });
 
-    it("clears org keys for the active user when unspecified", async () => {
-      await cryptoService.clearKeys(null);
+    describe.each([USER_ENCRYPTED_ORGANIZATION_KEYS, USER_ENCRYPTED_PROVIDER_KEYS])(
+      "key removal",
+      (key) => {
+        it(`clears ${key.key} for active user when unspecified`, async () => {
+          await cryptoService.clearKeys(null);
 
-      const encryptedOrgKeyState = stateProvider.singleUser.getFake(
-        mockUserId,
-        USER_ENCRYPTED_ORGANIZATION_KEYS,
-      );
-      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledTimes(1);
-      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledWith(null);
-    });
+          const encryptedOrgKeyState = stateProvider.singleUser.getFake(mockUserId, key);
+          expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledTimes(1);
+          expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledWith(null);
+        });
 
-    it("clears org keys for the specified user when specified", async () => {
-      const userId = "someOtherUser" as UserId;
-      await cryptoService.clearKeys(userId);
+        it(`clears ${key.key} for the specified user when specified`, async () => {
+          const userId = "someOtherUser" as UserId;
+          await cryptoService.clearKeys(userId);
 
-      const encryptedOrgKeyState = stateProvider.singleUser.getFake(
-        userId,
-        USER_ENCRYPTED_ORGANIZATION_KEYS,
-      );
-      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledTimes(1);
-      expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledWith(null);
-    });
-  });
-
-  describe("clearProviderKeys", () => {
-    let forceMemorySpy: jest.Mock;
-    beforeEach(() => {
-      forceMemorySpy = cryptoService["activeUserProviderKeysState"].forceValue = jest.fn();
-    });
-    it("clears in memory org keys when called with memoryOnly", async () => {
-      await cryptoService.clearProviderKeys(true);
-
-      expect(forceMemorySpy).toHaveBeenCalledWith({});
-    });
-
-    it("does not clear memory when called with the non active user and memory only", async () => {
-      await cryptoService.clearProviderKeys(true, "someOtherUser" as UserId);
-
-      expect(forceMemorySpy).not.toHaveBeenCalled();
-    });
-
-    it("does not write to disk state if called with memory only", async () => {
-      await cryptoService.clearProviderKeys(true);
-
-      expect(stateProvider.singleUser.mock.get).not.toHaveBeenCalled();
-    });
-
-    it("clears disk state when called with diskOnly", async () => {
-      await cryptoService.clearProviderKeys(false);
-
-      expect(stateProvider.singleUser.mock.get).toHaveBeenCalledWith(
-        mockUserId,
-        USER_ENCRYPTED_PROVIDER_KEYS,
-      );
-      expect(
-        stateProvider.singleUser.getFake(mockUserId, USER_ENCRYPTED_PROVIDER_KEYS).nextMock,
-      ).toHaveBeenCalledWith(null);
-    });
-
-    it("clears another user's disk state when called with diskOnly and that user", async () => {
-      await cryptoService.clearProviderKeys(false, "someOtherUser" as UserId);
-
-      expect(stateProvider.singleUser.mock.get).toHaveBeenCalledWith(
-        "someOtherUser" as UserId,
-        USER_ENCRYPTED_PROVIDER_KEYS,
-      );
-      expect(
-        stateProvider.singleUser.getFake("someOtherUser" as UserId, USER_ENCRYPTED_PROVIDER_KEYS)
-          .nextMock,
-      ).toHaveBeenCalledWith(null);
-    });
-
-    it("does not clear active user disk state when called with diskOnly and a different specified user", async () => {
-      await cryptoService.clearProviderKeys(false, "someOtherUser" as UserId);
-
-      expect(stateProvider.singleUser.mock.get).not.toHaveBeenCalledWith(
-        mockUserId,
-        USER_ENCRYPTED_PROVIDER_KEYS,
-      );
-    });
+          const encryptedOrgKeyState = stateProvider.singleUser.getFake(userId, key);
+          expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledTimes(1);
+          expect(encryptedOrgKeyState.nextMock).toHaveBeenCalledWith(null);
+        });
+      },
+    );
   });
 
   describe("clearKeyPair", () => {

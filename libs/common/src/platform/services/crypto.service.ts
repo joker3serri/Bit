@@ -486,7 +486,6 @@ export class CryptoService implements CryptoServiceAbstraction {
       return;
     }
     await this.stateProvider.setUserState(USER_ENCRYPTED_ORGANIZATION_KEYS, null, userId);
-    return;
   }
 
   async setProviderKeys(providers: ProfileProviderResponse[]): Promise<void> {
@@ -514,25 +513,12 @@ export class CryptoService implements CryptoServiceAbstraction {
     return await firstValueFrom(this.activeUserProviderKeys$);
   }
 
-  async clearProviderKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    const activeUserId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    const userIdIsActive = userId == null || userId === activeUserId;
-
-    if (!memoryOnly) {
-      if (userId == null && activeUserId == null) {
-        // nothing to do
-        return;
-      }
-      await this.stateProvider
-        .getUser(userId ?? activeUserId, USER_ENCRYPTED_PROVIDER_KEYS)
-        .update(() => null);
+  private async clearProviderKeys(userId: UserId): Promise<void> {
+    if (userId == null) {
+      // nothing to do
       return;
     }
-
-    // provider keys are only cached for active users
-    if (userIdIsActive) {
-      await this.activeUserProviderKeysState.forceValue({});
-    }
+    await this.stateProvider.setUserState(USER_ENCRYPTED_PROVIDER_KEYS, null, userId);
   }
 
   async getPublicKey(): Promise<Uint8Array> {
@@ -678,7 +664,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     await this.clearUserKey(true, userId);
     await this.clearMasterKeyHash(userId);
     await this.clearOrgKeys(userId);
-    await this.clearProviderKeys(false, userId);
+    await this.clearProviderKeys(userId);
     await this.clearKeyPair(false, userId);
     await this.clearPinKeys(userId);
     await this.stateProvider.setUserState(USER_EVER_HAD_USER_KEY, null, userId);
