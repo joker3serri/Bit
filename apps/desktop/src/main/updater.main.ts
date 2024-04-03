@@ -1,3 +1,5 @@
+import { release as osRelease } from "os";
+
 import { dialog, shell } from "electron";
 import log from "electron-log";
 import { autoUpdater } from "electron-updater";
@@ -10,6 +12,8 @@ import { WindowMain } from "./window.main";
 
 const UpdaterCheckInitialDelay = 5 * 1000; // 5 seconds
 const UpdaterCheckInterval = 12 * 60 * 60 * 1000; // 12 hours
+const MinSupportedMacRelease = 21; // Monterey
+const MinSupportedWinRelease = 10; // Windows 10
 
 export class UpdaterMain {
   private doingUpdateCheck = false;
@@ -22,13 +26,17 @@ export class UpdaterMain {
   ) {
     autoUpdater.logger = log;
 
+    const osRelease = this.getOsRelease();
     const linuxCanUpdate = process.platform === "linux" && isAppImage();
     const windowsCanUpdate =
-      process.platform === "win32" && !isWindowsStore() && !isWindowsPortable();
-    const macCanUpdate = process.platform === "darwin" && !isMacAppStore();
+      process.platform === "win32" &&
+      !isWindowsStore() &&
+      !isWindowsPortable() &&
+      osRelease[0] >= MinSupportedWinRelease;
+    const macCanUpdate =
+      process.platform === "darwin" && !isMacAppStore() && osRelease[0] >= MinSupportedMacRelease;
     this.canUpdate =
-      process.env.ELECTRON_NO_UPDATER !== "1" &&
-      (linuxCanUpdate || windowsCanUpdate || macCanUpdate);
+      !this.userDisabledUpdates() && (linuxCanUpdate || windowsCanUpdate || macCanUpdate);
   }
 
   async init() {
@@ -143,5 +151,36 @@ export class UpdaterMain {
   private reset() {
     autoUpdater.autoDownload = true;
     this.doingUpdateCheck = false;
+  }
+
+  private getOsRelease(): [number?, number?, number?] {
+    const release = osRelease();
+    const parts = release.split(".");
+    let major: number = null;
+    let minor: number = null;
+    let build: number = null;
+    try {
+      if (parts.length > 2) {
+        build = parseInt(parts[2]);
+      }
+      if (parts.length > 1) {
+        minor = parseInt(parts[1]);
+      }
+      if (parts.length > 0) {
+        major = parseInt(parts[0]);
+      }
+    } catch {
+      // Swallow any exception in parsing release parts
+    }
+    return [major, minor, build];
+  }
+
+  private userDisabledUpdates(): boolean {
+    for (const arg of process.argv) {
+      if (arg != null && arg.indexOf("ELECTRON_NO_UPDATER") > -1) {
+        return true;
+      }
+    }
+    return process.env.ELECTRON_NO_UPDATER === "1";
   }
 }
