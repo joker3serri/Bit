@@ -53,7 +53,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
       switchMap((a) =>
         a == null
           ? null
-          : this.authService.activeAccountStatus$.pipe(map((s) => ({ account: a, status: s }))),
+          : this.authService.activeAccountStatus$.pipe(map((s) => ({ ...a, status: s }))),
       ),
     );
   }
