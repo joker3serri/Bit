@@ -32,7 +32,7 @@ export const MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION: KeyDefinitionLike = {
   },
 };
 
-export class MoveMasterKeyStateToProviderMigrator extends Migrator<48, 49> {
+export class MoveMasterKeyStateToProviderMigrator extends Migrator<54, 55> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

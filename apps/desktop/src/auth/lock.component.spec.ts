@@ -26,6 +26,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -57,6 +58,9 @@ describe("LockComponent", () => {
   let activatedRouteMock: MockProxy<ActivatedRoute>;
   let mockMasterPasswordService: FakeMasterPasswordService;
   let mockAccountService: FakeAccountService;
+
+  const mockUserId = Utils.newGuid() as UserId;
+  const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
 
   beforeEach(async () => {
     stateServiceMock = mock<StateService>();
@@ -160,6 +164,10 @@ describe("LockComponent", () => {
         {
           provide: BiometricStateService,
           useValue: biometricStateService,
+        },
+        {
+          provide: AccountService,
+          useValue: accountService,
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],

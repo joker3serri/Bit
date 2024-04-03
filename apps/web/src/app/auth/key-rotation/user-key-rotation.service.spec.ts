@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EncryptionType } from "@bitwarden/common/platform/enums";
@@ -36,8 +36,6 @@ import { UserKeyRotationService } from "./user-key-rotation.service";
 describe("KeyRotationService", () => {
   let keyRotationService: UserKeyRotationService;
 
-  let mockAccountService: FakeAccountService;
-  let mockMasterPasswordService: FakeMasterPasswordService;
   let mockApiService: MockProxy<UserKeyRotationApiService>;
   let mockCipherService: MockProxy<CipherService>;
   let mockFolderService: MockProxy<FolderService>;
@@ -48,12 +46,13 @@ describe("KeyRotationService", () => {
   let mockCryptoService: MockProxy<CryptoService>;
   let mockEncryptService: MockProxy<EncryptService>;
   let mockStateService: MockProxy<StateService>;
-  let mockConfigService: MockProxy<ConfigServiceAbstraction>;
+  let mockConfigService: MockProxy<ConfigService>;
 
-  const userId = Utils.newGuid() as UserId;
+  const mockUserId = Utils.newGuid() as UserId;
+  const mockAccountService: FakeAccountService = mockAccountServiceWith(mockUserId);
+  let mockMasterPasswordService: FakeMasterPasswordService = new FakeMasterPasswordService();
 
   beforeAll(() => {
-    mockAccountService = mockAccountServiceWith(userId);
     mockMasterPasswordService = new FakeMasterPasswordService();
     mockApiService = mock<UserKeyRotationApiService>();
     mockCipherService = mock<CipherService>();
@@ -65,10 +64,9 @@ describe("KeyRotationService", () => {
     mockCryptoService = mock<CryptoService>();
     mockEncryptService = mock<EncryptService>();
     mockStateService = mock<StateService>();
-    mockConfigService = mock<ConfigServiceAbstraction>();
+    mockConfigService = mock<ConfigService>();
 
     keyRotationService = new UserKeyRotationService(
-      mockAccountService,
       mockMasterPasswordService,
       mockApiService,
       mockCipherService,
@@ -80,6 +78,7 @@ describe("KeyRotationService", () => {
       mockCryptoService,
       mockEncryptService,
       mockStateService,
+      mockAccountService,
       mockConfigService,
     );
   });
@@ -184,7 +183,7 @@ describe("KeyRotationService", () => {
 
       expect(mockMasterPasswordService.mock.setMasterKey).toHaveBeenCalledWith(
         "mockMasterKey" as any,
-        userId,
+        mockUserId,
       );
     });
 

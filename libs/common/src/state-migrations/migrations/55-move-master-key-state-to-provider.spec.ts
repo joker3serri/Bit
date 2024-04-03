@@ -8,7 +8,7 @@ import {
   MASTER_KEY_ENCRYPTED_USER_KEY_DEFINITION,
   MASTER_KEY_HASH_DEFINITION,
   MoveMasterKeyStateToProviderMigrator,
-} from "./49-move-master-key-state-to-provider";
+} from "./55-move-master-key-state-to-provider";
 
 function preMigrationState() {
   return {
@@ -93,8 +93,8 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationState(), 48);
-      sut = new MoveMasterKeyStateToProviderMigrator(48, 49);
+      helper = mockMigrationHelper(preMigrationState(), 54);
+      sut = new MoveMasterKeyStateToProviderMigrator(54, 55);
     });
 
     it("should remove properties from existing accounts", async () => {
@@ -158,8 +158,8 @@ describe("MoveForceSetPasswordReasonToStateProviderMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(postMigrationState(), 49);
-      sut = new MoveMasterKeyStateToProviderMigrator(48, 49);
+      helper = mockMigrationHelper(postMigrationState(), 55);
+      sut = new MoveMasterKeyStateToProviderMigrator(54, 55);
     });
 
     it.each(["FirstAccount", "SecondAccount"])("should null out new values", async (userId) => {

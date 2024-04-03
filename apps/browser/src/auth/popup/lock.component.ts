@@ -66,6 +66,7 @@ export class LockComponent extends BaseLockComponent {
     pinCryptoService: PinCryptoServiceAbstraction,
     private routerService: BrowserRouterService,
     biometricStateService: BiometricStateService,
+    accountService: AccountService,
   ) {
     super(
       accountService,
@@ -90,6 +91,7 @@ export class LockComponent extends BaseLockComponent {
       userVerificationService,
       pinCryptoService,
       biometricStateService,
+      accountService,
     );
     this.successRoute = "/tabs/current";
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;

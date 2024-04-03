@@ -79,6 +79,7 @@ export class LockComponent implements OnInit, OnDestroy {
     protected userVerificationService: UserVerificationService,
     protected pinCryptoService: PinCryptoServiceAbstraction,
     protected biometricStateService: BiometricStateService,
+    protected accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -276,7 +277,8 @@ export class LockComponent implements OnInit, OnDestroy {
 
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
-    await this.deviceTrustCryptoService.trustDeviceIfRequired();
+    const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
+    await this.deviceTrustCryptoService.trustDeviceIfRequired(activeAccount.id);
 
     await this.doContinue(evaluatePasswordAfterUnlock);
   }

@@ -63,6 +63,7 @@ export class LockComponent extends BaseLockComponent {
     userVerificationService: UserVerificationService,
     pinCryptoService: PinCryptoServiceAbstraction,
     biometricStateService: BiometricStateService,
+    accountService: AccountService,
   ) {
     super(
       accountService,
@@ -87,6 +88,7 @@ export class LockComponent extends BaseLockComponent {
       userVerificationService,
       pinCryptoService,
       biometricStateService,
+      accountService,
     );
   }
 

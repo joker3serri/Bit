@@ -5,7 +5,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -26,7 +26,6 @@ import { UserKeyRotationApiService } from "./user-key-rotation-api.service";
 @Injectable()
 export class UserKeyRotationService {
   constructor(
-    private accountService: AccountService,
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private apiService: UserKeyRotationApiService,
     private cipherService: CipherService,
@@ -38,7 +37,8 @@ export class UserKeyRotationService {
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private stateService: StateService,
-    private configService: ConfigServiceAbstraction,
+    private accountService: AccountService,
+    private configService: ConfigService,
   ) {}
 
   /**
@@ -95,7 +95,12 @@ export class UserKeyRotationService {
       await this.rotateUserKeyAndEncryptedDataLegacy(request);
     }
 
-    await this.deviceTrustCryptoService.rotateDevicesTrust(newUserKey, masterPasswordHash);
+    const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
+    await this.deviceTrustCryptoService.rotateDevicesTrust(
+      activeAccount.id,
+      newUserKey,
+      masterPasswordHash,
+    );
   }
 
   private async encryptPrivateKey(newUserKey: UserKey): Promise<EncryptedString | null> {
