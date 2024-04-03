@@ -1,4 +1,4 @@
-import { KeyDefinition, KeyDefinitionOptions } from "../../../platform/state";
+import { KeyDefinitionOptions, UserKeyDefinition } from "../../../platform/state";
 // eslint-disable-next-line -- `StateDefinition` used as an argument
 import { StateDefinition } from "../../../platform/state/state-definition";
 import { ClassifiedFormat } from "./classified-format";
@@ -21,12 +21,14 @@ export class SecretKeyDefinition<Outer, Id, Inner extends object, Disclosed, Sec
 
   /** Converts the secret key to the `KeyDefinition` used for secret storage. */
   toEncryptedStateKey() {
-    const secretKey = new KeyDefinition<ClassifiedFormat<Id, Disclosed>[]>(
+    const secretKey = new UserKeyDefinition<ClassifiedFormat<Id, Disclosed>[]>(
       this.stateDefinition,
       this.key,
       {
         cleanupDelayMs: this.options.cleanupDelayMs,
         deserializer: (jsonValue) => jsonValue as ClassifiedFormat<Id, Disclosed>[],
+        // Clear encrypted state on logout
+        clearOn: ["logout"],
       },
     );
 
