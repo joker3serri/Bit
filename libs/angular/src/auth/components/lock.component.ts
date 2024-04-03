@@ -57,7 +57,6 @@ export class LockComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    protected accountService: AccountService,
     protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected router: Router,
     protected i18nService: I18nService,

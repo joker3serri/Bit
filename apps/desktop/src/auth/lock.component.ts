@@ -39,7 +39,6 @@ export class LockComponent extends BaseLockComponent {
   private autoPromptBiometric = false;
 
   constructor(
-    accountService: AccountService,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     router: Router,
     i18nService: I18nService,
@@ -66,7 +65,6 @@ export class LockComponent extends BaseLockComponent {
     accountService: AccountService,
   ) {
     super(
-      accountService,
       masterPasswordService,
       router,
       i18nService,

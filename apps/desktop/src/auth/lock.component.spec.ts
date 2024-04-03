@@ -45,8 +45,6 @@ const isWindowVisibleMock = jest.fn();
   },
 };
 
-const userId = "userId" as UserId;
-
 describe("LockComponent", () => {
   let component: LockComponent;
   let fixture: ComponentFixture<LockComponent>;
@@ -57,7 +55,6 @@ describe("LockComponent", () => {
   let platformUtilsServiceMock: MockProxy<PlatformUtilsService>;
   let activatedRouteMock: MockProxy<ActivatedRoute>;
   let mockMasterPasswordService: FakeMasterPasswordService;
-  let mockAccountService: FakeAccountService;
 
   const mockUserId = Utils.newGuid() as UserId;
   const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
@@ -73,7 +70,6 @@ describe("LockComponent", () => {
     activatedRouteMock = mock<ActivatedRoute>();
     activatedRouteMock.queryParams = mock<ActivatedRoute["queryParams"]>();
 
-    mockAccountService = mockAccountServiceWith(userId);
     mockMasterPasswordService = new FakeMasterPasswordService();
 
     biometricStateService.dismissedRequirePasswordOnStartCallout$ = of(false);
@@ -84,7 +80,6 @@ describe("LockComponent", () => {
       declarations: [LockComponent, I18nPipe],
       providers: [
         { provide: InternalMasterPasswordServiceAbstraction, useValue: mockMasterPasswordService },
-        { provide: AccountService, useValue: mockAccountService },
         {
           provide: I18nService,
           useValue: mock<I18nService>(),
