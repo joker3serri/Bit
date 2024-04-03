@@ -18,12 +18,12 @@ import { Account } from "../../models/account";
 import { BrowserApi } from "../browser/browser-api";
 import { browserSession, sessionSync } from "../decorators/session-sync-observable";
 
-import { BrowserStateService as StateServiceAbstraction } from "./abstractions/browser-state.service";
+import { BrowserStateService } from "./abstractions/browser-state.service";
 
 @browserSession
-export class BrowserStateService
+export class DefaultBrowserStateService
   extends BaseStateService<GlobalState, Account>
-  implements StateServiceAbstraction
+  implements BrowserStateService
 {
   @sessionSync({
     initializer: Account.fromJSON as any, // TODO: Remove this any when all any types are removed from Account

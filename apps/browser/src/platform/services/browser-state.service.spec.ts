@@ -17,7 +17,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 
 import { Account } from "../../models/account";
 
-import { BrowserStateService } from "./browser-state.service";
+import { DefaultBrowserStateService } from "./default-browser-state.service";
 
 // disable session syncing to just test class
 jest.mock("../decorators/session-sync-observable/");
@@ -36,7 +36,7 @@ describe("Browser State Service", () => {
   const userId = "userId" as UserId;
   const accountService = mockAccountServiceWith(userId);
 
-  let sut: BrowserStateService;
+  let sut: DefaultBrowserStateService;
 
   beforeEach(() => {
     secureStorageService = mock();
@@ -68,7 +68,7 @@ describe("Browser State Service", () => {
       const stateGetter = (key: string) => Promise.resolve(state);
       memoryStorageService.get.mockImplementation(stateGetter);
 
-      sut = new BrowserStateService(
+      sut = new DefaultBrowserStateService(
         diskStorageService,
         secureStorageService,
         memoryStorageService,

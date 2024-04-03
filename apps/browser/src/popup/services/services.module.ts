@@ -96,7 +96,7 @@ import { BrowserEnvironmentService } from "../../platform/services/browser-envir
 import BrowserLocalStorageService from "../../platform/services/browser-local-storage.service";
 import BrowserMessagingPrivateModePopupService from "../../platform/services/browser-messaging-private-mode-popup.service";
 import BrowserMessagingService from "../../platform/services/browser-messaging.service";
-import { BrowserStateService } from "../../platform/services/browser-state.service";
+import { DefaultBrowserStateService } from "../../platform/services/default-browser-state.service";
 import I18nService from "../../platform/services/i18n.service";
 import { ForegroundPlatformUtilsService } from "../../platform/services/platform-utils/foreground-platform-utils.service";
 import { ForegroundDerivedStateProvider } from "../../platform/state/foreground-derived-state.provider";
@@ -398,7 +398,7 @@ const safeProviders: SafeProvider[] = [
       tokenService: TokenService,
       migrationRunner: MigrationRunner,
     ) => {
-      return new BrowserStateService(
+      return new DefaultBrowserStateService(
         storageService,
         secureStorageService,
         memoryStorageService,
