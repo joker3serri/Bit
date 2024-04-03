@@ -35,7 +35,7 @@ export const REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE = new UserKeyDefinition<bo
   "refreshTokenMigratedToSecureStorage",
   {
     deserializer: (refreshTokenMigratedToSecureStorage) => refreshTokenMigratedToSecureStorage,
-    clearOn: [], // What is the right one here?
+    clearOn: [], // Don't clear on lock/logout so that we always check the correct place (secure storage) for the refresh token if it's been migrated
   },
 );
 
