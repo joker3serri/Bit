@@ -21,7 +21,7 @@ export const PASSWORD_SETTINGS = new UserKeyDefinition<PasswordGenerationOptions
   "passwordGeneratorSettings",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -31,7 +31,7 @@ export const PASSPHRASE_SETTINGS = new UserKeyDefinition<PassphraseGenerationOpt
   "passphraseGeneratorSettings",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -41,7 +41,7 @@ export const EFF_USERNAME_SETTINGS = new UserKeyDefinition<EffUsernameGeneration
   "effUsernameGeneratorSettings",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -51,7 +51,7 @@ export const CATCHALL_SETTINGS = new UserKeyDefinition<CatchallGenerationOptions
   "catchallGeneratorSettings",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -61,7 +61,7 @@ export const SUBADDRESS_SETTINGS = new UserKeyDefinition<SubaddressGenerationOpt
   "subaddressGeneratorSettings",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -70,7 +70,7 @@ export const ADDY_IO_FORWARDER = new UserKeyDefinition<SelfHostedApiOptions & Em
   "addyIoForwarder",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -79,7 +79,7 @@ export const DUCK_DUCK_GO_FORWARDER = new UserKeyDefinition<ApiOptions>(
   "duckDuckGoForwarder",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -88,7 +88,7 @@ export const FASTMAIL_FORWARDER = new UserKeyDefinition<ApiOptions & EmailPrefix
   "fastmailForwarder",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -97,7 +97,7 @@ export const FIREFOX_RELAY_FORWARDER = new UserKeyDefinition<ApiOptions>(
   "firefoxRelayForwarder",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -106,7 +106,7 @@ export const FORWARD_EMAIL_FORWARDER = new UserKeyDefinition<ApiOptions & EmailD
   "forwardEmailForwarder",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -115,7 +115,7 @@ export const SIMPLE_LOGIN_FORWARDER = new UserKeyDefinition<SelfHostedApiOptions
   "simpleLoginForwarder",
   {
     deserializer: (value) => value,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
@@ -126,6 +126,6 @@ export const GENERATOR_HISTORY = SecretKeyDefinition.array(
   SecretClassifier.allSecret<GeneratedCredential>(),
   {
     deserializer: GeneratedCredential.fromJSON,
-    clearOn: [],
+    clearOn: ["logout"],
   },
 );
