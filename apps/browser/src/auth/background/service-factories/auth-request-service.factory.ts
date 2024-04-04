@@ -18,6 +18,10 @@ import {
   factory,
 } from "../../../platform/background/service-factories/factory-options";
 import {
+  stateProviderFactory,
+  StateProviderInitOptions,
+} from "../../../platform/background/service-factories/state-provider.factory";
+import {
   stateServiceFactory,
   StateServiceInitOptions,
 } from "../../../platform/background/service-factories/state-service.factory";
@@ -28,7 +32,8 @@ export type AuthRequestServiceInitOptions = AuthRequestServiceFactoryOptions &
   AppIdServiceInitOptions &
   CryptoServiceInitOptions &
   ApiServiceInitOptions &
-  StateServiceInitOptions;
+  StateServiceInitOptions &
+  StateProviderInitOptions;
 
 export function authRequestServiceFactory(
   cache: { authRequestService?: AuthRequestServiceAbstraction } & CachedServices,
@@ -44,6 +49,7 @@ export function authRequestServiceFactory(
         await cryptoServiceFactory(cache, opts),
         await apiServiceFactory(cache, opts),
         await stateServiceFactory(cache, opts),
+        await stateProviderFactory(cache, opts),
       ),
   );
 }
