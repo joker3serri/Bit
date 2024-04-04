@@ -84,7 +84,6 @@ export class UnlockCommand {
     }
 
     if (passwordValid) {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setMasterKey(masterKey, userId);
       const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
       await this.cryptoService.setUserKey(userKey);
