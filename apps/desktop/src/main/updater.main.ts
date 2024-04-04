@@ -146,7 +146,7 @@ export class UpdaterMain {
 
   private userDisabledUpdates(): boolean {
     for (const arg of process.argv) {
-      if (arg != null && arg.indexOf("ELECTRON_NO_UPDATER") > -1) {
+      if (arg != null && arg.toUpperCase().indexOf("--ELECTRON_NO_UPDATER=1") > -1) {
         return true;
       }
     }
