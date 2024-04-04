@@ -91,6 +91,13 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     await this.stateProvider.getUser(userId, MASTER_KEY).update((_) => masterKey);
   }
 
+  async clearMasterKey(userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
+    await this.stateProvider.getUser(userId, MASTER_KEY).update((_) => null);
+  }
+
   async setMasterKeyHash(masterKeyHash: string, userId: UserId): Promise<void> {
     if (masterKeyHash == null) {
       throw new Error("Master key hash is required.");
@@ -99,6 +106,13 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
       throw new Error("User ID is required.");
     }
     await this.stateProvider.getUser(userId, MASTER_KEY_HASH).update((_) => masterKeyHash);
+  }
+
+  async clearMasterKeyHash(userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
+    await this.stateProvider.getUser(userId, MASTER_KEY_HASH).update((_) => null);
   }
 
   async setMasterKeyEncryptedUserKey(encryptedKey: EncString, userId: UserId): Promise<void> {

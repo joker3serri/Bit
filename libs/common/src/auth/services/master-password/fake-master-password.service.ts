@@ -30,6 +30,10 @@ export class FakeMasterPasswordService implements InternalMasterPasswordServiceA
     return this.mock.setMasterKey(masterKey, userId);
   }
 
+  clearMasterKey(userId: UserId): Promise<void> {
+    return this.mock.clearMasterKey(userId);
+  }
+
   masterKeyHash$(userId: UserId): Observable<string> {
     return this.masterKeyHashSubject.asObservable();
   }
@@ -44,6 +48,10 @@ export class FakeMasterPasswordService implements InternalMasterPasswordServiceA
 
   setMasterKeyHash(masterKeyHash: string, userId: UserId): Promise<void> {
     return this.mock.setMasterKeyHash(masterKeyHash, userId);
+  }
+
+  clearMasterKeyHash(userId: UserId): Promise<void> {
+    return this.mock.clearMasterKeyHash(userId);
   }
 
   forceSetPasswordReason$(userId: UserId): Observable<ForceSetPasswordReason> {

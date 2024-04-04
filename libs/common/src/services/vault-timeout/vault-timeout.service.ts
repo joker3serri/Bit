@@ -96,7 +96,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       await this.collectionService.clearActiveUserCache();
     }
 
-    await this.masterPasswordService.setMasterKey(null, (userId ?? currentUserId) as UserId);
+    await this.masterPasswordService.clearMasterKey((userId ?? currentUserId) as UserId);
 
     await this.stateService.setEverBeenUnlocked(true, { userId: userId });
     await this.stateService.setUserKeyAutoUnlock(null, { userId: userId });
