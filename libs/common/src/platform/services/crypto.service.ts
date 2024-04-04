@@ -281,6 +281,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async setMasterKeyEncryptedUserKey(userKeyMasterKey: string, userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     await this.masterPasswordService.setMasterKeyEncryptedUserKey(
       new EncString(userKeyMasterKey),
       userId,
@@ -335,24 +336,21 @@ export class CryptoService implements CryptoServiceAbstraction {
     userId?: UserId,
   ): Promise<UserKey> {
     userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+    userKey ??= await this.masterPasswordService.getMasterKeyEncryptedUserKey(userId);
     masterKey ??= await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (masterKey == null) {
       throw new Error("No master key found.");
     }
 
+    // Try one more way to get the user key if it still wasn't found.
     if (userKey == null) {
-      let userKey = await this.masterPasswordService.getMasterKeyEncryptedUserKey(userId);
-
-      // Try one more way to get the user key if it still wasn't found.
-      if (userKey == null) {
-        const deprecatedKey = await this.stateService.getEncryptedCryptoSymmetricKey({
-          userId: userId,
-        });
-        if (deprecatedKey == null) {
-          throw new Error("No encrypted user key found.");
-        }
-        userKey = new EncString(deprecatedKey);
+      const deprecatedKey = await this.stateService.getEncryptedCryptoSymmetricKey({
+        userId: userId,
+      });
+      if (deprecatedKey == null) {
+        throw new Error("No encrypted user key found.");
       }
+      userKey = new EncString(deprecatedKey);
     }
 
     let decUserKey: Uint8Array;
@@ -672,7 +670,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async clearKeys(userId?: UserId): Promise<any> {
     userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
-    await this.masterPasswordService.setMasterKeyHash(null, userId);
+    await this.masterPasswordService.clearMasterKeyHash(userId);
 
     await this.clearUserKey(true, userId);
     await this.clearOrgKeys(false, userId);
