@@ -22,7 +22,7 @@ export const GENERATOR_SETTINGS = new UserKeyDefinition<GeneratorNavigation>(
   "generatorSettings",
   {
     deserializer: (value) => value,
-    clearOn: [],
+    clearOn: ["lock", "logout"],
   },
 );
 
