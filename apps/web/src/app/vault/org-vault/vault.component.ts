@@ -407,8 +407,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([filter, collection, organization]) => {
         return (
-          (filter.collectionId === Unassigned &&
-            !organization.canUseAdminCollections(this.flexibleCollectionsV1Enabled)) ||
+          (filter.collectionId === Unassigned && !organization.canEditUnassignedCiphers) ||
           (!organization.canEditAllCiphers(this.flexibleCollectionsV1Enabled) &&
             collection != undefined &&
             !collection.node.assigned)
