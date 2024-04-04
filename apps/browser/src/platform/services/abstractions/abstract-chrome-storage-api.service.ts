@@ -8,6 +8,8 @@ import {
 
 import { fromChromeEvent } from "../../browser/from-chrome-event";
 
+const serializationIndicator = "__json__";
+
 export default abstract class AbstractChromeStorageService
   implements AbstractStorageService, ObservableStorageService
 {
@@ -44,7 +46,11 @@ export default abstract class AbstractChromeStorageService
     return new Promise((resolve) => {
       this.chromeStorageApi.get(key, (obj: any) => {
         if (obj != null && obj[key] != null) {
-          resolve(obj[key] as T);
+          let value = obj[key];
+          if (obj[key][serializationIndicator] && typeof obj[key].value === "string") {
+            value = JSON.parse(obj[key].value);
+          }
+          resolve(value as T);
           return;
         }
         resolve(null);
@@ -65,6 +71,11 @@ export default abstract class AbstractChromeStorageService
     if (obj instanceof Set) {
       obj = Array.from(obj);
     }
+
+    obj = {
+      [serializationIndicator]: true,
+      value: JSON.stringify(obj),
+    };
 
     const keyedObj = { [key]: obj };
     return new Promise<void>((resolve) => {
