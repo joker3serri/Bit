@@ -54,26 +54,31 @@ describe("AccountSwitcherService", () => {
   });
 
   describe("availableAccounts$", () => {
-    it("should return all accounts and an add account option when accounts are less than 5", async () => {
-      const user1AccountInfo: AccountInfo = {
+    it("should return all logged in accounts and an add account option when accounts are less than 5", async () => {
+      const accountInfo: AccountInfo = {
         name: "Test User 1",
         email: "test1@email.com",
       };
 
       avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
-      accountsSubject.next({ ["1" as UserId]: user1AccountInfo });
-      authStatusSubject.next({ ["1" as UserId]: AuthenticationStatus.Unlocked });
-      activeAccountSubject.next(Object.assign(user1AccountInfo, { id: "1" as UserId }));
+      accountsSubject.next({ ["1" as UserId]: accountInfo, ["2" as UserId]: accountInfo });
+      authStatusSubject.next({
+        ["1" as UserId]: AuthenticationStatus.Unlocked,
+        ["2" as UserId]: AuthenticationStatus.Locked,
+      });
+      activeAccountSubject.next(Object.assign(accountInfo, { id: "1" as UserId }));
 
       const accounts = await firstValueFrom(
         accountSwitcherService.availableAccounts$.pipe(timeout(20)),
       );
-      expect(accounts).toHaveLength(2);
+      expect(accounts).toHaveLength(3);
       expect(accounts[0].id).toBe("1");
       expect(accounts[0].isActive).toBeTruthy();
-
-      expect(accounts[1].id).toBe("addAccount");
+      expect(accounts[1].id).toBe("2");
       expect(accounts[1].isActive).toBeFalsy();
+
+      expect(accounts[2].id).toBe("addAccount");
+      expect(accounts[2].isActive).toBeFalsy();
     });
 
     it.each([5, 6])(
@@ -104,7 +109,7 @@ describe("AccountSwitcherService", () => {
       },
     );
 
-    it("only displays accounts that are not logged out", async () => {
+    it("excludes logged out accounts", async () => {
       const user1AccountInfo: AccountInfo = {
         name: "Test User 1",
         email: "",
