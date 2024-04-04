@@ -1,5 +1,13 @@
 @import "./reset.css";
 
+/** 
+  Note that the value of the *-600 colors is currently equivalent to the value 
+  of the *-500 variant of that color. This is a temporary change to make BW-42
+  updates easier. 
+
+  TODO remove comment when the color palette portion of BW-42 is completed.
+*/
+
 :root {
   --color-transparent-hover: rgb(0 0 0 / 0.03);
 
