@@ -1,5 +1,5 @@
 import { matches, mock } from "jest-mock-extended";
-import { BehaviorSubject, firstValueFrom, of, timeout } from "rxjs";
+import { BehaviorSubject, ReplaySubject, firstValueFrom, of, timeout } from "rxjs";
 
 import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -13,8 +13,9 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { AccountSwitcherService } from "./account-switcher.service";
 
 describe("AccountSwitcherService", () => {
-  const accountsSubject = new BehaviorSubject<Record<UserId, AccountInfo>>(null);
-  const activeAccountSubject = new BehaviorSubject<{ id: UserId } & AccountInfo>(null);
+  let accountsSubject: BehaviorSubject<Record<UserId, AccountInfo>>;
+  let activeAccountSubject: BehaviorSubject<{ id: UserId } & AccountInfo>;
+  let authStatusSubject: ReplaySubject<Record<UserId, AuthenticationStatus>>;
 
   const accountService = mock<AccountService>();
   const avatarService = mock<AvatarService>();
@@ -27,12 +28,14 @@ describe("AccountSwitcherService", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    accountsSubject = new BehaviorSubject<Record<UserId, AccountInfo>>(null);
+    activeAccountSubject = new BehaviorSubject<{ id: UserId } & AccountInfo>(null);
+    authStatusSubject = new ReplaySubject<Record<UserId, AuthenticationStatus>>(1);
 
+    // Use subject to allow for easy updates
     accountService.accounts$ = accountsSubject;
     accountService.activeAccount$ = activeAccountSubject;
-
-    // default all accounts to be unlocked
-    authService.authStatusFor$.mockReturnValue(new BehaviorSubject(AuthenticationStatus.Unlocked));
+    authService.authStatuses$ = authStatusSubject;
 
     accountSwitcherService = new AccountSwitcherService(
       accountService,
@@ -44,6 +47,12 @@ describe("AccountSwitcherService", () => {
     );
   });
 
+  afterEach(() => {
+    accountsSubject.complete();
+    activeAccountSubject.complete();
+    authStatusSubject.complete();
+  });
+
   describe("availableAccounts$", () => {
     it("should return all accounts and an add account option when accounts are less than 5", async () => {
       const user1AccountInfo: AccountInfo = {
@@ -52,10 +61,8 @@ describe("AccountSwitcherService", () => {
       };
 
       avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
-      accountsSubject.next({
-        "1": user1AccountInfo,
-      } as Record<UserId, AccountInfo>);
-
+      accountsSubject.next({ ["1" as UserId]: user1AccountInfo });
+      authStatusSubject.next({ ["1" as UserId]: AuthenticationStatus.Unlocked });
       activeAccountSubject.next(Object.assign(user1AccountInfo, { id: "1" as UserId }));
 
       const accounts = await firstValueFrom(
@@ -73,14 +80,17 @@ describe("AccountSwitcherService", () => {
       "should return only accounts if there are %i accounts",
       async (numberOfAccounts) => {
         const seedAccounts: Record<UserId, AccountInfo> = {};
+        const seedStatuses: Record<UserId, AuthenticationStatus> = {};
         for (let i = 0; i < numberOfAccounts; i++) {
           seedAccounts[`${i}` as UserId] = {
             email: `test${i}@email.com`,
             name: "Test User ${i}",
           };
+          seedStatuses[`${i}` as UserId] = AuthenticationStatus.Unlocked;
         }
         avatarService.getUserAvatarColor$.mockReturnValue(of("#cccccc"));
         accountsSubject.next(seedAccounts);
+        authStatusSubject.next(seedStatuses);
         activeAccountSubject.next(
           Object.assign(seedAccounts["1" as UserId], { id: "1" as UserId }),
         );
@@ -99,10 +109,11 @@ describe("AccountSwitcherService", () => {
         name: "Test User 1",
         email: "",
       };
+      accountsSubject.next({ ["1" as UserId]: user1AccountInfo });
+      authStatusSubject.next({ ["1" as UserId]: AuthenticationStatus.LoggedOut });
       accountsSubject.next({
         "1": user1AccountInfo,
       } as Record<UserId, AccountInfo>);
-      authService.authStatusFor$.mockReturnValueOnce(of(AuthenticationStatus.LoggedOut));
 
       const accounts = await firstValueFrom(
         accountSwitcherService.availableAccounts$.pipe(timeout(20)),

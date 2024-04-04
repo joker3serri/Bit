@@ -49,7 +49,7 @@ export class AccountSwitcherService {
     private messagingService: MessagingService,
     private environmentService: EnvironmentService,
     private logService: LogService,
-    private authService: AuthService,
+    authService: AuthService,
   ) {
     this.availableAccounts$ = combineLatest([
       accountService.accounts$,
@@ -71,9 +71,9 @@ export class AccountSwitcherService {
               server: (await this.environmentService.getEnvironment(id))?.getHostname(),
               status: accountStatuses[id],
               isActive: id === activeAccount?.id,
-              avatarColor: await firstValueFrom(
-                this.avatarService.getUserAvatarColor$(id as UserId),
-              ),
+              // avatarColor: await firstValueFrom(
+              //   this.avatarService.getUserAvatarColor$(id as UserId),
+              // ),
             };
           }),
         );
