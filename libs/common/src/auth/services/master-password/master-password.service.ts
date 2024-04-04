@@ -25,11 +25,11 @@ const MASTER_KEY_HASH = new UserKeyDefinition<string>(MASTER_PASSWORD_DISK, "mas
   clearOn: ["logout"],
 });
 
-const MASTER_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncString>(
+const MASTER_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<string>(
   MASTER_PASSWORD_DISK,
   "masterKeyEncryptedUserKey",
   {
-    deserializer: (key) => EncString.fromJSON(key),
+    deserializer: (key) => key,
     clearOn: ["logout"],
   },
 );
@@ -78,7 +78,7 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     const key = await firstValueFrom(
       this.stateProvider.getUser(userId, MASTER_KEY_ENCRYPTED_USER_KEY).state$,
     );
-    return key;
+    return EncString.fromJSON(key);
   }
 
   async setMasterKey(masterKey: MasterKey, userId: UserId): Promise<void> {
@@ -124,7 +124,7 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     }
     await this.stateProvider
       .getUser(userId, MASTER_KEY_ENCRYPTED_USER_KEY)
-      .update((_) => encryptedKey);
+      .update((_) => encryptedKey.toJSON());
   }
 
   async setForceSetPasswordReason(reason: ForceSetPasswordReason, userId: UserId): Promise<void> {

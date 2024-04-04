@@ -790,7 +790,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: MasterPasswordServiceAbstraction,
-    useExisting: MasterPasswordServiceAbstraction,
+    useExisting: InternalMasterPasswordServiceAbstraction,
   }),
   safeProvider({
     provide: KeyConnectorServiceAbstraction,
