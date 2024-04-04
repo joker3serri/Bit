@@ -47,7 +47,7 @@ describe("accountService", () => {
       expect(emissions).toEqual([undefined]);
     });
 
-    it("should emit the active account and status", async () => {
+    it("should emit the active account", async () => {
       const emissions = trackEmissions(sut.activeAccount$);
       accountsState.stateSubject.next({ [userId]: userInfo });
       activeAccountIdState.stateSubject.next(userId);
