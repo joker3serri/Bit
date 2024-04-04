@@ -207,6 +207,11 @@ export class Organization {
     return this.canEditAnyCollection(flexibleCollectionsV1Enabled);
   }
 
+  canEditUnassignedCiphers() {
+    // TODO: Update this to exclude Providers if provider access is restricted in AC-1707
+    return this.isAdmin || this.permissions.editAnyCollection;
+  }
+
   canEditAllCiphers(flexibleCollectionsV1Enabled: boolean) {
     // Before Flexible Collections, any admin or anyone with editAnyCollection permission could edit all ciphers
     if (!this.flexibleCollections || !flexibleCollectionsV1Enabled) {
