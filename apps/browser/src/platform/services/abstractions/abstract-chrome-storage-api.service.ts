@@ -62,8 +62,8 @@ export default abstract class AbstractChromeStorageService
       this.chromeStorageApi.get(key, (obj: any) => {
         if (obj != null && obj[key] != null) {
           let value = obj[key];
-          if (obj[key][serializationIndicator] && typeof obj[key].value === "string") {
-            value = JSON.parse(obj[key].value);
+          if (value[serializationIndicator] && typeof value.value === "string") {
+            value = JSON.parse(value.value);
           }
           resolve(value as T);
           return;
