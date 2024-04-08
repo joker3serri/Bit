@@ -104,7 +104,6 @@ export class CollectionsComponent implements OnInit {
   }
 
   protected async saveCollections() {
-    const checkCipherEdit = await this.collectionService.checkCipherEditValue(this.cipherDomain);
-    return this.cipherService.saveCollectionsWithServer(checkCipherEdit);
+    return this.cipherService.saveCollectionsWithServer(this.cipherDomain);
   }
 }

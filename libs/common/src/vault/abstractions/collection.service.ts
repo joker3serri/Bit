@@ -2,7 +2,6 @@ import { Observable } from "rxjs";
 
 import { CollectionId } from "../../types/guid";
 import { CollectionData } from "../models/data/collection.data";
-import { Cipher } from "../models/domain/cipher";
 import { Collection } from "../models/domain/collection";
 import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
@@ -26,5 +25,4 @@ export abstract class CollectionService {
   replace: (collections: { [id: string]: CollectionData }) => Promise<any>;
   clear: (userId: string) => Promise<any>;
   delete: (id: string | string[]) => Promise<any>;
-  checkCipherEditValue: (cipher: Cipher) => Promise<Cipher>;
 }
