@@ -76,12 +76,9 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
-import { CipherFileUploadService } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { DialogService } from "@bitwarden/components";
-import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
 import { UnauthGuardService } from "../../auth/popup/services";
 import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
@@ -186,11 +183,6 @@ const safeProviders: SafeProvider[] = [
     deps: [LogService, I18nServiceAbstraction, StateProvider],
   }),
   safeProvider({
-    provide: CipherFileUploadService,
-    useFactory: getBgService<CipherFileUploadService>("cipherFileUploadService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: CipherService,
     useFactory: getBgService<CipherService>("cipherService"),
     deps: [],
@@ -219,11 +211,6 @@ const safeProviders: SafeProvider[] = [
     provide: BrowserEnvironmentService,
     useClass: BrowserEnvironmentService,
     deps: [LogService, StateProvider, AccountServiceAbstraction],
-  }),
-  safeProvider({
-    provide: TotpService,
-    useFactory: getBgService<TotpService>("totpService"),
-    deps: [],
   }),
   safeProvider({
     provide: I18nServiceAbstraction,
@@ -308,11 +295,6 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: AutofillService,
     useFactory: getBgService<AutofillService>("autofillService"),
-    deps: [],
-  }),
-  safeProvider({
-    provide: VaultExportServiceAbstraction,
-    useFactory: getBgService<VaultExportServiceAbstraction>("exportService"),
     deps: [],
   }),
   safeProvider({
