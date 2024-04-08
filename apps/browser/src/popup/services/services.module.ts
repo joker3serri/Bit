@@ -78,6 +78,8 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
+import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService } from "@bitwarden/components";
 
 import { UnauthGuardService } from "../../auth/popup/services";
@@ -227,6 +229,11 @@ const safeProviders: SafeProvider[] = [
       return cryptoService;
     },
     deps: [EncryptService],
+  }),
+  safeProvider({
+    provide: TotpServiceAbstraction,
+    useClass: TotpService,
+    deps: [CryptoFunctionService, LogService],
   }),
   safeProvider({
     provide: AuthRequestServiceAbstraction,
