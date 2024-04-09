@@ -9,7 +9,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
 
-import { WebLayoutMigrationBannerService } from "./web-layout-migration-banner.service";
 import { WebUnassignedItemsBannerService } from "./web-unassigned-items-banner.service";
 
 @Component({
@@ -39,7 +38,6 @@ export class WebHeaderComponent {
     private platformUtilsService: PlatformUtilsService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private messagingService: MessagingService,
-    protected webLayoutMigrationBannerService: WebLayoutMigrationBannerService,
     protected webUnassignedItemsBannerService: WebUnassignedItemsBannerService,
   ) {
     this.routeData$ = this.route.data.pipe(
