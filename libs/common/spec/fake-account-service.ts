@@ -30,12 +30,8 @@ export class FakeAccountService implements AccountService {
   get activeUserId() {
     return this._activeUserId;
   }
-  get accounts$() {
-    return this.accountsSubject.asObservable();
-  }
-  get activeAccount$() {
-    return this.activeAccountSubject.asObservable();
-  }
+  accounts$ = this.accountsSubject.asObservable();
+  activeAccount$ = this.activeAccountSubject.asObservable();
 
   constructor(initialData: Record<UserId, AccountInfo>) {
     this.accountsSubject.next(initialData);
