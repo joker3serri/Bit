@@ -13,6 +13,21 @@
     >{{ "releaseBlog" | i18n }}</a
   >
 </bit-banner>
+<bit-banner
+  class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
+  (onClose)="webLayoutMigrationBannerService.hideBanner()"
+  *ngIf="webLayoutMigrationBannerService.showBanner$ | async"
+>
+  {{ "unassignedItemsBanner" | i18n }}
+  <a
+    href="https://bitwarden.com/help/unassigned-vault-items-moved-to-admin-console"
+    bitLink
+    linkType="contrast"
+    target="_blank"
+    rel="noreferrer"
+    >{{ "learnMore" | i18n }}</a
+  >
+</bit-banner>
 <header
   *ngIf="routeData$ | async as routeData"
   class="-tw-m-6 tw-mb-3 tw-flex tw-flex-col tw-p-6"
