@@ -62,6 +62,7 @@ import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/p
 import {
   AbstractMemoryStorageService,
   AbstractStorageService,
+  ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
@@ -159,7 +160,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: MessagingService,
     useFactory: () => {
-      return needsBackgroundInit
+      return needsBackgroundInit && BrowserApi.isManifestVersion(2)
         ? new BrowserMessagingPrivateModePopupService()
         : new BrowserMessagingService();
     },
@@ -387,7 +388,15 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: OBSERVABLE_MEMORY_STORAGE,
-    useClass: ForegroundMemoryStorageService,
+    useFactory: () => {
+      if (BrowserApi.isManifestVersion(2)) {
+        return new ForegroundMemoryStorageService();
+      }
+
+      return getBgService<AbstractStorageService & ObservableStorageService>(
+        "memoryStorageForStateProviders",
+      )();
+    },
     deps: [],
   }),
   safeProvider({
