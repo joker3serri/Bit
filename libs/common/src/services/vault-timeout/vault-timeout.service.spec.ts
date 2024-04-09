@@ -178,7 +178,6 @@ describe("VaultTimeoutService", () => {
     expect(stateService.setEverBeenUnlocked).toHaveBeenCalledWith(true, { userId: userId });
     expect(stateService.setUserKeyAutoUnlock).toHaveBeenCalledWith(null, { userId: userId });
     expect(masterPasswordService.mock.clearMasterKey).toHaveBeenCalledWith(userId);
-    expect(cryptoService.clearUserKey).toHaveBeenCalledWith(false, userId);
     expect(cipherService.clearCache).toHaveBeenCalledWith(userId);
     expect(lockedCallback).toHaveBeenCalledWith(userId);
   };

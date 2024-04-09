@@ -146,7 +146,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {
     if (key == null) {
-      throw new Error("No key provided. Use ClearUserKey to clear the key");
+      throw new Error("No key provided. Lock the user to clear the key");
     }
     // Set userId to ensure we have one for the account status update
     [userId, key] = await this.stateProvider.setUserState(USER_KEY, key, userId);
@@ -252,13 +252,19 @@ export class CryptoService implements CryptoServiceAbstraction {
     return this.buildProtectedSymmetricKey(masterKey, newUserKey.key);
   }
 
-  async clearUserKey(clearStoredKeys = true, userId?: UserId): Promise<void> {
-    // Set userId to ensure we have one for the account status update
-    [userId] = await this.stateProvider.setUserState(USER_KEY, null, userId);
-    await this.accountService.setMaxAccountStatus(userId, AuthenticationStatus.Locked);
-    if (clearStoredKeys) {
-      await this.clearAllStoredUserKeys(userId);
+  /**
+   * Clears the user key. Clears all stored versions of the user keys as well, such as the biometrics key
+   * @param userId The desired user
+   */
+  async clearUserKey(userId: UserId): Promise<void> {
+    if (userId == null) {
+      // nothing to do
+      return;
     }
+    // Set userId to ensure we have one for the account status update
+    await this.stateProvider.setUserState(USER_KEY, null, userId);
+    await this.accountService.setMaxAccountStatus(userId, AuthenticationStatus.Locked);
+    await this.clearAllStoredUserKeys(userId);
   }
 
   async clearStoredUserKey(keySuffix: KeySuffixOptions, userId?: UserId): Promise<void> {
@@ -468,25 +474,12 @@ export class CryptoService implements CryptoServiceAbstraction {
     return this.buildProtectedSymmetricKey(key, newSymKey.key);
   }
 
-  async clearOrgKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
-    const userIdIsActive = userId == null || userId === activeUserId;
-
-    if (!memoryOnly) {
-      if (userId == null && activeUserId == null) {
-        // nothing to do
-        return;
-      }
-      await this.stateProvider
-        .getUser(userId ?? activeUserId, USER_ENCRYPTED_ORGANIZATION_KEYS)
-        .update(() => null);
+  private async clearOrgKeys(userId: UserId): Promise<void> {
+    if (userId == null) {
+      // nothing to do
       return;
     }
-
-    // org keys are only cached for active users
-    if (userIdIsActive) {
-      await this.activeUserOrgKeysState.forceValue({});
-    }
+    await this.stateProvider.setUserState(USER_ENCRYPTED_ORGANIZATION_KEYS, null, userId);
   }
 
   async setProviderKeys(providers: ProfileProviderResponse[]): Promise<void> {
@@ -514,25 +507,12 @@ export class CryptoService implements CryptoServiceAbstraction {
     return await firstValueFrom(this.activeUserProviderKeys$);
   }
 
-  async clearProviderKeys(memoryOnly?: boolean, userId?: UserId): Promise<void> {
-    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
-    const userIdIsActive = userId == null || userId === activeUserId;
-
-    if (!memoryOnly) {
-      if (userId == null && activeUserId == null) {
-        // nothing to do
-        return;
-      }
-      await this.stateProvider
-        .getUser(userId ?? activeUserId, USER_ENCRYPTED_PROVIDER_KEYS)
-        .update(() => null);
+  private async clearProviderKeys(userId: UserId): Promise<void> {
+    if (userId == null) {
+      // nothing to do
       return;
     }
-
-    // provider keys are only cached for active users
-    if (userIdIsActive) {
-      await this.activeUserProviderKeysState.forceValue({});
-    }
+    await this.stateProvider.setUserState(USER_ENCRYPTED_PROVIDER_KEYS, null, userId);
   }
 
   async getPublicKey(): Promise<Uint8Array> {
@@ -585,26 +565,17 @@ export class CryptoService implements CryptoServiceAbstraction {
     return [publicB64, privateEnc];
   }
 
-  async clearKeyPair(memoryOnly?: boolean, userId?: UserId): Promise<void[]> {
-    const activeUserId = await firstValueFrom(this.stateProvider.activeUserId$);
-    const userIdIsActive = userId == null || userId === activeUserId;
-
-    if (!memoryOnly) {
-      if (userId == null && activeUserId == null) {
-        // nothing to do
-        return;
-      }
-      await this.stateProvider
-        .getUser(userId ?? activeUserId, USER_ENCRYPTED_PRIVATE_KEY)
-        .update(() => null);
+  /**
+   * Clears the user's key pair
+   * @param userId The desired user
+   */
+  private async clearKeyPair(userId: UserId): Promise<void[]> {
+    if (userId == null) {
+      // nothing to do
       return;
     }
 
-    // decrypted key pair is only cached for active users
-    if (userIdIsActive) {
-      await this.activeUserPrivateKeyState.forceValue(null);
-      await this.activeUserPublicKeyState.forceValue(null);
-    }
+    await this.stateProvider.setUserState(USER_ENCRYPTED_PRIVATE_KEY, null, userId);
   }
 
   async makePinKey(pin: string, salt: string, kdf: KdfType, kdfConfig: KdfConfig): Promise<PinKey> {
@@ -670,12 +641,16 @@ export class CryptoService implements CryptoServiceAbstraction {
 
   async clearKeys(userId?: UserId): Promise<any> {
     userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
-    await this.masterPasswordService.clearMasterKeyHash(userId);
 
-    await this.clearUserKey(true, userId);
-    await this.clearOrgKeys(false, userId);
-    await this.clearProviderKeys(false, userId);
-    await this.clearKeyPair(false, userId);
+    if (userId == null) {
+      throw new Error("Cannot clear keys, no user Id resolved.");
+    }
+
+    await this.masterPasswordService.clearMasterKeyHash(userId);
+    await this.clearUserKey(userId);
+    await this.clearOrgKeys(userId);
+    await this.clearProviderKeys(userId);
+    await this.clearKeyPair(userId);
     await this.clearPinKeys(userId);
     await this.stateProvider.setUserState(USER_EVER_HAD_USER_KEY, null, userId);
   }

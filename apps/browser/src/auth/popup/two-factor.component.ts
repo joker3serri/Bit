@@ -17,7 +17,6 @@ import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -33,8 +32,6 @@ import { ZonedMessageListenerService } from "../../platform/browser/zoned-messag
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 
 import { closeTwoFactorAuthPopout } from "./utils/auth-popout-window";
-
-const BroadcasterSubscriptionId = "TwoFactorComponent";
 
 @Component({
   selector: "app-two-factor",
@@ -52,7 +49,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     platformUtilsService: PlatformUtilsService,
     private syncService: SyncService,
     environmentService: EnvironmentService,
-    private broadcasterService: BroadcasterService,
     stateService: StateService,
     route: ActivatedRoute,
     private messagingService: MessagingService,
@@ -180,8 +176,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
   async ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-
-    this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
 
     if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && (await this.isLinux())) {
       document.body.classList.remove("linux-webauthn");
