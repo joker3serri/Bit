@@ -344,9 +344,7 @@ describe("cryptoService", () => {
   describe("clearKeys", () => {
     it("resolves active user id when called with no user id", async () => {
       let callCount = 0;
-      accountService.activeAccount$ = accountService.activeAccountSubject.pipe(
-        tap(() => callCount++),
-      );
+      stateProvider.activeUserId$ = stateProvider.activeUserId$.pipe(tap(() => callCount++));
 
       await cryptoService.clearKeys(null);
       expect(callCount).toBe(1);
