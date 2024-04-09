@@ -44,19 +44,14 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     return this.accountSwitcherService.SPECIAL_ADD_ACCOUNT_ID;
   }
 
-  get availableAccounts$() {
-    return this.accountSwitcherService.availableAccounts$;
-  }
-
-  get currentAccount$() {
-    return this.accountService.activeAccount$.pipe(
-      switchMap((a) =>
-        a == null
-          ? null
-          : this.authService.activeAccountStatus$.pipe(map((s) => ({ ...a, status: s }))),
-      ),
-    );
-  }
+  readonly availableAccounts$ = this.accountSwitcherService.availableAccounts$;
+  readonly currentAccount$ = this.accountService.activeAccount$.pipe(
+    switchMap((a) =>
+      a == null
+        ? null
+        : this.authService.activeAccountStatus$.pipe(map((s) => ({ ...a, status: s }))),
+    ),
+  );
 
   async ngOnInit() {
     const availableVaultTimeoutActions = await firstValueFrom(
