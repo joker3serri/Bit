@@ -29,7 +29,6 @@ export class UserSubscriptionComponent implements OnInit {
   firstLoaded = false;
   adjustStorageAdd = true;
   showAdjustStorage = false;
-  showUpdateLicense = false;
   sub: SubscriptionResponse;
   selfHosted = false;
   cloudWebVaultUrl: string;
@@ -139,21 +138,9 @@ export class UserSubscriptionComponent implements OnInit {
     const dialogRef = UpdateLicenseDialogComponent.open(this.dialogService);
     const result = await lastValueFrom(dialogRef.closed);
     if (result === UpdateLicenseDialogResult.Updated) {
-      this.closeUpdateLicense(true);
-    } else if (result === UpdateLicenseDialogResult.Cancelled) {
-      this.closeUpdateLicense(false);
+      await this.load();
     }
-    this.showUpdateLicense = true;
   };
-
-  closeUpdateLicense(load: boolean) {
-    this.showUpdateLicense = false;
-    if (load) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.load();
-    }
-  }
 
   adjustStorage(add: boolean) {
     this.adjustStorageAdd = add;
