@@ -2,7 +2,6 @@ import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
-import { UnassignedItemsBannerService } from "@bitwarden/angular/services/unassigned-items-banner.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
@@ -12,6 +11,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
 
+import { WebUnassignedItemsBannerService } from "./web-unassigned-items-banner.service";
 
 @Component({
   selector: "app-header",
@@ -43,7 +43,7 @@ export class WebHeaderComponent {
     private platformUtilsService: PlatformUtilsService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private messagingService: MessagingService,
-    protected unassignedItemsBannerService: UnassignedItemsBannerService,
+    protected webUnassignedItemsBannerService: WebUnassignedItemsBannerService,
     private configService: ConfigService,
   ) {
     this.routeData$ = this.route.data.pipe(
