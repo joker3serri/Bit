@@ -26,7 +26,6 @@ import { DialogService } from "@bitwarden/components";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
-import { flagEnabled } from "../../platform/flags";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 
 @Component({
@@ -150,7 +149,7 @@ export class SettingsComponent implements OnInit {
     this.startToTrayDescText = this.i18nService.t(startToTrayKey + "Desc");
 
     // DuckDuckGo browser is only for macos initially
-    this.showDuckDuckGoIntegrationOption = flagEnabled("showDDGSetting") && isMac;
+    this.showDuckDuckGoIntegrationOption = isMac;
 
     this.vaultTimeoutOptions = [
       // { name: i18nService.t('immediately'), value: 0 },
