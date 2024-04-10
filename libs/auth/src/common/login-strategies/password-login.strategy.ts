@@ -218,7 +218,6 @@ export class PasswordLoginStrategy extends LoginStrategy {
     }
     await this.cryptoService.setMasterKeyEncryptedUserKey(response.key);
 
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (masterKey) {
       const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
