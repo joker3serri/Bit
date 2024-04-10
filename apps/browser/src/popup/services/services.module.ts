@@ -313,7 +313,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       CipherService,
       AutofillSettingsServiceAbstraction,
-      TotpService,
+      TotpServiceAbstraction,
       EventCollectionServiceAbstraction,
       LogService,
       DomainSettingsService,
