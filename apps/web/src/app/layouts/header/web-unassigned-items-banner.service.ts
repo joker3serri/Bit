@@ -8,7 +8,7 @@ import {
   UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
 
-const DISMISS_BANNER_KEY = new UserKeyDefinition<boolean>(
+export const DISMISS_BANNER_KEY = new UserKeyDefinition<boolean>(
   UNASSIGNED_ITEMS_BANNER_DISK,
   "dismissBanner",
   {
@@ -17,7 +17,7 @@ const DISMISS_BANNER_KEY = new UserKeyDefinition<boolean>(
   },
 );
 
-const HAS_UNASSIGNED_ITEMS = new UserKeyDefinition<boolean | null>(
+export const HAS_UNASSIGNED_ITEMS = new UserKeyDefinition<boolean | null>(
   UNASSIGNED_ITEMS_BANNER_DISK,
   "hasUnassignedItems",
   {
