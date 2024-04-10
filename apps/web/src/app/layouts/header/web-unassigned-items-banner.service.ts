@@ -29,14 +29,14 @@ export const HAS_UNASSIGNED_ITEMS = new UserKeyDefinition<boolean | null>(
 /** Displays a banner that tells users how to move their unassigned items into a collection. */
 @Injectable({ providedIn: "root" })
 export class WebUnassignedItemsBannerService {
-  private _hasUnassignedItems = this.stateProvider.getActive(DISMISS_BANNER_KEY);
-  private _showBanner = this.stateProvider.getActive(HAS_UNASSIGNED_ITEMS);
+  private _dismissBanner = this.stateProvider.getActive(DISMISS_BANNER_KEY);
+  private _hasUnassignedItems = this.stateProvider.getActive(HAS_UNASSIGNED_ITEMS);
 
-  showBanner$ = combineLatest([this._hasUnassignedItems.state$, this._showBanner.state$]).pipe(
+  showBanner$ = combineLatest([this._dismissBanner.state$, this._hasUnassignedItems.state$]).pipe(
     concatMap(async ([dismissBanner, hasUnassignedItems]) => {
       if (!dismissBanner && hasUnassignedItems == null) {
         const hasUnassignedItemsResponse = await this.apiService.getShowUnassignedCiphersBanner();
-        await this._showBanner.update(() => hasUnassignedItemsResponse);
+        await this._hasUnassignedItems.update(() => hasUnassignedItemsResponse);
         return EMPTY; // to test, we could also just emit false and let the value update the next time around
       }
 
@@ -50,6 +50,6 @@ export class WebUnassignedItemsBannerService {
   ) {}
 
   async hideBanner() {
-    await this._hasUnassignedItems.update(() => true);
+    await this._dismissBanner.update(() => true);
   }
 }
