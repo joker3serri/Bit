@@ -54,8 +54,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   private loadedTimeout: number;
   private searchTimeout: number;
   private initPageDetailsTimeout: number;
-  private maxCollectPageDetailsAttempts = 10;
-  private collectPageDetailsAttempts = 0;
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -361,14 +359,10 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       tab: this.tab,
       sender: BroadcasterSubscriptionId,
     });
-    this.collectPageDetailsAttempts++;
 
     window.clearTimeout(this.initPageDetailsTimeout);
     this.initPageDetailsTimeout = window.setTimeout(() => {
-      if (
-        this.pageDetails.length === 0 &&
-        this.collectPageDetailsAttempts < this.maxCollectPageDetailsAttempts
-      ) {
+      if (this.pageDetails.length === 0) {
         this.collectTabPageDetails();
       }
     }, 250);
