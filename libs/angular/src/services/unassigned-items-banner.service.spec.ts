@@ -5,16 +5,13 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
 
-import {
-  SHOW_BANNER_KEY,
-  WebUnassignedItemsBannerService,
-} from "./web-unassigned-items-banner.service";
+import { SHOW_BANNER_KEY, UnassignedItemsBannerService } from "./unassigned-items-banner.service";
 
-describe("WebUnassignedItemsBanner", () => {
+describe("UnassignedItemsBanner", () => {
   let stateProvider: FakeStateProvider;
   let apiService: MockProxy<ApiService>;
 
-  const sutFactory = () => new WebUnassignedItemsBannerService(stateProvider, apiService);
+  const sutFactory = () => new UnassignedItemsBannerService(stateProvider, apiService);
 
   beforeEach(() => {
     const fakeAccountService = mockAccountServiceWith("userId" as UserId);

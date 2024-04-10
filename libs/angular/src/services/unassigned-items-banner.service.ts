@@ -19,7 +19,7 @@ export const SHOW_BANNER_KEY = new UserKeyDefinition<boolean>(
 
 /** Displays a banner that tells users how to move their unassigned items into a collection. */
 @Injectable({ providedIn: "root" })
-export class WebUnassignedItemsBannerService {
+export class UnassignedItemsBannerService {
   private _showBanner = this.stateProvider.getActive(SHOW_BANNER_KEY);
 
   showBanner$ = this._showBanner.state$.pipe(

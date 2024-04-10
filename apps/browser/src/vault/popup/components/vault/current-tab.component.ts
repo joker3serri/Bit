@@ -3,11 +3,14 @@ import { Router } from "@angular/router";
 import { Subject, firstValueFrom } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";
 
+import { UnassignedItemsBannerService } from "@bitwarden/angular/services/unassigned-items-banner.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -23,6 +26,7 @@ import { AutofillService } from "../../../../autofill/services/abstractions/auto
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../platform/popup/browser-popup-utils";
 import { VaultFilterService } from "../../../services/vault-filter.service";
+
 
 const BroadcasterSubscriptionId = "CurrentTabComponent";
 
@@ -54,6 +58,10 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   private loadedTimeout: number;
   private searchTimeout: number;
 
+  protected unassignedItemsBannerEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.UnassignedItemsBanner,
+  );
+
   constructor(
     private platformUtilsService: PlatformUtilsService,
     private cipherService: CipherService,
@@ -70,6 +78,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private vaultFilterService: VaultFilterService,
     private vaultSettingsService: VaultSettingsService,
+    private configService: ConfigService,
+    protected unassignedItemsBannerService: UnassignedItemsBannerService,
   ) {}
 
   async ngOnInit() {
