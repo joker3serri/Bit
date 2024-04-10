@@ -12,18 +12,13 @@ const DISMISS_BANNER_KEY = new KeyDefinition<boolean>(
   UNASSIGNED_ITEMS_BANNER_DISK,
   "dismissBanner",
   {
-    deserializer: (b) => {
-      if (b === null) {
-        return false;
-      }
-      return b;
-    },
+    deserializer: (b) => b ?? false,
   },
 );
 
-const SHOW_BANNER_KEY = new KeyDefinition<boolean | null>(
+const HAS_UNASSIGNED_ITEMS = new KeyDefinition<boolean | null>(
   UNASSIGNED_ITEMS_BANNER_DISK,
-  "showBanner",
+  "hasUnassignedItems",
   {
     deserializer: (b) => b ?? null,
   },
@@ -32,18 +27,18 @@ const SHOW_BANNER_KEY = new KeyDefinition<boolean | null>(
 /** Displays a banner that tells users how to move their unassigned items into a collection. */
 @Injectable({ providedIn: "root" })
 export class WebUnassignedItemsBannerService {
-  private _dismissBannerState = this.globalStateProvider.get(DISMISS_BANNER_KEY);
-  private _showBannerState = this.globalStateProvider.get(SHOW_BANNER_KEY);
+  private _hasUnassignedItems = this.globalStateProvider.get(DISMISS_BANNER_KEY);
+  private _showBanner = this.globalStateProvider.get(HAS_UNASSIGNED_ITEMS);
 
-  showBanner$ = combineLatest([this._dismissBannerState.state$, this._showBannerState.state$]).pipe(
-    concatMap(async ([dismissBanner, showBanner]) => {
-      if (!dismissBanner && showBanner == null) {
-        const showBannerResponse = await this.apiService.getShowUnassignedCiphersBanner();
-        await this._showBannerState.update(() => showBannerResponse);
+  showBanner$ = combineLatest([this._hasUnassignedItems.state$, this._showBanner.state$]).pipe(
+    concatMap(async ([dismissBanner, hasUnassignedItems]) => {
+      if (!dismissBanner && hasUnassignedItems == null) {
+        const hasUnassignedItemsResponse = await this.apiService.getShowUnassignedCiphersBanner();
+        await this._showBanner.update(() => hasUnassignedItemsResponse);
         return EMPTY; // to test, we could also just emit false and let the value update the next time around
       }
 
-      return !dismissBanner && showBanner;
+      return !dismissBanner && hasUnassignedItems;
     }),
   );
 
@@ -53,6 +48,6 @@ export class WebUnassignedItemsBannerService {
   ) {}
 
   async hideBanner() {
-    await this._dismissBannerState.update(() => true);
+    await this._hasUnassignedItems.update(() => true);
   }
 }
