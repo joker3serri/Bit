@@ -3,32 +3,34 @@ import { EMPTY, combineLatest, concatMap } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import {
-  GlobalStateProvider,
-  KeyDefinition,
+  StateProvider,
   UNASSIGNED_ITEMS_BANNER_DISK,
+  UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
 
-const DISMISS_BANNER_KEY = new KeyDefinition<boolean>(
+const DISMISS_BANNER_KEY = new UserKeyDefinition<boolean>(
   UNASSIGNED_ITEMS_BANNER_DISK,
   "dismissBanner",
   {
     deserializer: (b) => b ?? false,
+    clearOn: ["logout"],
   },
 );
 
-const HAS_UNASSIGNED_ITEMS = new KeyDefinition<boolean | null>(
+const HAS_UNASSIGNED_ITEMS = new UserKeyDefinition<boolean | null>(
   UNASSIGNED_ITEMS_BANNER_DISK,
   "hasUnassignedItems",
   {
     deserializer: (b) => b ?? null,
+    clearOn: ["logout"],
   },
 );
 
 /** Displays a banner that tells users how to move their unassigned items into a collection. */
 @Injectable({ providedIn: "root" })
 export class WebUnassignedItemsBannerService {
-  private _hasUnassignedItems = this.globalStateProvider.get(DISMISS_BANNER_KEY);
-  private _showBanner = this.globalStateProvider.get(HAS_UNASSIGNED_ITEMS);
+  private _hasUnassignedItems = this.stateProvider.getActive(DISMISS_BANNER_KEY);
+  private _showBanner = this.stateProvider.getActive(HAS_UNASSIGNED_ITEMS);
 
   showBanner$ = combineLatest([this._hasUnassignedItems.state$, this._showBanner.state$]).pipe(
     concatMap(async ([dismissBanner, hasUnassignedItems]) => {
@@ -43,7 +45,7 @@ export class WebUnassignedItemsBannerService {
   );
 
   constructor(
-    private globalStateProvider: GlobalStateProvider,
+    private stateProvider: StateProvider,
     private apiService: ApiService,
   ) {}
 
