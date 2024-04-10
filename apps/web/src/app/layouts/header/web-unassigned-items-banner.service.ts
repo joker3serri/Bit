@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { EMPTY, combineLatest, concatMap } from "rxjs";
+import { EMPTY, concatMap } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import {
@@ -8,20 +8,11 @@ import {
   UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
 
-export const DISMISS_BANNER_KEY = new UserKeyDefinition<boolean>(
+export const SHOW_BANNER_KEY = new UserKeyDefinition<boolean>(
   UNASSIGNED_ITEMS_BANNER_DISK,
-  "dismissBanner",
+  "showBanner",
   {
-    deserializer: (b) => b ?? false,
-    clearOn: ["logout"],
-  },
-);
-
-export const HAS_UNASSIGNED_ITEMS = new UserKeyDefinition<boolean | null>(
-  UNASSIGNED_ITEMS_BANNER_DISK,
-  "hasUnassignedItems",
-  {
-    deserializer: (b) => b ?? null,
+    deserializer: (b) => b,
     clearOn: ["logout"],
   },
 );
@@ -29,18 +20,18 @@ export const HAS_UNASSIGNED_ITEMS = new UserKeyDefinition<boolean | null>(
 /** Displays a banner that tells users how to move their unassigned items into a collection. */
 @Injectable({ providedIn: "root" })
 export class WebUnassignedItemsBannerService {
-  private _dismissBanner = this.stateProvider.getActive(DISMISS_BANNER_KEY);
-  private _hasUnassignedItems = this.stateProvider.getActive(HAS_UNASSIGNED_ITEMS);
+  private _showBanner = this.stateProvider.getActive(SHOW_BANNER_KEY);
 
-  showBanner$ = combineLatest([this._dismissBanner.state$, this._hasUnassignedItems.state$]).pipe(
-    concatMap(async ([dismissBanner, hasUnassignedItems]) => {
-      if (!dismissBanner && hasUnassignedItems == null) {
-        const hasUnassignedItemsResponse = await this.apiService.getShowUnassignedCiphersBanner();
-        await this._hasUnassignedItems.update(() => hasUnassignedItemsResponse);
-        return EMPTY; // to test, we could also just emit false and let the value update the next time around
+  showBanner$ = this._showBanner.state$.pipe(
+    concatMap(async (showBanner) => {
+      // null indicates that the user has not seen or dismissed the banner yet - get the flag from server
+      if (showBanner == null) {
+        const showBannerResponse = await this.apiService.getShowUnassignedCiphersBanner();
+        await this._showBanner.update(() => showBannerResponse);
+        return EMPTY; // complete the inner observable without emitting any value; the update on the previous line will trigger another run
       }
 
-      return !dismissBanner && hasUnassignedItems;
+      return showBanner;
     }),
   );
 
@@ -50,6 +41,6 @@ export class WebUnassignedItemsBannerService {
   ) {}
 
   async hideBanner() {
-    await this._dismissBanner.update(() => true);
+    await this._showBanner.update(() => false);
   }
 }
