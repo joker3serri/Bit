@@ -8,10 +8,10 @@ import {
   UNASSIGNED_ITEMS_BANNER_DISK,
 } from "@bitwarden/common/platform/state";
 
-const SHOW_BANNER_KEY = new KeyDefinition<boolean>(UNASSIGNED_ITEMS_BANNER_DISK, "showBanner", {
+const HIDE_BANNER_KEY = new KeyDefinition<boolean>(UNASSIGNED_ITEMS_BANNER_DISK, "hideBanner", {
   deserializer: (b) => {
     if (b === null) {
-      return true;
+      return false;
     }
     return b;
   },
@@ -20,13 +20,13 @@ const SHOW_BANNER_KEY = new KeyDefinition<boolean>(UNASSIGNED_ITEMS_BANNER_DISK,
 /** Displays a banner that tells users how to move their unassigned items into a collection. */
 @Injectable({ providedIn: "root" })
 export class WebUnassignedItemsBannerService {
-  private _showBannerState = this.globalStateProvider.get(SHOW_BANNER_KEY);
+  private _hideBannerState = this.globalStateProvider.get(HIDE_BANNER_KEY);
   private _adminOrganizations = this.organizationService.organizations$.pipe(
     map((orgs) => orgs.filter((o) => o.isAdmin)),
   );
 
-  showBanner$ = combineLatest([this._showBannerState.state$, this._adminOrganizations]).pipe(
-    map(([showBanner, adminOrganizations]) => showBanner && adminOrganizations?.length > 1),
+  showBanner$ = combineLatest([this._hideBannerState.state$, this._adminOrganizations]).pipe(
+    map(([hideBanner, adminOrganizations]) => !hideBanner && adminOrganizations?.length > 1),
   );
 
   constructor(
@@ -35,6 +35,6 @@ export class WebUnassignedItemsBannerService {
   ) {}
 
   async hideBanner() {
-    await this._showBannerState.update(() => false);
+    await this._hideBannerState.update(() => true);
   }
 }
