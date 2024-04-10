@@ -10,6 +10,7 @@ import {
   AuthRequestServiceAbstraction,
   AuthRequestService,
   LoginEmailServiceAbstraction,
+  LoginEmailService,
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -364,9 +365,10 @@ export default class MainBackground {
     const logoutCallback = async (expired: boolean, userId?: UserId) =>
       await this.logout(expired, userId);
 
-    this.messagingService = this.popupOnlyContext
-      ? new BrowserMessagingPrivateModeBackgroundService()
-      : new BrowserMessagingService();
+    this.messagingService =
+      this.isPrivateMode && BrowserApi.isManifestVersion(2)
+        ? new BrowserMessagingPrivateModeBackgroundService()
+        : new BrowserMessagingService();
     this.logService = new ConsoleLogService(false);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
@@ -408,13 +410,14 @@ export default class MainBackground {
       storageServiceProvider,
     );
 
-    this.encryptService = flagEnabled("multithreadDecryption")
-      ? new MultithreadEncryptServiceImplementation(
-          this.cryptoFunctionService,
-          this.logService,
-          true,
-        )
-      : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
+    this.encryptService =
+      flagEnabled("multithreadDecryption") && BrowserApi.isManifestVersion(2)
+        ? new MultithreadEncryptServiceImplementation(
+            this.cryptoFunctionService,
+            this.logService,
+            true,
+          )
+        : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       storageServiceProvider,
@@ -558,10 +561,13 @@ export default class MainBackground {
     const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
       // AuthService should send the messages to the background not popup.
       send = (subscriber: string, arg: any = {}) => {
+        if (BrowserApi.isManifestVersion(3)) {
+          that.messagingService.send(subscriber, arg);
+          return;
+        }
+
         const message = Object.assign({}, { command: subscriber }, arg);
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        that.runtimeBackground.processMessage(message, that as any);
+        void that.runtimeBackground.processMessage(message, that as any);
       };
     })();
 
@@ -604,6 +610,8 @@ export default class MainBackground {
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
       this.stateProvider,
     );
+
+    this.loginEmailService = new LoginEmailService(this.stateProvider);
 
     this.loginStrategyService = new LoginStrategyService(
       this.accountService,
