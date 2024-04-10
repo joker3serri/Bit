@@ -13,7 +13,7 @@ export const SHOW_BANNER_KEY = new UserKeyDefinition<boolean>(
   "showBanner",
   {
     deserializer: (b) => b,
-    clearOn: ["logout"],
+    clearOn: [],
   },
 );
 
