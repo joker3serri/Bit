@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { EMPTY, concatMap } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { UnassignedItemsBannerApiService } from "@bitwarden/angular/services/unassigned-items-banner.api.service";
 import {
   StateProvider,
   UNASSIGNED_ITEMS_BANNER_DISK,
@@ -37,7 +37,7 @@ export class WebUnassignedItemsBannerService {
 
   constructor(
     private stateProvider: StateProvider,
-    private apiService: ApiService,
+    private apiService: UnassignedItemsBannerApiService,
   ) {}
 
   async hideBanner() {
