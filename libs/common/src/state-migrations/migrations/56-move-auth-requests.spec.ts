@@ -3,7 +3,7 @@ import { MockProxy } from "jest-mock-extended";
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { AuthRequestMigrator } from "./55-move-auth-requests";
+import { AuthRequestMigrator } from "./56-move-auth-requests";
 
 function exampleJSON() {
   return {
@@ -77,8 +77,8 @@ describe("AuthRequestMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 54);
-      sut = new AuthRequestMigrator(54, 55);
+      helper = mockMigrationHelper(exampleJSON(), 55);
+      sut = new AuthRequestMigrator(55, 56);
     });
 
     it("should remove adminAuthRequest and approveLoginRequests", async () => {
@@ -108,8 +108,8 @@ describe("AuthRequestMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 55);
-      sut = new AuthRequestMigrator(54, 55);
+      helper = mockMigrationHelper(rollbackJSON(), 56);
+      sut = new AuthRequestMigrator(55, 56);
     });
 
     it("should null out new adminAuthRequest and acceptAuthRequests value", async () => {

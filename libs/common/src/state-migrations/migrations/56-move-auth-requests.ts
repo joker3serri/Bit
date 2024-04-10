@@ -27,7 +27,7 @@ const ACCEPT_AUTH_REQUESTS_KEY: KeyDefinitionLike = {
   key: "acceptAuthRequests",
 };
 
-export class AuthRequestMigrator extends Migrator<54, 55> {
+export class AuthRequestMigrator extends Migrator<55, 56> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
 
