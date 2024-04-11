@@ -9,35 +9,35 @@ import {
 
 import { BufferedKeyDefinition } from "./buffered-key-definition";
 
-/** Stateful storage that rolls data from an input state to an output
- *  state. When rollover occurs, the input state is automatically deleted.
- *  @remarks The rollover state can only rollover non-nullish values. If the
- *   rollover key contains `null` or `undefined`, it will do nothing.
+/** Stateful storage that overwrites one state with a buffered state.
+ *  When a overwrite occurs, the input state is automatically deleted.
+ *  @remarks The buffered state can only overwrite non-nullish values. If the
+ *   buffer key contains `null` or `undefined`, it will do nothing.
  */
 export class BufferedState<Input, Output, Dependency> implements SingleUserState<Output> {
   /**
-   * Instantiate a rollover state
-   * @param provider constructs the temporary rollover state.
-   * @param key defines the temporary rollover state.
-   * @param outputState updates when a rollover occurs
-   * @param dependency$ provides data the rollover depends upon to evaluate and
+   * Instantiate a buffered state
+   * @param provider constructs the buffer.
+   * @param key defines the buffer location.
+   * @param output updates when a overwrite occurs
+   * @param dependency$ provides data the buffer depends upon to evaluate and
    *   transform its data. If this is omitted, then `true` is injected as
-   *   a dependency.
+   *   a dependency, which with a default output will trigger a overwrite immediately.
    *
-   * @remarks `dependency$` enables rollover control during dynamic circumstances,
-   *   such as when a rollover should occur only if a user key is available.
+   * @remarks `dependency$` enables overwrite control during dynamic circumstances,
+   *   such as when a overwrite should occur only if a user key is available.
    */
   constructor(
     provider: StateProvider,
     private key: BufferedKeyDefinition<Input, Output, Dependency>,
-    private outputState: SingleUserState<Output>,
+    private output: SingleUserState<Output>,
     dependency$: Observable<Dependency> = null,
   ) {
-    this.inputState = provider.getUser(outputState.userId, key.toKeyDefinition());
+    this.bufferState = provider.getUser(output.userId, key.toKeyDefinition());
 
     const watching = [
-      this.inputState.state$,
-      this.outputState.state$,
+      this.bufferState.state$,
+      this.output.state$,
       dependency$ ?? of(true as unknown as Dependency),
     ] as const;
 
@@ -45,8 +45,8 @@ export class BufferedState<Input, Output, Dependency> implements SingleUserState
       concatMap(async ([input, output, dependency]) => {
         const normalized = input ?? null;
 
-        const canRollover = normalized !== null && key.shouldRollover(dependency);
-        if (canRollover) {
+        const canOverwrite = normalized !== null && key.shouldOverwrite(dependency);
+        if (canOverwrite) {
           await this.updateOutput(dependency);
 
           // prevent duplicate updates by suppressing the update
@@ -59,17 +59,17 @@ export class BufferedState<Input, Output, Dependency> implements SingleUserState
       map(([, output]) => output),
     );
 
-    this.combinedState$ = this.state$.pipe(map((state) => [this.outputState.userId, state]));
+    this.combinedState$ = this.state$.pipe(map((state) => [this.output.userId, state]));
 
-    this.inputState$ = this.inputState.state$;
+    this.bufferState$ = this.bufferState.state$;
   }
 
-  private inputState: SingleUserState<Input>;
+  private bufferState: SingleUserState<Input>;
 
   private async updateOutput(dependency: Dependency) {
     // retrieve the latest input value
     let input: Input;
-    await this.inputState.update((state) => state, {
+    await this.bufferState.update((state) => state, {
       shouldUpdate: (state) => {
         input = state;
         return false;
@@ -83,27 +83,27 @@ export class BufferedState<Input, Output, Dependency> implements SingleUserState
 
     // destroy invalid data and bail
     if (!(await this.key.isValid(input, dependency))) {
-      await this.inputState.update(() => null);
+      await this.bufferState.update(() => null);
       return;
     }
 
-    // rollover anything left; the updates need to be awaited with `Promise.all` so that
-    // `inputState.update(() => null)` runs before `shouldUpdate` reads the value (above).
+    // overwrite anything left to the output; the updates need to be awaited with `Promise.all`
+    // so that `inputState.update(() => null)` runs before `shouldUpdate` reads the value (above).
     // This lets the emission from `this.outputState.update` renter the `concatMap`. If the
     // awaits run in sequence, it can win the race and cause a double emission.
     const output = await this.key.map(input, dependency);
-    await Promise.all([this.outputState.update(() => output), this.inputState.update(() => null)]);
+    await Promise.all([this.output.update(() => output), this.bufferState.update(() => null)]);
 
     return;
   }
 
   /** {@link SingleUserState.userId} */
   get userId() {
-    return this.outputState.userId;
+    return this.output.userId;
   }
 
   /** Observes changes to the output state. This updates when the output
-   *  state updates, when a rollover occurs, and when `BufferedState.rollover`
+   *  state updates, when the buffer is moved to the output, and when `BufferedState.buffer`
    *  is invoked.
    */
   readonly state$: Observable<Output>;
@@ -111,23 +111,22 @@ export class BufferedState<Input, Output, Dependency> implements SingleUserState
   /** {@link SingleUserState.combinedState$} */
   readonly combinedState$: Observable<CombinedState<Output>>;
 
-  /** Creates a new rollover state. The rollover state overwrites the output
+  /** Buffers a value state. The buffered state overwrites the output
    *  state when a subscription occurs.
    *  @param value the state to roll over. Setting this to `null` or `undefined`
    *  has no effect.
    */
-  async rollover(value: Input): Promise<void> {
+  async buffer(value: Input): Promise<void> {
     const normalized = value ?? null;
     if (normalized !== null) {
-      await this.inputState.update(() => normalized);
+      await this.bufferState.update(() => normalized);
     }
   }
 
-  /** The data presently pending rollover. This emits the pending value each time
-   *  new rollover data is provided. It emits null when there is no data pending
-   *  rollover.
+  /** The data presently being buffered. This emits the pending value each time
+   *  new buffer data is provided. It emits null when the buffer is empty.
    */
-  readonly inputState$: Observable<Input>;
+  readonly bufferState$: Observable<Input>;
 
   /** Updates the output state.
    *  @param configureState a callback that returns an updated output
@@ -140,6 +139,6 @@ export class BufferedState<Input, Output, Dependency> implements SingleUserState
     configureState: (state: Output, dependencies: TCombine) => Output,
     options: StateUpdateOptions<Output, TCombine> = null,
   ): Promise<Output> {
-    return this.outputState.update(configureState, options);
+    return this.output.update(configureState, options);
   }
 }

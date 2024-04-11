@@ -19,7 +19,7 @@ type SomeType = { foo: boolean; bar: boolean };
 const SOME_KEY = new KeyDefinition<SomeType>(GENERATOR_DISK, "fooBar", {
   deserializer: (jsonValue) => jsonValue as SomeType,
 });
-const ROLLOVER_KEY = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+const BUFFER_KEY = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
   deserializer: (jsonValue) => jsonValue as SomeType,
   clearOn: [],
 });
@@ -31,7 +31,7 @@ describe("BufferedState", () => {
       const value = { foo: true, bar: false };
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       await outputState.update(() => value);
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = await firstValueFrom(bufferedState.state$);
 
@@ -44,7 +44,7 @@ describe("BufferedState", () => {
       const firstValue = { foo: true, bar: false };
       const secondValue = { foo: true, bar: true };
       await outputState.update(() => firstValue);
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = trackEmissions(bufferedState.state$);
       await outputState.update(() => secondValue);
@@ -54,16 +54,16 @@ describe("BufferedState", () => {
     });
 
     // this test is important for data migrations, which set
-    // the rollover state without using the rollover state abstraction.
+    // the buffered state without using the `BufferedState` abstraction.
     it.each([[null], [undefined]])(
-      "reads from the output state when the rollover state is '%p'",
-      async (rolloverValue) => {
+      "reads from the output state when the buffered state is '%p'",
+      async (bufferValue) => {
         const provider = new FakeStateProvider(accountService);
         const outputState = provider.getUser(SomeUser, SOME_KEY);
         const firstValue = { foo: true, bar: false };
         await outputState.update(() => firstValue);
-        const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
-        await provider.setUserState(ROLLOVER_KEY.toKeyDefinition(), rolloverValue, SomeUser);
+        const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
+        await provider.setUserState(BUFFER_KEY.toKeyDefinition(), bufferValue, SomeUser);
 
         const result = await firstValueFrom(bufferedState.state$);
 
@@ -72,17 +72,17 @@ describe("BufferedState", () => {
     );
 
     // also important for data migrations
-    it("rolls over pending values from the rollover state immediately by default", async () => {
+    it("rolls over pending values from the buffered state immediately by default", async () => {
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       await outputState.update(() => ({ foo: true, bar: false }));
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
-      const rolloverValue = { foo: true, bar: true };
-      await provider.setUserState(ROLLOVER_KEY.toKeyDefinition(), rolloverValue, SomeUser);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
+      const bufferedValue = { foo: true, bar: true };
+      await provider.setUserState(BUFFER_KEY.toKeyDefinition(), bufferedValue, SomeUser);
 
       const result = await firstValueFrom(bufferedState.state$);
 
-      expect(result).toEqual(rolloverValue);
+      expect(result).toEqual(bufferedValue);
     });
 
     // also important for data migrations
@@ -92,12 +92,8 @@ describe("BufferedState", () => {
       const value = { foo: true, bar: false };
       await outputState.update(() => value);
       const dependency = new BehaviorSubject<boolean>(false).asObservable();
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState, dependency);
-      await provider.setUserState(
-        ROLLOVER_KEY.toKeyDefinition(),
-        { foo: true, bar: true },
-        SomeUser,
-      );
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState, dependency);
+      await provider.setUserState(BUFFER_KEY.toKeyDefinition(), { foo: true, bar: true }, SomeUser);
 
       const result = await firstValueFrom(bufferedState.state$);
 
@@ -105,7 +101,7 @@ describe("BufferedState", () => {
     });
 
     // also important for data migrations
-    it("replaces the output state when its dependency emits a truthy value", async () => {
+    it("overwrites the output state when its dependency emits a truthy value", async () => {
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       const firstValue = { foo: true, bar: false };
@@ -113,42 +109,42 @@ describe("BufferedState", () => {
       const dependency = new BehaviorSubject<boolean>(false);
       const bufferedState = new BufferedState(
         provider,
-        ROLLOVER_KEY,
+        BUFFER_KEY,
         outputState,
         dependency.asObservable(),
       );
-      const rolloverValue = { foo: true, bar: true };
-      await provider.setUserState(ROLLOVER_KEY.toKeyDefinition(), rolloverValue, SomeUser);
+      const bufferedValue = { foo: true, bar: true };
+      await provider.setUserState(BUFFER_KEY.toKeyDefinition(), bufferedValue, SomeUser);
 
       const result = trackEmissions(bufferedState.state$);
       dependency.next(true);
       await awaitAsync();
 
-      expect(result).toEqual([firstValue, rolloverValue]);
+      expect(result).toEqual([firstValue, bufferedValue]);
     });
 
-    it("replaces the output state when shouldUpdate returns a truthy value", async () => {
-      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+    it("overwrites the output state when shouldOverwrite returns a truthy value", async () => {
+      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
         deserializer: (jsonValue) => jsonValue as SomeType,
-        shouldRollover: () => true,
+        shouldOverwrite: () => true,
         clearOn: [],
       });
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       await outputState.update(() => ({ foo: true, bar: false }));
       const bufferedState = new BufferedState(provider, bufferedKey, outputState);
-      const rolloverValue = { foo: true, bar: true };
-      await provider.setUserState(bufferedKey.toKeyDefinition(), rolloverValue, SomeUser);
+      const bufferedValue = { foo: true, bar: true };
+      await provider.setUserState(bufferedKey.toKeyDefinition(), bufferedValue, SomeUser);
 
       const result = await firstValueFrom(bufferedState.state$);
 
-      expect(result).toEqual(rolloverValue);
+      expect(result).toEqual(bufferedValue);
     });
 
-    it("reads from the output state when shouldUpdate returns a falsy value", async () => {
-      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+    it("reads from the output state when shouldOverwrite returns a falsy value", async () => {
+      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
         deserializer: (jsonValue) => jsonValue as SomeType,
-        shouldRollover: () => false,
+        shouldOverwrite: () => false,
         clearOn: [],
       });
       const provider = new FakeStateProvider(accountService);
@@ -167,10 +163,10 @@ describe("BufferedState", () => {
       expect(result).toEqual(value);
     });
 
-    it("replaces the output state when shouldUpdate transforms its dependency to a truthy value", async () => {
-      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+    it("replaces the output state when shouldOverwrite transforms its dependency to a truthy value", async () => {
+      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
         deserializer: (jsonValue) => jsonValue as SomeType,
-        shouldRollover: (dependency) => !dependency,
+        shouldOverwrite: (dependency) => !dependency,
         clearOn: [],
       });
       const provider = new FakeStateProvider(accountService);
@@ -184,14 +180,14 @@ describe("BufferedState", () => {
         outputState,
         dependency.asObservable(),
       );
-      const rolloverValue = { foo: true, bar: true };
-      await provider.setUserState(bufferedKey.toKeyDefinition(), rolloverValue, SomeUser);
+      const bufferedValue = { foo: true, bar: true };
+      await provider.setUserState(bufferedKey.toKeyDefinition(), bufferedValue, SomeUser);
 
       const result = trackEmissions(bufferedState.state$);
       dependency.next(false);
       await awaitAsync();
 
-      expect(result).toEqual([firstValue, rolloverValue]);
+      expect(result).toEqual([firstValue, bufferedValue]);
     });
   });
 
@@ -202,7 +198,7 @@ describe("BufferedState", () => {
       const firstValue = { foo: true, bar: false };
       const secondValue = { foo: true, bar: true };
       await outputState.update(() => firstValue);
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = trackEmissions(bufferedState.state$);
       await outputState.update(() => secondValue);
@@ -212,23 +208,23 @@ describe("BufferedState", () => {
     });
   });
 
-  describe("rollover", () => {
-    it("updates state$ once per rollover", async () => {
+  describe("buffer", () => {
+    it("updates state$ once per overwrite", async () => {
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       const firstValue = { foo: true, bar: false };
       const secondValue = { foo: true, bar: true };
       await outputState.update(() => firstValue);
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover(secondValue);
+      await bufferedState.buffer(secondValue);
       await awaitAsync();
 
       expect(result).toEqual([firstValue, secondValue]);
     });
 
-    it("emits the output state when shouldRollover is false", async () => {
+    it("emits the output state when its dependency is false", async () => {
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       const firstValue = { foo: true, bar: false };
@@ -236,20 +232,20 @@ describe("BufferedState", () => {
       const dependency = new BehaviorSubject<boolean>(false);
       const bufferedState = new BufferedState(
         provider,
-        ROLLOVER_KEY,
+        BUFFER_KEY,
         outputState,
         dependency.asObservable(),
       );
-      const rolloverValue = { foo: true, bar: true };
+      const bufferedValue = { foo: true, bar: true };
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover(rolloverValue);
+      await bufferedState.buffer(bufferedValue);
       await awaitAsync();
 
       expect(result).toEqual([firstValue, firstValue]);
     });
 
-    it("replaces the output state when shouldRollover becomes true", async () => {
+    it("replaces the output state when its dependency becomes true", async () => {
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       const firstValue = { foo: true, bar: false };
@@ -257,36 +253,36 @@ describe("BufferedState", () => {
       const dependency = new BehaviorSubject<boolean>(false);
       const bufferedState = new BufferedState(
         provider,
-        ROLLOVER_KEY,
+        BUFFER_KEY,
         outputState,
         dependency.asObservable(),
       );
-      const rolloverValue = { foo: true, bar: true };
+      const bufferedValue = { foo: true, bar: true };
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover(rolloverValue);
+      await bufferedState.buffer(bufferedValue);
       dependency.next(true);
       await awaitAsync();
 
-      expect(result).toEqual([firstValue, firstValue, rolloverValue]);
+      expect(result).toEqual([firstValue, firstValue, bufferedValue]);
     });
 
-    it.each([[null], [undefined]])("ignores `%p`", async (rolloverValue) => {
+    it.each([[null], [undefined]])("ignores `%p`", async (bufferedValue) => {
       const provider = new FakeStateProvider(accountService);
       const outputState = provider.getUser(SomeUser, SOME_KEY);
       const firstValue = { foo: true, bar: false };
       await outputState.update(() => firstValue);
-      const bufferedState = new BufferedState(provider, ROLLOVER_KEY, outputState);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover(rolloverValue);
+      await bufferedState.buffer(bufferedValue);
       await awaitAsync();
 
       expect(result).toEqual([firstValue]);
     });
 
-    it("discards the rollover data when isValid returns false", async () => {
-      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+    it("discards the buffered data when isValid returns false", async () => {
+      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
         deserializer: (jsonValue) => jsonValue as SomeType,
         isValid: () => Promise.resolve(false),
         clearOn: [],
@@ -298,14 +294,14 @@ describe("BufferedState", () => {
       const bufferedState = new BufferedState(provider, bufferedKey, outputState);
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover({ foo: true, bar: true });
+      await bufferedState.buffer({ foo: true, bar: true });
       await awaitAsync();
 
       expect(result).toEqual([firstValue, firstValue]);
     });
 
-    it("applies the rollover data when isValid returns true", async () => {
-      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+    it("overwrites the output when isValid returns true", async () => {
+      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
         deserializer: (jsonValue) => jsonValue as SomeType,
         isValid: () => Promise.resolve(true),
         clearOn: [],
@@ -315,18 +311,18 @@ describe("BufferedState", () => {
       const firstValue = { foo: true, bar: false };
       await outputState.update(() => firstValue);
       const bufferedState = new BufferedState(provider, bufferedKey, outputState);
-      const rolloverValue = { foo: true, bar: true };
+      const bufferedValue = { foo: true, bar: true };
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover(rolloverValue);
+      await bufferedState.buffer(bufferedValue);
       await awaitAsync();
 
-      expect(result).toEqual([firstValue, rolloverValue]);
+      expect(result).toEqual([firstValue, bufferedValue]);
     });
 
-    it("maps the rollover data when it rolls over", async () => {
+    it("maps the buffered data when it overwrites the state", async () => {
       const mappedValue = { foo: true, bar: true };
-      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_rollover", {
+      const bufferedKey = new BufferedKeyDefinition<SomeType>(GENERATOR_DISK, "fooBar_buffer", {
         deserializer: (jsonValue) => jsonValue as SomeType,
         map: () => Promise.resolve(mappedValue),
         clearOn: [],
@@ -338,7 +334,7 @@ describe("BufferedState", () => {
       const bufferedState = new BufferedState(provider, bufferedKey, outputState);
 
       const result = trackEmissions(bufferedState.state$);
-      await bufferedState.rollover({ foo: false, bar: false });
+      await bufferedState.buffer({ foo: false, bar: false });
       await awaitAsync();
 
       expect(result).toEqual([firstValue, mappedValue]);

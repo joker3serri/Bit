@@ -27,27 +27,27 @@ export type BufferedKeyDefinitionOptions<Input, Output, Dependency> =
      */
     map?: (input: Input, dependency: Dependency) => Promise<Output>;
 
-    /** Checks whether a rollover should occur
+    /** Checks whether an overwrite should occur
      *  @param dependency the latest value from the dependency observable provided
-     *    to the rollover state.
-     *  @returns `true` if a rollover should occur, otherwise `false`. If this
-     *   function is not specified, rollovers occur when the dependency is truthy.
+     *    to the buffered state.
+     *  @returns `true` if a overwrite should occur, otherwise `false`. If this
+     *   function is not specified, overwrites occur when the dependency is truthy.
      *
-     *  @remarks This is intended for waiting to rollover until a dependency becomes available
-     *  (e.g. an encryption key or a user confirmation).
+     *  @remarks This is intended for waiting to overwrite until a dependency becomes
+     *   available (e.g. an encryption key or a user confirmation).
      */
-    shouldRollover?: (dependency: Dependency) => boolean;
+    shouldOverwrite?: (dependency: Dependency) => boolean;
   };
 
 /** Storage and mapping settings for data stored by a `BufferedState`.
  */
 export class BufferedKeyDefinition<Input, Output = Input, Dependency = true> {
   /**
-   * Defines a rollover state
-   * @param stateDefinition The domain of the rollover's temporary state.
-   * @param key Domain key that identifies the rollover value. This key must
+   * Defines a buffered state
+   * @param stateDefinition The domain of the buffer
+   * @param key Domain key that identifies the buffered value. This key must
    *    not be reused in any capacity.
-   * @param options Configures the operation of the rollover state.
+   * @param options Configures the operation of the buffered state.
    */
   constructor(
     readonly stateDefinition: StateDefinition,
@@ -55,7 +55,7 @@ export class BufferedKeyDefinition<Input, Output = Input, Dependency = true> {
     readonly options: BufferedKeyDefinitionOptions<Input, Output, Dependency>,
   ) {}
 
-  /** Converts the rollover key definition to a state provider
+  /** Converts the buffered key definition to a state provider
    *  key definition
    */
   toKeyDefinition() {
@@ -64,11 +64,11 @@ export class BufferedKeyDefinition<Input, Output = Input, Dependency = true> {
     return bufferedKey;
   }
 
-  /** Checks whether the dependency triggers a rollover. */
-  shouldRollover(dependency: Dependency) {
-    const shouldRollover = this.options?.shouldRollover;
-    if (shouldRollover) {
-      return shouldRollover(dependency);
+  /** Checks whether the dependency triggers an overwrite. */
+  shouldOverwrite(dependency: Dependency) {
+    const shouldOverwrite = this.options?.shouldOverwrite;
+    if (shouldOverwrite) {
+      return shouldOverwrite(dependency);
     }
 
     return dependency ? true : false;

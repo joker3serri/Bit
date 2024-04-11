@@ -23,39 +23,39 @@ describe("BufferedKeyDefinition", () => {
     });
   });
 
-  describe("shouldRollover", () => {
-    it("should call the shouldRollover function when its defined", async () => {
-      const shouldRollover = jest.fn(() => true);
+  describe("shouldOverwrite", () => {
+    it("should call the shouldOverwrite function when its defined", async () => {
+      const shouldOverwrite = jest.fn(() => true);
       const key = new BufferedKeyDefinition(GENERATOR_DISK, "test", {
         deserializer,
-        shouldRollover,
+        shouldOverwrite,
         clearOn: [],
       });
 
-      const result = await key.shouldRollover(true);
+      const result = await key.shouldOverwrite(true);
 
-      expect(shouldRollover).toHaveBeenCalledWith(true);
+      expect(shouldOverwrite).toHaveBeenCalledWith(true);
       expect(result).toStrictEqual(true);
     });
 
-    it("should return true when shouldRollover is not defined and the input is truthy", async () => {
+    it("should return true when shouldOverwrite is not defined and the input is truthy", async () => {
       const key = new BufferedKeyDefinition<number, number, number>(GENERATOR_DISK, "test", {
         deserializer,
         clearOn: [],
       });
 
-      const result = await key.shouldRollover(1);
+      const result = await key.shouldOverwrite(1);
 
       expect(result).toStrictEqual(true);
     });
 
-    it("should return false when shouldRollover is not defined and the input is falsy", async () => {
+    it("should return false when shouldOverwrite is not defined and the input is falsy", async () => {
       const key = new BufferedKeyDefinition<number, number, number>(GENERATOR_DISK, "test", {
         deserializer,
         clearOn: [],
       });
 
-      const result = await key.shouldRollover(0);
+      const result = await key.shouldOverwrite(0);
 
       expect(result).toStrictEqual(false);
     });
