@@ -73,7 +73,7 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
     return this.organizations$.pipe(mapToSingleOrganization(id));
   }
 
-  getAll$(userId: UserId): Observable<Organization[]> {
+  getAll$(userId?: UserId): Observable<Organization[]> {
     return this.getOrganizationsFromState$(userId);
   }
 

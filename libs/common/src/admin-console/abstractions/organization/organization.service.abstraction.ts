@@ -123,9 +123,9 @@ export abstract class OrganizationService {
   getAll: (userId?: string) => Promise<Organization[]>;
 
   /**
-   * Publishes state for all organizations for the given user id.
+   * Publishes state for all organizations for the given user id or the active user.
    */
-  getAll$: (userId: UserId) => Observable<Organization[]>;
+  getAll$: (userId?: UserId) => Observable<Organization[]>;
 }
 
 /**
