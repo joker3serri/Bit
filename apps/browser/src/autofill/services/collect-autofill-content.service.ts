@@ -1084,13 +1084,15 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
       if (!nodeIsElement(node)) {
         continue;
       }
-
-      const autofillElementNodes = this.queryAllTreeWalkerNodes(
-        node,
-        (walkerNode: Node) =>
-          nodeIsFormElement(walkerNode) || this.isNodeFormFieldElement(walkerNode),
-      ) as HTMLElement[];
-
+      const ignored = [...this.ignoredInputTypes].map((type) => '[type="' + type + '"]').join(",");
+      const selector =
+        "form, span[data-bwautofill]," +
+        `input:not([data-bwignore],${ignored}), ` +
+        "textarea:not([data-bwignore]), select:not([data-bwignore])";
+      const autofillElementNodes = [...node.querySelectorAll(selector)];
+      if (node.matches(selector)) {
+        autofillElementNodes.push(node);
+      }
       if (autofillElementNodes.length) {
         isElementMutated = true;
         mutatedElements.push(...autofillElementNodes);
