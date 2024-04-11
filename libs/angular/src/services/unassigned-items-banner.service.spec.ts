@@ -1,5 +1,5 @@
 import { MockProxy, mock } from "jest-mock-extended";
-import { firstValueFrom, skip } from "rxjs";
+import { firstValueFrom, take } from "rxjs";
 
 import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -37,17 +37,26 @@ describe("UnassignedItemsBanner", () => {
     expect(apiService.getShowUnassignedCiphersBanner).not.toHaveBeenCalled();
   });
 
-  it("fetches from server if local state has not been set yet", async () => {
+  it("fetches from server if local state has not been set yet", (done) => {
     apiService.getShowUnassignedCiphersBanner.mockResolvedValue(true);
 
     const showBanner = stateProvider.activeUser.getFake(SHOW_BANNER_KEY);
     showBanner.nextState(undefined);
 
     const sut = sutFactory();
-    // skip first value so we get the recomputed value after the server call
-    expect(await firstValueFrom(sut.showBanner$.pipe(skip(1)))).toBe(true);
-    // Expect to have updated local state
-    expect(await firstValueFrom(showBanner.state$)).toBe(true);
-    expect(apiService.getShowUnassignedCiphersBanner).toHaveBeenCalledTimes(1);
+
+    let count = 1;
+    sut.showBanner$.pipe(take(2)).subscribe((val) => {
+      if (count == 1) {
+        // Should continue to hide the banner while we wait for the server response
+        expect(val).toBe(false);
+        count++;
+      } else {
+        // Then use the server response
+        expect(val).toBe(true);
+        expect(apiService.getShowUnassignedCiphersBanner).toHaveBeenCalledTimes(1);
+        done();
+      }
+    });
   });
 });
