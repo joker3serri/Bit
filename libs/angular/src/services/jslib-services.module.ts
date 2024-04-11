@@ -1047,10 +1047,12 @@ const safeProviders: SafeProvider[] = [
     provide: OrganizationBillingServiceAbstraction,
     useClass: OrganizationBillingService,
     deps: [
+      ApiServiceAbstraction,
       CryptoServiceAbstraction,
       EncryptService,
       I18nServiceAbstraction,
       OrganizationApiServiceAbstraction,
+      SyncServiceAbstraction,
     ],
   }),
   safeProvider({
