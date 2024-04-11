@@ -24,15 +24,17 @@ export class UnassignedItemsBannerService {
   private _showBanner = this.stateProvider.getActive(SHOW_BANNER_KEY);
 
   showBanner$ = this._showBanner.state$.pipe(
-    concatMap(async (showBanner) => {
+    concatMap(async (showBannerState) => {
+      let result = showBannerState;
+
       // null indicates that the user has not seen or dismissed the banner yet - get the flag from server
-      if (showBanner == null) {
+      if (result == null) {
         const showBannerResponse = await this.apiService.getShowUnassignedCiphersBanner();
         await this._showBanner.update(() => showBannerResponse);
-        return false; // don't show anything yet, the call to update() will trigger another run and use the stored value
+        result = showBannerResponse;
       }
 
-      return showBanner;
+      return result;
     }),
   );
 
