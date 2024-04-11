@@ -81,7 +81,7 @@ describe("AuthRequestMigrator", () => {
       sut = new AuthRequestMigrator(55, 56);
     });
 
-    it("should remove adminAuthRequest and approveLoginRequests", async () => {
+    it("removes the existing adminAuthRequest and approveLoginRequests", async () => {
       await sut.migrate(helper);
 
       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
@@ -93,7 +93,7 @@ describe("AuthRequestMigrator", () => {
       expect(helper.set).not.toHaveBeenCalledWith("SecondAccount");
     });
 
-    it("should set adminAuthRequest and approveLoginRequests", async () => {
+    it("sets the adminAuthRequest and approveLoginRequests under the new key definitions", async () => {
       await sut.migrate(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith("FirstAccount", ADMIN_AUTH_REQUEST_KEY, {
@@ -112,14 +112,14 @@ describe("AuthRequestMigrator", () => {
       sut = new AuthRequestMigrator(55, 56);
     });
 
-    it("should null out new adminAuthRequest and acceptAuthRequests value", async () => {
+    it("nulls the new adminAuthRequest and acceptAuthRequests values", async () => {
       await sut.rollback(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith("FirstAccount", ADMIN_AUTH_REQUEST_KEY, null);
       expect(helper.setToUser).toHaveBeenCalledWith("FirstAccount", ACCEPT_AUTH_REQUESTS_KEY, null);
     });
 
-    it("should set back the adminAuthRequest and approveLoginRequests", async () => {
+    it("sets back the adminAuthRequest and approveLoginRequests under old account object", async () => {
       await sut.rollback(helper);
 
       expect(helper.set).toHaveBeenCalledWith("FirstAccount", {
