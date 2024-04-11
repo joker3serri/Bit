@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom } from "rxjs";
+import { BehaviorSubject, firstValueFrom, of } from "rxjs";
 
 import {
   mockAccountServiceWith,
@@ -191,6 +191,20 @@ describe("BufferedState", () => {
     });
   });
 
+  describe("userId", () => {
+    const AnotherUser = "anotherUser" as UserId;
+
+    it.each([[SomeUser], [AnotherUser]])("gets the userId", (userId) => {
+      const provider = new FakeStateProvider(accountService);
+      const outputState = provider.getUser(userId, SOME_KEY);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
+
+      const result = bufferedState.userId;
+
+      expect(result).toEqual(userId);
+    });
+  });
+
   describe("update", () => {
     it("updates state$", async () => {
       const provider = new FakeStateProvider(accountService);
@@ -205,6 +219,24 @@ describe("BufferedState", () => {
       await awaitAsync();
 
       expect(result).toEqual([firstValue, secondValue]);
+    });
+
+    it("respects update options", async () => {
+      const provider = new FakeStateProvider(accountService);
+      const outputState = provider.getUser(SomeUser, SOME_KEY);
+      const firstValue = { foo: true, bar: false };
+      const secondValue = { foo: true, bar: true };
+      await outputState.update(() => firstValue);
+      const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
+
+      const result = trackEmissions(bufferedState.state$);
+      await outputState.update(() => secondValue, {
+        shouldUpdate: (_, latest) => latest,
+        combineLatestWith: of(false),
+      });
+      await awaitAsync();
+
+      expect(result).toEqual([firstValue]);
     });
   });
 
