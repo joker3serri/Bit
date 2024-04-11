@@ -25,6 +25,7 @@ export class UnassignedItemsBannerService {
 
   showBanner$ = this._showBanner.state$.pipe(
     concatMap(async (showBannerState) => {
+      // null indicates that the user has not seen or dismissed the banner yet - get the flag from server
       if (showBannerState == null) {
         const showBannerResponse = await this.apiService.getShowUnassignedCiphersBanner();
         await this._showBanner.update(() => showBannerResponse);
