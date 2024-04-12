@@ -215,7 +215,7 @@ describe("BufferedState", () => {
       const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = trackEmissions(bufferedState.state$);
-      await outputState.update(() => secondValue);
+      await bufferedState.update(() => secondValue);
       await awaitAsync();
 
       expect(result).toEqual([firstValue, secondValue]);
@@ -230,7 +230,7 @@ describe("BufferedState", () => {
       const bufferedState = new BufferedState(provider, BUFFER_KEY, outputState);
 
       const result = trackEmissions(bufferedState.state$);
-      await outputState.update(() => secondValue, {
+      await bufferedState.update(() => secondValue, {
         shouldUpdate: (_, latest) => latest,
         combineLatestWith: of(false),
       });
