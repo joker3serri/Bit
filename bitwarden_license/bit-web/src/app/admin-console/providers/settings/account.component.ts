@@ -127,10 +127,6 @@ export class AccountComponent {
 
     // User confirmed the dialog so check verification success
     if (!result.verificationSuccess) {
-      if (result.noAvailableClientVerificationMethods) {
-        // No client-side verification methods are available
-        // Could send user to configure a verification method like PIN or biometrics
-      }
       return false;
     }
     return true;

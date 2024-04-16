@@ -1,6 +1,6 @@
 import { ProviderSetupRequest } from "../../models/request/provider/provider-setup.request";
 import { ProviderUpdateRequest } from "../../models/request/provider/provider-update.request";
-import { ProviderVerifyDeleteRecoverRequest } from "../../models/request/provider/provider-verify-delete-recover.request";
+import { ProviderVerifyRecoverDeleteRequest } from "../../models/request/provider/provider-verify-recover-delete.request";
 import { ProviderResponse } from "../../models/response/provider/provider.response";
 
 export class ProviderApiServiceAbstraction {
@@ -9,7 +9,7 @@ export class ProviderApiServiceAbstraction {
   putProvider: (id: string, request: ProviderUpdateRequest) => Promise<ProviderResponse>;
   providerRecoverDeleteToken: (
     organizationId: string,
-    request: ProviderVerifyDeleteRecoverRequest,
+    request: ProviderVerifyRecoverDeleteRequest,
   ) => Promise<any>;
   deleteProvider: (id: string) => Promise<void>;
 }

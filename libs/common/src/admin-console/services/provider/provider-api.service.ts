@@ -2,7 +2,7 @@ import { ApiService } from "../../../abstractions/api.service";
 import { ProviderApiServiceAbstraction } from "../../abstractions/provider/provider-api.service.abstraction";
 import { ProviderSetupRequest } from "../../models/request/provider/provider-setup.request";
 import { ProviderUpdateRequest } from "../../models/request/provider/provider-update.request";
-import { ProviderVerifyDeleteRecoverRequest } from "../../models/request/provider/provider-verify-delete-recover.request";
+import { ProviderVerifyRecoverDeleteRequest } from "../../models/request/provider/provider-verify-recover-delete.request";
 import { ProviderResponse } from "../../models/response/provider/provider.response";
 
 export class ProviderApiService implements ProviderApiServiceAbstraction {
@@ -30,7 +30,7 @@ export class ProviderApiService implements ProviderApiServiceAbstraction {
 
   providerRecoverDeleteToken(
     providerId: string,
-    request: ProviderVerifyDeleteRecoverRequest,
+    request: ProviderVerifyRecoverDeleteRequest,
   ): Promise<any> {
     return this.apiService.send(
       "POST",

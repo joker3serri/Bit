@@ -1,4 +1,4 @@
-export class ProviderVerifyDeleteRecoverRequest {
+export class ProviderVerifyRecoverDeleteRequest {
   token: string;
 
   constructor(token: string) {

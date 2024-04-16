@@ -7910,13 +7910,7 @@
     "message": "Delete provider"
   },
   "deleteProviderConfirmation": {
-    "message": "Deleting a provider is permanent and irreversible. Enter your master password to confirm the deletion of the provider and all associated data.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "John Smith"
-      }
-    }
+    "message": "Deleting a provider is permanent and irreversible. Enter your master password to confirm the deletion of the provider and all associated data."
   },
   "deleteProviderName": {
     "message": "Cannot delete $ID$",

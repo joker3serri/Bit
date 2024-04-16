@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
-import { ProviderVerifyDeleteRecoverRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-verify-delete-recover.request";
+import { ProviderVerifyRecoverDeleteRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-verify-recover-delete.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -42,7 +42,7 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
 
   async submit() {
     try {
-      const request = new ProviderVerifyDeleteRecoverRequest(this.token);
+      const request = new ProviderVerifyRecoverDeleteRequest(this.token);
       this.formPromise = this.providerApiService.providerRecoverDeleteToken(
         this.providerId,
         request,
