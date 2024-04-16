@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { first } from "rxjs/operators";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ProviderVerifyDeleteRecoverRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-verify-delete-recover.request";
@@ -29,19 +29,15 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
     private logService: LogService,
   ) {}
 
-  ngOnInit() {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
-      if (qParams.providerId != null && qParams.token != null && qParams.name != null) {
-        this.providerId = qParams.providerId;
-        this.token = qParams.token;
-        this.name = qParams.name;
-      } else {
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.router.navigate(["/"]);
-      }
-    });
+  async ngOnInit() {
+    const qParams = await firstValueFrom(this.route.queryParams);
+    if (qParams.providerId != null && qParams.token != null && qParams.name != null) {
+      this.providerId = qParams.providerId;
+      this.token = qParams.token;
+      this.name = qParams.name;
+    } else {
+      await this.router.navigate(["/"]);
+    }
   }
 
   async submit() {
@@ -54,9 +50,7 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
         this.i18nService.t("providerDeleted"),
         this.i18nService.t("providerDeletedDesc"),
       );
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["/"]);
+      await this.router.navigate(["/"]);
     } catch (e) {
       this.logService.error(e);
     }
