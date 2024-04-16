@@ -19,7 +19,6 @@ import { KdfType } from "@bitwarden/common/platform/enums";
   templateUrl: "change-kdf-confirmation.component.html",
 })
 export class ChangeKdfConfirmationComponent {
-  kdf: KdfType;
   kdfConfig: KdfConfig;
 
   form = new FormGroup({
@@ -39,9 +38,8 @@ export class ChangeKdfConfirmationComponent {
     private stateService: StateService,
     private logService: LogService,
     private kdfConfigService: KdfConfigService,
-    @Inject(DIALOG_DATA) params: { kdf: KdfType; kdfConfig: KdfConfig },
+    @Inject(DIALOG_DATA) params: { kdfConfig: KdfConfig },
   ) {
-    this.kdf = params.kdf;
     this.kdfConfig = params.kdfConfig;
     this.masterPassword = null;
   }
@@ -67,17 +65,20 @@ export class ChangeKdfConfirmationComponent {
 
   private async makeKeyAndSaveAsync() {
     const masterPassword = this.form.value.masterPassword;
+
+    // Ensure the KDF config is valid.
+    this.kdfConfig.validateKdfConfig();
+
     const request = new KdfRequest();
-    request.kdf = this.kdf;
+    request.kdf = this.kdfConfig.kdfType;
     request.kdfIterations = this.kdfConfig.iterations;
-    request.kdfMemory = this.kdfConfig.memory;
-    request.kdfParallelism = this.kdfConfig.parallelism;
+    if (this.kdfConfig.kdfType === KdfType.Argon2id) {
+      request.kdfMemory = this.kdfConfig.memory;
+      request.kdfParallelism = this.kdfConfig.parallelism;
+    }
     const masterKey = await this.cryptoService.getOrDeriveMasterKey(masterPassword);
     request.masterPasswordHash = await this.cryptoService.hashMasterKey(masterPassword, masterKey);
     const email = await this.stateService.getEmail();
-
-    // Ensure the KDF config is valid.
-    this.kdfConfigService.validateKdfConfig(this.kdfConfig);
 
     const newMasterKey = await this.cryptoService.makeMasterKey(
       masterPassword,

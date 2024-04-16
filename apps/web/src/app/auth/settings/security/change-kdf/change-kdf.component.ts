@@ -1,7 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
-import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
+import {
+  Argon2KdfConfig,
+  KdfConfig,
+  PBKDF2KdfConfig,
+} from "@bitwarden/common/auth/models/domain/kdf-config";
 import {
   DEFAULT_KDF_CONFIG,
   PBKDF2_ITERATIONS,
@@ -45,14 +49,9 @@ export class ChangeKdfComponent implements OnInit {
 
   async onChangeKdf(newValue: KdfType) {
     if (newValue === KdfType.PBKDF2_SHA256) {
-      this.kdfConfig = new KdfConfig(PBKDF2_ITERATIONS.defaultValue, newValue);
+      this.kdfConfig = new PBKDF2KdfConfig();
     } else if (newValue === KdfType.Argon2id) {
-      this.kdfConfig = new KdfConfig(
-        ARGON2_ITERATIONS.defaultValue,
-        newValue,
-        ARGON2_MEMORY.defaultValue,
-        ARGON2_PARALLELISM.defaultValue,
-      );
+      this.kdfConfig = new Argon2KdfConfig();
     } else {
       throw new Error("Unknown KDF type.");
     }
