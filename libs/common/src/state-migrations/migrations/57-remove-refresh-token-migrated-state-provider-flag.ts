@@ -1,5 +1,5 @@
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
-import { Migrator } from "../migrator";
+import { IRREVERSIBLE, Migrator } from "../migrator";
 
 type ExpectedAccountType = NonNullable<unknown>;
 
@@ -31,7 +31,7 @@ export class RemoveRefreshTokenMigratedFlagMigrator extends Migrator<56, 57> {
   async rollback(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function rollbackAccount(userId: string, account: ExpectedAccountType): Promise<void> {
-      // No rollback needed
+      throw IRREVERSIBLE;
     }
 
     await Promise.all([...accounts.map(({ userId, account }) => rollbackAccount(userId, account))]);
