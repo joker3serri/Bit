@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { filter, concatMap, Subject, takeUntil, firstValueFrom } from "rxjs";
+import { filter, concatMap, Subject, takeUntil, firstValueFrom, map } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -59,8 +60,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.activeUserId = userId;
     });
 
-    this.stateService.activeAccountUnlocked$
+    this.authService.activeAccountStatus$
       .pipe(
+        map((status) => status === AuthenticationStatus.Unlocked),
         filter((unlocked) => unlocked),
         concatMap(async () => {
           await this.recordActivity();

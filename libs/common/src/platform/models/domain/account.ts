@@ -1,6 +1,5 @@
 import { Jsonify } from "type-fest";
 
-import { AdminAuthRequestStorable } from "../../../auth/models/domain/admin-auth-req-storable";
 import { UriMatchStrategySetting } from "../../../models/domain/domain-service";
 import { GeneratorOptions } from "../../../tools/generator/generator-options";
 import {
@@ -155,7 +154,6 @@ export class AccountSettings {
   protectedPin?: string;
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
-  approveLoginRequests?: boolean;
 
   /** @deprecated July 2023, left for migration purposes*/
   pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();
@@ -192,7 +190,6 @@ export class Account {
   profile?: AccountProfile = new AccountProfile();
   settings?: AccountSettings = new AccountSettings();
   tokens?: AccountTokens = new AccountTokens();
-  adminAuthRequest?: Jsonify<AdminAuthRequestStorable> = null;
 
   constructor(init: Partial<Account>) {
     Object.assign(this, {
@@ -216,7 +213,6 @@ export class Account {
         ...new AccountTokens(),
         ...init?.tokens,
       },
-      adminAuthRequest: init?.adminAuthRequest,
     });
   }
 
@@ -231,7 +227,6 @@ export class Account {
       profile: AccountProfile.fromJSON(json?.profile),
       settings: AccountSettings.fromJSON(json?.settings),
       tokens: AccountTokens.fromJSON(json?.tokens),
-      adminAuthRequest: AdminAuthRequestStorable.fromJSON(json?.adminAuthRequest),
     });
   }
 }

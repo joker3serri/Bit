@@ -22,7 +22,7 @@ export const CIPHERS_DISK: KeyDefinitionLike = {
   },
 };
 
-export class CipherServiceMigrator extends Migrator<55, 56> {
+export class CipherServiceMigrator extends Migrator<56, 57> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {
