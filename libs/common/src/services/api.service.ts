@@ -7,15 +7,12 @@ import { OrganizationSponsorshipRedeemRequest } from "../admin-console/models/re
 import { OrganizationConnectionRequest } from "../admin-console/models/request/organization-connection.request";
 import { ProviderAddOrganizationRequest } from "../admin-console/models/request/provider/provider-add-organization.request";
 import { ProviderOrganizationCreateRequest } from "../admin-console/models/request/provider/provider-organization-create.request";
-import { ProviderSetupRequest } from "../admin-console/models/request/provider/provider-setup.request";
-import { ProviderUpdateRequest } from "../admin-console/models/request/provider/provider-update.request";
 import { ProviderUserAcceptRequest } from "../admin-console/models/request/provider/provider-user-accept.request";
 import { ProviderUserBulkConfirmRequest } from "../admin-console/models/request/provider/provider-user-bulk-confirm.request";
 import { ProviderUserBulkRequest } from "../admin-console/models/request/provider/provider-user-bulk.request";
 import { ProviderUserConfirmRequest } from "../admin-console/models/request/provider/provider-user-confirm.request";
 import { ProviderUserInviteRequest } from "../admin-console/models/request/provider/provider-user-invite.request";
 import { ProviderUserUpdateRequest } from "../admin-console/models/request/provider/provider-user-update.request";
-import { ProviderVerifyDeleteRecoverRequest } from "../admin-console/models/request/provider/provider-verify-delete-recover.request";
 import { SelectionReadOnlyRequest } from "../admin-console/models/request/selection-read-only.request";
 import {
   OrganizationConnectionConfigApis,
@@ -33,7 +30,6 @@ import {
   ProviderUserResponse,
   ProviderUserUserDetailsResponse,
 } from "../admin-console/models/response/provider/provider-user.response";
-import { ProviderResponse } from "../admin-console/models/response/provider/provider.response";
 import { SelectionReadOnlyResponse } from "../admin-console/models/response/selection-read-only.response";
 import { TokenService } from "../auth/abstractions/token.service";
 import { CreateAuthRequest } from "../auth/models/request/create-auth.request";
@@ -1160,40 +1156,6 @@ export class ApiService implements ApiServiceAbstraction {
 
   async deleteOrganizationConnection(id: string): Promise<void> {
     return this.send("DELETE", "/organizations/connections/" + id, null, true, false);
-  }
-
-  // Provider APIs
-
-  async postProviderSetup(id: string, request: ProviderSetupRequest) {
-    const r = await this.send("POST", "/providers/" + id + "/setup", request, true, true);
-    return new ProviderResponse(r);
-  }
-
-  async getProvider(id: string) {
-    const r = await this.send("GET", "/providers/" + id, null, true, true);
-    return new ProviderResponse(r);
-  }
-
-  async putProvider(id: string, request: ProviderUpdateRequest) {
-    const r = await this.send("PUT", "/providers/" + id, request, true, true);
-    return new ProviderResponse(r);
-  }
-
-  providerRecoverDeleteToken(
-    providerId: string,
-    request: ProviderVerifyDeleteRecoverRequest,
-  ): Promise<any> {
-    return this.send(
-      "POST",
-      "/providers/" + providerId + "/delete-recover-token",
-      request,
-      false,
-      false,
-    );
-  }
-
-  async deleteProvider(id: string): Promise<void> {
-    await this.send("DELETE", "/providers/" + id, null, true, false);
   }
 
   // Provider User APIs

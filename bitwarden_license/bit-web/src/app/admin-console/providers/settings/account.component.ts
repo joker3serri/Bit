@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
 import { ProviderUpdateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-update.request";
 import { ProviderResponse } from "@bitwarden/common/admin-console/models/response/provider/provider.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -41,6 +42,7 @@ export class AccountComponent {
     private logService: LogService,
     private dialogService: DialogService,
     private configService: ConfigService,
+    private providerApiService: ProviderApiServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -49,7 +51,7 @@ export class AccountComponent {
     this.route.parent.parent.params.subscribe(async (params) => {
       this.providerId = params.providerId;
       try {
-        this.provider = await this.apiService.getProvider(this.providerId);
+        this.provider = await this.providerApiService.getProvider(this.providerId);
       } catch (e) {
         this.logService.error(`Handled exception: ${e}`);
       }
@@ -64,7 +66,7 @@ export class AccountComponent {
       request.businessName = this.provider.businessName;
       request.billingEmail = this.provider.billingEmail;
 
-      this.formPromise = this.apiService.putProvider(this.providerId, request).then(() => {
+      this.formPromise = this.providerApiService.putProvider(this.providerId, request).then(() => {
         return this.syncService.fullSync(true);
       });
       await this.formPromise;
@@ -92,7 +94,7 @@ export class AccountComponent {
       return;
     }
 
-    this.formPromise = this.apiService.deleteProvider(this.providerId);
+    this.formPromise = this.providerApiService.deleteProvider(this.providerId);
     try {
       await this.formPromise;
       this.platformUtilsService.showToast(

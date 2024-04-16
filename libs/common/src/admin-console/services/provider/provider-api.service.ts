@@ -1,9 +1,33 @@
 import { ApiService } from "../../../abstractions/api.service";
 import { ProviderApiServiceAbstraction } from "../../abstractions/provider/provider-api.service.abstraction";
+import { ProviderSetupRequest } from "../../models/request/provider/provider-setup.request";
+import { ProviderUpdateRequest } from "../../models/request/provider/provider-update.request";
 import { ProviderVerifyDeleteRecoverRequest } from "../../models/request/provider/provider-verify-delete-recover.request";
+import { ProviderResponse } from "../../models/response/provider/provider.response";
 
 export class ProviderApiService implements ProviderApiServiceAbstraction {
   constructor(private apiService: ApiService) {}
+  async postProviderSetup(id: string, request: ProviderSetupRequest) {
+    const r = await this.apiService.send(
+      "POST",
+      "/providers/" + id + "/setup",
+      request,
+      true,
+      true,
+    );
+    return new ProviderResponse(r);
+  }
+
+  async getProvider(id: string) {
+    const r = await this.apiService.send("GET", "/providers/" + id, null, true, true);
+    return new ProviderResponse(r);
+  }
+
+  async putProvider(id: string, request: ProviderUpdateRequest) {
+    const r = await this.apiService.send("PUT", "/providers/" + id, request, true, true);
+    return new ProviderResponse(r);
+  }
+
   providerRecoverDeleteToken(
     providerId: string,
     request: ProviderVerifyDeleteRecoverRequest,
