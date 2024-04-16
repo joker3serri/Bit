@@ -21,7 +21,7 @@ export class LocalBackedSessionStorageService
   extends AbstractMemoryStorageService
   implements ObservableStorageService
 {
-  private cache = new Map<string, unknown>();
+  private cache = new Map<string, string>();
   private updatesSubject = new Subject<StorageUpdate>();
 
   private commandName = `localBackedSessionStorage_${this.name}`;
@@ -63,7 +63,7 @@ export class LocalBackedSessionStorageService
 
   async get<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
     if (this.cache.has(key)) {
-      return this.cache.get(key) as T;
+      return JSON.parse(this.cache.get(key)) as T;
     }
 
     return await this.getBypassCache(key, options);
@@ -80,8 +80,8 @@ export class LocalBackedSessionStorageService
       value = options.deserializer(value as Jsonify<T>);
     }
 
-    this.cache.set(key, value);
-    return this.cache.get(key) as T;
+    this.cache.set(key, JSON.stringify(value));
+    return value as T;
   }
 
   async has(key: string): Promise<boolean> {
@@ -93,7 +93,7 @@ export class LocalBackedSessionStorageService
       return await this.remove(key);
     }
 
-    this.cache.set(key, obj);
+    this.cache.set(key, JSON.stringify(obj));
     await this.updateLocalSessionValue(key, obj);
     this.sendUpdate({ key, updateType: "save" });
   }
