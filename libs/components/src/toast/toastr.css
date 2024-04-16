@@ -6,6 +6,9 @@
   all: unset;
   display: block;
   width: var(--bit-toast-width);
+
+  /* Needed to make hover states work in Electron, since the toast appears in the draggable region. */
+  -webkit-app-region: no-drag;
 }
 
 /* Disable hover styles */
