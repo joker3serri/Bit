@@ -10,7 +10,7 @@ export const REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE: KeyDefinitionLike = {
   },
 };
 
-export class RemoveRefreshTokenMigratedFlagMigrator extends Migrator<56, 57> {
+export class RemoveRefreshTokenMigratedFlagMigrator extends Migrator<57, 58> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountType>();
     async function migrateAccount(userId: string, account: ExpectedAccountType): Promise<void> {

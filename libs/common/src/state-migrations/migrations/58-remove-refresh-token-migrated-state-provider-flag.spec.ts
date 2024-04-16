@@ -7,7 +7,7 @@ import { IRREVERSIBLE } from "../migrator";
 import {
   REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   RemoveRefreshTokenMigratedFlagMigrator,
-} from "./57-remove-refresh-token-migrated-state-provider-flag";
+} from "./58-remove-refresh-token-migrated-state-provider-flag";
 
 // Represents data in state service pre-migration
 function preMigrationJson() {
@@ -37,8 +37,8 @@ describe("RemoveRefreshTokenMigratedFlagMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationJson(), 56);
-      sut = new RemoveRefreshTokenMigratedFlagMigrator(56, 57);
+      helper = mockMigrationHelper(preMigrationJson(), 57);
+      sut = new RemoveRefreshTokenMigratedFlagMigrator(57, 58);
     });
 
     it("should remove refreshTokenMigratedToSecureStorage from state provider for all accounts that have it", async () => {
@@ -61,8 +61,8 @@ describe("RemoveRefreshTokenMigratedFlagMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 57);
-      sut = new RemoveRefreshTokenMigratedFlagMigrator(56, 57);
+      helper = mockMigrationHelper(rollbackJSON(), 58);
+      sut = new RemoveRefreshTokenMigratedFlagMigrator(57, 58);
     });
 
     it("should not add data back and throw IRREVERSIBLE error on call", async () => {
