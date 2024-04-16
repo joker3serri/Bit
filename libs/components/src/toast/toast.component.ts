@@ -8,19 +8,19 @@ export type ToastVariant = "success" | "error" | "info" | "warning";
 const variants: Record<ToastVariant, { icon: string; bgColor: string }> = {
   success: {
     icon: "bwi-check",
-    bgColor: "tw-bg-success-500",
+    bgColor: "tw-bg-success-600",
   },
   error: {
     icon: "bwi-error",
-    bgColor: "tw-bg-danger-500",
+    bgColor: "tw-bg-danger-600",
   },
   info: {
     icon: "bwi-info-circle",
-    bgColor: "tw-bg-info-500",
+    bgColor: "tw-bg-info-600",
   },
   warning: {
     icon: "bwi-exclamation-triangle",
-    bgColor: "tw-bg-warning-500",
+    bgColor: "tw-bg-warning-600",
   },
 };
 
