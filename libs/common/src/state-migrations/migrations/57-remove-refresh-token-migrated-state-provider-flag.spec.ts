@@ -2,6 +2,7 @@ import { MockProxy, any } from "jest-mock-extended";
 
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
+import { IRREVERSIBLE } from "../migrator";
 
 import {
   REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
@@ -64,12 +65,8 @@ describe("RemoveRefreshTokenMigratedFlagMigrator", () => {
       sut = new RemoveRefreshTokenMigratedFlagMigrator(56, 57);
     });
 
-    it("should not add data back", async () => {
-      await sut.rollback(helper);
-
-      expect(helper.set).not.toHaveBeenCalledWith("user1", any());
-      expect(helper.set).not.toHaveBeenCalledWith("user2", any());
-      expect(helper.set).not.toHaveBeenCalledWith("user3", any());
+    it("should not add data back and throw IRREVERSIBLE error on call", async () => {
+      await expect(sut.rollback(helper)).rejects.toThrow(IRREVERSIBLE);
     });
   });
 });
