@@ -42,26 +42,28 @@ export const TopLevelPage: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <popup-layout>
-        <popup-header variant="top-level" popupHeader pageTitle="Test"></popup-header>
-        <div>
-          rest of content
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things last item</div>
-        </div>
-        <popup-bottom-navigation popupFooter [activePage]="activePage"></popup-bottom-navigation>
-      </popup-layout>
+      <div class="tw-h-[640px] tw-w-[380px]">
+        <popup-layout>
+          <popup-header variant="top-level" popupHeader pageTitle="Test"></popup-header>
+          <div>
+            rest of content
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things last item</div>
+          </div>
+          <popup-bottom-navigation popupFooter [activePage]="activePage"></popup-bottom-navigation>
+        </popup-layout>
+      </div>
     `,
   }),
 };
@@ -79,26 +81,28 @@ export const TopLevelWithAction: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <popup-layout>
-        <popup-header variant="top-level-action" popupHeader pageTitle="Test"></popup-header>
-        <div>
-          rest of content
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things last item</div>
-        </div>
-        <popup-bottom-navigation popupFooter [activePage]="activePage"></popup-bottom-navigation>
-      </popup-layout>
+      <div class="tw-h-[640px] tw-w-[380px]">
+        <popup-layout>
+          <popup-header variant="top-level-action" popupHeader pageTitle="Test"></popup-header>
+          <div>
+            rest of content
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things last item</div>
+          </div>
+          <popup-bottom-navigation popupFooter [activePage]="activePage"></popup-bottom-navigation>
+        </popup-layout>
+      </div>
     `,
   }),
 };
@@ -107,31 +111,33 @@ export const SubPageWithAction: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <popup-layout>
-        <popup-header variant="sub-page" popupHeader pageTitle="Test"></popup-header>
-        <div>
-          rest of content
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things last item</div>
-        </div>
-        <popup-footer popupFooter>
-          <div actionFooter class="tw-flex tw-gap-2">
-            <button bitButton buttonType="primary">Save</button>
-            <button bitButton buttonType="secondary">Cancel</button>
+      <div class="tw-h-[640px] tw-w-[380px]">
+        <popup-layout>
+          <popup-header variant="sub-page" popupHeader pageTitle="Test"></popup-header>
+          <div>
+            rest of content
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things last item</div>
           </div>
-        </popup-footer>
-      </popup-layout>
+          <popup-footer popupFooter>
+            <div actionFooter class="tw-flex tw-gap-2">
+              <button bitButton buttonType="primary">Save</button>
+              <button bitButton buttonType="secondary">Cancel</button>
+            </div>
+          </popup-footer>
+        </popup-layout>
+      </div>
     `,
   }),
 };
@@ -140,25 +146,71 @@ export const SubPage: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <popup-layout>
-        <popup-header variant="sub-page" popupHeader pageTitle="Test"></popup-header>
-        <div>
-          rest of content
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things</div>
-          <div class="tw-my-8">lots of things last item</div>
-        </div>
-      </popup-layout>
+      <div class="tw-h-[640px] tw-w-[380px]">
+        <popup-layout>
+          <popup-header variant="sub-page" popupHeader pageTitle="Test"></popup-header>
+          <div>
+            rest of content
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things last item</div>
+          </div>
+        </popup-layout>
+      </div>
+    `,
+  }),
+};
+
+export const PoppedOut: Story = {
+  args: {
+    activePage: "vault",
+  },
+  argTypes: {
+    activePage: {
+      options: ["vault", "generator", "send", "settings"],
+      control: { type: "select" },
+    },
+  },
+  render: (args) => ({
+    props: args,
+    template: /* HTML */ `
+      <div class="tw-h-[640px] tw-w-[900px]">
+        <popup-layout>
+          <popup-header
+            variant="top-level-action"
+            popupHeader
+            pageTitle="Test"
+            poppedOut="true"
+          ></popup-header>
+          <div>
+            rest of content
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things</div>
+            <div class="tw-my-8">lots of things last item</div>
+          </div>
+          <popup-bottom-navigation popupFooter [activePage]="activePage"></popup-bottom-navigation>
+        </popup-layout>
+      </div>
     `,
   }),
 };
