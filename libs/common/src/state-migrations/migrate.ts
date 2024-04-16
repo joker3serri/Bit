@@ -52,6 +52,7 @@ import { DeleteInstalledVersion } from "./migrations/52-delete-installed-version
 import { DeviceTrustCryptoServiceStateProviderMigrator } from "./migrations/53-migrate-device-trust-crypto-svc-to-state-providers";
 import { SendMigrator } from "./migrations/54-move-encrypted-sends";
 import { MoveMasterKeyStateToProviderMigrator } from "./migrations/55-move-master-key-state-to-provider";
+import { AuthRequestMigrator } from "./migrations/56-move-auth-requests";
 import { KdfConfigMigrator } from "./migrations/56-move-kdf-config-to-state-provider";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
 import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-auto-prompt-to-account";
@@ -60,7 +61,7 @@ import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-setting
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 3;
-export const CURRENT_VERSION = 56;
+export const CURRENT_VERSION = 57;
 
 export type MinVersion = typeof MIN_VERSION;
 
@@ -119,7 +120,8 @@ export function createMigrationBuilder() {
     .with(DeviceTrustCryptoServiceStateProviderMigrator, 52, 53)
     .with(SendMigrator, 53, 54)
     .with(MoveMasterKeyStateToProviderMigrator, 54, 55)
-    .with(KdfConfigMigrator, 55, CURRENT_VERSION);
+    .with(AuthRequestMigrator, 55, 56)
+    .with(KdfConfigMigrator, 56, CURRENT_VERSION);
 }
 
 export async function currentVersion(
