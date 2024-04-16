@@ -5,6 +5,7 @@ import { Component, Input } from "@angular/core";
 
 import { AvatarModule } from "../avatar";
 import { ButtonModule } from "../button";
+import { IconButtonModule } from "../icon-button";
 import { LinkModule } from "../link";
 import { TypographyModule } from "../typography";
 
@@ -47,17 +48,20 @@ export class PopupLayoutComponent {}
           Add
         </button>
         <!-- TODO update icon -->
-        <i class="bwi bwi-external-link" aria-hidden="true"></i>
-        <bit-avatar
-          *ngIf="variant === 'top-level' || variant === 'top-level-action'"
-          text="Ash Ketchum"
-          size="small"
-        ></bit-avatar>
+        <button bitIconButton="bwi-external-link" size="small">Pop out</button>
+        <!-- TODO reference browser/src/auth/popup/account-switching/current-account -->
+        <button class="tw-bg-transparent tw-border-none">
+          <bit-avatar
+            *ngIf="variant === 'top-level' || variant === 'top-level-action'"
+            text="Ash Ketchum"
+            size="small"
+          ></bit-avatar>
+        </button>
       </div>
     </header>
   `,
   standalone: true,
-  imports: [TypographyModule, CommonModule, AvatarModule, ButtonModule],
+  imports: [TypographyModule, CommonModule, AvatarModule, ButtonModule, IconButtonModule],
 })
 export class PopupHeaderComponent {
   @Input() variant: "top-level" | "top-level-action" | "sub-page" = "top-level-action";
@@ -83,52 +87,31 @@ export class PopupFooterComponent {}
 @Component({
   selector: "popup-bottom-navigation",
   template: `
-    <footer class="tw-p-3 tw-border-0 tw-border-solid tw-border-t tw-border-secondary-300 tw-flex">
-      <!-- top margin is offset for large font icons, look into better fix -->
-      <div class="tw-flex tw-justify-around tw-flex-1 tw-mt-1">
+    <footer class="tw-border-0 tw-border-solid tw-border-t tw-border-secondary-300 tw-flex">
+      <div class="tw-flex tw-flex-1">
         <a
-          class="tw-flex tw-flex-col tw-items-center tw-gap-1"
-          [ngClass]="activePage === 'vault' ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'"
-        >
-          <i *ngIf="activePage !== 'vault'" class="bwi bwi-lg bwi-lock" aria-hidden="true"></i>
-          <i *ngIf="activePage === 'vault'" class="bwi bwi-lg bwi-lock-f" aria-hidden="true"></i>
-          Vault
-        </a>
-        <a
-          class="tw-flex tw-flex-col tw-items-center tw-gap-1"
+          *ngFor="let button of navButtons"
+          class="tw-group tw-flex tw-flex-col tw-items-center tw-gap-1 tw-pb-2 tw-pt-3 tw-w-1/4 hover:tw-no-underline hover:tw-bg-primary-100 tw-border-2 tw-border-solid tw-border-transparent focus:tw-rounded-lg focus:tw-border-primary-500 "
           [ngClass]="
-            activePage === 'generator' ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'
+            activePage === button.page ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'
           "
+          title="{{ button.label }}"
         >
           <i
-            *ngIf="activePage !== 'generator'"
-            class="bwi bwi-lg bwi-generate"
+            *ngIf="activePage !== button.page"
+            class="bwi bwi-lg bwi-{{ button.iconKey }}"
             aria-hidden="true"
           ></i>
           <i
-            *ngIf="activePage === 'generator'"
-            class="bwi bwi-lg bwi-generate-f"
+            *ngIf="activePage === button.page"
+            class="bwi bwi-lg bwi-{{ button.iconKey }}-f"
             aria-hidden="true"
           ></i>
-          Generator
-        </a>
-        <a
-          class="tw-flex tw-flex-col tw-items-center tw-gap-1"
-          [ngClass]="activePage === 'send' ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'"
-        >
-          <i *ngIf="activePage !== 'send'" class="bwi bwi-lg bwi-send" aria-hidden="true"></i>
-          <i *ngIf="activePage === 'send'" class="bwi bwi-lg bwi-send-f" aria-hidden="true"></i>
-          Send
-        </a>
-        <a
-          class="tw-flex tw-flex-col tw-items-center tw-gap-1"
-          [ngClass]="
-            activePage === 'settings' ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'
-          "
-        >
-          <i *ngIf="activePage !== 'settings'" class="bwi bwi-lg bwi-cog" aria-hidden="true"></i>
-          <i *ngIf="activePage === 'settings'" class="bwi bwi-lg bwi-cog-f" aria-hidden="true"></i>
-          Settings
+          <span
+            class="tw-truncate tw-max-w-full"
+            [ngClass]="activePage !== button.page && 'group-hover:tw-underline'"
+            >{{ button.label }}</span
+          >
         </a>
       </div>
     </footer>
@@ -141,4 +124,27 @@ export class PopupBottomNavigationComponent {
   @Input() activePage: "vault" | "generator" | "send" | "settings";
   // TODO button functionality
   // TODO icon button states
+
+  navButtons = [
+    {
+      label: "Vault",
+      page: "vault",
+      iconKey: "lock",
+    },
+    {
+      label: "Generatorbutverylongversion",
+      page: "generator",
+      iconKey: "generate",
+    },
+    {
+      label: "Send",
+      page: "send",
+      iconKey: "send",
+    },
+    {
+      label: "Settings",
+      page: "settings",
+      iconKey: "cog",
+    },
+  ];
 }
