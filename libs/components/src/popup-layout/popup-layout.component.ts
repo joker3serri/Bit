@@ -2,6 +2,7 @@
 
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { RouterModule } from "@angular/router";
 
 import { AvatarModule } from "../avatar";
 import { ButtonModule } from "../button";
@@ -96,24 +97,25 @@ export class PopupFooterComponent {}
           <a
             *ngFor="let button of navButtons"
             class="tw-group tw-flex tw-flex-col tw-items-center tw-gap-1 tw-pb-2 tw-pt-3 tw-w-1/4 hover:tw-no-underline hover:tw-bg-primary-100 tw-border-2 tw-border-solid tw-border-transparent focus:tw-rounded-lg focus:tw-border-primary-500 "
-            [ngClass]="
-              activePage === button.page ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'
-            "
+            [ngClass]="rla.isActive ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'"
             title="{{ button.label }}"
+            routerLink="/{{ button.page }}"
+            routerLinkActive
+            #rla="routerLinkActive"
           >
             <i
-              *ngIf="activePage !== button.page"
+              *ngIf="!rla.isActive"
               class="bwi bwi-lg bwi-{{ button.iconKey }}"
               aria-hidden="true"
             ></i>
             <i
-              *ngIf="activePage === button.page"
+              *ngIf="rla.isActive"
               class="bwi bwi-lg bwi-{{ button.iconKey }}-f"
               aria-hidden="true"
             ></i>
             <span
               class="tw-truncate tw-max-w-full"
-              [ngClass]="activePage !== button.page && 'group-hover:tw-underline'"
+              [ngClass]="!rla.isActive && 'group-hover:tw-underline'"
               >{{ button.label }}</span
             >
           </a>
@@ -122,13 +124,10 @@ export class PopupFooterComponent {}
     </footer>
   `,
   standalone: true,
-  imports: [CommonModule, LinkModule],
+  imports: [CommonModule, LinkModule, RouterModule],
 })
 export class PopupBottomNavigationComponent {
-  // TODO change implementation to router link active
-  @Input() activePage: "vault" | "generator" | "send" | "settings";
   // TODO button functionality
-  // TODO icon button disabled state
 
   navButtons = [
     {
