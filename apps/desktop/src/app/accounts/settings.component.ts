@@ -3,14 +3,13 @@ import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, firstValueFrom, Observable, Subject } from "rxjs";
 import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
+import { AuthRequestServiceAbstraction } from "@bitwarden/auth/common";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { DeviceType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -21,10 +20,13 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { ThemeType, KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService } from "@bitwarden/components";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
-import { flagEnabled } from "../../platform/flags";
+import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
+import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 
 @Component({
   selector: "app-settings",
@@ -41,7 +43,6 @@ export class SettingsComponent implements OnInit {
   themeOptions: any[];
   clearClipboardOptions: any[];
   supportsBiometric: boolean;
-  additionalBiometricSettingsText: string;
   showAlwaysShowDock = false;
   requireEnableTray = false;
   showDuckDuckGoIntegrationOption = false;
@@ -61,6 +62,7 @@ export class SettingsComponent implements OnInit {
   showAppPreferences = true;
 
   currentUserEmail: string;
+  currentUserId: UserId;
 
   availableVaultTimeoutActions$: Observable<VaultTimeoutAction[]>;
   vaultTimeoutPolicyCallout: Observable<{
@@ -97,6 +99,7 @@ export class SettingsComponent implements OnInit {
       value: false,
       disabled: true,
     }),
+    enableHardwareAcceleration: true,
     enableDuckDuckGoBrowserIntegration: false,
     theme: [null as ThemeType | null],
     locale: [null as string | null],
@@ -115,12 +118,14 @@ export class SettingsComponent implements OnInit {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private messagingService: MessagingService,
     private cryptoService: CryptoService,
-    private modalService: ModalService,
-    private themingService: AbstractThemingService,
-    private settingsService: SettingsService,
+    private themeStateService: ThemeStateService,
+    private domainSettingsService: DomainSettingsService,
     private dialogService: DialogService,
     private userVerificationService: UserVerificationServiceAbstraction,
+    private desktopSettingsService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
+    private desktopAutofillSettingsService: DesktopAutofillSettingsService,
+    private authRequestService: AuthRequestServiceAbstraction,
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
@@ -144,7 +149,7 @@ export class SettingsComponent implements OnInit {
     this.startToTrayDescText = this.i18nService.t(startToTrayKey + "Desc");
 
     // DuckDuckGo browser is only for macos initially
-    this.showDuckDuckGoIntegrationOption = flagEnabled("showDDGSetting") && isMac;
+    this.showDuckDuckGoIntegrationOption = isMac;
 
     this.vaultTimeoutOptions = [
       // { name: i18nService.t('immediately'), value: 0 },
@@ -206,6 +211,7 @@ export class SettingsComponent implements OnInit {
       return;
     }
     this.currentUserEmail = await this.stateService.getEmail();
+    this.currentUserId = (await this.stateService.getUserId()) as UserId;
 
     this.availableVaultTimeoutActions$ = this.refreshTimeoutSettings$.pipe(
       switchMap(() => this.vaultTimeoutSettingsService.availableVaultTimeoutActions$()),
@@ -248,23 +254,28 @@ export class SettingsComponent implements OnInit {
       requirePasswordOnStart: await firstValueFrom(
         this.biometricStateService.requirePasswordOnStart$,
       ),
-      approveLoginRequests: (await this.stateService.getApproveLoginRequests()) ?? false,
+      approveLoginRequests:
+        (await this.authRequestService.getAcceptAuthRequests(this.currentUserId)) ?? false,
       clearClipboard: await firstValueFrom(this.autofillSettingsService.clearClipboardDelay$),
       minimizeOnCopyToClipboard: await this.stateService.getMinimizeOnCopyToClipboard(),
-      enableFavicons: !(await this.stateService.getDisableFavicon()),
-      enableTray: await this.stateService.getEnableTray(),
-      enableMinToTray: await this.stateService.getEnableMinimizeToTray(),
-      enableCloseToTray: await this.stateService.getEnableCloseToTray(),
-      startToTray: await this.stateService.getEnableStartToTray(),
-      openAtLogin: await this.stateService.getOpenAtLogin(),
-      alwaysShowDock: await this.stateService.getAlwaysShowDock(),
+      enableFavicons: await firstValueFrom(this.domainSettingsService.showFavicons$),
+      enableTray: await firstValueFrom(this.desktopSettingsService.trayEnabled$),
+      enableMinToTray: await firstValueFrom(this.desktopSettingsService.minimizeToTray$),
+      enableCloseToTray: await firstValueFrom(this.desktopSettingsService.closeToTray$),
+      startToTray: await firstValueFrom(this.desktopSettingsService.startToTray$),
+      openAtLogin: await firstValueFrom(this.desktopSettingsService.openAtLogin$),
+      alwaysShowDock: await firstValueFrom(this.desktopSettingsService.alwaysShowDock$),
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
-      enableDuckDuckGoBrowserIntegration:
-        await this.stateService.getEnableDuckDuckGoBrowserIntegration(),
-      theme: await this.stateService.getTheme(),
-      locale: (await this.stateService.getLocale()) ?? null,
+      enableDuckDuckGoBrowserIntegration: await firstValueFrom(
+        this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
+      ),
+      enableHardwareAcceleration: await firstValueFrom(
+        this.desktopSettingsService.hardwareAcceleration$,
+      ),
+      theme: await firstValueFrom(this.themeStateService.selectedTheme$),
+      locale: await firstValueFrom(this.i18nService.userSetLocale$),
     };
     this.form.setValue(initialValues, { emitEvent: false });
 
@@ -276,10 +287,6 @@ export class SettingsComponent implements OnInit {
     this.showMinToTray = this.platformUtilsService.getDevice() !== DeviceType.LinuxDesktop;
     this.showAlwaysShowDock = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
-    this.additionalBiometricSettingsText =
-      this.biometricText === "unlockWithTouchId"
-        ? "additionalTouchIdSettings"
-        : "additionalWindowsHelloSettings";
     this.previousVaultTimeout = this.form.value.vaultTimeout;
 
     this.refreshTimeoutSettings$
@@ -445,12 +452,12 @@ export class SettingsComponent implements OnInit {
     try {
       if (!enabled || !this.supportsBiometric) {
         this.form.controls.biometric.setValue(false, { emitEvent: false });
-        await this.stateService.setBiometricUnlock(null);
+        await this.biometricStateService.setBiometricUnlockEnabled(false);
         await this.cryptoService.refreshAdditionalKeys();
         return;
       }
 
-      await this.stateService.setBiometricUnlock(true);
+      await this.biometricStateService.setBiometricUnlockEnabled(true);
       if (this.isWindows) {
         // Recommended settings for Windows Hello
         this.form.controls.requirePasswordOnStart.setValue(true);
@@ -465,7 +472,7 @@ export class SettingsComponent implements OnInit {
       const biometricSet = await this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric);
       this.form.controls.biometric.setValue(biometricSet, { emitEvent: false });
       if (!biometricSet) {
-        await this.stateService.setBiometricUnlock(null);
+        await this.biometricStateService.setBiometricUnlockEnabled(false);
       }
     } finally {
       this.messagingService.send("redrawMenu");
@@ -498,21 +505,21 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveFavicons() {
-    await this.settingsService.setDisableFavicon(!this.form.value.enableFavicons);
+    await this.domainSettingsService.setShowFavicons(this.form.value.enableFavicons);
     this.messagingService.send("refreshCiphers");
   }
 
   async saveMinToTray() {
-    await this.stateService.setEnableMinimizeToTray(this.form.value.enableMinToTray);
+    await this.desktopSettingsService.setMinimizeToTray(this.form.value.enableMinToTray);
   }
 
   async saveCloseToTray() {
     if (this.requireEnableTray) {
       this.form.controls.enableTray.setValue(true);
-      await this.stateService.setEnableTray(this.form.value.enableTray);
+      await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
     }
 
-    await this.stateService.setEnableCloseToTray(this.form.value.enableCloseToTray);
+    await this.desktopSettingsService.setCloseToTray(this.form.value.enableCloseToTray);
   }
 
   async saveTray() {
@@ -529,9 +536,9 @@ export class SettingsComponent implements OnInit {
 
       if (confirm) {
         this.form.controls.startToTray.setValue(false, { emitEvent: false });
-        await this.stateService.setEnableStartToTray(this.form.value.startToTray);
+        await this.desktopSettingsService.setStartToTray(this.form.value.startToTray);
         this.form.controls.enableCloseToTray.setValue(false, { emitEvent: false });
-        await this.stateService.setEnableCloseToTray(this.form.value.enableCloseToTray);
+        await this.desktopSettingsService.setCloseToTray(this.form.value.enableCloseToTray);
       } else {
         this.form.controls.enableTray.setValue(true);
       }
@@ -539,25 +546,26 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    await this.stateService.setEnableTray(this.form.value.enableTray);
+    await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
+    // TODO: Ideally the DesktopSettingsService.trayEnabled$ could be subscribed to instead of using messaging.
     this.messagingService.send(this.form.value.enableTray ? "showTray" : "removeTray");
   }
 
   async saveStartToTray() {
     if (this.requireEnableTray) {
       this.form.controls.enableTray.setValue(true);
-      await this.stateService.setEnableTray(this.form.value.enableTray);
+      await this.desktopSettingsService.setTrayEnabled(this.form.value.enableTray);
     }
 
-    await this.stateService.setEnableStartToTray(this.form.value.startToTray);
+    await this.desktopSettingsService.setStartToTray(this.form.value.startToTray);
   }
 
   async saveLocale() {
-    await this.stateService.setLocale(this.form.value.locale);
+    await this.i18nService.setLocale(this.form.value.locale);
   }
 
   async saveTheme() {
-    await this.themingService.updateConfiguredTheme(this.form.value.theme);
+    await this.themeStateService.setSelectedTheme(this.form.value.theme);
   }
 
   async saveMinOnCopyToClipboard() {
@@ -569,13 +577,12 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveAlwaysShowDock() {
-    await this.stateService.setAlwaysShowDock(this.form.value.alwaysShowDock);
+    await this.desktopSettingsService.setAlwaysShowDock(this.form.value.alwaysShowDock);
   }
 
   async saveOpenAtLogin() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.stateService.setOpenAtLogin(this.form.value.openAtLogin);
+    await this.desktopSettingsService.setOpenAtLogin(this.form.value.openAtLogin);
+    // TODO: Ideally DesktopSettingsService.openAtLogin$ could be subscribed to directly rather than sending a message
     this.messagingService.send(
       this.form.value.openAtLogin ? "addOpenAtLogin" : "removeOpenAtLogin",
     );
@@ -636,7 +643,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveDdgBrowserIntegration() {
-    await this.stateService.setEnableDuckDuckGoBrowserIntegration(
+    await this.desktopAutofillSettingsService.setEnableDuckDuckGoBrowserIntegration(
       this.form.value.enableDuckDuckGoBrowserIntegration,
     );
 
@@ -657,8 +664,17 @@ export class SettingsComponent implements OnInit {
     );
   }
 
+  async saveHardwareAcceleration() {
+    await this.desktopSettingsService.setHardwareAcceleration(
+      this.form.value.enableHardwareAcceleration,
+    );
+  }
+
   async updateApproveLoginRequests() {
-    await this.stateService.setApproveLoginRequests(this.form.value.approveLoginRequests);
+    await this.authRequestService.setAcceptAuthRequests(
+      this.form.value.approveLoginRequests,
+      this.currentUserId,
+    );
   }
 
   ngOnDestroy() {
@@ -683,6 +699,17 @@ export class SettingsComponent implements OnInit {
         return "autoPromptTouchId";
       case DeviceType.WindowsDesktop:
         return "autoPromptWindowsHello";
+      default:
+        throw new Error("Unsupported platform");
+    }
+  }
+
+  get additionalBiometricSettingsText() {
+    switch (this.platformUtilsService.getDevice()) {
+      case DeviceType.MacOsDesktop:
+        return "additionalTouchIdSettings";
+      case DeviceType.WindowsDesktop:
+        return "additionalWindowsHelloSettings";
       default:
         throw new Error("Unsupported platform");
     }

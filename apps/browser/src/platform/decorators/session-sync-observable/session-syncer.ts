@@ -93,8 +93,12 @@ export class SessionSyncer {
   }
 
   async update(serializedValue: any) {
+    if (!serializedValue) {
+      return;
+    }
+
     const unBuiltValue = JSON.parse(serializedValue);
-    if (BrowserApi.manifestVersion !== 3 && BrowserApi.isBackgroundPage(self)) {
+    if (!BrowserApi.isManifestVersion(3) && BrowserApi.isBackgroundPage(self)) {
       await this.memoryStorageService.save(this.metaData.sessionKey, serializedValue);
     }
     const builder = SyncedItemMetadata.builder(this.metaData);
@@ -104,8 +108,12 @@ export class SessionSyncer {
   }
 
   private async updateSession(value: any) {
+    if (!value) {
+      return;
+    }
+
     const serializedValue = JSON.stringify(value);
-    if (BrowserApi.manifestVersion === 3 || BrowserApi.isBackgroundPage(self)) {
+    if (BrowserApi.isManifestVersion(3) || BrowserApi.isBackgroundPage(self)) {
       await this.memoryStorageService.save(this.metaData.sessionKey, serializedValue);
     }
     await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id, serializedValue });

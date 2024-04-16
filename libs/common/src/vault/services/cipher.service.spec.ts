@@ -1,23 +1,28 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
+import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { makeStaticByteArray } from "../../../spec/utils";
 import { ApiService } from "../../abstractions/api.service";
 import { SearchService } from "../../abstractions/search.service";
-import { SettingsService } from "../../abstractions/settings.service";
 import { AutofillSettingsService } from "../../autofill/services/autofill-settings.service";
-import { ConfigServiceAbstraction } from "../../platform/abstractions/config/config.service.abstraction";
+import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
+import { UriMatchStrategy } from "../../models/domain/domain-service";
+import { ConfigService } from "../../platform/abstractions/config/config.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { Utils } from "../../platform/misc/utils";
 import { EncArrayBuffer } from "../../platform/models/domain/enc-array-buffer";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { ContainerService } from "../../platform/services/container.service";
+import { UserId } from "../../types/guid";
 import { CipherKey, OrgKey } from "../../types/key";
 import { CipherFileUploadService } from "../abstractions/file-upload/cipher-file-upload.service";
-import { UriMatchType, FieldType } from "../enums";
+import { FieldType } from "../enums";
 import { CipherRepromptType } from "../enums/cipher-reprompt-type";
 import { CipherType } from "../enums/cipher-type";
 import { CipherData } from "../models/data/cipher.data";
@@ -53,7 +58,9 @@ const cipherData: CipherData = {
   key: "EncKey",
   reprompt: CipherRepromptType.None,
   login: {
-    uris: [{ uri: "EncryptedString", uriChecksum: "EncryptedString", match: UriMatchType.Domain }],
+    uris: [
+      { uri: "EncryptedString", uriChecksum: "EncryptedString", match: UriMatchStrategy.Domain },
+    ],
     username: "EncryptedString",
     password: "EncryptedString",
     passwordRevisionDate: "2022-01-31T12:00:00.000Z",
@@ -94,18 +101,22 @@ const cipherData: CipherData = {
     },
   ],
 };
+const mockUserId = Utils.newGuid() as UserId;
+let accountService: FakeAccountService;
 
 describe("Cipher Service", () => {
   const cryptoService = mock<CryptoService>();
   const stateService = mock<StateService>();
   const autofillSettingsService = mock<AutofillSettingsService>();
-  const settingsService = mock<SettingsService>();
+  const domainSettingsService = mock<DomainSettingsService>();
   const apiService = mock<ApiService>();
   const cipherFileUploadService = mock<CipherFileUploadService>();
   const i18nService = mock<I18nService>();
   const searchService = mock<SearchService>();
   const encryptService = mock<EncryptService>();
-  const configService = mock<ConfigServiceAbstraction>();
+  const configService = mock<ConfigService>();
+  accountService = mockAccountServiceWith(mockUserId);
+  const stateProvider = new FakeStateProvider(accountService);
 
   let cipherService: CipherService;
   let cipherObj: Cipher;
@@ -118,7 +129,7 @@ describe("Cipher Service", () => {
 
     cipherService = new CipherService(
       cryptoService,
-      settingsService,
+      domainSettingsService,
       apiService,
       i18nService,
       searchService,
@@ -127,6 +138,7 @@ describe("Cipher Service", () => {
       encryptService,
       cipherFileUploadService,
       configService,
+      stateProvider,
     );
 
     cipherObj = new Cipher(cipherData);
@@ -277,7 +289,7 @@ describe("Cipher Service", () => {
       it("should add a uri hash to login uris", async () => {
         encryptService.hash.mockImplementation((value) => Promise.resolve(`${value} hash`));
         cipherView.login.uris = [
-          { uri: "uri", match: UriMatchType.RegularExpression } as LoginUriView,
+          { uri: "uri", match: UriMatchStrategy.RegularExpression } as LoginUriView,
         ];
 
         const domain = await cipherService.encrypt(cipherView);
@@ -286,7 +298,7 @@ describe("Cipher Service", () => {
           {
             uri: new EncString("uri has been encrypted"),
             uriChecksum: new EncString("uri hash has been encrypted"),
-            match: UriMatchType.RegularExpression,
+            match: UriMatchStrategy.RegularExpression,
           },
         ]);
       });
