@@ -2,12 +2,13 @@ import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
-import { ProviderBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/provider-billing.service.abstraction";
 import { PlanType } from "@bitwarden/common/billing/enums";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
+
+import { WebProviderService } from "../../../admin-console/providers/services/web-provider.service";
 
 type CreateClientOrganizationParams = {
   providerId: string;
@@ -54,7 +55,7 @@ export class CreateClientOrganizationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private providerBillingService: ProviderBillingServiceAbstraction,
+    private webProviderService: WebProviderService,
   ) {}
 
   protected getPlanCardContainerClasses(selected: boolean) {
@@ -126,7 +127,7 @@ export class CreateClientOrganizationComponent implements OnInit {
 
     const selectedPlanCard = this.planCards.find((planCard) => planCard.selected);
 
-    await this.providerBillingService.createClientOrganization(
+    await this.webProviderService.createClientOrganization(
       this.dialogParams.providerId,
       this.formGroup.value.organizationName,
       this.formGroup.value.clientOwnerEmail,
