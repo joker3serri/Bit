@@ -7,8 +7,10 @@
     <i aria-hidden="true" class="bwi tw-text-xl tw-py-1.5 tw-px-2.5 {{ iconClass }}"></i>
     <div>
       <span class="tw-sr-only">{{ variant | i18n }}</span>
-      <p *ngIf="title" class="tw-font-semibold tw-mb-0">{{ title }}</p>
-      <p *ngFor="let m of messageArray" class="tw-mb-2 last:tw-mb-0">{{ m }}</p>
+      <p *ngIf="title" data-testid="toast-title" class="tw-font-semibold tw-mb-0">{{ title }}</p>
+      <p *ngFor="let m of messageArray" data-testid="toast-message" class="tw-mb-2 last:tw-mb-0">
+        {{ m }}
+      </p>
     </div>
     <button
       class="tw-ml-auto"
