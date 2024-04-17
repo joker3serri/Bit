@@ -33,7 +33,6 @@ describe("UserKeyInitService", () => {
         id: mockUserId,
         name: "name",
         email: "email",
-        status: 1,
       });
 
       (userKeyInitService as any).setUserKeyInMemoryIfAutoUserKeySet = jest.fn();
@@ -57,7 +56,6 @@ describe("UserKeyInitService", () => {
         id: mockUserId,
         name: "name",
         email: "email",
-        status: 1,
       });
 
       const mockUser2Id = Utils.newGuid() as UserId;
@@ -74,7 +72,6 @@ describe("UserKeyInitService", () => {
         id: mockUser2Id,
         name: "name",
         email: "email",
-        status: 1,
       });
 
       // Assert
