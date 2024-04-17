@@ -46,6 +46,7 @@ export class VaultItemsComponent {
   @Input() showPermissionsColumn = false;
   @Input() viewingOrgVault: boolean;
   @Input({ required: true }) flexibleCollectionsV1Enabled = false;
+  @Input() addAccessStatus: number;
 
   private _ciphers?: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -177,6 +178,7 @@ export class VaultItemsComponent {
         item.cipher !== undefined ||
         (item.collection !== undefined && this.canDeleteCollection(item.collection)),
     );
+
     this.dataSource.data = items;
   }
 

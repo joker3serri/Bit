@@ -100,7 +100,7 @@
           (onEvent)="event($event)"
         ></tr>
         <tr
-          *ngIf="item.cipher"
+          *ngIf="item.cipher && addAccessStatus !== 1"
           bitRow
           appVaultCipherRow
           alignContent="middle"

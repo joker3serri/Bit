@@ -28,7 +28,7 @@
   <div class="col-9">
     <bit-toggle-group
       *ngIf="showAddAccessToggle && activeFilter.selectedCollectionNode"
-      [selected]="addAccessStatus"
+      [selected]="addAccessStatus$ | async"
       (selectedChange)="addAccessToggle($event)"
       [attr.aria-label]="'addAccessFilter' | i18n"
     >
@@ -69,6 +69,7 @@
       [showBulkAddToCollections]="organization?.flexibleCollections"
       [viewingOrgVault]="true"
       [flexibleCollectionsV1Enabled]="flexibleCollectionsV1Enabled"
+      [addAccessStatus]="addAccessStatus$ | async"
     >
     </app-vault-items>
     <ng-container *ngIf="!flexibleCollectionsV1Enabled">
