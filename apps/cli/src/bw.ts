@@ -353,6 +353,15 @@ export class Main {
       migrationRunner,
     );
 
+    this.pinService = new PinService(
+      this.stateProvider,
+      this.stateService,
+      this.masterPasswordService,
+      this.keyGenerationService,
+      this.encryptService,
+      this.logService,
+    );
+
     this.cryptoService = new CryptoService(
       this.pinService,
       this.masterPasswordService,
@@ -566,15 +575,6 @@ export class Main {
       this.policyService,
       this.stateService,
       this.biometricStateService,
-    );
-
-    this.pinService = new PinService(
-      this.stateProvider,
-      this.stateService,
-      this.masterPasswordService,
-      this.keyGenerationService,
-      this.encryptService,
-      this.logService,
     );
 
     this.userVerificationService = new UserVerificationService(
