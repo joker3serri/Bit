@@ -30,11 +30,7 @@ import { CollectionView } from "@bitwarden/common/vault/models/view/collection.v
 import { DialogService } from "@bitwarden/components";
 
 import { CollectionAdminService } from "../../../vault/core/collection-admin.service";
-import {
-  CollectionAccessSelectionView,
-  InternalGroupService as GroupService,
-  GroupView,
-} from "../core";
+import { InternalGroupService as GroupService, GroupView } from "../core";
 import {
   AccessItemType,
   AccessItemValue,
@@ -252,36 +248,17 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
         ]) => {
           this.members = members;
           this.group = group;
-
-          this.collections = collections
-            .map<AccessItemView>((c) =>
-              mapCollectionToAccessItemView(
-                c,
-                organization,
-                flexibleCollectionsV1Enabled,
-                group == null ? undefined : group.collections.find((access) => access.id == c.id),
-              ),
-            )
-            // Remove any collection views that are not already assigned and that we don't have permissions to assign access to
-            .filter(
-              (item) => !item.readonly || group?.collections.some((access) => access.id == item.id),
-            );
+          this.collections = mapToAccessItemViews(
+            collections,
+            organization,
+            flexibleCollectionsV1Enabled,
+            group,
+          );
 
           if (this.group != undefined) {
             // Must detect changes so that AccessSelector @Inputs() are aware of the latest
             // collections/members set above, otherwise no selected values will be patched below
             this.changeDetectorRef.detectChanges();
-
-            const collectionAccess = this.group.collections
-              // The FormControl value only represents editable collection access - exclude readonly access selections
-              .filter(
-                (selection) => !this.collections.find((item) => item.id == selection.id).readonly,
-              )
-              .map((gc) => ({
-                id: gc.id,
-                type: AccessItemType.Collection,
-                permission: convertToPermission(gc),
-              }));
 
             this.groupForm.patchValue({
               name: this.group.name,
@@ -291,7 +268,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
                 id: m,
                 type: AccessItemType.Member,
               })),
-              collections: collectionAccess,
+              collections: mapToAccessSelections(group, this.collections),
             });
           }
 
@@ -380,18 +357,45 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
   };
 }
 
-function mapCollectionToAccessItemView(
-  collection: CollectionView,
+/**
+ * Maps the group's current collection access to AccessItemValues to populate the access-selector's FormControl
+ */
+function mapToAccessSelections(group: GroupView, items: AccessItemView[]): AccessItemValue[] {
+  return (
+    group.collections
+      // The FormControl value only represents editable collection access - exclude readonly access selections
+      .filter((selection) => !items.find((item) => item.id == selection.id).readonly)
+      .map((gc) => ({
+        id: gc.id,
+        type: AccessItemType.Collection,
+        permission: convertToPermission(gc),
+      }))
+  );
+}
+
+/**
+ * Maps the organization's collections to AccessItemViews to populate the access-selector's multi-select
+ */
+function mapToAccessItemViews(
+  collections: CollectionView[],
   organization: Organization,
   flexibleCollectionsV1Enabled: boolean,
-  accessSelection?: CollectionAccessSelectionView,
-): AccessItemView {
-  return {
-    id: collection.id,
-    type: AccessItemType.Collection,
-    labelName: collection.name,
-    listName: collection.name,
-    readonly: !collection.canEdit(organization, flexibleCollectionsV1Enabled),
-    readonlyPermission: accessSelection ? convertToPermission(accessSelection) : undefined,
-  };
+  group?: GroupView,
+): AccessItemView[] {
+  return (
+    collections
+      .map<AccessItemView>((c) => {
+        const accessSelection = group?.collections.find((access) => access.id == c.id) ?? undefined;
+        return {
+          id: c.id,
+          type: AccessItemType.Collection,
+          labelName: c.name,
+          listName: c.name,
+          readonly: !c.canEdit(organization, flexibleCollectionsV1Enabled),
+          readonlyPermission: accessSelection ? convertToPermission(accessSelection) : undefined,
+        };
+      })
+      // Remove any collection views that are not already assigned and that we don't have permissions to assign access to
+      .filter((item) => !item.readonly || group?.collections.some((access) => access.id == item.id))
+  );
 }
