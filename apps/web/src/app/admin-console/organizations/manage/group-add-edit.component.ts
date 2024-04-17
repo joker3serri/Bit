@@ -237,10 +237,19 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
       this.restrictGroupAccess$,
       this.accountService.activeAccount$,
       this.organization$,
+      this.flexibleCollectionsV1Enabled$,
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(
-        ([collections, members, group, restrictGroupAccess, activeAccount, organization]) => {
+        ([
+          collections,
+          members,
+          group,
+          restrictGroupAccess,
+          activeAccount,
+          organization,
+          flexibleCollectionsV1Enabled,
+        ]) => {
           this.members = members;
           this.group = group;
 
@@ -249,7 +258,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
               mapCollectionToAccessItemView(
                 c,
                 organization,
-                true,
+                flexibleCollectionsV1Enabled,
                 group == null ? undefined : group.collections.find((access) => access.id == c.id),
               ),
             )
@@ -263,6 +272,17 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
             // collections/members set above, otherwise no selected values will be patched below
             this.changeDetectorRef.detectChanges();
 
+            const collectionAccess = this.group.collections
+              // The FormControl value only represents editable collection access - exclude readonly access selections
+              .filter(
+                (selection) => !this.collections.find((item) => item.id == selection.id).readonly,
+              )
+              .map((gc) => ({
+                id: gc.id,
+                type: AccessItemType.Collection,
+                permission: convertToPermission(gc),
+              }));
+
             this.groupForm.patchValue({
               name: this.group.name,
               externalId: this.group.externalId,
@@ -271,11 +291,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
                 id: m,
                 type: AccessItemType.Member,
               })),
-              collections: this.group.collections.map((gc) => ({
-                id: gc.id,
-                type: AccessItemType.Collection,
-                permission: convertToPermission(gc),
-              })),
+              collections: collectionAccess,
             });
           }
 
