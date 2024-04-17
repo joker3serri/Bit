@@ -50,6 +50,7 @@ import {
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
+import { ApplicationLifetimeService } from "@bitwarden/common/platform/abstractions/application-lifetime.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -63,6 +64,7 @@ import { StateFactory } from "@bitwarden/common/platform/factories/state-factory
 import { Account } from "@bitwarden/common/platform/models/domain/account";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
+import { ApplicationLifetimeHandler } from "@bitwarden/common/platform/services/application-lifetime.handler";
 import { BroadcasterService } from "@bitwarden/common/platform/services/broadcaster.service";
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
 import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
@@ -225,6 +227,7 @@ export class Main {
   configService: ConfigService;
   accountService: AccountService;
   globalStateProvider: GlobalStateProvider;
+  applicationLifetimeServices: ApplicationLifetimeService[] = [];
   singleUserStateProvider: SingleUserStateProvider;
   activeUserStateProvider: ActiveUserStateProvider;
   derivedStateProvider: DerivedStateProvider;
@@ -740,6 +743,11 @@ export class Main {
     this.containerService.attachToGlobal(global);
     await this.i18nService.init();
     this.twoFactorService.init();
+
+    const applicationLifetimeHandler = new ApplicationLifetimeHandler(
+      this.applicationLifetimeServices,
+    );
+    await applicationLifetimeHandler.runOnStart();
   }
 }
 

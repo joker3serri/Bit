@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { APP_INITIALIZER, NgModule, Optional, SkipSelf } from "@angular/core";
 
+import { AngularApplicationLifetimeHandler } from "@bitwarden/angular/platform/services/angular-application-lifetime.handler";
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   SECURE_STORAGE,
@@ -19,6 +20,7 @@ import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { ApplicationLifetimeService } from "@bitwarden/common/platform/abstractions/application-lifetime.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -28,6 +30,8 @@ import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/p
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
+import { ApplicationLifetimeHandler } from "@bitwarden/common/platform/services/application-lifetime.handler";
+import { LoggingLifetimeService } from "@bitwarden/common/platform/services/logging-lifetime.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
