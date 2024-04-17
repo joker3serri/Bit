@@ -3,14 +3,12 @@ import { Component, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
-import { ButtonModule } from "../button";
+import { ButtonModule } from "@bitwarden/components/src/button";
 
-import {
-  PopupLayoutComponent,
-  PopupHeaderComponent,
-  PopupFooterComponent,
-  PopupBottomNavigationComponent,
-} from "./popup-layout.component";
+import { PopupBottomNavigationComponent } from "./popup-bottom-navigation.component";
+import { PopupFooterComponent } from "./popup-footer.component";
+import { PopupHeaderComponent } from "./popup-header.component";
+import { PopupLayoutComponent } from "./popup-layout.component";
 
 @Component({
   selector: "vault-placeholder",
