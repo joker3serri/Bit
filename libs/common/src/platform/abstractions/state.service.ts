@@ -77,10 +77,6 @@ export abstract class StateService<T extends Account = Account> {
   /**
    * @deprecated For backwards compatible purposes only, use DesktopAutofillSettingsService
    */
-  getEnableDuckDuckGoBrowserIntegration: (options?: StorageOptions) => Promise<boolean>;
-  /**
-   * @deprecated For backwards compatible purposes only, use DesktopAutofillSettingsService
-   */
   setEnableDuckDuckGoBrowserIntegration: (
     value: boolean,
     options?: StorageOptions,

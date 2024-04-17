@@ -571,13 +571,6 @@ export class StateService<
     );
   }
 
-  async getEnableDuckDuckGoBrowserIntegration(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.enableDuckDuckGoBrowserIntegration ?? false
-    );
-  }
-
   async setEnableDuckDuckGoBrowserIntegration(
     value: boolean,
     options?: StorageOptions,

@@ -295,8 +295,7 @@ export class Main {
           (await this.stateService.getEnableBrowserIntegration()) ||
           (await firstValueFrom(
             this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
-          )) ||
-          (await this.stateService.getEnableDuckDuckGoBrowserIntegration())
+          ))
         ) {
           this.nativeMessagingMain.listen();
         }
