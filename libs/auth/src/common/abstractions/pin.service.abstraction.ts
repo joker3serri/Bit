@@ -66,14 +66,12 @@ export abstract class PinServiceAbstraction {
   /**
    * Gets the user's PinLockType {@link PinLockType}
    * @param userId The user id to check. If not provided, the current user is used
-   * TODO-rr-bw: verify
    */
   getPinLockType: (userId?: UserId) => Promise<PinLockType>;
 
   /**
    * Declares whether or not the user has a PIN set (either persistant or ephemeral)
    * @param userId The user id to check. If not provided, the current user is used
-   * TODO-rr-bw: verify
    */
   isPinSet: (userId?: UserId) => Promise<boolean>;
 

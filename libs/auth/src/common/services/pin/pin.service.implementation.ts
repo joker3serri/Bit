@@ -48,7 +48,7 @@ const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<EncryptedStri
 
 const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
   deserializer: (value) => value,
-  clearOn: [], // TODO-rr-bw: verify
+  clearOn: ["logout"],
 });
 
 export class PinService implements PinServiceAbstraction {
@@ -149,7 +149,7 @@ export class PinService implements PinServiceAbstraction {
   }
 
   async isPinSet(userId?: UserId): Promise<boolean> {
-    return (await this.getPinLockType(userId)) !== "DISABLED"; // TODO-rr-bw: verify
+    return (await this.getPinLockType(userId)) !== "DISABLED";
   }
 
   async decryptUserKeyWithPin(pin: string): Promise<UserKey | null> {

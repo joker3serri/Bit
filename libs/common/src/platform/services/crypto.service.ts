@@ -540,7 +540,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearPinKeys(userId?: UserId): Promise<void> {
-    // TODO-rr-bw
+    // TODO-rr-bw: find solution since it seems electron storage doesn't like setting values to null
     // await this.pinService.setPinKeyEncryptedUserKey(null, userId);
     // await this.pinService.setPinKeyEncryptedUserKeyEphemeral(null, userId);
     // await this.pinService.setProtectedPin(null, userId);
@@ -751,7 +751,7 @@ export class CryptoService implements CryptoServiceAbstraction {
       // migrated once used to unlock
       await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
     }
-    // TODO-rr-bw
+    // TODO-rr-bw: find solution since it seems electron storage doesn't like setting values to null
     // else {
     //   await this.pinService.setPinKeyEncryptedUserKey(null, userId);
     //   await this.pinService.setPinKeyEncryptedUserKeyEphemeral(null, userId);
