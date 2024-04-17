@@ -73,9 +73,10 @@ export class NativeMessageHandlerService {
 
     try {
       const remotePublicKey = Utils.fromB64ToArray(publicKey);
-      const ddgEnabled = await firstValueFrom(
-        this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
-      );
+      const ddgEnabled =
+        (await firstValueFrom(
+          this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
+        )) || (await this.stateService.getEnableDuckDuckGoBrowserIntegration());
 
       if (!ddgEnabled) {
         this.sendResponse({

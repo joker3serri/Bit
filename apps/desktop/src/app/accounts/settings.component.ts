@@ -268,9 +268,10 @@ export class SettingsComponent implements OnInit {
       enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
       enableBrowserIntegrationFingerprint:
         await this.stateService.getEnableBrowserIntegrationFingerprint(),
-      enableDuckDuckGoBrowserIntegration: await firstValueFrom(
-        this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
-      ),
+      enableDuckDuckGoBrowserIntegration:
+        (await firstValueFrom(
+          this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
+        )) || (await this.stateService.getEnableDuckDuckGoBrowserIntegration()),
       enableHardwareAcceleration: await firstValueFrom(
         this.desktopSettingsService.hardwareAcceleration$,
       ),
@@ -644,6 +645,11 @@ export class SettingsComponent implements OnInit {
 
   async saveDdgBrowserIntegration() {
     await this.desktopAutofillSettingsService.setEnableDuckDuckGoBrowserIntegration(
+      this.form.value.enableDuckDuckGoBrowserIntegration,
+    );
+
+    // Adding to cover users on a previous version of DDG
+    await this.stateService.setEnableDuckDuckGoBrowserIntegration(
       this.form.value.enableDuckDuckGoBrowserIntegration,
     );
 
