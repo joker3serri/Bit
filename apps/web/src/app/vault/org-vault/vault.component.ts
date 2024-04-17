@@ -321,6 +321,9 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const allCiphers$ = organization$.pipe(
       concatMap(async (organization) => {
+        if (!this.showAddAccessToggle) {
+          this.addAccessToggle(0);
+        }
         let ciphers;
 
         if (this.flexibleCollectionsV1Enabled) {
@@ -402,7 +405,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           );
         }
 
-        if (addAccessStatus === 1) {
+        if (addAccessStatus === 1 && this.showAddAccessToggle) {
           collectionsToReturn = collectionsToReturn.filter((c: any) => c.addAccess);
         }
         return collectionsToReturn;
