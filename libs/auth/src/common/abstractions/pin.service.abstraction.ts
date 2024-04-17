@@ -9,33 +9,21 @@ import { PinLockType } from "../services";
 export abstract class PinServiceAbstraction {
   /**
    * Gets the UserKey, encrypted by the PinKey.
-   * @remarks Persists through a client reset.
-   *          Used when require lock with MP on client restart is disabled.
-   *          {@link SetPinComponent.setPinForm.masterPassOnRestart}
    */
   getPinKeyEncryptedUserKey: (userId?: UserId) => Promise<EncString>;
 
   /**
    * Sets the UserKey, encrypted by the PinKey.
-   * @remarks Persists through a client reset.
-   *          Used when require lock with MP on client restart is disabled.
-   *          {@link SetPinComponent.setPinForm.masterPassOnRestart}
    */
   setPinKeyEncryptedUserKey: (value: EncString, userId?: UserId) => Promise<void>;
 
   /**
    * Gets the ephemeral ("short-lived") version of the UserKey, encrypted by the PinKey.
-   * @remarks Does not persist through a client reset.
-   *          Used when require lock with MP on client restart is enabled.
-   *          {@link SetPinComponent.setPinForm.masterPassOnRestart}
    */
   getPinKeyEncryptedUserKeyEphemeral: (userId?: UserId) => Promise<EncString>;
 
   /**
    * Sets the ephemeral ("short-lived") version of the UserKey, encrypted by the PinKey.
-   * @remarks Does not persist through a client reset.
-   *          Used when require lock with MP on client restart is enabled.
-   *          {@link SetPinComponent.setPinForm.masterPassOnRestart}
    */
   setPinKeyEncryptedUserKeyEphemeral: (value: EncString, userId?: UserId) => Promise<void>;
 
@@ -51,8 +39,8 @@ export abstract class PinServiceAbstraction {
 
   /**
    * Stores the UserKey, encrypted by the PinKey
-   * - If require MP on client reset is disabled, stores the persistant version via {@link getPinKeyEncryptedUserKey}
-   * - If require MP on client reset is enabled, stores the ephemeral version via {@link getPinKeyEncryptedUserKeyEphemeral}
+   * - If require MP on client reset is disabled, stores the persistant version via {@link setPinKeyEncryptedUserKey}
+   * - If require MP on client reset is enabled, stores the ephemeral version via {@link setPinKeyEncryptedUserKeyEphemeral}
    * TODO-rr-bw: rename method? the name is very similar to getPinKeyEncryptedUserKey(), which only stores the persistant version
    * TODO-rr-bw: OR consider moving back to CryptoService within the storeAdditionalKeys() method since it is only used there once
    */
@@ -97,7 +85,7 @@ export abstract class PinServiceAbstraction {
 
   /**
    * Creates a new PinKey that encrypts the UserKey instead of encrypting the MasterKey. Clears the old PinKey from state.
-   * @param masterPasswordOnRestart True if Master Password on Restart is enabled
+   * @param requireMasterPasswordOnClientRestart Whether or not the Master Password is required on client restart
    * @param pin User's PIN
    * @param email User's email
    * @param kdf User's KdfType
@@ -107,7 +95,7 @@ export abstract class PinServiceAbstraction {
    * @returns The UserKey
    */
   abstract decryptAndMigrateOldPinKey(
-    masterPasswordOnRestart: boolean,
+    requireMasterPasswordOnClientRestart: boolean,
     pin: string,
     email: string,
     kdf: KdfType,
@@ -123,6 +111,6 @@ export abstract class PinServiceAbstraction {
     salt: string,
     kdf: KdfType,
     kdfConfig: KdfConfig,
-    protectedKeyCs?: EncString,
+    oldPinKeyEncryptedMasterKey?: EncString,
   ): Promise<MasterKey>;
 }

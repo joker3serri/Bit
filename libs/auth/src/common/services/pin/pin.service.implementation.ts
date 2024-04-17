@@ -28,6 +28,10 @@ import { PinServiceAbstraction } from "../../abstractions/pin.service.abstractio
  */
 export type PinLockType = "DISABLED" | "PERSISTANT" | "TRANSIENT";
 
+/**
+ * Persists through a client reset. Used when require lock with MP on client restart is disabled.
+ * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
+ */
 const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
   "pinKeyEncryptedUserKey",
@@ -37,6 +41,10 @@ const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
   },
 );
 
+/**
+ * Does NOT persist through a client reset. Used when require lock with MP on client restart is enabled.
+ * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
+ */
 const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<EncryptedString>(
   PIN_MEMORY,
   "pinKeyEncryptedUserKeyEphemeral",
@@ -155,18 +163,20 @@ export class PinService implements PinServiceAbstraction {
   async decryptUserKeyWithPin(pin: string): Promise<UserKey | null> {
     try {
       const pinLockType: PinLockType = await this.getPinLockType();
+      const requireMasterPasswordOnClientRestart = pinLockType === "TRANSIENT";
 
       const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
         await this.getPinKeyEncryptedKeys(pinLockType);
 
       const kdf: KdfType = await this.stateService.getKdfType();
       const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
-      let userKey: UserKey;
       const email = await this.stateService.getEmail();
+
+      let userKey: UserKey;
 
       if (oldPinKeyEncryptedMasterKey) {
         userKey = await this.decryptAndMigrateOldPinKey(
-          pinLockType === "TRANSIENT",
+          requireMasterPasswordOnClientRestart,
           pin,
           email,
           kdf,
@@ -265,20 +275,20 @@ export class PinService implements PinServiceAbstraction {
     salt: string,
     kdf: KdfType,
     kdfConfig: KdfConfig,
-    pinKeyEncryptedMasterKey?: EncString,
+    oldPinKeyEncryptedMasterKey?: EncString,
   ): Promise<MasterKey> {
-    if (!pinKeyEncryptedMasterKey) {
-      const pinKeyEncryptedMasterKeyString = await this.stateService.getEncryptedPinProtected();
+    if (!oldPinKeyEncryptedMasterKey) {
+      const oldPinKeyEncryptedMasterKeyString = await this.stateService.getEncryptedPinProtected();
 
-      if (pinKeyEncryptedMasterKeyString == null) {
+      if (oldPinKeyEncryptedMasterKeyString == null) {
         throw new Error("No PIN encrypted key found.");
       }
 
-      pinKeyEncryptedMasterKey = new EncString(pinKeyEncryptedMasterKeyString);
+      oldPinKeyEncryptedMasterKey = new EncString(oldPinKeyEncryptedMasterKeyString);
     }
 
     const pinKey = await this.makePinKey(pin, salt, kdf, kdfConfig);
-    const masterKey = await this.encryptService.decryptToBytes(pinKeyEncryptedMasterKey, pinKey);
+    const masterKey = await this.encryptService.decryptToBytes(oldPinKeyEncryptedMasterKey, pinKey);
 
     return new SymmetricCryptoKey(masterKey) as MasterKey;
   }

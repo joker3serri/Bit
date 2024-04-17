@@ -10,11 +10,11 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Directive()
 export class SetPinComponent implements OnInit {
-  showMasterPassOnRestart = true;
+  showMasterPasswordOnClientRestart = true;
 
   setPinForm = this.formBuilder.group({
     pin: ["", [Validators.required]],
-    masterPassOnRestart: true,
+    requireMasterPasswordOnClientRestart: true,
   });
 
   constructor(
@@ -29,13 +29,15 @@ export class SetPinComponent implements OnInit {
   async ngOnInit() {
     const hasMasterPassword = await this.userVerificationService.hasMasterPassword();
 
-    this.setPinForm.controls.masterPassOnRestart.setValue(hasMasterPassword);
-    this.showMasterPassOnRestart = hasMasterPassword;
+    this.setPinForm.controls.requireMasterPasswordOnClientRestart.setValue(hasMasterPassword);
+    this.showMasterPasswordOnClientRestart = hasMasterPassword;
   }
 
   submit = async () => {
     const pin = this.setPinForm.get("pin").value;
-    const masterPassOnRestart = this.setPinForm.get("masterPassOnRestart").value;
+    const requireMasterPasswordOnClientRestart = this.setPinForm.get(
+      "requireMasterPasswordOnClientRestart",
+    ).value;
 
     if (Utils.isNullOrWhitespace(pin)) {
       this.dialogRef.close(false);
@@ -54,7 +56,7 @@ export class SetPinComponent implements OnInit {
 
     await this.pinService.setProtectedPin(userKeyEncryptedPin.encryptedString);
 
-    if (masterPassOnRestart) {
+    if (requireMasterPasswordOnClientRestart) {
       await this.pinService.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey);
     } else {
       await this.pinService.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey);
