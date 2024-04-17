@@ -172,24 +172,11 @@ export class AccountSettings {
   }
 }
 
-export class AccountTokens {
-  securityStamp?: string;
-
-  static fromJSON(obj: Jsonify<AccountTokens>): AccountTokens {
-    if (obj == null) {
-      return null;
-    }
-
-    return Object.assign(new AccountTokens(), obj);
-  }
-}
-
 export class Account {
   data?: AccountData = new AccountData();
   keys?: AccountKeys = new AccountKeys();
   profile?: AccountProfile = new AccountProfile();
   settings?: AccountSettings = new AccountSettings();
-  tokens?: AccountTokens = new AccountTokens();
 
   constructor(init: Partial<Account>) {
     Object.assign(this, {
@@ -209,10 +196,6 @@ export class Account {
         ...new AccountSettings(),
         ...init?.settings,
       },
-      tokens: {
-        ...new AccountTokens(),
-        ...init?.tokens,
-      },
     });
   }
 
@@ -226,7 +209,6 @@ export class Account {
       data: AccountData.fromJSON(json?.data),
       profile: AccountProfile.fromJSON(json?.profile),
       settings: AccountSettings.fromJSON(json?.settings),
-      tokens: AccountTokens.fromJSON(json?.tokens),
     });
   }
 }
