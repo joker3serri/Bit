@@ -1,10 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 
-import { AvatarModule } from "@bitwarden/components/src/avatar";
-import { ButtonModule } from "@bitwarden/components/src/button";
-import { IconButtonModule } from "@bitwarden/components/src/icon-button";
-import { TypographyModule } from "@bitwarden/components/src/typography";
+import {
+  AvatarModule,
+  ButtonModule,
+  IconButtonModule,
+  TypographyModule,
+} from "@bitwarden/components";
 
 @Component({
   selector: "popup-header",

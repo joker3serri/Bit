@@ -1,4 +1,5 @@
 {
+  "extends": "../../libs/shared/tsconfig",
   "compilerOptions": {
     "moduleResolution": "node",
     "noImplicitAny": true,

@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { LinkModule } from "@bitwarden/components/src/link";
+import { LinkModule } from "@bitwarden/components";
 
 @Component({
   selector: "popup-bottom-navigation",
