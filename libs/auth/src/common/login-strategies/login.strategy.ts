@@ -9,7 +9,7 @@ import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
+import { Argon2KdfConfig, PBKDF2KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { DeviceRequest } from "@bitwarden/common/auth/models/request/identity-token/device.request";
 import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/sso-token.request";
@@ -203,12 +203,13 @@ export abstract class LoginStrategy {
     );
 
     await this.KdfConfigService.setKdfConfig(
-      new KdfConfig(
-        tokenResponse.kdfIterations,
-        tokenResponse.kdf as KdfType,
-        tokenResponse.kdfMemory,
-        tokenResponse.kdfParallelism,
-      ),
+      tokenResponse.kdf === KdfType.PBKDF2_SHA256
+        ? new PBKDF2KdfConfig(tokenResponse.kdfIterations)
+        : new Argon2KdfConfig(
+            tokenResponse.kdfIterations,
+            tokenResponse.kdfMemory,
+            tokenResponse.kdfParallelism,
+          ),
     );
 
     await this.billingAccountProfileStateService.setHasPremium(accountInformation.premium, false);

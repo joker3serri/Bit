@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import {
   ARGON2_ITERATIONS,
   ARGON2_MEMORY,
@@ -9,7 +11,7 @@ import {
 export type KdfConfig = PBKDF2KdfConfig | Argon2KdfConfig;
 
 export class PBKDF2KdfConfig {
-  kdfType: KdfType.PBKDF2_SHA256;
+  kdfType: KdfType.PBKDF2_SHA256 = KdfType.PBKDF2_SHA256;
   iterations: number;
 
   constructor(iterations?: number) {
@@ -23,10 +25,14 @@ export class PBKDF2KdfConfig {
       );
     }
   }
+
+  static fromJSON(json: Jsonify<PBKDF2KdfConfig>): PBKDF2KdfConfig {
+    return new PBKDF2KdfConfig(json.iterations);
+  }
 }
 
 export class Argon2KdfConfig {
-  kdfType: KdfType.Argon2id;
+  kdfType: KdfType.Argon2id = KdfType.Argon2id;
   iterations: number;
   memory: number;
   parallelism: number;
@@ -55,5 +61,9 @@ export class Argon2KdfConfig {
         `Argon2 parallelism must be between ${ARGON2_PARALLELISM.min} and ${ARGON2_PARALLELISM.max}.`,
       );
     }
+  }
+
+  static fromJSON(json: Jsonify<Argon2KdfConfig>): Argon2KdfConfig {
+    return new Argon2KdfConfig(json.iterations, json.memory, json.parallelism);
   }
 }

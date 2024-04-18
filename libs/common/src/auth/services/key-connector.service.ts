@@ -7,6 +7,7 @@ import { KeysRequest } from "../../models/request/keys.request";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { LogService } from "../../platform/abstractions/log.service";
+import { KdfType } from "../../platform/enums/kdf-type.enum";
 import { Utils } from "../../platform/misc/utils";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import {
@@ -20,7 +21,7 @@ import { AccountService } from "../abstractions/account.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
-import { KdfConfig } from "../models/domain/kdf-config";
+import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "../models/domain/kdf-config";
 import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user-key.request";
 import { SetKeyConnectorKeyRequest } from "../models/request/set-key-connector-key.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -133,7 +134,10 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
       userDecryptionOptions,
     } = tokenResponse;
     const password = await this.keyGenerationService.createKey(512);
-    const kdfConfig = new KdfConfig(kdfIterations, kdf, kdfMemory, kdfParallelism);
+    const kdfConfig: KdfConfig =
+      kdf === KdfType.PBKDF2_SHA256
+        ? new PBKDF2KdfConfig(kdfIterations)
+        : new Argon2KdfConfig(kdfIterations, kdfMemory, kdfParallelism);
 
     const masterKey = await this.cryptoService.makeMasterKey(
       password.keyB64,

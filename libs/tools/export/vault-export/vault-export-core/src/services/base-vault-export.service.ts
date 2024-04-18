@@ -2,6 +2,7 @@ import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -29,11 +30,14 @@ export class BaseVaultExportService {
       salt: salt,
       kdfType: kdfConfig.kdfType,
       kdfIterations: kdfConfig.iterations,
-      kdfMemory: kdfConfig.memory,
-      kdfParallelism: kdfConfig.parallelism,
       encKeyValidation_DO_NOT_EDIT: encKeyValidation.encryptedString,
       data: encText.encryptedString,
     };
+
+    if (kdfConfig.kdfType === KdfType.Argon2id) {
+      jsonDoc.kdfMemory = kdfConfig.memory;
+      jsonDoc.kdfParallelism = kdfConfig.parallelism;
+    }
 
     return JSON.stringify(jsonDoc, null, "  ");
   }

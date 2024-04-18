@@ -15,8 +15,10 @@ export class SetKeyConnectorKeyRequest {
     this.key = key;
     this.kdf = kdfConfig.kdfType;
     this.kdfIterations = kdfConfig.iterations;
-    this.kdfMemory = kdfConfig.memory;
-    this.kdfParallelism = kdfConfig.parallelism;
+    if (kdfConfig.kdfType === KdfType.Argon2id) {
+      this.kdfMemory = kdfConfig.memory;
+      this.kdfParallelism = kdfConfig.parallelism;
+    }
     this.orgIdentifier = orgIdentifier;
     this.keys = keys;
   }

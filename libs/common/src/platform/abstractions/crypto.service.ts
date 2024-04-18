@@ -114,7 +114,6 @@ export abstract class CryptoService {
    * Generates a master key from the provided password
    * @param password The user's master password
    * @param email The user's email
-   * @param kdf The user's selected key derivation function to use
    * @param KdfConfig The user's key derivation function configuration
    * @returns A master key derived from the provided password
    */
@@ -253,7 +252,6 @@ export abstract class CryptoService {
   /**
    * @param pin The user's pin
    * @param salt The user's salt
-   * @param kdf The user's kdf
    * @param kdfConfig The user's kdf config
    * @returns A key derived from the user's pin
    */
@@ -269,7 +267,6 @@ export abstract class CryptoService {
    * Decrypts the user key with their pin
    * @param pin The user's PIN
    * @param salt The user's salt
-   * @param kdf The user's KDF
    * @param kdfConfig The user's KDF config
    * @param pinProtectedUserKey The user's PIN protected symmetric key, if not provided
    * it will be retrieved from storage
@@ -287,7 +284,6 @@ export abstract class CryptoService {
    * @param masterPasswordOnRestart True if Master Password on Restart is enabled
    * @param pin User's PIN
    * @param email User's email
-   * @param kdf User's KdfType
    * @param kdfConfig User's KdfConfig
    * @param oldPinKey The old Pin key from state (retrieved from different
    * places depending on if Master Password on Restart was enabled)

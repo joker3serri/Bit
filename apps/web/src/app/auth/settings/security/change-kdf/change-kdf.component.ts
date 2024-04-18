@@ -47,6 +47,14 @@ export class ChangeKdfComponent implements OnInit {
     this.kdfConfig = await this.kdfConfigService.getKdfConfig();
   }
 
+  isPBKDF2(t: KdfConfig): t is PBKDF2KdfConfig {
+    return t instanceof PBKDF2KdfConfig;
+  }
+
+  isArgon2(t: KdfConfig): t is Argon2KdfConfig {
+    return t instanceof Argon2KdfConfig;
+  }
+
   async onChangeKdf(newValue: KdfType) {
     if (newValue === KdfType.PBKDF2_SHA256) {
       this.kdfConfig = new PBKDF2KdfConfig();
@@ -60,7 +68,6 @@ export class ChangeKdfComponent implements OnInit {
   async openConfirmationModal() {
     this.dialogService.open(ChangeKdfConfirmationComponent, {
       data: {
-        kdf: this.kdfConfig.kdfType,
         kdfConfig: this.kdfConfig,
       },
     });
