@@ -175,7 +175,7 @@ export class PinService implements PinServiceAbstraction {
       let userKey: UserKey;
 
       if (oldPinKeyEncryptedMasterKey) {
-        userKey = await this.decryptAndMigrateOldPinKey(
+        userKey = await this.decryptAndMigrateOldPinKeyEncryptedMasterKey(
           requireMasterPasswordOnClientRestart,
           pin,
           email,
@@ -204,7 +204,16 @@ export class PinService implements PinServiceAbstraction {
     }
   }
 
-  async decryptUserKey(
+  /**
+   * Decrypts the UserKey with the provided PIN
+   * @param pin User's PIN
+   * @param salt User's salt
+   * @param kdf User's KDF
+   * @param kdfConfig User's KDF config
+   * @param pinKeyEncryptedUserKey The UserKey, encrypted by the PinKey. If not provided it will be retrieved from storage.
+   * @returns The UserKey
+   */
+  private async decryptUserKey(
     pin: string,
     salt: string,
     kdf: KdfType,
@@ -224,8 +233,28 @@ export class PinService implements PinServiceAbstraction {
     return new SymmetricCryptoKey(userKey) as UserKey;
   }
 
-  async decryptAndMigrateOldPinKey(
-    masterPasswordOnRestart: boolean,
+  /**
+   * @summary Creates a new PinKey that encrypts the UserKey instead of encrypting the MasterKey. Clears the `oldPinKeyEncryptedMasterKey` (aka `pinProtected`) from state.
+   *
+   * @description
+   * - Decrypts the `oldPinKeyEncryptedMasterKey` with the entered PIN, resulting in a master key
+   * - Uses that master key to decrypt the user key
+   * - Creates a new PinKey and uses it to encrypt the user key, resulting in a new `pinKeyEncryptedUserKey`
+   * - Clears the `oldPinKeyEncryptedMasterKey` (aka `pinProtected`) from state
+   * - Sets the new `pinKeyEncryptedUserKey` to state (either persistant or ephemeral depending on `requireMasterPasswordOnClientRestart`)
+   * - Creates a new `protectedPin` by encrypting the PIN with the user key
+   * - Sets that new `protectedPin` to state
+   *
+   * @param requireMasterPasswordOnClientRestart Whether or not the master password is required on client restart
+   * @param pin User's PIN
+   * @param email User's email
+   * @param kdf User's KdfType
+   * @param kdfConfig User's KdfConfig
+   * @param oldPinKeyEncryptedMasterKey The Master Key, encrypted by the PinKey (legacy)
+   * @returns The UserKey
+   */
+  private async decryptAndMigrateOldPinKeyEncryptedMasterKey(
+    requireMasterPasswordOnClientRestart: boolean,
     pin: string,
     email: string,
     kdf: KdfType,
@@ -240,6 +269,7 @@ export class PinService implements PinServiceAbstraction {
       kdfConfig,
       oldPinKeyEncryptedMasterKey,
     );
+
     const encUserKey = await this.stateService.getEncryptedCryptoSymmetricKey();
     const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(
       masterKey,
@@ -250,14 +280,17 @@ export class PinService implements PinServiceAbstraction {
     const pinKey = await this.makePinKey(pin, email, kdf, kdfConfig);
     const pinKeyEncryptedUserKey = await this.encryptService.encrypt(userKey.key, pinKey);
 
-    if (masterPasswordOnRestart) {
-      await this.stateService.setDecryptedPinProtected(null);
+    // Clear oldPinKeyEncryptedMasterKey and set new pinKeyEncryptedUserKey
+    if (requireMasterPasswordOnClientRestart) {
+      await this.stateService.setDecryptedPinProtected(null); // Clears oldPinKeyEncryptedMasterKey
       await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey);
     } else {
-      await this.stateService.setEncryptedPinProtected(null);
+      await this.stateService.setEncryptedPinProtected(null); // Clears oldPinKeyEncryptedMasterKey
       await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey);
+
       // We previously only set the protected pin if MP on Restart was enabled
       // now we set it regardless
+      // TODO-rr-bw: based on this comment, shouldn't this code be placed outside the if/else block?
       const userKeyEncryptedPin = await this.encryptService.encrypt(pin, userKey);
       await this.setProtectedPin(userKeyEncryptedPin.encryptedString);
     }
@@ -269,8 +302,8 @@ export class PinService implements PinServiceAbstraction {
     return userKey;
   }
 
-  // only for migration purposes
-  async decryptMasterKeyWithPin(
+  // Only for migration purposes
+  private async decryptMasterKeyWithPin(
     pin: string,
     salt: string,
     kdf: KdfType,
@@ -331,7 +364,6 @@ export class PinService implements PinServiceAbstraction {
     }
   }
 
-  // TODO-rr-bw: add jsdocs
   private async validatePin(userKey: UserKey, pin: string): Promise<boolean> {
     const protectedPin = await this.getProtectedPin();
     const decryptedPin = await this.encryptService.decryptToUtf8(
