@@ -102,8 +102,10 @@ import { ChromeMessageSender } from "../../platform/messaging/chrome-message.sen
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 import { BrowserFileDownloadService } from "../../platform/popup/services/browser-file-download.service";
 import { BrowserStateService as StateServiceAbstraction } from "../../platform/services/abstractions/browser-state.service";
+import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
 import BrowserLocalStorageService from "../../platform/services/browser-local-storage.service";
+import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
 import { DefaultBrowserStateService } from "../../platform/services/default-browser-state.service";
 import I18nService from "../../platform/services/i18n.service";
 import { ForegroundPlatformUtilsService } from "../../platform/services/platform-utils/foreground-platform-utils.service";
@@ -317,7 +319,13 @@ const safeProviders: SafeProvider[] = [
       DomainSettingsService,
       UserVerificationService,
       BillingAccountProfileStateService,
+      ScriptInjectorService,
     ],
+  }),
+  safeProvider({
+    provide: ScriptInjectorService,
+    useClass: BrowserScriptInjectorService,
+    deps: [],
   }),
   safeProvider({
     provide: KeyConnectorService,

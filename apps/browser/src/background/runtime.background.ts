@@ -4,7 +4,6 @@ import { NotificationsService } from "@bitwarden/common/abstractions/notificatio
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
@@ -23,8 +22,7 @@ import { BrowserApi } from "../platform/browser/browser-api";
 import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
-import { AbortManager } from "../vault/background/abort-manager";
-import { Fido2Service } from "../vault/services/abstractions/fido2.service";
+import { Fido2Background } from "../vault/fido2/background/abstractions/fido2.background";
 
 import MainBackground from "./main.background";
 
@@ -33,13 +31,11 @@ export default class RuntimeBackground {
   private pageDetailsToAutoFill: any[] = [];
   private onInstalledReason: string = null;
   private lockedVaultPendingNotifications: LockedVaultPendingNotificationsData[] = [];
-  private abortManager = new AbortManager();
 
   constructor(
     private main: MainBackground,
     private autofillService: AutofillService,
     private platformUtilsService: BrowserPlatformUtilsService,
-    private i18nService: I18nService,
     private notificationsService: NotificationsService,
     private stateService: BrowserStateService,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
@@ -48,7 +44,7 @@ export default class RuntimeBackground {
     private messagingService: MessagingService,
     private logService: LogService,
     private configService: ConfigService,
-    private fido2Service: Fido2Service,
+    private fido2Background: Fido2Background,
     private messageListener: MessageListener,
   ) {
     // onInstalled listener must be wired up before anything else, so we do it in the ctor
@@ -68,12 +64,7 @@ export default class RuntimeBackground {
       sender: chrome.runtime.MessageSender,
       sendResponse: (response: any) => void,
     ) => {
-      const messagesWithResponse = [
-        "checkFido2FeatureEnabled",
-        "fido2RegisterCredentialRequest",
-        "fido2GetCredentialRequest",
-        "biometricUnlock",
-      ];
+      const messagesWithResponse = ["biometricUnlock"];
 
       if (messagesWithResponse.includes(msg.command)) {
         this.processMessageWithSender(msg, sender).then(
@@ -361,9 +352,8 @@ export default class RuntimeBackground {
 
   private async checkOnInstalled() {
     setTimeout(async () => {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.autofillService.loadAutofillScriptsOnInstall();
+      void this.fido2Background.injectFido2ContentScriptsInAllTabs();
+      void this.autofillService.loadAutofillScriptsOnInstall();
 
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
