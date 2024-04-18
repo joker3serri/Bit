@@ -38,6 +38,7 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { EventType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -619,7 +620,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   async addAccessCollectionsMap(collections: TreeNode<CollectionAdminView>[]) {
     let mappedCollections;
     if (
-      this._flexibleCollectionsV1FlagEnabled &&
+      (this._flexibleCollectionsV1FlagEnabled &&
+        this.organization.type === OrganizationUserType.Custom &&
+        this.organization.permissions.editAnyCollection) ||
       !this.organization.canEditAllCiphers(this._flexibleCollectionsV1FlagEnabled)
     ) {
       mappedCollections = collections.map((c: TreeNode<CollectionAdminView>) => {
