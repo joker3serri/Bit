@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, firstValueFrom, throwError, timeout } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -198,6 +198,10 @@ export abstract class LoginStrategy {
       }),
     );
 
+    // there is a slight delay between when active account emits in background, and when it emits in foreground
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await this.verifyAccountAdded();
+
     await this.userDecryptionOptionsService.setUserDecryptionOptions(
       UserDecryptionOptions.fromResponse(tokenResponse),
     );
@@ -301,5 +305,22 @@ export abstract class LoginStrategy {
     const result = new AuthResult();
     result.captchaSiteKey = response.siteKey;
     return result;
+  }
+
+  private async verifyAccountAdded() {
+    const emittedAccount = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(
+        timeout({
+          first: 1000,
+          with: () =>
+            throwError(
+              () => new Error("Timeout while retrieving active account after initialization"),
+            ),
+        }),
+      ),
+    );
+    if (emittedAccount == null) {
+      throw new Error("Active account missing after initialization");
+    }
   }
 }
