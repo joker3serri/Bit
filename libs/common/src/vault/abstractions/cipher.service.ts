@@ -47,7 +47,15 @@ export abstract class CipherService {
   updateLastUsedDate: (id: string) => Promise<void>;
   updateLastLaunchedDate: (id: string) => Promise<void>;
   saveNeverDomain: (domain: string) => Promise<void>;
-  createWithServer: (cipher: Cipher, orgAdmin?: boolean) => Promise<any>;
+  /**
+   * Create a cipher with the server
+   *
+   * @param cipher The cipher to create
+   * @param orgAdmin If true, the request is submitted as an organization admin request
+   *
+   * @returns A promise that resolves to the created cipher
+   */
+  createWithServer: (cipher: Cipher, orgAdmin?: boolean) => Promise<Cipher>;
   /**
    * Update a cipher with the server
    * @param cipher The cipher to update

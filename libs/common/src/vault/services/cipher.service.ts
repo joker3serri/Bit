@@ -573,7 +573,7 @@ export class CipherService implements CipherServiceAbstraction {
     await this.domainSettingsService.setNeverDomains(domains);
   }
 
-  async createWithServer(cipher: Cipher, orgAdmin?: boolean): Promise<any> {
+  async createWithServer(cipher: Cipher, orgAdmin?: boolean): Promise<Cipher> {
     let response: CipherResponse;
     if (orgAdmin && cipher.organizationId != null) {
       const request = new CipherCreateRequest(cipher);
@@ -588,7 +588,9 @@ export class CipherService implements CipherServiceAbstraction {
     cipher.id = response.id;
 
     const data = new CipherData(response, cipher.collectionIds);
-    await this.upsert(data);
+    const updated = await this.upsert(data);
+    // No local data for new ciphers
+    return new Cipher(updated[cipher.id as CipherId]);
   }
 
   async updateWithServer(
