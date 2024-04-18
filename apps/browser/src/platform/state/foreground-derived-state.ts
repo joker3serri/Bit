@@ -55,8 +55,9 @@ export class ForegroundDerivedState<TTo> implements DerivedState<TTo> {
 
         return await this.getStoredValue();
       }),
-      filter((s) => s.derived),
-      map((s) => s.value),
+      // CG TODO: Should this be left in?
+      filter((s) => s?.derived),
+      map((s) => s?.value),
     );
 
     this.state$ = defer(() => of(this.initializePort())).pipe(

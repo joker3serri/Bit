@@ -6,6 +6,7 @@ export type StorageUpdateType = "save" | "remove";
 export type StorageUpdate = {
   key: string;
   updateType: StorageUpdateType;
+  value?: string;
 };
 
 export interface ObservableStorageService {

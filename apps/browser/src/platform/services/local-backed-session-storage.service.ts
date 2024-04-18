@@ -22,7 +22,7 @@ export class LocalBackedSessionStorageService
   extends AbstractMemoryStorageService
   implements ObservableStorageService
 {
-  private cache = new Map<string, string>();
+  private cache: Record<string, unknown> = {};
   private updatesSubject = new Subject<StorageUpdate>();
 
   private commandName = `localBackedSessionStorage_${this.name}`;
@@ -42,37 +42,42 @@ export class LocalBackedSessionStorageService
   ) {
     super();
 
+    void this.initializeCache();
+
     const remoteUpdatesObservable = fromChromeEvent(chrome.runtime.onMessage).pipe(
       filter(([msg]) => msg.command === this.updateCommandName),
       map(([msg]) => msg.update as StorageUpdate),
       tap((update) => {
-        if (update.updateType === "remove") {
-          this.cache.set(update.key, null);
-        } else {
-          this.cache.delete(update.key);
+        const { key, updateType, value } = update;
+        if (updateType === "remove") {
+          this.cache[update.key] = null;
+          return;
         }
+
+        if (!value) {
+          return;
+        }
+
+        this.cache[key] = JSON.parse(value);
+        this.updatesSubject.next({ key, updateType });
       }),
       share(),
     );
-
     remoteUpdatesObservable.subscribe();
-
     this.updates$ = merge(this.updatesSubject.asObservable(), remoteUpdatesObservable);
 
     const remoteGetCacheObservable = fromChromeEvent(chrome.runtime.onMessage).pipe(
       filter(([msg]) => msg.command === this.getCommandName),
       tap(([msg, _sender, sendResponse]) => {
         const { cacheKey } = msg;
-        if (!cacheKey || !this.cache.has(cacheKey)) {
+        if (!cacheKey || !this.cache[cacheKey]) {
           return;
         }
 
-        sendResponse(this.cache.get(cacheKey));
-        return true;
+        sendResponse(JSON.stringify(this.cache[cacheKey]));
       }),
       share(),
     );
-
     remoteGetCacheObservable.subscribe();
   }
 
@@ -81,14 +86,19 @@ export class LocalBackedSessionStorageService
   }
 
   async get<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
-    if (this.cache.has(key)) {
-      return JSON.parse(this.cache.get(key)) as T;
+    if (this.cache[key] !== undefined) {
+      if (this.cache[key] === null) {
+        return null;
+      }
+
+      return this.cache[key] as T;
     }
 
     const externalContextCacheValue = await this.getCachedValueFromExternalContext(key);
     if (externalContextCacheValue) {
-      this.cache.set(key, externalContextCacheValue);
-      return JSON.parse(externalContextCacheValue) as T;
+      this.cache[key] = JSON.parse(externalContextCacheValue);
+      this.updatesSubject.next({ key, updateType: "save" });
+      return externalContextCacheValue as T;
     }
 
     return await this.getBypassCache(key, options);
@@ -96,7 +106,9 @@ export class LocalBackedSessionStorageService
 
   async getBypassCache<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
     const session = await this.getLocalSession(await this.getSessionEncKey());
+
     if (session == null || !Object.keys(session).includes(key)) {
+      void this.save(key, null);
       return null;
     }
 
@@ -105,7 +117,7 @@ export class LocalBackedSessionStorageService
       value = options.deserializer(value as Jsonify<T>);
     }
 
-    this.cache.set(key, JSON.stringify(value));
+    this.cache[key] = JSON.parse(JSON.stringify(value));
     return value as T;
   }
 
@@ -118,30 +130,30 @@ export class LocalBackedSessionStorageService
       return await this.remove(key);
     }
 
-    const existingValue = this.cache.get(key);
-    if (this.comparedExternalCacheToLocal<T>(existingValue, obj)) {
+    const existingValue = this.cache[key];
+    if (this.compareValues<T>(existingValue as T, obj)) {
       return;
     }
 
     const externalContextCacheValue = await this.getCachedValueFromExternalContext(key);
-    if (this.comparedExternalCacheToLocal<T>(externalContextCacheValue, obj)) {
-      this.cache.set(key, externalContextCacheValue);
+    if (this.compareValues<T>(externalContextCacheValue, obj)) {
+      this.cache[key] = JSON.parse(externalContextCacheValue);
+      this.updatesSubject.next({ key, updateType: "save" });
       return;
     }
 
-    this.cache.set(key, JSON.stringify(obj));
+    this.cache[key] = obj;
     await this.updateLocalSessionValue(key, obj);
-    this.sendUpdate({ key, updateType: "save" });
+    this.sendUpdate({ key, updateType: "save", value: JSON.stringify(obj) });
   }
 
   async remove(key: string): Promise<void> {
-    const externalContextCacheValue = await this.getCachedValueFromExternalContext(key);
-    const existingValue = this.cache.get(key);
-    if (existingValue == null && externalContextCacheValue == null) {
+    const existingValue = this.cache[key];
+    if (existingValue === null) {
       return;
     }
 
-    this.cache.set(key, null);
+    this.cache[key] = null;
     await this.updateLocalSessionValue(key, null);
     this.sendUpdate({ key, updateType: "remove" });
   }
@@ -162,6 +174,11 @@ export class LocalBackedSessionStorageService
   }
 
   async getLocalSession(encKey: SymmetricCryptoKey): Promise<Record<string, unknown>> {
+    // if the cache is not empty
+    if (Object.keys(this.cache).length > 0) {
+      return this.cache;
+    }
+
     const local = await this.localStorage.get<string>(this.sessionKey);
 
     if (local == null) {
@@ -239,23 +256,32 @@ export class LocalBackedSessionStorageService
     return await BrowserApi.sendMessageWithResponse(this.getCommandName, { cacheKey });
   }
 
-  private comparedExternalCacheToLocal<T>(externalCacheValue: string, localValue: T): boolean {
-    if (externalCacheValue == null) {
-      return false;
+  private compareValues<T>(value1: string | T, value2: T): boolean {
+    if (typeof value1 !== "string" || typeof value1 !== "object" || typeof value2 !== "object") {
+      return value1 === value2;
     }
 
-    if (externalCacheValue === JSON.stringify(localValue)) {
+    if (value1 === JSON.stringify(value2)) {
       return true;
     }
 
-    const parsedExternalCacheValue = JSON.parse(externalCacheValue);
-    if (parsedExternalCacheValue == null) {
+    let parsedValue1 = value1;
+    if (typeof value1 === "string") {
+      parsedValue1 = JSON.parse(value1);
+    }
+    if (parsedValue1 == null) {
       return false;
     }
 
-    return (
-      Object.entries(parsedExternalCacheValue).sort().toString() ===
-      Object.entries(localValue).sort().toString()
-    );
+    return Object.entries(value1).sort().toString() === Object.entries(value2).sort().toString();
+  }
+
+  private async initializeCache() {
+    const localSession = await this.getLocalSession(await this.getSessionEncKey());
+    if (localSession == null) {
+      return;
+    }
+
+    this.cache = localSession || {};
   }
 }
