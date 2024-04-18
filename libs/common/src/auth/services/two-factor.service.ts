@@ -1,6 +1,9 @@
+import { map } from "rxjs";
+
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
-import { TWO_FACTOR_MEMORY, UserKeyDefinition } from "../../platform/state";
+import { Utils } from "../../platform/misc/utils";
+import { GlobalStateProvider, KeyDefinition, TWO_FACTOR_MEMORY } from "../../platform/state";
 import {
   TwoFactorProviderDetails,
   TwoFactorService as TwoFactorServiceAbstraction,
@@ -61,32 +64,33 @@ export const TwoFactorProviders: Partial<Record<TwoFactorProviderType, TwoFactor
   };
 
 // Memory storage as only required during authentication process
-export const PROVIDERS = UserKeyDefinition.record<Record<string, string>, TwoFactorProviderType>(
+export const PROVIDERS = KeyDefinition.record<Record<string, string>, TwoFactorProviderType>(
   TWO_FACTOR_MEMORY,
   "providers",
   {
     deserializer: (obj) => obj,
-    clearOn: ["logout"],
   },
 );
 
 // Memory storage as only required during authentication process
-export const SELECTED = new UserKeyDefinition<TwoFactorProviderType>(
-  TWO_FACTOR_MEMORY,
-  "selected",
-  {
-    deserializer: (obj) => obj,
-    clearOn: ["logout"],
-  },
-);
+export const SELECTED = new KeyDefinition<TwoFactorProviderType>(TWO_FACTOR_MEMORY, "selected", {
+  deserializer: (obj) => obj,
+});
 
 export class TwoFactorService implements TwoFactorServiceAbstraction {
+  private providersState = this.globalStateProvider.get(PROVIDERS);
+  private selectedState = this.globalStateProvider.get(SELECTED);
+  readonly providers$ = this.providersState.state$.pipe(
+    map((providers) => Utils.recordToMap(providers)),
+  );
+  readonly selected$ = this.selectedState.state$;
   private twoFactorProvidersData: Map<TwoFactorProviderType, { [key: string]: string }>;
   private selectedTwoFactorProviderType: TwoFactorProviderType = null;
 
   constructor(
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
+    private globalStateProvider: GlobalStateProvider,
   ) {}
 
   init() {
