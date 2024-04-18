@@ -740,11 +740,13 @@ export class CipherService implements CipherServiceAbstraction {
     return new Cipher(cData);
   }
 
-  async saveCollectionsWithServer(cipher: Cipher): Promise<any> {
+  async saveCollectionsWithServer(cipher: Cipher): Promise<Cipher> {
     const request = new CipherCollectionsRequest(cipher.collectionIds);
     const response = await this.apiService.putCipherCollections(cipher.id, request);
     const data = new CipherData(response);
-    await this.upsert(data);
+    const updated = await this.upsert(data);
+    // Collection updates don't change local data
+    return new Cipher(updated[cipher.id as CipherId], cipher.localData);
   }
 
   /**

@@ -86,7 +86,14 @@ export abstract class CipherService {
     data: ArrayBuffer,
     admin?: boolean,
   ) => Promise<Cipher>;
-  saveCollectionsWithServer: (cipher: Cipher) => Promise<any>;
+  /**
+   * Save the collections for a cipher with the server
+   *
+   * @param cipher The cipher to save collections for
+   *
+   * @returns A promise that resolves when the collections have been saved
+   */
+  saveCollectionsWithServer: (cipher: Cipher) => Promise<Cipher>;
   /**
    * Bulk update collections for many ciphers with the server
    * @param orgId
