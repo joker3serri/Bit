@@ -498,12 +498,13 @@ export default class MainBackground {
     this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
 
     this.pinService = new PinService(
+      this.accountService,
+      this.encryptService,
+      this.keyGenerationService,
+      this.logService,
+      this.masterPasswordService,
       this.stateProvider,
       this.stateService,
-      this.masterPasswordService,
-      this.keyGenerationService,
-      this.encryptService,
-      this.logService,
     );
 
     this.cryptoService = new BrowserCryptoService(

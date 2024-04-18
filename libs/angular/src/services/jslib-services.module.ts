@@ -980,12 +980,13 @@ const safeProviders: SafeProvider[] = [
     provide: PinServiceAbstraction,
     useClass: PinService,
     deps: [
+      AccountServiceAbstraction,
+      EncryptService,
+      KeyGenerationServiceAbstraction,
+      LogService,
+      InternalMasterPasswordServiceAbstraction,
       StateProvider,
       StateServiceAbstraction,
-      InternalMasterPasswordServiceAbstraction,
-      KeyGenerationServiceAbstraction,
-      EncryptService,
-      LogService,
     ],
   }),
   safeProvider({

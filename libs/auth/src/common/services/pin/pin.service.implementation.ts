@@ -1,5 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -90,7 +91,7 @@ const OLD_PIN_KEY_DECRYPTED_MASTER_KEY = DeriveDefinition.fromWithUserId<
 
     const kdf = await stateService.getKdfType({ userId });
     const kdfConfig = await stateService.getKdfConfig({ userId });
-    const email = await stateService.getEmail({ userId });
+    const email = (await firstValueFrom(this.accountService.activeAccount$))?.email;
 
     const pinKey = await pinService.makePinKey(pin, email, kdf, kdfConfig); // ???
 
@@ -105,12 +106,13 @@ const OLD_PIN_KEY_DECRYPTED_MASTER_KEY = DeriveDefinition.fromWithUserId<
 
 export class PinService implements PinServiceAbstraction {
   constructor(
+    private accountService: AccountService,
+    private encryptService: EncryptService,
+    private keyGenerationService: KeyGenerationService,
+    private logService: LogService,
+    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private stateProvider: StateProvider,
     private stateService: StateService,
-    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
-    private keyGenerationService: KeyGenerationService,
-    private encryptService: EncryptService,
-    private logService: LogService,
   ) {}
 
   async getPinKeyEncryptedUserKey(userId?: UserId): Promise<EncString> {
@@ -159,7 +161,7 @@ export class PinService implements PinServiceAbstraction {
 
     const pinKey = await this.makePinKey(
       pin,
-      await this.stateService.getEmail({ userId: userId }),
+      (await firstValueFrom(this.accountService.activeAccount$))?.email,
       await this.stateService.getKdfType({ userId: userId }),
       await this.stateService.getKdfConfig({ userId: userId }),
     );
@@ -212,9 +214,10 @@ export class PinService implements PinServiceAbstraction {
       const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
         await this.getPinKeyEncryptedKeys(pinLockType);
 
-      const kdf: KdfType = await this.stateService.getKdfType();
-      const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
-      const email = await this.stateService.getEmail();
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const kdf: KdfType = await this.stateService.getKdfType({ userId });
+      const kdfConfig: KdfConfig = await this.stateService.getKdfConfig({ userId });
+      const email = (await firstValueFrom(this.accountService.activeAccount$))?.email;
 
       let userKey: UserKey;
 

@@ -365,12 +365,13 @@ export class Main {
     );
 
     this.pinService = new PinService(
+      this.accountService,
+      this.encryptService,
+      this.keyGenerationService,
+      this.logService,
+      this.masterPasswordService,
       this.stateProvider,
       this.stateService,
-      this.masterPasswordService,
-      this.keyGenerationService,
-      this.encryptService,
-      this.logService,
     );
 
     this.cryptoService = new CryptoService(
