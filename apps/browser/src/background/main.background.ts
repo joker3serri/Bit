@@ -36,7 +36,6 @@ import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarde
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
-import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -51,7 +50,6 @@ import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connect
 import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
 import { SsoLoginService } from "@bitwarden/common/auth/services/sso-login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
-import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import {
@@ -288,7 +286,6 @@ export default class MainBackground {
   providerService: ProviderServiceAbstraction;
   keyConnectorService: KeyConnectorServiceAbstraction;
   userVerificationService: UserVerificationServiceAbstraction;
-  twoFactorService: TwoFactorServiceAbstraction;
   vaultFilterService: VaultFilterService;
   usernameGenerationService: UsernameGenerationServiceAbstraction;
   encryptService: EncryptService;
@@ -554,8 +551,6 @@ export default class MainBackground {
       this.stateService,
     );
 
-    this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
-
     // eslint-disable-next-line
     const that = this;
     const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
@@ -627,7 +622,6 @@ export default class MainBackground {
       this.keyConnectorService,
       this.environmentService,
       this.stateService,
-      this.twoFactorService,
       this.i18nService,
       this.encryptService,
       this.passwordStrengthService,
@@ -1046,7 +1040,6 @@ export default class MainBackground {
 
     await (this.i18nService as I18nService).init();
     (this.eventUploadService as EventUploadService).init(true);
-    this.twoFactorService.init();
 
     if (!this.popupOnlyContext) {
       await this.vaultTimeoutService.init(true);
