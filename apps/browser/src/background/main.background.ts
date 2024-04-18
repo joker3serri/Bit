@@ -1021,7 +1021,7 @@ export default class MainBackground {
     await this.stateService.init({ runMigrations: !this.isPrivateMode });
 
     await (this.i18nService as I18nService).init();
-    await (this.eventUploadService as EventUploadService).init(true);
+    (this.eventUploadService as EventUploadService).init(true);
 
     if (!this.popupOnlyContext) {
       await this.vaultTimeoutService.init(true);
