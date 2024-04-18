@@ -65,6 +65,7 @@ import { VaultSelectComponent } from "../vault/popup/components/vault/vault-sele
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
+import { FoldersComponent } from "../vault/popup/settings/folders.component";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -73,7 +74,6 @@ import { PrivateModeWarningComponent } from "./components/private-mode-warning.c
 import { UserVerificationComponent } from "./components/user-verification.component";
 import { ServicesModule } from "./services/services.module";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
-import { FoldersComponent } from "./settings/folders.component";
 import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
 import { PremiumComponent } from "./settings/premium.component";
