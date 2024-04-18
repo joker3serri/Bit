@@ -140,7 +140,7 @@ jobs:
       - name: 'Download latest cloud asset using GitHub Run ID: ${{ inputs.build-web-run-id }}'
         if: ${{ inputs.build-web-run-id }}
         uses: bitwarden/gh-actions/download-artifacts@main
-        id: download-latest-artifacts
+        id: download-latest-artifacts-run-id
         continue-on-error: true
         with:
           workflow: build-web.yml
@@ -152,7 +152,7 @@ jobs:
       - name: 'Download latest cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
         if: ${{ !inputs.build-web-run-id }}
         uses: bitwarden/gh-actions/download-artifacts@main
-        id: download-artifacts
+        id: download-latest-artifacts
         continue-on-error: true
         with:
           workflow: build-web.yml
@@ -162,13 +162,13 @@ jobs:
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
 
       - name: Login to Azure
-        if: ${{ steps.download-artifacts.outcome == 'failure' }}
+        if: ${{ steps.download-latest-artifacts.outcome == 'failure' }}
         uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
         with:
           creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Retrieve secrets for Build trigger
-        if: ${{ steps.download-artifacts.outcome == 'failure' }}
+        if: ${{ steps.download-latest-artifacts.outcome == 'failure' }}
         id: retrieve-secret
         uses: bitwarden/gh-actions/get-keyvault-secrets@main
         with:
@@ -176,8 +176,9 @@ jobs:
           secrets: "github-pat-bitwarden-devops-bot-repo-scope"
 
       - name: 'Trigger build web for missing branch/tag ${{ inputs.branch-or-tag }}'
-        if: ${{ steps.download-artifacts.outcome == 'failure' }}
+        if: ${{ steps.download-latest-artifacts.outcome == 'failure' }}
         uses: convictional/trigger-workflow-and-wait@f69fa9eedd3c62a599220f4d5745230e237904be # v1.6.5
+        id: trigger-build-web
         with:
           owner: bitwarden
           repo: clients
@@ -188,11 +189,21 @@ jobs:
 
       - name: Set artifact build commit
         id: set-artifact-commit
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -z "${{ steps.download-latest-artifacts.outputs.artifact-build-commit }}" ]; then
-            echo "commit=${{ steps.download-artifacts.outputs.artifact-build-commit}} >> $GITHUB_OUTPUT"
+          # If run-id was used, get the commit from the download-latest-artifacts-run-id step
+          if [ "${{ inputs.build-web-run-id }}" ]; then
+            echo "commit=${{ steps.download-latest-artifacts-run-id.outputs.artifact-build-commit }}" >> $GITHUB_OUTPUT
+
+          elif [ "${{ steps.download-latest-artifacts.outcome }}" == "failure" ]; then
+            # If the download-latest-artifacts step failed, query the GH API to get the commit SHA of the artifact that was just built with trigger-build-web.
+            commit=$(gh api /repos/bitwarden/clients/actions/runs/${{ steps.trigger-build-web.outputs.workflow_id }}/artifacts --jq '.artifacts[0].workflow_run.head_sha')
+            echo "commit=$commit" >> $GITHUB_OUTPUT
+
           else
-            echo "commit=${{ steps.download-latest-artifacts.outputs.artifact-build-commit }} >> $GITHUB_OUTPUT"
+            # Set the commit to the output of step download-latest-artifacts.
+            echo "commit=${{ steps.download-latest-artifacts.outputs.artifact-build-commit }}" >> $GITHUB_OUTPUT
           fi
 
   notify-start:
@@ -242,6 +253,7 @@ jobs:
           environment: ${{ env._ENVIRONMENT_NAME }}
           task: 'deploy'
           description: 'Deployment from branch/tag: ${{ inputs.branch-or-tag }}'
+          ref: ${{ needs.artifact-check.outputs.artifact-build-commit }}
 
       - name: Login to Azure
         uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
