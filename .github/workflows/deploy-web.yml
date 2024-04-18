@@ -155,7 +155,7 @@ jobs:
         id: download-artifacts
         continue-on-error: true
         with:
-          workflow: build-web.yml 
+          workflow: build-web.yml
           path: apps/web
           workflow_conclusion: success
           branch: ${{ inputs.branch-or-tag }}
