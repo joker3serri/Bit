@@ -24,11 +24,11 @@ export class TwoFactorOptionsComponent implements OnInit {
     protected environmentService: EnvironmentService,
   ) {}
 
-  ngOnInit() {
-    this.providers = this.twoFactorService.getSupportedProviders(this.win);
+  async ngOnInit() {
+    this.providers = await this.twoFactorService.getSupportedProviders(this.win);
   }
 
-  choose(p: any) {
+  async choose(p: any) {
     this.onProviderSelected.emit(p.type);
   }
 

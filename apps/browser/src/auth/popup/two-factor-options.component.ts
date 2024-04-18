@@ -27,9 +27,9 @@ export class TwoFactorOptionsComponent extends BaseTwoFactorOptionsComponent {
     this.navigateTo2FA();
   }
 
-  choose(p: any) {
-    super.choose(p);
-    this.twoFactorService.setSelectedProvider(p.type);
+  override async choose(p: any) {
+    await super.choose(p);
+    await this.twoFactorService.setSelectedProvider(p.type);
 
     this.navigateTo2FA();
   }

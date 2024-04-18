@@ -863,7 +863,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: TwoFactorServiceAbstraction,
     useClass: TwoFactorService,
-    deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
+    deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction, GlobalStateProvider],
   }),
   safeProvider({
     provide: FormValidationErrorsServiceAbstraction,

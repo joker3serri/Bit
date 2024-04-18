@@ -15,13 +15,7 @@ import {
   SafeInjectionToken,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import {
-  AuthRequestServiceAbstraction,
-  InternalUserDecryptionOptionsServiceAbstraction,
-  LoginStrategyService,
-  LoginStrategyServiceAbstraction,
-} from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuthRequestServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
@@ -34,13 +28,10 @@ import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/ab
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
-import { TwoFactorService as DefaultTwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import {
   AutofillSettingsService,
   AutofillSettingsServiceAbstraction,
@@ -54,7 +45,6 @@ import {
   UserNotificationSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -83,7 +73,6 @@ import {
 } from "@bitwarden/common/platform/state";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -172,42 +161,9 @@ const safeProviders: SafeProvider[] = [
     deps: [],
   }),
   safeProvider({
-    provide: TwoFactorService,
-    useClass: DefaultTwoFactorService,
-    deps: [I18nServiceAbstraction, PlatformUtilsService],
-  }),
-  safeProvider({
     provide: AuthServiceAbstraction,
     useFactory: getBgService<AuthService>("authService"),
     deps: [],
-  }),
-  safeProvider({
-    provide: LoginStrategyServiceAbstraction,
-    useClass: LoginStrategyService,
-    deps: [
-      AccountServiceAbstraction,
-      InternalMasterPasswordServiceAbstraction,
-      CryptoService,
-      ApiService,
-      TokenService,
-      AppIdService,
-      PlatformUtilsService,
-      MessagingService,
-      LogService,
-      KeyConnectorService,
-      EnvironmentService,
-      StateServiceAbstraction,
-      TwoFactorService,
-      I18nServiceAbstraction,
-      EncryptService,
-      PasswordStrengthServiceAbstraction,
-      PolicyService,
-      DeviceTrustCryptoServiceAbstraction,
-      AuthRequestServiceAbstraction,
-      InternalUserDecryptionOptionsServiceAbstraction,
-      GlobalStateProvider,
-      BillingAccountProfileStateService,
-    ],
   }),
   safeProvider({
     provide: SsoLoginServiceAbstraction,

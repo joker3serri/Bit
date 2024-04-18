@@ -101,7 +101,7 @@ export abstract class LoginStrategy {
   }
 
   protected async startLogIn(): Promise<[AuthResult, IdentityResponse]> {
-    this.twoFactorService.clearSelectedProvider();
+    await this.twoFactorService.clearSelectedProvider();
 
     const tokenRequest = this.cache.value.tokenRequest;
     const response = await this.apiService.postIdentityToken(tokenRequest);
@@ -280,7 +280,7 @@ export abstract class LoginStrategy {
     const result = new AuthResult();
     result.twoFactorProviders = response.twoFactorProviders2;
 
-    this.twoFactorService.setProviders(response);
+    await this.twoFactorService.setProviders(response);
     this.cache.next({ ...this.cache.value, captchaBypassToken: response.captchaToken ?? null });
     result.ssoEmail2FaSessionToken = response.ssoEmail2faSessionToken;
     result.email = response.email;

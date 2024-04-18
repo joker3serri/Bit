@@ -308,8 +308,10 @@ describe("LoginStrategy", () => {
       expect(tokenService.clearTwoFactorToken).toHaveBeenCalled();
 
       const expected = new AuthResult();
-      expected.twoFactorProviders = new Map<TwoFactorProviderType, { [key: string]: string }>();
-      expected.twoFactorProviders.set(0, null);
+      expected.twoFactorProviders = { 0: null } as Record<
+        TwoFactorProviderType,
+        Record<string, string>
+      >;
       expect(result).toEqual(expected);
     });
 
@@ -338,8 +340,9 @@ describe("LoginStrategy", () => {
       expect(messagingService.send).not.toHaveBeenCalled();
 
       const expected = new AuthResult();
-      expected.twoFactorProviders = new Map<TwoFactorProviderType, { [key: string]: string }>();
-      expected.twoFactorProviders.set(1, { Email: "k***@bitwarden.com" });
+      expected.twoFactorProviders = {
+        [TwoFactorProviderType.Email]: { Email: "k***@bitwarden.com" },
+      };
       expected.email = userEmail;
       expected.ssoEmail2FaSessionToken = ssoEmail2FaSessionToken;
 
