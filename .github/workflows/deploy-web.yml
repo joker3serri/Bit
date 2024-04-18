@@ -225,11 +225,11 @@ jobs:
           ref: ${{ inputs.branch-or-tag }}
           wait_interval: 100
 
-      - name: Set artifact name
+      - name: Set artifact git SHA
         id: set-artifact-name
         run: |
           if [ -z "${{ steps.download-latest-artifacts.outputs.artifacts }}" ]; then
-            echo "${{ steps.download-artifacts.outputs.artifacts}}"
+            echo "${{ steps.download-artifacts.outputs.artifacts}}" | jq '.[0].head_sha'
           else
             echo "${{ steps.download-latest-artifacts.outputs.artifacts }}"
           fi
