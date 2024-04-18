@@ -2,6 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
 
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
+import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -16,6 +17,7 @@ export class InitService {
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private stateService: StateServiceAbstraction,
+    private twoFactorService: TwoFactorService,
     private logService: LogServiceAbstraction,
     private themingService: AbstractThemingService,
     @Inject(DOCUMENT) private document: Document,
@@ -25,6 +27,7 @@ export class InitService {
     return async () => {
       await this.stateService.init();
       await this.i18nService.init();
+      this.twoFactorService.init();
 
       if (!BrowserPopupUtils.inPopup(window)) {
         window.document.body.classList.add("body-full");
