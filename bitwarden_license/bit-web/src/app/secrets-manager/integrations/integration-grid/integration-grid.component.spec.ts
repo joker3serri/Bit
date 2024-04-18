@@ -4,6 +4,7 @@ import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
 import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../../libs/angular/src/services/injection-tokens";
+import { IntegrationType } from "../../../../../../../libs/common/src/enums";
 import { ThemeType } from "../../../../../../../libs/common/src/platform/enums";
 import { ThemeStateService } from "../../../../../../../libs/common/src/platform/theming/theme-state.service";
 import { IntegrationCardComponent } from "../integration-card/integration-card.component";
@@ -20,14 +21,14 @@ describe("IntegrationGridComponent", () => {
       image: "test-image1.png",
       linkText: "Get started with integration 1",
       linkURL: "https://example.com/1",
-      type: "integration",
+      type: IntegrationType.Integration,
     },
     {
       name: "SDK 2",
       image: "test-image2.png",
       linkText: "View SDK 2",
       linkURL: "https://example.com/2",
-      type: "sdk",
+      type: IntegrationType.SDK,
     },
   ];
 
