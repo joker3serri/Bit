@@ -194,7 +194,7 @@ jobs:
         id: download-artifacts
         continue-on-error: true
         with:
-          workflow: build-web.yml
+          workflow: build-web.yml 
           path: apps/web
           workflow_conclusion: success
           branch: ${{ inputs.branch-or-tag }}
@@ -224,6 +224,15 @@ jobs:
           workflow_file_name: build-web.yml
           ref: ${{ inputs.branch-or-tag }}
           wait_interval: 100
+
+      - name: Set artifact name
+        id: set-artifact-name
+        run: |
+          if [ -z "${{ steps.download-latest-artifacts.outputs.artifacts }}" ]; then
+            echo "${{ steps.download-artifacts.outputs.artifacts}}"
+          else
+            echo "${{ steps.download-latest-artifacts.outputs.artifacts }}"
+          fi
 
   azure-deploy:
     name: Deploy Web Vault to ${{ inputs.environment }} Storage Account
