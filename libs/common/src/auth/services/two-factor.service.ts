@@ -1,5 +1,6 @@
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
+import { TWO_FACTOR_MEMORY, UserKeyDefinition } from "../../platform/state";
 import {
   TwoFactorProviderDetails,
   TwoFactorService as TwoFactorServiceAbstraction,
@@ -58,6 +59,26 @@ export const TwoFactorProviders: Partial<Record<TwoFactorProviderType, TwoFactor
       premium: false,
     },
   };
+
+// Memory storage as only required during authentication process
+export const PROVIDERS = UserKeyDefinition.record<Record<string, string>, TwoFactorProviderType>(
+  TWO_FACTOR_MEMORY,
+  "providers",
+  {
+    deserializer: (obj) => obj,
+    clearOn: ["logout"],
+  },
+);
+
+// Memory storage as only required during authentication process
+export const SELECTED = new UserKeyDefinition<TwoFactorProviderType>(
+  TWO_FACTOR_MEMORY,
+  "selected",
+  {
+    deserializer: (obj) => obj,
+    clearOn: ["logout"],
+  },
+);
 
 export class TwoFactorService implements TwoFactorServiceAbstraction {
   private twoFactorProvidersData: Map<TwoFactorProviderType, { [key: string]: string }>;
