@@ -24,7 +24,7 @@
     "**/node_modules/argon2/package.json",
     "**/node_modules/argon2/lib/binding/napi-v3/argon2.node"
   ],
-  "electronVersion": "28.2.8",
+  "electronVersion": "28.3.1",
   "generateUpdatesFilesForAllChannels": true,
   "publish": {
     "provider": "generic",
@@ -203,7 +203,7 @@
       "si",
       "sk",
       "sl",
-      "sr",
+      "sr-cyrl",
       "sv",
       "te",
       "th",
@@ -228,6 +228,7 @@
     "artifactName": "${productName}-${version}-${arch}.${ext}"
   },
   "snap": {
+    "summary": "After installation enable required `password-manager-service` by running `sudo snap connect bitwarden:password-manager-service`.",
     "autoStart": true,
     "base": "core22",
     "confinement": "strict",

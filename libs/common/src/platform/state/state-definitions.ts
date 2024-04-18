@@ -36,6 +36,9 @@ export const BILLING_DISK = new StateDefinition("billing", "disk");
 // Auth
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
+export const AUTH_REQUEST_DISK_LOCAL = new StateDefinition("authRequestLocal", "disk", {
+  web: "disk-local",
+});
 export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-local" });
 export const DEVICE_TRUST_DISK_LOCAL = new StateDefinition("deviceTrust", "disk", {
   web: "disk-local",
@@ -75,6 +78,10 @@ export const AUTOFILL_SETTINGS_DISK_LOCAL = new StateDefinition("autofillSetting
 // Components
 
 export const NEW_WEB_LAYOUT_BANNER_DISK = new StateDefinition("newWebLayoutBanner", "disk", {
+  web: "disk-local",
+});
+
+export const UNASSIGNED_ITEMS_BANNER_DISK = new StateDefinition("unassignedItemsBanner", "disk", {
   web: "disk-local",
 });
 
@@ -129,3 +136,9 @@ export const VAULT_SETTINGS_DISK = new StateDefinition("vaultSettings", "disk", 
   web: "disk-local",
 });
 export const VAULT_BROWSER_MEMORY = new StateDefinition("vaultBrowser", "memory");
+export const VAULT_SEARCH_MEMORY = new StateDefinition("vaultSearch", "memory");
+export const CIPHERS_DISK = new StateDefinition("ciphers", "disk", { web: "memory" });
+export const CIPHERS_DISK_LOCAL = new StateDefinition("ciphersLocal", "disk", {
+  web: "disk-local",
+});
+export const CIPHERS_MEMORY = new StateDefinition("ciphersMemory", "memory");
