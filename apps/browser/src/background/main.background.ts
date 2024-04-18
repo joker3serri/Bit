@@ -3,8 +3,6 @@ import { firstValueFrom } from "rxjs";
 import {
   PinCryptoServiceAbstraction,
   PinCryptoService,
-  LoginStrategyServiceAbstraction,
-  LoginStrategyService,
   InternalUserDecryptionOptionsServiceAbstraction,
   UserDecryptionOptionsService,
   AuthRequestServiceAbstraction,
@@ -262,7 +260,6 @@ export default class MainBackground {
   containerService: ContainerService;
   auditService: AuditServiceAbstraction;
   authService: AuthServiceAbstraction;
-  loginStrategyService: LoginStrategyServiceAbstraction;
   loginEmailService: LoginEmailServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
   importService: ImportServiceAbstraction;
@@ -608,30 +605,6 @@ export default class MainBackground {
     );
 
     this.loginEmailService = new LoginEmailService(this.stateProvider);
-
-    this.loginStrategyService = new LoginStrategyService(
-      this.accountService,
-      this.masterPasswordService,
-      this.cryptoService,
-      this.apiService,
-      this.tokenService,
-      this.appIdService,
-      this.platformUtilsService,
-      backgroundMessagingService,
-      this.logService,
-      this.keyConnectorService,
-      this.environmentService,
-      this.stateService,
-      this.i18nService,
-      this.encryptService,
-      this.passwordStrengthService,
-      this.policyService,
-      this.deviceTrustCryptoService,
-      this.authRequestService,
-      this.userDecryptionOptionsService,
-      this.globalStateProvider,
-      this.billingAccountProfileStateService,
-    );
 
     this.ssoLoginService = new SsoLoginService(this.stateProvider);
 
