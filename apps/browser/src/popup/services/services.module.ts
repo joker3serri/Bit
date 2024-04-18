@@ -2,7 +2,7 @@ import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { Subject } from "rxjs";
+import { Subject, merge } from "rxjs";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
@@ -97,7 +97,6 @@ import { Account } from "../../models/account";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { runInsideAngular } from "../../platform/browser/run-inside-angular.operator";
 /* eslint-disable no-restricted-imports */
-import { ChromeMessageListener } from "../../platform/messaging/chrome-message.listener";
 import { ChromeMessageSender } from "../../platform/messaging/chrome-message.sender";
 /* eslint-enable no-restricted-imports */
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
@@ -110,6 +109,7 @@ import I18nService from "../../platform/services/i18n.service";
 import { ForegroundPlatformUtilsService } from "../../platform/services/platform-utils/foreground-platform-utils.service";
 import { ForegroundDerivedStateProvider } from "../../platform/state/foreground-derived-state.provider";
 import { ForegroundMemoryStorageService } from "../../platform/storage/foreground-memory-storage.service";
+import { fromChromeRuntimeMessaging } from "../../platform/utils/from-chrome-runtime-messaging";
 import { BrowserSendStateService } from "../../tools/popup/services/browser-send-state.service";
 import { FilePopoutUtilsService } from "../../tools/popup/services/file-popout-utils.service";
 import { VaultBrowserStateService } from "../../vault/services/vault-browser-state.service";
@@ -485,9 +485,11 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: MessageListener,
     useFactory: (subject: Subject<Message<object>>, ngZone: NgZone) =>
-      MessageListener.combine(
-        new MessageListener(subject), // For messages from the same context
-        new ChromeMessageListener(runInsideAngular(ngZone)), // For messages from a different context
+      new MessageListener(
+        merge(
+          subject.asObservable(), // For messages in the same context
+          fromChromeRuntimeMessaging().pipe(runInsideAngular(ngZone)), // For messages in the same context
+        ),
       ),
     deps: [INTRAPROCESS_MESSAGING_SUBJECT, NgZone],
   }),

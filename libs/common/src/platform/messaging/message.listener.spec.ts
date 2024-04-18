@@ -44,25 +44,4 @@ describe("MessageListener", () => {
       expect(tracker.emissions[1]).toEqual({ command: "myCommand", test: 3 });
     });
   });
-
-  describe("combine", () => {
-    const subject2 = new Subject<Message<{ otherProp: number }>>();
-    const sut2 = new MessageListener(subject2.asObservable());
-
-    it("will listen to all sources", async () => {
-      const combinedMessageListener = MessageListener.combine(sut, sut2);
-
-      const tracker = subscribeTo(combinedMessageListener.allMessages$);
-
-      const pausePromise = tracker.pauseUntilReceived(2);
-
-      subject.next({ command: "command1", test: 1 });
-      subject2.next({ command: "command2", otherProp: 2 });
-
-      await pausePromise;
-
-      expect(tracker.emissions[0]).toEqual({ command: "command1", test: 1 });
-      expect(tracker.emissions[1]).toEqual({ command: "command2", otherProp: 2 });
-    });
-  });
 });

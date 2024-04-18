@@ -1,4 +1,4 @@
-import { EMPTY, Observable, filter, merge } from "rxjs";
+import { EMPTY, Observable, filter } from "rxjs";
 
 import { Message, CommandDefinition } from "./types";
 
@@ -32,15 +32,6 @@ export class MessageListener {
     return this.allMessages$.pipe(
       filter((msg) => msg?.command === commandDefinition.command),
     ) as Observable<T>;
-  }
-
-  /**
-   * Helper function for combining multiple {@link MessageListener} into a single one.
-   * @param messageListeners The message listeners to combine.
-   * @returns A single message listener that will listen to messages from all given message listeners.
-   */
-  static combine(...messageListeners: MessageListener[]) {
-    return new MessageListener(merge(...messageListeners.map((ml) => ml.allMessages$)));
   }
 
   /**

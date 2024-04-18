@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { Subject } from "rxjs";
+import { Subject, merge } from "rxjs";
 
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
@@ -67,12 +67,12 @@ import {
   ELECTRON_SUPPORTS_SECURE_STORAGE,
   ElectronPlatformUtilsService,
 } from "../../platform/services/electron-platform-utils.service";
-import { ElectronRendererMessageListener } from "../../platform/services/electron-renderer-message.listener";
 import { ElectronRendererMessageSender } from "../../platform/services/electron-renderer-message.sender";
 import { ElectronRendererSecureStorageService } from "../../platform/services/electron-renderer-secure-storage.service";
 import { ElectronRendererStorageService } from "../../platform/services/electron-renderer-storage.service";
 import { ElectronStateService } from "../../platform/services/electron-state.service";
 import { I18nRendererService } from "../../platform/services/i18n.renderer.service";
+import { fromIpcMessaging } from "../../platform/utils/from-ipc-messaging";
 import { fromIpcSystemTheme } from "../../platform/utils/from-ipc-system-theme";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
 import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
@@ -153,9 +153,11 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: MessageListener,
     useFactory: (subject: Subject<Message<object>>) =>
-      MessageListener.combine(
-        new ElectronRendererMessageListener(), // Communication with main process
-        new MessageListener(subject), // Communication with ourself
+      new MessageListener(
+        merge(
+          subject.asObservable(), // For messages from the same context
+          fromIpcMessaging(), // For messages from the main process
+        ),
       ),
     deps: [INTRAPROCESS_MESSAGING_SUBJECT],
   }),

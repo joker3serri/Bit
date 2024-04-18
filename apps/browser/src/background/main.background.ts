@@ -1,4 +1,4 @@
-import { Subject, firstValueFrom } from "rxjs";
+import { Subject, firstValueFrom, merge } from "rxjs";
 
 import {
   PinCryptoServiceAbstraction,
@@ -210,7 +210,6 @@ import { BrowserApi } from "../platform/browser/browser-api";
 import { flagEnabled } from "../platform/flags";
 import { UpdateBadge } from "../platform/listeners/update-badge";
 /* eslint-disable no-restricted-imports */
-import { ChromeMessageListener } from "../platform/messaging/chrome-message.listener";
 import { ChromeMessageSender } from "../platform/messaging/chrome-message.sender";
 /* eslint-enable no-restricted-imports */
 import { BrowserStateService as StateServiceAbstraction } from "../platform/services/abstractions/browser-state.service";
@@ -225,6 +224,7 @@ import { BackgroundPlatformUtilsService } from "../platform/services/platform-ut
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
 import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
+import { fromChromeRuntimeMessaging } from "../platform/utils/from-chrome-runtime-messaging";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
 import { BrowserFido2UserInterfaceService } from "../vault/fido2/browser-fido2-user-interface.service";
@@ -383,9 +383,11 @@ export default class MainBackground {
       new ChromeMessageSender(this.logService),
     );
 
-    const messageListener = MessageListener.combine(
-      new MessageListener(this.intraprocessMessagingSubject),
-      new ChromeMessageListener(),
+    const messageListener = new MessageListener(
+      merge(
+        this.intraprocessMessagingSubject.asObservable(), // For messages from the same context
+        fromChromeRuntimeMessaging(), // For messages from other contexts
+      ),
     );
 
     const mv3MemoryStorageCreator = (partitionName: string) => {
