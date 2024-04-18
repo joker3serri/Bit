@@ -7,7 +7,7 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { ButtonModule, DialogModule } from "@bitwarden/components";
 
-import { BrowserApi } from "../../platform/browser/browser-api";
+import { BrowserApi } from "../../../../platform/browser/browser-api";
 
 @Component({
   templateUrl: "about.component.html",
