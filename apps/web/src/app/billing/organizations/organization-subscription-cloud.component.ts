@@ -19,6 +19,10 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { DialogService } from "@bitwarden/components";
 
 import {
+  AdjustStorageDialogResult,
+  openAdjustStorageDialog,
+} from "../shared/adjust-storage.component";
+import {
   OffboardingSurveyDialogResultType,
   openOffboardingSurvey,
 } from "../shared/offboarding-survey.component";
@@ -36,8 +40,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   userOrg: Organization;
   showChangePlan = false;
   showDownloadLicense = false;
-  adjustStorageAdd = true;
-  showAdjustStorage = false;
   hasBillingSyncToken: boolean;
   showAdjustSecretsManager = false;
   showSecretsManagerSubscribe = false;
@@ -241,6 +243,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return (
       this.sub.planType === PlanType.EnterpriseAnnually ||
       this.sub.planType === PlanType.EnterpriseMonthly ||
+      this.sub.planType === PlanType.EnterpriseAnnually2023 ||
+      this.sub.planType === PlanType.EnterpriseMonthly2023 ||
       this.sub.planType === PlanType.EnterpriseAnnually2020 ||
       this.sub.planType === PlanType.EnterpriseMonthly2020 ||
       this.sub.planType === PlanType.EnterpriseAnnually2019 ||
@@ -254,6 +258,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     } else if (
       this.sub.planType === PlanType.FamiliesAnnually ||
       this.sub.planType === PlanType.FamiliesAnnually2019 ||
+      this.sub.planType === PlanType.TeamsStarter2023 ||
       this.sub.planType === PlanType.TeamsStarter
     ) {
       if (this.isSponsoredSubscription) {
@@ -358,19 +363,22 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.load();
   }
 
-  adjustStorage(add: boolean) {
-    this.adjustStorageAdd = add;
-    this.showAdjustStorage = true;
-  }
-
-  closeStorage(load: boolean) {
-    this.showAdjustStorage = false;
-    if (load) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.load();
-    }
-  }
+  adjustStorage = (add: boolean) => {
+    return async () => {
+      const dialogRef = openAdjustStorageDialog(this.dialogService, {
+        data: {
+          storageGbPrice: this.storageGbPrice,
+          add: add,
+          organizationId: this.organizationId,
+          interval: this.billingInterval,
+        },
+      });
+      const result = await lastValueFrom(dialogRef.closed);
+      if (result === AdjustStorageDialogResult.Adjusted) {
+        await this.load();
+      }
+    };
+  };
 
   removeSponsorship = async () => {
     const confirmed = await this.dialogService.openSimpleDialog({

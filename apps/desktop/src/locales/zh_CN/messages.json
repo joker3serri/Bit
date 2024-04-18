@@ -1907,7 +1907,7 @@
     "message": "无法完成生物识别。"
   },
   "needADifferentMethod": {
-    "message": "Need a different method?"
+    "message": "使用其他方式？"
   },
   "useMasterPassword": {
     "message": "使用主密码"
@@ -2696,5 +2696,11 @@
   },
   "enableHardwareAccelerationRestart": {
     "message": "启用硬件加速并重启"
+  },
+  "removePasskey": {
+    "message": "移除通行密钥"
+  },
+  "passkeyRemoved": {
+    "message": "通行密钥已移除"
   }
 }

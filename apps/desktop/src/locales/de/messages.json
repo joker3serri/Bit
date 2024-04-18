@@ -2696,5 +2696,11 @@
   },
   "enableHardwareAccelerationRestart": {
     "message": "Hardwarebeschleunigung aktivieren und neu starten"
+  },
+  "removePasskey": {
+    "message": "Passkey entfernen"
+  },
+  "passkeyRemoved": {
+    "message": "Passkey entfernt"
   }
 }
