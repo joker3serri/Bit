@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
-import { ProviderOrganizationUpdateRequest } from "@bitwarden/common/billing/models/request/provider-organization-update.request";
+import { UpdateClientOrganizationRequest } from "@bitwarden/common/billing/models/request/update-client-organization.request";
 import { Plans } from "@bitwarden/common/billing/models/response/provider-subscription-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -69,10 +69,10 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
       return;
     }
 
-    const request = new ProviderOrganizationUpdateRequest();
+    const request = new UpdateClientOrganizationRequest();
     request.assignedSeats = assignedSeats;
 
-    await this.billingApiService.updateProviderOrganization(
+    await this.billingApiService.updateClientOrganization(
       this.providerId,
       this.providerOrganizationId,
       request,
