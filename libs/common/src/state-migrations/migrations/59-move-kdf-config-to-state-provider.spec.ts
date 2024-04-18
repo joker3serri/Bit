@@ -1,10 +1,9 @@
 import { MockProxy } from "jest-mock-extended";
 
-// import { KdfType } from "../../platform/enums/kdf-type.enum";
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { KdfConfigMigrator } from "./57-move-kdf-config-to-state-provider";
+import { KdfConfigMigrator } from "./59-move-kdf-config-to-state-provider";
 
 function exampleJSON() {
   return {
@@ -81,8 +80,8 @@ describe("KdfConfigMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(exampleJSON(), 57);
-      sut = new KdfConfigMigrator(56, 57);
+      helper = mockMigrationHelper(exampleJSON(), 59);
+      sut = new KdfConfigMigrator(58, 59);
     });
 
     it("should remove kdfType and kdfConfig from Account.Profile", async () => {
@@ -118,8 +117,8 @@ describe("KdfConfigMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 57);
-      sut = new KdfConfigMigrator(56, 57);
+      helper = mockMigrationHelper(rollbackJSON(), 59);
+      sut = new KdfConfigMigrator(58, 59);
     });
 
     it("should null out new KdfConfig account value and set account.profile", async () => {

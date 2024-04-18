@@ -1,9 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { KdfConfig } from "../../auth/models/domain/kdf-config";
+import { Argon2KdfConfig, PBKDF2KdfConfig } from "../../auth/models/domain/kdf-config";
 import { CsprngArray } from "../../types/csprng";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
-import { KdfType } from "../enums";
 
 import { KeyGenerationService } from "./key-generation.service";
 
@@ -75,7 +74,7 @@ describe("KeyGenerationService", () => {
     it("should derive a 32 byte key from a password using pbkdf2", async () => {
       const password = "password";
       const salt = "salt";
-      const kdfConfig = new KdfConfig(600_000, KdfType.PBKDF2_SHA256);
+      const kdfConfig = new PBKDF2KdfConfig(600_000);
 
       cryptoFunctionService.pbkdf2.mockResolvedValue(new Uint8Array(32));
 
@@ -87,7 +86,7 @@ describe("KeyGenerationService", () => {
     it("should derive a 32 byte key from a password using argon2id", async () => {
       const password = "password";
       const salt = "salt";
-      const kdfConfig = new KdfConfig(600_000, KdfType.Argon2id, 15);
+      const kdfConfig = new Argon2KdfConfig(3, 16, 4);
 
       cryptoFunctionService.hash.mockResolvedValue(new Uint8Array(32));
       cryptoFunctionService.argon2.mockResolvedValue(new Uint8Array(32));
