@@ -322,6 +322,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const allCiphers$ = organization$.pipe(
       concatMap(async (organization) => {
+        // If user swaps organization reset the addAccessToggle
         if (!this.showAddAccessToggle) {
           this.addAccessToggle(0);
         }
@@ -364,6 +365,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
+    // This will be passed into the usersCanManage call
     this.orgRevokedUsers = (
       await this.organizationUserService.getAllUsers(await firstValueFrom(organizationId$))
     ).data.filter((user: OrganizationUserUserDetailsResponse) => {
@@ -617,14 +619,24 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
   }
 
+  // Update the list of collections to see if any collection is orphaned
+  // and will receive the addAccess badge / be filterable by the user
   async addAccessCollectionsMap(collections: TreeNode<CollectionAdminView>[]) {
     let mappedCollections;
-    if (
-      (this._flexibleCollectionsV1FlagEnabled &&
-        this.organization.type === OrganizationUserType.Custom &&
-        this.organization.permissions.editAnyCollection) ||
-      !this.organization.canEditAllCiphers(this._flexibleCollectionsV1FlagEnabled)
-    ) {
+    const { type, allowAdminAccessToAllCollectionItems, permissions } = this.organization;
+
+    const canEditCiphersCheck =
+      this._flexibleCollectionsV1FlagEnabled &&
+      !this.organization.canEditAllCiphers(this._flexibleCollectionsV1FlagEnabled);
+
+    // This custom type check will show addAccess badge for
+    // Custom users with canEdit access AND owner/admin manage access setting is OFF
+    const customUserCheck =
+      this._flexibleCollectionsV1FlagEnabled &&
+      !allowAdminAccessToAllCollectionItems &&
+      type === OrganizationUserType.Custom &&
+      permissions.editAnyCollection;
+    if (canEditCiphersCheck || customUserCheck) {
       mappedCollections = collections.map((c: TreeNode<CollectionAdminView>) => {
         const groupsCanManage = c.node.groupsCanManage();
         const usersCanManage = c.node.usersCanManage(this.orgRevokedUsers);

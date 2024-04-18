@@ -178,7 +178,6 @@ export class VaultItemsComponent {
         item.cipher !== undefined ||
         (item.collection !== undefined && this.canDeleteCollection(item.collection)),
     );
-
     this.dataSource.data = items;
   }
 
