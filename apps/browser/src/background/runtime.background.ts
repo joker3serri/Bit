@@ -166,43 +166,6 @@ export default class RuntimeBackground {
             break;
         }
         break;
-      case "triggerFido2ContentScriptInjection":
-        await this.fido2Service.injectFido2ContentScripts(sender);
-        break;
-      case "fido2RegisterCredentialRequest":
-        return await this.abortManager.runWithAbortController(
-          msg.requestId,
-          async (abortController) => {
-            try {
-              return await this.main.fido2ClientService.createCredential(
-                msg.data,
-                sender.tab,
-                abortController,
-              );
-            } finally {
-              await BrowserApi.focusTab(sender.tab.id);
-              await BrowserApi.focusWindow(sender.tab.windowId);
-            }
-          },
-        );
-      case "fido2GetCredentialRequest":
-        return await this.abortManager.runWithAbortController(
-          msg.requestId,
-          async (abortController) => {
-            try {
-              return await this.main.fido2ClientService.assertCredential(
-                msg.data,
-                sender.tab,
-                abortController,
-              );
-            } finally {
-              await BrowserApi.focusTab(sender.tab.id);
-              await BrowserApi.focusWindow(sender.tab.windowId);
-            }
-          },
-        );
-      case "checkFido2FeatureEnabled":
-        return await this.main.fido2ClientService.isFido2FeatureEnabled(msg.hostname, msg.origin);
       case "biometricUnlock": {
         const result = await this.main.biometricUnlock();
         return result;
@@ -317,10 +280,6 @@ export default class RuntimeBackground {
       case "getClickedElementResponse":
         this.platformUtilsService.copyToClipboard(msg.identifier);
         break;
-      case "fido2AbortRequest":
-        this.abortManager.abort(msg.abortedRequestId);
-        break;
-
       case "switchAccount": {
         await this.main.switchAccount(msg.userId);
         break;
