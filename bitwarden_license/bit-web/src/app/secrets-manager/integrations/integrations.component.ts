@@ -18,6 +18,7 @@ export class IntegrationsComponent {
         linkText: i18nService.t("setUpGithubActions"),
         linkURL: "https://bitwarden.com/help/github-actions-integration/",
         image: "../../../../../../../images/secrets-manager/integrations/github.svg",
+        imageDarkMode: "../../../../../../../images/secrets-manager/integrations/github-white.svg",
         type: "integration",
       },
       {
@@ -25,6 +26,7 @@ export class IntegrationsComponent {
         linkText: i18nService.t("setUpGitlabCICD"),
         linkURL: "https://bitwarden.com/help/gitlab-integration/",
         image: "../../../../../../../images/secrets-manager/integrations/gitlab.svg",
+        imageDarkMode: "../../../../../../../images/secrets-manager/integrations/gitlab-white.svg",
         type: "integration",
       },
       {
@@ -59,7 +61,8 @@ export class IntegrationsComponent {
         name: "Java",
         linkText: i18nService.t("javaSDKRepo"),
         linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/java",
-        image: "../../../../../../../images/secrets-manager/sdks/java.png",
+        image: "../../../../../../../images/secrets-manager/sdks/java.svg",
+        imageDarkMode: "../../../../../../../images/secrets-manager/sdks/java-white.svg",
         type: "sdk",
       },
       {

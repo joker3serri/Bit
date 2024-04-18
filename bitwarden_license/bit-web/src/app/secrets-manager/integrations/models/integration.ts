@@ -2,6 +2,10 @@
 export type Integration = {
   name: string;
   image: string;
+  /**
+   * Optional image shown in dark mode.
+   */
+  imageDarkMode?: string;
   linkURL: string;
   linkText: string;
   type: "integration" | "sdk";

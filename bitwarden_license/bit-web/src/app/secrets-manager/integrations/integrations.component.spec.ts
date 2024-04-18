@@ -2,8 +2,12 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
+import { of } from "rxjs";
 
+import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../libs/angular/src/services/injection-tokens";
 import { I18nService } from "../../../../../../libs/common/src/platform/abstractions/i18n.service";
+import { ThemeType } from "../../../../../../libs/common/src/platform/enums";
+import { ThemeStateService } from "../../../../../../libs/common/src/platform/theming/theme-state.service";
 import { I18nPipe } from "../../../../../../libs/components/src/shared/i18n.pipe";
 
 import { IntegrationCardComponent } from "./integration-card/integration-card.component";
@@ -39,6 +43,14 @@ describe("IntegrationsComponent", () => {
         {
           provide: I18nService,
           useValue: mock<I18nService>({ t: (key) => key }),
+        },
+        {
+          provide: ThemeStateService,
+          useValue: mock<ThemeStateService>(),
+        },
+        {
+          provide: SYSTEM_THEME_OBSERVABLE,
+          useValue: of(ThemeType.Light),
         },
       ],
     }).compileComponents();
