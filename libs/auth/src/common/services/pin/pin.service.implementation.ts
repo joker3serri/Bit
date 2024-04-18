@@ -154,6 +154,12 @@ export class PinService implements PinServiceAbstraction {
   }
 
   async storePinKeyEncryptedUserKey(userKey: UserKey, userId?: UserId) {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("No UserId resolved.");
+    }
+
     const pin = await this.encryptService.decryptToUtf8(
       new EncString(await this.getProtectedPin(userId)),
       userKey,
@@ -181,6 +187,12 @@ export class PinService implements PinServiceAbstraction {
   }
 
   async getPinLockType(userId?: UserId): Promise<PinLockType> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("No UserId resolved.");
+    }
+
     // we can't check the protected pin for both because old accounts only
     // used it for MP on Restart
     const aUserKeyEncryptedPinIsSet = !!(await this.getProtectedPin(userId as UserId));
@@ -203,18 +215,28 @@ export class PinService implements PinServiceAbstraction {
   }
 
   async isPinSet(userId?: UserId): Promise<boolean> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("No UserId resolved.");
+    }
+
     return (await this.getPinLockType(userId)) !== "DISABLED";
   }
 
   async decryptUserKeyWithPin(pin: string): Promise<UserKey | null> {
     try {
-      const pinLockType: PinLockType = await this.getPinLockType();
+      const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+      if (userId == null) {
+        throw new Error("No UserId resolved.");
+      }
+      const pinLockType: PinLockType = await this.getPinLockType(userId);
       const requireMasterPasswordOnClientRestart = pinLockType === "TRANSIENT";
 
       const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
         await this.getPinKeyEncryptedKeys(pinLockType);
 
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       const kdf: KdfType = await this.stateService.getKdfType({ userId });
       const kdfConfig: KdfConfig = await this.stateService.getKdfConfig({ userId });
       const email = (await firstValueFrom(this.accountService.activeAccount$))?.email;
@@ -267,8 +289,14 @@ export class PinService implements PinServiceAbstraction {
     kdfConfig: KdfConfig,
     pinKeyEncryptedUserKey?: EncString,
   ): Promise<UserKey> {
-    pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKey();
-    pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKeyEphemeral();
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("No UserId resolved.");
+    }
+
+    pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKey(userId);
+    pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKeyEphemeral(userId);
 
     if (!pinKeyEncryptedUserKey) {
       throw new Error("No PIN encrypted key found.");
@@ -382,11 +410,20 @@ export class PinService implements PinServiceAbstraction {
    */
   private async getPinKeyEncryptedKeys(
     pinLockType: PinLockType,
+    userId?: UserId,
   ): Promise<{ pinKeyEncryptedUserKey: EncString; oldPinKeyEncryptedMasterKey?: EncString }> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("No UserId resolved.");
+    }
+
     switch (pinLockType) {
       case "PERSISTENT": {
-        const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKey();
-        const oldPinKeyEncryptedMasterKey = await this.stateService.getEncryptedPinProtected();
+        const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKey(userId);
+        const oldPinKeyEncryptedMasterKey = await this.stateService.getEncryptedPinProtected({
+          userId,
+        });
 
         return {
           pinKeyEncryptedUserKey,
@@ -396,8 +433,10 @@ export class PinService implements PinServiceAbstraction {
         };
       }
       case "TRANSIENT": {
-        const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral();
-        const oldPinKeyEncryptedMasterKey = await this.stateService.getDecryptedPinProtected();
+        const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral(userId);
+        const oldPinKeyEncryptedMasterKey = await this.stateService.getDecryptedPinProtected({
+          userId,
+        });
 
         return { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey };
       }
