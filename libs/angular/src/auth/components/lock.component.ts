@@ -345,7 +345,7 @@ export class LockComponent implements OnInit, OnDestroy {
     let ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral();
     ephemeralPinSet ||= await this.stateService.getDecryptedPinProtected();
     this.pinEnabled =
-      (this.pinLockType === "TRANSIENT" && !!ephemeralPinSet) || this.pinLockType === "PERSISTANT";
+      (this.pinLockType === "TRANSIENT" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";
     this.masterPasswordEnabled = await this.userVerificationService.hasMasterPassword();
 
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();

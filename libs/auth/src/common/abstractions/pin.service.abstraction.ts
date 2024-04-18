@@ -18,12 +18,12 @@ export abstract class PinServiceAbstraction {
   abstract setPinKeyEncryptedUserKey: (value: EncString, userId?: UserId) => Promise<void>;
 
   /**
-   * Gets the ephemeral ("short-lived") version of the UserKey, encrypted by the PinKey.
+   * Gets the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
    */
   abstract getPinKeyEncryptedUserKeyEphemeral: (userId?: UserId) => Promise<EncString>;
 
   /**
-   * Sets the ephemeral ("short-lived") version of the UserKey, encrypted by the PinKey.
+   * Sets the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
    */
   abstract setPinKeyEncryptedUserKeyEphemeral: (value: EncString, userId?: UserId) => Promise<void>;
 
@@ -39,9 +39,9 @@ export abstract class PinServiceAbstraction {
 
   /**
    * Stores the UserKey, encrypted by the PinKey
-   * - If require MP on client reset is disabled, stores the persistant version via {@link setPinKeyEncryptedUserKey}
+   * - If require MP on client reset is disabled, stores the persistent version via {@link setPinKeyEncryptedUserKey}
    * - If require MP on client reset is enabled, stores the ephemeral version via {@link setPinKeyEncryptedUserKeyEphemeral}
-   * TODO-rr-bw: rename method? the name is very similar to getPinKeyEncryptedUserKey(), which only stores the persistant version
+   * TODO-rr-bw: rename method? the name is very similar to getPinKeyEncryptedUserKey(), which only stores the persistent version
    * TODO-rr-bw: OR consider moving back to CryptoService within the storeAdditionalKeys() method since it is only used there once
    */
   abstract storePinKeyEncryptedUserKey: (userKey: UserKey, userId?: UserId) => Promise<void>;
@@ -63,7 +63,7 @@ export abstract class PinServiceAbstraction {
   abstract getPinLockType: (userId?: UserId) => Promise<PinLockType>;
 
   /**
-   * Declares whether or not the user has a PIN set (either persistant or ephemeral)
+   * Declares whether or not the user has a PIN set (either persistent or ephemeral)
    * @param userId The user id to check. If not provided, the current user is used
    */
   abstract isPinSet: (userId?: UserId) => Promise<boolean>;

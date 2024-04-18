@@ -26,7 +26,7 @@ import { PinServiceAbstraction } from "../../abstractions/pin.service.abstractio
  * - TRANSIENT  : PIN is set, but does not persist through client reset.
  *                After client reset the master password is required to unlock.
  */
-export type PinLockType = "DISABLED" | "PERSISTANT" | "TRANSIENT";
+export type PinLockType = "DISABLED" | "PERSISTENT" | "TRANSIENT";
 
 /**
  * Persists through a client reset. Used when require lock with MP on client restart is disabled.
@@ -188,7 +188,7 @@ export class PinService implements PinServiceAbstraction {
     }));
 
     if (aPinKeyEncryptedUserKeyIsSet || anOldPinKeyEncryptedMasterKeyIsSet) {
-      return "PERSISTANT";
+      return "PERSISTENT";
     } else if (
       aUserKeyEncryptedPinIsSet &&
       !aPinKeyEncryptedUserKeyIsSet &&
@@ -285,7 +285,7 @@ export class PinService implements PinServiceAbstraction {
    * - Uses that master key to decrypt the user key
    * - Creates a new PinKey and uses it to encrypt the user key, resulting in a new `pinKeyEncryptedUserKey`
    * - Clears the `oldPinKeyEncryptedMasterKey` (aka `pinProtected`) from state
-   * - Sets the new `pinKeyEncryptedUserKey` to state (either persistant or ephemeral depending on `requireMasterPasswordOnClientRestart`)
+   * - Sets the new `pinKeyEncryptedUserKey` to state (either persistent or ephemeral depending on `requireMasterPasswordOnClientRestart`)
    * - Creates a new `protectedPin` by encrypting the PIN with the user key
    * - Sets that new `protectedPin` to state
    *
@@ -381,7 +381,7 @@ export class PinService implements PinServiceAbstraction {
     pinLockType: PinLockType,
   ): Promise<{ pinKeyEncryptedUserKey: EncString; oldPinKeyEncryptedMasterKey?: EncString }> {
     switch (pinLockType) {
-      case "PERSISTANT": {
+      case "PERSISTENT": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKey();
         const oldPinKeyEncryptedMasterKey = await this.stateService.getEncryptedPinProtected();
 

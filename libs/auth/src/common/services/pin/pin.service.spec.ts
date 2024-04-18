@@ -85,7 +85,7 @@ describe("PinService", () => {
       migrationStatus: "PRE" | "POST" = "POST",
     ) {
       switch (pinLockType) {
-        case "PERSISTANT":
+        case "PERSISTENT":
           stateService.getPinKeyEncryptedUserKey.mockResolvedValue(
             pinKeyEncryptedUserKeyPersistant,
           );
@@ -121,8 +121,8 @@ describe("PinService", () => {
     }
 
     const testCases: { pinLockType: PinLockType; migrationStatus: "PRE" | "POST" }[] = [
-      { pinLockType: "PERSISTANT", migrationStatus: "PRE" },
-      { pinLockType: "PERSISTANT", migrationStatus: "POST" },
+      { pinLockType: "PERSISTENT", migrationStatus: "PRE" },
+      { pinLockType: "PERSISTENT", migrationStatus: "POST" },
       { pinLockType: "TRANSIENT", migrationStatus: "PRE" },
       { pinLockType: "TRANSIENT", migrationStatus: "POST" },
     ];
@@ -142,7 +142,7 @@ describe("PinService", () => {
 
         it(`should return null when PIN is incorrect and user key cannot be decrypted`, async () => {
           // Arrange
-          setupDecryptUserKeyWithPinMocks("PERSISTANT");
+          setupDecryptUserKeyWithPinMocks("PERSISTENT");
 
           cryptoService.decryptUserKeyWithPin.mockResolvedValue(null);
 
@@ -156,7 +156,7 @@ describe("PinService", () => {
         // not sure if this is a realistic scenario but going to test it anyway
         it(`should return null when PIN doesn't match after successful user key decryption`, async () => {
           // Arrange
-          setupDecryptUserKeyWithPinMocks("PERSISTANT");
+          setupDecryptUserKeyWithPinMocks("PERSISTENT");
 
           // non matching PIN
           cryptoService.decryptToUtf8.mockResolvedValue("9999");
