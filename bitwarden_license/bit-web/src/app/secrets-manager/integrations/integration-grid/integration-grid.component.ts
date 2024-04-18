@@ -1,5 +1,7 @@
 import { Component, Input } from "@angular/core";
 
+import { IntegrationType } from "@bitwarden/common/enums";
+
 import { Integration } from "../models/integration";
 
 @Component({
@@ -8,4 +10,6 @@ import { Integration } from "../models/integration";
 })
 export class IntegrationGridComponent {
   @Input() integrations: Integration[];
+
+  protected IntegrationType = IntegrationType;
 }

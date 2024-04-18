@@ -1,3 +1,5 @@
+import { IntegrationType } from "@bitwarden/common/enums";
+
 /** Integration or SDK */
 export type Integration = {
   name: string;
@@ -8,7 +10,7 @@ export type Integration = {
   imageDarkMode?: string;
   linkURL: string;
   linkText: string;
-  type: "integration" | "sdk";
+  type: IntegrationType;
   /**
    * Shows the "New" badge until the defined date.
    * When omitted, the badge is never shown.
