@@ -7,6 +7,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
 
 import { BrowserApi } from "../platform/browser/browser-api";
@@ -40,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private stateService: BrowserStateService,
     private browserSendStateService: BrowserSendStateService,
     private vaultBrowserStateService: VaultBrowserStateService,
+    private cipherService: CipherService,
     private changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private platformUtilsService: PlatformUtilsService,
@@ -160,7 +162,7 @@ export class AppComponent implements OnInit, OnDestroy {
           await this.clearComponentStates();
         }
         if (url.startsWith("/tabs/")) {
-          await this.stateService.setAddEditCipherInfo(null);
+          await this.cipherService.setAddEditCipherInfo(null);
         }
         (window as any).previousPopupUrl = url;
 
