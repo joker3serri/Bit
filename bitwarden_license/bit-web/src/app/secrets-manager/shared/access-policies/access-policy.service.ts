@@ -367,13 +367,9 @@ export class AccessPolicyService {
   ): ProjectServiceAccountsAccessPoliciesRequest {
     const request = new ProjectServiceAccountsAccessPoliciesRequest();
 
-    request.serviceAccountAccessPolicyRequests = policies.serviceAccountAccessPolicies.map(
-      (accessPolicy) => ({
-        granteeId: accessPolicy.serviceAccountId,
-        read: accessPolicy.read,
-        write: accessPolicy.write,
-      }),
-    );
+    request.serviceAccountAccessPolicyRequests = policies.serviceAccountAccessPolicies.map((ap) => {
+      return this.getAccessPolicyRequest(ap.serviceAccountId, ap);
+    });
 
     return request;
   }
