@@ -59,6 +59,50 @@ const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
   clearOn: ["logout"],
 });
 
+/* DerivedState (attempt) 
+
+const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedString>(
+  PIN_DISK,
+  "oldPinKeyEncryptedMasterKey",
+  {
+    deserializer: (value) => value,
+    clearOn: [], // TODO-rr-bw: verify
+  },
+);
+
+const OLD_PIN_KEY_DECRYPTED_MASTER_KEY = DeriveDefinition.fromWithUserId<
+  EncryptedString,
+  EncString,
+  {
+    stateService: StateService;
+    pinService: PinService;
+    encryptService: EncryptService;
+  }
+>(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, {
+  deserializer: (jsonValue) => new EncString(jsonValue),
+  derive: async (
+    [userId, oldPinKeyEncryptedMasterKeyString],
+    { stateService, pinService, encryptService },
+  ) => {
+    if (oldPinKeyEncryptedMasterKeyString == null) {
+      return null;
+    }
+
+    const kdf = await stateService.getKdfType({ userId });
+    const kdfConfig = await stateService.getKdfConfig({ userId });
+    const email = await stateService.getEmail({ userId });
+
+    const pinKey = await pinService.makePinKey(pin, email, kdf, kdfConfig); // ???
+
+    const oldPinKeyEncryptedMasterKey = new EncString(oldPinKeyEncryptedMasterKeyString);
+
+    const masterKey = await encryptService.decryptToBytes(oldPinKeyEncryptedMasterKey, pinKey);
+
+    return new SymmetricCryptoKey(masterKey) as MasterKey;
+  },
+});
+*/
+
 export class PinService implements PinServiceAbstraction {
   constructor(
     private stateProvider: StateProvider,
