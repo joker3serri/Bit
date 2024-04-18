@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
+import { mock } from "jest-mock-extended";
+import { of } from "rxjs";
 
+import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../../libs/angular/src/services/injection-tokens";
+import { ThemeType } from "../../../../../../../libs/common/src/platform/enums";
+import { ThemeStateService } from "../../../../../../../libs/common/src/platform/theming/theme-state.service";
 import { IntegrationCardComponent } from "../integration-card/integration-card.component";
 import { Integration } from "../models/integration";
 
@@ -29,7 +34,18 @@ describe("IntegrationGridComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [IntegrationGridComponent, IntegrationCardComponent],
+      providers: [
+        {
+          provide: ThemeStateService,
+          useValue: mock<ThemeStateService>(),
+        },
+        {
+          provide: SYSTEM_THEME_OBSERVABLE,
+          useValue: of(ThemeType.Light),
+        },
+      ],
     });
+
     fixture = TestBed.createComponent(IntegrationGridComponent);
     component = fixture.componentInstance;
     component.integrations = integrations;

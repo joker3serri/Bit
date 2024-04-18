@@ -5,7 +5,12 @@
     class="tw-flex tw-h-36 tw-bg-secondary-100 tw-items-center tw-justify-center tw-py-2 tw-px-6 lg:tw-py-4 lg:tw-px-12"
   >
     <div class="tw-flex tw-items-center tw-justify-center tw-h-28 tw-w-28 lg:tw-w-40">
-      <img [src]="image" alt="" class="tw-block tw-mx-auto tw-h-auto tw-max-w-full tw-max-h-full" />
+      <img
+        #imageEle
+        [src]="image"
+        alt=""
+        class="tw-block tw-mx-auto tw-h-auto tw-max-w-full tw-max-h-full"
+      />
     </div>
   </div>
   <div class="tw-p-5">

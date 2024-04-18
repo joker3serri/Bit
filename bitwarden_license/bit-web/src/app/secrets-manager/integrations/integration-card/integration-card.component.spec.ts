@@ -1,4 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { BehaviorSubject } from "rxjs";
+
+import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../../libs/angular/src/services/injection-tokens";
+import { ThemeType } from "../../../../../../../libs/common/src/platform/enums";
+import { ThemeStateService } from "../../../../../../../libs/common/src/platform/theming/theme-state.service";
 
 import { IntegrationCardComponent } from "./integration-card.component";
 
@@ -6,9 +11,25 @@ describe("IntegrationCardComponent", () => {
   let component: IntegrationCardComponent;
   let fixture: ComponentFixture<IntegrationCardComponent>;
 
+  const systemTheme$ = new BehaviorSubject<ThemeType>(ThemeType.Light);
+  const usersPreferenceTheme$ = new BehaviorSubject<ThemeType>(ThemeType.Light);
+
   beforeEach(async () => {
+    // reset system theme
+    systemTheme$.next(ThemeType.Light);
+
     await TestBed.configureTestingModule({
       declarations: [IntegrationCardComponent],
+      providers: [
+        {
+          provide: ThemeStateService,
+          useValue: { selectedTheme$: usersPreferenceTheme$ },
+        },
+        {
+          provide: SYSTEM_THEME_OBSERVABLE,
+          useValue: systemTheme$,
+        },
+      ],
     }).compileComponents();
   });
 
@@ -79,6 +100,75 @@ describe("IntegrationCardComponent", () => {
     it("does not show when expiration is invalid", () => {
       component.newBadgeExpiration = "not-a-date";
       expect(component.showNewBadge()).toBe(false);
+    });
+  });
+
+  describe("imageDarkMode", () => {
+    it("ignores theme changes when darkModeImage is not set", () => {
+      systemTheme$.next(ThemeType.Dark);
+      usersPreferenceTheme$.next(ThemeType.Dark);
+
+      fixture.detectChanges();
+
+      expect(component.imageEle.nativeElement.src).toContain("test-image.png");
+    });
+
+    describe("user prefers the system theme", () => {
+      beforeEach(() => {
+        component.imageDarkMode = "test-image-dark.png";
+      });
+
+      it("sets image src to imageDarkMode", () => {
+        usersPreferenceTheme$.next(ThemeType.System);
+        systemTheme$.next(ThemeType.Dark);
+
+        fixture.detectChanges();
+
+        expect(component.imageEle.nativeElement.src).toContain("test-image-dark.png");
+      });
+
+      it("sets image src to light mode image", () => {
+        component.imageEle.nativeElement.src = "test-image-dark.png";
+
+        usersPreferenceTheme$.next(ThemeType.System);
+        systemTheme$.next(ThemeType.Light);
+
+        fixture.detectChanges();
+
+        expect(component.imageEle.nativeElement.src).toContain("test-image.png");
+      });
+    });
+
+    describe("user prefers dark mode", () => {
+      beforeEach(() => {
+        component.imageDarkMode = "test-image-dark.png";
+      });
+
+      it("updates image to dark mode", () => {
+        systemTheme$.next(ThemeType.Light); // system theme shouldn't matter
+        usersPreferenceTheme$.next(ThemeType.Dark);
+
+        fixture.detectChanges();
+
+        expect(component.imageEle.nativeElement.src).toContain("test-image-dark.png");
+      });
+    });
+
+    describe("user prefers light mode", () => {
+      beforeEach(() => {
+        component.imageDarkMode = "test-image-dark.png";
+      });
+
+      it("updates image to light mode", () => {
+        component.imageEle.nativeElement.src = "test-image-dark.png";
+
+        systemTheme$.next(ThemeType.Dark); // system theme shouldn't matter
+        usersPreferenceTheme$.next(ThemeType.Light);
+
+        fixture.detectChanges();
+
+        expect(component.imageEle.nativeElement.src).toContain("test-image.png");
+      });
     });
   });
 });
