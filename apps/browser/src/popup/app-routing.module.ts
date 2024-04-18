@@ -21,6 +21,7 @@ import { LoginComponent } from "../auth/popup/login.component";
 import { RegisterComponent } from "../auth/popup/register.component";
 import { RemovePasswordComponent } from "../auth/popup/remove-password.component";
 import { SetPasswordComponent } from "../auth/popup/set-password.component";
+import { AccountSecurityComponent } from "../auth/popup/settings/account-security.component";
 import { SsoComponent } from "../auth/popup/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
@@ -34,6 +35,7 @@ import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.compo
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
 import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
+import { SettingsComponent } from "../tools/popup/settings/settings.component";
 import { Fido2Component } from "../vault/popup/components/fido2/fido2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
@@ -52,7 +54,6 @@ import { FoldersComponent } from "./settings/folders.component";
 import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
 import { PremiumComponent } from "./settings/premium.component";
-import { SettingsComponent } from "./settings/settings.component";
 import { SyncComponent } from "./settings/sync.component";
 import { TabsComponent } from "./tabs.component";
 
@@ -243,6 +244,12 @@ const routes: Routes = [
     component: AutofillComponent,
     canActivate: [AuthGuard],
     data: { state: "autofill" },
+  },
+  {
+    path: "account-security",
+    component: AccountSecurityComponent,
+    canActivate: [AuthGuard],
+    data: { state: "account-security" },
   },
   {
     path: "folders",
