@@ -35,8 +35,9 @@ import { BiometricErrors, BiometricErrorTypes } from "../../../models/biometricE
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { enableAccountSwitching } from "../../../platform/flags";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
-import { AwaitDesktopDialogComponent } from "../../../popup/settings/await-desktop-dialog.component";
 import { SetPinComponent } from "../components/set-pin.component";
+
+import { AwaitDesktopDialogComponent } from "./await-desktop-dialog.component";
 
 @Component({
   selector: "auth-account-security",
