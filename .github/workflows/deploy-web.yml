@@ -128,57 +128,18 @@ jobs:
       - name: Success Code
         run: exit 0
 
-  get-branch-or-tag-sha:
-    name: Get Branch or Tag SHA
-    runs-on: ubuntu-22.04
-    outputs:
-      branch-or-tag-sha: ${{ steps.get-branch-or-tag-sha.outputs.sha }}
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-        with:
-          ref: ${{ inputs.branch-or-tag }}
-          fetch-depth: 0
-
-      - name: Get Branch or Tag SHA
-        id: get-branch-or-tag-sha
-        run: |
-          echo "sha=$(git rev-parse origin/${{ inputs.branch-or-tag }})" >> $GITHUB_OUTPUT
-
-  notify-start:
-    name: Notify Slack with start message
-    needs:
-      - approval
-      - setup
-      - get-branch-or-tag-sha
-    runs-on: ubuntu-22.04
-    if: ${{ always() && contains( inputs.environment , 'QA' ) }}
-    outputs:
-      channel_id: ${{ steps.slack-message.outputs.channel_id }}
-      ts: ${{ steps.slack-message.outputs.ts }}
-    steps:
-      - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
-        id: slack-message
-        with:
-          project: Clients
-          environment: ${{ needs.setup.outputs.environment-name }}
-          tag: ${{ inputs.branch-or-tag }}
-          slack-channel: team-eng-qa-devops
-          event: 'start'
-          commit-sha: ${{ needs.get-branch-or-tag-sha.outputs.branch-or-tag-sha }}
-          url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
-          AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
-
   artifact-check:
     name: Check if Web artifact is present
     runs-on: ubuntu-22.04
     needs: setup
     env:
       _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
+    outputs:
+      artifact-build-commit: ${{ steps.set-artifact-commit.outputs.commit }}
     steps:
       - name: 'Download latest cloud asset using GitHub Run ID: ${{ inputs.build-web-run-id }}'
         if: ${{ inputs.build-web-run-id }}
-        uses: bitwarden/gh-actions/download-artifacts@5b587aa9bb6245e9efe686652183d7b1b014de64
+        uses: bitwarden/gh-actions/download-artifacts@main
         id: download-latest-artifacts
         continue-on-error: true
         with:
@@ -190,7 +151,7 @@ jobs:
 
       - name: 'Download latest cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
         if: ${{ !inputs.build-web-run-id }}
-        uses: bitwarden/gh-actions/download-artifacts@5b587aa9bb6245e9efe686652183d7b1b014de64
+        uses: bitwarden/gh-actions/download-artifacts@main
         id: download-artifacts
         continue-on-error: true
         with:
@@ -225,14 +186,38 @@ jobs:
           ref: ${{ inputs.branch-or-tag }}
           wait_interval: 100
 
-      - name: Set artifact git SHA
-        id: set-artifact-name
+      - name: Set artifact build commit
+        id: set-artifact-commit
         run: |
           if [ -z "${{ steps.download-latest-artifacts.outputs.artifact-build-commit }}" ]; then
-            echo "${{ steps.download-artifacts.outputs.artifact-build-commit}}"
+            echo "commit=${{ steps.download-artifacts.outputs.artifact-build-commit}} >> $GITHUB_OUTPUT"
           else
-            echo "${{ steps.download-latest-artifacts.outputs.artifact-build-commit }}"
+            echo "commit=${{ steps.download-latest-artifacts.outputs.artifact-build-commit }} >> $GITHUB_OUTPUT"
           fi
+
+  notify-start:
+    name: Notify Slack with start message
+    needs:
+      - approval
+      - setup
+      - artifact-check
+    runs-on: ubuntu-22.04
+    if: ${{ always() && contains( inputs.environment , 'QA' ) }}
+    outputs:
+      channel_id: ${{ steps.slack-message.outputs.channel_id }}
+      ts: ${{ steps.slack-message.outputs.ts }}
+    steps:
+      - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
+        id: slack-message
+        with:
+          project: Clients
+          environment: ${{ needs.setup.outputs.environment-name }}
+          tag: ${{ inputs.branch-or-tag }}
+          slack-channel: team-eng-qa-devops
+          event: 'start'
+          commit-sha: ${{ needs.artifact-check.outputs.artifact-build-commit }}
+          url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
+          AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
   azure-deploy:
     name: Deploy Web Vault to ${{ inputs.environment }} Storage Account
@@ -358,10 +343,10 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ always() && contains( inputs.environment , 'QA' ) }}
     needs:
+      - setup
       - notify-start
       - azure-deploy
-      - setup
-      - get-branch-or-tag-sha
+      - artifact-check
     steps:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
         with:
@@ -371,6 +356,6 @@ jobs:
           slack-channel: ${{ needs.notify-start.outputs.channel_id }}
           event: ${{ needs.azure-deploy.result }}
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
-          commit-sha: ${{ needs.get-branch-or-tag-sha.outputs.branch-or-tag-sha }}
+          commit-sha: ${{ needs.artifact-check.outputs.artifact-build-commit }}
           update-ts: ${{ needs.notify-start.outputs.ts }}
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
