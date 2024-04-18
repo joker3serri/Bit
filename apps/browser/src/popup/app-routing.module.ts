@@ -48,13 +48,13 @@ import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
+import { SyncComponent } from "../vault/popup/settings/sync.component";
 
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
 import { PremiumComponent } from "./settings/premium.component";
-import { SyncComponent } from "./settings/sync.component";
 import { TabsComponent } from "./tabs.component";
 
 const unauthRouteOverrides = {
