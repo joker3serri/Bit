@@ -54,7 +54,8 @@
     </bit-select>
     <bit-hint>{{
       "importTargetHint"
-        | i18n: (organizationId ? ("collection" | i18n | lowercase) : ("folder" | i18n | lowercase))
+        | i18n
+          : (organizationId ? ("collection" | i18n | lowercase) : ("folder" | i18n | lowercase))
     }}</bit-hint>
   </bit-form-field>
 
@@ -63,7 +64,7 @@
     <bit-select formControlName="format">
       <bit-option value="" label="-- {{ 'select' | i18n }} --" />
       <bit-option
-        class="tw-font-bold tw-text-muted tw-text-xs"
+        class="tw-text-xs tw-font-bold tw-text-muted"
         value="-"
         label="{{ 'commonImportFormats' | i18n }}"
         disabled
@@ -76,6 +77,12 @@
     </bit-select>
   </bit-form-field>
   <bit-callout type="info" title="{{ getFormatInstructionTitle() }}" *ngIf="format">
+    <ng-container *ngIf="isCreepRequest">
+      Navigate to a web vault that supports transfering credentials using Universal Credential
+      Exchange. With that page open, click on the "Start Import" button below to begin the import
+      process.
+    </ng-container>
+
     <ng-container *ngIf="format === 'bitwardencsv' || format === 'bitwardenjson'">
       See detailed instructions on our help site at
       <a target="_blank" rel="noreferrer" href="https://bitwarden.com/help/export-your-data/">
@@ -365,7 +372,19 @@
     [formGroup]="formGroup"
     (csvDataLoaded)="this.formGroup.controls.fileContents.setValue($event)"
   ></import-lastpass>
-  <div [hidden]="showLastPassOptions">
+  <div *ngIf="isCreepRequest">
+    <button
+      bitButton
+      type="button"
+      [buttonType]="creepImportStarted ? 'secondary' : 'primary'"
+      (click)="sendCreepRequest()"
+    >
+      <i class="bwi bwi-spinner bwi-spin tw-mr-1" aria-hidden="true" *ngIf="creepImportStarted"></i>
+      {{ creepImportStarted ? "Importing..." : "Start Import" }}
+    </button>
+  </div>
+
+  <div [hidden]="showLastPassOptions || isCreepRequest">
     <bit-form-field>
       <bit-label>{{ "selectImportFile" | i18n }}</bit-label>
       <div class="file-selector">

@@ -4,13 +4,13 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 
 import NotificationBackground from "../../autofill/background/notification.background";
 import { BrowserApi } from "../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 import { FilelessImporterInjectedScriptsConfig } from "../config/fileless-importer-injected-scripts";
 import {
   FilelessImportPort,
@@ -24,17 +24,21 @@ import {
   FilelessImporterBackground as FilelessImporterBackgroundInterface,
   FilelessImportPortMessage,
   SuppressDownloadScriptInjectionConfig,
+  CreepImporterMessageHandlers,
 } from "./abstractions/fileless-importer.background";
 
 class FilelessImporterBackground implements FilelessImporterBackgroundInterface {
   private static readonly filelessImporterPortNames: Set<string> = new Set([
     FilelessImportPort.LpImporter,
     FilelessImportPort.NotificationBar,
+    FilelessImportPort.CREEPImporter,
   ]);
   private importNotificationsPort: chrome.runtime.Port;
   private lpImporterPort: chrome.runtime.Port;
+  private creepImporterPort: chrome.runtime.Port;
+  private mostRecentlyFocusedTabId: number;
   private readonly importNotificationsPortMessageHandlers: ImportNotificationMessageHandlers = {
-    startFilelessImport: ({ message }) => this.startFilelessImport(message.importType),
+    startFilelessImport: ({ message, port }) => this.startFilelessImport(message.importType, port),
     cancelFilelessImport: ({ message, port }) =>
       this.cancelFilelessImport(message.importType, port.sender),
   };
@@ -42,6 +46,11 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     displayLpImportNotification: ({ port }) =>
       this.displayFilelessImportNotification(port.sender.tab, FilelessImportType.LP),
     startLpImport: ({ message }) => this.triggerLpImport(message.data),
+  };
+  private readonly creepImporterPortMessageHandlers: CreepImporterMessageHandlers = {
+    startCreepFilelessImport: ({ message }) => this.triggerCreepImport(message.data),
+    displayCreepImportNotification: ({ port }) =>
+      this.displayFilelessImportNotification(port.sender.tab, FilelessImportType.CREEP),
   };
 
   /**
@@ -68,6 +77,33 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    */
   init() {
     this.setupPortMessageListeners();
+
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.command !== "initiateCreepRequest") {
+        return;
+      }
+
+      void BrowserApi.focusTab(this.mostRecentlyFocusedTabId);
+      this.creepImporterPort?.postMessage({
+        command: "pingCreepExportRequest",
+        requestMessage: message.requestMessage,
+      });
+    });
+
+    chrome.windows.onFocusChanged.addListener(async (windowId) => {
+      chrome.tabs.query({ active: true, windowId }, (tab) => {
+        if (tab[0].url.startsWith("http")) {
+          this.mostRecentlyFocusedTabId = tab[0].id;
+        }
+      });
+    });
+    chrome.tabs.onActivated.addListener((activeInfo) => {
+      chrome.tabs.get(activeInfo.tabId, (tab) => {
+        if (tab.url.startsWith("http")) {
+          this.mostRecentlyFocusedTabId = activeInfo.tabId;
+        }
+      });
+    });
   }
 
   /**
@@ -75,9 +111,20 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
    *
    * @param importType - The type of import to start. Identifies the used content script.
    */
-  private startFilelessImport(importType: FilelessImportTypeKeys) {
+  private startFilelessImport(importType: FilelessImportTypeKeys, port: chrome.runtime.Port) {
     if (importType === FilelessImportType.LP) {
       this.lpImporterPort?.postMessage({ command: "startLpFilelessImport" });
+    }
+
+    if (importType === FilelessImportType.CREEP) {
+      void BrowserPopupUtils.openPopout(
+        "popup/index.html?uilocation=popout#/import?import-type=creeprequest",
+        {
+          singleActionKey: "creepImport",
+          senderWindowId: port.sender.tab.windowId,
+        },
+      );
+      void BrowserApi.tabSendMessageData(port.sender.tab, "closeNotificationBar");
     }
   }
 
@@ -171,6 +218,16 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
     }
   }
 
+  private triggerCreepImport(data: string) {
+    if (!data) {
+      return;
+    }
+
+    // Handle Import
+
+    void chrome.runtime.sendMessage({ command: "creepImportResponse", data });
+  }
+
   /**
    * Identifies if the user account has a policy that disables personal ownership.
    */
@@ -198,9 +255,7 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
       return;
     }
 
-    const filelessImportFeatureFlagEnabled = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.BrowserFilelessImport,
-    );
+    const filelessImportFeatureFlagEnabled = true;
     const userAuthStatus = await this.authService.getAuthStatus();
     const removeIndividualVault = await this.removeIndividualVault();
     const filelessImportEnabled =
@@ -226,6 +281,9 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
             : FilelessImporterInjectedScriptsConfig.LpSuppressImportDownload.mv2,
         );
         break;
+      case FilelessImportPort.CREEPImporter:
+        this.creepImporterPort = port;
+        break;
       case FilelessImportPort.NotificationBar:
         this.importNotificationsPort = port;
         break;
@@ -250,6 +308,9 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
       case FilelessImportPort.NotificationBar:
         handler = this.importNotificationsPortMessageHandlers[message.command];
         break;
+      case FilelessImportPort.CREEPImporter:
+        handler = this.creepImporterPortMessageHandlers[message.command];
+        break;
     }
 
     if (!handler) {
@@ -270,6 +331,9 @@ class FilelessImporterBackground implements FilelessImporterBackgroundInterface 
         break;
       case FilelessImportPort.NotificationBar:
         this.importNotificationsPort = null;
+        break;
+      case FilelessImportPort.CREEPImporter:
+        this.creepImporterPort = null;
         break;
     }
   };

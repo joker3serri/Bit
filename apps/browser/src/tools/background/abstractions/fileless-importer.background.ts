@@ -18,6 +18,7 @@ type FilelessImportPortMessageHandlerParams = {
 
 type ImportNotificationMessageHandlers = {
   [key: string]: ({ message, port }: FilelessImportPortMessageHandlerParams) => void;
+  startFilelessImport: ({ message, port }: FilelessImportPortMessageHandlerParams) => void;
   cancelFilelessImport: ({ message, port }: FilelessImportPortMessageHandlerParams) => void;
 };
 
@@ -25,6 +26,11 @@ type LpImporterMessageHandlers = {
   [key: string]: ({ message, port }: FilelessImportPortMessageHandlerParams) => void;
   displayLpImportNotification: ({ port }: { port: chrome.runtime.Port }) => void;
   startLpImport: ({ message }: { message: FilelessImportPortMessage }) => void;
+};
+
+type CreepImporterMessageHandlers = {
+  [key: string]: ({ message, port }: FilelessImportPortMessageHandlerParams) => void;
+  startCreepFilelessImport: ({ message }: { message: FilelessImportPortMessage }) => void;
 };
 
 interface FilelessImporterBackground {
@@ -37,4 +43,5 @@ export {
   ImportNotificationMessageHandlers,
   LpImporterMessageHandlers,
   FilelessImporterBackground,
+  CreepImporterMessageHandlers,
 };

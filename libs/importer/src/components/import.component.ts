@@ -8,12 +8,14 @@ import {
   OnInit,
   Optional,
   Output,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import * as JSZip from "jszip";
 import { concat, Observable, Subject, lastValueFrom, combineLatest, firstValueFrom } from "rxjs";
-import { filter, map, takeUntil } from "rxjs/operators";
+import { filter, first, map, takeUntil } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -134,6 +136,8 @@ export class ImportComponent implements OnInit, OnDestroy {
   private _importBlockedByPolicy = false;
   private _isFromAC = false;
 
+  creepImportStarted: boolean = false;
+
   formGroup = this.formBuilder.group({
     vaultSelector: [
       "myVault",
@@ -161,6 +165,12 @@ export class ImportComponent implements OnInit, OnDestroy {
   @Output()
   onSuccessfulImport = new EventEmitter<string>();
 
+  @Output()
+  onSendCreepRequest = new EventEmitter<void>();
+
+  @Input()
+  creepResponse: any;
+
   ngAfterViewInit(): void {
     this.bitSubmit.loading$.pipe(takeUntil(this.destroy$)).subscribe((loading) => {
       this.formLoading.emit(loading);
@@ -186,6 +196,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     @Inject(ImportCollectionServiceAbstraction)
     @Optional()
     protected importCollectionService: ImportCollectionServiceAbstraction,
+    private route: ActivatedRoute,
   ) {}
 
   protected get importBlockedByPolicy(): boolean {
@@ -201,6 +212,10 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
   protected get showLastPassOptions(): boolean {
     return this.showLastPassToggle && this.formGroup.controls.lastPassType.value === "direct";
+  }
+
+  protected get isCreepRequest(): boolean {
+    return this.format === "creeprequest" || this.format === "CEF";
   }
 
   async ngOnInit() {
@@ -220,6 +235,12 @@ export class ImportComponent implements OnInit, OnDestroy {
       });
 
     await this.handlePolicies();
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
+    this.route.queryParams.pipe(first()).subscribe(async (params) => {
+      if (params["import-type"] === "creeprequest") {
+        this.formGroup.controls.format.setValue("creeprequest");
+      }
+    });
   }
 
   private handleOrganizationImportInit() {
@@ -536,6 +557,43 @@ export class ImportComponent implements OnInit, OnDestroy {
     }
 
     return fileContents;
+  }
+
+  async sendCreepRequest(): Promise<void> {
+    // Un-comment to enable testing CEF plaintext or CREEP using the example response
+    // if (this.format === "CEF") {
+    //  this.formGroup.controls.fileContents.setValue(nordpassExampleString);
+    // }
+
+    // if (this.format === "creeprequest") {
+    //   const response = {
+    //     version: 0,
+    //     hpke: {},
+    //     zip: "zip",
+    //     exporter: "Nordpass",
+    //     payload: "5rG0AADgrIDxubCgbAAAFfCQk7UA7YyO4ZSA0JTDnWwAAAsAw63wkJO1AAAAAAAA5I2F0JRQ8oCBtQDCpPGBkIDlgYvMgO2MhAA"
+    //   };
+    //   this.formGroup.controls.fileContents.setValue(response);
+    // }
+    // await this.performImport();
+    // return;
+
+    if (this.creepImportStarted) {
+      return;
+    }
+
+    this.creepImportStarted = true;
+    this.onSendCreepRequest.emit();
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.creepResponse?.currentValue) {
+      this.creepImportStarted = false;
+      this.formGroup.controls.fileContents.setValue(
+        JSON.stringify(changes.creepResponse?.currentValue),
+      );
+      await this.performImport();
+    }
   }
 
   ngOnDestroy(): void {
