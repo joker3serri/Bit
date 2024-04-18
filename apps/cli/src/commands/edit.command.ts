@@ -86,8 +86,7 @@ export class EditCommand {
     cipherView = CipherExport.toView(req, cipherView);
     const encCipher = await this.cipherService.encrypt(cipherView);
     try {
-      await this.cipherService.updateWithServer(encCipher);
-      const updatedCipher = await this.cipherService.get(cipher.id);
+      const updatedCipher = await this.cipherService.updateWithServer(encCipher);
       const decCipher = await updatedCipher.decrypt(
         await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher),
       );

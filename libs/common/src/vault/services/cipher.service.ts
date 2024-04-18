@@ -591,7 +591,11 @@ export class CipherService implements CipherServiceAbstraction {
     await this.upsert(data);
   }
 
-  async updateWithServer(cipher: Cipher, orgAdmin?: boolean, isNotClone?: boolean): Promise<any> {
+  async updateWithServer(
+    cipher: Cipher,
+    orgAdmin?: boolean,
+    isNotClone?: boolean,
+  ): Promise<Cipher> {
     let response: CipherResponse;
     if (orgAdmin && isNotClone) {
       const request = new CipherRequest(cipher);
@@ -605,7 +609,9 @@ export class CipherService implements CipherServiceAbstraction {
     }
 
     const data = new CipherData(response, cipher.collectionIds);
-    await this.upsert(data);
+    const updated = await this.upsert(data);
+    // updating with server does not change local data
+    return new Cipher(updated[cipher.id as CipherId], cipher.localData);
   }
 
   async shareWithServer(
@@ -782,9 +788,9 @@ export class CipherService implements CipherServiceAbstraction {
     await this.encryptedCiphersState.update(() => ciphers);
   }
 
-  async upsert(cipher: CipherData | CipherData[]): Promise<any> {
+  async upsert(cipher: CipherData | CipherData[]): Promise<Record<CipherId, CipherData>> {
     const ciphers = cipher instanceof CipherData ? [cipher] : cipher;
-    await this.updateEncryptedCipherState((current) => {
+    return await this.updateEncryptedCipherState((current) => {
       ciphers.forEach((c) => (current[c.id as CipherId] = c));
       return current;
     });
@@ -796,12 +802,13 @@ export class CipherService implements CipherServiceAbstraction {
 
   private async updateEncryptedCipherState(
     update: (current: Record<CipherId, CipherData>) => Record<CipherId, CipherData>,
-  ) {
+  ): Promise<Record<CipherId, CipherData>> {
     await this.clearDecryptedCiphersState();
-    await this.encryptedCiphersState.update((current) => {
+    const [, updatedCiphers] = await this.encryptedCiphersState.update((current) => {
       const result = update(current ?? {});
       return result;
     });
+    return updatedCiphers;
   }
 
   async clear(userId?: string): Promise<any> {
