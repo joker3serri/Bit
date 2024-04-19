@@ -1,7 +1,5 @@
 import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards";
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
@@ -62,6 +60,7 @@ import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/p
 import {
   AbstractMemoryStorageService,
   AbstractStorageService,
+  ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
@@ -74,17 +73,15 @@ import {
   GlobalStateProvider,
   StateProvider,
 } from "@bitwarden/common/platform/state";
-import { SearchService } from "@bitwarden/common/services/search.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
-import { CipherFileUploadService } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { DialogService } from "@bitwarden/components";
-import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
+import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
+import { TotpService } from "@bitwarden/common/vault/services/totp.service";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 import { UnauthGuardService } from "../../auth/popup/services";
 import { AutofillService as AutofillServiceAbstraction } from "../../autofill/services/abstractions/autofill.service";
@@ -95,10 +92,12 @@ import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 import { BrowserFileDownloadService } from "../../platform/popup/services/browser-file-download.service";
 import { BrowserStateService as StateServiceAbstraction } from "../../platform/services/abstractions/browser-state.service";
+import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
 import BrowserLocalStorageService from "../../platform/services/browser-local-storage.service";
 import BrowserMessagingPrivateModePopupService from "../../platform/services/browser-messaging-private-mode-popup.service";
 import BrowserMessagingService from "../../platform/services/browser-messaging.service";
+import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
 import { DefaultBrowserStateService } from "../../platform/services/default-browser-state.service";
 import I18nService from "../../platform/services/i18n.service";
 import { ForegroundPlatformUtilsService } from "../../platform/services/platform-utils/foreground-platform-utils.service";
@@ -121,7 +120,7 @@ const mainBackground: MainBackground = needsBackgroundInit
   : BrowserApi.getBackgroundPage().bitwardenMain;
 
 function createLocalBgService() {
-  const localBgService = new MainBackground(isPrivateMode);
+  const localBgService = new MainBackground(isPrivateMode, true);
   // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   localBgService.bootstrap();
@@ -159,7 +158,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: MessagingService,
     useFactory: () => {
-      return needsBackgroundInit
+      return needsBackgroundInit && BrowserApi.isManifestVersion(2)
         ? new BrowserMessagingPrivateModePopupService()
         : new BrowserMessagingService();
     },
@@ -187,19 +186,8 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: SearchServiceAbstraction,
-    useFactory: (logService: LogService, i18nService: I18nServiceAbstraction) => {
-      return new PopupSearchService(
-        getBgService<SearchService>("searchService")(),
-        logService,
-        i18nService,
-      );
-    },
-    deps: [LogService, I18nServiceAbstraction],
-  }),
-  safeProvider({
-    provide: CipherFileUploadService,
-    useFactory: getBgService<CipherFileUploadService>("cipherFileUploadService"),
-    deps: [],
+    useClass: PopupSearchService,
+    deps: [LogService, I18nServiceAbstraction, StateProvider],
   }),
   safeProvider({
     provide: CipherService,
@@ -232,11 +220,6 @@ const safeProviders: SafeProvider[] = [
     deps: [LogService, StateProvider, AccountServiceAbstraction],
   }),
   safeProvider({
-    provide: TotpService,
-    useFactory: getBgService<TotpService>("totpService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: I18nServiceAbstraction,
     useFactory: (globalStateProvider: GlobalStateProvider) => {
       return new I18nService(BrowserApi.getUILanguage(), globalStateProvider);
@@ -251,6 +234,11 @@ const safeProviders: SafeProvider[] = [
       return cryptoService;
     },
     deps: [EncryptService],
+  }),
+  safeProvider({
+    provide: TotpServiceAbstraction,
+    useClass: TotpService,
+    deps: [CryptoFunctionService, LogService],
   }),
   safeProvider({
     provide: AuthRequestServiceAbstraction,
@@ -269,15 +257,9 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: PlatformUtilsService,
-    useExisting: ForegroundPlatformUtilsService,
-  }),
-  safeProvider({
-    provide: ForegroundPlatformUtilsService,
-    useClass: ForegroundPlatformUtilsService,
-    useFactory: (sanitizer: DomSanitizer, toastrService: ToastrService) => {
+    useFactory: (toastService: ToastService) => {
       return new ForegroundPlatformUtilsService(
-        sanitizer,
-        toastrService,
+        toastService,
         (clipboardValue: string, clearMs: number) => {
           void BrowserApi.sendMessage("clearClipboard", { clipboardValue, clearMs });
         },
@@ -294,7 +276,7 @@ const safeProviders: SafeProvider[] = [
         window,
       );
     },
-    deps: [DomSanitizer, ToastrService],
+    deps: [ToastService],
   }),
   safeProvider({
     provide: PasswordGenerationServiceAbstraction,
@@ -325,17 +307,18 @@ const safeProviders: SafeProvider[] = [
     deps: [
       CipherService,
       AutofillSettingsServiceAbstraction,
-      TotpService,
+      TotpServiceAbstraction,
       EventCollectionServiceAbstraction,
       LogService,
       DomainSettingsService,
       UserVerificationService,
       BillingAccountProfileStateService,
+      ScriptInjectorService,
     ],
   }),
   safeProvider({
-    provide: VaultExportServiceAbstraction,
-    useFactory: getBgService<VaultExportServiceAbstraction>("exportService"),
+    provide: ScriptInjectorService,
+    useClass: BrowserScriptInjectorService,
     deps: [],
   }),
   safeProvider({
@@ -387,7 +370,15 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: OBSERVABLE_MEMORY_STORAGE,
-    useClass: ForegroundMemoryStorageService,
+    useFactory: () => {
+      if (BrowserApi.isManifestVersion(2)) {
+        return new ForegroundMemoryStorageService();
+      }
+
+      return getBgService<AbstractStorageService & ObservableStorageService>(
+        "memoryStorageForStateProviders",
+      )();
+    },
     deps: [],
   }),
   safeProvider({
