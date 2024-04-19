@@ -71,7 +71,7 @@ export class BackgroundMemoryStorageService extends MemoryStorageService {
     });
   }
 
-  protected broadcastMessage(data: Omit<MemoryStoragePortMessage, "originator">) {
+  private broadcastMessage(data: Omit<MemoryStoragePortMessage, "originator">) {
     this._ports.forEach((port) => {
       this.sendMessageTo(port, data);
     });
