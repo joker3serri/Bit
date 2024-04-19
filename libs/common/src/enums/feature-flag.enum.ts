@@ -1,3 +1,8 @@
+/**
+ * Feature flags.
+ *
+ * Flags MUST be short lived and SHALL be removed once enabled.
+ */
 export enum FeatureFlag {
   BrowserFilelessImport = "browser-fileless-import",
   ItemShare = "item-share",
@@ -21,7 +26,8 @@ const FALSE = false as boolean;
 /**
  * Default value for feature flags.
  *
- * Flags MUST be short lived and SHALL be removed once enabled.
+ * DO NOT enable previously disabled flags, REMOVE them instead.
+ * We support true as a value as we prefer flags to "enable" not "disable".
  */
 export const DefaultFeatureFlagValue = {
   [FeatureFlag.BrowserFilelessImport]: FALSE,
@@ -34,8 +40,10 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.ShowPaymentMethodWarningBanners]: FALSE,
   [FeatureFlag.EnableConsolidatedBilling]: FALSE,
   [FeatureFlag.AC1795_UpdatedSubscriptionStatusSection]: FALSE,
+  [FeatureFlag.UnassignedItemsBanner]: FALSE,
+  [FeatureFlag.EnableDeleteProvider]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
 
-export type FeatureFlagType<Flag extends FeatureFlag> = DefaultFeatureFlagValueType[Flag];
+export type FeatureFlagValueType<Flag extends FeatureFlag> = DefaultFeatureFlagValueType[Flag];

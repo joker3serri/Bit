@@ -16,7 +16,7 @@ import { SemVer } from "semver";
 import {
   DefaultFeatureFlagValue,
   FeatureFlag,
-  FeatureFlagType,
+  FeatureFlagValueType,
 } from "../../../enums/feature-flag.enum";
 import { UserId } from "../../../types/guid";
 import { ConfigApiServiceAbstraction } from "../../abstractions/config/config-api.service.abstraction";
@@ -101,7 +101,7 @@ export class DefaultConfigService implements ConfigService {
           return DefaultFeatureFlagValue[key];
         }
 
-        return serverConfig.featureStates[key] as FeatureFlagType<Flag>;
+        return serverConfig.featureStates[key] as FeatureFlagValueType<Flag>;
       }),
     );
   }
