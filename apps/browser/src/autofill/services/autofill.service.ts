@@ -3,6 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
@@ -111,7 +112,7 @@ export default class AutofillService implements AutofillServiceInterface {
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
 
     // These settings are not available until the user logs in
-    let overlayVisibility = 0;
+    let overlayVisibility: InlineMenuVisibilitySetting = AutofillOverlayVisibility.Off;
     let autoFillOnPageLoadIsEnabled = false;
 
     if (activeAccount) {
@@ -223,7 +224,7 @@ export default class AutofillService implements AutofillServiceInterface {
    * Gets the overlay's visibility setting from the autofill settings service.
    */
   async getOverlayVisibility(): Promise<InlineMenuVisibilitySetting> {
-    return (await firstValueFrom(this.autofillSettingsService.inlineMenuVisibility$)) || 0;
+    return await firstValueFrom(this.autofillSettingsService.inlineMenuVisibility$);
   }
 
   /**
@@ -237,7 +238,7 @@ export default class AutofillService implements AutofillServiceInterface {
    * Gets the autofill on page load setting from the autofill settings service.
    */
   async getAutofillOnPageLoad(): Promise<boolean> {
-    return (await firstValueFrom(this.autofillSettingsService.autofillOnPageLoad$)) || false;
+    return await firstValueFrom(this.autofillSettingsService.autofillOnPageLoad$);
   }
 
   /**
