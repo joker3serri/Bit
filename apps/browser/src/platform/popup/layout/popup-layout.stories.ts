@@ -56,7 +56,7 @@ class SettingsComponent {}
   selector: "mock-add-button",
   template: `
     <button bitButton buttonType="primary" type="button">
-      <i class="bwi bwi-plus tw-font-bold" aria-hidden="true"></i>
+      <i class="bwi bwi-plus-f" aria-hidden="true"></i>
       Add
     </button>
   `,
@@ -69,7 +69,7 @@ class MockAddButtonComponent {}
   selector: "mock-popout-button",
   template: `
     <button
-      bitIconButton="bwi-external-link"
+      bitIconButton="bwi-popout"
       size="small"
       type="button"
       title="Pop out"
