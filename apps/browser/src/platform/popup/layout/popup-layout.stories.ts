@@ -123,6 +123,8 @@ export default {
               { path: "generator", component: GeneratorComponent },
               { path: "send", component: SendComponent },
               { path: "settings", component: SettingsComponent },
+              // in case you are coming from a story that also uses the router
+              { path: "**", redirectTo: "vault" },
             ],
             { useHash: true },
           ),
