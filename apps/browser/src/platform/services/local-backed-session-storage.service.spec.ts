@@ -2,6 +2,8 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   AbstractMemoryStorageService,
   AbstractStorageService,
@@ -25,6 +27,8 @@ describe.skip("LocalBackedSessionStorage", () => {
   let keyGenerationService: MockProxy<KeyGenerationService>;
   let localStorageService: MockProxy<AbstractStorageService>;
   let sessionStorageService: MockProxy<AbstractMemoryStorageService>;
+  let logService: MockProxy<LogService>;
+  let platformUtilsService: MockProxy<PlatformUtilsService>;
 
   let cache: Record<string, unknown>;
   const testObj = { a: 1, b: 2 };
@@ -49,16 +53,19 @@ describe.skip("LocalBackedSessionStorage", () => {
 
   beforeEach(() => {
     sendMessageWithResponseSpy.mockResolvedValue(null);
+    logService = mock<LogService>();
     encryptService = mock<EncryptService>();
     keyGenerationService = mock<KeyGenerationService>();
     localStorageService = mock<AbstractStorageService>();
     sessionStorageService = mock<AbstractMemoryStorageService>();
 
     sut = new LocalBackedSessionStorageService(
+      logService,
       encryptService,
       keyGenerationService,
       localStorageService,
       sessionStorageService,
+      platformUtilsService,
       "test",
     );
 

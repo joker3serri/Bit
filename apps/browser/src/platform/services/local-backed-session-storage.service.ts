@@ -3,6 +3,8 @@ import { Jsonify } from "type-fest";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   AbstractMemoryStorageService,
   AbstractStorageService,
@@ -32,10 +34,12 @@ export class LocalBackedSessionStorageService
   private knownNullishCacheKeys: Set<string> = new Set([]);
 
   constructor(
+    private logService: LogService,
     private encryptService: EncryptService,
     private keyGenerationService: KeyGenerationService,
     private localStorage: AbstractStorageService,
     private sessionStorage: AbstractStorageService,
+    private platformUtilsService: PlatformUtilsService,
     private partitionName: string,
   ) {
     super();
@@ -109,10 +113,14 @@ export class LocalBackedSessionStorageService
 
   async save<T>(key: string, obj: T): Promise<void> {
     // TODO - We don't necessarily want to do this comparison. This is a fragile approach for avoiding updates to the local session storage.
-    const existingValue = this.cachedSession[key] as T;
-    if (this.compareValues<T>(existingValue, obj)) {
-      this.updatesSubject.next({ key, updateType: "save" });
-      return;
+    if (this.platformUtilsService.isDev()) {
+      this.logService.warning(`Possible unnecessary write to local session storage. Key: ${key}`);
+      this.logService.warning(obj as any);
+      const existingValue = this.cachedSession[key] as T;
+      if (this.compareValues<T>(existingValue, obj)) {
+        this.updatesSubject.next({ key, updateType: "save" });
+        return;
+      }
     }
 
     if (obj == null) {

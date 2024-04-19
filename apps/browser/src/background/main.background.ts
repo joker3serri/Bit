@@ -395,6 +395,13 @@ export default class MainBackground {
       ),
     );
 
+    this.platformUtilsService = new BackgroundPlatformUtilsService(
+      this.messagingService,
+      (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
+      async () => this.biometricUnlock(),
+      self,
+    );
+
     const mv3MemoryStorageCreator = (partitionName: string) => {
       if (this.popupOnlyContext) {
         return new ForegroundMemoryStorageService(partitionName);
@@ -402,10 +409,12 @@ export default class MainBackground {
 
       // TODO: Consider using multithreaded encrypt service in popup only context
       return new LocalBackedSessionStorageService(
+        this.logService,
         new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
         this.keyGenerationService,
         new BrowserLocalStorageService(),
         new BrowserMemoryStorageService(),
+        this.platformUtilsService,
         partitionName,
       );
     };
@@ -474,12 +483,6 @@ export default class MainBackground {
     this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
 
     this.userNotificationSettingsService = new UserNotificationSettingsService(this.stateProvider);
-    this.platformUtilsService = new BackgroundPlatformUtilsService(
-      this.messagingService,
-      (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
-      async () => this.biometricUnlock(),
-      self,
-    );
 
     this.tokenService = new TokenService(
       this.singleUserStateProvider,
