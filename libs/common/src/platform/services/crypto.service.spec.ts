@@ -4,7 +4,7 @@ import { firstValueFrom, of, tap } from "rxjs";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState, FakeSingleUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
-import { AuthenticationStatus } from "../../auth/enums/authentication-status";
+import { FakeMasterPasswordService } from "../../auth/services/master-password/fake-master-password.service";
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { UserKey, MasterKey, PinKey } from "../../types/key";
@@ -41,12 +41,15 @@ describe("cryptoService", () => {
 
   const mockUserId = Utils.newGuid() as UserId;
   let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
 
   beforeEach(() => {
     accountService = mockAccountServiceWith(mockUserId);
+    masterPasswordService = new FakeMasterPasswordService();
     stateProvider = new FakeStateProvider(accountService);
 
     cryptoService = new CryptoService(
+      masterPasswordService,
       keyGenerationService,
       cryptoFunctionService,
       encryptService,
@@ -158,14 +161,14 @@ describe("cryptoService", () => {
   describe("getUserKeyWithLegacySupport", () => {
     let mockUserKey: UserKey;
     let mockMasterKey: MasterKey;
-    let stateSvcGetMasterKey: jest.SpyInstance;
+    let getMasterKey: jest.SpyInstance;
 
     beforeEach(() => {
       const mockRandomBytes = new Uint8Array(64) as CsprngArray;
       mockUserKey = new SymmetricCryptoKey(mockRandomBytes) as UserKey;
       mockMasterKey = new SymmetricCryptoKey(new Uint8Array(64) as CsprngArray) as MasterKey;
 
-      stateSvcGetMasterKey = jest.spyOn(stateService, "getMasterKey");
+      getMasterKey = jest.spyOn(masterPasswordService, "masterKey$");
     });
 
     it("returns the User Key if available", async () => {
@@ -175,17 +178,17 @@ describe("cryptoService", () => {
       const userKey = await cryptoService.getUserKeyWithLegacySupport(mockUserId);
 
       expect(getKeySpy).toHaveBeenCalledWith(mockUserId);
-      expect(stateSvcGetMasterKey).not.toHaveBeenCalled();
+      expect(getMasterKey).not.toHaveBeenCalled();
 
       expect(userKey).toEqual(mockUserKey);
     });
 
     it("returns the user's master key when User Key is not available", async () => {
-      stateSvcGetMasterKey.mockResolvedValue(mockMasterKey);
+      masterPasswordService.masterKeySubject.next(mockMasterKey);
 
       const userKey = await cryptoService.getUserKeyWithLegacySupport(mockUserId);
 
-      expect(stateSvcGetMasterKey).toHaveBeenCalledWith({ userId: mockUserId });
+      expect(getMasterKey).toHaveBeenCalledWith(mockUserId);
       expect(userKey).toEqual(mockMasterKey);
     });
   });
@@ -269,15 +272,6 @@ describe("cryptoService", () => {
       await expect(cryptoService.setUserKey(null, mockUserId)).rejects.toThrow("No key provided.");
     });
 
-    it("should update the user's lock state", async () => {
-      await cryptoService.setUserKey(mockUserKey, mockUserId);
-
-      expect(accountService.mock.setAccountStatus).toHaveBeenCalledWith(
-        mockUserId,
-        AuthenticationStatus.Unlocked,
-      );
-    });
-
     describe("Pin Key refresh", () => {
       let cryptoSvcMakePinKey: jest.SpyInstance;
       const protectedPin =
@@ -340,32 +334,13 @@ describe("cryptoService", () => {
   describe("clearKeys", () => {
     it("resolves active user id when called with no user id", async () => {
       let callCount = 0;
-      accountService.activeAccount$ = accountService.activeAccountSubject.pipe(
-        tap(() => callCount++),
-      );
+      stateProvider.activeUserId$ = stateProvider.activeUserId$.pipe(tap(() => callCount++));
 
       await cryptoService.clearKeys(null);
       expect(callCount).toBe(1);
 
       // revert to the original state
       accountService.activeAccount$ = accountService.activeAccountSubject.asObservable();
-    });
-
-    it("sets the maximum account status of the active user id to locked when user id is not specified", async () => {
-      await cryptoService.clearKeys();
-      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
-        mockUserId,
-        AuthenticationStatus.Locked,
-      );
-    });
-
-    it("sets the maximum account status of the specified user id to locked when user id is specified", async () => {
-      const userId = "someOtherUser" as UserId;
-      await cryptoService.clearKeys(userId);
-      expect(accountService.mock.setMaxAccountStatus).toHaveBeenCalledWith(
-        userId,
-        AuthenticationStatus.Locked,
-      );
     });
 
     describe.each([
