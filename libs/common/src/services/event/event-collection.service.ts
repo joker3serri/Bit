@@ -36,7 +36,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     const userId = await firstValueFrom(this.stateProvider.activeUserId$);
     const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
 
-    if (!(await this.shouldUpdate(cipherId, organizationId))) {
+    if (!(await this.shouldUpdate(cipherId, organizationId, eventType))) {
       return;
     }
 
@@ -87,7 +87,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     }
 
     // Individual vault export doesn't need cipher id or organization id.
-    if (eventType != EventType.User_ClientExportedVault) {
+    if (eventType == EventType.User_ClientExportedVault) {
       return true;
     }
 
