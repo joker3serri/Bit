@@ -67,6 +67,7 @@ export function memoryStorageServiceFactory(
         await keyGenerationServiceFactory(cache, opts),
         await diskStorageServiceFactory(cache, opts),
         await sessionStorageServiceFactory(cache, opts),
+        "serviceFactories",
       );
     }
     return new MemoryStorageService();

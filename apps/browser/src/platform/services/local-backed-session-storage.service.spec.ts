@@ -59,6 +59,7 @@ describe.skip("LocalBackedSessionStorage", () => {
       keyGenerationService,
       localStorageService,
       sessionStorageService,
+      "test",
     );
 
     cache = sut["cachedSession"];

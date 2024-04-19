@@ -24,8 +24,9 @@ export class LocalBackedSessionStorageService
   implements ObservableStorageService
 {
   private updatesSubject = new Subject<StorageUpdate>();
-  private encKey = `localEncryptionKey`;
-  private sessionKey = `localBackedSession`;
+  private commandName = `localBackedSessionStorage_${this.partitionName}`;
+  private encKey = `localEncryptionKey_${this.partitionName}`;
+  private sessionKey = `session_${this.partitionName}`;
   private cachedSession: Record<string, unknown> = {};
   private _ports: Set<chrome.runtime.Port> = new Set([]);
   private knownNullishCacheKeys: Set<string> = new Set([]);
@@ -35,11 +36,12 @@ export class LocalBackedSessionStorageService
     private keyGenerationService: KeyGenerationService,
     private localStorage: AbstractStorageService,
     private sessionStorage: AbstractStorageService,
+    private partitionName: string,
   ) {
     super();
 
     BrowserApi.addListener(chrome.runtime.onConnect, (port) => {
-      if (port.name !== portName(chrome.storage.session)) {
+      if (port.name !== `${portName(chrome.storage.session)}_${partitionName}`) {
         return;
       }
 
