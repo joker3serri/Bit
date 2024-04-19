@@ -125,7 +125,6 @@ export class CipherService implements CipherServiceAbstraction {
       switchMap(() => this.encryptedCiphersState.state$),
       map((ciphers) => ciphers ?? {}),
     );
-    // this.ciphers$ = this.encryptedCiphersState.state$.pipe(map((ciphers) => ciphers ?? {}));
     this.cipherViews$ = this.decryptedCiphersState.state$.pipe(
       map((views) => views ?? {}),
 
