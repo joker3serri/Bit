@@ -1,4 +1,4 @@
-import { Observable, Subject, filter, firstValueFrom, map } from "rxjs";
+import { filter, firstValueFrom, map, Observable, Subject } from "rxjs";
 
 import {
   AbstractMemoryStorageService,
@@ -89,8 +89,7 @@ export class ForegroundMemoryStorageService extends AbstractMemoryStorageService
       data: JSON.stringify(data),
     });
 
-    const result = await response;
-    return result;
+    return await response;
   }
 
   private sendMessage(data: Omit<MemoryStoragePortMessage, "originator">) {
