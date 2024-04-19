@@ -24,17 +24,16 @@ export class LocalBackedSessionStorageService
   implements ObservableStorageService
 {
   private updatesSubject = new Subject<StorageUpdate>();
-  private encKey = `localEncryptionKey_${this.name}`;
-  private sessionKey = `session_${this.name}`;
+  private encKey = `localEncryptionKey`;
+  private sessionKey = `localBackedSession`;
   private cachedSession: Record<string, unknown> = {};
-  private _ports: chrome.runtime.Port[] = [];
+  private _ports: Set<chrome.runtime.Port> = new Set([]);
 
   constructor(
     private encryptService: EncryptService,
     private keyGenerationService: KeyGenerationService,
     private localStorage: AbstractStorageService,
     private sessionStorage: AbstractStorageService,
-    private name: string,
   ) {
     super();
 
@@ -43,11 +42,11 @@ export class LocalBackedSessionStorageService
         return;
       }
 
-      this._ports.push(port);
+      this._ports.add(port);
 
       const listenerCallback = this.onMessageFromForeground.bind(this);
       port.onDisconnect.addListener(() => {
-        this._ports.splice(this._ports.indexOf(port), 1);
+        this._ports.delete(port);
         port.onMessage.removeListener(listenerCallback);
       });
       port.onMessage.addListener(listenerCallback);

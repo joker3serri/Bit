@@ -377,7 +377,7 @@ export default class MainBackground {
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
 
-    const mv3MemoryStorageCreator = (partitionName: string) => {
+    const mv3MemoryStorageCreator = () => {
       if (this.popupOnlyContext) {
         return new ForegroundMemoryStorageService();
       }
@@ -388,17 +388,12 @@ export default class MainBackground {
         this.keyGenerationService,
         new BrowserLocalStorageService(),
         new BrowserMemoryStorageService(),
-        partitionName,
       );
     };
 
     this.secureStorageService = this.storageService; // secure storage is not supported in browsers, so we use local storage and warn users when it is used
-    // this.memoryStorageService = BrowserApi.isManifestVersion(3)
-    //   ? mv3MemoryStorageCreator("stateService")
-    //   : new MemoryStorageService();
-
     this.memoryStorageForStateProviders = BrowserApi.isManifestVersion(3)
-      ? mv3MemoryStorageCreator("stateProviders")
+      ? mv3MemoryStorageCreator()
       : new BackgroundMemoryStorageService();
     this.memoryStorageService = BrowserApi.isManifestVersion(3)
       ? this.memoryStorageForStateProviders
