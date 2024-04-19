@@ -1,9 +1,8 @@
-import { Observable, filter, firstValueFrom } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -12,9 +11,6 @@ import { KdfType } from "@bitwarden/common/platform/enums";
 import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import {
-  ActiveUserState,
-  DeriveDefinition,
-  DerivedState,
   PIN_DISK,
   PIN_MEMORY,
   StateProvider,
@@ -74,50 +70,7 @@ const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedString>(
   },
 );
 
-// Formerly called `pinProtected.decrypted`
-const OLD_PIN_KEY_DECRYPTED_MASTER_KEY = DeriveDefinition.fromWithUserId<
-  EncryptedString,
-  SymmetricCryptoKey,
-  {
-    accountService: AccountService;
-    cryptoService: CryptoService;
-    encryptService: EncryptService;
-    pinService: PinService;
-    stateService: StateService;
-  }
->(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, {
-  deserializer: (jsonValue) => SymmetricCryptoKey.fromJSON(jsonValue),
-  derive: async (
-    [userId, oldPinKeyEncryptedMasterKeyString],
-    { accountService, cryptoService, encryptService, pinService, stateService },
-  ) => {
-    if (oldPinKeyEncryptedMasterKeyString == null) {
-      return null;
-    }
-
-    const kdf = await stateService.getKdfType({ userId });
-    const kdfConfig = await stateService.getKdfConfig({ userId });
-    const email = (await firstValueFrom(accountService.activeAccount$))?.email;
-
-    const pin = await encryptService.decryptToUtf8(
-      new EncString(await pinService.getProtectedPin(userId)),
-      await cryptoService.getUserKey(userId),
-    );
-
-    const pinKey = await pinService.makePinKey(pin, email, kdf, kdfConfig);
-    const oldPinKeyEncryptedMasterKey = new EncString(oldPinKeyEncryptedMasterKeyString);
-    const masterKey = await encryptService.decryptToBytes(oldPinKeyEncryptedMasterKey, pinKey);
-
-    return new SymmetricCryptoKey(masterKey) as MasterKey;
-  },
-});
-
 export class PinService implements PinServiceAbstraction {
-  private readonly oldPinKeyEncryptedMasterKeyState: ActiveUserState<EncryptedString>;
-  private readonly oldPinKeyDecryptedMasterKeyState: DerivedState<MasterKey>;
-
-  readonly oldPinKeyDecryptedMasterKey$: Observable<MasterKey>;
-
   constructor(
     private accountService: AccountService,
     private encryptService: EncryptService,
@@ -126,24 +79,16 @@ export class PinService implements PinServiceAbstraction {
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private stateProvider: StateProvider,
     private stateService: StateService,
-  ) {
-    this.oldPinKeyEncryptedMasterKeyState = stateProvider.getActive(
-      OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+  ) {}
+
+  private async getOldPinKeyEncryptedMasterKey(): Promise<EncryptedString> {
+    return await firstValueFrom(
+      this.stateProvider.getActive(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY).state$,
     );
-    this.oldPinKeyDecryptedMasterKeyState = stateProvider.getDerived(
-      this.oldPinKeyEncryptedMasterKeyState.combinedState$.pipe(
-        filter(([_userId, key]) => key != null),
-      ),
-      OLD_PIN_KEY_DECRYPTED_MASTER_KEY,
-      {
-        accountService: this.accountService,
-        cryptoService: this.cryptoService,
-        encryptService: this.encryptService,
-        pinService: this,
-        stateService: this.stateService,
-      },
-    );
-    this.oldPinKeyDecryptedMasterKey$ = this.oldPinKeyDecryptedMasterKeyState.state$;
+  }
+
+  async clearOldPinKeyEncryptedMasterKey(userId: UserId): Promise<void> {
+    await this.stateProvider.setUserState(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, null, userId);
   }
 
   async getPinKeyEncryptedUserKey(userId?: UserId): Promise<EncString> {
@@ -210,20 +155,6 @@ export class PinService implements PinServiceAbstraction {
     } else {
       await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
     }
-  }
-
-  async getOldPinKeyEncryptedMasterKey(): Promise<MasterKey> {
-    return await firstValueFrom(this.oldPinKeyDecryptedMasterKey$);
-  }
-
-  async setOldPinKeyEncryptedMasterKey(
-    oldPinKeyEncryptedMasterKey: EncryptedString,
-  ): Promise<void> {
-    if (oldPinKeyEncryptedMasterKey == null) {
-      return;
-    }
-
-    await this.oldPinKeyEncryptedMasterKeyState.update(() => oldPinKeyEncryptedMasterKey);
   }
 
   async makePinKey(pin: string, salt: string, kdf: KdfType, kdfConfig: KdfConfig): Promise<PinKey> {
