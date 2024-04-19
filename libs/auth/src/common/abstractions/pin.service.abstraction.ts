@@ -1,6 +1,6 @@
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { KdfType } from "@bitwarden/common/platform/enums";
-import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { UserId } from "@bitwarden/common/types/guid";
 import { PinKey, UserKey } from "@bitwarden/common/types/key";
 
@@ -48,6 +48,12 @@ export abstract class PinServiceAbstraction {
    * TODO-rr-bw: OR consider moving back to CryptoService within the storeAdditionalKeys() method since it is only used there once
    */
   abstract storePinKeyEncryptedUserKey: (userKey: UserKey, userId: UserId) => Promise<void>;
+
+  /**
+   * Gets the old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
+   * which is now deprecated and used for migration purposes only.
+   */
+  abstract getOldPinKeyEncryptedMasterKey: (userId: UserId) => Promise<EncryptedString>;
 
   /**
    * Clears the old MasterKey, encrypted by the PinKey.

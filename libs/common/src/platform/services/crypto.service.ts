@@ -871,8 +871,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     if (keySuffix === KeySuffixOptions.Auto) {
       await this.stateService.setCryptoMasterKeyAuto(null, { userId: userId });
     } else if (keySuffix === KeySuffixOptions.Pin) {
-      await this.stateService.setEncryptedPinProtected(null, { userId: userId });
-      await this.stateService.setDecryptedPinProtected(null, { userId: userId });
+      await this.pinService.clearOldPinKeyEncryptedMasterKey(userId);
     }
   }
 

@@ -27,6 +27,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/platform/enums";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserKey } from "@bitwarden/common/types/key";
 import { DialogService } from "@bitwarden/components";
@@ -345,7 +346,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.pinLockType = await this.pinService.getPinLockType(userId);
 
     let ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
-    ephemeralPinSet ||= await this.stateService.getDecryptedPinProtected();
+    ephemeralPinSet ||= new EncString(await this.pinService.getOldPinKeyEncryptedMasterKey(userId)); // TODO-rr-bw: verify
 
     this.pinEnabled =
       (this.pinLockType === "TRANSIENT" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";

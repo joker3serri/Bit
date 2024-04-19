@@ -60,7 +60,12 @@ const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
   clearOn: ["logout"],
 });
 
-// Formerly called `pinProtected.encrypted`
+/**
+ * The old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
+ * which is now deprecated and used for migration purposes only.
+ *
+ * We now use the `pinKeyEncryptedUserKey`.
+ */
 const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
   "oldPinKeyEncryptedMasterKey",
@@ -155,7 +160,7 @@ export class PinService implements PinServiceAbstraction {
     }
   }
 
-  private async getOldPinKeyEncryptedMasterKey(userId: UserId): Promise<EncryptedString> {
+  async getOldPinKeyEncryptedMasterKey(userId: UserId): Promise<EncryptedString> {
     this.validateUserId(userId, "Cannot get oldPinKeyEncryptedMasterKey.");
 
     return await firstValueFrom(
@@ -181,9 +186,8 @@ export class PinService implements PinServiceAbstraction {
     // used it for MP on Restart
     const aUserKeyEncryptedPinIsSet = !!(await this.getProtectedPin(userId));
     const aPinKeyEncryptedUserKeyIsSet = !!(await this.getPinKeyEncryptedUserKey(userId));
-    const anOldPinKeyEncryptedMasterKeyIsSet = !!(await this.stateService.getEncryptedPinProtected({
-      userId,
-    }));
+    const anOldPinKeyEncryptedMasterKeyIsSet =
+      !!(await this.getOldPinKeyEncryptedMasterKey(userId));
 
     if (aPinKeyEncryptedUserKeyIsSet || anOldPinKeyEncryptedMasterKeyIsSet) {
       return "PERSISTENT";
@@ -295,14 +299,7 @@ export class PinService implements PinServiceAbstraction {
    * - Sets the new `pinKeyEncryptedUserKey` to state (either persistent or ephemeral depending on `requireMasterPasswordOnClientRestart`)
    * - Creates a new `protectedPin` by encrypting the PIN with the user key
    * - Sets that new `protectedPin` to state
-   *
-   * @param requireMasterPasswordOnClientRestart Whether or not the master password is required on client restart
-   * @param pin User's PIN
-   * @param email User's email
-   * @param kdf User's KdfType
-   * @param kdfConfig User's KdfConfig
-   * @param oldPinKeyEncryptedMasterKey The Master Key, encrypted by the PinKey (legacy)
-   * @returns The UserKey
+   * @returns UserKey
    */
   private async decryptAndMigrateOldPinKeyEncryptedMasterKey(
     userId: UserId,
@@ -335,12 +332,11 @@ export class PinService implements PinServiceAbstraction {
     const pinKey = await this.makePinKey(pin, email, kdf, kdfConfig);
     const pinKeyEncryptedUserKey = await this.encryptService.encrypt(userKey.key, pinKey);
 
-    // Clear oldPinKeyEncryptedMasterKey and set new pinKeyEncryptedUserKey
+    await this.clearOldPinKeyEncryptedMasterKey(userId);
+
     if (requireMasterPasswordOnClientRestart) {
-      await this.stateService.setDecryptedPinProtected(null); // Clears oldPinKeyEncryptedMasterKey
       await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
     } else {
-      await this.stateService.setEncryptedPinProtected(null); // Clears oldPinKeyEncryptedMasterKey
       await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
 
       // We previously only set the protected pin if MP on Restart was enabled
@@ -369,7 +365,7 @@ export class PinService implements PinServiceAbstraction {
     this.validateUserId(userId, "Cannot decrypt master key with PIN.");
 
     if (!oldPinKeyEncryptedMasterKey) {
-      const oldPinKeyEncryptedMasterKeyString = await this.stateService.getEncryptedPinProtected();
+      const oldPinKeyEncryptedMasterKeyString = await this.getOldPinKeyEncryptedMasterKey(userId);
 
       if (oldPinKeyEncryptedMasterKeyString == null) {
         throw new Error("No PIN encrypted key found.");
@@ -400,9 +396,7 @@ export class PinService implements PinServiceAbstraction {
     switch (pinLockType) {
       case "PERSISTENT": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKey(userId);
-        const oldPinKeyEncryptedMasterKey = await this.stateService.getEncryptedPinProtected({
-          userId,
-        });
+        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId);
 
         return {
           pinKeyEncryptedUserKey,
@@ -413,11 +407,14 @@ export class PinService implements PinServiceAbstraction {
       }
       case "TRANSIENT": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral(userId);
-        const oldPinKeyEncryptedMasterKey = await this.stateService.getDecryptedPinProtected({
-          userId,
-        });
+        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify
 
-        return { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey };
+        return {
+          pinKeyEncryptedUserKey,
+          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey // TODO-rr-bw: verify
+            ? new EncString(oldPinKeyEncryptedMasterKey)
+            : undefined,
+        };
       }
       case "DISABLED":
         throw new Error("Pin is disabled");
