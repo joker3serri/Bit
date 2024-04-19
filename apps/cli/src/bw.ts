@@ -581,6 +581,7 @@ export class Main {
     this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.accountService,
       this.pinService,
       this.userDecryptionOptionsService,
       this.cryptoService,

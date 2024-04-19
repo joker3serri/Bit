@@ -693,6 +693,7 @@ export default class MainBackground {
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.accountService,
       this.pinService,
       this.userDecryptionOptionsService,
       this.cryptoService,
@@ -893,6 +894,7 @@ export default class MainBackground {
     };
 
     this.systemService = new SystemService(
+      this.accountService,
       this.pinService,
       this.messagingService,
       this.platformUtilsService,

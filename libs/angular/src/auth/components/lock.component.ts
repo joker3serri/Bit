@@ -159,7 +159,8 @@ export class LockComponent implements OnInit, OnDestroy {
     const MAX_INVALID_PIN_ENTRY_ATTEMPTS = 5;
 
     try {
-      const userKey = await this.pinService.decryptUserKeyWithPin(this.pin);
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const userKey = await this.pinService.decryptUserKeyWithPin(this.pin, userId);
 
       if (userKey) {
         await this.setUserKeyAndContinue(userKey);
@@ -340,10 +341,12 @@ export class LockComponent implements OnInit, OnDestroy {
       return await this.vaultTimeoutService.logOut();
     }
 
-    this.pinLockType = await this.pinService.getPinLockType();
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    this.pinLockType = await this.pinService.getPinLockType(userId);
 
-    let ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral();
+    let ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
     ephemeralPinSet ||= await this.stateService.getDecryptedPinProtected();
+
     this.pinEnabled =
       (this.pinLockType === "TRANSIENT" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";
     this.masterPasswordEnabled = await this.userVerificationService.hasMasterPassword();

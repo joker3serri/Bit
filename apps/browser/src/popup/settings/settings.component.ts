@@ -22,6 +22,7 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { DeviceType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
@@ -87,6 +88,7 @@ export class SettingsComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
   constructor(
+    private accountService: AccountService,
     private pinService: PinServiceAbstraction,
     private policyService: PolicyService,
     private formBuilder: FormBuilder,
@@ -170,12 +172,14 @@ export class SettingsComponent implements OnInit {
       )
       .subscribe();
 
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     const initialValues = {
       vaultTimeout: timeout,
       vaultTimeoutAction: await firstValueFrom(
         this.vaultTimeoutSettingsService.vaultTimeoutAction$(),
       ),
-      pin: await this.pinService.isPinSet(),
+      pin: await this.pinService.isPinSet(userId),
       biometric: await this.vaultTimeoutSettingsService.isBiometricLockSet(),
       enableAutoBiometricsPrompt: await firstValueFrom(
         this.biometricStateService.promptAutomatically$,

@@ -52,6 +52,7 @@ import { ProviderApiService } from "@bitwarden/common/admin-console/services/pro
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/account-api.service";
 import {
+  AccountService,
   AccountService as AccountServiceAbstraction,
   InternalAccountService,
 } from "@bitwarden/common/auth/abstractions/account.service";
@@ -629,6 +630,7 @@ const safeProviders: SafeProvider[] = [
     provide: VaultTimeoutSettingsServiceAbstraction,
     useClass: VaultTimeoutSettingsService,
     deps: [
+      AccountService,
       PinServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
       CryptoServiceAbstraction,

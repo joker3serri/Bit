@@ -164,6 +164,7 @@ const safeProviders: SafeProvider[] = [
     provide: SystemServiceAbstraction,
     useClass: SystemService,
     deps: [
+      AccountServiceAbstraction,
       PinServiceAbstraction,
       MessagingServiceAbstraction,
       PlatformUtilsServiceAbstraction,

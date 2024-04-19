@@ -2,6 +2,7 @@ import { firstValueFrom, timeout } from "rxjs";
 
 import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
 import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
+import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AutofillSettingsServiceAbstraction } from "../../autofill/services/autofill-settings.service";
@@ -19,6 +20,7 @@ export class SystemService implements SystemServiceAbstraction {
   private clearClipboardTimeoutFunction: () => Promise<any> = null;
 
   constructor(
+    private accountService: AccountService,
     private pinService: PinServiceAbstraction,
     private messagingService: MessagingService,
     private platformUtilsService: PlatformUtilsService,
@@ -47,8 +49,9 @@ export class SystemService implements SystemServiceAbstraction {
       return;
     }
 
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     // User has set a PIN, with ask for master password on restart, to protect their vault
-    const ephemeralPin = await this.pinService.getPinKeyEncryptedUserKeyEphemeral();
+    const ephemeralPin = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
     if (ephemeralPin != null) {
       return;
     }

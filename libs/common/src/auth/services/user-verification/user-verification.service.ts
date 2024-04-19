@@ -53,10 +53,11 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     verificationType: keyof UserVerificationOptions,
   ): Promise<UserVerificationOptions> {
     if (verificationType === "client") {
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       const [userHasMasterPassword, pinLockType, biometricsLockSet, biometricsUserKeyStored] =
         await Promise.all([
           this.hasMasterPasswordAndMasterKeyHash(),
-          this.pinService.getPinLockType(),
+          this.pinService.getPinLockType(userId),
           this.vaultTimeoutSettingsService.isBiometricLockSet(),
           this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric),
         ]);
@@ -193,7 +194,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   }
 
   private async verifyUserByPIN(verification: PinVerification): Promise<boolean> {
-    const userKey = await this.pinService.decryptUserKeyWithPin(verification.secret);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const userKey = await this.pinService.decryptUserKeyWithPin(verification.secret, userId);
 
     return userKey != null;
   }

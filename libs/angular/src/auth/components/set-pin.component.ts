@@ -1,8 +1,10 @@
 import { DialogRef } from "@angular/cdk/dialog";
 import { Directive, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
+import { firstValueFrom } from "rxjs";
 
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -18,12 +20,13 @@ export class SetPinComponent implements OnInit {
   });
 
   constructor(
-    private pinService: PinServiceAbstraction,
-    private dialogRef: DialogRef,
+    private accountService: AccountService,
     private cryptoService: CryptoService,
-    private userVerificationService: UserVerificationService,
-    private stateService: StateService,
+    private dialogRef: DialogRef,
     private formBuilder: FormBuilder,
+    private pinService: PinServiceAbstraction,
+    private stateService: StateService,
+    private userVerificationService: UserVerificationService,
   ) {}
 
   async ngOnInit() {
@@ -54,12 +57,14 @@ export class SetPinComponent implements OnInit {
     const pinKeyEncryptedUserKey = await this.cryptoService.encrypt(userKey.key, pinKey);
     const userKeyEncryptedPin = await this.cryptoService.encrypt(pin, userKey);
 
-    await this.pinService.setProtectedPin(userKeyEncryptedPin.encryptedString);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
+    await this.pinService.setProtectedPin(userKeyEncryptedPin.encryptedString, userId);
 
     if (requireMasterPasswordOnClientRestart) {
-      await this.pinService.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey);
+      await this.pinService.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
     } else {
-      await this.pinService.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey);
+      await this.pinService.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
     }
 
     this.dialogRef.close(true);

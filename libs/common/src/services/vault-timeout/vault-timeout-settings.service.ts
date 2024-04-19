@@ -8,6 +8,7 @@ import {
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../admin-console/enums";
+import { AccountService } from "../../auth/abstractions/account.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -17,6 +18,7 @@ import { UserId } from "../../types/guid";
 
 export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceAbstraction {
   constructor(
+    private accountService: AccountService,
     private pinService: PinServiceAbstraction,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private cryptoService: CryptoService,
@@ -101,6 +103,8 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   }
 
   async getVaultTimeoutAction(userId?: UserId): Promise<VaultTimeoutAction> {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     const availableActions = await this.getAvailableVaultTimeoutActions();
     if (availableActions.length === 1) {
       return availableActions[0];
