@@ -9,6 +9,7 @@
         routerLink="/{{ button.page }}"
         routerLinkActive
         #rla="routerLinkActive"
+        ariaCurrentWhenActive="page"
       >
         <i *ngIf="!rla.isActive" class="bwi bwi-lg bwi-{{ button.iconKey }}" aria-hidden="true"></i>
         <i

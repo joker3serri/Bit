@@ -68,7 +68,13 @@ class MockAddButtonComponent {}
 @Component({
   selector: "mock-popout-button",
   template: `
-    <button bitIconButton="bwi-external-link" size="small" type="button">Pop out</button>
+    <button
+      bitIconButton="bwi-external-link"
+      size="small"
+      type="button"
+      title="Pop out"
+      aria-label="Pop out"
+    ></button>
   `,
   standalone: true,
   imports: [IconButtonModule],
