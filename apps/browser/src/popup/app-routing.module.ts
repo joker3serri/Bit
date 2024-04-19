@@ -49,6 +49,7 @@ import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { SyncComponent } from "../vault/popup/settings/sync.component";
+import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
@@ -250,6 +251,12 @@ const routes: Routes = [
     component: AccountSecurityComponent,
     canActivate: [AuthGuard],
     data: { state: "account-security" },
+  },
+  {
+    path: "vault-settings",
+    component: VaultSettingsComponent,
+    canActivate: [AuthGuard],
+    data: { state: "vault-settings" },
   },
   {
     path: "folders",

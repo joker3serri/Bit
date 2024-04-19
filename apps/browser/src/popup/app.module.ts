@@ -67,6 +67,7 @@ import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { SyncComponent } from "../vault/popup/settings/sync.component";
+import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -152,6 +153,7 @@ import "../platform/popup/locales";
     SetPasswordComponent,
     AccountSecurityComponent,
     SettingsComponent,
+    VaultSettingsComponent,
     ShareComponent,
     SsoComponent,
     SyncComponent,
