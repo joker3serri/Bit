@@ -222,6 +222,7 @@ import { BackgroundPlatformUtilsService } from "../platform/services/platform-ut
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
 import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
+import { ForegroundMemoryStorageService } from "../platform/storage/foreground-memory-storage.service";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
 import { Fido2Background as Fido2BackgroundAbstraction } from "../vault/fido2/background/abstractions/fido2.background";
@@ -377,6 +378,10 @@ export default class MainBackground {
     this.storageService = new BrowserLocalStorageService();
 
     const mv3MemoryStorageCreator = (partitionName: string) => {
+      if (this.popupOnlyContext) {
+        return new ForegroundMemoryStorageService();
+      }
+
       // TODO: Consider using multithreaded encrypt service in popup only context
       return new LocalBackedSessionStorageService(
         new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
@@ -388,12 +393,16 @@ export default class MainBackground {
     };
 
     this.secureStorageService = this.storageService; // secure storage is not supported in browsers, so we use local storage and warn users when it is used
-    this.memoryStorageService = BrowserApi.isManifestVersion(3)
-      ? mv3MemoryStorageCreator("stateService")
-      : new MemoryStorageService();
+    // this.memoryStorageService = BrowserApi.isManifestVersion(3)
+    //   ? mv3MemoryStorageCreator("stateService")
+    //   : new MemoryStorageService();
+
     this.memoryStorageForStateProviders = BrowserApi.isManifestVersion(3)
       ? mv3MemoryStorageCreator("stateProviders")
       : new BackgroundMemoryStorageService();
+    this.memoryStorageService = BrowserApi.isManifestVersion(3)
+      ? this.memoryStorageForStateProviders
+      : new MemoryStorageService();
 
     const storageServiceProvider = new StorageServiceProvider(
       this.storageService,

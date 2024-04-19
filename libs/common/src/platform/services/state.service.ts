@@ -120,7 +120,7 @@ export class StateService<
         (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? [];
       for (const i in state.authenticatedAccounts) {
         if (i != null) {
-          state = await this.syncAccountFromDisk(state.authenticatedAccounts[i]);
+          state = (await this.syncAccountFromDisk(state.authenticatedAccounts[i])) || state;
         }
       }
       const storedActiveUser = await this.storageService.get<string>(keys.activeUserId);
