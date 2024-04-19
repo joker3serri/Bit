@@ -1,39 +1,33 @@
-// import { Observable, Subject, filter, map, merge, share, tap } from "rxjs";
+import { Subject } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import {
-  // AbstractMemoryStorageService,
+  AbstractMemoryStorageService,
   AbstractStorageService,
   ObservableStorageService,
-  // StorageUpdate,
+  StorageUpdate,
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { MemoryStorageOptions } from "@bitwarden/common/platform/models/domain/storage-options";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
-// import { BrowserApi } from "../browser/browser-api";
-// import { fromChromeEvent } from "../browser/from-chrome-event";
+import { BrowserApi } from "../browser/browser-api";
 import { devFlag } from "../decorators/dev-flag.decorator";
 import { devFlagEnabled } from "../flags";
-import { BackgroundMemoryStorageService } from "../storage/background-memory-storage.service";
+import { MemoryStoragePortMessage } from "../storage/port-messages";
+import { portName } from "../storage/port-name";
 
 export class LocalBackedSessionStorageService
-  extends BackgroundMemoryStorageService
+  extends AbstractMemoryStorageService
   implements ObservableStorageService
 {
-  // private cache: Record<string, unknown> = {};
-  // private updatesSubject = new Subject<StorageUpdate>();
-
-  private commandName = `localBackedSessionStorage_${this.name}`;
-  // private getCommandName = `${this.commandName}_get`;
-  // private updateCommandName = `${this.commandName}_update`;
+  private updatesSubject = new Subject<StorageUpdate>();
   private encKey = `localEncryptionKey_${this.name}`;
   private sessionKey = `session_${this.name}`;
-  private cachedSession: Record<string, unknown>;
-
-  // updates$: Observable<StorageUpdate>;
+  private cachedSession: Record<string, unknown> = {};
+  private _ports: chrome.runtime.Port[] = [];
 
   constructor(
     private encryptService: EncryptService,
@@ -44,72 +38,44 @@ export class LocalBackedSessionStorageService
   ) {
     super();
 
-    // void this.initializeCache();
+    BrowserApi.addListener(chrome.runtime.onConnect, (port) => {
+      if (port.name !== portName(chrome.storage.session)) {
+        return;
+      }
 
-    // const remoteUpdatesObservable = fromChromeEvent(chrome.runtime.onMessage).pipe(
-    //   filter(([msg]) => msg.command === this.updateCommandName),
-    //   map(([msg]) => msg.update as StorageUpdate),
-    //   tap((update) => {
-    //     const { key, updateType, value } = update;
-    //     if (updateType === "remove") {
-    //       this.cache[update.key] = null;
-    //       return;
-    //     }
-    //
-    //     if (!value) {
-    //       return;
-    //     }
-    //
-    //     this.cache[key] = JSON.parse(value);
-    //     this.updatesSubject.next({ key, updateType });
-    //   }),
-    //   share(),
-    // );
-    // remoteUpdatesObservable.subscribe();
-    // this.updates$ = merge(this.updatesSubject.asObservable(), remoteUpdatesObservable);
-    //
-    // const remoteGetCacheObservable = fromChromeEvent(chrome.runtime.onMessage).pipe(
-    //   filter(([msg]) => msg.command === this.getCommandName),
-    //   tap(([msg, _sender, sendResponse]) => {
-    //     const { cacheKey } = msg;
-    //     if (!cacheKey || !this.cache[cacheKey]) {
-    //       return;
-    //     }
-    //
-    //     sendResponse(JSON.stringify(this.cache[cacheKey]));
-    //   }),
-    //   share(),
-    // );
-    // remoteGetCacheObservable.subscribe();
+      this._ports.push(port);
+
+      const listenerCallback = this.onMessageFromForeground.bind(this);
+      port.onDisconnect.addListener(() => {
+        this._ports.splice(this._ports.indexOf(port), 1);
+        port.onMessage.removeListener(listenerCallback);
+      });
+      port.onMessage.addListener(listenerCallback);
+      // Initialize the new memory storage service with existing data
+      this.sendMessageTo(port, {
+        action: "initialization",
+        data: Array.from(Object.keys(this.cachedSession)),
+      });
+    });
+    this.updates$.subscribe((update) => {
+      this.broadcastMessage({
+        action: "subject_update",
+        data: update,
+      });
+    });
   }
 
-  // get valuesRequireDeserialization(): boolean {
-  //   return true;
-  // }
+  get valuesRequireDeserialization(): boolean {
+    return true;
+  }
+
+  get updates$() {
+    return this.updatesSubject.asObservable();
+  }
 
   async get<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
-    // if (this.cache[key] !== undefined) {
-    //   if (this.cache[key] === null) {
-    //     return null;
-    //   }
-    //
-    //   return this.cache[key] as T;
-    // }
-    //
-    // const externalContextCacheValue = await this.getCachedValueFromExternalContext(key);
-    // if (externalContextCacheValue) {
-    //   this.cache[key] = JSON.parse(externalContextCacheValue);
-    //   this.updatesSubject.next({ key, updateType: "save" });
-    //   return externalContextCacheValue as T;
-    // }
-    // console.log(key, this.store[key] === "null");
-    // if (this.store[key] === "null") {
-    //   return null;
-    // }
-
-    const cachedValue = await super.get<T>(key);
-    if (cachedValue) {
-      return cachedValue;
+    if (this.cachedSession[key] != null) {
+      return this.cachedSession[key] as T;
     }
 
     return await this.getBypassCache(key, options);
@@ -117,8 +83,7 @@ export class LocalBackedSessionStorageService
 
   async getBypassCache<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
     const session = await this.getLocalSession(await this.getSessionEncKey());
-    if (session == null || !Object.keys(session).includes(key)) {
-      this.store[key] = JSON.stringify(null);
+    if (!session[key]) {
       return null;
     }
 
@@ -127,14 +92,7 @@ export class LocalBackedSessionStorageService
       value = options.deserializer(value as Jsonify<T>);
     }
 
-    if (value != null) {
-      void super.save(key, value);
-    }
-
-    if (value === null) {
-      this.store[key] = JSON.stringify(null);
-    }
-
+    void this.save(key, value);
     return value as T;
   }
 
@@ -143,47 +101,26 @@ export class LocalBackedSessionStorageService
   }
 
   async save<T>(key: string, obj: T): Promise<void> {
-    const existingValue = this.store[key];
+    const existingValue = this.cachedSession[key] as T;
     if (this.compareValues<T>(existingValue, obj)) {
+      this.updatesSubject.next({ key, updateType: "save" });
       return;
     }
 
     if (obj == null) {
       return await this.remove(key);
     }
-    //
-    // const externalContextCacheValue = await this.getCachedValueFromExternalContext(key);
-    // if (this.compareValues<T>(externalContextCacheValue, obj)) {
-    //   this.cache[key] = JSON.parse(externalContextCacheValue);
-    //   this.updatesSubject.next({ key, updateType: "save" });
-    //   return;
-    // }
 
-    // this.store[key] = JSON.stringify(obj);
-    await super.save(key, obj);
+    this.cachedSession[key] = obj;
     await this.updateLocalSessionValue(key, obj);
-    // this.sendUpdate({ key, updateType: "save" });
+    this.updatesSubject.next({ key, updateType: "save" });
   }
 
   async remove(key: string): Promise<void> {
-    // const existingValue = this.cache[key];
-    // if (existingValue === null) {
-    //   return;
-    // }
-
-    await super.remove(key);
-    // delete this.store[key];
+    delete this.cachedSession[key];
     await this.updateLocalSessionValue(key, null);
-    // this.sendUpdate({ key, updateType: "remove" });
+    this.updatesSubject.next({ key, updateType: "remove" });
   }
-
-  // sendUpdate(storageUpdate: StorageUpdate) {
-  //   this.updatesSubject.next(storageUpdate);
-  //   void chrome.runtime.sendMessage({
-  //     command: this.updateCommandName,
-  //     update: storageUpdate,
-  //   });
-  // }
 
   private async updateLocalSessionValue<T>(key: string, obj: T) {
     const sessionEncKey = await this.getSessionEncKey();
@@ -197,10 +134,10 @@ export class LocalBackedSessionStorageService
       return this.cachedSession;
     }
 
+    this.cachedSession = {};
     const local = await this.localStorage.get<string>(this.sessionKey);
-
     if (local == null) {
-      return null;
+      return this.cachedSession;
     }
 
     if (devFlagEnabled("storeSessionDecrypted")) {
@@ -212,7 +149,7 @@ export class LocalBackedSessionStorageService
       // Error with decryption -- session is lost, delete state and key and start over
       await this.setSessionEncKey(null);
       await this.localStorage.remove(this.sessionKey);
-      return null;
+      return this.cachedSession;
     }
 
     this.cachedSession = JSON.parse(sessionJson);
@@ -272,44 +209,75 @@ export class LocalBackedSessionStorageService
     }
   }
 
-  // private async getCachedValueFromExternalContext(cacheKey: string): Promise<string> {
-  //   return await BrowserApi.sendMessageWithResponse(this.getCommandName, { cacheKey });
-  // }
-
-  private compareValues<T>(value1: string, value2: T): boolean {
-    if (!value1 && !value2) {
+  private compareValues<T>(value1: T, value2: T): boolean {
+    if (value1 == null && value2 == null) {
       return true;
     }
 
-    if (value1 && !value2) {
+    if (value1 && value2 == null) {
       return false;
     }
 
-    let parsedValue1 = value1;
-    if (typeof value1 === "string") {
-      parsedValue1 = JSON.parse(value1);
-    }
-    if (!parsedValue1) {
+    if (value1 == null && value2) {
       return false;
     }
 
-    if (typeof value1 !== "string" || typeof value2 !== "object") {
+    if (typeof value1 !== "object" || typeof value2 !== "object") {
       return value1 === value2;
     }
 
-    if (value1 === JSON.stringify(value2)) {
+    if (JSON.stringify(value1) === JSON.stringify(value2)) {
       return true;
     }
 
     return Object.entries(value1).sort().toString() === Object.entries(value2).sort().toString();
   }
 
-  // private async initializeCache() {
-  //   const localSession = await this.getLocalSession(await this.getSessionEncKey());
-  //   if (localSession == null) {
-  //     return;
-  //   }
-  //
-  //   this.cache = localSession || {};
-  // }
+  private async onMessageFromForeground(
+    message: MemoryStoragePortMessage,
+    port: chrome.runtime.Port,
+  ) {
+    if (message.originator === "background") {
+      return;
+    }
+
+    let result: unknown = null;
+
+    switch (message.action) {
+      case "get":
+      case "getBypassCache":
+      case "has": {
+        result = await this[message.action](message.key);
+        break;
+      }
+      case "save":
+        await this.save(message.key, JSON.parse((message.data as string) ?? null) as unknown);
+        break;
+      case "remove":
+        await this.remove(message.key);
+        break;
+    }
+
+    this.sendMessageTo(port, {
+      id: message.id,
+      key: message.key,
+      data: JSON.stringify(result),
+    });
+  }
+
+  protected broadcastMessage(data: Omit<MemoryStoragePortMessage, "originator">) {
+    this._ports.forEach((port) => {
+      this.sendMessageTo(port, data);
+    });
+  }
+
+  private sendMessageTo(
+    port: chrome.runtime.Port,
+    data: Omit<MemoryStoragePortMessage, "originator">,
+  ) {
+    port.postMessage({
+      ...data,
+      originator: "background",
+    });
+  }
 }
