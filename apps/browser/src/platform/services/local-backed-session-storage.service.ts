@@ -129,7 +129,7 @@ export class LocalBackedSessionStorageService
   }
 
   async getLocalSession(encKey: SymmetricCryptoKey): Promise<Record<string, unknown>> {
-    if (this.cachedSession) {
+    if (Object.keys(this.cachedSession).length > 0) {
       return this.cachedSession;
     }
 
