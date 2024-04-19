@@ -106,6 +106,7 @@ export class LocalBackedSessionStorageService
   }
 
   async save<T>(key: string, obj: T): Promise<void> {
+    // TODO - We don't necessarily want to do this comparison. This is a fragile approach for avoiding updates to the local session storage.
     const existingValue = this.cachedSession[key] as T;
     if (this.compareValues<T>(existingValue, obj)) {
       this.updatesSubject.next({ key, updateType: "save" });
@@ -216,6 +217,7 @@ export class LocalBackedSessionStorageService
     }
   }
 
+  // TODO - Remove this method when we update how we avoid updates to the local session storage.
   private compareValues<T>(value1: T, value2: T): boolean {
     if (value1 == null && value2 == null) {
       return true;
