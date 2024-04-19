@@ -9,7 +9,7 @@ export default class BrowserMemoryStorageService
   constructor() {
     super(chrome.storage.session);
   }
-  type: "MemoryStorageService";
+  type = "MemoryStorageService" as const;
   getBypassCache<T>(key: string): Promise<T> {
     return this.get(key);
   }
