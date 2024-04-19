@@ -1,24 +1,21 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import { Component, Input } from "@angular/core";
 
-import {
-  AvatarModule,
-  ButtonModule,
-  IconButtonModule,
-  TypographyModule,
-} from "@bitwarden/components";
+import { TypographyModule } from "@bitwarden/components";
 
 @Component({
   selector: "popup-header",
   templateUrl: "popup-header.component.html",
   standalone: true,
-  imports: [TypographyModule, CommonModule, AvatarModule, ButtonModule, IconButtonModule],
+  imports: [TypographyModule, CommonModule],
 })
 export class PopupHeaderComponent {
-  @Input() variant: "top-level" | "top-level-action" | "sub-page" = "top-level-action";
+  @Input() showBackButton: boolean = false;
   @Input() pageTitle: string;
-  // Not the best solution
-  @Input() poppedOut: boolean = false;
-  // TODO avatar Input
-  // TODO button functionality
+
+  constructor(private location: Location) {}
+
+  back() {
+    this.location.back();
+  }
 }

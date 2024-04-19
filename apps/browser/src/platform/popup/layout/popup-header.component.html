@@ -1,32 +1,14 @@
 <header class="tw-p-4 tw-border-0 tw-border-solid tw-border-b tw-border-secondary-300">
   <div class="tw-max-w-screen-sm tw-mx-auto tw-flex tw-justify-between">
     <div class="tw-inline-flex tw-items-center tw-gap-2 tw-h-9">
-      <!-- not the right icon -->
-      <i
-        class="bwi bwi-angle-left tw-font-bold"
-        aria-hidden="true"
-        *ngIf="variant === 'sub-page'"
-      ></i>
-      <!-- see if this doesnt need the ! override -->
-      <h1 bitTypography="h3" class="!tw-mb-0 tw-text-headers">{{ pageTitle }}</h1>
+      <button class="tw-bg-transparent tw-border-none" type="button" *ngIf="showBackButton">
+        <!-- not the right icon -->
+        <i class="bwi bwi-angle-left tw-font-bold" aria-hidden="true"></i>
+      </button>
+      <h1 bitTypography="h3" class="tw-mb-0.5 tw-text-headers">{{ pageTitle }}</h1>
     </div>
     <div class="tw-inline-flex tw-items-center tw-gap-2 tw-h-9">
-      <button bitButton *ngIf="variant === 'top-level-action'" buttonType="primary" type="button">
-        <i class="bwi bwi-plus tw-font-bold" aria-hidden="true"></i>
-        Add
-      </button>
-      <!-- TODO update icon -->
-      <button bitIconButton="bwi-external-link" size="small" *ngIf="!poppedOut" type="button">
-        Pop out
-      </button>
-      <!-- TODO reference browser/src/auth/popup/account-switching/current-account -->
-      <button
-        class="tw-bg-transparent tw-border-none"
-        *ngIf="variant === 'top-level' || variant === 'top-level-action'"
-        type="button"
-      >
-        <bit-avatar text="Ash Ketchum" size="small"></bit-avatar>
-      </button>
+      <ng-content select="[slot=end]"></ng-content>
     </div>
   </div>
 </header>

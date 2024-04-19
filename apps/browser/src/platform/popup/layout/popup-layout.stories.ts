@@ -3,7 +3,7 @@ import { Component, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
-import { ButtonModule } from "@bitwarden/components/src/button";
+import { AvatarModule, ButtonModule, IconButtonModule } from "@bitwarden/components";
 
 import { PopupBottomNavigationComponent } from "./popup-bottom-navigation.component";
 import { PopupFooterComponent } from "./popup-footer.component";
@@ -52,6 +52,41 @@ class SendComponent {}
 })
 class SettingsComponent {}
 
+@Component({
+  selector: "mock-add-button",
+  template: `
+    <button bitButton buttonType="primary" type="button">
+      <i class="bwi bwi-plus tw-font-bold" aria-hidden="true"></i>
+      Add
+    </button>
+  `,
+  standalone: true,
+  imports: [ButtonModule],
+})
+class MockAddButtonComponent {}
+
+@Component({
+  selector: "mock-popout-button",
+  template: `
+    <button bitIconButton="bwi-external-link" size="small" type="button">Pop out</button>
+  `,
+  standalone: true,
+  imports: [IconButtonModule],
+})
+class MockPopoutButtonComponent {}
+
+@Component({
+  selector: "mock-current-account",
+  template: `
+    <button class="tw-bg-transparent tw-border-none" type="button">
+      <bit-avatar text="Ash Ketchum" size="small"></bit-avatar>
+    </button>
+  `,
+  standalone: true,
+  imports: [AvatarModule],
+})
+class MockCurrentAccountComponent {}
+
 export default {
   title: "Browser/Popup Layout",
   component: PopupLayoutComponent,
@@ -65,6 +100,11 @@ export default {
         CommonModule,
         ButtonModule,
         RouterModule,
+        AvatarModule,
+        IconButtonModule,
+        MockAddButtonComponent,
+        MockPopoutButtonComponent,
+        MockCurrentAccountComponent,
       ],
     }),
     applicationConfig({
@@ -94,9 +134,11 @@ export const TopLevelPage: Story = {
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px]">
         <popup-layout>
-          <popup-header variant="top-level" popupHeader pageTitle="Test"></popup-header>
+          <popup-header slot="popupHeader" pageTitle="Test">
+            <mock-current-account slot="end"></mock-current-account>
+          </popup-header>
           <router-outlet></router-outlet>
-          <popup-bottom-navigation popupFooter></popup-bottom-navigation>
+          <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
         </popup-layout>
       </div>
     `,
@@ -109,9 +151,15 @@ export const TopLevelWithAction: Story = {
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px]">
         <popup-layout>
-          <popup-header variant="top-level-action" popupHeader pageTitle="Test"></popup-header>
+          <popup-header slot="popupHeader" pageTitle="Test">
+            <ng-container slot="end">
+              <mock-add-button></mock-add-button>
+              <mock-popout-button></mock-popout-button>
+              <mock-current-account></mock-current-account>
+            </ng-container>
+          </popup-header>
           <router-outlet></router-outlet>
-          <popup-bottom-navigation popupFooter></popup-bottom-navigation>
+          <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
         </popup-layout>
       </div>
     `,
@@ -124,10 +172,12 @@ export const SubPageWithAction: Story = {
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px]">
         <popup-layout>
-          <popup-header variant="sub-page" popupHeader pageTitle="Test"></popup-header>
+          <popup-header showBackButton="true" slot="popupHeader" pageTitle="Test">
+            <mock-popout-button slot="end"></mock-popout-button>
+          </popup-header>
           <router-outlet></router-outlet>
-          <popup-footer popupFooter>
-            <div actionFooter class="tw-flex tw-gap-2">
+          <popup-footer slot="popupFooter">
+            <div slot="actionFooter" class="tw-flex tw-gap-2">
               <button bitButton buttonType="primary">Save</button>
               <button bitButton buttonType="secondary">Cancel</button>
             </div>
@@ -144,7 +194,9 @@ export const SubPage: Story = {
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px]">
         <popup-layout>
-          <popup-header variant="sub-page" popupHeader pageTitle="Test"></popup-header>
+          <popup-header showBackButton="true" slot="popupHeader" pageTitle="Test">
+            <mock-popout-button slot="end"></mock-popout-button>
+          </popup-header>
           <router-outlet></router-outlet>
         </popup-layout>
       </div>
@@ -158,14 +210,14 @@ export const PoppedOut: Story = {
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[900px]">
         <popup-layout>
-          <popup-header
-            variant="top-level-action"
-            popupHeader
-            pageTitle="Test"
-            poppedOut="true"
-          ></popup-header>
+          <popup-header slot="popupHeader" pageTitle="Test" poppedOut="true">
+            <ng-container slot="end">
+              <mock-add-button></mock-add-button>
+              <mock-current-account></mock-current-account>
+            </ng-container>
+          </popup-header>
           <router-outlet></router-outlet>
-          <popup-bottom-navigation popupFooter></popup-bottom-navigation>
+          <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
         </popup-layout>
       </div>
     `,
