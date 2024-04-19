@@ -487,7 +487,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: DerivedStateProvider,
     useClass: ForegroundDerivedStateProvider,
-    deps: [OBSERVABLE_MEMORY_STORAGE, NgZone],
+    deps: [StorageServiceProvider, NgZone],
   }),
   safeProvider({
     provide: AutofillSettingsServiceAbstraction,
