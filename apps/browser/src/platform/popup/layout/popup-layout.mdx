@@ -23,7 +23,7 @@ extension is popped out.
 - default
   - Use `router-outlet`
 
-Basic example:
+Basic usage example:
 
 ```
 <popup-layout>
@@ -49,6 +49,8 @@ Basic example:
   - Use to insert one or more interactive elements
   - The header handles the spacing between elements passed to to the `end` slot.
 
+Usage example:
+
 ```
 <popup-header pageTitle="Test" showBackButton="true">
   <ng-container slot="end">
@@ -58,6 +60,13 @@ Basic example:
 </popup-header>
 ```
 
+Common interactive elements to insert into the `end` slot are:
+
+- `app-current-account`: shows current account and switcher
+- `app-pop-out`: shows popout button when the extension is not already popped out
+- "Add" button: this can be accomplished with the Button component and any custom functionality for
+  that particular page
+
 ## Popup bottom navigation
 
 Popup bottom navigation contains the 4 main page links for the browser extension. It uses the
@@ -65,6 +74,8 @@ Angular router to determine which page is currently active, and style the button
 Clicking on the buttons will navigate to the correct route.
 
 Long button names will be ellipsed.
+
+Usage example:
 
 ```
 <popup-bottom-navigation></popup-bottom-navigation>
@@ -75,6 +86,8 @@ Long button names will be ellipsed.
 Popup footer should be used when the page displays action buttons. It functions similarly to the
 Dialog footer in that the calling code is responsible for passing in the different buttons that need
 to be rendered.
+
+Usage example:
 
 ```
 <popup-footer>

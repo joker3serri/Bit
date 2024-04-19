@@ -13,19 +13,19 @@ import { PopupLayoutComponent } from "./popup-layout.component";
 @Component({
   selector: "vault-placeholder",
   template: `
-    <div class="tw-mb-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item</div>
-    <div class="tw-my-8">vault item last item</div>
+    <div class="tw-mb-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item</div>
+    <div class="tw-my-8 tw-text-main">vault item last item</div>
   `,
   standalone: true,
 })
@@ -33,21 +33,21 @@ class VaultComponent {}
 
 @Component({
   selector: "generator-placeholder",
-  template: ` <div>generator stuff here</div> `,
+  template: ` <div class="tw-text-main">generator stuff here</div> `,
   standalone: true,
 })
 class GeneratorComponent {}
 
 @Component({
   selector: "send-placeholder",
-  template: ` <div>send some stuff</div> `,
+  template: ` <div class="tw-text-main">send some stuff</div> `,
   standalone: true,
 })
 class SendComponent {}
 
 @Component({
   selector: "settings-placeholder",
-  template: ` <div>change your settings</div> `,
+  template: ` <div class="tw-text-main">change your settings</div> `,
   standalone: true,
 })
 class SettingsComponent {}
