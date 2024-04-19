@@ -28,6 +28,7 @@ export class LocalBackedSessionStorageService
   private sessionKey = `localBackedSession`;
   private cachedSession: Record<string, unknown> = {};
   private _ports: Set<chrome.runtime.Port> = new Set([]);
+  private knownNullishCacheKeys: Set<string> = new Set([]);
 
   constructor(
     private encryptService: EncryptService,
@@ -77,12 +78,17 @@ export class LocalBackedSessionStorageService
       return this.cachedSession[key] as T;
     }
 
+    if (this.knownNullishCacheKeys.has(key)) {
+      return null;
+    }
+
     return await this.getBypassCache(key, options);
   }
 
   async getBypassCache<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
     const session = await this.getLocalSession(await this.getSessionEncKey());
-    if (!session[key]) {
+    if (session[key] == null) {
+      this.knownNullishCacheKeys.add(key);
       return null;
     }
 
@@ -110,12 +116,14 @@ export class LocalBackedSessionStorageService
       return await this.remove(key);
     }
 
+    this.knownNullishCacheKeys.delete(key);
     this.cachedSession[key] = obj;
     await this.updateLocalSessionValue(key, obj);
     this.updatesSubject.next({ key, updateType: "save" });
   }
 
   async remove(key: string): Promise<void> {
+    this.knownNullishCacheKeys.add(key);
     delete this.cachedSession[key];
     await this.updateLocalSessionValue(key, null);
     this.updatesSubject.next({ key, updateType: "remove" });
