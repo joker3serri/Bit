@@ -118,9 +118,6 @@ export class LocalBackedSessionStorageService
       if (this.compareValues<T>(existingValue, obj)) {
         this.logService.warning(`Possible unnecessary write to local session storage. Key: ${key}`);
         this.logService.warning(obj as any);
-
-        this.updatesSubject.next({ key, updateType: "save" });
-        return;
       }
     }
 
