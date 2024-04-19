@@ -314,6 +314,7 @@ const safeProviders: SafeProvider[] = [
       UserVerificationService,
       BillingAccountProfileStateService,
       ScriptInjectorService,
+      AccountServiceAbstraction,
     ],
   }),
   safeProvider({
