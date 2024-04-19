@@ -112,12 +112,13 @@ export class LocalBackedSessionStorageService
   }
 
   async save<T>(key: string, obj: T): Promise<void> {
-    // TODO - We don't necessarily want to do this comparison. This is a fragile approach for avoiding updates to the local session storage.
+    // This is for observation purposes only. At some point, we don't want to write to local session storage if the value is the same.
     if (this.platformUtilsService.isDev()) {
-      this.logService.warning(`Possible unnecessary write to local session storage. Key: ${key}`);
-      this.logService.warning(obj as any);
       const existingValue = this.cachedSession[key] as T;
       if (this.compareValues<T>(existingValue, obj)) {
+        this.logService.warning(`Possible unnecessary write to local session storage. Key: ${key}`);
+        this.logService.warning(obj as any);
+
         this.updatesSubject.next({ key, updateType: "save" });
         return;
       }
@@ -227,7 +228,6 @@ export class LocalBackedSessionStorageService
     }
   }
 
-  // TODO - Remove this method when we update how we avoid updates to the local session storage.
   private compareValues<T>(value1: T, value2: T): boolean {
     if (value1 == null && value2 == null) {
       return true;
