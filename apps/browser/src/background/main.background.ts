@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { Subject, firstValueFrom, merge } from "rxjs";
 
 import {
   PinCryptoServiceAbstraction,
@@ -29,6 +29,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/services/policy/p
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
@@ -82,7 +83,6 @@ import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/co
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   AbstractMemoryStorageService,
@@ -95,6 +95,9 @@ import {
   DefaultBiometricStateService,
 } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
+import { Message, MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
+// eslint-disable-next-line no-restricted-imports -- Used for dependency creation
+import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
@@ -110,6 +113,7 @@ import { MigrationBuilderService } from "@bitwarden/common/platform/services/mig
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
+import { UserKeyInitService } from "@bitwarden/common/platform/services/user-key-init.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
   ActiveUserStateProvider,
@@ -134,7 +138,6 @@ import { EventUploadService } from "@bitwarden/common/services/event/event-uploa
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
-import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/src/auth/abstractions/avatar.service";
 import {
   PasswordGenerationService,
   PasswordGenerationServiceAbstraction,
@@ -207,13 +210,14 @@ import { Account } from "../models/account";
 import { BrowserApi } from "../platform/browser/browser-api";
 import { flagEnabled } from "../platform/flags";
 import { UpdateBadge } from "../platform/listeners/update-badge";
+/* eslint-disable no-restricted-imports */
+import { ChromeMessageSender } from "../platform/messaging/chrome-message.sender";
+/* eslint-enable no-restricted-imports */
 import { BrowserStateService as StateServiceAbstraction } from "../platform/services/abstractions/browser-state.service";
 import { BrowserCryptoService } from "../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
 import BrowserMemoryStorageService from "../platform/services/browser-memory-storage.service";
-import BrowserMessagingPrivateModeBackgroundService from "../platform/services/browser-messaging-private-mode-background.service";
-import BrowserMessagingService from "../platform/services/browser-messaging.service";
 import { BrowserScriptInjectorService } from "../platform/services/browser-script-injector.service";
 import { DefaultBrowserStateService } from "../platform/services/default-browser-state.service";
 import I18nService from "../platform/services/i18n.service";
@@ -222,6 +226,8 @@ import { BackgroundPlatformUtilsService } from "../platform/services/platform-ut
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
 import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
+import { ForegroundMemoryStorageService } from "../platform/storage/foreground-memory-storage.service";
+import { fromChromeRuntimeMessaging } from "../platform/utils/from-chrome-runtime-messaging";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
 import { Fido2Background as Fido2BackgroundAbstraction } from "../vault/fido2/background/abstractions/fido2.background";
@@ -235,7 +241,7 @@ import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
 
 export default class MainBackground {
-  messagingService: MessagingServiceAbstraction;
+  messagingService: MessageSender;
   storageService: BrowserLocalStorageService;
   secureStorageService: AbstractStorageService;
   memoryStorageService: AbstractMemoryStorageService;
@@ -325,6 +331,9 @@ export default class MainBackground {
   stateEventRunnerService: StateEventRunnerService;
   ssoLoginService: SsoLoginServiceAbstraction;
   billingAccountProfileStateService: BillingAccountProfileStateService;
+  // eslint-disable-next-line rxjs/no-exposed-subjects -- Needed to give access to services module
+  intraprocessMessagingSubject: Subject<Message<object>>;
+  userKeyInitService: UserKeyInitService;
   scriptInjectorService: BrowserScriptInjectorService;
 
   onUpdatedRan: boolean;
@@ -367,22 +376,45 @@ export default class MainBackground {
     const logoutCallback = async (expired: boolean, userId?: UserId) =>
       await this.logout(expired, userId);
 
-    this.messagingService =
-      this.isPrivateMode && BrowserApi.isManifestVersion(2)
-        ? new BrowserMessagingPrivateModeBackgroundService()
-        : new BrowserMessagingService();
     this.logService = new ConsoleLogService(false);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
 
+    this.intraprocessMessagingSubject = new Subject<Message<object>>();
+
+    this.messagingService = MessageSender.combine(
+      new SubjectMessageSender(this.intraprocessMessagingSubject),
+      new ChromeMessageSender(this.logService),
+    );
+
+    const messageListener = new MessageListener(
+      merge(
+        this.intraprocessMessagingSubject.asObservable(), // For messages from the same context
+        fromChromeRuntimeMessaging(), // For messages from other contexts
+      ),
+    );
+
+    this.platformUtilsService = new BackgroundPlatformUtilsService(
+      this.messagingService,
+      (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
+      async () => this.biometricUnlock(),
+      self,
+    );
+
     const mv3MemoryStorageCreator = (partitionName: string) => {
+      if (this.popupOnlyContext) {
+        return new ForegroundMemoryStorageService(partitionName);
+      }
+
       // TODO: Consider using multithreaded encrypt service in popup only context
       return new LocalBackedSessionStorageService(
+        this.logService,
         new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
         this.keyGenerationService,
         new BrowserLocalStorageService(),
         new BrowserMemoryStorageService(),
+        this.platformUtilsService,
         partitionName,
       );
     };
@@ -451,12 +483,6 @@ export default class MainBackground {
     this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
 
     this.userNotificationSettingsService = new UserNotificationSettingsService(this.stateProvider);
-    this.platformUtilsService = new BackgroundPlatformUtilsService(
-      this.messagingService,
-      (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
-      async () => this.biometricUnlock(),
-      self,
-    );
 
     this.tokenService = new TokenService(
       this.singleUserStateProvider,
@@ -558,21 +584,6 @@ export default class MainBackground {
 
     this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
 
-    // eslint-disable-next-line
-    const that = this;
-    const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
-      // AuthService should send the messages to the background not popup.
-      send = (subscriber: string, arg: any = {}) => {
-        if (BrowserApi.isManifestVersion(3)) {
-          that.messagingService.send(subscriber, arg);
-          return;
-        }
-
-        const message = Object.assign({}, { command: subscriber }, arg);
-        void that.runtimeBackground.processMessage(message, that as any);
-      };
-    })();
-
     this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
 
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
@@ -603,7 +614,7 @@ export default class MainBackground {
 
     this.authService = new AuthService(
       this.accountService,
-      backgroundMessagingService,
+      this.messagingService,
       this.cryptoService,
       this.apiService,
       this.stateService,
@@ -624,7 +635,7 @@ export default class MainBackground {
       this.tokenService,
       this.appIdService,
       this.platformUtilsService,
-      backgroundMessagingService,
+      this.messagingService,
       this.logService,
       this.keyConnectorService,
       this.environmentService,
@@ -805,6 +816,7 @@ export default class MainBackground {
       this.userVerificationService,
       this.billingAccountProfileStateService,
       this.scriptInjectorService,
+      this.accountService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -913,6 +925,7 @@ export default class MainBackground {
         this.logService,
         this.configService,
         this.fido2Background,
+        messageListener,
       );
       this.nativeMessagingBackground = new NativeMessagingBackground(
         this.accountService,
@@ -1047,12 +1060,22 @@ export default class MainBackground {
         );
       }
     }
+
+    this.userKeyInitService = new UserKeyInitService(
+      this.accountService,
+      this.cryptoService,
+      this.logService,
+    );
   }
 
   async bootstrap() {
     this.containerService.attachToGlobal(self);
 
     await this.stateService.init({ runMigrations: !this.isPrivateMode });
+
+    // This is here instead of in in the InitService b/c we don't plan for
+    // side effects to run in the Browser InitService.
+    this.userKeyInitService.listenForActiveUserChangesToSetUserKey();
 
     await (this.i18nService as I18nService).init();
     await (this.eventUploadService as EventUploadService).init(true);
