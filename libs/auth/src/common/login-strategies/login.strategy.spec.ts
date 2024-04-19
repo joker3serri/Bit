@@ -28,7 +28,6 @@ import {
   Account,
   AccountProfile,
   AccountTokens,
-  AccountKeys,
 } from "@bitwarden/common/platform/models/domain/account";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -216,13 +215,27 @@ describe("LoginStrategy", () => {
           tokens: {
             ...new AccountTokens(),
           },
-          keys: new AccountKeys(),
         }),
       );
       expect(userDecryptionOptionsService.setUserDecryptionOptions).toHaveBeenCalledWith(
         UserDecryptionOptions.fromResponse(idTokenResponse),
       );
       expect(messagingService.send).toHaveBeenCalledWith("loggedIn");
+    });
+
+    it("throws if active account isn't found after being initialized", async () => {
+      const idTokenResponse = identityTokenResponseFactory();
+      apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
+
+      const mockVaultTimeoutAction = VaultTimeoutAction.Lock;
+      const mockVaultTimeout = 1000;
+
+      stateService.getVaultTimeoutAction.mockResolvedValue(mockVaultTimeoutAction);
+      stateService.getVaultTimeout.mockResolvedValue(mockVaultTimeout);
+
+      accountService.activeAccountSubject.next(null);
+
+      await expect(async () => await passwordLoginStrategy.logIn(credentials)).rejects.toThrow();
     });
 
     it("builds AuthResult", async () => {

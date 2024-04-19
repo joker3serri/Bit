@@ -17,7 +17,8 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { FakeAccountService } from "@bitwarden/common/spec";
+import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
 import { PrfKey, UserKey } from "@bitwarden/common/types/key";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
@@ -47,6 +48,7 @@ describe("WebAuthnLoginStrategy", () => {
 
   const token = "mockToken";
   const deviceId = Utils.newGuid();
+  const userId = Utils.newGuid() as UserId;
 
   let webAuthnCredentials!: WebAuthnLoginCredentials;
 
@@ -67,7 +69,7 @@ describe("WebAuthnLoginStrategy", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    accountService = new FakeAccountService(null);
+    accountService = mockAccountServiceWith(userId);
     masterPasswordService = new FakeMasterPasswordService();
 
     cryptoService = mock<CryptoService>();
