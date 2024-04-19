@@ -536,11 +536,16 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearPinKeys(userId?: UserId): Promise<void> {
-    // TODO-rr-bw: find solution since it seems electron storage doesn't like setting values to null
-    // await this.pinService.setPinKeyEncryptedUserKey(null, userId);
-    // await this.pinService.setPinKeyEncryptedUserKeyEphemeral(null, userId);
-    // await this.pinService.setProtectedPin(null, userId);
-    // await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("Cannot clear keys, no user Id resolved.");
+    }
+
+    await this.pinService.clearPinKeyEncryptedUserKey(userId);
+    await this.pinService.clearPinKeyEncryptedUserKeyEphemeral(userId);
+    await this.pinService.setProtectedPin(null, userId);
+    await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
   }
 
   async makeSendKey(keyMaterial: CsprngArray): Promise<SymmetricCryptoKey> {
@@ -732,6 +737,12 @@ export class CryptoService implements CryptoServiceAbstraction {
    * @param userId The desired user
    */
   protected async storeAdditionalKeys(key: UserKey, userId?: UserId) {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
+
+    if (userId == null) {
+      throw new Error("Cannot clear keys, no user Id resolved.");
+    }
+
     const storeAuto = await this.shouldStoreKey(KeySuffixOptions.Auto, userId);
     if (storeAuto) {
       await this.stateService.setUserKeyAutoUnlock(key.keyB64, { userId: userId });
@@ -746,12 +757,10 @@ export class CryptoService implements CryptoServiceAbstraction {
       // We can't always clear deprecated keys because the pin is only
       // migrated once used to unlock
       await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
+    } else {
+      await this.pinService.clearPinKeyEncryptedUserKey(userId);
+      await this.pinService.clearPinKeyEncryptedUserKeyEphemeral(userId);
     }
-    // TODO-rr-bw: find solution since it seems electron storage doesn't like setting values to null
-    // else {
-    //   await this.pinService.setPinKeyEncryptedUserKey(null, userId);
-    //   await this.pinService.setPinKeyEncryptedUserKeyEphemeral(null, userId);
-    // }
   }
 
   protected async shouldStoreKey(keySuffix: KeySuffixOptions, userId?: UserId) {

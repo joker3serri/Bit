@@ -18,6 +18,11 @@ export abstract class PinServiceAbstraction {
   abstract setPinKeyEncryptedUserKey: (encString: EncString, userId: UserId) => Promise<void>;
 
   /**
+   * Clears the UserKey, encrypted by the PinKey
+   */
+  abstract clearPinKeyEncryptedUserKey(userId: UserId): Promise<void>;
+
+  /**
    * Gets the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
    */
   abstract getPinKeyEncryptedUserKeyEphemeral: (userId: UserId) => Promise<EncString>;
@@ -29,6 +34,11 @@ export abstract class PinServiceAbstraction {
     encString: EncString,
     userId: UserId,
   ) => Promise<void>;
+
+  /**
+   * Clears the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey
+   */
+  abstract clearPinKeyEncryptedUserKeyEphemeral(userId: UserId): Promise<void>;
 
   /**
    * Gets the user's PIN, encrypted by the UserKey.

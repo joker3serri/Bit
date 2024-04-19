@@ -87,7 +87,7 @@ export class PinService implements PinServiceAbstraction {
   ) {}
 
   async getPinKeyEncryptedUserKey(userId: UserId): Promise<EncString> {
-    this.validateUserId(userId, "Cannot get oldPinKeyEncryptedMasterKey.");
+    this.validateUserId(userId, "Cannot get pinKeyEncryptedUserKey.");
 
     return EncString.fromJSON(
       await firstValueFrom(this.stateProvider.getUserState$(PIN_KEY_ENCRYPTED_USER_KEY, userId)),
@@ -104,8 +104,14 @@ export class PinService implements PinServiceAbstraction {
     );
   }
 
+  async clearPinKeyEncryptedUserKey(userId: UserId): Promise<void> {
+    this.validateUserId(userId, "Cannot clear pinKeyEncryptedUserKey.");
+
+    await this.stateProvider.setUserState(PIN_KEY_ENCRYPTED_USER_KEY, null, userId);
+  }
+
   async getPinKeyEncryptedUserKeyEphemeral(userId: UserId): Promise<EncString> {
-    this.validateUserId(userId, "Cannot get pinKeyEncryptedUserKey.");
+    this.validateUserId(userId, "Cannot get pinKeyEncryptedUserKeyEphemeral.");
 
     return EncString.fromJSON(
       await firstValueFrom(
@@ -122,6 +128,12 @@ export class PinService implements PinServiceAbstraction {
       encString?.encryptedString,
       userId,
     );
+  }
+
+  async clearPinKeyEncryptedUserKeyEphemeral(userId: UserId): Promise<void> {
+    this.validateUserId(userId, "Cannot clear pinKeyEncryptedUserKeyEphemeral.");
+
+    await this.stateProvider.setUserState(PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL, null, userId);
   }
 
   async getProtectedPin(userId: UserId): Promise<string> {
@@ -273,13 +285,13 @@ export class PinService implements PinServiceAbstraction {
     kdfConfig: KdfConfig,
     pinKeyEncryptedUserKey?: EncString,
   ): Promise<UserKey> {
-    this.validateUserId(userId, "Cannot get decrypt user key.");
+    this.validateUserId(userId, "Cannot decrypt user key.");
 
     pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKey(userId);
     pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKeyEphemeral(userId);
 
     if (!pinKeyEncryptedUserKey) {
-      throw new Error("No PIN encrypted key found.");
+      throw new Error("No pinKeyEncryptedUserKey found.");
     }
 
     const pinKey = await this.makePinKey(pin, salt, kdf, kdfConfig);
@@ -368,7 +380,7 @@ export class PinService implements PinServiceAbstraction {
       const oldPinKeyEncryptedMasterKeyString = await this.getOldPinKeyEncryptedMasterKey(userId);
 
       if (oldPinKeyEncryptedMasterKeyString == null) {
-        throw new Error("No PIN encrypted key found.");
+        throw new Error("No oldPinKeyEncrytedMasterKey found.");
       }
 
       oldPinKeyEncryptedMasterKey = new EncString(oldPinKeyEncryptedMasterKeyString);
@@ -391,7 +403,7 @@ export class PinService implements PinServiceAbstraction {
     pinLockType: PinLockType,
     userId: UserId,
   ): Promise<{ pinKeyEncryptedUserKey: EncString; oldPinKeyEncryptedMasterKey?: EncString }> {
-    this.validateUserId(userId, "Cannot get PIN key encrypted keys.");
+    this.validateUserId(userId, "Cannot get PinKey encrypted keys.");
 
     switch (pinLockType) {
       case "PERSISTENT": {
