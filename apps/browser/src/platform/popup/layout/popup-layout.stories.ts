@@ -135,7 +135,10 @@ export const TopLevelPage: Story = {
       <div class="tw-h-[640px] tw-w-[380px]">
         <popup-layout>
           <popup-header slot="popupHeader" pageTitle="Test">
-            <mock-current-account slot="end"></mock-current-account>
+            <ng-container slot="end">
+              <mock-popout-button></mock-popout-button>
+              <mock-current-account></mock-current-account>
+            </ng-container>
           </popup-header>
           <router-outlet></router-outlet>
           <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
@@ -177,7 +180,7 @@ export const SubPageWithAction: Story = {
           </popup-header>
           <router-outlet></router-outlet>
           <popup-footer slot="popupFooter">
-            <div slot="actionFooter" class="tw-flex tw-gap-2">
+            <div class="tw-flex tw-gap-2">
               <button bitButton buttonType="primary">Save</button>
               <button bitButton buttonType="secondary">Cancel</button>
             </div>

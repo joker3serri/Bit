@@ -11,8 +11,6 @@ import { LinkModule } from "@bitwarden/components";
   imports: [CommonModule, LinkModule, RouterModule],
 })
 export class PopupBottomNavigationComponent {
-  // TODO button functionality
-
   navButtons = [
     {
       label: "Vault",
@@ -20,7 +18,7 @@ export class PopupBottomNavigationComponent {
       iconKey: "lock",
     },
     {
-      label: "Generatorbutverylongversion",
+      label: "Generator",
       page: "generator",
       iconKey: "generate",
     },

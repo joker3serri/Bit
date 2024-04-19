@@ -1,0 +1,123 @@
+import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
+
+import * as stories from "./popup-layout.stories";
+
+<Meta of={stories} />
+
+Please note that because these stories use `router-outlet`, there are issues with rendering content
+when Light & Dark mode is selected. The stories are best viewed by selecting one color mode.
+
+# Popup Layout
+
+The popup layout is the main layout component for the Bitwarden browser extension. It handles
+positioning the `header` and `footer` elements, and inserting the rest of the content into the
+`main` element with scroll. There is also a max-width built in so that the page looks nice when the
+extension is popped out.
+
+**Slots**
+
+- `popupHeader`
+  - Use `popup-header` component
+- `popupFooter`
+  - Use either `popup-footer` or `popup-bottom-navigation` components
+- default
+  - Use `router-outlet`
+
+Basic example:
+
+```
+<popup-layout>
+  <popup-header slot="popupHeader"></popup-header>
+  <router-outlet></router-outlet>
+  <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
+</popup-layout>
+```
+
+## Popup header
+
+**Args**
+
+- `pageTitle`: required
+  - Inserts title as an h1.
+- `showBackButton`: optional, defaults to `false`
+  - Toggles the back button to appear. The back button uses `Location.back()` to navigate back one
+    page in history.
+
+**Slots**
+
+- `end`
+  - Use to insert one or more interactive elements
+  - The header handles the spacing between elements passed to to the `end` slot.
+
+```
+<popup-header pageTitle="Test" showBackButton="true">
+  <ng-container slot="end">
+    <button></button>
+    <button></button>
+  </ng-container>
+</popup-header>
+```
+
+## Popup bottom navigation
+
+Popup bottom navigation contains the 4 main page links for the browser extension. It uses the
+Angular router to determine which page is currently active, and style the button appropriately.
+Clicking on the buttons will navigate to the correct route.
+
+Long button names will be ellipsed.
+
+```
+<popup-bottom-navigation></popup-bottom-navigation>
+```
+
+## Popup footer
+
+Popup footer should be used when the page displays action buttons. It functions similarly to the
+Dialog footer in that the calling code is responsible for passing in the different buttons that need
+to be rendered.
+
+```
+<popup-footer>
+  <div class="tw-flex tw-gap-2">
+    <button bitButton buttonType="primary">Save</button>
+    <button bitButton buttonType="secondary">Cancel</button>
+  </div>
+</popup-footer>
+```
+
+# Page types
+
+There are a few types of pages that are used in the browser extension.
+
+View the story source code to see examples of how to construct these types of pages.
+
+## Top-level page
+
+This is an example of what a top-level page in the browser extension should look like. The stories
+use mock components for the page content and for the buttons in the header.
+
+<Story of={stories.TopLevelPage} />
+
+This is an example of what a top-level page with the "Add" button should look like. The stories use
+mock components for the page content and for the buttons in the header.
+
+<Story of={stories.TopLevelWithAction} />
+
+## Subpage
+
+This is an example of what a subpage with an action footer should look like. The stories use mock
+components for the page content and for the footer buttons.
+
+<Story of={stories.SubPageWithAction} />
+
+This is an example of what a subpage without an action footer should look like. The stories use mock
+components for the page content.
+
+<Story of={stories.SubPage} />
+
+## Popped out
+
+When the browser extension is popped out, the "popout" button should not be passed to the header.
+This story shows this example with a top level page structure.
+
+<Story of={stories.PoppedOut} />
