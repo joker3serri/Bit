@@ -229,7 +229,7 @@ export class LoginCommand {
         }
       }
       if (response.requiresTwoFactor) {
-        const twoFactorProviders = this.twoFactorService.getSupportedProviders(null);
+        const twoFactorProviders = await this.twoFactorService.getSupportedProviders(null);
         if (twoFactorProviders.length === 0) {
           return Response.badRequest("No providers available for this client.");
         }
@@ -270,7 +270,7 @@ export class LoginCommand {
 
         if (
           twoFactorToken == null &&
-          response.twoFactorProviders.size > 1 &&
+          Object.keys(response.twoFactorProviders).length > 1 &&
           selectedProvider.type === TwoFactorProviderType.Email
         ) {
           const emailReq = new TwoFactorEmailRequest();
