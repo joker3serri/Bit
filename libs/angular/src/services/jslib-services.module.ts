@@ -1,4 +1,5 @@
 import { ErrorHandler, LOCALE_ID, NgModule } from "@angular/core";
+import { Subject } from "rxjs";
 
 import {
   AuthRequestServiceAbstraction,
@@ -38,6 +39,7 @@ import {
   InternalPolicyService,
   PolicyService as PolicyServiceAbstraction,
 } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
 import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { OrganizationApiService } from "@bitwarden/common/admin-console/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/services/organization/organization.service";
@@ -47,9 +49,11 @@ import { DefaultOrganizationManagementPreferencesService } from "@bitwarden/comm
 import { OrganizationUserServiceImplementation } from "@bitwarden/common/admin-console/services/organization-user/organization-user.service.implementation";
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
+import { ProviderApiService } from "@bitwarden/common/admin-console/services/provider/provider-api.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/account-api.service";
 import {
+  AccountService,
   AccountService as AccountServiceAbstraction,
   InternalAccountService,
 } from "@bitwarden/common/auth/abstractions/account.service";
@@ -60,6 +64,10 @@ import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abst
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import {
+  InternalMasterPasswordServiceAbstraction,
+  MasterPasswordServiceAbstraction,
+} from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
@@ -78,6 +86,7 @@ import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
+import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
 import { PasswordResetEnrollmentServiceImplementation } from "@bitwarden/common/auth/services/password-reset-enrollment.service.implementation";
 import { SsoLoginService } from "@bitwarden/common/auth/services/sso-login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
@@ -108,7 +117,7 @@ import { BillingApiService } from "@bitwarden/common/billing/services/billing-ap
 import { OrganizationBillingService } from "@bitwarden/common/billing/services/organization-billing.service";
 import { PaymentMethodWarningsService } from "@bitwarden/common/billing/services/payment-method-warnings.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -129,6 +138,9 @@ import {
   DefaultBiometricStateService,
 } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
+import { Message, MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
+// eslint-disable-next-line no-restricted-imports -- Used for dependency injection
+import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
 import { devFlagEnabled, flagEnabled } from "@bitwarden/common/platform/misc/flags";
 import { Account } from "@bitwarden/common/platform/models/domain/account";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
@@ -139,6 +151,7 @@ import { ConsoleLogService } from "@bitwarden/common/platform/services/console-l
 import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
+import { DefaultBroadcasterService } from "@bitwarden/common/platform/services/default-broadcaster.service";
 import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
@@ -147,6 +160,7 @@ import { MigrationRunner } from "@bitwarden/common/platform/services/migration-r
 import { NoopNotificationsService } from "@bitwarden/common/platform/services/noop-notifications.service";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
+import { UserKeyInitService } from "@bitwarden/common/platform/services/user-key-init.service";
 import { ValidationService } from "@bitwarden/common/platform/services/validation.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
@@ -238,7 +252,6 @@ import {
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { UnauthGuard } from "../auth/guards/unauth.guard";
 import { FormValidationErrorsService as FormValidationErrorsServiceAbstraction } from "../platform/abstractions/form-validation-errors.service";
-import { BroadcasterService } from "../platform/services/broadcaster.service";
 import { FormValidationErrorsService } from "../platform/services/form-validation-errors.service";
 import { LoggingErrorHandler } from "../platform/services/logging-error-handler";
 import { AngularThemingService } from "../platform/services/theming/angular-theming.service";
@@ -261,6 +274,7 @@ import {
   SYSTEM_LANGUAGE,
   SYSTEM_THEME_OBSERVABLE,
   WINDOW,
+  INTRAPROCESS_MESSAGING_SUBJECT,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
 
@@ -359,6 +373,8 @@ const safeProviders: SafeProvider[] = [
     provide: LoginStrategyServiceAbstraction,
     useClass: LoginStrategyService,
     deps: [
+      AccountServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
       CryptoServiceAbstraction,
       ApiServiceAbstraction,
       TokenServiceAbstraction,
@@ -404,6 +420,7 @@ const safeProviders: SafeProvider[] = [
       encryptService: EncryptService,
       fileUploadService: CipherFileUploadServiceAbstraction,
       configService: ConfigService,
+      stateProvider: StateProvider,
     ) =>
       new CipherService(
         cryptoService,
@@ -416,6 +433,7 @@ const safeProviders: SafeProvider[] = [
         encryptService,
         fileUploadService,
         configService,
+        stateProvider,
       ),
     deps: [
       CryptoServiceAbstraction,
@@ -428,6 +446,7 @@ const safeProviders: SafeProvider[] = [
       EncryptService,
       CipherFileUploadServiceAbstraction,
       ConfigService,
+      StateProvider,
     ],
   }),
   safeProvider({
@@ -437,7 +456,6 @@ const safeProviders: SafeProvider[] = [
       CryptoServiceAbstraction,
       I18nServiceAbstraction,
       CipherServiceAbstraction,
-      StateServiceAbstraction,
       StateProvider,
     ],
   }),
@@ -521,6 +539,7 @@ const safeProviders: SafeProvider[] = [
     provide: CryptoServiceAbstraction,
     useClass: CryptoService,
     deps: [
+      InternalMasterPasswordServiceAbstraction,
       KeyGenerationServiceAbstraction,
       CryptoFunctionServiceAbstraction,
       EncryptService,
@@ -587,6 +606,8 @@ const safeProviders: SafeProvider[] = [
     provide: SyncServiceAbstraction,
     useClass: SyncService,
     deps: [
+      InternalMasterPasswordServiceAbstraction,
+      AccountServiceAbstraction,
       ApiServiceAbstraction,
       DomainSettingsService,
       InternalFolderService,
@@ -607,9 +628,14 @@ const safeProviders: SafeProvider[] = [
       AvatarServiceAbstraction,
       LOGOUT_CALLBACK,
       BillingAccountProfileStateService,
+      TokenServiceAbstraction,
     ],
   }),
-  safeProvider({ provide: BroadcasterServiceAbstraction, useClass: BroadcasterService, deps: [] }),
+  safeProvider({
+    provide: BroadcasterService,
+    useClass: DefaultBroadcasterService,
+    deps: [MessageSender, MessageListener],
+  }),
   safeProvider({
     provide: VaultTimeoutSettingsServiceAbstraction,
     useClass: VaultTimeoutSettingsService,
@@ -626,6 +652,8 @@ const safeProviders: SafeProvider[] = [
     provide: VaultTimeoutService,
     useClass: VaultTimeoutService,
     deps: [
+      AccountServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
       CipherServiceAbstraction,
       FolderServiceAbstraction,
       CollectionServiceAbstraction,
@@ -714,7 +742,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SearchServiceAbstraction,
     useClass: SearchService,
-    deps: [LogService, I18nServiceAbstraction],
+    deps: [LogService, I18nServiceAbstraction, StateProvider],
   }),
   safeProvider({
     provide: NotificationsServiceAbstraction,
@@ -728,6 +756,7 @@ const safeProviders: SafeProvider[] = [
       LOGOUT_CALLBACK,
       StateServiceAbstraction,
       AuthServiceAbstraction,
+      AuthRequestServiceAbstraction,
       MessagingServiceAbstraction,
     ],
   }),
@@ -744,7 +773,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: EventUploadServiceAbstraction,
     useClass: EventUploadService,
-    deps: [ApiServiceAbstraction, StateProvider, LogService, AccountServiceAbstraction],
+    deps: [ApiServiceAbstraction, StateProvider, LogService, AuthServiceAbstraction],
   }),
   safeProvider({
     provide: EventCollectionServiceAbstraction,
@@ -754,7 +783,7 @@ const safeProviders: SafeProvider[] = [
       StateProvider,
       OrganizationServiceAbstraction,
       EventUploadServiceAbstraction,
-      AccountServiceAbstraction,
+      AuthServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -772,9 +801,20 @@ const safeProviders: SafeProvider[] = [
     deps: [InternalPolicyService, ApiServiceAbstraction],
   }),
   safeProvider({
+    provide: InternalMasterPasswordServiceAbstraction,
+    useClass: MasterPasswordService,
+    deps: [StateProvider],
+  }),
+  safeProvider({
+    provide: MasterPasswordServiceAbstraction,
+    useExisting: InternalMasterPasswordServiceAbstraction,
+  }),
+  safeProvider({
     provide: KeyConnectorServiceAbstraction,
     useClass: KeyConnectorService,
     deps: [
+      AccountServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
       CryptoServiceAbstraction,
       ApiServiceAbstraction,
       TokenServiceAbstraction,
@@ -791,6 +831,8 @@ const safeProviders: SafeProvider[] = [
     deps: [
       StateServiceAbstraction,
       CryptoServiceAbstraction,
+      AccountServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
       I18nServiceAbstraction,
       UserVerificationApiServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
@@ -934,9 +976,11 @@ const safeProviders: SafeProvider[] = [
     useClass: AuthRequestService,
     deps: [
       AppIdServiceAbstraction,
+      AccountServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
       CryptoServiceAbstraction,
       ApiServiceAbstraction,
-      StateServiceAbstraction,
+      StateProvider,
     ],
   }),
   safeProvider({
@@ -1019,10 +1063,13 @@ const safeProviders: SafeProvider[] = [
     provide: OrganizationBillingServiceAbstraction,
     useClass: OrganizationBillingService,
     deps: [
+      ApiServiceAbstraction,
+      BillingApiServiceAbstraction,
       CryptoServiceAbstraction,
       EncryptService,
       I18nServiceAbstraction,
       OrganizationApiServiceAbstraction,
+      SyncServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -1081,9 +1128,34 @@ const safeProviders: SafeProvider[] = [
     deps: [StateProvider],
   }),
   safeProvider({
+    provide: UserKeyInitService,
+    useClass: UserKeyInitService,
+    deps: [AccountService, CryptoServiceAbstraction, LogService],
+  }),
+  safeProvider({
     provide: ErrorHandler,
     useClass: LoggingErrorHandler,
     deps: [],
+  }),
+  safeProvider({
+    provide: INTRAPROCESS_MESSAGING_SUBJECT,
+    useFactory: () => new Subject<Message<object>>(),
+    deps: [],
+  }),
+  safeProvider({
+    provide: MessageListener,
+    useFactory: (subject: Subject<Message<object>>) => new MessageListener(subject.asObservable()),
+    deps: [INTRAPROCESS_MESSAGING_SUBJECT],
+  }),
+  safeProvider({
+    provide: MessageSender,
+    useFactory: (subject: Subject<Message<object>>) => new SubjectMessageSender(subject),
+    deps: [INTRAPROCESS_MESSAGING_SUBJECT],
+  }),
+  safeProvider({
+    provide: ProviderApiServiceAbstraction,
+    useClass: ProviderApiService,
+    deps: [ApiServiceAbstraction],
   }),
 ];
 
