@@ -38,7 +38,7 @@ const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
   "pinKeyEncryptedUserKey",
   {
     deserializer: (jsonValue) => jsonValue,
-    clearOn: [],
+    clearOn: [], // TODO-rr-bw: verify
   },
 );
 
@@ -94,7 +94,10 @@ export class PinService implements PinServiceAbstraction {
     );
   }
 
-  async setPinKeyEncryptedUserKey(encString: EncString, userId: UserId): Promise<void> {
+  /**
+   * Sets the UserKey, encrypted by the PinKey.
+   */
+  private async setPinKeyEncryptedUserKey(encString: EncString, userId: UserId): Promise<void> {
     this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKey.");
 
     await this.stateProvider.setUserState(
@@ -120,7 +123,13 @@ export class PinService implements PinServiceAbstraction {
     );
   }
 
-  async setPinKeyEncryptedUserKeyEphemeral(encString: EncString, userId: UserId): Promise<void> {
+  /**
+   * Sets the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
+   */
+  private async setPinKeyEncryptedUserKeyEphemeral(
+    encString: EncString,
+    userId: UserId,
+  ): Promise<void> {
     this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKeyEphemeral.");
 
     await this.stateProvider.setUserState(
@@ -136,6 +145,20 @@ export class PinService implements PinServiceAbstraction {
     await this.stateProvider.setUserState(PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL, null, userId);
   }
 
+  async storePinKeyEncryptedUserKey(
+    pinKeyEncryptedUserKey: EncString,
+    storeAsEphemeral: boolean,
+    userId: UserId,
+  ) {
+    this.validateUserId(userId, "Cannot store pinKeyEncryptedUserKey.");
+
+    if (storeAsEphemeral) {
+      await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
+    } else {
+      await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
+    }
+  }
+
   async getProtectedPin(userId: UserId): Promise<string> {
     this.validateUserId(userId, "Cannot get protectedPin.");
 
@@ -146,30 +169,6 @@ export class PinService implements PinServiceAbstraction {
     this.validateUserId(userId, "Cannot set protectedPin.");
 
     await this.stateProvider.setUserState(PROTECTED_PIN, protectedPin, userId);
-  }
-
-  async storePinKeyEncryptedUserKey(userKey: UserKey, userId: UserId) {
-    this.validateUserId(userId, "Cannot store pinKeyEncryptedUserKey.");
-
-    const pin = await this.encryptService.decryptToUtf8(
-      new EncString(await this.getProtectedPin(userId)),
-      userKey,
-    );
-
-    const pinKey = await this.makePinKey(
-      pin,
-      (await firstValueFrom(this.accountService.activeAccount$))?.email,
-      await this.stateService.getKdfType({ userId: userId }),
-      await this.stateService.getKdfConfig({ userId: userId }),
-    );
-
-    const pinKeyEncryptedUserKey = await this.encryptService.encrypt(userKey.key, pinKey);
-
-    if ((await this.getPinKeyEncryptedUserKey(userId)) != null) {
-      await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
-    } else {
-      await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
-    }
   }
 
   async getOldPinKeyEncryptedMasterKey(userId: UserId): Promise<EncryptedString> {
@@ -186,6 +185,34 @@ export class PinService implements PinServiceAbstraction {
     await this.stateProvider.setUserState(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, null, userId);
   }
 
+  async createPinKeyEncryptedUserKey(
+    pin: string,
+    userKey: UserKey,
+    userId: UserId,
+  ): Promise<EncString> {
+    this.validateUserId(userId, "Cannot create pinKeyEncryptedUserKey.");
+
+    if (!userKey) {
+      throw new Error("No UserKey provided. Cannot create pinKeyEncryptedUserKey.");
+    }
+
+    const pinKey = await this.makePinKey(
+      pin,
+      (await firstValueFrom(this.accountService.activeAccount$))?.email, // TODO-rr-bw: verify (could this possibly be different from the UserId passed in?)
+      await this.stateService.getKdfType({ userId }),
+      await this.stateService.getKdfConfig({ userId }),
+    );
+
+    return await this.encryptService.encrypt(userKey.key, pinKey); // TODO-rr-bw: verify that I can use encryptService.encrypt instead of cryptoService.encrypt
+  }
+
+  async createProtectedPin(pin: string, userKey: UserKey) {
+    if (!userKey) {
+      throw new Error("No UserKey provided. Cannot create protectedPin.");
+    }
+    return await this.encryptService.encrypt(pin, userKey); // TODO-rr-bw: verify that I can use encryptService.encrypt instead of cryptoService.encrypt
+  }
+
   async makePinKey(pin: string, salt: string, kdf: KdfType, kdfConfig: KdfConfig): Promise<PinKey> {
     const pinKey = await this.keyGenerationService.deriveKeyFromPassword(pin, salt, kdf, kdfConfig);
     return (await this.keyGenerationService.stretchKey(pinKey)) as PinKey;
@@ -196,7 +223,7 @@ export class PinService implements PinServiceAbstraction {
 
     // we can't check the protected pin for both because old accounts only
     // used it for MP on Restart
-    const aUserKeyEncryptedPinIsSet = !!(await this.getProtectedPin(userId));
+    const aProtectedPinIsSet = !!(await this.getProtectedPin(userId));
     const aPinKeyEncryptedUserKeyIsSet = !!(await this.getPinKeyEncryptedUserKey(userId));
     const anOldPinKeyEncryptedMasterKeyIsSet =
       !!(await this.getOldPinKeyEncryptedMasterKey(userId));
@@ -204,7 +231,7 @@ export class PinService implements PinServiceAbstraction {
     if (aPinKeyEncryptedUserKeyIsSet || anOldPinKeyEncryptedMasterKeyIsSet) {
       return "PERSISTENT";
     } else if (
-      aUserKeyEncryptedPinIsSet &&
+      aProtectedPinIsSet &&
       !aPinKeyEncryptedUserKeyIsSet &&
       !anOldPinKeyEncryptedMasterKeyIsSet
     ) {
@@ -340,9 +367,7 @@ export class PinService implements PinServiceAbstraction {
       new EncString(encUserKey),
     );
 
-    // Migrate
-    const pinKey = await this.makePinKey(pin, email, kdf, kdfConfig);
-    const pinKeyEncryptedUserKey = await this.encryptService.encrypt(userKey.key, pinKey);
+    const pinKeyEncryptedUserKey = await this.createPinKeyEncryptedUserKey(pin, userKey, userId);
 
     await this.clearOldPinKeyEncryptedMasterKey(userId);
 
@@ -354,8 +379,8 @@ export class PinService implements PinServiceAbstraction {
       // We previously only set the protected pin if MP on Restart was enabled
       // now we set it regardless
       // TODO-rr-bw: based on this comment, shouldn't this code be placed outside the if/else block?
-      const userKeyEncryptedPin = await this.encryptService.encrypt(pin, userKey);
-      await this.setProtectedPin(userKeyEncryptedPin.encryptedString, userId);
+      const protectedPin = await this.encryptService.encrypt(pin, userKey);
+      await this.setProtectedPin(protectedPin.encryptedString, userId);
     }
 
     // This also clears the old Biometrics key since the new Biometrics key will

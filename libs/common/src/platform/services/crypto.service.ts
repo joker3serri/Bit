@@ -753,7 +753,25 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     const storePin = await this.shouldStoreKey(KeySuffixOptions.Pin, userId);
     if (storePin) {
-      await this.pinService.storePinKeyEncryptedUserKey(key, userId);
+      // Decrypt protectedPin with user key
+      const pin = await this.encryptService.decryptToUtf8(
+        new EncString(await this.pinService.getProtectedPin(userId)),
+        key,
+      );
+
+      const pinKeyEncryptedUserKey = await this.pinService.createPinKeyEncryptedUserKey(
+        pin,
+        key,
+        userId,
+      );
+      const noPreExistingPersistentKey =
+        (await this.pinService.getPinKeyEncryptedUserKey(userId)) == null;
+
+      await this.pinService.storePinKeyEncryptedUserKey(
+        pinKeyEncryptedUserKey,
+        noPreExistingPersistentKey, // TODO-rr-bw: verify
+        userId,
+      );
       // We can't always clear deprecated keys because the pin is only
       // migrated once used to unlock
       await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);

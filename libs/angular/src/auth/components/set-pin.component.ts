@@ -47,25 +47,21 @@ export class SetPinComponent implements OnInit {
       return;
     }
 
-    const pinKey = await this.pinService.makePinKey(
-      pin,
-      await this.stateService.getEmail(),
-      await this.stateService.getKdfType(),
-      await this.stateService.getKdfConfig(),
-    );
-    const userKey = await this.cryptoService.getUserKey();
-    const pinKeyEncryptedUserKey = await this.cryptoService.encrypt(userKey.key, pinKey);
-    const userKeyEncryptedPin = await this.cryptoService.encrypt(pin, userKey);
-
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const userKey = await this.cryptoService.getUserKey();
+    const pinKeyEncryptedUserKey = await this.pinService.createPinKeyEncryptedUserKey(
+      pin,
+      userKey,
+      userId,
+    );
+    const protectedPin = await this.pinService.createProtectedPin(pin, userKey);
 
-    await this.pinService.setProtectedPin(userKeyEncryptedPin.encryptedString, userId);
-
-    if (requireMasterPasswordOnClientRestart) {
-      await this.pinService.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
-    } else {
-      await this.pinService.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
-    }
+    await this.pinService.setProtectedPin(protectedPin.encryptedString, userId);
+    await this.pinService.storePinKeyEncryptedUserKey(
+      pinKeyEncryptedUserKey,
+      requireMasterPasswordOnClientRestart,
+      userId,
+    );
 
     this.dialogRef.close(true);
   };

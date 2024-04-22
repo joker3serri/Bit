@@ -13,11 +13,6 @@ export abstract class PinServiceAbstraction {
   abstract getPinKeyEncryptedUserKey: (userId: UserId) => Promise<EncString>;
 
   /**
-   * Sets the UserKey, encrypted by the PinKey.
-   */
-  abstract setPinKeyEncryptedUserKey: (encString: EncString, userId: UserId) => Promise<void>;
-
-  /**
    * Clears the UserKey, encrypted by the PinKey
    */
   abstract clearPinKeyEncryptedUserKey(userId: UserId): Promise<void>;
@@ -28,17 +23,20 @@ export abstract class PinServiceAbstraction {
   abstract getPinKeyEncryptedUserKeyEphemeral: (userId: UserId) => Promise<EncString>;
 
   /**
-   * Sets the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
-   */
-  abstract setPinKeyEncryptedUserKeyEphemeral: (
-    encString: EncString,
-    userId: UserId,
-  ) => Promise<void>;
-
-  /**
    * Clears the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey
    */
   abstract clearPinKeyEncryptedUserKeyEphemeral(userId: UserId): Promise<void>;
+
+  /**
+   * Stores the UserKey, encrypted by the PinKey.
+   * @param storeEphemeralVersion If true, the method stores an ephemeral version via the private {@link setPinKeyEncryptedUserKeyEphemeral} method.
+   *                              If false, the method stores a persistent version via the private {@link setPinKeyEncryptedUserKey} method.
+   */
+  abstract storePinKeyEncryptedUserKey: (
+    pinKeyEncryptedUserKey: EncString,
+    storeEphemeralVersion: boolean,
+    userId: UserId,
+  ) => Promise<void>;
 
   /**
    * Gets the user's PIN, encrypted by the UserKey.
@@ -51,15 +49,6 @@ export abstract class PinServiceAbstraction {
   abstract setProtectedPin: (protectedPin: string, userId: UserId) => Promise<void>;
 
   /**
-   * Stores the UserKey, encrypted by the PinKey.
-   * - If require MP on client reset is disabled, stores the persistent version via {@link setPinKeyEncryptedUserKey}
-   * - If require MP on client reset is enabled, stores the ephemeral version via {@link setPinKeyEncryptedUserKeyEphemeral}
-   * TODO-rr-bw: rename method? the name is very similar to getPinKeyEncryptedUserKey(), which only stores the persistent version
-   * TODO-rr-bw: OR consider moving back to CryptoService within the storeAdditionalKeys() method since it is only used there once
-   */
-  abstract storePinKeyEncryptedUserKey: (userKey: UserKey, userId: UserId) => Promise<void>;
-
-  /**
    * Gets the old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
    * which is now deprecated and used for migration purposes only.
    */
@@ -69,6 +58,17 @@ export abstract class PinServiceAbstraction {
    * Clears the old MasterKey, encrypted by the PinKey.
    */
   abstract clearOldPinKeyEncryptedMasterKey: (userId: UserId) => Promise<void>;
+
+  /**
+   * Makes a pinKeyEncryptedUserKey from the provided PIN and UserKey.
+   */
+  abstract createPinKeyEncryptedUserKey: (
+    pin: string,
+    userKey: UserKey,
+    userId: UserId,
+  ) => Promise<EncString>;
+
+  abstract createProtectedPin: (pin: string, userKey: UserKey) => Promise<EncString>;
 
   /**
    * Makes a PinKey from the provided PIN.
