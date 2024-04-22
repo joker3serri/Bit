@@ -49,14 +49,15 @@ export class SetPinComponent implements OnInit {
 
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     const userKey = await this.cryptoService.getUserKey();
+
+    const protectedPin = await this.pinService.createProtectedPin(pin, userKey);
+    await this.pinService.setProtectedPin(protectedPin.encryptedString, userId);
+
     const pinKeyEncryptedUserKey = await this.pinService.createPinKeyEncryptedUserKey(
       pin,
       userKey,
       userId,
     );
-    const protectedPin = await this.pinService.createProtectedPin(pin, userKey);
-
-    await this.pinService.setProtectedPin(protectedPin.encryptedString, userId);
     await this.pinService.storePinKeyEncryptedUserKey(
       pinKeyEncryptedUserKey,
       requireMasterPasswordOnClientRestart,

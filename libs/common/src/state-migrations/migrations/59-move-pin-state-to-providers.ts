@@ -5,6 +5,9 @@ type ExpectedAccountState = {
   settings?: {
     pinKeyEncryptedUserKey?: string; // EncryptedString
     protectedPin?: string;
+    pinProtected?: {
+      encrypted?: string;
+    };
   };
 };
 
@@ -20,66 +23,44 @@ const PROTECTED_PIN: KeyDefinitionLike = {
   key: "protectedPin",
 };
 
+const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY: KeyDefinitionLike = {
+  stateDefinition: PIN_STATE,
+  key: "oldPinKeyEncryptedMasterKey",
+};
+
 export class PinMigrator extends Migrator<58, 59> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountState>();
+    let updatedAccount = false;
 
-    await Promise.all(
-      legacyAccounts.map(async ({ userId, account }) => {
-        // Move account pinKeyEncryptedUserKey
-        if (account?.settings?.pinKeyEncryptedUserKey != null) {
-          await helper.setToUser(
-            userId,
-            PIN_KEY_ENCRYPTED_USER_KEY,
-            account.settings.pinKeyEncryptedUserKey,
-          );
-
-          // Delete old account pinKeyEncryptedUserKey property
-          delete account?.settings?.pinKeyEncryptedUserKey;
-          await helper.set(userId, account);
-        }
-
-        // Move account protectedPin
-        if (account?.settings?.protectedPin != null) {
-          await helper.setToUser(userId, PROTECTED_PIN, account.settings.protectedPin);
-
-          // Delete old account protectedPin property
-          delete account?.settings?.protectedPin;
-          await helper.set(userId, account);
-        }
-      }),
-    );
-  }
-
-  async rollback(helper: MigrationHelper): Promise<void> {
-    async function rollbackUser(userId: string, account: ExpectedAccountState) {
-      let updatedAccount = false;
-
-      const userPinKeyEncryptedUserKey = await helper.getFromUser<string>(
-        userId,
-        PIN_KEY_ENCRYPTED_USER_KEY,
-      );
-
-      const userProtectedPin = await helper.getFromUser<string>(userId, PROTECTED_PIN);
-
-      if (userPinKeyEncryptedUserKey) {
-        if (!account) {
-          account = {};
-        }
-
+    async function migrateAccount(userId: string, account: ExpectedAccountState) {
+      // Migrate pinKeyEncryptedUserKey
+      if (account?.settings?.pinKeyEncryptedUserKey != null) {
+        await helper.setToUser(
+          userId,
+          PIN_KEY_ENCRYPTED_USER_KEY,
+          account.settings.pinKeyEncryptedUserKey,
+        );
+        delete account.settings.pinKeyEncryptedUserKey;
         updatedAccount = true;
-        account.settings.pinKeyEncryptedUserKey = userPinKeyEncryptedUserKey;
-        await helper.setToUser(userId, PIN_KEY_ENCRYPTED_USER_KEY, null);
       }
 
-      if (userProtectedPin) {
-        if (!account) {
-          account = {};
-        }
-
+      // Migrate protectedPin
+      if (account?.settings?.protectedPin != null) {
+        await helper.setToUser(userId, PROTECTED_PIN, account.settings.protectedPin);
+        delete account.settings.protectedPin;
         updatedAccount = true;
-        account.settings.protectedPin = userProtectedPin;
-        await helper.setToUser(userId, PROTECTED_PIN, null);
+      }
+
+      // Migrate pinProtected
+      if (account?.settings?.pinProtected?.encrypted != null) {
+        await helper.setToUser(
+          userId,
+          OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+          account.settings.pinProtected.encrypted,
+        );
+        delete account.settings.pinProtected;
+        updatedAccount = true;
       }
 
       if (updatedAccount) {
@@ -87,8 +68,54 @@ export class PinMigrator extends Migrator<58, 59> {
       }
     }
 
+    await Promise.all([
+      ...legacyAccounts.map(({ userId, account }) => migrateAccount(userId, account)),
+    ]);
+  }
+
+  async rollback(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<ExpectedAccountState>();
 
-    await Promise.all(accounts.map(({ userId, account }) => rollbackUser(userId, account)));
+    async function rollbackAccount(userId: string, account: ExpectedAccountState) {
+      let updatedAccount = false;
+
+      const accountPinKeyEncryptedUserKey = await helper.getFromUser<string>(
+        userId,
+        PIN_KEY_ENCRYPTED_USER_KEY,
+      );
+      const accountProtectedPin = await helper.getFromUser<string>(userId, PROTECTED_PIN);
+      const accountOldPinKeyEncryptedMasterKey = await helper.getFromUser<string>(
+        userId,
+        OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+      );
+
+      if (!account) {
+        account = {};
+      }
+
+      if (accountPinKeyEncryptedUserKey != null) {
+        account.settings.pinKeyEncryptedUserKey = accountPinKeyEncryptedUserKey;
+        await helper.setToUser(userId, PIN_KEY_ENCRYPTED_USER_KEY, null);
+        updatedAccount = true;
+      }
+
+      if (accountProtectedPin != null) {
+        account.settings.protectedPin = accountProtectedPin;
+        await helper.setToUser(userId, PROTECTED_PIN, null);
+        updatedAccount = true;
+      }
+
+      if (accountOldPinKeyEncryptedMasterKey != null) {
+        account.settings.pinProtected.encrypted = accountOldPinKeyEncryptedMasterKey;
+        await helper.setToUser(userId, OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, null);
+        updatedAccount = true;
+      }
+
+      if (updatedAccount) {
+        await helper.set(userId, account);
+      }
+    }
+
+    await Promise.all(accounts.map(({ userId, account }) => rollbackAccount(userId, account)));
   }
 }
