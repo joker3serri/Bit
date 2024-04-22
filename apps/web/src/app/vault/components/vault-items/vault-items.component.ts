@@ -48,6 +48,7 @@ export class VaultItemsComponent {
   @Input() viewingOrgVault: boolean;
   @Input({ required: true }) flexibleCollectionsV1Enabled = false;
   @Input() addAccessStatus: number;
+  @Input() addAccessToggle: boolean;
 
   private _ciphers?: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -108,8 +109,8 @@ export class VaultItemsComponent {
     // if Flexible collections is on. check if this is a custom user with edit permission
     if (
       this.flexibleCollectionsV1Enabled &&
-      organization.type === OrganizationUserType.Custom &&
-      !organization.permissions.editAnyCollection
+      organization?.type === OrganizationUserType.Custom &&
+      !organization?.permissions.editAnyCollection
     ) {
       return false;
     }
@@ -128,8 +129,8 @@ export class VaultItemsComponent {
     // if Flexible collections is on. check if this is a custom user with delete permission
     if (
       this.flexibleCollectionsV1Enabled &&
-      organization.type === OrganizationUserType.Custom &&
-      !organization.permissions.deleteAnyCollection
+      organization?.type === OrganizationUserType.Custom &&
+      !organization?.permissions.deleteAnyCollection
     ) {
       return false;
     }

@@ -104,7 +104,7 @@
           has filtered for collections with addAccess 
         -->
         <tr
-          *ngIf="item.cipher && addAccessStatus !== 1"
+          *ngIf="item.cipher && (!addAccessToggle || (addAccessToggle && addAccessStatus !== 1))"
           bitRow
           appVaultCipherRow
           alignContent="middle"
