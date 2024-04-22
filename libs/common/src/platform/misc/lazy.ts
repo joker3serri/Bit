@@ -11,8 +11,8 @@ export class Lazy<T> {
    */
   get(): T {
     if (!this._isCreated) {
-      this._isCreated = true;
       this._value = this.factory();
+      this._isCreated = true;
     }
 
     return this._value as T;
