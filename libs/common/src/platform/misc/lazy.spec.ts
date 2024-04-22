@@ -13,7 +13,7 @@ describe("Lazy", () => {
     jest.resetAllMocks();
   });
 
-  describe("getValue", () => {
+  describe("get", () => {
     it("should call the factory once", async () => {
       await lazy.get();
       await lazy.get();
@@ -55,28 +55,6 @@ describe("Lazy", () => {
       const value = await lazy.get();
 
       expect(value).toBeNull();
-    });
-  });
-
-  describe("factory is not async", () => {
-    const syncFactory = jest.fn();
-
-    beforeEach(() => {
-      syncFactory.mockReturnValue(42);
-      lazy = new Lazy(syncFactory);
-    });
-
-    it("should return the value from the factory", async () => {
-      const value = await lazy.get();
-
-      expect(value).toBe(42);
-    });
-
-    it("should call the factory once", async () => {
-      await lazy.get();
-      await lazy.get();
-
-      expect(syncFactory).toHaveBeenCalledTimes(1);
     });
   });
 });

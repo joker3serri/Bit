@@ -99,7 +99,7 @@ export class LocalBackedSessionStorageService
     }
 
     if (obj == null) {
-      return this.remove(key);
+      return await this.remove(key);
     }
 
     this.cache[key] = obj;
