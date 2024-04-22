@@ -182,7 +182,6 @@ export class LocalBackedSessionStorageService
     port: chrome.runtime.Port,
     data: Omit<MemoryStoragePortMessage, "originator">,
   ) {
-    // console.log("Sending message to port", port, data);
     port.postMessage({
       ...data,
       originator: "background",
