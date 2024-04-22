@@ -39,7 +39,7 @@ export class LocalBackedSessionStorageService
     super();
 
     BrowserApi.addListener(chrome.runtime.onConnect, (port) => {
-      if (port.name !== `${portName(chrome.storage.session)}`) {
+      if (port.name !== portName(chrome.storage.session)) {
         return;
       }
 
