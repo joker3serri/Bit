@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom, throwError, timeout } from "rxjs";
+import { BehaviorSubject, filter, firstValueFrom, throwError, timeout } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -159,7 +159,7 @@ export abstract class LoginStrategy {
    * It also sets the access token and refresh token in the token service.
    *
    * @param {IdentityTokenResponse} tokenResponse - The response from the server containing the identity token.
-   * @returns {Promise<void>} - A promise that resolves when the account information has been successfully saved.
+   * @returns {Promise<UserId>} - A promise that resolves the the UserId when the account information has been successfully saved.
    */
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse): Promise<UserId> {
     const accountInformation = await this.tokenService.decodeAccessToken(tokenResponse.accessToken);
@@ -198,8 +198,6 @@ export abstract class LoginStrategy {
       }),
     );
 
-    // there is a slight delay between when active account emits in background, and when it emits in foreground
-    await new Promise((resolve) => setTimeout(resolve, 200));
     await this.verifyAccountAdded();
 
     await this.userDecryptionOptionsService.setUserDecryptionOptions(
@@ -307,19 +305,24 @@ export abstract class LoginStrategy {
     return result;
   }
 
+  /**
+   * Verifies that the active account is set after initialization.
+   * Note: In browser there is a slight delay between when active account emits in background,
+   * and when it emits in foreground. We're giving the foreground 1 second to catch up.
+   * If nothing is emitted, we throw an error.
+   */
   private async verifyAccountAdded() {
-    const emittedAccount = await firstValueFrom(
-      this.accountService.activeAccount$.pipe(
-        timeout({
-          first: 1000,
-          with: () =>
-            throwError(
-              () => new Error("Timeout while retrieving active account after initialization"),
-            ),
-        }),
-      ),
-    );
-    if (emittedAccount == null) {
+    try {
+      await firstValueFrom(
+        this.accountService.activeAccount$.pipe(
+          filter((account) => account != null),
+          timeout({
+            first: 1000,
+            with: () => throwError(() => new Error()),
+          }),
+        ),
+      );
+    } catch (e) {
       throw new Error("Active account missing after initialization");
     }
   }
