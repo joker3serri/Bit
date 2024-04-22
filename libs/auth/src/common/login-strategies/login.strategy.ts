@@ -1,4 +1,4 @@
-import { BehaviorSubject, filter, firstValueFrom, throwError, timeout } from "rxjs";
+import { BehaviorSubject, filter, firstValueFrom, timeout } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -160,7 +160,7 @@ export abstract class LoginStrategy {
   protected async saveAccountInformation(tokenResponse: IdentityTokenResponse): Promise<UserId> {
     const accountInformation = await this.tokenService.decodeAccessToken(tokenResponse.accessToken);
 
-    const userId = accountInformation.sub;
+    const userId = accountInformation.sub as UserId;
 
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId });
     const vaultTimeout = await this.stateService.getVaultTimeout({ userId });
@@ -191,14 +191,14 @@ export abstract class LoginStrategy {
       }),
     );
 
-    await this.verifyAccountAdded();
+    await this.verifyAccountAdded(userId);
 
     await this.userDecryptionOptionsService.setUserDecryptionOptions(
       UserDecryptionOptions.fromResponse(tokenResponse),
     );
 
     await this.billingAccountProfileStateService.setHasPremium(accountInformation.premium, false);
-    return userId as UserId;
+    return userId;
   }
 
   protected async processTokenResponse(response: IdentityTokenResponse): Promise<AuthResult> {
@@ -304,19 +304,17 @@ export abstract class LoginStrategy {
    * and when it emits in foreground. We're giving the foreground 1 second to catch up.
    * If nothing is emitted, we throw an error.
    */
-  private async verifyAccountAdded() {
-    try {
-      await firstValueFrom(
-        this.accountService.activeAccount$.pipe(
-          filter((account) => account != null),
-          timeout({
-            first: 1000,
-            with: () => throwError(() => new Error()),
-          }),
-        ),
-      );
-    } catch (e) {
-      throw new Error("Active account missing after initialization");
-    }
+  private async verifyAccountAdded(expectedUserId: UserId) {
+    await firstValueFrom(
+      this.accountService.activeAccount$.pipe(
+        filter((account) => account?.id === expectedUserId),
+        timeout({
+          first: 1000,
+          with: () => {
+            throw new Error("Expected user never made active user after initialization.");
+          },
+        }),
+      ),
+    );
   }
 }
