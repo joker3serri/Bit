@@ -1,6 +1,7 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -103,6 +104,16 @@ export class VaultItemsComponent {
     }
 
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
+
+    // if Flexible collections is on. check if this is a custom user with edit permission
+    if (
+      this.flexibleCollectionsV1Enabled &&
+      organization.type === OrganizationUserType.Custom &&
+      !organization.permissions.editAnyCollection
+    ) {
+      return false;
+    }
+
     return collection.canEdit(organization, this.flexibleCollectionsV1Enabled);
   }
 
@@ -113,6 +124,15 @@ export class VaultItemsComponent {
     }
 
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
+
+    // if Flexible collections is on. check if this is a custom user with delete permission
+    if (
+      this.flexibleCollectionsV1Enabled &&
+      organization.type === OrganizationUserType.Custom &&
+      !organization.permissions.deleteAnyCollection
+    ) {
+      return false;
+    }
     return collection.canDelete(organization);
   }
 

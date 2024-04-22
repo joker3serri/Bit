@@ -91,7 +91,12 @@
       <i class="bwi bwi-fw bwi-users" aria-hidden="true"></i>
       {{ "access" | i18n }}
     </button>
-    <button *ngIf="canDeleteCollection" type="button" bitMenuItem (click)="deleteCollection()">
+    <button
+      *ngIf="canDeleteCollection || (collection.addAccess && collection.id !== Unassigned)"
+      type="button"
+      bitMenuItem
+      (click)="deleteCollection()"
+    >
       <span class="tw-text-danger">
         <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
         {{ "delete" | i18n }}
