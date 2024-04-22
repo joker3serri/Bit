@@ -7,7 +7,7 @@ export class Lazy<T> {
   /**
    * Resolves the factory and returns the result. Guaranteed to resolve the value only once.
    *
-   * @returns Promise resolving the result of the factory
+   * @returns The value produced by your factory.
    */
   get(): T {
     if (!this._isCreated) {
