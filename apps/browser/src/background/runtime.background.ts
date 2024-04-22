@@ -324,9 +324,10 @@ export default class RuntimeBackground {
 
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
+          if (process.env.ENV !== "development") {
+            void BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
+          }
+
           await this.autofillSettingsService.setInlineMenuVisibility(
             AutofillOverlayVisibility.OnFieldFocus,
           );
