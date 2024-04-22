@@ -1,60 +1,85 @@
 import { Lazy } from "./lazy";
 
 describe("Lazy", () => {
-  let factory: jest.Mock<Promise<number>>;
-  let lazy: Lazy<number>;
-
-  beforeEach(() => {
-    factory = jest.fn();
-    lazy = new Lazy(factory);
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  describe("get", () => {
-    it("should call the factory once", async () => {
-      await lazy.get();
-      await lazy.get();
+  describe("async", () => {
+    let factory: jest.Mock<Promise<number>>;
+    let lazy: Lazy<Promise<number>>;
 
-      expect(factory).toHaveBeenCalledTimes(1);
+    beforeEach(() => {
+      factory = jest.fn();
+      lazy = new Lazy(factory);
     });
 
-    it("should return the value from the factory", async () => {
-      factory.mockResolvedValue(42);
+    describe("get", () => {
+      it("should call the factory once", async () => {
+        await lazy.get();
+        await lazy.get();
 
-      const value = await lazy.get();
+        expect(factory).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return the value from the factory", async () => {
+        factory.mockResolvedValue(42);
+
+        const value = await lazy.get();
+
+        expect(value).toBe(42);
+      });
+    });
+
+    describe("factory throws", () => {
+      it("should throw the error", async () => {
+        factory.mockRejectedValue(new Error("factory error"));
+
+        await expect(lazy.get()).rejects.toThrow("factory error");
+      });
+    });
+
+    describe("factory returns undefined", () => {
+      it("should return undefined", async () => {
+        factory.mockResolvedValue(undefined);
+
+        const value = await lazy.get();
+
+        expect(value).toBeUndefined();
+      });
+    });
+
+    describe("factory returns null", () => {
+      it("should return null", async () => {
+        factory.mockResolvedValue(null);
+
+        const value = await lazy.get();
+
+        expect(value).toBeNull();
+      });
+    });
+  });
+
+  describe("sync", () => {
+    const syncFactory = jest.fn();
+    let lazy: Lazy<number>;
+
+    beforeEach(() => {
+      syncFactory.mockReturnValue(42);
+      lazy = new Lazy<number>(syncFactory);
+    });
+
+    it("should return the value from the factory", () => {
+      const value = lazy.get();
 
       expect(value).toBe(42);
     });
-  });
 
-  describe("factory throws", () => {
-    it("should throw the error", async () => {
-      factory.mockRejectedValue(new Error("factory error"));
+    it("should call the factory once", () => {
+      lazy.get();
+      lazy.get();
 
-      await expect(lazy.get()).rejects.toThrow("factory error");
-    });
-  });
-
-  describe("factory returns undefined", () => {
-    it("should return undefined", async () => {
-      factory.mockResolvedValue(undefined);
-
-      const value = await lazy.get();
-
-      expect(value).toBeUndefined();
-    });
-  });
-
-  describe("factory returns null", () => {
-    it("should return null", async () => {
-      factory.mockResolvedValue(null);
-
-      const value = await lazy.get();
-
-      expect(value).toBeNull();
+      expect(syncFactory).toHaveBeenCalledTimes(1);
     });
   });
 });

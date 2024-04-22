@@ -1,25 +1,20 @@
 export class Lazy<T> {
-  private _promise: Promise<T> | undefined = undefined;
+  private _value: T | undefined = undefined;
+  private _isCreated = false;
 
-  constructor(private readonly factory: () => Promise<T>) {}
+  constructor(private readonly factory: () => T) {}
 
   /**
    * Resolves the factory and returns the result. Guaranteed to resolve the value only once.
    *
    * @returns Promise resolving the result of the factory
    */
-  async get(): Promise<T> {
-    if (this._promise === undefined) {
-      this._promise = this.inner_get();
+  get(): T {
+    if (!this._isCreated) {
+      this._isCreated = true;
+      this._value = this.factory();
     }
-    return await this._promise;
-  }
 
-  /**
-   * Ensures the factory is only called once by forcing the value returned by the factory to be a promise and storing it in a private field.
-   * @returns Promise resolving the result of the factory
-   */
-  private async inner_get(): Promise<T> {
-    return await this.factory();
+    return this._value as T;
   }
 }
