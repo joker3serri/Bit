@@ -30,7 +30,7 @@ export class LocalBackedSessionStorageService
   updates$ = this.updatesSubject.asObservable();
 
   constructor(
-    private readonly sessionKey: Lazy<SymmetricCryptoKey>,
+    private readonly sessionKey: Lazy<Promise<SymmetricCryptoKey>>,
     private readonly localStorage: AbstractStorageService,
     private readonly encryptService: EncryptService,
     private readonly platformUtilsService: PlatformUtilsService,

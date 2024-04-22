@@ -28,7 +28,7 @@ describe("LocalBackedSessionStorage", () => {
     logService = mock<LogService>();
 
     sut = new LocalBackedSessionStorageService(
-      new Lazy(() => sessionKey),
+      new Lazy(async () => sessionKey),
       localStorage,
       encryptService,
       platformUtilsService,
