@@ -65,8 +65,6 @@ export class StateService<
   private hasBeenInited = false;
   protected isRecoveredSession = false;
 
-  protected accountDiskCache = new BehaviorSubject<Record<string, TAccount>>({});
-
   // default account serializer, must be overridden by child class
   protected accountDeserializer = Account.fromJSON as (json: Jsonify<TAccount>) => TAccount;
 
@@ -80,7 +78,6 @@ export class StateService<
     protected environmentService: EnvironmentService,
     protected tokenService: TokenService,
     private migrationRunner: MigrationRunner,
-    protected useAccountCache: boolean = true,
   ) {}
 
   async init(initOptions: InitOptions = {}): Promise<void> {
@@ -990,13 +987,6 @@ export class StateService<
       return null;
     }
 
-    if (this.useAccountCache) {
-      const cachedAccount = this.accountDiskCache.value[options.userId];
-      if (cachedAccount != null) {
-        return cachedAccount;
-      }
-    }
-
     const account = options?.useSecureStorage
       ? (await this.secureStorageService.get<TAccount>(options.userId, options)) ??
         (await this.storageService.get<TAccount>(
@@ -1004,8 +994,6 @@ export class StateService<
           this.reconcileOptions(options, { htmlStorageLocation: HtmlStorageLocation.Local }),
         ))
       : await this.storageService.get<TAccount>(options.userId, options);
-
-    this.setDiskCache(options.userId, account);
     return account;
   }
 
@@ -1035,8 +1023,6 @@ export class StateService<
       : this.storageService;
 
     await storageLocation.save(`${options.userId}`, account, options);
-
-    this.deleteDiskCache(options.userId);
   }
 
   protected async saveAccountToMemory(account: TAccount): Promise<void> {
@@ -1236,9 +1222,6 @@ export class StateService<
     await this.updateState(async (state) => {
       userId = userId ?? state.activeUserId;
       delete state.accounts[userId];
-
-      this.deleteDiskCache(userId);
-
       return state;
     });
   }
@@ -1351,20 +1334,6 @@ export class StateService<
 
       return await this.setState(updatedState);
     });
-  }
-
-  private setDiskCache(key: string, value: TAccount, options?: StorageOptions) {
-    if (this.useAccountCache) {
-      this.accountDiskCache.value[key] = value;
-      this.accountDiskCache.next(this.accountDiskCache.value);
-    }
-  }
-
-  protected deleteDiskCache(key: string) {
-    if (this.useAccountCache) {
-      delete this.accountDiskCache.value[key];
-      this.accountDiskCache.next(this.accountDiskCache.value);
-    }
   }
 }
 
