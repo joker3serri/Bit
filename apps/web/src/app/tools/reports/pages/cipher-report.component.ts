@@ -22,6 +22,7 @@ export class CipherReportComponent implements OnDestroy {
   loading = false;
   hasLoaded = false;
   ciphers: CipherView[] = [];
+  allCiphers: CipherView[] = [];
   organization: Organization;
   organizations: Organization[];
   organizations$: Observable<Organization[]>;
@@ -29,6 +30,7 @@ export class CipherReportComponent implements OnDestroy {
   filterStatus: any = [0];
   showFilterToggle: boolean = false;
   filterOrgStatus = 0;
+  vaultMsg: string = "vault";
   private destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -49,21 +51,34 @@ export class CipherReportComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
-  getOrgName(filterId: string | number) {
-    let orgName;
+  getOrgValues(filterId: string | number, type: string) {
+    let orgName: any;
+    let orgFilterStatus: any;
+    let cipherCount;
+
     if (filterId === 0) {
       orgName = this.i18nService.t("all");
+      cipherCount = this.allCiphers.length;
     } else if (filterId === 1) {
       orgName = this.i18nService.t("me");
+      cipherCount = this.allCiphers.filter((c: any) => c.orgFilterStatus === null).length;
     } else {
       this.organizations.filter((org: Organization) => {
         if (org.id === filterId) {
           orgName = org.name;
+          orgFilterStatus = org.id;
           return org;
         }
       });
+      cipherCount = this.allCiphers.filter(
+        (c: any) => c.orgFilterStatus === orgFilterStatus,
+      ).length;
     }
-    return orgName;
+    if (type === "name") {
+      return orgName;
+    } else if (type === "count") {
+      return cipherCount;
+    }
   }
 
   async filterOrgToggle(status: any) {
@@ -123,7 +138,7 @@ export class CipherReportComponent implements OnDestroy {
   }
 
   protected async setCiphers() {
-    this.ciphers = [];
+    this.allCiphers = [];
   }
 
   protected async repromptCipher(c: CipherView) {
@@ -138,6 +153,8 @@ export class CipherReportComponent implements OnDestroy {
   }
 
   protected filterCiphersByOrg(ciphersList: CipherView[]) {
+    this.allCiphers = [...ciphersList];
+
     this.ciphers = ciphersList.map((ciph: any) => {
       ciph.orgFilterStatus = ciph.organizationId;
 
@@ -148,8 +165,10 @@ export class CipherReportComponent implements OnDestroy {
       }
       return ciph;
     });
+
     if (this.filterStatus.length > 2) {
       this.showFilterToggle = true;
+      this.vaultMsg = "vaults";
     }
   }
 }

@@ -16,7 +16,7 @@
     </app-callout>
     <ng-container *ngIf="ciphers.length">
       <app-callout type="danger" title="{{ 'inactive2faFound' | i18n }}">
-        {{ "inactive2faFoundDesc" | i18n: (ciphers.length | number) }}
+        {{ "inactive2faFoundReportDesc" | i18n: (ciphers.length | number) : vaultMsg }}
       </app-callout>
       <bit-toggle-group
         *ngIf="showFilterToggle && !isAdminConsoleActive"
@@ -26,7 +26,8 @@
       >
         <ng-container *ngFor="let status of filterStatus">
           <bit-toggle [value]="status">
-            {{ getOrgName(status) }}
+            {{ getOrgValues(status, "name") }}
+            <span bitBadge variant="info"> {{ getOrgValues(status, "count") }} </span>
           </bit-toggle>
         </ng-container>
       </bit-toggle-group>
