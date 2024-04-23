@@ -8,8 +8,14 @@ import {
   PBKDF2_ITERATIONS,
 } from "../../../platform/enums/kdf-type.enum";
 
+/**
+ * Represents a type safe KDF configuration.
+ */
 export type KdfConfig = PBKDF2KdfConfig | Argon2KdfConfig;
 
+/**
+ * Password-Based Key Derivation Function 2 (PBKDF2) KDF configuration.
+ */
 export class PBKDF2KdfConfig {
   kdfType: KdfType.PBKDF2_SHA256 = KdfType.PBKDF2_SHA256;
   iterations: number;
@@ -18,6 +24,10 @@ export class PBKDF2KdfConfig {
     this.iterations = iterations ?? PBKDF2_ITERATIONS.defaultValue;
   }
 
+  /**
+   * Validates the PBKDF2 KDF configuration.
+   * A Valid PBKDF2 KDF configuration has KDF iterations between the 600_000 and 2_000_000.
+   */
   validateKdfConfig(): void {
     if (!PBKDF2_ITERATIONS.inRange(this.iterations)) {
       throw new Error(
@@ -31,6 +41,9 @@ export class PBKDF2KdfConfig {
   }
 }
 
+/**
+ * Argon2 KDF configuration.
+ */
 export class Argon2KdfConfig {
   kdfType: KdfType.Argon2id = KdfType.Argon2id;
   iterations: number;
@@ -43,6 +56,10 @@ export class Argon2KdfConfig {
     this.parallelism = parallelism ?? ARGON2_PARALLELISM.defaultValue;
   }
 
+  /**
+   * Validates the Argon2 KDF configuration.
+   * A Valid Argon2 KDF configuration has iterations between 2 and 10, memory between 16mb and 1024mb, and parallelism between 1 and 16.
+   */
   validateKdfConfig(): void {
     if (!ARGON2_ITERATIONS.inRange(this.iterations)) {
       throw new Error(

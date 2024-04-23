@@ -30,13 +30,14 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
+import { KdfConfigService as KdfConfigServiceAbstraction } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
 import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
+import { KdfConfigService } from "@bitwarden/common/auth/services/kdf-config.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
@@ -234,7 +235,7 @@ export class Main {
   biometricStateService: BiometricStateService;
   billingAccountProfileStateService: BillingAccountProfileStateService;
   providerApiService: ProviderApiServiceAbstraction;
-  kdfConfigService: KdfConfigService;
+  kdfConfigService: KdfConfigServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -489,6 +490,8 @@ export class Main {
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
       this.stateProvider,
     );
+
+    this.kdfConfigService = new KdfConfigService(this.stateProvider);
 
     this.loginStrategyService = new LoginStrategyService(
       this.accountService,
