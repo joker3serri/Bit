@@ -7,7 +7,6 @@ import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Directive()
@@ -25,7 +24,6 @@ export class SetPinComponent implements OnInit {
     private dialogRef: DialogRef,
     private formBuilder: FormBuilder,
     private pinService: PinServiceAbstraction,
-    private stateService: StateService,
     private userVerificationService: UserVerificationService,
   ) {}
 

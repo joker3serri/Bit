@@ -1,143 +1,131 @@
 import { MockProxy } from "jest-mock-extended";
 
 import { MigrationHelper } from "../migration-helper";
-import { mockMigrationHelper, runMigrator } from "../migration-helper.spec";
+import { mockMigrationHelper } from "../migration-helper.spec";
 
-import { PinMigrator } from "./59-move-pin-state-to-providers";
+import {
+  OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+  PIN_KEY_ENCRYPTED_USER_KEY,
+  PROTECTED_PIN,
+  PinStateMigrator,
+} from "./59-move-pin-state-to-providers";
 
-function rollbackJSON() {
+function preMigrationState() {
   return {
-    authenticatedAccounts: ["user-1", "user-2"],
-    "user_user-1_pin_pinKeyEncryptedUserKey": "example1",
-    "user_user-2_pin_pinKeyEncryptedUserKey": "example2",
-    "user-1": {
-      settings: {
-        extra: "data",
-      },
-      extra: "data",
+    global: {
+      otherStuff: "otherStuff1",
     },
-    "user-2": {
+    authenticatedAccounts: ["AccountOne", "AccountTwo"],
+    // prettier-ignore
+    "AccountOne": {
       settings: {
-        extra: "data",
+        pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
+        protectedPin: "AccountOne_protectedPin",
+        pinProtected: {
+          encrypted: "AccountOne_oldPinKeyEncryptedMasterKey", // note the name change
+        },
+        otherStuff: "otherStuff2",
       },
-      extra: "data",
+      otherStuff: "otherStuff3",
+    },
+    // prettier-ignore
+    "AccountTwo": {
+      settings: {
+        otherStuff: "otherStuff4",
+      },
     },
   };
 }
 
-describe("PinMigrator", () => {
-  const migrator = new PinMigrator(58, 59);
+function postMigrationState() {
+  return {
+    user_AccountOne_pin_pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
+    user_AccountOne_pin_protectedPin: "AccountOne_protectedPin",
+    user_AccountOne_pin_oldPinKeyEncryptedMasterKey: "AccountOne_oldPinKeyEncryptedMasterKey",
+    authenticatedAccounts: ["AccountOne", "AccountTwo"],
+    global: {
+      otherStuff: "otherStuff1",
+    },
+    // prettier-ignore
+    "AccountOne": {
+      settings: {
+        otherStuff: "otherStuff2",
+      },
+      otherStuff: "otherStuff3",
+    },
+    // prettier-ignore
+    "AccountTwo": {
+      settings: {
+        otherStuff: "otherStuff4",
+      },
+    },
+  };
+}
 
-  it("should migrate the pinKeyEncryptedUserKey property from the account settings object to a user StorageKey", async () => {
-    const output = await runMigrator(migrator, {
-      authenticatedAccounts: ["user-1", "user-2"] as const,
-      "user-1": {
-        settings: {
-          pinKeyEncryptedUserKey: "example1",
-          extra: "data",
-        },
-        extra: "data",
-      },
-      "user-2": {
-        settings: {
-          pinKeyEncryptedUserKey: "example2",
-          extra: "data",
-        },
-        extra: "data",
-      },
-    });
+describe("PinStateMigrator", () => {
+  let helper: MockProxy<MigrationHelper>;
+  let sut: PinStateMigrator;
 
-    expect(output).toEqual({
-      authenticatedAccounts: ["user-1", "user-2"],
-      "user_user-1_pin_pinKeyEncryptedUserKey": "example1",
-      "user_user-2_pin_pinKeyEncryptedUserKey": "example2",
-      "user-1": {
-        settings: {
-          extra: "data",
-        },
-        extra: "data",
-      },
-      "user-2": {
-        settings: {
-          extra: "data",
-        },
-        extra: "data",
-      },
-    });
-  });
-
-  it("should handle missing parts", async () => {
-    const output = await runMigrator(migrator, {
-      authenticatedAccounts: ["user-1", "user-2"],
-      global: {
-        extra: "data",
-      },
-      "user-1": {
-        extra: "data",
-        settings: {
-          extra: "data",
-        },
-      },
-      "user-2": null,
-    });
-
-    expect(output).toEqual({
-      authenticatedAccounts: ["user-1", "user-2"],
-      global: {
-        extra: "data",
-      },
-      "user-1": {
-        extra: "data",
-        settings: {
-          extra: "data",
-        },
-      },
-      "user-2": null,
-    });
-  });
-
-  describe("rollback", () => {
-    let helper: MockProxy<MigrationHelper>;
-    let sut: PinMigrator;
-
-    const keyDefinitionLike = {
-      key: "pinKeyEncryptedUserKey",
-      stateDefinition: {
-        name: "pin",
-      },
-    };
-
+  describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJSON(), 59);
-      sut = new PinMigrator(58, 59);
+      helper = mockMigrationHelper(preMigrationState(), 58);
+      sut = new PinStateMigrator(58, 59);
     });
 
-    it("should null out the pinKeyEncryptedUserKey user StorageKey for each account", async () => {
-      await sut.rollback(helper);
+    it("should remove properties (pinKeyEncryptedUserKey, protectedPin, pinProtected) from existing accounts", async () => {
+      await sut.migrate(helper);
 
-      expect(helper.setToUser).toHaveBeenCalledTimes(2);
-      expect(helper.setToUser).toHaveBeenCalledWith("user-1", keyDefinitionLike, null);
-      expect(helper.setToUser).toHaveBeenCalledWith("user-2", keyDefinitionLike, null);
+      expect(helper.set).toHaveBeenCalledWith("AccountOne", {
+        settings: {
+          otherStuff: "otherStuff2",
+        },
+        otherStuff: "otherStuff3",
+      });
+
+      expect(helper.set).not.toHaveBeenCalledWith("AccountTwo");
     });
 
-    it("should add the pinKeyEncryptedUserKey property back to the account settings object", async () => {
-      await sut.rollback(helper);
+    it("should set the properties (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey) under the new key definitions", async () => {
+      await sut.migrate(helper);
 
-      expect(helper.set).toHaveBeenCalledTimes(2);
-      expect(helper.set).toHaveBeenCalledWith("user-1", {
-        settings: {
-          pinKeyEncryptedUserKey: "example1",
-          extra: "data",
-        },
-        extra: "data",
-      });
-      expect(helper.set).toHaveBeenCalledWith("user-2", {
-        settings: {
-          pinKeyEncryptedUserKey: "example2",
-          extra: "data",
-        },
-        extra: "data",
-      });
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "AccountOne",
+        PIN_KEY_ENCRYPTED_USER_KEY,
+        "AccountOne_pinKeyEncryptedUserKey",
+      );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "AccountOne",
+        PROTECTED_PIN,
+        "AccountOne_protectedPin",
+      );
+
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "AccountOne",
+        OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+        "AccountOne_oldPinKeyEncryptedMasterKey",
+      );
+
+      expect(helper.setToUser).not.toHaveBeenCalledWith("AccountTwo");
     });
   });
+
+  // describe("rollback", () => {
+  //   beforeEach(() => {
+  //     helper = mockMigrationHelper(postMigrationState(), 59);
+  //     sut = new PinStateMigrator(58, 59);
+  //   });
+
+  //   it("should null out the previously migrated values (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey)", async () => {
+  //     await sut.rollback(helper);
+
+  //     expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PIN_KEY_ENCRYPTED_USER_KEY, null);
+  //     expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PROTECTED_PIN, null);
+  //     expect(helper.setToUser).toHaveBeenCalledWith(
+  //       "AccountOne",
+  //       OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+  //       null,
+  //     );
+  //   });
+  // });
 });

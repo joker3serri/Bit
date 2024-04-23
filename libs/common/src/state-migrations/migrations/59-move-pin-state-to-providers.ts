@@ -11,24 +11,24 @@ type ExpectedAccountState = {
   };
 };
 
-const PIN_STATE: StateDefinitionLike = { name: "pin" };
+export const PIN_STATE: StateDefinitionLike = { name: "pin" };
 
-const PIN_KEY_ENCRYPTED_USER_KEY: KeyDefinitionLike = {
+export const PIN_KEY_ENCRYPTED_USER_KEY: KeyDefinitionLike = {
   stateDefinition: PIN_STATE,
   key: "pinKeyEncryptedUserKey",
 };
 
-const PROTECTED_PIN: KeyDefinitionLike = {
+export const PROTECTED_PIN: KeyDefinitionLike = {
   stateDefinition: PIN_STATE,
   key: "protectedPin",
 };
 
-const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY: KeyDefinitionLike = {
+export const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY: KeyDefinitionLike = {
   stateDefinition: PIN_STATE,
   key: "oldPinKeyEncryptedMasterKey",
 };
 
-export class PinMigrator extends Migrator<58, 59> {
+export class PinStateMigrator extends Migrator<58, 59> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountState>();
     let updatedAccount = false;
