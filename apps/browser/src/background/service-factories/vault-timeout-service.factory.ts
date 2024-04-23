@@ -1,10 +1,6 @@
 import { VaultTimeoutService as AbstractVaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 
 import {
-  accountActivityServiceFactory,
-  AccountActivityServiceInitOptions,
-} from "../../auth/background/service-factories/account-activity-service.factory";
-import {
   accountServiceFactory,
   AccountServiceInitOptions,
 } from "../../auth/background/service-factories/account-service.factory";
@@ -81,8 +77,7 @@ export type VaultTimeoutServiceInitOptions = VaultTimeoutServiceFactoryOptions &
   StateServiceInitOptions &
   AuthServiceInitOptions &
   VaultTimeoutSettingsServiceInitOptions &
-  StateEventRunnerServiceInitOptions &
-  AccountActivityServiceInitOptions;
+  StateEventRunnerServiceInitOptions;
 
 export function vaultTimeoutServiceFactory(
   cache: { vaultTimeoutService?: AbstractVaultTimeoutService } & CachedServices,
@@ -107,7 +102,6 @@ export function vaultTimeoutServiceFactory(
         await authServiceFactory(cache, opts),
         await vaultTimeoutSettingsServiceFactory(cache, opts),
         await stateEventRunnerServiceFactory(cache, opts),
-        await accountActivityServiceFactory(cache, opts),
         opts.vaultTimeoutServiceOptions.lockedCallback,
         opts.vaultTimeoutServiceOptions.loggedOutCallback,
       ),

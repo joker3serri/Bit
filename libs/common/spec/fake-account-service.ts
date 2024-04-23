@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended";
-import { Observable, ReplaySubject } from "rxjs";
+import { ReplaySubject, combineLatest, map } from "rxjs";
 
 import { AccountInfo, AccountService } from "../src/auth/abstractions/account.service";
 import { UserId } from "../src/types/guid";
@@ -33,20 +33,44 @@ export class FakeAccountService implements AccountService {
   activeAccountSubject = new ReplaySubject<{ id: UserId } & AccountInfo>(1);
   // eslint-disable-next-line rxjs/no-exposed-subjects -- test class
   accountActivitySubject = new ReplaySubject<Record<UserId, Date>>(1);
-  // eslint-disable-next-line rxjs/no-exposed-subjects -- test class
-  nextUpActiveUsers$: Observable<({ id: UserId } & AccountInfo)[]>;
   private _activeUserId: UserId;
   get activeUserId() {
     return this._activeUserId;
   }
   accounts$ = this.accountsSubject.asObservable();
   activeAccount$ = this.activeAccountSubject.asObservable();
+  accountActivity$ = this.accountActivitySubject.asObservable();
+  get sortedUserIds$() {
+    return this.accountActivity$.pipe(
+      map((activity) => {
+        return Object.entries(activity)
+          .map(([userId, lastActive]: [UserId, Date]) => ({ userId, lastActive }))
+          .sort((a, b) => a.lastActive.getTime() - b.lastActive.getTime())
+          .map((a) => a.userId);
+      }),
+    );
+  }
+  get nextUpAccount$() {
+    return combineLatest([this.accounts$, this.activeAccount$, this.sortedUserIds$]).pipe(
+      map(([accounts, activeAccount, sortedUserIds]) => {
+        const nextId = sortedUserIds.find((id) => id !== activeAccount?.id && accounts[id] != null);
+        return nextId ? { id: nextId, ...accounts[nextId] } : null;
+      }),
+    );
+  }
 
   constructor(initialData: Record<UserId, AccountInfo>, accountActivity?: Record<UserId, Date>) {
     this.accountsSubject.next(initialData);
     this.activeAccountSubject.subscribe((data) => (this._activeUserId = data?.id));
     this.activeAccountSubject.next(null);
     this.accountActivitySubject.next(accountActivity);
+  }
+  setAccountActivity(userId: UserId, lastActivity: Date): Promise<void> {
+    this.accountActivitySubject.next({
+      ...this.accountActivitySubject["_buffer"][0],
+      [userId]: lastActivity,
+    });
+    return this.mock.setAccountActivity(userId, lastActivity);
   }
 
   async addAccount(userId: UserId, accountData: AccountInfo): Promise<void> {

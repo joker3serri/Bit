@@ -19,18 +19,12 @@ import {
   messagingServiceFactory,
 } from "../../../platform/background/service-factories/messaging-service.factory";
 
-import {
-  AccountActivityServiceInitOptions,
-  accountActivityServiceFactory,
-} from "./account-activity-service.factory";
-
 type AccountServiceFactoryOptions = FactoryOptions;
 
 export type AccountServiceInitOptions = AccountServiceFactoryOptions &
   MessagingServiceInitOptions &
   LogServiceInitOptions &
-  GlobalStateProviderInitOptions &
-  AccountActivityServiceInitOptions;
+  GlobalStateProviderInitOptions;
 
 export function accountServiceFactory(
   cache: { accountService?: AccountService } & CachedServices,
@@ -45,7 +39,6 @@ export function accountServiceFactory(
         await messagingServiceFactory(cache, opts),
         await logServiceFactory(cache, opts),
         await globalStateProviderFactory(cache, opts),
-        await accountActivityServiceFactory(cache, opts),
       ),
   );
 }

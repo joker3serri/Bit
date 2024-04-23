@@ -30,8 +30,15 @@ export function accountInfoEqual(a: AccountInfo, b: AccountInfo) {
 export abstract class AccountService {
   accounts$: Observable<Record<UserId, AccountInfo>>;
   activeAccount$: Observable<{ id: UserId | undefined } & AccountInfo>;
-  /** Ordered list of next accounts, sorted in descending order by most recent account activity */
-  nextUpActiveUsers$: Observable<({ id: UserId } & AccountInfo)[]>;
+
+  /**
+   * Observable of the last activity time for each account.
+   */
+  accountActivity$: Observable<Record<UserId, Date>>;
+  /** Account list in order of descending recency */
+  sortedUserIds$: Observable<UserId[]>;
+  /** Next account that is not the current active account */
+  nextUpAccount$: Observable<{ id: UserId } & AccountInfo>;
   /**
    * Updates the `accounts$` observable with the new account data.
    *
@@ -70,6 +77,12 @@ export abstract class AccountService {
    * @param userId
    */
   abstract clean(userId: UserId): Promise<void>;
+  /**
+   * Updates the given user's last activity time.
+   * @param userId
+   * @param lastActivity
+   */
+  abstract setAccountActivity(userId: UserId, lastActivity: Date): Promise<void>;
 }
 
 export abstract class InternalAccountService extends AccountService {

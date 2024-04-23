@@ -12,12 +12,12 @@ import { trackEmissions } from "../../../spec/utils";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { UserId } from "../../types/guid";
-import { AccountActivityService } from "../abstractions/account-activity.service";
 import { AccountInfo, accountInfoEqual } from "../abstractions/account.service";
 
 import {
   ACCOUNT_ACCOUNTS,
   ACCOUNT_ACTIVE_ACCOUNT_ID,
+  ACCOUNT_ACTIVITY,
   AccountServiceImplementation,
 } from "./account.service";
 
@@ -64,7 +64,6 @@ describe("accountInfoEqual", () => {
 describe("accountService", () => {
   let messagingService: MockProxy<MessagingService>;
   let logService: MockProxy<LogService>;
-  let accountActivityService: MockProxy<AccountActivityService>;
   let globalStateProvider: FakeGlobalStateProvider;
   let sut: AccountServiceImplementation;
   let accountsState: FakeGlobalState<Record<UserId, AccountInfo>>;
@@ -75,15 +74,9 @@ describe("accountService", () => {
   beforeEach(() => {
     messagingService = mock();
     logService = mock();
-    accountActivityService = mock();
     globalStateProvider = new FakeGlobalStateProvider();
 
-    sut = new AccountServiceImplementation(
-      messagingService,
-      logService,
-      globalStateProvider,
-      accountActivityService,
-    );
+    sut = new AccountServiceImplementation(messagingService, logService, globalStateProvider);
 
     accountsState = globalStateProvider.getFake(ACCOUNT_ACCOUNTS);
     activeAccountIdState = globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID);
@@ -141,12 +134,11 @@ describe("accountService", () => {
     });
 
     it("sets the last active date of the account to now", async () => {
+      const state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
+      state.stateSubject.next({});
       await sut.addAccount(userId, userInfo);
 
-      expect(accountActivityService.setAccountActivity).toHaveBeenCalledWith(
-        userId,
-        expect.any(Date),
-      );
+      expect(state.nextMock).toHaveBeenCalledWith({ userId: expect.any(Date) });
     });
   });
 
@@ -239,9 +231,12 @@ describe("accountService", () => {
     });
 
     it("removes account activity of the given user", async () => {
+      const state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
+      state.stateSubject.next({ [userId]: new Date() });
+
       await sut.clean(userId);
 
-      expect(accountActivityService.removeAccountActivity).toHaveBeenCalledWith(userId);
+      expect(state.nextMock).toHaveBeenCalledWith({});
     });
   });
 
@@ -263,4 +258,73 @@ describe("accountService", () => {
       expect(sut.switchAccount("unknown" as UserId)).rejects.toThrowError("Account does not exist");
     });
   });
+
+  describe("account activity", () => {
+    let state: FakeGlobalState<Record<UserId, Date>>;
+
+    beforeEach(() => {
+      state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
+    });
+    describe("accountActivity$", () => {
+      it("returns the account activity state", async () => {
+        state.stateSubject.next({
+          [toId("user1")]: new Date(1),
+          [toId("user2")]: new Date(2),
+        });
+
+        await expect(firstValueFrom(sut.accountActivity$)).resolves.toEqual({
+          [toId("user1")]: new Date(1),
+          [toId("user2")]: new Date(2),
+        });
+      });
+
+      it("returns an empty object when account activity is null", async () => {
+        state.stateSubject.next(null);
+
+        await expect(firstValueFrom(sut.accountActivity$)).resolves.toEqual({});
+      });
+    });
+
+    describe("sortedUserIds$", () => {
+      it("returns the sorted user ids by date", async () => {
+        state.stateSubject.next({
+          [toId("user1")]: new Date(3),
+          [toId("user2")]: new Date(2),
+          [toId("user3")]: new Date(1),
+        });
+
+        await expect(firstValueFrom(sut.sortedUserIds$)).resolves.toEqual([
+          "user3" as UserId,
+          "user2" as UserId,
+          "user1" as UserId,
+        ]);
+      });
+
+      it("returns an empty array when account activity is null", async () => {
+        state.stateSubject.next(null);
+
+        await expect(firstValueFrom(sut.sortedUserIds$)).resolves.toEqual([]);
+      });
+    });
+
+    describe("setAccountActivity", () => {
+      it("sets the account activity", async () => {
+        await sut.setAccountActivity("user1" as UserId, new Date(1));
+
+        expect(state.nextMock).toHaveBeenCalledWith({ user1: new Date(1) });
+      });
+
+      it("does not update if the activity is the same", async () => {
+        state.stateSubject.next({ [toId("user1")]: new Date(1) });
+
+        await sut.setAccountActivity("user1" as UserId, new Date(1));
+
+        expect(state.nextMock).not.toHaveBeenCalled();
+      });
+    });
+  });
 });
+
+function toId(userId: string) {
+  return userId as UserId;
+}

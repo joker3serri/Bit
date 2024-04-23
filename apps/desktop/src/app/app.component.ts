@@ -20,7 +20,6 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -152,7 +151,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private stateEventRunnerService: StateEventRunnerService,
     private providerService: ProviderService,
     private accountService: AccountService,
-    private accountActivityService: AccountActivityService,
   ) {}
 
   ngOnInit() {
@@ -634,7 +632,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     this.lastActivity = now;
-    await this.accountActivityService.setAccountActivity(this.activeUserId, now);
+    await this.accountService.setAccountActivity(this.activeUserId, now);
 
     // Idle states
     if (this.isIdle) {

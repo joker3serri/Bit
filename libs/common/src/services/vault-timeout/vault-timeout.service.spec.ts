@@ -4,7 +4,6 @@ import { BehaviorSubject, of } from "rxjs";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { SearchService } from "../../abstractions/search.service";
 import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
-import { AccountActivityService } from "../../auth/abstractions/account-activity.service";
 import { AccountInfo } from "../../auth/abstractions/account.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
@@ -37,7 +36,6 @@ describe("VaultTimeoutService", () => {
   let authService: MockProxy<AuthService>;
   let vaultTimeoutSettingsService: MockProxy<VaultTimeoutSettingsService>;
   let stateEventRunnerService: MockProxy<StateEventRunnerService>;
-  let accountActivityService: MockProxy<AccountActivityService>;
   let lockedCallback: jest.Mock<Promise<void>, [userId: string]>;
   let loggedOutCallback: jest.Mock<Promise<void>, [expired: boolean, userId?: string]>;
 
@@ -62,7 +60,6 @@ describe("VaultTimeoutService", () => {
     authService = mock();
     vaultTimeoutSettingsService = mock();
     stateEventRunnerService = mock();
-    accountActivityService = mock();
 
     lockedCallback = jest.fn();
     loggedOutCallback = jest.fn();
@@ -87,7 +84,6 @@ describe("VaultTimeoutService", () => {
       authService,
       vaultTimeoutSettingsService,
       stateEventRunnerService,
-      accountActivityService,
       lockedCallback,
       loggedOutCallback,
     );
@@ -150,7 +146,7 @@ describe("VaultTimeoutService", () => {
         {} as Record<string, AccountInfo>,
       ),
     );
-    accountActivityService.accountActivity$ = of(
+    accountService.accountActivity$ = of(
       Object.entries(accounts).reduce(
         (agg, [id, info]) => {
           agg[id] = info.lastActive ? new Date(info.lastActive) : null;

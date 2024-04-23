@@ -10,7 +10,6 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -89,7 +88,6 @@ export class AppComponent implements OnDestroy, OnInit {
     private paymentMethodWarningService: PaymentMethodWarningService,
     private organizationService: InternalOrganizationServiceAbstraction,
     private accountService: AccountService,
-    private accountActivityService: AccountActivityService,
   ) {}
 
   ngOnInit() {
@@ -311,7 +309,7 @@ export class AppComponent implements OnDestroy, OnInit {
     }
 
     this.lastActivity = now;
-    await this.accountActivityService.setAccountActivity(activeUserId, now);
+    await this.accountService.setAccountActivity(activeUserId, now);
     // Idle states
     if (this.isIdle) {
       this.isIdle = false;

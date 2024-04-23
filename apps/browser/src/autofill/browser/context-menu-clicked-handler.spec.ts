@@ -1,7 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import {
@@ -68,7 +67,6 @@ describe("ContextMenuClickedHandler", () => {
   let authService: MockProxy<AuthService>;
   let cipherService: MockProxy<CipherService>;
   let accountService: FakeAccountService;
-  let accountActivityService: MockProxy<AccountActivityService>;
   let totpService: MockProxy<TotpService>;
   let eventCollectionService: MockProxy<EventCollectionService>;
   let userVerificationService: MockProxy<UserVerificationService>;
@@ -84,7 +82,6 @@ describe("ContextMenuClickedHandler", () => {
     accountService = mockAccountServiceWith("userId" as UserId);
     totpService = mock();
     eventCollectionService = mock();
-    accountActivityService = mock();
 
     sut = new ContextMenuClickedHandler(
       copyToClipboard,
@@ -96,7 +93,6 @@ describe("ContextMenuClickedHandler", () => {
       eventCollectionService,
       userVerificationService,
       accountService,
-      accountActivityService,
     );
   });
 
