@@ -52,6 +52,8 @@ export class CipherReportComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
+  // this method will populate the names in the bit toggle of the report
+  // as well as the number of items in each filter toggle
   getOrgValues(filterId: string | number, type: string) {
     let orgName: any;
     let orgFilterStatus: any;
