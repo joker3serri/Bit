@@ -106,7 +106,12 @@ export class PinStateMigrator extends Migrator<58, 59> {
       }
 
       if (accountOldPinKeyEncryptedMasterKey != null) {
-        account.settings.pinProtected.encrypted = accountOldPinKeyEncryptedMasterKey;
+        account.settings = Object.assign(account.settings ?? {}, {
+          pinProtected: {
+            encrypted: accountOldPinKeyEncryptedMasterKey,
+          },
+        });
+
         await helper.setToUser(userId, OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, null);
         updatedAccount = true;
       }

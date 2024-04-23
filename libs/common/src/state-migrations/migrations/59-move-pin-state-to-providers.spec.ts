@@ -110,22 +110,39 @@ describe("PinStateMigrator", () => {
     });
   });
 
-  // describe("rollback", () => {
-  //   beforeEach(() => {
-  //     helper = mockMigrationHelper(postMigrationState(), 59);
-  //     sut = new PinStateMigrator(58, 59);
-  //   });
+  describe("rollback", () => {
+    beforeEach(() => {
+      helper = mockMigrationHelper(postMigrationState(), 59);
+      sut = new PinStateMigrator(58, 59);
+    });
 
-  //   it("should null out the previously migrated values (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey)", async () => {
-  //     await sut.rollback(helper);
+    it("should null out the previously migrated values (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey)", async () => {
+      await sut.rollback(helper);
 
-  //     expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PIN_KEY_ENCRYPTED_USER_KEY, null);
-  //     expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PROTECTED_PIN, null);
-  //     expect(helper.setToUser).toHaveBeenCalledWith(
-  //       "AccountOne",
-  //       OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
-  //       null,
-  //     );
-  //   });
-  // });
+      expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PIN_KEY_ENCRYPTED_USER_KEY, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PROTECTED_PIN, null);
+      expect(helper.setToUser).toHaveBeenCalledWith(
+        "AccountOne",
+        OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+        null,
+      );
+    });
+
+    it("should set back the original account properties (pinKeyEncryptedUserKey, protectedPin, pinProtected)", async () => {
+      await sut.rollback(helper);
+
+      expect(helper.set).toHaveBeenCalledTimes(1);
+      expect(helper.set).toHaveBeenCalledWith("AccountOne", {
+        settings: {
+          pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
+          protectedPin: "AccountOne_protectedPin",
+          pinProtected: {
+            encrypted: "AccountOne_oldPinKeyEncryptedMasterKey", // note the name change
+          },
+          otherStuff: "otherStuff2",
+        },
+        otherStuff: "otherStuff3",
+      });
+    });
+  });
 });
