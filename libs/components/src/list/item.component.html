@@ -1,0 +1,32 @@
+<!-- TODO: Colors will be finalized in the extension refresh feature branch -->
+<div
+  class="tw-box-border tw-overflow-auto tw-flex tw-bg-background [&:hover:not(:has(.end-slot:hover))]:tw-bg-primary-300/20 tw-text-main tw-border-solid tw-border-b tw-border-0 tw-rounded-lg tw-mb-1.5"
+  [ngClass]="
+    focusVisibleWithin()
+      ? 'tw-z-10 tw-rounded tw-outline-none tw-ring tw-ring-primary-600 tw-border-transparent'
+      : 'tw-border-b-secondary-300 [&:hover:not(:has(.end-slot:hover))]:tw-border-b-transparent'
+  "
+>
+  <!-- TODO render as anchor -->
+  <bit-item-action class="tw-block tw-w-full">
+    <button
+      bitFocusableElement
+      type="button"
+      class="fvw-target tw-outline-none tw-text-main tw-text-base tw-p-4 tw-bg-transparent tw-w-full tw-border-none tw-flex tw-gap-4 tw-items-center tw-justify-between"
+    >
+      <div class="tw-flex tw-gap-2 tw-items-center">
+        <i *ngIf="iconStart" class="bwi tw-text-[1.75rem] tw-text-muted" [ngClass]="iconStart"></i>
+        <ng-content></ng-content>
+      </div>
+      <i *ngIf="iconEnd" class="bwi tw-text-2xl tw-text-main" [ngClass]="iconEnd"></i>
+    </button>
+  </bit-item-action>
+
+  <div
+    #endSlot
+    class="end-slot tw-p-2 tw-flex tw-gap-2 tw-items-center"
+    [hidden]="endSlot.childElementCount === 0"
+  >
+    <ng-content select="bit-item-action"></ng-content>
+  </div>
+</div>
