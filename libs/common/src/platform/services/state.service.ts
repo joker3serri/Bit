@@ -35,7 +35,6 @@ const keys = {
   stateVersion: "stateVersion",
   global: "global",
   authenticatedAccounts: "authenticatedAccounts",
-  activeUserId: "activeUserId",
   tempAccountSettings: "tempAccountSettings", // used to hold account specific settings (i.e clear clipboard) between initial migration and first account authentication
 };
 
@@ -123,11 +122,6 @@ export class StateService<
 
       // After all individual accounts have been added
       state.authenticatedAccounts = authenticatedAccounts;
-
-      const storedActiveUser = await this.storageService.get<string>(keys.activeUserId);
-      if (storedActiveUser != null) {
-        state.activeUserId = storedActiveUser;
-      }
       await this.pushAccounts();
 
       return state;
@@ -160,7 +154,6 @@ export class StateService<
       return state;
     });
     await this.scaffoldNewAccountStorage(account);
-    await this.setActiveUser(account.profile.userId);
   }
 
   async setActiveUser(userId: string): Promise<void> {
@@ -1174,6 +1167,18 @@ export class StateService<
       settings: account.settings,
     };
     return Object.assign(this.createAccount(), persistentAccountInformation);
+  }
+
+  async clearDecryptedData(userId: UserId): Promise<void> {
+    await this.updateState(async (state) => {
+      if (userId != null && state?.accounts[userId]?.data != null) {
+        state.accounts[userId].data = new AccountData();
+      }
+
+      return state;
+    });
+
+    await this.pushAccounts();
   }
 
   protected async clearDecryptedDataForActiveUser(): Promise<void> {

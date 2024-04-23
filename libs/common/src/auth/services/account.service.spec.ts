@@ -12,12 +12,12 @@ import { trackEmissions } from "../../../spec/utils";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { UserId } from "../../types/guid";
+import { AccountActivityService } from "../abstractions/account-activity.service";
 import { AccountInfo, accountInfoEqual } from "../abstractions/account.service";
 
 import {
   ACCOUNT_ACCOUNTS,
   ACCOUNT_ACTIVE_ACCOUNT_ID,
-  ACCOUNT_ACTIVITY,
   AccountServiceImplementation,
 } from "./account.service";
 
@@ -64,6 +64,7 @@ describe("accountInfoEqual", () => {
 describe("accountService", () => {
   let messagingService: MockProxy<MessagingService>;
   let logService: MockProxy<LogService>;
+  let accountActivityService: MockProxy<AccountActivityService>;
   let globalStateProvider: FakeGlobalStateProvider;
   let sut: AccountServiceImplementation;
   let accountsState: FakeGlobalState<Record<UserId, AccountInfo>>;
@@ -74,9 +75,15 @@ describe("accountService", () => {
   beforeEach(() => {
     messagingService = mock();
     logService = mock();
+    accountActivityService = mock();
     globalStateProvider = new FakeGlobalStateProvider();
 
-    sut = new AccountServiceImplementation(messagingService, logService, globalStateProvider);
+    sut = new AccountServiceImplementation(
+      messagingService,
+      logService,
+      globalStateProvider,
+      accountActivityService,
+    );
 
     accountsState = globalStateProvider.getFake(ACCOUNT_ACCOUNTS);
     activeAccountIdState = globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID);
@@ -134,16 +141,12 @@ describe("accountService", () => {
     });
 
     it("sets the last active date of the account to now", async () => {
-      const emissions = trackEmissions(sut.accountActivity$);
       await sut.addAccount(userId, userInfo);
 
-      expect(emissions).toEqual([
-        null, // initial data
-        {
-          [userId]: expect.anything(),
-        },
-      ]);
-      expect(emissions[1][userId]).toAlmostEqual(new Date(), 100);
+      expect(accountActivityService.setAccountActivity).toHaveBeenCalledWith(
+        userId,
+        expect.any(Date),
+      );
     });
   });
 
@@ -236,13 +239,9 @@ describe("accountService", () => {
     });
 
     it("removes account activity of the given user", async () => {
-      const state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
-      state.stateSubject.next({ [userId]: new Date() });
-
       await sut.clean(userId);
-      const activityState = await firstValueFrom(state.state$);
 
-      expect(activityState).toEqual({});
+      expect(accountActivityService.removeAccountActivity).toHaveBeenCalledWith(userId);
     });
   });
 
@@ -262,32 +261,6 @@ describe("accountService", () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       expect(sut.switchAccount("unknown" as UserId)).rejects.toThrowError("Account does not exist");
-    });
-  });
-
-  describe("setAccountActivity", () => {
-    it("should update the account activity", async () => {
-      await sut.setAccountActivity(userId, new Date());
-      const state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
-
-      expect(state.nextMock).toHaveBeenCalledWith({ [userId]: expect.any(Date) });
-    });
-
-    it("should not update if the activity is the same", async () => {
-      const date = new Date();
-      const state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
-      state.stateSubject.next({ [userId]: date });
-
-      await sut.setAccountActivity(userId, date);
-
-      expect(state.nextMock).not.toHaveBeenCalled();
-    });
-
-    it("should update accountActivity$ with the new activity", async () => {
-      await sut.setAccountActivity(userId, new Date());
-      const currentState = await firstValueFrom(sut.accountActivity$);
-
-      expect(currentState[userId]).toBeInstanceOf(Date);
     });
   });
 });

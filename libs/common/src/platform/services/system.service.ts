@@ -78,7 +78,8 @@ export class SystemService implements SystemServiceAbstraction {
         );
         if (timeoutAction === VaultTimeoutAction.LogOut) {
           const nextUser = await this.stateService.nextUpActiveUser();
-          await this.stateService.setActiveUser(nextUser);
+          // Can be removed once we migrate password generation history to state providers
+          await this.stateService.clearDecryptedData(currentUser);
           await this.accountService.switchAccount(nextUser);
         }
       }

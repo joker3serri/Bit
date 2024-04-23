@@ -1,6 +1,7 @@
 import { firstValueFrom, map, mergeMap } from "rxjs";
 
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
+import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
@@ -46,6 +47,7 @@ export default class RuntimeBackground {
     private fido2Background: Fido2Background,
     private messageListener: MessageListener,
     private accountService: AccountService,
+    private accountActivityService: AccountActivityService,
   ) {
     // onInstalled listener must be wired up before anything else, so we do it in the ctor
     chrome.runtime.onInstalled.addListener((details: any) => {
@@ -110,7 +112,7 @@ export default class RuntimeBackground {
             const activeUserId = await firstValueFrom(
               this.accountService.activeAccount$.pipe(map((a) => a?.id)),
             );
-            await this.accountService.setAccountActivity(activeUserId, new Date());
+            await this.accountActivityService.setAccountActivity(activeUserId, new Date());
             const totpCode = await this.autofillService.doAutoFillActiveTab(
               [
                 {

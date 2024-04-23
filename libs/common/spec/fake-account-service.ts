@@ -39,7 +39,6 @@ export class FakeAccountService implements AccountService {
   }
   accounts$ = this.accountsSubject.asObservable();
   activeAccount$ = this.activeAccountSubject.asObservable();
-  accountActivity$ = this.accountActivitySubject.asObservable();
 
   constructor(initialData: Record<UserId, AccountInfo>, accountActivity?: Record<UserId, Date>) {
     this.accountsSubject.next(initialData);

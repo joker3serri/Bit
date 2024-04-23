@@ -29,6 +29,7 @@ export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
 
   addAccount: (account: T) => Promise<void>;
+  clearDecryptedData: (userId: UserId) => Promise<void>;
   setActiveUser: (userId: string) => Promise<void>;
   clean: (options?: StorageOptions) => Promise<UserId>;
   init: (initOptions?: InitOptions) => Promise<void>;

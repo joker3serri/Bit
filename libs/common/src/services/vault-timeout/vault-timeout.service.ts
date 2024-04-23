@@ -3,6 +3,7 @@ import { combineLatest, firstValueFrom, switchMap } from "rxjs";
 import { SearchService } from "../../abstractions/search.service";
 import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout.service";
+import { AccountActivityService } from "../../auth/abstractions/account-activity.service";
 import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
@@ -36,6 +37,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     private authService: AuthService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private stateEventRunnerService: StateEventRunnerService,
+    private accountActivityService: AccountActivityService,
     private lockedCallback: (userId?: string) => Promise<void> = null,
     private loggedOutCallback: (expired: boolean, userId?: string) => Promise<void> = null,
   ) {}
@@ -67,7 +69,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     await firstValueFrom(
       combineLatest([
         this.accountService.activeAccount$,
-        this.accountService.accountActivity$,
+        this.accountActivityService.accountActivity$,
       ]).pipe(
         switchMap(async ([activeAccount, accountActivity]) => {
           const activeUserId = activeAccount?.id;

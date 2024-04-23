@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angula
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { Subject, takeUntil, firstValueFrom, concatMap, filter, tap } from "rxjs";
 
+import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -50,6 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private messageListener: MessageListener,
     private toastService: ToastService,
     private accountService: AccountService,
+    private accountActivityService: AccountActivityService,
   ) {}
 
   async ngOnInit() {
@@ -209,7 +211,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     this.lastActivity = now;
-    await this.accountService.setAccountActivity(this.activeUserId, now);
+    await this.accountActivityService.setAccountActivity(this.activeUserId, now);
   }
 
   private showToast(msg: any) {

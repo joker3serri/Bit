@@ -1,4 +1,4 @@
-import { Subject, firstValueFrom, merge } from "rxjs";
+import { Subject, firstValueFrom, map, merge } from "rxjs";
 
 import {
   PinCryptoServiceAbstraction,
@@ -1183,7 +1183,11 @@ export default class MainBackground {
    */
   async switchAccount(userId: UserId) {
     try {
-      await this.stateService.setActiveUser(userId);
+      const currentlyActiveAccount = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+      );
+      // can be removed once password generation history is migrated to state providers
+      await this.stateService.clearDecryptedData(currentlyActiveAccount);
       await this.accountService.switchAccount(userId);
 
       if (userId == null) {

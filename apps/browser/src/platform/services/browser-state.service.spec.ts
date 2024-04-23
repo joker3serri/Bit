@@ -1,5 +1,4 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { firstValueFrom } from "rxjs";
 
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -53,7 +52,6 @@ describe("Browser State Service", () => {
     state.accounts[userId] = new Account({
       profile: { userId: userId },
     });
-    state.activeUserId = userId;
   });
 
   afterEach(() => {
@@ -82,18 +80,8 @@ describe("Browser State Service", () => {
       );
     });
 
-    describe("add Account", () => {
-      it("should add account", async () => {
-        const newUserId = "newUserId" as UserId;
-        const newAcct = new Account({
-          profile: { userId: newUserId },
-        });
-
-        await sut.addAccount(newAcct);
-
-        const accts = await firstValueFrom(sut.accounts$);
-        expect(accts[newUserId]).toBeDefined();
-      });
+    it("exists", () => {
+      expect(sut).toBeDefined();
     });
   });
 });

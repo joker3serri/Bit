@@ -30,7 +30,6 @@ export function accountInfoEqual(a: AccountInfo, b: AccountInfo) {
 export abstract class AccountService {
   accounts$: Observable<Record<UserId, AccountInfo>>;
   activeAccount$: Observable<{ id: UserId | undefined } & AccountInfo>;
-  accountActivity$: Observable<Record<UserId, Date>>;
   /**
    * Updates the `accounts$` observable with the new account data.
    *
@@ -69,12 +68,6 @@ export abstract class AccountService {
    * @param userId
    */
   abstract clean(userId: UserId): Promise<void>;
-  /**
-   * Updates the given user's last activity time.
-   * @param userId
-   * @param lastActivity
-   */
-  abstract setAccountActivity(userId: UserId, lastActivity: Date): Promise<void>;
 }
 
 export abstract class InternalAccountService extends AccountService {

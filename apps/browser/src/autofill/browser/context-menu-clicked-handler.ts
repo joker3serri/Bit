@@ -1,6 +1,7 @@
 import { firstValueFrom, map } from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
+import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -77,6 +78,7 @@ export class ContextMenuClickedHandler {
     private eventCollectionService: EventCollectionService,
     private userVerificationService: UserVerificationService,
     private accountService: AccountService,
+    private accountActivityService: AccountActivityService,
   ) {}
 
   static async mv3Create(cachedServices: CachedServices) {
@@ -134,6 +136,7 @@ export class ContextMenuClickedHandler {
       await eventCollectionServiceFactory(cachedServices, serviceOptions),
       await userVerificationServiceFactory(cachedServices, serviceOptions),
       await accountServiceFactory(cachedServices, serviceOptions),
+      await accountActivityServiceFactory(cachedServices, serviceOptions),
     );
   }
 
@@ -244,7 +247,7 @@ export class ContextMenuClickedHandler {
     const activeUserId = await firstValueFrom(
       this.accountService.activeAccount$.pipe(map((a) => a?.id)),
     );
-    await this.accountService.setAccountActivity(activeUserId, new Date());
+    await this.accountActivityService.setAccountActivity(activeUserId, new Date());
     switch (info.parentMenuItemId) {
       case AUTOFILL_ID:
       case AUTOFILL_IDENTITY_ID:

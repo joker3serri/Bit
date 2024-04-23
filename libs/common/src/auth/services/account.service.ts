@@ -1,4 +1,4 @@
-import { Subject, combineLatestWith, map, distinctUntilChanged, shareReplay } from "rxjs";
+import { combineLatestWith, map, distinctUntilChanged, shareReplay } from "rxjs";
 
 import {
   AccountInfo,
@@ -14,6 +14,7 @@ import {
   KeyDefinition,
 } from "../../platform/state";
 import { UserId } from "../../types/guid";
+import { AccountActivityService } from "../abstractions/account-activity.service";
 
 export const ACCOUNT_ACCOUNTS = KeyDefinition.record<AccountInfo, UserId>(
   ACCOUNT_DISK,
@@ -38,19 +39,17 @@ const loggedOutInfo: AccountInfo = {
 };
 
 export class AccountServiceImplementation implements InternalAccountService {
-  private lock = new Subject<UserId>();
-  private logout = new Subject<UserId>();
   private accountsState: GlobalState<Record<UserId, AccountInfo>>;
   private activeAccountIdState: GlobalState<UserId | undefined>;
 
   accounts$;
   activeAccount$;
-  accountActivity$;
 
   constructor(
     private messagingService: MessagingService,
     private logService: LogService,
     private globalStateProvider: GlobalStateProvider,
+    private accountActivityService: AccountActivityService,
   ) {
     this.accountsState = this.globalStateProvider.get(ACCOUNT_ACCOUNTS);
     this.activeAccountIdState = this.globalStateProvider.get(ACCOUNT_ACTIVE_ACCOUNT_ID);
@@ -64,7 +63,6 @@ export class AccountServiceImplementation implements InternalAccountService {
       distinctUntilChanged((a, b) => a?.id === b?.id && accountInfoEqual(a, b)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-    this.accountActivity$ = this.globalStateProvider.get(ACCOUNT_ACTIVITY).state$;
   }
 
   async addAccount(userId: UserId, accountData: AccountInfo): Promise<void> {
@@ -73,7 +71,7 @@ export class AccountServiceImplementation implements InternalAccountService {
       accounts[userId] = accountData;
       return accounts;
     });
-    await this.setAccountActivity(userId, new Date());
+    await this.accountActivityService.setAccountActivity(userId, new Date());
   }
 
   async setAccountName(userId: UserId, name: string): Promise<void> {
@@ -90,7 +88,7 @@ export class AccountServiceImplementation implements InternalAccountService {
 
   async clean(userId: UserId) {
     await this.setAccountInfo(userId, loggedOutInfo);
-    await this.removeAccountActivity(userId);
+    await this.accountActivityService.removeAccountActivity(userId);
   }
 
   async switchAccount(userId: UserId): Promise<void> {
@@ -112,19 +110,6 @@ export class AccountServiceImplementation implements InternalAccountService {
           // update only if userId changes
           return id !== userId;
         },
-      },
-    );
-  }
-
-  async setAccountActivity(userId: UserId, date: Date): Promise<void> {
-    await this.globalStateProvider.get(ACCOUNT_ACTIVITY).update(
-      (activity) => {
-        activity ??= {};
-        activity[userId] = date;
-        return activity;
-      },
-      {
-        shouldUpdate: (activity) => activity?.[userId] != date,
       },
     );
   }
@@ -158,18 +143,6 @@ export class AccountServiceImplementation implements InternalAccountService {
 
           return !accountInfoEqual(accounts[userId], newAccountInfo(accounts[userId]));
         },
-      },
-    );
-  }
-
-  private async removeAccountActivity(userId: UserId): Promise<void> {
-    await this.globalStateProvider.get(ACCOUNT_ACTIVITY).update(
-      (activity) => {
-        delete activity?.[userId];
-        return activity;
-      },
-      {
-        shouldUpdate: (activity) => activity?.[userId] != null,
       },
     );
   }
