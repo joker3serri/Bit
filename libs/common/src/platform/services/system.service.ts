@@ -49,11 +49,13 @@ export class SystemService implements SystemServiceAbstraction {
       return;
     }
 
+    // If there is an active user, check if they have a pinKeyEncryptedUserKeyEphemeral. If so, prevent process reload upon lock.
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    // User has set a PIN, with ask for master password on restart, to protect their vault
-    const ephemeralPin = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
-    if (ephemeralPin != null) {
-      return;
+    if (userId != null) {
+      const ephemeralPin = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
+      if (ephemeralPin != null) {
+        return;
+      }
     }
 
     this.cancelProcessReload();

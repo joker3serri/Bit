@@ -38,7 +38,7 @@ const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
   "pinKeyEncryptedUserKey",
   {
     deserializer: (jsonValue) => jsonValue,
-    clearOn: [], // TODO-rr-bw: verify
+    clearOn: ["logout"], // TODO-rr-bw: verify
   },
 );
 
@@ -198,7 +198,7 @@ export class PinService implements PinServiceAbstraction {
 
     const pinKey = await this.makePinKey(
       pin,
-      (await firstValueFrom(this.accountService.activeAccount$))?.email, // TODO-rr-bw: verify (could this possibly be different from the UserId passed in?)
+      (await firstValueFrom(this.accountService.activeAccount$))?.email, // TODO-rr-bw: verify (could this user possibly be different from the UserId passed in?)
       await this.stateService.getKdfType({ userId }),
       await this.stateService.getKdfConfig({ userId }),
     );
@@ -351,7 +351,6 @@ export class PinService implements PinServiceAbstraction {
   ): Promise<UserKey> {
     this.validateUserId(userId, "Cannot decrypt and migrate oldPinKeyEncryptedMasterKey.");
 
-    // Decrypt
     const masterKey = await this.decryptMasterKeyWithPin(
       userId,
       pin,
@@ -368,20 +367,16 @@ export class PinService implements PinServiceAbstraction {
     );
 
     const pinKeyEncryptedUserKey = await this.createPinKeyEncryptedUserKey(pin, userKey, userId);
+    await this.storePinKeyEncryptedUserKey(
+      pinKeyEncryptedUserKey,
+      requireMasterPasswordOnClientRestart,
+      userId,
+    );
+
+    const protectedPin = await this.createProtectedPin(pin, userKey);
+    await this.setProtectedPin(protectedPin.encryptedString, userId);
 
     await this.clearOldPinKeyEncryptedMasterKey(userId);
-
-    if (requireMasterPasswordOnClientRestart) {
-      await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
-    } else {
-      await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
-
-      // We previously only set the protected pin if MP on Restart was enabled
-      // now we set it regardless
-      // TODO-rr-bw: based on this comment, shouldn't this code be placed outside the if/else block?
-      const protectedPin = await this.encryptService.encrypt(pin, userKey);
-      await this.setProtectedPin(protectedPin.encryptedString, userId);
-    }
 
     // This also clears the old Biometrics key since the new Biometrics key will
     // be created when the user key is set.
