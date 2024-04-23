@@ -30,14 +30,16 @@ type ExpectedAccountType = {
   };
 };
 
-export class ReplicateKnownAccountsMigrator extends Migrator<58, 59> {
+export class KnownAccountsMigrator extends Migrator<58, 59> {
   async migrate(helper: MigrationHelper): Promise<void> {
-    await this.replicateAuthenticatedAccounts(helper);
+    await this.migrateAuthenticatedAccounts(helper);
     await this.migrateActiveAccountId(helper);
     await this.migrateAccountActivity(helper);
   }
   async rollback(helper: MigrationHelper): Promise<void> {
-    // Known accounts are replicated, not migrated, so we don't need to rollback.
+    // authenticated account are removed, but the accounts record also contains logged out accounts. Best we can do is to add them all back
+    const accounts = (await helper.getFromGlobal<Record<string, unknown>>(ACCOUNT_ACCOUNTS)) ?? {};
+    await helper.set("authenticatedAccounts", Object.keys(accounts));
     await helper.removeFromGlobal(ACCOUNT_ACCOUNTS);
 
     // Active Account Id
@@ -62,7 +64,7 @@ export class ReplicateKnownAccountsMigrator extends Migrator<58, 59> {
     await helper.removeFromGlobal(ACCOUNT_ACTIVITY);
   }
 
-  private async replicateAuthenticatedAccounts(helper: MigrationHelper) {
+  private async migrateAuthenticatedAccounts(helper: MigrationHelper) {
     const authenticatedAccounts = (await helper.get<string[]>("authenticatedAccounts")) ?? [];
     const accounts = await Promise.all(
       authenticatedAccounts.map(async (userId) => {
@@ -85,6 +87,7 @@ export class ReplicateKnownAccountsMigrator extends Migrator<58, 59> {
     );
 
     await helper.setToGlobal(ACCOUNT_ACCOUNTS, accountsToStore);
+    await helper.remove("authenticatedAccounts");
   }
 
   private async migrateAccountActivity(helper: MigrationHelper) {

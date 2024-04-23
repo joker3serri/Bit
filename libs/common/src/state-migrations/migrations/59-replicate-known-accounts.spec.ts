@@ -1,4 +1,4 @@
-import { MockProxy, any } from "jest-mock-extended";
+import { MockProxy } from "jest-mock-extended";
 
 import { MigrationHelper } from "../migration-helper";
 import { mockMigrationHelper } from "../migration-helper.spec";
@@ -7,7 +7,7 @@ import {
   ACCOUNT_ACCOUNTS,
   ACCOUNT_ACTIVE_ACCOUNT_ID,
   ACCOUNT_ACTIVITY,
-  ReplicateKnownAccountsMigrator,
+  KnownAccountsMigrator,
 } from "./59-replicate-known-accounts";
 
 const migrateJson = () => {
@@ -36,7 +36,6 @@ const migrateJson = () => {
 
 const rollbackJson = () => {
   return {
-    authenticatedAccounts: ["user1", "user2"],
     user1: {
       profile: {
         email: "user1",
@@ -50,7 +49,7 @@ const rollbackJson = () => {
         emailVerified: false,
       },
     },
-    global_accounts_accounts: {
+    global_account_accounts: {
       user1: {
         profile: {
           email: "user1",
@@ -75,15 +74,15 @@ const rollbackJson = () => {
 
 describe("ReplicateKnownAccounts", () => {
   let helper: MockProxy<MigrationHelper>;
-  let sut: ReplicateKnownAccountsMigrator;
+  let sut: KnownAccountsMigrator;
 
   describe("migrate", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(migrateJson(), 58);
-      sut = new ReplicateKnownAccountsMigrator(58, 59);
+      sut = new KnownAccountsMigrator(58, 59);
     });
 
-    it("replicates accounts", async () => {
+    it("migrates accounts", async () => {
       await sut.migrate(helper);
       expect(helper.setToGlobal).toHaveBeenCalledWith(ACCOUNT_ACCOUNTS, {
         user1: {
@@ -97,7 +96,7 @@ describe("ReplicateKnownAccounts", () => {
           name: undefined,
         },
       });
-      expect(helper.set).not.toHaveBeenCalledWith("authenticatedAccounts", any());
+      expect(helper.remove).toHaveBeenCalledWith("authenticatedAccounts");
     });
 
     it("migrates active account it", async () => {
@@ -119,11 +118,12 @@ describe("ReplicateKnownAccounts", () => {
   describe("rollback", () => {
     beforeEach(() => {
       helper = mockMigrationHelper(rollbackJson(), 59);
-      sut = new ReplicateKnownAccountsMigrator(58, 59);
+      sut = new KnownAccountsMigrator(58, 59);
     });
 
-    it("removes accounts", async () => {
+    it("rolls back authenticated accounts", async () => {
       await sut.rollback(helper);
+      expect(helper.set).toHaveBeenCalledWith("authenticatedAccounts", ["user1", "user2"]);
       expect(helper.removeFromGlobal).toHaveBeenCalledWith(ACCOUNT_ACCOUNTS);
     });
 

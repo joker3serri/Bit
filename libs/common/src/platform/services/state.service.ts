@@ -34,7 +34,6 @@ const keys = {
   state: "state",
   stateVersion: "stateVersion",
   global: "global",
-  authenticatedAccounts: "authenticatedAccounts",
   tempAccountSettings: "tempAccountSettings", // used to hold account specific settings (i.e clear clipboard) between initial migration and first account authentication
 };
 
@@ -111,17 +110,15 @@ export class StateService<
     }
 
     // Get all likely authenticated accounts
-    const authenticatedAccounts = (
-      (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? []
-    ).filter((account) => account != null);
+    const authenticatedAccounts = await firstValueFrom(
+      this.accountService.accounts$.pipe(map((accounts) => Object.keys(accounts))),
+    );
 
     await this.updateState(async (state) => {
       for (const i in authenticatedAccounts) {
         state = await this.syncAccountFromDisk(authenticatedAccounts[i]);
       }
 
-      // After all individual accounts have been added
-      state.authenticatedAccounts = authenticatedAccounts;
       await this.pushAccounts();
 
       return state;
@@ -148,8 +145,6 @@ export class StateService<
   async addAccount(account: TAccount) {
     await this.environmentService.seedUserEnvironment(account.profile.userId as UserId);
     await this.updateState(async (state) => {
-      state.authenticatedAccounts.push(account.profile.userId);
-      await this.storageService.save(keys.authenticatedAccounts, state.authenticatedAccounts);
       state.accounts[account.profile.userId] = account;
       return state;
     });
@@ -1212,13 +1207,6 @@ export class StateService<
     // We must have a manual call to clear tokens as we can't leverage state provider to clean
     // up our data as we have secure storage in the mix.
     await this.tokenService.clearTokens(userId as UserId);
-    await this.updateState(async (state) => {
-      state.authenticatedAccounts = state.authenticatedAccounts.filter((id) => id !== userId);
-
-      await this.storageService.save(keys.authenticatedAccounts, state.authenticatedAccounts);
-
-      return state;
-    });
   }
 
   protected async removeAccountFromDisk(userId: string) {

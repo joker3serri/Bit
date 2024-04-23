@@ -9,7 +9,6 @@ export class State<
 > {
   accounts: { [userId: string]: TAccount } = {};
   globals: TGlobalState;
-  authenticatedAccounts: string[] = [];
 
   constructor(globals: TGlobalState) {
     this.globals = globals;
