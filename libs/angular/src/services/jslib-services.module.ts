@@ -51,6 +51,7 @@ import { PolicyApiService } from "@bitwarden/common/admin-console/services/polic
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { ProviderApiService } from "@bitwarden/common/admin-console/services/provider/provider-api.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
+import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/account-api.service";
 import {
   AccountService,
@@ -77,6 +78,7 @@ import { UserVerificationService as UserVerificationServiceAbstraction } from "@
 import { WebAuthnLoginApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-api.service.abstraction";
 import { WebAuthnLoginPrfCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
+import { DefaultAccountActivityService } from "@bitwarden/common/auth/services/account-activity.service";
 import { AccountApiServiceImplementation } from "@bitwarden/common/auth/services/account-api.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/services/anonymous-hub.service";
@@ -481,7 +483,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: InternalAccountService,
     useClass: AccountServiceImplementation,
-    deps: [MessagingServiceAbstraction, LogService, GlobalStateProvider],
+    deps: [MessagingServiceAbstraction, LogService, GlobalStateProvider, AccountActivityService],
   }),
   safeProvider({
     provide: AccountServiceAbstraction,
@@ -664,6 +666,7 @@ const safeProviders: SafeProvider[] = [
       AuthServiceAbstraction,
       VaultTimeoutSettingsServiceAbstraction,
       StateEventRunnerService,
+      AccountActivityService,
       LOCKED_CALLBACK,
       LOGOUT_CALLBACK,
     ],
@@ -1155,6 +1158,11 @@ const safeProviders: SafeProvider[] = [
     provide: ProviderApiServiceAbstraction,
     useClass: ProviderApiService,
     deps: [ApiServiceAbstraction],
+  }),
+  safeProvider({
+    provide: AccountActivityService,
+    useClass: DefaultAccountActivityService,
+    deps: [GlobalStateProvider],
   }),
 ];
 

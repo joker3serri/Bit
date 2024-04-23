@@ -1,4 +1,4 @@
-import { combineLatestWith, map, distinctUntilChanged, shareReplay } from "rxjs";
+import { combineLatestWith, map, distinctUntilChanged, shareReplay, combineLatest } from "rxjs";
 
 import {
   AccountInfo,
@@ -44,6 +44,7 @@ export class AccountServiceImplementation implements InternalAccountService {
 
   accounts$;
   activeAccount$;
+  nextUpActiveUsers$;
 
   constructor(
     private messagingService: MessagingService,
@@ -62,6 +63,17 @@ export class AccountServiceImplementation implements InternalAccountService {
       map(([id, accounts]) => (id ? { id, ...accounts[id] } : undefined)),
       distinctUntilChanged((a, b) => a?.id === b?.id && accountInfoEqual(a, b)),
       shareReplay({ bufferSize: 1, refCount: false }),
+    );
+    this.nextUpActiveUsers$ = combineLatest([
+      this.accounts$,
+      this.activeAccount$,
+      this.accountActivityService.sortedUserIds$,
+    ]).pipe(
+      map(([accounts, activeAccount, sortedUserIds]) => {
+        return sortedUserIds
+          .filter((id) => id !== activeAccount?.id && accounts[id] != null)
+          .map((id) => ({ id, ...accounts[id] }));
+      }),
     );
   }
 

@@ -146,7 +146,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     await this.loginEmailService.saveEmailSettings();
 
     await this.router.navigate(["/login"]);
-    await this.stateService.setActiveUser(null);
+    await this.stateService.clearDecryptedData(this.activeAccount?.id as UserId);
     await this.accountService.switchAccount(null);
   }
 

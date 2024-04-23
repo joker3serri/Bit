@@ -30,8 +30,7 @@ export abstract class StateService<T extends Account = Account> {
 
   addAccount: (account: T) => Promise<void>;
   clearDecryptedData: (userId: UserId) => Promise<void>;
-  setActiveUser: (userId: string) => Promise<void>;
-  clean: (options?: StorageOptions) => Promise<UserId>;
+  clean: (options?: StorageOptions) => Promise<void>;
   init: (initOptions?: InitOptions) => Promise<void>;
 
   /**
@@ -184,5 +183,4 @@ export abstract class StateService<T extends Account = Account> {
   setVaultTimeout: (value: number, options?: StorageOptions) => Promise<void>;
   getVaultTimeoutAction: (options?: StorageOptions) => Promise<string>;
   setVaultTimeoutAction: (value: string, options?: StorageOptions) => Promise<void>;
-  nextUpActiveUser: () => Promise<UserId>;
 }

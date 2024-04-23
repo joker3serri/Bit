@@ -27,6 +27,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/services/or
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
+import { AccountActivityService } from "@bitwarden/common/auth/abstractions/account-activity.service";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
@@ -42,6 +43,7 @@ import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/ab
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
+import { DefaultAccountActivityService } from "@bitwarden/common/auth/services/account-activity.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
@@ -321,6 +323,7 @@ export default class MainBackground {
   deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
   authRequestService: AuthRequestServiceAbstraction;
   accountService: AccountServiceAbstraction;
+  accountActivityService: AccountActivityService;
   globalStateProvider: GlobalStateProvider;
   pinCryptoService: PinCryptoServiceAbstraction;
   singleUserStateProvider: SingleUserStateProvider;
@@ -484,10 +487,12 @@ export default class MainBackground {
       storageServiceProvider,
       stateEventRegistrarService,
     );
+    this.accountActivityService = new DefaultAccountActivityService(this.globalStateProvider);
     this.accountService = new AccountServiceImplementation(
       this.messagingService,
       this.logService,
       this.globalStateProvider,
+      this.accountActivityService,
     );
     this.activeUserStateProvider = new DefaultActiveUserStateProvider(
       this.accountService,
@@ -767,6 +772,7 @@ export default class MainBackground {
       this.authService,
       this.vaultTimeoutSettingsService,
       this.stateEventRunnerService,
+      this.accountActivityService,
       lockedCallback,
       logoutCallback,
     );
@@ -951,6 +957,7 @@ export default class MainBackground {
         this.fido2Background,
         messageListener,
         this.accountService,
+        this.accountActivityService,
       );
       this.nativeMessagingBackground = new NativeMessagingBackground(
         this.accountService,
@@ -1044,6 +1051,7 @@ export default class MainBackground {
         this.eventCollectionService,
         this.userVerificationService,
         this.accountService,
+        this.accountActivityService,
       );
 
       this.contextMenusBackground = new ContextMenusBackground(contextMenuClickedHandler);
@@ -1249,7 +1257,10 @@ export default class MainBackground {
     //Needs to be checked before state is cleaned
     const needStorageReseed = await this.needsStorageReseed();
 
-    const newActiveUser = await this.stateService.clean({ userId: userId });
+    const newActiveUser = await firstValueFrom(
+      this.accountService.nextUpActiveUsers$.pipe(map((users) => users[0]?.id ?? null)),
+    );
+    await this.stateService.clean({ userId: userId });
     await this.accountService.clean(userId);
 
     await this.stateEventRunnerService.handleEvent("logout", userId);

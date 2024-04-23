@@ -156,30 +156,13 @@ export class StateService<
     await this.scaffoldNewAccountStorage(account);
   }
 
-  async setActiveUser(userId: string): Promise<void> {
-    await this.clearDecryptedDataForActiveUser();
-    await this.updateState(async (state) => {
-      state.activeUserId = userId;
-      await this.storageService.save(keys.activeUserId, userId);
-
-      return state;
-    });
-
-    await this.pushAccounts();
-  }
-
-  async clean(options?: StorageOptions): Promise<UserId> {
+  async clean(options?: StorageOptions): Promise<void> {
     options = this.reconcileOptions(options, await this.defaultInMemoryOptions());
     await this.deAuthenticateAccount(options.userId);
-    let currentUser = (await this.state())?.activeUserId;
-    if (options.userId === currentUser) {
-      currentUser = await this.dynamicallySetActiveUser();
-    }
 
     await this.removeAccountFromDisk(options?.userId);
     await this.removeAccountFromMemory(options?.userId);
     await this.pushAccounts();
-    return currentUser as UserId;
   }
 
   /**
@@ -887,24 +870,28 @@ export class StateService<
   }
 
   protected async getAccountFromMemory(options: StorageOptions): Promise<TAccount> {
+    const userId =
+      options.userId ??
+      (await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+      ));
+
     return await this.state().then(async (state) => {
       if (state.accounts == null) {
         return null;
       }
-      return state.accounts[await this.getUserIdFromMemory(options)];
-    });
-  }
-
-  protected async getUserIdFromMemory(options: StorageOptions): Promise<string> {
-    return await this.state().then((state) => {
-      return options?.userId != null
-        ? state.accounts[options.userId]?.profile?.userId
-        : state.activeUserId;
+      return state.accounts[userId];
     });
   }
 
   protected async getAccountFromDisk(options: StorageOptions): Promise<TAccount> {
-    if (options?.userId == null && (await this.state())?.activeUserId == null) {
+    const userId =
+      options.userId ??
+      (await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+      ));
+
+    if (userId == null) {
       return null;
     }
 
@@ -1074,44 +1061,64 @@ export class StateService<
   }
 
   protected async defaultInMemoryOptions(): Promise<StorageOptions> {
+    const userId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     return {
       storageLocation: StorageLocation.Memory,
-      userId: (await this.state()).activeUserId,
+      userId,
     };
   }
 
   protected async defaultOnDiskOptions(): Promise<StorageOptions> {
+    const userId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     return {
       storageLocation: StorageLocation.Disk,
       htmlStorageLocation: HtmlStorageLocation.Session,
-      userId: (await this.state())?.activeUserId ?? (await this.getActiveUserIdFromStorage()),
+      userId,
       useSecureStorage: false,
     };
   }
 
   protected async defaultOnDiskLocalOptions(): Promise<StorageOptions> {
+    const userId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     return {
       storageLocation: StorageLocation.Disk,
       htmlStorageLocation: HtmlStorageLocation.Local,
-      userId: (await this.state())?.activeUserId ?? (await this.getActiveUserIdFromStorage()),
+      userId,
       useSecureStorage: false,
     };
   }
 
   protected async defaultOnDiskMemoryOptions(): Promise<StorageOptions> {
+    const userId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     return {
       storageLocation: StorageLocation.Disk,
       htmlStorageLocation: HtmlStorageLocation.Memory,
-      userId: (await this.state())?.activeUserId ?? (await this.getUserId()),
+      userId,
       useSecureStorage: false,
     };
   }
 
   protected async defaultSecureStorageOptions(): Promise<StorageOptions> {
+    const userId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     return {
       storageLocation: StorageLocation.Disk,
       useSecureStorage: true,
-      userId: (await this.state())?.activeUserId ?? (await this.getActiveUserIdFromStorage()),
+      userId,
     };
   }
 
@@ -1120,7 +1127,10 @@ export class StateService<
   }
 
   protected async removeAccountFromLocalStorage(userId: string = null): Promise<void> {
-    userId = userId ?? (await this.state())?.activeUserId;
+    userId ??= await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     const storedAccount = await this.getAccount(
       this.reconcileOptions({ userId: userId }, await this.defaultOnDiskLocalOptions()),
     );
@@ -1131,7 +1141,10 @@ export class StateService<
   }
 
   protected async removeAccountFromSessionStorage(userId: string = null): Promise<void> {
-    userId = userId ?? (await this.state())?.activeUserId;
+    userId ??= await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     const storedAccount = await this.getAccount(
       this.reconcileOptions({ userId: userId }, await this.defaultOnDiskOptions()),
     );
@@ -1142,7 +1155,10 @@ export class StateService<
   }
 
   protected async removeAccountFromSecureStorage(userId: string = null): Promise<void> {
-    userId = userId ?? (await this.state())?.activeUserId;
+    userId ??= await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     await this.setUserKeyAutoUnlock(null, { userId: userId });
     await this.setUserKeyBiometric(null, { userId: userId });
     await this.setCryptoMasterKeyAuto(null, { userId: userId });
@@ -1151,8 +1167,11 @@ export class StateService<
   }
 
   protected async removeAccountFromMemory(userId: string = null): Promise<void> {
+    userId ??= await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+    );
+
     await this.updateState(async (state) => {
-      userId = userId ?? state.activeUserId;
       delete state.accounts[userId];
 
       this.deleteDiskCache(userId);
@@ -1181,17 +1200,6 @@ export class StateService<
     await this.pushAccounts();
   }
 
-  protected async clearDecryptedDataForActiveUser(): Promise<void> {
-    await this.updateState(async (state) => {
-      const userId = state?.activeUserId;
-      if (userId != null && state?.accounts[userId]?.data != null) {
-        state.accounts[userId].data = new AccountData();
-      }
-
-      return state;
-    });
-  }
-
   protected createAccount(init: Partial<TAccount> = null): TAccount {
     return this.stateFactory.createAccount(init);
   }
@@ -1217,32 +1225,6 @@ export class StateService<
     await this.removeAccountFromSessionStorage(userId);
     await this.removeAccountFromLocalStorage(userId);
     await this.removeAccountFromSecureStorage(userId);
-  }
-
-  async nextUpActiveUser() {
-    const accounts = (await this.state())?.accounts;
-    if (accounts == null || Object.keys(accounts).length < 1) {
-      return null;
-    }
-
-    let newActiveUser;
-    for (const userId in accounts) {
-      if (userId == null) {
-        continue;
-      }
-      if (await this.getIsAuthenticated({ userId: userId })) {
-        newActiveUser = userId;
-        break;
-      }
-      newActiveUser = null;
-    }
-    return newActiveUser as UserId;
-  }
-
-  protected async dynamicallySetActiveUser() {
-    const newActiveUser = await this.nextUpActiveUser();
-    await this.setActiveUser(newActiveUser);
-    return newActiveUser;
   }
 
   protected async saveSecureStorageKey<T extends JsonValue>(

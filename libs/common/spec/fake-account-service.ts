@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended";
-import { ReplaySubject } from "rxjs";
+import { Observable, ReplaySubject } from "rxjs";
 
 import { AccountInfo, AccountService } from "../src/auth/abstractions/account.service";
 import { UserId } from "../src/types/guid";
@@ -33,6 +33,8 @@ export class FakeAccountService implements AccountService {
   activeAccountSubject = new ReplaySubject<{ id: UserId } & AccountInfo>(1);
   // eslint-disable-next-line rxjs/no-exposed-subjects -- test class
   accountActivitySubject = new ReplaySubject<Record<UserId, Date>>(1);
+  // eslint-disable-next-line rxjs/no-exposed-subjects -- test class
+  nextUpActiveUsers$: Observable<({ id: UserId } & AccountInfo)[]>;
   private _activeUserId: UserId;
   get activeUserId() {
     return this._activeUserId;
@@ -45,9 +47,6 @@ export class FakeAccountService implements AccountService {
     this.activeAccountSubject.subscribe((data) => (this._activeUserId = data?.id));
     this.activeAccountSubject.next(null);
     this.accountActivitySubject.next(accountActivity);
-  }
-  async setAccountActivity(userId: UserId, lastActivity: Date): Promise<void> {
-    await this.mock.setAccountActivity(userId, lastActivity);
   }
 
   async addAccount(userId: UserId, accountData: AccountInfo): Promise<void> {

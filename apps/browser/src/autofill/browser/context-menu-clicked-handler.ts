@@ -29,6 +29,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
+import { accountActivityServiceFactory } from "../../auth/background/service-factories/account-activity-service.factory";
 import { accountServiceFactory } from "../../auth/background/service-factories/account-service.factory";
 import {
   authServiceFactory,

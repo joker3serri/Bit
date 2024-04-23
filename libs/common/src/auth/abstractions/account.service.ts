@@ -30,6 +30,8 @@ export function accountInfoEqual(a: AccountInfo, b: AccountInfo) {
 export abstract class AccountService {
   accounts$: Observable<Record<UserId, AccountInfo>>;
   activeAccount$: Observable<{ id: UserId | undefined } & AccountInfo>;
+  /** Ordered list of next accounts, sorted in descending order by most recent account activity */
+  nextUpActiveUsers$: Observable<({ id: UserId } & AccountInfo)[]>;
   /**
    * Updates the `accounts$` observable with the new account data.
    *
