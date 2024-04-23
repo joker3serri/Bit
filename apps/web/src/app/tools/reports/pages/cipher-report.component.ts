@@ -1,5 +1,5 @@
 import { Directive, ViewChild, ViewContainerRef, OnDestroy } from "@angular/core";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -29,8 +29,9 @@ export class CipherReportComponent implements OnDestroy {
 
   filterStatus: any = [0];
   showFilterToggle: boolean = false;
-  filterOrgStatus = 0;
   vaultMsg: string = "vault";
+  currentFilterStatus: number | string;
+  protected filterOrgStatus$ = new BehaviorSubject<number | string>(0);
   private destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -82,6 +83,7 @@ export class CipherReportComponent implements OnDestroy {
   }
 
   async filterOrgToggle(status: any) {
+    this.currentFilterStatus = status;
     await this.setCiphers();
     if (status === 0) {
       return;
@@ -94,7 +96,19 @@ export class CipherReportComponent implements OnDestroy {
 
   async load() {
     this.loading = true;
-    await this.setCiphers();
+    // when a user fixes an item in a report we want to persist the filter they had
+    // if they fix the last item of that filter we will go back to the "All" filter
+    if (this.currentFilterStatus) {
+      if (this.ciphers.length > 2) {
+        this.filterOrgStatus$.next(this.currentFilterStatus);
+        await this.filterOrgToggle(this.currentFilterStatus);
+      } else {
+        this.filterOrgStatus$.next(0);
+        await this.filterOrgToggle(0);
+      }
+    } else {
+      await this.setCiphers();
+    }
     this.loading = false;
     this.hasLoaded = true;
   }
@@ -169,6 +183,10 @@ export class CipherReportComponent implements OnDestroy {
     if (this.filterStatus.length > 2) {
       this.showFilterToggle = true;
       this.vaultMsg = "vaults";
+    } else {
+      // If a user fixes an item and there is only one item left remove the filter toggle and change the vault message to singular
+      this.showFilterToggle = false;
+      this.vaultMsg = "vault";
     }
   }
 }
