@@ -55,6 +55,13 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
   inactiveAccounts$: Observable<{ [userId: string]: InactiveAccount }>;
   authStatus = AuthenticationStatus;
 
+  view$: Observable<{
+    activeAccount: ActiveAccount | null;
+    inactiveAccounts: { [userId: string]: InactiveAccount };
+    numberOfAccounts: number;
+    showSwitcher: boolean;
+  }>;
+
   isOpen = false;
   overlayPosition: ConnectedPosition[] = [
     {
@@ -121,6 +128,20 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     );
     this.numberOfAccounts$ = this.inactiveAccounts$.pipe(
       map((accounts) => Object.keys(accounts).length),
+    );
+
+    this.view$ = combineLatest([
+      this.activeAccount$,
+      this.inactiveAccounts$,
+      this.numberOfAccounts$,
+      this.showSwitcher$,
+    ]).pipe(
+      map(([activeAccount, inactiveAccounts, numberOfAccounts, showSwitcher]) => ({
+        activeAccount,
+        inactiveAccounts,
+        numberOfAccounts,
+        showSwitcher,
+      })),
     );
   }
 
