@@ -29,34 +29,39 @@ export class A11yGridDirective implements AfterViewInit {
   onKeyDown(event: KeyboardEvent) {
     switch (event.code) {
       case "ArrowUp":
-        event.preventDefault();
         this.updateCellFocusByDelta(0, -1);
         break;
       case "ArrowRight":
-        event.preventDefault();
         this.updateCellFocusByDelta(1, 0);
         break;
       case "ArrowDown":
-        event.preventDefault();
         this.updateCellFocusByDelta(0, 1);
         break;
       case "ArrowLeft":
-        event.preventDefault();
         this.updateCellFocusByDelta(-1, 0);
         break;
       case "Home":
-      case "End":
-      case "PageUp":
-      case "PageDown":
-      case "Space":
-      case "Enter":
-      default:
+        this.updateCellFocusByDelta(-this.activeCol, -this.activeRow);
         break;
+      case "End":
+        this.updateCellFocusByDelta(this.grid[this.grid.length - 1].length, this.grid.length);
+        break;
+      case "PageUp":
+        this.updateCellFocusByDelta(0, -5);
+        break;
+      case "PageDown":
+        this.updateCellFocusByDelta(0, 5);
+        break;
+      default:
+        return;
     }
+    event.preventDefault();
   }
 
   ngAfterViewInit(): void {
     this.grid = this.rows.map((listItem) => [...listItem.cells]);
+    this.grid.flat().map((cell) => (cell.focusableChild.getFocusTarget().tabIndex = -1));
+
     const firstCell = this.getActiveCellContent();
     firstCell.tabIndex = 0;
   }
@@ -67,7 +72,6 @@ export class A11yGridDirective implements AfterViewInit {
 
   private updateCellFocusByDelta(colDelta: number, rowDelta: number) {
     const prevActive = this.getActiveCellContent();
-    prevActive.tabIndex = -1;
 
     this.activeCol += colDelta;
     this.activeRow += rowDelta;
@@ -98,8 +102,12 @@ export class A11yGridDirective implements AfterViewInit {
       }
     }
 
-    const newTarget = this.getActiveCellContent();
-    newTarget.tabIndex = 0;
-    newTarget.focus();
+    const nextActive = this.getActiveCellContent();
+    nextActive.tabIndex = 0;
+    nextActive.focus();
+
+    if (nextActive !== prevActive) {
+      prevActive.tabIndex = -1;
+    }
   }
 }
