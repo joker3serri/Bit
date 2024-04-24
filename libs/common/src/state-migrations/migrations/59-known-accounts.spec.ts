@@ -8,7 +8,7 @@ import {
   ACCOUNT_ACTIVE_ACCOUNT_ID,
   ACCOUNT_ACTIVITY,
   KnownAccountsMigrator,
-} from "./59-replicate-known-accounts";
+} from "./59-known-accounts";
 
 const migrateJson = () => {
   return {

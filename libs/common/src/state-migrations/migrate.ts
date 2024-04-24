@@ -55,7 +55,7 @@ import { MoveMasterKeyStateToProviderMigrator } from "./migrations/55-move-maste
 import { AuthRequestMigrator } from "./migrations/56-move-auth-requests";
 import { CipherServiceMigrator } from "./migrations/57-move-cipher-service-to-state-provider";
 import { RemoveRefreshTokenMigratedFlagMigrator } from "./migrations/58-remove-refresh-token-migrated-state-provider-flag";
-import { KnownAccountsMigrator } from "./migrations/59-replicate-known-accounts";
+import { KnownAccountsMigrator } from "./migrations/59-known-accounts";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
 import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-auto-prompt-to-account";
 import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";

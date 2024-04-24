@@ -523,7 +523,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private async updateAppMenu() {
     let updateRequest: MenuUpdateRequest;
-    const stateAccounts = await firstValueFrom(this.stateService.accounts$);
+    const stateAccounts = await firstValueFrom(this.accountService.accounts$);
     if (stateAccounts == null || Object.keys(stateAccounts).length < 1) {
       updateRequest = {
         accounts: null,
@@ -532,32 +532,32 @@ export class AppComponent implements OnInit, OnDestroy {
     } else {
       const accounts: { [userId: string]: MenuAccount } = {};
       for (const i in stateAccounts) {
+        const userId = i as UserId;
         if (
           i != null &&
-          stateAccounts[i]?.profile?.userId != null &&
-          !this.isAccountCleanUpInProgress(stateAccounts[i].profile.userId) // skip accounts that are being cleaned up
+          userId != null &&
+          !this.isAccountCleanUpInProgress(userId) // skip accounts that are being cleaned up
         ) {
-          const userId = stateAccounts[i].profile.userId;
           const availableTimeoutActions = await firstValueFrom(
             this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId),
           );
 
+          const authStatus = await firstValueFrom(this.authService.authStatusFor$(userId));
           accounts[userId] = {
-            isAuthenticated: await this.stateService.getIsAuthenticated({
-              userId: userId,
-            }),
-            isLocked:
-              (await this.authService.getAuthStatus(userId)) === AuthenticationStatus.Locked,
+            isAuthenticated: authStatus >= AuthenticationStatus.Locked,
+            isLocked: authStatus === AuthenticationStatus.Locked,
             isLockable: availableTimeoutActions.includes(VaultTimeoutAction.Lock),
-            email: stateAccounts[i].profile.email,
-            userId: stateAccounts[i].profile.userId,
+            email: stateAccounts[userId].email,
+            userId: userId,
             hasMasterPassword: await this.userVerificationService.hasMasterPassword(userId),
           };
         }
       }
       updateRequest = {
         accounts: accounts,
-        activeUserId: await this.stateService.getUserId(),
+        activeUserId: await firstValueFrom(
+          this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+        ),
       };
     }
 
@@ -575,6 +575,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.startAccountCleanUp(userBeingLoggedOut);
 
     let preLogoutActiveUserId;
+    const nextUpAccount = await firstValueFrom(this.accountService.nextUpAccount$);
     try {
       // Provide the userId of the user to upload events for
       await this.eventUploadService.uploadEvents(userBeingLoggedOut);
@@ -596,11 +597,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.finishAccountCleanUp(userBeingLoggedOut);
     }
 
-    if (this.activeUserId == null) {
+    await this.accountService.switchAccount(nextUpAccount?.id);
+
+    if (nextUpAccount == null) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["login"]);
-    } else if (preLogoutActiveUserId !== this.activeUserId) {
+    } else if (preLogoutActiveUserId !== nextUpAccount.id) {
       this.messagingService.send("switchAccount");
     }
 

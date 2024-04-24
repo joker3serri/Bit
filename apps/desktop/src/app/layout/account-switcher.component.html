@@ -5,12 +5,12 @@
   (click)="toggle()"
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
-  [hidden]="!showSwitcher"
+  [hidden]="!(showSwitcher$ | async)"
   aria-haspopup="dialog"
 >
-  <ng-container *ngIf="activeAccount?.email != null; else noActiveAccount">
+  <ng-container *ngIf="activeAccount$ | async as activeAccount; else noActiveAccount">
     <app-avatar
-      [text]="activeAccount.name"
+      [text]="activeAccount.name ?? activeAccount.email"
       [id]="activeAccount.id"
       [color]="activeAccount.avatarColor"
       [size]="25"
@@ -43,7 +43,7 @@
   [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
   (backdropClick)="close()"
   (detach)="close()"
-  [cdkConnectedOverlayOpen]="showSwitcher && isOpen"
+  [cdkConnectedOverlayOpen]="(showSwitcher$ | async) && isOpen"
   [cdkConnectedOverlayPositions]="overlayPosition"
   cdkConnectedOverlayMinWidth="250px"
 >
@@ -55,9 +55,9 @@
     role="dialog"
     aria-modal="true"
   >
-    <div class="accounts" *ngIf="numberOfAccounts > 0">
+    <div class="accounts" *ngIf="(numberOfAccounts$ | async) > 0">
       <button
-        *ngFor="let account of inactiveAccounts | keyvalue"
+        *ngFor="let account of inactiveAccounts$ | async | keyvalue"
         class="account"
         (click)="switch(account.key)"
       >
@@ -95,14 +95,14 @@
         ></i>
       </button>
     </div>
-    <ng-container *ngIf="activeAccount?.email != null">
-      <div class="border" *ngIf="numberOfAccounts > 0"></div>
-      <ng-container *ngIf="numberOfAccounts < 4">
+    <ng-container *ngIf="activeAccount$ | async">
+      <div class="border" *ngIf="(numberOfAccounts$ | async) > 0"></div>
+      <ng-container *ngIf="(numberOfAccounts$ | async) < 4">
         <button type="button" class="add" (click)="addAccount()">
           <i class="bwi bwi-plus" aria-hidden="true"></i> {{ "addAccount" | i18n }}
         </button>
       </ng-container>
-      <ng-container *ngIf="numberOfAccounts === 4">
+      <ng-container *ngIf="(numberOfAccounts$ | async) === 4">
         <span class="accountLimitReached">{{ "accountSwitcherLimitReached" | i18n }} </span>
       </ng-container>
     </ng-container>

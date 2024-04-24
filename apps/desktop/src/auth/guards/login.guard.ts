@@ -1,29 +1,38 @@
-import { Injectable } from "@angular/core";
-import { CanActivate } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { inject } from "@angular/core";
+import { CanActivateFn } from "@angular/router";
+import { Observable, map } from "rxjs";
 
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { ToastService } from "@bitwarden/components";
 
 const maxAllowedAccounts = 5;
 
-@Injectable()
-export class LoginGuard implements CanActivate {
-  protected homepage = "vault";
-  constructor(
-    private stateService: StateService,
-    private platformUtilsService: PlatformUtilsService,
-    private i18nService: I18nService,
-  ) {}
+function loginGuard(): Observable<boolean> {
+  const authService = inject(AuthService);
+  const toastService = inject(ToastService);
+  const i18nService = inject(I18nService);
 
-  async canActivate() {
-    const accounts = await firstValueFrom(this.stateService.accounts$);
-    if (accounts != null && Object.keys(accounts).length >= maxAllowedAccounts) {
-      this.platformUtilsService.showToast("error", null, this.i18nService.t("accountLimitReached"));
-      return false;
-    }
+  return authService.authStatuses$.pipe(
+    map((statuses) =>
+      Object.values(statuses).filter((status) => status != AuthenticationStatus.LoggedOut),
+    ),
+    map((accounts) => {
+      if (accounts != null && Object.keys(accounts).length >= maxAllowedAccounts) {
+        toastService.showToast({
+          variant: "error",
+          title: null,
+          message: i18nService.t("accountLimitReached"),
+        });
+        return false;
+      }
 
-    return true;
-  }
+      return true;
+    }),
+  );
+}
+
+export function loginGuardFn(): CanActivateFn {
+  return () => loginGuard();
 }

@@ -57,7 +57,6 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/ge
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { DialogService } from "@bitwarden/components";
 
-import { LoginGuard } from "../../auth/guards/login.guard";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { Account } from "../../models/account";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
@@ -100,7 +99,6 @@ const safeProviders: SafeProvider[] = [
   safeProvider(InitService),
   safeProvider(NativeMessagingService),
   safeProvider(SearchBarService),
-  safeProvider(LoginGuard),
   safeProvider(DialogService),
   safeProvider({
     provide: APP_INITIALIZER as SafeInjectionToken<() => void>,
