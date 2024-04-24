@@ -64,6 +64,7 @@ import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items
 import { VaultSelectComponent } from "../vault/popup/components/vault/vault-select.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
+import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -138,6 +139,7 @@ import "../platform/popup/locales";
     LoginViaAuthRequestComponent,
     LoginDecryptionOptionsComponent,
     OptionsComponent,
+    AppearanceComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
     PasswordHistoryComponent,
