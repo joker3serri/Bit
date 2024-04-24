@@ -286,7 +286,7 @@ describe("accountService", () => {
     });
 
     describe("sortedUserIds$", () => {
-      it("returns the sorted user ids by date", async () => {
+      it("returns the sorted user ids by date with most recent first", async () => {
         state.stateSubject.next({
           [toId("user1")]: new Date(3),
           [toId("user2")]: new Date(2),
@@ -294,9 +294,9 @@ describe("accountService", () => {
         });
 
         await expect(firstValueFrom(sut.sortedUserIds$)).resolves.toEqual([
-          "user3" as UserId,
-          "user2" as UserId,
           "user1" as UserId,
+          "user2" as UserId,
+          "user3" as UserId,
         ]);
       });
 
