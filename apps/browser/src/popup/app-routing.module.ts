@@ -46,6 +46,7 @@ import { ShareComponent } from "../vault/popup/components/vault/share.component"
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
+import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
@@ -292,6 +293,12 @@ const routes: Routes = [
     component: OptionsComponent,
     canActivate: [AuthGuard],
     data: { state: "options" },
+  },
+  {
+    path: "appearance",
+    component: AppearanceComponent,
+    canActivate: [AuthGuard],
+    data: { state: "appearance" },
   },
   {
     path: "clone-cipher",
