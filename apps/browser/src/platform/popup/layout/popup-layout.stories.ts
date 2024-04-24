@@ -93,24 +93,158 @@ class MockPopoutButtonComponent {}
 })
 class MockCurrentAccountComponent {}
 
+@Component({
+  selector: "mock-vault-page",
+  template: `
+    <popup-page>
+      <popup-header slot="header" pageTitle="Test">
+        <ng-container slot="end">
+          <mock-add-button></mock-add-button>
+          <mock-popout-button></mock-popout-button>
+          <mock-current-account></mock-current-account>
+        </ng-container>
+      </popup-header>
+      <vault-placeholder></vault-placeholder>
+    </popup-page>
+  `,
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    MockAddButtonComponent,
+    MockPopoutButtonComponent,
+    MockCurrentAccountComponent,
+    VaultComponent,
+  ],
+})
+class MockVaultPageComponent {}
+
+@Component({
+  selector: "mock-generator-page",
+  template: `
+    <popup-page>
+      <popup-header slot="header" pageTitle="Test">
+        <ng-container slot="end">
+          <mock-add-button></mock-add-button>
+          <mock-popout-button></mock-popout-button>
+          <mock-current-account></mock-current-account>
+        </ng-container>
+      </popup-header>
+      <generator-placeholder></generator-placeholder>
+    </popup-page>
+  `,
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    MockAddButtonComponent,
+    MockPopoutButtonComponent,
+    MockCurrentAccountComponent,
+    GeneratorComponent,
+  ],
+})
+class MockGeneratorPageComponent {}
+
+@Component({
+  selector: "mock-send-page",
+  template: `
+    <popup-page>
+      <popup-header slot="header" pageTitle="Test">
+        <ng-container slot="end">
+          <mock-add-button></mock-add-button>
+          <mock-popout-button></mock-popout-button>
+          <mock-current-account></mock-current-account>
+        </ng-container>
+      </popup-header>
+      <send-placeholder></send-placeholder>
+    </popup-page>
+  `,
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    MockAddButtonComponent,
+    MockPopoutButtonComponent,
+    MockCurrentAccountComponent,
+    SendComponent,
+  ],
+})
+class MockSendPageComponent {}
+
+@Component({
+  selector: "mock-settings-page",
+  template: `
+    <popup-page>
+      <popup-header slot="header" pageTitle="Test">
+        <ng-container slot="end">
+          <mock-add-button></mock-add-button>
+          <mock-popout-button></mock-popout-button>
+          <mock-current-account></mock-current-account>
+        </ng-container>
+      </popup-header>
+      <settings-placeholder></settings-placeholder>
+    </popup-page>
+  `,
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    MockAddButtonComponent,
+    MockPopoutButtonComponent,
+    MockCurrentAccountComponent,
+    SettingsComponent,
+  ],
+})
+class MockSettingsPageComponent {}
+
+@Component({
+  selector: "mock-vault-subpage",
+  template: `
+    <popup-page>
+      <popup-header slot="header" pageTitle="Test">
+        <ng-container slot="end">
+          <mock-add-button></mock-add-button>
+          <mock-popout-button></mock-popout-button>
+          <mock-current-account></mock-current-account>
+        </ng-container>
+      </popup-header>
+      <vault-placeholder></vault-placeholder>
+      <popup-footer slot="footer">
+        <div class="tw-flex tw-gap-2">
+          <button bitButton buttonType="primary">Save</button>
+          <button bitButton buttonType="secondary">Cancel</button>
+        </div>
+      </popup-footer>
+    </popup-page>
+  `,
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    PopupFooterComponent,
+    ButtonModule,
+    MockAddButtonComponent,
+    MockPopoutButtonComponent,
+    MockCurrentAccountComponent,
+    VaultComponent,
+  ],
+})
+class MockVaultSubpageComponent {}
+
 export default {
   title: "Browser/Popup Layout",
   component: PopupPageComponent,
   decorators: [
     moduleMetadata({
       imports: [
-        PopupPageComponent,
-        PopupHeaderComponent,
-        PopupFooterComponent,
         PopupTabNavigationComponent,
         CommonModule,
-        ButtonModule,
         RouterModule,
-        AvatarModule,
-        IconButtonModule,
-        MockAddButtonComponent,
-        MockPopoutButtonComponent,
-        MockCurrentAccountComponent,
+        MockVaultSubpageComponent,
+        MockVaultPageComponent,
+        MockSendPageComponent,
+        MockGeneratorPageComponent,
+        MockSettingsPageComponent,
       ],
     }),
     applicationConfig({
@@ -119,10 +253,10 @@ export default {
           RouterModule.forRoot(
             [
               { path: "", redirectTo: "vault", pathMatch: "full" },
-              { path: "vault", component: VaultComponent },
-              { path: "generator", component: GeneratorComponent },
-              { path: "send", component: SendComponent },
-              { path: "settings", component: SettingsComponent },
+              { path: "vault", component: MockVaultPageComponent },
+              { path: "generator", component: MockGeneratorPageComponent },
+              { path: "send", component: MockSendPageComponent },
+              { path: "settings", component: MockSettingsPageComponent },
               // in case you are coming from a story that also uses the router
               { path: "**", redirectTo: "vault" },
             ],
@@ -142,16 +276,7 @@ export const PopupTabNavigation: Story = {
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
         <popup-tab-navigation>
-          <popup-page>
-            <popup-header slot="header" pageTitle="Test">
-              <ng-container slot="end">
-                <mock-add-button></mock-add-button>
-                <mock-popout-button></mock-popout-button>
-                <mock-current-account></mock-current-account>
-              </ng-container>
-            </popup-header>
-            <router-outlet></router-outlet>
-          </popup-page>
+          <router-outlet></router-outlet>
         </popup-tab-navigation>
       </div>
     `,
@@ -163,12 +288,7 @@ export const PopupPage: Story = {
     props: args,
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
-        <popup-page>
-          <popup-header showBackButton="true" slot="header" pageTitle="Test">
-            <mock-popout-button slot="end"></mock-popout-button>
-          </popup-header>
-          <router-outlet></router-outlet>
-        </popup-page>
+        <mock-vault-page></mock-vault-page>
       </div>
     `,
   }),
@@ -179,18 +299,7 @@ export const PopupPageWithFooter: Story = {
     props: args,
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
-        <popup-page>
-          <popup-header showBackButton="true" slot="header" pageTitle="Test">
-            <mock-popout-button slot="end"></mock-popout-button>
-          </popup-header>
-          <router-outlet></router-outlet>
-          <popup-footer slot="footer">
-            <div class="tw-flex tw-gap-2">
-              <button bitButton buttonType="primary">Save</button>
-              <button bitButton buttonType="secondary">Cancel</button>
-            </div>
-          </popup-footer>
-        </popup-page>
+        <mock-vault-subpage></mock-vault-subpage>
       </div>
     `,
   }),
@@ -201,17 +310,7 @@ export const PoppedOut: Story = {
     props: args,
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[900px] tw-border tw-border-solid tw-border-secondary-300">
-        <popup-tab-navigation>
-          <popup-page>
-            <popup-header slot="header" pageTitle="Test">
-              <ng-container slot="end">
-                <mock-add-button></mock-add-button>
-                <mock-current-account></mock-current-account>
-              </ng-container>
-            </popup-header>
-            <router-outlet></router-outlet>
-          </popup-page>
-        </popup-tab-navigation>
+        <mock-vault-page></mock-vault-page>
       </div>
     `,
   }),
