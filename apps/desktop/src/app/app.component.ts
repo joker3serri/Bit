@@ -565,9 +565,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private async logOut(expired: boolean, userId?: string) {
-    const userBeingLoggedOut = await firstValueFrom(
-      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
-    );
+    const userBeingLoggedOut =
+      (userId as UserId) ??
+      (await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id))));
 
     // Mark account as being cleaned up so that the updateAppMenu logic (executed on syncCompleted)
     // doesn't attempt to update a user that is being logged out as we will manually
@@ -596,8 +596,6 @@ export class AppComponent implements OnInit, OnDestroy {
     } finally {
       this.finishAccountCleanUp(userBeingLoggedOut);
     }
-
-    await this.accountService.switchAccount(nextUpAccount?.id);
 
     if (nextUpAccount == null) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
