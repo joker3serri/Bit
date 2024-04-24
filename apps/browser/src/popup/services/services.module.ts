@@ -194,11 +194,6 @@ const safeProviders: SafeProvider[] = [
     deps: [LogService, I18nServiceAbstraction, StateProvider],
   }),
   safeProvider({
-    provide: CipherService,
-    useFactory: getBgService<CipherService>("cipherService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: CryptoFunctionService,
     useFactory: () => new WebCryptoFunctionService(window),
     deps: [],
