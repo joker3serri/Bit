@@ -2,6 +2,7 @@ import {
   Observable,
   combineLatest,
   distinctUntilChanged,
+  firstValueFrom,
   map,
   of,
   shareReplay,
@@ -84,17 +85,8 @@ export class AuthService implements AuthServiceAbstraction {
   }
 
   async getAuthStatus(userId?: string): Promise<AuthenticationStatus> {
-    // If we don't have an access token or userId, we're logged out
-    const isAuthenticated = await this.stateService.getIsAuthenticated({ userId: userId });
-    if (!isAuthenticated) {
-      return AuthenticationStatus.LoggedOut;
-    }
-
-    // Note: since we aggresively set the auto user key to memory if it exists on app init (see InitService)
-    // we only need to check if the user key is in memory.
-    const hasUserKey = await this.cryptoService.hasUserKeyInMemory(userId as UserId);
-
-    return hasUserKey ? AuthenticationStatus.Unlocked : AuthenticationStatus.Locked;
+    userId ??= await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
+    return await firstValueFrom(this.authStatusFor$(userId as UserId));
   }
 
   logOut(callback: () => void) {

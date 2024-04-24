@@ -1,7 +1,7 @@
 import { Directive, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom, Subject } from "rxjs";
-import { concatMap, take, takeUntil } from "rxjs/operators";
+import { concatMap, map, take, takeUntil } from "rxjs/operators";
 
 import { PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -29,6 +29,7 @@ import { BiometricStateService } from "@bitwarden/common/platform/biometrics/bio
 import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { PinLockType } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
+import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import { DialogService } from "@bitwarden/components";
 
@@ -84,8 +85,8 @@ export class LockComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.accountService.activeAccount$
       .pipe(
-        concatMap(async () => {
-          await this.load();
+        concatMap(async (account) => {
+          await this.load(account?.id);
         }),
         takeUntil(this.destroy$),
       )
@@ -113,8 +114,9 @@ export class LockComponent implements OnInit, OnDestroy {
       type: "warning",
     });
 
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
     if (confirmed) {
-      this.messagingService.send("logout");
+      this.messagingService.send("logout", { userId });
     }
   }
 
@@ -321,7 +323,7 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async load() {
+  private async load(userId: UserId) {
     // TODO: Investigate PM-3515
 
     // The loading of the lock component works as follows:
@@ -333,11 +335,11 @@ export class LockComponent implements OnInit, OnDestroy {
     //        - If they have biometrics enabled, they will be presented with the biometric prompt
 
     const availableVaultTimeoutActions = await firstValueFrom(
-      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
+      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId),
     );
     const supportsLock = availableVaultTimeoutActions.includes(VaultTimeoutAction.Lock);
     if (!supportsLock) {
-      return await this.vaultTimeoutService.logOut();
+      return await this.vaultTimeoutService.logOut(userId);
     }
 
     this.pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();

@@ -6,6 +6,7 @@ import { AuthService } from "../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AutofillSettingsServiceAbstraction } from "../../autofill/services/autofill-settings.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
+import { UserId } from "../../types/guid";
 import { MessagingService } from "../abstractions/messaging.service";
 import { PlatformUtilsService } from "../abstractions/platform-utils.service";
 import { StateService } from "../abstractions/state.service";
@@ -30,12 +31,14 @@ export class SystemService implements SystemServiceAbstraction {
   ) {}
 
   async startProcessReload(authService: AuthService): Promise<void> {
-    const accounts = await firstValueFrom(this.stateService.accounts$);
+    const accounts = await firstValueFrom(this.accountService.accounts$);
     if (accounts != null) {
       const keys = Object.keys(accounts);
       if (keys.length > 0) {
         for (const userId of keys) {
-          if ((await authService.getAuthStatus(userId)) === AuthenticationStatus.Unlocked) {
+          let status = await firstValueFrom(authService.authStatusFor$(userId as UserId));
+          status = await authService.getAuthStatus(userId);
+          if (status === AuthenticationStatus.Unlocked) {
             return;
           }
         }
