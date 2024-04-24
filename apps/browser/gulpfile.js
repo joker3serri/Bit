@@ -35,6 +35,9 @@ function buildString() {
   if (process.env.MANIFEST_VERSION) {
     build = `-mv${process.env.MANIFEST_VERSION}`;
   }
+  if (process.env.BETA_BUILD === "1") {
+    build += "-beta";
+  }
   if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== "") {
     build = `-${process.env.BUILD_NUMBER}`;
   }
@@ -81,6 +84,13 @@ function distChrome() {
     delete manifest.applications;
     delete manifest.sidebar_action;
     delete manifest.commands._execute_sidebar_action;
+
+    if (process.env.BETA_BUILD === "1") {
+      manifest.name = "Bitwarden Password Manager BETA";
+      manifest.short_name = "Bitwarden BETA";
+      manifest.description = "THIS EXTENSION IS FOR BETA TESTING BITWARDEN.";
+    }
+
     return manifest;
   });
 }
