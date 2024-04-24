@@ -31,7 +31,6 @@ const filters = {
 };
 
 function buildString() {
-  console.log("!!!", process.env);
   var build = "";
   if (process.env.MANIFEST_VERSION) {
     build = `-mv${process.env.MANIFEST_VERSION}`;
@@ -258,6 +257,11 @@ function applyBetaLabels(manifest) {
   manifest.name = "Bitwarden Password Manager BETA";
   manifest.short_name = "Bitwarden BETA";
   manifest.description = "THIS EXTENSION IS FOR BETA TESTING BITWARDEN.";
+  if (process.env.GITHUB_RUN_ID) {
+    manifest.version = `${manifest.version}.${process.env.GITHUB_RUN_ID}`;
+  } else {
+    manifest.version = `${manifest.version}.0`;
+  }
   return manifest;
 }
 
