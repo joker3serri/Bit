@@ -11,7 +11,7 @@ type ExpectedAccountState = {
   };
 };
 
-export const PIN_STATE: StateDefinitionLike = { name: "pin" };
+export const PIN_STATE: StateDefinitionLike = { name: "pinUnlock" };
 
 export const PIN_KEY_ENCRYPTED_USER_KEY: KeyDefinitionLike = {
   stateDefinition: PIN_STATE,

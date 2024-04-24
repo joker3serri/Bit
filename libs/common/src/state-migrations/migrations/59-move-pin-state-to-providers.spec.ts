@@ -39,9 +39,9 @@ function preMigrationState() {
 
 function postMigrationState() {
   return {
-    user_AccountOne_pin_pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
-    user_AccountOne_pin_protectedPin: "AccountOne_protectedPin",
-    user_AccountOne_pin_oldPinKeyEncryptedMasterKey: "AccountOne_oldPinKeyEncryptedMasterKey",
+    user_AccountOne_pinUnlock_pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
+    user_AccountOne_pinUnlock_protectedPin: "AccountOne_protectedPin",
+    user_AccountOne_pinUnlock_oldPinKeyEncryptedMasterKey: "AccountOne_oldPinKeyEncryptedMasterKey",
     authenticatedAccounts: ["AccountOne", "AccountTwo"],
     global: {
       otherStuff: "otherStuff1",
