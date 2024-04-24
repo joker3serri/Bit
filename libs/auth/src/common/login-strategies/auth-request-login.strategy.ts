@@ -3,7 +3,6 @@ import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -19,6 +18,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/src/auth/abstractions/device-trust.service.abstraction";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
@@ -62,7 +62,7 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
     stateService: StateService,
     twoFactorService: TwoFactorService,
     userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
-    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    private deviceTrustService: DeviceTrustServiceAbstraction,
     billingAccountProfileStateService: BillingAccountProfileStateService,
     kdfConfigService: KdfConfigService,
   ) {
@@ -150,7 +150,7 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
       await this.trySetUserKeyWithMasterKey();
 
       // Establish trust if required after setting user key
-      await this.deviceTrustCryptoService.trustDeviceIfRequired(userId);
+      await this.deviceTrustService.trustDeviceIfRequired(userId);
     }
   }
 

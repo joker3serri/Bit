@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
@@ -43,7 +43,7 @@ describe("AuthRequestLoginStrategy", () => {
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
   let userDecryptionOptions: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
-  let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
+  let deviceTrustService: MockProxy<DeviceTrustServiceAbstraction>;
   let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
   let kdfConfigService: MockProxy<KdfConfigService>;
 
@@ -77,7 +77,7 @@ describe("AuthRequestLoginStrategy", () => {
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
     userDecryptionOptions = mock<InternalUserDecryptionOptionsServiceAbstraction>();
-    deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
+    deviceTrustService = mock<DeviceTrustServiceAbstraction>();
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
     kdfConfigService = mock<KdfConfigService>();
 
@@ -102,7 +102,7 @@ describe("AuthRequestLoginStrategy", () => {
       stateService,
       twoFactorService,
       userDecryptionOptions,
-      deviceTrustCryptoService,
+      deviceTrustService,
       billingAccountProfileStateService,
       kdfConfigService,
     );
@@ -136,7 +136,7 @@ describe("AuthRequestLoginStrategy", () => {
     );
     expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(tokenResponse.key);
     expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
-    expect(deviceTrustCryptoService.trustDeviceIfRequired).toHaveBeenCalled();
+    expect(deviceTrustService.trustDeviceIfRequired).toHaveBeenCalled();
     expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey);
   });
 
@@ -164,6 +164,6 @@ describe("AuthRequestLoginStrategy", () => {
     expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey);
 
     // trustDeviceIfRequired should be called
-    expect(deviceTrustCryptoService.trustDeviceIfRequired).not.toHaveBeenCalled();
+    expect(deviceTrustService.trustDeviceIfRequired).not.toHaveBeenCalled();
   });
 });

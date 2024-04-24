@@ -30,11 +30,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
-import {
-  Account,
-  AccountProfile,
-  AccountTokens,
-} from "@bitwarden/common/platform/models/domain/account";
+import { Account, AccountProfile } from "@bitwarden/common/platform/models/domain/account";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
@@ -191,9 +187,6 @@ export abstract class LoginStrategy {
             name: accountInformation.name,
             email: accountInformation.email,
           },
-        },
-        tokens: {
-          ...new AccountTokens(),
         },
       }),
     );
