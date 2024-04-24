@@ -265,9 +265,6 @@ export default class RuntimeBackground {
         await openTwoFactorAuthPopout(msg);
         break;
       }
-      case "reloadPopup":
-        this.messagingService.send("reloadPopup");
-        break;
       case "emailVerificationRequired":
         this.messagingService.send("showDialog", {
           title: { key: "emailVerificationRequired" },
