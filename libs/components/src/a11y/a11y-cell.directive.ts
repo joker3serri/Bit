@@ -19,6 +19,5 @@ export class A11yCellDirective implements AfterContentChecked {
       console.error("A11yCellDirective must contain content that provides FocusableElement");
       return;
     }
-    // this.focusableChild.getFocusTarget().tabIndex = -1;
   }
 }

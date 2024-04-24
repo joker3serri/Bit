@@ -4,6 +4,7 @@ import {
   Directive,
   HostBinding,
   HostListener,
+  Input,
   QueryList,
 } from "@angular/core";
 
@@ -15,77 +16,95 @@ import { A11yRowDirective } from "./a11y-row.directive";
   standalone: true,
 })
 export class A11yGridDirective implements AfterViewInit {
-  @ContentChildren(A11yRowDirective)
-  rows: QueryList<A11yRowDirective>;
-
   @HostBinding("attr.role")
   role = "grid";
 
+  @ContentChildren(A11yRowDirective)
+  rows: QueryList<A11yRowDirective>;
+
+  /** The number of pages to navigate on `PageUp` and `PageDown` */
+  @Input() pageSize = 5;
+
   private grid: A11yCellDirective[][];
-  private activeRow: number = 0;
-  private activeCol: number = 0;
+
+  /** The row that currently has focus */
+  private activeRow = 0;
+
+  /** The cell that currently has focus */
+  private activeCol = 0;
 
   @HostListener("keydown", ["$event"])
   onKeyDown(event: KeyboardEvent) {
     switch (event.code) {
       case "ArrowUp":
-        this.updateCellFocusByDelta(0, -1);
-        break;
-      case "ArrowRight":
-        this.updateCellFocusByDelta(1, 0);
-        break;
-      case "ArrowDown":
-        this.updateCellFocusByDelta(0, 1);
-        break;
-      case "ArrowLeft":
         this.updateCellFocusByDelta(-1, 0);
         break;
+      case "ArrowRight":
+        this.updateCellFocusByDelta(0, 1);
+        break;
+      case "ArrowDown":
+        this.updateCellFocusByDelta(1, 0);
+        break;
+      case "ArrowLeft":
+        this.updateCellFocusByDelta(0, -1);
+        break;
       case "Home":
-        this.updateCellFocusByDelta(-this.activeCol, -this.activeRow);
+        this.updateCellFocusByDelta(-this.activeRow, -this.activeCol);
         break;
       case "End":
-        this.updateCellFocusByDelta(this.grid[this.grid.length - 1].length, this.grid.length);
+        this.updateCellFocusByDelta(this.grid.length, this.grid[this.grid.length - 1].length);
         break;
       case "PageUp":
-        this.updateCellFocusByDelta(0, -5);
+        this.updateCellFocusByDelta(-this.pageSize, 0);
         break;
       case "PageDown":
-        this.updateCellFocusByDelta(0, 5);
+        this.updateCellFocusByDelta(this.pageSize, 0);
         break;
       default:
         return;
     }
+
+    /** Prevent default scrolling behavior */
     event.preventDefault();
   }
 
   ngAfterViewInit(): void {
+    this.initializeGrid();
+  }
+
+  private initializeGrid(): void {
     this.grid = this.rows.map((listItem) => [...listItem.cells]);
     this.grid.flat().map((cell) => (cell.focusableChild.getFocusTarget().tabIndex = -1));
 
-    const firstCell = this.getActiveCellContent();
-    firstCell.tabIndex = 0;
+    this.getActiveCellContent().tabIndex = 0;
   }
 
+  /** Get the focusable content of the active cell */
   private getActiveCellContent(): HTMLElement {
     return this.grid[this.activeRow][this.activeCol].focusableChild.getFocusTarget();
   }
 
-  private updateCellFocusByDelta(colDelta: number, rowDelta: number) {
+  /** Move focus via a delta against the currently active gridcell */
+  private updateCellFocusByDelta(rowDelta: number, colDelta: number) {
     const prevActive = this.getActiveCellContent();
 
     this.activeCol += colDelta;
     this.activeRow += rowDelta;
 
+    // Row upper bound
     if (this.activeRow >= this.grid.length) {
       this.activeRow = this.grid.length - 1;
     }
 
+    // Row lower bound
     if (this.activeRow < 0) {
       this.activeRow = 0;
     }
 
+    // Column upper bound
     if (this.activeCol >= this.grid[this.activeRow].length) {
       if (this.activeRow < this.grid.length - 1) {
+        // Wrap to next row on right arrow
         this.activeCol = 0;
         this.activeRow += 1;
       } else {
@@ -93,8 +112,10 @@ export class A11yGridDirective implements AfterViewInit {
       }
     }
 
+    // Column lower bound
     if (this.activeCol < 0) {
       if (this.activeRow > 0) {
+        // Wrap to prev row on left arrow
         this.activeRow -= 1;
         this.activeCol = this.grid[this.activeRow].length - 1;
       } else {
