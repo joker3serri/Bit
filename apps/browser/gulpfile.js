@@ -31,7 +31,7 @@ const filters = {
 };
 
 function buildString() {
-  console.log(process.env);
+  console.log("!!!", process.env);
   var build = "";
   if (process.env.MANIFEST_VERSION) {
     build = `-mv${process.env.MANIFEST_VERSION}`;
