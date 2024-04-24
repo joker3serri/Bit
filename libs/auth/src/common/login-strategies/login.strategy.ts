@@ -27,11 +27,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import {
-  Account,
-  AccountProfile,
-  AccountTokens,
-} from "@bitwarden/common/platform/models/domain/account";
+import { Account, AccountProfile } from "@bitwarden/common/platform/models/domain/account";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
@@ -166,8 +162,8 @@ export abstract class LoginStrategy {
 
     const userId = accountInformation.sub;
 
-    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
-    const vaultTimeout = await this.stateService.getVaultTimeout();
+    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId });
+    const vaultTimeout = await this.stateService.getVaultTimeout({ userId });
 
     // set access token and refresh token before account initialization so authN status can be accurate
     // User id will be derived from the access token.
@@ -191,9 +187,6 @@ export abstract class LoginStrategy {
             kdfParallelism: tokenResponse.kdfParallelism,
             kdfType: tokenResponse.kdf,
           },
-        },
-        tokens: {
-          ...new AccountTokens(),
         },
       }),
     );
