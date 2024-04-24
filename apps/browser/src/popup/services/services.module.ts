@@ -199,11 +199,6 @@ const safeProviders: SafeProvider[] = [
     deps: [],
   }),
   safeProvider({
-    provide: CollectionService,
-    useFactory: getBgService<CollectionService>("collectionService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: LogService,
     useFactory: (platformUtilsService: PlatformUtilsService) =>
       new ConsoleLogService(platformUtilsService.isDev()),
