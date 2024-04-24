@@ -437,10 +437,11 @@ export class CipherService implements CipherServiceAbstraction {
     });
   }
 
-  async getAllDecryptedForUrl(
+  async newGetAllDecryptedForUrl(
     url: string,
     includeOtherTypes?: CipherType[],
     defaultMatch: UriMatchStrategySetting = null,
+    reindexCiphers = true,
   ): Promise<CipherView[]> {
     if (url == null && includeOtherTypes == null) {
       return Promise.resolve([]);
@@ -449,7 +450,48 @@ export class CipherService implements CipherServiceAbstraction {
     const equivalentDomains = await firstValueFrom(
       this.domainSettingsService.getUrlEquivalentDomains(url),
     );
-    const ciphers = await this.getAllDecrypted();
+    const ciphers = await this.getDecryptedCiphers();
+    defaultMatch ??= await firstValueFrom(this.domainSettingsService.defaultUriMatchStrategy$);
+
+    return ciphers.filter((cipher) => {
+      const cipherIsLogin = cipher.type === CipherType.Login && cipher.login !== null;
+
+      if (cipher.deletedDate !== null) {
+        return false;
+      }
+
+      if (
+        Array.isArray(includeOtherTypes) &&
+        includeOtherTypes.includes(cipher.type) &&
+        !cipherIsLogin
+      ) {
+        return true;
+      }
+
+      if (cipherIsLogin) {
+        return cipher.login.matchesUri(url, equivalentDomains, defaultMatch);
+      }
+
+      return false;
+    });
+  }
+
+  async getAllDecryptedForUrl(
+    url: string,
+    includeOtherTypes?: CipherType[],
+    defaultMatch: UriMatchStrategySetting = null,
+    reindexCiphers = true,
+  ): Promise<CipherView[]> {
+    if (url == null && includeOtherTypes == null) {
+      return Promise.resolve([]);
+    }
+
+    const equivalentDomains = await firstValueFrom(
+      this.domainSettingsService.getUrlEquivalentDomains(url),
+    );
+    const ciphers = reindexCiphers
+      ? await this.getAllDecrypted()
+      : await this.getDecryptedCiphers();
     defaultMatch ??= await firstValueFrom(this.domainSettingsService.defaultUriMatchStrategy$);
 
     return ciphers.filter((cipher) => {
@@ -1135,7 +1177,9 @@ export class CipherService implements CipherServiceAbstraction {
   }
 
   async setAddEditCipherInfo(value: AddEditCipherInfo) {
-    await this.addEditCipherInfoState.update(() => value);
+    await this.addEditCipherInfoState.update(() => value, {
+      shouldUpdate: (current) => !(current == null && value == null),
+    });
   }
 
   // Helpers
