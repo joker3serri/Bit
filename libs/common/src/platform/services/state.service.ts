@@ -115,14 +115,19 @@ export class StateService<
       return;
     }
 
+    // Get all likely authenticated accounts
+    const authenticatedAccounts = (
+      (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? []
+    ).filter((account) => account != null);
+
     await this.updateState(async (state) => {
-      state.authenticatedAccounts =
-        (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? [];
-      for (const i in state.authenticatedAccounts) {
-        if (i != null) {
-          state = await this.syncAccountFromDisk(state.authenticatedAccounts[i]);
-        }
+      for (const i in authenticatedAccounts) {
+        state = await this.syncAccountFromDisk(authenticatedAccounts[i]);
       }
+
+      // After all individual accounts have been added
+      state.authenticatedAccounts = authenticatedAccounts;
+
       const storedActiveUser = await this.storageService.get<string>(keys.activeUserId);
       if (storedActiveUser != null) {
         state.activeUserId = storedActiveUser;
@@ -571,6 +576,20 @@ export class StateService<
     );
   }
 
+  async setEnableDuckDuckGoBrowserIntegration(
+    value: boolean,
+    options?: StorageOptions,
+  ): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    globals.enableDuckDuckGoBrowserIntegration = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+  }
+
   /**
    * @deprecated Use UserKey instead
    */
@@ -617,24 +636,6 @@ export class StateService<
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  async getEverBeenUnlocked(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions())))
-        ?.profile?.everBeenUnlocked ?? false
-    );
-  }
-
-  async setEverBeenUnlocked(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.profile.everBeenUnlocked = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
