@@ -9,7 +9,9 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { DeviceType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -37,6 +39,7 @@ export class LockComponent extends BaseLockComponent {
   private autoPromptBiometric = false;
 
   constructor(
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
     router: Router,
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
@@ -55,12 +58,14 @@ export class LockComponent extends BaseLockComponent {
     passwordStrengthService: PasswordStrengthServiceAbstraction,
     logService: LogService,
     dialogService: DialogService,
-    deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    deviceTrustService: DeviceTrustServiceAbstraction,
     userVerificationService: UserVerificationService,
     pinCryptoService: PinCryptoServiceAbstraction,
     biometricStateService: BiometricStateService,
+    accountService: AccountService,
   ) {
     super(
+      masterPasswordService,
       router,
       i18nService,
       platformUtilsService,
@@ -77,10 +82,11 @@ export class LockComponent extends BaseLockComponent {
       policyService,
       passwordStrengthService,
       dialogService,
-      deviceTrustCryptoService,
+      deviceTrustService,
       userVerificationService,
       pinCryptoService,
       biometricStateService,
+      accountService,
     );
   }
 

@@ -10,7 +10,9 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
@@ -55,6 +57,7 @@ export class LockComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
+    protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
     protected router: Router,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
@@ -71,10 +74,11 @@ export class LockComponent implements OnInit, OnDestroy {
     protected policyService: InternalPolicyService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected dialogService: DialogService,
-    protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    protected deviceTrustService: DeviceTrustServiceAbstraction,
     protected userVerificationService: UserVerificationService,
     protected pinCryptoService: PinCryptoServiceAbstraction,
     protected biometricStateService: BiometricStateService,
+    protected accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -204,6 +208,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async doUnlockWithMasterPassword() {
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     const kdf = await this.stateService.getKdfType();
     const kdfConfig = await this.stateService.getKdfConfig();
 
@@ -213,11 +218,13 @@ export class LockComponent implements OnInit, OnDestroy {
       kdf,
       kdfConfig,
     );
-    const storedPasswordHash = await this.cryptoService.getMasterKeyHash();
+    const storedMasterKeyHash = await firstValueFrom(
+      this.masterPasswordService.masterKeyHash$(userId),
+    );
 
     let passwordValid = false;
 
-    if (storedPasswordHash != null) {
+    if (storedMasterKeyHash != null) {
       // Offline unlock possible
       passwordValid = await this.cryptoService.compareAndUpdateKeyHash(
         this.masterPassword,
@@ -242,7 +249,7 @@ export class LockComponent implements OnInit, OnDestroy {
           masterKey,
           HashPurpose.LocalAuthorization,
         );
-        await this.cryptoService.setMasterKeyHash(localKeyHash);
+        await this.masterPasswordService.setMasterKeyHash(localKeyHash, userId);
       } catch (e) {
         this.logService.error(e);
       } finally {
@@ -260,7 +267,7 @@ export class LockComponent implements OnInit, OnDestroy {
     }
 
     const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
-    await this.cryptoService.setMasterKey(masterKey);
+    await this.masterPasswordService.setMasterKey(masterKey, userId);
     await this.setUserKeyAndContinue(userKey, true);
   }
 
@@ -269,13 +276,13 @@ export class LockComponent implements OnInit, OnDestroy {
 
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
-    await this.deviceTrustCryptoService.trustDeviceIfRequired();
+    const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
+    await this.deviceTrustService.trustDeviceIfRequired(activeAccount.id);
 
     await this.doContinue(evaluatePasswordAfterUnlock);
   }
 
   private async doContinue(evaluatePasswordAfterUnlock: boolean) {
-    await this.stateService.setEverBeenUnlocked(true);
     await this.biometricStateService.resetUserPromptCancelled();
     this.messagingService.send("unlocked");
 
@@ -289,8 +296,10 @@ export class LockComponent implements OnInit, OnDestroy {
         }
 
         if (this.requirePasswordChange()) {
-          await this.stateService.setForceSetPasswordReason(
+          const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+          await this.masterPasswordService.setForceSetPasswordReason(
             ForceSetPasswordReason.WeakMasterPassword,
+            userId,
           );
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises

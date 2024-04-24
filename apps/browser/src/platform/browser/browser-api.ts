@@ -5,6 +5,8 @@ import { DeviceType } from "@bitwarden/common/enums";
 import { TabMessage } from "../../types/tab-messages";
 import { BrowserPlatformUtilsService } from "../services/platform-utils/browser-platform-utils.service";
 
+import { registerContentScriptsPolyfill } from "./browser-api.register-content-scripts-polyfill";
+
 export class BrowserApi {
   static isWebExtensionsApi: boolean = typeof browser !== "undefined";
   static isSafariApi: boolean =
@@ -351,11 +353,11 @@ export class BrowserApi {
   private static setupUnloadListeners() {
     // The MDN recommend using 'visibilitychange' but that event is fired any time the popup window is obscured as well
     // 'pagehide' works just like 'unload' but is compatible with the back/forward cache, so we prefer using that one
-    window.onpagehide = () => {
+    self.addEventListener("pagehide", () => {
       for (const [event, callback] of BrowserApi.trackedChromeEventListeners) {
         event.removeListener(callback);
       }
-    };
+    });
   }
 
   static sendMessage(subscriber: string, arg: any = {}) {
@@ -423,7 +425,7 @@ export class BrowserApi {
       return;
     }
 
-    const currentHref = window.location.href;
+    const currentHref = self.location.href;
     views
       .filter((w) => w.location.href != null && !w.location.href.includes("background.html"))
       .filter((w) => !exemptCurrentHref || w.location.href !== currentHref)
@@ -590,5 +592,42 @@ export class BrowserApi {
         callback();
       }
     });
+  }
+
+  /**
+   * Handles registration of static content scripts within manifest v2.
+   *
+   * @param contentScriptOptions - Details of the registered content scripts
+   */
+  static async registerContentScriptsMv2(
+    contentScriptOptions: browser.contentScripts.RegisteredContentScriptOptions,
+  ): Promise<browser.contentScripts.RegisteredContentScript> {
+    if (typeof browser !== "undefined" && !!browser.contentScripts?.register) {
+      return await browser.contentScripts.register(contentScriptOptions);
+    }
+
+    return await registerContentScriptsPolyfill(contentScriptOptions);
+  }
+
+  /**
+   * Handles registration of static content scripts within manifest v3.
+   *
+   * @param scripts - Details of the registered content scripts
+   */
+  static async registerContentScriptsMv3(
+    scripts: chrome.scripting.RegisteredContentScript[],
+  ): Promise<void> {
+    await chrome.scripting.registerContentScripts(scripts);
+  }
+
+  /**
+   * Handles unregistering of static content scripts within manifest v3.
+   *
+   * @param filter - Optional filter to unregister content scripts. Passing an empty object will unregister all content scripts.
+   */
+  static async unregisterContentScriptsMv3(
+    filter?: chrome.scripting.ContentScriptFilter,
+  ): Promise<void> {
+    await chrome.scripting.unregisterContentScripts(filter);
   }
 }

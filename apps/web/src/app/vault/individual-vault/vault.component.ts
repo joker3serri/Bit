@@ -86,7 +86,7 @@ import {
   BulkShareDialogResult,
   openBulkShareDialog,
 } from "./bulk-action-dialogs/bulk-share-dialog/bulk-share-dialog.component";
-import { CollectionsComponent } from "./collections.component";
+import { openIndividualVaultCollectionsDialog } from "./collections.component";
 import { FolderAddEditDialogResult, openFolderAddEditDialog } from "./folder-add-edit.component";
 import { ShareComponent } from "./share.component";
 import { VaultFilterComponent } from "./vault-filter/components/vault-filter.component";
@@ -145,8 +145,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected selectedCollection: TreeNode<CollectionView> | undefined;
   protected canCreateCollections = false;
   protected currentSearchText$: Observable<string>;
-  protected showBulkCollectionAccess$ = this.configService.getFeatureFlag$(
-    FeatureFlag.BulkCollectionAccess,
+  protected flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollectionsV1,
     false,
   );
 
@@ -272,7 +272,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       concatMap(async ([ciphers, filter, searchText]) => {
         const filterFunction = createFilterFunction(filter);
 
-        if (this.searchService.isSearchable(searchText)) {
+        if (await this.searchService.isSearchable(searchText)) {
           return await this.searchService.searchCiphers(searchText, [filterFunction], ciphers);
         }
 
@@ -283,7 +283,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const collections$ = combineLatest([nestedCollections$, filter$, this.currentSearchText$]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
-      map(([collections, filter, searchText]) => {
+      concatMap(async ([collections, filter, searchText]) => {
         if (filter.collectionId === undefined || filter.collectionId === Unassigned) {
           return [];
         }
@@ -303,7 +303,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           collectionsToReturn = selectedCollection?.children.map((c) => c.node) ?? [];
         }
 
-        if (this.searchService.isSearchable(searchText)) {
+        if (await this.searchService.isSearchable(searchText)) {
           collectionsToReturn = this.searchPipe.transform(
             collectionsToReturn,
             searchText,
@@ -568,17 +568,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async editCipherCollections(cipher: CipherView) {
-    const [modal] = await this.modalService.openViewRef(
-      CollectionsComponent,
-      this.collectionsModalRef,
-      (comp) => {
-        comp.cipherId = cipher.id;
-        comp.onSavedCollections.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refresh();
-        });
-      },
-    );
+    openIndividualVaultCollectionsDialog(this.dialogService, { data: { cipherId: cipher.id } });
   }
 
   async addCipher() {
@@ -689,6 +679,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     } else if (result.action === CollectionDialogAction.Deleted) {
       await this.collectionService.delete(result.collection?.id);
       this.refresh();
+      // Navigate away if we deleted the collection we were viewing
+      if (this.selectedCollection?.node.id === c?.id) {
+        void this.router.navigate([], {
+          queryParams: { collectionId: this.selectedCollection.parent?.node.id ?? null },
+          queryParamsHandling: "merge",
+          replaceUrl: true,
+        });
+      }
     }
   }
 
@@ -720,9 +718,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
       // Navigate away if we deleted the collection we were viewing
       if (this.selectedCollection?.node.id === collection.id) {
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.router.navigate([], {
+        void this.router.navigate([], {
           queryParams: { collectionId: this.selectedCollection.parent?.node.id ?? null },
           queryParamsHandling: "merge",
           replaceUrl: true,

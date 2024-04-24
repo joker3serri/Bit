@@ -1,16 +1,26 @@
-import { Observable, distinctUntilChanged, map, shareReplay } from "rxjs";
+import {
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  of,
+  shareReplay,
+  switchMap,
+} from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { StateService } from "../../platform/abstractions/state.service";
-import { KeySuffixOptions } from "../../platform/enums";
+import { UserId } from "../../types/guid";
 import { AccountService } from "../abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
+import { TokenService } from "../abstractions/token.service";
 import { AuthenticationStatus } from "../enums/authentication-status";
 
 export class AuthService implements AuthServiceAbstraction {
   activeAccountStatus$: Observable<AuthenticationStatus>;
+  authStatuses$: Observable<Record<UserId, AuthenticationStatus>>;
 
   constructor(
     protected accountService: AccountService,
@@ -18,9 +28,56 @@ export class AuthService implements AuthServiceAbstraction {
     protected cryptoService: CryptoService,
     protected apiService: ApiService,
     protected stateService: StateService,
+    private tokenService: TokenService,
   ) {
     this.activeAccountStatus$ = this.accountService.activeAccount$.pipe(
-      map((account) => account.status),
+      map((account) => account?.id),
+      switchMap((userId) => {
+        return this.authStatusFor$(userId);
+      }),
+    );
+
+    this.authStatuses$ = this.accountService.accounts$.pipe(
+      map((accounts) => Object.keys(accounts) as UserId[]),
+      switchMap((entries) =>
+        combineLatest(
+          entries.map((userId) =>
+            this.authStatusFor$(userId).pipe(map((status) => ({ userId, status }))),
+          ),
+        ),
+      ),
+      map((statuses) => {
+        return statuses.reduce(
+          (acc, { userId, status }) => {
+            acc[userId] = status;
+            return acc;
+          },
+          {} as Record<UserId, AuthenticationStatus>,
+        );
+      }),
+    );
+  }
+
+  authStatusFor$(userId: UserId): Observable<AuthenticationStatus> {
+    if (userId == null) {
+      return of(AuthenticationStatus.LoggedOut);
+    }
+
+    return combineLatest([
+      this.cryptoService.getInMemoryUserKeyFor$(userId),
+      this.tokenService.hasAccessToken$(userId),
+    ]).pipe(
+      map(([userKey, hasAccessToken]) => {
+        if (!hasAccessToken) {
+          return AuthenticationStatus.LoggedOut;
+        }
+
+        if (!userKey) {
+          return AuthenticationStatus.Locked;
+        }
+
+        return AuthenticationStatus.Unlocked;
+      }),
       distinctUntilChanged(),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
@@ -33,31 +90,11 @@ export class AuthService implements AuthServiceAbstraction {
       return AuthenticationStatus.LoggedOut;
     }
 
-    // If we don't have a user key in memory, we're locked
-    if (!(await this.cryptoService.hasUserKeyInMemory(userId))) {
-      // Check if the user has vault timeout set to never and verify that
-      // they've never unlocked their vault
-      const neverLock =
-        (await this.cryptoService.hasUserKeyStored(KeySuffixOptions.Auto, userId)) &&
-        !(await this.stateService.getEverBeenUnlocked({ userId: userId }));
+    // Note: since we aggresively set the auto user key to memory if it exists on app init (see InitService)
+    // we only need to check if the user key is in memory.
+    const hasUserKey = await this.cryptoService.hasUserKeyInMemory(userId as UserId);
 
-      if (neverLock) {
-        // Attempt to get the key from storage and set it in memory
-        const userKey = await this.cryptoService.getUserKeyFromStorage(
-          KeySuffixOptions.Auto,
-          userId,
-        );
-        await this.cryptoService.setUserKey(userKey, userId);
-      }
-    }
-
-    // We do another check here in case setting the auto key failed
-    const hasKeyInMemory = await this.cryptoService.hasUserKeyInMemory(userId);
-    if (!hasKeyInMemory) {
-      return AuthenticationStatus.Locked;
-    }
-
-    return AuthenticationStatus.Unlocked;
+    return hasUserKey ? AuthenticationStatus.Unlocked : AuthenticationStatus.Locked;
   }
 
   logOut(callback: () => void) {

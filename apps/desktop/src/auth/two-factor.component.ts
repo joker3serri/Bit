@@ -7,10 +7,12 @@ import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import {
   LoginStrategyServiceAbstraction,
+  LoginEmailServiceAbstraction,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -56,10 +58,12 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     logService: LogService,
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
-    loginService: LoginService,
+    loginEmailService: LoginEmailServiceAbstraction,
     userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    accountService: AccountService,
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
@@ -75,10 +79,12 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       logService,
       twoFactorService,
       appIdService,
-      loginService,
+      loginEmailService,
       userDecryptionOptionsService,
       ssoLoginService,
       configService,
+      masterPasswordService,
+      accountService,
     );
     super.onSuccessfulLogin = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.

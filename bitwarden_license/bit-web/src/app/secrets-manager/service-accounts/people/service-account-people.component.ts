@@ -128,7 +128,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("serviceAccountAccessUpdated"),
+        this.i18nService.t("machineAccountAccessUpdated"),
       );
     } catch (e) {
       this.validationService.showError(e);
@@ -196,7 +196,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     selectedPolicies: ApItemValueType[],
   ): Promise<void> {
     if (showAccessRemovalWarning) {
-      await this.router.navigate(["sm", this.organizationId, "service-accounts"]);
+      await this.router.navigate(["sm", this.organizationId, "machine-accounts"]);
     } else if (
       this.accessPolicySelectorService.isAccessRemoval(currentAccessPolicies, selectedPolicies)
     ) {
@@ -206,8 +206,8 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
 
   private async showWarning(): Promise<boolean> {
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "smAccessRemovalWarningSaTitle" },
-      content: { key: "smAccessRemovalWarningSaMessage" },
+      title: { key: "smAccessRemovalWarningMaTitle" },
+      content: { key: "smAccessRemovalWarningMaMessage" },
       acceptButtonText: { key: "removeAccess" },
       cancelButtonText: { key: "cancel" },
       type: "warning",
@@ -218,7 +218,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
   private async showAccessTokenStillAvailableWarning(): Promise<void> {
     await this.dialogService.openSimpleDialog({
       title: { key: "saPeopleWarningTitle" },
-      content: { key: "saPeopleWarningMessage" },
+      content: { key: "maPeopleWarningMessage" },
       type: "warning",
       acceptButtonText: { key: "close" },
       cancelButtonText: null,

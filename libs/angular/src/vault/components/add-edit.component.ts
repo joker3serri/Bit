@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { concatMap, Observable, Subject, takeUntil } from "rxjs";
+import { concatMap, firstValueFrom, Observable, Subject, takeUntil } from "rxjs";
 
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -402,6 +402,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  removePasskey() {
+    if (this.cipher.type !== CipherType.Login || this.cipher.login.fido2Credentials == null) {
+      return;
+    }
+
+    this.cipher.login.fido2Credentials = null;
+  }
+
   onCardNumberChange(): void {
     this.cipher.card.brand = CardView.getCardBrandByPatterns(this.cipher.card.number);
   }
@@ -584,7 +592,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.writeableCollections.forEach((c) => ((c as any).checked = false));
     }
     if (this.cipher.organizationId != null) {
-      this.collections = this.writeableCollections.filter(
+      this.collections = this.writeableCollections?.filter(
         (c) => c.organizationId === this.cipher.organizationId,
       );
       const org = await this.organizationService.get(this.cipher.organizationId);
@@ -654,7 +662,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
     // if a cipher is unassigned we want to check if they are an admin or have permission to edit any collection
     if (!cipher.collectionIds) {
-      orgAdmin = this.organization?.canEditAnyCollection;
+      orgAdmin = this.organization?.canEditUnassignedCiphers();
     }
 
     return this.cipher.id == null
@@ -663,14 +671,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipher() {
-    const asAdmin = this.organization?.canEditAnyCollection;
+    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
     return this.cipher.isDeleted
       ? this.cipherService.deleteWithServer(this.cipher.id, asAdmin)
       : this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
   }
 
   protected restoreCipher() {
-    const asAdmin = this.organization?.canEditAnyCollection;
+    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
     return this.cipherService.restoreWithServer(this.cipher.id, asAdmin);
   }
 
@@ -679,7 +687,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async loadAddEditCipherInfo(): Promise<boolean> {
-    const addEditCipherInfo: any = await this.stateService.getAddEditCipherInfo();
+    const addEditCipherInfo: any = await firstValueFrom(this.cipherService.addEditCipherInfo$);
     const loadedSavedInfo = addEditCipherInfo != null;
 
     if (loadedSavedInfo) {
@@ -692,7 +700,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       }
     }
 
-    await this.stateService.setAddEditCipherInfo(null);
+    await this.cipherService.setAddEditCipherInfo(null);
 
     return loadedSavedInfo;
   }
