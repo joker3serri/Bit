@@ -5,11 +5,7 @@
 import { Fido2ContentScript } from "../enums/fido2-content-script.enum";
 
 (function (globalContext) {
-  const shouldExecuteContentScript =
-    globalContext.document.contentType === "text/html" &&
-    globalContext.document.location.protocol === "https:";
-
-  if (!shouldExecuteContentScript) {
+  if (globalContext.document.contentType !== "text/html") {
     return;
   }
 
