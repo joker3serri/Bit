@@ -58,7 +58,7 @@ export class LockComponent extends BaseLockComponent {
     policyApiService: PolicyApiServiceAbstraction,
     policyService: InternalPolicyService,
     passwordStrengthService: PasswordStrengthServiceAbstraction,
-    private authService: AuthService,
+    authService: AuthService,
     dialogService: DialogService,
     deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     userVerificationService: UserVerificationService,
@@ -90,6 +90,7 @@ export class LockComponent extends BaseLockComponent {
       pinCryptoService,
       biometricStateService,
       accountService,
+      authService,
     );
     this.successRoute = "/tabs/current";
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;

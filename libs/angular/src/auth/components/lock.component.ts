@@ -11,9 +11,11 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
@@ -46,6 +48,7 @@ export class LockComponent implements OnInit, OnDestroy {
   supportsBiometric: boolean;
   biometricLock: boolean;
 
+  private activeUserId: UserId;
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
   protected onSuccessfulSubmit: () => Promise<void>;
@@ -80,12 +83,14 @@ export class LockComponent implements OnInit, OnDestroy {
     protected pinCryptoService: PinCryptoServiceAbstraction,
     protected biometricStateService: BiometricStateService,
     protected accountService: AccountService,
+    protected authService: AuthService,
   ) {}
 
   async ngOnInit() {
     this.accountService.activeAccount$
       .pipe(
         concatMap(async (account) => {
+          this.activeUserId = account?.id;
           await this.load(account?.id);
         }),
         takeUntil(this.destroy$),
@@ -114,9 +119,8 @@ export class LockComponent implements OnInit, OnDestroy {
       type: "warning",
     });
 
-    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
     if (confirmed) {
-      this.messagingService.send("logout", { userId });
+      this.messagingService.send("logout", { userId: this.activeUserId });
     }
   }
 
@@ -327,12 +331,24 @@ export class LockComponent implements OnInit, OnDestroy {
     // TODO: Investigate PM-3515
 
     // The loading of the lock component works as follows:
-    //   1. First, is locking a valid timeout action?  If not, we will log the user out.
-    //   2. If locking IS a valid timeout action, we proceed to show the user the lock screen.
+    //   1. If the user is unlocked, we're here in error so we navigate to the home page
+    //   2. First, is locking a valid timeout action?  If not, we will log the user out.
+    //   3. If locking IS a valid timeout action, we proceed to show the user the lock screen.
     //      The user will be able to unlock as follows:
     //        - If they have a PIN set, they will be presented with the PIN input
     //        - If they have a master password and no PIN, they will be presented with the master password input
     //        - If they have biometrics enabled, they will be presented with the biometric prompt
+
+    const isUnlocked = await firstValueFrom(
+      this.authService
+        .authStatusFor$(userId)
+        .pipe(map((status) => status === AuthenticationStatus.Unlocked)),
+    );
+    if (isUnlocked) {
+      // navigate to home
+      await this.router.navigate(["/"]);
+      return;
+    }
 
     const availableVaultTimeoutActions = await firstValueFrom(
       this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId),
