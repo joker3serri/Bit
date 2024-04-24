@@ -5,10 +5,10 @@ import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/an
 
 import { AvatarModule, ButtonModule, IconButtonModule } from "@bitwarden/components";
 
-import { PopupBottomNavigationComponent } from "./popup-bottom-navigation.component";
 import { PopupFooterComponent } from "./popup-footer.component";
 import { PopupHeaderComponent } from "./popup-header.component";
-import { PopupLayoutComponent } from "./popup-layout.component";
+import { PopupPageComponent } from "./popup-page.component";
+import { PopupTabNavigationComponent } from "./popup-tab-navigation.component";
 
 @Component({
   selector: "vault-placeholder",
@@ -95,14 +95,14 @@ class MockCurrentAccountComponent {}
 
 export default {
   title: "Browser/Popup Layout",
-  component: PopupLayoutComponent,
+  component: PopupPageComponent,
   decorators: [
     moduleMetadata({
       imports: [
-        PopupLayoutComponent,
+        PopupPageComponent,
         PopupHeaderComponent,
         PopupFooterComponent,
-        PopupBottomNavigationComponent,
+        PopupTabNavigationComponent,
         CommonModule,
         ButtonModule,
         RouterModule,
@@ -134,82 +134,63 @@ export default {
   ],
 } as Meta;
 
-type Story = StoryObj<PopupLayoutComponent>;
+type Story = StoryObj<PopupPageComponent>;
 
-export const TopLevelPage: Story = {
+export const PopupTabNavigation: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px]">
-        <popup-layout>
-          <popup-header slot="popupHeader" pageTitle="Test">
-            <ng-container slot="end">
-              <mock-popout-button></mock-popout-button>
-              <mock-current-account></mock-current-account>
-            </ng-container>
-          </popup-header>
-          <router-outlet></router-outlet>
-          <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
-        </popup-layout>
+      <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+        <popup-tab-navigation>
+          <popup-page>
+            <popup-header slot="header" pageTitle="Test">
+              <ng-container slot="end">
+                <mock-add-button></mock-add-button>
+                <mock-popout-button></mock-popout-button>
+                <mock-current-account></mock-current-account>
+              </ng-container>
+            </popup-header>
+            <router-outlet></router-outlet>
+          </popup-page>
+        </popup-tab-navigation>
       </div>
     `,
   }),
 };
 
-export const TopLevelWithAction: Story = {
+export const PopupPage: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px]">
-        <popup-layout>
-          <popup-header slot="popupHeader" pageTitle="Test">
-            <ng-container slot="end">
-              <mock-add-button></mock-add-button>
-              <mock-popout-button></mock-popout-button>
-              <mock-current-account></mock-current-account>
-            </ng-container>
-          </popup-header>
-          <router-outlet></router-outlet>
-          <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
-        </popup-layout>
-      </div>
-    `,
-  }),
-};
-
-export const SubPageWithAction: Story = {
-  render: (args) => ({
-    props: args,
-    template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px]">
-        <popup-layout>
-          <popup-header showBackButton="true" slot="popupHeader" pageTitle="Test">
+      <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+        <popup-page>
+          <popup-header showBackButton="true" slot="header" pageTitle="Test">
             <mock-popout-button slot="end"></mock-popout-button>
           </popup-header>
           <router-outlet></router-outlet>
-          <popup-footer slot="popupFooter">
+        </popup-page>
+      </div>
+    `,
+  }),
+};
+
+export const PopupPageWithFooter: Story = {
+  render: (args) => ({
+    props: args,
+    template: /* HTML */ `
+      <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+        <popup-page>
+          <popup-header showBackButton="true" slot="header" pageTitle="Test">
+            <mock-popout-button slot="end"></mock-popout-button>
+          </popup-header>
+          <router-outlet></router-outlet>
+          <popup-footer slot="footer">
             <div class="tw-flex tw-gap-2">
               <button bitButton buttonType="primary">Save</button>
               <button bitButton buttonType="secondary">Cancel</button>
             </div>
           </popup-footer>
-        </popup-layout>
-      </div>
-    `,
-  }),
-};
-
-export const SubPage: Story = {
-  render: (args) => ({
-    props: args,
-    template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px]">
-        <popup-layout>
-          <popup-header showBackButton="true" slot="popupHeader" pageTitle="Test">
-            <mock-popout-button slot="end"></mock-popout-button>
-          </popup-header>
-          <router-outlet></router-outlet>
-        </popup-layout>
+        </popup-page>
       </div>
     `,
   }),
@@ -219,17 +200,18 @@ export const PoppedOut: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[900px]">
-        <popup-layout>
-          <popup-header slot="popupHeader" pageTitle="Test" poppedOut="true">
-            <ng-container slot="end">
-              <mock-add-button></mock-add-button>
-              <mock-current-account></mock-current-account>
-            </ng-container>
-          </popup-header>
-          <router-outlet></router-outlet>
-          <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
-        </popup-layout>
+      <div class="tw-h-[640px] tw-w-[900px] tw-border tw-border-solid tw-border-secondary-300">
+        <popup-tab-navigation>
+          <popup-page>
+            <popup-header slot="header" pageTitle="Test">
+              <ng-container slot="end">
+                <mock-add-button></mock-add-button>
+                <mock-current-account></mock-current-account>
+              </ng-container>
+            </popup-header>
+            <router-outlet></router-outlet>
+          </popup-page>
+        </popup-tab-navigation>
       </div>
     `,
   }),

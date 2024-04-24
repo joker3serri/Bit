@@ -5,12 +5,15 @@ import { RouterModule } from "@angular/router";
 import { LinkModule } from "@bitwarden/components";
 
 @Component({
-  selector: "popup-bottom-navigation",
-  templateUrl: "popup-bottom-navigation.component.html",
+  selector: "popup-tab-navigation",
+  templateUrl: "popup-tab-navigation.component.html",
   standalone: true,
   imports: [CommonModule, LinkModule, RouterModule],
+  host: {
+    class: "tw-block tw-h-full tw-w-full tw-flex tw-flex-col",
+  },
 })
-export class PopupBottomNavigationComponent {
+export class PopupTabNavigationComponent {
   navButtons = [
     {
       label: "Vault",

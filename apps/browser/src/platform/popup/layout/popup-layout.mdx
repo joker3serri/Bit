@@ -7,30 +7,49 @@ import * as stories from "./popup-layout.stories";
 Please note that because these stories use `router-outlet`, there are issues with rendering content
 when Light & Dark mode is selected. The stories are best viewed by selecting one color mode.
 
-# Popup Layout
+# Popup Tab Navigation
 
-The popup layout is the main layout component for the Bitwarden browser extension. It handles
-positioning the `header` and `footer` elements, and inserting the rest of the content into the
-`main` element with scroll. There is also a max-width built in so that the page looks nice when the
-extension is popped out.
+The popup tab navigation component is the component that composes together the popup page and the
+bottom tab navigation footer.
+
+The navigation footer contains the 4 main page links for the browser extension. It uses the Angular
+router to determine which page is currently active, and style the button appropriately. Clicking on
+the buttons will navigate to the correct route. The navigation footer has a max-width built in so
+that the page looks nice when the extension is popped out.
+
+Long button names will be ellipsed.
+
+Usage example:
+
+```
+<popup-tab-navigation>
+  <popup-page></popup-page>
+</popup-tab-navigation>
+```
+
+# Popup Page
+
+The popup page handles positioning a page's `header` and `footer` elements, and inserting the rest
+of the content into the `main` element with scroll. There is also a max-width built in so that the
+page looks nice when the extension is popped out.
 
 **Slots**
 
-- `popupHeader`
+- `header`
   - Use `popup-header` component
-- `popupFooter`
-  - Use either `popup-footer` or `popup-bottom-navigation` components
+- `footer`
+  - Use the `popup-footer` component
 - default
   - Use `router-outlet`
 
 Basic usage example:
 
 ```
-<popup-layout>
-  <popup-header slot="popupHeader"></popup-header>
+<popup-page>
+  <popup-header slot="header"></popup-header>
   <router-outlet></router-outlet>
-  <popup-bottom-navigation slot="popupFooter"></popup-bottom-navigation>
-</popup-layout>
+  <popup-footer slot="footer"></popup-footer>
+</popup-page>
 ```
 
 ## Popup header
@@ -67,20 +86,6 @@ Common interactive elements to insert into the `end` slot are:
 - "Add" button: this can be accomplished with the Button component and any custom functionality for
   that particular page
 
-## Popup bottom navigation
-
-Popup bottom navigation contains the 4 main page links for the browser extension. It uses the
-Angular router to determine which page is currently active, and style the button appropriately.
-Clicking on the buttons will navigate to the correct route.
-
-Long button names will be ellipsed.
-
-Usage example:
-
-```
-<popup-bottom-navigation></popup-bottom-navigation>
-```
-
 ## Popup footer
 
 Popup footer should be used when the page displays action buttons. It functions similarly to the
@@ -104,29 +109,15 @@ There are a few types of pages that are used in the browser extension.
 
 View the story source code to see examples of how to construct these types of pages.
 
-## Top-level page
+## Extension Tab
 
-This is an example of what a top-level page in the browser extension should look like. The stories
-use mock components for the page content and for the buttons in the header.
+<Story of={stories.PopupTabNavigation} />
 
-<Story of={stories.TopLevelPage} />
+## Extension Page
 
-This is an example of what a top-level page with the "Add" button should look like. The stories use
-mock components for the page content and for the buttons in the header.
+<Story of={stories.PopupPage} />
 
-<Story of={stories.TopLevelWithAction} />
-
-## Subpage
-
-This is an example of what a subpage with an action footer should look like. The stories use mock
-components for the page content and for the footer buttons.
-
-<Story of={stories.SubPageWithAction} />
-
-This is an example of what a subpage without an action footer should look like. The stories use mock
-components for the page content.
-
-<Story of={stories.SubPage} />
+<Story of={stories.PopupPageWithFooter} />
 
 ## Popped out
 
