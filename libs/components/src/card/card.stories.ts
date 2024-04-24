@@ -52,15 +52,8 @@ export const WithinSections: Story = {
           </bit-section>
 
           <bit-section>
+            <h2 bitTypography="h5">Bar</h2>
             <bit-card>
-                <h2 bitTypography="h5">Bar</h2>
-                <p bitTypography="body1" class="!tw-mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae congue risus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc elementum odio nibh, eget pellentesque sem ornare vitae. Etiam vel ante et velit fringilla egestas a sed sem. Fusce molestie nisl et nisi accumsan dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed eu risus ex. </p>
-            </bit-card>
-          </bit-section>
-
-          <bit-section>
-            <bit-card>
-                <h2 bitTypography="h5">Bar</h2>
                 <p bitTypography="body1" class="!tw-mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae congue risus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc elementum odio nibh, eget pellentesque sem ornare vitae. Etiam vel ante et velit fringilla egestas a sed sem. Fusce molestie nisl et nisi accumsan dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed eu risus ex. </p>
             </bit-card>
           </bit-section>
