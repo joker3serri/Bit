@@ -242,7 +242,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     );
     userDecryptionOpts.hasMasterPassword = true;
     await this.userDecryptionOptionsService.setUserDecryptionOptions(userDecryptionOpts);
-    await this.kdfConfigService.setKdfConfig(this.kdfConfig);
+    await this.kdfConfigService.setKdfConfig(this.userId, this.kdfConfig);
     await this.masterPasswordService.setMasterKey(masterKey, this.userId);
     await this.cryptoService.setUserKey(userKey[0]);
 

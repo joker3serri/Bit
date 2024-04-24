@@ -203,6 +203,7 @@ export abstract class LoginStrategy {
     );
 
     await this.KdfConfigService.setKdfConfig(
+      userId as UserId,
       tokenResponse.kdf === KdfType.PBKDF2_SHA256
         ? new PBKDF2KdfConfig(tokenResponse.kdfIterations)
         : new Argon2KdfConfig(

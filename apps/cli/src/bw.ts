@@ -358,6 +358,8 @@ export class Main {
 
     this.masterPasswordService = new MasterPasswordService(this.stateProvider);
 
+    this.kdfConfigService = new KdfConfigService(this.stateProvider);
+
     this.cryptoService = new CryptoService(
       this.masterPasswordService,
       this.keyGenerationService,
@@ -490,8 +492,6 @@ export class Main {
     this.billingAccountProfileStateService = new DefaultBillingAccountProfileStateService(
       this.stateProvider,
     );
-
-    this.kdfConfigService = new KdfConfigService(this.stateProvider);
 
     this.loginStrategyService = new LoginStrategyService(
       this.accountService,
