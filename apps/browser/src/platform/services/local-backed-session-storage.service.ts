@@ -210,11 +210,7 @@ export class LocalBackedSessionStorageService
         return value1 === value2;
       }
 
-      if (JSON.stringify(value1) === JSON.stringify(value2)) {
-        return true;
-      }
-
-      return Object.entries(value1).sort().toString() === Object.entries(value2).sort().toString();
+      return JSON.stringify(value1) === JSON.stringify(value2);
     } catch (e) {
       this.logService.error(
         `error comparing values\n${JSON.stringify(value1)}\n${JSON.stringify(value2)}`,
