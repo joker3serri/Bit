@@ -16,6 +16,7 @@ import { ReusedPasswordsReportComponent as OrgReusedPasswordsReportComponent } f
 import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent } from "../admin-console/organizations/tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../admin-console/organizations/tools/weak-passwords-report.component";
 import { ProvidersComponent } from "../admin-console/providers/providers.component";
+import { VerifyRecoverDeleteProviderComponent } from "../admin-console/providers/verify-recover-delete-provider.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
@@ -188,6 +189,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
+    VerifyRecoverDeleteProviderComponent,
     LowKdfComponent,
   ],
   exports: [
@@ -265,6 +267,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
+    VerifyRecoverDeleteProviderComponent,
     LowKdfComponent,
     HeaderModule,
     DangerZoneComponent,
