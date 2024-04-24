@@ -349,7 +349,7 @@ export class LockComponent implements OnInit, OnDestroy {
     ephemeralPinSet ||= new EncString(await this.pinService.getOldPinKeyEncryptedMasterKey(userId)); // TODO-rr-bw: verify
 
     this.pinEnabled =
-      (this.pinLockType === "TRANSIENT" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";
+      (this.pinLockType === "EPHEMERAL" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";
     this.masterPasswordEnabled = await this.userVerificationService.hasMasterPassword();
 
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();

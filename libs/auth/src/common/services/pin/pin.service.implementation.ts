@@ -24,10 +24,10 @@ import { PinServiceAbstraction } from "../../abstractions/pin.service.abstractio
 /**
  * - DISABLED   : No PIN set.
  * - PERSISTENT : PIN is set and persists through client reset.
- * - TRANSIENT  : PIN is set, but does not persist through client reset.
+ * - EPHEMERAL  : PIN is set, but does not persist through client reset.
  *                After client reset the master password is required to unlock.
  */
-export type PinLockType = "DISABLED" | "PERSISTENT" | "TRANSIENT";
+export type PinLockType = "DISABLED" | "PERSISTENT" | "EPHEMERAL";
 
 /**
  * Persists through a client reset. Used when require lock with MP on client restart is disabled.
@@ -235,7 +235,7 @@ export class PinService implements PinServiceAbstraction {
       !aPinKeyEncryptedUserKeyIsSet &&
       !anOldPinKeyEncryptedMasterKeyIsSet
     ) {
-      return "TRANSIENT";
+      return "EPHEMERAL";
     } else {
       return "DISABLED";
     }
@@ -252,7 +252,7 @@ export class PinService implements PinServiceAbstraction {
 
     try {
       const pinLockType: PinLockType = await this.getPinLockType(userId);
-      const requireMasterPasswordOnClientRestart = pinLockType === "TRANSIENT";
+      const requireMasterPasswordOnClientRestart = pinLockType === "EPHEMERAL";
 
       const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
         await this.getPinKeyEncryptedKeys(pinLockType, userId);
@@ -437,7 +437,7 @@ export class PinService implements PinServiceAbstraction {
             : undefined,
         };
       }
-      case "TRANSIENT": {
+      case "EPHEMERAL": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral(userId);
         const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify
 

@@ -83,7 +83,7 @@ describe("VaultTimeoutSettingsService", () => {
       expect(result).toContain(VaultTimeoutAction.Lock);
     });
 
-    it("contains Lock when the user has a transient/ephemeral PIN configured", async () => {
+    it("contains Lock when the user has an ephemeral PIN configured", async () => {
       stateService.getProtectedPin.mockResolvedValue("some-key");
 
       const result = await firstValueFrom(service.availableVaultTimeoutActions$());
