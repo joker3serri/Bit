@@ -216,10 +216,6 @@ export class LocalBackedSessionStorageService
       return false;
     }
 
-    if (typeof value1 !== "object" || typeof value2 !== "object") {
-      return value1 === value2;
-    }
-
     if (JSON.stringify(value1) === JSON.stringify(value2)) {
       return true;
     }
