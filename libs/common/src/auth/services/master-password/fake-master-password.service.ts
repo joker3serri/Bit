@@ -67,6 +67,6 @@ export class FakeMasterPasswordService implements InternalMasterPasswordServiceA
     userKey?: EncString,
     userId?: string,
   ): Promise<UserKey> {
-    return false as any; // TODO-rr-bw
+    return this.mock.decryptUserKeyWithMasterKey(masterKey, userKey, userId);
   }
 }

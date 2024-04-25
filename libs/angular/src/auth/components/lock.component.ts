@@ -346,7 +346,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.pinLockType = await this.pinService.getPinLockType(userId);
 
     let ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
-    ephemeralPinSet ||= new EncString(await this.pinService.getOldPinKeyEncryptedMasterKey(userId)); // TODO-rr-bw: verify
+    ephemeralPinSet ||= new EncString(await this.pinService.getOldPinKeyEncryptedMasterKey(userId));
 
     this.pinEnabled =
       (this.pinLockType === "EPHEMERAL" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";

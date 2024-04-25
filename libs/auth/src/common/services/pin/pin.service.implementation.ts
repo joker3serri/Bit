@@ -38,7 +38,7 @@ const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
   "pinKeyEncryptedUserKey",
   {
     deserializer: (jsonValue) => jsonValue,
-    clearOn: ["logout"], // TODO-rr-bw: verify
+    clearOn: ["logout"],
   },
 );
 
@@ -198,19 +198,19 @@ export class PinService implements PinServiceAbstraction {
 
     const pinKey = await this.makePinKey(
       pin,
-      (await firstValueFrom(this.accountService.activeAccount$))?.email, // TODO-rr-bw: verify (could this user possibly be different from the UserId passed in?)
+      (await firstValueFrom(this.accountService.activeAccount$))?.email,
       await this.stateService.getKdfType({ userId }),
       await this.stateService.getKdfConfig({ userId }),
     );
 
-    return await this.encryptService.encrypt(userKey.key, pinKey); // TODO-rr-bw: verify that I can use encryptService.encrypt instead of cryptoService.encrypt
+    return await this.encryptService.encrypt(userKey.key, pinKey);
   }
 
   async createProtectedPin(pin: string, userKey: UserKey) {
     if (!userKey) {
       throw new Error("No UserKey provided. Cannot create protectedPin.");
     }
-    return await this.encryptService.encrypt(pin, userKey); // TODO-rr-bw: verify that I can use encryptService.encrypt instead of cryptoService.encrypt
+    return await this.encryptService.encrypt(pin, userKey);
   }
 
   async makePinKey(pin: string, salt: string, kdf: KdfType, kdfConfig: KdfConfig): Promise<PinKey> {
@@ -439,11 +439,11 @@ export class PinService implements PinServiceAbstraction {
       }
       case "EPHEMERAL": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral(userId);
-        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify
+        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId);
 
         return {
           pinKeyEncryptedUserKey,
-          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey // TODO-rr-bw: verify
+          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey
             ? new EncString(oldPinKeyEncryptedMasterKey)
             : undefined,
         };

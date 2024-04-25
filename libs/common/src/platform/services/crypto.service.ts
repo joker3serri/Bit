@@ -769,7 +769,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
       await this.pinService.storePinKeyEncryptedUserKey(
         pinKeyEncryptedUserKey,
-        noPreExistingPersistentKey, // TODO-rr-bw: verify
+        noPreExistingPersistentKey,
         userId,
       );
       // We can't always clear deprecated keys because the pin is only
