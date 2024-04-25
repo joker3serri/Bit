@@ -26,7 +26,6 @@ describe("Browser State Service", () => {
   let diskStorageService: MockProxy<AbstractStorageService>;
   let logService: MockProxy<LogService>;
   let stateFactory: MockProxy<StateFactory<GlobalState, Account>>;
-  let useAccountCache: boolean;
   let environmentService: MockProxy<EnvironmentService>;
   let tokenService: MockProxy<TokenService>;
   let migrationRunner: MockProxy<MigrationRunner>;
@@ -45,8 +44,6 @@ describe("Browser State Service", () => {
     environmentService = mock();
     tokenService = mock();
     migrationRunner = mock();
-    // turn off account cache for tests
-    useAccountCache = false;
 
     state = new State(new GlobalState());
     state.accounts[userId] = new Account({
@@ -76,7 +73,6 @@ describe("Browser State Service", () => {
         environmentService,
         tokenService,
         migrationRunner,
-        useAccountCache,
       );
     });
 

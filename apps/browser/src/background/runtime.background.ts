@@ -11,7 +11,7 @@ import { SystemService } from "@bitwarden/common/platform/abstractions/system.se
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 
-import { MessageListener } from "../../../../libs/common/src/platform/messaging";
+import { MessageListener, isExternalMessage } from "../../../../libs/common/src/platform/messaging";
 import {
   closeUnlockPopout,
   openSsoAuthResultPopout,
@@ -267,7 +267,9 @@ export default class RuntimeBackground {
         break;
       }
       case "reloadPopup":
-        this.messagingService.send("reloadPopup");
+        if (isExternalMessage(msg)) {
+          this.messagingService.send("reloadPopup");
+        }
         break;
       case "emailVerificationRequired":
         this.messagingService.send("showDialog", {
