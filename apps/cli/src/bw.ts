@@ -18,21 +18,23 @@ import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
 import { OrganizationApiService } from "@bitwarden/common/admin-console/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/services/organization/organization.service";
 import { OrganizationUserServiceImplementation } from "@bitwarden/common/admin-console/services/organization-user/organization-user.service.implementation";
 import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
+import { ProviderApiService } from "@bitwarden/common/admin-console/services/provider/provider-api.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
-import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
+import { DeviceTrustService } from "@bitwarden/common/auth/services/device-trust.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
@@ -58,10 +60,10 @@ import {
 } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions, LogLevelType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
+import { MessageSender } from "@bitwarden/common/platform/messaging";
 import { Account } from "@bitwarden/common/platform/models/domain/account";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
-import { BroadcasterService } from "@bitwarden/common/platform/services/broadcaster.service";
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
 import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
@@ -73,9 +75,9 @@ import { KeyGenerationService } from "@bitwarden/common/platform/services/key-ge
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-import { NoopMessagingService } from "@bitwarden/common/platform/services/noop-messaging.service";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
+import { UserKeyInitService } from "@bitwarden/common/platform/services/user-key-init.service";
 import {
   ActiveUserStateProvider,
   DerivedStateProvider,
@@ -153,7 +155,7 @@ global.DOMParser = new jsdom.JSDOM().window.DOMParser;
 const packageJson = require("../package.json");
 
 export class Main {
-  messagingService: NoopMessagingService;
+  messagingService: MessageSender;
   storageService: LowdbStorageService;
   secureStorageService: NodeEnvSecureStorageService;
   memoryStorageService: MemoryStorageService;
@@ -210,14 +212,13 @@ export class Main {
   organizationService: OrganizationService;
   providerService: ProviderService;
   twoFactorService: TwoFactorService;
-  broadcasterService: BroadcasterService;
   folderApiService: FolderApiService;
   userVerificationApiService: UserVerificationApiService;
   organizationApiService: OrganizationApiServiceAbstraction;
   syncNotifierService: SyncNotifierService;
   sendApiService: SendApiService;
   devicesApiService: DevicesApiServiceAbstraction;
-  deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
+  deviceTrustService: DeviceTrustServiceAbstraction;
   authRequestService: AuthRequestService;
   configApiService: ConfigApiServiceAbstraction;
   configService: ConfigService;
@@ -232,6 +233,8 @@ export class Main {
   stateEventRunnerService: StateEventRunnerService;
   biometricStateService: BiometricStateService;
   billingAccountProfileStateService: BillingAccountProfileStateService;
+  providerApiService: ProviderApiServiceAbstraction;
+  userKeyInitService: UserKeyInitService;
 
   constructor() {
     let p = null;
@@ -295,7 +298,7 @@ export class Main {
       stateEventRegistrarService,
     );
 
-    this.messagingService = new NoopMessagingService();
+    this.messagingService = MessageSender.EMPTY;
 
     this.accountService = new AccountServiceImplementation(
       this.messagingService,
@@ -308,9 +311,7 @@ export class Main {
       this.singleUserStateProvider,
     );
 
-    this.derivedStateProvider = new DefaultDerivedStateProvider(
-      this.memoryStorageForStateProviders,
-    );
+    this.derivedStateProvider = new DefaultDerivedStateProvider(storageServiceProvider);
 
     this.stateProvider = new DefaultStateProvider(
       this.activeUserStateProvider,
@@ -419,8 +420,6 @@ export class Main {
 
     this.searchService = new SearchService(this.logService, this.i18nService, this.stateProvider);
 
-    this.broadcasterService = new BroadcasterService();
-
     this.collectionService = new CollectionService(
       this.cryptoService,
       this.i18nService,
@@ -463,7 +462,7 @@ export class Main {
     this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
 
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
-    this.deviceTrustCryptoService = new DeviceTrustCryptoService(
+    this.deviceTrustService = new DeviceTrustService(
       this.keyGenerationService,
       this.cryptoFunctionService,
       this.cryptoService,
@@ -508,7 +507,7 @@ export class Main {
       this.encryptService,
       this.passwordStrengthService,
       this.policyService,
-      this.deviceTrustCryptoService,
+      this.deviceTrustService,
       this.authRequestService,
       this.userDecryptionOptionsService,
       this.globalStateProvider,
@@ -634,6 +633,7 @@ export class Main {
       this.avatarService,
       async (expired: boolean) => await this.logout(),
       this.billingAccountProfileStateService,
+      this.tokenService,
     );
 
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
@@ -692,6 +692,14 @@ export class Main {
       this.eventUploadService,
       this.authService,
     );
+
+    this.providerApiService = new ProviderApiService(this.apiService);
+
+    this.userKeyInitService = new UserKeyInitService(
+      this.accountService,
+      this.cryptoService,
+      this.logService,
+    );
   }
 
   async run() {
@@ -735,6 +743,7 @@ export class Main {
     this.containerService.attachToGlobal(global);
     await this.i18nService.init();
     this.twoFactorService.init();
+    this.userKeyInitService.listenForActiveUserChangesToSetUserKey();
   }
 }
 
