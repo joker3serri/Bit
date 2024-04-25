@@ -17,6 +17,17 @@ import { PopupPageComponent } from "./popup-page.component";
 import { PopupTabNavigationComponent } from "./popup-tab-navigation.component";
 
 @Component({
+  selector: "extension-container",
+  template: `
+    <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+      <ng-content></ng-content>
+    </div>
+  `,
+  standalone: true,
+})
+class ExtensionContainerComponent {}
+
+@Component({
   selector: "vault-placeholder",
   template: `
     <div class="tw-mb-8 tw-text-main">vault item</div>
@@ -267,6 +278,7 @@ export default {
         PopupTabNavigationComponent,
         CommonModule,
         RouterModule,
+        ExtensionContainerComponent,
         MockVaultSubpageComponent,
         MockVaultPageComponent,
         MockSendPageComponent,
@@ -312,11 +324,11 @@ export const PopupTabNavigation: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+      <extension-container>
         <popup-tab-navigation>
           <router-outlet></router-outlet>
         </popup-tab-navigation>
-      </div>
+      </extension-container>
     `,
   }),
 };
@@ -325,9 +337,9 @@ export const PopupPage: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+      <extension-container>
         <mock-vault-page></mock-vault-page>
-      </div>
+      </extension-container>
     `,
   }),
 };
@@ -336,9 +348,9 @@ export const PopupPageWithFooter: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <div class="tw-h-[640px] tw-w-[380px] tw-border tw-border-solid tw-border-secondary-300">
+      <extension-container>
         <mock-vault-subpage></mock-vault-subpage>
-      </div>
+      </extension-container>
     `,
   }),
 };

@@ -9,8 +9,8 @@ when Light & Dark mode is selected. The stories are best viewed by selecting one
 
 # Popup Tab Navigation
 
-The popup tab navigation component is the component that composes together the popup page and the
-bottom tab navigation footer.
+The popup tab navigation component composes together the popup page and the bottom tab navigation
+footer. This component is intended to be used a level _above_ each extension tab's page code.
 
 The navigation footer contains the 4 main page links for the browser extension. It uses the Angular
 router to determine which page is currently active, and style the button appropriately. Clicking on
@@ -36,13 +36,13 @@ page looks nice when the extension is popped out.
 **Slots**
 
 - `header`
-  - Use `popup-header` component
-  - Every page should have a header
+  - Use `popup-header` component.
+  - Every page should have a header.
 - `footer`
-  - Use the `popup-footer` component
-  - Not every page will have a footer
+  - Use the `popup-footer` component.
+  - Not every page will have a footer.
 - default
-  - Whatever content you want in `main`
+  - Whatever content you want in `main`.
 
 Basic usage example:
 
@@ -59,7 +59,7 @@ Basic usage example:
 **Args**
 
 - `pageTitle`: required
-  - Inserts title as an h1.
+  - Inserts title as an `h1`.
 - `showBackButton`: optional, defaults to `false`
   - Toggles the back button to appear. The back button uses `Location.back()` to navigate back one
     page in history.
@@ -67,13 +67,13 @@ Basic usage example:
 **Slots**
 
 - `end`
-  - Use to insert one or more interactive elements
-  - The header handles the spacing between elements passed to to the `end` slot.
+  - Use to insert one or more interactive elements.
+  - The header handles the spacing between elements passed to the `end` slot.
 
 Usage example:
 
 ```html
-<popup-header pageTitle="Test" showBackButton="true">
+<popup-header pageTitle="Test" showBackButton>
   <ng-container slot="end">
     <button></button>
     <button></button>
@@ -111,11 +111,15 @@ View the story source code to see examples of how to construct these types of pa
 
 ## Extension Tab
 
+Example of wrapping an extension page in the `popup-tab-navigation` component.
+
 <Canvas>
   <Story of={stories.PopupTabNavigation} />
 </Canvas>
 
 ## Extension Page
+
+Examples of using just the `popup-page` component, without and with a footer.
 
 <Canvas>
   <Story of={stories.PopupPage} />
