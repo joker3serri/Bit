@@ -119,9 +119,9 @@ export class AccountSwitcherComponent {
     );
     this.showSwitcher$ = combineLatest([this.activeAccount$, this.inactiveAccounts$]).pipe(
       map(([activeAccount, inactiveAccounts]) => {
-        const userIsInAVault = activeAccount != null;
+        const hasActiveUser = activeAccount != null;
         const userIsAddingAnAdditionalAccount = Object.keys(inactiveAccounts).length > 0;
-        return userIsInAVault || userIsAddingAnAdditionalAccount;
+        return hasActiveUser || userIsAddingAnAdditionalAccount;
       }),
     );
     this.numberOfAccounts$ = this.inactiveAccounts$.pipe(
