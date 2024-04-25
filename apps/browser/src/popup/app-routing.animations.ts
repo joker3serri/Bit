@@ -192,9 +192,6 @@ export const routerTransition = trigger("routerTransition", [
   transition("tabs => sync", inSlideLeft),
   transition("sync => tabs", outSlideRight),
 
-  transition("tabs => excluded-domains", inSlideLeft),
-  transition("excluded-domains => tabs", outSlideRight),
-
   transition("tabs => options", inSlideLeft),
   transition("options => tabs", outSlideRight),
 
@@ -218,6 +215,9 @@ export const routerTransition = trigger("routerTransition", [
   // Notification settings
   transition("tabs => notifications", inSlideLeft),
   transition("notifications => tabs", outSlideRight),
+
+  transition("notifications => excluded-domains", inSlideLeft),
+  transition("excluded-domains => notifications", outSlideRight),
 
   transition("tabs => autofill", inSlideLeft),
   transition("autofill => tabs", outSlideRight),
