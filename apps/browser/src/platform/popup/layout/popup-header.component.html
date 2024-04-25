@@ -7,8 +7,8 @@
         bitIconButton="bwi-back"
         type="button"
         *ngIf="showBackButton"
-        title="Back"
-        aria-label="Back"
+        [title]="'back' | i18n"
+        [ariaLabel]="'back' | i18n"
       ></button>
       <h1 bitTypography="h3" class="!tw-mb-0.5 tw-text-headers">{{ pageTitle }}</h1>
     </div>

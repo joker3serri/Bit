@@ -3,7 +3,13 @@ import { Component, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
-import { AvatarModule, ButtonModule, IconButtonModule } from "@bitwarden/components";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import {
+  AvatarModule,
+  ButtonModule,
+  I18nMockService,
+  IconButtonModule,
+} from "@bitwarden/components";
 
 import { PopupFooterComponent } from "./popup-footer.component";
 import { PopupHeaderComponent } from "./popup-header.component";
@@ -267,6 +273,16 @@ export default {
         MockGeneratorPageComponent,
         MockSettingsPageComponent,
         MockVaultPagePoppedComponent,
+      ],
+      providers: [
+        {
+          provide: I18nService,
+          useFactory: () => {
+            return new I18nMockService({
+              back: "Back",
+            });
+          },
+        },
       ],
     }),
     applicationConfig({
