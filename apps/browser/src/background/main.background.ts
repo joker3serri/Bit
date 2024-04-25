@@ -808,7 +808,10 @@ export default class MainBackground {
     );
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
 
-    this.scriptInjectorService = new BrowserScriptInjectorService();
+    this.scriptInjectorService = new BrowserScriptInjectorService(
+      this.platformUtilsService,
+      this.logService,
+    );
     this.autofillService = new AutofillService(
       this.cipherService,
       this.autofillSettingsService,
