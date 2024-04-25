@@ -126,7 +126,7 @@ export function createMigrationBuilder() {
     .with(CipherServiceMigrator, 56, 57)
     .with(RemoveRefreshTokenMigratedFlagMigrator, 57, 58)
     .with(KdfConfigMigrator, 58, 59)
-    .with(KnownAccountsMigrator, 59, 60);
+    .with(KnownAccountsMigrator, 59, CURRENT_VERSION);
 }
 
 export async function currentVersion(
