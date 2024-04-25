@@ -31,7 +31,7 @@ export const ACCOUNT_ACTIVITY = KeyDefinition.record<Date, UserId>(ACCOUNT_DISK,
   deserializer: (activity) => new Date(activity),
 });
 
-const loggedOutInfo: AccountInfo = {
+const LOGGED_OUT_INFO: AccountInfo = {
   email: "",
   emailVerified: false,
   name: undefined,
@@ -113,7 +113,7 @@ export class AccountServiceImplementation implements InternalAccountService {
   }
 
   async clean(userId: UserId) {
-    await this.setAccountInfo(userId, loggedOutInfo);
+    await this.setAccountInfo(userId, LOGGED_OUT_INFO);
     await this.removeAccountActivity(userId);
   }
 
