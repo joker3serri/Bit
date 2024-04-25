@@ -43,6 +43,7 @@
   --color-text-contrast: 255 255 255;
   --color-text-alt2: 255 255 255;
   --color-text-code: 192 17 118;
+  --color-text-headers: 2 15 102;
 
   --tw-ring-offset-color: #ffffff;
 }
@@ -86,6 +87,7 @@
   --color-text-contrast: 25 30 38;
   --color-text-alt2: 255 255 255;
   --color-text-code: 240 141 199;
+  --color-text-headers: 226 227 228;
 
   --tw-ring-offset-color: #1f242e;
 }
