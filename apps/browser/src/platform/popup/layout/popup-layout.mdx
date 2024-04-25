@@ -1,4 +1,4 @@
-import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
+import { Meta, Story, Canvas } from "@storybook/addon-docs";
 
 import * as stories from "./popup-layout.stories";
 
@@ -111,16 +111,24 @@ View the story source code to see examples of how to construct these types of pa
 
 ## Extension Tab
 
-<Story of={stories.PopupTabNavigation} />
+<Canvas>
+  <Story of={stories.PopupTabNavigation} />
+</Canvas>
 
 ## Extension Page
 
-<Story of={stories.PopupPage} />
+<Canvas>
+  <Story of={stories.PopupPage} />
+</Canvas>
 
-<Story of={stories.PopupPageWithFooter} />
+<Canvas>
+  <Story of={stories.PopupPageWithFooter} />
+</Canvas>
 
 ## Popped out
 
 When the browser extension is popped out, the "popout" button should not be passed to the header.
 
-<Story of={stories.PoppedOut} />
+<Canvas>
+  <Story of={stories.PoppedOut} />
+</Canvas>
