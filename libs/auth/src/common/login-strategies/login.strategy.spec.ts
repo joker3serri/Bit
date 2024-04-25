@@ -248,7 +248,7 @@ describe("LoginStrategy", () => {
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
       masterPasswordService.masterKeySubject.next(masterKey);
-      masterPasswordService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+      masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       const result = await passwordLoginStrategy.logIn(credentials);
 
@@ -267,7 +267,7 @@ describe("LoginStrategy", () => {
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
       masterPasswordService.masterKeySubject.next(masterKey);
-      masterPasswordService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+      masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await passwordLoginStrategy.logIn(credentials);
 

@@ -184,7 +184,7 @@ describe("UserApiLoginStrategy", () => {
 
     apiService.postIdentityToken.mockResolvedValue(tokenResponse);
     masterPasswordService.masterKeySubject.next(masterKey);
-    masterPasswordService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+    masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
     await apiLogInStrategy.logIn(credentials);
 

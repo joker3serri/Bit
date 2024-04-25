@@ -435,7 +435,7 @@ describe("SsoLoginStrategy", () => {
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
       masterPasswordService.masterKeySubject.next(masterKey);
-      masterPasswordService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+      masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await ssoLoginStrategy.logIn(credentials);
 
@@ -486,7 +486,7 @@ describe("SsoLoginStrategy", () => {
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
       masterPasswordService.masterKeySubject.next(masterKey);
-      masterPasswordService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+      masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await ssoLoginStrategy.logIn(credentials);
 

@@ -87,9 +87,9 @@ export abstract class InternalMasterPasswordServiceAbstraction extends MasterPas
    * @param userId The desired user
    * @returns The user key
    */
-  abstract decryptUserKeyWithMasterKey(
+  abstract decryptUserKeyWithMasterKey: (
     masterKey: MasterKey,
     userKey?: EncString,
     userId?: string,
-  ): Promise<UserKey>;
+  ) => Promise<UserKey>;
 }
