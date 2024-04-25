@@ -68,7 +68,7 @@ img {
   border: none;
 }
 
-a:not(popup-page a) {
+a:not(popup-page a, popup-tab-navigation a) {
   text-decoration: none;
 
   @include themify($themes) {
