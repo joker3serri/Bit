@@ -6,10 +6,10 @@
     <div class="tw-flex tw-flex-1">
       <a
         *ngFor="let button of navButtons"
-        class="tw-group tw-flex tw-flex-col tw-items-center tw-gap-1 tw-px-0.5 tw-pb-2 tw-pt-3 tw-w-1/4 hover:tw-text-primary-600 tw-no-underline hover:tw-bg-primary-100 tw-border-2 tw-border-solid tw-border-transparent focus-visible:tw-rounded-lg focus-visible:tw-border-primary-500"
+        class="tw-group tw-flex tw-flex-col tw-items-center tw-gap-1 tw-px-0.5 tw-pb-2 tw-pt-3 tw-w-1/4 hover:tw-no-underline hover:tw-text-primary-600 hover:tw-bg-primary-100 tw-border-2 tw-border-solid tw-border-transparent focus-visible:tw-rounded-lg focus-visible:tw-border-primary-500"
         [ngClass]="rla.isActive ? 'tw-font-bold tw-text-primary-600' : 'tw-text-muted'"
-        title="{{ button.label }}"
-        routerLink="/{{ button.page }}"
+        [title]="button.label"
+        [routerLink]="button.page"
         routerLinkActive
         #rla="routerLinkActive"
         ariaCurrentWhenActive="page"
@@ -17,7 +17,7 @@
         <i *ngIf="!rla.isActive" class="bwi bwi-lg bwi-{{ button.iconKey }}" aria-hidden="true"></i>
         <i
           *ngIf="rla.isActive"
-          class="bwi bwi-lg bwi-{{ button.iconKey }}-f"
+          class="bwi bwi-lg bwi-{{ button.iconKeyActive }}"
           aria-hidden="true"
         ></i>
         <span

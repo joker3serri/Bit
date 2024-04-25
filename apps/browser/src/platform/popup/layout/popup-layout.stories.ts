@@ -226,19 +226,15 @@ class MockSettingsPageComponent {}
   selector: "mock-vault-subpage",
   template: `
     <popup-page>
-      <popup-header slot="header" pageTitle="Test">
+      <popup-header slot="header" pageTitle="Test" showBackButton>
         <ng-container slot="end">
-          <mock-add-button></mock-add-button>
           <mock-popout-button></mock-popout-button>
-          <mock-current-account></mock-current-account>
         </ng-container>
       </popup-header>
       <vault-placeholder></vault-placeholder>
       <popup-footer slot="footer">
-        <div class="tw-flex tw-gap-2">
-          <button bitButton buttonType="primary">Save</button>
-          <button bitButton buttonType="secondary">Cancel</button>
-        </div>
+        <button bitButton buttonType="primary">Save</button>
+        <button bitButton buttonType="secondary">Cancel</button>
       </popup-footer>
     </popup-page>
   `,
