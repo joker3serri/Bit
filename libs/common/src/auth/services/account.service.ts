@@ -88,6 +88,10 @@ export class AccountServiceImplementation implements InternalAccountService {
   }
 
   async addAccount(userId: UserId, accountData: AccountInfo): Promise<void> {
+    if (userId == null) {
+      throw new Error("userId is required");
+    }
+
     await this.accountsState.update((accounts) => {
       accounts ||= {};
       accounts[userId] = accountData;
