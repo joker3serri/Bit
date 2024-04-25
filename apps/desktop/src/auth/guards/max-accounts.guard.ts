@@ -9,7 +9,7 @@ import { ToastService } from "@bitwarden/components";
 
 const maxAllowedAccounts = 5;
 
-function loginGuard(): Observable<boolean> {
+function maxAccountsGuard(): Observable<boolean> {
   const authService = inject(AuthService);
   const toastService = inject(ToastService);
   const i18nService = inject(I18nService);
@@ -33,6 +33,6 @@ function loginGuard(): Observable<boolean> {
   );
 }
 
-export function loginGuardFn(): CanActivateFn {
-  return () => loginGuard();
+export function maxAccountsGuardFn(): CanActivateFn {
+  return () => maxAccountsGuard();
 }
