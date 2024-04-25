@@ -324,7 +324,7 @@ export default class RuntimeBackground {
 
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
-          if (process.env.ENV !== "development") {
+          if (!this.platformUtilsService.isDev()) {
             void BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
           }
 
