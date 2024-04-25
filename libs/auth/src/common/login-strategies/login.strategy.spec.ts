@@ -2,6 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -113,6 +114,7 @@ describe("LoginStrategy", () => {
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
   let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
+  let kdfConfigService: MockProxy<KdfConfigService>;
 
   let passwordLoginStrategy: PasswordLoginStrategy;
   let credentials: PasswordLoginCredentials;
@@ -132,6 +134,7 @@ describe("LoginStrategy", () => {
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
     userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
+    kdfConfigService = mock<KdfConfigService>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
@@ -158,6 +161,7 @@ describe("LoginStrategy", () => {
       policyService,
       loginStrategyService,
       billingAccountProfileStateService,
+      kdfConfigService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
   });
@@ -204,8 +208,6 @@ describe("LoginStrategy", () => {
               userId: userId,
               name: name,
               email: email,
-              kdfIterations: kdfIterations,
-              kdfType: kdf,
             },
           },
         }),
@@ -417,6 +419,7 @@ describe("LoginStrategy", () => {
         policyService,
         loginStrategyService,
         billingAccountProfileStateService,
+        kdfConfigService,
       );
 
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
