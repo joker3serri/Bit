@@ -130,13 +130,12 @@ const OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE = new SafeInjectionToken<
 >("OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE");
 
 const needsBackgroundInit = BrowserPopupUtils.backgroundInitializationRequired();
-const isPrivateMode = BrowserPopupUtils.inPrivateMode();
 const mainBackground: MainBackground = needsBackgroundInit
   ? createLocalBgService()
   : BrowserApi.getBackgroundPage().bitwardenMain;
 
 function createLocalBgService() {
-  const localBgService = new MainBackground(isPrivateMode, true);
+  const localBgService = new MainBackground(true);
   // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   localBgService.bootstrap();

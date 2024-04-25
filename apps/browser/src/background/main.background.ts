@@ -355,10 +355,7 @@ export default class MainBackground {
   private isSafari: boolean;
   private nativeMessagingBackground: NativeMessagingBackground;
 
-  constructor(
-    public isPrivateMode: boolean = false,
-    public popupOnlyContext: boolean = false,
-  ) {
+  constructor(public popupOnlyContext: boolean = false) {
     // Services
     const lockedCallback = async (userId?: string) => {
       if (this.notificationsService != null) {
