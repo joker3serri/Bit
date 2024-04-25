@@ -4,7 +4,9 @@ import { TwoFactorProviderType } from "../../enums/two-factor-provider-type";
 import { MasterPasswordPolicyResponse } from "./master-password-policy.response";
 
 export class IdentityTwoFactorResponse extends BaseResponse {
+  // contains available two-factor providers
   twoFactorProviders: TwoFactorProviderType[];
+  // a map of two-factor providers to necessary data for completion
   twoFactorProviders2: Record<TwoFactorProviderType, Record<string, string>>;
   captchaToken: string;
   ssoEmail2faSessionToken: string;

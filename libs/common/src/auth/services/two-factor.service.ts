@@ -73,13 +73,17 @@ export const PROVIDERS = KeyDefinition.record<Record<string, string>, TwoFactorP
 );
 
 // Memory storage as only required during authentication process
-export const SELECTED = new KeyDefinition<TwoFactorProviderType>(TWO_FACTOR_MEMORY, "selected", {
-  deserializer: (obj) => obj,
-});
+export const SELECTED_PROVIDER = new KeyDefinition<TwoFactorProviderType>(
+  TWO_FACTOR_MEMORY,
+  "selected",
+  {
+    deserializer: (obj) => obj,
+  },
+);
 
 export class TwoFactorService implements TwoFactorServiceAbstraction {
   private providersState = this.globalStateProvider.get(PROVIDERS);
-  private selectedState = this.globalStateProvider.get(SELECTED);
+  private selectedState = this.globalStateProvider.get(SELECTED_PROVIDER);
   readonly providers$ = this.providersState.state$.pipe(
     map((providers) => Utils.recordToMap(providers)),
   );
@@ -184,23 +188,23 @@ export class TwoFactorService implements TwoFactorServiceAbstraction {
     return providerType;
   }
 
-  async setSelectedProvider(type: TwoFactorProviderType) {
+  async setSelectedProvider(type: TwoFactorProviderType): Promise<void> {
     await this.selectedState.update(() => type);
   }
 
-  async clearSelectedProvider() {
+  async clearSelectedProvider(): Promise<void> {
     await this.selectedState.update(() => null);
   }
 
-  async setProviders(response: IdentityTwoFactorResponse) {
+  async setProviders(response: IdentityTwoFactorResponse): Promise<void> {
     await this.providersState.update(() => response.twoFactorProviders2);
   }
 
-  async clearProviders() {
+  async clearProviders(): Promise<void> {
     await this.providersState.update(() => null);
   }
 
-  getProviders() {
+  getProviders(): Promise<Map<TwoFactorProviderType, { [key: string]: string }>> {
     return firstValueFrom(this.providers$);
   }
 }
