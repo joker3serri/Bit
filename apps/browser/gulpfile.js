@@ -259,7 +259,7 @@ function applyBetaLabels(manifest) {
   manifest.description = "THIS EXTENSION IS FOR BETA TESTING BITWARDEN.";
   if (process.env.GITHUB_RUN_ID) {
     manifest.version_name = `${manifest.version} beta - ${process.env.GITHUB_SHA.slice(8)}`;
-    manifest.version = `${manifest.version}.9${process.env.process.env.GITHUB_RUN_ID.replace(/0/g, "1").slice(-3)}`;
+    manifest.version = `${manifest.version}.9${process.env.process.env.GITHUB_RUN_ID.replace(/0/g, "1").slice(-4)}`;
   } else {
     manifest.version = `${manifest.version}.0`;
   }
