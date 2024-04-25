@@ -1,8 +1,8 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { combineLatest, firstValueFrom, map, Observable, Subject, switchMap } from "rxjs";
+import { combineLatest, firstValueFrom, map, Observable, switchMap } from "rxjs";
 
 import { LoginEmailServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -50,7 +50,7 @@ type InactiveAccount = ActiveAccount & {
     ]),
   ],
 })
-export class AccountSwitcherComponent implements OnInit, OnDestroy {
+export class AccountSwitcherComponent {
   activeAccount$: Observable<ActiveAccount | null>;
   inactiveAccounts$: Observable<{ [userId: string]: InactiveAccount }>;
   authStatus = AuthenticationStatus;
@@ -72,8 +72,6 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     },
   ];
 
-  private destroy$ = new Subject<void>();
-
   showSwitcher$: Observable<boolean>;
 
   numberOfAccounts$: Observable<number>;
@@ -87,9 +85,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     private environmentService: EnvironmentService,
     private loginEmailService: LoginEmailServiceAbstraction,
     private accountService: AccountService,
-  ) {}
-
-  async ngOnInit(): Promise<void> {
+  ) {
     this.activeAccount$ = this.accountService.activeAccount$.pipe(
       switchMap(async (active) => {
         if (active == null) {
@@ -145,11 +141,6 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
         showSwitcher,
       })),
     );
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   toggle() {
