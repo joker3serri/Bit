@@ -602,7 +602,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["login"]);
     } else if (preLogoutActiveUserId !== nextUpAccount.id) {
-      this.messagingService.send("switchAccount");
+      this.messagingService.send("switchAccount", { userId: nextUpAccount.id });
     }
 
     await this.updateAppMenu();
