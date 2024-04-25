@@ -130,11 +130,6 @@ export default class AutofillService implements AutofillServiceInterface {
 
     if (triggeringOnPageLoad && autoFillOnPageLoadIsEnabled) {
       injectedScripts.push("autofiller.js");
-    } else {
-      await this.scriptInjectorService.inject({
-        tabId: tab.id,
-        injectDetails: { file: "content/content-message-handler.js", runAt: "document_start" },
-      });
     }
 
     injectedScripts.push("notificationBar.js", "contextMenuHandler.js");
