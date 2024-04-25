@@ -215,6 +215,10 @@ export const routerTransition = trigger("routerTransition", [
   transition("tabs => edit-send, send-type => edit-send", inSlideUp),
   transition("edit-send => tabs, edit-send => send-type", outSlideDown),
 
+  // Notification settings
+  transition("tabs => notifications", inSlideLeft),
+  transition("notifications => tabs", outSlideRight),
+
   transition("tabs => autofill", inSlideLeft),
   transition("autofill => tabs", outSlideRight),
 
