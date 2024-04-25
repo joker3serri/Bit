@@ -24,7 +24,11 @@ module.exports = {
       current: colors.current,
       black: colors.black,
       primary: {
+        // Can only be used behind the extension refresh flag
+        100: rgba("--color-primary-100"),
         300: rgba("--color-primary-300"),
+        // Can only be used behind the extension refresh flag
+        500: rgba("--color-primary-500"),
         600: rgba("--color-primary-600"),
         700: rgba("--color-primary-700"),
       },
