@@ -30,7 +30,7 @@ type ExpectedAccountType = {
   };
 };
 
-export class KnownAccountsMigrator extends Migrator<58, 59> {
+export class KnownAccountsMigrator extends Migrator<59, 60> {
   async migrate(helper: MigrationHelper): Promise<void> {
     await this.migrateAuthenticatedAccounts(helper);
     await this.migrateActiveAccountId(helper);

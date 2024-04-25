@@ -8,7 +8,7 @@ import {
   ACCOUNT_ACTIVE_ACCOUNT_ID,
   ACCOUNT_ACTIVITY,
   KnownAccountsMigrator,
-} from "./59-known-accounts";
+} from "./60-known-accounts";
 
 const migrateJson = () => {
   return {
@@ -78,8 +78,8 @@ describe("ReplicateKnownAccounts", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(migrateJson(), 58);
-      sut = new KnownAccountsMigrator(58, 59);
+      helper = mockMigrationHelper(migrateJson(), 59);
+      sut = new KnownAccountsMigrator(59, 60);
     });
 
     it("migrates accounts", async () => {
@@ -117,8 +117,8 @@ describe("ReplicateKnownAccounts", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(rollbackJson(), 59);
-      sut = new KnownAccountsMigrator(58, 59);
+      helper = mockMigrationHelper(rollbackJson(), 60);
+      sut = new KnownAccountsMigrator(59, 60);
     });
 
     it("rolls back authenticated accounts", async () => {

@@ -13,6 +13,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -84,6 +85,7 @@ export class LockComponent implements OnInit, OnDestroy {
     protected biometricStateService: BiometricStateService,
     protected accountService: AccountService,
     protected authService: AuthService,
+    protected kdfConfigService: KdfConfigService,
   ) {}
 
   async ngOnInit() {
@@ -214,14 +216,12 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async doUnlockWithMasterPassword() {
+    const kdfConfig = await this.kdfConfigService.getKdfConfig();
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    const kdf = await this.stateService.getKdfType();
-    const kdfConfig = await this.stateService.getKdfConfig();
 
     const masterKey = await this.cryptoService.makeMasterKey(
       this.masterPassword,
       this.email,
-      kdf,
       kdfConfig,
     );
     const storedMasterKeyHash = await firstValueFrom(
