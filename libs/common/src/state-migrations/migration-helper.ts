@@ -159,12 +159,7 @@ export class MigrationHelper {
   async getAccounts<ExpectedAccountType>(): Promise<
     { userId: string; account: ExpectedAccountType }[]
   > {
-    let userIds;
-    if (this.currentVersion < 60) {
-      userIds = await knownAccountUserIdsBuilderPre60(this.storageService);
-    } else {
-      userIds = await knownAccountUserIdsBuilder(this.storageService);
-    }
+    const userIds = await this.getKnownUserIds();
     return Promise.all(
       userIds.map(async (userId) => ({
         userId,
