@@ -37,6 +37,7 @@ import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.comp
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
+import { NotifcationsSettingsComponent } from "../autofill/popup/settings/notifications.component";
 import { HeaderComponent } from "../platform/popup/header.component";
 import { FilePopoutCalloutComponent } from "../tools/popup/components/file-popout-callout.component";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
@@ -138,6 +139,7 @@ import "../platform/popup/locales";
     LoginViaAuthRequestComponent,
     LoginDecryptionOptionsComponent,
     OptionsComponent,
+    NotifcationsSettingsComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
     PasswordHistoryComponent,

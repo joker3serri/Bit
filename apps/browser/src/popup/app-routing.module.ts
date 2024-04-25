@@ -27,6 +27,7 @@ import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.comp
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
+import { NotifcationsSettingsComponent } from "../autofill/popup/settings/notifications.component";
 import BrowserPopupUtils from "../platform/popup/browser-popup-utils";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
@@ -250,6 +251,12 @@ const routes: Routes = [
     component: AccountSecurityComponent,
     canActivate: [AuthGuard],
     data: { state: "account-security" },
+  },
+  {
+    path: "notifications",
+    component: NotifcationsSettingsComponent,
+    canActivate: [AuthGuard],
+    data: { state: "notifications" },
   },
   {
     path: "folders",
