@@ -54,6 +54,13 @@ export abstract class StateService<T extends Account = Account> {
    */
   setUserKeyBiometric: (value: BiometricKey, options?: StorageOptions) => Promise<void>;
   /**
+   * @deprecated For backwards compatible purposes only, use DesktopAutofillSettingsService
+   */
+  setEnableDuckDuckGoBrowserIntegration: (
+    value: boolean,
+    options?: StorageOptions,
+  ) => Promise<void>;
+  /**
    * @deprecated For migration purposes only, use getUserKeyMasterKey instead
    */
   getEncryptedCryptoSymmetricKey: (options?: StorageOptions) => Promise<string>;
@@ -104,8 +111,6 @@ export abstract class StateService<T extends Account = Account> {
     value: GeneratedPasswordHistory[],
     options?: StorageOptions,
   ) => Promise<void>;
-  getEverBeenUnlocked: (options?: StorageOptions) => Promise<boolean>;
-  setEverBeenUnlocked: (value: boolean, options?: StorageOptions) => Promise<void>;
   getIsAuthenticated: (options?: StorageOptions) => Promise<boolean>;
   getKdfConfig: (options?: StorageOptions) => Promise<KdfConfig>;
   setKdfConfig: (kdfConfig: KdfConfig, options?: StorageOptions) => Promise<void>;
@@ -131,8 +136,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getGeneratorOptions: (options?: StorageOptions) => Promise<GeneratorOptions>;
   setGeneratorOptions: (value: GeneratorOptions, options?: StorageOptions) => Promise<void>;
-  getSecurityStamp: (options?: StorageOptions) => Promise<string>;
-  setSecurityStamp: (value: string, options?: StorageOptions) => Promise<void>;
   getUserId: (options?: StorageOptions) => Promise<string>;
   getVaultTimeout: (options?: StorageOptions) => Promise<number>;
   setVaultTimeout: (value: number, options?: StorageOptions) => Promise<void>;

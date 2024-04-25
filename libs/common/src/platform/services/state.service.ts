@@ -64,8 +64,6 @@ export class StateService<
   private hasBeenInited = false;
   protected isRecoveredSession = false;
 
-  protected accountDiskCache = new BehaviorSubject<Record<string, TAccount>>({});
-
   // default account serializer, must be overridden by child class
   protected accountDeserializer = Account.fromJSON as (json: Jsonify<TAccount>) => TAccount;
 
@@ -79,7 +77,6 @@ export class StateService<
     protected environmentService: EnvironmentService,
     protected tokenService: TokenService,
     private migrationRunner: MigrationRunner,
-    protected useAccountCache: boolean = true,
   ) {}
 
   async init(initOptions: InitOptions = {}): Promise<void> {
@@ -114,14 +111,19 @@ export class StateService<
       return;
     }
 
+    // Get all likely authenticated accounts
+    const authenticatedAccounts = (
+      (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? []
+    ).filter((account) => account != null);
+
     await this.updateState(async (state) => {
-      state.authenticatedAccounts =
-        (await this.storageService.get<string[]>(keys.authenticatedAccounts)) ?? [];
-      for (const i in state.authenticatedAccounts) {
-        if (i != null) {
-          state = await this.syncAccountFromDisk(state.authenticatedAccounts[i]);
-        }
+      for (const i in authenticatedAccounts) {
+        state = await this.syncAccountFromDisk(authenticatedAccounts[i]);
       }
+
+      // After all individual accounts have been added
+      state.authenticatedAccounts = authenticatedAccounts;
+
       const storedActiveUser = await this.storageService.get<string>(keys.activeUserId);
       if (storedActiveUser != null) {
         state.activeUserId = storedActiveUser;
@@ -508,6 +510,20 @@ export class StateService<
     );
   }
 
+  async setEnableDuckDuckGoBrowserIntegration(
+    value: boolean,
+    options?: StorageOptions,
+  ): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    globals.enableDuckDuckGoBrowserIntegration = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+  }
+
   /**
    * @deprecated Use UserKey instead
    */
@@ -537,24 +553,6 @@ export class StateService<
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
-  async getEverBeenUnlocked(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions())))
-        ?.profile?.everBeenUnlocked ?? false
-    );
-  }
-
-  async setEverBeenUnlocked(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.profile.everBeenUnlocked = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
@@ -746,23 +744,6 @@ export class StateService<
     );
   }
 
-  async getSecurityStamp(options?: StorageOptions): Promise<string> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.tokens?.securityStamp;
-  }
-
-  async setSecurityStamp(value: string, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-    account.tokens.securityStamp = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
-    );
-  }
-
   async getUserId(options?: StorageOptions): Promise<string> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
@@ -897,13 +878,6 @@ export class StateService<
       return null;
     }
 
-    if (this.useAccountCache) {
-      const cachedAccount = this.accountDiskCache.value[options.userId];
-      if (cachedAccount != null) {
-        return cachedAccount;
-      }
-    }
-
     const account = options?.useSecureStorage
       ? (await this.secureStorageService.get<TAccount>(options.userId, options)) ??
         (await this.storageService.get<TAccount>(
@@ -911,8 +885,6 @@ export class StateService<
           this.reconcileOptions(options, { htmlStorageLocation: HtmlStorageLocation.Local }),
         ))
       : await this.storageService.get<TAccount>(options.userId, options);
-
-    this.setDiskCache(options.userId, account);
     return account;
   }
 
@@ -942,8 +914,6 @@ export class StateService<
       : this.storageService;
 
     await storageLocation.save(`${options.userId}`, account, options);
-
-    this.deleteDiskCache(options.userId);
   }
 
   protected async saveAccountToMemory(account: TAccount): Promise<void> {
@@ -1143,9 +1113,6 @@ export class StateService<
     await this.updateState(async (state) => {
       userId = userId ?? state.activeUserId;
       delete state.accounts[userId];
-
-      this.deleteDiskCache(userId);
-
       return state;
     });
   }
@@ -1258,20 +1225,6 @@ export class StateService<
 
       return await this.setState(updatedState);
     });
-  }
-
-  private setDiskCache(key: string, value: TAccount, options?: StorageOptions) {
-    if (this.useAccountCache) {
-      this.accountDiskCache.value[key] = value;
-      this.accountDiskCache.next(this.accountDiskCache.value);
-    }
-  }
-
-  protected deleteDiskCache(key: string) {
-    if (this.useAccountCache) {
-      delete this.accountDiskCache.value[key];
-      this.accountDiskCache.next(this.accountDiskCache.value);
-    }
   }
 }
 
