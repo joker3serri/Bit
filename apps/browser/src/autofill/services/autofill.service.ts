@@ -132,6 +132,13 @@ export default class AutofillService implements AutofillServiceInterface {
       injectedScripts.push("autofiller.js");
     }
 
+    if (!triggeringOnPageLoad) {
+      await this.scriptInjectorService.inject({
+        tabId: tab.id,
+        injectDetails: { file: "content/content-message-handler.js", runAt: "document_start" },
+      });
+    }
+
     injectedScripts.push("notificationBar.js", "contextMenuHandler.js");
 
     for (const injectedScript of injectedScripts) {
