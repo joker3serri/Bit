@@ -254,6 +254,11 @@ export class VaultComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((activeFilter) => {
         this.activeFilter = activeFilter;
+
+        // watch the active filters. Only show toggle when viewing the collections filter
+        if (!this.activeFilter.collectionId) {
+          this.showAddAccessToggle = false;
+        }
       });
 
     this.searchText$
@@ -323,7 +328,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const allCiphers$ = organization$.pipe(
       concatMap(async (organization) => {
         // If user swaps organization reset the addAccessToggle
-        if (!this.showAddAccessToggle) {
+        if (!this.showAddAccessToggle || organization) {
           this.addAccessToggle(0);
         }
         let ciphers;
