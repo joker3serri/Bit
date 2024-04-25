@@ -21,7 +21,7 @@ export class PopupHeaderComponent {
     this._showBackButton = coerceBooleanProperty(value);
   }
 
-  _showBackButton = false;
+  private _showBackButton = false;
 
   /** Title string that will be inserted as an h1 */
   @Input({ required: true }) pageTitle: string;
