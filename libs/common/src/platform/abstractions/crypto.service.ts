@@ -6,7 +6,7 @@ import { ProfileProviderResponse } from "../../admin-console/models/response/pro
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { OrganizationId, ProviderId, UserId } from "../../types/guid";
 import { UserKey, MasterKey, OrgKey, ProviderKey, CipherKey } from "../../types/key";
-import { KeySuffixOptions, KdfType, HashPurpose } from "../enums";
+import { KeySuffixOptions, HashPurpose } from "../enums";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
@@ -114,16 +114,10 @@ export abstract class CryptoService {
    * Generates a master key from the provided password
    * @param password The user's master password
    * @param email The user's email
-   * @param kdf The user's selected key derivation function to use
    * @param KdfConfig The user's key derivation function configuration
    * @returns A master key derived from the provided password
    */
-  abstract makeMasterKey(
-    password: string,
-    email: string,
-    kdf: KdfType,
-    KdfConfig: KdfConfig,
-  ): Promise<MasterKey>;
+  abstract makeMasterKey(password: string, email: string, KdfConfig: KdfConfig): Promise<MasterKey>;
   /**
    * Encrypts the existing (or provided) user key with the
    * provided master key
@@ -243,7 +237,6 @@ export abstract class CryptoService {
    * @returns A new keypair: [publicKey in Base64, encrypted privateKey]
    */
   abstract makeKeyPair(key?: SymmetricCryptoKey): Promise<[string, EncString]>;
-
   /**
    * Clears the user's pin keys from storage
    * Note: This will remove the stored pin and as a result,
@@ -251,7 +244,6 @@ export abstract class CryptoService {
    * @param userId The desired user
    */
   abstract clearPinKeys(userId?: string): Promise<void>;
-
   /**
    * Replaces old master auto keys with new user auto keys
    */
@@ -297,15 +289,6 @@ export abstract class CryptoService {
     publicKey: string;
     privateKey: EncString;
   }>;
-
-  /**
-   * Validate that the KDF config follows the requirements for the given KDF type.
-   *
-   * @remarks
-   * Should always be called before updating a users KDF config.
-   */
-  abstract validateKdfConfig(kdf: KdfType, kdfConfig: KdfConfig): void;
-
   /**
    * Previously, the master key was used for any additional key like the biometrics or pin key.
    * We have switched to using the user key for these purposes. This method is for clearing the state

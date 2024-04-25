@@ -43,6 +43,7 @@ export const AVATAR_DISK = new StateDefinition("avatar", "disk", { web: "disk-lo
 export const DEVICE_TRUST_DISK_LOCAL = new StateDefinition("deviceTrust", "disk", {
   web: "disk-local",
 });
+export const KDF_CONFIG_DISK = new StateDefinition("kdfConfig", "disk");
 export const KEY_CONNECTOR_DISK = new StateDefinition("keyConnector", "disk");
 export const LOGIN_EMAIL_DISK = new StateDefinition("loginEmail", "disk", {
   web: "disk-local",

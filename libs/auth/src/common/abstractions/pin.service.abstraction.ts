@@ -1,5 +1,4 @@
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
-import { KdfType } from "@bitwarden/common/platform/enums";
 import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { UserId } from "@bitwarden/common/types/guid";
 import { PinKey, UserKey } from "@bitwarden/common/types/key";
@@ -73,12 +72,7 @@ export abstract class PinServiceAbstraction {
   /**
    * Makes a PinKey from the provided PIN.
    */
-  abstract makePinKey: (
-    pin: string,
-    salt: string,
-    kdf: KdfType,
-    kdfConfig: KdfConfig,
-  ) => Promise<PinKey>;
+  abstract makePinKey: (pin: string, salt: string, kdfConfig: KdfConfig) => Promise<PinKey>;
 
   /**
    * Gets the user's PinLockType {@link PinLockType}.

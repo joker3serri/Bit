@@ -26,6 +26,8 @@ import {
   stateServiceFactory,
 } from "../../../platform/background/service-factories/state-service.factory";
 
+import { AccountServiceInitOptions, accountServiceFactory } from "./account-service.factory";
+import { KdfConfigServiceInitOptions, kdfConfigServiceFactory } from "./kdf-config-service.factory";
 import {
   MasterPasswordServiceInitOptions,
   internalMasterPasswordServiceFactory,
@@ -34,12 +36,14 @@ import {
 type PinServiceFactoryOptions = FactoryOptions;
 
 export type PinServiceInitOptions = PinServiceFactoryOptions &
-  StateProviderInitOptions &
-  StateServiceInitOptions &
-  MasterPasswordServiceInitOptions &
-  KeyGenerationServiceInitOptions &
+  AccountServiceInitOptions &
   EncryptServiceInitOptions &
-  LogServiceInitOptions;
+  KdfConfigServiceInitOptions &
+  KeyGenerationServiceInitOptions &
+  LogServiceInitOptions &
+  MasterPasswordServiceInitOptions &
+  StateProviderInitOptions &
+  StateServiceInitOptions;
 
 export function pinServiceFactory(
   cache: { pinService?: PinServiceAbstraction } & CachedServices,
@@ -51,12 +55,14 @@ export function pinServiceFactory(
     opts,
     async () =>
       new PinService(
+        await accountServiceFactory(cache, opts),
+        await encryptServiceFactory(cache, opts),
+        await kdfConfigServiceFactory(cache, opts),
+        await keyGenerationServiceFactory(cache, opts),
+        await logServiceFactory(cache, opts),
+        await internalMasterPasswordServiceFactory(cache, opts),
         await stateProviderFactory(cache, opts),
         await stateServiceFactory(cache, opts),
-        await internalMasterPasswordServiceFactory(cache, opts),
-        await keyGenerationServiceFactory(cache, opts),
-        await encryptServiceFactory(cache, opts),
-        await logServiceFactory(cache, opts),
       ),
   );
 }
