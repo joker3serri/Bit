@@ -120,6 +120,31 @@ class MockCurrentAccountComponent {}
 class MockVaultPageComponent {}
 
 @Component({
+  selector: "mock-vault-page-popped",
+  template: `
+    <popup-page>
+      <popup-header slot="header" pageTitle="Test">
+        <ng-container slot="end">
+          <mock-add-button></mock-add-button>
+          <mock-current-account></mock-current-account>
+        </ng-container>
+      </popup-header>
+      <vault-placeholder></vault-placeholder>
+    </popup-page>
+  `,
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    MockAddButtonComponent,
+    MockPopoutButtonComponent,
+    MockCurrentAccountComponent,
+    VaultComponent,
+  ],
+})
+class MockVaultPagePoppedComponent {}
+
+@Component({
   selector: "mock-generator-page",
   template: `
     <popup-page>
@@ -245,6 +270,7 @@ export default {
         MockSendPageComponent,
         MockGeneratorPageComponent,
         MockSettingsPageComponent,
+        MockVaultPagePoppedComponent,
       ],
     }),
     applicationConfig({
@@ -310,7 +336,7 @@ export const PoppedOut: Story = {
     props: args,
     template: /* HTML */ `
       <div class="tw-h-[640px] tw-w-[900px] tw-border tw-border-solid tw-border-secondary-300">
-        <mock-vault-page></mock-vault-page>
+        <mock-vault-page-popped></mock-vault-page-popped>
       </div>
     `,
   }),

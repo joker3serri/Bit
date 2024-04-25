@@ -37,17 +37,19 @@ page looks nice when the extension is popped out.
 
 - `header`
   - Use `popup-header` component
+  - Every page should have a header
 - `footer`
   - Use the `popup-footer` component
+  - Not every page will have a footer
 - default
-  - Use `router-outlet`
+  - Whatever content you want in `main`
 
 Basic usage example:
 
 ```
 <popup-page>
   <popup-header slot="header"></popup-header>
-  <router-outlet></router-outlet>
+  <div> This is content </div>
   <popup-footer slot="footer"></popup-footer>
 </popup-page>
 ```
@@ -96,10 +98,8 @@ Usage example:
 
 ```
 <popup-footer>
-  <div class="tw-flex tw-gap-2">
-    <button bitButton buttonType="primary">Save</button>
-    <button bitButton buttonType="secondary">Cancel</button>
-  </div>
+  <button bitButton buttonType="primary">Save</button>
+  <button bitButton buttonType="secondary">Cancel</button>
 </popup-footer>
 ```
 
@@ -122,6 +122,5 @@ View the story source code to see examples of how to construct these types of pa
 ## Popped out
 
 When the browser extension is popped out, the "popout" button should not be passed to the header.
-This story shows this example with a top level page structure.
 
 <Story of={stories.PoppedOut} />
