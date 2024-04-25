@@ -106,14 +106,16 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
       }),
     );
     this.inactiveAccounts$ = combineLatest([
+      this.activeAccount$,
       this.accountService.accounts$,
       this.authService.authStatuses$,
     ]).pipe(
-      switchMap(async ([accounts, accountStatuses]) => {
-        // Filter out logged out accounts
+      switchMap(async ([activeAccount, accounts, accountStatuses]) => {
+        // Filter out logged out accounts and active account
         accounts = Object.fromEntries(
           Object.entries(accounts).filter(
-            ([id]: [UserId, AccountInfo]) => accountStatuses[id] !== AuthenticationStatus.LoggedOut,
+            ([id]: [UserId, AccountInfo]) =>
+              accountStatuses[id] !== AuthenticationStatus.LoggedOut || id === activeAccount?.id,
           ),
         );
         return this.createInactiveAccounts(accounts);
