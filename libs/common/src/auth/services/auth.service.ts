@@ -40,13 +40,16 @@ export class AuthService implements AuthServiceAbstraction {
 
     this.authStatuses$ = this.accountService.accounts$.pipe(
       map((accounts) => Object.keys(accounts) as UserId[]),
-      switchMap((entries) =>
-        combineLatest(
+      switchMap((entries) => {
+        if (entries.length === 0) {
+          return of([] as { userId: UserId; status: AuthenticationStatus }[]);
+        }
+        return combineLatest(
           entries.map((userId) =>
             this.authStatusFor$(userId).pipe(map((status) => ({ userId, status }))),
           ),
-        ),
-      ),
+        );
+      }),
       map((statuses) => {
         return statuses.reduce(
           (acc, { userId, status }) => {
