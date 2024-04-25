@@ -16,11 +16,14 @@ export function accountInfoEqual(a: AccountInfo, b: AccountInfo) {
   if (a == null && b == null) {
     return true;
   }
-  const keys = new Set([...Object.keys(a ?? {}), ...Object.keys(b ?? {})]) as Set<
-    keyof AccountInfo
-  >;
+
+  if (a == null || b == null) {
+    return false;
+  }
+
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]) as Set<keyof AccountInfo>;
   for (const key of keys) {
-    if (a?.[key] !== b?.[key]) {
+    if (a[key] !== b[key]) {
       return false;
     }
   }
