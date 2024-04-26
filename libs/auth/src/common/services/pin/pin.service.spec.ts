@@ -7,6 +7,7 @@ import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/ke
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import {
   FakeAccountService,
@@ -20,6 +21,8 @@ import {
   PinService,
   PIN_KEY_ENCRYPTED_USER_KEY,
   PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,
+  OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+  PROTECTED_PIN,
 } from "./pin.service.implementation";
 
 describe("PinService", () => {
@@ -136,6 +139,95 @@ describe("PinService", () => {
         await expect(
           sut.createPinKeyEncryptedUserKey(mockPin, undefined, mockUserId),
         ).rejects.toThrow("No UserKey provided. Cannot create pinKeyEncryptedUserKey.");
+      });
+    });
+  });
+
+  describe("protectedPin methods", () => {
+    const mockPin = "1234";
+    const mockProtectedPin = "protectedPin";
+    const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
+
+    it("should throw an error if a userId is not provided", async () => {
+      await expect(sut.getProtectedPin(undefined)).rejects.toThrow(
+        "User ID is required. Cannot get protectedPin.",
+      );
+      await expect(sut.setProtectedPin(mockProtectedPin, undefined)).rejects.toThrow(
+        "User ID is required. Cannot set protectedPin.",
+      );
+    });
+
+    describe("getProtectedPin()", () => {
+      it("should get the protectedPin of the specified userId", async () => {
+        await sut.getProtectedPin(mockUserId);
+
+        expect(stateProvider.mock.getUserState$).toHaveBeenCalledWith(PROTECTED_PIN, mockUserId);
+      });
+    });
+
+    describe("setProtectedPin", () => {
+      it("should set the protectedPin of the specified userId", async () => {
+        const mockProtectedPin = "protectedPin";
+
+        await sut.setProtectedPin(mockProtectedPin, mockUserId);
+
+        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+          PROTECTED_PIN,
+          mockProtectedPin,
+          mockUserId,
+        );
+      });
+    });
+
+    describe("createProtectedPin", () => {
+      it("should throw an error if a userKey is not provided", async () => {
+        await expect(sut.createProtectedPin(mockPin, undefined)).rejects.toThrow(
+          "No UserKey provided. Cannot create protectedPin.",
+        );
+      });
+
+      it("should create a protectedPin from the provided PIN and userKey", async () => {
+        const encString = new EncString(mockProtectedPin);
+
+        encryptService.encrypt.calledWith(mockPin, mockUserKey).mockResolvedValue(encString);
+
+        const result = await sut.createProtectedPin(mockPin, mockUserKey);
+
+        expect(result).toEqual(encString);
+      });
+    });
+  });
+
+  describe("oldPinKeyEncryptedMasterKey methods", () => {
+    it("should throw an error if a userId is not provided", async () => {
+      await expect(sut.getOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
+        "User ID is required. Cannot get oldPinKeyEncryptedMasterKey.",
+      );
+      await expect(sut.clearOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
+        "User ID is required. Cannot clear oldPinKeyEncryptedMasterKey.",
+      );
+    });
+
+    describe("getOldPinKeyEncryptedMasterKey()", () => {
+      it("should get the oldPinKeyEncryptedMasterKey of the specified userId", async () => {
+        await sut.getOldPinKeyEncryptedMasterKey(mockUserId);
+
+        expect(stateProvider.mock.getUserState$).toHaveBeenCalledWith(
+          OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+          mockUserId,
+        );
+      });
+    });
+
+    describe("clearOldPinKeyEncryptedMasterKey()", () => {
+      it("should clear the oldPinKeyEncryptedMasterKey of the specified userId", async () => {
+        await sut.clearOldPinKeyEncryptedMasterKey(mockUserId);
+
+        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+          OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
+          null,
+          mockUserId,
+        );
       });
     });
   });
