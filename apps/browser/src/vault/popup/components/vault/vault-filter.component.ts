@@ -1,13 +1,15 @@
 import { Location } from "@angular/common";
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BehaviorSubject, Subject, firstValueFrom, from } from "rxjs";
-import { first, switchMap, takeUntil } from "rxjs/operators";
+import { BehaviorSubject, Subject, firstValueFrom, from, of } from "rxjs";
+import { first, switchMap, takeUntil, timeout } from "rxjs/operators";
 
+import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -95,6 +97,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
     private location: Location,
     private vaultFilterService: VaultFilterService,
     private vaultBrowserStateService: VaultBrowserStateService,
+    private logService: LogService,
   ) {
     this.noFolderListSize = 100;
   }
@@ -217,7 +220,19 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
 
   async loadFolders() {
     const allFolders = await firstValueFrom(
-      this.vaultFilterService.buildNestedFolders(this.selectedOrganization),
+      this.vaultFilterService.buildNestedFolders(this.selectedOrganization).pipe(
+        timeout({
+          first: 1_000,
+          with: () => {
+            this.logService.warning("Folders were not available, returning no folders.");
+            // TEMP: This is a fix for derived state sometimes not emitting a value when it's expected
+            // this replaces a never loading vault with a vault that displays with no folders.
+            // this isn't ideal but folders will attempt to load again when navigating away from this
+            // component and coming back to it.
+            return of(new DynamicTreeNode<FolderView>({}));
+          },
+        }),
+      ),
     );
     this.folders = allFolders.fullList;
     this.nestedFolders = allFolders.nestedList;
