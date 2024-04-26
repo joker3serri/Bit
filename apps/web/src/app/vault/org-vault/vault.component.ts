@@ -641,7 +641,15 @@ export class VaultComponent implements OnInit, OnDestroy {
       !allowAdminAccessToAllCollectionItems &&
       type === OrganizationUserType.Custom &&
       permissions.editAnyCollection;
-    if (canEditCiphersCheck || customUserCheck) {
+
+    // If Custom user has Delete Only access they will not see Add Access toggle
+    const customUserOnlyDelete =
+      this.flexibleCollectionsV1Enabled &&
+      type === OrganizationUserType.Custom &&
+      permissions.deleteAnyCollection &&
+      !permissions.editAnyCollection;
+
+    if (!customUserOnlyDelete && (canEditCiphersCheck || customUserCheck)) {
       mappedCollections = collections.map((c: TreeNode<CollectionAdminView>) => {
         const groupsCanManage = c.node.groupsCanManage();
         const usersCanManage = c.node.usersCanManage(this.orgRevokedUsers);

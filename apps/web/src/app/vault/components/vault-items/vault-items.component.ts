@@ -106,8 +106,10 @@ export class VaultItemsComponent {
 
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
 
-    // if Flexible collections is on. check if this is a custom user with edit permission
+    // if Flexible collections is on. custom user without edit access should not see the Edit option
+    // unless that user has "Can Manage" access to a collection
     if (
+      !collection.manage &&
       this.flexibleCollectionsV1Enabled &&
       organization?.type === OrganizationUserType.Custom &&
       !organization?.permissions.editAnyCollection
@@ -126,11 +128,14 @@ export class VaultItemsComponent {
 
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
 
-    // if Flexible collections is on. check if this is a custom user with delete permission
+    // if Flexible collections is on, a custom user with only edit access should not see
+    // the Delete button for orphaned collections
     if (
+      collection.addAccess &&
       this.flexibleCollectionsV1Enabled &&
       organization?.type === OrganizationUserType.Custom &&
-      !organization?.permissions.deleteAnyCollection
+      !organization?.permissions.deleteAnyCollection &&
+      organization?.permissions.editAnyCollection
     ) {
       return false;
     }
