@@ -33,7 +33,7 @@ export type PinLockType = "DISABLED" | "PERSISTENT" | "EPHEMERAL";
  * Persists through a client reset. Used when require lock with MP on client restart is disabled.
  * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
  */
-const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
+export const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
   "pinKeyEncryptedUserKey",
   {
@@ -46,7 +46,7 @@ const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
  * Does NOT persist through a client reset. Used when require lock with MP on client restart is enabled.
  * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
  */
-const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<EncryptedString>(
+export const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<EncryptedString>(
   PIN_MEMORY,
   "pinKeyEncryptedUserKeyEphemeral",
   {
@@ -55,7 +55,7 @@ const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<EncryptedStri
   },
 );
 
-const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
+export const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
   deserializer: (jsonValue) => jsonValue,
   clearOn: ["logout"],
 });
@@ -66,7 +66,7 @@ const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
  *
  * We now use the `pinKeyEncryptedUserKey`.
  */
-const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedString>(
+export const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
   "oldPinKeyEncryptedMasterKey",
   {
