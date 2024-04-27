@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
 
 @Component({
   selector: "bit-item-content, [bit-item-content]",
@@ -11,10 +11,4 @@ import { Component, Input } from "@angular/core";
       "fvw-target tw-outline-none tw-text-main hover:tw-text-main hover:tw-no-underline tw-text-base tw-p-4 tw-bg-transparent tw-w-full tw-border-none tw-flex tw-gap-4 tw-items-center tw-justify-between",
   },
 })
-export class ItemContentComponent {
-  @Input()
-  iconStart: string | null = null;
-
-  @Input()
-  iconEnd: string | null = null;
-}
+export class ItemContentComponent {}
