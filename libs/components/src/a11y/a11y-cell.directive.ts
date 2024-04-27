@@ -1,23 +1,33 @@
-import { AfterContentChecked, ContentChild, Directive, HostBinding } from "@angular/core";
+import { ContentChild, Directive, ElementRef, HostBinding } from "@angular/core";
 
 import { FocusableElement } from "../shared/focusable-element";
 
 @Directive({
   selector: "bitA11yCell",
   standalone: true,
+  providers: [{ provide: FocusableElement, useExisting: A11yCellDirective }],
 })
-export class A11yCellDirective implements AfterContentChecked {
+export class A11yCellDirective implements FocusableElement {
   @HostBinding("attr.role")
-  role = "gridcell";
+  role: "gridcell" | null;
 
   @ContentChild(FocusableElement)
-  focusableChild: FocusableElement;
+  private focusableChild: FocusableElement;
 
-  ngAfterContentChecked(): void {
-    if (!this.focusableChild) {
-      // eslint-disable-next-line no-console
-      console.error("A11yCellDirective must contain content that provides FocusableElement");
-      return;
+  getFocusTarget() {
+    let focusTarget: HTMLElement;
+    if (this.focusableChild) {
+      focusTarget = this.focusableChild.getFocusTarget();
+    } else {
+      focusTarget = this.elementRef.nativeElement.querySelector("button, a");
     }
+
+    if (!focusTarget) {
+      return this.elementRef.nativeElement;
+    }
+
+    return focusTarget;
   }
+
+  constructor(private elementRef: ElementRef<HTMLElement>) {}
 }

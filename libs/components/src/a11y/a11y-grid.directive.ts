@@ -73,15 +73,21 @@ export class A11yGridDirective implements AfterViewInit {
   }
 
   private initializeGrid(): void {
-    this.grid = this.rows.map((listItem) => [...listItem.cells]);
-    this.grid.flat().map((cell) => (cell.focusableChild.getFocusTarget().tabIndex = -1));
+    this.grid = this.rows.map((listItem) => {
+      listItem.role = "row";
+      return [...listItem.cells];
+    });
+    this.grid.flat().forEach((cell) => {
+      cell.role = "gridcell";
+      cell.getFocusTarget().tabIndex = -1;
+    });
 
     this.getActiveCellContent().tabIndex = 0;
   }
 
   /** Get the focusable content of the active cell */
   private getActiveCellContent(): HTMLElement {
-    return this.grid[this.activeRow][this.activeCol].focusableChild.getFocusTarget();
+    return this.grid[this.activeRow][this.activeCol].getFocusTarget();
   }
 
   /** Move focus via a delta against the currently active gridcell */

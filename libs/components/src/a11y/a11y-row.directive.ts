@@ -15,7 +15,7 @@ import { A11yCellDirective } from "./a11y-cell.directive";
 })
 export class A11yRowDirective implements AfterViewInit {
   @HostBinding("attr.role")
-  role = "row";
+  role: "row" | null;
 
   cells: A11yCellDirective[];
 
