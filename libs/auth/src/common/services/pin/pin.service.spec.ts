@@ -39,6 +39,10 @@ describe("PinService", () => {
   const stateService = mock<StateService>();
 
   const mockUserId = Utils.newGuid() as UserId;
+  const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
+  const mockPin = "1234";
+  const mockProtectedPin = "protectedPin";
+  const mockProtectedPinEncString = new EncString(mockProtectedPin);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -63,7 +67,7 @@ describe("PinService", () => {
     expect(sut).not.toBeFalsy();
   });
 
-  describe("get/clear pinKeyEncryptedUserKey methods", () => {
+  describe("get/clear/create pinKeyEncryptedUserKey methods", () => {
     it("should throw an error if a userId is not provided", async () => {
       await expect(sut.getPinKeyEncryptedUserKey(undefined)).rejects.toThrow(
         "User ID is required. Cannot get pinKeyEncryptedUserKey.",
@@ -77,6 +81,9 @@ describe("PinService", () => {
       await expect(sut.clearPinKeyEncryptedUserKeyEphemeral(undefined)).rejects.toThrow(
         "User ID is required. Cannot clear pinKeyEncryptedUserKeyEphemeral.",
       );
+      await expect(
+        sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
+      ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
     });
 
     describe("getPinKeyEncryptedUserKey()", () => {
@@ -126,15 +133,6 @@ describe("PinService", () => {
     });
 
     describe("createPinKeyEncryptedUserKey()", () => {
-      const mockPin = "1234";
-      const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
-
-      it("should throw an error if a userId is not provided", async () => {
-        await expect(
-          sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
-        ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
-      });
-
       it("should throw an error if a userKey is not provided", async () => {
         await expect(
           sut.createPinKeyEncryptedUserKey(mockPin, undefined, mockUserId),
@@ -144,10 +142,6 @@ describe("PinService", () => {
   });
 
   describe("protectedPin methods", () => {
-    const mockPin = "1234";
-    const mockProtectedPin = "protectedPin";
-    const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
-
     it("should throw an error if a userId is not provided", async () => {
       await expect(sut.getProtectedPin(undefined)).rejects.toThrow(
         "User ID is required. Cannot get protectedPin.",
@@ -165,10 +159,8 @@ describe("PinService", () => {
       });
     });
 
-    describe("setProtectedPin", () => {
+    describe("setProtectedPin()", () => {
       it("should set the protectedPin of the specified userId", async () => {
-        const mockProtectedPin = "protectedPin";
-
         await sut.setProtectedPin(mockProtectedPin, mockUserId);
 
         expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
@@ -179,7 +171,7 @@ describe("PinService", () => {
       });
     });
 
-    describe("createProtectedPin", () => {
+    describe("createProtectedPin()", () => {
       it("should throw an error if a userKey is not provided", async () => {
         await expect(sut.createProtectedPin(mockPin, undefined)).rejects.toThrow(
           "No UserKey provided. Cannot create protectedPin.",
@@ -187,13 +179,13 @@ describe("PinService", () => {
       });
 
       it("should create a protectedPin from the provided PIN and userKey", async () => {
-        const encString = new EncString(mockProtectedPin);
-
-        encryptService.encrypt.calledWith(mockPin, mockUserKey).mockResolvedValue(encString);
+        encryptService.encrypt
+          .calledWith(mockPin, mockUserKey)
+          .mockResolvedValue(mockProtectedPinEncString);
 
         const result = await sut.createProtectedPin(mockPin, mockUserKey);
 
-        expect(result).toEqual(encString);
+        expect(result).toEqual(mockProtectedPinEncString);
       });
     });
   });
@@ -253,6 +245,14 @@ describe("PinService", () => {
       const result = await sut.isPinSet(mockUserId);
 
       expect(result).toEqual(false);
+    });
+  });
+
+  describe("decryptUserKeyWithPin()", () => {
+    it("should throw an error if a userId is not provided", async () => {
+      await expect(sut.decryptUserKeyWithPin(mockPin, undefined)).rejects.toThrow(
+        "User ID is required. Cannot decrypt user key with PIN.",
+      );
     });
   });
 });
