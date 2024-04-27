@@ -295,7 +295,7 @@ export class PinService implements PinServiceAbstraction {
   /**
    * Decrypts the UserKey with the provided PIN
    */
-  private async decryptUserKey(
+  async decryptUserKey(
     userId: UserId,
     pin: string,
     salt: string,
@@ -330,7 +330,7 @@ export class PinService implements PinServiceAbstraction {
    * - Sets that new `protectedPin` to state
    * @returns UserKey
    */
-  private async decryptAndMigrateOldPinKeyEncryptedMasterKey(
+  async decryptAndMigrateOldPinKeyEncryptedMasterKey(
     userId: UserId,
     pin: string,
     email: string,

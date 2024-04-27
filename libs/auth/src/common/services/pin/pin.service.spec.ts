@@ -6,6 +6,7 @@ import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -23,6 +24,7 @@ import {
   PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,
   OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
   PROTECTED_PIN,
+  PinLockType,
 } from "./pin.service.implementation";
 
 describe("PinService", () => {
@@ -254,9 +256,110 @@ describe("PinService", () => {
         "User ID is required. Cannot decrypt user key with PIN.",
       );
     });
+
+    function setupDecryptUserKeyWithPinMocks(
+      pinLockType: PinLockType,
+      migrationStatus: "PRE" | "POST" = "POST",
+    ) {
+      sut.getPinLockType = jest.fn().mockResolvedValue(pinLockType);
+      kdfConfigService.getKdfConfig.mockResolvedValue(DEFAULT_KDF_CONFIG);
+      // TODO-rr-bw: mock email
+
+      if (migrationStatus === "PRE") {
+        sut.decryptAndMigrateOldPinKeyEncryptedMasterKey = jest.fn().mockResolvedValue(mockUserKey);
+      } else {
+        sut.decryptUserKey = jest.fn().mockResolvedValue(mockUserKey);
+      }
+
+      mockPinEncryptedKeyDataByPinLockType(pinLockType, migrationStatus);
+
+      sut.getProtectedPin = jest.fn().mockResolvedValue(mockProtectedPin);
+      encryptService.decryptToUtf8.mockResolvedValue(mockPin);
+    }
+
+    // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
+    const pinKeyEncryptedUserKeyEphemeral = new EncString(
+      "2.gbauOANURUHqvhLTDnva1A==|nSW+fPumiuTaDB/s12+JO88uemV6rhwRSR+YR1ZzGr5j6Ei3/h+XEli2Unpz652NlZ9NTuRpHxeOqkYYJtp7J+lPMoclgteXuAzUu9kqlRc=|DeUFkhIwgkGdZA08bDnDqMMNmZk21D+H5g8IostPKAY=",
+    );
+    const pinKeyEncryptedUserKeyPersistant = new EncString(
+      "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=",
+    );
+
+    const oldPinKeyEncryptedMasterKeyPostMigration: any = null;
+    const oldPinKeyEncryptedMasterKeyPreMigrationPersistent =
+      "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=";
+    const oldPinKeyEncryptedMasterKeyPreMigrationEphemeral = new EncString(
+      "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=",
+    );
+
+    function mockPinEncryptedKeyDataByPinLockType(
+      pinLockType: PinLockType,
+      migrationStatus: "PRE" | "POST" = "POST",
+    ) {
+      switch (pinLockType) {
+        case "PERSISTENT":
+          sut.getPinKeyEncryptedUserKey = jest
+            .fn()
+            .mockResolvedValue(pinKeyEncryptedUserKeyPersistant);
+
+          if (migrationStatus === "PRE") {
+            sut.getOldPinKeyEncryptedMasterKey = jest
+              .fn()
+              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPreMigrationPersistent);
+          } else {
+            sut.getOldPinKeyEncryptedMasterKey = jest
+              .fn()
+              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPostMigration);
+          }
+
+          break;
+        case "EPHEMERAL":
+          sut.getPinKeyEncryptedUserKeyEphemeral = jest
+            .fn()
+            .mockResolvedValue(pinKeyEncryptedUserKeyEphemeral);
+
+          if (migrationStatus === "PRE") {
+            sut.getOldPinKeyEncryptedMasterKey = jest
+              .fn()
+              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPreMigrationEphemeral.encryptedString); // TODO-rr-bw: verify
+          } else {
+            sut.getOldPinKeyEncryptedMasterKey = jest
+              .fn()
+              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPostMigration);
+          }
+
+          break;
+        case "DISABLED":
+          // no mocking required. Error should be thrown
+          break;
+      }
+    }
+
+    const testCases: { pinLockType: PinLockType; migrationStatus: "PRE" | "POST" }[] = [
+      { pinLockType: "PERSISTENT", migrationStatus: "PRE" },
+      { pinLockType: "PERSISTENT", migrationStatus: "POST" },
+      { pinLockType: "EPHEMERAL", migrationStatus: "PRE" },
+      { pinLockType: "EPHEMERAL", migrationStatus: "POST" },
+    ];
+
+    testCases.forEach(({ pinLockType, migrationStatus }) => {
+      describe(`given a ${pinLockType} PIN (${migrationStatus} migration)`, () => {
+        it(`should successfully decrypt and return user key when using a valid PIN`, async () => {
+          // Arrange
+          setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
+
+          // Act
+          const result = await sut.decryptUserKeyWithPin(mockPin, mockUserId);
+
+          // Assert
+          expect(result).toEqual(mockUserKey);
+        });
+      });
+    });
   });
 });
 
+// TODO-rr-bw: remove
 // import { mock } from "jest-mock-extended";
 
 // import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
