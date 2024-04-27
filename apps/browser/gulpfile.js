@@ -276,7 +276,7 @@ function applyBetaLabels(manifest) {
     // GITHUB_RUN_ID is a number like: 8853654662
     // which will convert to [ 4024, 3206 ]
     // and a single incremented id of 8853654663 will become  [ 4024, 3207 ]
-    const runIdParts = numToShorts(parseInt(process.env.GITHUB_RUN_ID));
+    const runIdParts = numToUint16s(parseInt(process.env.GITHUB_RUN_ID));
 
     // Only use the first 2 parts from the given version number and base the other 2 numbers from the GITHUB_RUN_ID
     // Example: 2024.4.4024.3206
