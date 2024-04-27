@@ -1,17 +1,96 @@
-import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
+import { Meta, Story, Primary, Controls, Canvas } from "@storybook/addon-docs";
 
 import * as stories from "./list.stories";
 
 <Meta of={stories} />
 
-# List
+# Item
 
-The `BitListComponent` is a container that displays one or more instances of `BitItemComponent`.
+`<bit-item>` is a horizontal card that contains one or more interactive actions.
 
-## Icons
+It is a generic container that can be used for standalone content, as an alternative to a table, or
+to list navigation options.
 
-## Primary Action
+<Canvas>
+  <Story of={stories.Default} />
+</Canvas>
+
+## Importing
+
+```ts
+import { ItemModule } from "@bitwarden/components";
+
+@Component({
+  selector: "app-example",
+  standalone: true,
+  imports: [ItemModule],
+})
+export class ExampleComponent {}
+```
+
+## Primary Content
+
+The primary content of an item is supplied by `bit-item-content`.
+
+### Content Types
+
+The content can be a button, anchor, or static container.
+
+```html
+<bit-item>
+  <a bit-item-content routerLink="..."> Hi, I am a link. </a>
+</bit-item>
+
+<bit-item>
+  <button bit-item-content (click)="...">And I am a button.</button>
+</bit-item>
+
+<bit-item>
+  <bit-item-content> I'm just static :( </bit-item-content>
+</bit-item>
+```
+
+<Canvas>
+  <Story of={stories.ContentTypes} />
+</Canvas>
 
 ## Secondary Actions
 
-## A11y
+Secondary interative actions can be placed in the item through the `"end-actions"` slot.
+
+Each actions must be wrapped by `ItemActionComponent`.
+
+Actions are commonly icon buttons or badge buttons.
+
+```html
+<bit-item>
+  <button bit-item-content>...</button>
+
+  <ng-container slot="end-actions">
+    <bit-item-action>
+      <button type="button" bitBadge variant="primary">Auto-fill</button>
+    </bit-item-action>
+    <bit-item-action>
+      <button type="button" bitIconButton="bwi-clone" aria-label="Copy"></button>
+    </bit-item-action>
+    <bit-item-action>
+      <button type="button" bitIconButton="bwi-ellipsis-v" aria-label="Options"></button>
+    </bit-item-action>
+  </ng-container>
+</bit-item>
+```
+
+## Item Groups
+
+Groups of items must be associated by wrapping them in the `<bit-item-group>`.
+
+This will enable arrow-based keyboard navigation
+([further reading here](https://www.w3.org/WAI/ARIA/apg/patterns/grid/examples/layout-grids/#kbd_label)).
+
+```html
+<bit-item-group>
+  <bit-item>...</bit-item>
+  <bit-item>...</bit-item>
+  <bit-item>...</bit-item>
+</bit-item-group>
+```
