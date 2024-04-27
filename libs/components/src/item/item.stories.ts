@@ -3,7 +3,6 @@ import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from "@stor
 import { A11yGridDirective } from "../a11y/a11y-grid.directive";
 import { AvatarModule } from "../avatar";
 import { BadgeModule } from "../badge";
-import { ColorPasswordModule } from "../color-password";
 import { IconButtonModule } from "../icon-button";
 import { TypographyModule } from "../typography";
 
@@ -14,18 +13,17 @@ import { ItemComponent } from "./item.component";
 
 export default {
   title: "Component Library/Item",
-  component: ItemGroupComponent,
+  component: ItemComponent,
   decorators: [
     moduleMetadata({
       imports: [
-        ItemComponent,
+        ItemGroupComponent,
         AvatarModule,
         IconButtonModule,
         BadgeModule,
         TypographyModule,
         ItemActionComponent,
         ItemContentComponent,
-        ColorPasswordModule,
         A11yGridDirective,
       ],
     }),
@@ -55,28 +53,6 @@ export const Default: Story = {
           </bit-item-action>
           <bit-item-action>
             <button type="button" bitIconButton="bwi-ellipsis-v"></button>
-          </bit-item-action>
-        </ng-container>
-      </bit-item>
-    `,
-  }),
-};
-
-export const CustomContent: Story = {
-  render: (args) => ({
-    props: args,
-    template: /*html*/ `
-      <bit-item>
-        <bit-item-content>
-          <bit-color-password password="p@s$W0rD123"></bit-color-password>
-        </bit-item-content>
-
-        <ng-container slot="end-actions">
-          <bit-item-action>
-            <button type="button" bitIconButton="bwi-clone"></button>
-          </bit-item-action>
-          <bit-item-action>
-            <button type="button" bitIconButton="bwi-generate"></button>
           </bit-item-action>
         </ng-container>
       </bit-item>
