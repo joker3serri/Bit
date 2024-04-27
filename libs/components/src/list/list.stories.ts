@@ -26,7 +26,6 @@ export default {
         ItemActionComponent,
         ItemContentComponent,
         ColorPasswordModule,
-        ItemTextDirective,
         A11yGridDirective,
       ],
     }),

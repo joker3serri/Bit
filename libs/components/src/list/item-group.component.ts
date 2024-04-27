@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 
 import { A11yGridDirective } from "../a11y/a11y-grid.directive";
 
@@ -8,5 +8,6 @@ import { A11yGridDirective } from "../a11y/a11y-grid.directive";
   standalone: true,
   imports: [CommonModule],
   template: `<ng-content></ng-content>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemGroupComponent extends A11yGridDirective {}
