@@ -22,6 +22,11 @@ export type PasswordGenerationOptions = {
    */
   ambiguous?: boolean;
 
+  /** `true` when extra special characters may be included in the output.
+   *  `false` when extra special characters should not be included in the output.
+   */
+  extraSpecial?: boolean;
+
   /** `true` when uppercase ASCII characters should be included in the output
    * This value defaults to `false.
    */
@@ -74,6 +79,7 @@ export const DefaultPasswordGenerationOptions: Partial<PasswordGenerationOptions
   length: 14,
   minLength: DefaultBoundaries.length.min,
   ambiguous: true,
+  extraSpecial: false,
   uppercase: true,
   lowercase: true,
   number: true,

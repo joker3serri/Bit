@@ -285,6 +285,15 @@
               [(ngModel)]="avoidAmbiguous"
             />
           </div>
+          <div class="box-content-row box-content-row-checkbox" appBoxRow>
+            <label for="extraSpecial">Extra special characters</label>
+            <input
+              id="extraSpecial"
+              type="checkbox"
+              (change)="savePasswordOptions()"
+              [(ngModel)]="passwordOptions.extraSpecial"
+            />
+          </div>
         </div>
       </div>
     </ng-container>

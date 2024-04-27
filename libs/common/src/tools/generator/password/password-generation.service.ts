@@ -16,6 +16,7 @@ const DefaultOptions: PasswordGeneratorOptions = {
   length: 14,
   minLength: 5,
   ambiguous: false,
+  extraSpecial: false,
   number: true,
   minNumber: 1,
   uppercase: true,
@@ -105,7 +106,10 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
       allCharSet += numberCharSet;
     }
 
-    const specialCharSet = "!@#$%^&*";
+    let specialCharSet = "!@#$%^&*";
+    if (o.extraSpecial) {
+      specialCharSet += "()[]{}?/\\-_.:,;=+<>";
+    }
     if (o.special) {
       allCharSet += specialCharSet;
     }
