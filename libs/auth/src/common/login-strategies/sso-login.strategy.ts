@@ -3,6 +3,7 @@ import { Jsonify } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -98,6 +99,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     private authRequestService: AuthRequestServiceAbstraction,
     private i18nService: I18nService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
+    kdfConfigService: KdfConfigService,
   ) {
     super(
       accountService,
@@ -113,6 +115,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       twoFactorService,
       userDecryptionOptionsService,
       billingAccountProfileStateService,
+      kdfConfigService,
     );
 
     this.cache = new BehaviorSubject(data);
@@ -241,7 +244,7 @@ export class SsoLoginStrategy extends LoginStrategy {
 
       // Only try to set user key with device key if admin approval request was not successful
       if (!hasUserKey) {
-        await this.trySetUserKeyWithDeviceKey(tokenResponse);
+        await this.trySetUserKeyWithDeviceKey(tokenResponse, userId);
       }
     } else if (
       masterKeyEncryptedUserKey != null &&
@@ -309,10 +312,11 @@ export class SsoLoginStrategy extends LoginStrategy {
     }
   }
 
-  private async trySetUserKeyWithDeviceKey(tokenResponse: IdentityTokenResponse): Promise<void> {
+  private async trySetUserKeyWithDeviceKey(
+    tokenResponse: IdentityTokenResponse,
+    userId: UserId,
+  ): Promise<void> {
     const trustedDeviceOption = tokenResponse.userDecryptionOptions?.trustedDeviceOption;
-
-    const userId = (await this.stateService.getUserId()) as UserId;
 
     const deviceKey = await this.deviceTrustService.getDeviceKey(userId);
     const encDevicePrivateKey = trustedDeviceOption?.encryptedPrivateKey;
