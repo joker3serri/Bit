@@ -67,6 +67,7 @@
             buttonType="main"
             [disabled]="disabled"
             size="default"
+            [disabled]="disabled"
             [attr.title]="'remove' | i18n"
             [attr.aria-label]="'remove' | i18n"
             (click)="selectionList.deselectItem(item.id); handleBlur()"
