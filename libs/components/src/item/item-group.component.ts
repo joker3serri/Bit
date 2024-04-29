@@ -9,5 +9,8 @@ import { A11yGridDirective } from "../a11y/a11y-grid.directive";
   imports: [CommonModule],
   template: `<ng-content></ng-content>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "tw-block",
+  },
 })
 export class ItemGroupComponent extends A11yGridDirective {}

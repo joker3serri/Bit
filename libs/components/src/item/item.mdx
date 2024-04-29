@@ -105,7 +105,17 @@ Actions are commonly icon buttons or badge buttons.
 
 Groups of items must be associated by wrapping them in the `<bit-item-group>`.
 
-This will enable arrow-based keyboard navigation
+<Canvas>
+  <Story of={stories.MultipleActionList} />
+</Canvas>
+
+<Canvas>
+  <Story of={stories.SingleActionList} />
+</Canvas>
+
+### A11y
+
+Item groups utilize arrow-based keyboard navigation
 ([further reading here](https://www.w3.org/WAI/ARIA/apg/patterns/grid/examples/layout-grids/#kbd_label)).
 
 Use `aria-label` or `aria-labelledby` to give groups an accessible name.
@@ -118,10 +128,8 @@ Use `aria-label` or `aria-labelledby` to give groups an accessible name.
 </bit-item-group>
 ```
 
-<Canvas>
-  <Story of={stories.MultipleActionList} />
-</Canvas>
+### Virtual Scrolling
 
 <Canvas>
-  <Story of={stories.SingleActionList} />
+  <Story of={stories.VirtualScrolling} />
 </Canvas>
