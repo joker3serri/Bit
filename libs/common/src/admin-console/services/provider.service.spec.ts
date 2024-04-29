@@ -1,3 +1,8 @@
+import { mock, MockProxy } from "jest-mock-extended";
+import { firstValueFrom, of } from "rxjs";
+
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../spec";
 import { FakeActiveUserState, FakeSingleUserState } from "../../../spec/fake-state";
 import { Utils } from "../../platform/misc/utils";
@@ -80,13 +85,16 @@ describe("ProviderService", () => {
   let fakeStateProvider: FakeStateProvider;
   let fakeUserState: FakeSingleUserState<Record<string, ProviderData>>;
   let fakeActiveUserState: FakeActiveUserState<Record<string, ProviderData>>;
+  let fakeConfigService: MockProxy<ConfigService>;
 
   beforeEach(async () => {
     fakeAccountService = mockAccountServiceWith(fakeUserId);
     fakeStateProvider = new FakeStateProvider(fakeAccountService);
     fakeUserState = fakeStateProvider.singleUser.getFake(fakeUserId, PROVIDERS);
     fakeActiveUserState = fakeStateProvider.activeUser.getFake(PROVIDERS);
-    providerService = new ProviderService(fakeStateProvider);
+    fakeConfigService = mock<ConfigService>();
+
+    providerService = new ProviderService(fakeConfigService, fakeStateProvider);
   });
 
   describe("getAll()", () => {
@@ -103,6 +111,61 @@ describe("ProviderService", () => {
       fakeUserState.nextState(arrayToRecord(mockData));
       const result = await providerService.getAll();
       expect(result).toEqual([]);
+    });
+  });
+
+  describe("hasConsolidatedBilling$()", () => {
+    it("Returns an observable of true when the FF is enabled and the provider is billable", async () => {
+      const mockData = buildMockProviders(1);
+      mockData[0].providerStatus = ProviderStatusType.Billable;
+      fakeUserState.nextState(arrayToRecord(mockData));
+      fakeConfigService.getFeatureFlag$.mockReturnValue(of(true));
+      const result = providerService.hasConsolidatedBilling$(mockData[0].id);
+      const hasConsolidatedBilling = await firstValueFrom(result);
+      expect(hasConsolidatedBilling).toBeTruthy();
+    });
+
+    it("Returns an observable of false when the FF is disabled and the provider is billable", async () => {
+      const mockData = buildMockProviders(1);
+      mockData[0].providerStatus = ProviderStatusType.Billable;
+      fakeUserState.nextState(arrayToRecord(mockData));
+      fakeConfigService.getFeatureFlag$.mockReturnValue(of(false));
+      const result = providerService.hasConsolidatedBilling$(mockData[0].id);
+      const hasConsolidatedBilling = await firstValueFrom(result);
+      expect(hasConsolidatedBilling).toBeFalsy();
+    });
+
+    it("Returns an observable of false when the FF is enabled and the provider is not billable", async () => {
+      const mockData = buildMockProviders(1);
+      mockData[0].providerStatus = ProviderStatusType.Created;
+      fakeUserState.nextState(arrayToRecord(mockData));
+      fakeConfigService.getFeatureFlag$.mockReturnValue(of(true));
+      const result = providerService.hasConsolidatedBilling$(mockData[0].id);
+      const hasConsolidatedBilling = await firstValueFrom(result);
+      expect(hasConsolidatedBilling).toBeFalsy();
+    });
+
+    it("Returns an observable of false when the FF is enabled and the provider is does not exist", async () => {
+      fakeConfigService.getFeatureFlag$.mockReturnValue(of(true));
+      const result = providerService.hasConsolidatedBilling$("this-provider-does-not-exist");
+      const hasConsolidatedBilling = await firstValueFrom(result);
+      expect(hasConsolidatedBilling).toBeFalsy();
+    });
+  });
+
+  describe("get$()", () => {
+    it("Returns an observable of a single provider from state that matches the specified id", async () => {
+      const mockData = buildMockProviders(5);
+      fakeUserState.nextState(arrayToRecord(mockData));
+      const result = providerService.get$(mockData[3].id);
+      const provider = await firstValueFrom(result);
+      expect(provider).toEqual(new Provider(mockData[3]));
+    });
+
+    it("Returns an observable of undefined if the specified provider is not found", async () => {
+      const result = providerService.get$("this-provider-does-not-exist");
+      const provider = await firstValueFrom(result);
+      expect(provider).toBe(undefined);
     });
   });
 
