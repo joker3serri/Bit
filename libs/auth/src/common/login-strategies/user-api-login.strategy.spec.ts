@@ -192,7 +192,11 @@ describe("UserApiLoginStrategy", () => {
 
     await apiLogInStrategy.logIn(credentials);
 
-    expect(masterPasswordService.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(masterKey);
+    expect(masterPasswordService.mock.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(
+      masterKey,
+      undefined,
+      undefined,
+    );
     expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
   });
 });

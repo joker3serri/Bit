@@ -443,7 +443,11 @@ describe("SsoLoginStrategy", () => {
 
       await ssoLoginStrategy.logIn(credentials);
 
-      expect(masterPasswordService.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(masterKey);
+      expect(masterPasswordService.mock.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(
+        masterKey,
+        undefined,
+        undefined,
+      );
       expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
     });
   });
@@ -494,7 +498,11 @@ describe("SsoLoginStrategy", () => {
 
       await ssoLoginStrategy.logIn(credentials);
 
-      expect(masterPasswordService.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(masterKey);
+      expect(masterPasswordService.mock.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(
+        masterKey,
+        undefined,
+        undefined,
+      );
       expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
     });
   });
