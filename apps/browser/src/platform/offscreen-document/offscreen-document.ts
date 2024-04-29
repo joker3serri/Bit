@@ -53,6 +53,11 @@ class OffscreenDocument implements OffscreenDocumentInterface {
     return await BrowserClipboardService.read(self);
   }
 
+  /**
+   * Decrypts the items in the message using the encrypt service.
+   *
+   * @param message - The extension message containing the items to decrypt
+   */
   private async handleOffscreenDecryptItems(
     message: OffscreenDocumentExtensionMessage,
   ): Promise<string> {

@@ -68,4 +68,26 @@ describe("BrowserMultithreadEncryptServiceImplementation", () => {
       decryptRequest: expect.any(String),
     });
   });
+
+  it("returns an empty array if the passed items are not defined", async () => {
+    const result = await encryptService.decryptItems(null, key);
+
+    expect(result).toEqual([]);
+  });
+
+  it("returns an empty array if the offscreen document message returns an empty value", async () => {
+    sendMessageWithResponseSpy.mockResolvedValue("");
+
+    const result = await encryptService.decryptItems(items, key);
+
+    expect(result).toEqual([]);
+  });
+
+  it("returns an empty array if the offscreen document message returns an empty array", async () => {
+    sendMessageWithResponseSpy.mockResolvedValue("[]");
+
+    const result = await encryptService.decryptItems(items, key);
+
+    expect(result).toEqual([]);
+  });
 });
