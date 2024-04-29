@@ -49,9 +49,6 @@ export class CollectionAdminView extends CollectionView {
 
   /**
    * Whether the user can modify user access to this collection
-   * @param org
-   * @param flexibleCollectionsV1Enabled
-   * @returns
    */
   canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     return this.canEdit(org, flexibleCollectionsV1Enabled) || org.canManageUsers;
