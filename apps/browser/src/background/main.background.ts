@@ -1055,11 +1055,12 @@ export default class MainBackground {
         this.cipherService,
       );
 
-      if (BrowserApi.isManifestVersion(2)) {
+      if (chrome.webRequest != null && chrome.webRequest.onAuthRequired != null) {
         this.webRequestBackground = new WebRequestBackground(
           this.platformUtilsService,
           this.cipherService,
           this.authService,
+          chrome.webRequest,
         );
       }
     }
@@ -1098,9 +1099,7 @@ export default class MainBackground {
     await this.tabsBackground.init();
     this.contextMenusBackground?.init();
     await this.idleBackground.init();
-    if (BrowserApi.isManifestVersion(2)) {
-      await this.webRequestBackground.init();
-    }
+    this.webRequestBackground?.startListening();
 
     if (this.platformUtilsService.isFirefox() && !this.isPrivateMode) {
       // Set Private Mode windows to the default icon - they do not share state with the background page

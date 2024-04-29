@@ -4,40 +4,29 @@ import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
-import { BrowserApi } from "../../platform/browser/browser-api";
-
 export default class WebRequestBackground {
   private pendingAuthRequests: any[] = [];
-  private webRequest: any;
   private isFirefox: boolean;
 
   constructor(
     platformUtilsService: PlatformUtilsService,
     private cipherService: CipherService,
     private authService: AuthService,
+    private readonly webRequest: typeof chrome.webRequest,
   ) {
-    if (BrowserApi.isManifestVersion(2)) {
-      this.webRequest = chrome.webRequest;
-    }
     this.isFirefox = platformUtilsService.isFirefox();
   }
 
-  async init() {
-    if (!this.webRequest || !this.webRequest.onAuthRequired) {
-      return;
-    }
-
+  startListening() {
     this.webRequest.onAuthRequired.addListener(
-      async (details: any, callback: any) => {
+      async (details, callback) => {
         if (!details.url || this.pendingAuthRequests.indexOf(details.requestId) !== -1) {
           if (callback) {
-            callback();
+            callback(null);
           }
           return;
         }
-
         this.pendingAuthRequests.push(details.requestId);
-
         if (this.isFirefox) {
           // eslint-disable-next-line
           return new Promise(async (resolve, reject) => {
@@ -51,7 +40,7 @@ export default class WebRequestBackground {
       [this.isFirefox ? "blocking" : "asyncBlocking"],
     );
 
-    this.webRequest.onCompleted.addListener((details: any) => this.completeAuthRequest(details), {
+    this.webRequest.onCompleted.addListener((details) => this.completeAuthRequest(details), {
       urls: ["http://*/*"],
     });
     this.webRequest.onErrorOccurred.addListener(
@@ -91,7 +80,7 @@ export default class WebRequestBackground {
     }
   }
 
-  private completeAuthRequest(details: any) {
+  private completeAuthRequest(details: chrome.webRequest.WebResponseCacheDetails) {
     const i = this.pendingAuthRequests.indexOf(details.requestId);
     if (i > -1) {
       this.pendingAuthRequests.splice(i, 1);
