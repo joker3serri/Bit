@@ -55,6 +55,10 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   private destroy$ = new Subject<void>();
 
+  protected enableConsolidatedBilling$ = this.configService.getFeatureFlag$(
+    FeatureFlag.EnableConsolidatedBilling,
+  );
+
   constructor(
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
@@ -102,8 +106,13 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.loading = true;
     this.locale = await firstValueFrom(this.i18nService.locale$);
     this.userOrg = await this.organizationService.get(this.organizationId);
+    const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
     this.IsProviderManaged =
-      this.userOrg.hasProvider && this.userOrg.providerType == ProviderType.Msp ? true : false;
+      this.userOrg.hasProvider &&
+      this.userOrg.providerType == ProviderType.Msp &&
+      enableConsolidatedBilling
+        ? true
+        : false;
     if (this.userOrg.canViewSubscription) {
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
       this.lineItems = this.sub?.subscription?.items;
