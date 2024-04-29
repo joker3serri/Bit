@@ -5,7 +5,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
 export default class WebRequestBackground {
-  private pendingAuthRequests: any[] = [];
+  private pendingAuthRequests: Set<string> = new Set<string>([]);
   private isFirefox: boolean;
 
   constructor(
@@ -20,13 +20,13 @@ export default class WebRequestBackground {
   startListening() {
     this.webRequest.onAuthRequired.addListener(
       async (details, callback) => {
-        if (!details.url || this.pendingAuthRequests.indexOf(details.requestId) !== -1) {
+        if (!details.url || this.pendingAuthRequests.has(details.requestId)) {
           if (callback) {
             callback(null);
           }
           return;
         }
-        this.pendingAuthRequests.push(details.requestId);
+        this.pendingAuthRequests.add(details.requestId);
         if (this.isFirefox) {
           // eslint-disable-next-line
           return new Promise(async (resolve, reject) => {
@@ -81,9 +81,6 @@ export default class WebRequestBackground {
   }
 
   private completeAuthRequest(details: chrome.webRequest.WebResponseCacheDetails) {
-    const i = this.pendingAuthRequests.indexOf(details.requestId);
-    if (i > -1) {
-      this.pendingAuthRequests.splice(i, 1);
-    }
+    this.pendingAuthRequests.delete(details.requestId);
   }
 }
