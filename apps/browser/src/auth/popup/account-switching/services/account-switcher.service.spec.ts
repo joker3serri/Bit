@@ -8,6 +8,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { AccountSwitcherService } from "./account-switcher.service";
@@ -22,6 +23,7 @@ describe("AccountSwitcherService", () => {
   const messagingService = mock<MessagingService>();
   const environmentService = mock<EnvironmentService>();
   const logService = mock<LogService>();
+  const userAutoUnlockKeyService = mock<UserAutoUnlockKeyService>();
   const authService = mock<AuthService>();
 
   let accountSwitcherService: AccountSwitcherService;
@@ -43,6 +45,7 @@ describe("AccountSwitcherService", () => {
       messagingService,
       environmentService,
       logService,
+      userAutoUnlockKeyService,
       authService,
     );
   });
@@ -181,6 +184,8 @@ describe("AccountSwitcherService", () => {
         }),
       );
       expect(removeListenerSpy).toBeCalledTimes(1);
+
+      expect(userAutoUnlockKeyService.setUserKeyInMemoryIfAutoUserKeySet).toBeCalledWith("1");
     });
   });
 });
