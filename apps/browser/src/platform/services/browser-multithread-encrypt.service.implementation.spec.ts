@@ -9,7 +9,6 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { InitializerKey } from "@bitwarden/common/platform/services/cryptography/initializer-key";
 import { makeStaticByteArray } from "@bitwarden/common/spec";
 
-import { flushPromises } from "../../autofill/spec/testing-utils";
 import { BrowserApi } from "../browser/browser-api";
 
 import { BrowserMultithreadEncryptServiceImplementation } from "./browser-multithread-encrypt.service.implementation";
@@ -24,6 +23,12 @@ describe("BrowserMultithreadEncryptServiceImplementation", () => {
   const sendMessageWithResponseSpy = jest.spyOn(BrowserApi, "sendMessageWithResponse");
   const encType = EncryptionType.AesCbc256_HmacSha256_B64;
   const key = new SymmetricCryptoKey(makeStaticByteArray(64, 100), encType);
+  const items: Decryptable<InitializerMetadata>[] = [
+    {
+      decrypt: jest.fn(),
+      initializerKey: InitializerKey.Cipher,
+    },
+  ];
 
   beforeEach(() => {
     cryptoFunctionServiceMock = mock<CryptoFunctionService>();
@@ -43,17 +48,19 @@ describe("BrowserMultithreadEncryptServiceImplementation", () => {
     jest.clearAllMocks();
   });
 
+  it("decrypts items using web workers if the chrome.offscreen API is not supported", async () => {
+    manifestVersionSpy.mockReturnValue(2);
+
+    await encryptService.decryptItems([], key);
+
+    expect(createOffscreenDocumentSpy).not.toHaveBeenCalled();
+    expect(closeOffscreenDocumentSpy).not.toHaveBeenCalled();
+  });
+
   it("decrypts items using the chrome.offscreen API if it is supported", async () => {
-    const items: Decryptable<InitializerMetadata>[] = [
-      {
-        decrypt: jest.fn(),
-        initializerKey: InitializerKey.Cipher,
-      },
-    ];
     sendMessageWithResponseSpy.mockResolvedValue(JSON.stringify(items));
 
     await encryptService.decryptItems(items, key);
-    await flushPromises();
 
     expect(BrowserApi.createOffscreenDocument).toHaveBeenCalled();
     expect(BrowserApi.closeOffscreenDocument).toHaveBeenCalled();
