@@ -12,12 +12,19 @@ export class BrowserMultithreadEncryptServiceImplementation extends MultithreadE
     items: Decryptable<T>[],
     key: SymmetricCryptoKey,
   ): Promise<T[]> {
-    if (items == null || items.length < 1) {
-      return [];
+    if (!this.isOffscreenDocumentSupported()) {
+      return await super.decryptItems(items, key);
     }
 
-    if (!this.isOffscreenDocumentSupported()) {
-      return super.decryptItems(items, key);
+    return await this.decryptItemsInOffscreenDocument(items, key);
+  }
+
+  private async decryptItemsInOffscreenDocument<T extends InitializerMetadata>(
+    items: Decryptable<T>[],
+    key: SymmetricCryptoKey,
+  ): Promise<T[]> {
+    if (items == null || items.length < 1) {
+      return [];
     }
 
     const request = {
