@@ -51,6 +51,7 @@
     "default_popup": "popup/index.html"
   },
   "permissions": [
+    "activeTab",
     "tabs",
     "contextMenus",
     "storage",
