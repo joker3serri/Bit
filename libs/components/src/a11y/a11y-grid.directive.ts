@@ -73,16 +73,21 @@ export class A11yGridDirective implements AfterViewInit {
   }
 
   private initializeGrid(): void {
-    this.grid = this.rows.map((listItem) => {
-      listItem.role = "row";
-      return [...listItem.cells];
-    });
-    this.grid.flat().forEach((cell) => {
-      cell.role = "gridcell";
-      cell.getFocusTarget().tabIndex = -1;
-    });
+    try {
+      this.grid = this.rows.map((listItem) => {
+        listItem.role = "row";
+        return [...listItem.cells];
+      });
+      this.grid.flat().forEach((cell) => {
+        cell.role = "gridcell";
+        cell.getFocusTarget().tabIndex = -1;
+      });
 
-    this.getActiveCellContent().tabIndex = 0;
+      this.getActiveCellContent().tabIndex = 0;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Unable to initialize grid");
+    }
   }
 
   /** Get the focusable content of the active cell */
