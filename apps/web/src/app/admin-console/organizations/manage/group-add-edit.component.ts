@@ -101,7 +101,6 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
   );
   private flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsV1,
-    false,
   );
 
   protected PermissionMode = PermissionMode;
