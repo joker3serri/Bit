@@ -6,9 +6,9 @@ import { BrowserApi } from "../browser/browser-api";
 import BrowserClipboardService from "../services/browser-clipboard.service";
 
 import {
+  OffscreenDocument as OffscreenDocumentInterface,
   OffscreenDocumentExtensionMessage,
   OffscreenDocumentExtensionMessageHandlers,
-  OffscreenDocument as OffscreenDocumentInterface,
 } from "./abstractions/offscreen-document";
 
 class OffscreenDocument implements OffscreenDocumentInterface {
@@ -67,9 +67,7 @@ class OffscreenDocument implements OffscreenDocumentInterface {
     }
 
     const request = JSON.parse(decryptRequest);
-    const response = await this.encryptService.decryptItems(request.items, request.key);
-
-    return JSON.stringify(response);
+    return await this.encryptService.getDecryptedItemsFromWorker(request.items, request.key);
   }
 
   /**

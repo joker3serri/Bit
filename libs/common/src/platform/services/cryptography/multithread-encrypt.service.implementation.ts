@@ -30,6 +30,16 @@ export class MultithreadEncryptServiceImplementation extends EncryptServiceImple
       return [];
     }
 
+    const decryptedItems = await this.getDecryptedItemsFromWorker(items, key);
+    const parsedItems = JSON.parse(decryptedItems);
+
+    return this.initializeItems(parsedItems);
+  }
+
+  async getDecryptedItemsFromWorker<T extends InitializerMetadata>(
+    items: Decryptable<T>[],
+    key: SymmetricCryptoKey,
+  ): Promise<string> {
     this.logService.info("Starting decryption using multithreading");
 
     this.worker ??= new Worker(
@@ -53,10 +63,9 @@ export class MultithreadEncryptServiceImplementation extends EncryptServiceImple
     return await firstValueFrom(
       fromEvent(this.worker, "message").pipe(
         filter((response: MessageEvent) => response.data?.id === request.id),
-        map((response) => JSON.parse(response.data.items)),
-        map((jsonItems: Jsonify<T>[]) => this.initializeItems(jsonItems)),
+        map((response) => response.data.items),
         takeUntil(this.clear$),
-        defaultIfEmpty([]),
+        defaultIfEmpty("[]"),
       ),
     );
   }
