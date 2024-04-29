@@ -44,7 +44,7 @@ export const Default: Story = {
           <span slot="secondary">Bar</span>
         </button>
 
-        <ng-container slot="end-actions">
+        <ng-container slot="end">
           <bit-item-action>
             <button type="button" bitBadge variant="primary">Auto-fill</button>
           </bit-item-action>
@@ -55,6 +55,28 @@ export const Default: Story = {
             <button type="button" bitIconButton="bwi-ellipsis-v"></button>
           </bit-item-action>
         </ng-container>
+      </bit-item>
+    `,
+  }),
+};
+
+export const ContentSlots: Story = {
+  render: (args) => ({
+    props: args,
+    template: /*html*/ `
+      <bit-item>
+        <button bit-item-content type="button">
+          <bit-avatar
+            slot="start"
+            [text]="'Foo'"
+          ></bit-avatar>
+          foo@bitwarden.com
+          <ng-container slot="secondary">
+            <div>Bitwarden.com</div>
+            <div><em>locked</em></div>
+          </ng-container>
+          <i slot="end" class="bwi bwi-lock" aria-hidden="true"></i>
+        </button>
       </bit-item>
     `,
   }),
@@ -83,6 +105,20 @@ export const ContentTypes: Story = {
   }),
 };
 
+export const TextOverflow: Story = {
+  render: (args) => ({
+    props: args,
+    template: /*html*/ `
+      <div class="tw-text-main tw-mb-4">TODO: Fix truncation</div>
+      <bit-item>
+        <bit-item-content>
+          Helloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+        </bit-item-content>
+      </bit-item>
+    `,
+  }),
+};
+
 export const MultipleActionList: Story = {
   render: (args) => ({
     props: args,
@@ -95,7 +131,7 @@ export const MultipleActionList: Story = {
             <span slot="secondary">Bar</span>
           </button>
 
-          <ng-container slot="end-actions">
+          <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
             </bit-item-action>
@@ -114,7 +150,7 @@ export const MultipleActionList: Story = {
             <span slot="secondary">Bar</span>
           </button>
 
-          <ng-container slot="end-actions">
+          <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
             </bit-item-action>
@@ -133,7 +169,7 @@ export const MultipleActionList: Story = {
             <span slot="secondary">Bar</span>
           </button>
 
-          <ng-container slot="end-actions">
+          <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
             </bit-item-action>
@@ -152,7 +188,7 @@ export const MultipleActionList: Story = {
             <span slot="secondary">Bar</span>
           </button>
 
-          <ng-container slot="end-actions">
+          <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
             </bit-item-action>
@@ -171,7 +207,7 @@ export const MultipleActionList: Story = {
             <span slot="secondary">Bar</span>
           </button>
 
-          <ng-container slot="end-actions">
+          <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
             </bit-item-action>
@@ -190,7 +226,7 @@ export const MultipleActionList: Story = {
             <span slot="secondary">Bar</span>
           </button>
 
-          <ng-container slot="end-actions">
+          <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
             </bit-item-action>

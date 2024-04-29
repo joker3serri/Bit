@@ -4,29 +4,20 @@ import * as stories from "./item.stories";
 
 <Meta of={stories} />
 
+```ts
+import { ItemModule } from "@bitwarden/components";
+```
+
 # Item
 
 `<bit-item>` is a horizontal card that contains one or more interactive actions.
 
-It is a generic container that can be used for standalone content, as an alternative to a table, or
-to list navigation options.
+It is a generic container that can be used for either standalone content, an alternative to tables,
+or to list nav links.
 
 <Canvas>
   <Story of={stories.Default} />
 </Canvas>
-
-## Importing
-
-```ts
-import { ItemModule } from "@bitwarden/components";
-
-@Component({
-  selector: "app-example",
-  standalone: true,
-  imports: [ItemModule],
-})
-export class ExampleComponent {}
-```
 
 ## Primary Content
 
@@ -54,11 +45,41 @@ The content can be a button, anchor, or static container.
   <Story of={stories.ContentTypes} />
 </Canvas>
 
+### Content Slots
+
+`bit-item-content` contains the following slots to help position the content:
+
+| Slot               | Descriptions                                        |
+| ------------------ | --------------------------------------------------- |
+| default            | primary text or arbitrary content                   |
+| `slot="secondary"` | supporting text; under the default slot             |
+| `slot="start"`     | Commonly an icon or avatar; before the default slot |
+| `slot="end"`       | Commonly an icon; after the default slot            |
+
+```html
+<bit-item>
+  <button bit-item-content type="button">
+    <bit-avatar slot="start" [text]="'Foo'"></bit-avatar>
+    foo@bitwarden.com
+    <ng-container slot="secondary">
+      <div>Bitwarden.com</div>
+      <div><em>locked</em></div>
+    </ng-container>
+    <i slot="end" class="bwi bwi-lock" aria-hidden="true"></i>
+  </button>
+</bit-item>
+```
+
+<Canvas>
+  <Story of={stories.ContentSlots} />
+</Canvas>
+
 ## Secondary Actions
 
-Secondary interative actions can be placed in the item through the `"end-actions"` slot.
+Secondary interative actions can be placed in the item through the `"end"` slot, outside of
+`bit-item-content`.
 
-Each actions must be wrapped by `ItemActionComponent`.
+Each actions must be wrapped by `<bit-item-action>`.
 
 Actions are commonly icon buttons or badge buttons.
 
@@ -66,7 +87,7 @@ Actions are commonly icon buttons or badge buttons.
 <bit-item>
   <button bit-item-content>...</button>
 
-  <ng-container slot="end-actions">
+  <ng-container slot="end">
     <bit-item-action>
       <button type="button" bitBadge variant="primary">Auto-fill</button>
     </bit-item-action>
@@ -95,4 +116,10 @@ This will enable arrow-based keyboard navigation
 </bit-item-group>
 ```
 
-./item.stories
+<Canvas>
+  <Story of={stories.MultipleActionList} />
+</Canvas>
+
+<Canvas>
+  <Story of={stories.SingleActionList} />
+</Canvas>
