@@ -1,3 +1,5 @@
+import { defaultIfEmpty, filter, firstValueFrom, fromEvent, map, Subject, takeUntil } from "rxjs";
+
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 
 import { BrowserApi } from "../browser/browser-api";
@@ -9,11 +11,18 @@ import {
   OffscreenDocument as OffscreenDocumentInterface,
 } from "./abstractions/offscreen-document";
 
+// TTL (time to live) is not strictly required but avoids tying up memory resources if inactive
+const workerTTL = 3 * 60000; // 3 minutes
+
 class OffscreenDocument implements OffscreenDocumentInterface {
   private consoleLogService: ConsoleLogService = new ConsoleLogService(false);
+  private webWorker: Worker;
+  private webWorkerTimeout: number | NodeJS.Timeout;
+  private clearWebWorker$ = new Subject<void>();
   private readonly extensionMessageHandlers: OffscreenDocumentExtensionMessageHandlers = {
     offscreenCopyToClipboard: ({ message }) => this.handleOffscreenCopyToClipboard(message),
     offscreenReadFromClipboard: () => this.handleOffscreenReadFromClipboard(),
+    offscreenDecryptItems: ({ message }) => this.handleOffscreenDecryptItems(message),
   };
 
   /**
@@ -37,6 +46,52 @@ class OffscreenDocument implements OffscreenDocumentInterface {
    */
   private async handleOffscreenReadFromClipboard() {
     return await BrowserClipboardService.read(self);
+  }
+
+  private async handleOffscreenDecryptItems(
+    message: OffscreenDocumentExtensionMessage,
+  ): Promise<string> {
+    const { decryptRequestId, decryptRequest } = message;
+    if (!decryptRequest) {
+      return "[]";
+    }
+
+    this.webWorker ??= new Worker(
+      new URL(
+        /* webpackChunkName: 'encrypt-worker' */
+        "@bitwarden/common/platform/services/cryptography/encrypt.worker.ts",
+        import.meta.url,
+      ),
+    );
+    this.restartWebWorkerTimeout();
+    this.webWorker.postMessage(decryptRequest);
+
+    return await firstValueFrom(
+      fromEvent(this.webWorker, "message").pipe(
+        filter((response: MessageEvent) => response.data?.id === decryptRequestId),
+        map((response) => response.data.items),
+        takeUntil(this.clearWebWorker$),
+        defaultIfEmpty("[]"),
+      ),
+    );
+  }
+
+  private clearWebWorker() {
+    this.clearWebWorker$.next();
+    this.webWorker?.terminate();
+    this.webWorker = null;
+    this.clearWebWorkerTimeout();
+  }
+
+  private restartWebWorkerTimeout() {
+    this.clearWebWorkerTimeout();
+    this.webWorkerTimeout = globalThis.setTimeout(() => this.clearWebWorker(), workerTTL);
+  }
+
+  private clearWebWorkerTimeout() {
+    if (this.webWorkerTimeout != null) {
+      globalThis.clearTimeout(this.webWorkerTimeout);
+    }
   }
 
   /**
