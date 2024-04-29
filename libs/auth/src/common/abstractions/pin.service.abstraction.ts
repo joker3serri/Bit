@@ -5,6 +5,9 @@ import { PinKey, UserKey } from "@bitwarden/common/types/key";
 
 import { PinLockType } from "../services";
 
+/**
+ * Used for PIN-based unlocks on Browser and Desktop
+ */
 export abstract class PinServiceAbstraction {
   /**
    * Gets the UserKey, encrypted by the PinKey.

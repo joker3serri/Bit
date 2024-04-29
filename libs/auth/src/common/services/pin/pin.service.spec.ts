@@ -263,7 +263,6 @@ describe("PinService", () => {
     ) {
       sut.getPinLockType = jest.fn().mockResolvedValue(pinLockType);
       kdfConfigService.getKdfConfig.mockResolvedValue(DEFAULT_KDF_CONFIG);
-      // TODO-rr-bw: mock email
 
       if (migrationStatus === "PRE") {
         sut.decryptAndMigrateOldPinKeyEncryptedMasterKey = jest.fn().mockResolvedValue(mockUserKey);
@@ -321,7 +320,7 @@ describe("PinService", () => {
           if (migrationStatus === "PRE") {
             sut.getOldPinKeyEncryptedMasterKey = jest
               .fn()
-              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPreMigrationEphemeral.encryptedString); // TODO-rr-bw: verify
+              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPreMigrationEphemeral.encryptedString);
           } else {
             sut.getOldPinKeyEncryptedMasterKey = jest
               .fn()
