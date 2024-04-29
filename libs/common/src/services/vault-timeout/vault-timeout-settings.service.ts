@@ -103,8 +103,6 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   }
 
   async getVaultTimeoutAction(userId?: UserId): Promise<VaultTimeoutAction> {
-    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
-
     const availableActions = await this.getAvailableVaultTimeoutActions();
     if (availableActions.length === 1) {
       return availableActions[0];
@@ -142,6 +140,8 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   }
 
   private async getAvailableVaultTimeoutActions(userId?: string): Promise<VaultTimeoutAction[]> {
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     const availableActions = [VaultTimeoutAction.LogOut];
 
     const canLock =
