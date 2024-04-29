@@ -2,7 +2,6 @@ type OffscreenDocumentExtensionMessage = {
   [key: string]: any;
   command: string;
   text?: string;
-  decryptRequestId?: string;
   decryptRequest?: string;
 };
 
