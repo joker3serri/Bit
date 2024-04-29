@@ -7,6 +7,12 @@ import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platf
 import { BrowserApi } from "../browser/browser-api";
 
 export class BrowserMultithreadEncryptServiceImplementation extends MultithreadEncryptServiceImplementation {
+  /**
+   * Handles decryption of items, will use the offscreen document if supported.
+   *
+   * @param items - The items to decrypt.
+   * @param key - The key to use for decryption.
+   */
   async decryptItems<T extends InitializerMetadata>(
     items: Decryptable<T>[],
     key: SymmetricCryptoKey,
@@ -18,6 +24,12 @@ export class BrowserMultithreadEncryptServiceImplementation extends MultithreadE
     return await this.decryptItemsInOffscreenDocument(items, key);
   }
 
+  /**
+   * Decrypts items using the offscreen document api.
+   *
+   * @param items - The items to decrypt.
+   * @param key - The key to use for decryption.
+   */
   private async decryptItemsInOffscreenDocument<T extends InitializerMetadata>(
     items: Decryptable<T>[],
     key: SymmetricCryptoKey,
@@ -53,6 +65,9 @@ export class BrowserMultithreadEncryptServiceImplementation extends MultithreadE
     return this.initializeItems(responseItems);
   }
 
+  /**
+   * Checks if the offscreen document api is supported.
+   */
   private isOffscreenDocumentSupported() {
     return (
       BrowserApi.isManifestVersion(3) &&
