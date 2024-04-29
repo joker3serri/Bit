@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
 import { A11yGridDirective } from "../a11y/a11y-grid.directive";
@@ -6,7 +5,7 @@ import { A11yGridDirective } from "../a11y/a11y-grid.directive";
 @Component({
   selector: "bit-item-group",
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `<ng-content></ng-content>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
