@@ -7,6 +7,7 @@ import {
 } from "../../auth/abstractions/account.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
+import { Utils } from "../../platform/misc/utils";
 import {
   ACCOUNT_DISK,
   GlobalState,
@@ -88,7 +89,7 @@ export class AccountServiceImplementation implements InternalAccountService {
   }
 
   async addAccount(userId: UserId, accountData: AccountInfo): Promise<void> {
-    if (userId == null) {
+    if (!Utils.isGuid(userId)) {
       throw new Error("userId is required");
     }
 
@@ -141,6 +142,11 @@ export class AccountServiceImplementation implements InternalAccountService {
   }
 
   async setAccountActivity(userId: UserId, lastActivity: Date): Promise<void> {
+    if (!Utils.isGuid(userId)) {
+      // only store for valid userIds
+      return;
+    }
+
     await this.globalStateProvider.get(ACCOUNT_ACTIVITY).update(
       (activity) => {
         activity ||= {};

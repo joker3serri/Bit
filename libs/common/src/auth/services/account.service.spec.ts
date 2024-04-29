@@ -11,6 +11,7 @@ import { FakeGlobalStateProvider } from "../../../spec/fake-state-provider";
 import { trackEmissions } from "../../../spec/utils";
 import { LogService } from "../../platform/abstractions/log.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
+import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
 import { AccountInfo, accountInfoEqual } from "../abstractions/account.service";
 
@@ -68,7 +69,7 @@ describe("accountService", () => {
   let sut: AccountServiceImplementation;
   let accountsState: FakeGlobalState<Record<UserId, AccountInfo>>;
   let activeAccountIdState: FakeGlobalState<UserId>;
-  const userId = "userId" as UserId;
+  const userId = Utils.newGuid() as UserId;
   const userInfo = { email: "email", name: "name", emailVerified: true };
 
   beforeEach(() => {
@@ -138,8 +139,19 @@ describe("accountService", () => {
       state.stateSubject.next({});
       await sut.addAccount(userId, userInfo);
 
-      expect(state.nextMock).toHaveBeenCalledWith({ userId: expect.any(Date) });
+      expect(state.nextMock).toHaveBeenCalledWith({ [userId]: expect.any(Date) });
     });
+
+    it.each([null, undefined, 123, "not a guid"])(
+      "does not set last active if the userId is not a valid guid",
+      async (userId) => {
+        const state = globalStateProvider.getFake(ACCOUNT_ACTIVITY);
+        state.stateSubject.next({});
+        await expect(sut.addAccount(userId as UserId, userInfo)).rejects.toThrow(
+          "userId is required",
+        );
+      },
+    );
   });
 
   describe("setAccountName", () => {
@@ -308,19 +320,29 @@ describe("accountService", () => {
     });
 
     describe("setAccountActivity", () => {
+      const userId = Utils.newGuid() as UserId;
       it("sets the account activity", async () => {
-        await sut.setAccountActivity("user1" as UserId, new Date(1));
+        await sut.setAccountActivity(userId, new Date(1));
 
-        expect(state.nextMock).toHaveBeenCalledWith({ user1: new Date(1) });
+        expect(state.nextMock).toHaveBeenCalledWith({ [userId]: new Date(1) });
       });
 
       it("does not update if the activity is the same", async () => {
-        state.stateSubject.next({ [toId("user1")]: new Date(1) });
+        state.stateSubject.next({ [userId]: new Date(1) });
 
-        await sut.setAccountActivity("user1" as UserId, new Date(1));
+        await sut.setAccountActivity(userId, new Date(1));
 
         expect(state.nextMock).not.toHaveBeenCalled();
       });
+
+      it.each([null, undefined, 123, "not a guid"])(
+        "does not set last active if the userId is not a valid guid",
+        async (userId) => {
+          await sut.setAccountActivity(userId as UserId, new Date(1));
+
+          expect(state.nextMock).not.toHaveBeenCalled();
+        },
+      );
     });
   });
 });

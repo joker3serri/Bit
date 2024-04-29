@@ -13,6 +13,7 @@ import { ApiService } from "../../abstractions/api.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
 import { AccountService } from "../abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
@@ -63,7 +64,7 @@ export class AuthService implements AuthServiceAbstraction {
   }
 
   authStatusFor$(userId: UserId): Observable<AuthenticationStatus> {
-    if (userId == null) {
+    if (!Utils.isGuid(userId)) {
       return of(AuthenticationStatus.LoggedOut);
     }
 

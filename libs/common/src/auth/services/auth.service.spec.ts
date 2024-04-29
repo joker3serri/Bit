@@ -153,11 +153,14 @@ describe("AuthService", () => {
       cryptoService.getInMemoryUserKeyFor$.mockReturnValue(of(undefined));
     });
 
-    it("emits LoggedOut when userId is null", async () => {
-      expect(await firstValueFrom(sut.authStatusFor$(null))).toEqual(
-        AuthenticationStatus.LoggedOut,
-      );
-    });
+    it.each([null, undefined, "not a userId"])(
+      "emits LoggedOut when userId is invalid (%s)",
+      async () => {
+        expect(await firstValueFrom(sut.authStatusFor$(null))).toEqual(
+          AuthenticationStatus.LoggedOut,
+        );
+      },
+    );
 
     it("emits LoggedOut when there is no access token", async () => {
       tokenService.hasAccessToken$.mockReturnValue(of(false));
