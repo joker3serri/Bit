@@ -17,7 +17,6 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { fromChromeEvent } from "../../../../platform/browser/from-chrome-event";
@@ -50,7 +49,6 @@ export class AccountSwitcherService {
     private messagingService: MessagingService,
     private environmentService: EnvironmentService,
     private logService: LogService,
-    private userAutoUnlockKeyService: UserAutoUnlockKeyService,
     authService: AuthService,
   ) {
     this.availableAccounts$ = combineLatest([
@@ -162,8 +160,5 @@ export class AccountSwitcherService {
       }
       throw err;
     });
-
-    // Set the user key in memory if the auto user key is set on acct switch
-    await this.userAutoUnlockKeyService.setUserKeyInMemoryIfAutoUserKeySet(id as UserId);
   }
 }
