@@ -1,4 +1,4 @@
-import { Subject, firstValueFrom, map, timeout } from "rxjs";
+import { Subject, firstValueFrom, map, merge, timeout } from "rxjs";
 
 import {
   PinCryptoServiceAbstraction,
