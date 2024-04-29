@@ -314,7 +314,7 @@ export class Main {
       this.singleUserStateProvider,
     );
 
-    this.derivedStateProvider = new DefaultDerivedStateProvider(storageServiceProvider);
+    this.derivedStateProvider = new DefaultDerivedStateProvider();
 
     this.stateProvider = new DefaultStateProvider(
       this.activeUserStateProvider,
@@ -344,6 +344,7 @@ export class Main {
       this.storageService,
       this.logService,
       new MigrationBuilderService(),
+      ClientType.Cli,
     );
 
     this.stateService = new StateService(
