@@ -14,12 +14,7 @@ export class DefaultOffscreenDocumentService implements DefaultOffscreenDocument
         await this.create(reasons, justification);
       }
 
-      const maybePromise = callback();
-
-      if (maybePromise instanceof Promise) {
-        return await maybePromise;
-      }
-      return maybePromise;
+      return await Promise.resolve(callback());
     } finally {
       this.workerCount--;
       if (this.workerCount === 0) {

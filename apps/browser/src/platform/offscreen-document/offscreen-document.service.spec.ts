@@ -1,6 +1,26 @@
 import { DefaultOffscreenDocumentService } from "./offscreen-document.service";
 
-describe("DefaultOffscreenDocumentService", () => {
+class TestCase {
+  synchronicity: string;
+  private _callback: () => Promise<any> | any;
+  get callback() {
+    return jest.fn(this._callback);
+  }
+
+  constructor(synchronicity: string, callback: () => Promise<any> | any) {
+    this.synchronicity = synchronicity;
+    this._callback = callback;
+  }
+
+  toString() {
+    return this.synchronicity;
+  }
+}
+
+describe.each([
+  new TestCase("synchronous callback", () => 42),
+  new TestCase("asynchronous callback", () => Promise.resolve(42)),
+])("DefaultOffscreenDocumentService %s", (testCase) => {
   let sut: DefaultOffscreenDocumentService;
   const reasons = [chrome.offscreen.Reason.TESTING];
   const justification = "justification is testing";
@@ -11,8 +31,10 @@ describe("DefaultOffscreenDocumentService", () => {
     hasDocument: jest.fn().mockResolvedValue(false),
     Reason: chrome.offscreen.Reason,
   };
+  let callback: jest.Mock<() => Promise<number> | number>;
 
   beforeEach(() => {
+    callback = testCase.callback;
     chrome.offscreen = api;
 
     sut = new DefaultOffscreenDocumentService();
@@ -36,7 +58,7 @@ describe("DefaultOffscreenDocumentService", () => {
     it("does not create a document when one exists", async () => {
       api.hasDocument.mockResolvedValue(true);
 
-      await sut.withDocument(reasons, justification, () => {});
+      await sut.withDocument(reasons, justification, callback);
 
       expect(chrome.offscreen.createDocument).not.toHaveBeenCalled();
     });
@@ -47,33 +69,29 @@ describe("DefaultOffscreenDocumentService", () => {
       });
 
       it("calls the callback", async () => {
-        const callback = jest.fn();
-
         await sut.withDocument(reasons, justification, callback);
 
         expect(callback).toHaveBeenCalled();
       });
 
       it("returns the callback result", async () => {
-        const callback = jest.fn().mockReturnValue("result");
-
         const result = await sut.withDocument(reasons, justification, callback);
 
-        expect(result).toBe("result");
+        expect(result).toBe(42);
       });
 
       it("closes the document when the callback completes and no other callbacks are running", async () => {
-        await sut.withDocument(reasons, justification, () => {});
+        await sut.withDocument(reasons, justification, callback);
 
         expect(chrome.offscreen.closeDocument).toHaveBeenCalled();
       });
 
       it("does not close the document when the callback completes and other callbacks are running", async () => {
         await Promise.all([
-          sut.withDocument(reasons, justification, () => {}),
-          sut.withDocument(reasons, justification, () => {}),
-          sut.withDocument(reasons, justification, () => {}),
-          sut.withDocument(reasons, justification, () => {}),
+          sut.withDocument(reasons, justification, callback),
+          sut.withDocument(reasons, justification, callback),
+          sut.withDocument(reasons, justification, callback),
+          sut.withDocument(reasons, justification, callback),
         ]);
 
         expect(chrome.offscreen.closeDocument).toHaveBeenCalledTimes(1);
