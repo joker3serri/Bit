@@ -59,7 +59,7 @@ The content can be a button, anchor, or static container.
 ```html
 <bit-item>
   <button bit-item-content type="button">
-    <bit-avatar slot="start" [text]="'Foo'"></bit-avatar>
+    <bit-avatar slot="start" text="Foo"></bit-avatar>
     foo@bitwarden.com
     <ng-container slot="secondary">
       <div>Bitwarden.com</div>
@@ -108,8 +108,10 @@ Groups of items must be associated by wrapping them in the `<bit-item-group>`.
 This will enable arrow-based keyboard navigation
 ([further reading here](https://www.w3.org/WAI/ARIA/apg/patterns/grid/examples/layout-grids/#kbd_label)).
 
+Use `aria-label` or `aria-labelledby` to give groups an accessible name.
+
 ```html
-<bit-item-group>
+<bit-item-group aria-label="My Items">
   <bit-item>...</bit-item>
   <bit-item>...</bit-item>
   <bit-item>...</bit-item>

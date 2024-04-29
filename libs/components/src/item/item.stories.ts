@@ -123,7 +123,7 @@ export const MultipleActionList: Story = {
   render: (args) => ({
     props: args,
     template: /*html*/ `
-      <bit-item-group>
+      <bit-item-group aria-label="Multiple Action List">
         <bit-item>
           <button bit-item-content>
             <i slot="start" class="bwi bwi-globe tw-text-3xl tw-text-muted" aria-hidden="true"></i>
@@ -247,7 +247,7 @@ export const SingleActionList: Story = {
   render: (args) => ({
     props: args,
     template: /*html*/ `
-      <bit-item-group>
+      <bit-item-group aria-label="Single Action List">
         <bit-item>
           <a bit-item-content href="#">
             Foobar
