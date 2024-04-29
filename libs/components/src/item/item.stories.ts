@@ -296,9 +296,10 @@ export const SingleActionList: Story = {
 export const VirtualScrolling: Story = {
   render: (_args) => ({
     props: {
-      data: Array.from(Array(10000).keys()),
+      data: Array.from(Array(100000).keys()),
     },
     template: /*html*/ `
+      <div class="tw-text-main tw-mb-4">TODO: Fix keyboard nav within virtual scroll</div>
       <cdk-virtual-scroll-viewport [itemSize]="46" class="tw-h-[500px]">
         <bit-item-group aria-label="Single Action List">
           <bit-item *cdkVirtualFor="let item of data">
