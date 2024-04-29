@@ -54,16 +54,18 @@ export class MultithreadEncryptServiceImplementation extends EncryptServiceImple
       fromEvent(this.worker, "message").pipe(
         filter((response: MessageEvent) => response.data?.id === request.id),
         map((response) => JSON.parse(response.data.items)),
-        map((items) =>
-          items.map((jsonItem: Jsonify<T>) => {
-            const initializer = getClassInitializer<T>(jsonItem.initializerKey);
-            return initializer(jsonItem);
-          }),
-        ),
+        map((jsonItems: Jsonify<T>[]) => this.initializeItems(jsonItems)),
         takeUntil(this.clear$),
         defaultIfEmpty([]),
       ),
     );
+  }
+
+  protected initializeItems<T extends InitializerMetadata>(items: Jsonify<T>[]): T[] {
+    return items.map((jsonItem: Jsonify<T>) => {
+      const initializer = getClassInitializer<T>(jsonItem.initializerKey);
+      return initializer(jsonItem);
+    });
   }
 
   private clear() {

@@ -2,7 +2,6 @@ import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.i
 import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { getClassInitializer } from "@bitwarden/common/platform/services/cryptography/get-class-initializer";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 
 import { BrowserApi } from "../browser/browser-api";
@@ -38,7 +37,6 @@ export class BrowserMultithreadEncryptServiceImplementation extends MultithreadE
       "Use web worker to decrypt items.",
     );
     const response = (await BrowserApi.sendMessageWithResponse("offscreenDecryptItems", {
-      decryptRequestId: request.id,
       decryptRequest: JSON.stringify(request),
     })) as string;
     BrowserApi.closeOffscreenDocument();
@@ -52,10 +50,7 @@ export class BrowserMultithreadEncryptServiceImplementation extends MultithreadE
       return [];
     }
 
-    return responseItems.map((jsonItem: any) => {
-      const initializer = getClassInitializer<T>(jsonItem.initializerKey);
-      return initializer(jsonItem);
-    });
+    return this.initializeItems(responseItems);
   }
 
   private isOffscreenDocumentSupported() {
