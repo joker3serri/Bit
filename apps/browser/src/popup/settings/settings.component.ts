@@ -439,8 +439,9 @@ export class SettingsComponent implements OnInit {
       type: "info",
     });
 
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     if (confirmed) {
-      this.messagingService.send("logout");
+      this.messagingService.send("logout", { userId: userId });
     }
   }
 
