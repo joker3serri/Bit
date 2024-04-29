@@ -12,10 +12,10 @@ jest.mock(
   "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation",
   () => ({
     MultithreadEncryptServiceImplementation: class MultithreadEncryptServiceImplementation {
-      decryptItems = async <T extends InitializerMetadata>(
+      getDecryptedItemsFromWorker = async <T extends InitializerMetadata>(
         items: Decryptable<T>[],
         _key: SymmetricCryptoKey,
-      ): Promise<T[]> => items as unknown as T[];
+      ): Promise<string> => JSON.stringify(items);
     },
   }),
 );
