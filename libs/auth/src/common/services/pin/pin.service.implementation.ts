@@ -101,6 +101,10 @@ export class PinService implements PinServiceAbstraction {
   private async setPinKeyEncryptedUserKey(encString: EncString, userId: UserId): Promise<void> {
     this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKey.");
 
+    if (encString == null) {
+      throw new Error("No EncString provided. Cannot set pinKeyEncryptedUserKey.");
+    }
+
     await this.stateProvider.setUserState(
       PIN_KEY_ENCRYPTED_USER_KEY,
       encString?.encryptedString,
@@ -132,6 +136,10 @@ export class PinService implements PinServiceAbstraction {
     userId: UserId,
   ): Promise<void> {
     this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKeyEphemeral.");
+
+    if (encString == null) {
+      throw new Error("No EncString provided. Cannot set pinKeyEncryptedUserKeyEphemeral.");
+    }
 
     await this.stateProvider.setUserState(
       PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,

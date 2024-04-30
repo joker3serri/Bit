@@ -138,6 +138,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
    * @param verification User-supplied verification data (OTP, MP, PIN, or biometrics)
    */
   async verifyUser(verification: Verification): Promise<boolean> {
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     if (verificationHasSecret(verification)) {
       this.validateSecretInput(verification);
     }
@@ -146,9 +148,9 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
       case VerificationType.OTP:
         return this.verifyUserByOTP(verification);
       case VerificationType.MasterPassword:
-        return this.verifyUserByMasterPassword(verification);
+        return this.verifyUserByMasterPassword(verification, userId);
       case VerificationType.PIN:
-        return this.verifyUserByPIN(verification);
+        return this.verifyUserByPIN(verification, userId);
       case VerificationType.Biometrics:
         return this.verifyUserByBiometrics();
       default: {
@@ -171,8 +173,12 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
 
   private async verifyUserByMasterPassword(
     verification: MasterPasswordVerification,
+    userId: UserId,
   ): Promise<boolean> {
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    if (!userId) {
+      throw new Error("User ID is required. Cannot verify user by master password.");
+    }
+
     let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (!masterKey) {
       masterKey = await this.cryptoService.makeMasterKey(
@@ -193,8 +199,11 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     return true;
   }
 
-  private async verifyUserByPIN(verification: PinVerification): Promise<boolean> {
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+  private async verifyUserByPIN(verification: PinVerification, userId: UserId): Promise<boolean> {
+    if (!userId) {
+      throw new Error("User ID is required. Cannot verify user by PIN.");
+    }
+
     const userKey = await this.pinService.decryptUserKeyWithPin(verification.secret, userId);
 
     return userKey != null;
