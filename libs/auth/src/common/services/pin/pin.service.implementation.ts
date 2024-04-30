@@ -318,16 +318,7 @@ export class PinService implements PinServiceAbstraction {
   }
 
   /**
-   * @summary Creates a new PinKey that encrypts the UserKey instead of encrypting the MasterKey. Clears the `oldPinKeyEncryptedMasterKey` (aka `pinProtected`) from state.
-   *
-   * @description
-   * - Decrypts the `oldPinKeyEncryptedMasterKey` with the entered PIN, resulting in a master key
-   * - Uses that master key to decrypt the user key
-   * - Creates a new PinKey and uses it to encrypt the user key, resulting in a new `pinKeyEncryptedUserKey`
-   * - Clears the `oldPinKeyEncryptedMasterKey` (aka `pinProtected`) from state
-   * - Sets the new `pinKeyEncryptedUserKey` to state (either persistent or ephemeral depending on `requireMasterPasswordOnClientRestart`)
-   * - Creates a new `protectedPin` by encrypting the PIN with the user key
-   * - Sets that new `protectedPin` to state
+   * Creates a new `pinKeyEncryptedUserKey` and clears the `oldPinKeyEncryptedMasterKey`.
    * @returns UserKey
    */
   async decryptAndMigrateOldPinKeyEncryptedMasterKey(
