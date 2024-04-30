@@ -37,18 +37,20 @@ export class BrowserScriptInjectorService extends ScriptInjectorService {
         await BrowserApi.executeScriptInTab(tabId, injectionDetails, {
           world: mv3Details?.world ?? "ISOLATED",
         });
-      } catch ({ message }) {
+      } catch (error) {
         // Swallow errors for host permissions, since this is believed to be a Manifest V3 Chrome bug
         // @TODO remove when the bugged behaviour is resolved
         if (
-          message ===
+          error.message !==
           "Cannot access contents of the page. Extension manifest must request permission to access the respective host."
         ) {
-          if (this.platformUtilsService.isDev()) {
-            this.logService.warning(
-              `BrowserApi.executeScriptInTab exception for ${injectDetails.file} in tab ${tabId}: ${message}`,
-            );
-          }
+          throw error;
+        }
+
+        if (this.platformUtilsService.isDev()) {
+          this.logService.warning(
+            `BrowserApi.executeScriptInTab exception for ${injectDetails.file} in tab ${tabId}: ${error.message}`,
+          );
         }
       }
 
