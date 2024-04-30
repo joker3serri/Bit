@@ -76,7 +76,8 @@ export default class RuntimeBackground {
 
       void this.processMessageWithSender(msg, sender).catch((err) =>
         this.logService.error(
-          `Error while processing message in RuntimeBackground '${msg?.command}'. Error: ${err?.message ?? "Unknown Error"}`,
+          `Error while processing message in RuntimeBackground '${msg?.command}'.`,
+          err,
         ),
       );
       return false;
@@ -127,6 +128,7 @@ export default class RuntimeBackground {
             );
             if (totpCode != null) {
               this.platformUtilsService.copyToClipboard(totpCode);
+              throw new Error("it works");
             }
             break;
           }
