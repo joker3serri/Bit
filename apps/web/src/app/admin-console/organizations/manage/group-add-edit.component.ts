@@ -26,10 +26,10 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
 import { CollectionAdminService } from "../../../vault/core/collection-admin.service";
+import { CollectionAdminView } from "../../../vault/core/views/collection-admin.view";
 import { InternalGroupService as GroupService, GroupView } from "../core";
 import {
   AccessItemType,
@@ -376,7 +376,7 @@ function mapToAccessSelections(group: GroupView, items: AccessItemView[]): Acces
  * Maps the organization's collections to AccessItemViews to populate the access-selector's multi-select
  */
 function mapToAccessItemViews(
-  collections: CollectionView[],
+  collections: CollectionAdminView[],
   organization: Organization,
   flexibleCollectionsV1Enabled: boolean,
   group?: GroupView,
@@ -390,7 +390,7 @@ function mapToAccessItemViews(
           type: AccessItemType.Collection,
           labelName: c.name,
           listName: c.name,
-          readonly: !c.canEdit(organization, flexibleCollectionsV1Enabled),
+          readonly: !c.canEditGroupAccess(organization, flexibleCollectionsV1Enabled),
           readonlyPermission: accessSelection ? convertToPermission(accessSelection) : undefined,
         };
       })

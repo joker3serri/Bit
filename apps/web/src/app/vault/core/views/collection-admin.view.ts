@@ -53,4 +53,11 @@ export class CollectionAdminView extends CollectionView {
   canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     return this.canEdit(org, flexibleCollectionsV1Enabled) || org.canManageUsers;
   }
+
+  /**
+   * Whether the user can modify group access to this collection
+   */
+  canEditGroupAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+    return this.canEdit(org, flexibleCollectionsV1Enabled) || org.canManageGroups;
+  }
 }
