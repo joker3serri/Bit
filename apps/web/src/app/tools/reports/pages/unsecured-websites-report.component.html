@@ -27,8 +27,8 @@
       >
         <ng-container *ngFor="let status of filterStatus">
           <bit-toggle [value]="status">
-            {{ getOrgValues(status, "name") }}
-            <span bitBadge variant="info"> {{ getOrgValues(status, "count") }} </span>
+            {{ getName(status) }}
+            <span bitBadge variant="info"> {{ getCount(status) }} </span>
           </bit-toggle>
         </ng-container>
       </bit-toggle-group>

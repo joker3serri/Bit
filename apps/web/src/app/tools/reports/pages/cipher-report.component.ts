@@ -52,23 +52,35 @@ export class CipherReportComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
-  // this method will populate the names in the bit toggle of the report
-  // as well as the number of items in each filter toggle
-  getOrgValues(filterId: string | number, type: string) {
+  getName(filterId: string | number) {
     let orgName: any;
-    let orgFilterStatus: any;
-    let cipherCount;
 
     if (filterId === 0) {
       orgName = this.i18nService.t("all");
-      cipherCount = this.allCiphers.length;
     } else if (filterId === 1) {
       orgName = this.i18nService.t("me");
-      cipherCount = this.allCiphers.filter((c: any) => c.orgFilterStatus === null).length;
     } else {
       this.organizations.filter((org: Organization) => {
         if (org.id === filterId) {
           orgName = org.name;
+          return org;
+        }
+      });
+    }
+    return orgName;
+  }
+
+  getCount(filterId: string | number) {
+    let orgFilterStatus: any;
+    let cipherCount;
+
+    if (filterId === 0) {
+      cipherCount = this.allCiphers.length;
+    } else if (filterId === 1) {
+      cipherCount = this.allCiphers.filter((c: any) => c.orgFilterStatus === null).length;
+    } else {
+      this.organizations.filter((org: Organization) => {
+        if (org.id === filterId) {
           orgFilterStatus = org.id;
           return org;
         }
@@ -77,11 +89,7 @@ export class CipherReportComponent implements OnDestroy {
         (c: any) => c.orgFilterStatus === orgFilterStatus,
       ).length;
     }
-    if (type === "name") {
-      return orgName;
-    } else if (type === "count") {
-      return cipherCount;
-    }
+    return cipherCount;
   }
 
   async filterOrgToggle(status: any) {
