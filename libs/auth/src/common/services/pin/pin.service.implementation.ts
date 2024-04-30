@@ -347,7 +347,7 @@ export class PinService implements PinServiceAbstraction {
       oldPinKeyEncryptedMasterKey,
     );
 
-    const encUserKey = await this.stateService.getEncryptedCryptoSymmetricKey();
+    const encUserKey = await this.stateService.getEncryptedCryptoSymmetricKey({ userId: userId });
     const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(
       masterKey,
       new EncString(encUserKey),
@@ -367,7 +367,7 @@ export class PinService implements PinServiceAbstraction {
 
     // This also clears the old Biometrics key since the new Biometrics key will
     // be created when the user key is set.
-    await this.stateService.setCryptoMasterKeyBiometric(null);
+    await this.stateService.setCryptoMasterKeyBiometric(null, { userId: userId });
 
     return userKey;
   }
