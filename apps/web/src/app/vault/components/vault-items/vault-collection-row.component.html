@@ -73,7 +73,6 @@
     appStopProp
   ></button>
   <bit-menu #collectionOptions>
-    <!-- collection addAccess logic put here to allow Owners/Admins to edit an orphaned collection -->
     <button *ngIf="canEditCollection" type="button" bitMenuItem (click)="edit()">
       <i class="bwi bwi-fw bwi-pencil-square" aria-hidden="true"></i>
       {{ "editInfo" | i18n }}
