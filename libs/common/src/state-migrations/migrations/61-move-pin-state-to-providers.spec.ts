@@ -8,7 +8,7 @@ import {
   PIN_KEY_ENCRYPTED_USER_KEY,
   PROTECTED_PIN,
   PinStateMigrator,
-} from "./60-move-pin-state-to-providers";
+} from "./61-move-pin-state-to-providers";
 
 function preMigrationState() {
   return {
@@ -68,8 +68,8 @@ describe("PinStateMigrator", () => {
 
   describe("migrate", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(preMigrationState(), 60);
-      sut = new PinStateMigrator(59, 60);
+      helper = mockMigrationHelper(preMigrationState(), 61);
+      sut = new PinStateMigrator(60, 61);
     });
 
     it("should remove properties (pinKeyEncryptedUserKey, protectedPin, pinProtected) from existing accounts", async () => {
@@ -112,8 +112,8 @@ describe("PinStateMigrator", () => {
 
   describe("rollback", () => {
     beforeEach(() => {
-      helper = mockMigrationHelper(postMigrationState(), 60);
-      sut = new PinStateMigrator(59, 60);
+      helper = mockMigrationHelper(postMigrationState(), 61);
+      sut = new PinStateMigrator(60, 61);
     });
 
     it("should null out the previously migrated values (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey)", async () => {

@@ -28,7 +28,7 @@ export const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY: KeyDefinitionLike = {
   key: "oldPinKeyEncryptedMasterKey",
 };
 
-export class PinStateMigrator extends Migrator<59, 60> {
+export class PinStateMigrator extends Migrator<60, 61> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const legacyAccounts = await helper.getAccounts<ExpectedAccountState>();
     let updatedAccount = false;
