@@ -640,7 +640,7 @@ const safeProviders: SafeProvider[] = [
     provide: VaultTimeoutSettingsServiceAbstraction,
     useClass: VaultTimeoutSettingsService,
     deps: [
-      AccountService,
+      AccountServiceAbstraction,
       PinServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
       CryptoServiceAbstraction,

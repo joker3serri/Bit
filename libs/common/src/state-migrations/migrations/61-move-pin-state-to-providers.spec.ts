@@ -15,7 +15,18 @@ function preMigrationState() {
     global: {
       otherStuff: "otherStuff1",
     },
-    authenticatedAccounts: ["AccountOne", "AccountTwo"],
+    global_account_accounts: {
+      // prettier-ignore
+      "AccountOne": {
+        email: "account-one@email.com",
+        name: "Account One",
+      },
+      // prettier-ignore
+      "AccountTwo": {
+        email: "account-two@email.com",
+        name: "Account Two",
+      },
+    },
     // prettier-ignore
     "AccountOne": {
       settings: {
@@ -45,6 +56,18 @@ function postMigrationState() {
     authenticatedAccounts: ["AccountOne", "AccountTwo"],
     global: {
       otherStuff: "otherStuff1",
+    },
+    global_account_accounts: {
+      // prettier-ignore
+      "AccountOne": {
+        email: "account-one@email.com",
+        name: "Account One",
+      },
+      // prettier-ignore
+      "AccountTwo": {
+        email: "account-two@email.com",
+        name: "Account Two",
+      },
     },
     // prettier-ignore
     "AccountOne": {
