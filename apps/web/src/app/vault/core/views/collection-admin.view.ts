@@ -60,6 +60,9 @@ export class CollectionAdminView extends CollectionView {
     return returnedUsers;
   }
 
+  /**
+   * Whether the current user can edit the collection, including user and group access
+   */
   override canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     return org?.flexibleCollections
       ? org?.canEditAnyCollection(flexibleCollectionsV1Enabled) || this.manage
@@ -71,5 +74,12 @@ export class CollectionAdminView extends CollectionView {
     return org?.flexibleCollections
       ? org?.canDeleteAnyCollection || (!org?.limitCollectionCreationDeletion && this.manage)
       : org?.canDeleteAnyCollection || (org?.canDeleteAssignedCollections && this.assigned);
+  }
+
+  /**
+   * Whether the user can modify user access to this collection
+   */
+  canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+    return this.canEdit(org, flexibleCollectionsV1Enabled) || org.canManageUsers;
   }
 }
