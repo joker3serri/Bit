@@ -38,7 +38,7 @@ export class KnownAccountsMigrator extends Migrator<59, 60> {
   }
   async rollback(helper: MigrationHelper): Promise<void> {
     // authenticated account are removed, but the accounts record also contains logged out accounts. Best we can do is to add them all back
-    const userIds = (await helper.getKnownUserIds()) ?? {};
+    const userIds = (await helper.getKnownUserIds()) ?? [];
     await helper.set("authenticatedAccounts", userIds);
     await helper.removeFromGlobal(ACCOUNT_ACCOUNTS);
 
