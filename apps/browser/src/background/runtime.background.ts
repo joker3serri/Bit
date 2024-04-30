@@ -128,7 +128,6 @@ export default class RuntimeBackground {
             );
             if (totpCode != null) {
               this.platformUtilsService.copyToClipboard(totpCode);
-              throw new Error("it works");
             }
             break;
           }
