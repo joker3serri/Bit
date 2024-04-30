@@ -480,6 +480,7 @@ export default class MainBackground {
           this.cryptoFunctionService,
           this.logService,
           true,
+          this.offscreenDocumentService,
         )
       : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
 

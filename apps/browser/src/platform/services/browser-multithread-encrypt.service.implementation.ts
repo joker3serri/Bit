@@ -1,3 +1,5 @@
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.interface";
 import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -5,8 +7,18 @@ import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/sym
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 
 import { BrowserApi } from "../browser/browser-api";
+import { OffscreenDocumentService } from "../offscreen-document/abstractions/offscreen-document";
 
 export class BrowserMultithreadEncryptServiceImplementation extends MultithreadEncryptServiceImplementation {
+  constructor(
+    cryptoFunctionService: CryptoFunctionService,
+    logService: LogService,
+    logMacFailures: boolean,
+    private offscreenDocumentService: OffscreenDocumentService,
+  ) {
+    super(cryptoFunctionService, logService, logMacFailures);
+  }
+
   /**
    * Handles decryption of items, will use the offscreen document if supported.
    *
@@ -44,14 +56,15 @@ export class BrowserMultithreadEncryptServiceImplementation extends MultithreadE
       key: key,
     };
 
-    await BrowserApi.createOffscreenDocument(
+    const response = await this.offscreenDocumentService.withDocument(
       [chrome.offscreen.Reason.WORKERS],
       "Use web worker to decrypt items.",
+      async () => {
+        return (await BrowserApi.sendMessageWithResponse("offscreenDecryptItems", {
+          decryptRequest: JSON.stringify(request),
+        })) as string;
+      },
     );
-    const response = (await BrowserApi.sendMessageWithResponse("offscreenDecryptItems", {
-      decryptRequest: JSON.stringify(request),
-    })) as string;
-    BrowserApi.closeOffscreenDocument();
 
     if (!response) {
       return [];
