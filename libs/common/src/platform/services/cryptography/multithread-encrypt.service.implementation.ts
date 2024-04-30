@@ -19,8 +19,8 @@ export class MultithreadEncryptServiceImplementation extends EncryptServiceImple
   private clear$ = new Subject<void>();
 
   /**
-   * Sends items to a web worker to decrypt them.
-   * This utilises multithreading to decrypt items faster without interrupting other operations (e.g. updating UI).
+   * Decrypts items using a web worker if the environment supports it.
+   * Will fall back to the main thread if the window object is not available.
    */
   async decryptItems<T extends InitializerMetadata>(
     items: Decryptable<T>[],
@@ -40,6 +40,11 @@ export class MultithreadEncryptServiceImplementation extends EncryptServiceImple
     return this.initializeItems(parsedItems);
   }
 
+  /**
+   * Sends items to a web worker to decrypt them. This utilizes multithreading to decrypt items
+   * faster without interrupting other operations (e.g. updating UI). This method returns values
+   * prior to deserialization to support forwarding results to another party
+   */
   async getDecryptedItemsFromWorker<T extends InitializerMetadata>(
     items: Decryptable<T>[],
     key: SymmetricCryptoKey,
