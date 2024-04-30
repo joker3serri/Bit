@@ -395,7 +395,7 @@ export class PinService implements PinServiceAbstraction {
    * on the user's PinLockType.
    * @remarks The `oldPinKeyEncryptedMasterKey` (also known as `pinProtected`) is only used for
    *          migrating old PinKeys and will be null for all migrated accounts
-   * @throws If PinLockType is 'DISABLED'
+   * @throws If PinLockType is 'DISABLED' or if userId is not provided
    */
   private async getPinKeyEncryptedKeys(
     pinLockType: PinLockType,

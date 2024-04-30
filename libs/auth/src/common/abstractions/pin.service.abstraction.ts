@@ -93,10 +93,9 @@ export abstract class PinServiceAbstraction {
    * Decrypts the UserKey with the provided PIN.
    *
    * @remarks If the user has an old pinKeyEncryptedMasterKey (formerly called `pinProtected`), the UserKey
-   * will be obtained via the private {@link  decryptAndMigrateOldPinKeyEncryptedMasterKey} method.
+   * will be obtained via the private {@link decryptAndMigrateOldPinKeyEncryptedMasterKey} method.
    * If the user does not have an old pinKeyEncryptedMasterKey, the UserKey will be obtained via the
    * private {@link decryptUserKey} method.
-   *
    * @returns UserKey
    */
   abstract decryptUserKeyWithPin: (pin: string, userId: UserId) => Promise<UserKey | null>;

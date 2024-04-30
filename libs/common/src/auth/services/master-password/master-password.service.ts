@@ -155,6 +155,7 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     userKey ??= await this.getMasterKeyEncryptedUserKey(userId);
     masterKey ??= await firstValueFrom(this.masterKey$(userId));
+
     if (masterKey == null) {
       throw new Error("No master key found.");
     }
@@ -164,13 +165,16 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
       const deprecatedKey = await this.stateService.getEncryptedCryptoSymmetricKey({
         userId: userId,
       });
+
       if (deprecatedKey == null) {
         throw new Error("No encrypted user key found.");
       }
+
       userKey = new EncString(deprecatedKey);
     }
 
     let decUserKey: Uint8Array;
+
     if (userKey.encryptionType === EncryptionType.AesCbc256_B64) {
       decUserKey = await this.encryptService.decryptToBytes(userKey, masterKey);
     } else if (userKey.encryptionType === EncryptionType.AesCbc256_HmacSha256_B64) {
@@ -179,6 +183,7 @@ export class MasterPasswordService implements InternalMasterPasswordServiceAbstr
     } else {
       throw new Error("Unsupported encryption type.");
     }
+
     if (decUserKey == null) {
       return null;
     }

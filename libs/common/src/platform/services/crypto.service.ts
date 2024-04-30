@@ -511,7 +511,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
 
     if (userId == null) {
-      throw new Error("Cannot clear keys, no user Id resolved.");
+      throw new Error("Cannot clear PIN keys, no user Id resolved.");
     }
 
     await this.pinService.clearPinKeyEncryptedUserKey(userId);
@@ -722,7 +722,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
 
     if (userId == null) {
-      throw new Error("Cannot clear keys, no user Id resolved.");
+      throw new Error("Cannot store additional keys, no user Id resolved.");
     }
 
     const storeAuto = await this.shouldStoreKey(KeySuffixOptions.Auto, userId);
