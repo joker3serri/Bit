@@ -184,12 +184,11 @@ describe("PinService", () => {
       });
 
       it("should create a protectedPin from the provided PIN and userKey", async () => {
-        encryptService.encrypt
-          .calledWith(mockPin, mockUserKey)
-          .mockResolvedValue(mockProtectedPinEncString);
+        encryptService.encrypt.mockResolvedValue(mockProtectedPinEncString);
 
         const result = await sut.createProtectedPin(mockPin, mockUserKey);
 
+        expect(encryptService.encrypt).toHaveBeenCalledWith(mockPin, mockUserKey);
         expect(result).toEqual(mockProtectedPinEncString);
       });
     });
@@ -236,13 +235,16 @@ describe("PinService", () => {
       );
     });
 
-    it("should return true if the user PinLockType is not 'DISABLED'", async () => {
-      sut.getPinLockType = jest.fn().mockResolvedValue("PERSISTENT");
+    it.each(["PERSISTENT", "EPHEMERAL"])(
+      "should return true if the user PinLockType is '%s'",
+      async () => {
+        sut.getPinLockType = jest.fn().mockResolvedValue("PERSISTENT");
 
-      const result = await sut.isPinSet(mockUserId);
+        const result = await sut.isPinSet(mockUserId);
 
-      expect(result).toEqual(true);
-    });
+        expect(result).toEqual(true);
+      },
+    );
 
     it("should return false if the user PinLockType is 'DISABLED'", async () => {
       sut.getPinLockType = jest.fn().mockResolvedValue("DISABLED");
