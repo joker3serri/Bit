@@ -21,7 +21,6 @@ export class SystemService implements SystemServiceAbstraction {
   private clearClipboardTimeoutFunction: () => Promise<any> = null;
 
   constructor(
-    private accountService: AccountService,
     private pinService: PinServiceAbstraction,
     private messagingService: MessagingService,
     private platformUtilsService: PlatformUtilsService,

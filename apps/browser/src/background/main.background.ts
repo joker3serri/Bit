@@ -909,7 +909,6 @@ export default class MainBackground {
     };
 
     this.systemService = new SystemService(
-      this.accountService,
       this.pinService,
       this.messagingService,
       this.platformUtilsService,

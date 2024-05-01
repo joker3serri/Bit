@@ -207,7 +207,7 @@ export class PinService implements PinServiceAbstraction {
 
     const pinKey = await this.makePinKey(
       pin,
-      (await firstValueFrom(this.accountService.activeAccount$))?.email,
+      (await firstValueFrom(this.accountService.activeAccount$))?.email, // TODO-rr-bw: verify (could this be different that the userId passed in? does account service provide a clean way to get account email based on userId instead of active account?)
       await this.kdfConfigService.getKdfConfig(),
     );
 
@@ -303,7 +303,7 @@ export class PinService implements PinServiceAbstraction {
   /**
    * Decrypts the UserKey with the provided PIN
    */
-  async decryptUserKey(
+  private async decryptUserKey(
     userId: UserId,
     pin: string,
     salt: string,
@@ -329,7 +329,7 @@ export class PinService implements PinServiceAbstraction {
    * Creates a new `pinKeyEncryptedUserKey` and clears the `oldPinKeyEncryptedMasterKey`.
    * @returns UserKey
    */
-  async decryptAndMigrateOldPinKeyEncryptedMasterKey(
+  private async decryptAndMigrateOldPinKeyEncryptedMasterKey(
     userId: UserId,
     pin: string,
     email: string,
@@ -425,11 +425,11 @@ export class PinService implements PinServiceAbstraction {
       }
       case "EPHEMERAL": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral(userId);
-        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId);
+        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify (this changed from the previous pin-crypto.service.ts where we got the decrypted version of pinProtected)
 
         return {
           pinKeyEncryptedUserKey,
-          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey
+          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey // TODO-rr-bw: verify also here (see comment just above)
             ? new EncString(oldPinKeyEncryptedMasterKey)
             : undefined,
         };

@@ -359,13 +359,12 @@ export class LockComponent implements OnInit, OnDestroy {
       return await this.vaultTimeoutService.logOut(userId);
     }
 
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     this.pinLockType = await this.pinService.getPinLockType(userId);
 
     let ephemeralPinSet: EncString | EncryptedString =
       await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
 
-    ephemeralPinSet ||= await this.pinService.getOldPinKeyEncryptedMasterKey(userId);
+    ephemeralPinSet ||= await this.pinService.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify (previosly we got decrypted version of pinProtected)
 
     this.pinEnabled =
       (this.pinLockType === "EPHEMERAL" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";
