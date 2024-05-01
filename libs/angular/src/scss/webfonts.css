@@ -1,5 +1,16 @@
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
+  src:
+    url("webfonts/DMSans[opsz,wght].woff2") format("woff2 supports variations"),
+    url("webfonts/DMSans[opsz,wght].woff2") format("woff2-variations");
+  font-stretch: 25% 150%;
+  font-style: oblique 0deg 10deg;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* @font-face {
+  font-family: "DM Sans";
   font-style: italic;
   font-weight: 300;
   font-display: auto;
@@ -8,7 +19,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: italic;
   font-weight: 400;
   font-display: auto;
@@ -17,7 +28,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: italic;
   font-weight: 600;
   font-display: auto;
@@ -26,7 +37,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: italic;
   font-weight: 700;
   font-display: auto;
@@ -35,7 +46,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: italic;
   font-weight: 800;
   font-display: auto;
@@ -44,7 +55,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: normal;
   font-weight: 300;
   font-display: auto;
@@ -53,7 +64,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: normal;
   font-weight: 400;
   font-display: auto;
@@ -62,7 +73,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: normal;
   font-weight: 600;
   font-display: auto;
@@ -71,7 +82,7 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: normal;
   font-weight: 700;
   font-display: auto;
@@ -80,10 +91,10 @@
 }
 
 @font-face {
-  font-family: "Open Sans";
+  font-family: "DM Sans";
   font-style: normal;
   font-weight: 800;
   font-display: auto;
   src: url(webfonts/Open_Sans-normal-800.woff) format("woff");
   unicode-range: U+0-10FFFF;
-}
+} */
