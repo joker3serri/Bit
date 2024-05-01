@@ -5,86 +5,23 @@ import { TypographyDirective } from "./typography.directive";
 export default {
   title: "Component Library/Typography",
   component: TypographyDirective,
-  args: {
-    bitTypography: "body1",
-  },
 } as Meta;
 
-type Story = StoryObj<TypographyDirective & { text: string }>;
+type Story = StoryObj<TypographyDirective>;
 
-export const H1: Story = {
+export const Default: Story = {
   render: (args) => ({
     props: args,
-    template: `<span [bitTypography]="bitTypography" class="tw-text-main">{{text}}</span>`,
+    template: /*html*/ `
+      <div bitTypography="h1">h1</div>
+      <div bitTypography="h2">h2</div>
+      <div bitTypography="h3">h3</div>
+      <div bitTypography="h4">h4</div>
+      <div bitTypography="h5">h5</div>
+      <div bitTypography="h6">h6</div>
+      <div bitTypography="body1" class="tw-text-main">body1</div>
+      <div bitTypography="body2" class="tw-text-main">body2</div>
+      <div bitTypography="helper" class="tw-text-main">helper</div>
+    `,
   }),
-  args: {
-    bitTypography: "h1",
-    text: "h1. Page Title",
-  },
-};
-
-export const H2: Story = {
-  ...H1,
-  args: {
-    bitTypography: "h2",
-    text: "h2. Page Section",
-  },
-};
-
-export const H3: Story = {
-  ...H1,
-  args: {
-    bitTypography: "h3",
-    text: "h3. Page Section",
-  },
-};
-
-export const H4: Story = {
-  ...H1,
-  args: {
-    bitTypography: "h4",
-    text: "h4. Page Section",
-  },
-};
-
-export const H5: Story = {
-  ...H1,
-
-  args: {
-    bitTypography: "h5",
-    text: "h5. Page Section",
-  },
-};
-
-export const H6: Story = {
-  ...H1,
-
-  args: {
-    bitTypography: "h6",
-    text: "h6. Page Section",
-  },
-};
-
-export const Body1: Story = {
-  ...H1,
-  args: {
-    bitTypography: "body1",
-    text: "Body 1",
-  },
-};
-
-export const Body2: Story = {
-  ...H1,
-  args: {
-    bitTypography: "body2",
-    text: "Body 2",
-  },
-};
-
-export const Helper: Story = {
-  ...H1,
-  args: {
-    bitTypography: "helper",
-    text: "Helper Text",
-  },
 };
