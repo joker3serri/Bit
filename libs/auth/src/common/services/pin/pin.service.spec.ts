@@ -84,7 +84,7 @@ describe("PinService", () => {
     expect(sut).not.toBeFalsy();
   });
 
-  describe("get/clear/create pinKeyEncryptedUserKey methods", () => {
+  describe("userId validation", () => {
     it("should throw an error if a userId is not provided", async () => {
       await expect(sut.getPinKeyEncryptedUserKey(undefined)).rejects.toThrow(
         "User ID is required. Cannot get pinKeyEncryptedUserKey.",
@@ -101,8 +101,29 @@ describe("PinService", () => {
       await expect(
         sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
       ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
+      await expect(sut.getProtectedPin(undefined)).rejects.toThrow(
+        "User ID is required. Cannot get protectedPin.",
+      );
+      await expect(sut.setProtectedPin(mockProtectedPin, undefined)).rejects.toThrow(
+        "User ID is required. Cannot set protectedPin.",
+      );
+      await expect(sut.getOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
+        "User ID is required. Cannot get oldPinKeyEncryptedMasterKey.",
+      );
+      await expect(sut.clearOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
+        "User ID is required. Cannot clear oldPinKeyEncryptedMasterKey.",
+      );
+      await expect(
+        sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
+      ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
+      await expect(sut.getPinLockType(undefined)).rejects.toThrow("Cannot get PinLockType.");
+      await expect(sut.isPinSet(undefined)).rejects.toThrow(
+        "User ID is required. Cannot determine if PIN is set.",
+      );
     });
+  });
 
+  describe("get/clear/create pinKeyEncryptedUserKey methods", () => {
     describe("getPinKeyEncryptedUserKey()", () => {
       it("should get the pinKeyEncryptedUserKey of the specified userId", async () => {
         await sut.getPinKeyEncryptedUserKey(mockUserId);
@@ -159,15 +180,6 @@ describe("PinService", () => {
   });
 
   describe("protectedPin methods", () => {
-    it("should throw an error if a userId is not provided", async () => {
-      await expect(sut.getProtectedPin(undefined)).rejects.toThrow(
-        "User ID is required. Cannot get protectedPin.",
-      );
-      await expect(sut.setProtectedPin(mockProtectedPin, undefined)).rejects.toThrow(
-        "User ID is required. Cannot set protectedPin.",
-      );
-    });
-
     describe("getProtectedPin()", () => {
       it("should get the protectedPin of the specified userId", async () => {
         await sut.getProtectedPin(mockUserId);
@@ -207,15 +219,6 @@ describe("PinService", () => {
   });
 
   describe("oldPinKeyEncryptedMasterKey methods", () => {
-    it("should throw an error if a userId is not provided", async () => {
-      await expect(sut.getOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
-        "User ID is required. Cannot get oldPinKeyEncryptedMasterKey.",
-      );
-      await expect(sut.clearOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
-        "User ID is required. Cannot clear oldPinKeyEncryptedMasterKey.",
-      );
-    });
-
     describe("getOldPinKeyEncryptedMasterKey()", () => {
       it("should get the oldPinKeyEncryptedMasterKey of the specified userId", async () => {
         await sut.getOldPinKeyEncryptedMasterKey(mockUserId);
@@ -241,12 +244,6 @@ describe("PinService", () => {
   });
 
   describe("createPinKeyEncryptedUserKey()", () => {
-    it("should throw an error if a userId is not provided", async () => {
-      await expect(
-        sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
-      ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
-    });
-
     it("should create a pinKeyEncryptedUserKey", async () => {
       sut.makePinKey = jest.fn().mockResolvedValue(mockPinKey);
 
@@ -272,10 +269,6 @@ describe("PinService", () => {
   });
 
   describe("getPinLockType()", () => {
-    it("should throw an error if a userId is not provided", async () => {
-      await expect(sut.getPinLockType(undefined)).rejects.toThrow("Cannot get PinLockType.");
-    });
-
     it("should return 'PERSISTENT' if a pinKeyEncryptedUserKey (persistent version) is found", async () => {
       sut.getProtectedPin = jest.fn().mockResolvedValue(null);
       sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(pinKeyEncryptedUserKeyPersistant);
@@ -319,12 +312,6 @@ describe("PinService", () => {
   });
 
   describe("isPinSet()", () => {
-    it("should throw an error if a userId is not provided", async () => {
-      await expect(sut.isPinSet(undefined)).rejects.toThrow(
-        "User ID is required. Cannot determine if PIN is set.",
-      );
-    });
-
     it.each(["PERSISTENT", "EPHEMERAL"])(
       "should return true if the user PinLockType is '%s'",
       async () => {
