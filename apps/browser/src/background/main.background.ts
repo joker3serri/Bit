@@ -1,4 +1,4 @@
-import { Subject, firstValueFrom, merge, timeout } from "rxjs";
+import { Subject, firstValueFrom, map, merge, timeout } from "rxjs";
 
 import {
   PinCryptoServiceAbstraction,
@@ -902,6 +902,7 @@ export default class MainBackground {
       this.autofillSettingsService,
       this.vaultTimeoutSettingsService,
       this.biometricStateService,
+      this.accountService,
     );
 
     // Other fields
@@ -920,7 +921,6 @@ export default class MainBackground {
         this.autofillService,
         this.platformUtilsService as BrowserPlatformUtilsService,
         this.notificationsService,
-        this.stateService,
         this.autofillSettingsService,
         this.systemService,
         this.environmentService,
@@ -929,6 +929,7 @@ export default class MainBackground {
         this.configService,
         this.fido2Background,
         messageListener,
+        this.accountService,
       );
       this.nativeMessagingBackground = new NativeMessagingBackground(
         this.accountService,
@@ -1018,10 +1019,10 @@ export default class MainBackground {
         },
         this.authService,
         this.cipherService,
-        this.stateService,
         this.totpService,
         this.eventCollectionService,
         this.userVerificationService,
+        this.accountService,
       );
 
       this.contextMenusBackground = new ContextMenusBackground(contextMenuClickedHandler);
@@ -1055,11 +1056,12 @@ export default class MainBackground {
         this.cipherService,
       );
 
-      if (BrowserApi.isManifestVersion(2)) {
+      if (chrome.webRequest != null && chrome.webRequest.onAuthRequired != null) {
         this.webRequestBackground = new WebRequestBackground(
           this.platformUtilsService,
           this.cipherService,
           this.authService,
+          chrome.webRequest,
         );
       }
     }
@@ -1105,9 +1107,7 @@ export default class MainBackground {
     await this.tabsBackground.init();
     this.contextMenusBackground?.init();
     await this.idleBackground.init();
-    if (BrowserApi.isManifestVersion(2)) {
-      await this.webRequestBackground.init();
-    }
+    this.webRequestBackground?.startListening();
 
     if (this.platformUtilsService.isFirefox() && !this.isPrivateMode) {
       // Set Private Mode windows to the default icon - they do not share state with the background page
@@ -1168,7 +1168,12 @@ export default class MainBackground {
    */
   async switchAccount(userId: UserId) {
     try {
-      await this.stateService.setActiveUser(userId);
+      const currentlyActiveAccount = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((account) => account?.id)),
+      );
+      // can be removed once password generation history is migrated to state providers
+      await this.stateService.clearDecryptedData(currentlyActiveAccount);
+      await this.accountService.switchAccount(userId);
 
       if (userId == null) {
         this.loginEmailService.setRememberEmail(false);
@@ -1240,7 +1245,11 @@ export default class MainBackground {
     //Needs to be checked before state is cleaned
     const needStorageReseed = await this.needsStorageReseed();
 
-    const newActiveUser = await this.stateService.clean({ userId: userId });
+    const newActiveUser = await firstValueFrom(
+      this.accountService.nextUpAccount$.pipe(map((a) => a?.id)),
+    );
+    await this.stateService.clean({ userId: userId });
+    await this.accountService.clean(userId);
 
     await this.stateEventRunnerService.handleEvent("logout", userId);
 
