@@ -2,14 +2,13 @@ import { VaultTimeoutSettingsService as AbstractVaultTimeoutSettingsService } fr
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 
 import {
-  accountServiceFactory,
-  AccountServiceInitOptions,
-} from "src/auth/background/service-factories/account-service.factory";
-
-import {
   policyServiceFactory,
   PolicyServiceInitOptions,
 } from "../../admin-console/background/service-factories/policy-service.factory";
+import {
+  accountServiceFactory,
+  AccountServiceInitOptions,
+} from "../../auth/background/service-factories/account-service.factory";
 import {
   pinServiceFactory,
   PinServiceInitOptions,
