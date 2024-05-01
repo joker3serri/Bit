@@ -228,6 +228,22 @@ describe("PinService", () => {
     });
   });
 
+  describe("createPinKeyEncryptedUserKey()", () => {
+    it("should throw an error if a userId is not provided", async () => {
+      await expect(
+        sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
+      ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
+    });
+
+    it("should create a pinKeyEncryptedUserKey", async () => {
+      sut.makePinKey = jest.fn().mockResolvedValue(mockPinKey);
+
+      await sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, mockUserId);
+
+      expect(encryptService.encrypt).toHaveBeenCalledWith(mockUserKey.key, mockPinKey);
+    });
+  });
+
   describe("makePinKey()", () => {
     it("should make a PinKey", async () => {
       keyGenerationService.deriveKeyFromPassword.mockResolvedValue(mockPinKey);
