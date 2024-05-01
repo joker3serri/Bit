@@ -333,16 +333,6 @@ export class AddEditComponent extends BaseAddEditComponent {
     }, 200);
   }
 
-  // private async handleFido2UserVerification(
-  //   sessionId: string,
-  //   userVerification: boolean,
-  // ): Promise<boolean> {
-  //   // We are bypassing user verification pending implementation of PIN and biometric support.
-  //   const masterPasswordRepromptRequired = this.cipher && this.cipher.reprompt !== 0;
-
-  //   return true;
-  // }
-
   repromptChanged() {
     super.repromptChanged();
 
