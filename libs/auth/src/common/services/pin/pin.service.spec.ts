@@ -265,9 +265,6 @@ describe("PinService", () => {
     const oldPinKeyEncryptedMasterKeyPostMigration: any = null;
     const oldPinKeyEncryptedMasterKeyPreMigrationPersistent =
       "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=";
-    const oldPinKeyEncryptedMasterKeyPreMigrationEphemeral = new EncString(
-      "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=",
-    );
 
     async function setupDecryptUserKeyWithPinMocks(
       pinLockType: PinLockType,
@@ -280,8 +277,8 @@ describe("PinService", () => {
       kdfConfigService.getKdfConfig.mockResolvedValue(DEFAULT_KDF_CONFIG);
       stateService.getEmail.mockResolvedValue(mockUserEmail);
 
-      if (migrationStatus === "PRE") {
-        await mockDecryptAndMigrateOldPinKeyEncryptedMasterKeyFn(pinLockType);
+      if (pinLockType === "PERSISTENT" && migrationStatus === "PRE") {
+        await mockDecryptAndMigrateOldPinKeyEncryptedMasterKeyFn();
       } else {
         mockDecryptUserKeyFn();
       }
@@ -290,30 +287,18 @@ describe("PinService", () => {
       encryptService.decryptToUtf8.mockResolvedValue(mockPin);
     }
 
-    async function mockDecryptAndMigrateOldPinKeyEncryptedMasterKeyFn(pinLockType: PinLockType) {
+    async function mockDecryptAndMigrateOldPinKeyEncryptedMasterKeyFn() {
       sut.makePinKey = jest.fn().mockResolvedValue(mockPinKey);
       encryptService.decryptToBytes.mockResolvedValue(mockMasterKey.key);
 
       stateService.getEncryptedCryptoSymmetricKey.mockResolvedValue(mockUserKey.keyB64); // TODO-rr-bw: verify .keyB64 is correct
       masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(mockUserKey);
 
-      if (pinLockType === "EPHEMERAL") {
-        sut.createPinKeyEncryptedUserKey = jest
-          .fn()
-          .mockResolvedValue(pinKeyEncryptedUserKeyEphemeral);
-      } else {
-        sut.createPinKeyEncryptedUserKey = jest
-          .fn()
-          .mockResolvedValue(pinKeyEncryptedUserKeyPersistant);
-      }
+      sut.createPinKeyEncryptedUserKey = jest
+        .fn()
+        .mockResolvedValue(pinKeyEncryptedUserKeyPersistant);
 
-      const isEphemeralVersion = pinLockType === "EPHEMERAL" ? true : false;
-
-      await sut.storePinKeyEncryptedUserKey(
-        pinKeyEncryptedUserKeyPersistant,
-        isEphemeralVersion,
-        mockUserId,
-      );
+      await sut.storePinKeyEncryptedUserKey(pinKeyEncryptedUserKeyPersistant, false, mockUserId);
 
       sut.createProtectedPin = jest.fn().mockResolvedValue(mockProtectedPinEncString);
       await sut.setProtectedPin(mockProtectedPinEncString.encryptedString, mockUserId);
@@ -346,7 +331,7 @@ describe("PinService", () => {
           } else {
             sut.getOldPinKeyEncryptedMasterKey = jest
               .fn()
-              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPostMigration);
+              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPostMigration); // null
           }
 
           break;
@@ -354,16 +339,6 @@ describe("PinService", () => {
           sut.getPinKeyEncryptedUserKeyEphemeral = jest
             .fn()
             .mockResolvedValue(pinKeyEncryptedUserKeyEphemeral);
-
-          if (migrationStatus === "PRE") {
-            sut.getOldPinKeyEncryptedMasterKey = jest
-              .fn()
-              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPreMigrationEphemeral.encryptedString); // TODO-rr-bw: verify
-          } else {
-            sut.getOldPinKeyEncryptedMasterKey = jest
-              .fn()
-              .mockResolvedValue(oldPinKeyEncryptedMasterKeyPostMigration);
-          }
 
           break;
         case "DISABLED":
@@ -381,7 +356,7 @@ describe("PinService", () => {
 
     testCases.forEach(({ pinLockType, migrationStatus }) => {
       describe(`given a ${pinLockType} PIN (${migrationStatus} migration)`, () => {
-        if (migrationStatus === "PRE") {
+        if (pinLockType === "PERSISTENT" && migrationStatus === "PRE") {
           it("should clear the oldPinKeyEncryptedMasterKey from state", async () => {
             await setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
 
@@ -399,21 +374,11 @@ describe("PinService", () => {
 
             await sut.decryptUserKeyWithPin(mockPin, mockUserId);
 
-            if (pinLockType === "PERSISTENT") {
-              expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
-                PIN_KEY_ENCRYPTED_USER_KEY,
-                pinKeyEncryptedUserKeyPersistant.encryptedString,
-                mockUserId,
-              );
-            }
-
-            if (pinLockType === "EPHEMERAL") {
-              expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
-                PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,
-                pinKeyEncryptedUserKeyEphemeral.encryptedString,
-                mockUserId,
-              );
-            }
+            expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+              PIN_KEY_ENCRYPTED_USER_KEY,
+              pinKeyEncryptedUserKeyPersistant.encryptedString,
+              mockUserId,
+            );
           });
         }
 

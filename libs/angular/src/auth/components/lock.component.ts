@@ -30,7 +30,6 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/platform/enums";
-import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
@@ -361,10 +360,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
     this.pinLockType = await this.pinService.getPinLockType(userId);
 
-    let ephemeralPinSet: EncString | EncryptedString =
-      await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
-
-    ephemeralPinSet ||= await this.pinService.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify (previosly we got decrypted version of pinProtected)
+    const ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
 
     this.pinEnabled =
       (this.pinLockType === "EPHEMERAL" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";

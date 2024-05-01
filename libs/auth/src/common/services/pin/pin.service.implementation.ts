@@ -425,13 +425,10 @@ export class PinService implements PinServiceAbstraction {
       }
       case "EPHEMERAL": {
         const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyEphemeral(userId);
-        const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId); // TODO-rr-bw: verify (this changed from the previous pin-crypto.service.ts where we got the decrypted version of pinProtected)
 
         return {
           pinKeyEncryptedUserKey,
-          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey // TODO-rr-bw: verify also here (see comment just above)
-            ? new EncString(oldPinKeyEncryptedMasterKey)
-            : undefined,
+          oldPinKeyEncryptedMasterKey: undefined, // Going forward, we only migrate non-ephemeral version
         };
       }
       case "DISABLED":
