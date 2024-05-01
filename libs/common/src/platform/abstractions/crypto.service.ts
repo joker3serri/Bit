@@ -245,10 +245,6 @@ export abstract class CryptoService {
    */
   abstract clearPinKeys(userId?: string): Promise<void>;
   /**
-   * Replaces old master auto keys with new user auto keys
-   */
-  abstract migrateAutoKeyIfNeeded(userId?: string): Promise<void>;
-  /**
    * @param keyMaterial The key material to derive the send key from
    * @returns A new send key
    */
