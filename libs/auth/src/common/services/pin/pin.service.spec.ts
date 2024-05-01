@@ -228,6 +228,21 @@ describe("PinService", () => {
     });
   });
 
+  describe("makePinKey()", () => {
+    it("should make a PinKey", async () => {
+      keyGenerationService.deriveKeyFromPassword.mockResolvedValue(mockPinKey);
+
+      await sut.makePinKey(mockPin, mockUserEmail, DEFAULT_KDF_CONFIG);
+
+      expect(keyGenerationService.deriveKeyFromPassword).toHaveBeenCalledWith(
+        mockPin,
+        mockUserEmail,
+        DEFAULT_KDF_CONFIG,
+      );
+      expect(keyGenerationService.stretchKey).toHaveBeenCalledWith(mockPinKey);
+    });
+  });
+
   describe("isPinSet()", () => {
     it("should throw an error if a userId is not provided", async () => {
       await expect(sut.isPinSet(undefined)).rejects.toThrow(
