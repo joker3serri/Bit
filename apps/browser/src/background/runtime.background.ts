@@ -8,6 +8,7 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
+import { devFlagEnabled } from "@bitwarden/common/platform/misc/flags";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 
@@ -324,7 +325,7 @@ export default class RuntimeBackground {
 
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
-          if (!this.platformUtilsService.isDev()) {
+          if (!devFlagEnabled("skipWelcomeOnInstall")) {
             void BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
           }
 
