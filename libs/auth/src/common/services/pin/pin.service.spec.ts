@@ -49,6 +49,18 @@ describe("PinService", () => {
   const mockProtectedPin = "protectedPin";
   const mockProtectedPinEncString = new EncString(mockProtectedPin);
 
+  // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
+  const pinKeyEncryptedUserKeyEphemeral = new EncString(
+    "2.gbauOANURUHqvhLTDnva1A==|nSW+fPumiuTaDB/s12+JO88uemV6rhwRSR+YR1ZzGr5j6Ei3/h+XEli2Unpz652NlZ9NTuRpHxeOqkYYJtp7J+lPMoclgteXuAzUu9kqlRc=|DeUFkhIwgkGdZA08bDnDqMMNmZk21D+H5g8IostPKAY=",
+  );
+  const pinKeyEncryptedUserKeyPersistant = new EncString(
+    "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=",
+  );
+
+  const oldPinKeyEncryptedMasterKeyPostMigration: any = null;
+  const oldPinKeyEncryptedMasterKeyPreMigrationPersistent =
+    "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=";
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -259,6 +271,53 @@ describe("PinService", () => {
     });
   });
 
+  describe("getPinLockType()", () => {
+    it("should throw an error if a userId is not provided", async () => {
+      await expect(sut.getPinLockType(undefined)).rejects.toThrow("Cannot get PinLockType.");
+    });
+
+    it("should return 'PERSISTENT' if a pinKeyEncryptedUserKey (persistent version) is found", async () => {
+      sut.getProtectedPin = jest.fn().mockResolvedValue(null);
+      sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(pinKeyEncryptedUserKeyPersistant);
+
+      const result = await sut.getPinLockType(mockUserId);
+
+      expect(result).toBe("PERSISTENT");
+    });
+
+    it("should return 'PERSISTENT' if an old oldPinKeyEncryptedMasterKey is found", async () => {
+      sut.getProtectedPin = jest.fn().mockResolvedValue(null);
+      sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(null);
+      sut.getOldPinKeyEncryptedMasterKey = jest
+        .fn()
+        .mockResolvedValue(oldPinKeyEncryptedMasterKeyPreMigrationPersistent);
+
+      const result = await sut.getPinLockType(mockUserId);
+
+      expect(result).toBe("PERSISTENT");
+    });
+
+    it("should return 'EPHEMERAL' if neither a pinKeyEncryptedUserKey (persistent version) nor an old oldPinKeyEncryptedMasterKey are found, but a protectedPin is found", async () => {
+      sut.getProtectedPin = jest.fn().mockResolvedValue(mockProtectedPin);
+      sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(null);
+      sut.getOldPinKeyEncryptedMasterKey = jest.fn().mockResolvedValue(null);
+
+      const result = await sut.getPinLockType(mockUserId);
+
+      expect(result).toBe("EPHEMERAL");
+    });
+
+    it("should return 'DISABLED' if ALL three of these are NOT found: protectedPin, pinKeyEncryptedUserKey (persistent version), oldPinKeyEncryptedMasterKey", async () => {
+      sut.getProtectedPin = jest.fn().mockResolvedValue(null);
+      sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(null);
+      sut.getOldPinKeyEncryptedMasterKey = jest.fn().mockResolvedValue(null);
+
+      const result = await sut.getPinLockType(mockUserId);
+
+      expect(result).toBe("DISABLED");
+    });
+  });
+
   describe("isPinSet()", () => {
     it("should throw an error if a userId is not provided", async () => {
       await expect(sut.isPinSet(undefined)).rejects.toThrow(
@@ -287,18 +346,6 @@ describe("PinService", () => {
   });
 
   describe("decryptUserKeyWithPin()", () => {
-    // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
-    const pinKeyEncryptedUserKeyEphemeral = new EncString(
-      "2.gbauOANURUHqvhLTDnva1A==|nSW+fPumiuTaDB/s12+JO88uemV6rhwRSR+YR1ZzGr5j6Ei3/h+XEli2Unpz652NlZ9NTuRpHxeOqkYYJtp7J+lPMoclgteXuAzUu9kqlRc=|DeUFkhIwgkGdZA08bDnDqMMNmZk21D+H5g8IostPKAY=",
-    );
-    const pinKeyEncryptedUserKeyPersistant = new EncString(
-      "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=",
-    );
-
-    const oldPinKeyEncryptedMasterKeyPostMigration: any = null;
-    const oldPinKeyEncryptedMasterKeyPreMigrationPersistent =
-      "2.fb5kOEZvh9zPABbP8WRmSQ==|Yi6ZAJY+UtqCKMUSqp1ahY9Kf8QuneKXs6BMkpNsakLVOzTYkHHlilyGABMF7GzUO8QHyZi7V/Ovjjg+Naf3Sm8qNhxtDhibITv4k8rDnM0=|TFkq3h2VNTT1z5BFbebm37WYuxyEHXuRo0DZJI7TQnw=";
-
     async function setupDecryptUserKeyWithPinMocks(
       pinLockType: PinLockType,
       migrationStatus: "PRE" | "POST" = "POST",
