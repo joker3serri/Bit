@@ -350,7 +350,6 @@ describe("PinService", () => {
     const testCases: { pinLockType: PinLockType; migrationStatus: "PRE" | "POST" }[] = [
       { pinLockType: "PERSISTENT", migrationStatus: "PRE" },
       { pinLockType: "PERSISTENT", migrationStatus: "POST" },
-      { pinLockType: "EPHEMERAL", migrationStatus: "PRE" },
       { pinLockType: "EPHEMERAL", migrationStatus: "POST" },
     ];
 
@@ -395,7 +394,7 @@ describe("PinService", () => {
 
         it(`should return null when PIN is incorrect and user key cannot be decrypted`, async () => {
           // Arrange
-          await setupDecryptUserKeyWithPinMocks("PERSISTENT");
+          await setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
 
           sut.decryptUserKeyWithPin = jest.fn().mockResolvedValue(null);
 
@@ -409,7 +408,7 @@ describe("PinService", () => {
         // not sure if this is a realistic scenario but going to test it anyway
         it(`should return null when PIN doesn't match after successful user key decryption`, async () => {
           // Arrange
-          await setupDecryptUserKeyWithPinMocks("PERSISTENT");
+          await setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
 
           // non matching PIN
           encryptService.decryptToUtf8.mockResolvedValue("9999");

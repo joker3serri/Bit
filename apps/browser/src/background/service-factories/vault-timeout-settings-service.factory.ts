@@ -2,6 +2,11 @@ import { VaultTimeoutSettingsService as AbstractVaultTimeoutSettingsService } fr
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 
 import {
+  accountServiceFactory,
+  AccountServiceInitOptions,
+} from "src/auth/background/service-factories/account-service.factory";
+
+import {
   policyServiceFactory,
   PolicyServiceInitOptions,
 } from "../../admin-console/background/service-factories/policy-service.factory";
@@ -38,6 +43,7 @@ import {
 type VaultTimeoutSettingsServiceFactoryOptions = FactoryOptions;
 
 export type VaultTimeoutSettingsServiceInitOptions = VaultTimeoutSettingsServiceFactoryOptions &
+  AccountServiceInitOptions &
   PinServiceInitOptions &
   UserDecryptionOptionsServiceInitOptions &
   CryptoServiceInitOptions &
@@ -56,6 +62,7 @@ export function vaultTimeoutSettingsServiceFactory(
     opts,
     async () =>
       new VaultTimeoutSettingsService(
+        await accountServiceFactory(cache, opts),
         await pinServiceFactory(cache, opts),
         await userDecryptionOptionsServiceFactory(cache, opts),
         await cryptoServiceFactory(cache, opts),
