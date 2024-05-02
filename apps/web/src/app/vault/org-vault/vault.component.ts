@@ -762,27 +762,9 @@ export class VaultComponent implements OnInit, OnDestroy {
         cipherId: cipher.id,
       },
     });
-    /**
-
-     const [modal] = await this.modalService.openViewRef(
-     CollectionsComponent,
-     this.collectionsModalRef,
-     (comp) => {
-     comp.flexibleCollectionsV1Enabled = this.flexibleCollectionsV1Enabled;
-     comp.restrictProviderAccess = this.restrictProviderAccessEnabled;
-        comp.collectionIds = cipher.collectionIds;
-        comp.collections = collections;
-        comp.organization = this.organization;
-        comp.cipherId = cipher.id;
-        comp.onSavedCollections.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refresh();
-        });
-      },
-    );*/
 
     if ((await lastValueFrom(dialog.closed)) == CollectionsDialogResult.Saved) {
-      await this.refresh();
+      this.refresh();
     }
   }
 
