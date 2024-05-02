@@ -70,13 +70,9 @@ export class BulkCollectionAssignmentDialogComponent implements OnDestroy, OnIni
   ) {}
 
   async ngOnInit() {
-    const v1FCEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollectionsV1,
-      false,
-    );
+    const v1FCEnabled = await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollectionsV1);
     const restrictProviderAccess = await this.configService.getFeatureFlag(
       FeatureFlag.RestrictProviderAccess,
-      false,
     );
     const org = await this.organizationService.get(this.params.organizationId);
 
