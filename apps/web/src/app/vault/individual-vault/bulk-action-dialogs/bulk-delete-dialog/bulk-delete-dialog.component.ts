@@ -56,9 +56,8 @@ export class BulkDeleteDialogComponent {
     FeatureFlag.FlexibleCollectionsV1,
   );
 
-  private restrictProivderAccess$ = this.configService.getFeatureFlag$(
+  private restrictProviderAccess$ = this.configService.getFeatureFlag$(
     FeatureFlag.RestrictProviderAccess,
-    false,
   );
 
   constructor(
@@ -86,7 +85,7 @@ export class BulkDeleteDialogComponent {
     const deletePromises: Promise<void>[] = [];
     if (this.cipherIds.length) {
       const flexibleCollectionsV1Enabled = await firstValueFrom(this.flexibleCollectionsV1Enabled$);
-      const restrictProviderAccess = await firstValueFrom(this.restrictProivderAccess$);
+      const restrictProviderAccess = await firstValueFrom(this.restrictProviderAccess$);
 
       if (
         !this.organization ||
@@ -124,7 +123,7 @@ export class BulkDeleteDialogComponent {
 
   private async deleteCiphers(): Promise<any> {
     const flexibleCollectionsV1Enabled = await firstValueFrom(this.flexibleCollectionsV1Enabled$);
-    const restrictProviderAccess = await firstValueFrom(this.restrictProivderAccess$);
+    const restrictProviderAccess = await firstValueFrom(this.restrictProviderAccess$);
     const asAdmin = this.organization?.canEditAllCiphers(
       flexibleCollectionsV1Enabled,
       restrictProviderAccess,

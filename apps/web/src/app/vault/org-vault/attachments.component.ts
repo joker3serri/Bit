@@ -64,7 +64,7 @@ export class AttachmentsComponent extends BaseAttachmentsComponent implements On
       this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1),
     );
     this.restrictProviderAccess = await firstValueFrom(
-      this.configService.getFeatureFlag$(FeatureFlag.RestrictProviderAccess, false),
+      this.configService.getFeatureFlag$(FeatureFlag.RestrictProviderAccess),
     );
   }
 

@@ -82,7 +82,6 @@ export class VaultHeaderComponent implements OnInit {
     );
     this.restrictProviderAccessFlag = await this.configService.getFeatureFlag(
       FeatureFlag.RestrictProviderAccess,
-      false,
     );
   }
 
