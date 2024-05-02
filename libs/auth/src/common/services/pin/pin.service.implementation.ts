@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
@@ -205,11 +205,12 @@ export class PinService implements PinServiceAbstraction {
       throw new Error("No UserKey provided. Cannot create pinKeyEncryptedUserKey.");
     }
 
-    const pinKey = await this.makePinKey(
-      pin,
-      (await firstValueFrom(this.accountService.activeAccount$))?.email, // TODO-rr-bw: verify (could this be different that the userId passed in? does account service provide a clean way to get account email based on userId instead of active account?)
-      await this.kdfConfigService.getKdfConfig(),
+    const email = await firstValueFrom(
+      this.accountService.accounts$.pipe(map((accounts) => accounts[userId].email)),
     );
+    const kdfConfig = await this.kdfConfigService.getKdfConfig();
+
+    const pinKey = await this.makePinKey(pin, email, kdfConfig);
 
     return await this.encryptService.encrypt(userKey.key, pinKey);
   }
@@ -259,14 +260,16 @@ export class PinService implements PinServiceAbstraction {
     this.validateUserId(userId, "Cannot decrypt user key with PIN.");
 
     try {
-      const pinLockType: PinLockType = await this.getPinLockType(userId);
+      const pinLockType = await this.getPinLockType(userId);
       const requireMasterPasswordOnClientRestart = pinLockType === "EPHEMERAL";
 
       const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
         await this.getPinKeyEncryptedKeys(pinLockType, userId);
 
-      const kdfConfig: KdfConfig = await this.kdfConfigService.getKdfConfig();
-      const email = (await firstValueFrom(this.accountService.activeAccount$))?.email;
+      const email = await firstValueFrom(
+        this.accountService.accounts$.pipe(map((accounts) => accounts[userId].email)),
+      );
+      const kdfConfig = await this.kdfConfigService.getKdfConfig();
 
       let userKey: UserKey;
 
