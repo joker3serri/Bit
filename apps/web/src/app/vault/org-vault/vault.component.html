@@ -99,8 +99,13 @@
       </bit-no-items>
       <collection-access-restricted
         *ngIf="showCollectionAccessRestricted"
+        [canEditCollection]="organization.isProviderUser"
         (viewCollectionClicked)="
-          editCollection(selectedCollection.node, CollectionDialogTabType.Info, true)
+          editCollection(
+            selectedCollection.node,
+            CollectionDialogTabType.Info,
+            !organization.isProviderUser
+          )
         "
       >
       </collection-access-restricted>
