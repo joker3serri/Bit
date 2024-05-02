@@ -175,7 +175,6 @@ export class AddEditComponent extends BaseAddEditComponent {
 
     if (
       inFido2PopoutWindow &&
-      userVerification &&
       !(await this.fido2UserVerificationService.handleUserVerification(
         userVerification,
         this.cipher,
