@@ -123,7 +123,7 @@ describe("PinService", () => {
     });
   });
 
-  describe("get/clear/create pinKeyEncryptedUserKey methods", () => {
+  describe("get/clear/create/store pinKeyEncryptedUserKey methods", () => {
     describe("getPinKeyEncryptedUserKey()", () => {
       it("should get the pinKeyEncryptedUserKey of the specified userId", async () => {
         await sut.getPinKeyEncryptedUserKey(mockUserId);
@@ -175,6 +175,48 @@ describe("PinService", () => {
         await expect(
           sut.createPinKeyEncryptedUserKey(mockPin, undefined, mockUserId),
         ).rejects.toThrow("No UserKey provided. Cannot create pinKeyEncryptedUserKey.");
+      });
+
+      it("should create a pinKeyEncryptedUserKey", async () => {
+        sut.makePinKey = jest.fn().mockResolvedValue(mockPinKey);
+
+        await sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, mockUserId);
+
+        expect(encryptService.encrypt).toHaveBeenCalledWith(mockUserKey.key, mockPinKey);
+      });
+    });
+
+    describe("storePinKeyEncryptedUserKey", () => {
+      it("should store a pinKeyEncryptedUserKey (persistent version) when 'storeAsEphemeral' is false", async () => {
+        const storeAsEphemeral = false;
+
+        await sut.storePinKeyEncryptedUserKey(
+          pinKeyEncryptedUserKeyPersistant,
+          storeAsEphemeral,
+          mockUserId,
+        );
+
+        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+          PIN_KEY_ENCRYPTED_USER_KEY,
+          pinKeyEncryptedUserKeyPersistant.encryptedString,
+          mockUserId,
+        );
+      });
+
+      it("should store a pinKeyEncryptedUserKeyEphemeral when 'storeAsEphemeral' is true", async () => {
+        const storeAsEphemeral = true;
+
+        await sut.storePinKeyEncryptedUserKey(
+          pinKeyEncryptedUserKeyEphemeral,
+          storeAsEphemeral,
+          mockUserId,
+        );
+
+        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+          PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,
+          pinKeyEncryptedUserKeyEphemeral.encryptedString,
+          mockUserId,
+        );
       });
     });
   });
@@ -240,16 +282,6 @@ describe("PinService", () => {
           mockUserId,
         );
       });
-    });
-  });
-
-  describe("createPinKeyEncryptedUserKey()", () => {
-    it("should create a pinKeyEncryptedUserKey", async () => {
-      sut.makePinKey = jest.fn().mockResolvedValue(mockPinKey);
-
-      await sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, mockUserId);
-
-      expect(encryptService.encrypt).toHaveBeenCalledWith(mockUserKey.key, mockPinKey);
     });
   });
 
