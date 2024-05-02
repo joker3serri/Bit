@@ -30,6 +30,20 @@ export abstract class MasterPasswordServiceAbstraction {
    * @throws If the user ID is missing.
    */
   abstract getMasterKeyEncryptedUserKey: (userId: UserId) => Promise<EncString>;
+  /**
+   * Decrypts the user key with the provided master key
+   * @param masterKey The user's master key
+   * @param userKey The user's encrypted symmetric key
+   * @param userId The desired user
+   * @throws If either the MasterKey or UserKey are not resolved, or if the UserKey encryption type
+   *         is neither AesCbc256_B64 nor AesCbc256_HmacSha256_B64
+   * @returns The user key
+   */
+  abstract decryptUserKeyWithMasterKey: (
+    masterKey: MasterKey,
+    userKey?: EncString,
+    userId?: string,
+  ) => Promise<UserKey>;
 }
 
 export abstract class InternalMasterPasswordServiceAbstraction extends MasterPasswordServiceAbstraction {
@@ -79,19 +93,4 @@ export abstract class InternalMasterPasswordServiceAbstraction extends MasterPas
     reason: ForceSetPasswordReason,
     userId: UserId,
   ) => Promise<void>;
-
-  /**
-   * Decrypts the user key with the provided master key
-   * @param masterKey The user's master key
-   * @param userKey The user's encrypted symmetric key
-   * @param userId The desired user
-   * @throws If either the MasterKey or UserKey are not resolved, or if the UserKey encryption type
-   *         is neither AesCbc256_B64 nor AesCbc256_HmacSha256_B64
-   * @returns The user key
-   */
-  abstract decryptUserKeyWithMasterKey: (
-    masterKey: MasterKey,
-    userKey?: EncString,
-    userId?: string,
-  ) => Promise<UserKey>;
 }

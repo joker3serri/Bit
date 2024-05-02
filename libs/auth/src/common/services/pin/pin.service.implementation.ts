@@ -2,7 +2,7 @@ import { firstValueFrom, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
@@ -82,7 +82,7 @@ export class PinService implements PinServiceAbstraction {
     private kdfConfigService: KdfConfigService,
     private keyGenerationService: KeyGenerationService,
     private logService: LogService,
-    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    private masterPasswordService: MasterPasswordServiceAbstraction,
     private stateProvider: StateProvider,
     private stateService: StateService,
   ) {}

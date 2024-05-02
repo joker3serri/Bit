@@ -30,7 +30,7 @@ import { AccountServiceInitOptions, accountServiceFactory } from "./account-serv
 import { KdfConfigServiceInitOptions, kdfConfigServiceFactory } from "./kdf-config-service.factory";
 import {
   MasterPasswordServiceInitOptions,
-  internalMasterPasswordServiceFactory,
+  masterPasswordServiceFactory,
 } from "./master-password-service.factory";
 
 type PinServiceFactoryOptions = FactoryOptions;
@@ -60,7 +60,7 @@ export function pinServiceFactory(
         await kdfConfigServiceFactory(cache, opts),
         await keyGenerationServiceFactory(cache, opts),
         await logServiceFactory(cache, opts),
-        await internalMasterPasswordServiceFactory(cache, opts),
+        await masterPasswordServiceFactory(cache, opts),
         await stateProviderFactory(cache, opts),
         await stateServiceFactory(cache, opts),
       ),
