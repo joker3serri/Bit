@@ -5,7 +5,6 @@
 ./apps/browser/store/windows/Assets
 ./bitwarden_license/README.md
 ./libs/angular/src/directives/cipherListVirtualScroll.directive.ts
-./libs/angular/src/scss/webfonts/DMSans[opsz,wght].woff2
 ./libs/admin-console/README.md
 ./libs/auth/README.md
 ./libs/billing/README.md
