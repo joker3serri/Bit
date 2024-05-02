@@ -1,4 +1,4 @@
-/* TODO: the fonts on this page are broken on prod */
+/* The fonts on this page are broken on prod: https://bitwarden.atlassian.net/browse/PM-7863 */
 
 body {
   font-family: "DM Sans";
