@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { mock, MockProxy } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
+import { of } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -16,9 +17,12 @@ import { UnsecuredWebsitesReportComponent } from "./unsecured-websites-report.co
 describe("UnsecuredWebsitesReportComponent", () => {
   let component: UnsecuredWebsitesReportComponent;
   let fixture: ComponentFixture<UnsecuredWebsitesReportComponent>;
+  let organizationService: MockProxy<OrganizationService>;
   let syncServiceMock: MockProxy<SyncService>;
 
   beforeEach(() => {
+    organizationService = mock<OrganizationService>();
+    organizationService.organizations$ = of([]);
     syncServiceMock = mock<SyncService>();
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -31,7 +35,7 @@ describe("UnsecuredWebsitesReportComponent", () => {
         },
         {
           provide: OrganizationService,
-          useValue: mock<OrganizationService>(),
+          useValue: organizationService,
         },
         {
           provide: ModalService,

@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
+import { of } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -18,11 +19,14 @@ describe("ExposedPasswordsReportComponent", () => {
   let component: ExposedPasswordsReportComponent;
   let fixture: ComponentFixture<ExposedPasswordsReportComponent>;
   let auditService: MockProxy<AuditService>;
+  let organizationService: MockProxy<OrganizationService>;
   let syncServiceMock: MockProxy<SyncService>;
 
   beforeEach(() => {
     syncServiceMock = mock<SyncService>();
     auditService = mock<AuditService>();
+    organizationService = mock<OrganizationService>();
+    organizationService.organizations$ = of([]);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TestBed.configureTestingModule({
@@ -38,7 +42,7 @@ describe("ExposedPasswordsReportComponent", () => {
         },
         {
           provide: OrganizationService,
-          useValue: mock<OrganizationService>(),
+          useValue: organizationService,
         },
         {
           provide: ModalService,

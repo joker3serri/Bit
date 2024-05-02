@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -25,9 +26,17 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
     protected organizationService: OrganizationService,
     modalService: ModalService,
     passwordRepromptService: PasswordRepromptService,
+    i18nService: I18nService,
     syncService: SyncService,
   ) {
-    super(modalService, passwordRepromptService, syncService, organizationService);
+    super(
+      cipherService,
+      modalService,
+      passwordRepromptService,
+      organizationService,
+      i18nService,
+      syncService,
+    );
   }
 
   async ngOnInit() {
@@ -38,7 +47,9 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
     const allCiphers = await this.getAllCiphers();
     const exposedPasswordCiphers: CipherView[] = [];
     const promises: Promise<void>[] = [];
-    allCiphers.forEach((ciph) => {
+    this.filterStatus = [0];
+
+    allCiphers.forEach((ciph: any) => {
       const { type, login, isDeleted, edit, viewPassword, id } = ciph;
       if (
         type !== CipherType.Login ||
@@ -50,6 +61,7 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
       ) {
         return;
       }
+
       const promise = this.auditService.passwordLeaked(login.password).then((exposedCount) => {
         if (exposedCount > 0) {
           exposedPasswordCiphers.push(ciph);
@@ -59,11 +71,8 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
       promises.push(promise);
     });
     await Promise.all(promises);
-    this.ciphers = [...exposedPasswordCiphers];
-  }
 
-  protected getAllCiphers(): Promise<CipherView[]> {
-    return this.cipherService.getAllDecrypted();
+    this.filterCiphersByOrg(exposedPasswordCiphers);
   }
 
   protected canManageCipher(c: CipherView): boolean {

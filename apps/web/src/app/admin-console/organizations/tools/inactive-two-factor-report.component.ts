@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -25,6 +26,7 @@ export class InactiveTwoFactorReportComponent extends BaseInactiveTwoFactorRepor
     logService: LogService,
     passwordRepromptService: PasswordRepromptService,
     organizationService: OrganizationService,
+    i18nService: I18nService,
     syncService: SyncService,
   ) {
     super(
@@ -33,11 +35,13 @@ export class InactiveTwoFactorReportComponent extends BaseInactiveTwoFactorRepor
       modalService,
       logService,
       passwordRepromptService,
+      i18nService,
       syncService,
     );
   }
 
   async ngOnInit() {
+    this.isAdminConsoleActive = true;
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organization = await this.organizationService.get(params.organizationId);
