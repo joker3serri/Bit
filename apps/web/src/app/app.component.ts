@@ -303,6 +303,7 @@ export class AppComponent implements OnDestroy, OnInit {
       }
 
       await this.stateService.clean({ userId: userId });
+      await this.accountService.clean(userId);
 
       await logoutPromise;
 
