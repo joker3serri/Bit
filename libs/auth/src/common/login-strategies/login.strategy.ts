@@ -251,7 +251,7 @@ export abstract class LoginStrategy {
 
     await this.setMasterKey(response);
     await this.setUserKey(response, userId);
-    await this.setPrivateKey(response);
+    await this.setPrivateKey(response, userId);
 
     this.messagingService.send("loggedIn");
 
@@ -261,7 +261,7 @@ export abstract class LoginStrategy {
   // The keys comes from different sources depending on the login strategy
   protected abstract setMasterKey(response: IdentityTokenResponse): Promise<void>;
   protected abstract setUserKey(response: IdentityTokenResponse, userId: UserId): Promise<void>;
-  protected abstract setPrivateKey(response: IdentityTokenResponse): Promise<void>;
+  protected abstract setPrivateKey(response: IdentityTokenResponse, userId: UserId): Promise<void>;
 
   // Old accounts used master key for encryption. We are forcing migrations but only need to
   // check on password logins
@@ -269,9 +269,10 @@ export abstract class LoginStrategy {
     return false;
   }
 
-  protected async createKeyPairForOldAccount() {
+  protected async createKeyPairForOldAccount(userId: UserId) {
     try {
-      const [publicKey, privateKey] = await this.cryptoService.makeKeyPair();
+      const userKey = await this.cryptoService.getUserKeyWithLegacySupport(userId);
+      const [publicKey, privateKey] = await this.cryptoService.makeKeyPair(userKey);
       await this.apiService.postAccountKeys(new KeysRequest(publicKey, privateKey.encryptedString));
       return privateKey.encryptedString;
     } catch (e) {
