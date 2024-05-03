@@ -1263,9 +1263,9 @@ export default class MainBackground {
     // HACK: Wait for the user logging outs authentication status to transition to LoggedOut
     await logoutPromise;
 
+    await this.switchAccount(newActiveUser);
     if (newActiveUser != null) {
       // we have a new active user, do not continue tearing down application
-      await this.switchAccount(newActiveUser);
       this.messagingService.send("switchAccountFinish");
     } else {
       this.messagingService.send("doneLoggingOut", {

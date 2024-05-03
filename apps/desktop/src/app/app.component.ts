@@ -630,6 +630,7 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         // We don't have another user to switch to, bring them to the login page so they
         // can sign into a user.
+        await this.accountService.switchAccount(null);
         void this.router.navigate(["login"]);
       }
     }
