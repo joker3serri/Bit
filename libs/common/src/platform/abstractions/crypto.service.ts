@@ -312,14 +312,14 @@ export abstract class CryptoService {
    * @param publicKey The public key to use for encryption, if not provided, the user's public key will be used
    * @returns The encrypted data
    */
-  abstract rsaEncrypt(data: Uint8Array, publicKey?: Uint8Array): Promise<EncString>;
+  abstract rsaEncrypt(data: Uint8Array, publicKey: Uint8Array): Promise<EncString>;
   /**
    * Decrypts a value using RSA.
    * @param encValue The encrypted value to decrypt
    * @param privateKeyValue The private key to use for decryption
    * @returns The decrypted value
    */
-  abstract rsaDecrypt(encValue: string, privateKeyValue?: Uint8Array): Promise<Uint8Array>;
+  abstract rsaDecrypt(encValue: string, privateKeyValue: Uint8Array): Promise<Uint8Array>;
   abstract randomNumber(min: number, max: number): Promise<number>;
   /**
    * Generates a new cipher key
