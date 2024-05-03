@@ -319,7 +319,7 @@ export abstract class CryptoService {
    * @param privateKeyValue The private key to use for decryption
    * @returns The decrypted value
    */
-  abstract rsaDecrypt(encValue: string, privateKeyValue: Uint8Array): Promise<Uint8Array>;
+  abstract rsaDecrypt(encValue: string, privateKey: Uint8Array): Promise<Uint8Array>;
   abstract randomNumber(min: number, max: number): Promise<number>;
   /**
    * Generates a new cipher key
