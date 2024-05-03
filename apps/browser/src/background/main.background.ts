@@ -771,7 +771,7 @@ export default class MainBackground {
 
     this.avatarService = new AvatarService(this.apiService, this.stateProvider);
 
-    this.providerService = new ProviderService(this.configService, this.stateProvider);
+    this.providerService = new ProviderService(this.stateProvider);
 
     this.syncService = new SyncService(
       this.masterPasswordService,
