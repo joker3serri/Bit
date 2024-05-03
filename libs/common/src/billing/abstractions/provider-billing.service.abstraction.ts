@@ -23,8 +23,3 @@ export const canAccessBilling = (
         ),
       ),
   );
-
-export const getById = (providerId: string): OperatorFunction<Provider[], MaybeProvider> =>
-  map<Provider[], MaybeProvider>((providers) =>
-    providers.find((provider) => provider.id === providerId),
-  );
