@@ -2,7 +2,16 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import * as jq from "jquery";
-import { Subject, firstValueFrom, map, switchMap, takeUntil, timer } from "rxjs";
+import {
+  combineLatest,
+  filter,
+  firstValueFrom,
+  map,
+  Subject,
+  switchMap,
+  takeUntil,
+  timer,
+} from "rxjs";
 
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
@@ -14,6 +23,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { PaymentMethodWarningsServiceAbstraction as PaymentMethodWarningService } from "@bitwarden/common/billing/abstractions/payment-method-warnings-service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -242,8 +252,12 @@ export class AppComponent implements OnDestroy, OnInit {
       new SendOptionsPolicy(),
     ]);
 
-    this.paymentMethodWarningsRefresh$
+    combineLatest([
+      this.configService.getFeatureFlag$(FeatureFlag.ShowPaymentMethodWarningBanners),
+      this.paymentMethodWarningsRefresh$,
+    ])
       .pipe(
+        filter(([showPaymentMethodWarningBanners]) => showPaymentMethodWarningBanners),
         switchMap(() => this.organizationService.memberOrganizations$),
         switchMap(
           async (organizations) =>
