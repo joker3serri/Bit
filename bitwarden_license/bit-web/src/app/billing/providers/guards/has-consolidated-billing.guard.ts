@@ -1,5 +1,6 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, createUrlTreeFromSnapshot } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { ProviderStatusType } from "@bitwarden/common/admin-console/enums";
@@ -10,7 +11,7 @@ export const hasConsolidatedBilling: CanActivateFn = async (route: ActivatedRout
   const configService = inject(ConfigService);
   const providerService = inject(ProviderService);
 
-  const provider = await providerService.get(route.params.providerId);
+  const provider = await firstValueFrom(providerService.get$(route.params.providerId));
 
   const consolidatedBillingEnabled = await configService.getFeatureFlag(
     FeatureFlag.EnableConsolidatedBilling,
@@ -19,6 +20,7 @@ export const hasConsolidatedBilling: CanActivateFn = async (route: ActivatedRout
   if (
     !consolidatedBillingEnabled ||
     !provider ||
+    !provider.isProviderAdmin ||
     provider.providerStatus !== ProviderStatusType.Billable
   ) {
     return createUrlTreeFromSnapshot(route, ["/providers", route.params.providerId]);

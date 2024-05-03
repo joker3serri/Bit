@@ -1,8 +1,4 @@
-import { combineLatest, firstValueFrom, map, Observable, of, switchMap, take } from "rxjs";
-
-import { ProviderStatusType } from "@bitwarden/common/admin-console/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { firstValueFrom, map, Observable, of, switchMap, take } from "rxjs";
 
 import { PROVIDERS_DISK, StateProvider, UserKeyDefinition } from "../../platform/state";
 import { UserId } from "../../types/guid";
@@ -20,10 +16,7 @@ function mapToSingleProvider(providerId: string) {
 }
 
 export class ProviderService implements ProviderServiceAbstraction {
-  constructor(
-    private configService: ConfigService,
-    private stateProvider: StateProvider,
-  ) {}
+  constructor(private stateProvider: StateProvider) {}
 
   private providers$(userId?: UserId): Observable<Provider[] | undefined> {
     // FIXME: Can be replaced with `getUserStateOrDefault$` if we weren't trying to pick this.
@@ -42,19 +35,6 @@ export class ProviderService implements ProviderServiceAbstraction {
   private mapProviderRecordToArray() {
     return map<Record<string, ProviderData>, Provider[]>((providers) =>
       Object.values(providers ?? {})?.map((o) => new Provider(o)),
-    );
-  }
-
-  hasConsolidatedBilling$(id: string): Observable<boolean> {
-    return combineLatest([
-      this.get$(id),
-      this.configService.getFeatureFlag$(FeatureFlag.EnableConsolidatedBilling),
-    ]).pipe(
-      map(([provider, enableConsolidatedBilling]) => {
-        return provider
-          ? provider.providerStatus === ProviderStatusType.Billable && enableConsolidatedBilling
-          : false;
-      }),
     );
   }
 

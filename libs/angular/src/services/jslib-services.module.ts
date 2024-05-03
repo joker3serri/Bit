@@ -868,7 +868,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: ProviderServiceAbstraction,
     useClass: ProviderService,
-    deps: [ConfigService, StateProvider],
+    deps: [StateProvider],
   }),
   safeProvider({
     provide: TwoFactorServiceAbstraction,

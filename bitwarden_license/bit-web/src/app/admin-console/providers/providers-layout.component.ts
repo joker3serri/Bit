@@ -7,6 +7,7 @@ import { takeUntil } from "rxjs/operators";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
+import { canAccessBilling } from "@bitwarden/common/billing/abstractions/provider-billing.service.abstraction";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
@@ -34,7 +35,7 @@ export class ProvidersLayoutComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   protected provider$: Observable<Provider>;
-  protected hasConsolidatedBilling$: Observable<boolean>;
+  protected canAccessBilling$: Observable<boolean>;
 
   protected showPaymentMethodWarningBanners$ = this.configService.getFeatureFlag$(
     FeatureFlag.ShowPaymentMethodWarningBanners,
@@ -54,9 +55,9 @@ export class ProvidersLayoutComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     );
 
-    this.hasConsolidatedBilling$ = this.provider$.pipe(
+    this.canAccessBilling$ = this.provider$.pipe(
       filter((provider) => !!provider),
-      switchMap((provider) => this.providerService.hasConsolidatedBilling$(provider.id)),
+      canAccessBilling(this.configService),
       startWith(false),
       takeUntil(this.destroy$),
     );

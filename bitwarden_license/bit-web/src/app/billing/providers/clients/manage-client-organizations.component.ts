@@ -10,7 +10,9 @@ import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { canAccessBilling } from "@bitwarden/common/billing/abstractions/provider-billing.service.abstraction";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { DialogService, ToastService } from "@bitwarden/components";
@@ -39,6 +41,7 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
   constructor(
     private apiService: ApiService,
     private billingApiService: BillingApiService,
+    private configService: ConfigService,
     private providerService: ProviderService,
     private router: Router,
     activatedRoute: ActivatedRoute,
@@ -65,9 +68,10 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
       .pipe(
         switchMap((params) => {
           this.providerId = params.providerId;
-          return this.providerService.hasConsolidatedBilling$(this.providerId).pipe(
-            map((hasConsolidatedBilling) => {
-              if (!hasConsolidatedBilling) {
+          return this.providerService.get$(this.providerId).pipe(
+            canAccessBilling(this.configService),
+            map((canAccessBilling) => {
+              if (!canAccessBilling) {
                 return from(
                   this.router.navigate(["../clients"], {
                     relativeTo: this.activatedRoute,

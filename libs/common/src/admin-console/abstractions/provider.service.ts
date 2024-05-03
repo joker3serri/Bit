@@ -5,7 +5,6 @@ import { ProviderData } from "../models/data/provider.data";
 import { Provider } from "../models/domain/provider";
 
 export abstract class ProviderService {
-  hasConsolidatedBilling$: (id: string) => Observable<boolean>;
   get$: (id: string) => Observable<Provider>;
   get: (id: string) => Promise<Provider>;
   getAll: () => Promise<Provider[]>;
