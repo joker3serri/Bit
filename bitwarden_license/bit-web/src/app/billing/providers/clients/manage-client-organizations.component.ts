@@ -93,7 +93,7 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
   }
 
   async load() {
-    this.provider = await this.providerService.get(this.providerId);
+    this.provider = await firstValueFrom(this.providerService.get$(this.providerId));
 
     this.manageOrganizations = this.provider.type === ProviderUserType.ProviderAdmin;
 
