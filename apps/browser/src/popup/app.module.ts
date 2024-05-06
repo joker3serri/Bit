@@ -17,6 +17,8 @@ import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe"
 import { AvatarModule, ButtonModule, ToastModule } from "@bitwarden/components";
 import { ExportScopeCalloutComponent } from "@bitwarden/vault-export-ui";
 
+import { VaultV2Component } from "src/vault/popup/components/vault/vault-v2.component";
+
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
 import { AccountComponent } from "../auth/popup/account-switching/account.component";
 import { CurrentAccountComponent } from "../auth/popup/account-switching/current-account.component";
@@ -177,6 +179,7 @@ import "../platform/popup/locales";
     EnvironmentSelectorComponent,
     CurrentAccountComponent,
     AccountSwitcherComponent,
+    VaultV2Component,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],
