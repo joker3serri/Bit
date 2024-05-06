@@ -272,7 +272,7 @@ export class BaseLoginDecryptionOptionsComponent implements OnInit, OnDestroy {
 
     // this.loading to support clients without async-actions-support
     this.loading = true;
-    // errors are caught in base components
+    // errors must be caught in child components to prevent navigation
     try {
       const { publicKey, privateKey } = await this.cryptoService.initAccount();
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
