@@ -16,6 +16,7 @@ export enum FeatureFlag {
   AC1795_UpdatedSubscriptionStatusSection = "AC-1795_updated-subscription-status-section",
   UnassignedItemsBanner = "unassigned-items-banner",
   EnableDeleteProvider = "AC-1218-delete-provider",
+  ExtensionRefresh = "extension-refresh",
   RestrictProviderAccess = "restrict-provider-access",
 }
 
@@ -43,6 +44,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.AC1795_UpdatedSubscriptionStatusSection]: FALSE,
   [FeatureFlag.UnassignedItemsBanner]: FALSE,
   [FeatureFlag.EnableDeleteProvider]: FALSE,
+  [FeatureFlag.ExtensionRefresh]: FALSE,
   [FeatureFlag.RestrictProviderAccess]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
