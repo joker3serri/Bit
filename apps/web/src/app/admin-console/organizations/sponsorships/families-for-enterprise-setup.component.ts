@@ -87,7 +87,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
 
       this.token = qParams.token;
 
-      await this.syncService.fullSync(true);
+      await this.syncService.fullSync(true, "init-families-for-enterprise-setup");
       this.badToken = !(await this.apiService.postPreValidateSponsorshipToken(this.token));
       this.loading = false;
     });
@@ -135,7 +135,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
         null,
         this.i18nService.t("sponsoredFamiliesOfferRedeemed"),
       );
-      await this.syncService.fullSync(true);
+      await this.syncService.fullSync(true, "families-for-enterprise-setup");
 
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises

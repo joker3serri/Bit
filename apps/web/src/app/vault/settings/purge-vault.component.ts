@@ -38,7 +38,7 @@ export class PurgeVaultComponent {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("vaultPurged"));
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.syncService.fullSync(true);
+      this.syncService.fullSync(true, "purge-vault");
       if (this.organizationId != null) {
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises

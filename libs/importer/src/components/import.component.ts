@@ -369,7 +369,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.syncService.fullSync(true);
+      this.syncService.fullSync(true, "import");
       this.onSuccessfulImport.emit(this._organizationId);
     } catch (e) {
       this.dialogService.open<unknown, Error>(ImportErrorDialogComponent, {

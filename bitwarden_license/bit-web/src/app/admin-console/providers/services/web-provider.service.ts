@@ -34,7 +34,7 @@ export class WebProviderService {
     request.key = encryptedOrgKey.encryptedString;
 
     const response = await this.apiService.postProviderAddOrganization(providerId, request);
-    await this.syncService.fullSync(true);
+    await this.syncService.fullSync(true, "provider-add-organization");
     return response;
   }
 
@@ -75,11 +75,11 @@ export class WebProviderService {
 
     await this.apiService.refreshIdentityToken();
 
-    await this.syncService.fullSync(true);
+    await this.syncService.fullSync(true, "provider-create-client-org");
   }
 
   async detachOrganization(providerId: string, organizationId: string): Promise<any> {
     await this.apiService.deleteProviderOrganization(providerId, organizationId);
-    await this.syncService.fullSync(true);
+    await this.syncService.fullSync(true, "provider-detach-organization");
   }
 }

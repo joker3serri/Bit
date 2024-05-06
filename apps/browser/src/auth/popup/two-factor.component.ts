@@ -88,13 +88,13 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     super.onSuccessfulLogin = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      syncService.fullSync(true);
+      syncService.fullSync(true, "successful-login-post-2fa");
     };
 
     super.onSuccessfulLoginTde = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      syncService.fullSync(true);
+      syncService.fullSync(true, "successful-tde-login-post-2fa");
     };
 
     super.onSuccessfulLoginTdeNavigate = async () => {
@@ -114,7 +114,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
       super.onSuccessfulLogin = async () => {
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.syncService.fullSync(true);
+        this.syncService.fullSync(true, "successful-login-post-2fa");
         this.messagingService.send("reloadPopup");
         window.close();
       };
@@ -159,7 +159,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           // the sync even if this tab closes.
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.syncService.fullSync(true);
+          this.syncService.fullSync(true, "successful-login-post-sso");
 
           // Force sidebars (FF && Opera) to reload while exempting current window
           // because we are just going to close the current window.

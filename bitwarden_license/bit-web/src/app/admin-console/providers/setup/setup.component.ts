@@ -128,7 +128,7 @@ export class SetupComponent implements OnInit {
 
       const provider = await this.providerApiService.postProviderSetup(this.providerId, request);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("providerSetup"));
-      await this.syncService.fullSync(true);
+      await this.syncService.fullSync(true, "create-provider");
 
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises

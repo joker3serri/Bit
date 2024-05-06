@@ -336,7 +336,7 @@ export class AppComponent implements OnInit, OnDestroy {
           }
           case "syncVault":
             try {
-              await this.syncService.fullSync(true, true);
+              await this.syncService.fullSync(true, "sync-vault", true);
               this.platformUtilsService.showToast(
                 "success",
                 null,
@@ -359,7 +359,7 @@ export class AppComponent implements OnInit, OnDestroy {
               }
 
               if (lastSyncAgo >= SyncInterval) {
-                await this.syncService.fullSync(false);
+                await this.syncService.fullSync(false, "check-sync-vault");
               }
             } catch (e) {
               this.logService.error(e);
@@ -421,7 +421,7 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
               this.messagingService.send("unlocked");
               this.loading = true;
-              await this.syncService.fullSync(true);
+              await this.syncService.fullSync(true, "switch-account");
               this.loading = false;
               // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -499,7 +499,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.modal.close();
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.syncService.fullSync(false);
+      this.syncService.fullSync(false, "saved-folder");
     });
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil

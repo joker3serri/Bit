@@ -566,7 +566,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         }
 
         await this.apiService.refreshIdentityToken();
-        await this.syncService.fullSync(true);
+        await this.syncService.fullSync(true, "create-organization");
 
         if (!this.acceptingSponsorship && !this.isInTrialFlow) {
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.

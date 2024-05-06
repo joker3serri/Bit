@@ -67,7 +67,7 @@ export class AccountComponent {
       request.billingEmail = this.provider.billingEmail;
 
       this.formPromise = this.providerApiService.putProvider(this.providerId, request).then(() => {
-        return this.syncService.fullSync(true);
+        return this.syncService.fullSync(true, "provider-update");
       });
       await this.formPromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("providerUpdated"));

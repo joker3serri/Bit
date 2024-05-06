@@ -168,18 +168,18 @@ export class NotificationsService implements NotificationsServiceAbstraction {
       case NotificationType.SyncCiphers:
       case NotificationType.SyncSettings:
         if (isAuthenticated) {
-          await this.syncService.fullSync(false);
+          await this.syncService.fullSync(false, "notifications-sync-vault");
         }
         break;
       case NotificationType.SyncOrganizations:
         if (isAuthenticated) {
           // An organization update may not have bumped the user's account revision date, so force a sync
-          await this.syncService.fullSync(true);
+          await this.syncService.fullSync(true, "notifications-sync-organizations");
         }
         break;
       case NotificationType.SyncOrgKeys:
         if (isAuthenticated) {
-          await this.syncService.fullSync(true);
+          await this.syncService.fullSync(true, "notifications-sync-org-keys");
           // Stop so a reconnect can be made
           await this.signalrConnection.stop();
         }
@@ -233,7 +233,7 @@ export class NotificationsService implements NotificationsServiceAbstraction {
       await this.signalrConnection.start();
       this.connected = true;
       if (sync) {
-        await this.syncService.fullSync(false);
+        await this.syncService.fullSync(false, "notifications-reconnect");
       }
     } catch (e) {
       this.logService.error(e);

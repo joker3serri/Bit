@@ -63,7 +63,7 @@ export class EnrollMasterPasswordReset {
 
       platformUtilsService.showToast("success", null, i18nService.t("enrollPasswordResetSuccess"));
 
-      await syncService.fullSync(true);
+      await syncService.fullSync(true, "enroll-master-password-reset");
     } catch (e) {
       logService.error(e);
     }

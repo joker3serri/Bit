@@ -90,7 +90,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     super.ngOnInit();
 
-    await this.syncService.fullSync(true);
+    await this.syncService.fullSync(true, "set-password");
     this.syncLoading = false;
 
     this.userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;

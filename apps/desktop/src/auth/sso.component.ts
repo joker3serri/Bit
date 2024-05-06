@@ -65,13 +65,13 @@ export class SsoComponent extends BaseSsoComponent {
     super.onSuccessfulLogin = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      syncService.fullSync(true);
+      syncService.fullSync(true, "successful-login-post-sso");
     };
 
     super.onSuccessfulLoginTde = async () => {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      syncService.fullSync(true);
+      syncService.fullSync(true, "successful-tde-login-post-sso");
     };
 
     this.redirectUri = "bitwarden://sso-callback";

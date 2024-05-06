@@ -84,7 +84,7 @@ export class LoginViaAuthRequestComponent extends BaseLoginWithDeviceComponent {
     );
 
     super.onSuccessfulLogin = () => {
-      return syncService.fullSync(true);
+      return syncService.fullSync(true, "successful-login-via-auth-request");
     };
   }
 
