@@ -55,10 +55,17 @@ export const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<Encryp
   },
 );
 
-export const PROTECTED_PIN = new UserKeyDefinition<string>(PIN_DISK, "protectedPin", {
-  deserializer: (jsonValue) => jsonValue,
-  clearOn: ["logout"],
-});
+/**
+ * The PIN, encrypted by the UserKey
+ */
+export const USER_KEY_ENCRYPTED_PIN = new UserKeyDefinition<EncryptedString>(
+  PIN_DISK,
+  "userKeyEncryptedPin",
+  {
+    deserializer: (jsonValue) => jsonValue,
+    clearOn: ["logout"],
+  },
+);
 
 /**
  * The old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
@@ -154,46 +161,6 @@ export class PinService implements PinServiceAbstraction {
     await this.stateProvider.setUserState(PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL, null, userId);
   }
 
-  async storePinKeyEncryptedUserKey(
-    pinKeyEncryptedUserKey: EncString,
-    storeAsEphemeral: boolean,
-    userId: UserId,
-  ) {
-    this.validateUserId(userId, "Cannot store pinKeyEncryptedUserKey.");
-
-    if (storeAsEphemeral) {
-      await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
-    } else {
-      await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
-    }
-  }
-
-  async getProtectedPin(userId: UserId): Promise<string> {
-    this.validateUserId(userId, "Cannot get protectedPin.");
-
-    return await firstValueFrom(this.stateProvider.getUserState$(PROTECTED_PIN, userId));
-  }
-
-  async setProtectedPin(protectedPin: string, userId: UserId): Promise<void> {
-    this.validateUserId(userId, "Cannot set protectedPin.");
-
-    await this.stateProvider.setUserState(PROTECTED_PIN, protectedPin, userId);
-  }
-
-  async getOldPinKeyEncryptedMasterKey(userId: UserId): Promise<EncryptedString> {
-    this.validateUserId(userId, "Cannot get oldPinKeyEncryptedMasterKey.");
-
-    return await firstValueFrom(
-      this.stateProvider.getUserState$(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, userId),
-    );
-  }
-
-  async clearOldPinKeyEncryptedMasterKey(userId: UserId): Promise<void> {
-    this.validateUserId(userId, "Cannot clear oldPinKeyEncryptedMasterKey.");
-
-    await this.stateProvider.setUserState(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, null, userId);
-  }
-
   async createPinKeyEncryptedUserKey(
     pin: string,
     userKey: UserKey,
@@ -215,11 +182,54 @@ export class PinService implements PinServiceAbstraction {
     return await this.encryptService.encrypt(userKey.key, pinKey);
   }
 
-  async createProtectedPin(pin: string, userKey: UserKey) {
+  async storePinKeyEncryptedUserKey(
+    pinKeyEncryptedUserKey: EncString,
+    storeAsEphemeral: boolean,
+    userId: UserId,
+  ) {
+    this.validateUserId(userId, "Cannot store pinKeyEncryptedUserKey.");
+
+    if (storeAsEphemeral) {
+      await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
+    } else {
+      await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
+    }
+  }
+
+  async getUserKeyEncryptedPin(userId: UserId): Promise<string> {
+    this.validateUserId(userId, "Cannot get userKeyEncryptedPin.");
+
+    return await firstValueFrom(this.stateProvider.getUserState$(USER_KEY_ENCRYPTED_PIN, userId));
+  }
+
+  async setUserKeyEncryptedPin(
+    userKeyEncryptedPin: EncryptedString,
+    userId: UserId,
+  ): Promise<void> {
+    this.validateUserId(userId, "Cannot set userKeyEncryptedPin.");
+
+    await this.stateProvider.setUserState(USER_KEY_ENCRYPTED_PIN, userKeyEncryptedPin, userId);
+  }
+
+  async createUserKeyEncryptedPin(pin: string, userKey: UserKey) {
     if (!userKey) {
-      throw new Error("No UserKey provided. Cannot create protectedPin.");
+      throw new Error("No UserKey provided. Cannot create userKeyEncryptedPin.");
     }
     return await this.encryptService.encrypt(pin, userKey);
+  }
+
+  async getOldPinKeyEncryptedMasterKey(userId: UserId): Promise<EncryptedString> {
+    this.validateUserId(userId, "Cannot get oldPinKeyEncryptedMasterKey.");
+
+    return await firstValueFrom(
+      this.stateProvider.getUserState$(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, userId),
+    );
+  }
+
+  async clearOldPinKeyEncryptedMasterKey(userId: UserId): Promise<void> {
+    this.validateUserId(userId, "Cannot clear oldPinKeyEncryptedMasterKey.");
+
+    await this.stateProvider.setUserState(OLD_PIN_KEY_ENCRYPTED_MASTER_KEY, null, userId);
   }
 
   async makePinKey(pin: string, salt: string, kdfConfig: KdfConfig): Promise<PinKey> {
@@ -232,7 +242,7 @@ export class PinService implements PinServiceAbstraction {
 
     // we can't check the protected pin for both because old accounts only
     // used it for MP on Restart
-    const aProtectedPinIsSet = !!(await this.getProtectedPin(userId));
+    const aUserKeyEncryptedPinIsSet = !!(await this.getUserKeyEncryptedPin(userId));
     const aPinKeyEncryptedUserKeyIsSet = !!(await this.getPinKeyEncryptedUserKey(userId));
     const anOldPinKeyEncryptedMasterKeyIsSet =
       !!(await this.getOldPinKeyEncryptedMasterKey(userId));
@@ -240,7 +250,7 @@ export class PinService implements PinServiceAbstraction {
     if (aPinKeyEncryptedUserKeyIsSet || anOldPinKeyEncryptedMasterKeyIsSet) {
       return "PERSISTENT";
     } else if (
-      aProtectedPinIsSet &&
+      aUserKeyEncryptedPinIsSet &&
       !aPinKeyEncryptedUserKeyIsSet &&
       !anOldPinKeyEncryptedMasterKeyIsSet
     ) {
@@ -363,8 +373,8 @@ export class PinService implements PinServiceAbstraction {
       userId,
     );
 
-    const protectedPin = await this.createProtectedPin(pin, userKey);
-    await this.setProtectedPin(protectedPin.encryptedString, userId);
+    const userKeyEncryptedPin = await this.createUserKeyEncryptedPin(pin, userKey);
+    await this.setUserKeyEncryptedPin(userKeyEncryptedPin.encryptedString, userId);
 
     await this.clearOldPinKeyEncryptedMasterKey(userId);
 
@@ -447,9 +457,9 @@ export class PinService implements PinServiceAbstraction {
   private async validatePin(userKey: UserKey, pin: string, userId: UserId): Promise<boolean> {
     this.validateUserId(userId, "Cannot validate PIN.");
 
-    const protectedPin = await this.getProtectedPin(userId);
+    const userKeyEncryptedPin = await this.getUserKeyEncryptedPin(userId);
     const decryptedPin = await this.encryptService.decryptToUtf8(
-      new EncString(protectedPin),
+      new EncString(userKeyEncryptedPin),
       userKey,
     );
 

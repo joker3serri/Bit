@@ -6,7 +6,7 @@ import { mockMigrationHelper } from "../migration-helper.spec";
 import {
   OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
   PIN_KEY_ENCRYPTED_USER_KEY,
-  PROTECTED_PIN,
+  USER_KEY_ENCRYPTED_PIN,
   PinStateMigrator,
 } from "./61-move-pin-state-to-providers";
 
@@ -31,7 +31,7 @@ function preMigrationState() {
     "AccountOne": {
       settings: {
         pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
-        protectedPin: "AccountOne_protectedPin",
+        protectedPin: "AccountOne_userKeyEncryptedPin", // note the name change
         pinProtected: {
           encrypted: "AccountOne_oldPinKeyEncryptedMasterKey", // note the name change
         },
@@ -51,7 +51,7 @@ function preMigrationState() {
 function postMigrationState() {
   return {
     user_AccountOne_pinUnlock_pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
-    user_AccountOne_pinUnlock_protectedPin: "AccountOne_protectedPin",
+    user_AccountOne_pinUnlock_userKeyEncryptedPin: "AccountOne_userKeyEncryptedPin",
     user_AccountOne_pinUnlock_oldPinKeyEncryptedMasterKey: "AccountOne_oldPinKeyEncryptedMasterKey",
     authenticatedAccounts: ["AccountOne", "AccountTwo"],
     global: {
@@ -108,7 +108,7 @@ describe("PinStateMigrator", () => {
       expect(helper.set).not.toHaveBeenCalledWith("AccountTwo");
     });
 
-    it("should set the properties (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey) under the new key definitions", async () => {
+    it("should set the properties (pinKeyEncryptedUserKey, userKeyEncryptedPin, oldPinKeyEncryptedMasterKey) under the new key definitions", async () => {
       await sut.migrate(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith(
@@ -119,8 +119,8 @@ describe("PinStateMigrator", () => {
 
       expect(helper.setToUser).toHaveBeenCalledWith(
         "AccountOne",
-        PROTECTED_PIN,
-        "AccountOne_protectedPin",
+        USER_KEY_ENCRYPTED_PIN,
+        "AccountOne_userKeyEncryptedPin",
       );
 
       expect(helper.setToUser).toHaveBeenCalledWith(
@@ -139,11 +139,11 @@ describe("PinStateMigrator", () => {
       sut = new PinStateMigrator(60, 61);
     });
 
-    it("should null out the previously migrated values (pinKeyEncryptedUserKey, protectedPin, oldPinKeyEncryptedMasterKey)", async () => {
+    it("should null out the previously migrated values (pinKeyEncryptedUserKey, userKeyEncryptedPin, oldPinKeyEncryptedMasterKey)", async () => {
       await sut.rollback(helper);
 
       expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PIN_KEY_ENCRYPTED_USER_KEY, null);
-      expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", PROTECTED_PIN, null);
+      expect(helper.setToUser).toHaveBeenCalledWith("AccountOne", USER_KEY_ENCRYPTED_PIN, null);
       expect(helper.setToUser).toHaveBeenCalledWith(
         "AccountOne",
         OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
@@ -158,9 +158,9 @@ describe("PinStateMigrator", () => {
       expect(helper.set).toHaveBeenCalledWith("AccountOne", {
         settings: {
           pinKeyEncryptedUserKey: "AccountOne_pinKeyEncryptedUserKey",
-          protectedPin: "AccountOne_protectedPin",
+          protectedPin: "AccountOne_userKeyEncryptedPin",
           pinProtected: {
-            encrypted: "AccountOne_oldPinKeyEncryptedMasterKey", // note the name change
+            encrypted: "AccountOne_oldPinKeyEncryptedMasterKey",
           },
           otherStuff: "otherStuff2",
         },

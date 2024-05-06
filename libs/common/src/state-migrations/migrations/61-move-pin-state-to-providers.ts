@@ -4,7 +4,7 @@ import { Migrator } from "../migrator";
 type ExpectedAccountState = {
   settings?: {
     pinKeyEncryptedUserKey?: string; // EncryptedString
-    protectedPin?: string;
+    protectedPin?: string; // EncryptedString
     pinProtected?: {
       encrypted?: string;
     };
@@ -18,9 +18,9 @@ export const PIN_KEY_ENCRYPTED_USER_KEY: KeyDefinitionLike = {
   key: "pinKeyEncryptedUserKey",
 };
 
-export const PROTECTED_PIN: KeyDefinitionLike = {
+export const USER_KEY_ENCRYPTED_PIN: KeyDefinitionLike = {
   stateDefinition: PIN_STATE,
-  key: "protectedPin",
+  key: "userKeyEncryptedPin",
 };
 
 export const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY: KeyDefinitionLike = {
@@ -45,14 +45,14 @@ export class PinStateMigrator extends Migrator<60, 61> {
         updatedAccount = true;
       }
 
-      // Migrate protectedPin
+      // Migrate protectedPin (to USER_KEY_ENCRYPTED_PIN)
       if (account?.settings?.protectedPin != null) {
-        await helper.setToUser(userId, PROTECTED_PIN, account.settings.protectedPin);
+        await helper.setToUser(userId, USER_KEY_ENCRYPTED_PIN, account.settings.protectedPin);
         delete account.settings.protectedPin;
         updatedAccount = true;
       }
 
-      // Migrate pinProtected
+      // Migrate pinProtected (to OLD_PIN_KEY_ENCRYPTED_MASTER_KEY)
       if (account?.settings?.pinProtected?.encrypted != null) {
         await helper.setToUser(
           userId,
@@ -83,7 +83,10 @@ export class PinStateMigrator extends Migrator<60, 61> {
         userId,
         PIN_KEY_ENCRYPTED_USER_KEY,
       );
-      const accountProtectedPin = await helper.getFromUser<string>(userId, PROTECTED_PIN);
+      const accountUserKeyEncryptedPin = await helper.getFromUser<string>(
+        userId,
+        USER_KEY_ENCRYPTED_PIN,
+      );
       const accountOldPinKeyEncryptedMasterKey = await helper.getFromUser<string>(
         userId,
         OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
@@ -99,9 +102,9 @@ export class PinStateMigrator extends Migrator<60, 61> {
         updatedAccount = true;
       }
 
-      if (accountProtectedPin != null) {
-        account.settings.protectedPin = accountProtectedPin;
-        await helper.setToUser(userId, PROTECTED_PIN, null);
+      if (accountUserKeyEncryptedPin != null) {
+        account.settings.protectedPin = accountUserKeyEncryptedPin;
+        await helper.setToUser(userId, USER_KEY_ENCRYPTED_PIN, null);
         updatedAccount = true;
       }
 

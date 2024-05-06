@@ -15,7 +15,7 @@ export abstract class PinServiceAbstraction {
   abstract getPinKeyEncryptedUserKey: (userId: UserId) => Promise<EncString>;
 
   /**
-   * Clears the UserKey, encrypted by the PinKey
+   * Clears the UserKey, encrypted by the PinKey.
    */
   abstract clearPinKeyEncryptedUserKey(userId: UserId): Promise<void>;
 
@@ -25,9 +25,18 @@ export abstract class PinServiceAbstraction {
   abstract getPinKeyEncryptedUserKeyEphemeral: (userId: UserId) => Promise<EncString>;
 
   /**
-   * Clears the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey
+   * Clears the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
    */
   abstract clearPinKeyEncryptedUserKeyEphemeral(userId: UserId): Promise<void>;
+
+  /**
+   * Creates a pinKeyEncryptedUserKey from the provided PIN and UserKey.
+   */
+  abstract createPinKeyEncryptedUserKey: (
+    pin: string,
+    userKey: UserKey,
+    userId: UserId,
+  ) => Promise<EncString>;
 
   /**
    * Stores the UserKey, encrypted by the PinKey.
@@ -43,12 +52,20 @@ export abstract class PinServiceAbstraction {
   /**
    * Gets the user's PIN, encrypted by the UserKey.
    */
-  abstract getProtectedPin: (userId: UserId) => Promise<string>;
+  abstract getUserKeyEncryptedPin: (userId: UserId) => Promise<string>;
 
   /**
    * Sets the user's PIN, encrypted by the UserKey.
    */
-  abstract setProtectedPin: (protectedPin: string, userId: UserId) => Promise<void>;
+  abstract setUserKeyEncryptedPin: (
+    userKeyEncryptedPin: EncryptedString,
+    userId: UserId,
+  ) => Promise<void>;
+
+  /**
+   * Creates a PIN, encrypted by the UserKey.
+   */
+  abstract createUserKeyEncryptedPin: (pin: string, userKey: UserKey) => Promise<EncString>;
 
   /**
    * Gets the old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
@@ -60,17 +77,6 @@ export abstract class PinServiceAbstraction {
    * Clears the old MasterKey, encrypted by the PinKey.
    */
   abstract clearOldPinKeyEncryptedMasterKey: (userId: UserId) => Promise<void>;
-
-  /**
-   * Makes a pinKeyEncryptedUserKey from the provided PIN and UserKey.
-   */
-  abstract createPinKeyEncryptedUserKey: (
-    pin: string,
-    userKey: UserKey,
-    userId: UserId,
-  ) => Promise<EncString>;
-
-  abstract createProtectedPin: (pin: string, userKey: UserKey) => Promise<EncString>;
 
   /**
    * Makes a PinKey from the provided PIN.

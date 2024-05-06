@@ -8,7 +8,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import {
   FakeAccountService,
@@ -23,7 +23,7 @@ import {
   PIN_KEY_ENCRYPTED_USER_KEY,
   PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,
   OLD_PIN_KEY_ENCRYPTED_MASTER_KEY,
-  PROTECTED_PIN,
+  USER_KEY_ENCRYPTED_PIN,
   PinLockType,
 } from "./pin.service.implementation";
 
@@ -46,8 +46,8 @@ describe("PinService", () => {
   const mockPinKey = new SymmetricCryptoKey(randomBytes(32)) as PinKey; // TODO-rr-bw: verify 32 is correct
   const mockUserEmail = "user@example.com";
   const mockPin = "1234";
-  const mockProtectedPin = "protectedPin";
-  const mockProtectedPinEncString = new EncString(mockProtectedPin);
+  const mockUserKeyEncryptedPin = "userKeyEncryptedPin" as EncryptedString;
+  const mockUserKeyEncryptedPinEncString = new EncString(mockUserKeyEncryptedPin);
 
   // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
   const pinKeyEncryptedUserKeyEphemeral = new EncString(
@@ -101,11 +101,11 @@ describe("PinService", () => {
       await expect(
         sut.createPinKeyEncryptedUserKey(mockPin, mockUserKey, undefined),
       ).rejects.toThrow("User ID is required. Cannot create pinKeyEncryptedUserKey.");
-      await expect(sut.getProtectedPin(undefined)).rejects.toThrow(
-        "User ID is required. Cannot get protectedPin.",
+      await expect(sut.getUserKeyEncryptedPin(undefined)).rejects.toThrow(
+        "User ID is required. Cannot get userKeyEncryptedPin.",
       );
-      await expect(sut.setProtectedPin(mockProtectedPin, undefined)).rejects.toThrow(
-        "User ID is required. Cannot set protectedPin.",
+      await expect(sut.setUserKeyEncryptedPin(mockUserKeyEncryptedPin, undefined)).rejects.toThrow(
+        "User ID is required. Cannot set userKeyEncryptedPin.",
       );
       await expect(sut.getOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
         "User ID is required. Cannot get oldPinKeyEncryptedMasterKey.",
@@ -221,41 +221,44 @@ describe("PinService", () => {
     });
   });
 
-  describe("protectedPin methods", () => {
-    describe("getProtectedPin()", () => {
-      it("should get the protectedPin of the specified userId", async () => {
-        await sut.getProtectedPin(mockUserId);
+  describe("userKeyEncryptedPin methods", () => {
+    describe("getUserKeyEncryptedPin()", () => {
+      it("should get the userKeyEncryptedPin of the specified userId", async () => {
+        await sut.getUserKeyEncryptedPin(mockUserId);
 
-        expect(stateProvider.mock.getUserState$).toHaveBeenCalledWith(PROTECTED_PIN, mockUserId);
-      });
-    });
-
-    describe("setProtectedPin()", () => {
-      it("should set the protectedPin of the specified userId", async () => {
-        await sut.setProtectedPin(mockProtectedPin, mockUserId);
-
-        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
-          PROTECTED_PIN,
-          mockProtectedPin,
+        expect(stateProvider.mock.getUserState$).toHaveBeenCalledWith(
+          USER_KEY_ENCRYPTED_PIN,
           mockUserId,
         );
       });
     });
 
-    describe("createProtectedPin()", () => {
+    describe("setUserKeyEncryptedPin()", () => {
+      it("should set the userKeyEncryptedPin of the specified userId", async () => {
+        await sut.setUserKeyEncryptedPin(mockUserKeyEncryptedPin, mockUserId);
+
+        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+          USER_KEY_ENCRYPTED_PIN,
+          mockUserKeyEncryptedPin,
+          mockUserId,
+        );
+      });
+    });
+
+    describe("createUserKeyEncryptedPin()", () => {
       it("should throw an error if a userKey is not provided", async () => {
-        await expect(sut.createProtectedPin(mockPin, undefined)).rejects.toThrow(
-          "No UserKey provided. Cannot create protectedPin.",
+        await expect(sut.createUserKeyEncryptedPin(mockPin, undefined)).rejects.toThrow(
+          "No UserKey provided. Cannot create userKeyEncryptedPin.",
         );
       });
 
-      it("should create a protectedPin from the provided PIN and userKey", async () => {
-        encryptService.encrypt.mockResolvedValue(mockProtectedPinEncString);
+      it("should create a userKeyEncryptedPin from the provided PIN and userKey", async () => {
+        encryptService.encrypt.mockResolvedValue(mockUserKeyEncryptedPinEncString);
 
-        const result = await sut.createProtectedPin(mockPin, mockUserKey);
+        const result = await sut.createUserKeyEncryptedPin(mockPin, mockUserKey);
 
         expect(encryptService.encrypt).toHaveBeenCalledWith(mockPin, mockUserKey);
-        expect(result).toEqual(mockProtectedPinEncString);
+        expect(result).toEqual(mockUserKeyEncryptedPinEncString);
       });
     });
   });
@@ -302,7 +305,7 @@ describe("PinService", () => {
 
   describe("getPinLockType()", () => {
     it("should return 'PERSISTENT' if a pinKeyEncryptedUserKey (persistent version) is found", async () => {
-      sut.getProtectedPin = jest.fn().mockResolvedValue(null);
+      sut.getUserKeyEncryptedPin = jest.fn().mockResolvedValue(null);
       sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(pinKeyEncryptedUserKeyPersistant);
 
       const result = await sut.getPinLockType(mockUserId);
@@ -311,7 +314,7 @@ describe("PinService", () => {
     });
 
     it("should return 'PERSISTENT' if an old oldPinKeyEncryptedMasterKey is found", async () => {
-      sut.getProtectedPin = jest.fn().mockResolvedValue(null);
+      sut.getUserKeyEncryptedPin = jest.fn().mockResolvedValue(null);
       sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(null);
       sut.getOldPinKeyEncryptedMasterKey = jest
         .fn()
@@ -322,8 +325,8 @@ describe("PinService", () => {
       expect(result).toBe("PERSISTENT");
     });
 
-    it("should return 'EPHEMERAL' if neither a pinKeyEncryptedUserKey (persistent version) nor an old oldPinKeyEncryptedMasterKey are found, but a protectedPin is found", async () => {
-      sut.getProtectedPin = jest.fn().mockResolvedValue(mockProtectedPin);
+    it("should return 'EPHEMERAL' if neither a pinKeyEncryptedUserKey (persistent version) nor an old oldPinKeyEncryptedMasterKey are found, but a userKeyEncryptedPin is found", async () => {
+      sut.getUserKeyEncryptedPin = jest.fn().mockResolvedValue(mockUserKeyEncryptedPin);
       sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(null);
       sut.getOldPinKeyEncryptedMasterKey = jest.fn().mockResolvedValue(null);
 
@@ -332,8 +335,8 @@ describe("PinService", () => {
       expect(result).toBe("EPHEMERAL");
     });
 
-    it("should return 'DISABLED' if ALL three of these are NOT found: protectedPin, pinKeyEncryptedUserKey (persistent version), oldPinKeyEncryptedMasterKey", async () => {
-      sut.getProtectedPin = jest.fn().mockResolvedValue(null);
+    it("should return 'DISABLED' if ALL three of these are NOT found: userKeyEncryptedPin, pinKeyEncryptedUserKey (persistent version), oldPinKeyEncryptedMasterKey", async () => {
+      sut.getUserKeyEncryptedPin = jest.fn().mockResolvedValue(null);
       sut.getPinKeyEncryptedUserKey = jest.fn().mockResolvedValue(null);
       sut.getOldPinKeyEncryptedMasterKey = jest.fn().mockResolvedValue(null);
 
@@ -382,7 +385,7 @@ describe("PinService", () => {
         mockDecryptUserKeyFn();
       }
 
-      sut.getProtectedPin = jest.fn().mockResolvedValue(mockProtectedPin);
+      sut.getUserKeyEncryptedPin = jest.fn().mockResolvedValue(mockUserKeyEncryptedPin);
       encryptService.decryptToUtf8.mockResolvedValue(mockPin);
     }
 
@@ -399,8 +402,11 @@ describe("PinService", () => {
 
       await sut.storePinKeyEncryptedUserKey(pinKeyEncryptedUserKeyPersistant, false, mockUserId);
 
-      sut.createProtectedPin = jest.fn().mockResolvedValue(mockProtectedPinEncString);
-      await sut.setProtectedPin(mockProtectedPinEncString.encryptedString, mockUserId);
+      sut.createUserKeyEncryptedPin = jest.fn().mockResolvedValue(mockUserKeyEncryptedPinEncString);
+      await sut.setUserKeyEncryptedPin(
+        mockUserKeyEncryptedPinEncString.encryptedString,
+        mockUserId,
+      );
 
       await sut.clearOldPinKeyEncryptedMasterKey(mockUserId);
 

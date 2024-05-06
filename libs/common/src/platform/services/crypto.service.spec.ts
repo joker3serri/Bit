@@ -254,15 +254,15 @@ describe("cryptoService", () => {
     });
 
     describe("Pin Key refresh", () => {
-      const protectedPin =
+      const userKeyEncryptedPin =
         "2.jcow2vTUePO+CCyokcIfVw==|DTBNlJ5yVsV2Bsk3UU3H6Q==|YvFBff5gxWqM+UsFB6BKimKxhC32AtjF3IStpU1Ijwg=";
       const encString = new EncString(
         "2.jcow2vTUePO+CCyokcIfVw==|DTBNlJ5yVsV2Bsk3UU3H6Q==|YvFBff5gxWqM+UsFB6BKimKxhC32AtjF3IStpU1Ijwg=",
       );
 
-      it("sets a pinKeyEncryptedUserKey if a ProtectedPin and pinKeyEncryptedUserKey is set", async () => {
+      it("sets a pinKeyEncryptedUserKey if a UserKeyEncryptedPin and pinKeyEncryptedUserKey is set", async () => {
         pinService.createPinKeyEncryptedUserKey.mockResolvedValue(encString);
-        pinService.getProtectedPin.mockResolvedValue(protectedPin);
+        pinService.getUserKeyEncryptedPin.mockResolvedValue(userKeyEncryptedPin);
         pinService.getPinKeyEncryptedUserKey.mockResolvedValue(
           new EncString(
             "2.OdGNE3L23GaDZGvu9h2Brw==|/OAcNnrYwu0rjiv8+RUr3Tc+Ef8fV035Tm1rbTxfEuC+2LZtiCAoIvHIZCrM/V1PWnb/pHO2gh9+Koks04YhX8K29ED4FzjeYP8+YQD/dWo=|+12xTcIK/UVRsOyawYudPMHb6+lCHeR2Peq1pQhPm0A=",
@@ -278,9 +278,9 @@ describe("cryptoService", () => {
         );
       });
 
-      it("sets a pinKeyEncryptedUserKeyEphemeral if a ProtectedPin is set, but a pinKeyEncryptedUserKey is not set", async () => {
+      it("sets a pinKeyEncryptedUserKeyEphemeral if a UserKeyEncryptedPin is set, but a pinKeyEncryptedUserKey is not set", async () => {
         pinService.createPinKeyEncryptedUserKey.mockResolvedValue(encString);
-        pinService.getProtectedPin.mockResolvedValue(protectedPin);
+        pinService.getUserKeyEncryptedPin.mockResolvedValue(userKeyEncryptedPin);
         pinService.getPinKeyEncryptedUserKey.mockResolvedValue(null);
 
         await cryptoService.setUserKey(mockUserKey, mockUserId);
@@ -292,8 +292,8 @@ describe("cryptoService", () => {
         );
       });
 
-      it("clears the pinKeyEncryptedUserKey and pinKeyEncryptedUserKeyEphemeral if the ProtectedPin is not set", async () => {
-        pinService.getProtectedPin.mockResolvedValue(null);
+      it("clears the pinKeyEncryptedUserKey and pinKeyEncryptedUserKeyEphemeral if the UserKeyEncryptedPin is not set", async () => {
+        pinService.getUserKeyEncryptedPin.mockResolvedValue(null);
 
         await cryptoService.setUserKey(mockUserKey, mockUserId);
 

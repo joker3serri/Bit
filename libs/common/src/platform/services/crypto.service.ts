@@ -518,7 +518,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     await this.pinService.clearPinKeyEncryptedUserKey(userId);
     await this.pinService.clearPinKeyEncryptedUserKeyEphemeral(userId);
-    await this.pinService.setProtectedPin(null, userId);
+    await this.pinService.setUserKeyEncryptedPin(null, userId);
     await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
   }
 
@@ -741,9 +741,9 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     const storePin = await this.shouldStoreKey(KeySuffixOptions.Pin, userId);
     if (storePin) {
-      // Decrypt protectedPin with user key
+      // Decrypt userKeyEncryptedPin with user key
       const pin = await this.encryptService.decryptToUtf8(
-        new EncString(await this.pinService.getProtectedPin(userId)),
+        new EncString(await this.pinService.getUserKeyEncryptedPin(userId)),
         key,
       );
 
@@ -778,8 +778,8 @@ export class CryptoService implements CryptoServiceAbstraction {
         break;
       }
       case KeySuffixOptions.Pin: {
-        const protectedPin = await this.pinService.getProtectedPin(userId);
-        shouldStoreKey = !!protectedPin;
+        const userKeyEncryptedPin = await this.pinService.getUserKeyEncryptedPin(userId);
+        shouldStoreKey = !!userKeyEncryptedPin;
         break;
       }
     }
