@@ -3038,9 +3038,6 @@
   "accountSecurity": {
     "message": "Account security"
   },
-  "vaultSettings": {
-    "message": "Vault settings"
-  },
   "errorAssigningTargetCollection": {
     "message": "Error assigning target collection."
   },
