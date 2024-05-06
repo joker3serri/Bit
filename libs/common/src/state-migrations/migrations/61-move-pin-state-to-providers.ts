@@ -13,9 +13,9 @@ type ExpectedAccountState = {
 
 export const PIN_STATE: StateDefinitionLike = { name: "pinUnlock" };
 
-export const PIN_KEY_ENCRYPTED_USER_KEY: KeyDefinitionLike = {
+export const PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT: KeyDefinitionLike = {
   stateDefinition: PIN_STATE,
-  key: "pinKeyEncryptedUserKey",
+  key: "pinKeyEncryptedUserKeyPersistent",
 };
 
 export const USER_KEY_ENCRYPTED_PIN: KeyDefinitionLike = {
@@ -34,25 +34,25 @@ export class PinStateMigrator extends Migrator<60, 61> {
     let updatedAccount = false;
 
     async function migrateAccount(userId: string, account: ExpectedAccountState) {
-      // Migrate pinKeyEncryptedUserKey
+      // Migrate pinKeyEncryptedUserKey (to `pinKeyEncryptedUserKeyPersistent`)
       if (account?.settings?.pinKeyEncryptedUserKey != null) {
         await helper.setToUser(
           userId,
-          PIN_KEY_ENCRYPTED_USER_KEY,
+          PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT,
           account.settings.pinKeyEncryptedUserKey,
         );
         delete account.settings.pinKeyEncryptedUserKey;
         updatedAccount = true;
       }
 
-      // Migrate protectedPin (to USER_KEY_ENCRYPTED_PIN)
+      // Migrate protectedPin (to `userKeyEncryptedPin`)
       if (account?.settings?.protectedPin != null) {
         await helper.setToUser(userId, USER_KEY_ENCRYPTED_PIN, account.settings.protectedPin);
         delete account.settings.protectedPin;
         updatedAccount = true;
       }
 
-      // Migrate pinProtected (to OLD_PIN_KEY_ENCRYPTED_MASTER_KEY)
+      // Migrate pinProtected (to `oldPinKeyEncryptedMasterKey`)
       if (account?.settings?.pinProtected?.encrypted != null) {
         await helper.setToUser(
           userId,
@@ -79,9 +79,9 @@ export class PinStateMigrator extends Migrator<60, 61> {
     async function rollbackAccount(userId: string, account: ExpectedAccountState) {
       let updatedAccount = false;
 
-      const accountPinKeyEncryptedUserKey = await helper.getFromUser<string>(
+      const accountPinKeyEncryptedUserKeyPersistent = await helper.getFromUser<string>(
         userId,
-        PIN_KEY_ENCRYPTED_USER_KEY,
+        PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT,
       );
       const accountUserKeyEncryptedPin = await helper.getFromUser<string>(
         userId,
@@ -96,9 +96,9 @@ export class PinStateMigrator extends Migrator<60, 61> {
         account = {};
       }
 
-      if (accountPinKeyEncryptedUserKey != null) {
-        account.settings.pinKeyEncryptedUserKey = accountPinKeyEncryptedUserKey;
-        await helper.setToUser(userId, PIN_KEY_ENCRYPTED_USER_KEY, null);
+      if (accountPinKeyEncryptedUserKeyPersistent != null) {
+        account.settings.pinKeyEncryptedUserKey = accountPinKeyEncryptedUserKeyPersistent;
+        await helper.setToUser(userId, PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT, null);
         updatedAccount = true;
       }
 

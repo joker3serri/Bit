@@ -516,7 +516,7 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("Cannot clear PIN keys, no user Id resolved.");
     }
 
-    await this.pinService.clearPinKeyEncryptedUserKey(userId);
+    await this.pinService.clearPinKeyEncryptedUserKeyPersistent(userId);
     await this.pinService.clearPinKeyEncryptedUserKeyEphemeral(userId);
     await this.pinService.setUserKeyEncryptedPin(null, userId);
     await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
@@ -753,7 +753,7 @@ export class CryptoService implements CryptoServiceAbstraction {
         userId,
       );
       const noPreExistingPersistentKey =
-        (await this.pinService.getPinKeyEncryptedUserKey(userId)) == null;
+        (await this.pinService.getPinKeyEncryptedUserKeyPersistent(userId)) == null;
 
       await this.pinService.storePinKeyEncryptedUserKey(
         pinKeyEncryptedUserKey,
@@ -764,7 +764,7 @@ export class CryptoService implements CryptoServiceAbstraction {
       // migrated once used to unlock
       await this.clearDeprecatedKeys(KeySuffixOptions.Pin, userId);
     } else {
-      await this.pinService.clearPinKeyEncryptedUserKey(userId);
+      await this.pinService.clearPinKeyEncryptedUserKeyPersistent(userId);
       await this.pinService.clearPinKeyEncryptedUserKeyEphemeral(userId);
     }
   }

@@ -33,9 +33,9 @@ export type PinLockType = "DISABLED" | "PERSISTENT" | "EPHEMERAL";
  * Persists through a client reset. Used when require lock with MP on client restart is disabled.
  * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
  */
-export const PIN_KEY_ENCRYPTED_USER_KEY = new UserKeyDefinition<EncryptedString>(
+export const PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
-  "pinKeyEncryptedUserKey",
+  "pinKeyEncryptedUserKeyPersistent",
   {
     deserializer: (jsonValue) => jsonValue,
     clearOn: ["logout"],
@@ -94,35 +94,40 @@ export class PinService implements PinServiceAbstraction {
     private stateService: StateService,
   ) {}
 
-  async getPinKeyEncryptedUserKey(userId: UserId): Promise<EncString> {
-    this.validateUserId(userId, "Cannot get pinKeyEncryptedUserKey.");
+  async getPinKeyEncryptedUserKeyPersistent(userId: UserId): Promise<EncString> {
+    this.validateUserId(userId, "Cannot get pinKeyEncryptedUserKeyPersistent.");
 
     return EncString.fromJSON(
-      await firstValueFrom(this.stateProvider.getUserState$(PIN_KEY_ENCRYPTED_USER_KEY, userId)),
+      await firstValueFrom(
+        this.stateProvider.getUserState$(PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT, userId),
+      ),
     );
   }
 
   /**
    * Sets the UserKey, encrypted by the PinKey.
    */
-  private async setPinKeyEncryptedUserKey(encString: EncString, userId: UserId): Promise<void> {
-    this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKey.");
+  private async setPinKeyEncryptedUserKeyPersistent(
+    encString: EncString,
+    userId: UserId,
+  ): Promise<void> {
+    this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKeyPersistent.");
 
     if (encString == null) {
       throw new Error("No EncString provided. Cannot set pinKeyEncryptedUserKey.");
     }
 
     await this.stateProvider.setUserState(
-      PIN_KEY_ENCRYPTED_USER_KEY,
+      PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT,
       encString?.encryptedString,
       userId,
     );
   }
 
-  async clearPinKeyEncryptedUserKey(userId: UserId): Promise<void> {
-    this.validateUserId(userId, "Cannot clear pinKeyEncryptedUserKey.");
+  async clearPinKeyEncryptedUserKeyPersistent(userId: UserId): Promise<void> {
+    this.validateUserId(userId, "Cannot clear pinKeyEncryptedUserKeyPersistent.");
 
-    await this.stateProvider.setUserState(PIN_KEY_ENCRYPTED_USER_KEY, null, userId);
+    await this.stateProvider.setUserState(PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT, null, userId);
   }
 
   async getPinKeyEncryptedUserKeyEphemeral(userId: UserId): Promise<EncString> {
@@ -192,7 +197,7 @@ export class PinService implements PinServiceAbstraction {
     if (storeAsEphemeral) {
       await this.setPinKeyEncryptedUserKeyEphemeral(pinKeyEncryptedUserKey, userId);
     } else {
-      await this.setPinKeyEncryptedUserKey(pinKeyEncryptedUserKey, userId);
+      await this.setPinKeyEncryptedUserKeyPersistent(pinKeyEncryptedUserKey, userId);
     }
   }
 
@@ -243,15 +248,16 @@ export class PinService implements PinServiceAbstraction {
     // we can't check the protected pin for both because old accounts only
     // used it for MP on Restart
     const aUserKeyEncryptedPinIsSet = !!(await this.getUserKeyEncryptedPin(userId));
-    const aPinKeyEncryptedUserKeyIsSet = !!(await this.getPinKeyEncryptedUserKey(userId));
+    const aPinKeyEncryptedUserKeyPersistentIsSet =
+      !!(await this.getPinKeyEncryptedUserKeyPersistent(userId));
     const anOldPinKeyEncryptedMasterKeyIsSet =
       !!(await this.getOldPinKeyEncryptedMasterKey(userId));
 
-    if (aPinKeyEncryptedUserKeyIsSet || anOldPinKeyEncryptedMasterKeyIsSet) {
+    if (aPinKeyEncryptedUserKeyPersistentIsSet || anOldPinKeyEncryptedMasterKeyIsSet) {
       return "PERSISTENT";
     } else if (
       aUserKeyEncryptedPinIsSet &&
-      !aPinKeyEncryptedUserKeyIsSet &&
+      !aPinKeyEncryptedUserKeyPersistentIsSet &&
       !anOldPinKeyEncryptedMasterKeyIsSet
     ) {
       return "EPHEMERAL";
@@ -325,7 +331,7 @@ export class PinService implements PinServiceAbstraction {
   ): Promise<UserKey> {
     this.validateUserId(userId, "Cannot decrypt user key.");
 
-    pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKey(userId);
+    pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKeyPersistent(userId);
     pinKeyEncryptedUserKey ||= await this.getPinKeyEncryptedUserKeyEphemeral(userId);
 
     if (!pinKeyEncryptedUserKey) {
@@ -426,7 +432,7 @@ export class PinService implements PinServiceAbstraction {
 
     switch (pinLockType) {
       case "PERSISTENT": {
-        const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKey(userId);
+        const pinKeyEncryptedUserKey = await this.getPinKeyEncryptedUserKeyPersistent(userId);
         const oldPinKeyEncryptedMasterKey = await this.getOldPinKeyEncryptedMasterKey(userId);
 
         return {
