@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom, map } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
 import { AccountService } from "../../auth/abstractions/account.service";
@@ -51,9 +51,6 @@ export class StateService<
   TAccount extends Account = Account,
 > implements StateServiceAbstraction<TAccount>
 {
-  protected accountsSubject = new BehaviorSubject<{ [userId: string]: TAccount }>({});
-  accounts$ = this.accountsSubject.asObservable();
-
   private hasBeenInited = false;
   protected isRecoveredSession = false;
 
@@ -114,8 +111,6 @@ export class StateService<
         state = await this.syncAccountFromDisk(authenticatedAccounts[i]);
       }
 
-      await this.pushAccounts();
-
       return state;
     });
   }
@@ -152,7 +147,6 @@ export class StateService<
 
     await this.removeAccountFromDisk(options?.userId);
     await this.removeAccountFromMemory(options?.userId);
-    await this.pushAccounts();
   }
 
   /**
@@ -759,7 +753,6 @@ export class StateService<
         });
       });
     }
-    await this.pushAccounts();
   }
 
   protected async scaffoldNewAccountStorage(account: TAccount): Promise<void> {
@@ -835,17 +828,6 @@ export class StateService<
       account,
       this.reconcileOptions({ userId: account.profile.userId }, await this.defaultOnDiskOptions()),
     );
-  }
-
-  protected async pushAccounts(): Promise<void> {
-    await this.state().then((state) => {
-      if (state.accounts == null || Object.keys(state.accounts).length < 1) {
-        this.accountsSubject.next({});
-        return;
-      }
-
-      this.accountsSubject.next(state.accounts);
-    });
   }
 
   protected reconcileOptions(
@@ -999,8 +981,6 @@ export class StateService<
 
       return state;
     });
-
-    await this.pushAccounts();
   }
 
   protected createAccount(init: Partial<TAccount> = null): TAccount {
