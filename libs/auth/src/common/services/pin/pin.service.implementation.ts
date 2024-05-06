@@ -108,18 +108,20 @@ export class PinService implements PinServiceAbstraction {
    * Sets the UserKey, encrypted by the PinKey.
    */
   private async setPinKeyEncryptedUserKeyPersistent(
-    encString: EncString,
+    pinKeyEncryptedUserKey: EncString,
     userId: UserId,
   ): Promise<void> {
     this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKeyPersistent.");
 
-    if (encString == null) {
-      throw new Error("No EncString provided. Cannot set pinKeyEncryptedUserKey.");
+    if (pinKeyEncryptedUserKey == null) {
+      throw new Error(
+        "No pinKeyEncryptedUserKey provided. Cannot set pinKeyEncryptedUserKeyPersistent.",
+      );
     }
 
     await this.stateProvider.setUserState(
       PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT,
-      encString?.encryptedString,
+      pinKeyEncryptedUserKey?.encryptedString,
       userId,
     );
   }
@@ -144,18 +146,20 @@ export class PinService implements PinServiceAbstraction {
    * Sets the ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
    */
   private async setPinKeyEncryptedUserKeyEphemeral(
-    encString: EncString,
+    pinKeyEncryptedUserKey: EncString,
     userId: UserId,
   ): Promise<void> {
     this.validateUserId(userId, "Cannot set pinKeyEncryptedUserKeyEphemeral.");
 
-    if (encString == null) {
-      throw new Error("No EncString provided. Cannot set pinKeyEncryptedUserKeyEphemeral.");
+    if (pinKeyEncryptedUserKey == null) {
+      throw new Error(
+        "No pinKeyEncryptedUserKey provided. Cannot set pinKeyEncryptedUserKeyEphemeral.",
+      );
     }
 
     await this.stateProvider.setUserState(
       PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL,
-      encString?.encryptedString,
+      pinKeyEncryptedUserKey?.encryptedString,
       userId,
     );
   }
