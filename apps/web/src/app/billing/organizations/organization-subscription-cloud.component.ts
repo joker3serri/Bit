@@ -50,7 +50,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   locale: string;
   showUpdatedSubscriptionStatusSection$: Observable<boolean>;
   manageBillingFromProviderPortal = ManageBilling;
-  IsProviderManaged = false;
+  isProviderManaged = false;
 
   protected readonly teamsStarter = ProductType.TeamsStarter;
 
@@ -111,8 +111,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     if (this.userOrg.hasProvider) {
       const provider = await this.providerService.getProvider(this.userOrg.providerId);
       const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
-      this.IsProviderManaged =
-        provider.type == ProviderType.Msp && enableConsolidatedBilling ? true : false;
+      this.isProviderManaged = provider.type == ProviderType.Msp && enableConsolidatedBilling;
     }
 
     if (this.userOrg.canViewSubscription) {
