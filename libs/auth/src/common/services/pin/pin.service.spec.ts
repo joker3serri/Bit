@@ -8,7 +8,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import {
   FakeAccountService,
@@ -46,8 +46,8 @@ describe("PinService", () => {
   const mockPinKey = new SymmetricCryptoKey(randomBytes(32)) as PinKey; // TODO-rr-bw: verify 32 is correct
   const mockUserEmail = "user@example.com";
   const mockPin = "1234";
-  const mockUserKeyEncryptedPin = "userKeyEncryptedPin" as EncryptedString;
-  const mockUserKeyEncryptedPinEncString = new EncString(mockUserKeyEncryptedPin);
+  const mockUserKeyEncryptedPin = new EncString("userKeyEncryptedPin");
+  // const mockUserKeyEncryptedPinEncString = new EncString(mockUserKeyEncryptedPin);
 
   // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
   const pinKeyEncryptedUserKeyEphemeral = new EncString(
@@ -106,6 +106,9 @@ describe("PinService", () => {
       );
       await expect(sut.setUserKeyEncryptedPin(mockUserKeyEncryptedPin, undefined)).rejects.toThrow(
         "User ID is required. Cannot set userKeyEncryptedPin.",
+      );
+      await expect(sut.clearUserKeyEncryptedPin(undefined)).rejects.toThrow(
+        "User ID is required. Cannot clear userKeyEncryptedPin.",
       );
       await expect(sut.getOldPinKeyEncryptedMasterKey(undefined)).rejects.toThrow(
         "User ID is required. Cannot get oldPinKeyEncryptedMasterKey.",
@@ -239,7 +242,19 @@ describe("PinService", () => {
 
         expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
           USER_KEY_ENCRYPTED_PIN,
-          mockUserKeyEncryptedPin,
+          mockUserKeyEncryptedPin.encryptedString,
+          mockUserId,
+        );
+      });
+    });
+
+    describe("clearUserKeyEncryptedPin()", () => {
+      it("should clear the pinKeyEncryptedUserKey of the specified userId", async () => {
+        await sut.clearUserKeyEncryptedPin(mockUserId);
+
+        expect(stateProvider.mock.setUserState).toHaveBeenCalledWith(
+          USER_KEY_ENCRYPTED_PIN,
+          null,
           mockUserId,
         );
       });
@@ -253,12 +268,12 @@ describe("PinService", () => {
       });
 
       it("should create a userKeyEncryptedPin from the provided PIN and userKey", async () => {
-        encryptService.encrypt.mockResolvedValue(mockUserKeyEncryptedPinEncString);
+        encryptService.encrypt.mockResolvedValue(mockUserKeyEncryptedPin);
 
         const result = await sut.createUserKeyEncryptedPin(mockPin, mockUserKey);
 
         expect(encryptService.encrypt).toHaveBeenCalledWith(mockPin, mockUserKey);
-        expect(result).toEqual(mockUserKeyEncryptedPinEncString);
+        expect(result).toEqual(mockUserKeyEncryptedPin);
       });
     });
   });
@@ -404,11 +419,8 @@ describe("PinService", () => {
 
       await sut.storePinKeyEncryptedUserKey(pinKeyEncryptedUserKeyPersistant, false, mockUserId);
 
-      sut.createUserKeyEncryptedPin = jest.fn().mockResolvedValue(mockUserKeyEncryptedPinEncString);
-      await sut.setUserKeyEncryptedPin(
-        mockUserKeyEncryptedPinEncString.encryptedString,
-        mockUserId,
-      );
+      sut.createUserKeyEncryptedPin = jest.fn().mockResolvedValue(mockUserKeyEncryptedPin);
+      await sut.setUserKeyEncryptedPin(mockUserKeyEncryptedPin, mockUserId);
 
       await sut.clearOldPinKeyEncryptedMasterKey(mockUserId);
 

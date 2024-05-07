@@ -12,7 +12,10 @@
         <input class="tw-font-mono" bitInput type="password" formControlName="pin" />
         <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
       </bit-form-field>
-      <label class="tw-flex tw-items-start tw-gap-2" *ngIf="showMasterPasswordOnClientRestart">
+      <label
+        class="tw-flex tw-items-start tw-gap-2"
+        *ngIf="showMasterPasswordOnClientRestartOption"
+      >
         <input
           class="tw-mt-1"
           type="checkbox"

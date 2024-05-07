@@ -70,13 +70,13 @@ export abstract class PinServiceAbstraction {
   /**
    * Gets the user's PIN, encrypted by the UserKey.
    */
-  abstract getUserKeyEncryptedPin: (userId: UserId) => Promise<string>;
+  abstract getUserKeyEncryptedPin: (userId: UserId) => Promise<EncString>;
 
   /**
    * Sets the user's PIN, encrypted by the UserKey.
    */
   abstract setUserKeyEncryptedPin: (
-    userKeyEncryptedPin: EncryptedString,
+    userKeyEncryptedPin: EncString,
     userId: UserId,
   ) => Promise<void>;
 
@@ -84,6 +84,11 @@ export abstract class PinServiceAbstraction {
    * Creates a PIN, encrypted by the UserKey.
    */
   abstract createUserKeyEncryptedPin: (pin: string, userKey: UserKey) => Promise<EncString>;
+
+  /**
+   * Clears the user's PIN, encrypted by the UserKey.
+   */
+  abstract clearUserKeyEncryptedPin(userId: UserId): Promise<void>;
 
   /**
    * Gets the old MasterKey, encrypted by the PinKey (formerly called `pinProtected`).

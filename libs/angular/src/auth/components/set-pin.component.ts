@@ -49,7 +49,7 @@ export class SetPinComponent implements OnInit {
     const userKey = await this.cryptoService.getUserKey();
 
     const userKeyEncryptedPin = await this.pinService.createUserKeyEncryptedPin(pin, userKey);
-    await this.pinService.setUserKeyEncryptedPin(userKeyEncryptedPin.encryptedString, userId);
+    await this.pinService.setUserKeyEncryptedPin(userKeyEncryptedPin, userId);
 
     const pinKeyEncryptedUserKey = await this.pinService.createPinKeyEncryptedUserKey(
       pin,
