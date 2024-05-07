@@ -674,7 +674,10 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const canEditCiphersCheck =
       this._flexibleCollectionsV1FlagEnabled &&
-      !this.organization.canEditAllCiphers(this._flexibleCollectionsV1FlagEnabled);
+      !this.organization.canEditAllCiphers(
+        this._flexibleCollectionsV1FlagEnabled,
+        this.restrictProviderAccessEnabled,
+      );
 
     // This custom type check will show addAccess badge for
     // Custom users with canEdit access AND owner/admin manage access setting is OFF
