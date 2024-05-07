@@ -6,16 +6,34 @@ import { PinKey, UserKey } from "@bitwarden/common/types/key";
 import { PinLockType } from "../services";
 
 /**
- * Used for PIN-based unlocks on Browser and Desktop
+ * The PinService is used for PIN-based unlocks. Below is a very basic overview of the PIN flow:
+ *
+ * -- Setting the PIN via {@link SetPinComponent} --
+ *
+ *    When the user submits the setPinForm:
+
+ *    1. We encrypt the PIN with the UserKey and store it on disk as `userKeyEncryptedPin`.
+ *
+ *    2. We create a PinKey from the PIN, and then use that PinKey to encrypt the UserKey, resulting in
+ *       a `pinKeyEncryptedUserKey`, which can be stored in one of two ways depending on what the user selects
+ *       for the `requireMasterPasswordOnClientReset` checkbox.
+ *
+ *       If `requireMasterPasswordOnClientReset` is:
+ *       - TRUE, store in memory as `pinKeyEncryptedUserKeyEphemeral` (does NOT persist through a client reset)
+ *       - FALSE, store on disk as `pinKeyEncryptedUserKeyPersistent` (persists through a client reset)
+ *
+ * -- Unlocking with the PIN via {@link LockComponent} --
+ *
+ *    When the user enters their PIN, we decrypt their UserKey with the PIN and set that UserKey to state.
  */
 export abstract class PinServiceAbstraction {
   /**
-   * Gets the UserKey, encrypted by the PinKey.
+   * Gets the persistent (stored on disk) version of the UserKey, encrypted by the PinKey.
    */
   abstract getPinKeyEncryptedUserKeyPersistent: (userId: UserId) => Promise<EncString>;
 
   /**
-   * Clears the UserKey, encrypted by the PinKey.
+   * Clears the persistent (stored on disk) version of the UserKey, encrypted by the PinKey.
    */
   abstract clearPinKeyEncryptedUserKeyPersistent(userId: UserId): Promise<void>;
 
@@ -40,8 +58,8 @@ export abstract class PinServiceAbstraction {
 
   /**
    * Stores the UserKey, encrypted by the PinKey.
-   * @param storeEphemeralVersion If true, the method stores an ephemeral version via the private {@link setPinKeyEncryptedUserKeyEphemeral} method.
-   *                              If false, the method stores a persistent version via the private {@link setPinKeyEncryptedUserKey} method.
+   * @param storeEphemeralVersion If true, stores an ephemeral version via the private {@link setPinKeyEncryptedUserKeyEphemeral} method.
+   *                              If false, stores a persistent version via the private {@link setPinKeyEncryptedUserKeyPersistent} method.
    */
   abstract storePinKeyEncryptedUserKey: (
     pinKeyEncryptedUserKey: EncString,
@@ -68,8 +86,8 @@ export abstract class PinServiceAbstraction {
   abstract createUserKeyEncryptedPin: (pin: string, userKey: UserKey) => Promise<EncString>;
 
   /**
-   * Gets the old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
-   * which is now deprecated and used for migration purposes only.
+   * Gets the old MasterKey, encrypted by the PinKey (formerly called `pinProtected`).
+   * Deprecated and used for migration purposes only.
    */
   abstract getOldPinKeyEncryptedMasterKey: (userId: UserId) => Promise<EncryptedString>;
 
@@ -85,23 +103,21 @@ export abstract class PinServiceAbstraction {
 
   /**
    * Gets the user's PinLockType {@link PinLockType}.
-   * @param userId The user id to check. If not provided, the current user is used
    */
   abstract getPinLockType: (userId: UserId) => Promise<PinLockType>;
 
   /**
    * Declares whether or not the user has a PIN set (either persistent or ephemeral).
-   * @param userId The user id to check. If not provided, the current user is used
    */
   abstract isPinSet: (userId: UserId) => Promise<boolean>;
 
   /**
    * Decrypts the UserKey with the provided PIN.
    *
-   * @remarks If the user has an old pinKeyEncryptedMasterKey (formerly called `pinProtected`), the UserKey
-   * will be obtained via the private {@link decryptAndMigrateOldPinKeyEncryptedMasterKey} method.
-   * If the user does not have an old pinKeyEncryptedMasterKey, the UserKey will be obtained via the
-   * private {@link decryptUserKey} method.
+   * @remarks - If the user has an old pinKeyEncryptedMasterKey (formerly called `pinProtected`), the UserKey
+   *            will be obtained via the private {@link decryptAndMigrateOldPinKeyEncryptedMasterKey} method.
+   *          - If the user does not have an old pinKeyEncryptedMasterKey, the UserKey will be obtained via the
+   *            private {@link decryptUserKey} method.
    * @returns UserKey
    */
   abstract decryptUserKeyWithPin: (pin: string, userId: UserId) => Promise<UserKey | null>;

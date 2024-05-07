@@ -11,7 +11,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Directive()
 export class SetPinComponent implements OnInit {
-  showMasterPasswordOnClientRestart = true;
+  showMasterPasswordOnClientRestartOption = true;
 
   setPinForm = this.formBuilder.group({
     pin: ["", [Validators.required]],
@@ -31,7 +31,7 @@ export class SetPinComponent implements OnInit {
     const hasMasterPassword = await this.userVerificationService.hasMasterPassword();
 
     this.setPinForm.controls.requireMasterPasswordOnClientRestart.setValue(hasMasterPassword);
-    this.showMasterPasswordOnClientRestart = hasMasterPassword;
+    this.showMasterPasswordOnClientRestartOption = hasMasterPassword;
   }
 
   submit = async () => {

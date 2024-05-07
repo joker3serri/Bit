@@ -24,13 +24,15 @@ import { PinServiceAbstraction } from "../../abstractions/pin.service.abstractio
 /**
  * - DISABLED   : No PIN set.
  * - PERSISTENT : PIN is set and persists through client reset.
- * - EPHEMERAL  : PIN is set, but does not persist through client reset.
- *                After client reset the master password is required to unlock.
+ * - EPHEMERAL  : PIN is set, but does NOT persist through client reset. This means that
+ *                after client reset the master password is required to unlock.
  */
 export type PinLockType = "DISABLED" | "PERSISTENT" | "EPHEMERAL";
 
 /**
- * Persists through a client reset. Used when require lock with MP on client restart is disabled.
+ * The persistent (stored on disk) version of the UserKey, encrypted by the PinKey.
+ *
+ * @remarks Persists through a client reset. Used when `requireMasterPasswordOnClientRestart` is disabled.
  * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
  */
 export const PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT = new UserKeyDefinition<EncryptedString>(
@@ -43,7 +45,9 @@ export const PIN_KEY_ENCRYPTED_USER_KEY_PERSISTENT = new UserKeyDefinition<Encry
 );
 
 /**
- * Does NOT persist through a client reset. Used when require lock with MP on client restart is enabled.
+ * The ephemeral (stored in memory) version of the UserKey, encrypted by the PinKey.
+ *
+ * @remarks Does NOT persist through a client reset. Used when `requireMasterPasswordOnClientRestart` is enabled.
  * @see SetPinComponent.setPinForm.requireMasterPasswordOnClientRestart
  */
 export const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<EncryptedString>(
@@ -56,7 +60,7 @@ export const PIN_KEY_ENCRYPTED_USER_KEY_EPHEMERAL = new UserKeyDefinition<Encryp
 );
 
 /**
- * The PIN, encrypted by the UserKey
+ * The PIN, encrypted by the UserKey.
  */
 export const USER_KEY_ENCRYPTED_PIN = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
@@ -68,10 +72,8 @@ export const USER_KEY_ENCRYPTED_PIN = new UserKeyDefinition<EncryptedString>(
 );
 
 /**
- * The old MasterKey, encrypted by the PinKey (formerly called `pinProtected`),
- * which is now deprecated and used for migration purposes only.
- *
- * We now use the `pinKeyEncryptedUserKey`.
+ * The old MasterKey, encrypted by the PinKey (formerly called `pinProtected`).
+ * Deprecated and used for migration purposes only.
  */
 export const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedString>(
   PIN_DISK,
@@ -105,7 +107,7 @@ export class PinService implements PinServiceAbstraction {
   }
 
   /**
-   * Sets the UserKey, encrypted by the PinKey.
+   * Sets the persistent (stored on disk) version of the UserKey, encrypted by the PinKey.
    */
   private async setPinKeyEncryptedUserKeyPersistent(
     pinKeyEncryptedUserKey: EncString,
@@ -224,6 +226,7 @@ export class PinService implements PinServiceAbstraction {
     if (!userKey) {
       throw new Error("No UserKey provided. Cannot create userKeyEncryptedPin.");
     }
+
     return await this.encryptService.encrypt(pin, userKey);
   }
 
@@ -249,8 +252,10 @@ export class PinService implements PinServiceAbstraction {
   async getPinLockType(userId: UserId): Promise<PinLockType> {
     this.validateUserId(userId, "Cannot get PinLockType.");
 
-    // we can't check the protected pin for both because old accounts only
-    // used it for MP on Restart
+    /**
+     * We can't check the `userKeyEncryptedPin` (formerly called `protectedPin`) for both because old
+     * accounts only used it for MP on Restart
+     */
     const aUserKeyEncryptedPinIsSet = !!(await this.getUserKeyEncryptedPin(userId));
     const aPinKeyEncryptedUserKeyPersistentIsSet =
       !!(await this.getPinKeyEncryptedUserKeyPersistent(userId));
@@ -324,7 +329,7 @@ export class PinService implements PinServiceAbstraction {
   }
 
   /**
-   * Decrypts the UserKey with the provided PIN
+   * Decrypts the UserKey with the provided PIN.
    */
   private async decryptUserKey(
     userId: UserId,
@@ -388,8 +393,7 @@ export class PinService implements PinServiceAbstraction {
 
     await this.clearOldPinKeyEncryptedMasterKey(userId);
 
-    // This also clears the old Biometrics key since the new Biometrics key will
-    // be created when the user key is set.
+    // This also clears the old Biometrics key since the new Biometrics key will be created when the user key is set.
     await this.stateService.setCryptoMasterKeyBiometric(null, { userId: userId });
 
     return userKey;
@@ -422,10 +426,11 @@ export class PinService implements PinServiceAbstraction {
   }
 
   /**
-   * Gets the user's `pinKeyEncryptedUserKey` and `oldPinKeyEncryptedMasterKey` (if one exists) based
-   * on the user's PinLockType.
-   * @remarks The `oldPinKeyEncryptedMasterKey` (also known as `pinProtected`) is only used for
-   *          migrating old PinKeys and will be null for all migrated accounts
+   * Gets the user's `pinKeyEncryptedUserKey` (persistent or ephemeral) and `oldPinKeyEncryptedMasterKey`
+   * (if one exists) based on the user's PinLockType.
+   *
+   * @remarks The `oldPinKeyEncryptedMasterKey` (formerly `pinProtected`) is only used for migration and
+   *          will be null for all migrated accounts.
    * @throws If PinLockType is 'DISABLED' or if userId is not provided
    */
   private async getPinKeyEncryptedKeys(
