@@ -47,7 +47,6 @@ describe("PinService", () => {
   const mockUserEmail = "user@example.com";
   const mockPin = "1234";
   const mockUserKeyEncryptedPin = new EncString("userKeyEncryptedPin");
-  // const mockUserKeyEncryptedPinEncString = new EncString(mockUserKeyEncryptedPin);
 
   // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
   const pinKeyEncryptedUserKeyEphemeral = new EncString(
