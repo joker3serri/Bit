@@ -4,6 +4,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -87,6 +88,7 @@ export const OLD_PIN_KEY_ENCRYPTED_MASTER_KEY = new UserKeyDefinition<EncryptedS
 export class PinService implements PinServiceAbstraction {
   constructor(
     private accountService: AccountService,
+    private cryptoFunctionService: CryptoFunctionService,
     private encryptService: EncryptService,
     private kdfConfigService: KdfConfigService,
     private keyGenerationService: KeyGenerationService,
@@ -484,7 +486,8 @@ export class PinService implements PinServiceAbstraction {
     const userKeyEncryptedPin = await this.getUserKeyEncryptedPin(userId);
     const decryptedPin = await this.encryptService.decryptToUtf8(userKeyEncryptedPin, userKey);
 
-    return decryptedPin === pin;
+    const isPinValid = this.cryptoFunctionService.compareFast(decryptedPin, pin);
+    return isPinValid;
   }
 
   /**

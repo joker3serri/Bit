@@ -993,6 +993,7 @@ const safeProviders: SafeProvider[] = [
     useClass: PinService,
     deps: [
       AccountServiceAbstraction,
+      CryptoFunctionServiceAbstraction,
       EncryptService,
       KdfConfigServiceAbstraction,
       KeyGenerationServiceAbstraction,

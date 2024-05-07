@@ -371,6 +371,7 @@ export class Main {
 
     this.pinService = new PinService(
       this.accountService,
+      this.cryptoFunctionService,
       this.encryptService,
       this.kdfConfigService,
       this.keyGenerationService,

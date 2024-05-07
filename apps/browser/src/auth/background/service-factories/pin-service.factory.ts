@@ -1,6 +1,10 @@
 import { PinServiceAbstraction, PinService } from "@bitwarden/auth/common";
 
 import {
+  CryptoFunctionServiceInitOptions,
+  cryptoFunctionServiceFactory,
+} from "../../../platform/background/service-factories/crypto-function-service.factory";
+import {
   EncryptServiceInitOptions,
   encryptServiceFactory,
 } from "../../../platform/background/service-factories/encrypt-service.factory";
@@ -37,6 +41,7 @@ type PinServiceFactoryOptions = FactoryOptions;
 
 export type PinServiceInitOptions = PinServiceFactoryOptions &
   AccountServiceInitOptions &
+  CryptoFunctionServiceInitOptions &
   EncryptServiceInitOptions &
   KdfConfigServiceInitOptions &
   KeyGenerationServiceInitOptions &
@@ -56,6 +61,7 @@ export function pinServiceFactory(
     async () =>
       new PinService(
         await accountServiceFactory(cache, opts),
+        await cryptoFunctionServiceFactory(cache, opts),
         await encryptServiceFactory(cache, opts),
         await kdfConfigServiceFactory(cache, opts),
         await keyGenerationServiceFactory(cache, opts),
