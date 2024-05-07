@@ -5,13 +5,10 @@
   <div bitDialogTitle>Bitwarden</div>
   <div bitDialogContent>
     <p>&copy; Bitwarden Inc. 2015-{{ year }}</p>
-    <p>
-      {{ "version" | i18n }}: <span class="user-select-text">{{ version$ | async }}</span>
-    </p>
+    <p class="user-select">{{ "version" | i18n }}: {{ version$ | async }}</p>
     <ng-container *ngIf="data$ | async as data">
       <p *ngIf="data.isCloud">
-        {{ "serverVersion" | i18n }}:
-        <span class="user-select-text">{{ data.serverConfig?.version }}</span>
+        {{ "serverVersion" | i18n }}: {{ data.serverConfig?.version }}
         <span *ngIf="!data.serverConfig.isValid()">
           ({{ "lastSeenOn" | i18n: (data.serverConfig.utcDate | date: "mediumDate") }})
         </span>
@@ -19,11 +16,9 @@
 
       <ng-container *ngIf="!data.isCloud">
         <ng-container *ngIf="data.serverConfig.server">
-          <p>
+          <p class="user-select">
             {{ "serverVersion" | i18n }} <small>({{ "thirdParty" | i18n }})</small>:
-            <span class="user-select-text">
-              {{ data.serverConfig?.version }}
-            </span>
+            {{ data.serverConfig?.version }}
             <span *ngIf="!data.serverConfig.isValid()">
               ({{ "lastSeenOn" | i18n: (data.serverConfig.utcDate | date: "mediumDate") }})
             </span>
@@ -33,9 +28,9 @@
           </div>
         </ng-container>
 
-        <p *ngIf="!data.serverConfig.server">
+        <p class="user-select" *ngIf="!data.serverConfig.server">
           {{ "serverVersion" | i18n }} <small>({{ "selfHostedServer" | i18n }})</small>:
-          <span class="user-select-text">{{ data.serverConfig?.version }}</span>
+          {{ data.serverConfig?.version }}
           <span *ngIf="!data.serverConfig.isValid()">
             ({{ "lastSeenOn" | i18n: (data.serverConfig.utcDate | date: "mediumDate") }})
           </span>
