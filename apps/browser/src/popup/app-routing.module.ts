@@ -2,9 +2,9 @@ import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, RouteReuseStrategy, RouterModule, Routes } from "@angular/router";
 
 import {
-  redirectGuard,
   AuthGuard,
   lockGuard,
+  redirectGuard,
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
@@ -27,6 +27,7 @@ import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.comp
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
+import { PremiumComponent } from "../billing/popup/settings/premium.component";
 import BrowserPopupUtils from "../platform/popup/browser-popup-utils";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
@@ -51,11 +52,12 @@ import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { SyncComponent } from "../vault/popup/settings/sync.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
+import { extensionRefreshRedirect, extensionRefreshSwap } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
-import { PremiumComponent } from "./settings/premium.component";
+import { TabsV2Component } from "./tabs-v2.component";
 import { TabsComponent } from "./tabs.component";
 
 const unauthRouteOverrides = {
@@ -336,9 +338,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "help-and-feedback" },
   },
-  {
+  ...extensionRefreshSwap(TabsComponent, TabsV2Component, {
     path: "tabs",
-    component: TabsComponent,
     data: { state: "tabs" },
     children: [
       {
@@ -350,6 +351,7 @@ const routes: Routes = [
         path: "current",
         component: CurrentTabComponent,
         canActivate: [AuthGuard],
+        canMatch: [extensionRefreshRedirect("/tabs/vault")],
         data: { state: "tabs_current" },
         runGuardsAndResolvers: "always",
       },
@@ -378,7 +380,7 @@ const routes: Routes = [
         data: { state: "tabs_send" },
       },
     ],
-  },
+  }),
   {
     path: "account-switcher",
     component: AccountSwitcherComponent,

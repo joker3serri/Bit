@@ -20,6 +20,7 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -69,6 +70,7 @@ export class AccountSecurityComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
   constructor(
+    private accountService: AccountService,
     private policyService: PolicyService,
     private formBuilder: FormBuilder,
     private platformUtilsService: PlatformUtilsService,
@@ -454,8 +456,9 @@ export class AccountSecurityComponent implements OnInit {
       type: "info",
     });
 
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     if (confirmed) {
-      this.messagingService.send("logout");
+      this.messagingService.send("logout", { userId: userId });
     }
   }
 
