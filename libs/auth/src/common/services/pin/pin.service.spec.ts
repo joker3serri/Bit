@@ -43,9 +43,9 @@ describe("PinService", () => {
   const stateService = mock<StateService>();
 
   const mockUserId = Utils.newGuid() as UserId;
-  const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey; // TODO-rr-bw: verify 32 is correct
-  const mockMasterKey = new SymmetricCryptoKey(randomBytes(32)) as MasterKey; // TODO-rr-bw: verify 32 is correct
-  const mockPinKey = new SymmetricCryptoKey(randomBytes(32)) as PinKey; // TODO-rr-bw: verify 32 is correct
+  const mockUserKey = new SymmetricCryptoKey(randomBytes(64)) as UserKey;
+  const mockMasterKey = new SymmetricCryptoKey(randomBytes(32)) as MasterKey;
+  const mockPinKey = new SymmetricCryptoKey(randomBytes(32)) as PinKey;
   const mockUserEmail = "user@example.com";
   const mockPin = "1234";
   const mockUserKeyEncryptedPin = new EncString("userKeyEncryptedPin");
@@ -65,7 +65,7 @@ describe("PinService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    accountService = mockAccountServiceWith(mockUserId);
+    accountService = mockAccountServiceWith(mockUserId, { email: mockUserEmail });
     masterPasswordService = new FakeMasterPasswordService();
     stateProvider = new FakeStateProvider(accountService);
 
@@ -426,7 +426,6 @@ describe("PinService", () => {
       mockPinEncryptedKeyDataByPinLockType(pinLockType, migrationStatus);
 
       kdfConfigService.getKdfConfig.mockResolvedValue(DEFAULT_KDF_CONFIG);
-      stateService.getEmail.mockResolvedValue(mockUserEmail); // TODO-rr-bw: Fix this (now using accountService)
 
       if (pinLockType === "PERSISTENT" && migrationStatus === "PRE") {
         await mockDecryptAndMigrateOldPinKeyEncryptedMasterKeyFn();
@@ -436,14 +435,14 @@ describe("PinService", () => {
 
       sut.getUserKeyEncryptedPin = jest.fn().mockResolvedValue(mockUserKeyEncryptedPin);
       encryptService.decryptToUtf8.mockResolvedValue(mockPin);
-      cryptoFunctionService.compareFast.calledWith(mockPin, "1234").mockResolvedValue(true); // TODO-rr-bw: verify
+      cryptoFunctionService.compareFast.calledWith(mockPin, "1234").mockResolvedValue(true);
     }
 
     async function mockDecryptAndMigrateOldPinKeyEncryptedMasterKeyFn() {
       sut.makePinKey = jest.fn().mockResolvedValue(mockPinKey);
       encryptService.decryptToBytes.mockResolvedValue(mockMasterKey.key);
 
-      stateService.getEncryptedCryptoSymmetricKey.mockResolvedValue(mockUserKey.keyB64); // TODO-rr-bw: verify .keyB64 is correct
+      stateService.getEncryptedCryptoSymmetricKey.mockResolvedValue(mockUserKey.keyB64);
       masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(mockUserKey);
 
       sut.createPinKeyEncryptedUserKey = jest
