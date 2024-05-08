@@ -199,6 +199,10 @@ export const routerTransition = trigger("routerTransition", [
   transition("tabs => options", inSlideLeft),
   transition("options => tabs", outSlideRight),
 
+  // Appearance settings
+  transition("tabs => appearance", inSlideLeft),
+  transition("appearance => tabs", outSlideRight),
+
   transition("tabs => premium", inSlideLeft),
   transition("premium => tabs", outSlideRight),
 

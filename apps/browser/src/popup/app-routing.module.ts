@@ -48,7 +48,9 @@ import { PasswordHistoryComponent } from "../vault/popup/components/vault/passwo
 import { ShareComponent } from "../vault/popup/components/vault/share.component";
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
+import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
+import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { SyncComponent } from "../vault/popup/settings/sync.component";
@@ -310,6 +312,12 @@ const routes: Routes = [
     data: { state: "options" },
   },
   {
+    path: "appearance",
+    component: AppearanceComponent,
+    canActivate: [AuthGuard],
+    data: { state: "appearance" },
+  },
+  {
     path: "clone-cipher",
     component: AddEditComponent,
     canActivate: [AuthGuard],
@@ -362,12 +370,11 @@ const routes: Routes = [
         data: { state: "tabs_current" },
         runGuardsAndResolvers: "always",
       },
-      {
+      ...extensionRefreshSwap(VaultFilterComponent, VaultV2Component, {
         path: "vault",
-        component: VaultFilterComponent,
         canActivate: [AuthGuard],
         data: { state: "tabs_vault" },
-      },
+      }),
       {
         path: "generator",
         component: GeneratorComponent,
