@@ -46,16 +46,18 @@ import { PasswordHistoryComponent } from "../vault/popup/components/vault/passwo
 import { ShareComponent } from "../vault/popup/components/vault/share.component";
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
+import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
+import { FoldersComponent } from "../vault/popup/settings/folders.component";
+import { SyncComponent } from "../vault/popup/settings/sync.component";
+import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
 import { extensionRefreshRedirect, extensionRefreshSwap } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
-import { FoldersComponent } from "./settings/folders.component";
 import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
-import { SyncComponent } from "./settings/sync.component";
 import { TabsV2Component } from "./tabs-v2.component";
 import { TabsComponent } from "./tabs.component";
 
@@ -254,6 +256,12 @@ const routes: Routes = [
     data: { state: "account-security" },
   },
   {
+    path: "vault-settings",
+    component: VaultSettingsComponent,
+    canActivate: [AuthGuard],
+    data: { state: "vault-settings" },
+  },
+  {
     path: "folders",
     component: FoldersComponent,
     canActivate: [AuthGuard],
@@ -348,12 +356,11 @@ const routes: Routes = [
         data: { state: "tabs_current" },
         runGuardsAndResolvers: "always",
       },
-      {
+      ...extensionRefreshSwap(VaultFilterComponent, VaultV2Component, {
         path: "vault",
-        component: VaultFilterComponent,
         canActivate: [AuthGuard],
         data: { state: "tabs_vault" },
-      },
+      }),
       {
         path: "generator",
         component: GeneratorComponent,
