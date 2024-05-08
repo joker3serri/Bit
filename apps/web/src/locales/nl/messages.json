@@ -1809,12 +1809,16 @@
   "unsecuredWebsitesFound": {
     "message": "Onveilige websites gevonden"
   },
-  "unsecuredWebsitesFoundDesc": {
-    "message": "We hebben $COUNT$ items met onbeveiligde URIs in je kluis gevonden. Als de website het ondersteunt, moet je de URI naar https:// wijzigen.",
+  "unsecuredWebsitesFoundReportDesc": {
+    "message": "We vonden $COUNT$ items met onbeveiligde URIs in $VAULT$. Als de website het ondersteunt, kun je de URI beter aanpassen naar https://.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1830,12 +1834,16 @@
   "inactive2faFound": {
     "message": "Logins zonder 2FA gevonden"
   },
-  "inactive2faFoundDesc": {
-    "message": "We hebben $COUNT$ website(s) in je kluis gevonden waar je (volgens 2fa.directory) nog tweestapsaanmelding kunt instellen. Om deze accounts beter te beschermen, zou je tweestapsaanmelding moeten inschakelen.",
+  "inactive2faFoundReportDesc": {
+    "message": "We vonden $COUNT$ website(s) in $VAULT$ waar je tweestapsaanmelding nog niet gebruikt (terwijl dat volgens 2fa.directory wel kan). Om deze accounts beter te beschermen, kun je tweestapsaanmelding instellen.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1854,12 +1862,16 @@
   "exposedPasswordsFound": {
     "message": "Gelekte wachtwoorden gevonden"
   },
-  "exposedPasswordsFoundDesc": {
-    "message": "We hebben in je kluis $COUNT$ wachtwoorden gevonden die zijn gelekt. Je zou voor deze accounts een nieuw wachtwoord moeten instellen.",
+  "exposedPasswordsFoundReportDesc": {
+    "message": "We vonden $COUNT$ items in $VAULT$ met wachtwoorden die voorkomen in bekende datalekken. Je kunt die wachtwoorden het beste vervangen door een nieuw wachtwoord.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1887,12 +1899,16 @@
   "weakPasswordsFound": {
     "message": "Zwakke wachtwoorden gevonden"
   },
-  "weakPasswordsFoundDesc": {
-    "message": "We hebben $COUNT$ zwakke wachtwoorden in je kluis gevonden. Je zou ze moeten veranderen in sterke wachtwoorden.",
+  "weakPasswordsFoundReportDesc": {
+    "message": "We vonden $COUNT$ items in $VAULT$ met zwakke wachtwoorden. Je kunt die wachtwoorden het beste vervangen door sterke wachtwoorden.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1908,12 +1924,16 @@
   "reusedPasswordsFound": {
     "message": "Dubbele wachtwoorden gevonden"
   },
-  "reusedPasswordsFoundDesc": {
-    "message": "We hebben $COUNT$ dubbele wachtwoorden in je kluis gevonden. Je zou deze moeten veranderen in unieke wachtwoorden.",
+  "reusedPasswordsFoundReportDesc": {
+    "message": "We vonden $COUNT$ wachtwoorden die vaker voorkomen in $VAULT$. Je kunt die wachtwoorden het beste vervangen door een uniek wachtwoord.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -6460,6 +6480,9 @@
   "editGroupCollectionsDesc": {
     "message": "Geef toegang tot collecties door ze aan deze groep toe te voegen."
   },
+  "editGroupCollectionsRestrictionsDesc": {
+    "message": "You can only assign collections you manage."
+  },
   "accessAllCollectionsDesc": {
     "message": "Geef toegang tot alle huidige en toekomstige collecties."
   },
@@ -7606,6 +7629,9 @@
   "providerPortal": {
     "message": "Providerportaal"
   },
+  "success": {
+    "message": "Succes"
+  },
   "viewCollection": {
     "message": "Collectie weergeven"
   },
@@ -7900,10 +7926,154 @@
   "machineAccountAccessUpdated": {
     "message": "Toegang tot machine-account bijgewerkt"
   },
-  "unassignedItemsBanner": {
-    "message": "Notice: Unassigned organization items are no longer visible in your All Vaults view across devices and are now only accessible via the Admin Console. Assign these items to a collection from the Admin Console to make them visible."
+  "restrictedGroupAccessDesc": {
+    "message": "Je kunt jezelf niet aan een groep toevoegen."
   },
   "unassignedItemsBannerSelfHost": {
     "message": "Kennisgeving: Vanaf 2 mei 2024 zijn niet-toegewezen organisatie-items op geen enkel apparaat meer zichtbaar in de weergave van alle kluisjes en alleen toegankelijk via de Admin Console. Je kunt deze items in het Admin Console aan een collectie toewijzen om ze zichtbaar te maken."
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "Let op: Niet-toegewezen organisatie-items zijn niet langer zichtbaar in de weergave van alle kluissen op verschillende apparaten en zijn nu alleen toegankelijk via de Admin Console."
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "Let op: Vanaf 16 mei 2024 zijn niet-toegewezen organisatie-items niet langer zichtbaar in de weergave van alle kluissen op verschillende apparaten en alleen toegankelijk via de Admin Console."
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "Deze items toewijzen aan een collectie van de",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": "om ze zichtbaar te maken.",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "deleteProvider": {
+    "message": "Provider verwijderen"
+  },
+  "deleteProviderConfirmation": {
+    "message": "Het verwijderen van een provider is definitief en onomkeerbaar. Voer je hoofdwachtwoord in om het verwijderen van de provider en alle bijbehorende gegevens te bevestigen."
+  },
+  "deleteProviderName": {
+    "message": "Kan $ID$ niet verwijderen",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deleteProviderWarningDescription": {
+    "message": "Je moet alle clients ontkoppelen voordat je $ID$ kunt verwijderen.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "providerDeleted": {
+    "message": "Provider verwijderd"
+  },
+  "providerDeletedDesc": {
+    "message": "De organisatie en alle bijhorende gegevens zijn verwijderd."
+  },
+  "deleteProviderRecoverConfirmDesc": {
+    "message": "Je hebt het verwijderen van deze provider aangevraagd. Gebruik deonderstaande knop om te bevestigen."
+  },
+  "deleteProviderWarning": {
+    "message": "Het verwijderen van een provider is definitief. Je kunt het niet ongedaan maken."
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Fout bij toewijzen doelverzameling."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Fout bij toewijzen doelmap."
+  },
+  "integrationsAndSdks": {
+    "message": "Integraties & SDKs",
+    "description": "The title for the section that deals with integrations and SDKs."
+  },
+  "integrations": {
+    "message": "Integraties"
+  },
+  "integrationsDesc": {
+    "message": "Automatisch secrets synchroniseren van Bitwarden Secrets Manager met een dienst van derden."
+  },
+  "sdks": {
+    "message": "SDKs"
+  },
+  "sdksDesc": {
+    "message": "Gebruik Bitwarden Secrets Manager SDK in de volgende programmeertalen om je eigen applicaties te bouwen."
+  },
+  "setUpGithubActions": {
+    "message": "GitHub Actions instellen"
+  },
+  "setUpGitlabCICD": {
+    "message": "GitLab CI/CD instellen"
+  },
+  "setUpAnsible": {
+    "message": "Ansibel instellen"
+  },
+  "cSharpSDKRepo": {
+    "message": "C#-repository bekijken"
+  },
+  "cPlusPlusSDKRepo": {
+    "message": "C++-repository bekijken"
+  },
+  "jsWebAssemblySDKRepo": {
+    "message": "JS WebAssembly-repository bekijken"
+  },
+  "javaSDKRepo": {
+    "message": "Java-repository bekijken"
+  },
+  "pythonSDKRepo": {
+    "message": "Python-repository bekijken"
+  },
+  "phpSDKRepo": {
+    "message": "Php-repository bekijken"
+  },
+  "rubySDKRepo": {
+    "message": "Ruby-repository bekijken"
+  },
+  "goSDKRepo": {
+    "message": "Go-repository bekijken"
+  },
+  "createNewClientToManageAsProvider": {
+    "message": "Create a new client organization to manage as a Provider. Additional seats will be reflected in the next billing cycle."
+  },
+  "selectAPlan": {
+    "message": "Select a plan"
+  },
+  "thirtyFivePercentDiscount": {
+    "message": "35% Discount"
+  },
+  "monthPerMember": {
+    "message": "month per member"
+  },
+  "seats": {
+    "message": "Seats"
+  },
+  "addOrganization": {
+    "message": "Add organization"
+  },
+  "createdNewClient": {
+    "message": "Successfully created new client"
+  },
+  "noAccess": {
+    "message": "Geen toegang"
+  },
+  "collectionAdminConsoleManaged": {
+    "message": "Deze collectie is alleen toegankelijk vanaf de admin console"
+  },
+  "organizationOptionsMenu": {
+    "message": "Toggle Organization Menu"
+  },
+  "vaultItemSelect": {
+    "message": "Select vault item"
+  },
+  "collectionItemSelect": {
+    "message": "Select collection item"
+  },
+  "manageBillingFromProviderPortalMessage": {
+    "message": "Manage billing from the Provider Portal"
   }
 }

@@ -579,7 +579,7 @@
     "message": "Acceso"
   },
   "accessLevel": {
-    "message": "Access level"
+    "message": "Nivel de acceso"
   },
   "loggedOut": {
     "message": "Sesión terminada"
@@ -1359,11 +1359,11 @@
     "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. (Optional second half: You may need to wait until your administrator confirms your organization membership.)"
   },
   "onboardingImportDataDetailsPartTwoNoOrgs": {
-    "message": " instead.",
+    "message": " en su lugar.",
     "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead."
   },
   "onboardingImportDataDetailsPartTwoWithOrgs": {
-    "message": " instead. You may need to wait until your administrator confirms your organization membership.",
+    "message": " en su lugar. Es posible que tenga que esperar hasta que su administrador confirme la pertenencia a su organización.",
     "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item instead. You may need to wait until your administrator confirms your organization membership."
   },
   "importError": {
@@ -1809,12 +1809,16 @@
   "unsecuredWebsitesFound": {
     "message": "Sitios web no seguros encontrados"
   },
-  "unsecuredWebsitesFoundDesc": {
-    "message": "Hemos encontrado $COUNT$ elemento(s) en su caja fuerte con URIs no seguras. Si el sitio web lo permite debe cambiar su esquema URI a https://.",
+  "unsecuredWebsitesFoundReportDesc": {
+    "message": "Hemos encontrado $COUNT$ elementos en su $VAULT$ con URIs no seguros. Deberías cambiar su esquema URI a https:// si el sitio web lo permite.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1830,12 +1834,16 @@
   "inactive2faFound": {
     "message": "Inicios de sesión sin 2FA encontrados"
   },
-  "inactive2faFoundDesc": {
-    "message": "Hemos encontrado $COUNT$ sitios web en tu bóveda que pueden no estar configurados con inicio de sesión en dos pasos (de acuerdo a 2fa. irectory). Para proteger aún más estas cuentas, debe configurar el inicio de sesión en dos pasos.",
+  "inactive2faFoundReportDesc": {
+    "message": "Hemos encontrado $COUNT$ sitio(s) web en su $VAULT$ que pueden no estar configurados con inicio de sesión en dos pasos (según 2fa.directory). Para proteger aún más estas cuentas, debe configurar el inicio de sesión en dos pasos.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1854,12 +1862,16 @@
   "exposedPasswordsFound": {
     "message": "Contraseñas comprometidas encontradas"
   },
-  "exposedPasswordsFoundDesc": {
-    "message": "Hemos encontrado $COUNT$ elementos en su caja fuerte que tienen contraseñas que fueron comprometidas en filtraciones de datos conocidas. Debe cambiarlos para utilizar una contraseña nueva.",
+  "exposedPasswordsFoundReportDesc": {
+    "message": "Hemos encontrado $COUNT$ elementos en su $VAULT$ que tienen contraseñas que fueron expuestas en violaciones de datos conocidas. Deberías cambiarlas para utilizar una contraseña nueva.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1887,12 +1899,16 @@
   "weakPasswordsFound": {
     "message": "Contraseñas débiles encontradas"
   },
-  "weakPasswordsFoundDesc": {
-    "message": "Hemos encontrado $COUNT$ elemento(s) en su caja fuerte con contraseñas que no son fuertes. Se deben actualizar para usar contraseñas más fuertes.",
+  "weakPasswordsFoundReportDesc": {
+    "message": "Hemos encontrado $COUNT$ elementos en su $VAULT$ con contraseñas que no son seguras. Debe actualizarlos para utilizar contraseñas más seguras.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1908,12 +1924,16 @@
   "reusedPasswordsFound": {
     "message": "Contraseñas reutilizadas encontradas"
   },
-  "reusedPasswordsFoundDesc": {
-    "message": "Hemos encontrado $COUNT$ contraseña(s) que están siendo reutilizadas en su caja fuerte. Debe cambiarlas a un valor único.",
+  "reusedPasswordsFoundReportDesc": {
+    "message": "Hemos encontrado $COUNT$ contraseñas que están siendo reutilizadas en tu $VAULT$. Deberías cambiarlas por un valor único.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -4951,13 +4971,13 @@
     "message": "Cree una nueva organización de clientes que estará asociada a usted como proveedor. Usted poddrá acceder y gestionar esta organización."
   },
   "newClient": {
-    "message": "New client"
+    "message": "Nuevo cliente"
   },
   "addExistingOrganization": {
     "message": "Añadir una organización existente"
   },
   "addNewOrganization": {
-    "message": "Add new organization"
+    "message": "Añadir nueva organización"
   },
   "myProvider": {
     "message": "Mi proveedor"
@@ -5213,7 +5233,7 @@
     "message": "Set a unique SP entity ID"
   },
   "spUniqueEntityIdDesc": {
-    "message": "Generate an identifier that is unique to your organization"
+    "message": "Genera un identificador único para su organización"
   },
   "idpEntityId": {
     "message": "ID de la entidad"
@@ -6460,6 +6480,9 @@
   "editGroupCollectionsDesc": {
     "message": "Conceder acceso a las colecciones añadiéndolas a este grupo."
   },
+  "editGroupCollectionsRestrictionsDesc": {
+    "message": "You can only assign collections you manage."
+  },
   "accessAllCollectionsDesc": {
     "message": "Otorgar acceso a todas las colecciones actuales y futuras."
   },
@@ -7606,6 +7629,9 @@
   "providerPortal": {
     "message": "Provider Portal"
   },
+  "success": {
+    "message": "Success"
+  },
   "viewCollection": {
     "message": "View collection"
   },
@@ -7900,10 +7926,154 @@
   "machineAccountAccessUpdated": {
     "message": "Machine account access updated"
   },
-  "unassignedItemsBanner": {
-    "message": "Notice: Unassigned organization items are no longer visible in your All Vaults view across devices and are now only accessible via the Admin Console. Assign these items to a collection from the Admin Console to make them visible."
+  "restrictedGroupAccessDesc": {
+    "message": "You cannot add yourself to a group."
   },
   "unassignedItemsBannerSelfHost": {
     "message": "Notice: On May 2, 2024, unassigned organization items will no longer be visible in your All Vaults view across devices and will only be accessible via the Admin Console. Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "Notice: Unassigned organization items are no longer visible in your All Vaults view across devices and are now only accessible via the Admin Console."
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "Notice: On May 16, 2024, unassigned organization items will no longer be visible in your All Vaults view across devices and will only be accessible via the Admin Console."
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "Assign these items to a collection from the",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": "to make them visible.",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "deleteProvider": {
+    "message": "Delete provider"
+  },
+  "deleteProviderConfirmation": {
+    "message": "Deleting a provider is permanent and irreversible. Enter your master password to confirm the deletion of the provider and all associated data."
+  },
+  "deleteProviderName": {
+    "message": "Cannot delete $ID$",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deleteProviderWarningDescription": {
+    "message": "You must unlink all clients before you can delete $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "providerDeleted": {
+    "message": "Provider deleted"
+  },
+  "providerDeletedDesc": {
+    "message": "The Provider and all associated data has been deleted."
+  },
+  "deleteProviderRecoverConfirmDesc": {
+    "message": "You have requested to delete this Provider. Use the button below to confirm."
+  },
+  "deleteProviderWarning": {
+    "message": "Deleting your provider is permanent. It cannot be undone."
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Error assigning target collection."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Error assigning target folder."
+  },
+  "integrationsAndSdks": {
+    "message": "Integrations & SDKs",
+    "description": "The title for the section that deals with integrations and SDKs."
+  },
+  "integrations": {
+    "message": "Integrations"
+  },
+  "integrationsDesc": {
+    "message": "Automatically sync secrets from Bitwarden Secrets Manager to a third-party service."
+  },
+  "sdks": {
+    "message": "SDKs"
+  },
+  "sdksDesc": {
+    "message": "Use Bitwarden Secrets Manager SDK in the following programming languages to build your own applications."
+  },
+  "setUpGithubActions": {
+    "message": "Set up Github Actions"
+  },
+  "setUpGitlabCICD": {
+    "message": "Set up GitLab CI/CD"
+  },
+  "setUpAnsible": {
+    "message": "Set up Ansible"
+  },
+  "cSharpSDKRepo": {
+    "message": "View C# repository"
+  },
+  "cPlusPlusSDKRepo": {
+    "message": "View C++ repository"
+  },
+  "jsWebAssemblySDKRepo": {
+    "message": "View JS WebAssembly repository"
+  },
+  "javaSDKRepo": {
+    "message": "View Java repository"
+  },
+  "pythonSDKRepo": {
+    "message": "View Python repository"
+  },
+  "phpSDKRepo": {
+    "message": "View php repository"
+  },
+  "rubySDKRepo": {
+    "message": "View Ruby repository"
+  },
+  "goSDKRepo": {
+    "message": "View Go repository"
+  },
+  "createNewClientToManageAsProvider": {
+    "message": "Create a new client organization to manage as a Provider. Additional seats will be reflected in the next billing cycle."
+  },
+  "selectAPlan": {
+    "message": "Select a plan"
+  },
+  "thirtyFivePercentDiscount": {
+    "message": "35% Discount"
+  },
+  "monthPerMember": {
+    "message": "month per member"
+  },
+  "seats": {
+    "message": "Seats"
+  },
+  "addOrganization": {
+    "message": "Add organization"
+  },
+  "createdNewClient": {
+    "message": "Successfully created new client"
+  },
+  "noAccess": {
+    "message": "No access"
+  },
+  "collectionAdminConsoleManaged": {
+    "message": "This collection is only accessible from the admin console"
+  },
+  "organizationOptionsMenu": {
+    "message": "Toggle Organization Menu"
+  },
+  "vaultItemSelect": {
+    "message": "Select vault item"
+  },
+  "collectionItemSelect": {
+    "message": "Select collection item"
+  },
+  "manageBillingFromProviderPortalMessage": {
+    "message": "Manage billing from the Provider Portal"
   }
 }

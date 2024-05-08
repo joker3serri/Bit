@@ -1809,12 +1809,16 @@
   "unsecuredWebsitesFound": {
     "message": "セキュリティ保護されていないウェブサイトが見つかりました"
   },
-  "unsecuredWebsitesFoundDesc": {
-    "message": "セキュアでないURIが$COUNT$個のアイテムで見つかりました。ウェブサイトが対応しているならば、URIをhttps://形式に変更すべきです。",
+  "unsecuredWebsitesFoundReportDesc": {
+    "message": "セキュアでない URI が $VAULT$ 内で $COUNT$ 個見つかりました。ウェブサイトが対応している場合は、URI を https:// 形式に変更すべきです。",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1830,12 +1834,16 @@
   "inactive2faFound": {
     "message": "二段階認証を利用していないアイテムが見つかりました"
   },
-  "inactive2faFoundDesc": {
-    "message": "保管庫に $COUNT$ 個のウェブサイトがあり、2段階認証でのログインが設定されていない可能性があります (2fa.directory によれば)。これらのアカウントをさらに保護するには、2段階認証のログインを設定する必要があります。",
+  "inactive2faFoundReportDesc": {
+    "message": "$VAULT$ に $COUNT$ 個のウェブサイトがあり、(2fa.directory によれば) 2段階認証でのログインを設定できる可能性があります 。これらのアカウントをさらに保護するには、2段階認証のログインを設定してください。",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1854,12 +1862,16 @@
   "exposedPasswordsFound": {
     "message": "流出したパスワードが見つかりました"
   },
-  "exposedPasswordsFoundDesc": {
-    "message": "既知のデータ流出で公開されていたパスワードが $COUNT$ 個のアイテムで見つかりました。これらは新しいパスワードへ変更すべきです。",
+  "exposedPasswordsFoundReportDesc": {
+    "message": "既知の流出済みパスワードが $VAULT$ 内の $COUNT$ 個のアイテムで見つかりました。これらは新しいパスワードへ変更すべきです。",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1887,12 +1899,16 @@
   "weakPasswordsFound": {
     "message": "脆弱なパスワードが見つかりました"
   },
-  "weakPasswordsFoundDesc": {
-    "message": "保管庫内に$COUNT$個の強力でないパスワードが見つかりました。もっと強力なパスワードへ更新すべきです。",
+  "weakPasswordsFoundReportDesc": {
+    "message": "$VAULT$ 内に $COUNT$ 個の脆弱なパスワードが見つかりました。もっと強力なパスワードへ更新すべきです。",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1908,12 +1924,16 @@
   "reusedPasswordsFound": {
     "message": "再利用しているパスワードが見つかりました。"
   },
-  "reusedPasswordsFoundDesc": {
-    "message": "$COUNT$個の再利用しているパスワードが見つかりました。それぞれ異なるパスワードへ変更すべきです。",
+  "reusedPasswordsFoundReportDesc": {
+    "message": "$VAULT$ 内に $COUNT$ 個の再利用しているパスワードが見つかりました。それぞれ異なるパスワードへ変更すべきです。",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -6460,6 +6480,9 @@
   "editGroupCollectionsDesc": {
     "message": "このグループに追加してコレクションへのアクセスを許可します。"
   },
+  "editGroupCollectionsRestrictionsDesc": {
+    "message": "You can only assign collections you manage."
+  },
   "accessAllCollectionsDesc": {
     "message": "現在および将来のすべてのコレクションへのアクセスを許可します。"
   },
@@ -7601,10 +7624,13 @@
     "message": "リリースブログを読む"
   },
   "adminConsole": {
-    "message": "管理者コンソール"
+    "message": "管理コンソール"
   },
   "providerPortal": {
     "message": "プロバイダーポータル"
+  },
+  "success": {
+    "message": "成功"
   },
   "viewCollection": {
     "message": "コレクションを表示"
@@ -7900,10 +7926,154 @@
   "machineAccountAccessUpdated": {
     "message": "マシンアカウントへのアクセス権限を更新しました"
   },
-  "unassignedItemsBanner": {
-    "message": "注意: 割り当てられていない組織項目は、デバイス間のすべての保管庫のビューでは表示されなくなり、管理コンソールからのみアクセスできます。 管理コンソールからコレクションにこれらのアイテムを割り当てると、表示するようにできます。"
+  "restrictedGroupAccessDesc": {
+    "message": "あなた自身をグループに追加することはできません。"
   },
   "unassignedItemsBannerSelfHost": {
     "message": "お知らせ：2024年5月2日に、 割り当てられていない組織アイテムはデバイス間のすべての保管庫ビューに表示されなくなり、管理コンソールからのみアクセス可能になります。 管理コンソールからコレクションにこれらのアイテムを割り当てると、表示できるようになります。"
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "注意: 割り当てられていない組織アイテムは、デバイス間のすべての保管庫ビューでは表示されなくなり、管理コンソールからのみアクセスできるようになりました。"
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "お知らせ：2024年5月16日に、 割り当てられていない組織アイテムは、デバイス間のすべての保管庫ビューに表示されなくなり、管理コンソールからのみアクセス可能になります。"
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "これらのアイテムのコレクションへの割り当てを",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": "で実行すると表示できるようになります。",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "deleteProvider": {
+    "message": "プロバイダを削除"
+  },
+  "deleteProviderConfirmation": {
+    "message": "プロバイダの削除は恒久的で元に戻せません。マスターパスワードを入力して、プロバイダと関連するすべてのデータの削除を確認してください。"
+  },
+  "deleteProviderName": {
+    "message": "$ID$ を削除できません",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deleteProviderWarningDescription": {
+    "message": "$ID$ を削除するには、まずすべてのクライアントのリンクを解除してください。",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "providerDeleted": {
+    "message": "プロバイダを削除しました"
+  },
+  "providerDeletedDesc": {
+    "message": "プロバイダと関連するすべてのデータを削除しました。"
+  },
+  "deleteProviderRecoverConfirmDesc": {
+    "message": "このプロバイダの削除をリクエストしました。下のボタンを使うと確認できます。"
+  },
+  "deleteProviderWarning": {
+    "message": "プロバイダを削除すると元に戻すことはできません。"
+  },
+  "errorAssigningTargetCollection": {
+    "message": "ターゲットコレクションの割り当てに失敗しました。"
+  },
+  "errorAssigningTargetFolder": {
+    "message": "ターゲットフォルダーの割り当てに失敗しました。"
+  },
+  "integrationsAndSdks": {
+    "message": "連携＆SDK",
+    "description": "The title for the section that deals with integrations and SDKs."
+  },
+  "integrations": {
+    "message": "システム連携"
+  },
+  "integrationsDesc": {
+    "message": "Bitwarden シークレットマネージャーのシークレットを、サードパーティーのサービスに自動的に同期します。"
+  },
+  "sdks": {
+    "message": "SDK"
+  },
+  "sdksDesc": {
+    "message": "Bitwarden シークレットマネージャー SDK を以下のプログラミング言語で使用して、独自のアプリを構築できます。"
+  },
+  "setUpGithubActions": {
+    "message": "Github アクションを設定"
+  },
+  "setUpGitlabCICD": {
+    "message": "GitLab CI/CD の設定"
+  },
+  "setUpAnsible": {
+    "message": "Ansible を設定"
+  },
+  "cSharpSDKRepo": {
+    "message": "C# リポジトリを表示"
+  },
+  "cPlusPlusSDKRepo": {
+    "message": "C++ リポジトリを表示"
+  },
+  "jsWebAssemblySDKRepo": {
+    "message": "JS WebAssembly リポジトリを表示"
+  },
+  "javaSDKRepo": {
+    "message": "Java リポジトリを表示"
+  },
+  "pythonSDKRepo": {
+    "message": "Python リポジトリを表示"
+  },
+  "phpSDKRepo": {
+    "message": "PHP リポジトリを表示"
+  },
+  "rubySDKRepo": {
+    "message": "Ruby リポジトリを表示"
+  },
+  "goSDKRepo": {
+    "message": "Go リポジトリを表示"
+  },
+  "createNewClientToManageAsProvider": {
+    "message": "プロバイダーとして管理するための新しいクライアント組織を作成します。次の請求サイクルに追加のシートが反映されます。"
+  },
+  "selectAPlan": {
+    "message": "プランを選択"
+  },
+  "thirtyFivePercentDiscount": {
+    "message": "35%割引"
+  },
+  "monthPerMember": {
+    "message": "月/メンバーあたり"
+  },
+  "seats": {
+    "message": "シート"
+  },
+  "addOrganization": {
+    "message": "組織を追加"
+  },
+  "createdNewClient": {
+    "message": "新しいクライアントを作成しました"
+  },
+  "noAccess": {
+    "message": "アクセス不可"
+  },
+  "collectionAdminConsoleManaged": {
+    "message": "このコレクションは管理コンソールからのみアクセス可能です"
+  },
+  "organizationOptionsMenu": {
+    "message": "組織メニューの切り替え"
+  },
+  "vaultItemSelect": {
+    "message": "保管庫のアイテムを選択"
+  },
+  "collectionItemSelect": {
+    "message": "コレクションのアイテムを選択"
+  },
+  "manageBillingFromProviderPortalMessage": {
+    "message": "プロバイダーポータルからの請求を管理"
   }
 }

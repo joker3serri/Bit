@@ -630,7 +630,7 @@
     "message": "Suojausavain ei kelpaa. Yritä uudelleen."
   },
   "twoFactorForPasskeysNotSupportedOnClientUpdateToLogIn": {
-    "message": "Kaksivaiheista salausavainkirjautumista ei tueta. Päivitä sovellus kirjautuaksesi sisään."
+    "message": "Kaksivaiheista suojausavainkirjautumista ei tueta. Päivitä sovellus kirjautuaksesi sisään."
   },
   "loginWithPasskeyInfo": {
     "message": "Käytä generoitua suojausavainta, joka kirjaa sinut automaattisesti sisään ilman salasanaa. Henkilöllisyytesi vahvistetaan kasvojen tunnistuksen tai sormenjäljen kataisilla biometrisillä tiedoilla, tai jollakin muulla FIDO2-suojausratkaisulla."
@@ -648,10 +648,10 @@
     "message": "Pidä tämä ikkuna avoinna ja seuraa selaimesi opasteita."
   },
   "errorCreatingPasskey": {
-    "message": "Virhe suojausavaimen luonnissa"
+    "message": "Virhe luotaessa suojausavainta"
   },
   "errorCreatingPasskeyInfo": {
-    "message": "Suojausavaimesi luonnissa kohdattiin ongelma."
+    "message": "Suojausavaintasi luotaessa kohdattiin ongelma."
   },
   "passkeySuccessfullyCreated": {
     "message": "Suojausavain on luotu"
@@ -1809,12 +1809,16 @@
   "unsecuredWebsitesFound": {
     "message": "Suojaamattomia verkkosivustoja löytyi"
   },
-  "unsecuredWebsitesFoundDesc": {
-    "message": "Löysimme holvistasi $COUNT$ kohdetta suojaamattomilla URI-osoitteilla. Sinun tulisi muuttaa niiden URI suojattuun \"https://\" -muotoon, jos sivusto tukee sitä.",
+  "unsecuredWebsitesFoundReportDesc": {
+    "message": "Löysimme holv(e)istasi $COUNT$ kohdetta suojaamattomilla URI-osoitteilla. Nämä tulisi muuttaa suojattuun \"https://\" -muotoon, jos sivustot sen mahdollistavat.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1830,12 +1834,16 @@
   "inactive2faFound": {
     "message": "Löytyi kirjautumistietoja, joille ei ole määritetty kaksivaiheista kirjautumista"
   },
-  "inactive2faFoundDesc": {
-    "message": "Löysimme holvistasi $COUNT$ sivustoa, joita ei ehkä ole määritetty käyttämään kaksivaiheista kirjautumista (2fa.directory-sivuston mukaan). Suojataksesi nämä tilit paremmin, sinun tulisi määrittää niille kaksivaiheinen kirjautuminen.",
+  "inactive2faFoundReportDesc": {
+    "message": "Löysimme holv(e)istasi $COUNT$ sivustoa, joita ei ehkä ole määritetty käyttämään kaksivaiheista tunnistautumista (2fa.directory-sivuston mukaan). Nämä tilit tulisi suojata paremmin määrittämällä niille kaksivaiheinen tunnistautuminen.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1854,12 +1862,16 @@
   "exposedPasswordsFound": {
     "message": "Paljastuneita salasanoja löytyi"
   },
-  "exposedPasswordsFoundDesc": {
-    "message": "Löysimme holvistasi $COUNT$ kohdetta, jotka sisältävät tunnetuissa tietovuodoissa paljastuneita salasanoja. Näiden palveluiden salasanat tulisi vaihtaa.",
+  "exposedPasswordsFoundReportDesc": {
+    "message": "Löysimme holv(e)istasi $COUNT$ kohdetta, joiden salasanat ovat paljastuneet tunnetuissa tietovuodoissa. Nämä salasanat tulisi vaihtaa.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1887,12 +1899,16 @@
   "weakPasswordsFound": {
     "message": "Heikkoja salasanoja löytyi"
   },
-  "weakPasswordsFoundDesc": {
-    "message": "Löysimme holvistasi $COUNT$ kohdetta, joiden salasanat eivät ole vahvoja. Nämä tulisi korvata vahvemmilla salasanoilla.",
+  "weakPasswordsFoundReportDesc": {
+    "message": "Löysimme holv(e)istasi $COUNT$ kohdetta, joiden salasanat eivät ole vahvoja. Nämä tulisi korvata vahvemmilla salasanoilla.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1908,12 +1924,16 @@
   "reusedPasswordsFound": {
     "message": "Toistuvia salasanoja löytyi"
   },
-  "reusedPasswordsFoundDesc": {
-    "message": "Löysimme holvistasi $COUNT$ toistuvasti käytettyä salasanaa. Ne tulisi vaihtaa yksilöllisiksi.",
+  "reusedPasswordsFoundReportDesc": {
+    "message": "Löysimme holv(e)istasi $COUNT$ toistuvasti käytettyä salasanaa. Ne tulisi korvata yksilöllisillä salasanoilla.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -2799,7 +2819,7 @@
     "message": "Verkkoholvi"
   },
   "cli": {
-    "message": "komentorivi"
+    "message": "Komentorivi"
   },
   "bitWebVault": {
     "message": "Bitwarden Verkkoholvi"
@@ -4948,10 +4968,10 @@
     "message": "Uusi asiakasorganisaatio"
   },
   "newClientOrganizationDesc": {
-    "message": "Luo uusi asiakasorganisaatio, joka liitetään sinuun toimittajana. Voit käyttää ja hallita tätä organisaatiota."
+    "message": "Luo uusi asiakasorganisaatio, jonka toimittajaksi sinut määritetään. Voit käyttää ja hallita tätä organisaatiota."
   },
   "newClient": {
-    "message": "Uusi pääte"
+    "message": "Uusi asiakas"
   },
   "addExistingOrganization": {
     "message": "Lisää olemassa oleva organisaatio"
@@ -6238,7 +6258,7 @@
     "description": "Title for creating a new project."
   },
   "softDeleteSecretWarning": {
-    "message": "Salaisuuksien poistaminen voi vaikuttaa olemassa oleviin integrointeihin.",
+    "message": "Salaisuuksien poistaminen voi vaikuttaa olemassa oleviin integraatioihin.",
     "description": "Warns that deleting secrets can have consequences on integrations"
   },
   "softDeletesSuccessToast": {
@@ -6459,6 +6479,9 @@
   },
   "editGroupCollectionsDesc": {
     "message": "Myönnä käyttöoikeudet kokoelmiin lisäämällä heidät tähän ryhmään."
+  },
+  "editGroupCollectionsRestrictionsDesc": {
+    "message": "Voit määrittää vain hallitsemiasi kokoelmia."
   },
   "accessAllCollectionsDesc": {
     "message": "Myönnä käyttöoikeudet kaikkiin nykyisiin ja tuleviin kokoelmiin"
@@ -7071,7 +7094,7 @@
     "description": "The individual description shown to the user when the user doesn't have access to delete a project."
   },
   "smProjectsDeleteBulkConfirmation": {
-    "message": "Seuraavien projektien poistaminen ei ole mahdollista. Haluatko jatkaa?",
+    "message": "Seuraavia projekteja ei ole mahdollista poistaa. Haluatko jatkaa?",
     "description": "The message shown to the user when bulk deleting projects and the user doesn't have access to some projects."
   },
   "updateKdfSettings": {
@@ -7217,7 +7240,7 @@
     "message": "Tilille ei ole asetettu pääsalasanaa"
   },
   "removeOrgUserNoMasterPasswordDesc": {
-    "message": "Käyttäjän $USER$ poistaminen asettamatta hänen tililleen pääsalasanaa voi estää häntä kirjautumasta hänen omalle tililleen. Haluatko varmasti jatkaa?",
+    "message": "Käyttäjän $USER$ poistaminen asettamatta hänen tililleen pääsalasanaa voi estää häntä kirjautumasta heidän omalle tililleen. Haluatko varmasti jatkaa?",
     "placeholders": {
       "user": {
         "content": "$1",
@@ -7484,7 +7507,7 @@
     "message": "Laajennuksella voit tallentaa kirjautumistietoja ja automaattitäyttää lomakkeita avaamatta verkkosovellusta."
   },
   "projectAccessUpdated": {
-    "message": "Projektin käyttöoikeudet on muutettu"
+    "message": "Projektin käyttöoikeuksia muutettiin"
   },
   "unexpectedErrorSend": {
     "message": "Odottamaton virhe ladattaessa Sendiä. Yritä myöhemmin uudelleen."
@@ -7514,7 +7537,7 @@
     "message": "Ylläpitäjät voivat käyttää ja hallinnoida kokoelmia."
   },
   "serviceAccountAccessUpdated": {
-    "message": "Palvelutilin oikeuksia muutettiin"
+    "message": "Palvelutilin käyttöoikeuksia muutettiin"
   },
   "commonImportFormats": {
     "message": "Yleiset muodot",
@@ -7595,7 +7618,7 @@
     "message": "Ilmainen 1 vuoden ajan"
   },
   "newWebApp": {
-    "message": "Tervetuloa uuteen, entistä parempaan verkkosovellukseen. Lue lisää siitä, mikä on muuttunut."
+    "message": "Tervetuloa uuteen, entistä parempaan verkkosovellukseen. Katso mikä on muuttunut."
   },
   "releaseBlog": {
     "message": "Lue julkaisublogia"
@@ -7606,8 +7629,11 @@
   "providerPortal": {
     "message": "Toimittajaportaali"
   },
+  "success": {
+    "message": "Onnistui"
+  },
   "viewCollection": {
-    "message": "Tarkastele kokoelmaa"
+    "message": "Näytä kokoelma"
   },
   "restrictedGroupAccess": {
     "message": "Et voi lisätä itseäsi ryhmiin."
@@ -7637,7 +7663,7 @@
     "message": "Kokoelmat määritettiin"
   },
   "bulkCollectionAssignmentWarning": {
-    "message": "Olet valinnut $TOTAL_COUNT$ kohdetta. Et voi päivittää näistä $READONLY_COUNT$ kohdetta, koska käyttöoikeutesi eivät salli muokkausta.",
+    "message": "Olet valinnut $TOTAL_COUNT$ kohdetta. Näistä $READONLY_COUNT$ et voi muuttaa, koska käyttöoikeutesi eivät salli muokkausta.",
     "placeholders": {
       "total_count": {
         "content": "$1",
@@ -7665,7 +7691,7 @@
     "message": "Jäljellä"
   },
   "unlinkOrganization": {
-    "message": "Irrota organisaatio"
+    "message": "Poista organisaatioliitos"
   },
   "manageSeats": {
     "message": "HALLITSE KÄYTTÄJÄPAIKKOJA"
@@ -7900,10 +7926,154 @@
   "machineAccountAccessUpdated": {
     "message": "Konetilin oikeuksia muutettiin"
   },
-  "unassignedItemsBanner": {
-    "message": "Huomautus: Organisaatioiden kokoelmiin määrittämättömät kohteet eivät enää näy laitteiden \"Kaikki holvit\" -näkymissä, vaan ne ovat nähtävissä vain Hallintapaneelista. Määritä kohteet kokoelmiin Hallintapaneelista, jotta ne ovat jatkossakin käytettävissä kaikilta laitteilta."
+  "restrictedGroupAccessDesc": {
+    "message": "Et voi lisätä itseäsi ryhmään."
   },
   "unassignedItemsBannerSelfHost": {
-    "message": "Huomautus: 2.5.2024 alkaen kokoelmiin määrittämättömät organisaatioiden kohteet eivät enää näy laitteiden \"Kaikki holvit\" -näkymissä, vaan ne ovat nähtävissä vain Hallintapaneelista. Määritä kohteet kokoelmiin Hallintapaneelista, jotta ne ovat jatkossakin käytettävissä kaikilta laitteilta."
+    "message": "Huomioi: Alkaen 2. toukokuuta 2024, määrittämättömät organisaatiokohteet eivät enää näy laitteidesi \"Kaikki holvit\" -näkymissä, vaan ne ovat käytettävissä vain Hallintapaneelista."
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "Huomioi: Määrittämättömät organisaatiokohteet eivät enää näy laitteidesi \"Kaikki holvit\" -näkymissä, vaan ne ovat käytettävissä vain Hallintapaneelista."
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "Huomioi: Alkaen 16. toukokuuta 2024, määrittämättömät organisaatiokohteet eivät enää näy laitteidesi \"Kaikki holvit\" -näkymissä, vaan ne ovat käytettävissä vain Hallintapaneelista."
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "Määritä nämä kohteet kokoelmaan",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": ", jotta ne näkyvät.",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "deleteProvider": {
+    "message": "Poista toimittaja"
+  },
+  "deleteProviderConfirmation": {
+    "message": "Toimittajan poisto on pysyvää ja peruuttamatonta. Vahvista palveluntarjoajan ja kaikkien siihen liittyvien tietojen poisto syöttämällä pääsalasanasi."
+  },
+  "deleteProviderName": {
+    "message": "Toimittajaa $ID$ ei ole mahdollista poistaa",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deleteProviderWarningDescription": {
+    "message": "You must unlink all clients before you can delete $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "providerDeleted": {
+    "message": "Toimittaja poistettiin"
+  },
+  "providerDeletedDesc": {
+    "message": "Toimittaja ja kaikki siihen liittyvät tiedot on poistettu."
+  },
+  "deleteProviderRecoverConfirmDesc": {
+    "message": "Olet pyytänyt tämän toimittajan poistoa. Vahvista alla olevalla painikeella."
+  },
+  "deleteProviderWarning": {
+    "message": "Toimittajasi poisto on pysyvä toimenpide, eikä sen peruminen ole mahdollista."
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Virhe määritettäessä kohdekokoelmaa."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Virhe määritettäessä kohdekansiota."
+  },
+  "integrationsAndSdks": {
+    "message": "Integraatiot ja SDK:t",
+    "description": "The title for the section that deals with integrations and SDKs."
+  },
+  "integrations": {
+    "message": "Integraatiot"
+  },
+  "integrationsDesc": {
+    "message": "Synkronoi salaisuudet automaattisesti Bitwardenin Salaisuushallinnan ja ulkopuolisen palvelun välillä."
+  },
+  "sdks": {
+    "message": "SDK:t"
+  },
+  "sdksDesc": {
+    "message": "Bitwardenin Salaisuushallinnan SDK:n avulla voit kehittää omia sovelluksiasi seuraavilla ohjelmointikielillä."
+  },
+  "setUpGithubActions": {
+    "message": "Määritä GitHub Actions"
+  },
+  "setUpGitlabCICD": {
+    "message": "Määritä GitLab CI/CD"
+  },
+  "setUpAnsible": {
+    "message": "Määritä Ansible"
+  },
+  "cSharpSDKRepo": {
+    "message": "Näytä C#-arkisto"
+  },
+  "cPlusPlusSDKRepo": {
+    "message": "Näytä C++-arkisto"
+  },
+  "jsWebAssemblySDKRepo": {
+    "message": "Näytä JS WebAssembly -arkisto"
+  },
+  "javaSDKRepo": {
+    "message": "Näytä Java-arkisto"
+  },
+  "pythonSDKRepo": {
+    "message": "Näytä Python-arkisto"
+  },
+  "phpSDKRepo": {
+    "message": "Näytä php-arkisto"
+  },
+  "rubySDKRepo": {
+    "message": "Näytä Ruby-arkisto"
+  },
+  "goSDKRepo": {
+    "message": "Näytä Go-arkisto"
+  },
+  "createNewClientToManageAsProvider": {
+    "message": "Luo uusi asiakasorganisaatio, jota hallitset toimittajana. Uudet käyttäjäpaikat näkyvät seuraavalla laskutusjaksolla."
+  },
+  "selectAPlan": {
+    "message": "Valitse tilaus"
+  },
+  "thirtyFivePercentDiscount": {
+    "message": "35 %:n alennus"
+  },
+  "monthPerMember": {
+    "message": "kuukaudessa/jäsen"
+  },
+  "seats": {
+    "message": "Käyttäjäpaikat"
+  },
+  "addOrganization": {
+    "message": "Lisää organisaatio"
+  },
+  "createdNewClient": {
+    "message": "Uuden asiakkaan luonti onnistui."
+  },
+  "noAccess": {
+    "message": "Käyttöoikeutta ei ole"
+  },
+  "collectionAdminConsoleManaged": {
+    "message": "Tämä kokoelma on käytettävissä vain hallintakonsolista"
+  },
+  "organizationOptionsMenu": {
+    "message": "Näytä/piilota organisaatiovalikko"
+  },
+  "vaultItemSelect": {
+    "message": "Valitse holvin kohde"
+  },
+  "collectionItemSelect": {
+    "message": "Valitse kokoelman kohde"
+  },
+  "manageBillingFromProviderPortalMessage": {
+    "message": "Hallitse laskutusta Toimittajaportaaliista"
   }
 }

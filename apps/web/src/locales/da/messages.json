@@ -1809,12 +1809,16 @@
   "unsecuredWebsitesFound": {
     "message": "Ikke-sikrede websteder fundet"
   },
-  "unsecuredWebsitesFoundDesc": {
-    "message": "$COUNT$ emner fundet i din boks med ikke-sikrede URI'er. Deres URI-protokoller bør ændres til https://, såfremt webstedet tillader det.",
+  "unsecuredWebsitesFoundReportDesc": {
+    "message": "$COUNT$ emner fundet i $VAULT$ med ikke-sikreded URI'er. Hvis tilladt af webstedet, bør deres URI-protokol ændres til https://.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1830,12 +1834,16 @@
   "inactive2faFound": {
     "message": "Logins uden totrins-login fundet"
   },
-  "inactive2faFoundDesc": {
-    "message": "$COUNT$ websted(er) fundet i boksen, som muligvis ikke er opsat med totrins-login (jf. 2fa.directory). For yderligere at beskytte disse konti, bør totrins-login opsættes.",
+  "inactive2faFoundReportDesc": {
+    "message": "$COUNT$ websted(er) muligvis uden opsat med tofaktorgodkendelse (iflg. 2fa.directory) fundet i $VAULT$. For yderligere beskyttelse af disse konti bør tofaktorgodkendelse opsættes.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1854,12 +1862,16 @@
   "exposedPasswordsFound": {
     "message": "Kompromitterede adgangskoder fundet"
   },
-  "exposedPasswordsFoundDesc": {
-    "message": "$COUNT$ emner fundet i din boks med adgangskoder kompromitteret i kendte datalæk. En ny adgangskode bør opsættes for disse emner.",
+  "exposedPasswordsFoundReportDesc": {
+    "message": "$COUNT$ emner fundet i $VAULT$ med adgangskoder kompromitteret via kendte datalæk. Deres adgangskoder bør skiftes.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1887,12 +1899,16 @@
   "weakPasswordsFound": {
     "message": "Svage adgangskoder fundet"
   },
-  "weakPasswordsFoundDesc": {
-    "message": "$COUNT$ emner fundet i din boks med adgangskoder, som ikke er stærke. Disse bør opdateres med stærkere adgangskoder.",
+  "weakPasswordsFoundReportDesc": {
+    "message": "$COUNT$ emner med svage adgangskoder fundet i $VAULT$. Disse bør skiftes til stærke adgangskoder.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -1908,12 +1924,16 @@
   "reusedPasswordsFound": {
     "message": "Genbrugte adgangskoder fundet"
   },
-  "reusedPasswordsFoundDesc": {
-    "message": "Vi fandt $COUNT$ adgangskoder, der genbruges i din boks. Du bør ændre dem til unikke koder.",
+  "reusedPasswordsFoundReportDesc": {
+    "message": "$COUNT$ adgangskoder, som genbruges, fundet i $VAULT$. Disse bør skiftes til unikke adgangskoder.",
     "placeholders": {
       "count": {
         "content": "$1",
         "example": "8"
+      },
+      "vault": {
+        "content": "$2",
+        "example": "this will be 'vault' or 'vaults'"
       }
     }
   },
@@ -6460,6 +6480,9 @@
   "editGroupCollectionsDesc": {
     "message": "Tildel adgang til samlinger ved at føje dem til denne gruppe."
   },
+  "editGroupCollectionsRestrictionsDesc": {
+    "message": "Der kan kun tildeles samlinger, man selv håndterer."
+  },
   "accessAllCollectionsDesc": {
     "message": "Tildel adgang til alle nuværende og fremtidige samlinger."
   },
@@ -7606,6 +7629,9 @@
   "providerPortal": {
     "message": "Udbyderportal"
   },
+  "success": {
+    "message": "Gennemført"
+  },
   "viewCollection": {
     "message": "Vis samling"
   },
@@ -7900,10 +7926,154 @@
   "machineAccountAccessUpdated": {
     "message": "Maskinekontoadgang opdateret"
   },
-  "unassignedItemsBanner": {
-    "message": "Bemærk: Utildelte organisationsemner er ikke længere synlige i Alle Bokse-visningen og er kun tilgængelige via Adminkonsollen. Føj disse emner til en samling fra Adminkonsollen for at gøre dem synlige."
+  "restrictedGroupAccessDesc": {
+    "message": "Man kan ikke føje sig selv til en gruppe."
   },
   "unassignedItemsBannerSelfHost": {
     "message": "Bemærk: Pr. 2. maj 2024 vil utildelte organisationsemner ikke længere være synlige i Alle Bokse-visningen på tværs af enheder og vil kun være tilgængelige via Admin-konsollen. Tildel disse emner til en samling via Admin-konsollen for at gøre dem synlige."
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "Bemærk: Utildelte organisationsemner er ikke længere synlige i Alle Bokse-visningen, men er kun tilgængelige via Admin-konsol."
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "Bemærk: Pr. 16. maj 2024 er utildelte organisationsemner er ikke længere synlige i Alle Bokse-visningen, men er kun tilgængelige via Admin-konsol."
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "Tildel disse emner til en samling via",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": "for at gøre dem synlige.",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "deleteProvider": {
+    "message": "Slet udbyder"
+  },
+  "deleteProviderConfirmation": {
+    "message": "Sletning af en udbyder er permanent og irreversibel. Angiv hovedadgangskoden for at bekræfte sletningen af udbyderen og alle tilknyttede data."
+  },
+  "deleteProviderName": {
+    "message": "Kan ikke slette $ID$",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deleteProviderWarningDescription": {
+    "message": "Alle klienttilknytninger skal fjernes, før $ID$ kan slettes.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "providerDeleted": {
+    "message": "Udbyder er hermed slettet"
+  },
+  "providerDeletedDesc": {
+    "message": "Udbyderen og alle tilknyttede data er hermed slettet."
+  },
+  "deleteProviderRecoverConfirmDesc": {
+    "message": "Der er anmodet sletning af din Bitwarden-konto. Klik på knappen nedenfor for at bekræfte."
+  },
+  "deleteProviderWarning": {
+    "message": "Sletning af kontoen er permanent og irreversibel."
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Fejl ved tildeling af målsamling."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Fejl ved tildeling af målmappe."
+  },
+  "integrationsAndSdks": {
+    "message": "Integrationer og SDK'er",
+    "description": "The title for the section that deals with integrations and SDKs."
+  },
+  "integrations": {
+    "message": "Integrationer"
+  },
+  "integrationsDesc": {
+    "message": "Synk automatisk hemmeligheder fra Bitwarden Secrets Manager til en tredjepartstjeneste."
+  },
+  "sdks": {
+    "message": "SDK'er"
+  },
+  "sdksDesc": {
+    "message": "Brug Bitwarden Secrets Manager SDK i flg. programmeringssprog til bygning af egne applikationer."
+  },
+  "setUpGithubActions": {
+    "message": "Opsæt Github-handlinger"
+  },
+  "setUpGitlabCICD": {
+    "message": "Opsæt GitLab CI/CD"
+  },
+  "setUpAnsible": {
+    "message": "Opsæt Ansible"
+  },
+  "cSharpSDKRepo": {
+    "message": "Vis C#-repo"
+  },
+  "cPlusPlusSDKRepo": {
+    "message": "Vis C++-repo"
+  },
+  "jsWebAssemblySDKRepo": {
+    "message": "VIs JS WebAssembly-repo"
+  },
+  "javaSDKRepo": {
+    "message": "Vis Java-repo"
+  },
+  "pythonSDKRepo": {
+    "message": "Vis Python-repo"
+  },
+  "phpSDKRepo": {
+    "message": "Vis php-repo"
+  },
+  "rubySDKRepo": {
+    "message": "Vis Ruby-repo"
+  },
+  "goSDKRepo": {
+    "message": "Vis Go-repo"
+  },
+  "createNewClientToManageAsProvider": {
+    "message": "Opret en ny kundeorganisation til at håndtere som udbyder. Yderligere pladser afspejles i næste faktureringscyklus."
+  },
+  "selectAPlan": {
+    "message": "Vælg en abonnementstype"
+  },
+  "thirtyFivePercentDiscount": {
+    "message": "35% rabat"
+  },
+  "monthPerMember": {
+    "message": "måned pr. medlem"
+  },
+  "seats": {
+    "message": "Pladser"
+  },
+  "addOrganization": {
+    "message": "Tilføj organisation"
+  },
+  "createdNewClient": {
+    "message": "Ny kunde er hermed oprettet"
+  },
+  "noAccess": {
+    "message": "Ingen adgang"
+  },
+  "collectionAdminConsoleManaged": {
+    "message": "Denne samling er kun tilgængelig via Admin-konsol"
+  },
+  "organizationOptionsMenu": {
+    "message": "Skift Organisationsmenu"
+  },
+  "vaultItemSelect": {
+    "message": "Vælg boksemne"
+  },
+  "collectionItemSelect": {
+    "message": "Vælg samlingsemne"
+  },
+  "manageBillingFromProviderPortalMessage": {
+    "message": "Håndter fakturering via udbyderportalen"
   }
 }
