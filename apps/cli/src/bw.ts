@@ -686,6 +686,8 @@ export class Main {
       this.organizationExportService,
     );
 
+    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
+
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
     this.program = new Program(this);
     this.vaultProgram = new VaultProgram(this);
@@ -709,8 +711,6 @@ export class Main {
     );
 
     this.providerApiService = new ProviderApiService(this.apiService);
-
-    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
   }
 
   async run() {
