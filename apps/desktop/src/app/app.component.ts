@@ -603,7 +603,7 @@ export class AppComponent implements OnInit, OnDestroy {
           content: { key: "accessTokenUnableToBeDecrypted" },
           acceptButtonText: { key: "ok" },
           cancelButtonText: null,
-          type: "info",
+          type: "danger",
         });
 
         await firstValueFrom(this.activeSimpleDialog.closed);
@@ -623,7 +623,7 @@ export class AppComponent implements OnInit, OnDestroy {
           content: { key: "refreshTokenSecureStorageRetrievalFailure" },
           acceptButtonText: { key: "ok" },
           cancelButtonText: null,
-          type: "info",
+          type: "danger",
         });
 
         await firstValueFrom(this.activeSimpleDialog.closed);
