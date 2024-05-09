@@ -243,6 +243,8 @@ export class AppComponent implements OnInit, OnDestroy {
     ]);
   }
 
+  // Displaying toasts isn't super useful on the popup due to the reloads we do.
+  // However, it is visible for a moment on the FF sidebar logout.
   private async displayLogoutReason(logoutReason: LogoutReason) {
     let toastOptions: ToastOptions;
     switch (logoutReason) {
