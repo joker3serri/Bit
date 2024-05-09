@@ -61,6 +61,7 @@ import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.ty
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { DialogService } from "@bitwarden/components";
 
+import { PinServiceAbstraction } from "../../../../../libs/auth/src/common/abstractions";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { Account } from "../../models/account";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
@@ -189,6 +190,7 @@ const safeProviders: SafeProvider[] = [
     provide: SystemServiceAbstraction,
     useClass: SystemService,
     deps: [
+      PinServiceAbstraction,
       MessagingServiceAbstraction,
       PlatformUtilsServiceAbstraction,
       RELOAD_CALLBACK,
@@ -256,6 +258,7 @@ const safeProviders: SafeProvider[] = [
     provide: CryptoServiceAbstraction,
     useClass: ElectronCryptoService,
     deps: [
+      PinServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
       KeyGenerationServiceAbstraction,
       CryptoFunctionServiceAbstraction,

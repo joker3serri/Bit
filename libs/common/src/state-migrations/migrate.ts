@@ -58,7 +58,7 @@ import { RemoveRefreshTokenMigratedFlagMigrator } from "./migrations/58-remove-r
 import { KdfConfigMigrator } from "./migrations/59-move-kdf-config-to-state-provider";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
 import { KnownAccountsMigrator } from "./migrations/60-known-accounts";
-import { VaultTimeoutSettingsServiceStateProviderMigrator } from "./migrations/61-migrate-vault-timeout-settings-svc-to-state-provider";
+import { PinStateMigrator } from "./migrations/61-move-pin-state-to-providers";
 import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-auto-prompt-to-account";
 import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";
 import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-settings-to-global";
@@ -128,7 +128,8 @@ export function createMigrationBuilder() {
     .with(RemoveRefreshTokenMigratedFlagMigrator, 57, 58)
     .with(KdfConfigMigrator, 58, 59)
     .with(KnownAccountsMigrator, 59, 60)
-    .with(VaultTimeoutSettingsServiceStateProviderMigrator, 60, CURRENT_VERSION);
+    .with(PinStateMigrator, 60, CURRENT_VERSION);
+  // .with(VaultTimeoutSettingsServiceStateProviderMigrator, 60, CURRENT_VERSION); // TODO: bump migrations
 }
 
 export async function currentVersion(

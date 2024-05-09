@@ -2,11 +2,13 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, map, of } from "rxjs";
 
 import {
+  PinServiceAbstraction,
   FakeUserDecryptionOptions as UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { Utils } from "../..//platform/misc/utils";
 import { FakeAccountService, mockAccountServiceWith, FakeStateProvider } from "../../../spec";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -17,17 +19,17 @@ import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { BiometricStateService } from "../../platform/biometrics/biometric-state.service";
-import { EncString } from "../../platform/models/domain/enc-string";
 import {
   VAULT_TIMEOUT,
   VAULT_TIMEOUT_ACTION,
 } from "../../services/vault-timeout/vault-timeout-settings.state";
-import { UserId } from "../../types/guid";
 import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
 
 import { VaultTimeoutSettingsService } from "./vault-timeout-settings.service";
 
 describe("VaultTimeoutSettingsService", () => {
+  let accountService: FakeAccountService;
+  let pinService: MockProxy<PinServiceAbstraction>;
   let userDecryptionOptionsService: MockProxy<UserDecryptionOptionsServiceAbstraction>;
   let cryptoService: MockProxy<CryptoService>;
   let tokenService: MockProxy<TokenService>;
@@ -39,12 +41,12 @@ describe("VaultTimeoutSettingsService", () => {
   let userDecryptionOptionsSubject: BehaviorSubject<UserDecryptionOptions>;
 
   const mockUserId = Utils.newGuid() as UserId;
-  let accountService: FakeAccountService;
   let stateProvider: FakeStateProvider;
-
   let logService: MockProxy<LogService>;
 
   beforeEach(() => {
+    accountService = mockAccountServiceWith(mockUserId);
+    pinService = mock<PinServiceAbstraction>();
     userDecryptionOptionsService = mock<UserDecryptionOptionsServiceAbstraction>();
     cryptoService = mock<CryptoService>();
     tokenService = mock<TokenService>();
@@ -94,18 +96,8 @@ describe("VaultTimeoutSettingsService", () => {
       expect(result).toContain(VaultTimeoutAction.Lock);
     });
 
-    it("contains Lock when the user has a persistent PIN configured", async () => {
-      stateService.getPinKeyEncryptedUserKey.mockResolvedValue(createEncString());
-
-      const result = await firstValueFrom(
-        vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
-      );
-
-      expect(result).toContain(VaultTimeoutAction.Lock);
-    });
-
-    it("contains Lock when the user has a transient/ephemeral PIN configured", async () => {
-      stateService.getProtectedPin.mockResolvedValue("some-key");
+    it("contains Lock when the user has either a persistent or ephemeral PIN configured", async () => {
+      pinService.isPinSet.mockResolvedValue(true);
 
       const result = await firstValueFrom(
         vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
@@ -116,6 +108,7 @@ describe("VaultTimeoutSettingsService", () => {
 
     it("contains Lock when the user has biometrics configured", async () => {
       biometricStateService.biometricUnlockEnabled$ = of(true);
+      biometricStateService.getBiometricUnlockEnabled.mockResolvedValue(true);
 
       const result = await firstValueFrom(
         vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
@@ -126,8 +119,7 @@ describe("VaultTimeoutSettingsService", () => {
 
     it("not contains Lock when the user does not have a master password, PIN, or biometrics", async () => {
       userDecryptionOptionsSubject.next(new UserDecryptionOptions({ hasMasterPassword: false }));
-      stateService.getPinKeyEncryptedUserKey.mockResolvedValue(null);
-      stateService.getProtectedPin.mockResolvedValue(null);
+      pinService.isPinSet.mockResolvedValue(false);
       biometricStateService.biometricUnlockEnabled$ = of(false);
 
       const result = await firstValueFrom(
@@ -189,11 +181,7 @@ describe("VaultTimeoutSettingsService", () => {
         "returns $expected when policy is $policy, has PIN unlock method: $hasPinUnlock or Biometric unlock method: $hasBiometricUnlock, and user preference is $userPreference",
         async ({ hasPinUnlock, hasBiometricUnlock, policy, userPreference, expected }) => {
           biometricStateService.getBiometricUnlockEnabled.mockResolvedValue(hasBiometricUnlock);
-
-          if (hasPinUnlock) {
-            stateService.getProtectedPin.mockResolvedValue("PIN");
-            stateService.getPinKeyEncryptedUserKey.mockResolvedValue(new EncString("PIN"));
-          }
+          pinService.isPinSet.mockResolvedValue(hasPinUnlock);
 
           userDecryptionOptionsSubject.next(
             new UserDecryptionOptions({ hasMasterPassword: false }),
@@ -334,6 +322,8 @@ describe("VaultTimeoutSettingsService", () => {
     defaultVaultTimeout: VaultTimeout,
   ): VaultTimeoutSettingsService {
     return new VaultTimeoutSettingsService(
+      accountService,
+      pinService,
       userDecryptionOptionsService,
       cryptoService,
       tokenService,
@@ -346,7 +336,3 @@ describe("VaultTimeoutSettingsService", () => {
     );
   }
 });
-
-function createEncString() {
-  return Symbol() as unknown as EncString;
-}

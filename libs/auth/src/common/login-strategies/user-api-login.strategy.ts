@@ -113,15 +113,19 @@ export class UserApiLoginStrategy extends LoginStrategy {
     if (response.apiUseKeyConnector) {
       const masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
       if (masterKey) {
-        const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(masterKey);
+        const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(masterKey);
         await this.cryptoService.setUserKey(userKey, userId);
       }
     }
   }
 
-  protected override async setPrivateKey(response: IdentityTokenResponse): Promise<void> {
+  protected override async setPrivateKey(
+    response: IdentityTokenResponse,
+    userId: UserId,
+  ): Promise<void> {
     await this.cryptoService.setPrivateKey(
-      response.privateKey ?? (await this.createKeyPairForOldAccount()),
+      response.privateKey ?? (await this.createKeyPairForOldAccount(userId)),
+      userId,
     );
   }
 

@@ -466,11 +466,15 @@ describe("SsoLoginStrategy", () => {
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
       masterPasswordService.masterKeySubject.next(masterKey);
-      cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+      masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await ssoLoginStrategy.logIn(credentials);
 
-      expect(cryptoService.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(masterKey);
+      expect(masterPasswordService.mock.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(
+        masterKey,
+        undefined,
+        undefined,
+      );
       expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
     });
   });
@@ -518,11 +522,15 @@ describe("SsoLoginStrategy", () => {
 
       apiService.postIdentityToken.mockResolvedValue(tokenResponse);
       masterPasswordService.masterKeySubject.next(masterKey);
-      cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+      masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
 
       await ssoLoginStrategy.logIn(credentials);
 
-      expect(cryptoService.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(masterKey);
+      expect(masterPasswordService.mock.decryptUserKeyWithMasterKey).toHaveBeenCalledWith(
+        masterKey,
+        undefined,
+        undefined,
+      );
       expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
     });
   });

@@ -17,7 +17,7 @@ import {
   CLIENT_TYPE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { AuthRequestServiceAbstraction } from "@bitwarden/auth/common";
+import { AuthRequestServiceAbstraction, PinServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -60,7 +60,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 import {
-  AbstractMemoryStorageService,
   AbstractStorageService,
   ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
@@ -90,6 +89,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService, ToastService } from "@bitwarden/components";
+import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { UnauthGuardService } from "../../auth/popup/services";
 import { AutofillService as AutofillServiceAbstraction } from "../../autofill/services/abstractions/autofill.service";
@@ -120,6 +120,7 @@ import { ForegroundMemoryStorageService } from "../../platform/storage/foregroun
 import { fromChromeRuntimeMessaging } from "../../platform/utils/from-chrome-runtime-messaging";
 import { BrowserSendStateService } from "../../tools/popup/services/browser-send-state.service";
 import { FilePopoutUtilsService } from "../../tools/popup/services/file-popout-utils.service";
+import { Fido2UserVerificationService } from "../../vault/services/fido2-user-verification.service";
 import { VaultBrowserStateService } from "../../vault/services/vault-browser-state.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
@@ -216,6 +217,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: CryptoService,
     useFactory: (
+      pinService: PinServiceAbstraction,
       masterPasswordService: InternalMasterPasswordServiceAbstraction,
       keyGenerationService: KeyGenerationService,
       cryptoFunctionService: CryptoFunctionService,
@@ -229,6 +231,7 @@ const safeProviders: SafeProvider[] = [
       kdfConfigService: KdfConfigService,
     ) => {
       const cryptoService = new BrowserCryptoService(
+        pinService,
         masterPasswordService,
         keyGenerationService,
         cryptoFunctionService,
@@ -245,6 +248,7 @@ const safeProviders: SafeProvider[] = [
       return cryptoService;
     },
     deps: [
+      PinServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
       KeyGenerationService,
       CryptoFunctionService,
@@ -417,7 +421,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE,
     useFactory: (
-      regularMemoryStorageService: AbstractMemoryStorageService & ObservableStorageService,
+      regularMemoryStorageService: AbstractStorageService & ObservableStorageService,
     ) => {
       if (BrowserApi.isManifestVersion(2)) {
         return regularMemoryStorageService;
@@ -445,7 +449,7 @@ const safeProviders: SafeProvider[] = [
     useFactory: (
       storageService: AbstractStorageService,
       secureStorageService: AbstractStorageService,
-      memoryStorageService: AbstractMemoryStorageService,
+      memoryStorageService: AbstractStorageService,
       logService: LogService,
       accountService: AccountServiceAbstraction,
       environmentService: EnvironmentService,
@@ -603,6 +607,11 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: CLIENT_TYPE,
     useValue: ClientType.Browser,
+  }),
+  safeProvider({
+    provide: Fido2UserVerificationService,
+    useClass: Fido2UserVerificationService,
+    deps: [PasswordRepromptService, UserVerificationService, DialogService],
   }),
 ];
 

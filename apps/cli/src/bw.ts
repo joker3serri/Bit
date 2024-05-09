@@ -10,8 +10,8 @@ import {
   AuthRequestService,
   LoginStrategyService,
   LoginStrategyServiceAbstraction,
-  PinCryptoService,
-  PinCryptoServiceAbstraction,
+  PinService,
+  PinServiceAbstraction,
   UserDecryptionOptionsService,
 } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -209,7 +209,7 @@ export class Main {
   cipherFileUploadService: CipherFileUploadService;
   keyConnectorService: KeyConnectorService;
   userVerificationService: UserVerificationService;
-  pinCryptoService: PinCryptoServiceAbstraction;
+  pinService: PinServiceAbstraction;
   stateService: StateService;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
   domainSettingsService: DomainSettingsService;
@@ -361,11 +361,29 @@ export class Main {
       migrationRunner,
     );
 
-    this.masterPasswordService = new MasterPasswordService(this.stateProvider);
+    this.masterPasswordService = new MasterPasswordService(
+      this.stateProvider,
+      this.stateService,
+      this.keyGenerationService,
+      this.encryptService,
+    );
 
     this.kdfConfigService = new KdfConfigService(this.stateProvider);
 
+    this.pinService = new PinService(
+      this.accountService,
+      this.cryptoFunctionService,
+      this.encryptService,
+      this.kdfConfigService,
+      this.keyGenerationService,
+      this.logService,
+      this.masterPasswordService,
+      this.stateProvider,
+      this.stateService,
+    );
+
     this.cryptoService = new CryptoService(
+      this.pinService,
       this.masterPasswordService,
       this.keyGenerationService,
       this.cryptoFunctionService,
@@ -394,6 +412,8 @@ export class Main {
     this.policyService = new PolicyService(this.stateProvider, this.organizationService);
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.accountService,
+      this.pinService,
       this.userDecryptionOptionsService,
       this.cryptoService,
       this.tokenService,
@@ -500,6 +520,7 @@ export class Main {
       this.stateProvider,
       this.secureStorageService,
       this.userDecryptionOptionsService,
+      this.logService,
     );
 
     this.authRequestService = new AuthRequestService(
@@ -586,14 +607,6 @@ export class Main {
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
 
-    this.pinCryptoService = new PinCryptoService(
-      this.stateService,
-      this.cryptoService,
-      this.vaultTimeoutSettingsService,
-      this.logService,
-      this.kdfConfigService,
-    );
-
     this.userVerificationService = new UserVerificationService(
       this.stateService,
       this.cryptoService,
@@ -602,7 +615,7 @@ export class Main {
       this.i18nService,
       this.userVerificationApiService,
       this.userDecryptionOptionsService,
-      this.pinCryptoService,
+      this.pinService,
       this.logService,
       this.vaultTimeoutSettingsService,
       this.platformUtilsService,
@@ -665,11 +678,13 @@ export class Main {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.pinService,
     );
 
     this.individualExportService = new IndividualVaultExportService(
       this.folderService,
       this.cipherService,
+      this.pinService,
       this.cryptoService,
       this.cryptoFunctionService,
       this.kdfConfigService,
@@ -678,6 +693,7 @@ export class Main {
     this.organizationExportService = new OrganizationVaultExportService(
       this.cipherService,
       this.apiService,
+      this.pinService,
       this.cryptoService,
       this.cryptoFunctionService,
       this.collectionService,
@@ -688,6 +704,8 @@ export class Main {
       this.individualExportService,
       this.organizationExportService,
     );
+
+    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
     this.program = new Program(this);
@@ -712,8 +730,6 @@ export class Main {
     );
 
     this.providerApiService = new ProviderApiService(this.apiService);
-
-    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
   }
 
   async run() {

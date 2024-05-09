@@ -184,7 +184,7 @@ describe("PasswordLoginStrategy", () => {
     const userKey = new SymmetricCryptoKey(new Uint8Array(64).buffer as CsprngArray) as UserKey;
 
     masterPasswordService.masterKeySubject.next(masterKey);
-    cryptoService.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
+    masterPasswordService.mock.decryptUserKeyWithMasterKey.mockResolvedValue(userKey);
     tokenService.decodeAccessToken.mockResolvedValue({ sub: userId });
 
     await passwordLoginStrategy.logIn(credentials);
@@ -199,7 +199,7 @@ describe("PasswordLoginStrategy", () => {
       userId,
     );
     expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey, userId);
-    expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey);
+    expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey, userId);
   });
 
   it("does not force the user to update their master password when there are no requirements", async () => {
