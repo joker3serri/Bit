@@ -38,10 +38,8 @@ export class AboutPageComponent {
     this.dialogService.open(AboutDialogComponent);
   }
 
-  launchHelp() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    BrowserApi.createNewTab("https://bitwarden.com/help/");
+  async launchHelp() {
+    await BrowserApi.createNewTab("https://bitwarden.com/help/");
   }
 
   async openWebVault() {
@@ -50,16 +48,12 @@ export class AboutPageComponent {
     await BrowserApi.createNewTab(url);
   }
 
-  launchContactForm() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    BrowserApi.createNewTab("https://bitwarden.com/contact/");
+  async launchContactForm() {
+    await BrowserApi.createNewTab("https://bitwarden.com/contact/");
   }
 
-  launchForums() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    BrowserApi.createNewTab("https://bitwarden.com/getinvolved/");
+  async launchForums() {
+    await BrowserApi.createNewTab("https://bitwarden.com/getinvolved/");
   }
 
   async rate() {
