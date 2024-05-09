@@ -4,8 +4,8 @@ import { Subject } from "rxjs";
 import {
   AuthRequestServiceAbstraction,
   AuthRequestService,
-  PinCryptoServiceAbstraction,
-  PinCryptoService,
+  PinServiceAbstraction,
+  PinService,
   LoginStrategyServiceAbstraction,
   LoginStrategyService,
   LoginEmailServiceAbstraction,
@@ -535,6 +535,7 @@ const safeProviders: SafeProvider[] = [
     provide: CryptoServiceAbstraction,
     useClass: CryptoService,
     deps: [
+      PinServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
       KeyGenerationServiceAbstraction,
       CryptoFunctionServiceAbstraction,
@@ -651,6 +652,8 @@ const safeProviders: SafeProvider[] = [
     provide: VaultTimeoutSettingsServiceAbstraction,
     useClass: VaultTimeoutSettingsService,
     deps: [
+      AccountServiceAbstraction,
+      PinServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
       CryptoServiceAbstraction,
       TokenServiceAbstraction,
@@ -718,6 +721,7 @@ const safeProviders: SafeProvider[] = [
       I18nServiceAbstraction,
       CollectionServiceAbstraction,
       CryptoServiceAbstraction,
+      PinServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -726,6 +730,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       FolderServiceAbstraction,
       CipherServiceAbstraction,
+      PinServiceAbstraction,
       CryptoServiceAbstraction,
       CryptoFunctionServiceAbstraction,
       KdfConfigServiceAbstraction,
@@ -737,6 +742,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       CipherServiceAbstraction,
       ApiServiceAbstraction,
+      PinServiceAbstraction,
       CryptoServiceAbstraction,
       CryptoFunctionServiceAbstraction,
       CollectionServiceAbstraction,
@@ -812,7 +818,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: InternalMasterPasswordServiceAbstraction,
     useClass: MasterPasswordService,
-    deps: [StateProvider],
+    deps: [StateProvider, StateServiceAbstraction, KeyGenerationServiceAbstraction, EncryptService],
   }),
   safeProvider({
     provide: MasterPasswordServiceAbstraction,
@@ -845,7 +851,7 @@ const safeProviders: SafeProvider[] = [
       I18nServiceAbstraction,
       UserVerificationApiServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
-      PinCryptoServiceAbstraction,
+      PinServiceAbstraction,
       LogService,
       VaultTimeoutSettingsServiceAbstraction,
       PlatformUtilsServiceAbstraction,
@@ -995,14 +1001,18 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
-    provide: PinCryptoServiceAbstraction,
-    useClass: PinCryptoService,
+    provide: PinServiceAbstraction,
+    useClass: PinService,
     deps: [
-      StateServiceAbstraction,
-      CryptoServiceAbstraction,
-      VaultTimeoutSettingsServiceAbstraction,
-      LogService,
+      AccountServiceAbstraction,
+      CryptoFunctionServiceAbstraction,
+      EncryptService,
       KdfConfigServiceAbstraction,
+      KeyGenerationServiceAbstraction,
+      LogService,
+      MasterPasswordServiceAbstraction,
+      StateProvider,
+      StateServiceAbstraction,
     ],
   }),
   safeProvider({

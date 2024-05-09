@@ -153,7 +153,7 @@ type EmailDomainOptions = {
   domain: string;
 };
 
-export class ForwarderOptionsMigrator extends Migrator<62, 63> {
+export class ForwarderOptionsMigrator extends Migrator<63, 64> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<AccountType>();
 

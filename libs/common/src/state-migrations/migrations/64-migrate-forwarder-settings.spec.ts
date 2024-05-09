@@ -14,7 +14,7 @@ import {
   NAVIGATION,
   SIMPLE_LOGIN,
   SUBADDRESS,
-} from "./63-migrate-forwarder-settings";
+} from "./64-migrate-forwarder-settings";
 
 function migrationHelper(usernameGenerationOptions: ExpectedOptions) {
   const helper = mockMigrationHelper(
@@ -38,7 +38,7 @@ function migrationHelper(usernameGenerationOptions: ExpectedOptions) {
         },
       },
     },
-    62,
+    63,
   );
 
   return helper;
@@ -64,7 +64,7 @@ describe("ForwarderOptionsMigrator", () => {
         type: "catchall",
         forwardedService: "simplelogin",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -80,7 +80,7 @@ describe("ForwarderOptionsMigrator", () => {
         catchallType: "random",
         catchallDomain: "example.com",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -96,7 +96,7 @@ describe("ForwarderOptionsMigrator", () => {
         wordCapitalize: true,
         wordIncludeNumber: false,
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -112,7 +112,7 @@ describe("ForwarderOptionsMigrator", () => {
         subaddressType: "random",
         subaddressEmail: "j.d@example.com",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -129,7 +129,7 @@ describe("ForwarderOptionsMigrator", () => {
         forwardedAnonAddyApiToken: "some_addyio_token",
         forwardedAnonAddyDomain: "some_addyio_domain",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -145,7 +145,7 @@ describe("ForwarderOptionsMigrator", () => {
       const helper = migrationHelper({
         forwardedDuckDuckGoToken: "some_duckduckgo_token",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -159,7 +159,7 @@ describe("ForwarderOptionsMigrator", () => {
       const helper = migrationHelper({
         forwardedFirefoxApiToken: "some_firefox_token",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -173,7 +173,7 @@ describe("ForwarderOptionsMigrator", () => {
       const helper = migrationHelper({
         forwardedFastmailApiToken: "some_fastmail_token",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -188,7 +188,7 @@ describe("ForwarderOptionsMigrator", () => {
         forwardedForwardEmailApiToken: "some_forwardemail_token",
         forwardedForwardEmailDomain: "some_forwardemail_domain",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 
@@ -204,7 +204,7 @@ describe("ForwarderOptionsMigrator", () => {
         forwardedSimpleLoginApiKey: "some_simplelogin_token",
         forwardedSimpleLoginBaseUrl: "some_simplelogin_baseurl",
       });
-      const migrator = new ForwarderOptionsMigrator(62, 63);
+      const migrator = new ForwarderOptionsMigrator(63, 64);
 
       await migrator.migrate(helper);
 

@@ -5,12 +5,18 @@ import {
   EncryptedHistory,
   GeneratorHistoryMigrator,
   HISTORY,
-} from "./62-migrate-generator-history";
+} from "./63-migrate-generator-history";
 
 function migrationHelper(encrypted: EncryptedHistory) {
   const helper = mockMigrationHelper(
     {
-      authenticatedAccounts: ["SomeAccount"],
+      global_account_accounts: {
+        SomeAccount: {
+          email: "SomeAccount",
+          name: "SomeAccount",
+          emailVerified: true,
+        },
+      },
       SomeAccount: {
         data: {
           passwordGenerationHistory: {
@@ -25,7 +31,7 @@ function migrationHelper(encrypted: EncryptedHistory) {
         },
       },
     },
-    59,
+    62,
   );
 
   return helper;
@@ -48,7 +54,7 @@ describe("PasswordOptionsMigrator", () => {
   describe("migrate", () => {
     it("migrates generator type", async () => {
       const helper = migrationHelper([{ this: "should be copied" }, { this: "too" }]);
-      const migrator = new GeneratorHistoryMigrator(61, 62);
+      const migrator = new GeneratorHistoryMigrator(62, 63);
 
       await migrator.migrate(helper);
 

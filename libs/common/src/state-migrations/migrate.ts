@@ -58,16 +58,17 @@ import { RemoveRefreshTokenMigratedFlagMigrator } from "./migrations/58-remove-r
 import { KdfConfigMigrator } from "./migrations/59-move-kdf-config-to-state-provider";
 import { RemoveLegacyEtmKeyMigrator } from "./migrations/6-remove-legacy-etm-key";
 import { KnownAccountsMigrator } from "./migrations/60-known-accounts";
-import { PasswordOptionsMigrator } from "./migrations/61-migrate-password-settings";
-import { GeneratorHistoryMigrator } from "./migrations/62-migrate-generator-history";
-import { ForwarderOptionsMigrator } from "./migrations/63-migrate-forwarder-settings";
+import { PinStateMigrator } from "./migrations/61-move-pin-state-to-providers";
+import { PasswordOptionsMigrator } from "./migrations/62-migrate-password-settings";
+import { GeneratorHistoryMigrator } from "./migrations/63-migrate-generator-history";
+import { ForwarderOptionsMigrator } from "./migrations/64-migrate-forwarder-settings";
 import { MoveBiometricAutoPromptToAccount } from "./migrations/7-move-biometric-auto-prompt-to-account";
 import { MoveStateVersionMigrator } from "./migrations/8-move-state-version";
 import { MoveBrowserSettingsToGlobal } from "./migrations/9-move-browser-settings-to-global";
 import { MinVersionMigrator } from "./migrations/min-version";
 
 export const MIN_VERSION = 3;
-export const CURRENT_VERSION = 63;
+export const CURRENT_VERSION = 64;
 export type MinVersion = typeof MIN_VERSION;
 
 export function createMigrationBuilder() {
@@ -130,9 +131,10 @@ export function createMigrationBuilder() {
     .with(RemoveRefreshTokenMigratedFlagMigrator, 57, 58)
     .with(KdfConfigMigrator, 58, 59)
     .with(KnownAccountsMigrator, 59, 60)
-    .with(PasswordOptionsMigrator, 60, 61)
-    .with(GeneratorHistoryMigrator, 61, 62)
-    .with(ForwarderOptionsMigrator, 62, CURRENT_VERSION);
+    .with(PinStateMigrator, 60, 61)
+    .with(PasswordOptionsMigrator, 61, 62)
+    .with(GeneratorHistoryMigrator, 62, 63)
+    .with(ForwarderOptionsMigrator, 63, CURRENT_VERSION);
 }
 
 export async function currentVersion(

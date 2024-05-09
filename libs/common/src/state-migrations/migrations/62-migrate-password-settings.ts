@@ -83,7 +83,7 @@ export type PasswordGenerationOptions = {
   minSpecial?: number;
 };
 
-export class PasswordOptionsMigrator extends Migrator<60, 61> {
+export class PasswordOptionsMigrator extends Migrator<61, 62> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<AccountType>();
 
