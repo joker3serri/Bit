@@ -217,10 +217,11 @@ export class AcceptOrganizationInviteService {
       (p) => p.type === PolicyType.MasterPassword && p.enabled,
     );
 
-    const storedInvite = await this.getOrganizationInvite();
+    let storedInvite = await this.getOrganizationInvite();
     if (storedInvite?.email !== invite.email) {
       // clear stored invites if the email doesn't match
       await this.clearOrganizationInvitation();
+      storedInvite = null;
     }
     // if we don't have an org invite stored, we know the user hasn't been redirected yet to check the MP policy
     const hasNotCheckedMasterPasswordYet = storedInvite == null;

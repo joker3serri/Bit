@@ -108,6 +108,24 @@ describe("AcceptOrganizationInviteService", () => {
       expect(globalState.nextMock).toHaveBeenCalledWith(invite);
     });
 
+    it("clears the stored invite when a master password policy check is required but the stored invite doesn't match the provided one", async () => {
+      const storedInvite = createOrgInvite({ email: "wrongemail@example.com" });
+      const providedInvite = createOrgInvite();
+      await globalState.update(() => storedInvite);
+      policyApiService.getPoliciesByToken.mockResolvedValue([
+        {
+          type: PolicyType.MasterPassword,
+          enabled: true,
+        } as Policy,
+      ]);
+
+      const result = await sut.validateAndAcceptInvite(providedInvite);
+
+      expect(result).toBe(false);
+      expect(authService.logOut).toHaveBeenCalled();
+      expect(globalState.nextMock).toHaveBeenCalledWith(providedInvite);
+    });
+
     it("accepts the invitation request when the organization doesn't have a master password policy", async () => {
       const invite = createOrgInvite();
       policyApiService.getPoliciesByToken.mockResolvedValue([]);
