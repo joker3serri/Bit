@@ -598,7 +598,7 @@ export default class MainBackground {
         return Promise.resolve();
       },
       this.logService,
-      (logoutReason: LogoutReason) => this.logout(logoutReason),
+      (logoutReason: LogoutReason, userId?: UserId) => this.logout(logoutReason, userId),
     );
 
     this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
@@ -1226,7 +1226,6 @@ export default class MainBackground {
     }
   }
 
-  // TODO: figure out what this should look like
   async logout(logoutReason: LogoutReason, userId?: UserId) {
     const activeUserId = await firstValueFrom(
       this.accountService.activeAccount$.pipe(
@@ -1297,6 +1296,7 @@ export default class MainBackground {
       this.messagingService.send("switchAccountFinish");
     } else {
       this.messagingService.send("doneLoggingOut", {
+        logoutReason: logoutReason,
         userId: userBeingLoggedOut,
       });
     }
