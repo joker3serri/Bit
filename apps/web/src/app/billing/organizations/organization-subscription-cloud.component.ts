@@ -5,7 +5,8 @@ import { concatMap, firstValueFrom, lastValueFrom, Observable, Subject, takeUnti
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums";
+import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
+import { OrganizationApiKeyType, ProviderType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlanType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
@@ -29,6 +30,7 @@ import {
 
 import { BillingSyncApiKeyComponent } from "./billing-sync-api-key.component";
 import { DownloadLicenceDialogComponent } from "./download-license.component";
+import { ManageBilling } from "./icons/manage-billing.icon";
 import { SecretsManagerSubscriptionOptions } from "./sm-adjust-subscription.component";
 
 @Component({
@@ -48,10 +50,16 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   loading: boolean;
   locale: string;
   showUpdatedSubscriptionStatusSection$: Observable<boolean>;
+  manageBillingFromProviderPortal = ManageBilling;
+  isProviderManaged = false;
 
   protected readonly teamsStarter = ProductType.TeamsStarter;
 
   private destroy$ = new Subject<void>();
+
+  protected enableConsolidatedBilling$ = this.configService.getFeatureFlag$(
+    FeatureFlag.EnableConsolidatedBilling,
+  );
 
   constructor(
     private apiService: ApiService,
@@ -63,6 +71,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private configService: ConfigService,
+    private providerService: ProviderApiServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -85,7 +94,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
     this.showUpdatedSubscriptionStatusSection$ = this.configService.getFeatureFlag$(
       FeatureFlag.AC1795_UpdatedSubscriptionStatusSection,
-      false,
     );
   }
 
@@ -101,6 +109,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.loading = true;
     this.locale = await firstValueFrom(this.i18nService.locale$);
     this.userOrg = await this.organizationService.get(this.organizationId);
+    if (this.userOrg.hasProvider) {
+      const provider = await this.providerService.getProvider(this.userOrg.providerId);
+      const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
+      this.isProviderManaged = provider.type == ProviderType.Msp && enableConsolidatedBilling;
+    }
+
     if (this.userOrg.canViewSubscription) {
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
       this.lineItems = this.sub?.subscription?.items;
