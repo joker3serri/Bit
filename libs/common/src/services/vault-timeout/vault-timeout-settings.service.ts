@@ -43,7 +43,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     private cryptoService: CryptoService,
     private tokenService: TokenService,
     private policyService: PolicyService,
-    private stateService: StateService,
+    private stateService: StateService, // TODO: consider removing this
     private biometricStateService: BiometricStateService,
     private stateProvider: StateProvider,
     private logService: LogService,
@@ -291,7 +291,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
         this.userDecryptionOptionsService.userDecryptionOptionsById$(userId),
       );
 
-      return !!decryptionOptions.hasMasterPassword;
+      return !!decryptionOptions?.hasMasterPassword;
     } else {
       return await firstValueFrom(this.userDecryptionOptionsService.hasMasterPassword$);
     }
