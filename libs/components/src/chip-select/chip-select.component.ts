@@ -12,7 +12,7 @@ import { MenuItemDirective, MenuModule } from "../menu";
   standalone: true,
   imports: [CommonModule, ButtonModule, IconButtonModule, MenuModule],
 })
-export class ChipComponent {
+export class ChipSelectComponent {
   @Input()
   get selected() {
     return this._selected;

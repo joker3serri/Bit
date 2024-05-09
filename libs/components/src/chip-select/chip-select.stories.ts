@@ -2,11 +2,11 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
 import { MenuModule } from "../menu";
 
-import { ChipComponent } from "./chip-select.component";
+import { ChipSelectComponent } from "./chip-select.component";
 
 export default {
-  title: "Component Library/Chip",
-  component: ChipComponent,
+  title: "Component Library/Chip Select",
+  component: ChipSelectComponent,
   decorators: [
     moduleMetadata({
       imports: [MenuModule],
@@ -15,7 +15,7 @@ export default {
   ],
 } as Meta;
 
-type Story = StoryObj<ChipComponent>;
+type Story = StoryObj<ChipSelectComponent>;
 
 export const Default: Story = {
   render: (args) => ({
