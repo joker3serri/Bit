@@ -1,3 +1,4 @@
+import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionAccessDetailsResponse } from "@bitwarden/common/src/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -7,6 +8,7 @@ import { CollectionAccessSelectionView } from "../../../admin-console/organizati
 export class CollectionAdminView extends CollectionView {
   groups: CollectionAccessSelectionView[] = [];
   users: CollectionAccessSelectionView[] = [];
+  addAccess: boolean;
 
   /**
    * Flag indicating the user has been explicitly assigned to this Collection
@@ -31,6 +33,36 @@ export class CollectionAdminView extends CollectionView {
     this.assigned = response.assigned;
   }
 
+  groupsCanManage() {
+    if (this.groups.length === 0) {
+      return this.groups;
+    }
+
+    const returnedGroups = this.groups.filter((group) => {
+      if (group.manage) {
+        return group;
+      }
+    });
+    return returnedGroups;
+  }
+
+  usersCanManage(revokedUsers: OrganizationUserUserDetailsResponse[]) {
+    if (this.users.length === 0) {
+      return this.users;
+    }
+
+    const returnedUsers = this.users.filter((user) => {
+      const isRevoked = revokedUsers.some((revoked) => revoked.id === user.id);
+      if (user.manage && !isRevoked) {
+        return user;
+      }
+    });
+    return returnedUsers;
+  }
+
+  /**
+   * Whether the current user can edit the collection, including user and group access
+   */
   override canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     return org?.flexibleCollections
       ? org?.canEditAnyCollection(flexibleCollectionsV1Enabled) || this.manage
@@ -42,5 +74,19 @@ export class CollectionAdminView extends CollectionView {
     return org?.flexibleCollections
       ? org?.canDeleteAnyCollection || (!org?.limitCollectionCreationDeletion && this.manage)
       : org?.canDeleteAnyCollection || (org?.canDeleteAssignedCollections && this.assigned);
+  }
+
+  /**
+   * Whether the user can modify user access to this collection
+   */
+  canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+    return this.canEdit(org, flexibleCollectionsV1Enabled) || org.permissions.manageUsers;
+  }
+
+  /**
+   * Whether the user can modify group access to this collection
+   */
+  canEditGroupAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+    return this.canEdit(org, flexibleCollectionsV1Enabled) || org.permissions.manageGroups;
   }
 }

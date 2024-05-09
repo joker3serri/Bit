@@ -169,6 +169,12 @@ export abstract class LoginStrategy {
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId });
     const vaultTimeout = await this.stateService.getVaultTimeout({ userId });
 
+    await this.accountService.addAccount(userId, {
+      name: accountInformation.name,
+      email: accountInformation.email,
+      emailVerified: accountInformation.email_verified,
+    });
+
     // set access token and refresh token before account initialization so authN status can be accurate
     // User id will be derived from the access token.
     await this.tokenService.setTokens(
@@ -177,6 +183,8 @@ export abstract class LoginStrategy {
       vaultTimeout,
       tokenResponse.refreshToken, // Note: CLI login via API key sends undefined for refresh token.
     );
+
+    await this.accountService.switchAccount(userId);
 
     await this.stateService.addAccount(
       new Account({
@@ -233,6 +241,7 @@ export abstract class LoginStrategy {
 
     // Must come before setting keys, user key needs email to update additional keys
     const userId = await this.saveAccountInformation(response);
+    result.userId = userId;
 
     if (response.twoFactorToken != null) {
       // note: we can read email from access token b/c it was saved in saveAccountInformation
@@ -241,9 +250,9 @@ export abstract class LoginStrategy {
       await this.tokenService.setTwoFactorToken(userEmail, response.twoFactorToken);
     }
 
-    await this.setMasterKey(response);
+    await this.setMasterKey(response, userId);
     await this.setUserKey(response, userId);
-    await this.setPrivateKey(response);
+    await this.setPrivateKey(response, userId);
 
     this.messagingService.send("loggedIn");
 
@@ -251,9 +260,9 @@ export abstract class LoginStrategy {
   }
 
   // The keys comes from different sources depending on the login strategy
-  protected abstract setMasterKey(response: IdentityTokenResponse): Promise<void>;
+  protected abstract setMasterKey(response: IdentityTokenResponse, userId: UserId): Promise<void>;
   protected abstract setUserKey(response: IdentityTokenResponse, userId: UserId): Promise<void>;
-  protected abstract setPrivateKey(response: IdentityTokenResponse): Promise<void>;
+  protected abstract setPrivateKey(response: IdentityTokenResponse, userId: UserId): Promise<void>;
 
   // Old accounts used master key for encryption. We are forcing migrations but only need to
   // check on password logins
@@ -261,9 +270,10 @@ export abstract class LoginStrategy {
     return false;
   }
 
-  protected async createKeyPairForOldAccount() {
+  protected async createKeyPairForOldAccount(userId: UserId) {
     try {
-      const [publicKey, privateKey] = await this.cryptoService.makeKeyPair();
+      const userKey = await this.cryptoService.getUserKeyWithLegacySupport(userId);
+      const [publicKey, privateKey] = await this.cryptoService.makeKeyPair(userKey);
       await this.apiService.postAccountKeys(new KeysRequest(publicKey, privateKey.encryptedString));
       return privateKey.encryptedString;
     } catch (e) {

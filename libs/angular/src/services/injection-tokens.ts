@@ -1,8 +1,8 @@
 import { InjectionToken } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 
+import { ClientType } from "@bitwarden/common/enums";
 import {
-  AbstractMemoryStorageService,
   AbstractStorageService,
   ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
@@ -23,7 +23,7 @@ export class SafeInjectionToken<T> extends InjectionToken<T> {
 
 export const WINDOW = new SafeInjectionToken<Window>("WINDOW");
 export const OBSERVABLE_MEMORY_STORAGE = new SafeInjectionToken<
-  AbstractMemoryStorageService & ObservableStorageService
+  AbstractStorageService & ObservableStorageService
 >("OBSERVABLE_MEMORY_STORAGE");
 export const OBSERVABLE_DISK_STORAGE = new SafeInjectionToken<
   AbstractStorageService & ObservableStorageService
@@ -31,9 +31,7 @@ export const OBSERVABLE_DISK_STORAGE = new SafeInjectionToken<
 export const OBSERVABLE_DISK_LOCAL_STORAGE = new SafeInjectionToken<
   AbstractStorageService & ObservableStorageService
 >("OBSERVABLE_DISK_LOCAL_STORAGE");
-export const MEMORY_STORAGE = new SafeInjectionToken<AbstractMemoryStorageService>(
-  "MEMORY_STORAGE",
-);
+export const MEMORY_STORAGE = new SafeInjectionToken<AbstractStorageService>("MEMORY_STORAGE");
 export const SECURE_STORAGE = new SafeInjectionToken<AbstractStorageService>("SECURE_STORAGE");
 export const STATE_FACTORY = new SafeInjectionToken<StateFactory>("STATE_FACTORY");
 export const LOGOUT_CALLBACK = new SafeInjectionToken<
@@ -52,3 +50,4 @@ export const SYSTEM_THEME_OBSERVABLE = new SafeInjectionToken<Observable<ThemeTy
 export const INTRAPROCESS_MESSAGING_SUBJECT = new SafeInjectionToken<Subject<Message<object>>>(
   "INTRAPROCESS_MESSAGING_SUBJECT",
 );
+export const CLIENT_TYPE = new SafeInjectionToken<ClientType>("CLIENT_TYPE");
