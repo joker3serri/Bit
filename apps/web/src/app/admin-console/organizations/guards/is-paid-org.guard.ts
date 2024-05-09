@@ -43,7 +43,9 @@ export class IsPaidOrgGuard implements CanActivate {
           icon: "bwi-arrow-circle-up",
         });
         if (upgradeConfirmed) {
-          await this.router.navigate(["organizations", org.id, "billing", "subscription"]);
+          await this.router.navigate(["organizations", org.id, "billing", "subscription"], {
+            queryParams: { upgrade: true },
+          });
         }
       }
     }
