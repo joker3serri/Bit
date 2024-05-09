@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
-import { DeviceType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -12,20 +11,6 @@ import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
-
-const RateUrls = {
-  [DeviceType.ChromeExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
-  [DeviceType.FirefoxExtension]:
-    "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/#reviews",
-  [DeviceType.OperaExtension]:
-    "https://addons.opera.com/en/extensions/details/bitwarden-free-password-manager/#feedback-container",
-  [DeviceType.EdgeExtension]:
-    "https://microsoftedge.microsoft.com/addons/detail/jbkfoedolllekgbhcbcoahefnbanhhlh",
-  [DeviceType.VivaldiExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
-  [DeviceType.SafariExtension]: "https://apps.apple.com/app/bitwarden/id1352778147",
-};
 
 @Component({
   selector: "tools-settings",
@@ -73,13 +58,6 @@ export class SettingsComponent implements OnInit {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/export"]);
-  }
-
-  rate() {
-    const deviceType = this.platformUtilsService.getDevice();
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    BrowserApi.createNewTab((RateUrls as any)[deviceType]);
   }
 
   ngOnDestroy() {
