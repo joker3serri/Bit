@@ -8081,5 +8081,8 @@
   },
   "manageBillingFromProviderPortalMessage": {
     "message": "Manage billing from the Provider Portal"
+  },
+  "addToFolder": {
+    "message": "Add to folder"
   }
 }
