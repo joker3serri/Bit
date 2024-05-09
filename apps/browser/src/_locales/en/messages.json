@@ -192,6 +192,9 @@
   "logOut": {
     "message": "Log out"
   },
+  "aboutBitwarden": {
+    "message": "About Bitwarden"
+  },
   "about": {
     "message": "About"
   },

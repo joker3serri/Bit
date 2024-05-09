@@ -13,8 +13,6 @@ import { DialogService } from "@bitwarden/components";
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 
-import { AboutDialogComponent } from "./about-dialog/about-dialog.component";
-
 const RateUrls = {
   [DeviceType.ChromeExtension]:
     "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
@@ -81,10 +79,6 @@ export class SettingsComponent implements OnInit {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.router.navigate(["/export"]);
-  }
-
-  about() {
-    this.dialogService.open(AboutDialogComponent);
   }
 
   rate() {
