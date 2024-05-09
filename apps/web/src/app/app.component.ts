@@ -267,6 +267,14 @@ export class AppComponent implements OnDestroy, OnInit {
   private async displayLogoutReason(logoutReason: LogoutReason) {
     let toastOptions: ToastOptions;
     switch (logoutReason) {
+      case "invalidSecurityStamp": {
+        toastOptions = {
+          variant: "warning",
+          title: this.i18nService.t("loggedOut"),
+          message: this.i18nService.t("loginExpired"),
+        };
+        break;
+      }
       case "sessionExpired": {
         toastOptions = {
           variant: "warning",
