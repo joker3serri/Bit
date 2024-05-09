@@ -162,7 +162,7 @@ export class VaultItemsComponent {
       }
     }
 
-    return collection.canDelete(organization);
+    return collection.canDelete(organization, this.flexibleCollectionsV1Enabled);
   }
 
   protected toggleAll() {

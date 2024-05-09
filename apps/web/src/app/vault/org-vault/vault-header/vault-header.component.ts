@@ -204,7 +204,7 @@ export class VaultHeaderComponent implements OnInit {
     }
 
     // Otherwise, check if we can delete the specified collection
-    return this.collection.node.canDelete(this.organization);
+    return this.collection.node.canDelete(this.organization, this.flexibleCollectionsV1Enabled);
   }
 
   get canCreateCollection(): boolean {
