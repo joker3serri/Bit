@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 
-import { BrowserApi } from "../../platform/browser/browser-api";
+import { BrowserApi } from "../../../../platform/browser/browser-api";
 
 @Component({
-  selector: "app-help-and-feedback",
-  templateUrl: "help-and-feedback.component.html",
+  selector: "app-about-page",
+  templateUrl: "about-page.component.html",
 })
-export class HelpAndFeedbackComponent {
+export class AboutPageComponent {
   launchHelp() {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

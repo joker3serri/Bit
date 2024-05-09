@@ -36,6 +36,7 @@ import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/pass
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
+import { AboutPageComponent } from "../tools/popup/settings/about-page/about-page.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
 import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
@@ -58,7 +59,6 @@ import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.c
 
 import { extensionRefreshRedirect, extensionRefreshSwap } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
-import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
 import { TabsV2Component } from "./tabs-v2.component";
 import { TabsComponent } from "./tabs.component";
@@ -348,10 +348,10 @@ const routes: Routes = [
     data: { state: "update-temp-password" },
   },
   {
-    path: "help-and-feedback",
-    component: HelpAndFeedbackComponent,
+    path: "about",
+    component: AboutPageComponent,
     canActivate: [AuthGuard],
-    data: { state: "help-and-feedback" },
+    data: { state: "about" },
   },
   ...extensionRefreshSwap(TabsComponent, TabsV2Component, {
     path: "tabs",
