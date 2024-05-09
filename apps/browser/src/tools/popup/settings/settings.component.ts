@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Subject } from "rxjs";
+import { Subject } from "rxjs";
 
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { DeviceType } from "@bitwarden/common/enums";
@@ -58,12 +58,6 @@ export class SettingsComponent implements OnInit {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");
     }
-  }
-
-  async webVault() {
-    const env = await firstValueFrom(this.environmentService.environment$);
-    const url = env.getWebVaultUrl();
-    await BrowserApi.createNewTab(url);
   }
 
   async import() {

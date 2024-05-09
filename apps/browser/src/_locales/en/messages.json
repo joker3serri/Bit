@@ -256,8 +256,8 @@
   "passGenInfo": {
     "message": "Automatically generate strong, unique passwords for your logins."
   },
-  "bitWebVault": {
-    "message": "Bitwarden web vault"
+  "bitWebVaultApp": {
+    "message": "Bitwarden web app"
   },
   "importItems": {
     "message": "Import items"
