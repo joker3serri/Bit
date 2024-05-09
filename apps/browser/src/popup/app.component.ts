@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angula
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { Subject, takeUntil, firstValueFrom, concatMap, filter, tap } from "rxjs";
 
+import { LogoutReason } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -10,7 +11,12 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { MessageListener } from "@bitwarden/common/platform/messaging";
 import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
+import {
+  DialogService,
+  SimpleDialogOptions,
+  ToastOptions,
+  ToastService,
+} from "@bitwarden/components";
 
 import { BrowserApi } from "../platform/browser/browser-api";
 import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
@@ -84,6 +90,10 @@ export class AppComponent implements OnInit, OnDestroy {
         tap((msg: any) => {
           if (msg.command === "doneLoggingOut") {
             this.authService.logOut(async () => {
+              if (msg.logoutReason) {
+                await this.displayLogoutReason(msg.logoutReason);
+              }
+
               // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               this.router.navigate(["home"]);
@@ -231,5 +241,37 @@ export class AppComponent implements OnInit, OnDestroy {
       this.browserSendStateService.setBrowserSendComponentState(null),
       this.browserSendStateService.setBrowserSendTypeComponentState(null),
     ]);
+  }
+
+  private async displayLogoutReason(logoutReason: LogoutReason) {
+    let toastOptions: ToastOptions;
+    switch (logoutReason) {
+      case "invalidSecurityStamp": {
+        toastOptions = {
+          variant: "warning",
+          title: this.i18nService.t("loggedOut"),
+          message: this.i18nService.t("loginExpired"),
+        };
+        break;
+      }
+      case "sessionExpired": {
+        toastOptions = {
+          variant: "warning",
+          title: this.i18nService.t("loggedOut"),
+          message: this.i18nService.t("loginExpired"),
+        };
+        break;
+      }
+      default: {
+        toastOptions = {
+          variant: "warning",
+          title: this.i18nService.t("loggedOut"),
+          message: this.i18nService.t("loggedOutDesc"),
+        };
+        break;
+      }
+    }
+
+    this.toastService.showToast(toastOptions);
   }
 }
