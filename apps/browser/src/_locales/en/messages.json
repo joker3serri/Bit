@@ -3035,6 +3035,12 @@
   "accountSecurity": {
     "message": "Account security"
   },
+  "notifications": {
+    "message": "Notifications"
+  }, 
+  "appearance": {
+    "message": "Appearance"
+  },
   "errorAssigningTargetCollection": {
     "message": "Error assigning target collection."
   },
