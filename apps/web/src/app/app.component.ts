@@ -298,22 +298,6 @@ export class AppComponent implements OnDestroy, OnInit {
         };
         break;
       }
-      case "accessTokenUnableToBeDecrypted": {
-        toastOptions = {
-          variant: "error",
-          title: this.i18nService.t("loggedOut"),
-          message: this.i18nService.t("accessTokenUnableToBeDecrypted"),
-        };
-        break;
-      }
-      case "refreshTokenSecureStorageRetrievalFailure": {
-        toastOptions = {
-          variant: "error",
-          title: this.i18nService.t("loggedOut"),
-          message: this.i18nService.t("refreshTokenSecureStorageRetrievalFailure"),
-        };
-        break;
-      }
       default: {
         toastOptions = {
           variant: "warning",
