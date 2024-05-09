@@ -195,4 +195,4 @@ import "../platform/popup/locales";
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

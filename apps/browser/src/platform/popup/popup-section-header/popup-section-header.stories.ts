@@ -1,9 +1,11 @@
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
-import { CardComponent } from "../../../../../../libs/components/src/card";
-import { IconButtonModule } from "../../../../../../libs/components/src/icon-button";
-import { SectionComponent } from "../../../../../../libs/components/src/section";
-import { TypographyModule } from "../../../../../../libs/components/src/typography";
+import {
+  CardComponent,
+  IconButtonModule,
+  SectionComponent,
+  TypographyModule,
+} from "@bitwarden/components";
 
 import { PopupSectionHeaderComponent } from "./popup-section-header.component";
 
