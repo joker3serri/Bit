@@ -2,7 +2,6 @@ import * as FormData from "form-data";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import * as fe from "node-fetch";
 
-import { LogoutReason } from "@bitwarden/auth/common";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -26,7 +25,7 @@ export class NodeApiService extends ApiService {
     stateService: StateService,
     refreshAccessTokenErrorCallback: () => Promise<void>,
     logService: LogService,
-    logoutCallback: (logoutReason: LogoutReason) => Promise<void>,
+    logoutCallback: () => Promise<void>,
     customUserAgent: string = null,
   ) {
     super(

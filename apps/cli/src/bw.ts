@@ -13,7 +13,6 @@ import {
   PinCryptoService,
   PinCryptoServiceAbstraction,
   UserDecryptionOptionsService,
-  LogoutReason,
 } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
@@ -258,8 +257,7 @@ export class Main {
       p = path.join(process.env.HOME, ".config/Bitwarden CLI");
     }
 
-    const logoutCallback = async (logoutReason: LogoutReason, userId?: UserId) =>
-      await this.logout(logoutReason, userId);
+    const logoutCallback = async () => await this.logout();
 
     this.platformUtilsService = new CliPlatformUtilsService(ClientType.Cli, packageJson);
     this.logService = new ConsoleLogService(
@@ -736,7 +734,7 @@ export class Main {
     }
   }
 
-  async logout(logoutReason: LogoutReason, passedInUserId?: UserId) {
+  async logout() {
     this.authService.logOut(() => {
       /* Do nothing */
     });
