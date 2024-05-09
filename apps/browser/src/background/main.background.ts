@@ -590,6 +590,7 @@ export default class MainBackground {
       this.appIdService,
       this.stateService,
       () => {
+        // Send toast to popup
         this.messagingService.send("showToast", {
           type: "error",
           title: this.i18nService.t("errorRefreshingAccessToken"),
