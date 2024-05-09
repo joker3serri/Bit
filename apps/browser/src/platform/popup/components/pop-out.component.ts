@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
+import BrowserPopupUtils from "../browser-popup-utils";
 
 @Component({
   selector: "app-pop-out",
