@@ -324,12 +324,7 @@ export class AppComponent implements OnDestroy, OnInit {
       }
     }
 
-    //const activeToast =
     this.toastService.showToast(toastOptions);
-    // if (delayLogoutToShowToast) {
-    //   // Since desktop has process reload on logout, we need to wait for the toast to be hidden before triggering the logout.
-    //   await firstValueFrom(activeToast.onHidden);
-    // }
   }
 
   private async logOut(logoutReason: LogoutReason, redirect = true) {
