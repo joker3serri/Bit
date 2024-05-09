@@ -8,7 +8,7 @@ import { MenuItemDirective, MenuModule } from "../menu";
 
 @Component({
   selector: "bit-chip",
-  templateUrl: "chip-select.template.html",
+  templateUrl: "chip-select.component.html",
   standalone: true,
   imports: [CommonModule, ButtonModule, IconButtonModule, MenuModule],
 })
