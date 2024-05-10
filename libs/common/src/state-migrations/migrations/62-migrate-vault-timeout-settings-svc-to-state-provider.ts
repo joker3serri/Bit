@@ -62,7 +62,7 @@ export enum ClientType {
   Cli = "cli",
 }
 
-export class VaultTimeoutSettingsServiceStateProviderMigrator extends Migrator<60, 61> {
+export class VaultTimeoutSettingsServiceStateProviderMigrator extends Migrator<61, 62> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const globalData = await helper.get<ExpectedGlobalType>("global");
 
