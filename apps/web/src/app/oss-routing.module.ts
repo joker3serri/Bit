@@ -17,6 +17,7 @@ import { VerifyRecoverDeleteProviderComponent } from "./admin-console/providers/
 import { CreateOrganizationComponent } from "./admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "./admin-console/settings/sponsored-families.component";
 import { AcceptOrganizationComponent } from "./auth/accept-organization.component";
+import { AnonLayoutWrapperComponent } from "./auth/anon-layout-wrapper.component";
 import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
@@ -93,12 +94,6 @@ const routes: Routes = [
         path: "trial",
         redirectTo: "register",
         pathMatch: "full",
-      },
-      {
-        path: "sso",
-        component: SsoComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "enterpriseSingleSignOn" },
       },
       {
         path: "set-password",
@@ -294,6 +289,19 @@ const routes: Routes = [
     path: "organizations",
     loadChildren: () =>
       import("./admin-console/organizations/organization.module").then((m) => m.OrganizationModule),
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "sso",
+        component: SsoComponent,
+        data: {
+          pageTitle: "enterpriseSingleSignOn",
+        },
+      },
+    ],
   },
 ];
 
