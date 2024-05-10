@@ -27,12 +27,18 @@ on:
       - '.github/workflows/build-cli.yml'
   workflow_dispatch:
     inputs: {}
+  pull_request_target:
+      types: [opened, synchronize]
 
 defaults:
   run:
     working-directory: apps/cli
 
 jobs:
+  check-run:
+    name: Check PR run
+    uses: bitwarden/gh-actions/.github/workflows/check-run.yml@main
+
   setup:
     name: Setup
     runs-on: ubuntu-22.04
@@ -362,6 +368,7 @@ jobs:
       - cli
       - cli-windows
       - snap
+      - check-run
     steps:
       - name: Check if any job failed
         working-directory: ${{ github.workspace }}
