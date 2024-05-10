@@ -648,7 +648,6 @@ const safeProviders: SafeProvider[] = [
       CryptoServiceAbstraction,
       TokenServiceAbstraction,
       PolicyServiceAbstraction,
-      StateServiceAbstraction,
       BiometricStateService,
       StateProvider,
       LogService,

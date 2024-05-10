@@ -17,7 +17,6 @@ import { TokenService } from "../../auth/abstractions/token.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { LogService } from "../../platform/abstractions/log.service";
-import { StateService } from "../../platform/abstractions/state.service";
 import { BiometricStateService } from "../../platform/biometrics/biometric-state.service";
 import {
   VAULT_TIMEOUT,
@@ -34,7 +33,6 @@ describe("VaultTimeoutSettingsService", () => {
   let cryptoService: MockProxy<CryptoService>;
   let tokenService: MockProxy<TokenService>;
   let policyService: MockProxy<PolicyService>;
-  let stateService: MockProxy<StateService>;
   const biometricStateService = mock<BiometricStateService>();
   let vaultTimeoutSettingsService: VaultTimeoutSettingsServiceAbstraction;
 
@@ -51,7 +49,6 @@ describe("VaultTimeoutSettingsService", () => {
     cryptoService = mock<CryptoService>();
     tokenService = mock<TokenService>();
     policyService = mock<PolicyService>();
-    stateService = mock<StateService>();
 
     userDecryptionOptionsSubject = new BehaviorSubject(null);
     userDecryptionOptionsService.userDecryptionOptions$ = userDecryptionOptionsSubject;
@@ -328,7 +325,6 @@ describe("VaultTimeoutSettingsService", () => {
       cryptoService,
       tokenService,
       policyService,
-      stateService,
       biometricStateService,
       stateProvider,
       logService,

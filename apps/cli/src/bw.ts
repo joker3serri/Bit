@@ -418,7 +418,6 @@ export class Main {
       this.cryptoService,
       this.tokenService,
       this.policyService,
-      this.stateService,
       this.biometricStateService,
       this.stateProvider,
       this.logService,

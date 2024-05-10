@@ -27,7 +27,6 @@ import { TokenService } from "../../auth/abstractions/token.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { LogService } from "../../platform/abstractions/log.service";
-import { StateService } from "../../platform/abstractions/state.service";
 import { BiometricStateService } from "../../platform/biometrics/biometric-state.service";
 import { StateProvider } from "../../platform/state";
 import { UserId } from "../../types/guid";
@@ -43,7 +42,6 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     private cryptoService: CryptoService,
     private tokenService: TokenService,
     private policyService: PolicyService,
-    private stateService: StateService, // TODO: consider removing this
     private biometricStateService: BiometricStateService,
     private stateProvider: StateProvider,
     private logService: LogService,
