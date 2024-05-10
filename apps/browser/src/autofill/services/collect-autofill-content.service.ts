@@ -19,6 +19,7 @@ import {
   elementIsInputElement,
   elementIsTextAreaElement,
   nodeIsFormElement,
+  nodeIsInputElement,
 } from "../utils";
 
 import { AutofillOverlayContentService } from "./abstractions/autofill-overlay-content.service";
@@ -54,6 +55,7 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
     "image",
     "file",
   ]);
+  private useTreeWalkerStrategyFlagSet = false;
 
   constructor(
     domElementVisibilityService: DomElementVisibilityService,
@@ -363,7 +365,9 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
   ): FormFieldElement[] {
     let formFieldElements = previouslyFoundFormFieldElements;
     if (!formFieldElements) {
-      formFieldElements = this.deepQueryElements(document, this.formFieldQueryString, true);
+      formFieldElements = this.useTreeWalkerStrategyFlagSet
+        ? this.queryTreeWalkerForAutofillFormFieldElements()
+        : this.deepQueryElements(document, this.formFieldQueryString, true);
     }
 
     if (!fieldsLimit || formFieldElements.length <= fieldsLimit) {
@@ -930,13 +934,15 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
    * Queries all potential form and field elements from the DOM and returns
    * a collection of form and field elements. Leverages the TreeWalker API
    * to deep query Shadow DOM elements.
-   * @returns {{formElements: Node[], formFieldElements: Node[]}}
-   * @private
    */
   private queryAutofillFormAndFieldElements(): {
     formElements: HTMLFormElement[];
     formFieldElements: FormFieldElement[];
   } {
+    if (this.useTreeWalkerStrategyFlagSet) {
+      return this.queryTreeWalkerForAutofillFormAndFieldElements();
+    }
+
     const queriedElements = this.deepQueryElements<HTMLElement>(
       document,
       `form, ${this.formFieldQueryString}`,
@@ -1132,15 +1138,16 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
         continue;
       }
 
-      if (nodeIsFormElement(node) || this.isNodeFormFieldElement(node)) {
+      if (
+        !this.useTreeWalkerStrategyFlagSet &&
+        (nodeIsFormElement(node) || this.isNodeFormFieldElement(node))
+      ) {
         mutatedElements.push(node as HTMLElement);
       }
 
-      const autofillElements = this.deepQueryElements<HTMLElement>(
-        node,
-        `form, ${this.formFieldQueryString}`,
-        true,
-      );
+      const autofillElements = this.useTreeWalkerStrategyFlagSet
+        ? this.queryTreeWalkerForMutatedElements(node)
+        : this.deepQueryElements<HTMLElement>(node, `form, ${this.formFieldQueryString}`, true);
       if (autofillElements.length) {
         mutatedElements = mutatedElements.concat(autofillElements);
       }
@@ -1426,6 +1433,150 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
     }
     this.mutationObserver?.disconnect();
     this.intersectionObserver?.disconnect();
+  }
+
+  /**
+   * Queries the DOM for all the nodes that match the given filter callback
+   * and returns a collection of nodes.
+   * @param rootNode
+   * @param filterCallback
+   * @param isObservingShadowRoot
+   *
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   */
+  private queryAllTreeWalkerNodes(
+    rootNode: Node,
+    filterCallback: CallableFunction,
+    isObservingShadowRoot = true,
+  ): Node[] {
+    const treeWalkerQueryResults: Node[] = [];
+
+    this.buildTreeWalkerNodesQueryResults(
+      rootNode,
+      treeWalkerQueryResults,
+      filterCallback,
+      isObservingShadowRoot,
+    );
+
+    return treeWalkerQueryResults;
+  }
+
+  /**
+   * Recursively builds a collection of nodes that match the given filter callback.
+   * If a node has a ShadowRoot, it will be observed for mutations.
+   *
+   * @param rootNode
+   * @param treeWalkerQueryResults
+   * @param filterCallback
+   *
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   */
+  private buildTreeWalkerNodesQueryResults(
+    rootNode: Node,
+    treeWalkerQueryResults: Node[],
+    filterCallback: CallableFunction,
+    isObservingShadowRoot: boolean,
+  ) {
+    const treeWalker = document?.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT);
+    let currentNode = treeWalker?.currentNode;
+
+    while (currentNode) {
+      if (filterCallback(currentNode)) {
+        treeWalkerQueryResults.push(currentNode);
+      }
+
+      const nodeShadowRoot = this.getShadowRoot(currentNode);
+      if (nodeShadowRoot) {
+        if (isObservingShadowRoot) {
+          this.mutationObserver.observe(nodeShadowRoot, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+          });
+        }
+
+        this.buildTreeWalkerNodesQueryResults(
+          nodeShadowRoot,
+          treeWalkerQueryResults,
+          filterCallback,
+          isObservingShadowRoot,
+        );
+      }
+
+      currentNode = treeWalker?.nextNode();
+    }
+  }
+
+  /**
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   */
+  private queryTreeWalkerForAutofillFormAndFieldElements(): {
+    formElements: HTMLFormElement[];
+    formFieldElements: FormFieldElement[];
+  } {
+    const formElements: HTMLFormElement[] = [];
+    const formFieldElements: FormFieldElement[] = [];
+    this.queryAllTreeWalkerNodes(document.documentElement, (node: Node) => {
+      if (nodeIsFormElement(node)) {
+        formElements.push(node);
+        return true;
+      }
+
+      if (this.isNodeFormFieldElement(node)) {
+        formFieldElements.push(node as FormFieldElement);
+        return true;
+      }
+
+      return false;
+    });
+
+    return { formElements, formFieldElements };
+  }
+
+  /**
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   */
+  private queryTreeWalkerForAutofillFormFieldElements(): FormFieldElement[] {
+    return this.queryAllTreeWalkerNodes(document.documentElement, (node: Node) =>
+      this.isNodeFormFieldElement(node),
+    ) as FormFieldElement[];
+  }
+
+  /**
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   *
+   * @param node - The node to query
+   */
+  private queryTreeWalkerForMutatedElements(node: Node): HTMLElement[] {
+    return this.queryAllTreeWalkerNodes(
+      node,
+      (walkerNode: Node) =>
+        nodeIsFormElement(walkerNode) || this.isNodeFormFieldElement(walkerNode),
+    ) as HTMLElement[];
+  }
+
+  /**
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   */
+  private queryTreeWalkerForPasswordElements(): HTMLElement[] {
+    return this.queryAllTreeWalkerNodes(
+      document.documentElement,
+      (node: Node) => nodeIsInputElement(node) && node.type === "password",
+      false,
+    ) as HTMLElement[];
+  }
+
+  /**
+   * This is a temporary method to maintain a fallback strategy for the tree walker API
+   *
+   * @deprecated - This method remains as a fallback in the case that the deepQuery implementation fails.
+   */
+  isPasswordFieldWithinDocument(): boolean {
+    if (this.useTreeWalkerStrategyFlagSet) {
+      return Boolean(this.queryTreeWalkerForPasswordElements()?.length);
+    }
+
+    return Boolean(this.deepQueryElements(document, `input[type="password"]`)?.length);
   }
 }
 

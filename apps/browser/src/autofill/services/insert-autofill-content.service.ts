@@ -100,10 +100,7 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
    * @private
    */
   private isPasswordFieldWithinDocument(): boolean {
-    return Boolean(
-      this.collectAutofillContentService.deepQueryElements(document, `input[type="password"]`)
-        ?.length,
-    );
+    return this.collectAutofillContentService.isPasswordFieldWithinDocument();
   }
 
   /**

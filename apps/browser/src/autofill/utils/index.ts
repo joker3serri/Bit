@@ -248,6 +248,15 @@ function nodeIsElement(node: Node): node is Element {
 }
 
 /**
+ * Identifies whether a node is an input element.
+ *
+ * @param node - The node to check.
+ */
+function nodeIsInputElement(node: Node): node is HTMLInputElement {
+  return nodeIsElement(node) && elementIsInputElement(node);
+}
+
+/**
  * Identifies whether a node is a form element.
  *
  * @param node - The node to check.
@@ -274,5 +283,6 @@ export {
   elementIsDescriptionDetailsElement,
   elementIsDescriptionTermElement,
   nodeIsElement,
+  nodeIsInputElement,
   nodeIsFormElement,
 };
