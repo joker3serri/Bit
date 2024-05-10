@@ -28,7 +28,7 @@ export abstract class TokenService {
   setTokens: (
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     refreshToken?: string,
     clientIdClientSecret?: [string, string],
   ) => Promise<void>;

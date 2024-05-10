@@ -10,10 +10,10 @@ import { AbstractStorageService } from "../../platform/abstractions/storage.serv
 import { StorageLocation } from "../../platform/enums";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { UserId } from "../../types/guid";
-import { VaultTimeout } from "../../types/vault-timeout.type";
+import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
-import { DecodedAccessToken, TokenService } from "./token.service";
+import { DecodedAccessToken, TokenService, TokenStorageLocation } from "./token.service";
 import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
@@ -38,10 +38,10 @@ describe("TokenService", () => {
   let logService: MockProxy<LogService>;
 
   const memoryVaultTimeoutAction = VaultTimeoutAction.LogOut;
-  const memoryVaultTimeout = 30;
+  const memoryVaultTimeout: VaultTimeout = 30;
 
   const diskVaultTimeoutAction = VaultTimeoutAction.Lock;
-  const diskVaultTimeout: VaultTimeout = null;
+  const diskVaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
 
   const accessTokenJwt =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwibmJmIjoxNzA5MzI0MTExLCJpYXQiOjE3MDkzMjQxMTEsImV4cCI6MTcwOTMyNzcxMSwic2NvcGUiOlsiYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbIkFwcGxpY2F0aW9uIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6ImVjZTcwYTEzLTcyMTYtNDNjNC05OTc3LWIxMDMwMTQ2ZTFlNyIsImF1dGhfdGltZSI6MTcwOTMyNDEwNCwiaWRwIjoiYml0d2FyZGVuIiwicHJlbWl1bSI6ZmFsc2UsImVtYWlsIjoiZXhhbXBsZUBiaXR3YXJkZW4uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJzc3RhbXAiOiJHWTdKQU82NENLS1RLQkI2WkVBVVlMMldPUVU3QVNUMiIsIm5hbWUiOiJUZXN0IFVzZXIiLCJvcmdvd25lciI6WyI5MmI0OTkwOC1iNTE0LTQ1YTgtYmFkYi1iMTAzMDE0OGZlNTMiLCIzOGVkZTMyMi1iNGI0LTRiZDgtOWUwOS1iMTA3MDExMmRjMTEiLCJiMmQwNzAyOC1hNTgzLTRjM2UtOGQ2MC1iMTA3MDExOThjMjkiLCJiZjkzNGJhMi0wZmQ0LTQ5ZjItYTk1ZS1iMTA3MDExZmM5ZTYiLCJjMGI3Zjc1ZC0wMTVmLTQyYzktYjNhNi1iMTA4MDE3NjA3Y2EiXSwiZGV2aWNlIjoiNGI4NzIzNjctMGRhNi00MWEwLWFkY2ItNzdmMmZlZWZjNGY0IiwianRpIjoiNzUxNjFCRTQxMzFGRjVBMkRFNTExQjhDNEUyRkY4OUEifQ.n7roP8sSbfwcYdvRxZNZds27IK32TW6anorE6BORx_Q";
@@ -164,21 +164,33 @@ describe("TokenService", () => {
     describe("setAccessToken", () => {
       it("should throw an error if the access token is null", async () => {
         // Act
-        const result = tokenService.setAccessToken(null, VaultTimeoutAction.Lock, null);
+        const result = tokenService.setAccessToken(
+          null,
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).rejects.toThrow("Access token is required.");
       });
 
       it("should throw an error if an invalid token is passed in", async () => {
         // Act
-        const result = tokenService.setAccessToken("invalidToken", VaultTimeoutAction.Lock, null);
+        const result = tokenService.setAccessToken(
+          "invalidToken",
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).rejects.toThrow("JWT must have 3 parts");
       });
 
       it("should not throw an error as long as the token is valid", async () => {
         // Act
-        const result = tokenService.setAccessToken(accessTokenJwt, VaultTimeoutAction.Lock, null);
+        const result = tokenService.setAccessToken(
+          accessTokenJwt,
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).resolves.not.toThrow();
       });
@@ -1992,6 +2004,42 @@ describe("TokenService", () => {
       await expect(result).rejects.toThrow("Access token is required.");
     });
 
+    it("should throw an error if the vault timeout is missing", async () => {
+      // Arrange
+      const refreshToken = "refreshToken";
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout: VaultTimeout = null;
+
+      // Act
+      const result = tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+      );
+
+      // Assert
+      await expect(result).rejects.toThrow("Vault Timeout is required.");
+    });
+
+    it("should throw an error if the vault timeout action is missing", async () => {
+      // Arrange
+      const refreshToken = "refreshToken";
+      const vaultTimeoutAction: VaultTimeoutAction = null;
+      const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+
+      // Act
+      const result = tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+      );
+
+      // Assert
+      await expect(result).rejects.toThrow("Vault Timeout Action is required.");
+    });
+
     it("should not throw an error if the refresh token is missing and it should just not set it", async () => {
       // Arrange
       const refreshToken: string = null;
@@ -2267,6 +2315,147 @@ describe("TokenService", () => {
         const result = await tokenService.getSecurityStamp(userIdFromAccessToken);
         // Assert
         expect(result).toEqual(mockSecurityStamp);
+      });
+    });
+  });
+
+  describe("determineStorageLocation", () => {
+    it("should throw an error if the vault timeout is null", async () => {
+      // Arrange
+      const vaultTimeout: VaultTimeout = null;
+      // Act
+      const result = (tokenService as any).determineStorageLocation(vaultTimeout);
+      // Assert
+      await expect(result).rejects.toThrow(
+        "TokenService - determineStorageLocation: We expect the vault timeout to always exist at this point.",
+      );
+    });
+
+    describe("Secure storage disabled", () => {
+      beforeEach(() => {
+        const supportsSecureStorage = false;
+        tokenService = createTokenService(supportsSecureStorage);
+      });
+
+      it.each([
+        [VaultTimeoutStringType.OnRestart],
+        [VaultTimeoutStringType.OnLocked],
+        [VaultTimeoutStringType.OnSleep],
+        [VaultTimeoutStringType.OnIdle],
+        [0],
+        [30],
+        [60],
+        [90],
+        [120],
+      ])(
+        "returns memory when the vault timeout action is logout and the vault timeout is defined %s (not Never)",
+        async (vaultTimeout: VaultTimeout) => {
+          // Arrange
+          const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+          const useSecureStorage = false;
+          // Act
+          const result = await (tokenService as any).determineStorageLocation(
+            vaultTimeoutAction,
+            vaultTimeout,
+            useSecureStorage,
+          );
+          // Assert
+          expect(result).toEqual(TokenStorageLocation.Memory);
+        },
+      );
+
+      it("returns disk when the vault timeout action is logout and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = false;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.Disk);
+      });
+
+      it("returns disk when the vault timeout action is lock and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.Lock;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = false;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.Disk);
+      });
+    });
+
+    describe("Secure storage enabled", () => {
+      beforeEach(() => {
+        const supportsSecureStorage = true;
+        tokenService = createTokenService(supportsSecureStorage);
+      });
+
+      it.each([
+        [VaultTimeoutStringType.OnRestart],
+        [VaultTimeoutStringType.OnLocked],
+        [VaultTimeoutStringType.OnSleep],
+        [VaultTimeoutStringType.OnIdle],
+        [0],
+        [30],
+        [60],
+        [90],
+        [120],
+      ])(
+        "returns memory when the vault timeout action is logout and the vault timeout is defined %s (not Never)",
+        async (vaultTimeout: VaultTimeout) => {
+          // Arrange
+          const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+          const useSecureStorage = true;
+          // Act
+          const result = await (tokenService as any).determineStorageLocation(
+            vaultTimeoutAction,
+            vaultTimeout,
+            useSecureStorage,
+          );
+          // Assert
+          expect(result).toEqual(TokenStorageLocation.Memory);
+        },
+      );
+
+      it("returns secure storage when the vault timeout action is logout and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = true;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.SecureStorage);
+      });
+
+      it("returns secure storage when the vault timeout action is lock and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.Lock;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = true;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.SecureStorage);
       });
     });
   });

@@ -19,7 +19,7 @@ import {
   UserKeyDefinition,
 } from "../../platform/state";
 import { UserId } from "../../types/guid";
-import { VaultTimeout } from "../../types/vault-timeout.type";
+import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
@@ -160,12 +160,21 @@ export class TokenService implements TokenServiceAbstraction {
   async setTokens(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     refreshToken?: string,
     clientIdClientSecret?: [string, string],
   ): Promise<void> {
     if (!accessToken) {
       throw new Error("Access token is required.");
+    }
+
+    // Can't check for nullish b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     // get user id the access token
@@ -886,10 +895,19 @@ export class TokenService implements TokenServiceAbstraction {
 
   private async determineStorageLocation(
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     useSecureStorage: boolean,
   ): Promise<TokenStorageLocation> {
-    if (vaultTimeoutAction === VaultTimeoutAction.LogOut && vaultTimeout != null) {
+    if (vaultTimeout == null) {
+      throw new Error(
+        "TokenService - determineStorageLocation: We expect the vault timeout to always exist at this point.",
+      );
+    }
+
+    if (
+      vaultTimeoutAction === VaultTimeoutAction.LogOut &&
+      vaultTimeout !== VaultTimeoutStringType.Never
+    ) {
       return TokenStorageLocation.Memory;
     } else {
       if (useSecureStorage && this.platformSupportsSecureStorage) {
