@@ -6,45 +6,25 @@
     <span class="sr-only">{{ "loading" | i18n }}</span>
   </ng-container>
 
-  <ng-container *ngIf="sub && firstLoaded">
-    <ng-container *ngIf="true">
-      <!-- <ng-container *ngIf="!(showUpdatedSubscriptionStatusSection$ | async)"> -->
-      <bit-callout type="warning" title="{{ 'canceled' | i18n }}" *ngIf="false">
-        {{ "subscriptionCanceled" | i18n }}</bit-callout
-      >
-      <bit-callout type="warning" title="{{ 'pendingCancellation' | i18n }}" *ngIf="false">
-        <p>{{ "subscriptionPendingCanceled" | i18n }}</p>
-        <button
-          *ngIf="userOrg.canEditSubscription"
-          bitButton
-          buttonType="secondary"
-          [bitAction]="reinstate"
-          type="button"
-        >
-          {{ "reinstateSubscription" | i18n }}
-        </button>
-      </bit-callout>
+  <ng-container *ngIf="subscription && firstLoaded">
+    <bit-callout type="warning" title="{{ 'canceled' | i18n }}" *ngIf="false">
+      {{ "subscriptionCanceled" | i18n }}</bit-callout
+    >
 
-      <dl class="tw-grid tw-grid-flow-col tw-grid-rows-2">
-        <dt>{{ "billingPlan" | i18n }}</dt>
-        <dd>{{ "Test Plan" }}</dd>
-        <ng-container *ngIf="true">
-          <dt>{{ "status" | i18n }}</dt>
-          <dd>
-            <span class="tw-capitalize">{{ "Active" }}</span>
-            <span bitBadge variant="warning" *ngIf="subscriptionMarkedForCancel">{{
-              "pendingCancellation" | i18n
-            }}</span>
-          </dd>
-          <dt [ngClass]="{ 'tw-text-danger': isExpired }">
-            {{ "subscriptionExpiration" | i18n }}?
-          </dt>
-          <dd [ngClass]="{ 'tw-text-danger': isExpired }">
-            {{ "2022-10-12" | date: "mediumDate" }}
-          </dd>
-        </ng-container>
-      </dl>
-    </ng-container>
+    <dl class="tw-grid tw-grid-flow-col tw-grid-rows-2">
+      <dt>{{ "billingPlan" | i18n }}</dt>
+      <dd>{{ "providerPlan" | i18n }}</dd>
+      <ng-container *ngIf="subscription">
+        <dt>{{ "status" | i18n }}</dt>
+        <dd>
+          <span class="tw-capitalize">{{ subscription.status }}</span>
+        </dd>
+        <dt [ngClass]="{ 'tw-text-danger': isExpired }">{{ "subscriptionExpiration" | i18n }}?</dt>
+        <dd [ngClass]="{ 'tw-text-danger': isExpired }">
+          {{ subscription.currentPeriodEndDate | date: "mediumDate" }}
+        </dd>
+      </ng-container>
+    </dl>
   </ng-container>
 
   <ng-container *ngIf="true">
@@ -55,18 +35,36 @@
       >
       <bit-table>
         <ng-template body>
-          <ng-container *ngIf="sub">
-            <tr bitRow *ngFor="let i of [1, 2, 3]">
-              <td bitCell class="tw-pl-0 tw-py-3">Teams Organization Seats</td>
-              <td bitCell class="tw-text-right">$800/month</td>
+          <ng-container *ngIf="subscription">
+            <tr bitRow *ngFor="let i of subscription.plans">
+              <td bitCell class="tw-pl-0 tw-py-3">
+                {{ i.planName.substring(0, i.planName.indexOf(" ")) }} {{ "orgSeats" | i18n }} ({{
+                  i.cadence.toLowerCase()
+                }}) {{ "&times;"
+                }}{{ i.seatMinimum + i.purchasedSeats > 1 ? i.seatMinimum + i.purchasedSeats : "" }}
+                @
+                {{
+                  i.cost / (i.seatMinimum + i.purchasedSeats) -
+                    ((i.cost / (i.seatMinimum + i.purchasedSeats)) *
+                      subscription.discountPercentage) /
+                      100 | currency: "$"
+                }}
+              </td>
+              <td bitCell class="tw-text-right">
+                {{ i.cost | currency: "$" }} /{{ "month" | i18n }}
+              </td>
             </tr>
             <tr bitRow>
               <td bitCell class="tw-pl-0 tw-py-3">
-                <span class="tw-text-sm">A 30% discount is applied to you subscription.</span>
+                <span class="tw-text-sm">
+                  {{ "providerDicount" | i18n: subscription.discountPercentage }}</span
+                >
               </td>
               <td bitCell class="tw-text-right">
-                <span class="tw-font-bold">Total:</span> $2,400/month
-                <span class="tw-text-sm tw-block">As of {{ "2023-0101" | date: "medium" }}</span>
+                <span class="tw-font-bold">Total:</span> {{ totalCost | currency: "$" }} /{{
+                  "month" | i18n
+                }}
+                <span class="tw-text-sm tw-block">As of {{ currentDate | date: "medium" }}</span>
               </td>
             </tr>
           </ng-container>

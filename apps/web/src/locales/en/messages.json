@@ -2235,7 +2235,7 @@
     "message": "Details"
   },
   "billingDetails": {
-    "message": "Billing Details"
+    "message": "Billing details"
   },
   "downloadLicense": {
     "message": "Download license"
@@ -8090,5 +8090,20 @@
   },
   "viewAccess": {
     "message": "View access"
+  },
+  "providerPlan": {
+    "message": "Managed Service Provider"
+  },
+  "orgSeats": {
+    "message": "Organization Seats"
+  },
+  "providerDicount": {
+    "message": "A $AMOUNT$% discount is applied to you subscription",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   }
 }
