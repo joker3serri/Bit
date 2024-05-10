@@ -12,9 +12,12 @@ import { PopupSectionHeaderComponent } from "./popup-section-header.component";
 export default {
   title: "Browser/Popup Section Header",
   component: PopupSectionHeaderComponent,
+  args: {
+    title: "Title",
+  },
   decorators: [
     moduleMetadata({
-      imports: [TypographyModule, IconButtonModule, SectionComponent, CardComponent],
+      imports: [SectionComponent, CardComponent, TypographyModule, IconButtonModule],
     }),
   ],
 } as Meta<PopupSectionHeaderComponent>;
@@ -22,53 +25,51 @@ export default {
 type Story = StoryObj<PopupSectionHeaderComponent>;
 
 export const OnlyTitle: Story = {
-  render: () => ({
+  render: (args) => ({
+    props: args,
     template: `
-      <popup-section-header>
-        <h2 bitTypography="h6" noMargin class="tw-mb-0" slot="title">
-          Only Title
-        </h2>
-      </popup-section-header>
+      <popup-section-header [title]="title"></popup-section-header>
     `,
   }),
+  args: {
+    title: "Only Title",
+  },
 };
 
 export const TrailingText: Story = {
-  render: () => ({
+  render: (args) => ({
+    props: args,
     template: `
-      <popup-section-header>
-        <h2 bitTypography="h6" noMargin class="tw-mb-0" slot="title">
-          Trailing Text
-        </h2>
+      <popup-section-header [title]="title">
         <span bitTypography="body2" slot="end">13</span>
       </popup-section-header>
     `,
   }),
+  args: {
+    title: "Trailing Text",
+  },
 };
 
 export const TailingIcon: Story = {
-  render: () => ({
+  render: (args) => ({
+    props: args,
     template: `
-      <popup-section-header>
-        <h2 bitTypography="h6" noMargin class="tw-mb-0" slot="title">
-          Trailing Icon
-        </h2>
+      <popup-section-header [title]="title">
         <button bitIconButton="bwi-star" slot="end"></button>
       </popup-section-header>
     `,
   }),
+  args: {
+    title: "Trailing Icon",
+  },
 };
 
 export const WithSections: Story = {
-  render: (args) => ({
-    props: args,
+  render: () => ({
     template: `
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
-          <popup-section-header>
-            <h2 bitTypography="h6" noMargin class="tw-mb-0" slot="title">
-              Section 1
-            </h2>
+          <popup-section-header title="Section 1">
             <button bitIconButton="bwi-star" slot="end">1</button>
           </popup-section-header>
           <bit-card>
@@ -76,10 +77,7 @@ export const WithSections: Story = {
           </bit-card>
         </bit-section>
         <bit-section>
-          <popup-section-header>
-            <h2 bitTypography="h6" noMargin class="tw-mb-0" slot="title">
-              Section 2
-            </h2>
+          <popup-section-header title="Section 2">
             <button bitIconButton="bwi-star" slot="end">2</button>
           </popup-section-header>
           <bit-card>
