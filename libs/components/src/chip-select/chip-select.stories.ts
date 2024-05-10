@@ -21,23 +21,13 @@ export const Default: Story = {
   render: (args) => ({
     props: args,
     template: /* html */ `
-      <bit-chip>
-        <i class="bwi bwi-folder" aria-hidden="true" slot="start"></i>
-        Label
-        <ng-container slot="menuItems">
-          <a href="#" bitMenuItem>Anchor link</a>
-          <a href="#" bitMenuItem>Another link</a>
-        </ng-container>
-      </bit-chip>
-
-      <bit-chip selected>
-        <i class="bwi bwi-folder" aria-hidden="true" slot="start"></i>
-        Label
-        <ng-container slot="menuItems">
-          <a href="#" bitMenuItem>Anchor link</a>
-          <a href="#" bitMenuItem>Another link</a>
-        </ng-container>
-      </bit-chip>
+      <bit-chip-select placeholder="Folder" icon="bwi-key">
+        <bit-option label="Foo"></bit-option>
+        <bit-option label="Bar"></bit-option>
+        <bit-option label="Baz">
+          <bit-option label="Foo"></bit-option>
+        </bit-option>
+      </bit-chip-select>
     `,
   }),
 };

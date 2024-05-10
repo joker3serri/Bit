@@ -1,31 +1,42 @@
 <button
   type="button"
-  class="tw-border tw-border-solid tw-rounded-3xl tw-border-text-muted tw-px-3 tw-py-1.5 tw-inline-flex tw-gap-1.5 tw-items-center focus-visible:tw-ring focus-visible:tw-ring-offset-1 focus-visible:tw-ring-primary-700 focus-visible:tw-z-10"
-  [ngClass]="
-    selected
-      ? 'tw-bg-text-muted tw-text-contrast hover:tw-bg-secondary-700'
-      : 'tw-bg-background tw-text-muted hover:tw-bg-black/5'
-  "
-  aria-expanded="false"
-  aria-controls="listbox-id"
+  bitButton
   buttonType="secondary"
-  [bitMenuTriggerFor]="chipSelectMenu"
+  [bitMenuTriggerFor]="menu"
+  #menuTrigger="menuTrigger"
 >
-  <span class="tw-pr-1">
-    <ng-content select="[slot=start]"></ng-content>
-  </span>
-  <ng-content></ng-content>
-  <button
-    *ngIf="selected"
-    bitIconButton="bwi-close"
-    buttonType="contrast"
-    size="small"
-    type="button"
-    class="tw-rounded-3xl before:tw-rounded-3xl tw-text-sm"
-    (click)="clear($event)"
-  ></button>
-  <i *ngIf="!selected" class="bwi bwi-angle-down tw-mt-1 tw-p-1"></i>
+  <i class="bwi {{ icon }}"></i>
+  {{ placeholder }}
+  <i class="bwi" [ngClass]="menuTrigger.isOpen ? 'bwi-angle-up' : 'bwi-angle-down'"></i>
 </button>
-<bit-menu #chipSelectMenu>
-  <ng-content select="[slot=menuItems]"></ng-content>
+<bit-menu #menu>
+  <button
+    type="button"
+    bitMenuItem
+    *ngIf="renderedOptions.parent"
+    (click)="viewOption(renderedOptions.parent, $event)"
+  >
+    <i class="bwi bwi-angle-left"></i>
+    Back
+  </button>
+
+  <button
+    type="button"
+    bitMenuItem
+    *ngIf="renderedOptions.parent"
+    (click)="selectOption(renderedOptions, $event)"
+  >
+    {{ renderedOptions.label }}
+  </button>
+  <!-- <bit-menu-divider *ngIf="renderedOptions.parent"></bit-menu-divider> -->
+
+  <button
+    type="button"
+    bitMenuItem
+    *ngFor="let option of renderedOptions.children"
+    (click)="option.children ? viewOption(option, $event) : selectOption(option, $event)"
+  >
+    {{ option.label }}
+    <i *ngIf="option.children" class="bwi bwi-angle-right"></i>
+  </button>
 </bit-menu>
