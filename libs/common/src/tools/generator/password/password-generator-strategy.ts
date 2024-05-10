@@ -6,7 +6,7 @@ import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { PasswordGenerationServiceAbstraction } from "../abstractions/password-generation.service.abstraction";
 import { PASSWORD_SETTINGS } from "../key-definitions";
-import { reduceCollection } from "../reduce-collection.operator";
+import { distinctIfShallowMatch, reduceCollection } from "../rx-operators";
 
 import {
   DefaultPasswordGenerationOptions,
@@ -50,6 +50,7 @@ export class PasswordGeneratorStrategy
   toEvaluator() {
     return pipe(
       reduceCollection(leastPrivilege, DisabledPasswordGeneratorPolicy),
+      distinctIfShallowMatch(),
       map((policy) => new PasswordGeneratorOptionsEvaluator(policy)),
     );
   }
