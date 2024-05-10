@@ -231,10 +231,20 @@ export class LegacyPasswordGenerationService implements PasswordGenerationServic
           generatorEvaluator,
           policyUpdated,
         ]) => {
+          const passwordOptionsWithPolicy = passwordEvaluator.applyPolicy(
+            passwordOptions ?? passwordDefaults,
+          );
+          const passphraseOptionsWithPolicy = passphraseEvaluator.applyPolicy(
+            passphraseOptions ?? passphraseDefaults,
+          );
+          const generatorOptionsWithPolicy = generatorEvaluator.applyPolicy(
+            generatorOptions ?? generatorDefaults,
+          );
+
           const options = this.toPasswordGeneratorOptions({
-            password: passwordEvaluator.applyPolicy(passwordOptions ?? passwordDefaults),
-            passphrase: passphraseEvaluator.applyPolicy(passphraseOptions ?? passphraseDefaults),
-            generator: generatorEvaluator.applyPolicy(generatorOptions ?? generatorDefaults),
+            password: passwordEvaluator.sanitize(passwordOptionsWithPolicy),
+            passphrase: passphraseEvaluator.sanitize(passphraseOptionsWithPolicy),
+            generator: generatorEvaluator.applyPolicy(generatorOptionsWithPolicy),
             policyUpdated,
           });
 
