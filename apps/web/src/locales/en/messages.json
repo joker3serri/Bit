@@ -8082,6 +8082,12 @@
   "manageBillingFromProviderPortalMessage": {
     "message": "Manage billing from the Provider Portal"
   },
+  "viewInfo": {
+    "message": "View info"
+  },
+  "viewAccess": {
+    "message": "View access"
+  },
   "addToFolder": {
     "message": "Add to folder"
   }
