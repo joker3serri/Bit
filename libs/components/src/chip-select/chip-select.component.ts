@@ -14,6 +14,8 @@ export type OptionTree<T> = Option<T> & {
 const testData: OptionTree<any>[] = [
   {
     label: "Foo",
+    value: "foo-1-2-3",
+    icon: "bwi-key",
   },
   {
     label: "Bar",
@@ -24,6 +26,193 @@ const testData: OptionTree<any>[] = [
       {
         label: "Bar1",
         children: [
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
+          {
+            label: "Foooooooooooooooo00000000000000000000000000000000000002",
+          },
+          {
+            label: "Bar2",
+            children: [
+              {
+                label: "Foo3",
+              },
+            ],
+          },
+          {
+            label: "Baz2",
+          },
+          {
+            label: "Baf2",
+          },
           {
             label: "Foooooooooooooooo00000000000000000000000000000000000002",
           },
@@ -56,6 +245,8 @@ const testData: OptionTree<any>[] = [
 export class ChipSelectComponent<T = unknown> implements OnInit {
   // private i18nService = inject(I18nService);
 
+  protected selected: OptionTree<T>;
+
   @Input() placeholder = "Placeholder";
 
   // name placeholder icon?
@@ -67,7 +258,7 @@ export class ChipSelectComponent<T = unknown> implements OnInit {
   protected renderedOptions: OptionTree<T>;
 
   protected selectOption(option: OptionTree<T>, event: MouseEvent) {
-    this.placeholder = option.label;
+    this.selected = option;
   }
 
   protected viewOption(option: OptionTree<T>, event: MouseEvent) {
