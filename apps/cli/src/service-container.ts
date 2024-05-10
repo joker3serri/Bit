@@ -154,7 +154,8 @@ global.DOMParser = new jsdom.JSDOM().window.DOMParser;
 const packageJson = require("../package.json");
 
 /**
- * Instantiates and makes available all of the global services used by the BW CLI app.
+ * Instantiates services and makes them available for dependency injection.
+ * Any Bitwarden-licensed services should be registered here.
  */
 export class ServiceContainer {
   inited = false;
