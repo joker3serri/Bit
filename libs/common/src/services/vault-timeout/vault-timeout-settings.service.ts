@@ -57,11 +57,11 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
       throw new Error("User id required. Cannot set vault timeout settings.");
     }
 
-    if (!timeout) {
+    if (timeout == null) {
       throw new Error("Vault Timeout cannot be null.");
     }
 
-    if (!action) {
+    if (action == null) {
       throw new Error("Vault Timeout Action cannot be null.");
     }
 
