@@ -10,7 +10,12 @@ let nextId = 0;
 })
 export class RadioButtonComponent {
   @HostBinding("attr.id") @Input() id = `bit-radio-button-${nextId++}`;
+  @HostBinding("class") get classList() {
+    return [this.block ? "tw-block" : "tw-inline-block", "tw-mb-2"];
+  }
+
   @Input() value: unknown;
+  @Input() disabled = false;
 
   constructor(private groupComponent: RadioGroupComponent) {}
 
@@ -26,8 +31,12 @@ export class RadioButtonComponent {
     return this.groupComponent.selected === this.value;
   }
 
-  get disabled() {
+  get groupDisabled() {
     return this.groupComponent.disabled;
+  }
+
+  get block() {
+    return this.groupComponent.block;
   }
 
   protected onInputChange() {

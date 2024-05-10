@@ -1,6 +1,7 @@
 import { powerMonitor } from "electron";
 
-import { Main } from "../main";
+import { MessageSender } from "@bitwarden/common/platform/messaging";
+
 import { isSnapStore } from "../utils";
 
 // tslint:disable-next-line
@@ -10,21 +11,21 @@ const IdleCheckInterval = 30 * 1000; // 30 seconds
 export class PowerMonitorMain {
   private idle = false;
 
-  constructor(private main: Main) {}
+  constructor(private messagingService: MessageSender) {}
 
   init() {
     // ref: https://github.com/electron/electron/issues/13767
     if (!isSnapStore()) {
       // System sleep
       powerMonitor.on("suspend", () => {
-        this.main.messagingService.send("systemSuspended");
+        this.messagingService.send("systemSuspended");
       });
     }
 
     if (process.platform !== "linux") {
       // System locked
       powerMonitor.on("lock-screen", () => {
-        this.main.messagingService.send("systemLocked");
+        this.messagingService.send("systemLocked");
       });
     }
 
@@ -37,7 +38,7 @@ export class PowerMonitorMain {
           return;
         }
 
-        this.main.messagingService.send("systemIdle");
+        this.messagingService.send("systemIdle");
       }
 
       this.idle = idle;

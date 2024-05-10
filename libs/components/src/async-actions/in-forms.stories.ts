@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, Validators, FormBuilder } from "@angular/forms";
 import { action } from "@storybook/addon-actions";
-import { Meta, moduleMetadata, Story } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { delay, of } from "rxjs";
 
-import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { I18nService } from "@bitwarden/common/src/platform/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
 import { FormFieldModule } from "../form-field";
@@ -27,6 +27,7 @@ const template = `
     <bit-form-field>
       <bit-label>Email</bit-label>
       <input bitInput formControlName="email" />
+      <button type="button" bitSuffix bitIconButton="bwi-refresh" bitFormButton [bitAction]="refresh"></button>
     </bit-form-field>
 
     <button class="tw-mr-2" type="submit" buttonType="primary" bitButton bitFormButton>Submit</button>
@@ -46,6 +47,12 @@ class PromiseExampleComponent {
   });
 
   constructor(private formBuilder: FormBuilder) {}
+
+  refresh = async () => {
+    await new Promise<void>((resolve, reject) => {
+      setTimeout(resolve, 2000);
+    });
+  };
 
   submit = async () => {
     this.formObj.markAllAsTouched();
@@ -77,6 +84,10 @@ class ObservableExampleComponent {
   });
 
   constructor(private formBuilder: FormBuilder) {}
+
+  refresh = () => {
+    return of("fake observable").pipe(delay(2000));
+  };
 
   submit = () => {
     this.formObj.markAllAsTouched();
@@ -134,16 +145,18 @@ export default {
   ],
 } as Meta;
 
-const PromiseTemplate: Story<PromiseExampleComponent> = (args: PromiseExampleComponent) => ({
-  props: args,
-  template: `<app-promise-example></app-promise-example>`,
-});
+type Story = StoryObj<PromiseExampleComponent>;
 
-export const UsingPromise = PromiseTemplate.bind({});
+export const UsingPromise: Story = {
+  render: (args) => ({
+    props: args,
+    template: `<app-promise-example></app-promise-example>`,
+  }),
+};
 
-const ObservableTemplate: Story<PromiseExampleComponent> = (args: PromiseExampleComponent) => ({
-  props: args,
-  template: `<app-observable-example></app-observable-example>`,
-});
-
-export const UsingObservable = ObservableTemplate.bind({});
+export const UsingObservable: Story = {
+  render: (args) => ({
+    props: args,
+    template: `<app-observable-example></app-observable-example>`,
+  }),
+};

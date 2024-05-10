@@ -1,3 +1,4 @@
+import { hasModifierKey } from "@angular/cdk/keycodes";
 import {
   Component,
   Input,
@@ -12,7 +13,7 @@ import {
 import { ControlValueAccessor, NgControl, Validators } from "@angular/forms";
 import { NgSelectComponent } from "@ng-select/ng-select";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { BitFormFieldControl } from "../form-field/form-field-control";
 
@@ -41,7 +42,7 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   @Input() disabled = false;
 
   // Internal tracking of selected items
-  @Input() selectedItems: SelectItemView[];
+  protected selectedItems: SelectItemView[];
 
   // Default values for our implementation
   loadingText: string;
@@ -55,7 +56,10 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
 
   @Output() onItemsConfirmed = new EventEmitter<any[]>();
 
-  constructor(private i18nService: I18nService, @Optional() @Self() private ngControl?: NgControl) {
+  constructor(
+    private i18nService: I18nService,
+    @Optional() @Self() private ngControl?: NgControl,
+  ) {
     if (ngControl != null) {
       ngControl.valueAccessor = this;
     }
@@ -66,6 +70,23 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
     this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
     this.loadingText = this.i18nService.t("multiSelectLoading");
   }
+
+  /** Function for customizing keyboard navigation */
+  /** Needs to be arrow function to retain `this` scope. */
+  keyDown = (event: KeyboardEvent) => {
+    if (!this.select.isOpen && event.key === "Enter" && !hasModifierKey(event)) {
+      return false;
+    }
+
+    if (this.select.isOpen && event.key === "Escape" && !hasModifierKey(event)) {
+      this.selectedItems = [];
+      this.select.close();
+      event.stopPropagation();
+      return false;
+    }
+
+    return true;
+  };
 
   /** Helper method for showing selected state in custom template */
   isSelected(item: any): boolean {

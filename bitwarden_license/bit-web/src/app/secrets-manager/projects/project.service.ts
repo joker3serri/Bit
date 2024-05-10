@@ -2,15 +2,15 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
-import { BulkOperationStatus } from "../layout/dialogs/bulk-status-dialog.component";
 import { ProjectListView } from "../models/view/project-list.view";
 import { ProjectView } from "../models/view/project.view";
+import { BulkOperationStatus } from "../shared/dialogs/bulk-status-dialog.component";
 
 import { ProjectRequest } from "./models/requests/project.request";
 import { ProjectListItemResponse } from "./models/responses/project-list-item.response";
@@ -26,7 +26,7 @@ export class ProjectService {
   constructor(
     private cryptoService: CryptoService,
     private apiService: ApiService,
-    private encryptService: EncryptService
+    private encryptService: EncryptService,
   ) {}
 
   async getByProjectId(projectId: string): Promise<ProjectView> {
@@ -41,7 +41,7 @@ export class ProjectService {
       "/organizations/" + organizationId + "/projects",
       null,
       true,
-      true
+      true,
     );
     const results = new ListResponse(r, ProjectListItemResponse);
     return await this.createProjectsListView(organizationId, results.data);
@@ -54,7 +54,7 @@ export class ProjectService {
       "/organizations/" + organizationId + "/projects",
       request,
       true,
-      true
+      true,
     );
 
     const project = await this.createProjectView(new ProjectResponse(r));
@@ -87,7 +87,7 @@ export class ProjectService {
 
   private async getProjectRequest(
     organizationId: string,
-    projectView: ProjectView
+    projectView: ProjectView,
   ): Promise<ProjectRequest> {
     const orgKey = await this.getOrganizationKey(organizationId);
     const request = new ProjectRequest();
@@ -96,7 +96,7 @@ export class ProjectService {
     return request;
   }
 
-  private async createProjectView(projectResponse: ProjectResponse): Promise<ProjectView> {
+  private async createProjectView(projectResponse: ProjectResponse) {
     const orgKey = await this.getOrganizationKey(projectResponse.organizationId);
 
     const projectView = new ProjectView();
@@ -104,17 +104,18 @@ export class ProjectService {
     projectView.organizationId = projectResponse.organizationId;
     projectView.creationDate = projectResponse.creationDate;
     projectView.revisionDate = projectResponse.revisionDate;
+    projectView.read = projectResponse.read;
+    projectView.write = projectResponse.write;
     projectView.name = await this.encryptService.decryptToUtf8(
       new EncString(projectResponse.name),
-      orgKey
+      orgKey,
     );
-
     return projectView;
   }
 
   private async createProjectsListView(
     organizationId: string,
-    projects: ProjectListItemResponse[]
+    projects: ProjectListItemResponse[],
   ): Promise<ProjectListView[]> {
     const orgKey = await this.getOrganizationKey(organizationId);
     return await Promise.all(
@@ -122,14 +123,16 @@ export class ProjectService {
         const projectListView = new ProjectListView();
         projectListView.id = s.id;
         projectListView.organizationId = s.organizationId;
+        projectListView.read = s.read;
+        projectListView.write = s.write;
         projectListView.name = await this.encryptService.decryptToUtf8(
           new EncString(s.name),
-          orgKey
+          orgKey,
         );
         projectListView.creationDate = s.creationDate;
         projectListView.revisionDate = s.revisionDate;
         return projectListView;
-      })
+      }),
     );
   }
 }

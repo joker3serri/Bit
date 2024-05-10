@@ -3,12 +3,12 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "Bitwarden - Ücretsiz Parola Yöneticisi",
+    "message": "Bitwarden Parola Yöneticisi",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "Tüm cihazlarınız için güvenli ve ücretsiz bir parola yöneticisi.",
-    "description": "Extension description"
+    "message": "Bitwarden tüm parolalarınızı, geçiş anahtarlarınızı ve hassas bilgilerinizi güvenle saklar",
+    "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
     "message": "Güvenli kasanıza ulaşmak için giriş yapın veya yeni bir hesap oluşturun."
@@ -91,6 +91,15 @@
   "autoFill": {
     "message": "Otomatik doldur"
   },
+  "autoFillLogin": {
+    "message": "Hesabı otomatik doldur"
+  },
+  "autoFillCard": {
+    "message": "Kartı otomatik doldur"
+  },
+  "autoFillIdentity": {
+    "message": "Kimliği otomatik doldur"
+  },
   "generatePasswordCopied": {
     "message": "Parola oluştur (ve kopyala)"
   },
@@ -99,6 +108,21 @@
   },
   "noMatchingLogins": {
     "message": "Eşleşen hesap yok"
+  },
+  "noCards": {
+    "message": "Kart yok"
+  },
+  "noIdentities": {
+    "message": "Kimlik yok"
+  },
+  "addLoginMenu": {
+    "message": "Hesap ekle"
+  },
+  "addCardMenu": {
+    "message": "Kart ekle"
+  },
+  "addIdentityMenu": {
+    "message": "Kimlik ekle"
   },
   "unlockVaultMenu": {
     "message": "Kasanızın kilidini açın"
@@ -148,6 +172,12 @@
   "changeMasterPassword": {
     "message": "Ana parolayı değiştir"
   },
+  "continueToWebApp": {
+    "message": "Web uygulamasına devam edilsin mi?"
+  },
+  "changeMasterPasswordOnWebConfirmation": {
+    "message": "Ana parolanızı Bitwarden web uygulamasında değiştirebilirsiniz."
+  },
   "fingerprintPhrase": {
     "message": "Parmak izi ifadesi",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -195,6 +225,15 @@
   "helpFeedback": {
     "message": "Yardım ve geribildirim"
   },
+  "helpCenter": {
+    "message": "Bitwarden yardım merkezi"
+  },
+  "communityForums": {
+    "message": "Bitwarden forumlarını keşfedin"
+  },
+  "contactSupport": {
+    "message": "Bitwarden destek ekibiyle iletişime geçin"
+  },
   "sync": {
     "message": "Eşitle"
   },
@@ -234,6 +273,9 @@
   },
   "length": {
     "message": "Uzunluk"
+  },
+  "passwordMinLength": {
+    "message": "Minimum parola uzunluğu"
   },
   "uppercase": {
     "message": "Büyük harf (A-Z)"
@@ -290,6 +332,9 @@
   "password": {
     "message": "Parola"
   },
+  "totp": {
+    "message": "Kimlik doğrulama sırrı"
+  },
   "passphrase": {
     "message": "Uzun söz"
   },
@@ -328,6 +373,12 @@
   },
   "other": {
     "message": "Diğer"
+  },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Kasa zaman aşımı eyleminizi değiştirmek için kilit açma yönteminizi ayarlayın."
+  },
+  "unlockMethodNeeded": {
+    "message": "Ayarlar'da bir kilit açma yöntemi ayarlayın"
   },
   "rateExtension": {
     "message": "Uzantıyı değerlendirin"
@@ -368,6 +419,9 @@
   },
   "lockNow": {
     "message": "Şimdi kilitle"
+  },
+  "lockAll": {
+    "message": "Tümünü kilitle"
   },
   "immediately": {
     "message": "Hemen"
@@ -430,13 +484,26 @@
     "message": "Ana parolayı yeniden yazmalısınız."
   },
   "masterPasswordMinlength": {
-    "message": "Ana parola en az 8 karakter uzunluğunda olmalıdır."
+    "message": "Ana parola en az $VALUE$ karakter uzunluğunda olmalıdır.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "Ana parola onayı eşleşmiyor."
   },
   "newAccountCreated": {
     "message": "Yeni hesabınız oluşturuldu! Şimdi giriş yapabilirsiniz."
+  },
+  "youSuccessfullyLoggedIn": {
+    "message": "Başarıyla giriş yaptınız"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Bu pencereyi kapatabilirsiniz"
   },
   "masterPassSent": {
     "message": "Size ana parolanızın ipucunu içeren bir e-posta gönderdik."
@@ -459,6 +526,18 @@
   },
   "autofillError": {
     "message": "Seçilen hesap bu sayfada otomatik olarak doldurulamadı. Lütfen bilgileri elle kopyalayıp yapıştırın."
+  },
+  "totpCaptureError": {
+    "message": "Mevcut web sayfasındaki QR kodu taranamıyor"
+  },
+  "totpCaptureSuccess": {
+    "message": "Kimlik doğrulama anahtarı eklendi"
+  },
+  "totpCapture": {
+    "message": "Mevcut web sayfasındaki kimlik doğrulayıcı QR kodunu tarayın"
+  },
+  "copyTOTP": {
+    "message": "Kimlik doğrulama anahtarını kopyala (TOTP)"
   },
   "loggedOut": {
     "message": "Çıkış yapıldı"
@@ -483,12 +562,6 @@
   },
   "addedFolder": {
     "message": "Klasör eklendi"
-  },
-  "changeMasterPass": {
-    "message": "Ana parolayı değiştir"
-  },
-  "changeMasterPasswordConfirmation": {
-    "message": "Ana parolanızı bitwarden.com web kasası üzerinden değiştirebilirsiniz. Siteye gitmek ister misiniz?"
   },
   "twoStepLoginConfirmation": {
     "message": "İki aşamalı giriş, hesabınıza girererken işlemi bir güvenlik anahtarı, şifrematik uygulaması, SMS, telefon araması veya e-posta gibi ek bir yöntemle doğrulamanızı isteyerek hesabınızın güvenliğini artırır. İki aşamalı giriş özelliğini bitwarden.com web kasası üzerinden etkinleştirebilirsiniz. Şimdi siteye gitmek ister misiniz?"
@@ -576,6 +649,9 @@
   "addLoginNotificationDesc": {
     "message": "\"Hesap ekle\" bildirimi, ilk kez kullandığınız hesap bilgilerini kasanıza kaydetmek isteyip istemediğinizi otomatik olarak sorar."
   },
+  "addLoginNotificationDescAlt": {
+    "message": "Kasanızda bulunmayan kayıtların eklenmesini isteyip istemediğinizi sorar. Oturum açmış tüm hesaplar için geçerlidir."
+  },
   "showCardsCurrentTab": {
     "message": "Sekme sayfasında kartları göster"
   },
@@ -608,17 +684,35 @@
   "changedPasswordNotificationDesc": {
     "message": "Sitede bir değişiklik tespit edildiğinde hesap parolasını güncellemeyi öner."
   },
+  "changedPasswordNotificationDescAlt": {
+    "message": "Bir sitede değişiklik tespit edildiğinde hesap parolasını güncellemek isteyip istemediğiniz sorar. Oturum açmış tüm hesaplar için geçerlidir."
+  },
+  "enableUsePasskeys": {
+    "message": "Geçiş anahtarlarını kaydet ve kullan"
+  },
+  "usePasskeysDesc": {
+    "message": "Yeni geçiş anahtarlarını kaydetmek ve kasanızda saklanan geçiş anahtarlarıyla giriş yapmak için sor. Giriş yapmış tüm hesaplar için geçerlidir."
+  },
   "notificationChangeDesc": {
     "message": "Bu parolayı Bitwarden'da güncellemek ister misiniz?"
   },
   "notificationChangeSave": {
     "message": "Güncelle"
   },
+  "notificationUnlockDesc": {
+    "message": "Otomatik doldurma isteğini tamamlamak için Bitwarden kasanızın kilidini açın."
+  },
+  "notificationUnlock": {
+    "message": "Kilidi aç"
+  },
   "enableContextMenuItem": {
     "message": "Bağlam menüsü seçeneklerini göster"
   },
   "contextMenuItemDesc": {
-    "message": "Parola oluşturma ve eşlesen hesaplara ulaşmak için sağ tıklamayı kullan."
+    "message": "Parola oluşturmak ve eşleşen hesaplara ulaşmak için sağ tıklamayı kullan."
+  },
+  "contextMenuItemDescAlt": {
+    "message": "Web sitesi için parola oluşturmak ve eşleşen hesap bilgilerine erişmek için sağ tıklamayı kullanabilirsiniz. Oturum açmış tüm hesaplar için geçerlidir."
   },
   "defaultUriMatchDetection": {
     "message": "Varsayılan URI eşleşme tespiti",
@@ -632,6 +726,9 @@
   },
   "themeDesc": {
     "message": "Uygulamanın renk temasını değiştir."
+  },
+  "themeDescAlt": {
+    "message": "Uygulamanın renk temasını değiştirir. Oturum açmış tüm hesaplar için geçerlidir."
   },
   "dark": {
     "message": "Koyu",
@@ -746,8 +843,8 @@
   "featureUnavailable": {
     "message": "Özellik kullanılamıyor"
   },
-  "updateKey": {
-    "message": "Şifreleme anahtarınızı güncellemeden bu özelliği kullanamazsınız."
+  "encryptionKeyMigrationRequired": {
+    "message": "Şifreleme anahtarınızın güncellenmesi gerekiyor. Şifreleme anahtarınızı güncellemek için lütfen web kasasına giriş yapın."
   },
   "premiumMembership": {
     "message": "Premium üyelik"
@@ -770,8 +867,8 @@
   "ppremiumSignUpStorage": {
     "message": "Dosya ekleri için 1 GB şifrelenmiş depolama."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "YubiKey, FIDO U2F ve Duo gibi iki aşamalı giriş seçenekleri."
+  "premiumSignUpTwoStepOptions": {
+    "message": "YubiKey ve Duo gibi marka bazlı iki aşamalı giriş seçenekleri."
   },
   "ppremiumSignUpReports": {
     "message": "Kasanızı güvende tutmak için parola hijyeni, hesap sağlığı ve veri ihlali raporları."
@@ -953,6 +1050,31 @@
   "environmentSaved": {
     "message": "Ortam URL'leri kaydedildi"
   },
+  "showAutoFillMenuOnFormFields": {
+    "message": "Form alanlarında otomatik doldurma menüsünü göster",
+    "description": "Represents the message for allowing the user to enable the auto-fill overlay"
+  },
+  "showAutoFillMenuOnFormFieldsDescAlt": {
+    "message": "Oturum açmış tüm hesaplara uygulanır."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Çakışmaları önlemek için tarayıcınızın yerleşik şifre yöneticisi ayarlarını kapatın."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Tarayıcı ayarlarını düzenleyin."
+  },
+  "autofillOverlayVisibilityOff": {
+    "message": "Kapalı",
+    "description": "Overlay setting select option for disabling autofill overlay"
+  },
+  "autofillOverlayVisibilityOnFieldFocus": {
+    "message": "Alan seçili olduğunda",
+    "description": "Overlay appearance select option for showing the field on focus of the input element"
+  },
+  "autofillOverlayVisibilityOnButtonClick": {
+    "message": "Otomatik doldurma simgesi seçildiğinde",
+    "description": "Overlay appearance select option for showing the field on click of the overlay icon"
+  },
   "enableAutoFillOnPageLoad": {
     "message": "Sayfa yüklendiğinde otomatik doldur"
   },
@@ -960,7 +1082,10 @@
     "message": "Sayfa yüklendiğinde giriş formu tespit edilirse otomatik olarak formu doldur."
   },
   "experimentalFeature": {
-    "message": "Bu şu anda deneysel bir özelliktir. Kullanımı sizin sorumluluğunuzdadır."
+    "message": "Ele geçirilmiş veya güvenilmeyen web siteleri sayfa yüklenirken otomatik doldurmayı suistimal edebilir."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Otomatik doldurma hakkında bilgi alın"
   },
   "defaultAutoFillOnPageLoad": {
     "message": "Hesaplar için varsayılan otomatik doldurma ayarı"
@@ -994,9 +1119,6 @@
   },
   "commandLockVaultDesc": {
     "message": "Kasayı kilitle"
-  },
-  "privateModeWarning": {
-    "message": "Gizli mod desteği deneyseldir ve bazı özellikler kısıtlıdır."
   },
   "customFields": {
     "message": "Özel alanlar"
@@ -1041,6 +1163,9 @@
   },
   "faviconDesc": {
     "message": "Hesapların yanında tanıdık görseller göster."
+  },
+  "faviconDescAlt": {
+    "message": "Her hesabın yanında tanınabilir bir resim göster. Oturum açmış tüm hesaplar için geçerlidir."
   },
   "enableBadgeCounter": {
     "message": "Rozet sayacını göster"
@@ -1122,6 +1247,9 @@
   },
   "dr": {
     "message": "Dr"
+  },
+  "mx": {
+    "message": "Mx"
   },
   "firstName": {
     "message": "Ad"
@@ -1368,6 +1496,9 @@
   "invalidPin": {
     "message": "PIN kodu geçersiz."
   },
+  "tooManyInvalidPinEntryAttemptsLoggingOut": {
+    "message": "Çok fazla geçersiz PIN girişi denemesi. Oturum kapatılıyor."
+  },
   "unlockWithBiometrics": {
     "message": "Kilidi biyometri ile aç"
   },
@@ -1418,9 +1549,6 @@
   "restoreItem": {
     "message": "Kaydı geri yükle"
   },
-  "restoreItemConfirmation": {
-    "message": "Bu kaydı geri yüklemek istediğinizden emin misiniz?"
-  },
   "restoredItem": {
     "message": "Kayıt geri yüklendi"
   },
@@ -1439,8 +1567,35 @@
   "autoFillSuccess": {
     "message": "Kayıt otomatik dolduruldu "
   },
+  "insecurePageWarning": {
+    "message": "Uyarı: Güvenli olmayan bir HTTP sayfasındasınız. Gönderdiğiniz bilgiler potansiyel olarak başkaları tarafından görülebilir ve değiştirilebilir. Bu hesabı güvenli (HTTPS) bir sayfa üzerinden kaydetmiştiniz."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Yine de bu hesabı doldurmak istiyor musunuz?"
+  },
+  "autofillIframeWarning": {
+    "message": "Bu form, kayıtlı hesabınızın URI'sinden farklı bir alan adında yer alıyor. Yine de otomatik doldurmak isterseniz \"Tamam\"ı, durdurmak için \"İptal\"i seçin."
+  },
+  "autofillIframeWarningTip": {
+    "message": "İleride bu uyarıyı görmek istemiyorsanız bu siteye ait Bitwarden hesap kaydınıza $HOSTNAME$ URI'sini ekleyin.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Ana parolayı belirle"
+  },
+  "currentMasterPass": {
+    "message": "Mevcut ana parola"
+  },
+  "newMasterPass": {
+    "message": "Yeni ana parola"
+  },
+  "confirmNewMasterPass": {
+    "message": "Yeni ana parolayı onaylayın"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Bir veya daha fazla kuruluş ilkesi gereğince ana parolanız aşağıdaki gereksinimleri karşılamalıdır:"
@@ -1550,6 +1705,12 @@
   "biometricsNotSupportedDesc": {
     "message": "Tarayıcı biyometrisi bu cihazda desteklenmiyor."
   },
+  "biometricsFailedTitle": {
+    "message": "Biyometri doğrulanamadı"
+  },
+  "biometricsFailedDesc": {
+    "message": "Biyometri doğrulaması tamamlanamadı. Ana parolanızı kullanabilir veya çıkış yapabilirsiniz. Sorun devam ederse Bitwarden destek ekibiyle iletişime geçin."
+  },
   "nativeMessaginPermissionErrorTitle": {
     "message": "İzin verilmedi"
   },
@@ -1568,18 +1729,24 @@
   "personalOwnershipPolicyInEffect": {
     "message": "Bir kuruluş ilkesi sahiplik seçeneklerinizi etkiliyor."
   },
+  "personalOwnershipPolicyInEffectImports": {
+    "message": "Bir kuruluş ilkesi, kayıtları kişisel kasanıza içe aktarmayı engelledi."
+  },
   "excludedDomains": {
     "message": "Hariç tutulan alan adları"
   },
   "excludedDomainsDesc": {
     "message": "Bitwarden bu alan adlarında hesaplarınızı kaydetmeyi sormayacaktır. Değişikliklerin etkili olması için sayfayı yenilemelisiniz."
   },
+  "excludedDomainsDescAlt": {
+    "message": "Bitwarden, oturum açmış tüm hesaplar için bu alan adlarının hesap bilgilerini kaydetmeyi sormayacaktır. Değişikliklerin etkili olması için sayfayı yenilemeniz gerekir."
+  },
   "excludedDomainsInvalidDomain": {
     "message": "$DOMAIN$ geçerli bir alan adı değil",
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -1822,6 +1989,9 @@
   "updateMasterPasswordWarning": {
     "message": "Ana parolanız kuruluşunuzdaki bir yönetici tarafından yakın zamanda değiştirildi. Kasanıza erişmek için parolanızı güncellemelisiniz. Devam ettiğinizde oturumunuz kapanacak ve yeniden oturum açmanız gerekecektir. Diğer cihazlardaki aktif oturumlar bir saate kadar aktif kalabilir."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ana parolanız kuruluş ilkelerinizi karşılamıyor. Kasanıza erişmek için ana parolanızı güncellemelisiniz. Devam ettiğinizde oturumunuz kapanacak ve yeniden oturum açmanız gerekecektir. Diğer cihazlardaki aktif oturumlar bir saate kadar aktif kalabilir."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Otomatik eklenme"
   },
@@ -1831,8 +2001,21 @@
   "selectFolder": {
     "message": "Klasör seç..."
   },
-  "ssoCompleteRegistration": {
-    "message": "SSO ile girişinizi tamamlamak için lütfen kasanıza erişirken kullanacağınız ana parolayı belirleyin."
+  "noFoldersFound": {
+    "message": "Hiçbir klasör bulunamadı",
+    "description": "Used as a message within the notification bar when no folders are found"
+  },
+  "orgPermissionsUpdatedMustSetPassword": {
+    "message": "Kuruluş izinleriniz güncellendi ve bir ana parola belirlemeniz gerekiyor.",
+    "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "orgRequiresYouToSetPassword": {
+    "message": "Kuruluşunuz bir ana parola belirlemenizi gerektiriyor.",
+    "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "verificationRequired": {
+    "message": "Doğrulama gerekli",
+    "description": "Default title for the user verification dialog."
   },
   "hours": {
     "message": "Saat"
@@ -1841,7 +2024,7 @@
     "message": "Dakika"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Kuruluş ilkeleriniz kasa zaman aşımınızı etkiliyor. İzin verilen maksimum kasa zaman aşımı $HOURS$ saat $MINUTES$ dakikadır",
+    "message": "Kuruluş ilkeleriniz izin verilen maksimum kasa zaman aşımını $HOURS$ saat $MINUTES$ dakika olarak belirlemiş.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1850,6 +2033,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Kuruluş ilkeleriniz kasa zaman aşımınızı etkiliyor. İzin verilen maksimum kasa zaman aşımı $HOURS$ saat $MINUTES$ dakikadır. Kasa zaman aşımı eyleminiz $ACTION$ olarak ayarlanmış.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Kuruluş ilkeleriniz, kasa zaman aşımı eyleminizi $ACTION$ olarak ayarladı.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1901,8 +2110,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Kişisel kasa dışa aktarılıyor"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Yalnızca $EMAIL$ ile ilişkili kişisel kasadaki kayıtlar dışa aktarılacaktır. Kuruluş kasasındaki kayıtlar dahil edilmeyecektir.",
+  "exportingIndividualVaultDescription": {
+    "message": "Yalnızca $EMAIL$ ile ilişkili kasa kayıtları dışa aktarılacaktır. Kuruluş kasasındaki kayıtlar dahil edilmeyecektir. Yalnızca kasa kayıt bilgileri dışa aktarılacak, kayıtlara eklenen dosyalar aktarılmayacaktır.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -1964,7 +2173,7 @@
     "description": "Part of a URL."
   },
   "apiAccessToken": {
-    "message": "API erişim anahtarı"
+    "message": "API erişim token'ı"
   },
   "apiKey": {
     "message": "API anahtarı"
@@ -1980,9 +2189,6 @@
   },
   "disabledOrganizationFilterError": {
     "message": "Askıya alınmış kuruluşlardaki kayıtlara erişilemez. Destek almak için kuruluş sahibinizle iletişime geçin."
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "loggingInTo": {
     "message": "$DOMAIN$ sitesine giriş yapılıyor",
@@ -2005,8 +2211,8 @@
   "serverVersion": {
     "message": "Sunucu sürümü"
   },
-  "selfHosted": {
-    "message": "Barındırılan"
+  "selfHostedServer": {
+    "message": "şirket içinde barındırılan"
   },
   "thirdParty": {
     "message": "Üçüncü taraf"
@@ -2043,5 +2249,784 @@
   },
   "rememberEmail": {
     "message": "E-postayı hatırla"
+  },
+  "loginWithDevice": {
+    "message": "Cihazla giriş yap"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Cihazla girişi Bitwarden mobil uygulamasının ayarlarından etkinleştirmelisiniz. Başka bir seçeneğe mi ihtiyacınız var?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Parmak izi ifadesi"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Lütfen kasanızın kilidinin açık olduğundan ve parmak izi ifadesinin diğer cihazla eşleştiğinden emin olun."
+  },
+  "resendNotification": {
+    "message": "Bildirimi yeniden gönder"
+  },
+  "viewAllLoginOptions": {
+    "message": "Tüm giriş seçeneklerini gör"
+  },
+  "notificationSentDevice": {
+    "message": "Cihazınıza bir bildirim gönderildi."
+  },
+  "loginInitiated": {
+    "message": "Giriş başlatıldı"
+  },
+  "exposedMasterPassword": {
+    "message": "Açığa Çıkmış Ana Parola"
+  },
+  "exposedMasterPasswordDesc": {
+    "message": "Bu parola bir veri ihlalinde tespit edildi. Hesabınızı korumak için aynı parolayı farklı yerlerde kullanmayın. Bu parolayı kullanmak istediğinizden emin misiniz?"
+  },
+  "weakAndExposedMasterPassword": {
+    "message": "Zayıf ve Açığa Çıkmış Ana Parola"
+  },
+  "weakAndBreachedMasterPasswordDesc": {
+    "message": "Hem zayıf hem de veri ihlalinde yer alan bir tespit edildi. Hesabınızı korumak için güçlü bir parola seçin ve o parolayı başka yerlerde kullanmayın. Bu parolayı kullanmak istediğinizden emin misiniz?"
+  },
+  "checkForBreaches": {
+    "message": "Bilinen veri ihlallerinde bu parolayı kontrol et"
+  },
+  "important": {
+    "message": "Önemli:"
+  },
+  "masterPasswordHint": {
+    "message": "Ana parolanızı unutursanız kurtaramazsınız!"
+  },
+  "characterMinimum": {
+    "message": "En az $LENGTH$ karakter",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Kuruluş ilkeleriniz, sayfa yüklendiğinde otomatik doldurmayı etkinleştirdi."
+  },
+  "howToAutofill": {
+    "message": "Otomatik doldurma nasıl yapılır?"
+  },
+  "autofillSelectInfoWithCommand": {
+    "message": "Bu ekrandan bir öğe seçin, $COMMAND$ kısayolunu kullanın veya ayarlardaki diğer seçenekleri keşfedin.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Bu ekrandan bir öğe seçin veya ayarlardaki diğer seçenekleri keşfedin."
+  },
+  "gotIt": {
+    "message": "Anladım"
+  },
+  "autofillSettings": {
+    "message": "Otomatik doldurma ayarları"
+  },
+  "autofillShortcut": {
+    "message": "Otomatik doldurma klavye kısayolu"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Otomatik doldurma kısayolu ayarlanmamış. Bunu tarayıcının ayarlarından değiştirebilirsiniz."
+  },
+  "autofillShortcutText": {
+    "message": "Otomatik doldurma kısayolu: $COMMAND$. Bunu tarayıcının ayarlarından değiştirebilirsiniz.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Varsayılan otomatik doldurma kısayolu: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "loggingInOn": {
+    "message": "Giriş yapılan konum"
+  },
+  "opensInANewWindow": {
+    "message": "Yeni pencerede açılır"
+  },
+  "deviceApprovalRequired": {
+    "message": "Cihaz onayı gerekiyor. Lütfen onay yönteminizi seçin:"
+  },
+  "rememberThisDevice": {
+    "message": "Bu cihazı hatırla"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Paylaşılan bir cihaz kullanıyorsanız işaretlemeyin"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Diğer cihazımdan onayla"
+  },
+  "requestAdminApproval": {
+    "message": "Yönetici onayı iste"
+  },
+  "approveWithMasterPassword": {
+    "message": "Ana parola ile onayla"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Kuruluş SSO tanımlayıcısı gereklidir."
+  },
+  "eu": {
+    "message": "AB",
+    "description": "European Union"
+  },
+  "accessDenied": {
+    "message": "Erişim engellendi. Bu sayfayı görüntüleme iznine sahip değilsiniz."
+  },
+  "general": {
+    "message": "Genel"
+  },
+  "display": {
+    "message": "Görünüm"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Hesap başarıyla oluşturuldu!"
+  },
+  "adminApprovalRequested": {
+    "message": "Yönetici onayı istendi"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "İsteğiniz yöneticinize gönderildi."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Onaylandıktan sonra bilgilendirileceksiniz."
+  },
+  "troubleLoggingIn": {
+    "message": "Giriş yaparken sorun mu yaşıyorsunuz?"
+  },
+  "loginApproved": {
+    "message": "Giriş onaylandı"
+  },
+  "userEmailMissing": {
+    "message": "Kullanıcının e-postası eksik"
+  },
+  "deviceTrusted": {
+    "message": "Cihaza güvenildi"
+  },
+  "inputRequired": {
+    "message": "Girdi gerekli."
+  },
+  "required": {
+    "message": "gerekli"
+  },
+  "search": {
+    "message": "Ara"
+  },
+  "inputMinLength": {
+    "message": "Girdi en az $COUNT$ karakter uzunluğunda olmalıdır.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Girdi $COUNT$ karakter uzunluğunu geçmemelidir.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Şu karakterlere izin verilmez: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Girdi değeri en az $MIN$ olmalı.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Girdi değeri en fazla $MAX$ olmalı.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "Bir veya daha fazla e-posta geçersiz"
+  },
+  "inputTrimValidator": {
+    "message": "Girdi yalnızca boşluktan ibaret olamaz.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Girdi bir e-posta adresi değil."
+  },
+  "fieldsNeedAttention": {
+    "message": "Yukarıdaki $COUNT$ alanla ilgilenmeniz gerekiyor.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Seçin --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Filtrelemek için yazın --"
+  },
+  "multiSelectLoading": {
+    "message": "Seçenekler alınıyor..."
+  },
+  "multiSelectNotFound": {
+    "message": "Hiç kayıt bulunamadı"
+  },
+  "multiSelectClearAll": {
+    "message": "Tümünü temizle"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ tane daha",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Alt menü"
+  },
+  "toggleCollapse": {
+    "message": "Daraltmayı aç/kapat",
+    "description": "Toggling an expand/collapse state."
+  },
+  "filelessImport": {
+    "message": "Verileriniz Bitwarden'a aktarılsın mı?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "LastPass verileriniz korunsun ve Bitwarden'a aktarılsın mı?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Şifrelenmemiş dosya olarak kaydet",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Bitwarden'a aktar",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "İçe aktarılıyor...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Veriler başarıyla içe aktarıldı!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "İçe aktarma hatası. Ayrıntılar için konsolu kontrol edin.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "İçe aktarma sırasında ağ hatasıyla karşılaşıldı.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
+  "aliasDomain": {
+    "message": "Alias alan adı"
+  },
+  "passwordRepromptDisabledAutofillOnPageLoad": {
+    "message": "Ana parolayı yeniden isteyen kayıtlar sayfa yüklendiğinde otomatik olarak doldurulamaz. Sayfa yüklendiğinde otomatik doldurma kapatıldı.",
+    "description": "Toast message for describing that master password re-prompt cannot be auto-filled on page load."
+  },
+  "autofillOnPageLoadSetToDefault": {
+    "message": "Sayfa yüklendiğinde otomatik doldurma, varsayılan ayarı kullanacak şekilde ayarlandı.",
+    "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
+  },
+  "turnOffMasterPasswordPromptToEditField": {
+    "message": "Bu alanı düzenlemek için ana parolayı yeniden istemeyi kapatın",
+    "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "İçeriğe geç"
+  },
+  "bitwardenOverlayButton": {
+    "message": "Bitwarden otomatik doldurma menüsü düğmesi",
+    "description": "Page title for the iframe containing the overlay button"
+  },
+  "toggleBitwardenVaultOverlay": {
+    "message": "Bitwarden otomatik doldurma menüsünü aç/kapat",
+    "description": "Screen reader and tool tip label for the overlay button"
+  },
+  "bitwardenVault": {
+    "message": "Bitwarden otomatik doldurma menüsü",
+    "description": "Page title in overlay"
+  },
+  "unlockYourAccountToViewMatchingLogins": {
+    "message": "Eşleşen hesaplarınızı görmek için hesabınızın kilidini açın",
+    "description": "Text to display in overlay when the account is locked."
+  },
+  "unlockAccount": {
+    "message": "Hesap kilidini aç",
+    "description": "Button text to display in overlay when the account is locked."
+  },
+  "fillCredentialsFor": {
+    "message": "Bilgileri doldur",
+    "description": "Screen reader text for when overlay item is in focused"
+  },
+  "partialUsername": {
+    "message": "Kısmi kullanıcı adı",
+    "description": "Screen reader text for when a login item is focused where a partial username is displayed. SR will announce this phrase before reading the text of the partial username"
+  },
+  "noItemsToShow": {
+    "message": "Gösterilecek kayıt yok",
+    "description": "Text to show in overlay if there are no matching items"
+  },
+  "newItem": {
+    "message": "Yeni kayıt",
+    "description": "Button text to display in overlay when there are no matching items"
+  },
+  "addNewVaultItem": {
+    "message": "Kasaya yeni kayıt ekle",
+    "description": "Screen reader text (aria-label) for new item button in overlay"
+  },
+  "bitwardenOverlayMenuAvailable": {
+    "message": "Bitwarden otomatik doldurma menüsü mevcut. Seçmek için aşağı ok tuşuna basın.",
+    "description": "Screen reader text for announcing when the overlay opens on the page"
+  },
+  "turnOn": {
+    "message": "Aç"
+  },
+  "ignore": {
+    "message": "Yok say"
+  },
+  "importData": {
+    "message": "Verileri içe aktar",
+    "description": "Used for the header of the import dialog, the import button and within the file-password-prompt"
+  },
+  "importError": {
+    "message": "İçe aktarma hatası"
+  },
+  "importErrorDesc": {
+    "message": "İçe aktarmaya çalıştığınız verilerle ilgili bir problem var. Lütfen kaynak dosyanızdaki aşağıda belirtilen hataları çözüp tekrar deneyin."
+  },
+  "resolveTheErrorsBelowAndTryAgain": {
+    "message": "Aşağıdaki hataları düzeltip yeniden deneyin."
+  },
+  "description": {
+    "message": "Açıklama"
+  },
+  "importSuccess": {
+    "message": "Veriler başarıyla içe aktarıldı"
+  },
+  "importSuccessNumberOfItems": {
+    "message": "Toplam $AMOUNT$ kayıt içe aktarıldı.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "tryAgain": {
+    "message": "Yeniden dene"
+  },
+  "verificationRequiredForActionSetPinToContinue": {
+    "message": "Bu işlem için doğrulama gerekiyor. Devam etmek için bir PIN belirleyin."
+  },
+  "setPin": {
+    "message": "PIN belirle"
+  },
+  "verifyWithBiometrics": {
+    "message": "Biyometri ile doğrula"
+  },
+  "awaitingConfirmation": {
+    "message": "Onay bekleniyor"
+  },
+  "couldNotCompleteBiometrics": {
+    "message": "Biyometri işlemi tamamlanamadı."
+  },
+  "needADifferentMethod": {
+    "message": "Farklı bir yönteme mi ihtiyacınız var?"
+  },
+  "useMasterPassword": {
+    "message": "Ana parolayı kullan"
+  },
+  "usePin": {
+    "message": "PIN kullan"
+  },
+  "useBiometrics": {
+    "message": "Biyometri kullan"
+  },
+  "enterVerificationCodeSentToEmail": {
+    "message": "E-posta adresinize gönderilen doğrulama kodunu girin."
+  },
+  "resendCode": {
+    "message": "Kodu yeniden gönder"
+  },
+  "total": {
+    "message": "Toplam"
+  },
+  "importWarning": {
+    "message": "$ORGANIZATION$ kuruluşuna veri aktarıyorsunuz. Verileriniz bu kuruluşun üyeleriyle paylaşılabilir. Devam etmek istiyor musunuz?",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Duo'yu başlatın ve oturum açmayı tamamlamak için adımları izleyin."
+  },
+  "duoRequiredForAccount": {
+    "message": "Hesabınız için Duo iki adımlı giriş gereklidir."
+  },
+  "popoutTheExtensionToCompleteLogin": {
+    "message": "Giriş işlemini tamamlamak için uzantıyı dışarı alın."
+  },
+  "popoutExtension": {
+    "message": "Uzantıyı dışarı al"
+  },
+  "launchDuo": {
+    "message": "Duo'yu başlat"
+  },
+  "importFormatError": {
+    "message": "Veriler doğru biçimlendirilmemiş. Lütfen içe aktarma dosyanızı kontrol edin ve tekrar deneyin."
+  },
+  "importNothingError": {
+    "message": "Hiçbir şey içe aktarılmadı."
+  },
+  "importEncKeyError": {
+    "message": "Dışa aktarılmış dosya çözülemedi. Şifreleme anahtarınız, veriler dışa aktarılırken kullanılanla uyuşmuyor."
+  },
+  "invalidFilePassword": {
+    "message": "Geçersiz dosya parolası. Lütfen dışa aktardığınız dosyayı oluştururken girdiğiniz parolayı kullanın."
+  },
+  "importDestination": {
+    "message": "İçe aktarma hedefi"
+  },
+  "learnAboutImportOptions": {
+    "message": "İçe aktarma seçeneklerinizi öğrenin"
+  },
+  "selectImportFolder": {
+    "message": "Bir klasör seçin"
+  },
+  "selectImportCollection": {
+    "message": "Bir koleksiyon seçin"
+  },
+  "importTargetHint": {
+    "message": "İçe aktarılan dosya içeriklerinin $DESTINATION$ konumuna taşınmasını istiyorsanız bu seçeneği seçin",
+    "description": "Located as a hint under the import target. Will be appended by either folder or collection, depending if the user is importing into an individual or an organizational vault.",
+    "placeholders": {
+      "destination": {
+        "content": "$1",
+        "example": "folder or collection"
+      }
+    }
+  },
+  "importUnassignedItemsError": {
+    "message": "Dosya atanmamış öğeler içeriyor."
+  },
+  "selectFormat": {
+    "message": "İçe aktarma dosyasının biçimini seçin"
+  },
+  "selectImportFile": {
+    "message": "İçe aktarma dosyasını seçin"
+  },
+  "chooseFile": {
+    "message": "Dosya seçin"
+  },
+  "noFileChosen": {
+    "message": "Dosya seçilmedi"
+  },
+  "orCopyPasteFileContents": {
+    "message": "veya içe aktarma dosyasının içeriğini kopyalayıp yapıştırın"
+  },
+  "instructionsFor": {
+    "message": "$NAME$ Talimatları",
+    "description": "The title for the import tool instructions.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "LastPass (csv)"
+      }
+    }
+  },
+  "confirmVaultImport": {
+    "message": "Kasayı içe aktarmayı onaylayın"
+  },
+  "confirmVaultImportDesc": {
+    "message": "Bu dosya parola korumalıdır. Verileri içe aktarmak için lütfen dosya parolasını girin."
+  },
+  "confirmFilePassword": {
+    "message": "Dosya parolasını onaylayın"
+  },
+  "typePasskey": {
+    "message": "Geçiş anahtarı"
+  },
+  "passkeyNotCopied": {
+    "message": "Geçiş anahtarı kopyalanmayacak"
+  },
+  "passkeyNotCopiedAlert": {
+    "message": "Geçiş anahtarı klonlanan öğeye kopyalanmayacaktır. Bu öğeyi klonlamaya devam etmek istiyor musunuz?"
+  },
+  "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword": {
+    "message": "Site kimlik doğrulaması gerektiriyor. Bu özellik henüz ana parolası olmayan hesaplarda kullanılamaz."
+  },
+  "logInWithPasskey": {
+    "message": "Geçiş anahtarı ile giriş yapılsın mı?"
+  },
+  "passkeyAlreadyExists": {
+    "message": "Bu uygulama için bir geçiş anahtarı zaten mevcut."
+  },
+  "noPasskeysFoundForThisApplication": {
+    "message": "Bu uygulamaya ait hiç geçiş anahtarı bulunamadı."
+  },
+  "noMatchingPasskeyLogin": {
+    "message": "Bu siteyle eşleşen hiç hesabınız yok."
+  },
+  "confirm": {
+    "message": "Onayla"
+  },
+  "savePasskey": {
+    "message": "Geçiş anahtarını kaydet"
+  },
+  "savePasskeyNewLogin": {
+    "message": "Geçiş anahtarını yeni hesap olarak kaydet"
+  },
+  "choosePasskey": {
+    "message": "Bu geçiş anahtarının kaydedileceği hesabı seçin"
+  },
+  "passkeyItem": {
+    "message": "Geçiş anahtarı kaydı"
+  },
+  "overwritePasskey": {
+    "message": "Geçiş anahtarının üzerine yazılsın mı?"
+  },
+  "overwritePasskeyAlert": {
+    "message": "Bu kayıt zaten bir geçiş anahtarı içeriyor. Mevcut geçiş anahtarının üzerine yazmak istediğinizden emin misiniz?"
+  },
+  "featureNotSupported": {
+    "message": "Bu özellik henüz desteklenmiyor"
+  },
+  "yourPasskeyIsLocked": {
+    "message": "Geçiş anahtarını kullanmak için kimlik doğrulama gerekiyor. Devam etmek için kimliğinizi doğrulayın."
+  },
+  "multifactorAuthenticationCancelled": {
+    "message": "Çok faktörlü kimlik doğrulama iptal edildi"
+  },
+  "noLastPassDataFound": {
+    "message": "LastPass verisi bulunamadı"
+  },
+  "incorrectUsernameOrPassword": {
+    "message": "Kullanıcı adı veya parola yanlış"
+  },
+  "incorrectPassword": {
+    "message": "Yanlış parola"
+  },
+  "incorrectCode": {
+    "message": "Yanlış kod"
+  },
+  "incorrectPin": {
+    "message": "Yanlış PIN"
+  },
+  "multifactorAuthenticationFailed": {
+    "message": "Çok faktörlü kimlik doğrulama başarısız oldu"
+  },
+  "includeSharedFolders": {
+    "message": "Paylaşılan klasörleri dahil et"
+  },
+  "lastPassEmail": {
+    "message": "LastPass E-postası"
+  },
+  "importingYourAccount": {
+    "message": "Hesabınız içe aktarılıyor..."
+  },
+  "lastPassMFARequired": {
+    "message": "LastPass çok faktörlü kimlik doğrulaması gerekli"
+  },
+  "lastPassMFADesc": {
+    "message": "Kimlik doğrulama uygulamanızdaki tek kullanımlık kodu girin"
+  },
+  "lastPassOOBDesc": {
+    "message": "Kimlik doğrulama uygulamanızda oturum açma isteğini onaylayın veya tek kullanımlık kodu girin."
+  },
+  "passcode": {
+    "message": "Kod"
+  },
+  "lastPassMasterPassword": {
+    "message": "LastPass ana parolası"
+  },
+  "lastPassAuthRequired": {
+    "message": "LastPass kimlik doğrulaması gerekli"
+  },
+  "awaitingSSO": {
+    "message": "SSO kimlik doğrulaması bekleniyor"
+  },
+  "awaitingSSODesc": {
+    "message": "Lütfen şirket hesabınızla giriş yapmaya devam edin."
+  },
+  "seeDetailedInstructions": {
+    "message": "Ayrıntılı talimatları yardım sitemizde bulabilirsiniz:",
+    "description": "This is followed a by a hyperlink to the help website."
+  },
+  "importDirectlyFromLastPass": {
+    "message": "Doğrudan LastPass'ten içe aktar"
+  },
+  "importFromCSV": {
+    "message": "CSV'den içe aktar"
+  },
+  "lastPassTryAgainCheckEmail": {
+    "message": "Tekrar deneyin veya LastPass'ten gelecek kimlik doğrulama e-postasını kontrol edin."
+  },
+  "collection": {
+    "message": "Koleksiyon"
+  },
+  "lastPassYubikeyDesc": {
+    "message": "LastPass hesabınızla ilişkili YubiKey'i bilgisayarınızın USB portuna takıp düğmesine dokunun."
+  },
+  "switchAccount": {
+    "message": "Hesabı değiştir"
+  },
+  "switchAccounts": {
+    "message": "Hesapları değiştir"
+  },
+  "switchToAccount": {
+    "message": "Hesaba geç"
+  },
+  "activeAccount": {
+    "message": "Aktif hesap"
+  },
+  "availableAccounts": {
+    "message": "Mevcut hesaplar"
+  },
+  "accountLimitReached": {
+    "message": "Hesap sınırına ulaştınız. Yeni hesap eklemek için hesaplardan birinden çıkış yapın."
+  },
+  "active": {
+    "message": "aktif"
+  },
+  "locked": {
+    "message": "kilitli"
+  },
+  "unlocked": {
+    "message": "kilitli değil"
+  },
+  "server": {
+    "message": "sunucu"
+  },
+  "hostedAt": {
+    "message": "konum"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Cihazınızı veya donanımsal anahtarınızı kullanın"
+  },
+  "justOnce": {
+    "message": "Yalnızca bir defa"
+  },
+  "alwaysForThisSite": {
+    "message": "Bu site için her zaman"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ hariç tutulan alan adlarına eklendi.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
+  },
+  "commonImportFormats": {
+    "message": "Sık kullanılan biçimler",
+    "description": "Label indicating the most common import formats"
+  },
+  "overrideDefaultBrowserAutofillTitle": {
+    "message": "Bitwarden varsayılan parola yöneticiniz yapılsın mı?",
+    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
+  },
+  "overrideDefaultBrowserAutofillDescription": {
+    "message": "Bu seçeneği göz ardı ederseniz Bitwarden otomatik doldurma menüsüyle tarayıcınızınki arasında çakışma yaşanabilir.",
+    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
+  },
+  "overrideDefaultBrowserAutoFillSettings": {
+    "message": "Bitwarden'ı varsayılan parola yöneticiniz yapın",
+    "description": "Label for the setting that allows overriding the default browser autofill settings"
+  },
+  "privacyPermissionAdditionNotGrantedTitle": {
+    "message": "Bitwarden varsayılan parola yöneticisi olarak ayarlanamadı",
+    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
+  },
+  "privacyPermissionAdditionNotGrantedDescription": {
+    "message": "Bitwarden'ı varsayılan parola yöneticisi olarak ayarlamak için tarayıcı gizlilik izinlerini vermeniz gerekir.",
+    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
+  },
+  "makeDefault": {
+    "message": "Varsayılan yap",
+    "description": "Button text for the setting that allows overriding the default browser autofill settings"
+  },
+  "saveCipherAttemptSuccess": {
+    "message": "Kimlik bilgileri başarıyla kaydedildi!",
+    "description": "Notification message for when saving credentials has succeeded."
+  },
+  "updateCipherAttemptSuccess": {
+    "message": "Kimlik bilgileri başarıyla güncellendi!",
+    "description": "Notification message for when updating credentials has succeeded."
+  },
+  "saveCipherAttemptFailed": {
+    "message": "Kimlik bilgileri kaydedilirken hata oluştu. Ayrıntılar için konsolu kontrol edin.",
+    "description": "Notification message for when saving credentials has failed."
+  },
+  "success": {
+    "message": "Başarılı"
+  },
+  "removePasskey": {
+    "message": "Geçiş anahtarını kaldır"
+  },
+  "passkeyRemoved": {
+    "message": "Geçiş anahtarı kaldırıldı"
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "Notice: Unassigned organization items are no longer visible in the All Vaults view and only accessible via the Admin Console."
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "Notice: On May 16, 2024, unassigned organization items will no longer be visible in the All Vaults view and will only be accessible via the Admin Console."
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "Assign these items to a collection from the",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": "to make them visible.",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "adminConsole": {
+    "message": "Yönetici Konsolu"
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Error assigning target collection."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Error assigning target folder."
   }
 }

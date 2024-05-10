@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { I18nMockService } from "../utils/i18n-mock.service";
 
@@ -27,6 +27,8 @@ describe("RadioButton", () => {
       ],
     });
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TestBed.compileComponents();
     fixture = TestBed.createComponent(TestApp);
     fixture.detectChanges();
@@ -72,7 +74,7 @@ class MockedButtonGroupComponent implements Partial<RadioGroupComponent> {
 
 @Component({
   selector: "test-app",
-  template: ` <bit-radio-button [value]="value">Element</bit-radio-button>`,
+  template: ` <bit-radio-button [value]="value"><bit-label>Element</bit-label></bit-radio-button>`,
 })
 class TestApp {
   value?: string;

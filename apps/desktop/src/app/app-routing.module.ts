@@ -1,36 +1,61 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
-import { LockGuard } from "@bitwarden/angular/guards/lock.guard";
+import {
+  AuthGuard,
+  lockGuard,
+  redirectGuard,
+  tdeDecryptionRequiredGuard,
+} from "@bitwarden/angular/auth/guards";
 
-import { AccessibilityCookieComponent } from "./accounts/accessibility-cookie.component";
-import { HintComponent } from "./accounts/hint.component";
-import { LockComponent } from "./accounts/lock.component";
-import { LoginComponent } from "./accounts/login.component";
-import { RegisterComponent } from "./accounts/register.component";
-import { RemovePasswordComponent } from "./accounts/remove-password.component";
-import { SetPasswordComponent } from "./accounts/set-password.component";
-import { SsoComponent } from "./accounts/sso.component";
-import { TwoFactorComponent } from "./accounts/two-factor.component";
-import { UpdateTempPasswordComponent } from "./accounts/update-temp-password.component";
-import { LoginGuard } from "./guards/login.guard";
-import { SendComponent } from "./send/send.component";
-import { VaultComponent } from "./vault/vault.component";
+import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
+import { maxAccountsGuardFn } from "../auth/guards/max-accounts.guard";
+import { HintComponent } from "../auth/hint.component";
+import { LockComponent } from "../auth/lock.component";
+import { LoginDecryptionOptionsComponent } from "../auth/login/login-decryption-options/login-decryption-options.component";
+import { LoginViaAuthRequestComponent } from "../auth/login/login-via-auth-request.component";
+import { LoginComponent } from "../auth/login/login.component";
+import { RegisterComponent } from "../auth/register.component";
+import { RemovePasswordComponent } from "../auth/remove-password.component";
+import { SetPasswordComponent } from "../auth/set-password.component";
+import { SsoComponent } from "../auth/sso.component";
+import { TwoFactorComponent } from "../auth/two-factor.component";
+import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
+import { VaultComponent } from "../vault/app/vault/vault.component";
+
+import { SendComponent } from "./tools/send/send.component";
 
 const routes: Routes = [
-  { path: "", redirectTo: "/vault", pathMatch: "full" },
+  {
+    path: "",
+    pathMatch: "full",
+    children: [], // Children lets us have an empty component.
+    canActivate: [redirectGuard({ loggedIn: "/vault", loggedOut: "/login", locked: "/lock" })],
+  },
   {
     path: "lock",
     component: LockComponent,
-    canActivate: [LockGuard],
+    canActivate: [lockGuard()],
   },
   {
     path: "login",
     component: LoginComponent,
-    canActivate: [LoginGuard],
+    canActivate: [maxAccountsGuardFn()],
+  },
+  {
+    path: "login-with-device",
+    component: LoginViaAuthRequestComponent,
+  },
+  {
+    path: "admin-approval-requested",
+    component: LoginViaAuthRequestComponent,
   },
   { path: "2fa", component: TwoFactorComponent },
+  {
+    path: "login-initiated",
+    component: LoginDecryptionOptionsComponent,
+    canActivate: [tdeDecryptionRequiredGuard()],
+  },
   { path: "register", component: RegisterComponent },
   {
     path: "vault",

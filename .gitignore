@@ -30,6 +30,7 @@ build
 
 # Testing
 coverage
+junit.xml
 
 # Misc
 *.crx
@@ -41,3 +42,6 @@ coverage
 documentation.json
 .eslintcache
 storybook-static
+
+# Local app configuration
+apps/**/config/local.json

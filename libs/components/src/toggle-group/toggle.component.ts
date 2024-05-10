@@ -1,4 +1,4 @@
-import { HostBinding, Component, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
 
 import { ToggleGroupComponent } from "./toggle-group.component";
 
@@ -9,12 +9,12 @@ let nextId = 0;
   templateUrl: "./toggle.component.html",
   preserveWhitespaces: false,
 })
-export class ToggleComponent {
+export class ToggleComponent<TValue> {
   id = nextId++;
 
-  @Input() value?: string;
+  @Input() value?: TValue;
 
-  constructor(private groupComponent: ToggleGroupComponent) {}
+  constructor(private groupComponent: ToggleGroupComponent<TValue>) {}
 
   @HostBinding("tabIndex") tabIndex = "-1";
   @HostBinding("class") classList = ["tw-group"];
@@ -50,10 +50,10 @@ export class ToggleComponent {
       "peer-focus:tw-outline-none",
       "peer-focus:tw-ring",
       "peer-focus:tw-ring-offset-2",
-      "peer-focus:tw-ring-primary-500",
+      "peer-focus:tw-ring-primary-600",
       "peer-focus:tw-z-10",
-      "peer-focus:tw-bg-primary-500",
-      "peer-focus:tw-border-primary-500",
+      "peer-focus:tw-bg-primary-600",
+      "peer-focus:tw-border-primary-600",
       "peer-focus:!tw-text-contrast",
 
       "hover:tw-no-underline",
@@ -61,16 +61,17 @@ export class ToggleComponent {
       "hover:tw-border-text-muted",
       "hover:!tw-text-contrast",
 
-      "peer-checked:tw-bg-primary-500",
-      "peer-checked:tw-border-primary-500",
+      "peer-checked:tw-bg-primary-600",
+      "peer-checked:tw-border-primary-600",
       "peer-checked:!tw-text-contrast",
       "tw-py-1.5",
       "tw-px-3",
 
-      // Fix for badge being pushed slightly lower when inside a button.
-      // Insipired by bootstrap, which does the same.
-      "[&>[bitBadge]]:tw-relative",
-      "[&>[bitBadge]]:tw--top-px",
+      // Fix for bootstrap styles that add bottom margin
+      "!tw-mb-0",
+
+      // Fix for badge being slightly off center vertically
+      "[&>[bitBadge]]:tw-mt-px",
     ];
   }
 

@@ -2,6 +2,10 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AccessTokenComponent } from "./access/access-tokens.component";
+import { ServiceAccountEventsComponent } from "./event-logs/service-accounts-events.component";
+import { serviceAccountAccessGuard } from "./guards/service-account-access.guard";
+import { ServiceAccountPeopleComponent } from "./people/service-account-people.component";
+import { ServiceAccountProjectsComponent } from "./projects/service-account-projects.component";
 import { ServiceAccountComponent } from "./service-account.component";
 import { ServiceAccountsComponent } from "./service-accounts.component";
 
@@ -13,15 +17,28 @@ const routes: Routes = [
   {
     path: ":serviceAccountId",
     component: ServiceAccountComponent,
+    canActivate: [serviceAccountAccessGuard],
     children: [
       {
         path: "",
         pathMatch: "full",
-        redirectTo: "access",
+        redirectTo: "projects",
       },
       {
         path: "access",
         component: AccessTokenComponent,
+      },
+      {
+        path: "people",
+        component: ServiceAccountPeopleComponent,
+      },
+      {
+        path: "projects",
+        component: ServiceAccountProjectsComponent,
+      },
+      {
+        path: "events",
+        component: ServiceAccountEventsComponent,
       },
     ],
   },

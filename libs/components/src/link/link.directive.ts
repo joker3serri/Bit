@@ -1,13 +1,13 @@
 import { Input, HostBinding, Directive } from "@angular/core";
 
-export type LinkType = "primary" | "secondary" | "contrast";
+export type LinkType = "primary" | "secondary" | "contrast" | "light";
 
 const linkStyles: Record<LinkType, string[]> = {
   primary: [
-    "!tw-text-primary-500",
-    "hover:!tw-text-primary-500",
+    "!tw-text-primary-600",
+    "hover:!tw-text-primary-600",
     "focus-visible:before:tw-ring-primary-700",
-    "disabled:!tw-text-primary-500/60",
+    "disabled:!tw-text-primary-600/60",
   ],
   secondary: [
     "!tw-text-main",
@@ -21,9 +21,16 @@ const linkStyles: Record<LinkType, string[]> = {
     "focus-visible:before:tw-ring-text-contrast",
     "disabled:!tw-text-contrast/60",
   ],
+  light: [
+    "!tw-text-alt2",
+    "hover:!tw-text-alt2",
+    "focus-visible:before:tw-ring-text-alt2",
+    "disabled:!tw-text-alt2/60",
+  ],
 };
 
 const commonStyles = [
+  "tw-text-unset",
   "tw-leading-none",
   "tw-p-0",
   "tw-font-semibold",
@@ -56,8 +63,7 @@ const commonStyles = [
   "before:-tw-inset-x-[0.1em]",
   "before:tw-rounded-md",
   "before:tw-transition",
-  "before:tw-ring-2",
-  "focus-visible:before:tw-ring-text-contrast",
+  "focus-visible:before:tw-ring-2",
   "focus-visible:tw-z-10",
 ];
 

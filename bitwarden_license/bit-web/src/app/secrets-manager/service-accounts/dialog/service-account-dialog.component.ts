@@ -1,32 +1,41 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { BitValidators } from "@bitwarden/components";
 
-import { ProjectListView } from "../../models/view/project-list.view";
-import { SecretListView } from "../../models/view/secret-list.view";
 import { ServiceAccountView } from "../../models/view/service-account.view";
-import { ProjectService } from "../../projects/project.service";
-import { SecretService } from "../../secrets/secret.service";
 import { ServiceAccountService } from "../service-account.service";
+
+export enum OperationType {
+  Add,
+  Edit,
+}
 
 export interface ServiceAccountOperation {
   organizationId: string;
+  serviceAccountId?: string;
+  operation: OperationType;
+  organizationEnabled: boolean;
 }
 
 @Component({
-  selector: "sm-service-account-dialog",
   templateUrl: "./service-account-dialog.component.html",
 })
-export class ServiceAccountDialogComponent implements OnInit {
-  projects: ProjectListView[];
-  secrets: SecretListView[];
+export class ServiceAccountDialogComponent {
+  protected formGroup = new FormGroup(
+    {
+      name: new FormControl("", {
+        validators: [Validators.required, Validators.maxLength(500), BitValidators.trimValidator],
+        updateOn: "submit",
+      }),
+    },
+    {},
+  );
 
-  formGroup = new FormGroup({
-    name: new FormControl("", [Validators.required]),
-  });
+  protected loading = false;
 
   constructor(
     public dialogRef: DialogRef,
@@ -34,16 +43,37 @@ export class ServiceAccountDialogComponent implements OnInit {
     private serviceAccountService: ServiceAccountService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private projectService: ProjectService,
-    private secretService: SecretService
   ) {}
 
   async ngOnInit() {
-    this.projects = await this.projectService.getProjects(this.data.organizationId);
-    this.secrets = await this.secretService.getSecrets(this.data.organizationId);
+    if (this.data.operation == OperationType.Edit) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      this.loadData();
+    }
+  }
+
+  async loadData() {
+    this.loading = true;
+    const serviceAccount: ServiceAccountView =
+      await this.serviceAccountService.getByServiceAccountId(
+        this.data.serviceAccountId,
+        this.data.organizationId,
+      );
+    this.formGroup.patchValue({ name: serviceAccount.name });
+    this.loading = false;
   }
 
   submit = async () => {
+    if (!this.data.organizationEnabled) {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("machineAccountsCannotCreate"),
+      );
+      return;
+    }
+
     this.formGroup.markAllAsTouched();
 
     if (this.formGroup.invalid) {
@@ -51,12 +81,21 @@ export class ServiceAccountDialogComponent implements OnInit {
     }
 
     const serviceAccountView = this.getServiceAccountView();
-    await this.serviceAccountService.create(this.data.organizationId, serviceAccountView);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("serviceAccountCreated")
-    );
+    let serviceAccountMessage: string;
+
+    if (this.data.operation == OperationType.Add) {
+      await this.serviceAccountService.create(this.data.organizationId, serviceAccountView);
+      serviceAccountMessage = this.i18nService.t("machineAccountCreated");
+    } else {
+      await this.serviceAccountService.update(
+        this.data.serviceAccountId,
+        this.data.organizationId,
+        serviceAccountView,
+      );
+      serviceAccountMessage = this.i18nService.t("machineAccountUpdated");
+    }
+
+    this.platformUtilsService.showToast("success", null, serviceAccountMessage);
     this.dialogRef.close();
   };
 
@@ -65,5 +104,9 @@ export class ServiceAccountDialogComponent implements OnInit {
     serviceAccountView.organizationId = this.data.organizationId;
     serviceAccountView.name = this.formGroup.value.name;
     return serviceAccountView;
+  }
+
+  get title() {
+    return this.data.operation === OperationType.Add ? "newMachineAccount" : "editMachineAccount";
   }
 }

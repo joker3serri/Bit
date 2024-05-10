@@ -8,16 +8,16 @@ import {
   AbstractControl,
 } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
+import { ProjectListView } from "../../models/view/project-list.view";
 import {
   BulkOperationStatus,
   BulkStatusDetails,
   BulkStatusDialogComponent,
-} from "../../layout/dialogs/bulk-status-dialog.component";
-import { ProjectListView } from "../../models/view/project-list.view";
+} from "../../shared/dialogs/bulk-status-dialog.component";
 import { ProjectService } from "../project.service";
 
 export interface ProjectDeleteOperation {
@@ -25,7 +25,6 @@ export interface ProjectDeleteOperation {
 }
 
 @Component({
-  selector: "sm-project-delete-dialog",
   templateUrl: "./project-delete-dialog.component.html",
 })
 export class ProjectDeleteDialogComponent implements OnInit {
@@ -39,14 +38,14 @@ export class ProjectDeleteDialogComponent implements OnInit {
     private projectService: ProjectService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
   ) {}
 
   ngOnInit(): void {
     if (!(this.data.projects?.length >= 1)) {
       this.dialogRef.close();
       throw new Error(
-        "The project delete dialog was not called with the appropriate operation values."
+        "The project delete dialog was not called with the appropriate operation values.",
       );
     }
   }

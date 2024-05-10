@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
-interface User {
+export interface User {
   name?: string;
-  email: string;
+  email?: string;
 }
 
 @Pipe({
@@ -11,6 +11,10 @@ interface User {
 export class UserNamePipe implements PipeTransform {
   transform(user?: User): string {
     if (user == null) {
+      return null;
+    }
+
+    if (user.name == null && user.email == null) {
       return null;
     }
 

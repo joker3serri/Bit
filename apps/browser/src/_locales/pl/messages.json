@@ -3,12 +3,12 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "Bitwarden - darmowy menedżer haseł",
+    "message": "Menedżer Haseł Bitwarden",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "Bezpieczny i darmowy menedżer haseł dla wszystkich Twoich urządzeń.",
-    "description": "Extension description"
+    "message": "W domu, w pracy, lub w ruchu, Bitwarden z łatwością zabezpiecza Twoje hasła, passkeys i poufne informacje",
+    "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
     "message": "Zaloguj się lub utwórz nowe konto, aby uzyskać dostęp do Twojego bezpiecznego sejfu."
@@ -91,6 +91,15 @@
   "autoFill": {
     "message": "Autouzupełnianie"
   },
+  "autoFillLogin": {
+    "message": "Autouzupełnianie logowania"
+  },
+  "autoFillCard": {
+    "message": "Autouzupełnianie karty"
+  },
+  "autoFillIdentity": {
+    "message": "Autouzupełnianie tożsamości"
+  },
   "generatePasswordCopied": {
     "message": "Wygeneruj hasło (do schowka)"
   },
@@ -98,7 +107,22 @@
     "message": "Kopiuj nazwę pola niestandardowego"
   },
   "noMatchingLogins": {
-    "message": "Brak pasujących danych logowania."
+    "message": "Brak pasujących danych logowania"
+  },
+  "noCards": {
+    "message": "Brak kart"
+  },
+  "noIdentities": {
+    "message": "Brak tożsamości"
+  },
+  "addLoginMenu": {
+    "message": "Dodaj dane logowania"
+  },
+  "addCardMenu": {
+    "message": "Dodaj kartę"
+  },
+  "addIdentityMenu": {
+    "message": "Dodaj tożsamość"
   },
   "unlockVaultMenu": {
     "message": "Odblokuj sejf"
@@ -148,6 +172,12 @@
   "changeMasterPassword": {
     "message": "Zmień hasło główne"
   },
+  "continueToWebApp": {
+    "message": "Kontynuować do aplikacji internetowej?"
+  },
+  "changeMasterPasswordOnWebConfirmation": {
+    "message": "Możesz zmienić swoje hasło główne w aplikacji internetowej Bitwarden."
+  },
   "fingerprintPhrase": {
     "message": "Unikalny identyfikator konta",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -195,6 +225,15 @@
   "helpFeedback": {
     "message": "Pomoc i opinie"
   },
+  "helpCenter": {
+    "message": "Centrum pomocy Bitwarden"
+  },
+  "communityForums": {
+    "message": "Przeglądaj fora społeczności Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Skontaktuj się z pomocą techniczną Bitwarden"
+  },
   "sync": {
     "message": "Synchronizacja"
   },
@@ -234,6 +273,9 @@
   },
   "length": {
     "message": "Długość"
+  },
+  "passwordMinLength": {
+    "message": "Minimalna długość hasła"
   },
   "uppercase": {
     "message": "Wielkie litery (A-Z)"
@@ -290,6 +332,9 @@
   "password": {
     "message": "Hasło"
   },
+  "totp": {
+    "message": "Sekret uwierzytelniania"
+  },
   "passphrase": {
     "message": "Hasło wyrazowe"
   },
@@ -328,6 +373,12 @@
   },
   "other": {
     "message": "Inne"
+  },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Ustaw metodę odblokowania, aby zmienić czas blokowania sejfu."
+  },
+  "unlockMethodNeeded": {
+    "message": "Ustaw metodę odblokowania w Ustawieniach"
   },
   "rateExtension": {
     "message": "Oceń rozszerzenie"
@@ -368,6 +419,9 @@
   },
   "lockNow": {
     "message": "Zablokuj"
+  },
+  "lockAll": {
+    "message": "Zablokuj wszystko"
   },
   "immediately": {
     "message": "Natychmiast"
@@ -430,13 +484,26 @@
     "message": "Wymagane jest ponowne wpisanie hasła głównego."
   },
   "masterPasswordMinlength": {
-    "message": "Hasło główne musi zawierać co najmniej 8 znaków."
+    "message": "Hasło główne musi zawierać co najmniej $VALUE$ znaki(-ów).",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "Hasła nie pasują do siebie."
   },
   "newAccountCreated": {
     "message": "Konto zostało utworzone! Teraz możesz się zalogować."
+  },
+  "youSuccessfullyLoggedIn": {
+    "message": "Zalogowałeś się pomyślnie"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Możesz zamknąć to okno."
   },
   "masterPassSent": {
     "message": "Wysłaliśmy Tobie wiadomość e-mail z podpowiedzią do hasła głównego."
@@ -459,6 +526,18 @@
   },
   "autofillError": {
     "message": "Nie można zastosować autouzupełnienia na tej stronie. Skopiuj i wklej informacje ręcznie."
+  },
+  "totpCaptureError": {
+    "message": "Nie można zeskanować kodu QR z bieżącej strony"
+  },
+  "totpCaptureSuccess": {
+    "message": "Klucz uwierzytelniający został dodany"
+  },
+  "totpCapture": {
+    "message": "Zeskanuj kod QR z bieżącej strony"
+  },
+  "copyTOTP": {
+    "message": "Kopiuj klucz uwierzytelniający (TOTP)"
   },
   "loggedOut": {
     "message": "Wylogowano"
@@ -483,12 +562,6 @@
   },
   "addedFolder": {
     "message": "Folder został dodany"
-  },
-  "changeMasterPass": {
-    "message": "Zmień hasło główne"
-  },
-  "changeMasterPasswordConfirmation": {
-    "message": "Hasło główne możesz zmienić na stronie sejfu bitwarden.com. Czy chcesz przejść do tej strony?"
   },
   "twoStepLoginConfirmation": {
     "message": "Logowanie dwustopniowe sprawia, że konto jest bardziej bezpieczne poprzez wymuszenie potwierdzenia logowania z innego urządzenia, takiego jak z klucza bezpieczeństwa, aplikacji uwierzytelniającej, wiadomości SMS, telefonu lub adresu e-mail. Logowanie dwustopniowe możesz włączyć w sejfie internetowym bitwarden.com. Czy chcesz przejść do tej strony?"
@@ -576,6 +649,9 @@
   "addLoginNotificationDesc": {
     "message": "\"Dodaj powiadomienia logowania\" automatycznie wyświetla monit o zapisanie nowych danych logowania do sejfu przy każdym pierwszym logowaniu."
   },
+  "addLoginNotificationDescAlt": {
+    "message": "Poproś o dodanie elementu, jeśli nie zostanie znaleziony w Twoim sejfie. Dotyczy wszystkich zalogowanych kont."
+  },
   "showCardsCurrentTab": {
     "message": "Pokaż karty na stronie głównej"
   },
@@ -608,17 +684,35 @@
   "changedPasswordNotificationDesc": {
     "message": "Poproś o aktualizację hasła danych logowania po wykryciu zmiany w witrynie."
   },
+  "changedPasswordNotificationDescAlt": {
+    "message": "Poproś o aktualizację hasła, gdy zmiana zostanie wykryta na stronie. Dotyczy wszystkich zalogowanych kont."
+  },
+  "enableUsePasskeys": {
+    "message": "Pytaj o zapisywanie i używanie passkey"
+  },
+  "usePasskeysDesc": {
+    "message": "Pytaj o zapisywanie nowych passkey albo danych logowania z passkey w Twoim sejfie. Dotyczy wszystkich zalogowanych kont."
+  },
   "notificationChangeDesc": {
     "message": "Czy chcesz zaktualizować to hasło w Bitwarden?"
   },
   "notificationChangeSave": {
     "message": "Zaktualizuj"
   },
+  "notificationUnlockDesc": {
+    "message": "Odblokuj swój sejf Bitwarden, aby ukończyć żądanie autouzupełniania."
+  },
+  "notificationUnlock": {
+    "message": "Odblokuj"
+  },
   "enableContextMenuItem": {
     "message": "Pokaż opcje menu kontekstowego"
   },
   "contextMenuItemDesc": {
     "message": "Użyj drugiego kliknięcia, aby uzyskać dostęp do generowania haseł i pasujących danych logowania do witryny. "
+  },
+  "contextMenuItemDescAlt": {
+    "message": "Użyj drugiego kliknięcia, aby uzyskać dostęp do generowania haseł i pasujących danych logowania do witryny. Dotyczy wszystkich zalogowanych kont."
   },
   "defaultUriMatchDetection": {
     "message": "Domyślne wykrywanie dopasowania",
@@ -632,6 +726,9 @@
   },
   "themeDesc": {
     "message": "Zmień motyw kolorystyczny aplikacji."
+  },
+  "themeDescAlt": {
+    "message": "Zmień kolor motywu aplikacji. Dotyczy wszystkich zalogowanych kont."
   },
   "dark": {
     "message": "Ciemny",
@@ -746,8 +843,8 @@
   "featureUnavailable": {
     "message": "Funkcja jest niedostępna"
   },
-  "updateKey": {
-    "message": "Nie możesz używać tej funkcji, dopóki nie zaktualizujesz klucza szyfrowania."
+  "encryptionKeyMigrationRequired": {
+    "message": "Wymagana jest migracja klucza szyfrowania. Zaloguj się przez sejf internetowy, aby zaktualizować klucz szyfrowania."
   },
   "premiumMembership": {
     "message": "Konto Premium"
@@ -770,8 +867,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB miejsca na zaszyfrowane załączniki."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Dodatkowe opcje logowania dwustopniowego, takie jak klucze YubiKey, FIDO U2F oraz Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Własnościowe opcje logowania dwuetapowego, takie jak YubiKey i Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Raporty bezpieczeństwa haseł, stanu konta i raporty wycieków danych, aby Twoje dane były bezpieczne."
@@ -936,7 +1033,7 @@
     "message": "Adres URL serwera"
   },
   "apiUrl": {
-    "message": "Adres URL serwera interfejsu API"
+    "message": "Adres URL serwera API"
   },
   "webVaultUrl": {
     "message": "Adres URL serwera sejfu internetowego"
@@ -953,6 +1050,31 @@
   "environmentSaved": {
     "message": "Adresy URL środowiska zostały zapisane"
   },
+  "showAutoFillMenuOnFormFields": {
+    "message": "Pokaż menu autouzupełniania na polach formularza",
+    "description": "Represents the message for allowing the user to enable the auto-fill overlay"
+  },
+  "showAutoFillMenuOnFormFieldsDescAlt": {
+    "message": "Dotyczy wszystkich zalogowanych kont."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Wyłącz wbudowany w przeglądarkę menedżera haseł, aby uniknąć konfliktów."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Edytuj ustawienia przeglądarki."
+  },
+  "autofillOverlayVisibilityOff": {
+    "message": "Wył.",
+    "description": "Overlay setting select option for disabling autofill overlay"
+  },
+  "autofillOverlayVisibilityOnFieldFocus": {
+    "message": "Gdy pole jest zaznaczone",
+    "description": "Overlay appearance select option for showing the field on focus of the input element"
+  },
+  "autofillOverlayVisibilityOnButtonClick": {
+    "message": "Gdy wybrano ikonę autouzupełniania",
+    "description": "Overlay appearance select option for showing the field on click of the overlay icon"
+  },
   "enableAutoFillOnPageLoad": {
     "message": "Włącz autouzupełnianie po załadowaniu strony"
   },
@@ -960,7 +1082,10 @@
     "message": "Jeśli zostanie wykryty formularz logowania, automatycznie uzupełnij dane logowania po załadowaniu strony."
   },
   "experimentalFeature": {
-    "message": "Obecnie jest to funkcja eksperymentalna. Używaj na własne ryzyko."
+    "message": "Zaatakowane lub niezaufane witryny internetowe mogą wykorzystać funkcję autouzupełniania podczas wczytywania strony, aby wyrządzić szkody."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Dowiedz się więcej o autouzupełnianiu"
   },
   "defaultAutoFillOnPageLoad": {
     "message": "Domyślne ustawienie autouzupełniania"
@@ -994,9 +1119,6 @@
   },
   "commandLockVaultDesc": {
     "message": "Zablokuj sejf"
-  },
-  "privateModeWarning": {
-    "message": "Obsługa trybu prywatnego jest eksperymentalna, a niektóre funkcje są ograniczone."
   },
   "customFields": {
     "message": "Pola niestandardowe"
@@ -1040,7 +1162,10 @@
     "message": "Pokaż ikony witryn"
   },
   "faviconDesc": {
-    "message": "Pokaż rozpoznawalny obraz obok każdych danych logowania."
+    "message": "Pokaż rozpoznawalny obraz obok danych logowania."
+  },
+  "faviconDescAlt": {
+    "message": "Pokaż rozpoznawalny obraz obok każdego logowania. Dotyczy wszystkich zalogowanych kont."
   },
   "enableBadgeCounter": {
     "message": "Pokaż licznik na ikonie"
@@ -1122,6 +1247,9 @@
   },
   "dr": {
     "message": "Doktor"
+  },
+  "mx": {
+    "message": "Pan(i)"
   },
   "firstName": {
     "message": "Imię"
@@ -1316,7 +1444,7 @@
     "description": "ex. Date this item was created"
   },
   "datePasswordUpdated": {
-    "message": "Aktualizacja hasła",
+    "message": "Hasło zostało zaktualizowane",
     "description": "ex. Date this password was updated"
   },
   "neverLockWarning": {
@@ -1368,6 +1496,9 @@
   "invalidPin": {
     "message": "Kod PIN jest nieprawidłowy."
   },
+  "tooManyInvalidPinEntryAttemptsLoggingOut": {
+    "message": "Zbyt wiele nieprawidłowych prób wpisywania PIN. Wylogowywanie."
+  },
   "unlockWithBiometrics": {
     "message": "Odblokuj danymi biometrycznymi"
   },
@@ -1418,9 +1549,6 @@
   "restoreItem": {
     "message": "Przywróć element"
   },
-  "restoreItemConfirmation": {
-    "message": "Czy na pewno chcesz przywrócić ten element?"
-  },
   "restoredItem": {
     "message": "Element został przywrócony"
   },
@@ -1439,8 +1567,35 @@
   "autoFillSuccess": {
     "message": "Element został automatycznie uzupełniony"
   },
+  "insecurePageWarning": {
+    "message": "Ostrzeżenie: Jest to niezabezpieczona strona HTTP i wszelkie przekazane informacje mogą być potencjalnie widoczne i zmienione przez innych. Ten login został pierwotnie zapisany na stronie bezpiecznej (HTTPS)."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Nadal chcesz uzupełnić ten login?"
+  },
+  "autofillIframeWarning": {
+    "message": "Formularz jest hostowany przez inną domenę niż zapisany adres URI dla tego loginu. Wybierz OK, aby i tak automatycznie wypełnić lub anuluj aby zatrzymać."
+  },
+  "autofillIframeWarningTip": {
+    "message": "Aby zapobiec temu ostrzeżeniu w przyszłości, zapisz ten URI, $HOSTNAME$, dla tej witryny.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Ustaw hasło główne"
+  },
+  "currentMasterPass": {
+    "message": "Aktualne hasło główne"
+  },
+  "newMasterPass": {
+    "message": "Nowe hasło główne"
+  },
+  "confirmNewMasterPass": {
+    "message": "Potwierdź nowe hasło główne"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Co najmniej jedna zasada organizacji wymaga, aby hasło główne spełniało następujące wymagania:"
@@ -1488,7 +1643,7 @@
     "message": "Zaznaczając tę opcję, akceptujesz:"
   },
   "acceptPoliciesRequired": {
-    "message": "Warunki użytkowania i polityka prywatności nie zostały zaakceptowane."
+    "message": "Regulamin i polityka prywatności nie zostały zaakceptowane."
   },
   "termsOfService": {
     "message": "Regulamin"
@@ -1550,6 +1705,12 @@
   "biometricsNotSupportedDesc": {
     "message": "Dane biometryczne przeglądarki nie są obsługiwane na tym urządzeniu."
   },
+  "biometricsFailedTitle": {
+    "message": "Dane biometryczne są błędne"
+  },
+  "biometricsFailedDesc": {
+    "message": "Dane biometryczne nie mogę być użyte, rozważ użycie hasła głównego lub wylogowanie. Jeśli się to powtarza, skontaktuj się z pomocą techniczną Bitwarden."
+  },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Uprawnienie nie zostało przyznane"
   },
@@ -1568,18 +1729,24 @@
   "personalOwnershipPolicyInEffect": {
     "message": "Zasada organizacji ma wpływ na opcję własności elementów."
   },
+  "personalOwnershipPolicyInEffectImports": {
+    "message": "Polityka organizacji zablokowała importowanie elementów do Twojego sejfu."
+  },
   "excludedDomains": {
     "message": "Wykluczone domeny"
   },
   "excludedDomainsDesc": {
     "message": "Aplikacja Bitwarden nie będzie proponować zapisywania danych logowania dla tych domen. Musisz odświeżyć stronę, aby zastosowywać zmiany."
   },
+  "excludedDomainsDescAlt": {
+    "message": "Aplikacja Bitwarden nie będzie proponować zapisywania danych logowania dla tych domen dla wszystkich zalogowanych kont. Musisz odświeżyć stronę, aby zastosowywać zmiany."
+  },
   "excludedDomainsInvalidDomain": {
     "message": "$DOMAIN$ nie jest prawidłową nazwą domeny",
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -1820,7 +1987,10 @@
     "message": "Zaktualizuj hasło główne"
   },
   "updateMasterPasswordWarning": {
-    "message": "Twoje hasło główne zostało ostatnio zmienione przez administratora Twojej organizacji. Musisz je teraz zaktualizować, aby uzyskać dostęp do sejfu. W przypadku kontynuacji nastąpi wylogowanie z bieżącej sesji, przez co konieczne będzie ponowne zalogowanie się. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie jedną godzinę."
+    "message": "Hasło główne zostało zmienione przez administratora Twojej organizacji. Musisz je zaktualizować, aby uzyskać dostęp do sejfu. Ta czynność spowoduje wylogowanie z bieżącej sesji, przez co konieczne będzie ponowne zalogowanie się. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie godzinę."
+  },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Twoje hasło główne nie spełnia jednej lub kilku zasad organizacji. Aby uzyskać dostęp do sejfu, musisz teraz zaktualizować swoje hasło główne. Kontynuacja wyloguje Cię z bieżącej sesji, wymagając zalogowania się ponownie. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie jedną godzinę."
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Automatyczne rejestrowanie użytkowników"
@@ -1831,8 +2001,21 @@
   "selectFolder": {
     "message": "Wybierz folder..."
   },
-  "ssoCompleteRegistration": {
-    "message": "W celu zakończenia jednokrotnego logowania SSO, ustaw hasło główne, aby uzyskać dostęp do sejfu."
+  "noFoldersFound": {
+    "message": "Nie znaleziono folderów",
+    "description": "Used as a message within the notification bar when no folders are found"
+  },
+  "orgPermissionsUpdatedMustSetPassword": {
+    "message": "Uprawnienia w Twojej organizacji zostały zaktualizowane, musisz teraz ustawić hasło główne.",
+    "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "orgRequiresYouToSetPassword": {
+    "message": "Twoja organizacja wymaga ustawienia hasła głównego.",
+    "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "verificationRequired": {
+    "message": "Wymagana weryfikacja",
+    "description": "Default title for the user verification dialog."
   },
   "hours": {
     "message": "Godziny"
@@ -1853,14 +2036,40 @@
       }
     }
   },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Zasady organizacji mają wpływ na czas blokowania sejfu. Maksymalny dozwolony czas wynosi $HOURS$ godz. i $MINUTES$ min. Twój czas blokowania sejfu to $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Zasady organizacji ustawiły czas blokowania sejfu na $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
+      }
+    }
+  },
   "vaultTimeoutTooLarge": {
     "message": "Czas blokowania sejfu przekracza limit określony przez organizację."
   },
   "vaultExportDisabled": {
-    "message": "Eksport sejfu wyłączony"
+    "message": "Eksportowanie sejfu jest niedostępne"
   },
   "personalVaultExportPolicyInEffect": {
-    "message": "Co najmniej jedna zasada organizacji uniemożliwia wyeksportowanie Twojego sejfu."
+    "message": "Co najmniej jedna zasada organizacji uniemożliwia wyeksportowanie osobistego sejfu."
   },
   "copyCustomFieldNameInvalidElement": {
     "message": "Nie można zidentyfikować poprawnego elementu formularza. Spróbuj sprawdzić kod HTML."
@@ -1901,8 +2110,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Eksportowanie osobistego sejfu"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Tylko osobiste elementy sejfu powiązane z adresem $EMAIL$ zostaną wyeksportowane. Elementy sejfu należące do organizacji nie będą uwzględnione.",
+  "exportingIndividualVaultDescription": {
+    "message": "Z sejfu zostaną wyeksportowane tylko elementy powiązane z $EMAIL$. Elementy z sejfu organizacji nie będą uwzględnione. Tylko informacje o elemencie zostaną wyeksportowane i nie będą zawierać powiązanych załączników.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -1942,7 +2151,7 @@
     "message": "Losowe słowo"
   },
   "websiteName": {
-    "message": "Nazwa witryny"
+    "message": "Nazwa strony"
   },
   "whatWouldYouLikeToGenerate": {
     "message": "Co chcesz wygenerować?"
@@ -1954,10 +2163,10 @@
     "message": "Usługa"
   },
   "forwardedEmail": {
-    "message": "Alias przekazywanego e-maila"
+    "message": "Alias przekierowania"
   },
   "forwardedEmailDesc": {
-    "message": "Wygeneruj alias adresu e-mail z zewnętrznej usługi przekazywania."
+    "message": "Wygeneruj alias adresu e-mail z zewnętrznej usługi przekierowania."
   },
   "hostname": {
     "message": "Nazwa hosta",
@@ -1967,7 +2176,7 @@
     "message": "Token dostępu API"
   },
   "apiKey": {
-    "message": "Klucz interfejsu API"
+    "message": "Klucz API"
   },
   "ssoKeyConnectorError": {
     "message": "Błąd serwera Key Connector: upewnij się, że serwer Key Connector jest dostępny i działa poprawnie."
@@ -1976,13 +2185,10 @@
     "message": "Wymagana jest subskrypcja Premium"
   },
   "organizationIsDisabled": {
-    "message": "Organizacja jest wyłączona."
+    "message": "Organizacja została zawieszona."
   },
   "disabledOrganizationFilterError": {
-    "message": "Nie można uzyskać dostępu do elementów w wyłączonych organizacjach. Skontaktuj się z właścicielem organizacji, aby uzyskać pomoc."
-  },
-  "cardBrandMir": {
-    "message": "Mir"
+    "message": "Nie można uzyskać dostępu do elementów w zawieszonych organizacjach. Skontaktuj się z właścicielem organizacji, aby uzyskać pomoc."
   },
   "loggingInTo": {
     "message": "Logowanie do $DOMAIN$",
@@ -1994,7 +2200,7 @@
     }
   },
   "settingsEdited": {
-    "message": "Ustawienia zostały edytowane"
+    "message": "Ustawienia zostały zmienione"
   },
   "environmentEditedClick": {
     "message": "Kliknij tutaj"
@@ -2005,11 +2211,11 @@
   "serverVersion": {
     "message": "Wersja serwera"
   },
-  "selfHosted": {
-    "message": "Samodzielnie hostowany"
+  "selfHostedServer": {
+    "message": "samodzielnie hostowany"
   },
   "thirdParty": {
-    "message": "Innego dostawcy"
+    "message": "Inny dostawca"
   },
   "thirdPartyServerMessage": {
     "message": "Połączono z implementacją serwera innego dostawcy, $SERVERNAME$. Zweryfikuj błędy za pomocą oficjalnego serwera lub zgłoś je serwerowi innego dostawcy.",
@@ -2021,7 +2227,7 @@
     }
   },
   "lastSeenOn": {
-    "message": "ostatnio widziano $DATE$",
+    "message": "ostatnio widziany $DATE$",
     "placeholders": {
       "date": {
         "content": "$1",
@@ -2039,9 +2245,788 @@
     "message": "To nie Ty?"
   },
   "newAroundHere": {
-    "message": "Jesteś tu nowy(a)?"
+    "message": "Nowy użytkownik?"
   },
   "rememberEmail": {
     "message": "Zapamiętaj adres e-mail"
+  },
+  "loginWithDevice": {
+    "message": "Zaloguj się za pomocą urządzenia"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Logowanie za pomocą urządzenia musi być włączone w ustawieniach aplikacji Bitwarden. Potrzebujesz innej opcji?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Unikalny identyfikator konta"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Upewnij się, że sejf jest odblokowany, a unikalny identyfikator konta pasuje do drugiego urządzenia."
+  },
+  "resendNotification": {
+    "message": "Wyślij ponownie powiadomienie"
+  },
+  "viewAllLoginOptions": {
+    "message": "Zobacz wszystkie sposoby logowania"
+  },
+  "notificationSentDevice": {
+    "message": "Powiadomienie zostało wysłane na urządzenie."
+  },
+  "loginInitiated": {
+    "message": "Logowanie rozpoczęte"
+  },
+  "exposedMasterPassword": {
+    "message": "Ujawnione hasło główne"
+  },
+  "exposedMasterPasswordDesc": {
+    "message": "Hasło ujawnione w wyniku naruszenia ochrony danych. Użyj unikalnego hasła, aby chronić swoje konto. Czy na pewno chcesz użyć ujawnionego hasła?"
+  },
+  "weakAndExposedMasterPassword": {
+    "message": "Słabe i ujawnione hasło główne"
+  },
+  "weakAndBreachedMasterPasswordDesc": {
+    "message": "Słabe hasło ujawnione w wyniku naruszenia ochrony danych. Użyj silnego i unikalnego hasła, aby chronić swoje konto. Czy na pewno chcesz użyć tego hasła?"
+  },
+  "checkForBreaches": {
+    "message": "Sprawdź znane naruszenia ochrony danych tego hasła"
+  },
+  "important": {
+    "message": "Ważne:"
+  },
+  "masterPasswordHint": {
+    "message": "Twoje hasło główne nie może zostać odzyskane, jeśli je zapomnisz!"
+  },
+  "characterMinimum": {
+    "message": "Minimum znaków: $LENGTH$",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "autofillPageLoadPolicyActivated": {
+    "message": "Twoja organizacji włączyła autouzupełnianie podczas wczytywania strony."
+  },
+  "howToAutofill": {
+    "message": "Jak autouzupełniać"
+  },
+  "autofillSelectInfoWithCommand": {
+    "message": "Wybierz element z tego ekranu, użyj skrótu $COMMAND$ lub zobacz inne opcje w ustawieniach.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillSelectInfoWithoutCommand": {
+    "message": "Wybierz element z tego ekranu lub zobacz inne opcje w ustawieniach."
+  },
+  "gotIt": {
+    "message": "Rozumiem"
+  },
+  "autofillSettings": {
+    "message": "Ustawienia autouzupełniania"
+  },
+  "autofillShortcut": {
+    "message": "Skrót klawiaturowy autouzupełniania"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Skrót autouzupełniania nie jest ustawiony. Zmień to w ustawieniach przeglądarki."
+  },
+  "autofillShortcutText": {
+    "message": "Skrót autouzupełniania to: $COMMAND$. Zmień to w ustawieniach przeglądarki.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Domyślny skrót autouzupełniania: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "loggingInOn": {
+    "message": "Logowanie do"
+  },
+  "opensInANewWindow": {
+    "message": "Otwiera w nowym oknie"
+  },
+  "deviceApprovalRequired": {
+    "message": "Wymagane zatwierdzenie urządzenia. Wybierz opcję zatwierdzenia poniżej:"
+  },
+  "rememberThisDevice": {
+    "message": "Zapamiętaj to urządzenie"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Odznacz jeśli używasz publicznego urządzenia"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Zatwierdź z innego twojego urządzenia"
+  },
+  "requestAdminApproval": {
+    "message": "Poproś administratora o zatwierdzenie"
+  },
+  "approveWithMasterPassword": {
+    "message": "Zatwierdź przy użyciu hasła głównego"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Identyfikator organizacji jest wymagany."
+  },
+  "eu": {
+    "message": "UE",
+    "description": "European Union"
+  },
+  "accessDenied": {
+    "message": "Odmowa dostępu. Nie masz uprawnień do przeglądania tej strony."
+  },
+  "general": {
+    "message": "Ogólne"
+  },
+  "display": {
+    "message": "Wyświetl"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Konto pomyślnie utworzone!"
+  },
+  "adminApprovalRequested": {
+    "message": "Poproszono administratora o zatwierdzenie"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Twoja prośba została wysłana do Twojego administratora."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Zostaniesz powiadomiony po zatwierdzeniu."
+  },
+  "troubleLoggingIn": {
+    "message": "Problem z zalogowaniem?"
+  },
+  "loginApproved": {
+    "message": "Logowanie zatwierdzone"
+  },
+  "userEmailMissing": {
+    "message": "Brak adresu e-mail użytkownika"
+  },
+  "deviceTrusted": {
+    "message": "Zaufano urządzeniu"
+  },
+  "inputRequired": {
+    "message": "Dane wejściowe są wymagane."
+  },
+  "required": {
+    "message": "wymagane"
+  },
+  "search": {
+    "message": "Szukaj"
+  },
+  "inputMinLength": {
+    "message": "Dane wejściowe muszą zawierać co najmniej $COUNT$ znaki(-ów).",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Dane wejściowe nie mogą przekraczać długości $COUNT$ znaków.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Następujące znaki są niedozwolone: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Wartość wejściowa musi wynosić co najmniej $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Wartość wejściowa nie może przekraczać $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "Co najmniej 1 e-mail jest nieprawidłowy"
+  },
+  "inputTrimValidator": {
+    "message": "Tekst nie może zawierać tylko spacji.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Dane wejściowe nie są adresem e-mail."
+  },
+  "fieldsNeedAttention": {
+    "message": "Pola powyżej wymagające Twojej uwagi: $COUNT$.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Wybierz --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Pisz, aby filtrować --"
+  },
+  "multiSelectLoading": {
+    "message": "Pobieranie opcji..."
+  },
+  "multiSelectNotFound": {
+    "message": "Nie znaleziono żadnych pozycji"
+  },
+  "multiSelectClearAll": {
+    "message": "Wyczyść wszystko"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ więcej",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Podmenu"
+  },
+  "toggleCollapse": {
+    "message": "Zwiń/rozwiń",
+    "description": "Toggling an expand/collapse state."
+  },
+  "filelessImport": {
+    "message": "Zaimportować Twoje dane do Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Ochronić Twoje dane LastPass i zaimportować do Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Zapisz jako niezaszyfrowany plik",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importuj do Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importowanie...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Dane pomyślnie zaimportowane!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Błąd podczas importowania. Sprawdź konsolę, aby uzyskać szczegółowe informacje.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Wystąpił błąd sieci podczas importu.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
+  "aliasDomain": {
+    "message": "Domena aliasu"
+  },
+  "passwordRepromptDisabledAutofillOnPageLoad": {
+    "message": "Elementy z pytaniem o hasło głównege nie mogą być automatycznie wypełniane przy wczytywaniu strony. Automatyczne wypełnianie po wczytywania strony zostało wyłączone.",
+    "description": "Toast message for describing that master password re-prompt cannot be auto-filled on page load."
+  },
+  "autofillOnPageLoadSetToDefault": {
+    "message": "Automatyczne wypełnianie przy wczytywaniu strony zostało ustawione, aby używać ustawień domyślnych.",
+    "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
+  },
+  "turnOffMasterPasswordPromptToEditField": {
+    "message": "Wyłącz prośbę o podanie hasła głównego, aby edytować to pole",
+    "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Przejdź do treści"
+  },
+  "bitwardenOverlayButton": {
+    "message": "Przycisk menu autouzupełniania Bitwarden",
+    "description": "Page title for the iframe containing the overlay button"
+  },
+  "toggleBitwardenVaultOverlay": {
+    "message": "Przełącz menu autouzupełniania Bitwarden",
+    "description": "Screen reader and tool tip label for the overlay button"
+  },
+  "bitwardenVault": {
+    "message": "Menu autouzupełniania Bitwarden",
+    "description": "Page title in overlay"
+  },
+  "unlockYourAccountToViewMatchingLogins": {
+    "message": "Odblokuj swoje konto, aby wyświetlić pasujące elementy",
+    "description": "Text to display in overlay when the account is locked."
+  },
+  "unlockAccount": {
+    "message": "Odblokuj konto",
+    "description": "Button text to display in overlay when the account is locked."
+  },
+  "fillCredentialsFor": {
+    "message": "Wypełnij dane logowania dla",
+    "description": "Screen reader text for when overlay item is in focused"
+  },
+  "partialUsername": {
+    "message": "Częściowa nazwa użytkownika",
+    "description": "Screen reader text for when a login item is focused where a partial username is displayed. SR will announce this phrase before reading the text of the partial username"
+  },
+  "noItemsToShow": {
+    "message": "Brak elementów do wyświetlenia",
+    "description": "Text to show in overlay if there are no matching items"
+  },
+  "newItem": {
+    "message": "Nowy element",
+    "description": "Button text to display in overlay when there are no matching items"
+  },
+  "addNewVaultItem": {
+    "message": "Dodaj nowy element do sejfu",
+    "description": "Screen reader text (aria-label) for new item button in overlay"
+  },
+  "bitwardenOverlayMenuAvailable": {
+    "message": "Dostępne menu autouzupełniania Bitwarden. Naciśnij przycisk strzałki w dół, aby wybrać.",
+    "description": "Screen reader text for announcing when the overlay opens on the page"
+  },
+  "turnOn": {
+    "message": "Włącz"
+  },
+  "ignore": {
+    "message": "Ignoruj"
+  },
+  "importData": {
+    "message": "Importuj dane",
+    "description": "Used for the header of the import dialog, the import button and within the file-password-prompt"
+  },
+  "importError": {
+    "message": "Błąd importu"
+  },
+  "importErrorDesc": {
+    "message": "Wystąpił problem z danymi, które chcesz zaimportować. Rozwiąż poniższe problemy w Twoim pliku i spróbuj ponownie."
+  },
+  "resolveTheErrorsBelowAndTryAgain": {
+    "message": "Rozwiąż poniższe błędy i spróbuj ponownie."
+  },
+  "description": {
+    "message": "Opis"
+  },
+  "importSuccess": {
+    "message": "Importowanie danych zakończone sukcesem"
+  },
+  "importSuccessNumberOfItems": {
+    "message": "Zaimportowano elementów: $AMOUNT$.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "tryAgain": {
+    "message": "Spróbuj ponownie"
+  },
+  "verificationRequiredForActionSetPinToContinue": {
+    "message": "Weryfikacja dla tej akcji jest wymagana. Ustaw kod PIN, aby kontynuować."
+  },
+  "setPin": {
+    "message": "Ustaw PIN"
+  },
+  "verifyWithBiometrics": {
+    "message": "Weryfikuj za pomocą biometrii"
+  },
+  "awaitingConfirmation": {
+    "message": "Oczekiwanie na potwierdzenie"
+  },
+  "couldNotCompleteBiometrics": {
+    "message": "Nie można ukończyć z użyciem biometrii."
+  },
+  "needADifferentMethod": {
+    "message": "Potrzebujesz innej metody?"
+  },
+  "useMasterPassword": {
+    "message": "Użyj hasła głównego"
+  },
+  "usePin": {
+    "message": "Użyj PINu"
+  },
+  "useBiometrics": {
+    "message": "Użyj biometrii"
+  },
+  "enterVerificationCodeSentToEmail": {
+    "message": "Wpisz kod weryfikacyjny, który został wysłany na adres e-mail."
+  },
+  "resendCode": {
+    "message": "Wysłać kod ponownie"
+  },
+  "total": {
+    "message": "Łącznie"
+  },
+  "importWarning": {
+    "message": "Importujesz dane do organizacji $ORGANIZATION$. Dane mogą zostać udostępnione członkom organizacji. Czy chcesz kontynuować?",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Uruchom DUO i wykonaj kroki, aby zakończyć logowanie."
+  },
+  "duoRequiredForAccount": {
+    "message": "Dwustopniowe logowanie Duo jest wymagane dla Twojego konta."
+  },
+  "popoutTheExtensionToCompleteLogin": {
+    "message": "Otwórz rozszerzenie w nowym oknie, aby dokończyć logowanie."
+  },
+  "popoutExtension": {
+    "message": "Otwórz rozszerzenie w nowym oknie"
+  },
+  "launchDuo": {
+    "message": "Uruchom DUO"
+  },
+  "importFormatError": {
+    "message": "Dane nie są poprawnie sformatowane. Sprawdź importowany plik i spróbuj ponownie."
+  },
+  "importNothingError": {
+    "message": "Nic nie zostało zaimportowane."
+  },
+  "importEncKeyError": {
+    "message": "Wystąpił błąd podczas odszyfrowywania pliku. Klucz szyfrowania nie pasuje do klucza użytego podczas eksportowania danych."
+  },
+  "invalidFilePassword": {
+    "message": "Hasło do pliku jest nieprawidłowe. Użyj hasła które podano przy tworzeniu pliku eksportu."
+  },
+  "importDestination": {
+    "message": "Miejsce docelowe importu"
+  },
+  "learnAboutImportOptions": {
+    "message": "Dowiedz się więcej o opcjach importu"
+  },
+  "selectImportFolder": {
+    "message": "Wybierz folder"
+  },
+  "selectImportCollection": {
+    "message": "Wybierz kolekcję"
+  },
+  "importTargetHint": {
+    "message": "Wybierz tę opcję, jeśli chcesz, aby zawartość zaimportowanego pliku została przeniesiona do $DESTINATION$",
+    "description": "Located as a hint under the import target. Will be appended by either folder or collection, depending if the user is importing into an individual or an organizational vault.",
+    "placeholders": {
+      "destination": {
+        "content": "$1",
+        "example": "folder or collection"
+      }
+    }
+  },
+  "importUnassignedItemsError": {
+    "message": "Plik zawiera nieprzypisane elementy."
+  },
+  "selectFormat": {
+    "message": "Wybierz format importowanego pliku"
+  },
+  "selectImportFile": {
+    "message": "Wybierz plik do zaimportowania"
+  },
+  "chooseFile": {
+    "message": "Wybierz plik"
+  },
+  "noFileChosen": {
+    "message": "Nie wybrano pliku"
+  },
+  "orCopyPasteFileContents": {
+    "message": "lub skopiuj/wklej treść pliku"
+  },
+  "instructionsFor": {
+    "message": "Instrukcja dla $NAME$",
+    "description": "The title for the import tool instructions.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "LastPass (csv)"
+      }
+    }
+  },
+  "confirmVaultImport": {
+    "message": "Potwierdź importowanie sejfu"
+  },
+  "confirmVaultImportDesc": {
+    "message": "Plik jest chroniony hasłem. Wprowadź hasło pliku, aby zaimportować dane."
+  },
+  "confirmFilePassword": {
+    "message": "Potwierdź hasło pliku"
+  },
+  "typePasskey": {
+    "message": "Passkey"
+  },
+  "passkeyNotCopied": {
+    "message": "Passkey nie zostanie skopiowany"
+  },
+  "passkeyNotCopiedAlert": {
+    "message": "Passkey nie zostanie skopiowane do sklonowanego elementu. Czy chcesz kontynuować klonowanie tego elementu?"
+  },
+  "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword": {
+    "message": "Weryfikacja jest wymagana przez stronę inicjującą. Ta funkcja nie jest jeszcze zaimplementowana dla kont bez hasła głównego."
+  },
+  "logInWithPasskey": {
+    "message": "Zaloguj się za pomocą passkey?"
+  },
+  "passkeyAlreadyExists": {
+    "message": "Passkey już istnieje dla tej aplikacji."
+  },
+  "noPasskeysFoundForThisApplication": {
+    "message": "Nie znaleziono passkey'a dla tej aplikacji."
+  },
+  "noMatchingPasskeyLogin": {
+    "message": "Nie masz pasujących danych logowania do tej witryny."
+  },
+  "confirm": {
+    "message": "Potwierdź"
+  },
+  "savePasskey": {
+    "message": "Zapisz passkey"
+  },
+  "savePasskeyNewLogin": {
+    "message": "Zapisz passkey jako nowe dane logowania"
+  },
+  "choosePasskey": {
+    "message": "Wybierz dane logowania do których przypisać passkey"
+  },
+  "passkeyItem": {
+    "message": "Element Passkey"
+  },
+  "overwritePasskey": {
+    "message": "Zastąpić passkey?"
+  },
+  "overwritePasskeyAlert": {
+    "message": "Ten element zawiera już passkey. Czy na pewno chcesz nadpisać bieżący passkey?"
+  },
+  "featureNotSupported": {
+    "message": "Funkcja nie jest jeszcze obsługiwana"
+  },
+  "yourPasskeyIsLocked": {
+    "message": "Wymagane uwierzytelnienie aby używać passkey. Sprawdź swoją tożsamość, aby kontynuować."
+  },
+  "multifactorAuthenticationCancelled": {
+    "message": "Uwierzytelnianie wieloskładnikowe zostało anulowane"
+  },
+  "noLastPassDataFound": {
+    "message": "Nie znaleziono danych LastPass"
+  },
+  "incorrectUsernameOrPassword": {
+    "message": "Nieprawidłowa nazwa użytkownika lub hasło"
+  },
+  "incorrectPassword": {
+    "message": "Błędne hasło"
+  },
+  "incorrectCode": {
+    "message": "Błędny kod"
+  },
+  "incorrectPin": {
+    "message": "Niepoprawny PIN"
+  },
+  "multifactorAuthenticationFailed": {
+    "message": "Uwierzytelnianie wieloskładnikowe nie powiodło się"
+  },
+  "includeSharedFolders": {
+    "message": "Dołącz udostępnione foldery"
+  },
+  "lastPassEmail": {
+    "message": "E-mail LastPass"
+  },
+  "importingYourAccount": {
+    "message": "Importowanie konta..."
+  },
+  "lastPassMFARequired": {
+    "message": "Wymagane jest uwierzytelnianie wieloskładnikowe LastPass"
+  },
+  "lastPassMFADesc": {
+    "message": "Wprowadź jednorazowy kod z aplikacji uwierzytelniającej"
+  },
+  "lastPassOOBDesc": {
+    "message": "Zatwierdź żądanie logowania w aplikacji uwierzytelniającej lub wprowadź jednorazowe hasło."
+  },
+  "passcode": {
+    "message": "Kod"
+  },
+  "lastPassMasterPassword": {
+    "message": "Hasło główne LastPass"
+  },
+  "lastPassAuthRequired": {
+    "message": "Wymagane uwierzytelnianie LastPass"
+  },
+  "awaitingSSO": {
+    "message": "Oczekiwanie na uwierzytelnianie SSO"
+  },
+  "awaitingSSODesc": {
+    "message": "Kontynuuj logowanie przy użyciu danych firmowych."
+  },
+  "seeDetailedInstructions": {
+    "message": "Zobacz szczegółowe instrukcje na naszej stronie pomocy pod adresem",
+    "description": "This is followed a by a hyperlink to the help website."
+  },
+  "importDirectlyFromLastPass": {
+    "message": "Importuj bezpośrednio z LastPass"
+  },
+  "importFromCSV": {
+    "message": "Importuj z CSV"
+  },
+  "lastPassTryAgainCheckEmail": {
+    "message": "Spróbuj ponownie lub poszukaj wiadomości e-mail od LastPass, aby zweryfikować, że to Ty."
+  },
+  "collection": {
+    "message": "Kolekcja"
+  },
+  "lastPassYubikeyDesc": {
+    "message": "Włóż YubiKey powiązany z Twoim kontem LastPass do portu USB komputera, a następnie naciśnij jego przycisk."
+  },
+  "switchAccount": {
+    "message": "Przełącz konto"
+  },
+  "switchAccounts": {
+    "message": "Przełącz konta"
+  },
+  "switchToAccount": {
+    "message": "Przełącz na konto"
+  },
+  "activeAccount": {
+    "message": "Aktywne konto"
+  },
+  "availableAccounts": {
+    "message": "Dostępne konta"
+  },
+  "accountLimitReached": {
+    "message": "Limit kont został osiągnięty. Wyloguj się z konta, aby dodać inne."
+  },
+  "active": {
+    "message": "aktywne"
+  },
+  "locked": {
+    "message": "zablokowane"
+  },
+  "unlocked": {
+    "message": "odblokowane"
+  },
+  "server": {
+    "message": "serwer"
+  },
+  "hostedAt": {
+    "message": "hostowany w"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Użyj swojego urządzenia lub klucza sprzętowego"
+  },
+  "justOnce": {
+    "message": "Tylko raz"
+  },
+  "alwaysForThisSite": {
+    "message": "Zawsze dla tej witryny"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ dodana do wykluczonych domen.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
+  },
+  "commonImportFormats": {
+    "message": "Popularne formaty",
+    "description": "Label indicating the most common import formats"
+  },
+  "overrideDefaultBrowserAutofillTitle": {
+    "message": "Czy Bitwarden ma być domyślnym menadżerem haseł?",
+    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
+  },
+  "overrideDefaultBrowserAutofillDescription": {
+    "message": "Ignorowanie tej opcji może spowodować konflikty pomiędzy menu autouzupełniania Bitwarden a przeglądarką.",
+    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
+  },
+  "overrideDefaultBrowserAutoFillSettings": {
+    "message": "Ustaw Bitwarden jako domyślny menedżer haseł",
+    "description": "Label for the setting that allows overriding the default browser autofill settings"
+  },
+  "privacyPermissionAdditionNotGrantedTitle": {
+    "message": "Nie można ustawić Bitwarden jako domyślnego menedżera haseł",
+    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
+  },
+  "privacyPermissionAdditionNotGrantedDescription": {
+    "message": "Musisz przyznać Bitwarden uprawnienia do prywatności przeglądarki, aby ustawić go jako domyślnego menedżera haseł.",
+    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
+  },
+  "makeDefault": {
+    "message": "Ustaw jako domyślny",
+    "description": "Button text for the setting that allows overriding the default browser autofill settings"
+  },
+  "saveCipherAttemptSuccess": {
+    "message": "Pomyślnie zapisano dane logowania!",
+    "description": "Notification message for when saving credentials has succeeded."
+  },
+  "updateCipherAttemptSuccess": {
+    "message": "Pomyślnie zaktualizowano dane logowania!",
+    "description": "Notification message for when updating credentials has succeeded."
+  },
+  "saveCipherAttemptFailed": {
+    "message": "Błąd podczas zapisywania danych logowania. Sprawdź konsolę, aby uzyskać szczegóły.",
+    "description": "Notification message for when saving credentials has failed."
+  },
+  "success": {
+    "message": "Sukces"
+  },
+  "removePasskey": {
+    "message": "Usuń passkey"
+  },
+  "passkeyRemoved": {
+    "message": "Passkey został usunięty"
+  },
+  "unassignedItemsBannerNotice": {
+    "message": "Uwaga: Nieprzypisane elementy organizacji nie są już widoczne w widoku Wszystkie sejfy i są teraz dostępne tylko przez Konsolę Administracyjną."
+  },
+  "unassignedItemsBannerSelfHostNotice": {
+    "message": "Uwaga: 16 maja 2024 r. nieprzypisana elementy w organizacji nie będą już widoczne w widoku Wszystkie sejfy i będą dostępne tylko przez Konsolę Administracyjną."
+  },
+  "unassignedItemsBannerCTAPartOne": {
+    "message": "Przypisz te elementy do kolekcji z",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "unassignedItemsBannerCTAPartTwo": {
+    "message": ", aby były widoczne.",
+    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
+  },
+  "adminConsole": {
+    "message": "Konsola Administracyjna"
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Wystąpił błąd podczas przypisywania kolekcji."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Wystąpił błąd podczas przypisywania folderu."
   }
 }

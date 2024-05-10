@@ -4,23 +4,33 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
-import { ToastrModule } from "ngx-toastr";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
   AsyncActionsModule,
   AvatarModule,
+  BadgeListModule,
   BadgeModule,
   ButtonModule,
   CalloutModule,
+  CheckboxModule,
+  ColorPasswordModule,
+  ContainerComponent,
   DialogModule,
   FormFieldModule,
   IconButtonModule,
   IconModule,
+  LinkModule,
   MenuModule,
-  NavigationModule,
+  MultiSelectModule,
+  ProgressModule,
+  RadioButtonModule,
+  SectionComponent,
+  SelectModule,
   TableModule,
   TabsModule,
+  ToggleGroupModule,
+  TypographyModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -41,23 +51,33 @@ import "./locales";
     ReactiveFormsModule,
     InfiniteScrollModule,
     RouterModule,
-    ToastrModule,
     JslibModule,
 
-    // Component library
+    // Component library modules
+    // Only add components that are used almost everywhere in the application
     AsyncActionsModule,
     AvatarModule,
+    BadgeListModule,
     BadgeModule,
     ButtonModule,
     CalloutModule,
+    CheckboxModule,
+    ColorPasswordModule,
+    ContainerComponent,
     DialogModule,
     FormFieldModule,
     IconButtonModule,
     IconModule,
+    LinkModule,
     MenuModule,
-    NavigationModule,
+    MultiSelectModule,
+    ProgressModule,
+    RadioButtonModule,
+    SectionComponent,
     TableModule,
     TabsModule,
+    ToggleGroupModule,
+    TypographyModule,
 
     // Web specific
   ],
@@ -68,23 +88,33 @@ import "./locales";
     ReactiveFormsModule,
     InfiniteScrollModule,
     RouterModule,
-    ToastrModule,
     JslibModule,
 
     // Component library
     AsyncActionsModule,
     AvatarModule,
+    BadgeListModule,
     BadgeModule,
     ButtonModule,
     CalloutModule,
+    CheckboxModule,
+    ColorPasswordModule,
+    ContainerComponent,
     DialogModule,
     FormFieldModule,
     IconButtonModule,
     IconModule,
+    LinkModule,
     MenuModule,
-    NavigationModule,
+    MultiSelectModule,
+    ProgressModule,
+    RadioButtonModule,
+    SectionComponent,
+    SelectModule,
     TableModule,
     TabsModule,
+    ToggleGroupModule,
+    TypographyModule,
 
     // Web specific
   ],

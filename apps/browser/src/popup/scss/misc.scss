@@ -193,7 +193,7 @@ p.lead {
   font-size: 8px;
 
   @include themify($themes) {
-    color: themed("mutedColor") !important;
+    color: themed("passwordCountText") !important;
   }
 }
 
@@ -422,9 +422,12 @@ img,
 .callout,
 .row-label,
 .modal-title,
-.overlay-container,
-.swal2-container {
+.overlay-container {
   user-select: none;
+
+  &.user-select {
+    user-select: auto;
+  }
 }
 
 app-about .modal-body > *,

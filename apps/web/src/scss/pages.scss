@@ -1,31 +1,3 @@
-.generated-wrapper {
-  min-width: 0;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-.password-row {
-  min-width: 0;
-}
-
-.password-letter {
-  @include themify($themes) {
-    color: themed("pwLetter");
-  }
-}
-
-.password-number {
-  @include themify($themes) {
-    color: themed("pwNumber");
-  }
-}
-
-.password-special {
-  @include themify($themes) {
-    color: themed("pwSpecial");
-  }
-}
-
 app-generator {
   #lengthRange {
     width: 100%;
@@ -60,7 +32,7 @@ app-password-generator-history {
   }
 }
 
-app-import {
+tools-import {
   textarea {
     height: 150px;
   }
@@ -174,57 +146,6 @@ app-sponsored-families {
     p {
       font-size: 1.5rem;
       margin: 10px 0 50px 0;
-    }
-  }
-}
-
-.collapsable-row {
-  display: flex;
-  padding-top: 15px;
-  i {
-    margin-top: 3px;
-  }
-  .filter-title {
-    padding-left: 5px;
-  }
-  &.active {
-    @include themify($themes) {
-      color: themed("primary");
-    }
-  }
-}
-
-.vault-filter-option {
-  padding-bottom: 3px;
-  &.active {
-    @include themify($themes) {
-      color: themed("primary");
-      font-weight: bold;
-    }
-  }
-  button.org-options {
-    background: none;
-    border: none;
-    padding: 0;
-
-    &:hover,
-    &:focus {
-      @include themify($themes) {
-        color: themed("iconHover") !important;
-        box-shadow: none;
-      }
-    }
-  }
-}
-
-.org-filter-heading {
-  @include themify($themes) {
-    color: themed("textColor");
-  }
-  &.active {
-    @include themify($themes) {
-      color: themed("primary");
-      font-weight: bold;
     }
   }
 }
