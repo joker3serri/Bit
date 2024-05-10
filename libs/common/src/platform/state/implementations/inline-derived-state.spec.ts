@@ -52,7 +52,6 @@ describe("InlineDerivedState", () => {
 
   describe("forceValue", () => {
     it("returns the force value back to the caller", async () => {
-      //
       const sut = new InlineDerivedState(parentState.asObservable(), syncDeriveDefinition, {});
 
       const value = await sut.forceValue(true);
