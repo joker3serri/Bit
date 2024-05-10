@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
@@ -134,6 +135,26 @@ describe("NavigationProductSwitcherComponent", () => {
       expect(links[0].textContent).toContain("Organizations");
       expect(links[1].textContent).toContain("AA Product");
       expect(links[2].textContent).toContain("Test Product");
+    });
+
+    it('shows the nav item as active when "isActive" is true', () => {
+      mockProducts$.next({
+        bento: [
+          {
+            name: "Organizations",
+            icon: "bwi-lock",
+            marketingRoute: "https://www.example.com/",
+            isActive: true,
+          },
+        ],
+        other: [],
+      });
+
+      fixture.detectChanges();
+
+      const navItem = fixture.debugElement.query(By.directive(NavItemComponent));
+
+      expect(navItem.componentInstance.forceActiveStyles).toBe(true);
     });
   });
 
