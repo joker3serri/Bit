@@ -280,12 +280,14 @@ export class AccountSecurityComponent implements OnInit {
 
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
 
+    const vaultTimeoutAction = await firstValueFrom(
+      this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(activeAccount.id),
+    );
+
     await this.vaultTimeoutSettingsService.setVaultTimeoutOptions(
       activeAccount.id,
       newValue,
-      await firstValueFrom(
-        this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(activeAccount.id),
-      ),
+      vaultTimeoutAction,
     );
     if (newValue == null) {
       this.messagingService.send("bgReseedStorage");
