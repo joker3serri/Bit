@@ -2234,9 +2234,6 @@
   "details": {
     "message": "Details"
   },
-  "billingDetails": {
-    "message": "Billing details"
-  },
   "downloadLicense": {
     "message": "Download license"
   },
@@ -8098,7 +8095,7 @@
     "message": "Organization Seats"
   },
   "providerDicount": {
-    "message": "A $AMOUNT$% discount is applied to you subscription",
+    "message": "$AMOUNT$% Discount",
     "placeholders": {
       "amount": {
         "content": "$1",

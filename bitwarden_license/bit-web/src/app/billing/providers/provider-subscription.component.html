@@ -19,7 +19,7 @@
         <dd>
           <span class="tw-capitalize">{{ subscription.status }}</span>
         </dd>
-        <dt [ngClass]="{ 'tw-text-danger': isExpired }">{{ "subscriptionExpiration" | i18n }}?</dt>
+        <dt [ngClass]="{ 'tw-text-danger': isExpired }">{{ "nextCharge" | i18n }}</dt>
         <dd [ngClass]="{ 'tw-text-danger': isExpired }">
           {{ subscription.currentPeriodEndDate | date: "mediumDate" }}
         </dd>
@@ -29,10 +29,14 @@
 
   <ng-container *ngIf="true">
     <div class="tw-flex-col">
-      <strong
-        class="tw-block tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 pb-2"
-        >{{ "billingDetails" | i18n }}</strong
-      >
+      <strong class="tw-block tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 pb-2"
+        >{{ "details" | i18n }} &#160;<span
+          bitBadge
+          variant="success"
+          *ngIf="subscription.discountPercentage"
+          >{{ "providerDicount" | i18n: subscription.discountPercentage }}</span
+        >
+      </strong>
       <bit-table>
         <ng-template body>
           <ng-container *ngIf="subscription">
@@ -54,19 +58,20 @@
                 {{ ((100 - subscription.discountPercentage) / 100) * i.cost | currency: "$" }} /{{
                   "month" | i18n
                 }}
+                <p>
+                  <bit-hint class="tw-text-sm tw-line-through">
+                    {{ i.cost | currency: "$" }} /{{ "month" | i18n }}
+                  </bit-hint>
+                </p>
               </td>
             </tr>
+
             <tr bitRow>
-              <td bitCell class="tw-pl-0 tw-py-3">
-                <span class="tw-text-sm">
-                  {{ "providerDicount" | i18n: subscription.discountPercentage }}</span
-                >
-              </td>
+              <td bitCell class="tw-pl-0 tw-py-3"></td>
               <td bitCell class="tw-text-right">
                 <span class="tw-font-bold">Total:</span> {{ totalCost | currency: "$" }} /{{
                   "month" | i18n
                 }}
-                <span class="tw-text-sm tw-block">As of {{ currentDate | date: "medium" }}</span>
               </td>
             </tr>
           </ng-container>
