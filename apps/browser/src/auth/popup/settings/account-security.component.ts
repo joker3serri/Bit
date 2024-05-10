@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { Router } from "@angular/router";
 import {
   BehaviorSubject,
   combineLatest,
@@ -17,13 +16,13 @@ import {
 } from "rxjs";
 
 import { FingerprintDialogComponent } from "@bitwarden/auth/angular";
+import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { DeviceType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -34,35 +33,20 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { DialogService } from "@bitwarden/components";
 
-import { SetPinComponent } from "../../auth/popup/components/set-pin.component";
-import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
-import { BrowserApi } from "../../platform/browser/browser-api";
-import { enableAccountSwitching } from "../../platform/flags";
-import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
+import { BiometricErrors, BiometricErrorTypes } from "../../../models/biometricErrors";
+import { BrowserApi } from "../../../platform/browser/browser-api";
+import { enableAccountSwitching } from "../../../platform/flags";
+import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
+import { SetPinComponent } from "../components/set-pin.component";
 
-import { AboutComponent } from "./about.component";
 import { AwaitDesktopDialogComponent } from "./await-desktop-dialog.component";
 
-const RateUrls = {
-  [DeviceType.ChromeExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
-  [DeviceType.FirefoxExtension]:
-    "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/#reviews",
-  [DeviceType.OperaExtension]:
-    "https://addons.opera.com/en/extensions/details/bitwarden-free-password-manager/#feedback-container",
-  [DeviceType.EdgeExtension]:
-    "https://microsoftedge.microsoft.com/addons/detail/jbkfoedolllekgbhcbcoahefnbanhhlh",
-  [DeviceType.VivaldiExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
-  [DeviceType.SafariExtension]: "https://apps.apple.com/app/bitwarden/id1352778147",
-};
-
 @Component({
-  selector: "app-settings",
-  templateUrl: "settings.component.html",
+  selector: "auth-account-security",
+  templateUrl: "account-security.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class SettingsComponent implements OnInit {
+export class AccountSecurityComponent implements OnInit {
   protected readonly VaultTimeoutAction = VaultTimeoutAction;
 
   availableVaultTimeoutActions: VaultTimeoutAction[] = [];
@@ -88,6 +72,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private pinService: PinServiceAbstraction,
     private policyService: PolicyService,
     private formBuilder: FormBuilder,
     private platformUtilsService: PlatformUtilsService,
@@ -95,7 +80,6 @@ export class SettingsComponent implements OnInit {
     private vaultTimeoutService: VaultTimeoutService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     public messagingService: MessagingService,
-    private router: Router,
     private environmentService: EnvironmentService,
     private cryptoService: CryptoService,
     private stateService: StateService,
@@ -149,7 +133,6 @@ export class SettingsComponent implements OnInit {
     if (timeout === -2 && !showOnLocked) {
       timeout = -1;
     }
-    const pinStatus = await this.vaultTimeoutSettingsService.isPinLockSet();
 
     this.form.controls.vaultTimeout.valueChanges
       .pipe(
@@ -171,12 +154,14 @@ export class SettingsComponent implements OnInit {
       )
       .subscribe();
 
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
     const initialValues = {
       vaultTimeout: timeout,
       vaultTimeoutAction: await firstValueFrom(
         this.vaultTimeoutSettingsService.vaultTimeoutAction$(),
       ),
-      pin: pinStatus !== "DISABLED",
+      pin: await this.pinService.isPinSet(userId),
       biometric: await this.vaultTimeoutSettingsService.isBiometricLockSet(),
       enableAutoBiometricsPrompt: await firstValueFrom(
         this.biometricStateService.promptAutomatically$,
@@ -425,23 +410,6 @@ export class SettingsComponent implements OnInit {
     );
   }
 
-  async lock() {
-    await this.vaultTimeoutService.lock();
-  }
-
-  async logOut() {
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "logOut" },
-      content: { key: "logOutConfirmation" },
-      type: "info",
-    });
-
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    if (confirmed) {
-      this.messagingService.send("logout", { userId: userId });
-    }
-  }
-
   async changePassword() {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "continueToWebApp" },
@@ -468,44 +436,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async share() {
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "learnOrg" },
-      content: { key: "learnOrgConfirmation" },
-      type: "info",
-    });
-    if (confirmed) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");
-    }
-  }
-
-  async webVault() {
-    const env = await firstValueFrom(this.environmentService.environment$);
-    const url = env.getWebVaultUrl();
-    await BrowserApi.createNewTab(url);
-  }
-
-  async import() {
-    await this.router.navigate(["/import"]);
-    if (await BrowserApi.isPopupOpen()) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      BrowserPopupUtils.openCurrentPagePopout(window);
-    }
-  }
-
-  export() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/export"]);
-  }
-
-  about() {
-    this.dialogService.open(AboutComponent);
-  }
-
   async fingerprint() {
     const fingerprint = await this.cryptoService.getFingerprint(
       await this.stateService.getUserId(),
@@ -518,11 +448,21 @@ export class SettingsComponent implements OnInit {
     return firstValueFrom(dialogRef.closed);
   }
 
-  rate() {
-    const deviceType = this.platformUtilsService.getDevice();
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    BrowserApi.createNewTab((RateUrls as any)[deviceType]);
+  async lock() {
+    await this.vaultTimeoutService.lock();
+  }
+
+  async logOut() {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "logOut" },
+      content: { key: "logOutConfirmation" },
+      type: "info",
+    });
+
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    if (confirmed) {
+      this.messagingService.send("logout", { userId: userId });
+    }
   }
 
   ngOnDestroy() {
