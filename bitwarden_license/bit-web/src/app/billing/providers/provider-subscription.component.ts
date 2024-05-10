@@ -19,7 +19,6 @@ export class ProviderSubscriptionComponent {
   loading: boolean;
   private destroy$ = new Subject<void>();
   totalCost: number;
-  cadence: string;
   currentDate = new Date();
 
   constructor(
@@ -41,7 +40,7 @@ export class ProviderSubscriptionComponent {
   }
 
   get isExpired() {
-    return this.subscription.status !== "Active";
+    return this.subscription.status == "Active";
   }
 
   async load() {
@@ -50,11 +49,8 @@ export class ProviderSubscriptionComponent {
     }
     this.loading = true;
     this.subscription = await this.billingApiService.getProviderSubscription(this.providerId);
-    this.totalCost = this.sumCost(this.subscription.plans);
-    if (this.subscription.plans.length > 1) {
-      this.cadence = this.subscription.plans[0].cadence;
-    }
-
+    this.totalCost =
+      ((100 - this.subscription.discountPercentage) / 100) * this.sumCost(this.subscription.plans);
     this.loading = false;
   }
 

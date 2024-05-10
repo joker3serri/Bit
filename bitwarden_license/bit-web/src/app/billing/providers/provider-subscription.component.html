@@ -51,7 +51,9 @@
                 }}
               </td>
               <td bitCell class="tw-text-right">
-                {{ i.cost | currency: "$" }} /{{ "month" | i18n }}
+                {{ ((100 - subscription.discountPercentage) / 100) * i.cost | currency: "$" }} /{{
+                  "month" | i18n
+                }}
               </td>
             </tr>
             <tr bitRow>
