@@ -148,7 +148,7 @@ export abstract class ApiService {
       | UserApiTokenRequest
       | WebAuthnLoginTokenRequest,
   ) => Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse>;
-  refreshIdentityToken: () => Promise<any>;
+  refreshIdentityToken: () => Promise<void>;
 
   getProfile: () => Promise<ProfileResponse>;
   getUserSubscription: () => Promise<SubscriptionResponse>;
