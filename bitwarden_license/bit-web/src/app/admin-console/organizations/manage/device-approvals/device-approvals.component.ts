@@ -18,22 +18,20 @@ import { Devices } from "@bitwarden/web-vault/app/admin-console/icons";
 import { LooseComponentsModule } from "@bitwarden/web-vault/app/shared";
 import { SharedModule } from "@bitwarden/web-vault/app/shared/shared.module";
 
-const safeProviders: SafeProvider[] = [
-  safeProvider({
-    provide: OrganizationAuthRequestApiService,
-    deps: [ApiService],
-  }),
-  safeProvider({
-    provide: OrganizationAuthRequestService,
-    deps: [OrganizationAuthRequestApiService, CryptoService, OrganizationUserService],
-  }),
-];
-
 @Component({
   selector: "app-org-device-approvals",
   templateUrl: "./device-approvals.component.html",
   standalone: true,
-  providers: safeProviders,
+  providers: [
+    safeProvider({
+      provide: OrganizationAuthRequestApiService,
+      deps: [ApiService],
+    }),
+    safeProvider({
+      provide: OrganizationAuthRequestService,
+      deps: [OrganizationAuthRequestApiService, CryptoService, OrganizationUserService],
+    }),
+  ] satisfies SafeProvider[],
   imports: [SharedModule, NoItemsModule, LooseComponentsModule],
 })
 export class DeviceApprovalsComponent implements OnInit, OnDestroy {
