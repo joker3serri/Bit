@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { AvatarModule } from "@bitwarden/components";
 
 import { AccountSwitcherService, AvailableAccount } from "./services/account-switcher.service";
@@ -24,6 +25,7 @@ export class AccountComponent {
     private router: Router,
     private location: Location,
     private i18nService: I18nService,
+    private logService: LogService,
   ) {}
 
   get specialAccountAddId() {
@@ -32,7 +34,11 @@ export class AccountComponent {
 
   async selectAccount(id: string) {
     this.loading.emit(true);
-    await this.accountSwitcherService.selectAccount(id);
+    try {
+      await this.accountSwitcherService.selectAccount(id);
+    } catch (e) {
+      this.logService.error("Error selecting account", e);
+    }
 
     if (id === this.specialAccountAddId) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
