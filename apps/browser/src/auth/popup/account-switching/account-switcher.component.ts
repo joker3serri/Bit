@@ -108,6 +108,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     if (confirmed) {
       this.messagingService.send("logout", { userId });
     }
+    this.loading = false;
   }
 
   ngOnDestroy() {
