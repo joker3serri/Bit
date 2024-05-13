@@ -6,7 +6,6 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
-import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import {
   OrganizationApiKeyType,
   ProviderStatusType,
@@ -76,7 +75,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private dialogService: DialogService,
     private configService: ConfigService,
     private providerApiService: ProviderApiServiceAbstraction,
-    private providerService: ProviderService,
   ) {}
 
   async ngOnInit() {
@@ -115,13 +113,11 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.locale = await firstValueFrom(this.i18nService.locale$);
     this.userOrg = await this.organizationService.get(this.organizationId);
     if (this.userOrg.hasProvider) {
-      const providerStatus = (await this.providerService.get(this.userOrg.providerId))
-        .providerStatus;
       const provider = await this.providerApiService.getProvider(this.userOrg.providerId);
       const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
       this.isProviderManaged =
         provider.type == ProviderType.Msp &&
-        providerStatus == ProviderStatusType.Billable &&
+        provider.status == ProviderStatusType.Billable &&
         enableConsolidatedBilling;
     }
 
