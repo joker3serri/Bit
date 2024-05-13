@@ -168,7 +168,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("Access token is required.");
     }
 
-    // Can't check for nullish b/c 0 is a valid value
+    // Can't check for falsey b/c 0 is a valid value
     if (vaultTimeout == null) {
       throw new Error("Vault Timeout is required.");
     }
@@ -341,7 +341,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("User id not found. Cannot save access token.");
     }
 
-    // Can't check for nullish b/c 0 is a valid value
+    // Can't check for falsey b/c 0 is a valid value
     if (vaultTimeout == null) {
       throw new Error("Vault Timeout is required.");
     }
@@ -440,7 +440,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("User id not found. Cannot save refresh token.");
     }
 
-    // Can't check for nullish b/c 0 is a valid value
+    // Can't check for falsey b/c 0 is a valid value
     if (vaultTimeout == null) {
       throw new Error("Vault Timeout is required.");
     }
@@ -559,7 +559,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("User id not found. Cannot save client id.");
     }
 
-    // Can't check for nullish b/c 0 is a valid value
+    // Can't check for falsey b/c 0 is a valid value
     if (vaultTimeout == null) {
       throw new Error("Vault Timeout is required.");
     }
@@ -635,7 +635,7 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("User id not found. Cannot save client secret.");
     }
 
-    // Can't check for nullish b/c 0 is a valid value
+    // Can't check for falsey b/c 0 is a valid value
     if (vaultTimeout == null) {
       throw new Error("Vault Timeout is required.");
     }
