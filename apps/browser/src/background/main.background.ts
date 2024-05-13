@@ -806,6 +806,7 @@ export default class MainBackground {
       logoutCallback,
       this.billingAccountProfileStateService,
       this.tokenService,
+      this.authService,
     );
     this.eventUploadService = new EventUploadService(
       this.apiService,

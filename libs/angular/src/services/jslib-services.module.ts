@@ -629,6 +629,7 @@ const safeProviders: SafeProvider[] = [
       LOGOUT_CALLBACK,
       BillingAccountProfileStateService,
       TokenServiceAbstraction,
+      AuthService,
     ],
   }),
   safeProvider({
