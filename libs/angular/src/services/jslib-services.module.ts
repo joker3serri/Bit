@@ -581,7 +581,6 @@ const safeProviders: SafeProvider[] = [
         title: i18nService.t("errorRefreshingAccessToken"),
         message: i18nService.t("errorRefreshingAccessTokenDesc"),
       });
-      return Promise.resolve();
     },
     deps: [ToastService, I18nServiceAbstraction],
   }),

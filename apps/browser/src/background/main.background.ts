@@ -376,6 +376,15 @@ export default class MainBackground {
     const logoutCallback = async (logoutReason: LogoutReason, userId?: UserId) =>
       await this.logout(logoutReason, userId);
 
+    const refreshAccessTokenErrorCallback = () => {
+      // Send toast to popup
+      this.messagingService.send("showToast", {
+        type: "error",
+        title: this.i18nService.t("errorRefreshingAccessToken"),
+        message: this.i18nService.t("errorRefreshingAccessTokenDesc"),
+      });
+    };
+
     this.logService = new ConsoleLogService(false);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
@@ -589,15 +598,7 @@ export default class MainBackground {
       this.environmentService,
       this.appIdService,
       this.stateService,
-      () => {
-        // Send toast to popup
-        this.messagingService.send("showToast", {
-          type: "error",
-          title: this.i18nService.t("errorRefreshingAccessToken"),
-          message: this.i18nService.t("errorRefreshingAccessTokenDesc"),
-        });
-        return Promise.resolve();
-      },
+      refreshAccessTokenErrorCallback,
       this.logService,
       (logoutReason: LogoutReason, userId?: UserId) => this.logout(logoutReason, userId),
     );

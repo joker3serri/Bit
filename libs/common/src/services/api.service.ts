@@ -160,7 +160,7 @@ export class ApiService implements ApiServiceAbstraction {
     private environmentService: EnvironmentService,
     private appIdService: AppIdService,
     private stateService: StateService,
-    private refreshAccessTokenErrorCallback: () => Promise<void>,
+    private refreshAccessTokenErrorCallback: () => void,
     private logService: LogService,
     private logoutCallback: (logoutReason: LogoutReason) => Promise<void>,
     private customUserAgent: string = null,
@@ -1719,7 +1719,7 @@ export class ApiService implements ApiServiceAbstraction {
       return this.doApiTokenRefresh();
     }
 
-    await this.refreshAccessTokenErrorCallback();
+    this.refreshAccessTokenErrorCallback();
 
     throw new Error("Cannot refresh access token, no refresh token or api keys are stored.");
   }

@@ -53,6 +53,6 @@ export const INTRAPROCESS_MESSAGING_SUBJECT = new SafeInjectionToken<Subject<Mes
 );
 export const CLIENT_TYPE = new SafeInjectionToken<ClientType>("CLIENT_TYPE");
 
-export const REFRESH_ACCESS_TOKEN_ERROR_CALLBACK = new SafeInjectionToken<() => Promise<void>>(
+export const REFRESH_ACCESS_TOKEN_ERROR_CALLBACK = new SafeInjectionToken<() => void>(
   "REFRESH_ACCESS_TOKEN_ERROR_CALLBACK",
 );
