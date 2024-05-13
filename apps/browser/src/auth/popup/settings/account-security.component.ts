@@ -254,7 +254,7 @@ export class AccountSecurityComponent implements OnInit {
   }
 
   async saveVaultTimeout(previousValue: VaultTimeout, newValue: VaultTimeout) {
-    if (newValue == VaultTimeoutStringType.Never) {
+    if (newValue === VaultTimeoutStringType.Never) {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "warning" },
         content: { key: "neverLockWarning" },
@@ -289,7 +289,7 @@ export class AccountSecurityComponent implements OnInit {
       newValue,
       vaultTimeoutAction,
     );
-    if (newValue == VaultTimeoutStringType.Never) {
+    if (newValue === VaultTimeoutStringType.Never) {
       this.messagingService.send("bgReseedStorage");
     }
   }

@@ -371,7 +371,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveVaultTimeout(newValue: VaultTimeout) {
-    if (newValue == VaultTimeoutStringType.Never) {
+    if (newValue === VaultTimeoutStringType.Never) {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "warning" },
         content: { key: "neverLockWarning" },
