@@ -89,6 +89,13 @@ export class CollectionView implements View, ITreeNodeObject {
     return !org?.limitCollectionCreationDeletion && this.manage;
   }
 
+  /**
+   * Returns true if the user can view collection info and access in a read-only state from the individual vault
+   */
+  canViewCollectionInfo(org: Organization | undefined): boolean {
+    return false;
+  }
+
   static fromJSON(obj: Jsonify<CollectionView>) {
     return Object.assign(new CollectionView(new Collection()), obj);
   }
