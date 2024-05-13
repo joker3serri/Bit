@@ -15,7 +15,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import { AvatarModule, ButtonModule, ToastModule } from "@bitwarden/components";
+import { AvatarModule, ButtonModule, IconButtonModule, ToastModule } from "@bitwarden/components";
 import { ExportScopeCalloutComponent } from "@bitwarden/vault-export-ui";
 
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
@@ -70,6 +70,8 @@ import { PasswordHistoryComponent } from "../vault/popup/components/vault/passwo
 import { ShareComponent } from "../vault/popup/components/vault/share.component";
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
+import { VaultListItemComponent } from "../vault/popup/components/vault/vault-list-item.component";
+import { VaultListItemsContainerComponent } from "../vault/popup/components/vault/vault-list-items-container.component";
 import { VaultSelectComponent } from "../vault/popup/components/vault/vault-select.component";
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
@@ -124,6 +126,9 @@ import "../platform/popup/locales";
     PopupFooterComponent,
     PopupHeaderComponent,
     UserVerificationDialogComponent,
+    VaultListItemsContainerComponent,
+    VaultListItemComponent,
+    IconButtonModule,
   ],
   declarations: [
     ActionButtonsComponent,
