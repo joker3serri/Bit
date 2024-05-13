@@ -103,7 +103,7 @@ export class ServeCommand {
     this.statusCommand = new StatusCommand(
       this.main.environmentService,
       this.main.syncService,
-      this.main.stateService,
+      this.main.accountService,
       this.main.authService,
     );
     this.deleteCommand = new DeleteCommand(
