@@ -1,4 +1,5 @@
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
+import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -27,9 +28,15 @@ export class OrganizationAuthRequestService {
     organizationId: string,
     authRequests: PendingAuthRequestView[],
   ): Promise<void> {
+    const details = await this.organizationUserService.getManyOrganizationUserResetPasswordDetails(
+      organizationId,
+      authRequests.map((r) => r.organizationUserId),
+    );
+
     const items = await Promise.all(
       authRequests.map(async (r) => {
-        const encryptedKey = await this.getEncryptedUserKey(organizationId, r);
+        const detail = details.data.find((d) => d.organizationUserId === r.organizationUserId);
+        const encryptedKey = await this.getEncryptedUserKey(organizationId, r.publicKey, detail);
 
         return new AdminAuthRequestUpdateWithIdRequest(r.id, true, encryptedKey.encryptedString);
       }),
@@ -39,7 +46,22 @@ export class OrganizationAuthRequestService {
   }
 
   async approvePendingRequest(organizationId: string, authRequest: PendingAuthRequestView) {
-    const encryptedKey = await this.getEncryptedUserKey(organizationId, authRequest);
+    const details = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
+      organizationId,
+      authRequest.organizationUserId,
+    );
+
+    if (details == null || details.resetPasswordKey == null) {
+      throw new Error(
+        "The user must be enrolled in account recovery (password reset) in order for the request to be approved.",
+      );
+    }
+
+    const encryptedKey = await this.getEncryptedUserKey(
+      organizationId,
+      authRequest.publicKey,
+      details,
+    );
 
     await this.organizationAuthRequestApiService.approvePendingRequest(
       organizationId,
@@ -51,28 +73,18 @@ export class OrganizationAuthRequestService {
   /**
    * Creates a copy of the user key that has been encrypted with the provided device's public key.
    * @param organizationId
-   * @param authRequest
+   * @param devicePublicKey
+   * @param resetPasswordDetails
    * @private
    */
   private async getEncryptedUserKey(
     organizationId: string,
-    authRequest: PendingAuthRequestView,
+    devicePublicKey: string,
+    resetPasswordDetails: OrganizationUserResetPasswordDetailsResponse,
   ): Promise<EncString> {
-    const resetPasswordDetails =
-      await this.organizationUserService.getOrganizationUserResetPasswordDetails(
-        organizationId,
-        authRequest.organizationUserId,
-      );
-
-    if (resetPasswordDetails == null || resetPasswordDetails.resetPasswordKey == null) {
-      throw new Error(
-        "The user must be enrolled in account recovery (password reset) in order for the request to be approved.",
-      );
-    }
-
     const encryptedUserKey = resetPasswordDetails.resetPasswordKey;
     const encryptedOrgPrivateKey = resetPasswordDetails.encryptedPrivateKey;
-    const devicePubKey = Utils.fromB64ToArray(authRequest.publicKey);
+    const devicePubKey = Utils.fromB64ToArray(devicePublicKey);
 
     // Decrypt Organization's encrypted Private Key with org key
     const orgSymKey = await this.cryptoService.getOrgKey(organizationId);
