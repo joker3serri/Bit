@@ -35,6 +35,12 @@ export abstract class CipherService {
     includeOtherTypes?: CipherType[],
     defaultMatch?: UriMatchStrategySetting,
   ) => Promise<CipherView[]>;
+  filterCiphersForUrl: (
+    ciphers: CipherView[],
+    url: string,
+    includeOtherTypes?: CipherType[],
+    defaultMatch?: UriMatchStrategySetting,
+  ) => Promise<CipherView[]>;
   getAllFromApiForOrganization: (organizationId: string) => Promise<CipherView[]>;
   /**
    * Gets ciphers belonging to the specified organization that the user has explicit collection level access to.
