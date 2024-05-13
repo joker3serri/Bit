@@ -975,7 +975,11 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!c.edit && !this.organization.allowAdminAccessToAllCollectionItems) {
+    if (
+      this.flexibleCollectionsV1Enabled &&
+      !c.edit &&
+      !this.organization.allowAdminAccessToAllCollectionItems
+    ) {
       this.showMissingPermissionsError();
       return;
     }
@@ -995,7 +999,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async bulkRestore(ciphers: CipherView[]) {
-    if (ciphers.some((c) => !c.edit && !this.organization.allowAdminAccessToAllCollectionItems)) {
+    if (
+      this.flexibleCollectionsV1Enabled &&
+      ciphers.some((c) => !c.edit && !this.organization.allowAdminAccessToAllCollectionItems)
+    ) {
       this.showMissingPermissionsError();
       return;
     }
@@ -1016,7 +1023,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async deleteCipher(c: CipherView): Promise<boolean> {
-    if (!c.edit && !this.organization.allowAdminAccessToAllCollectionItems) {
+    if (
+      this.flexibleCollectionsV1Enabled &&
+      !c.edit &&
+      !this.organization.allowAdminAccessToAllCollectionItems
+    ) {
       this.showMissingPermissionsError();
       return;
     }
@@ -1102,7 +1113,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     if (
-      collections?.some((c) => !c.canDelete(organization)) ||
+      (this.flexibleCollectionsV1Enabled && collections?.some((c) => !c.canDelete(organization))) ||
       ciphers?.some((c) => !c.edit && !this.organization.allowAdminAccessToAllCollectionItems)
     ) {
       this.showMissingPermissionsError();
@@ -1240,7 +1251,10 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (collections.some((c) => !c.canEdit(organization, this.flexibleCollectionsV1Enabled))) {
+    if (
+      this.flexibleCollectionsV1Enabled &&
+      collections.some((c) => !c.canEdit(organization, this.flexibleCollectionsV1Enabled))
+    ) {
       this.showMissingPermissionsError();
       return;
     }

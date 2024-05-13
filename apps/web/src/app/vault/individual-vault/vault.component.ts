@@ -550,7 +550,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async shareCipher(cipher: CipherView) {
-    if (cipher.organizationId != null) {
+    if ((await this.flexibleCollectionsV1Enabled()) && cipher.organizationId != null) {
       // You cannot move ciphers between organizations
       this.showMissingPermissionsError();
       return;
@@ -754,7 +754,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!c.edit) {
+    if ((await this.flexibleCollectionsV1Enabled()) && !c.edit) {
       this.showMissingPermissionsError();
       return;
     }
@@ -773,7 +773,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async bulkRestore(ciphers: CipherView[]) {
-    if (ciphers.some((c) => !c.edit)) {
+    if ((await this.flexibleCollectionsV1Enabled()) && ciphers.some((c) => !c.edit)) {
       this.showMissingPermissionsError();
       return;
     }
@@ -818,7 +818,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!c.edit) {
+    if ((await this.flexibleCollectionsV1Enabled()) && !c.edit) {
       this.showMissingPermissionsError();
       return;
     }
@@ -863,7 +863,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     if (
-      collections?.some((c) => !c.canDelete(organizations.find((o) => o.id == c.organizationId))) ||
+      ((await this.flexibleCollectionsV1Enabled()) &&
+        collections?.some(
+          (c) => !c.canDelete(organizations.find((o) => o.id == c.organizationId)),
+        )) ||
       ciphers?.some((c) => !c.edit)
     ) {
       this.showMissingPermissionsError();
@@ -962,7 +965,10 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (ciphers.some((c) => c.organizationId != null)) {
+    if (
+      (await this.flexibleCollectionsV1Enabled()) &&
+      ciphers.some((c) => c.organizationId != null)
+    ) {
       // You cannot move ciphers between organizations
       this.showMissingPermissionsError();
       return;
@@ -1032,6 +1038,10 @@ export class VaultComponent implements OnInit, OnDestroy {
       title: null,
       message: this.i18nService.t("missingPermissions"),
     });
+  }
+
+  private flexibleCollectionsV1Enabled() {
+    return firstValueFrom(this.flexibleCollectionsV1Enabled$);
   }
 }
 
