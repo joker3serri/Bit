@@ -159,7 +159,7 @@ const packageJson = require("../package.json");
  * Any Bitwarden-licensed services should be registered here.
  */
 export class ServiceContainer {
-  inited = false;
+  private inited = false;
 
   messagingService: MessageSender;
   storageService: LowdbStorageService;
