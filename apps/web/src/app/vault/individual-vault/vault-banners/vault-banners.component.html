@@ -1,4 +1,5 @@
 <bit-banner
+  id="update-browser-banner"
   class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
   bannerType="warning"
   *ngIf="visibleBanners.includes(VisibleVaultBanner.OutdatedBrowser)"
@@ -17,6 +18,7 @@
 </bit-banner>
 
 <bit-banner
+  id="kdf-settings-banner"
   class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
   bannerType="warning"
   *ngIf="visibleBanners.includes(VisibleVaultBanner.KDFSettings)"
@@ -29,6 +31,7 @@
 </bit-banner>
 
 <app-verify-email
+  id="verify-email-banner"
   *ngIf="visibleBanners.includes(VisibleVaultBanner.VerifyEmail)"
   class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
   (onDismiss)="dismissBanner(VisibleVaultBanner.VerifyEmail)"
@@ -36,6 +39,7 @@
 ></app-verify-email>
 
 <bit-banner
+  id="premium-banner"
   class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
   bannerType="premium"
   *ngIf="premiumBannerVisible$ | async"
