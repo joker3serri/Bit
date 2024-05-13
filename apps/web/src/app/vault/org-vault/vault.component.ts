@@ -1003,17 +1003,30 @@ export class VaultComponent implements OnInit, OnDestroy {
     if (!(await this.repromptCipher(ciphers))) {
       return;
     }
+
     // assess if there are unassigned ciphers and/or editable ciphers selected in bulk for restore
     const editAccessCiphers: string[] = [];
     const unassignedCiphers: string[] = [];
 
-    ciphers.map((cipher) => {
-      if (cipher.collectionIds.length === 0) {
-        unassignedCiphers.push(cipher.id);
-      } else if (cipher.edit) {
+    // If user has edit all Access no need to check for unassigned ciphers
+    const canEditAll = this.organization.canEditAllCiphers(
+      this.flexibleCollectionsV1Enabled,
+      this.restrictProviderAccessEnabled,
+    );
+
+    if (canEditAll) {
+      ciphers.map((cipher) => {
         editAccessCiphers.push(cipher.id);
-      }
-    });
+      });
+    } else {
+      ciphers.map((cipher) => {
+        if (cipher.collectionIds.length === 0) {
+          unassignedCiphers.push(cipher.id);
+        } else if (cipher.edit) {
+          editAccessCiphers.push(cipher.id);
+        }
+      });
+    }
 
     if (unassignedCiphers.length === 0 && editAccessCiphers.length === 0) {
       this.platformUtilsService.showToast(
@@ -1024,13 +1037,13 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (unassignedCiphers.length > 0) {
-      await this.cipherService.restoreManyWithServer(unassignedCiphers, this.organization.id);
+    if (unassignedCiphers.length > 0 || editAccessCiphers.length > 0) {
+      await this.cipherService.restoreManyWithServer(
+        [...unassignedCiphers, ...editAccessCiphers],
+        this.organization.id,
+      );
     }
 
-    if (editAccessCiphers.length > 0) {
-      await this.cipherService.restoreManyWithServer(editAccessCiphers, this.organization.id);
-    }
     this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItems"));
     this.refresh();
   }
