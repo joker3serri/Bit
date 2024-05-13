@@ -20,7 +20,7 @@ export const HISTORY: KeyDefinitionLike = {
   key: "localGeneratorHistoryBuffer",
 };
 
-export class GeneratorHistoryMigrator extends Migrator<62, 63> {
+export class GeneratorHistoryMigrator extends Migrator<63, 64> {
   async migrate(helper: MigrationHelper): Promise<void> {
     const accounts = await helper.getAccounts<AccountType>();
 

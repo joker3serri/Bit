@@ -7,7 +7,7 @@ import {
   NAVIGATION,
   PASSWORD,
   PASSPHRASE,
-} from "./62-migrate-password-settings";
+} from "./63-migrate-password-settings";
 
 function migrationHelper(passwordGenerationOptions: ExpectedOptions) {
   const helper = mockMigrationHelper(
@@ -31,7 +31,7 @@ function migrationHelper(passwordGenerationOptions: ExpectedOptions) {
         },
       },
     },
-    61,
+    62,
   );
 
   return helper;
@@ -57,7 +57,7 @@ describe("PasswordOptionsMigrator", () => {
         type: "password",
       });
       helper.getFromUser.mockResolvedValue({ some: { other: "data" } });
-      const migrator = new PasswordOptionsMigrator(61, 62);
+      const migrator = new PasswordOptionsMigrator(62, 63);
 
       await migrator.migrate(helper);
 
@@ -81,7 +81,7 @@ describe("PasswordOptionsMigrator", () => {
         special: true,
         minSpecial: 1,
       });
-      const migrator = new PasswordOptionsMigrator(61, 62);
+      const migrator = new PasswordOptionsMigrator(62, 63);
 
       await migrator.migrate(helper);
 
@@ -107,7 +107,7 @@ describe("PasswordOptionsMigrator", () => {
         capitalize: true,
         includeNumber: false,
       });
-      const migrator = new PasswordOptionsMigrator(61, 62);
+      const migrator = new PasswordOptionsMigrator(62, 63);
 
       await migrator.migrate(helper);
 

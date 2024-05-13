@@ -5,7 +5,7 @@ import {
   EncryptedHistory,
   GeneratorHistoryMigrator,
   HISTORY,
-} from "./63-migrate-generator-history";
+} from "./64-migrate-generator-history";
 
 function migrationHelper(encrypted: EncryptedHistory) {
   const helper = mockMigrationHelper(
@@ -31,7 +31,7 @@ function migrationHelper(encrypted: EncryptedHistory) {
         },
       },
     },
-    62,
+    63,
   );
 
   return helper;
@@ -54,7 +54,7 @@ describe("PasswordOptionsMigrator", () => {
   describe("migrate", () => {
     it("migrates generator type", async () => {
       const helper = migrationHelper([{ this: "should be copied" }, { this: "too" }]);
-      const migrator = new GeneratorHistoryMigrator(62, 63);
+      const migrator = new GeneratorHistoryMigrator(63, 64);
 
       await migrator.migrate(helper);
 
