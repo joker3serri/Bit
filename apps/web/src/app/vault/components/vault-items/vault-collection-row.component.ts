@@ -34,6 +34,8 @@ export class VaultCollectionRowComponent {
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() showPermissionsColumn: boolean;
+  @Input() flexibleCollectionsV1Enabled: boolean;
+  @Input() restrictProviderAccess: boolean;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
@@ -55,14 +57,19 @@ export class VaultCollectionRowComponent {
   }
 
   get permissionText() {
-    if (this.collection.id != Unassigned && !(this.collection as CollectionAdminView).assigned) {
-      return this.i18nService.t("noAccess");
-    } else {
+    if (
+      this.collection.id == Unassigned &&
+      this.organization?.canEditUnassignedCiphers(this.restrictProviderAccess)
+    ) {
+      return this.i18nService.t("canEdit");
+    }
+    if ((this.collection as CollectionAdminView).assigned) {
       const permissionList = getPermissionList(this.organization?.flexibleCollections);
       return this.i18nService.t(
         permissionList.find((p) => p.perm === convertToPermission(this.collection))?.labelId,
       );
     }
+    return this.i18nService.t("noAccess");
   }
 
   get permissionTooltip() {
