@@ -189,6 +189,12 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       this.enforcedPasswordPolicyOptions.defaultType
     ) {
       this.passwordOptions.type = this.enforcedPasswordPolicyOptions.defaultType;
+
+      if (this.regenerateWithoutButtonPress()) {
+        this.regenerate().catch((e) => {
+          this.logService.error(e);
+        });
+      }
     }
   }
 
