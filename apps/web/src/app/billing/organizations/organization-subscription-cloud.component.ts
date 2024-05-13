@@ -5,12 +5,7 @@ import { concatMap, firstValueFrom, lastValueFrom, Observable, Subject, takeUnti
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/provider/provider-api.service.abstraction";
-import {
-  OrganizationApiKeyType,
-  ProviderStatusType,
-  ProviderType,
-} from "@bitwarden/common/admin-console/enums";
+import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlanType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
@@ -74,7 +69,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private configService: ConfigService,
-    private providerApiService: ProviderApiServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -112,18 +106,15 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.loading = true;
     this.locale = await firstValueFrom(this.i18nService.locale$);
     this.userOrg = await this.organizationService.get(this.organizationId);
-    if (this.userOrg.hasProvider) {
-      const provider = await this.providerApiService.getProvider(this.userOrg.providerId);
-      const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
-      this.isProviderManaged =
-        provider.type == ProviderType.Msp &&
-        provider.status == ProviderStatusType.Billable &&
-        enableConsolidatedBilling;
-    }
 
     if (this.userOrg.canViewSubscription) {
+      const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
+
+      this.isProviderManaged = enableConsolidatedBilling && this.userOrg.hasProvider;
+
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
       this.lineItems = this.sub?.subscription?.items;
+
       if (this.lineItems && this.lineItems.length) {
         this.lineItems = this.lineItems
           .map((item) => {
