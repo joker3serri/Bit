@@ -97,6 +97,7 @@ import { Message, MessageListener, MessageSender } from "@bitwarden/common/platf
 // eslint-disable-next-line no-restricted-imports -- Used for dependency creation
 import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
+import { clearCaches } from "@bitwarden/common/platform/misc/sequentialize";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
@@ -1178,6 +1179,8 @@ export default class MainBackground {
       // can be removed once password generation history is migrated to state providers
       await this.stateService.clearDecryptedData(currentlyActiveAccount);
       await this.accountService.switchAccount(userId);
+      // Clear sequentialized caches
+      clearCaches();
 
       if (userId == null) {
         this.loginEmailService.setRememberEmail(false);
