@@ -3,6 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { LogoutReason } from "@bitwarden/auth/common";
 
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
+import { VaultTimeoutSettingsService } from "../abstractions/vault-timeout/vault-timeout-settings.service";
 import { OrganizationConnectionType } from "../admin-console/enums";
 import { OrganizationSponsorshipCreateRequest } from "../admin-console/models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../admin-console/models/request/organization/organization-sponsorship-redeem.request";
@@ -119,7 +120,6 @@ import { AppIdService } from "../platform/abstractions/app-id.service";
 import { EnvironmentService } from "../platform/abstractions/environment.service";
 import { LogService } from "../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../platform/abstractions/platform-utils.service";
-import { StateService } from "../platform/abstractions/state.service";
 import { Utils } from "../platform/misc/utils";
 import { UserId } from "../types/guid";
 import { AttachmentRequest } from "../vault/models/request/attachment.request";
@@ -159,10 +159,10 @@ export class ApiService implements ApiServiceAbstraction {
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
     private appIdService: AppIdService,
-    private stateService: StateService,
     private refreshAccessTokenErrorCallback: () => void,
     private logService: LogService,
     private logoutCallback: (logoutReason: LogoutReason) => Promise<void>,
+    private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private customUserAgent: string = null,
   ) {
     this.device = platformUtilsService.getDevice();
@@ -1758,8 +1758,17 @@ export class ApiService implements ApiServiceAbstraction {
       const responseJson = await response.json();
       const tokenResponse = new IdentityTokenResponse(responseJson);
 
-      const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
-      const vaultTimeout = await this.stateService.getVaultTimeout();
+      const newDecodedAccessToken = await this.tokenService.decodeAccessToken(
+        tokenResponse.accessToken,
+      );
+      const userId = newDecodedAccessToken.sub;
+
+      const vaultTimeoutAction = await firstValueFrom(
+        this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(userId),
+      );
+      const vaultTimeout = await firstValueFrom(
+        this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
+      );
 
       await this.tokenService.setTokens(
         tokenResponse.accessToken,
@@ -1791,8 +1800,15 @@ export class ApiService implements ApiServiceAbstraction {
       throw new Error("Invalid response received when refreshing api token");
     }
 
-    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
-    const vaultTimeout = await this.stateService.getVaultTimeout();
+    const newDecodedAccessToken = await this.tokenService.decodeAccessToken(response.accessToken);
+    const userId = newDecodedAccessToken.sub;
+
+    const vaultTimeoutAction = await firstValueFrom(
+      this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(userId),
+    );
+    const vaultTimeout = await firstValueFrom(
+      this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
+    );
 
     await this.tokenService.setAccessToken(
       response.accessToken,
