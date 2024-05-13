@@ -406,15 +406,18 @@ export class Main {
       " (" +
       this.platformUtilsService.getDeviceString().toUpperCase() +
       ")";
+
+    const refreshAccessTokenErrorCallback = () => {
+      throw new Error("Refresh Access token error");
+    };
+
     this.apiService = new NodeApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
       this.stateService,
-      () => {
-        throw new Error("Refresh Access token error");
-      },
+      refreshAccessTokenErrorCallback,
       this.logService,
       logoutCallback,
       customUserAgent,
