@@ -89,6 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(
         tap((msg: any) => {
           if (msg.command === "doneLoggingOut") {
+            // TODO: why do we call logout in the popup after receiving the doneLoggingOut message? Hasn't this already completeted logout?
             this.authService.logOut(async () => {
               if (msg.logoutReason) {
                 await this.displayLogoutReason(msg.logoutReason);
