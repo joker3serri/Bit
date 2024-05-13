@@ -12,6 +12,7 @@ import { FieldView } from "../models/view/field.view";
 import { AddEditCipherInfo } from "../types/add-edit-cipher-info";
 
 export abstract class CipherService {
+  cipherViews$: Observable<Record<CipherId, CipherView>>;
   /**
    *  An observable monitoring the add/edit cipher info saved to memory.
    */
