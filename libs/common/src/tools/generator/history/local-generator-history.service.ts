@@ -84,6 +84,13 @@ export class LocalGeneratorHistoryService extends GeneratorHistoryService {
     return result;
   };
 
+  /** {@link GeneratorHistoryService.take} */
+  clear = async (userId: UserId) => {
+    const state = this.getCredentialState(userId);
+    const result = (await state.update(() => null)) ?? [];
+    return result;
+  };
+
   /** {@link GeneratorHistoryService.credentials$} */
   credentials$ = (userId: UserId) => {
     return this.getCredentialState(userId).state$.pipe(map((credentials) => credentials ?? []));

@@ -25,6 +25,7 @@ import {
 } from "./abstractions";
 import { PasswordGenerationServiceAbstraction } from "./abstractions/password-generation.service.abstraction";
 import { DefaultGeneratorService } from "./default-generator.service";
+import { GeneratedCredential } from "./history";
 import { LocalGeneratorHistoryService } from "./history/local-generator-history.service";
 import { GeneratorNavigation } from "./navigation";
 import { DefaultGeneratorNavigationService } from "./navigation/default-generator-navigation.service";
@@ -381,11 +382,7 @@ export class LegacyPasswordGenerationService implements PasswordGenerationServic
   getHistory() {
     const history = this.accountService.activeAccount$.pipe(
       concatMap((account) => this.history.credentials$(account.id)),
-      map((history) =>
-        history.map(
-          (item) => new GeneratedPasswordHistory(item.credential, item.generationDate.valueOf()),
-        ),
-      ),
+      map((history) => history.map(toGeneratedPasswordHistory)),
     );
 
     return firstValueFrom(history);
@@ -398,7 +395,15 @@ export class LegacyPasswordGenerationService implements PasswordGenerationServic
   }
 
   clear() {
-    // clear is handled by the state provider's "clearon" configuration
-    return Promise.resolve();
+    const history$ = this.accountService.activeAccount$.pipe(
+      concatMap((account) => this.history.clear(account.id)),
+      map((history) => history.map(toGeneratedPasswordHistory)),
+    );
+
+    return firstValueFrom(history$);
   }
+}
+
+function toGeneratedPasswordHistory(value: GeneratedCredential) {
+  return new GeneratedPasswordHistory(value.credential, value.generationDate.valueOf());
 }

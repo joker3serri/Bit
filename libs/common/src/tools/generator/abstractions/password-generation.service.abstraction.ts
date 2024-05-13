@@ -16,5 +16,5 @@ export abstract class PasswordGenerationServiceAbstraction {
   saveOptions: (options: PasswordGeneratorOptions) => Promise<void>;
   getHistory: () => Promise<GeneratedPasswordHistory[]>;
   addHistory: (password: string) => Promise<void>;
-  clear: (userId?: string) => Promise<void>;
+  clear: (userId?: string) => Promise<GeneratedPasswordHistory[]>;
 }

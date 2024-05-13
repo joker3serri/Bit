@@ -342,9 +342,10 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
     return await this.stateService.setEncryptedPasswordGenerationHistory(newHistory);
   }
 
-  async clear(userId?: string): Promise<void> {
+  async clear(userId?: string): Promise<GeneratedPasswordHistory[]> {
     await this.stateService.setEncryptedPasswordGenerationHistory(null, { userId: userId });
     await this.stateService.setDecryptedPasswordGenerationHistory(null, { userId: userId });
+    return [];
   }
 
   private capitalize(str: string) {
