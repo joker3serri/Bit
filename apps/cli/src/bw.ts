@@ -273,7 +273,7 @@ export class Main {
     this.secureStorageService = new NodeEnvSecureStorageService(
       this.storageService,
       this.logService,
-      () => this.cryptoService,
+      this.encryptService,
     );
 
     this.memoryStorageService = new MemoryStorageService();
