@@ -573,14 +573,7 @@ export class AppComponent implements OnInit, OnDestroy {
     let toastOptions: ToastOptions;
 
     switch (logoutReason) {
-      case "invalidSecurityStamp": {
-        toastOptions = {
-          variant: "warning",
-          title: this.i18nService.t("loggedOut"),
-          message: this.i18nService.t("loginExpired"),
-        };
-        break;
-      }
+      case "invalidSecurityStamp":
       case "sessionExpired": {
         toastOptions = {
           variant: "warning",
