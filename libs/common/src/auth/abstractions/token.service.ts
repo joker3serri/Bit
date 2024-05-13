@@ -52,7 +52,7 @@ export abstract class TokenService {
   setAccessToken: (
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
   ) => Promise<void>;
 
   // TODO: revisit having this public clear method approach once the state service is fully deprecated.
@@ -91,7 +91,7 @@ export abstract class TokenService {
   setClientId: (
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ) => Promise<void>;
 
@@ -111,7 +111,7 @@ export abstract class TokenService {
   setClientSecret: (
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ) => Promise<void>;
 

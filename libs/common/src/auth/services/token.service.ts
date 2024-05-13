@@ -282,7 +282,7 @@ export class TokenService implements TokenServiceAbstraction {
   private async _setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     userId: UserId,
   ): Promise<void> {
     const storageLocation = await this.determineStorageLocation(
@@ -329,7 +329,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
   ): Promise<void> {
     if (!accessToken) {
       throw new Error("Access token is required.");
@@ -339,6 +339,15 @@ export class TokenService implements TokenServiceAbstraction {
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save access token.");
+    }
+
+    // Can't check for nullish b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     await this._setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
@@ -423,12 +432,21 @@ export class TokenService implements TokenServiceAbstraction {
   private async setRefreshToken(
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     userId: UserId,
   ): Promise<void> {
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save refresh token.");
+    }
+
+    // Can't check for nullish b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     const storageLocation = await this.determineStorageLocation(
@@ -531,7 +549,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setClientId(
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
@@ -539,6 +557,15 @@ export class TokenService implements TokenServiceAbstraction {
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save client id.");
+    }
+
+    // Can't check for nullish b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     const storageLocation = await this.determineStorageLocation(
@@ -599,13 +626,22 @@ export class TokenService implements TokenServiceAbstraction {
   async setClientSecret(
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: VaultTimeout | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
       throw new Error("User id not found. Cannot save client secret.");
+    }
+
+    // Can't check for nullish b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     const storageLocation = await this.determineStorageLocation(
@@ -898,6 +934,12 @@ export class TokenService implements TokenServiceAbstraction {
     vaultTimeout: VaultTimeout,
     useSecureStorage: boolean,
   ): Promise<TokenStorageLocation> {
+    if (vaultTimeoutAction == null) {
+      throw new Error(
+        "TokenService - determineStorageLocation: We expect the vault timeout action to always exist at this point.",
+      );
+    }
+
     if (vaultTimeout == null) {
       throw new Error(
         "TokenService - determineStorageLocation: We expect the vault timeout to always exist at this point.",

@@ -184,6 +184,26 @@ describe("TokenService", () => {
         await expect(result).rejects.toThrow("JWT must have 3 parts");
       });
 
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Act
+        const result = tokenService.setAccessToken(accessTokenJwt, VaultTimeoutAction.Lock, null);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Act
+        const result = tokenService.setAccessToken(
+          accessTokenJwt,
+          null,
+          VaultTimeoutStringType.Never,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
+      });
+
       it("should not throw an error as long as the token is valid", async () => {
         // Act
         const result = tokenService.setAccessToken(
@@ -1066,6 +1086,32 @@ describe("TokenService", () => {
         await expect(result).rejects.toThrow("User id not found. Cannot save refresh token.");
       });
 
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Act
+        const result = (tokenService as any).setRefreshToken(
+          refreshToken,
+          VaultTimeoutAction.Lock,
+          null,
+          userIdFromAccessToken,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Act
+        const result = (tokenService as any).setRefreshToken(
+          refreshToken,
+          null,
+          VaultTimeoutStringType.Never,
+          userIdFromAccessToken,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
+      });
+
       describe("Memory storage tests", () => {
         it("should set the refresh token in memory for the specified user id", async () => {
           // Act
@@ -1395,6 +1441,34 @@ describe("TokenService", () => {
         await expect(result).rejects.toThrow("User id not found. Cannot save client id.");
       });
 
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientId(clientId, VaultTimeoutAction.Lock, null);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientId(clientId, null, VaultTimeoutStringType.Never);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
+      });
+
       describe("Memory storage tests", () => {
         it("should set the client id in memory when there is an active user in global state", async () => {
           // Arrange
@@ -1631,9 +1705,45 @@ describe("TokenService", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
         // note: don't await here because we want to test the error
-        const result = tokenService.setClientSecret(clientSecret, VaultTimeoutAction.Lock, null);
+        const result = tokenService.setClientSecret(
+          clientSecret,
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot save client secret.");
+      });
+
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientSecret(clientSecret, VaultTimeoutAction.Lock, null);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientSecret(
+          clientSecret,
+          null,
+          VaultTimeoutStringType.Never,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
       });
 
       describe("Memory storage tests", () => {
@@ -2322,12 +2432,33 @@ describe("TokenService", () => {
   describe("determineStorageLocation", () => {
     it("should throw an error if the vault timeout is null", async () => {
       // Arrange
+      const vaultTimeoutAction: VaultTimeoutAction = VaultTimeoutAction.Lock;
       const vaultTimeout: VaultTimeout = null;
       // Act
-      const result = (tokenService as any).determineStorageLocation(vaultTimeout);
+      const result = (tokenService as any).determineStorageLocation(
+        vaultTimeoutAction,
+        vaultTimeout,
+        false,
+      );
       // Assert
       await expect(result).rejects.toThrow(
         "TokenService - determineStorageLocation: We expect the vault timeout to always exist at this point.",
+      );
+    });
+
+    it("should throw an error if the vault timeout action is null", async () => {
+      // Arrange
+      const vaultTimeoutAction: VaultTimeoutAction = null;
+      const vaultTimeout: VaultTimeout = 0;
+      // Act
+      const result = (tokenService as any).determineStorageLocation(
+        vaultTimeoutAction,
+        vaultTimeout,
+        false,
+      );
+      // Assert
+      await expect(result).rejects.toThrow(
+        "TokenService - determineStorageLocation: We expect the vault timeout action to always exist at this point.",
       );
     });
 
