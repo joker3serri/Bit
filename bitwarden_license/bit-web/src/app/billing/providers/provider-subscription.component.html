@@ -34,7 +34,7 @@
           bitBadge
           variant="success"
           *ngIf="subscription.discountPercentage"
-          >{{ "providerDicount" | i18n: subscription.discountPercentage }}</span
+          >{{ "providerDiscount" | i18n: subscription.discountPercentage }}</span
         >
       </strong>
       <bit-table>
@@ -42,16 +42,17 @@
           <ng-container *ngIf="subscription">
             <tr bitRow *ngFor="let i of subscription.plans">
               <td bitCell class="tw-pl-0 tw-py-3">
-                {{ i.planName.substring(0, i.planName.indexOf(" ")) }} {{ "orgSeats" | i18n }} ({{
+                {{ getFormattedPlanName(i.planName) }} {{ "orgSeats" | i18n }} ({{
                   i.cadence.toLowerCase()
-                }}) {{ "&times;"
-                }}{{ i.seatMinimum + i.purchasedSeats > 1 ? i.seatMinimum + i.purchasedSeats : "" }}
+                }}) {{ "&times;" }}{{ getFormattedSeatCount(i.seatMinimum, i.purchasedSeats) }}
                 @
                 {{
-                  i.cost / (i.seatMinimum + i.purchasedSeats) -
-                    ((i.cost / (i.seatMinimum + i.purchasedSeats)) *
-                      subscription.discountPercentage) /
-                      100 | currency: "$"
+                  getFormattedCost(
+                    i.cost,
+                    i.seatMinimum,
+                    i.purchasedSeats,
+                    subscription.discountPercentage
+                  ) | currency: "$"
                 }}
               </td>
               <td bitCell class="tw-text-right tw-py-3">

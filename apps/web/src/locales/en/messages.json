@@ -8196,7 +8196,7 @@
   "orgSeats": {
     "message": "Organization Seats"
   },
-  "providerDicount": {
+  "providerDiscount": {
     "message": "$AMOUNT$% Discount",
     "placeholders": {
       "amount": {

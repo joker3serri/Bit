@@ -40,7 +40,7 @@ export class ProviderSubscriptionComponent {
   }
 
   get isExpired() {
-    return this.subscription.status == "Active";
+    return this.subscription.status !== "active";
   }
 
   async load() {
@@ -52,6 +52,27 @@ export class ProviderSubscriptionComponent {
     this.totalCost =
       ((100 - this.subscription.discountPercentage) / 100) * this.sumCost(this.subscription.plans);
     this.loading = false;
+  }
+
+  getFormattedCost(
+    cost: number,
+    seatMinimum: number,
+    purchasedSeats: number,
+    discountPercentage: number,
+  ): number {
+    const costPerSeat = cost / (seatMinimum + purchasedSeats);
+    const discountedCost = costPerSeat - (costPerSeat * discountPercentage) / 100;
+    return discountedCost;
+  }
+
+  getFormattedPlanName(planName: string): string {
+    const spaceIndex = planName.indexOf(" ");
+    return planName.substring(0, spaceIndex);
+  }
+
+  getFormattedSeatCount(seatMinimum: number, purchasedSeats: number): string {
+    const totalSeats = seatMinimum + purchasedSeats;
+    return totalSeats > 1 ? totalSeats.toString() : "";
   }
 
   sumCost(plans: Plans[]): number {
