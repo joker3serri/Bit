@@ -72,13 +72,6 @@ export class CollectionAdminView extends CollectionView {
   }
 
   /**
-   * Returns true if the user can delete a collection from the Admin Console.
-   */
-  override canDelete(org: Organization): boolean {
-    return org?.canDeleteAnyCollection || super.canDelete(org);
-  }
-
-  /**
    * Whether the user can modify user access to this collection
    */
   canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
@@ -95,7 +88,14 @@ export class CollectionAdminView extends CollectionView {
   /**
    * Returns true if the user can view collection info and access in a read-only state from the Admin Console
    */
-  override canViewCollectionInfo(org: Organization | undefined): boolean {
+  override canViewCollectionInfo(
+    org: Organization | undefined,
+    flexibleCollectionsV1Enabled: boolean,
+  ): boolean {
+    if (!flexibleCollectionsV1Enabled) {
+      return false;
+    }
+
     if (this.isUnassignedCollection) {
       return false;
     }

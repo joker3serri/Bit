@@ -1062,7 +1062,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async deleteCollection(collection: CollectionView): Promise<void> {
-    if (!collection.canDelete(this.organization)) {
+    if (!collection.canDelete(this.organization, this.flexibleCollectionsV1Enabled)) {
       this.showMissingPermissionsError();
       return;
     }
