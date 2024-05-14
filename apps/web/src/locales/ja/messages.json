@@ -2788,6 +2788,12 @@
   "all": {
     "message": "すべて"
   },
+  "addAccess": {
+    "message": "アクセスを追加"
+  },
+  "addAccessFilter": {
+    "message": "アクセスフィルタを追加"
+  },
   "refresh": {
     "message": "更新"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "$ID$ を削除する前に、すべてのクライアントのリンクを解除してください",
+  "deleteProviderWarningDescription": {
+    "message": "$ID$ を削除するには、まずすべてのクライアントのリンクを解除してください。",
     "placeholders": {
       "id": {
         "content": "$1",

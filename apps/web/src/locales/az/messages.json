@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Hamısı"
   },
+  "addAccess": {
+    "message": "Müraciət əlavə et"
+  },
+  "addAccessFilter": {
+    "message": "Müraciət filtri əlavə et"
+  },
   "refresh": {
     "message": "Təzələ"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "$ID$ silinməzdən əvvəl bütün müştəriləri (client) ayırmalısınız",
+  "deleteProviderWarningDescription": {
+    "message": "$ID$ silinməzdən əvvəl bütün müştəriləri (client) ayırmalısınız.",
     "placeholders": {
       "id": {
         "content": "$1",

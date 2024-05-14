@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Все"
   },
+  "addAccess": {
+    "message": "Добавить доступ"
+  },
+  "addAccessFilter": {
+    "message": "Добавить фильтр доступа"
+  },
   "refresh": {
     "message": "Обновить"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Перед удалением $ID$ необходимо отвязать всех клиентов",
+  "deleteProviderWarningDescription": {
+    "message": "Перед удалением $ID$ необходимо отвязать всех клиентов.",
     "placeholders": {
       "id": {
         "content": "$1",

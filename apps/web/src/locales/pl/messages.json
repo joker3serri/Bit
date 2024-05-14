@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Wszyscy"
   },
+  "addAccess": {
+    "message": "Dodaj dostęp"
+  },
+  "addAccessFilter": {
+    "message": "Dodaj filtr dostępu"
+  },
   "refresh": {
     "message": "Odśwież"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Musisz odłączyć wszystkich klientów zanim będziesz mógł usunąć $ID$",
+  "deleteProviderWarningDescription": {
+    "message": "Musisz odłączyć wszystkich klientów zanim będziesz mógł usunąć $ID$.",
     "placeholders": {
       "id": {
         "content": "$1",

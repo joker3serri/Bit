@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Всички"
   },
+  "addAccess": {
+    "message": "Добавяне на достъп"
+  },
+  "addAccessFilter": {
+    "message": "Добавяне на филтър за достъп"
+  },
   "refresh": {
     "message": "Опресняване"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Трябва да разкачите всички клиенти, преди да можете да изтриете $ID$",
+  "deleteProviderWarningDescription": {
+    "message": "Трябва да разкачите всички клиенти, преди да можете да изтриете $ID$.",
     "placeholders": {
       "id": {
         "content": "$1",

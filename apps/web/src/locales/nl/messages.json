@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Alle"
   },
+  "addAccess": {
+    "message": "Add Access"
+  },
+  "addAccessFilter": {
+    "message": "Add Access Filter"
+  },
   "refresh": {
     "message": "Verversen"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Je moet alle clients ontkoppelen voordat je $ID$ kunt verwijderen",
+  "deleteProviderWarningDescription": {
+    "message": "Je moet alle clients ontkoppelen voordat je $ID$ kunt verwijderen.",
     "placeholders": {
       "id": {
         "content": "$1",

@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Všetky"
   },
+  "addAccess": {
+    "message": "Udeliť prístup"
+  },
+  "addAccessFilter": {
+    "message": "Filter udelenia prístupu"
+  },
   "refresh": {
     "message": "Obnoviť"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Pred tým než budete môcť odstrániť $ID$, musíte odpojiť všetkých klientov",
+  "deleteProviderWarningDescription": {
+    "message": "Pred tým než budete môcť odstrániť $ID$, musíte odpojiť všetkých klientov.",
     "placeholders": {
       "id": {
         "content": "$1",

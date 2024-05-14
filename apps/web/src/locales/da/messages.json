@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Alle"
   },
+  "addAccess": {
+    "message": "Tilføj adgang"
+  },
+  "addAccessFilter": {
+    "message": "Tilføj Adgangsfilter"
+  },
   "refresh": {
     "message": "Opdater"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Alle klienttilknytninger skal fjernes, før $ID$ kan slettes",
+  "deleteProviderWarningDescription": {
+    "message": "Alle klienttilknytninger skal fjernes, før $ID$ kan slettes.",
     "placeholders": {
       "id": {
         "content": "$1",

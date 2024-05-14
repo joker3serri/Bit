@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Vše"
   },
+  "addAccess": {
+    "message": "Přidat přístup"
+  },
+  "addAccessFilter": {
+    "message": "Přidat přístupový filtr"
+  },
   "refresh": {
     "message": "Obnovit"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "Před smazáním $ID$ musíte odpojit všechny klienty",
+  "deleteProviderWarningDescription": {
+    "message": "Před smazáním $ID$ musíte odpojit všechny klienty.",
     "placeholders": {
       "id": {
         "content": "$1",

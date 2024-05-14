@@ -2788,6 +2788,12 @@
   "all": {
     "message": "Összes"
   },
+  "addAccess": {
+    "message": "Hozzáférés hozzáadása"
+  },
+  "addAccessFilter": {
+    "message": "Hozzáférés szűrő hozzáadása"
+  },
   "refresh": {
     "message": "Frissítés"
   },
@@ -7961,8 +7967,8 @@
       }
     }
   },
-  "deleteProviderWarningDesc": {
-    "message": "You must unlink all clients before you can delete $ID$",
+  "deleteProviderWarningDescription": {
+    "message": "$ID$ törlése előtt le kell választani az összes klienst.",
     "placeholders": {
       "id": {
         "content": "$1",
