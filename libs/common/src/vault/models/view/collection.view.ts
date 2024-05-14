@@ -63,7 +63,7 @@ export class CollectionView implements View, ITreeNodeObject {
 
   /**
    * Returns true if the user can edit a collection (including user and group access) from the individual vault.
-   * Does not include admin permissions - see {@link CollectionAdminView.canEdit}.
+   * After FCv1, does not include admin permissions - see {@link CollectionAdminView.canEdit}.
    */
   canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     if (org != null && org.id !== this.organizationId) {
@@ -72,12 +72,17 @@ export class CollectionView implements View, ITreeNodeObject {
       );
     }
 
-    return this.manage;
+    if (flexibleCollectionsV1Enabled) {
+      // Only use individual permissions, not admin permissions
+      return this.manage;
+    }
+
+    return org?.canEditAnyCollection(flexibleCollectionsV1Enabled) || this.manage;
   }
 
   /**
    * Returns true if the user can delete a collection from the individual vault.
-   * Does not include admin permissions - see {@link CollectionAdminView.canDelete}.
+   * After FCv1, does not include admin permissions - see {@link CollectionAdminView.canDelete}.
    */
   canDelete(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     if (org != null && org.id !== this.organizationId) {
@@ -87,6 +92,12 @@ export class CollectionView implements View, ITreeNodeObject {
     }
 
     const canDeleteManagedCollections = !org?.limitCollectionCreationDeletion || org.isAdmin;
+
+    if (flexibleCollectionsV1Enabled) {
+      // Only use individual permissions, not admin permissions
+      return canDeleteManagedCollections && this.manage;
+    }
+
     return (
       org?.canDeleteAnyCollection(flexibleCollectionsV1Enabled) ||
       (canDeleteManagedCollections && this.manage)

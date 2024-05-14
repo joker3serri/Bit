@@ -72,6 +72,16 @@ export class CollectionAdminView extends CollectionView {
   }
 
   /**
+   * Returns true if the user can delete a collection from the Admin Console.
+   */
+  override canDelete(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+    return (
+      org?.canDeleteAnyCollection(flexibleCollectionsV1Enabled) ||
+      super.canDelete(org, flexibleCollectionsV1Enabled)
+    );
+  }
+
+  /**
    * Whether the user can modify user access to this collection
    */
   canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
