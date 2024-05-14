@@ -1215,6 +1215,7 @@ export default class MainBackground {
         await this.refreshMenu();
         await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
         await this.syncService.fullSync(false);
+        this.messagingService.send("goBack");
       }
     } finally {
       this.messagingService.send("switchAccountFinish", { userId: userId });
