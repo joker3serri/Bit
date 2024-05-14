@@ -752,6 +752,7 @@ export class ServiceContainer {
 
   async init() {
     if (this.inited) {
+      this.logService.warning("ServiceContainer.init called more than once");
       return;
     }
 
