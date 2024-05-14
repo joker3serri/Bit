@@ -1113,7 +1113,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     if (
-      (this.flexibleCollectionsV1Enabled && collections?.some((c) => !c.canDelete(organization))) ||
+      (this.flexibleCollectionsV1Enabled &&
+        collections?.some((c) => !c.canDelete(organization, this.flexibleCollectionsV1Enabled))) ||
       ciphers?.some((c) => !c.edit && !this.organization.allowAdminAccessToAllCollectionItems)
     ) {
       this.showMissingPermissionsError();
