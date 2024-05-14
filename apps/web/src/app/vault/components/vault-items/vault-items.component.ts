@@ -163,12 +163,12 @@ export class VaultItemsComponent {
       }
     }
 
-    return collection.canDelete(organization);
+    return collection.canDelete(organization, this.flexibleCollectionsV1Enabled);
   }
 
   protected canViewCollectionInfo(collection: CollectionView) {
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
-    return collection.canViewCollectionInfo(organization);
+    return collection.canViewCollectionInfo(organization, this.flexibleCollectionsV1Enabled);
   }
 
   protected toggleAll() {
